@@ -5,15 +5,23 @@
 import React, {Component} from "react"
 import Router from "./src/Router"
 import {StatusBar} from "react-native"
-export default class App extends Component {
+import { configureStore } from "./src/store/store"
+import { Provider } from "react-redux"
+
+export default class App extends Component<*, *> {
   constructor() {
     super()
+    this.store = configureStore()
     StatusBar.setBarStyle("light-content")
   }
 
+  store: {}
+
   render() {
     return (
-      <Router/>
+      <Provider store={this.store}>
+        <Router/>
+      </Provider>
     )
   }
 }

@@ -15,7 +15,6 @@ Object.defineProperty(global, "GLOBAL", {
 Object.defineProperty(process, "versions", {
     value: undefined
 });
-
 var vscodeHandlers = {
     'vscode_reloadApp': function () {
         try {
@@ -32,7 +31,6 @@ var vscodeHandlers = {
         }
     }
 };
-
 process.on("message", function (message) {
     if (message.data && vscodeHandlers[message.data.method]) {
         vscodeHandlers[message.data.method]();
@@ -40,15 +38,12 @@ process.on("message", function (message) {
         onmessage(message);
     }
 });
-
 var postMessage = function(message){
     process.send(message);
 };
-
 if (!self.postMessage) {
     self.postMessage = postMessage;
 }
-
 var importScripts = (function(){
     var fs=require('fs'), vm=require('vm');
     return function(scriptUrl){

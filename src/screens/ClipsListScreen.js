@@ -1,7 +1,7 @@
 import React from "react"
 import { View, Text, StyleSheet } from "react-native"
 
-export class ClipsListScreen extends React.Component {
+export class ClipsListScreen extends React.Component<Props, *> {
   render() {
     return (
       <View style={styles.view}>

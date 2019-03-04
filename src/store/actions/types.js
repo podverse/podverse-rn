@@ -1,0 +1,1 @@
+export const TOGGLE_PLAYER = "TOGGLE_PLAYER"

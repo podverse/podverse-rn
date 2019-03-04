@@ -1,5 +1,1 @@
-export {ClipsListScreen} from "./ClipsListScreen"
-export {PodcastsListScreen} from "./PodcastsListScreen"
-export {MoreOptionsScreen} from "./MoreOptionsScreen"
-export {DownloadsListScreen} from "./DownloadsListScreen"
-export {SearchPodcastsScreen} from "./SearchPodcastsScreen"
+export {PVTabBar} from "./PVTabBar.js"
