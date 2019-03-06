@@ -8,8 +8,8 @@ class SubcribedPodcastsScreenComponent extends React.Component {
   async componentDidMount() {
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
-      if(!appHasLaunched) {
-        AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, "true")
+      if(appHasLaunched) {
+        //AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, "true")
         this.props.navigation.navigate("OnBoarding")
       }
     } catch (error) {
@@ -20,6 +20,7 @@ class SubcribedPodcastsScreenComponent extends React.Component {
   render() {
     return (
       <View style={styles.view}>
+        {!!this.props.name  && <Text style={styles.title}>{`Welcome, ${this.props.name}`}</Text>}
         <Text>Podcast List</Text>
         <TouchableOpacity
           onPress={() => this.props.toggleBar(!this.props.showPlayer)}
@@ -47,8 +48,10 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mapStateToProps = (state) => {
+  const { userInfo = {} } = state
   return {
-    showPlayer: state.player.showPlayer
+    showPlayer: state.player.showPlayer,
+    name: userInfo.name || ""
   }
 }
 

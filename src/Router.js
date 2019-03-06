@@ -3,7 +3,7 @@
  */
 import { createAppContainer, createStackNavigator, createSwitchNavigator } from "react-navigation"
 import { createBottomTabNavigator } from "react-navigation-tabs"
-import { SubcribedPodcastsScreen, DownloadsListScreen, MoreOptionsScreen, SearchPodcastsScreen, ClipsListScreen, OnBoardingScreen } from "./screens"
+import { SubcribedPodcastsScreen, DownloadsListScreen, MoreOptionsScreen, SearchPodcastsScreen, ClipsListScreen, OnBoardingScreen, AuthScreen } from "./screens"
 import {PVTabBar} from "./components"
 import { PV } from "./resources"
 import React from "react"
@@ -106,7 +106,8 @@ const MoreOptionsNavigator = createStackNavigator({
 })
 
 const OnBoardingNavigator = createStackNavigator({
-  [PV.ScreenNames.OnboardingScreen]: OnBoardingScreen
+  [PV.ScreenNames.OnboardingScreen]: OnBoardingScreen,
+  [PV.ScreenNames.AuthScreen]: AuthScreen
 }, {
   mode: "modal",
   headerMode: "none"

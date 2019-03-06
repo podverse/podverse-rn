@@ -1,14 +1,29 @@
+//@flow
 import React from "react"
 import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView } from "react-native"
 import {PV} from "../resources"
+
+
+type Props = {
+  loginUser: ({}) => Promise<any>,
+  navigation: any
+}
+
 export class OnBoardingScreen extends React.Component<Props, *> {
+
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      name: ""
+    }
+  }
 
   dismissOnboarding = () => {
     this.props.navigation.navigate("MainApp")
   }
 
-  goToLogin = () => {
-
+  goToLogin = async () => {
+    this.props.navigation.navigate(PV.ScreenNames.AuthScreen)
   }
 
   render() {

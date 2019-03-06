@@ -4,5 +4,6 @@ export const ScreenNames = {
   MoreOptionsScreen: "MoreOptionsScreen",
   SearchPodcastsScreen: "SearchPodcastsScreen",
   ClipsListScreen: "ClipsListScreen",
-  OnboardingScreen: "OnBoardingScreen"
+  OnboardingScreen: "OnBoardingScreen",
+  AuthScreen: "AuthScreen"
 }
