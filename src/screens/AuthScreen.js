@@ -1,10 +1,10 @@
 //@flow
 import React from "react"
-import { View, StyleSheet, Image } from "react-native"
+import { View, Text, StyleSheet, Image, Alert, TouchableWithoutFeedback, Keyboard } from "react-native"
 import { connect } from "react-redux"
 import { PV } from "../resources"
-import { Login } from "../components"
-import { loginUser } from "../store/actions/auth"
+import { Login, SignUp } from "../components"
+import { loginUser, signUpUser } from "../store/actions/auth"
 
 export class AuthScreenComponent extends React.Component<Props, *> {
   constructor(props: Props){
@@ -17,18 +17,44 @@ export class AuthScreenComponent extends React.Component<Props, *> {
   attemptLogin = async (credentials: {}) => {
     try {
       await this.props.loginUser(credentials)
-      this.props.navigation.navigate("MainApp")
+      if(this.props.navigation.getParam("isOnboarding", false)) {
+        this.props.navigation.navigate(PV.RouteNames.MainApp)
+      } else {
+        this.props.navigation.goBack(null)
+      }
     } catch (error) {
-      console.log(error)
+      Alert.alert("Error", error.message, [{title:"OK"}])
     }
+  }
+
+  attemptSignUp = async (credentials: {}) => {
+    try {
+      await this.props.signUpUser(credentials)
+      if(this.props.navigation.getParam("isOnboarding", false)) {
+        this.props.navigation.navigate(PV.RouteNames.MainApp)
+      } else {
+        this.props.navigation.goBack(null)
+      }
+    } catch (error) {
+      Alert.alert("Error", error.message, [{title:"OK"}])
+    }
+  }
+
+  switchOptions = () => {
+    this.setState({showSignUp: !this.state.showSignUp})
   }
 
   render() {
     return (
-      <View style={styles.view}>
-        <Image source={PV.Images.BANNER} style={styles.banner} resizeMode="contain"/>
-        {!this.state.showSignUp ? <Login onLoginPressed={this.attemptLogin}/> : null}
-      </View>
+      <TouchableWithoutFeedback   onPress={() => Keyboard.dismiss()}>
+        <View style={styles.view}>
+          <Image source={PV.Images.BANNER} style={styles.banner} resizeMode="contain"/>
+          <View style={styles.contentView}>
+            {!this.state.showSignUp ? <Login onLoginPressed={this.attemptLogin}/> : <SignUp onSignUpPressed={this.attemptSignUp}/>}
+            <Text onPress={this.switchOptions} style={styles.switchOptionText}>{this.state.showSignUp ? "Login" : "SignUp"}</Text>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
     )
   }
 }
@@ -36,13 +62,25 @@ export class AuthScreenComponent extends React.Component<Props, *> {
 const styles = StyleSheet.create({
   view: {
     flex:1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: PV.Colors.podverseBlue
+    backgroundColor: PV.Colors.podverseBlue,
+    paddingTop: 100
+  },
+  contentView: {
+    width:"100%",
+    justifyContent: "center",
+    alignItems: "center"
   },
   banner: {
-    marginBottom: 20,
+    marginBottom: 60,
     width: "80%"
+  },
+  switchOptionText: {
+    fontSize: 18,
+    color: PV.Colors.white,
+    marginTop: 30,
+    textDecorationLine: "underline"
   }
 })
 
@@ -52,7 +90,8 @@ const mapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    loginUser: (credentials) => dispatch(loginUser(credentials))
+    loginUser: (credentials) => dispatch(loginUser(credentials)),
+    signUpUser: (credentials) => dispatch(signUpUser(credentials))
   }
 }
 

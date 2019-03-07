@@ -10,7 +10,7 @@ export class Login extends React.Component {
     }
   }
     inputsValid = () => {
-      return !!this.state.email && !!this.state.password && !this.state.password.match("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})")
+      return !!this.state.email && !!this.state.password
     }
 
     login = () => {
@@ -26,11 +26,16 @@ export class Login extends React.Component {
     }
 
     render() {
+      const disabled = !this.inputsValid()
+      const disabledStyle = disabled ? {backgroundColor: PV.Colors.disabled} : null
+      const disabledTextStyle = disabled ? {color: "white"} : null
       return (
         <View style={[styles.view, this.props.style]} onPress={() => Keyboard.dismiss()}>
-          <TextInput onChangeText={this.emailChanged} style={styles.textField} value={this.state.email} placeholder="Email"/>
+          <TextInput keyboardType="email-address" onChangeText={this.emailChanged} style={styles.textField} value={this.state.email} placeholder="Email"/>
           <TextInput secureTextEntry onChangeText={this.passwordChanged} style={styles.textField} value={this.state.password} underlineColorAndroid="transparent" placeholder="Password"/>
-          <TouchableOpacity style={styles.signInButton} disabled={this.inputsValid()} onPress={this.login}><Text style={styles.signInButtonText}>Login</Text></TouchableOpacity>
+          <TouchableOpacity style={[styles.signInButton, disabledStyle]} disabled={disabled} onPress={this.login}>
+            <Text style={[styles.signInButtonText, disabledTextStyle]}>Login</Text>
+          </TouchableOpacity>
         </View>
       )
     }
@@ -50,15 +55,15 @@ const styles = StyleSheet.create({
     paddingLeft: 20
   },
   signInButton: {
-    borderColor: PV.Colors.white,
-    borderWidth: 1,
+
     padding: 10,
     width: "65%",
-    alignItems: "center"
+    alignItems: "center",
+    backgroundColor: PV.Colors.white
   },
   signInButtonText: {
     fontSize: 17,
-    color: PV.Colors.white,
+    color: PV.Colors.podverseBlue,
     fontWeight: "bold"
   }
 })

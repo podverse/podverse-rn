@@ -8,9 +8,9 @@ class SubcribedPodcastsScreenComponent extends React.Component {
   async componentDidMount() {
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
-      if(appHasLaunched) {
-        //AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, "true")
-        this.props.navigation.navigate("OnBoarding")
+      if(!appHasLaunched) {
+        AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, "true")
+        this.props.navigation.navigate(PV.RouteNames.OnBoarding)
       }
     } catch (error) {
       console.log(error)
@@ -22,6 +22,10 @@ class SubcribedPodcastsScreenComponent extends React.Component {
       <View style={styles.view}>
         {!!this.props.name  && <Text style={styles.title}>{`Welcome, ${this.props.name}`}</Text>}
         <Text>Podcast List</Text>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate(PV.RouteNames.AuthNavigator)}
+          style={{position:"absolute", bottom: 0, height: 30, width:"40%", backgroundColor:"red", alignItems:"center", justifyContent:"center", marginBottom:50}}
+        ><Text>GO TO LOGIN</Text></TouchableOpacity>
         <TouchableOpacity
           onPress={() => this.props.toggleBar(!this.props.showPlayer)}
           style={{position:"absolute", bottom: 0, height: 30, width:"40%", backgroundColor:"gray", alignItems:"center", justifyContent:"center"}}
@@ -48,7 +52,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mapStateToProps = (state) => {
-  const { userInfo = {} } = state
+  const { userInfo = {} } = state.auth
   return {
     showPlayer: state.player.showPlayer,
     name: userInfo.name || ""

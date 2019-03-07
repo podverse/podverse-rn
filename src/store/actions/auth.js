@@ -1,6 +1,12 @@
 //@flow
 import * as UserTypes from "./types"
-import { login } from "../../services/auth"
+import { login, signUp, getAuthenticatedUserInfo } from "../../services/auth"
+
+type Credentials = {
+  email: string,
+  password: string,
+  name: string
+}
 
 export const setUserInfo = (userInfo: {}) => {
   return {
@@ -23,16 +29,36 @@ export const setLoginStatus = (isLoggedIn: boolean) => {
   }
 }
 
-export const loginUser = (credentials: {}) => {
+export const loginUser = (credentials: Credentials) => {
   return async (dispatch) => {
-    console.log(credentials)
-    try {
-      const response = await login(credentials.email, credentials.password)
-      const user = await response.json()
-      dispatch(setUserInfo(user))
-      return user
-    } catch (e) {
-      console.log(e)
+    const response = await login(credentials.email, credentials.password)
+    if(response.status !== 200) {
+      throw new Error(response._bodyInit)
     }
+
+    const user = await response.json()
+    dispatch(setUserInfo(user))
+    return user
+  }
+}
+
+export const signUpUser = (credentials: Credentials) => {
+  return async (dispatch) => {
+    await signUp(credentials.email, credentials.password, credentials.name)
+    return dispatch(getAuthUserInfo())
+  }
+}
+
+export const getAuthUserInfo = () => {
+  return async (dispatch) => {
+    const response = await getAuthenticatedUserInfo()
+    console.log("Get Auth response is: ", response)
+    if(response.status !== 200) {
+      throw new Error(response._bodyInit)
+    }
+    debugger
+    const user = await response.json()
+    dispatch(setUserInfo(user))
+    return user
   }
 }

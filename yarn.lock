@@ -4965,6 +4965,11 @@ react-native-safe-area-view@^0.11.0:
   resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-1.0.0-alpha.19.tgz#ecf3c9023e169b7013266d40b9c5599f37667f6d"
   integrity sha512-+a7GdwzLWYWYVUJMg+XuyBoRFGD8GdGyBfebuTNBY+xwUZpTXCaK/GlLGL6EE3h0iBHZu83do7zViEailWRNyA==
 
+react-native-secure-key-store@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-secure-key-store/-/react-native-secure-key-store-2.0.1.tgz#9e5caaff1ca94a986ce896b96c14d6a0a35586ec"
+  integrity sha512-HIRW25AyOrTHI9uWfvljIRI/787+dhPFqFNOBi3f6GcWvUcIy779CfMk5mIprvwbg025zWfUjU3s3cdjwWxdWw==
+
 react-native-tab-view@^1.0.0, react-native-tab-view@^1.2.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-1.3.1.tgz#f9932d6bd5ba7dad75ef9335a68f13d85ba5bd56"

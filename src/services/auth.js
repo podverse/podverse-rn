@@ -1,5 +1,6 @@
 
 // @flow
+import RNSecureKeyStore, {ACCESSIBLE} from "react-native-secure-key-store"
 const API_BASE_URL  = "https://api.stage.podverse.fm/api/v1"
 
 type Request = {endpoint?: string, params?: Object, query?: string, body?: Object, headers?: Object, method?: string, opts?: Object}
@@ -18,13 +19,20 @@ const request = async (request: Request) => {
   return await fetch(`${API_BASE_URL}${endpoint}?${query}`, {params, headers, body, method, ...opts})
 }
 
-export const getAuthenticatedUserInfo = async (bearerToken: string) => {
-  return await fetch(`${API_BASE_URL}/auth/get-authenticated-user-info`, {
-    method: "POST",
-    headers: {
-      Authorization: bearerToken
-    }
-  })
+export const getAuthenticatedUserInfo = async () => {
+  try {
+    const bearerToken = await RNSecureKeyStore.get("BEARER_TOKEN")
+    return await request({
+      endpoint: "/auth/get-authenticated-user-info",
+      method: "POST",
+      headers: {
+        "Authorization": bearerToken,
+        "Content-Type": "application/json"
+      }
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 // export const getLoggedInUserMediaRefs = async (bearerToken, nsfwMode, sort = 'most-recent', page = 1) => {
@@ -73,15 +81,6 @@ export const login = async (email: string, password: string) => {
       credentials: "include"
     }
   })
-  // fetch(`${API_BASE_URL}/auth/login`, {
-  //   method: "POST",
-  //   headers: {"Content-Type": "application/json"},
-  //   body: JSON.stringify({
-  //     email,
-  //     password
-  //   }),
-  //   credentials: "include"
-  // })
 }
 
 export const logOut = async () => {
@@ -110,15 +109,24 @@ export const sendResetPassword = async (email: string) => {
   })
 }
 
-export const signUp = async (email: string, password: string) => {
-  return await fetch(`${API_BASE_URL}/auth/sign-up`, {
+export const signUp = async (email: string, password: string, name: string) => {
+  const response = await request({
+    endpoint: "/auth/sign-up",
     method: "POST",
+    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
       email,
-      password
+      password,
+      name
     }),
-    credentials: "include"
+    opts: {credentials: "include"}
   })
+  if(response.status !== 200) {
+    throw new Error(response._bodyInit)
+  }
+  const bearerToken = response.headers.map["set-cookie"].slice(14, response.headers.map["set-cookie"].indexOf(";"))
+  RNSecureKeyStore.set("BEARER_TOKEN", bearerToken, {accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY})
+  return await response.json()
 }
 
 export const verifyEmail = async (token: string) => {

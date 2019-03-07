@@ -1,12 +1,12 @@
 import {Colors} from "./Colors"
-import { ScreenNames } from "./ScreenNames"
+import { RouteNames } from "./RouteNames"
 import { Keys } from "./Keys"
 import { Images } from "./Images"
 import {Tabs} from "./Tabs"
 
 export const PV = {
   Colors,
-  ScreenNames,
+  RouteNames,
   Keys,
   Images,
   Tabs

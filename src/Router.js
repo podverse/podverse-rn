@@ -10,10 +10,17 @@ import React from "react"
 import { Image } from "react-native"
 
 
+const AuthNavigator = createStackNavigator({
+  [PV.RouteNames.AuthScreen]: AuthScreen
+}, {
+  headerMode: "none"
+})
+
 const PodcastsNavigator = createStackNavigator({
-  [PV.ScreenNames.SubscribedPodcastsScreen]: SubcribedPodcastsScreen
+  [PV.RouteNames.SubscribedPodcastsScreen]: SubcribedPodcastsScreen
 },
 {
+  initialRouteName: PV.RouteNames.SubscribedPodcastsScreen,
   defaultNavigationOptions: {
     title: PV.Tabs.Podcasts.title,
     headerStyle: {
@@ -30,7 +37,7 @@ const PodcastsNavigator = createStackNavigator({
 })
 
 const ClipsNavigator = createStackNavigator({
-  [PV.ScreenNames.ClipsListScreen]: ClipsListScreen
+  [PV.RouteNames.ClipsListScreen]: ClipsListScreen
 },
 {
   defaultNavigationOptions: {
@@ -49,7 +56,7 @@ const ClipsNavigator = createStackNavigator({
 })
 
 const SearchNavigator = createStackNavigator({
-  [PV.ScreenNames.SearchPodcastsScreen]: SearchPodcastsScreen
+  [PV.RouteNames.SearchPodcastsScreen]: SearchPodcastsScreen
 },
 {
   defaultNavigationOptions: {
@@ -68,7 +75,7 @@ const SearchNavigator = createStackNavigator({
 })
 
 const DownloadsNavigator = createStackNavigator({
-  [PV.ScreenNames.DownloadsListScreen]: DownloadsListScreen
+  [PV.RouteNames.DownloadsListScreen]: DownloadsListScreen
 },
 {
   defaultNavigationOptions: {
@@ -87,7 +94,7 @@ const DownloadsNavigator = createStackNavigator({
 })
 
 const MoreOptionsNavigator = createStackNavigator({
-  [PV.ScreenNames.MoreOptionsScreen]: MoreOptionsScreen
+  [PV.RouteNames.MoreOptionsScreen]: MoreOptionsScreen
 },
 {
   defaultNavigationOptions: {
@@ -106,9 +113,10 @@ const MoreOptionsNavigator = createStackNavigator({
 })
 
 const OnBoardingNavigator = createStackNavigator({
-  [PV.ScreenNames.OnboardingScreen]: OnBoardingScreen,
-  [PV.ScreenNames.AuthScreen]: AuthScreen
+  [PV.RouteNames.OnboardingScreen]: OnBoardingScreen,
+  [PV.RouteNames.AuthNavigator]: AuthNavigator
 }, {
+  initialRouteName: PV.RouteNames.OnboardingScreen,
   mode: "modal",
   headerMode: "none"
 })
@@ -127,11 +135,19 @@ const TabNavigator = createBottomTabNavigator({
   }
 })
 
+const MainApp = createStackNavigator({
+  [PV.RouteNames.TabNavigator]: TabNavigator,
+  [PV.RouteNames.AuthNavigator]: AuthNavigator
+}, {
+  mode: "modal",
+  headerMode: "none"
+})
+
 const SwitchNavigator = createSwitchNavigator({
-  MainApp: TabNavigator,
+  MainApp: MainApp,
   OnBoarding: OnBoardingNavigator
 }, {
-  initialRouteName: "MainApp"
+  initialRouteName: PV.RouteNames.MainApp
 })
 
 export default createAppContainer(SwitchNavigator)

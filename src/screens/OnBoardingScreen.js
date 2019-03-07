@@ -23,7 +23,7 @@ export class OnBoardingScreen extends React.Component<Props, *> {
   }
 
   goToLogin = async () => {
-    this.props.navigation.navigate(PV.ScreenNames.AuthScreen)
+    this.props.navigation.navigate(PV.RouteNames.AuthScreen, {isOnboarding: true})
   }
 
   render() {
