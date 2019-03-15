@@ -8,6 +8,10 @@ type Props = {}
 
 type State = {}
 
+interface App {
+  store?: any
+}
+
 class App extends Component<Props, State> {
   constructor (props: Props) {
     super(props)
