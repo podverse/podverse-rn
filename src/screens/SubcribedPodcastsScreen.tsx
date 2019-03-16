@@ -1,5 +1,6 @@
 import React from 'react'
-import { AsyncStorage, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux'
 import { PV } from '../resources'
 import { togglePlayer } from '../store/actions/player'
