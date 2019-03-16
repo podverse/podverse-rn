@@ -5,9 +5,11 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "lint": "eslint *.js **/*.js"
+    "lint": "tslint 'src/**/*.{ts,tsx}'"
   },
   "dependencies": {
+    "@types/react-navigation": "^3.0.5",
+    "@types/react-redux": "^7.0.3",
     "fetch": "^1.1.0",
     "react": "16.6.3",
     "react-native": "0.57.8",
@@ -19,6 +21,8 @@
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
+    "@types/react": "^16.8.8",
+    "@types/react-native": "^0.57.40",
     "babel-eslint": "^10.0.1",
     "babel-jest": "23.6.0",
     "eslint": "^5.11.1",
@@ -27,7 +31,14 @@
     "eslint-plugin-react-native": "^3.5.0",
     "jest": "23.6.0",
     "metro-react-native-babel-preset": "0.51.1",
-    "react-test-renderer": "16.6.3"
+    "prettier": "^1.16.4",
+    "react-native-typescript-transformer": "^1.2.12",
+    "react-test-renderer": "16.6.3",
+    "tslint": "^5.14.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^8.0.1",
+    "tslint-react": "^3.6.0",
+    "typescript": "^3.3.3333"
   },
   "jest": {
     "preset": "react-native"
