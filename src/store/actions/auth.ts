@@ -1,5 +1,8 @@
-import { getAuthenticatedUserInfo, login, signUp } from '../../services/auth'
+import { getAuthenticatedUserInfo, login, signUp, logout } from 'podverse/src/services/auth'
 import * as UserTypes from './types'
+import {Alert} from "react-native"
+import RNSecureKeyStore from 'react-native-secure-key-store'
+import { PV } from 'podverse/src/resources'
 
 type Credentials = {
   email: string,
@@ -30,13 +33,9 @@ export const setLoginStatus = (isLoggedIn: boolean) => {
 
 export const loginUser = (credentials: Credentials) => {
   return async (dispatch: any) => {
-    const response = await login(credentials.email, credentials.password)
-    if (response.status !== 200) {
-      throw new Error(response._bodyInit)
-    }
-
-    const user = await response.json()
+    const user = await login(credentials.email, credentials.password)
     dispatch(setUserInfo(user))
+    dispatch(setLoginStatus(true))
     return user
   }
 }
@@ -50,13 +49,22 @@ export const signUpUser = (credentials: Credentials) => {
 
 export const getAuthUserInfo = () => {
   return async (dispatch: any) => {
-    const response = await getAuthenticatedUserInfo()
-    console.log('Get Auth response is: ', response)
-    if(response.status !== 200) {
-      throw new Error(response._bodyInit)
-    }
-    const user = await response.json()
+    const user = await getAuthenticatedUserInfo()
+    
     dispatch(setUserInfo(user))
+    dispatch(setLoginStatus(true))
+
     return user
+  }
+}
+
+export const logoutUser = () => async (dispatch: any) => {
+  try {
+    await logout()
+    dispatch(clearUserInfo())
+    dispatch(setLoginStatus(false))
+    RNSecureKeyStore.remove(PV.Keys.BEARER_TOKEN)
+  } catch (error) {
+    Alert.alert('Error', error.message, [])
   }
 }

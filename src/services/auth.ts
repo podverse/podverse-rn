@@ -1,51 +1,19 @@
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
-const API_BASE_URL = 'https://api.stage.podverse.fm/api/v1'
-
-type Request = {
-  endpoint?: string,
-  query?: string,
-  body?: any,
-  headers?: any,
-  method?: string,
-  opts?: any
-}
-
-const request = async (req: Request) => {
-  const {
-    endpoint = '',
-    query = '',
-    headers = {},
-    body = {},
-    method = 'GET',
-    opts = {}
-  } = req
-
-  return fetch(
-    `${API_BASE_URL}${endpoint}?${query}`,
-    {
-      headers,
-      body,
-      method,
-      ...opts
-    }
-  )
-}
+import { request } from "./request"
+import {PV} from 'podverse/src/resources'
 
 export const getAuthenticatedUserInfo = async () => {
-  try {
-    const bearerToken = await RNSecureKeyStore.get('BEARER_TOKEN')
-    return await request({
-      endpoint: '/auth/get-authenticated-user-info',
-      method: 'POST',
-      headers: {
-        'Authorization': bearerToken,
-        'Content-Type': 'application/json'
-      }
-    })
-  } catch (error) {
-    console.log(error)
-    return
-  }
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const response = await request({
+    endpoint: '/auth/get-authenticated-user-info',
+    method: 'POST',
+    headers: {
+      'Authorization': bearerToken,
+      'Content-Type': 'application/json'
+    }
+  })
+
+  return await response.json()
 }
 
 // export const getLoggedInUserMediaRefs = async (bearerToken, nsfwMode, sort = 'most-recent', page = 1) => {
@@ -82,71 +50,79 @@ export const getAuthenticatedUserInfo = async () => {
 // }
 
 export const login = async (email: string, password: string) => {
-  return request({
+  const response = await request({
     method: 'POST',
     endpoint: '/auth/login',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
+    body: {
       email,
       password
-    }),
+    },
+    opts: {
+      credentials: 'include'
+    }
+  })
+
+  const data = await response.json()
+
+  if(data.token) {
+    RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY })
+  }
+
+  return data
+}
+
+export const logout = async () => {
+  return request({
+    endpoint:'/auth/log-out',
+    method: 'POST',
     opts: {
       credentials: 'include'
     }
   })
 }
 
-export const logOut = async () => {
-  return fetch(`${API_BASE_URL}/auth/log-out`, {
-    method: 'POST',
-    credentials: 'include'
-  })
-}
+// export const resetPassword = async (password?: string, resetPasswordToken?: string) => {
+//   return fetch(`${API_BASE_URL}/auth/reset-password`, {
+//     method: 'POST',
+//     body: JSON.stringify({
+//       password,
+//       resetPasswordToken
+//     })
+//   })
+// }
 
-export const resetPassword = async (password?: string, resetPasswordToken?: string) => {
-  return fetch(`${API_BASE_URL}/auth/reset-password`, {
-    method: 'POST',
-    body: JSON.stringify({
-      password,
-      resetPasswordToken
-    })
-  })
-}
-
-export const sendResetPassword = async (email: string) => {
-  return fetch(`${API_BASE_URL}/auth/send-reset-password`, {
-    method: 'POST',
-    body: JSON.stringify({
-      email
-    })
-  })
-}
+// export const sendResetPassword = async (email: string) => {
+//   return fetch(`${API_BASE_URL}/auth/send-reset-password`, {
+//     method: 'POST',
+//     body: JSON.stringify({
+//       email
+//     })
+//   })
+// }
 
 export const signUp = async (email: string, password: string, name: string) => {
   const response = await request({
     endpoint: '/auth/sign-up',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
+    body: {
       email,
       password,
       name
-    }),
+    },
     opts: { credentials: 'include' }
   })
-  if (response.status !== 200) {
-    throw new Error(response._bodyInit)
+
+  const data = await response.json()
+
+  if(data.token) {
+    RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY })
   }
-  const bearerToken = response.headers.map['set-cookie']
-    .slice(14, response.headers.map['set-cookie'].indexOf(';'))
-  RNSecureKeyStore.set(
-    'BEARER_TOKEN',
-    bearerToken,
-    { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
-  )
-  return response.json()
+
+  return data
 }
 
-export const verifyEmail = async (token: string) => {
-  return fetch(`${API_BASE_URL}/auth/verify-email?token=${token}`)
-}
+// export const verifyEmail = async (token: string) => {
+//   return fetch(`${API_BASE_URL}/auth/verify-email?token=${token}`)
+// }

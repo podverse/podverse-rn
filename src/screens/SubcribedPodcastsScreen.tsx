@@ -2,14 +2,19 @@ import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux'
-import { PV } from '../resources'
-import { togglePlayer } from '../store/actions/player'
+import { PV } from 'podverse/src/resources'
+import { togglePlayer } from 'podverse/src/store/actions/player'
+import RNSecureKeyStore from 'react-native-secure-key-store'
+import { getAuthUserInfo, logoutUser } from 'podverse/src/store/actions/auth'
 
 type Props = {
   name?: string,
   navigation?: any,
-  showPlayer?: any,
-  toggleBar?: any
+  showPlayer: boolean,
+  isLoggedIn: boolean,
+  toggleBar: (showPlayer: boolean) => any,
+  getCurrentSession: () => Promise<any>,
+  logoutUser: () => Promise<any>
 }
 
 type State = {}
@@ -24,6 +29,11 @@ class SubcribedPodcastsScreenComponent extends React.Component<Props, State> {
       if (!appHasLaunched) {
         AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
         navigation.navigate(PV.RouteNames.OnBoarding)
+      } else {
+        const userToken = await RNSecureKeyStore.get('BEARER_TOKEN')
+        if(userToken) {
+          this.props.getCurrentSession()
+        }
       }
     } catch (error) {
       console.log(error)
@@ -38,7 +48,13 @@ class SubcribedPodcastsScreenComponent extends React.Component<Props, State> {
         {!!name && <Text>{`Welcome, ${name}`}</Text>}
         <Text>Podcast List</Text>
         <TouchableOpacity
-          onPress={() => navigation.navigate(PV.RouteNames.AuthNavigator)}
+          onPress={() => {
+            if(this.props.isLoggedIn) {
+              this.props.logoutUser()
+            } else {
+              navigation.navigate(PV.RouteNames.AuthNavigator)
+            }
+          }}
           style={{
             position: 'absolute',
             bottom: 0,
@@ -49,7 +65,7 @@ class SubcribedPodcastsScreenComponent extends React.Component<Props, State> {
             justifyContent: 'center',
             marginBottom: 50
           }}
-        ><Text>GO TO LOGIN</Text></TouchableOpacity>
+        ><Text>{this.props.isLoggedIn ? "LOGOUT" : "GO TO LOGIN"}</Text></TouchableOpacity>
         <TouchableOpacity
           onPress={() => toggleBar(!showPlayer)}
           style={{
@@ -78,7 +94,9 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    toggleBar: (toggle: any) => dispatch(togglePlayer(toggle))
+    toggleBar: (toggle: any) => dispatch(togglePlayer(toggle)),
+    getCurrentSession: () => dispatch(getAuthUserInfo()),
+    logoutUser: () => dispatch(logoutUser())
   }
 }
 
@@ -86,7 +104,8 @@ const mapStateToProps = (state: any) => {
   const { userInfo = {} } = state.auth
   return {
     showPlayer: state.player.showPlayer,
-    name: userInfo.name || ''
+    name: userInfo.name || '',
+    isLoggedIn: state.auth.isLoggedIn
   }
 }
 
