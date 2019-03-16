@@ -55,7 +55,6 @@ export const getAuthUserInfo = () => {
     if(response.status !== 200) {
       throw new Error(response._bodyInit)
     }
-    debugger
     const user = await response.json()
     dispatch(setUserInfo(user))
     return user
