@@ -1,6 +1,6 @@
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
-import { request } from "./request"
-import {PV} from 'podverse/src/resources'
+import { PV } from '../resources'
+import { request } from './request'
 
 export const getAuthenticatedUserInfo = async () => {
   const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
@@ -13,7 +13,7 @@ export const getAuthenticatedUserInfo = async () => {
     }
   })
 
-  return await response.json()
+  return response.json()
 }
 
 // export const getLoggedInUserMediaRefs = async (bearerToken, nsfwMode, sort = 'most-recent', page = 1) => {
@@ -65,7 +65,7 @@ export const login = async (email: string, password: string) => {
 
   const data = await response.json()
 
-  if(data.token) {
+  if (data.token) {
     RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY })
   }
 
@@ -74,7 +74,7 @@ export const login = async (email: string, password: string) => {
 
 export const logout = async () => {
   return request({
-    endpoint:'/auth/log-out',
+    endpoint: '/auth/log-out',
     method: 'POST',
     opts: {
       credentials: 'include'
@@ -116,7 +116,7 @@ export const signUp = async (email: string, password: string, name: string) => {
 
   const data = await response.json()
 
-  if(data.token) {
+  if (data.token) {
     RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY })
   }
 

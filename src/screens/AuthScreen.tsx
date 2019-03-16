@@ -18,7 +18,7 @@ type State = {
 
 export class AuthScreenComponent extends React.Component<Props, State> {
 
-  constructor (props: Props) {
+  constructor(props: Props) {
     super(props)
     this.state = {
       showSignUp: props.showSignUp || false
@@ -58,14 +58,14 @@ export class AuthScreenComponent extends React.Component<Props, State> {
     this.setState({ showSignUp: !this.state.showSignUp })
   }
 
-  render () {
+  render() {
     return (
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.view}>
-          <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain'/>
+          <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />
           <View style={styles.contentView}>
-            {!this.state.showSignUp ? <Login onLoginPressed={this.attemptLogin}/>
-              : <SignUp onSignUpPressed={this.attemptSignUp}/>}
+            {!this.state.showSignUp ? <Login onLoginPressed={this.attemptLogin} />
+              : <SignUp onSignUpPressed={this.attemptSignUp} />}
             <Text
               onPress={this.switchOptions}
               style={styles.switchOptionText}>

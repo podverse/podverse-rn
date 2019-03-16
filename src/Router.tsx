@@ -4,8 +4,10 @@ import { createAppContainer, createStackNavigator, createSwitchNavigator } from 
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { PVTabBar } from './components'
 import { PV } from './resources'
-import { AuthScreen, ClipsListScreen, DownloadsListScreen, MoreOptionsScreen,
-  OnBoardingScreen, SearchPodcastsScreen, SubcribedPodcastsScreen } from './screens'
+import {
+  AuthScreen, ClipsListScreen, DownloadsListScreen, MoreOptionsScreen,
+  OnBoardingScreen, SearchPodcastsScreen, SubcribedPodcastsScreen
+} from './screens'
 
 const AuthNavigator = createStackNavigator(
   {
@@ -160,10 +162,10 @@ const OnBoardingNavigator = createStackNavigator({
   [PV.RouteNames.OnboardingScreen]: OnBoardingScreen,
   [PV.RouteNames.AuthNavigator]: AuthNavigator
 }, {
-  initialRouteName: PV.RouteNames.OnboardingScreen,
-  mode: 'modal',
-  headerMode: 'none'
-})
+    initialRouteName: PV.RouteNames.OnboardingScreen,
+    mode: 'modal',
+    headerMode: 'none'
+  })
 
 const TabNavigator = createBottomTabNavigator({
   Podcasts: PodcastsNavigator,
@@ -172,26 +174,26 @@ const TabNavigator = createBottomTabNavigator({
   Downloads: DownloadsNavigator,
   More: MoreOptionsNavigator
 }, {
-  tabBarComponent: (props: any) => <PVTabBar {...props} />,
-  tabBarOptions: {
-    inactiveTintColor: 'black',
-    activeTintColor: PV.Colors.podverseBlue
-  }
-})
+    tabBarComponent: (props: any) => <PVTabBar {...props} />,
+    tabBarOptions: {
+      inactiveTintColor: 'black',
+      activeTintColor: PV.Colors.podverseBlue
+    }
+  })
 
 const MainApp = createStackNavigator({
   [PV.RouteNames.TabNavigator]: TabNavigator,
   [PV.RouteNames.AuthNavigator]: AuthNavigator
 }, {
-  mode: 'modal',
-  headerMode: 'none'
-})
+    mode: 'modal',
+    headerMode: 'none'
+  })
 
 const SwitchNavigator = createSwitchNavigator({
   MainApp,
   OnBoarding: OnBoardingNavigator
 }, {
-  initialRouteName: PV.RouteNames.MainApp
-})
+    initialRouteName: PV.RouteNames.MainApp
+  })
 
 export default createAppContainer(SwitchNavigator)

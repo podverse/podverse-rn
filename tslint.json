@@ -15,7 +15,9 @@
         "member-access": false,
         "no-console": false,
         "no-shadowed-variable": false,
-        "object-literal-sort-keys": false
+        "object-literal-sort-keys": false,
+        "space-before-function-paren": false,
+        "no-floating-promises": false
     },
     "rulesDirectory": []
 }

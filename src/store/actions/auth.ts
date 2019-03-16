@@ -1,8 +1,8 @@
-import { getAuthenticatedUserInfo, login, signUp, logout } from 'podverse/src/services/auth'
-import * as UserTypes from './types'
-import {Alert} from "react-native"
+import { Alert } from 'react-native'
 import RNSecureKeyStore from 'react-native-secure-key-store'
-import { PV } from 'podverse/src/resources'
+import { PV } from '../../resources'
+import { getAuthenticatedUserInfo, login, logout, signUp } from '../../services/auth'
+import * as UserTypes from './types'
 
 type Credentials = {
   email: string,
@@ -50,7 +50,7 @@ export const signUpUser = (credentials: Credentials) => {
 export const getAuthUserInfo = () => {
   return async (dispatch: any) => {
     const user = await getAuthenticatedUserInfo()
-    
+
     dispatch(setUserInfo(user))
     dispatch(setLoginStatus(true))
 

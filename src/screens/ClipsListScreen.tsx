@@ -6,7 +6,7 @@ type Props = {}
 type State = {}
 
 export class ClipsListScreen extends React.Component<Props, State> {
-  render () {
+  render() {
     return (
       <View style={styles.view}>
         <Text>Clips List</Text>

@@ -29,9 +29,10 @@ export const request = async (req: PVRequest) => {
     }
   )
 
-  if(response.status !== 200) {
-      throw new Error(response._bodyInit)
-    }
-    
+  if (response.status !== 200) {
+    const bodyErrorKey = '_bodyInit'
+    throw new Error(response[bodyErrorKey])
+  }
+
   return response
 }

@@ -1,11 +1,11 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import AsyncStorage from '@react-native-community/async-storage';
-import { connect } from 'react-redux'
-import { PV } from 'podverse/src/resources'
-import { togglePlayer } from 'podverse/src/store/actions/player'
 import RNSecureKeyStore from 'react-native-secure-key-store'
-import { getAuthUserInfo, logoutUser } from 'podverse/src/store/actions/auth'
+import { connect } from 'react-redux'
+import { PV } from '../resources'
+import { getAuthUserInfo, logoutUser } from '../store/actions/auth'
+import { togglePlayer } from '../store/actions/player'
 
 type Props = {
   name?: string,
@@ -21,7 +21,7 @@ type State = {}
 
 class SubcribedPodcastsScreenComponent extends React.Component<Props, State> {
 
-  async componentDidMount () {
+  async componentDidMount() {
     const { navigation } = this.props
 
     try {
@@ -31,7 +31,7 @@ class SubcribedPodcastsScreenComponent extends React.Component<Props, State> {
         navigation.navigate(PV.RouteNames.OnBoarding)
       } else {
         const userToken = await RNSecureKeyStore.get('BEARER_TOKEN')
-        if(userToken) {
+        if (userToken) {
           this.props.getCurrentSession()
         }
       }
@@ -40,7 +40,7 @@ class SubcribedPodcastsScreenComponent extends React.Component<Props, State> {
     }
   }
 
-  render () {
+  render() {
     const { name, navigation, showPlayer, toggleBar } = this.props
 
     return (
@@ -49,7 +49,7 @@ class SubcribedPodcastsScreenComponent extends React.Component<Props, State> {
         <Text>Podcast List</Text>
         <TouchableOpacity
           onPress={() => {
-            if(this.props.isLoggedIn) {
+            if (this.props.isLoggedIn) {
               this.props.logoutUser()
             } else {
               navigation.navigate(PV.RouteNames.AuthNavigator)
@@ -65,7 +65,7 @@ class SubcribedPodcastsScreenComponent extends React.Component<Props, State> {
             justifyContent: 'center',
             marginBottom: 50
           }}
-        ><Text>{this.props.isLoggedIn ? "LOGOUT" : "GO TO LOGIN"}</Text></TouchableOpacity>
+        ><Text>{this.props.isLoggedIn ? 'LOGOUT' : 'GO TO LOGIN'}</Text></TouchableOpacity>
         <TouchableOpacity
           onPress={() => toggleBar(!showPlayer)}
           style={{

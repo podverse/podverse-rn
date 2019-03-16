@@ -3,7 +3,7 @@ import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'r
 import { PV } from '../resources'
 
 type Props = {
-  loginUser: ({}) => Promise<any>,
+  loginUser: ({ }) => Promise<any>,
   navigation: any
 }
 
@@ -11,7 +11,7 @@ type State = {}
 
 export class OnBoardingScreen extends React.Component<Props, State> {
 
-  constructor (props: Props) {
+  constructor(props: Props) {
     super(props)
     this.state = {
       name: ''
@@ -26,12 +26,12 @@ export class OnBoardingScreen extends React.Component<Props, State> {
     this.props.navigation.navigate(PV.RouteNames.AuthScreen, { isOnboarding: true })
   }
 
-  render () {
+  render() {
     const extraMargin = { marginTop: 40 }
 
     return (
       <SafeAreaView style={styles.view}>
-        <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain'/>
+        <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />
         <View style={styles.content}>
           <Text style={styles.title}>No login needed to:</Text>
           <Text style={styles.text}>- Create and share clips</Text>
