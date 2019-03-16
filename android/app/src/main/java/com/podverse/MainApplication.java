@@ -3,6 +3,8 @@ package com.podverse;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import com.reactlibrary.securekeystore.RNSecureKeyStorePackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -24,6 +26,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new AsyncStoragePackage(),
+            new RNSecureKeyStorePackage(),
             new RNGestureHandlerPackage()
       );
     }
