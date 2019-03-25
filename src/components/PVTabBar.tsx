@@ -1,7 +1,7 @@
-import React from 'react'
-import { View } from 'react-native'
 import { BottomTabBar } from 'react-navigation-tabs'
 import { connect } from 'react-redux'
+import React from 'reactn'
+import { View } from '../components'
 import { Player } from './Player'
 
 type Props = {
@@ -13,13 +13,13 @@ type State = {
 }
 
 class PVTabBarComponent extends React.Component<Props, State> {
-  render () {
+  render() {
     const { showPlayer } = this.props
 
     return (
       <View>
-        {showPlayer && <Player/>}
-        <BottomTabBar {...this.props} />
+        {showPlayer && <Player />}
+        <BottomTabBar {...this.props} style={this.global.globalTheme.tabbar} />
       </View>
     )
   }

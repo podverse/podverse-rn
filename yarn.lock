@@ -5707,6 +5707,13 @@ react@16.8.3:
     prop-types "^15.6.2"
     scheduler "^0.13.3"
 
+reactn@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/reactn/-/reactn-1.0.0.tgz#e521d9bab4cd0de75777cabbe2b327a994783243"
+  integrity sha512-6i0KHxHZsIz3XNOHZe9LErrYMXMrADfAGzgNS3+Hd+BFTocJJb4f8myIZOvXCkrDGW0ALpqPnLjrFFwBUdmimA==
+  dependencies:
+    use-force-update "^1.0.0"
+
 read-pkg-up@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/read-pkg-up/-/read-pkg-up-2.0.0.tgz#6b72a8048984e0c41e79510fd5e9fa99b3b549be"
@@ -6829,6 +6836,11 @@ urix@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
   integrity sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=
+
+use-force-update@^1.0.0:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/use-force-update/-/use-force-update-1.0.4.tgz#7e9b55b32b7eb947a2187e5c87e047c7f6c4481b"
+  integrity sha512-/tF1kH4p4KwuJeA9De0hzPXi48JTk9fEwlBnZ8fUOTcDYwKuLiMPVOFrN0RzbcKLgcVog/74kTRCiHfu93ju+g==
 
 use@^3.1.0:
   version "3.1.1"

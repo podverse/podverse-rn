@@ -1,3 +1,5 @@
 export { PVTabBar } from './PVTabBar'
 export { Login } from './Login'
 export { SignUp } from './SignUp'
+export { PVView as View } from './PVView'
+export { PVText as Text } from './PVText'

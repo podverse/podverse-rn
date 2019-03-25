@@ -31,6 +31,36 @@ if (uiMode === 'dark') {
 
 export const colors = uiColors
 
+export const darkTheme = StyleSheet.create({
+  view: {
+    backgroundColor: PV.Colors.black
+  },
+  text: {
+    color: PV.Colors.white
+  },
+  tabbar: {
+    backgroundColor: PV.Colors.black
+  },
+  tabbarItem: {
+    tintColor: PV.Colors.blue
+  }
+})
+
+export const lightTheme = StyleSheet.create({
+  view: {
+    backgroundColor: PV.Colors.white
+  },
+  text: {
+    color: PV.Colors.black
+  },
+  tabbar: {
+    backgroundColor: PV.Colors.white
+  },
+  tabbarItem: {
+    tintColor: PV.Colors.blue
+  }
+})
+
 export const core = StyleSheet.create({
   text: {
     color: colors.text.primary

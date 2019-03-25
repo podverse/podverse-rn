@@ -1,5 +1,6 @@
 import React from 'react'
-import { FlatList, Text, TouchableHighlight } from 'react-native'
+import { FlatList, StyleSheet, TouchableOpacity } from 'react-native'
+import { Text, View } from '../components'
 import { PV } from '../resources'
 import { table } from '../styles'
 
@@ -54,19 +55,31 @@ export class MoreScreen extends React.Component<Props, State> {
 
   _onPress = (item: any) => {
     console.log('hello world', item)
+    if (item.title === 'Settings') {
+      this.props.navigation.navigate(PV.RouteNames.SettingsScreen)
+    }
   }
 
   render() {
     return (
-      <FlatList
-        data={moreFeaturesOptions}
-        renderItem={({ item, separators }) => (
-          <TouchableHighlight
-            onPress={() => this._onPress(item)}
-            style={table.cellWrapper}>
-            <Text style={table.cellText}>{item.title}</Text>
-          </TouchableHighlight>
-        )}/>
+      <View style={styles.view}>
+        <FlatList
+          data={moreFeaturesOptions}
+          renderItem={({ item, separators }) => (
+            <TouchableOpacity
+              onPress={() => this._onPress(item)}
+              style={table.cellWrapper}>
+              <Text style={table.cellText}>{item.title}</Text>
+            </TouchableOpacity>
+          )} />
+      </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+    padding: 10
+  }
+})
