@@ -74,7 +74,7 @@ export const login = async (email: string, password: string) => {
 
 export const logout = async () => {
   return request({
-    endpoint: '/auth/log-out',
+    endpoint: '/auth/logout',
     method: 'POST',
     opts: {
       credentials: 'include'

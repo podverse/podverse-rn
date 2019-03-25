@@ -1,11 +1,16 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-export class SearchPodcastsScreen extends React.Component {
+export class SettingsScreen extends React.Component {
+
+  static navigationOptions = {
+    title: 'Settings'
+  }
+
   render() {
     return (
       <View style={styles.view}>
-        <Text>Find Podcasts</Text>
+        <Text>Settings</Text>
       </View>
     )
   }

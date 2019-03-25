@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { connect } from 'react-redux'
-import { PV } from '../resources'
+import { colors } from '../styles'
 
 class PlayerComponent extends React.Component {
   render () {
@@ -11,11 +11,11 @@ class PlayerComponent extends React.Component {
 
 const styles = StyleSheet.create({
   player: {
-    height: 50,
-    width: '100%',
-    borderColor: PV.Colors.black,
+    borderBottomWidth: 1,
+    borderColor: colors.divider,
     borderTopWidth: 1,
-    borderBottomWidth: 1
+    height: 50,
+    width: '100%'
   }
 })
 

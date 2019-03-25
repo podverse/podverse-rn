@@ -1,6 +1,7 @@
 import React from 'react'
 import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { PV } from '../resources'
+import { colors } from '../styles'
 
 type Props = {
   loginUser: ({ }) => Promise<any>,
@@ -9,7 +10,7 @@ type Props = {
 
 type State = {}
 
-export class OnBoardingScreen extends React.Component<Props, State> {
+export class OnboardingScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
@@ -55,10 +56,10 @@ export class OnBoardingScreen extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   view: {
+    alignItems: 'center',
+    backgroundColor: colors.brandColor,
     flex: 1,
-    backgroundColor: PV.Colors.podverseBlue,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: 'center'
   },
   banner: {
     marginTop: 60,
@@ -70,30 +71,30 @@ const styles = StyleSheet.create({
     width: '80%'
   },
   skipSignInButton: {
-    width: '80%',
-    marginTop: 20,
+    alignItems: 'center',
     marginBottom: 30,
+    marginTop: 20,
     padding: 10,
-    alignItems: 'center'
+    width: '80%'
   },
   skipSignInText: {
-    color: PV.Colors.white,
+    color: colors.text.primary,
     fontSize: 16
   },
   signInButton: {
-    borderColor: PV.Colors.white,
+    alignItems: 'center',
+    borderColor: colors.button.border.primary,
     borderWidth: 1,
     padding: 10,
-    width: '80%',
-    alignItems: 'center'
+    width: '80%'
   },
   signInButtonText: {
+    color: colors.button.text.primary,
     fontSize: 17,
-    color: PV.Colors.white,
     fontWeight: 'bold'
   },
   title: {
-    color: PV.Colors.white,
+    color: colors.button.text.primary,
     fontSize: 17,
     fontWeight: 'bold',
     marginTop: 15
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
   text: {
     marginVertical: 10,
     paddingLeft: 20,
-    color: PV.Colors.white,
+    color: colors.text.primary,
     fontSize: 17
   }
 })

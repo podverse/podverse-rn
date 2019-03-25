@@ -1,11 +1,11 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-export class MoreOptionsScreen extends React.Component {
+export class FindScreen extends React.Component {
   render() {
     return (
       <View style={styles.view}>
-        <Text>More Options</Text>
+        <Text>Find</Text>
       </View>
     )
   }
