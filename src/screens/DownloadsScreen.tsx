@@ -1,11 +1,11 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-export class DownloadsListScreen extends React.Component {
+export class DownloadsScreen extends React.Component {
   render() {
     return (
       <View style={styles.view}>
-        <Text>Downloads List</Text>
+        <Text>Downloads</Text>
       </View>
     )
   }

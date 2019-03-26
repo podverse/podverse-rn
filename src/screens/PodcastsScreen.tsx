@@ -1,11 +1,13 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { connect } from 'react-redux'
+import { Text, View } from '../components'
 import { PV } from '../resources'
 import { getAuthUserInfo, logoutUser } from '../store/actions/auth'
 import { togglePlayer } from '../store/actions/player'
+import { core } from '../styles'
 
 type Props = {
   name?: string,
@@ -19,7 +21,7 @@ type Props = {
 
 type State = {}
 
-class SubcribedPodcastsScreenComponent extends React.Component<Props, State> {
+class PodcastsScreenComponent extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
@@ -28,7 +30,7 @@ class SubcribedPodcastsScreenComponent extends React.Component<Props, State> {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
       if (!appHasLaunched) {
         AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
-        navigation.navigate(PV.RouteNames.OnBoarding)
+        navigation.navigate(PV.RouteNames.Onboarding)
       } else {
         const userToken = await RNSecureKeyStore.get('BEARER_TOKEN')
         if (userToken) {
@@ -44,9 +46,13 @@ class SubcribedPodcastsScreenComponent extends React.Component<Props, State> {
     const { name, navigation, showPlayer, toggleBar } = this.props
 
     return (
-      <View style={styles.view}>
+      <View style={core.view}>
         {!!name && <Text>{`Welcome, ${name}`}</Text>}
-        <Text>Podcast List</Text>
+        <Text style={core.text}>Podcasts</Text>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate(PV.RouteNames.PodcastScreen)}>
+          <Text>Go to Podcast</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             if (this.props.isLoggedIn) {
@@ -84,14 +90,6 @@ class SubcribedPodcastsScreenComponent extends React.Component<Props, State> {
   }
 }
 
-const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-})
-
 const mapDispatchToProps = (dispatch: any) => {
   return {
     toggleBar: (toggle: any) => dispatch(togglePlayer(toggle)),
@@ -109,4 +107,4 @@ const mapStateToProps = (state: any) => {
   }
 }
 
-export const SubcribedPodcastsScreen = connect(mapStateToProps, mapDispatchToProps)(SubcribedPodcastsScreenComponent)
+export const PodcastsScreen = connect(mapStateToProps, mapDispatchToProps)(PodcastsScreenComponent)

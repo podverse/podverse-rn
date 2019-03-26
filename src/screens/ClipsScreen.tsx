@@ -1,11 +1,16 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native'
+import { Text, View } from '../components'
 
-export class MoreOptionsScreen extends React.Component {
+type Props = {}
+
+type State = {}
+
+export class ClipsScreen extends React.Component<Props, State> {
   render() {
     return (
       <View style={styles.view}>
-        <Text>More Options</Text>
+        <Text>Clips</Text>
       </View>
     )
   }

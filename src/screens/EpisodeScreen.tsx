@@ -1,15 +1,17 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native'
+import { Text, View } from '../components'
 
-type Props = {}
+export class EpisodeScreen extends React.Component {
 
-type State = {}
+  static navigationOptions = {
+    title: 'Episode'
+  }
 
-export class ClipsListScreen extends React.Component<Props, State> {
   render() {
     return (
       <View style={styles.view}>
-        <Text>Clips List</Text>
+        <Text>Episode</Text>
       </View>
     )
   }

@@ -1,11 +1,12 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native'
+import React from 'reactn'
+import { Text, View } from '../components'
 
-export class SearchPodcastsScreen extends React.Component {
+export class FindScreen extends React.Component {
   render() {
     return (
       <View style={styles.view}>
-        <Text>Find Podcasts</Text>
+        <Text>Find</Text>
       </View>
     )
   }
