@@ -1,8 +1,8 @@
-import AsyncStorage from '@react-native-community/async-storage';
-import { StyleSheet, Switch } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
+import { Switch } from 'react-native'
 import React from 'reactn'
 import { Text, View } from '../components'
-import { darkTheme, lightTheme } from '../styles'
+import { core, darkTheme, lightTheme } from '../styles'
 
 export class SettingsScreen extends React.Component {
 
@@ -18,7 +18,7 @@ export class SettingsScreen extends React.Component {
   render() {
     const { globalTheme } = this.global
     return (
-      <View style={styles.view}>
+      <View style={core.view}>
         <Text style={globalTheme.text}>Settings</Text>
         <Text style={globalTheme.text}>Toggle Dark Mode</Text>
         <Switch value={globalTheme === darkTheme} onValueChange={this._toggleTheme} />
@@ -26,11 +26,3 @@ export class SettingsScreen extends React.Component {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-})

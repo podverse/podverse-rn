@@ -12,6 +12,8 @@ type State = {
   options: any[]
 }
 
+const logoutKey = 'logout'
+
 const moreFeaturesOptions = [
   {
     title: 'Downloads',
@@ -35,7 +37,7 @@ const moreFeaturesOptions = [
   },
   {
     title: 'Log out',
-    key: 'logOut'
+    key: logoutKey
   }
 ]
 
@@ -54,14 +56,17 @@ export class MoreScreen extends React.Component<Props, State> {
   static navigationOptions = {
     title: 'More'
   }
-  
+
   state = {
     options: []
   }
 
   _onPress = (item: any) => {
-    if (item.title === 'Settings') {
-      this.props.navigation.navigate(PV.RouteNames.SettingsScreen)
+    console.log(item)
+    if (item.key === logoutKey) {
+      console.log('log out')
+    } else {
+      this.props.navigation.navigate(item.key)
     }
   }
 

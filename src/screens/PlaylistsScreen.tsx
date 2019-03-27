@@ -8,10 +8,10 @@ type Props = {
 
 type State = {}
 
-export class DownloadsScreen extends React.Component<Props, State> {
+export class PlaylistsScreen extends React.Component<Props, State> {
 
   static navigationOptions = {
-    title: 'Downloads'
+    title: 'Playlists'
   }
 
   render() {
@@ -19,7 +19,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
 
     return (
       <View style={core.view}>
-        <Text style={globalTheme.text}>Downloads</Text>
+        <Text style={globalTheme.text}>Playlists</Text>
       </View>
     )
   }
