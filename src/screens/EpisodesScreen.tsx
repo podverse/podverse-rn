@@ -1,5 +1,5 @@
-import React from 'react'
 import { TouchableOpacity } from 'react-native'
+import React from 'reactn'
 import { Text, View } from '../components'
 import { PV } from '../resources'
 import { button, core } from '../styles'
@@ -17,13 +17,15 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   render() {
+    const { globalTheme } = this.global
+
     return (
       <View style={core.view}>
-        <Text style={core.text}>Episodes</Text>
+        <Text style={globalTheme.text}>Episodes</Text>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate(PV.RouteNames.EpisodeScreen)}
-          style={button.primaryWrapper}>
-          <Text style={button.primaryText}>Go to Episode</Text>
+          style={[button.primaryWrapper, globalTheme.buttonPrimaryWrapper]}>
+          <Text style={globalTheme.buttonPrimaryText}>Go to Episode</Text>
         </TouchableOpacity>
       </View>
     )

@@ -1,10 +1,12 @@
-import React from 'react'
-import { FlatList, StyleSheet, TouchableOpacity } from 'react-native'
+import { FlatList, TouchableOpacity } from 'react-native'
+import React from 'reactn'
 import { Text, View } from '../components'
 import { PV } from '../resources'
-import { table } from '../styles'
+import { core, table } from '../styles'
 
-type Props = {}
+type Props = {
+  navigation?: any
+}
 
 type State = {
   options: any[]
@@ -49,37 +51,35 @@ const moreOtherOptions = [
 ]
 
 export class MoreScreen extends React.Component<Props, State> {
+  static navigationOptions = {
+    title: 'More'
+  }
+  
   state = {
     options: []
   }
 
   _onPress = (item: any) => {
-    console.log('hello world', item)
     if (item.title === 'Settings') {
       this.props.navigation.navigate(PV.RouteNames.SettingsScreen)
     }
   }
 
   render() {
+    const { globalTheme } = this.global
+
     return (
-      <View style={styles.view}>
+      <View style={core.backgroundView}>
         <FlatList
           data={moreFeaturesOptions}
           renderItem={({ item, separators }) => (
             <TouchableOpacity
               onPress={() => this._onPress(item)}
               style={table.cellWrapper}>
-              <Text style={table.cellText}>{item.title}</Text>
+              <Text style={globalTheme.tableCellTextPrimary}>{item.title}</Text>
             </TouchableOpacity>
           )} />
       </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    padding: 10
-  }
-})

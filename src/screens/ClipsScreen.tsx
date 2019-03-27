@@ -1,25 +1,26 @@
-import React from 'react'
-import { StyleSheet } from 'react-native'
+import React from 'reactn'
 import { Text, View } from '../components'
+import { core } from '../styles'
 
-type Props = {}
+type Props = {
+  navigation?: any
+}
 
 type State = {}
 
 export class ClipsScreen extends React.Component<Props, State> {
+
+  static navigationOptions = {
+    title: 'Clips'
+  }
+
   render() {
+    const { globalTheme } = this.global
+
     return (
-      <View style={styles.view}>
-        <Text>Clips</Text>
+      <View style={core.view}>
+        <Text style={globalTheme.text}>Clips</Text>
       </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-})

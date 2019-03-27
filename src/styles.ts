@@ -1,69 +1,105 @@
 import { StyleSheet } from 'react-native'
 import { PV } from './resources'
 
-const uiMode = 'dark'
-let uiColors = {} as any
-
-if (uiMode === 'dark') {
-  uiColors = {
-    app: {
-      backgroundColor: PV.Colors.black
-    },
-    brandColor: PV.Colors.brandColor,
-    button: {
-      border: {
-        primary: PV.Colors.grayDarker
-      },
-      text: {
-        primary: PV.Colors.white,
-        secondary: PV.Colors.grayLight
-      }
-    },
-    text: {
-      primary: PV.Colors.white,
-      secondary: PV.Colors.grayLight
-    },
-    divider: PV.Colors.grayDarker
-  }
-} else {
-  console.log('light mode')
+export type GlobalTheme = {
+  buttonPrimaryText?: any
+  buttonPrimaryTextDisabled?: any
+  buttonPrimaryWrapper?: any
+  buttonPrimaryWrapperDisabled?: any
+  player?: any
+  tabbar?: any
+  tabbarItem?: any
+  tableCellTextPrimary?: any
+  tableCellTextSecondary?: any
+  text?: any
+  view?: any
 }
 
-export const colors = uiColors
-
 export const darkTheme = StyleSheet.create({
-  view: {
+  buttonPrimaryText: {
+    color: PV.Colors.white
+  },
+  buttonPrimaryTextDisabled: {
+    color: PV.Colors.gray
+  },
+  buttonPrimaryWrapper: {
+    borderColor: PV.Colors.grayDarker
+  },
+  buttonPrimaryWrapperDisabled: {
+    backgroundColor: PV.Colors.grayLighter
+  },
+  player: {
+    borderColor: PV.Colors.gray
+  },
+  tabbar: {
     backgroundColor: PV.Colors.black
+  },
+  tabbarItem: {
+    tintColor: PV.Colors.blue
+  },
+  tableCellTextPrimary: {
+    color: PV.Colors.grayLighter
+  },
+  tableCellTextSecondary: {
+    color: PV.Colors.white
   },
   text: {
     color: PV.Colors.white
   },
-  tabbar: {
+  view: {
     backgroundColor: PV.Colors.black
-  },
-  tabbarItem: {
-    tintColor: PV.Colors.blue
   }
 })
 
 export const lightTheme = StyleSheet.create({
-  view: {
-    backgroundColor: PV.Colors.white
-  },
-  text: {
+  buttonPrimaryText: {
     color: PV.Colors.black
+  },
+  buttonPrimaryTextDisabled: {
+    color: PV.Colors.gray
+  },
+  buttonPrimaryWrapper: {
+    borderColor: PV.Colors.grayLighter
+  },
+  buttonPrimaryWrapperDisabled: {
+    backgroundColor: PV.Colors.grayDarker
+  },
+  player: {
+    borderColor: PV.Colors.gray
   },
   tabbar: {
     backgroundColor: PV.Colors.white
   },
   tabbarItem: {
     tintColor: PV.Colors.blue
+  },
+  tableCellTextPrimary: {
+    color: PV.Colors.grayLighter
+  },
+  tableCellTextSecondary: {
+    color: PV.Colors.white
+  },
+  text: {
+    color: PV.Colors.black
+  },
+  view: {
+    backgroundColor: PV.Colors.white
+  }
+})
+
+export const button = StyleSheet.create({
+  primaryWrapper: {
+    alignItems: 'center',
+    borderWidth: 1,
+    height: 50,
+    justifyContent: 'center',
+    width: 200
   }
 })
 
 export const core = StyleSheet.create({
-  text: {
-    color: colors.text.primary
+  backgroundView: {
+    flex: 1
   },
   view: {
     alignItems: 'center',
@@ -72,30 +108,9 @@ export const core = StyleSheet.create({
   }
 })
 
-export const button = StyleSheet.create({
-  primaryWrapper: {
-    borderColor: colors.button.border.primary,
-    borderWidth: 1,
-    height: 50,
-    width: 200
-  },
-  primaryWrapperDisabled: {
-    borderColor: colors.button.border.secondary
-  },
-  primaryText: {
-    color: colors.button.text.primary
-  },
-  primaryTextDisabled: {
-    color: colors.button.text.secondary
-  }
-})
-
 export const table = StyleSheet.create({
   cellWrapper: {
     height: 50,
     justifyContent: 'center'
-  },
-  cellText: {
-    color: colors.text.primary
   }
 })

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { PV } from '../resources'
-import { colors } from '../styles'
 
 type Props = {
   loginUser: ({ }) => Promise<any>,
@@ -57,7 +56,7 @@ export class OnboardingScreen extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   view: {
     alignItems: 'center',
-    backgroundColor: colors.brandColor,
+    backgroundColor: PV.Colors.brandColor,
     flex: 1,
     justifyContent: 'center'
   },
@@ -78,31 +77,31 @@ const styles = StyleSheet.create({
     width: '80%'
   },
   skipSignInText: {
-    color: colors.text.primary,
+    color: PV.Colors.white,
     fontSize: 16
   },
   signInButton: {
     alignItems: 'center',
-    borderColor: colors.button.border.primary,
+    borderColor: PV.Colors.gray,
     borderWidth: 1,
     padding: 10,
     width: '80%'
   },
   signInButtonText: {
-    color: colors.button.text.primary,
+    color: PV.Colors.white,
     fontSize: 17,
     fontWeight: 'bold'
   },
   title: {
-    color: colors.button.text.primary,
+    color: PV.Colors.white,
     fontSize: 17,
     fontWeight: 'bold',
     marginTop: 15
   },
   text: {
+    color: PV.Colors.white,
+    fontSize: 17,
     marginVertical: 10,
-    paddingLeft: 20,
-    color: colors.text.primary,
-    fontSize: 17
+    paddingLeft: 20
   }
 })

@@ -1,32 +1,23 @@
 import React from 'react'
 import { Image } from 'react-native'
-import {
-  createAppContainer, createStackNavigator, createSwitchNavigator,
-  NavigationScreenOptions
-} from 'react-navigation'
+import { createAppContainer, createStackNavigator, createSwitchNavigator,
+  NavigationScreenOptions } from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { PVTabBar } from './components'
 import { PV } from './resources'
-import {
-  AuthScreen, ClipsScreen, EpisodeScreen, EpisodesScreen, FindScreen, MoreScreen,
-  OnboardingScreen, PodcastScreen, PodcastsScreen, SettingsScreen
-} from './screens'
-import { colors } from './styles'
+import { AuthScreen, ClipsScreen, EpisodeScreen, EpisodesScreen, FindScreen, MoreScreen,
+  OnboardingScreen, PodcastScreen, PodcastsScreen, SettingsScreen } from './screens'
 
 const defaultNavigationOptions = {
   title: PV.Tabs.Podcasts.title,
   headerStyle: {
-    backgroundColor: colors.brandColor
+    backgroundColor: PV.Colors.brandColor
   },
-  headerTintColor: colors.text.primary,
+  headerTintColor: PV.Colors.white,
   headerTitleStyle: {
     fontWeight: 'bold'
   }
 } as NavigationScreenOptions
-
-const cardStyle = {
-  backgroundColor: colors.app.backgroundColor
-}
 
 const AuthNavigator = createStackNavigator(
   {
@@ -43,7 +34,6 @@ const PodcastsNavigator = createStackNavigator(
     [PV.RouteNames.EpisodeScreen]: EpisodeScreen
   },
   {
-    cardStyle,
     defaultNavigationOptions,
     initialRouteName: PV.RouteNames.PodcastsScreen,
     navigationOptions: {
@@ -65,7 +55,6 @@ const EpisodesNavigator = createStackNavigator(
     [PV.RouteNames.EpisodeScreen]: EpisodeScreen
   },
   {
-    cardStyle,
     defaultNavigationOptions,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => (
@@ -85,7 +74,6 @@ const ClipsNavigator = createStackNavigator(
     [PV.RouteNames.ClipsScreen]: ClipsScreen
   },
   {
-    cardStyle,
     defaultNavigationOptions,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => (
@@ -105,7 +93,6 @@ const FindNavigator = createStackNavigator(
     [PV.RouteNames.FindScreen]: FindScreen
   },
   {
-    cardStyle,
     defaultNavigationOptions,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => (
@@ -126,7 +113,6 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.SettingsScreen]: SettingsScreen
   },
   {
-    cardStyle,
     defaultNavigationOptions,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => (
@@ -145,10 +131,10 @@ const OnboardingNavigator = createStackNavigator({
   [PV.RouteNames.OnboardingScreen]: OnboardingScreen,
   [PV.RouteNames.AuthNavigator]: AuthNavigator
 }, {
-    initialRouteName: PV.RouteNames.OnboardingScreen,
-    mode: 'modal',
-    headerMode: 'none'
-  })
+  initialRouteName: PV.RouteNames.OnboardingScreen,
+  mode: 'modal',
+  headerMode: 'none'
+})
 
 const TabNavigator = createBottomTabNavigator({
   Podcasts: PodcastsNavigator,
@@ -157,26 +143,26 @@ const TabNavigator = createBottomTabNavigator({
   Find: FindNavigator,
   More: MoreNavigator
 }, {
-    tabBarComponent: (props: any) => <PVTabBar {...props} />,
-    tabBarOptions: {
-      inactiveTintColor: PV.Colors.grayDark,
-      activeTintColor: colors.brandColor
-    }
-  })
+  tabBarComponent: (props: any) => <PVTabBar {...props} />,
+  tabBarOptions: {
+    inactiveTintColor: PV.Colors.grayDark,
+    activeTintColor: PV.Colors.brandColor
+  }
+})
 
 const MainApp = createStackNavigator({
   [PV.RouteNames.TabNavigator]: TabNavigator,
   [PV.RouteNames.AuthNavigator]: AuthNavigator
 }, {
-    mode: 'modal',
-    headerMode: 'none'
-  })
+  mode: 'modal',
+  headerMode: 'none'
+})
 
 const SwitchNavigator = createSwitchNavigator({
   MainApp,
   Onboarding: OnboardingNavigator
 }, {
-    initialRouteName: PV.RouteNames.MainApp
-  })
+  initialRouteName: PV.RouteNames.MainApp
+})
 
 export default createAppContainer(SwitchNavigator)

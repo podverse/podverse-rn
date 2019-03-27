@@ -1,21 +1,26 @@
-import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { Text, View } from '../components'
+import { core } from '../styles'
 
-export class FindScreen extends React.Component {
+type Props = {
+  navigation?: any
+}
+
+type State = {}
+
+export class FindScreen extends React.Component<Props, State> {
+
+  static navigationOptions = {
+    title: 'Find'
+  }
+
   render() {
+    const { globalTheme } = this.global
+
     return (
-      <View style={styles.view}>
-        <Text>Find</Text>
+      <View style={core.view}>
+        <Text style={globalTheme.text}>Find</Text>
       </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-})

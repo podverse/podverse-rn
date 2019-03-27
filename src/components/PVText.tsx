@@ -1,8 +1,12 @@
 import React from 'react'
 import { Text } from 'react-native'
-import { useGlobal } from 'reactn'
 
-export const PVText = (props) => {
-  const [globalTheme] = useGlobal('globalTheme')
-  return <Text {...props} style={[props.style, globalTheme.text]}>{props.children}</Text>
+type Props = {
+  children?: any
+  globalTheme?: any
+  style?: any
+}
+
+export const PVText = (props: Props) => {
+  return <Text {...props} style={[props.style, props.globalTheme]}>{props.children}</Text>
 }

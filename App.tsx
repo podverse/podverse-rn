@@ -6,7 +6,7 @@ import { setGlobal } from 'reactn'
 import { PV } from './src/resources'
 import Router from './src/Router'
 import { configureStore } from './src/store/store'
-import { colors, darkTheme, lightTheme } from './src/styles'
+import { darkTheme, lightTheme } from './src/styles'
 
 type Props = {}
 
@@ -42,7 +42,7 @@ class App extends Component<Props, State> {
 
   _renderIntersitial = () => {
     return (
-      <View style={{ backgroundColor: colors.brandColor, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ backgroundColor: PV.Colors.brandColor, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Image source={PV.Images.BANNER} resizeMode='contain' />
       </View>
     )
