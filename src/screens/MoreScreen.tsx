@@ -1,4 +1,4 @@
-import { FlatList, TouchableOpacity } from 'react-native'
+import { SectionList, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { Text, View } from '../components'
 import { PV } from '../resources'
@@ -12,7 +12,9 @@ type State = {
   options: any[]
 }
 
-const logoutKey = 'logout'
+const _aboutKey = 'about'
+const _feedbackKey = 'feedback'
+const _logoutKey = 'logout'
 
 const moreFeaturesOptions = [
   {
@@ -37,18 +39,18 @@ const moreFeaturesOptions = [
   },
   {
     title: 'Log out',
-    key: logoutKey
+    key: _logoutKey
   }
 ]
 
 const moreOtherOptions = [
   {
     title: 'Feedback',
-    key: 'feedback'
+    key: _feedbackKey
   },
   {
     title: 'About',
-    key: 'about'
+    key: _aboutKey
   }
 ]
 
@@ -63,8 +65,12 @@ export class MoreScreen extends React.Component<Props, State> {
 
   _onPress = (item: any) => {
     console.log(item)
-    if (item.key === logoutKey) {
-      console.log('log out')
+    if (item.key === _aboutKey) {
+      console.log('about')
+    } else if (item.key === _feedbackKey) {
+      console.log('feedback')
+    } else if (item.key === _logoutKey) {
+      console.log('logout')
     } else {
       this.props.navigation.navigate(item.key)
     }
@@ -75,15 +81,21 @@ export class MoreScreen extends React.Component<Props, State> {
 
     return (
       <View style={core.backgroundView}>
-        <FlatList
-          data={moreFeaturesOptions}
+        <SectionList
           renderItem={({ item, separators }) => (
             <TouchableOpacity
               onPress={() => this._onPress(item)}
               style={table.cellWrapper}>
               <Text style={globalTheme.tableCellTextPrimary}>{item.title}</Text>
             </TouchableOpacity>
-          )} />
+          )}
+          renderSectionHeader={({ section: { title } }) => (
+            <Text style={globalTheme.tableSectionHeaderText}>{title}</Text>
+          )}
+          sections={[
+            { title: 'Features', data: moreFeaturesOptions },
+            { title: 'Other', data: moreOtherOptions }
+          ]} />
       </View>
     )
   }

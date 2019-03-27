@@ -11,6 +11,7 @@ export type GlobalTheme = {
   tabbarItem?: any
   tableCellTextPrimary?: any
   tableCellTextSecondary?: any
+  tableSectionHeaderText?: any
   text?: any
   view?: any
 }
@@ -41,6 +42,9 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.grayLighter
   },
   tableCellTextSecondary: {
+    color: PV.Colors.white
+  },
+  tableSectionHeaderText: {
     color: PV.Colors.white
   },
   text: {
@@ -78,6 +82,9 @@ export const lightTheme = StyleSheet.create({
   },
   tableCellTextSecondary: {
     color: PV.Colors.white
+  },
+  tableSectionHeaderText: {
+    color: PV.Colors.black
   },
   text: {
     color: PV.Colors.black
