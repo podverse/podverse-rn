@@ -1,12 +1,9 @@
-import React from 'react'
 import { StyleSheet, View } from 'react-native'
-import { connect } from 'react-redux'
-import { useGlobal } from 'reactn'
+import React from 'reactn'
 
-class PlayerComponent extends React.Component {
-
+export class Player extends React.PureComponent {
   render () {
-    const [globalTheme] = useGlobal('globalTheme')
+    const { globalTheme } = this.global
     return <View style={[styles.player, globalTheme.player]}/>
   }
 }
@@ -19,9 +16,3 @@ const styles = StyleSheet.create({
     width: '100%'
   }
 })
-
-const mapStateToProps = () => {
-  return {}
-}
-
-export const Player = connect(mapStateToProps)(PlayerComponent)
