@@ -1,6 +1,7 @@
 import React from 'react'
 import { BottomTabBar } from 'react-navigation-tabs'
 import { useGlobal } from 'reactn'
+import { GlobalTheme } from 'src/resources/Interfaces'
 import { View } from '../components'
 import { Player } from './Player'
 
@@ -8,8 +9,8 @@ type Props = {
 }
 
 export const PVTabBar = (props: Props) => {
-  const [showPlayer] = useGlobal('showPlayer')
-  const [globalTheme] = useGlobal('globalTheme')
+  const [showPlayer] = useGlobal<boolean>('showPlayer')
+  const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
 
   return (
     <View>

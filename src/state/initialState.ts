@@ -1,4 +1,6 @@
-export default {
+import { InitialState } from 'src/resources/Interfaces'
+
+const initialTheme: InitialState = {
   globalTheme: {},
   session: {
     userInfo: {},
@@ -6,3 +8,5 @@ export default {
   },
   showPlayer: false
 }
+
+export default initialTheme

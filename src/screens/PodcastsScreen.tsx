@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { TouchableOpacity, SwipeableListView } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import React from 'reactn'
 import { Text, View } from '../components'

@@ -58,7 +58,7 @@ export class SignUp extends React.Component<Props, State> {
     const { style } = this.props
     const { password, passwordVerification } = this.state
     const disabled = !this.inputsValid()
-    const disabledStyle = disabled ? { backgroundColor: PV.Colors.disabled } : null
+    const disabledStyle = disabled ? { backgroundColor: PV.Colors.grayDark } : null
     const disabledTextStyle = disabled ? { color: PV.Colors.white } : null
 
     const passwordMismatch = passwordVerification.length > 0 && passwordVerification !== password
