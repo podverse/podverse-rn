@@ -50,6 +50,7 @@ export const getAuthenticatedUserInfo = async () => {
 // }
 
 export const login = async (email: string, password: string) => {
+  console.log(email)
   const response = await request({
     method: 'POST',
     endpoint: '/auth/login',
@@ -63,8 +64,8 @@ export const login = async (email: string, password: string) => {
     }
   })
 
+  console.log(response)
   const data = await response.json()
-
   if (data.token) {
     RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY })
   }

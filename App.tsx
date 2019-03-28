@@ -1,12 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import React, { Component } from 'react'
 import { Image, StatusBar, View } from 'react-native'
-import { Provider } from 'react-redux'
 import { setGlobal } from 'reactn'
 import { PV } from './src/resources'
 import Router from './src/Router'
-import initialState from './src/store/initialState'
-import { configureStore } from './src/store/store'
+import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 type Props = {}
 
@@ -14,16 +12,11 @@ type State = {
   appReady: boolean
 }
 
-interface App {
-  store?: any
-}
-
 setGlobal(initialState)
 
 class App extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    this.store = configureStore()
     StatusBar.setBarStyle('light-content')
     this.state = {
       appReady: false
@@ -52,11 +45,7 @@ class App extends Component<Props, State> {
   }
 
   render() {
-    return (
-      <Provider store={this.store}>
-        {this.state.appReady ? <Router /> : this._renderIntersitial()}
-      </Provider>
-    )
+    return this.state.appReady ? <Router /> : this._renderIntersitial()
   }
 }
 

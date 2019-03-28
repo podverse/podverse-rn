@@ -1,24 +1,19 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { TouchableOpacity } from 'react-native'
+import { TouchableOpacity, SwipeableListView } from 'react-native'
 import RNSecureKeyStore from 'react-native-secure-key-store'
-import { connect } from 'react-redux'
 import React from 'reactn'
 import { Text, View } from '../components'
 import { PV } from '../resources'
-import { getAuthUserInfo, logoutUser } from '../store/actions/auth'
+import { getAuthUserInfo, logoutUser } from '../state/actions/auth'
 import { button, core } from '../styles'
 
 type Props = {
-  getCurrentSession: () => Promise<any>,
-  logoutUser: () => Promise<any>,
-  name?: string,
-  navigation?: any,
-  isLoggedIn: boolean
+  navigation?: any
 }
 
 type State = {}
 
-class PodcastsScreenComponent extends React.Component<Props, State> {
+export class PodcastsScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
@@ -31,17 +26,18 @@ class PodcastsScreenComponent extends React.Component<Props, State> {
       } else {
         const userToken = await RNSecureKeyStore.get('BEARER_TOKEN')
         if (userToken) {
-          this.props.getCurrentSession()
+          getAuthUserInfo()
         }
       }
     } catch (error) {
-      console.log(error)
+      console.log(error.message)
     }
   }
 
   render() {
-    const { name, navigation } = this.props
-    const globalTheme = this.global.globalTheme
+    const { navigation } = this.props
+    const { globalTheme, session, showPlayer } = this.global
+    const { name = '', isLoggedIn = false } = session.userInfo
 
     return (
       <View style={core.view}>
@@ -54,8 +50,8 @@ class PodcastsScreenComponent extends React.Component<Props, State> {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            if (this.props.isLoggedIn) {
-              this.props.logoutUser()
+            if (isLoggedIn) {
+              logoutUser()
             } else {
               navigation.navigate(PV.RouteNames.AuthNavigator)
             }
@@ -70,9 +66,9 @@ class PodcastsScreenComponent extends React.Component<Props, State> {
             justifyContent: 'center',
             marginBottom: 50
           }}
-        ><Text>{this.props.isLoggedIn ? 'LOGOUT' : 'GO TO LOGIN'}</Text></TouchableOpacity>
+        ><Text>{isLoggedIn ? 'LOGOUT' : 'GO TO LOGIN'}</Text></TouchableOpacity>
         <TouchableOpacity
-          onPress={() => this.setGlobal({ showPlayer: !this.global.showPlayer })}
+          onPress={() => this.setGlobal({ showPlayer: !showPlayer })}
           style={{
             position: 'absolute',
             bottom: 0,
@@ -82,26 +78,9 @@ class PodcastsScreenComponent extends React.Component<Props, State> {
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-          <Text>{this.global.showPlayer ? 'HIDE' : 'SHOW'}</Text>
+          <Text>{showPlayer ? 'HIDE' : 'SHOW'}</Text>
         </TouchableOpacity>
       </View>
     )
   }
 }
-
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    getCurrentSession: () => dispatch(getAuthUserInfo()),
-    logoutUser: () => dispatch(logoutUser())
-  }
-}
-
-const mapStateToProps = (state: any) => {
-  const { userInfo = {} } = state.auth
-  return {
-    isLoggedIn: state.auth.isLoggedIn,
-    name: userInfo.name || ''
-  }
-}
-
-export const PodcastsScreen = connect(mapStateToProps, mapDispatchToProps)(PodcastsScreenComponent)

@@ -1,22 +1,19 @@
 import React from 'react'
 import { Alert, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
-import { connect } from 'react-redux'
 import { Login, SignUp } from '../components'
 import { PV } from '../resources'
-import { loginUser, signUpUser } from '../store/actions/auth'
+import { Credentials, loginUser, signUpUser } from '../state/actions/auth'
 
 type Props = {
-  loginUser?: any
   navigation?: any
   showSignUp?: boolean
-  signUpUser?: any
 }
 
 type State = {
   showSignUp?: boolean
 }
 
-export class AuthScreenComponent extends React.Component<Props, State> {
+export class AuthScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
@@ -25,10 +22,11 @@ export class AuthScreenComponent extends React.Component<Props, State> {
     }
   }
 
-  attemptLogin = async (credentials: {}) => {
-    const { loginUser, navigation } = this.props
+  attemptLogin = async (credentials: Credentials) => {
+    const { navigation } = this.props
 
     try {
+      console.log(credentials)
       await loginUser(credentials)
       if (navigation.getParam('isOnboarding', false)) {
         navigation.navigate(PV.RouteNames.MainApp)
@@ -40,8 +38,8 @@ export class AuthScreenComponent extends React.Component<Props, State> {
     }
   }
 
-  attemptSignUp = async (credentials: {}) => {
-    const { navigation, signUpUser } = this.props
+  attemptSignUp = async (credentials: Credentials) => {
+    const { navigation } = this.props
     try {
       await signUpUser(credentials)
       if (navigation.getParam('isOnboarding', false)) {
@@ -102,16 +100,3 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline'
   }
 })
-
-const mapStateToProps = () => {
-  return {}
-}
-
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    loginUser: (credentials: any) => dispatch(loginUser(credentials)),
-    signUpUser: (credentials: any) => dispatch(signUpUser(credentials))
-  }
-}
-
-export const AuthScreen = connect(mapStateToProps, mapDispatchToProps)(AuthScreenComponent)

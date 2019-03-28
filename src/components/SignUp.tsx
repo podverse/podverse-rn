@@ -73,6 +73,7 @@ export class SignUp extends React.Component<Props, State> {
           onChangeText={this.emailChanged}
           style={styles.textField}
           value={this.state.email}
+          autoCapitalize='none'
           placeholder='Email'/>
         <TextInput
           secureTextEntry={true}
@@ -80,11 +81,13 @@ export class SignUp extends React.Component<Props, State> {
           style={styles.textField}
           value={this.state.password}
           underlineColorAndroid='transparent'
+          autoCapitalize='none'
           placeholder='Password'/>
         <TextInput
           secureTextEntry={true}
           onChangeText={this.passwordVerificationChanged}
           style={[styles.textField, passwordMismatch ? errorStyle : null]}
+          autoCapitalize='none'
           value={this.state.passwordVerification}
           underlineColorAndroid='transparent'
           placeholder='Verify Password' />
