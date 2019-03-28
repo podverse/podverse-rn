@@ -5,9 +5,9 @@ import { Provider } from 'react-redux'
 import { setGlobal } from 'reactn'
 import { PV } from './src/resources'
 import Router from './src/Router'
+import initialState from './src/store/initialState'
 import { configureStore } from './src/store/store'
 import { darkTheme, lightTheme } from './src/styles'
-
 type Props = {}
 
 type State = {
@@ -17,6 +17,8 @@ type State = {
 interface App {
   store?: any
 }
+
+setGlobal(initialState)
 
 class App extends Component<Props, State> {
   constructor(props: Props) {
@@ -30,10 +32,10 @@ class App extends Component<Props, State> {
 
   async componentDidMount() {
     const darkModeEnabled = await AsyncStorage.getItem('DARK_MODE_ENABLED')
-    this.setupGlobalState(darkModeEnabled ? darkTheme : lightTheme)
+    this.setupGlobalTheme(darkModeEnabled ? darkTheme : lightTheme)
   }
 
-  setupGlobalState(theme: {}) {
+  setupGlobalTheme(theme: {}) {
     setGlobal({
       globalTheme: theme
     }, () => {

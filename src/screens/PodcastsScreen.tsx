@@ -6,7 +6,6 @@ import React from 'reactn'
 import { Text, View } from '../components'
 import { PV } from '../resources'
 import { getAuthUserInfo, logoutUser } from '../store/actions/auth'
-import { togglePlayer } from '../store/actions/player'
 import { button, core } from '../styles'
 
 type Props = {
@@ -14,9 +13,7 @@ type Props = {
   logoutUser: () => Promise<any>,
   name?: string,
   navigation?: any,
-  showPlayer: boolean,
-  isLoggedIn: boolean,
-  toggleBar: (showPlayer: boolean) => any
+  isLoggedIn: boolean
 }
 
 type State = {}
@@ -43,7 +40,7 @@ class PodcastsScreenComponent extends React.Component<Props, State> {
   }
 
   render() {
-    const { name, navigation, showPlayer, toggleBar } = this.props
+    const { name, navigation } = this.props
     const globalTheme = this.global.globalTheme
 
     return (
@@ -75,7 +72,7 @@ class PodcastsScreenComponent extends React.Component<Props, State> {
           }}
         ><Text>{this.props.isLoggedIn ? 'LOGOUT' : 'GO TO LOGIN'}</Text></TouchableOpacity>
         <TouchableOpacity
-          onPress={() => toggleBar(!showPlayer)}
+          onPress={() => this.setGlobal({ showPlayer: !this.global.showPlayer })}
           style={{
             position: 'absolute',
             bottom: 0,
@@ -85,7 +82,7 @@ class PodcastsScreenComponent extends React.Component<Props, State> {
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-          <Text>{showPlayer ? 'HIDE' : 'SHOW'}</Text>
+          <Text>{this.global.showPlayer ? 'HIDE' : 'SHOW'}</Text>
         </TouchableOpacity>
       </View>
     )
@@ -95,8 +92,7 @@ class PodcastsScreenComponent extends React.Component<Props, State> {
 const mapDispatchToProps = (dispatch: any) => {
   return {
     getCurrentSession: () => dispatch(getAuthUserInfo()),
-    logoutUser: () => dispatch(logoutUser()),
-    toggleBar: (toggle: any) => dispatch(togglePlayer(toggle))
+    logoutUser: () => dispatch(logoutUser())
   }
 }
 
@@ -104,8 +100,7 @@ const mapStateToProps = (state: any) => {
   const { userInfo = {} } = state.auth
   return {
     isLoggedIn: state.auth.isLoggedIn,
-    name: userInfo.name || '',
-    showPlayer: state.player.showPlayer
+    name: userInfo.name || ''
   }
 }
 
