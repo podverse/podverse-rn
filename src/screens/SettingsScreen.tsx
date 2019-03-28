@@ -16,12 +16,11 @@ export class SettingsScreen extends React.Component {
   }
 
   render() {
-    const { globalTheme } = this.global
     return (
       <View style={core.view}>
-        <Text style={globalTheme.text}>Settings</Text>
-        <Text style={globalTheme.text}>Toggle Dark Mode</Text>
-        <Switch value={globalTheme === darkTheme} onValueChange={this._toggleTheme} />
+        <Text>Settings</Text>
+        <Text>Toggle Dark Mode</Text>
+        <Switch value={this.global.globalTheme === darkTheme} onValueChange={this._toggleTheme} />
       </View>
     )
   }

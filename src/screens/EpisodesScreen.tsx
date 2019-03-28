@@ -21,7 +21,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
     return (
       <View style={core.view}>
-        <Text style={globalTheme.text}>Episodes</Text>
+        <Text>Episodes</Text>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate(PV.RouteNames.EpisodeScreen)}
           style={[button.primaryWrapper, globalTheme.buttonPrimaryWrapper]}>

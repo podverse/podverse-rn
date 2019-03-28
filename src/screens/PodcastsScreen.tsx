@@ -49,7 +49,7 @@ class PodcastsScreenComponent extends React.Component<Props, State> {
     return (
       <View style={core.view}>
         {!!name && <Text>{`Welcome, ${name}`}</Text>}
-        <Text style={globalTheme.text}>Podcasts</Text>
+        <Text>Podcasts</Text>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate(PV.RouteNames.PodcastScreen)}
           style={[button.primaryWrapper, globalTheme.buttonPrimaryWrapper]}>

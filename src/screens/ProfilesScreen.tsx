@@ -21,7 +21,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
 
     return (
       <View style={core.view}>
-        <Text style={globalTheme.text}>Profiles</Text>
+        <Text>Profiles</Text>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate(PV.RouteNames.ProfileScreen)}
           style={[button.primaryWrapper, globalTheme.buttonPrimaryWrapper]}>

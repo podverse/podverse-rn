@@ -1,4 +1,4 @@
-import React from 'reactn'
+import React from 'react'
 import { Text, View } from '../components'
 import { core } from '../styles'
 
@@ -15,11 +15,9 @@ export class FindScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { globalTheme } = this.global
-
     return (
       <View style={core.view}>
-        <Text style={globalTheme.text}>Find</Text>
+        <Text>Find</Text>
       </View>
     )
   }

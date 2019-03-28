@@ -31,12 +31,13 @@ class App extends Component<Props, State> {
   async componentDidMount() {
     const darkModeEnabled = await AsyncStorage.getItem('DARK_MODE_ENABLED')
     this.setupGlobalState(darkModeEnabled ? darkTheme : lightTheme)
-    this.setState({ appReady: true })
   }
 
   setupGlobalState(theme: {}) {
     setGlobal({
       globalTheme: theme
+    }, () => {
+      this.setState({ appReady: true })
     })
   }
 
