@@ -64,7 +64,6 @@ export const login = async (email: string, password: string) => {
     }
   })
 
-  console.log(response)
   const data = await response.json()
   if (data.token) {
     RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY })
@@ -111,6 +110,9 @@ export const signUp = async (email: string, password: string, name: string) => {
       email,
       password,
       name
+    },
+    query: {
+      includeBodyToken: true
     },
     opts: { credentials: 'include' }
   })

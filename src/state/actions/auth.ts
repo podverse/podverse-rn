@@ -12,7 +12,7 @@ export type Credentials = {
 
 export const loginUser = async (credentials: Credentials) => {
   const user = await login(credentials.email, credentials.password)
-  setGlobal({ session: { userInfo: user }, isLoggedIn: true })
+  setGlobal({ session: { userInfo: user, isLoggedIn: true } })
   return user
 }
 
@@ -24,7 +24,7 @@ export const signUpUser = async (credentials: Credentials) => {
 export const getAuthUserInfo = async () => {
   try {
     const user = await getAuthenticatedUserInfo()
-    setGlobal({ session: { userInfo: user }, isLoggedIn: true })
+    setGlobal({ session: { userInfo: user, isLoggedIn: true } })
     return user
   } catch (error) {
     Alert.alert('Error', error.message, [])
@@ -34,7 +34,7 @@ export const getAuthUserInfo = async () => {
 export const logoutUser = async () => {
   try {
     await logout()
-    setGlobal({ session: { userInfo: {} }, isLoggedIn: false })
+    setGlobal({ session: { userInfo: {}, isLoggedIn: false } })
     RNSecureKeyStore.remove(PV.Keys.BEARER_TOKEN)
   } catch (error) {
     Alert.alert('Error', error.message, [])
