@@ -14,6 +14,9 @@ export const darkTheme = StyleSheet.create({
   buttonPrimaryWrapperDisabled: {
     backgroundColor: PV.Colors.grayLighter
   },
+  divider: {
+    backgroundColor: PV.Colors.grayDarker
+  },
   player: {
     borderColor: PV.Colors.gray
   },
@@ -35,6 +38,9 @@ export const darkTheme = StyleSheet.create({
   text: {
     color: PV.Colors.white
   },
+  textSecondary: {
+    color: PV.Colors.grayLighter
+  },
   view: {
     backgroundColor: PV.Colors.black
   }
@@ -52,6 +58,9 @@ export const lightTheme = StyleSheet.create({
   },
   buttonPrimaryWrapperDisabled: {
     backgroundColor: PV.Colors.grayDarker
+  },
+  divider: {
+    backgroundColor: PV.Colors.grayLighter
   },
   player: {
     borderColor: PV.Colors.gray
@@ -73,6 +82,9 @@ export const lightTheme = StyleSheet.create({
   },
   text: {
     color: PV.Colors.black
+  },
+  textSecondary: {
+    color: PV.Colors.grayDarker
   },
   view: {
     backgroundColor: PV.Colors.white
