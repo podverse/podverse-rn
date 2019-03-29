@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   textWrapper: {
     flex: 1,
     paddingBottom: 5,
-    paddingRight: 16,
+    paddingRight: 8,
     paddingTop: 6
   },
   title: {

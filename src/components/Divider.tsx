@@ -4,7 +4,14 @@ import { useGlobal } from 'reactn'
 
 export const Divider = (props: any) => {
   const [globalTheme] = useGlobal('globalTheme')
-  return <View {...props} style={[props.style, styles.divider, globalTheme.divider]}>{props.children}</View>
+  let noMargin = {}
+  if (props.noMargin) {
+    noMargin = {
+      marginBottom: 0,
+      marginTop: 0
+    }
+  }
+  return <View {...props} style={[styles.divider, props.style, noMargin, globalTheme.divider]}>{props.children}</View>
 }
 
 const styles = {

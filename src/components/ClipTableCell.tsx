@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   textWrapper: {
     flex: 1,
     justifyContent: 'space-between',
-    paddingRight: 16
+    paddingRight: 8
   },
   wrapperBottom: {
     flexDirection: 'row',
