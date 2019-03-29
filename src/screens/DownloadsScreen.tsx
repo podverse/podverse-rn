@@ -1,20 +1,25 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Text, View } from '../components'
+import { core } from '../styles'
 
-export class DownloadsScreen extends React.Component {
+type Props = {
+  navigation?: any
+}
+
+type State = {}
+
+export class DownloadsScreen extends React.Component<Props, State> {
+
+  static navigationOptions = {
+    title: 'Downloads'
+  }
+
   render() {
+
     return (
-      <View style={styles.view}>
+      <View style={core.view}>
         <Text>Downloads</Text>
       </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-})

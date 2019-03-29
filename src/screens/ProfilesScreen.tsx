@@ -10,10 +10,10 @@ type Props = {
 
 type State = {}
 
-export class PodcastScreen extends React.Component<Props, State> {
+export class ProfilesScreen extends React.Component<Props, State> {
 
   static navigationOptions = {
-    title: 'Podcast'
+    title: 'Profiles'
   }
 
   render() {
@@ -21,11 +21,11 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     return (
       <View style={core.view}>
-        <Text>Podcast</Text>
+        <Text>Profiles</Text>
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate(PV.RouteNames.EpisodeScreen)}
+          onPress={() => this.props.navigation.navigate(PV.RouteNames.ProfileScreen)}
           style={[button.primaryWrapper, globalTheme.buttonPrimaryWrapper]}>
-          <Text style={globalTheme.buttonPrimaryText}>Go to Episode</Text>
+          <Text style={globalTheme.buttonPrimaryText}>Go to Profile</Text>
         </TouchableOpacity>
       </View>
     )

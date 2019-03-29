@@ -42,8 +42,8 @@ export class Login extends React.Component<Props, State> {
     const { style } = this.props
     const { password } = this.state
     const disabled = !this.inputsValid()
-    const disabledStyle = disabled ? { backgroundColor: PV.Colors.disabled } : null
-    const disabledTextStyle = disabled ? { color: 'white' } : null
+    const disabledStyle = disabled ? { backgroundColor: PV.Colors.gray } : null
+    const disabledTextStyle = disabled ? { color: PV.Colors.white } : null
 
     return (
       <View style={[styles.view, style]}>
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   },
   signInButtonText: {
     fontSize: 17,
-    color: PV.Colors.podverseBlue,
+    color: PV.Colors.brandColor,
     fontWeight: 'bold'
   }
 })

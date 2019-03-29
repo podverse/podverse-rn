@@ -1,8 +1,14 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
 import { Text, View } from '../components'
+import { core } from '../styles'
 
-export class EpisodeScreen extends React.Component {
+type Props = {
+  navigation?: any
+}
+
+type State = {}
+
+export class EpisodeScreen extends React.Component<Props, State> {
 
   static navigationOptions = {
     title: 'Episode'
@@ -10,17 +16,9 @@ export class EpisodeScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.view}>
+      <View style={core.view}>
         <Text>Episode</Text>
       </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-})

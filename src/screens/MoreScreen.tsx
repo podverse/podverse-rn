@@ -1,14 +1,20 @@
-import React from 'react'
-import { FlatList, StyleSheet, TouchableOpacity } from 'react-native'
+import { SectionList, TouchableOpacity } from 'react-native'
+import React from 'reactn'
 import { Text, View } from '../components'
 import { PV } from '../resources'
-import { table } from '../styles'
+import { core, table } from '../styles'
 
-type Props = {}
+type Props = {
+  navigation?: any
+}
 
 type State = {
   options: any[]
 }
+
+const _aboutKey = 'about'
+const _feedbackKey = 'feedback'
+const _logoutKey = 'logout'
 
 const moreFeaturesOptions = [
   {
@@ -33,53 +39,64 @@ const moreFeaturesOptions = [
   },
   {
     title: 'Log out',
-    key: 'logOut'
+    key: _logoutKey
   }
 ]
 
 const moreOtherOptions = [
   {
     title: 'Feedback',
-    key: 'feedback'
+    key: _feedbackKey
   },
   {
     title: 'About',
-    key: 'about'
+    key: _aboutKey
   }
 ]
 
 export class MoreScreen extends React.Component<Props, State> {
+  static navigationOptions = {
+    title: 'More'
+  }
+
   state = {
     options: []
   }
 
   _onPress = (item: any) => {
-    console.log('hello world', item)
-    if (item.title === 'Settings') {
-      this.props.navigation.navigate(PV.RouteNames.SettingsScreen)
+    console.log(item)
+    if (item.key === _aboutKey) {
+      console.log('about')
+    } else if (item.key === _feedbackKey) {
+      console.log('feedback')
+    } else if (item.key === _logoutKey) {
+      console.log('logout')
+    } else {
+      this.props.navigation.navigate(item.key)
     }
   }
 
   render() {
+    const { globalTheme } = this.global
+
     return (
-      <View style={styles.view}>
-        <FlatList
-          data={moreFeaturesOptions}
+      <View style={core.backgroundView}>
+        <SectionList
           renderItem={({ item, separators }) => (
             <TouchableOpacity
               onPress={() => this._onPress(item)}
               style={table.cellWrapper}>
-              <Text style={table.cellText}>{item.title}</Text>
+              <Text style={globalTheme.tableCellTextPrimary}>{item.title}</Text>
             </TouchableOpacity>
-          )} />
+          )}
+          renderSectionHeader={({ section: { title } }) => (
+            <Text style={globalTheme.tableSectionHeaderText}>{title}</Text>
+          )}
+          sections={[
+            { title: 'Features', data: moreFeaturesOptions },
+            { title: 'Other', data: moreOtherOptions }
+          ]} />
       </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    padding: 10
-  }
-})

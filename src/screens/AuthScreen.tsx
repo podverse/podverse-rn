@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { Login, SignUp } from '../components'
 import { PV } from '../resources'
 import { loginUser, signUpUser } from '../store/actions/auth'
-import { colors } from '../styles'
 
 type Props = {
   loginUser?: any
@@ -84,7 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: colors.brandColor,
+    backgroundColor: PV.Colors.brandColor,
     paddingTop: 100
   },
   contentView: {
@@ -98,7 +97,7 @@ const styles = StyleSheet.create({
   },
   switchOptionText: {
     fontSize: 18,
-    color: colors.text.primary,
+    color: PV.Colors.white,
     marginTop: 30,
     textDecorationLine: 'underline'
   }

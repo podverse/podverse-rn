@@ -1,22 +1,22 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { connect } from 'react-redux'
+import React from 'reactn'
 import { Text, View } from '../components'
 import { PV } from '../resources'
 import { getAuthUserInfo, logoutUser } from '../store/actions/auth'
 import { togglePlayer } from '../store/actions/player'
-import { core } from '../styles'
+import { button, core } from '../styles'
 
 type Props = {
+  getCurrentSession: () => Promise<any>,
+  logoutUser: () => Promise<any>,
   name?: string,
   navigation?: any,
   showPlayer: boolean,
   isLoggedIn: boolean,
-  toggleBar: (showPlayer: boolean) => any,
-  getCurrentSession: () => Promise<any>,
-  logoutUser: () => Promise<any>
+  toggleBar: (showPlayer: boolean) => any
 }
 
 type State = {}
@@ -44,14 +44,16 @@ class PodcastsScreenComponent extends React.Component<Props, State> {
 
   render() {
     const { name, navigation, showPlayer, toggleBar } = this.props
+    const globalTheme = this.global.globalTheme
 
     return (
       <View style={core.view}>
         {!!name && <Text>{`Welcome, ${name}`}</Text>}
-        <Text style={core.text}>Podcasts</Text>
+        <Text>Podcasts</Text>
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate(PV.RouteNames.PodcastScreen)}>
-          <Text>Go to Podcast</Text>
+          onPress={() => this.props.navigation.navigate(PV.RouteNames.PodcastScreen)}
+          style={[button.primaryWrapper, globalTheme.buttonPrimaryWrapper]}>
+          <Text style={globalTheme.buttonPrimaryText}>Go to Podcast</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
@@ -92,18 +94,18 @@ class PodcastsScreenComponent extends React.Component<Props, State> {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    toggleBar: (toggle: any) => dispatch(togglePlayer(toggle)),
     getCurrentSession: () => dispatch(getAuthUserInfo()),
-    logoutUser: () => dispatch(logoutUser())
+    logoutUser: () => dispatch(logoutUser()),
+    toggleBar: (toggle: any) => dispatch(togglePlayer(toggle))
   }
 }
 
 const mapStateToProps = (state: any) => {
   const { userInfo = {} } = state.auth
   return {
-    showPlayer: state.player.showPlayer,
+    isLoggedIn: state.auth.isLoggedIn,
     name: userInfo.name || '',
-    isLoggedIn: state.auth.isLoggedIn
+    showPlayer: state.player.showPlayer
   }
 }
 

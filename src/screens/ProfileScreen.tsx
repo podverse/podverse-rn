@@ -8,16 +8,16 @@ type Props = {
 
 type State = {}
 
-export class ClipsScreen extends React.Component<Props, State> {
+export class ProfileScreen extends React.Component<Props, State> {
 
   static navigationOptions = {
-    title: 'Clips'
+    title: 'Profile'
   }
 
   render() {
     return (
       <View style={core.view}>
-        <Text>Clips</Text>
+        <Text>Profile</Text>
       </View>
     )
   }
