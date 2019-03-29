@@ -1,5 +1,6 @@
 import React from 'react'
-import { Divider, EpisodeTableCell, PodcastTableCell, View } from '../components'
+import { Divider, EpisodeTableCell, PlaylistTableCell, PodcastTableCell, ProfileTableCell,
+  View } from '../components'
 
 type Props = {
   navigation?: any
@@ -32,6 +33,13 @@ export class ClipsScreen extends React.Component<Props, State> {
           handleMorePress={() => console.log('handleMorePress')}
           podcastImageUrl='http://static.libsyn.com/p/assets/7/1/f/3/71f3014e14ef2722/JREiTunesImage2.jpg'
           podcastTitle='The Joe Rogan Experience' />
+        <Divider />
+        <PlaylistTableCell
+          itemsTotal={123}
+          title='Playlist Title #1' />
+        <Divider />
+        <ProfileTableCell title='Prof Chaos' />
+        <Divider />
       </View>
     )
   }

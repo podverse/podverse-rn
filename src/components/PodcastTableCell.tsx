@@ -80,6 +80,7 @@ export const PodcastTableCell = (props: Props) => {
 const styles = StyleSheet.create({
   bottomText: {
     flex: 0,
+    fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-end',
     marginTop: 2
   },

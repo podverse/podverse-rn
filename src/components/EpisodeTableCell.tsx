@@ -68,11 +68,12 @@ export const EpisodeTableCell = (props: Props) => {
 const styles = StyleSheet.create({
   bottomText: {
     flex: 0,
+    fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-end',
     marginTop: 2
   },
   episodeSummary: {
-    fontSize: PV.Fonts.sizes.sm,
+    fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.thin,
     marginBottom: 8,
     marginLeft: 8,
