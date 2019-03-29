@@ -1,0 +1,15 @@
+export const Fonts = {
+  sizes: {
+    xs: 13,
+    sm: 14,
+    md: 15,
+    lg: 16,
+    xl: 18
+  },
+  weights: {
+    thin: '300',
+    normal: '400',
+    bold: '600',
+    extraBold: '700'
+  }
+}
