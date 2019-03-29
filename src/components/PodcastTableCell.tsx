@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 0,
     height: 92,
+    marginLeft: 8,
     marginRight: 12,
     width: 92
   },

@@ -77,8 +77,8 @@ const styles = StyleSheet.create({
   episodeSummary: {
     fontSize: PV.Fonts.sizes.sm,
     marginBottom: 8,
-    marginLeft: 12,
-    marginRight: 12,
+    marginLeft: 8,
+    marginRight: 8,
     marginTop: 11
   },
   episodeTitle: {
@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 0,
     height: 60,
+    marginLeft: 8,
     marginRight: 12,
     width: 60
   },
