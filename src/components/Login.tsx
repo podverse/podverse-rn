@@ -14,7 +14,7 @@ type State = {
 
 export class Login extends React.Component<Props, State> {
 
-  constructor (props: Props) {
+  constructor(props: Props) {
     super(props)
     this.state = {
       email: '',
@@ -38,7 +38,7 @@ export class Login extends React.Component<Props, State> {
     this.setState({ password })
   }
 
-  render () {
+  render() {
     const { style } = this.props
     const { password } = this.state
     const disabled = !this.inputsValid()
@@ -52,14 +52,16 @@ export class Login extends React.Component<Props, State> {
           onChangeText={this.emailChanged}
           style={styles.textField}
           value={this.state.email}
+          autoCapitalize='none'
           placeholder='Email' />
         <TextInput
           secureTextEntry={true}
           onChangeText={this.passwordChanged}
           style={styles.textField}
           value={password}
+          autoCapitalize='none'
           underlineColorAndroid='transparent'
-          placeholder='Password'/>
+          placeholder='Password' />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
           disabled={disabled}

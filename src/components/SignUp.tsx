@@ -58,7 +58,7 @@ export class SignUp extends React.Component<Props, State> {
     const { style } = this.props
     const { password, passwordVerification } = this.state
     const disabled = !this.inputsValid()
-    const disabledStyle = disabled ? { backgroundColor: PV.Colors.disabled } : null
+    const disabledStyle = disabled ? { backgroundColor: PV.Colors.grayDark } : null
     const disabledTextStyle = disabled ? { color: PV.Colors.white } : null
 
     const passwordMismatch = passwordVerification.length > 0 && passwordVerification !== password
@@ -73,6 +73,7 @@ export class SignUp extends React.Component<Props, State> {
           onChangeText={this.emailChanged}
           style={styles.textField}
           value={this.state.email}
+          autoCapitalize='none'
           placeholder='Email'/>
         <TextInput
           secureTextEntry={true}
@@ -80,11 +81,13 @@ export class SignUp extends React.Component<Props, State> {
           style={styles.textField}
           value={this.state.password}
           underlineColorAndroid='transparent'
+          autoCapitalize='none'
           placeholder='Password'/>
         <TextInput
           secureTextEntry={true}
           onChangeText={this.passwordVerificationChanged}
           style={[styles.textField, passwordMismatch ? errorStyle : null]}
+          autoCapitalize='none'
           value={this.state.passwordVerification}
           underlineColorAndroid='transparent'
           placeholder='Verify Password' />
