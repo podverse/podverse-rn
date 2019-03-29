@@ -40,7 +40,7 @@ export const PodcastTableHeader = (props: Props) => {
 
 const styles = StyleSheet.create({
   autoDownload: {
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.sm,
     marginRight: 6
   },
   image: {

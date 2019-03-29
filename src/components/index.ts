@@ -1,6 +1,7 @@
 export { ClipTableCell } from './ClipTableCell'
 export { Divider } from './Divider'
 export { EpisodeTableCell } from './EpisodeTableCell'
+export { EpisodeTableHeader } from './EpisodeTableHeader'
 export { Login } from './Login'
 export { PlaylistTableCell } from './PlaylistTableCell'
 export { ProfileTableCell } from './ProfileTableCell'
