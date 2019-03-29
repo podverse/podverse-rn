@@ -1,22 +1,6 @@
 import { StyleSheet } from 'react-native'
 import { PV } from './resources'
 
-export type GlobalTheme = {
-  buttonPrimaryText?: any
-  buttonPrimaryTextDisabled?: any
-  buttonPrimaryWrapper?: any
-  buttonPrimaryWrapperDisabled?: any
-  divider?: any
-  player?: any
-  tabbar?: any
-  tabbarItem?: any
-  tableCellTextPrimary?: any
-  tableCellTextSecondary?: any
-  tableSectionHeaderText?: any
-  text?: any
-  view?: any
-}
-
 export const darkTheme = StyleSheet.create({
   buttonPrimaryText: {
     color: PV.Colors.white
