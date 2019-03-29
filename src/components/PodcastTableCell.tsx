@@ -80,14 +80,13 @@ export const PodcastTableCell = (props: Props) => {
 const styles = StyleSheet.create({
   bottomText: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.sm,
     justifyContent: 'flex-end',
     marginTop: 2
   },
   bottomTextWrapper: {
     flex: 1,
-    flexDirection: 'row',
-    fontSize: PV.Fonts.sizes.md
+    flexDirection: 'row'
   },
   bottomTextWrapperLeft: {
     flex: 1,
@@ -101,14 +100,14 @@ const styles = StyleSheet.create({
   image: {
     flex: 0,
     height: 92,
-    marginRight: 16,
+    marginRight: 12,
     width: 92
   },
   textWrapper: {
     flex: 1,
-    paddingBottom: 7,
+    paddingBottom: 5,
     paddingRight: 16,
-    paddingTop: 7
+    paddingTop: 6
   },
   title: {
     flex: 1,

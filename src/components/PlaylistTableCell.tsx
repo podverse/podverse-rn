@@ -14,7 +14,11 @@ export const PlaylistTableCell = (props: Props) => {
   return (
     <View style={styles.wrapper}>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.itemsTotal}>items: {itemsTotal}</Text>
+      <Text
+        isSecondary={true}
+        style={styles.itemsTotal}>
+        items: {itemsTotal}
+      </Text>
     </View>
   )
 }

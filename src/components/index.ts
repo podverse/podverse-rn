@@ -1,3 +1,4 @@
+export { ClipTableCell } from './ClipTableCell'
 export { Divider } from './Divider'
 export { EpisodeTableCell } from './EpisodeTableCell'
 export { Login } from './Login'

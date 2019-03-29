@@ -10,7 +10,7 @@ export const Divider = (props: any) => {
 const styles = {
   divider: {
     height: 1,
-    marginBottom: 8,
-    marginTop: 8
+    marginBottom: 10,
+    marginTop: 10
   }
 }

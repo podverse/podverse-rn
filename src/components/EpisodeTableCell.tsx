@@ -26,25 +26,24 @@ export const EpisodeTableCell = (props: Props) => {
               style={styles.image} />
         }
         <View style={styles.textWrapper}>
+          {
+            podcastTitle &&
+            <Text
+              isSecondary={true}
+              numberOfLines={1}
+              style={styles.podcastTitle}>
+              {podcastTitle}
+            </Text>
+          }
           <Text style={styles.episodeTitle}>{episodeTitle}</Text>
-          <View style={styles.textWrapperBottom}>
-            {
-              podcastTitle &&
-                <Text
-                  isSecondary={true}
-                  style={styles.bottomText}>
-                  {podcastTitle}
-                </Text>
-            }
-            {
-              episodePubDate &&
-                <Text
-                  isSecondary={true}
-                  style={styles.bottomText}>
-                  {episodePubDate}
-                </Text>
-            }
-          </View>
+          {
+            episodePubDate &&
+            <Text
+              isSecondary={true}
+              style={styles.bottomText}>
+              {episodePubDate}
+            </Text>
+          }
         </View>
         {
           handleMorePress &&
@@ -57,9 +56,12 @@ export const EpisodeTableCell = (props: Props) => {
         }
       </View>
       {
-        episodeSummary ?
-          <Text style={styles.episodeSummary}>{episodeSummary}</Text>
-          : <Text style={styles.episodeSummary}>{episodeSummary}</Text>
+        episodeSummary &&
+          <Text
+            numberOfLines={5}
+            style={styles.episodeSummary}>
+            {episodeSummary}
+          </Text>
       }
     </View>
   )
@@ -68,33 +70,33 @@ export const EpisodeTableCell = (props: Props) => {
 const styles = StyleSheet.create({
   bottomText: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.sm,
     justifyContent: 'flex-end',
     marginTop: 2
   },
   episodeSummary: {
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.thin,
+    fontSize: PV.Fonts.sizes.sm,
     marginBottom: 8,
-    marginLeft: 8,
-    marginRight: 8,
-    marginTop: 12
+    marginLeft: 12,
+    marginRight: 12,
+    marginTop: 11
   },
   episodeTitle: {
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold
   },
   image: {
     flex: 0,
-    height: 92,
-    marginRight: 16,
-    width: 92
+    height: 60,
+    marginRight: 12,
+    width: 60
   },
   moreButton: {
     flex: 0,
     marginBottom: 'auto',
-    marginTop: 'auto',
-    marginRight: 12
+    marginLeft: 8,
+    marginRight: 8,
+    marginTop: 'auto'
   },
   moreButtonImage: {
     borderColor: 'white',
@@ -104,16 +106,15 @@ const styles = StyleSheet.create({
     tintColor: 'white',
     width: 44
   },
+  podcastTitle: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.sm,
+    justifyContent: 'flex-start'
+  },
   textWrapper: {
     flex: 1,
     justifyContent: 'space-between',
-    paddingBottom: 7,
-    paddingRight: 16,
-    paddingTop: 7
-  },
-  textWrapperBottom: {
-    fontSize: PV.Fonts.sizes.md,
-    justifyContent: 'flex-end'
+    paddingRight: 16
   },
   wrapper: {
     flexDirection: 'row'
