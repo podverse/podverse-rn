@@ -36,3 +36,16 @@ export interface InitialState {
   },
   showPlayer: boolean
 }
+
+interface FontSizes {
+  [size: string]: number
+}
+
+interface FontWeight {
+  [weight: string]: string
+}
+
+export interface FontType {
+  sizes: FontSizes,
+  weights: FontWeight
+}

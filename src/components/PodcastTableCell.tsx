@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableHighlight } from 'react-native'
+import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { PV } from '../resources'
 import { Text, View } from './'
 
@@ -20,7 +20,7 @@ export const PodcastTableCell = (props: Props) => {
     } = props
 
   return (
-    <TouchableHighlight onPress={handleNavigationPress}>
+    <TouchableWithoutFeedback onPress={handleNavigationPress}>
       <View style={styles.wrapper}>
         <Image
           source={{ uri: podcastImageUrl }}
@@ -77,7 +77,7 @@ export const PodcastTableCell = (props: Props) => {
           </View>
         </View>
       </View>
-    </TouchableHighlight>
+    </TouchableWithoutFeedback>
   )
 }
 

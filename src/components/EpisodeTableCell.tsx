@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native'
+import { Image, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
 import { PV } from '../resources'
 import { Text, View } from './'
 
@@ -20,7 +20,7 @@ export const EpisodeTableCell = (props: Props) => {
   return (
     <View style={styles.wrapper}>
       <View style={styles.wrapperTop}>
-        <TouchableHighlight
+        <TouchableWithoutFeedback
           onPress={handleNavigationPress}
           style={{ flex: 1 }}>
           <View style={styles.touchableHighlight}>
@@ -51,7 +51,7 @@ export const EpisodeTableCell = (props: Props) => {
               }
             </View>
           </View>
-        </TouchableHighlight>
+        </TouchableWithoutFeedback>
         {
           handleMorePress &&
             <TouchableOpacity
