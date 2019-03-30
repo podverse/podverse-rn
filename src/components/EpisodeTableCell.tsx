@@ -1,29 +1,29 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, View } from './'
 
 type Props = {
-  episodePubDate?: string
-  episodeSummary?: string
-  episodeTitle?: string
+  pubDate?: string
+  description?: string
+  title?: string
   handleMorePress?: any
   handleNavigationPress?: any
   podcastImageUrl?: string
-  podcastTitle: string
+  podcastTitle?: string
 }
 
 export const EpisodeTableCell = (props: Props) => {
-  const { episodePubDate, episodeSummary, episodeTitle = 'untitled episode', handleMorePress,
+  const { pubDate, description, title = 'untitled episode', handleMorePress,
   handleNavigationPress, podcastImageUrl, podcastTitle } = props
 
   return (
     <View style={styles.wrapper}>
       <View style={styles.wrapperTop}>
         <TouchableWithoutFeedback
-          onPress={handleNavigationPress}
-          style={{ flex: 1 }}>
-          <View style={styles.touchableHighlight}>
+          onPress={handleNavigationPress}>
+          <View>
             {
               podcastImageUrl &&
               <Image
@@ -40,13 +40,13 @@ export const EpisodeTableCell = (props: Props) => {
                   {podcastTitle}
                 </Text>
               }
-              <Text style={styles.episodeTitle}>{episodeTitle}</Text>
+              <Text style={styles.title}>{title}</Text>
               {
-                episodePubDate &&
+                pubDate &&
                 <Text
                   isSecondary={true}
                   style={styles.bottomText}>
-                  {episodePubDate}
+                  {readableDate(pubDate)}
                 </Text>
               }
             </View>
@@ -61,11 +61,11 @@ export const EpisodeTableCell = (props: Props) => {
         }
       </View>
       {
-        episodeSummary &&
+        description &&
           <Text
             numberOfLines={5}
-            style={styles.episodeSummary}>
-            {episodeSummary}
+            style={styles.description}>
+            {description}
           </Text>
       }
     </View>
@@ -79,16 +79,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 2
   },
-  episodeSummary: {
+  description: {
     fontSize: PV.Fonts.sizes.md,
     marginBottom: 8,
     marginLeft: 8,
     marginRight: 8,
     marginTop: 11
-  },
-  episodeTitle: {
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.bold
   },
   image: {
     flex: 0,
@@ -118,10 +114,12 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     flex: 1,
-    marginLeft: 8
+    marginLeft: 8,
+    marginRight: 8
   },
-  touchableHighlight: {
-    flexDirection: 'row'
+  title: {
+    fontSize: PV.Fonts.sizes.md,
+    fontWeight: PV.Fonts.weights.bold
   },
   wrapper: {
     marginTop: 8

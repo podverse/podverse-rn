@@ -12,3 +12,11 @@ export const getPodcasts = async (ids: [string], nsfwMode: boolean) => {
 
   return response.json()
 }
+
+export const getPodcast = async (id: string) => {
+  const response = await request({
+    endpoint: `/podcast/${id}`
+  })
+
+  return response.json()
+}

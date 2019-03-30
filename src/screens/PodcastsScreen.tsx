@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { FlatList } from 'react-native-gesture-handler'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import React from 'reactn'
-import { Divider, PodcastTableCell, TableSectionSelectors, View } from '../components'
+import { ActivityIndicator, Divider, PodcastTableCell, TableSectionSelectors, View } from '../components'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
 
@@ -12,6 +12,7 @@ type Props = {
 
 type State = {
   fromSelected: string
+  isLoading: boolean
   sortSelected: string
 }
 
@@ -25,6 +26,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     super(props)
     this.state = {
       fromSelected: 'Subscribed',
+      isLoading: true,
       sortSelected: 'most recent'
     }
   }
@@ -46,6 +48,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     } catch (error) {
       console.log(error.message)
     }
+
+    this.setState({ isLoading: false })
   }
 
   selectLeftItem = (fromSelected: string) => {
@@ -58,19 +62,24 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _renderPodcastItem = ({ item }) => {
     const downloadCount = item.episodes ? item.episodes.length : 0
-    return (<PodcastTableCell
-      key={item.id}
-      autoDownloadOn={true}
-      downloadCount={downloadCount}
-      handleNavigationPress={() => this.props.navigation.navigate(PV.RouteNames.PodcastScreen)}
-      lastEpisodePubDate={item.lastEpisodePubDate}
-      podcastImageUrl={item.imageUrl}
-      podcastTitle={item.title} />)
+
+    return (
+      <PodcastTableCell
+        key={item.id}
+        autoDownloadOn={true}
+        downloadCount={downloadCount}
+        handleNavigationPress={() => this.props.navigation.navigate(
+          PV.RouteNames.PodcastScreen, { podcast: item }
+        )}
+        lastEpisodePubDate={item.lastEpisodePubDate}
+        podcastImageUrl={item.imageUrl}
+        podcastTitle={item.title} />
+    )
   }
 
   render() {
     const { navigation } = this.props
-    const { fromSelected, sortSelected } = this.state
+    const { fromSelected, isLoading, sortSelected } = this.state
     const { globalTheme, session, showPlayer, subscribedPodcasts = [] } = this.global
     const { userInfo = {}, isLoggedIn = false } = session
     const { name = '' } = userInfo
@@ -84,13 +93,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
           rightItems={rightItems}
           selectedLeftItem={fromSelected}
           selectedRightItem={sortSelected} />
-        <FlatList
-          style={{ flex: 1 }}
-          keyExtractor={(item) => item.id}
-          data={subscribedPodcasts}
-          renderItem={this._renderPodcastItem}
-          ItemSeparatorComponent={() => <Divider noMargin={true} />}
-        />
+        {
+          isLoading &&
+            <ActivityIndicator />
+        }
+        {
+          !isLoading &&
+            <FlatList
+              style={{ flex: 1 }}
+              keyExtractor={(item) => item.id}
+              data={subscribedPodcasts}
+              renderItem={this._renderPodcastItem}
+              ItemSeparatorComponent={() => <Divider noMargin={true} />} />
+        }
       </View>
     )
   }
