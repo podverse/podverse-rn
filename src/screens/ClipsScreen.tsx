@@ -6,7 +6,10 @@ type Props = {
   navigation?: any
 }
 
-type State = {}
+type State = {
+  fromSelected: string
+  sortSelected: string
+}
 
 export class ClipsScreen extends React.Component<Props, State> {
 
@@ -14,10 +17,65 @@ export class ClipsScreen extends React.Component<Props, State> {
     title: 'Clips'
   }
 
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      fromSelected: 'Subscribed',
+      sortSelected: 'most recent'
+    }
+  }
+
+  selectLeftItem = (fromSelected: string) => {
+    this.setState({ fromSelected })
+  }
+
+  selectRightItem = (sortSelected: string) => {
+    this.setState({ sortSelected })
+  }
+
   render() {
+    const { fromSelected, sortSelected } = this.state
+
     return (
       <View>
-        <TableSectionSelectors />
+        <TableSectionSelectors
+          handleSelectLeftItem={this.selectLeftItem}
+          handleSelectRightItem={this.selectRightItem}
+          leftItems={[
+            {
+              label: 'Subscribed',
+              value: 'Subscribed'
+            },
+            {
+              label: 'All Podcasts',
+              value: 'All Podcasts'
+            }
+          ]}
+          rightItems={[
+            {
+              label: 'most recent',
+              value: 'most recent'
+            },
+            {
+              label: 'top - past day',
+              value: 'top - past day'
+            },
+            {
+              label: 'top - past week',
+              value: 'top - past week'
+            },
+            {
+              label: 'top - past month',
+              value: 'top - past month'
+            },
+            {
+              label: 'top - past year',
+              value: 'top - past year'
+            }
+          ]}
+          selectedLeftItem={fromSelected}
+          selectedRightItem={sortSelected}
+        />
         <PodcastTableHeader
           autoDownloadOn={true}
           podcastImageUrl='https://ssl-static.libsyn.com/p/assets/4/9/9/b/499b28131200cbd4/grumpy-old-geeks_v7.4.jpg'
