@@ -54,9 +54,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           episodeSummary='The Asia-Pacific War of 1937-1945 has deep roots. It also involves a Japanese society that’s been called one of the most distinctive on Earth. If there were a Japanese version of Captain America, this would be his origin story.'
           episodeTitle='Hardcore History 63 - Supernova in the East II asdfasdfasdfsd'
           handleMorePress={() => console.log('handleMorePress')}
-          handleNavigationPress={() => this.props.navigation.navigate(PV.RouteNames.EpisodeScreen)}
-          podcastImageUrl='https://is4-ssl.mzstatic.com/image/thumb/Music71/v4/09/5c/79/095c79d2-17dc-eb92-3f50-ce8b00fc2f4d/source/600x600bb.jpg'
-          podcastTitle={`Dan Carlin's Hardcore History`} />
+          handleNavigationPress={() => this.props.navigation.navigate(PV.RouteNames.EpisodeScreen)} />
         <Divider />
       </View>
     )
