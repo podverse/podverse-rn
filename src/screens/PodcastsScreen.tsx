@@ -57,11 +57,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _renderPodcastItem = ({ item }) => {
+    const downloadCount = item.episodes ? item.episodes.length : 0
     return (<PodcastTableCell
+      key={item.id}
       autoDownloadOn={true}
-      downloadCount={(item.episodes || []).length}
+      downloadCount={downloadCount}
       handleNavigationPress={() => this.props.navigation.navigate(PV.RouteNames.PodcastScreen)}
-      lastEpisodePubDate={item.lastEpisodePupDate}
+      lastEpisodePubDate={item.lastEpisodePubDate}
       podcastImageUrl={item.imageUrl}
       podcastTitle={item.title} />)
   }
@@ -69,7 +71,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const { fromSelected, sortSelected } = this.state
-    const { globalTheme, session, showPlayer } = this.global
+    const { globalTheme, session, showPlayer, subscribedPodcasts = [] } = this.global
     const { userInfo = {}, isLoggedIn = false } = session
     const { name = '' } = userInfo
 
@@ -84,8 +86,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           selectedRightItem={sortSelected} />
         <FlatList
           style={{ flex: 1 }}
-          contentContainerStyle={{ flex: 1 }}
-          data={userInfo.subscribedPodcastIds || []}
+          keyExtractor={(item) => item.id}
+          data={subscribedPodcasts}
           renderItem={this._renderPodcastItem}
           ItemSeparatorComponent={() => <Divider />}
         />

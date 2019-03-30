@@ -14,7 +14,7 @@ export const request = async (req: PVRequest) => {
     endpoint = '',
     query = {},
     headers = {},
-    body = {},
+    body,
     method = 'GET',
     opts = {}
   } = req
@@ -27,7 +27,7 @@ export const request = async (req: PVRequest) => {
     `${API_BASE_URL}${endpoint}?${queryString}`,
     {
       headers,
-      body: JSON.stringify(body),
+      ...(body ? { body: JSON.stringify(body) } : {}),
       method,
       ...opts
     }

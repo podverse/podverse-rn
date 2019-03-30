@@ -32,7 +32,7 @@ export const PodcastTableCell = (props: Props) => {
           <View style={styles.bottomTextWrapper}>
             <View style={styles.bottomTextWrapperLeft}>
               {
-                podcastCategories &&
+                !!podcastCategories &&
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
@@ -40,7 +40,7 @@ export const PodcastTableCell = (props: Props) => {
                   </Text>
               }
               {
-                podcastAuthors &&
+                !!podcastAuthors &&
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
@@ -48,7 +48,7 @@ export const PodcastTableCell = (props: Props) => {
                   </Text>
               }
               {
-                downloadCount &&
+                !!downloadCount &&
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>

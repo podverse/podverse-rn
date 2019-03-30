@@ -7,7 +7,7 @@ const initialTheme: InitialState = {
     isLoggedIn: false
   },
   showPlayer: false,
-  subscribedPodcasts: [{}]
+  subscribedPodcasts: []
 }
 
 export default initialTheme

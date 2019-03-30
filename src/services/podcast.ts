@@ -5,7 +5,7 @@ export const getPodcasts = async (ids: [string]) => {
         endpoint: '/podcast',
         query: {
             sort: 'alphabetical',
-            podcastId: ids.join('&'),
+            podcastId: ids.join(','),
             page: 1
         }
     })
