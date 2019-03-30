@@ -14,6 +14,7 @@
     "react": "16.8.3",
     "react-native": "0.59.0",
     "react-native-gesture-handler": "^1.0.12",
+    "react-native-picker-select": "^6.1.0",
     "react-native-secure-key-store": "^2.0.1",
     "react-navigation": "^3.0.9",
     "reactn": "^1.0.0"

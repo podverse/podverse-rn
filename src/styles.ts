@@ -32,6 +32,9 @@ export const darkTheme = StyleSheet.create({
   tableCellTextSecondary: {
     color: PV.Colors.white
   },
+  tableSectionHeader: {
+    backgroundColor: PV.Colors.grayDarker
+  },
   tableSectionHeaderText: {
     color: PV.Colors.white
   },
@@ -76,6 +79,9 @@ export const lightTheme = StyleSheet.create({
   },
   tableCellTextSecondary: {
     color: PV.Colors.white
+  },
+  tableSectionHeader: {
+    backgroundColor: PV.Colors.grayLighter
   },
   tableSectionHeaderText: {
     color: PV.Colors.black

@@ -1,11 +1,12 @@
 import React from 'react'
-import { Image, StyleSheet } from 'react-native'
+import { Image, StyleSheet, TouchableHighlight } from 'react-native'
 import { PV } from '../resources'
 import { Text, View } from './'
 
 type Props = {
   autoDownloadOn?: boolean
   downloadCount?: number
+  handleNavigationPress?: any
   lastEpisodePubDate?: string
   podcastAuthors?: string
   podcastCategories?: string
@@ -14,66 +15,69 @@ type Props = {
 }
 
 export const PodcastTableCell = (props: Props) => {
-  const { autoDownloadOn, downloadCount, lastEpisodePubDate, podcastAuthors, podcastCategories,
-    podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER, podcastTitle = 'untitled podcast' } = props
+  const { autoDownloadOn, downloadCount, handleNavigationPress, lastEpisodePubDate, podcastAuthors,
+    podcastCategories, podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,podcastTitle = 'untitled podcast'
+    } = props
 
   return (
-    <View style={styles.wrapper}>
-      <Image
-        source={{ uri: podcastImageUrl }}
-        style={styles.image} />
-      <View style={styles.textWrapper}>
-        <Text
-          numberOfLines={3}
-          style={styles.title}>{podcastTitle}</Text>
-        <View style={styles.bottomTextWrapper}>
-          <View style={styles.bottomTextWrapperLeft}>
-            {
-              podcastCategories &&
-                <Text
-                  isSecondary={true}
-                  style={styles.bottomText}>
-                  {podcastCategories}
-                </Text>
-            }
-            {
-              podcastAuthors &&
-                <Text
-                  isSecondary={true}
-                  style={styles.bottomText}>
-                  {podcastAuthors}
-                </Text>
-            }
-            {
-              downloadCount &&
-                <Text
-                  isSecondary={true}
-                  style={styles.bottomText}>
-                  {`${downloadCount} downloaded`}
-                </Text>
-            }
-          </View>
-          <View style={styles.bottomTextWrapperRight}>
-            {
-              autoDownloadOn &&
-                <Text
-                  isSecondary={true}
-                  style={styles.bottomText}>
-                  Auto DL On
-                </Text>
-            }
-            {
-              lastEpisodePubDate &&
-                <Text
-                  isSecondary={true}
-                  style={styles.bottomText}>
-                  {lastEpisodePubDate}
-                </Text>
-            }
+    <TouchableHighlight onPress={handleNavigationPress}>
+      <View style={styles.wrapper}>
+        <Image
+          source={{ uri: podcastImageUrl }}
+          style={styles.image} />
+        <View style={styles.textWrapper}>
+          <Text
+            numberOfLines={3}
+            style={styles.title}>{podcastTitle}</Text>
+          <View style={styles.bottomTextWrapper}>
+            <View style={styles.bottomTextWrapperLeft}>
+              {
+                podcastCategories &&
+                  <Text
+                    isSecondary={true}
+                    style={styles.bottomText}>
+                    {podcastCategories}
+                  </Text>
+              }
+              {
+                podcastAuthors &&
+                  <Text
+                    isSecondary={true}
+                    style={styles.bottomText}>
+                    {podcastAuthors}
+                  </Text>
+              }
+              {
+                downloadCount &&
+                  <Text
+                    isSecondary={true}
+                    style={styles.bottomText}>
+                    {`${downloadCount} downloaded`}
+                  </Text>
+              }
+            </View>
+            <View style={styles.bottomTextWrapperRight}>
+              {
+                autoDownloadOn &&
+                  <Text
+                    isSecondary={true}
+                    style={styles.bottomText}>
+                    Auto DL On
+                  </Text>
+              }
+              {
+                lastEpisodePubDate &&
+                  <Text
+                    isSecondary={true}
+                    style={styles.bottomText}>
+                    {lastEpisodePubDate}
+                  </Text>
+              }
+            </View>
           </View>
         </View>
       </View>
-    </View>
+    </TouchableHighlight>
   )
 }
 
@@ -100,7 +104,6 @@ const styles = StyleSheet.create({
   image: {
     flex: 0,
     height: 92,
-    marginLeft: 8,
     marginRight: 12,
     width: 92
   },
