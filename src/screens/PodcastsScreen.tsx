@@ -61,7 +61,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { fromSelected, sortSelected } = this.state
     const { globalTheme, session, showPlayer } = this.global
-    const { name = '', isLoggedIn = false } = session.userInfo
+    const { userInfo = {}, isLoggedIn = false } = session
+    const { name = '' } = userInfo
 
     return (
       <View style={styles.view}>
