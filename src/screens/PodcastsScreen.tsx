@@ -89,7 +89,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           keyExtractor={(item) => item.id}
           data={subscribedPodcasts}
           renderItem={this._renderPodcastItem}
-          ItemSeparatorComponent={() => <Divider />}
+          ItemSeparatorComponent={() => <Divider noMargin={true} />}
         />
       </View>
     )

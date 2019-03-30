@@ -6,6 +6,9 @@ const initialTheme: InitialState = {
     userInfo: {},
     isLoggedIn: false
   },
+  settings: {
+    nsfwMode: true
+  },
   showPlayer: false,
   subscribedPodcasts: []
 }

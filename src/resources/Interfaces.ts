@@ -50,3 +50,7 @@ export interface FontType {
   sizes: FontSizes,
   weights: FontWeight
 }
+
+export interface ISettings {
+  nsfwMode: boolean
+}

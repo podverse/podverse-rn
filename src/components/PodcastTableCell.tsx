@@ -1,5 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, View } from './'
 
@@ -48,7 +49,7 @@ export const PodcastTableCell = (props: Props) => {
                   </Text>
               }
               {
-                !!downloadCount &&
+                !!downloadCount || downloadCount === 0 &&
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
@@ -70,7 +71,7 @@ export const PodcastTableCell = (props: Props) => {
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
-                    {lastEpisodePubDate}
+                    {readableDate(lastEpisodePubDate)}
                   </Text>
               }
             </View>

@@ -26,10 +26,11 @@ class App extends Component<Props, State> {
 
   async componentDidMount() {
     const darkModeEnabled = await AsyncStorage.getItem('DARK_MODE_ENABLED')
-    this.setupGlobalTheme(darkModeEnabled ? darkTheme : lightTheme)
+    const nsfwModeEnabled = await AsyncStorage.getItem('NSFW_MODE_ENABLED')
+    this.setupGlobalState(darkModeEnabled ? darkTheme : lightTheme, !!nsfwModeEnabled)
   }
 
-  setupGlobalTheme(theme: GlobalTheme) {
+  setupGlobalState(theme: GlobalTheme, nsfwMode: boolean) {
     setGlobal({
       globalTheme: theme
     }, () => {

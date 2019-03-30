@@ -1,3 +1,16 @@
+export const readableDate = (date) => {
+  const dateObj = new Date(date),
+    year = dateObj.getFullYear(),
+    month = dateObj.getMonth() + 1,
+    day = dateObj.getDate();
+
+  var today = new Date();
+  var yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+
+  return month + '/' + day + '/' + year;
+}
+
 export const convertSecToHHMMSS = (sec: number) => {
   let totalSec = Math.floor(sec)
   const hours = Math.floor(totalSec / 3600)
