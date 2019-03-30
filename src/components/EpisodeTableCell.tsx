@@ -22,7 +22,7 @@ export const EpisodeTableCell = (props: Props) => {
       <View style={styles.wrapperTop}>
         <TouchableHighlight
           onPress={handleNavigationPress}
-          style={{flex: 1}}>
+          style={{ flex: 1 }}>
           <View style={styles.touchableHighlight}>
             {
               podcastImageUrl &&
