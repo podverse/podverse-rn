@@ -52,7 +52,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           episodePubDate='1/12/2019'
           episodeSummary='The Asia-Pacific War of 1937-1945 has deep roots. It also involves a Japanese society that’s been called one of the most distinctive on Earth. If there were a Japanese version of Captain America, this would be his origin story.'
-          episodeTitle='Hardcore History 63 - Supernova in the East II asdfasdfasdfsd'
+          episodeTitle='Hardcore History 63 - Supernova in the East II'
           handleMorePress={() => console.log('handleMorePress')}
           handleNavigationPress={() => this.props.navigation.navigate(PV.RouteNames.EpisodeScreen)} />
         <Divider />
