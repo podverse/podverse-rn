@@ -1,6 +1,6 @@
 import React from 'react'
 import { ClipTableCell, Divider, EpisodeTableCell, EpisodeTableHeader, PlaylistTableCell,
-  PodcastTableCell, PodcastTableHeader, ProfileTableCell, View } from '../components'
+  PodcastTableCell, PodcastTableHeader, ProfileTableCell, TableSectionSelectors, View } from '../components'
 
 type Props = {
   navigation?: any
@@ -17,6 +17,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   render() {
     return (
       <View>
+        <TableSectionSelectors />
         <PodcastTableHeader
           autoDownloadOn={true}
           podcastImageUrl='https://ssl-static.libsyn.com/p/assets/4/9/9/b/499b28131200cbd4/grumpy-old-geeks_v7.4.jpg'

@@ -8,6 +8,7 @@ export interface GlobalTheme {
   tabbarItem?: any
   tableCellTextPrimary?: any
   tableCellTextSecondary?: any
+  tableSectionHeader?: any
   tableSectionHeaderText?: any
   text?: any
   view?: any
