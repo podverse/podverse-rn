@@ -34,7 +34,8 @@ export interface InitialState {
     userInfo: UserInfo,
     isLoggedIn: boolean
   },
-  showPlayer: boolean
+  showPlayer: boolean,
+  subscribedPodcasts: [{}]
 }
 
 interface FontSizes {

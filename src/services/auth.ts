@@ -50,7 +50,6 @@ export const getAuthenticatedUserInfo = async () => {
 // }
 
 export const login = async (email: string, password: string) => {
-  console.log(email)
   const response = await request({
     method: 'POST',
     endpoint: '/auth/login',
@@ -58,6 +57,9 @@ export const login = async (email: string, password: string) => {
     body: {
       email,
       password
+    },
+    query: {
+      includeBodyToken: true
     },
     opts: {
       credentials: 'include'

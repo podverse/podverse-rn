@@ -1,11 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { TouchableOpacity } from 'react-native'
+import { FlatList } from 'react-native-gesture-handler'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import React from 'reactn'
-import { Divider, PodcastTableCell, TableSectionSelectors, Text, View } from '../components'
+import { Divider, PodcastTableCell, TableSectionSelectors, View } from '../components'
 import { PV } from '../resources'
-import { getAuthUserInfo, logoutUser } from '../state/actions/auth'
-import { button, core } from '../styles'
+import { getAuthUserInfo } from '../state/actions/auth'
 
 type Props = {
   navigation?: any
@@ -41,7 +40,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       } else {
         const userToken = await RNSecureKeyStore.get('BEARER_TOKEN')
         if (userToken) {
-          getAuthUserInfo()
+          await getAuthUserInfo()
         }
       }
     } catch (error) {
@@ -55,6 +54,16 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   selectRightItem = (sortSelected: string) => {
     this.setState({ sortSelected })
+  }
+
+  _renderPodcastItem = ({ item }) => {
+    return (<PodcastTableCell
+      autoDownloadOn={true}
+      downloadCount={(item.episodes || []).length}
+      handleNavigationPress={() => this.props.navigation.navigate(PV.RouteNames.PodcastScreen)}
+      lastEpisodePubDate={item.lastEpisodePupDate}
+      podcastImageUrl={item.imageUrl}
+      podcastTitle={item.title} />)
   }
 
   render() {
@@ -73,49 +82,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
           rightItems={rightItems}
           selectedLeftItem={fromSelected}
           selectedRightItem={sortSelected} />
-        <PodcastTableCell
-          autoDownloadOn={true}
-          downloadCount={3}
-          handleNavigationPress={() => this.props.navigation.navigate(PV.RouteNames.PodcastScreen)}
-          lastEpisodePubDate='3/28/19'
-          podcastImageUrl='https://is4-ssl.mzstatic.com/image/thumb/Music71/v4/09/5c/79/095c79d2-17dc-eb92-3f50-ce8b00fc2f4d/source/600x600bb.jpg'
-          podcastTitle={`Dan Carlin's Hardcore History`} />
-        <Divider />
-        <View style={core.view}>
-          {!!name && <Text>{`Welcome, ${name}`}</Text>}
-          <TouchableOpacity
-            onPress={() => {
-              if (isLoggedIn) {
-                logoutUser()
-              } else {
-                navigation.navigate(PV.RouteNames.AuthNavigator)
-              }
-            }}
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              height: 30,
-              width: '40%',
-              backgroundColor: 'red',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: 50
-            }}
-          ><Text>{isLoggedIn ? 'LOGOUT' : 'GO TO LOGIN'}</Text></TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => this.setGlobal({ showPlayer: !showPlayer })}
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              height: 30,
-              width: '40%',
-              backgroundColor: 'gray',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-            <Text>{showPlayer ? 'HIDE' : 'SHOW'}</Text>
-          </TouchableOpacity>
-        </View>
+        <FlatList
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flex: 1 }}
+          data={userInfo.subscribedPodcastIds || []}
+          renderItem={this._renderPodcastItem}
+          ItemSeparatorComponent={() => <Divider />}
+        />
       </View>
     )
   }
