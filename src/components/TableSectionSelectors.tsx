@@ -10,8 +10,8 @@ type Props = {
   handleSelectRightItem?: any
   leftItems: any[]
   rightItems: any[]
-  selectedLeftItemKey?: string
-  selectedRightItemKey?: string
+  selectedLeftItemKey: string | null
+  selectedRightItemKey?: string | null
 }
 
 export const TableSectionSelectors = (props: Props) => {
@@ -33,7 +33,7 @@ export const TableSectionSelectors = (props: Props) => {
           style={styles.tableSectionHeaderButton}
           value={selectedLeftItemKey}>
           <Text style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
-            {selectedLeftItem.label || 'Select...'} &#9662;
+            {selectedLeftItem.label || 'Select an item...'} &#9662;
           </Text>
         </RNPickerSelect>
         {
@@ -44,7 +44,7 @@ export const TableSectionSelectors = (props: Props) => {
               style={styles.tableSectionHeaderButton}
               value={selectedRightItemKey}>
               <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                {selectedRightItem.label || 'Select...'} &#9662;
+                {selectedRightItem.label || 'Select an item...'} &#9662;
               </Text>
             </RNPickerSelect>
 

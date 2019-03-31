@@ -4,6 +4,7 @@ import RNSecureKeyStore from 'react-native-secure-key-store'
 import React from 'reactn'
 import { ActivityIndicator, Divider, PodcastTableCell, TableSectionSelectors, View } from '../components'
 import { PV } from '../resources'
+import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { getSubscribedPodcasts } from '../state/actions/podcasts'
@@ -13,11 +14,14 @@ type Props = {
 }
 
 type State = {
+  categoryItems: any[]
   isLoading: boolean
   podcasts: any[]
-  queryFrom: string
-  querySort: string
-  selectedCategory?: string
+  queryFrom: string | null
+  querySort: string | null
+  selectedCategory: string | null
+  selectedSubCategory: string | null
+  subCategoryItems: any[]
 }
 
 export class PodcastsScreen extends React.Component<Props, State> {
@@ -29,10 +33,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
+      categoryItems: [],
       isLoading: true,
       podcasts: [],
       queryFrom: _subscribedKey,
-      querySort: _alphabeticalKey
+      querySort: _alphabeticalKey,
+      selectedCategory: null,
+      selectedSubCategory: null,
+      subCategoryItems: []
     }
   }
 
@@ -65,6 +73,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     const { settings } = this.global
     const { nsfwMode } = settings
+    const { selectedCategory, selectedSubCategory } = this.state
 
     this.setState({
       isLoading: true,
@@ -73,37 +82,48 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     let podcasts = []
     const newState = {
-      isLoading: false,
-      selectedCategory: ''
+      isLoading: false
     } as any
+
     if (selectedKey === _subscribedKey) {
       const { session } = this.global
       const { subscribedPodcastIds } = session.userInfo
       newState.podcasts = await getSubscribedPodcasts(subscribedPodcastIds || [])
     } else if (selectedKey === _allPodcastsKey) {
-      const querySort = 'alphabetical'
+      const querySort = _alphabeticalKey
       podcasts = await getPodcasts({ sort: querySort }, nsfwMode)
       newState.podcasts = podcasts[0]
       newState.querySort = querySort
     } else if (selectedKey === _categoryKey) {
-      const querySort = 'alphabetical'
-      podcasts = await getPodcasts({
-        categories: selectedKey,
-        sort: querySort
-      }, nsfwMode)
-      newState.querySort = querySort
-      newState.selectedCategory = selectedKey
+      if (selectedSubCategory || selectedCategory) {
+        const querySort = this.state.querySort
+        podcasts = await getPodcasts({
+          sort: querySort,
+          categories: selectedSubCategory || selectedCategory
+        }, nsfwMode)
+        newState.podcasts = podcasts[0]
+      } else {
+        const querySort = _topPastWeek
+        const categories = await getTopLevelCategories()
+        newState.categoryItems = generateCategoryItems(categories[0])
+        podcasts = await getPodcasts({ sort: querySort }, nsfwMode)
+        newState.podcasts = podcasts[0]
+        newState.querySort = querySort
+      }
     }
 
     this.setState(newState)
   }
 
   selectRightItem = async (selectedKey: string) => {
-    if (!selectedKey) return
+    if (!selectedKey) {
+      this.setState({ querySort: null })
+      return
+    }
 
     const { settings } = this.global
     const { nsfwMode } = settings
-    const { queryFrom, selectedCategory } = this.state
+    const { queryFrom, selectedCategory, selectedSubCategory } = this.state
 
     this.setState({
       isLoading: true,
@@ -111,21 +131,54 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
 
     let podcasts = []
-    let newState = { isLoading: false }
-    if (queryFrom === _subscribedKey) {
-      const { session } = this.global
-      const { subscribedPodcastIds } = session.userInfo
-      newState.podcasts = await getSubscribedPodcasts(subscribedPodcastIds || [])
-    } else if (queryFrom === _allPodcastsKey) {
+    const newState = { isLoading: false } as any
+
+    if (queryFrom === _allPodcastsKey) {
       podcasts = await getPodcasts({ sort: selectedKey }, nsfwMode)
       newState.podcasts = podcasts[0]
     } else if (queryFrom === _categoryKey) {
       podcasts = await getPodcasts({
-        categories: selectedCategory,
+        categories: selectedSubCategory || selectedCategory,
         sort: selectedKey
       }, nsfwMode)
       newState.podcasts = podcasts[0]
     }
+
+    this.setState(newState)
+  }
+
+  _selectCategory = async (selectedKey: string, isSubCategory?: boolean) => {
+    if (!selectedKey) {
+      this.setState({
+        ...(isSubCategory ? { selectedCategory: _allCategoriesKey } : { selectedSubCategory: _allCategoriesKey }) as any
+      })
+      return
+    }
+
+    const { settings } = this.global
+    const { nsfwMode } = settings
+    const { querySort } = this.state
+
+    this.setState({
+      isLoading: true,
+      ...(isSubCategory ? { selectedSubCategory: selectedKey } : { selectedCategory: selectedKey }) as any,
+      ...(!isSubCategory ? { subCategoryItems: [] } : {})
+    })
+
+    let podcasts = []
+    const newState = { isLoading: false } as any
+
+    if (!isSubCategory) {
+      const category = await getCategoryById(selectedKey)
+      newState.subCategoryItems = generateCategoryItems(category.categories)
+      newState.selectedSubCategory = _allCategoriesKey
+    }
+
+    podcasts = await getPodcasts({
+      ...(selectedKey === _allCategoriesKey ? {} : { categories: selectedKey }),
+      sort: querySort
+    }, nsfwMode)
+    newState.podcasts = podcasts[0]
 
     this.setState(newState)
   }
@@ -149,7 +202,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { queryFrom, isLoading, querySort } = this.state
+    const { categoryItems, queryFrom, isLoading, querySort, selectedCategory, selectedSubCategory,
+      subCategoryItems } = this.state
     const { globalTheme, session, showPlayer, subscribedPodcasts = [] } = this.global
     const { userInfo = {}, isLoggedIn = false } = session
     const { name = '' } = userInfo
@@ -157,7 +211,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     let podcasts = []
     if (queryFrom === _subscribedKey) {
       podcasts = subscribedPodcasts
-    } else if (queryFrom === _allPodcastsKey) {
+    } else if (queryFrom === _allPodcastsKey || queryFrom === _categoryKey) {
       podcasts = this.state.podcasts
     }
 
@@ -170,6 +224,17 @@ export class PodcastsScreen extends React.Component<Props, State> {
           rightItems={queryFrom === _subscribedKey ? [] : rightItems}
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort} />
+
+        {
+          queryFrom === _categoryKey && categoryItems &&
+            <TableSectionSelectors
+              handleSelectLeftItem={(x: string) => this._selectCategory(x)}
+              handleSelectRightItem={(x: string) => this._selectCategory(x, true)}
+              leftItems={categoryItems}
+              rightItems={subCategoryItems}
+              selectedLeftItemKey={selectedCategory || _allCategoriesKey}
+              selectedRightItemKey={selectedSubCategory || _allCategoriesKey} />
+        }
         {
           isLoading &&
             <ActivityIndicator />
@@ -197,6 +262,7 @@ const styles = {
 const _subscribedKey = 'subscribed'
 const _allPodcastsKey = 'allPodcasts'
 const _categoryKey = 'category'
+const _allCategoriesKey = 'allCategories'
 const _alphabeticalKey = 'alphabetical'
 const _mostRecentKey = 'most-recent'
 const _topPastDay = 'top-past-day'
@@ -245,3 +311,25 @@ const rightItems = [
     value: _topPastYear
   }
 ]
+
+const generateCategoryItems = (categories: any[]) => {
+  const combinedItems = [
+    {
+      label: 'All',
+      value: _allCategoriesKey
+    }
+  ]
+
+  for (const category of categories) {
+    combinedItems.push({
+      label: category.title,
+      value: category.id
+    })
+  }
+
+  if (combinedItems.length > 1) {
+    return combinedItems
+  } else {
+    return []
+  }
+}

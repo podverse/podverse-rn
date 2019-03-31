@@ -1,12 +1,13 @@
 import { request } from './request'
 
-export const searchPodcasts = async (title?: string, author?: string, nsfwMode: boolean) => {
+export const searchPodcasts = async (title?: string, author?: string, nsfwMode?: boolean) => {
 
   const response = await request({
     endpoint: '/podcast',
     query: {
       sort: 'alphabetical',
-      podcastId: ids.join(','),
+      ...(title ? { title } : {}),
+      ...(author ? { author } : {}),
       page: 1
     }
   }, nsfwMode)
@@ -14,7 +15,7 @@ export const searchPodcasts = async (title?: string, author?: string, nsfwMode: 
   return response.json()
 }
 
-export const getPodcasts = async (query: any = {}, nsfwMode: boolean) => {
+export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' })
