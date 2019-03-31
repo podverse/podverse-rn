@@ -14,7 +14,6 @@ type State = {
   episodes: any[]
   fromSelected: string
   isLoading: boolean
-  podcast: any
   sortSelected: string
 }
 
@@ -26,24 +25,22 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    const podcast = this.props.navigation.getParam('podcast')
 
     this.state = {
       clips: [],
       episodes: [],
       fromSelected: 'All Episodes',
       isLoading: true,
-      podcast: podcast ? podcast : {},
       sortSelected: 'most recent'
     }
   }
 
   async componentDidMount() {
-    const { podcast } = this.state
+    const podcast = this.props.navigation.getParam('podcast')
     const { settings } = this.global
     const { nsfwMode } = settings
     const allEpisodes = await getEpisodes(podcast.id, nsfwMode)
-    this.setState({ 
+    this.setState({
       episodes: allEpisodes[0] || [],
       isLoading: false
     })
@@ -58,7 +55,7 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _renderEpisodeItem = ({ item }) => {
-    const { podcast } = this.state
+    const podcast = this.props.navigation.getParam('podcast')
     return (
       <EpisodeTableCell
         key={item.id}
@@ -77,7 +74,8 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { episodes, fromSelected, isLoading, podcast, sortSelected } = this.state
+    const podcast = this.props.navigation.getParam('podcast')
+    const { episodes, fromSelected, isLoading, sortSelected } = this.state
 
     return (
       <View style={styles.view}>
@@ -105,12 +103,6 @@ export class PodcastScreen extends React.Component<Props, State> {
             renderItem={this._renderEpisodeItem}
             style={{ flex: 1 }} />
         }
-        {/* <EpisodeTableCell
-          episodePubDate='1/12/2019'
-          episodeSummary='The Asia-Pacific War of 1937-1945 has deep roots. It also involves a Japanese society that’s been called one of the most distinctive on Earth. If there were a Japanese version of Captain America, this would be his origin story.'
-          episodeTitle='Hardcore History 63 - Supernova in the East II'
-          handleMorePress={() => console.log('handleMorePress')}
-          handleNavigationPress={() => this.props.navigation.navigate(PV.RouteNames.EpisodeScreen)} /> */}
       </View>
     )
   }
