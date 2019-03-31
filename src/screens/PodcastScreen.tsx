@@ -90,8 +90,8 @@ export class PodcastScreen extends React.Component<Props, State> {
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
           rightItems={rightItems}
-          selectedLeftItem={fromSelected}
-          selectedRightItem={sortSelected} />
+          selectedLeftItemKey={fromSelected}
+          selectedRightItemKey={sortSelected} />
         {
           isLoading &&
             <ActivityIndicator />

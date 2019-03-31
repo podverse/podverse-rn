@@ -8,16 +8,19 @@ import { Divider, Text } from './'
 type Props = {
   handleSelectLeftItem?: any
   handleSelectRightItem?: any
-  leftItems?: any[]
-  rightItems?: any[]
-  selectedLeftItem?: string
-  selectedRightItem?: string
+  leftItems: any[]
+  rightItems: any[]
+  selectedLeftItemKey?: string
+  selectedRightItemKey?: string
 }
 
 export const TableSectionSelectors = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
   const { handleSelectLeftItem, handleSelectRightItem, leftItems = [], rightItems = [],
-    selectedLeftItem, selectedRightItem } = props
+    selectedLeftItemKey, selectedRightItemKey } = props
+
+  const selectedLeftItem = leftItems.filter((x) => x.value === selectedLeftItemKey)[0] || {}
+  const selectedRightItem = rightItems.filter((x) => x.value === selectedRightItemKey)[0] || {}
 
   return (
     <View>
@@ -28,20 +31,24 @@ export const TableSectionSelectors = (props: Props) => {
           items={leftItems}
           onValueChange={handleSelectLeftItem}
           style={styles.tableSectionHeaderButton}
-          value={selectedLeftItem}>
+          value={selectedLeftItemKey}>
           <Text style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
-            {selectedLeftItem} &#9662;
+            {selectedLeftItem.label || 'Select...'} &#9662;
           </Text>
         </RNPickerSelect>
-        <RNPickerSelect
-          items={rightItems}
-          onValueChange={handleSelectRightItem}
-          style={styles.tableSectionHeaderButton}
-          value={selectedRightItem}>
-          <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-            {selectedRightItem} &#9662;
-          </Text>
-        </RNPickerSelect>
+        {
+          rightItems.length > 0 &&
+            <RNPickerSelect
+              items={rightItems}
+              onValueChange={handleSelectRightItem}
+              style={styles.tableSectionHeaderButton}
+              value={selectedRightItemKey}>
+              <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
+                {selectedRightItem.label || 'Select...'} &#9662;
+              </Text>
+            </RNPickerSelect>
+
+        }
       </View>
       <Divider noMargin={true} />
     </View>

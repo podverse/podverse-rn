@@ -79,8 +79,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
           rightItems={rightItems}
-          selectedLeftItem={fromSelected}
-          selectedRightItem={sortSelected} />
+          selectedLeftItemKey={fromSelected}
+          selectedRightItemKey={sortSelected} />
         {
           isLoading &&
           <ActivityIndicator />
@@ -89,7 +89,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           !isLoading &&
             <FlatList
               data={mediaRefs}
-              ItemSeparatorComponent={() => <Divider />}
+              ItemSeparatorComponent={() => <Divider noMargin={true} />}
               keyExtractor={(item) => item.id}
               renderItem={this._renderClipTableCell} 
               style={styles.flatList} />
@@ -102,7 +102,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
 const styles = {
   flatList: {
     flex: 1,
-    marginTop: 8
   },
   view: {
     flex: 1

@@ -24,7 +24,7 @@ export const ClipTableCell = (props: Props) => {
   const showPodcastInfo = episodePubDate || episodeTitle || podcastImageUrl || podcastTitle
 
   return (
-    <View>
+    <View style={styles.wrapper}>
       {
         showPodcastInfo &&
           <View style={styles.wrapperTop}>
@@ -120,8 +120,7 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold,
-    justifyContent: 'flex-end',
-    marginTop: 2
+    justifyContent: 'flex-end'
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.md,
@@ -156,6 +155,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     paddingRight: 8
+  },
+  wrapper: {
+    marginBottom: 8,
+    marginTop: 8
   },
   wrapperBottom: {
     flexDirection: 'row',
