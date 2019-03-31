@@ -58,10 +58,19 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _renderEpisodeItem = ({ item }) => {
+    const { podcast } = this.state
     return (
       <EpisodeTableCell
         key={item.id}
         description={item.description}
+        handleNavigationPress={() => this.props.navigation.navigate(
+          PV.RouteNames.EpisodeScreen, {
+            episode: {
+              ...item,
+              podcast
+            }
+          }
+        )}
         pubDate={item.pubDate}
         title={item.title} />
     )
@@ -69,7 +78,6 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   render() {
     const { episodes, fromSelected, isLoading, podcast, sortSelected } = this.state
-    const { globalTheme } = this.global
 
     return (
       <View style={styles.view}>
@@ -91,11 +99,11 @@ export class PodcastScreen extends React.Component<Props, State> {
         {
           !isLoading &&
           <FlatList
-            style={{ flex: 1 }}
-            keyExtractor={(item) => item.id}
             data={episodes}
+            ItemSeparatorComponent={() => <Divider noMargin={true} />}
+            keyExtractor={(item) => item.id}
             renderItem={this._renderEpisodeItem}
-            ItemSeparatorComponent={() => <Divider noMargin={true} />} />
+            style={{ flex: 1 }} />
         }
         {/* <EpisodeTableCell
           episodePubDate='1/12/2019'

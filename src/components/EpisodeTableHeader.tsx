@@ -1,5 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, View } from './'
 
@@ -25,7 +26,7 @@ export const EpisodeTableHeader = (props: Props) => {
         <Text
           isSecondary={true}
           style={styles.pubDate}>
-          {pubDate}
+          {readableDate(pubDate)}
         </Text>
       </View>
       {
