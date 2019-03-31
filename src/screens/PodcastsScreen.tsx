@@ -168,8 +168,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     let podcasts = []
     const newState = { isLoading: false } as any
 
-    if (!isSubCategory) {
-      const category = await getCategoryById(selectedKey)
+    if (selectedKey !== _allCategoriesKey && !isSubCategory) {
+      const category = await getCategoryById(selectedKey) as any
       newState.subCategoryItems = generateCategoryItems(category.categories)
       newState.selectedSubCategory = _allCategoriesKey
     }
@@ -313,21 +313,21 @@ const rightItems = [
 ]
 
 const generateCategoryItems = (categories: any[]) => {
-  const combinedItems = [
-    {
-      label: 'All',
-      value: _allCategoriesKey
+  if (categories && categories.length > 1) {
+    const combinedItems = [
+      {
+        label: 'All',
+        value: _allCategoriesKey
+      }
+    ]
+
+    for (const category of categories) {
+      combinedItems.push({
+        label: category.title,
+        value: category.id
+      })
     }
-  ]
 
-  for (const category of categories) {
-    combinedItems.push({
-      label: category.title,
-      value: category.id
-    })
-  }
-
-  if (combinedItems.length > 1) {
     return combinedItems
   } else {
     return []
