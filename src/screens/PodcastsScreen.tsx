@@ -121,8 +121,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.podcasts = await this._queryPodcastsByCategory(selectedSubCategory || selectedCategory)
         newState.selectedSubCategory = _allCategoriesKey
       } else {
-        const categories = await getTopLevelCategories()
-        newState.categoryItems = generateCategoryItems(categories[0])
+        const results = await getTopLevelCategories()
+        newState.categoryItems = generateCategoryItems(results[0])
         newState.podcasts = this._queryAllPodcasts(_topPastWeek)
         newState.querySort = _topPastWeek
         newState.selectedCategory = _allCategoriesKey
@@ -183,7 +183,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       ...(!isSubCategory ? { subCategoryItems: [] } : {})
     })
 
-    let podcasts = []
     const newState = { isLoading: false } as any
 
     if (selectedKey !== _allCategoriesKey && !isSubCategory) {
@@ -192,11 +191,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
       newState.selectedSubCategory = _allCategoriesKey
     }
 
-    podcasts = await getPodcasts({
+    const results = await getPodcasts({
       ...(selectedKey === _allCategoriesKey ? {} : { categories: selectedKey }),
       sort: querySort
     }, nsfwMode)
-    newState.podcasts = podcasts[0]
+    newState.podcasts = results[0]
 
     this.setState(newState)
   }

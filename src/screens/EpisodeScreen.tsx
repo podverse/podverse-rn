@@ -40,9 +40,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const { episode } = this.state
     const { settings } = this.global
     const { nsfwMode } = settings
-    const mediaRefs = await getMediaRefs(episode.id, nsfwMode)
+    const results = await getMediaRefs(episode.id, nsfwMode)
     this.setState({
-      mediaRefs: mediaRefs[0] || [],
+      mediaRefs: results[0] || [],
       isLoading: false
     })
   }
