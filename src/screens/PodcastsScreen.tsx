@@ -151,13 +151,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
       if (queryFrom === _allPodcastsKey) {
         const results = await getPodcasts({ sort: selectedKey }, nsfwMode)
-        newState.podcasts = results[0]
+        newState.podcasts = [...results[0], ...PV.FlatList.endOfListItems]
       } else if (queryFrom === _categoryKey) {
         const results = await getPodcasts({
           categories: selectedSubCategory || selectedCategory,
           sort: selectedKey
         }, nsfwMode)
-        newState.podcasts = results[0]
+        newState.podcasts = [...results[0], ...PV.FlatList.endOfListItems]
       }
 
       this.setState(newState)
@@ -194,7 +194,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         ...(selectedKey === _allCategoriesKey ? {} : { categories: selectedKey }),
         sort: querySort
       }, nsfwMode)
-      newState.podcasts = results[0]
+      newState.podcasts = [...results[0], ...PV.FlatList.endOfListItems]
+
+      newState.endOfResultsReached = newState.podcasts.length < 20
 
       this.setState(newState)
     })
