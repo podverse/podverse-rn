@@ -1,8 +1,11 @@
 export interface GlobalTheme {
+  activityIndicator?: any
   buttonPrimaryText?: any
   buttonPrimaryTextDisabled?: any
   buttonPrimaryWrapper?: any
   buttonPrimaryWrapperDisabled?: any
+  divider?: any
+  flatList?: any
   player?: any
   tabbar?: any
   tabbarItem?: any
