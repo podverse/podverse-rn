@@ -103,33 +103,33 @@ export class PodcastsScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       isLoading: true,
       queryFrom: selectedKey
-    })
+    }, async () => {
+      const newState = {
+        isLoading: false
+      } as any
 
-    const newState = {
-      isLoading: false
-    } as any
+      const { selectedCategory, selectedSubCategory } = this.state
 
-    const { selectedCategory, selectedSubCategory } = this.state
-
-    if (selectedKey === _subscribedKey) {
-      newState.podcasts = await this._querySubscribedPodcasts()
-    } else if (selectedKey === _allPodcastsKey) {
-      newState.querySort = _alphabeticalKey
-      newState.podcasts = await this._queryAllPodcasts(_alphabeticalKey)
-    } else if (selectedKey === _categoryKey) {
-      if (selectedSubCategory || selectedCategory) {
-        newState.podcasts = await this._queryPodcastsByCategory(selectedSubCategory || selectedCategory)
-        newState.selectedSubCategory = _allCategoriesKey
-      } else {
-        const results = await getTopLevelCategories()
-        newState.categoryItems = generateCategoryItems(results[0])
-        newState.podcasts = this._queryAllPodcasts(_topPastWeek)
-        newState.querySort = _topPastWeek
-        newState.selectedCategory = _allCategoriesKey
+      if (selectedKey === _subscribedKey) {
+        newState.podcasts = await this._querySubscribedPodcasts()
+      } else if (selectedKey === _allPodcastsKey) {
+        newState.querySort = _alphabeticalKey
+        newState.podcasts = await this._queryAllPodcasts(_alphabeticalKey)
+      } else if (selectedKey === _categoryKey) {
+        if (selectedSubCategory || selectedCategory) {
+          newState.podcasts = await this._queryPodcastsByCategory(selectedSubCategory || selectedCategory)
+          newState.selectedSubCategory = _allCategoriesKey
+        } else {
+          const results = await getTopLevelCategories()
+          newState.categoryItems = generateCategoryItems(results[0])
+          newState.podcasts = this._queryAllPodcasts(_topPastWeek)
+          newState.querySort = _topPastWeek
+          newState.selectedCategory = _allCategoriesKey
+        }
       }
-    }
 
-    this.setState(newState)
+      this.setState(newState)
+    })
   }
 
   selectRightItem = async (selectedKey: string) => {
@@ -146,22 +146,22 @@ export class PodcastsScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       isLoading: true,
       querySort: selectedKey
+    }, async () => {
+      const newState = { isLoading: false } as any
+
+      if (queryFrom === _allPodcastsKey) {
+        const results = await getPodcasts({ sort: selectedKey }, nsfwMode)
+        newState.podcasts = results[0]
+      } else if (queryFrom === _categoryKey) {
+        const results = await getPodcasts({
+          categories: selectedSubCategory || selectedCategory,
+          sort: selectedKey
+        }, nsfwMode)
+        newState.podcasts = results[0]
+      }
+
+      this.setState(newState)
     })
-
-    const newState = { isLoading: false } as any
-
-    if (queryFrom === _allPodcastsKey) {
-      const results = await getPodcasts({ sort: selectedKey }, nsfwMode)
-      newState.podcasts = results[0]
-    } else if (queryFrom === _categoryKey) {
-      const results = await getPodcasts({
-        categories: selectedSubCategory || selectedCategory,
-        sort: selectedKey
-      }, nsfwMode)
-      newState.podcasts = results[0]
-    }
-
-    this.setState(newState)
   }
 
   _selectCategory = async (selectedKey: string, isSubCategory?: boolean) => {
@@ -181,28 +181,28 @@ export class PodcastsScreen extends React.Component<Props, State> {
       isLoading: true,
       ...(isSubCategory ? { selectedSubCategory: selectedKey } : { selectedCategory: selectedKey }) as any,
       ...(!isSubCategory ? { subCategoryItems: [] } : {})
+    }, async () => {
+      const newState = { isLoading: false } as any
+
+      if (selectedKey !== _allCategoriesKey && !isSubCategory) {
+        const category = await getCategoryById(selectedKey) as any
+        newState.subCategoryItems = generateCategoryItems(category.categories)
+        newState.selectedSubCategory = _allCategoriesKey
+      }
+
+      const results = await getPodcasts({
+        ...(selectedKey === _allCategoriesKey ? {} : { categories: selectedKey }),
+        sort: querySort
+      }, nsfwMode)
+      newState.podcasts = results[0]
+
+      this.setState(newState)
     })
-
-    const newState = { isLoading: false } as any
-
-    if (selectedKey !== _allCategoriesKey && !isSubCategory) {
-      const category = await getCategoryById(selectedKey) as any
-      newState.subCategoryItems = generateCategoryItems(category.categories)
-      newState.selectedSubCategory = _allCategoriesKey
-    }
-
-    const results = await getPodcasts({
-      ...(selectedKey === _allCategoriesKey ? {} : { categories: selectedKey }),
-      sort: querySort
-    }, nsfwMode)
-    newState.podcasts = results[0]
-
-    this.setState(newState)
   }
 
   _renderPodcastItem = ({ item }) => {
     const downloadCount = item.episodes ? item.episodes.length : 0
-    
+
     return (
       <PodcastTableCell
         key={item.id}
