@@ -2,6 +2,7 @@ import { SectionList, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { Text, View } from '../components'
 import { PV } from '../resources'
+import { logoutUser } from '../state/actions/auth'
 import { core, table } from '../styles'
 
 type Props = {
@@ -15,6 +16,7 @@ type State = {
 const _aboutKey = 'about'
 const _feedbackKey = 'feedback'
 const _logoutKey = 'logout'
+const _loginKey = 'login'
 
 const moreFeaturesOptions = [
   {
@@ -40,6 +42,11 @@ const moreFeaturesOptions = [
   {
     title: 'Log out',
     key: _logoutKey
+  },
+  ,
+  {
+    title: 'Log In',
+    key: _loginKey
   }
 ]
 
@@ -70,14 +77,26 @@ export class MoreScreen extends React.Component<Props, State> {
     } else if (item.key === _feedbackKey) {
       console.log('feedback')
     } else if (item.key === _logoutKey) {
-      console.log('logout')
+      logoutUser()
+    } else if (item.key === _loginKey) {
+      this.props.navigation.navigate(PV.RouteNames.AuthNavigator)
     } else {
       this.props.navigation.navigate(item.key)
     }
   }
 
   render() {
-    const { globalTheme } = this.global
+
+    const { globalTheme, session } = this.global
+    const { isLoggedIn = false } = session
+
+    const featureOptions = moreFeaturesOptions.filter((item = { key: '', title: '' }) => {
+      if (isLoggedIn) {
+        return item.key !== _loginKey
+      } else {
+        return item.key !== _logoutKey
+      }
+    })
 
     return (
       <View style={core.backgroundView}>
@@ -93,7 +112,7 @@ export class MoreScreen extends React.Component<Props, State> {
             <Text style={globalTheme.tableSectionHeaderText}>{title}</Text>
           )}
           sections={[
-            { title: 'Features', data: moreFeaturesOptions },
+            { title: 'Features', data: featureOptions },
             { title: 'Other', data: moreOtherOptions }
           ]} />
       </View>

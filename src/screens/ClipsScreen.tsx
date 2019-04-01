@@ -73,8 +73,8 @@ export class ClipsScreen extends React.Component<Props, State> {
               value: 'top - past year'
             }
           ]}
-          selectedLeftItem={fromSelected}
-          selectedRightItem={sortSelected}
+          selectedLeftItemKey={fromSelected}
+          selectedRightItemKey={sortSelected}
         />
         <PodcastTableHeader
           autoDownloadOn={true}

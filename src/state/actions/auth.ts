@@ -3,6 +3,7 @@ import RNSecureKeyStore from 'react-native-secure-key-store'
 import { setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import { getAuthenticatedUserInfo, login, logout, signUp } from '../../services/auth'
+import { getSubscribedPodcasts } from './podcasts'
 
 export type Credentials = {
   email: string,
@@ -24,6 +25,7 @@ export const signUpUser = async (credentials: Credentials) => {
 export const getAuthUserInfo = async () => {
   try {
     const user = await getAuthenticatedUserInfo()
+    await getSubscribedPodcasts(user.subscribedPodcastIds || [])
     setGlobal({ session: { userInfo: user, isLoggedIn: true } })
     return user
   } catch (error) {

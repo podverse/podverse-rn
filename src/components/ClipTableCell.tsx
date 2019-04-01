@@ -5,26 +5,26 @@ import { PV } from '../resources'
 import { Text, View } from './'
 
 type Props = {
-  clipEndTime?: number
-  clipStartTime: number
-  clipTitle?: string
+  endTime?: number
   episodePubDate?: string
   episodeTitle?: string
   handleMorePress?: any
   podcastImageUrl?: string
-  podcastTitle: string
+  podcastTitle?: string
+  startTime: number
+  title?: string
 }
 
 export const ClipTableCell = (props: Props) => {
-  const { clipEndTime, clipStartTime, clipTitle = 'untitled clip', episodePubDate, episodeTitle,
-    handleMorePress, podcastImageUrl, podcastTitle } = props
+  const { endTime, episodePubDate, episodeTitle, handleMorePress, podcastImageUrl, podcastTitle,
+    startTime, title = 'untitled clip' } = props
 
-  const clipTime = readableClipTime(clipStartTime, clipEndTime)
+  const clipTime = readableClipTime(startTime, endTime)
 
   const showPodcastInfo = episodePubDate || episodeTitle || podcastImageUrl || podcastTitle
 
   return (
-    <View>
+    <View style={styles.wrapper}>
       {
         showPodcastInfo &&
           <View style={styles.wrapperTop}>
@@ -76,8 +76,8 @@ export const ClipTableCell = (props: Props) => {
         <View style={styles.wrapperBottomTextWrapper}>
           <Text
             numberOfLines={4}
-            style={styles.clipTitle}>
-            {clipTitle}
+            style={styles.title}>
+            {title}
           </Text>
           <Text
             style={styles.clipTime}>
@@ -116,12 +116,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 4
   },
-  clipTitle: {
+  title: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold,
-    justifyContent: 'flex-end',
-    marginTop: 2
+    justifyContent: 'flex-end'
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.md,
@@ -156,6 +155,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     paddingRight: 8
+  },
+  wrapper: {
+    marginBottom: 8,
+    marginTop: 8
   },
   wrapperBottom: {
     flexDirection: 'row',

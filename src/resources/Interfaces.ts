@@ -34,5 +34,23 @@ export interface InitialState {
     userInfo: UserInfo,
     isLoggedIn: boolean
   },
-  showPlayer: boolean
+  showPlayer: boolean,
+  subscribedPodcasts: [{}]
+}
+
+interface FontSizes {
+  [size: string]: number
+}
+
+interface FontWeight {
+  [weight: string]: string
+}
+
+export interface FontType {
+  sizes: FontSizes,
+  weights: FontWeight
+}
+
+export interface ISettings {
+  nsfwMode: boolean
 }

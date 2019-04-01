@@ -6,7 +6,11 @@ const initialTheme: InitialState = {
     userInfo: {},
     isLoggedIn: false
   },
-  showPlayer: false
+  settings: {
+    nsfwMode: true
+  },
+  showPlayer: false,
+  subscribedPodcasts: []
 }
 
 export default initialTheme

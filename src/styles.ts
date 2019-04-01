@@ -2,6 +2,9 @@ import { StyleSheet } from 'react-native'
 import { PV } from './resources'
 
 export const darkTheme = StyleSheet.create({
+  activityIndicator: {
+    color: PV.Colors.grayLighter
+  },
   buttonPrimaryText: {
     color: PV.Colors.white
   },
@@ -50,6 +53,9 @@ export const darkTheme = StyleSheet.create({
 })
 
 export const lightTheme = StyleSheet.create({
+  activityIndicator: {
+    color: PV.Colors.grayDarker
+  },
   buttonPrimaryText: {
     color: PV.Colors.black
   },
@@ -108,6 +114,9 @@ export const button = StyleSheet.create({
 })
 
 export const core = StyleSheet.create({
+  activityIndicator: {
+    flex: 1
+  },
   backgroundView: {
     flex: 1
   },

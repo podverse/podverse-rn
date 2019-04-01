@@ -1,5 +1,6 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableHighlight } from 'react-native'
+import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, View } from './'
 
@@ -20,7 +21,7 @@ export const PodcastTableCell = (props: Props) => {
     } = props
 
   return (
-    <TouchableHighlight onPress={handleNavigationPress}>
+    <TouchableWithoutFeedback onPress={handleNavigationPress}>
       <View style={styles.wrapper}>
         <Image
           source={{ uri: podcastImageUrl }}
@@ -32,7 +33,7 @@ export const PodcastTableCell = (props: Props) => {
           <View style={styles.bottomTextWrapper}>
             <View style={styles.bottomTextWrapperLeft}>
               {
-                podcastCategories &&
+                !!podcastCategories &&
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
@@ -40,7 +41,7 @@ export const PodcastTableCell = (props: Props) => {
                   </Text>
               }
               {
-                podcastAuthors &&
+                !!podcastAuthors &&
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
@@ -48,7 +49,7 @@ export const PodcastTableCell = (props: Props) => {
                   </Text>
               }
               {
-                downloadCount &&
+                !!downloadCount || downloadCount === 0 &&
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
@@ -70,14 +71,14 @@ export const PodcastTableCell = (props: Props) => {
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
-                    {lastEpisodePubDate}
+                    {readableDate(lastEpisodePubDate)}
                   </Text>
               }
             </View>
           </View>
         </View>
       </View>
-    </TouchableHighlight>
+    </TouchableWithoutFeedback>
   )
 }
 

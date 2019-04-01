@@ -9,15 +9,17 @@ type PVRequest = {
   opts?: any
 }
 
-export const request = async (req: PVRequest) => {
+export const request = async (req: PVRequest, nsfwMode?: boolean) => {
   const {
     endpoint = '',
     query = {},
     headers = {},
-    body = {},
+    body,
     method = 'GET',
     opts = {}
   } = req
+
+  headers.nsfwMode = nsfwMode ? 'on' : 'off'
 
   const queryString = Object.keys(query).map((key) => {
     return `${key}=${query[key]}`
@@ -27,7 +29,7 @@ export const request = async (req: PVRequest) => {
     `${API_BASE_URL}${endpoint}?${queryString}`,
     {
       headers,
-      body: JSON.stringify(body),
+      ...(body ? { body: JSON.stringify(body) } : {}),
       method,
       ...opts
     }

@@ -1,13 +1,19 @@
+import { FlatList } from 'react-native-gesture-handler'
 import React from 'reactn'
-import { Divider, EpisodeTableCell, PodcastTableHeader, TableSectionSelectors, View } from '../components'
+import { ActivityIndicator, Divider, EpisodeTableCell, PodcastTableHeader, TableSectionSelectors,
+  View } from '../components'
 import { PV } from '../resources'
+import { getEpisodes } from '../services/episode'
 
 type Props = {
   navigation?: any
 }
 
 type State = {
+  clips: any[]
+  episodes: any[]
   fromSelected: string
+  isLoading: boolean
   sortSelected: string
 }
 
@@ -19,10 +25,25 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
+
     this.state = {
-      fromSelected: 'Downloaded',
+      clips: [],
+      episodes: [],
+      fromSelected: 'All Episodes',
+      isLoading: true,
       sortSelected: 'most recent'
     }
+  }
+
+  async componentDidMount() {
+    const podcast = this.props.navigation.getParam('podcast')
+    const { settings } = this.global
+    const { nsfwMode } = settings
+    const allEpisodes = await getEpisodes(podcast.id, nsfwMode)
+    this.setState({
+      episodes: allEpisodes[0] || [],
+      isLoading: false
+    })
   }
 
   selectLeftItem = (fromSelected: string) => {
@@ -33,29 +54,55 @@ export class PodcastScreen extends React.Component<Props, State> {
     this.setState({ sortSelected })
   }
 
+  _renderEpisodeItem = ({ item }) => {
+    const podcast = this.props.navigation.getParam('podcast')
+    return (
+      <EpisodeTableCell
+        key={item.id}
+        description={item.description}
+        handleNavigationPress={() => this.props.navigation.navigate(
+          PV.RouteNames.EpisodeScreen, {
+            episode: {
+              ...item,
+              podcast
+            }
+          }
+        )}
+        pubDate={item.pubDate}
+        title={item.title} />
+    )
+  }
+
   render() {
-    const { fromSelected, sortSelected } = this.state
+    const podcast = this.props.navigation.getParam('podcast')
+    const { episodes, fromSelected, isLoading, sortSelected } = this.state
 
     return (
       <View style={styles.view}>
         <PodcastTableHeader
           autoDownloadOn={true}
-          podcastImageUrl='https://is4-ssl.mzstatic.com/image/thumb/Music71/v4/09/5c/79/095c79d2-17dc-eb92-3f50-ce8b00fc2f4d/source/600x600bb.jpg'
-          podcastTitle={`Dan Carlin's Hardcore History`} />
+          podcastImageUrl={podcast.imageUrl}
+          podcastTitle={podcast.title} />
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
           rightItems={rightItems}
-          selectedLeftItem={fromSelected}
-          selectedRightItem={sortSelected} />
-        <EpisodeTableCell
-          episodePubDate='1/12/2019'
-          episodeSummary='The Asia-Pacific War of 1937-1945 has deep roots. It also involves a Japanese society that’s been called one of the most distinctive on Earth. If there were a Japanese version of Captain America, this would be his origin story.'
-          episodeTitle='Hardcore History 63 - Supernova in the East II'
-          handleMorePress={() => console.log('handleMorePress')}
-          handleNavigationPress={() => this.props.navigation.navigate(PV.RouteNames.EpisodeScreen)} />
-        <Divider />
+          selectedLeftItemKey={fromSelected}
+          selectedRightItemKey={sortSelected} />
+        {
+          isLoading &&
+            <ActivityIndicator />
+        }
+        {
+          !isLoading &&
+          <FlatList
+            data={episodes}
+            ItemSeparatorComponent={() => <Divider noMargin={true} />}
+            keyExtractor={(item) => item.id}
+            renderItem={this._renderEpisodeItem}
+            style={{ flex: 1 }} />
+        }
       </View>
     )
   }
