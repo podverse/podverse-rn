@@ -76,21 +76,21 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _querySubscribedPodcasts = async () => {
-    const podcasts = await getSubscribedPodcasts(this.global.session.userInfo.subscribedPodcastIds || [])
-    return [...podcasts[0], ...PV.FlatList.endOfListItems]
+    const results = await getSubscribedPodcasts(this.global.session.userInfo.subscribedPodcastIds || [])
+    return [...results[0], ...PV.FlatList.endOfListItems]
   }
 
   _queryAllPodcasts = async (sort: string) => {
-    const podcasts = await getPodcasts({ sort }, this.global.settings.nsfwMode)
-    return [...podcasts[0], ...PV.FlatList.endOfListItems]
+    const results = await getPodcasts({ sort }, this.global.settings.nsfwMode)
+    return [...results[0], ...PV.FlatList.endOfListItems]
   }
 
   _queryPodcastsByCategory = async (categoryId: string | null) => {
-    const podcasts = await getPodcasts({
+    const results = await getPodcasts({
       sort: this.state.querySort,
       categories: categoryId
     }, this.global.settings.nsfwMode)
-    return [...podcasts[0], ...PV.FlatList.endOfListItems]
+    return [...results[0], ...PV.FlatList.endOfListItems]
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -148,18 +148,17 @@ export class PodcastsScreen extends React.Component<Props, State> {
       querySort: selectedKey
     })
 
-    let podcasts = []
     const newState = { isLoading: false } as any
 
     if (queryFrom === _allPodcastsKey) {
-      podcasts = await getPodcasts({ sort: selectedKey }, nsfwMode)
-      newState.podcasts = podcasts[0]
+      const results = await getPodcasts({ sort: selectedKey }, nsfwMode)
+      newState.podcasts = results[0]
     } else if (queryFrom === _categoryKey) {
-      podcasts = await getPodcasts({
+      const results = await getPodcasts({
         categories: selectedSubCategory || selectedCategory,
         sort: selectedKey
       }, nsfwMode)
-      newState.podcasts = podcasts[0]
+      newState.podcasts = results[0]
     }
 
     this.setState(newState)
