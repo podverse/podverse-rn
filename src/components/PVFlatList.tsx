@@ -30,8 +30,8 @@ export const PVFlatList = (props: Props) => {
         onEndReached={onEndReached}
         onEndReachedThreshold={onEndReachedThreshold}
         renderItem={(x) => {
-          const isLastCell = x.item.id === PV.FlatList.endOfResultsKey || x.item.id === PV.FlatList.isLoadingMoreKey
-          if (isLastCell) {
+          const isLastMsgCell = x.item.id === PV.FlatList.endOfResultsKey || x.item.id === PV.FlatList.isLoadingMoreKey
+          if (isLastMsgCell) {
             if (endOfResultsReached && x.item.id === PV.FlatList.endOfResultsKey) {
               return <Text style={[styles.lastCell, globalTheme.text]}>End of results</Text>
             } else if (isLoadingMore && x.item.id === PV.FlatList.isLoadingMoreKey) {
@@ -40,8 +40,7 @@ export const PVFlatList = (props: Props) => {
           } else {
             return renderItem(x)
           }
-        }
-        }
+        }}
         style={[globalTheme.flatList]} />
     </View>
   )

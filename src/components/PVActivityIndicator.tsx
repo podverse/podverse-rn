@@ -7,7 +7,7 @@ import { core } from '../styles'
 type Props = {
   children?: any
   size?: string
-  style?: any
+  styles?: any
 }
 
 export const PVActivityIndicator = (props: Props) => {
