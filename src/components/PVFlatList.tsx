@@ -29,7 +29,7 @@ export const PVFlatList = (props: Props) => {
         keyExtractor={(item) => item.id}
         onEndReached={onEndReached}
         onEndReachedThreshold={onEndReachedThreshold}
-        renderItem={(x) => {
+        renderItem={function (x) {
           const isLastMsgCell = x.item.id === PV.FlatList.endOfResultsKey || x.item.id === PV.FlatList.isLoadingMoreKey
           if (isLastMsgCell) {
             if (endOfResultsReached && x.item.id === PV.FlatList.endOfResultsKey) {
