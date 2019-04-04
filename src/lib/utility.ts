@@ -1,3 +1,5 @@
+import { PV } from '../resources'
+
 export const readableDate = (date) => {
   const dateObj = new Date(date),
     year = dateObj.getFullYear(),
@@ -62,4 +64,40 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
   } else {
     return `Start: ${s}`
   }
+}
+
+export const clone = obj => {
+  if (null == obj || "object" != typeof obj) return obj
+  var copy = obj.constructor()
+  for (var attr in obj) {
+    if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr]
+  }
+  return copy
+}
+
+export const generateCategoryItems = (categories: any[]) => {
+  const items = []
+
+  if (categories && categories.length > 0) {
+    for (const category of categories) {
+      items.push({
+        label: category.title,
+        value: category.id
+      })
+    }
+  }
+
+  return items
+}
+
+export const generateFlatListDataArray = (data: any[]) => {
+  return [...data, ...PV.FlatList.endOfListItems]
+}
+
+export const insertInFlatListDataArray = (oldData: any[], newData: any[]) => {
+  let newArray = oldData.filter((x: any) => {
+    if (x.id !== PV.FlatList.endOfResultsKey && x.id !== PV.FlatList.isLoadingMoreKey) return x
+  })
+  newArray = newArray.concat(...[...newData, ...PV.FlatList.endOfListItems])
+  return newArray
 }

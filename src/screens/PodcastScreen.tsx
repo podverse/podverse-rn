@@ -39,9 +39,9 @@ export class PodcastScreen extends React.Component<Props, State> {
     const podcast = this.props.navigation.getParam('podcast')
     const { settings } = this.global
     const { nsfwMode } = settings
-    const allEpisodes = await getEpisodes(podcast.id, nsfwMode)
+    const results = await getEpisodes(podcast.id, nsfwMode)
     this.setState({
-      episodes: allEpisodes[0] || [],
+      episodes: results[0] || [],
       isLoading: false
     })
   }

@@ -9,6 +9,7 @@ type Props = {
   handleSelectLeftItem?: any
   handleSelectRightItem?: any
   leftItems: any[]
+  placeholder?: any
   rightItems: any[]
   selectedLeftItemKey: string | null
   selectedRightItemKey?: string | null
@@ -16,8 +17,8 @@ type Props = {
 
 export const TableSectionSelectors = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
-  const { handleSelectLeftItem, handleSelectRightItem, leftItems = [], rightItems = [],
-    selectedLeftItemKey, selectedRightItemKey } = props
+  const { handleSelectLeftItem, handleSelectRightItem, leftItems = [], placeholder,
+    rightItems = [], selectedLeftItemKey, selectedRightItemKey } = props
 
   const selectedLeftItem = leftItems.filter((x) => x.value === selectedLeftItemKey)[0] || {}
   const selectedRightItem = rightItems.filter((x) => x.value === selectedRightItemKey)[0] || {}
@@ -30,10 +31,11 @@ export const TableSectionSelectors = (props: Props) => {
         <RNPickerSelect
           items={leftItems}
           onValueChange={handleSelectLeftItem}
+          placeholder={placeholder}
           style={styles.tableSectionHeaderButton}
           value={selectedLeftItemKey}>
           <Text style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
-            {selectedLeftItem.label || 'Select an item...'} &#9662;
+            {selectedLeftItem.label || 'Select...'} &#9662;
           </Text>
         </RNPickerSelect>
         {
@@ -41,10 +43,11 @@ export const TableSectionSelectors = (props: Props) => {
             <RNPickerSelect
               items={rightItems}
               onValueChange={handleSelectRightItem}
+              placeholder={placeholder}
               style={styles.tableSectionHeaderButton}
               value={selectedRightItemKey}>
               <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                {selectedRightItem.label || 'Select an item...'} &#9662;
+                {selectedRightItem.label || 'Select...'} &#9662;
               </Text>
             </RNPickerSelect>
 

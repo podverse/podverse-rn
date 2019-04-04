@@ -20,6 +20,9 @@ export const darkTheme = StyleSheet.create({
   divider: {
     backgroundColor: PV.Colors.grayDarker
   },
+  flatList: {
+    backgroundColor: PV.Colors.black
+  },
   player: {
     borderColor: PV.Colors.gray
   },
@@ -70,6 +73,9 @@ export const lightTheme = StyleSheet.create({
   },
   divider: {
     backgroundColor: PV.Colors.grayLighter
+  },
+  flatList: {
+    backgroundColor: PV.Colors.white
   },
   player: {
     borderColor: PV.Colors.gray
