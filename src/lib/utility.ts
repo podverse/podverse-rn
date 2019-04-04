@@ -1,16 +1,14 @@
-import { PV } from '../resources'
+export const readableDate = (date: string) => {
+  const dateObj = new Date(date)
+  const year = dateObj.getFullYear()
+  const month = dateObj.getMonth() + 1
+  const day = dateObj.getDate()
 
-export const readableDate = (date) => {
-  const dateObj = new Date(date),
-    year = dateObj.getFullYear(),
-    month = dateObj.getMonth() + 1,
-    day = dateObj.getDate();
+  const today = new Date()
+  const yesterday = new Date(today)
+  yesterday.setDate(today.getDate() - 1)
 
-  var today = new Date();
-  var yesterday = new Date(today);
-  yesterday.setDate(today.getDate() - 1);
-
-  return month + '/' + day + '/' + year;
+  return month + '/' + day + '/' + year
 }
 
 export const convertSecToHHMMSS = (sec: number) => {
@@ -66,15 +64,6 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
   }
 }
 
-export const clone = obj => {
-  if (null == obj || "object" != typeof obj) return obj
-  var copy = obj.constructor()
-  for (var attr in obj) {
-    if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr]
-  }
-  return copy
-}
-
 export const generateCategoryItems = (categories: any[]) => {
   const items = []
 
@@ -88,17 +77,4 @@ export const generateCategoryItems = (categories: any[]) => {
   }
 
   return items
-}
-
-export const generateFlatListDataArray = (data: any[]) => {
-  return [...data]
-}
-
-export const insertInFlatListDataArray = (oldData: any[], newData: any[]) => {
-  let newArray = oldData.filter((x: any) => {
-    if (x.id !== PV.FlatList.endOfResultsKey
-      && x.id !== PV.FlatList.isLoadingMoreKey) return x
-  })
-  newArray = newArray.concat(...[...newData])
-  return newArray
 }

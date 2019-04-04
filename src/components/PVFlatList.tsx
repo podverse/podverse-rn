@@ -1,16 +1,14 @@
-import React, { useEffect } from 'react'
-import { TextInput } from 'react-native'
-import { FlatList } from 'react-native'
+import React from 'react'
+import { FlatList, TextInput } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { GlobalTheme } from '../resources/Interfaces'
 import { core } from '../styles'
-import { ActivityIndicator, Text, View } from './'
+import { ActivityIndicator, View } from './'
 
 type Props = {
   data?: any
   extraData?: any
-  endOfResultsReached?: boolean
   filterInputText?: string
   handleFilterInputChangeText?: any
   handleGetItemLayout?: any
@@ -24,11 +22,11 @@ type Props = {
 
 export const PVFlatList = (props: Props) => {
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
-  const { data, endOfResultsReached, filterInputText, handleFilterInputChangeText,
+  const { data, filterInputText, handleFilterInputChangeText,
     isLoadingMore, ItemSeparatorComponent, onEndReached,
     onEndReachedThreshold = 0.8, renderItem, extraData } = props
 
-  let flatList: FlatList<any>
+  let flatList: FlatList<any> | null
   return (
     <View style={styles.view}>
       <FlatList
@@ -38,19 +36,16 @@ export const PVFlatList = (props: Props) => {
         keyExtractor={(item) => item.id}
         onEndReached={onEndReached}
         onLayout={() => {
-          flatList.scrollToOffset({ offset: PV.FlatList.filterInput.height, animated: false })
+          flatList && flatList.scrollToOffset({ offset: PV.FlatList.filterInput.height, animated: false })
         }}
         ref={(ref) => {
           flatList = ref
         }}
         onEndReachedThreshold={onEndReachedThreshold}
         ListFooterComponent={() => {
-          if (endOfResultsReached) {
-            return <Text style={[styles.lastCell, globalTheme.text]}>End of results</Text>
-          } else if (isLoadingMore) {
+          if (isLoadingMore) {
             return <ActivityIndicator styles={styles.lastCell} />
           }
-
           return null
         }}
         ListHeaderComponent={() => {
