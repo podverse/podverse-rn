@@ -14,6 +14,8 @@ export interface GlobalTheme {
   tableSectionHeader?: any
   tableSectionHeaderText?: any
   text?: any
+  textInput?: any
+  textInputWrapper?: any
   view?: any
 }
 

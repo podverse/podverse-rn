@@ -17,6 +17,7 @@ type Props = {
 type State = {
   categoryItems: any[]
   endOfResultsReached: boolean
+  filterInputText: string
   flatListData: any[]
   isLoading: boolean
   isLoadingMore: boolean
@@ -39,7 +40,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.state = {
       categoryItems: [],
       endOfResultsReached: false,
-      flatListData: [...PV.FlatList.endOfListItems],
+      filterInputText: '',
+      flatListData: generateFlatListDataArray([]),
       isLoading: true,
       isLoadingMore: false,
       queryFrom: _subscribedKey,
@@ -117,7 +119,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
       if (selectedKey === _subscribedKey) {
         const results = await this._querySubscribedPodcasts()
-        newState.flatListData = generateFlatListDataArray(results[0])
+        newState.flatListData = generateFlatListDataArray(results[0], false)
       } else if (selectedKey === _allPodcastsKey) {
         newState.querySort = _alphabeticalKey
         const results = await this._queryAllPodcasts(_alphabeticalKey)
@@ -283,10 +285,60 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
   }
 
+  _handleFilterInputTextChange = (text) => {
+    console.log('hiiii', text)
+    this.setState({
+      filterInputText: text
+    })
+  }
+
+  _handleGetItemLayout = (data, index) => {
+    const { queryFrom } = this.state
+
+  console.log(data, index)
+    return {
+      length: PV.Cells.podcast.wrapper.height + 1,
+      offset: 0,
+      index
+    }
+    // // Why does index sometimes === -1???
+    // if (queryFrom === _subscribedKey) {
+    //   return {
+    //     length: PV.Cells.podcast.wrapper.height + 1,
+    //     offset: 0,
+    //     index
+    //   }
+    // } else {
+    //   if (index === 0) {
+    //     return {
+    //       length: PV.FlatList.filterInput.height + 1,
+    //       offset: 0,
+    //       index
+    //     }
+    //   } else if (data.length <= (index + 2)) {
+    //     const adjustedIndex = data.length === index + 1 ? index - 1 : index
+    //     const offset =
+    //       (PV.FlatList.filterInput.height + 1) +
+    //       ((PV.Cells.podcast.wrapper.height + 1) * (adjustedIndex))
+    //     return {
+    //       length: PV.FlatList.filterInput.height + 1,
+    //       offset,
+    //       index
+    //     }
+    //   } else {
+    //     return {
+    //       length: PV.Cells.podcast.wrapper.height + 1,
+    //       offset: 0,
+    //       index
+    //     }
+    //   }
+    // }
+  }
+
   render() {
     const { navigation } = this.props
-    const { categoryItems, endOfResultsReached, flatListData, queryFrom, isLoading, isLoadingMore, querySort,
-      selectedCategory, selectedSubCategory, subCategoryItems } = this.state
+    const { categoryItems, endOfResultsReached, filterInputText, flatListData, queryFrom, isLoading,
+      isLoadingMore, querySort, selectedCategory, selectedSubCategory, subCategoryItems } = this.state
     const { globalTheme, session, showPlayer, subscribedPodcasts = [] } = this.global
     const { userInfo = {}, isLoggedIn = false } = session
     const { name = '' } = userInfo
@@ -319,6 +371,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
             <FlatList
               data={flatListData}
               endOfResultsReached={endOfResultsReached}
+              filterInputText={filterInputText}
+              handleFilterInputChangeText={this._handleFilterInputTextChange}
+              handleGetItemLayout={this._handleGetItemLayout}
+              initialScrollIndex={queryFrom === _subscribedKey ? 0 : 1}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               onEndReached={this._onEndReached}

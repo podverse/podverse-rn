@@ -1,3 +1,4 @@
+import { Cells } from './Cells'
 import { Colors } from './Colors'
 import { FlatList } from './FlatList'
 import { Fonts } from './Fonts'
@@ -7,6 +8,7 @@ import { RouteNames } from './RouteNames'
 import { Tabs } from './Tabs'
 
 export const PV = {
+  Cells,
   Colors,
   FlatList,
   Fonts,

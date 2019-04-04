@@ -91,12 +91,13 @@ export const generateCategoryItems = (categories: any[]) => {
 }
 
 export const generateFlatListDataArray = (data: any[]) => {
-  return [...data, ...PV.FlatList.endOfListItems]
+  return [...PV.FlatList.startOfListItems, ...data, ...PV.FlatList.endOfListItems]
 }
 
 export const insertInFlatListDataArray = (oldData: any[], newData: any[]) => {
   let newArray = oldData.filter((x: any) => {
-    if (x.id !== PV.FlatList.endOfResultsKey && x.id !== PV.FlatList.isLoadingMoreKey) return x
+    if (x.id !== PV.FlatList.endOfResultsKey
+      && x.id !== PV.FlatList.isLoadingMoreKey) return x
   })
   newArray = newArray.concat(...[...newData, ...PV.FlatList.endOfListItems])
   return newArray

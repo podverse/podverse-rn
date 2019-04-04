@@ -47,6 +47,12 @@ export const darkTheme = StyleSheet.create({
   text: {
     color: PV.Colors.white
   },
+  textInput: {
+    borderColor: PV.Colors.grayDarker
+  },
+  textInputWrapper: {
+    borderColor: PV.Colors.grayDarker
+  },
   textSecondary: {
     color: PV.Colors.grayLighter
   },
@@ -101,6 +107,12 @@ export const lightTheme = StyleSheet.create({
   text: {
     color: PV.Colors.black
   },
+  textInput: {
+    borderColor: PV.Colors.grayLighter
+  },
+  textInputWrapper: {
+    borderColor: PV.Colors.grayLighter
+  },
   textSecondary: {
     color: PV.Colors.grayDarker
   },
@@ -125,6 +137,22 @@ export const core = StyleSheet.create({
   },
   backgroundView: {
     flex: 1
+  },
+  textInput: {
+    flex: 1,
+    height: 32,
+    paddingLeft: 8,
+    paddingRight: 8
+  },
+  textInputWrapper: {
+    alignItems: 'center',
+    borderRadius: 4,
+    borderWidth: 1,
+    flexDirection: 'row',
+    height: 34,
+    justifyContent: 'center',
+    marginLeft: 8,
+    marginRight: 8
   },
   view: {
     alignItems: 'center',
