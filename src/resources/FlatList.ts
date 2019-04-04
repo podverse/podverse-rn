@@ -6,13 +6,6 @@ export const FlatList = {
   endOfResultsKey: _endOfResultsKey as any,
   filterInputKey: _filterInputKey as any,
   isLoadingMoreKey: _isLoadingMoreKey as any,
-  endOfListItems: [
-    { id: _endOfResultsKey },
-    { id: _isLoadingMoreKey }
-  ],
-  startOfListItems: [
-    { id: _filterInputKey }
-  ],
   filterInput: {
     height: 60
   },

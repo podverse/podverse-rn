@@ -124,19 +124,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.querySort = _alphabeticalKey
         const results = await this._queryAllPodcasts(_alphabeticalKey)
         newState.flatListData = generateFlatListDataArray(results[0])
-        newState.endOfResultsReached = newState.flatListData.length >= results[1] + 2
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
       } else if (selectedKey === _categoryKey) {
         if (selectedSubCategory || selectedCategory) {
           const results = await this._queryPodcastsByCategory(selectedSubCategory || selectedCategory, querySort)
           newState.flatListData = generateFlatListDataArray(results[0])
-          newState.endOfResultsReached = newState.flatListData.length >= results[1] + 2
+          newState.endOfResultsReached = newState.flatListData.length >= results[1]
           newState.selectedSubCategory = _allCategoriesKey
         } else {
           const categoryResults = await getTopLevelCategories()
           newState.categoryItems = generateCategoryItems(categoryResults[0])
           const podcastResults = await this._queryAllPodcasts(_topPastWeek)
           newState.flatListData = generateFlatListDataArray(podcastResults[0])
-          newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1] + 2
+          newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
           newState.querySort = _topPastWeek
           newState.selectedCategory = _allCategoriesKey
         }
@@ -166,14 +166,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
       if (queryFrom === _allPodcastsKey) {
         const results = await getPodcasts({ sort: selectedKey }, nsfwMode)
         newState.flatListData = generateFlatListDataArray(results[0])
-        newState.endOfResultsReached = newState.flatListData.length >= results[1] + 2
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
       } else if (queryFrom === _categoryKey) {
         const results = await getPodcasts({
           categories: selectedSubCategory || selectedCategory,
           sort: selectedKey
         }, nsfwMode)
         newState.flatListData = generateFlatListDataArray(results[0])
-        newState.endOfResultsReached = newState.flatListData.length >= results[1] + 2
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
       }
 
       this.setState(newState)
@@ -201,7 +201,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const newState = { isLoading: false } as State
 
       if (selectedKey !== _allCategoriesKey && !isSubCategory) {
-        const category = await getCategoryById(selectedKey) as any
+        const category = await getCategoryById(selectedKey)
         newState.subCategoryItems = generateCategoryItems(category.categories)
         newState.selectedSubCategory = _allCategoriesKey
       }
@@ -212,7 +212,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       }, nsfwMode)
       newState.endOfResultsReached = results.length < 20
       newState.flatListData = generateFlatListDataArray(results[0])
-      newState.endOfResultsReached = newState.flatListData.length >= results[1] + 2
+      newState.endOfResultsReached = newState.flatListData.length >= results[1]
 
       this.setState(newState)
     })
@@ -236,19 +236,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
             newState.querySort = _alphabeticalKey
             const results = await this._queryAllPodcasts(querySort, nextPage)
             newState.flatListData = insertInFlatListDataArray(flatListData, results[0])
-            newState.endOfResultsReached = newState.flatListData.length >= results[1] + 2
+            newState.endOfResultsReached = newState.flatListData.length >= results[1]
           } else if (queryFrom === _categoryKey) {
             if (selectedSubCategory || selectedCategory) {
               const results = await this._queryPodcastsByCategory(
                 selectedSubCategory || selectedCategory, querySort, nextPage
               )
               newState.flatListData = insertInFlatListDataArray(flatListData, results[0])
-              newState.endOfResultsReached = newState.flatListData.length >= results[1] + 2
+              newState.endOfResultsReached = newState.flatListData.length >= results[1]
               newState.selectedSubCategory = _allCategoriesKey
             } else {
               const results = await this._queryAllPodcasts(querySort, nextPage)
               newState.flatListData = insertInFlatListDataArray(flatListData, results[0])
-              newState.endOfResultsReached = newState.flatListData.length >= results[1] + 2
+              newState.endOfResultsReached = newState.flatListData.length >= results[1]
               newState.querySort = _topPastWeek
               newState.selectedCategory = _allCategoriesKey
             }
@@ -292,49 +292,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleGetItemLayout = (data, index) => {
-    const { queryFrom } = this.state
-
-  console.log(data, index)
-    return {
-      length: PV.Cells.podcast.wrapper.height + 1,
-      offset: 0,
-      index
-    }
-    // // Why does index sometimes === -1???
-    // if (queryFrom === _subscribedKey) {
-    //   return {
-    //     length: PV.Cells.podcast.wrapper.height + 1,
-    //     offset: 0,
-    //     index
-    //   }
-    // } else {
-    //   if (index === 0) {
-    //     return {
-    //       length: PV.FlatList.filterInput.height + 1,
-    //       offset: 0,
-    //       index
-    //     }
-    //   } else if (data.length <= (index + 2)) {
-    //     const adjustedIndex = data.length === index + 1 ? index - 1 : index
-    //     const offset =
-    //       (PV.FlatList.filterInput.height + 1) +
-    //       ((PV.Cells.podcast.wrapper.height + 1) * (adjustedIndex))
-    //     return {
-    //       length: PV.FlatList.filterInput.height + 1,
-    //       offset,
-    //       index
-    //     }
-    //   } else {
-    //     return {
-    //       length: PV.Cells.podcast.wrapper.height + 1,
-    //       offset: 0,
-    //       index
-    //     }
-    //   }
-    // }
-  }
-
   render() {
     const { navigation } = this.props
     const { categoryItems, endOfResultsReached, filterInputText, flatListData, queryFrom, isLoading,
@@ -370,11 +327,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
           !isLoading && flatListData &&
             <FlatList
               data={flatListData}
+              extraData={flatListData}
               endOfResultsReached={endOfResultsReached}
               filterInputText={filterInputText}
               handleFilterInputChangeText={this._handleFilterInputTextChange}
-              handleGetItemLayout={this._handleGetItemLayout}
-              initialScrollIndex={queryFrom === _subscribedKey ? 0 : 1}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               onEndReached={this._onEndReached}
