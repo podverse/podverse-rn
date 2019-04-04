@@ -104,9 +104,9 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 0,
-    height: 92,
+    height: PV.Cells.podcast.image.height,
     marginRight: 12,
-    width: 92
+    width: PV.Cells.podcast.image.width
   },
   textWrapper: {
     flex: 1,
