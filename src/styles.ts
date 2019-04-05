@@ -178,8 +178,11 @@ export const core = StyleSheet.create({
 })
 
 export const table = StyleSheet.create({
-  cellWrapper: {
-    height: 50,
-    justifyContent: 'center'
+  cellText: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.semibold,
+    height: PV.Table.cells.standard.height,
+    lineHeight: PV.Table.cells.standard.height,
+    paddingLeft: 8
   }
 })

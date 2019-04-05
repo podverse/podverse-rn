@@ -1,6 +1,6 @@
-import { SectionList, TouchableOpacity } from 'react-native'
+import { SectionList, TouchableWithoutFeedback } from 'react-native'
 import React from 'reactn'
-import { Text, View } from '../components'
+import { Divider, TableSectionHeader, Text, View } from '../components'
 import { PV } from '../resources'
 import { logoutUser } from '../state/actions/auth'
 import { core, table } from '../styles'
@@ -12,54 +12,6 @@ type Props = {
 type State = {
   options: any[]
 }
-
-const _aboutKey = 'about'
-const _feedbackKey = 'feedback'
-const _logoutKey = 'logout'
-const _loginKey = 'login'
-
-const moreFeaturesOptions = [
-  {
-    title: 'Downloads',
-    key: PV.RouteNames.DownloadsScreen
-  },
-  {
-    title: 'Playlists',
-    key: PV.RouteNames.PlaylistsScreen
-  },
-  {
-    title: 'Profiles',
-    key: PV.RouteNames.ProfilesScreen
-  },
-  {
-    title: 'My Profile',
-    key: PV.RouteNames.MyProfileScreen
-  },
-  {
-    title: 'Settings',
-    key: PV.RouteNames.SettingsScreen
-  },
-  {
-    title: 'Log out',
-    key: _logoutKey
-  },
-  ,
-  {
-    title: 'Log In',
-    key: _loginKey
-  }
-]
-
-const moreOtherOptions = [
-  {
-    title: 'Feedback',
-    key: _feedbackKey
-  },
-  {
-    title: 'About',
-    key: _aboutKey
-  }
-]
 
 export class MoreScreen extends React.Component<Props, State> {
   static navigationOptions = {
@@ -97,19 +49,18 @@ export class MoreScreen extends React.Component<Props, State> {
         return item.key !== _logoutKey
       }
     })
-
+console.log(table)
     return (
       <View style={core.backgroundView}>
         <SectionList
+          ItemSeparatorComponent={() => <Divider noMargin={true} />}
           renderItem={({ item, separators }) => (
-            <TouchableOpacity
-              onPress={() => this._onPress(item)}
-              style={table.cellWrapper}>
-              <Text style={globalTheme.tableCellTextPrimary}>{item.title}</Text>
-            </TouchableOpacity>
+            <TouchableWithoutFeedback onPress={() => this._onPress(item)}>
+              <Text style={[table.cellText, globalTheme.tableCellTextPrimary]}>{item.title}</Text>
+            </TouchableWithoutFeedback>
           )}
           renderSectionHeader={({ section: { title } }) => (
-            <Text style={globalTheme.tableSectionHeaderText}>{title}</Text>
+            <TableSectionHeader title={title} />
           )}
           sections={[
             { title: 'Features', data: featureOptions },
@@ -119,3 +70,50 @@ export class MoreScreen extends React.Component<Props, State> {
     )
   }
 }
+
+const _aboutKey = 'about'
+const _feedbackKey = 'feedback'
+const _logoutKey = 'logout'
+const _loginKey = 'login'
+
+const moreFeaturesOptions = [
+  {
+    title: 'Downloads',
+    key: PV.RouteNames.DownloadsScreen
+  },
+  {
+    title: 'Playlists',
+    key: PV.RouteNames.PlaylistsScreen
+  },
+  {
+    title: 'Profiles',
+    key: PV.RouteNames.ProfilesScreen
+  },
+  {
+    title: 'My Profile',
+    key: PV.RouteNames.MyProfileScreen
+  },
+  {
+    title: 'Settings',
+    key: PV.RouteNames.SettingsScreen
+  },
+  {
+    title: 'Log out',
+    key: _logoutKey
+  },
+  {
+    title: 'Log In',
+    key: _loginKey
+  }
+]
+
+const moreOtherOptions = [
+  {
+    title: 'Feedback',
+    key: _feedbackKey
+  },
+  {
+    title: 'About',
+    key: _aboutKey
+  }
+]

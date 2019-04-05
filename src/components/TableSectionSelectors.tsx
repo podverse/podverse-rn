@@ -68,7 +68,7 @@ const styles = {
   tableSectionHeader: {
     alignItems: 'stretch',
     flexDirection: 'row',
-    height: 40,
+    height: PV.Table.sectionHeader.height,
     justifyContent: 'space-between',
     paddingLeft: 8,
     paddingRight: 8
@@ -80,12 +80,12 @@ const styles = {
   tableSectionHeaderTextLeft: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    lineHeight: 40,
+    lineHeight: PV.Table.sectionHeader.height,
     paddingRight: 8
   },
   tableSectionHeaderTextRight: {
     fontSize: PV.Fonts.sizes.xl,
-    lineHeight: 40,
+    lineHeight: PV.Table.sectionHeader.height,
     paddingLeft: 8
   }
 }

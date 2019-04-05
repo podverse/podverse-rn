@@ -104,9 +104,9 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 0,
-    height: PV.Cells.podcast.image.height,
+    height: PV.Table.cells.podcast.image.height,
     marginRight: 12,
-    width: PV.Cells.podcast.image.width
+    width: PV.Table.cells.podcast.image.width
   },
   textWrapper: {
     flex: 1,
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.bold
+    fontWeight: PV.Fonts.weights.semibold
   },
   wrapper: {
     flexDirection: 'row'
