@@ -23,6 +23,7 @@ type State = {
   flatListData: any[]
   isLoading: boolean
   isLoadingMore: boolean
+  isRefreshing: boolean
   queryFrom: string | null
   queryPage: number
   querySort: string | null
@@ -46,6 +47,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       flatListData: [],
       isLoading: true,
       isLoadingMore: false,
+      isRefreshing: false,
       queryFrom: _subscribedKey,
       queryPage: 1,
       querySort: _alphabeticalKey,
@@ -110,12 +112,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     this.setState({
       endOfResultsReached: false,
+      flatListData: [],
       isLoading: true,
       queryFrom: selectedKey,
-      queryPage: 1,
-      flatListData: []
+      queryPage: 1
     }, async () => {
       const newState = await this._queryPodcastData(selectedKey, this.state)
+      console.log(newState)
       this.setState(newState)
     })
   }
@@ -172,6 +175,17 @@ export class PodcastsScreen extends React.Component<Props, State> {
         })
       }
     }
+  }
+
+  _onRefresh = () => {
+    const { queryFrom } = this.state
+
+    this.setState({
+      isRefreshing: true
+    }, async () => {
+      const newState = await this._queryPodcastData(queryFrom, this.state, { queryPage: 1 })
+      this.setState(newState)
+    })
   }
 
   _renderPodcastItem = ({ item }) => {
@@ -235,7 +249,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { categoryItems, flatListData, queryFrom, isLoading, isLoadingMore, querySort,
+    const { categoryItems, flatListData, queryFrom, isLoading, isLoadingMore, isRefreshing, querySort,
       selectedCategory, selectedSubCategory, subCategoryItems } = this.state
 
     return (
@@ -267,9 +281,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
               data={flatListData}
               extraData={flatListData}
               isLoadingMore={isLoadingMore}
+              isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               {...(queryFrom !== _subscribedKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
               onEndReached={this._onEndReached}
+              onRefresh={queryFrom === _subscribedKey ? this._onRefresh : null}
               renderItem={this._renderPodcastItem} />
         }
       </View>
@@ -282,6 +298,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const newState = {
       isLoading: false,
       isLoadingMore: false,
+      isRefreshing: false,
       ...nextState
     } as State
 
@@ -293,8 +310,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const results = await this._querySubscribedPodcasts()
       newState.flatListData = results[0]
     } else if (filterKey === _allPodcastsKey) {
-      const results = await this._queryAllPodcasts(_alphabeticalKey, newState.queryPage)
-      newState.querySort = _alphabeticalKey
+      const results = await this._queryAllPodcasts(querySort, newState.queryPage)
       newState.flatListData = [...flatListData, ...results[0]]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
     } else if (filterKey === _categoryKey) {
@@ -303,14 +319,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const results = await this._queryPodcastsByCategory(selectedSubCategory || selectedCategory, querySort, newState.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
-        newState.selectedSubCategory = _allCategoriesKey
+        newState.selectedSubCategory = selectedSubCategory || _allCategoriesKey
       } else {
         const categoryResults = await getTopLevelCategories()
-        const podcastResults = await this._queryAllPodcasts(_topPastWeek, newState.queryPage)
+        const podcastResults = await this._queryAllPodcasts(querySort, newState.queryPage)
         newState.categoryItems = generateCategoryItems(categoryResults[0])
         newState.flatListData = [...flatListData, ...podcastResults[0]]
         newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
-        newState.querySort = _topPastWeek
         newState.selectedCategory = _allCategoriesKey
       }
     } else if (rightItems.some((option) => option.value === filterKey)) {
@@ -396,11 +411,8 @@ const styles = {
     borderBottomWidth: 0,
     borderTopWidth: 0,
     flex: 0,
-    fontSize: PV.Fonts.sizes.md,
     height: PV.FlatList.searchBar.height,
-    justifyContent: 'center',
-    lineHeight: PV.FlatList.searchBar.height,
-    textAlign: 'center'
+    justifyContent: 'center'
   },
   view: {
     flex: 1

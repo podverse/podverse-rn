@@ -1,5 +1,5 @@
 import React from 'react'
-import { FlatList } from 'react-native'
+import { FlatList, RefreshControl } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { GlobalTheme } from '../resources/Interfaces'
@@ -14,17 +14,19 @@ type Props = {
   handleGetItemLayout?: any
   initialScrollIndex?: number
   isLoadingMore?: boolean
+  isRefreshing: boolean
   ItemSeparatorComponent?: any
   ListHeaderComponent?: any
   onEndReached: any
   onEndReachedThreshold?: number
+  onRefresh?: any
   renderItem: any
 }
 
 export const PVFlatList = (props: Props) => {
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
-  const { data, isLoadingMore, ItemSeparatorComponent, ListHeaderComponent, onEndReached,
-    onEndReachedThreshold = 0.8, renderItem, extraData } = props
+  const { data, extraData, isLoadingMore, isRefreshing = false, ItemSeparatorComponent, ListHeaderComponent,
+    onEndReached, onEndReachedThreshold = 0.8, onRefresh, renderItem } = props
 
   let flatList: FlatList<any> | null
   return (
@@ -49,6 +51,7 @@ export const PVFlatList = (props: Props) => {
         ref={(ref) => {
           flatList = ref
         }}
+        {...(onRefresh ? { refreshControl: <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} /> } : {})}
         renderItem={renderItem}
         style={[globalTheme.flatList]} />
     </View>
