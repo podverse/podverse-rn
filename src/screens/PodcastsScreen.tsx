@@ -267,6 +267,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
               handleSelectLeftItem={(x: string) => this._selectCategory(x)}
               handleSelectRightItem={(x: string) => this._selectCategory(x, true)}
               leftItems={categoryItems}
+              placeholderLeft={{ label: 'All', value: _allCategoriesKey }}
+              placeholderRight={{ label: 'All', value: _allCategoriesKey }}
               rightItems={subCategoryItems}
               selectedLeftItemKey={selectedCategory}
               selectedRightItemKey={selectedSubCategory} />
@@ -337,13 +339,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
     } else {
       const { isSubCategory } = queryOptions
-      if (!isSubCategory) {
+      let categories
+      if (isSubCategory) {
+        categories = filterKey === _allCategoriesKey ? selectedCategory : filterKey
+      } else if (filterKey === _allCategoriesKey) {
+        newState.selectedCategory = _allCategoriesKey
+      } else {
         const category = await getCategoryById(filterKey || '')
         newState.subCategoryItems = generateCategoryItems(category.categories)
         newState.selectedSubCategory = _allCategoriesKey
       }
 
-      const results = await getPodcasts({ categories: filterKey, sort: querySort, ...(searchTitle ? { searchTitle } : {}) }, nsfwMode)
+      const results = await getPodcasts({ categories, sort: querySort, ...(searchTitle ? { searchTitle } : {}) }, nsfwMode)
       newState.endOfResultsReached = results.length < 20
       newState.flatListData = results[0]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
