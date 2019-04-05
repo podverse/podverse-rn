@@ -9,9 +9,10 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.2.1",
+    "@types/lodash": "^4.14.123",
     "@types/react-navigation": "^3.0.5",
-    "@types/underscore": "^1.8.14",
     "fetch": "^1.1.0",
+    "lodash": "^4.17.11",
     "react": "16.8.3",
     "react-native": "0.59.0",
     "react-native-elements": "^1.1.0",
@@ -20,8 +21,7 @@
     "react-native-secure-key-store": "^2.0.1",
     "react-native-vector-icons": "^6.4.2",
     "react-navigation": "^3.5.1",
-    "reactn": "^1.0.0",
-    "underscore": "^1.9.1"
+    "reactn": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",

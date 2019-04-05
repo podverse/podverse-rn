@@ -1,12 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import debounce from 'lodash/debounce'
 import RNSecureKeyStore from 'react-native-secure-key-store'
-import React, { useGlobal } from 'reactn'
-import _ from 'underscore'
+import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PodcastTableCell, SearchBar, TableSectionSelectors,
   View } from '../components'
 import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
-import { GlobalTheme } from '../resources/Interfaces'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
@@ -55,7 +54,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       subCategoryItems: []
     }
 
-    this._handleSearchBarTextQuery = _.debounce(this._handleSearchBarTextQuery, 1000)
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
   }
 
   async componentDidMount() {
