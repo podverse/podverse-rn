@@ -118,7 +118,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       queryPage: 1
     }, async () => {
       const newState = await this._queryPodcastData(selectedKey, this.state)
-      console.log(newState)
       this.setState(newState)
     })
   }
@@ -328,7 +327,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.categoryItems = generateCategoryItems(categoryResults[0])
         newState.flatListData = [...flatListData, ...podcastResults[0]]
         newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
-        newState.selectedCategory = _allCategoriesKey
       }
     } else if (rightItems.some((option) => option.value === filterKey)) {
       const results = await getPodcasts({
@@ -345,6 +343,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       } else if (filterKey === _allCategoriesKey) {
         newState.selectedCategory = _allCategoriesKey
       } else {
+        categories = filterKey
         const category = await getCategoryById(filterKey || '')
         newState.subCategoryItems = generateCategoryItems(category.categories)
         newState.selectedSubCategory = _allCategoriesKey
