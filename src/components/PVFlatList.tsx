@@ -8,6 +8,7 @@ import { ActivityIndicator, View } from './'
 
 type Props = {
   data?: any
+  disableLeftSwipe: boolean
   extraData?: any
   searchBarText?: string
   handleFilterInputChangeText?: any
@@ -27,8 +28,9 @@ type Props = {
 
 export const PVFlatList = (props: Props) => {
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
-  const { data, extraData, isLoadingMore, isRefreshing = false, ItemSeparatorComponent, ListHeaderComponent,
-    onEndReached, onEndReachedThreshold = 0.8, onRefresh, renderHiddenItem, renderItem } = props
+  const { data, disableLeftSwipe = true, extraData, isLoadingMore, isRefreshing = false, ItemSeparatorComponent,
+    ListHeaderComponent, onEndReached, onEndReachedThreshold = 0.8, onRefresh, renderHiddenItem,
+    renderItem } = props
 
   let flatList: FlatList<any> | null
   return (
@@ -37,6 +39,7 @@ export const PVFlatList = (props: Props) => {
         useFlatList={true}
         closeOnRowPress={true}
         data={data}
+        disableLeftSwipe={disableLeftSwipe}
         disableRightSwipe={true}
         extraData={extraData}
         ItemSeparatorComponent={ItemSeparatorComponent}
@@ -59,8 +62,8 @@ export const PVFlatList = (props: Props) => {
         {...(onRefresh ? { refreshControl: <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} /> } : {})}
         renderHiddenItem={renderHiddenItem}
         renderItem={renderItem}
-        style={[globalTheme.flatList]}
-        rightOpenValue={-72} />
+        rightOpenValue={-72}
+        style={[globalTheme.flatList]} />
     </View>
   )
 }

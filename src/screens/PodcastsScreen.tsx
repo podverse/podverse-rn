@@ -290,6 +290,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           !isLoading && queryFrom && flatListData &&
             <FlatList
               data={flatListData}
+              disableLeftSwipe={queryFrom !== _subscribedKey}
               extraData={flatListData}
               {...(queryFrom !== _subscribedKey ? { handleHiddenItemPress: this._handleHiddenItemPress } : {})}
               isLoadingMore={isLoadingMore}
@@ -298,7 +299,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               {...(queryFrom !== _subscribedKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
               onEndReached={this._onEndReached}
               onRefresh={queryFrom === _subscribedKey ? this._onRefresh : null}
-              renderHiddenItem={queryFrom === _subscribedKey ? this._renderHiddenItem : null}
+              renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderPodcastItem} />
         }
       </View>
