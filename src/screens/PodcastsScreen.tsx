@@ -7,7 +7,7 @@ import { ActivityIndicator, Divider, FlatList, PodcastTableCell, SearchBar, Swip
 import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
-import { getPodcasts } from '../services/podcast'
+import { getPodcasts, toggleSubscribeToPodcast } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { getSubscribedPodcasts } from '../state/actions/podcasts'
 import { core } from '../styles'
@@ -232,16 +232,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleHiddenItemPress = (selectedId) => {
-    console.log(selectedId)
+  _handleHiddenItemPress = async (selectedId) => {
+    const { flatListData } = this.state
+    await toggleSubscribeToPodcast(selectedId)
+    const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
+    this.setState({ flatListData: newFlatListData })
   }
 
-  _renderHiddenItem = ({ item }) => {
-    return (
-      <SwipeRowBack
-        onPress={() => this._handleHiddenItemPress(item.id)} />
-    )
-  }
+  _renderHiddenItem = ({ item }) => <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id)} />
 
   _ListHeaderComponent = () => {
     const { searchBarText } = this.state
