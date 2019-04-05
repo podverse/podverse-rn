@@ -48,9 +48,11 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   textInput: {
+    backgroundColor: PV.Colors.black,
     borderColor: PV.Colors.grayDarker
   },
   textInputWrapper: {
+    backgroundColor: PV.Colors.black,
     borderColor: PV.Colors.grayDarker
   },
   textSecondary: {
@@ -108,9 +110,11 @@ export const lightTheme = StyleSheet.create({
     color: PV.Colors.black
   },
   textInput: {
+    backgroundColor: PV.Colors.white,
     borderColor: PV.Colors.grayLighter
   },
   textInputWrapper: {
+    backgroundColor: PV.Colors.white,
     borderColor: PV.Colors.grayLighter
   },
   textSecondary: {
@@ -137,6 +141,10 @@ export const core = StyleSheet.create({
   },
   backgroundView: {
     flex: 1
+  },
+  searchBar: {
+    borderBottomWidth: 1,
+    borderWidth: 1
   },
   textInput: {
     flex: 1,

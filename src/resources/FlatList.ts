@@ -1,15 +1,15 @@
 const _endOfResultsKey = 'endOfResults'
-const _filterInputKey = 'filterInput'
+const _searchBarKey = 'searchBar'
 const _isLoadingMoreKey = 'isLoadingMore'
 
 export const FlatList = {
   endOfResultsKey: _endOfResultsKey as any,
-  filterInputKey: _filterInputKey as any,
+  searchBarKey: _searchBarKey as any,
   isLoadingMoreKey: _isLoadingMoreKey as any,
-  filterInput: {
-    height: 60
+  searchBar: {
+    height: 72
   },
   lastCell: {
-    height: 72
+    height: 68
   }
 }

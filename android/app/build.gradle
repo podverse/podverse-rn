@@ -137,6 +137,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-vector-icons')
     implementation project(':@react-native-community_async-storage')
     compile project(':react-native-secure-key-store')
     compile project(':react-native-gesture-handler')
