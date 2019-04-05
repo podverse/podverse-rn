@@ -1,3 +1,5 @@
+import RNSecureKeyStore from 'react-native-secure-key-store'
+import { PV } from '../resources'
 import { request } from './request'
 
 export const searchPodcasts = async (title?: string, author?: string, nsfwMode?: boolean) => {
@@ -39,6 +41,16 @@ export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
 export const getPodcast = async (id: string) => {
   const response = await request({
     endpoint: `/podcast/${id}`
+  })
+
+  return response.json()
+}
+
+export const toggleSubscribeToPodcast = async (id: string) => {
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const response = await request({
+    endpoint: `/podcast/toggle-subscribe/${id}`,
+    headers: { Authorization: bearerToken }
   })
 
   return response.json()
