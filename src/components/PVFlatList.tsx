@@ -35,6 +35,7 @@ export const PVFlatList = (props: Props) => {
     <View style={styles.view}>
       <SwipeListView
         useFlatList={true}
+        closeOnRowPress={true}
         data={data}
         disableRightSwipe={true}
         extraData={extraData}
@@ -56,7 +57,7 @@ export const PVFlatList = (props: Props) => {
           ListHeaderComponent && flatList && flatList.scrollToOffset({ offset: PV.FlatList.searchBar.height, animated: false })
         }}
         {...(onRefresh ? { refreshControl: <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} /> } : {})}
-        {...(renderHiddenItem ? { renderHiddenItem } : {})}
+        renderHiddenItem={renderHiddenItem}
         renderItem={renderItem}
         style={[globalTheme.flatList]}
         rightOpenValue={-72} />

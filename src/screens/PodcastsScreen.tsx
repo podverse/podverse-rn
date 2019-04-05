@@ -187,6 +187,25 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
+  _ListHeaderComponent = () => {
+    const { searchBarText } = this.state
+
+    return (
+      <View style={styles.ListHeaderComponent}>
+        <SearchBar
+          containerStyle={styles.ListHeaderComponent}
+          inputContainerStyle={core.searchBar}
+          onChangeText={this._handleSearchBarTextChange}
+          onClear={this._handleSearchBarClear}
+          value={searchBarText} />
+      </View>
+    )
+  }
+
+  _ItemSeparatorComponent = () => {
+    return <Divider noMargin={true} />
+  }
+
   _renderPodcastItem = ({ item }) => {
     const downloadCount = item.episodes ? item.episodes.length : 0
 
@@ -195,17 +214,23 @@ export class PodcastsScreen extends React.Component<Props, State> {
         key={item.id}
         autoDownloadOn={true}
         downloadCount={downloadCount}
-        handleNavigationPress={() => this.props.navigation.navigate(
+        lastEpisodePubDate={item.lastEpisodePubDate}
+        onPress={() => this.props.navigation.navigate(
           PV.RouteNames.PodcastScreen, { podcast: item }
         )}
-        lastEpisodePubDate={item.lastEpisodePubDate}
         podcastImageUrl={item.imageUrl}
         podcastTitle={item.title} />
     )
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider noMargin={true} />
+  _renderHiddenItem = ({ item }, rowMap) => <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
+
+  _handleHiddenItemPress = async (selectedId, rowMap) => {
+    rowMap[selectedId].closeRow()
+    const { flatListData } = this.state
+    await toggleSubscribeToPodcast(selectedId)
+    const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
+    this.setState({ flatListData: newFlatListData })
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -230,30 +255,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.setState({
       searchBarText: ''
     })
-  }
-
-  _handleHiddenItemPress = async (selectedId) => {
-    const { flatListData } = this.state
-    await toggleSubscribeToPodcast(selectedId)
-    const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
-    this.setState({ flatListData: newFlatListData })
-  }
-
-  _renderHiddenItem = ({ item }) => <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id)} />
-
-  _ListHeaderComponent = () => {
-    const { searchBarText } = this.state
-
-    return (
-      <View style={styles.ListHeaderComponent}>
-        <SearchBar
-          containerStyle={styles.ListHeaderComponent}
-          inputContainerStyle={core.searchBar}
-          onChangeText={this._handleSearchBarTextChange}
-          onClear={this._handleSearchBarClear}
-          value={searchBarText} />
-      </View>
-    )
   }
 
   render() {

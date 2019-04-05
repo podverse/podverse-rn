@@ -7,8 +7,8 @@ import { Text, View } from './'
 type Props = {
   autoDownloadOn?: boolean
   downloadCount?: number
-  handleNavigationPress?: any
   lastEpisodePubDate?: string
+  onPress?: any
   podcastAuthors?: string
   podcastCategories?: string
   podcastImageUrl?: string
@@ -16,12 +16,12 @@ type Props = {
 }
 
 export const PodcastTableCell = (props: Props) => {
-  const { autoDownloadOn, downloadCount, handleNavigationPress, lastEpisodePubDate, podcastAuthors,
+  const { autoDownloadOn, downloadCount, lastEpisodePubDate, onPress, podcastAuthors,
     podcastCategories, podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,podcastTitle = 'untitled podcast'
     } = props
 
   return (
-    <TouchableWithoutFeedback onPress={handleNavigationPress}>
+    <TouchableWithoutFeedback onPress={onPress}>
       <View style={styles.wrapper}>
         <Image
           source={{ uri: podcastImageUrl }}
