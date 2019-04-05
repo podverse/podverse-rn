@@ -92,22 +92,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _queryAllPodcasts = async (sort: string | null, page: number = 1) => {
     const { searchBarText: searchTitle } = this.state
-    const results = await getPodcasts({
-      sort,
-      page,
-      ...(searchTitle ? { searchTitle } : {})
-    }, this.global.settings.nsfwMode)
+    const results = await getPodcasts({ sort, page, ...(searchTitle ? { searchTitle } : {}) }, this.global.settings.nsfwMode)
     return results
   }
 
   _queryPodcastsByCategory = async (categoryId: string | null, sort: string | null, page: number = 1) => {
     const { searchBarText: searchTitle } = this.state
-    const results = await getPodcasts({
-      categories: categoryId,
-      sort,
-      page,
-      ...(searchTitle ? { searchTitle } : {})
-    }, this.global.settings.nsfwMode)
+    const results = await getPodcasts({ categories: categoryId, sort, page,
+      ...(searchTitle ? { searchTitle } : {}) }, this.global.settings.nsfwMode)
     return results
   }
 
@@ -326,8 +318,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     } else if (rightItems.some((option) => option.value === filterKey)) {
       const results = await getPodcasts({
         ...(selectedSubCategory || selectedCategory ? { categories: selectedSubCategory || selectedCategory } : {}) as object,
-        sort: filterKey,
-        ...(searchTitle ? { searchTitle } : {})
+        sort: filterKey, ...(searchTitle ? { searchTitle } : {})
       }, nsfwMode)
       newState.flatListData = results[0]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
@@ -339,11 +330,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.selectedSubCategory = _allCategoriesKey
       }
 
-      const results = await getPodcasts({
-        categories: filterKey,
-        sort: querySort,
-        ...(searchTitle ? { searchTitle } : {})
-      }, nsfwMode)
+      const results = await getPodcasts({ categories: filterKey, sort: querySort, ...(searchTitle ? { searchTitle } : {}) }, nsfwMode)
       newState.endOfResultsReached = results.length < 20
       newState.flatListData = results[0]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
