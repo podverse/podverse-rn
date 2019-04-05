@@ -278,7 +278,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && flatListData &&
+          !isLoading && queryFrom && flatListData &&
             <FlatList
               data={flatListData}
               extraData={flatListData}

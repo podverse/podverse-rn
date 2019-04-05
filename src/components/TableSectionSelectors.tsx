@@ -32,11 +32,11 @@ export const TableSectionSelectors = (props: Props) => {
         <RNPickerSelect
           items={leftItems}
           onValueChange={handleSelectLeftItem}
-          placeholder={placeholderLeft}
+          placeholder={placeholderLeft || _placeholderDefault}
           style={styles.tableSectionHeaderButton}
           value={selectedLeftItemKey}>
           <Text style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
-            {selectedLeftItem.label || placeholderLeft.label || 'Select...'} &#9662;
+            {selectedLeftItem.label || (placeholderLeft && placeholderLeft.label) || _placeholderDefault.label} &#9662;
           </Text>
         </RNPickerSelect>
         {
@@ -44,11 +44,11 @@ export const TableSectionSelectors = (props: Props) => {
             <RNPickerSelect
               items={rightItems}
               onValueChange={handleSelectRightItem}
-              placeholder={placeholderRight}
+              placeholder={placeholderRight || _placeholderDefault}
               style={styles.tableSectionHeaderButton}
               value={selectedRightItemKey}>
               <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                {selectedRightItem.label || placeholderRight.label || 'Select...'} &#9662;
+                {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label} &#9662;
               </Text>
             </RNPickerSelect>
 
@@ -57,6 +57,11 @@ export const TableSectionSelectors = (props: Props) => {
       <Divider noMargin={true} />
     </View>
   )
+}
+
+const _placeholderDefault = {
+  label: 'Select...',
+  value: null
 }
 
 const styles = {
