@@ -222,13 +222,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _ListHeaderComponent = () => {
     const { searchBarText } = this.state
-    const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
 
     return (
       <View style={styles.ListHeaderComponent}>
         <SearchBar
-          containerStyle={[globalTheme.textInputWrapper, styles.ListHeaderComponent]}
-          inputContainerStyle={[core.searchBar, globalTheme.textInput]}
+          containerStyle={styles.ListHeaderComponent}
+          inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
           onClear={this._handleSearchBarClear}
           value={searchBarText} />
