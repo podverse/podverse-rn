@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import React from 'reactn'
-import { ActivityIndicator, Divider, FlatList, PodcastTableCell, SearchBar, TableSectionSelectors,
-  View } from '../components'
+import { ActivityIndicator, Divider, FlatList, PodcastTableCell, SearchBar, SwipeRowBack,
+  TableSectionSelectors, View } from '../components'
 import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
@@ -232,6 +232,17 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleHiddenItemPress = (selectedId) => {
+    console.log(selectedId)
+  }
+
+  _renderHiddenItem = ({ item }) => {
+    return (
+      <SwipeRowBack
+        onPress={() => this._handleHiddenItemPress(item.id)} />
+    )
+  }
+
   _ListHeaderComponent = () => {
     const { searchBarText } = this.state
 
@@ -281,12 +292,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
             <FlatList
               data={flatListData}
               extraData={flatListData}
+              {...(queryFrom !== _subscribedKey ? { handleHiddenItemPress: this._handleHiddenItemPress } : {})}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               {...(queryFrom !== _subscribedKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
               onEndReached={this._onEndReached}
               onRefresh={queryFrom === _subscribedKey ? this._onRefresh : null}
+              renderHiddenItem={queryFrom === _subscribedKey ? this._renderHiddenItem : null}
               renderItem={this._renderPodcastItem} />
         }
       </View>

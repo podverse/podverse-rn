@@ -26,6 +26,10 @@ export const darkTheme = StyleSheet.create({
   player: {
     borderColor: PV.Colors.gray
   },
+  swipeRowBack: {
+    backgroundColor: PV.Colors.gray,
+    color: PV.Colors.white
+  },
   tabbar: {
     backgroundColor: PV.Colors.black
   },
@@ -87,6 +91,10 @@ export const lightTheme = StyleSheet.create({
   },
   player: {
     borderColor: PV.Colors.gray
+  },
+  swipeRowBack: {
+    backgroundColor: PV.Colors.gray,
+    color: PV.Colors.black
   },
   tabbar: {
     backgroundColor: PV.Colors.white

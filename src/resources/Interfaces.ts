@@ -7,6 +7,7 @@ export interface GlobalTheme {
   divider?: any
   flatList?: any
   player?: any
+  swipeRowBack?: any
   tabbar?: any
   tabbarItem?: any
   tableCellTextPrimary?: any
