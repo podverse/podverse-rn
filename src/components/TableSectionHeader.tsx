@@ -11,7 +11,7 @@ type Props = {
 export const TableSectionHeader = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
   const { title } = props
-console.log('hi', styles)
+
   return (
     <View>
       <Divider noMargin={true} />

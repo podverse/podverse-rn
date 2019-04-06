@@ -38,7 +38,6 @@ export class MoreScreen extends React.Component<Props, State> {
   }
 
   render() {
-
     const { globalTheme, session } = this.global
     const { isLoggedIn = false } = session
 
@@ -49,7 +48,7 @@ export class MoreScreen extends React.Component<Props, State> {
         return item.key !== _logoutKey
       }
     })
-console.log(table)
+
     return (
       <View style={core.backgroundView}>
         <SectionList
