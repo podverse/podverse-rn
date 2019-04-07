@@ -26,6 +26,9 @@ type Props = {
   renderItem: any
 }
 
+// This is used to silence a ref warning when a Flatlist doesn't need to be swipable.
+const _renderHiddenItem = () => <View />
+
 export const PVFlatList = (props: Props) => {
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
   const { data, disableLeftSwipe = true, extraData, isLoadingMore, isRefreshing = false, ItemSeparatorComponent,
@@ -60,9 +63,9 @@ export const PVFlatList = (props: Props) => {
           ListHeaderComponent && flatList && flatList.scrollToOffset({ offset: PV.FlatList.searchBar.height, animated: false })
         }}
         {...(onRefresh ? { refreshControl: <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} /> } : {})}
-        renderHiddenItem={renderHiddenItem}
+        renderHiddenItem={renderHiddenItem || _renderHiddenItem}
         renderItem={renderItem}
-        rightOpenValue={-72}
+
         style={[globalTheme.flatList]} />
     </View>
   )
