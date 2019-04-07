@@ -19,7 +19,6 @@ type Props = {
 type State = {
   categoryItems: any[]
   endOfResultsReached: boolean
-  searchBarText: string
   flatListData: any[]
   isLoading: boolean
   isLoadingMore: boolean
@@ -27,6 +26,7 @@ type State = {
   queryFrom: string | null
   queryPage: number
   querySort: string | null
+  searchBarText: string
   selectedCategory: string | null
   selectedSubCategory: string | null
   subCategoryItems: any[]
@@ -43,7 +43,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.state = {
       categoryItems: [],
       endOfResultsReached: false,
-      searchBarText: '',
       flatListData: [],
       isLoading: true,
       isLoadingMore: false,
@@ -51,6 +50,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       queryFrom: _subscribedKey,
       queryPage: 1,
       querySort: _alphabeticalKey,
+      searchBarText: '',
       selectedCategory: null,
       selectedSubCategory: null,
       subCategoryItems: []
@@ -112,9 +112,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     this.setState({
       endOfResultsReached: false,
+      flatListData: [],
       isLoading: true,
-      querySort: selectedKey,
-      flatListData: []
+      querySort: selectedKey
     }, async () => {
       const newState = await this._queryPodcastData(selectedKey, this.state)
 
@@ -144,8 +144,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
-    const { endOfResultsReached, queryFrom, queryPage = 1 } = this.state
-    if (queryFrom !== _subscribedKey && !endOfResultsReached) {
+    const { endOfResultsReached, isLoadingMore, queryFrom, queryPage = 1 } = this.state
+    if (queryFrom !== _subscribedKey && !endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
         this.setState({
           isLoadingMore: true
@@ -215,6 +215,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.setState({ flatListData: newFlatListData })
   }
 
+  _handleSearchBarClear = (text: string) => {
+    this.setState({ searchBarText: '' })
+  }
+
   _handleSearchBarTextChange = (text: string) => {
     const { queryFrom } = this.state
 
@@ -231,12 +235,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _handleSearchBarTextQuery = async (queryFrom: string | null, prevState: any, newState: any, queryOptions: any) => {
     const state = await this._queryPodcastData(queryFrom, prevState, newState, { searchTitle: queryOptions.searchTitle })
     this.setState(state)
-  }
-
-  _handleSearchBarClear = (text: string) => {
-    this.setState({
-      searchBarText: ''
-    })
   }
 
   render() {

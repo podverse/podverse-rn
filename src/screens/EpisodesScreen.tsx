@@ -1,14 +1,26 @@
-import { TouchableOpacity } from 'react-native'
+import debounce from 'lodash/debounce'
 import React from 'reactn'
-import { Text, View } from '../components'
+import { ActivityIndicator, Divider, EpisodeTableCell, FlatList, SearchBar, TableSectionSelectors,
+  View } from '../components'
+import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
-import { button, core } from '../styles'
+import { getEpisodes } from '../services/episode'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
 }
 
-type State = {}
+type State = {
+  endOfResultsReached: boolean
+  flatListData: any[]
+  isLoading: boolean
+  isLoadingMore: boolean
+  queryFrom: string | null
+  queryPage: number
+  querySort: string | null
+  searchBarText: string
+}
 
 export class EpisodesScreen extends React.Component<Props, State> {
 
@@ -16,18 +28,264 @@ export class EpisodesScreen extends React.Component<Props, State> {
     title: 'Episodes'
   }
 
-  render() {
-    const { globalTheme } = this.global
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      endOfResultsReached: false,
+      flatListData: [],
+      isLoading: true,
+      isLoadingMore: false,
+      queryFrom: _allPodcastsKey,
+      queryPage: 1,
+      querySort: _mostRecentKey,
+      searchBarText: ''
+    }
+
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
+  }
+
+  async componentDidMount() {
+    const { queryFrom } = this.state
+    const newState = await this._queryEpisodeData(queryFrom)
+    this.setState(newState)
+  }
+
+  selectLeftItem = async (selectedKey: string) => {
+    if (!selectedKey) {
+      this.setState({ queryFrom: null })
+      return
+    }
+
+    this.setState({
+      endOfResultsReached: false,
+      flatListData: [],
+      isLoading: true,
+      queryFrom: selectedKey,
+      queryPage: 1
+    }, async () => {
+      const newState = await this._queryEpisodeData(selectedKey)
+      this.setState(newState)
+    })
+  }
+
+  selectRightItem = async (selectedKey: string) => {
+    if (!selectedKey) {
+      this.setState({ querySort: null })
+      return
+    }
+
+    this.setState({
+      endOfResultsReached: false,
+      flatListData: [],
+      isLoading: true,
+      querySort: selectedKey
+    }, async () => {
+      const newState = await this._queryEpisodeData(selectedKey)
+      this.setState(newState)
+    })
+  }
+
+  _onEndReached = ({ distanceFromEnd }) => {
+    const { endOfResultsReached, isLoadingMore, queryFrom, queryPage = 1 } = this.state
+    if (!endOfResultsReached && !isLoadingMore) {
+      if (distanceFromEnd > -1) {
+        this.setState({
+          isLoadingMore: true,
+          queryPage: queryPage + 1
+        }, async () => {
+          const newState = await this._queryEpisodeData(queryFrom, { queryPage: this.state.queryPage })
+          this.setState(newState)
+        })
+      }
+    }
+  }
+
+  _ListHeaderComponent = () => {
+    const { searchBarText } = this.state
 
     return (
-      <View style={core.view}>
-        <Text>Episodes</Text>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate(PV.RouteNames.EpisodeScreen)}
-          style={[button.primaryWrapper, globalTheme.buttonPrimaryWrapper]}>
-          <Text style={globalTheme.buttonPrimaryText}>Go to Episode</Text>
-        </TouchableOpacity>
+      <View style={styles.ListHeaderComponent}>
+        <SearchBar
+          containerStyle={styles.ListHeaderComponent}
+          inputContainerStyle={core.searchBar}
+          onChangeText={this._handleSearchBarTextChange}
+          onClear={this._handleSearchBarClear}
+          value={searchBarText} />
       </View>
     )
+  }
+
+  _ItemSeparatorComponent = () => {
+    return <Divider noMargin={true} />
+  }
+
+  _renderEpisodeItem = ({ item }) => (
+    <EpisodeTableCell
+        key={item.id}
+        description={removeHTMLFromString(item.description)}
+        handleMorePress={() => console.log('handleMorePress')}
+        handleNavigationPress={() => this.props.navigation.navigate(
+          PV.RouteNames.EpisodeScreen, { episode: item }
+        )}
+        moreButtonAlignToTop={true}
+        podcastImageUrl={item.podcast_imageUrl}
+        podcastTitle={item.podcast_title}
+        pubDate={item.pubDate}
+        title={item.title} />
+  )
+
+  _handleSearchBarClear = (text: string) => {
+    this.setState({ searchBarText: '' })
+  }
+
+  _handleSearchBarTextChange = (text: string) => {
+    const { queryFrom } = this.state
+
+    this.setState({
+      flatListData: [],
+      isLoadingMore: true,
+      queryPage: 1,
+      searchBarText: text
+    }, async () => {
+      this._handleSearchBarTextQuery(queryFrom, { searchTitle: text })
+    })
+  }
+
+  _handleSearchBarTextQuery = async (queryFrom: string | null, queryOptions: any) => {
+    const state = await this._queryEpisodeData(queryFrom, { searchAllFieldsText: queryOptions.searchAllFieldsText })
+    this.setState(state)
+  }
+
+  render() {
+    const { flatListData, queryFrom, isLoading, isLoadingMore, querySort } = this.state
+
+    return (
+      <View style={styles.view}>
+        <TableSectionSelectors
+          handleSelectLeftItem={this.selectLeftItem}
+          handleSelectRightItem={this.selectRightItem}
+          leftItems={leftItems}
+          rightItems={rightItems}
+          selectedLeftItemKey={queryFrom}
+          selectedRightItemKey={querySort} />
+        {
+          isLoading &&
+          <ActivityIndicator />
+        }
+        {
+          !isLoading && flatListData &&
+            <FlatList
+              data={flatListData}
+              disableLeftSwipe={queryFrom !== _subscribedKey}
+              extraData={flatListData}
+              isLoadingMore={isLoadingMore}
+              ItemSeparatorComponent={this._ItemSeparatorComponent}
+              ListHeaderComponent={this._ListHeaderComponent}
+              onEndReached={this._onEndReached}
+              renderItem={this._renderEpisodeItem} />
+        }
+      </View>
+    )
+  }
+
+  _queryEpisodeData = async (filterKey: string | null, queryOptions: {
+    queryPage?: number, searchAllFieldsText?: string
+  } = {}) => {
+    const newState = {
+      isLoading: false,
+      isLoadingMore: false
+    } as State
+    const { flatListData, queryFrom, querySort } = this.state
+    const podcastId = this.global.session.userInfo.subscribedPodcastIds
+    const nsfwMode = this.global.settings.nsfwMode
+    const { queryPage, searchAllFieldsText } = queryOptions
+
+    if (filterKey === _subscribedKey) {
+      const results = await getEpisodes({
+        sort: querySort,
+        page: queryPage,
+        podcastId,
+        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+        includePodcast: true
+      }, this.global.settings.nsfwMode)
+      newState.flatListData = [...flatListData, ...results[0]]
+      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+    } else if (filterKey === _allPodcastsKey) {
+      const { searchBarText: searchAllFieldsText } = this.state
+      const results = await getEpisodes({
+        sort: querySort,
+        page: queryPage,
+        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+        includePodcast: true
+      }, this.global.settings.nsfwMode)
+      newState.flatListData = [...flatListData, ...results[0]]
+      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+    } else if (rightItems.some((option) => option.value === filterKey)) {
+      const results = await getEpisodes({
+        ...(queryFrom === _subscribedKey ? { podcastId } : {}),
+        sort: filterKey,
+        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+        includePodcast: true
+      }, nsfwMode)
+      newState.flatListData = results[0]
+      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+    }
+
+    return newState
+  }
+}
+
+const _subscribedKey = 'subscribed'
+const _allPodcastsKey = 'allPodcasts'
+const _mostRecentKey = 'most-recent'
+const _topPastDay = 'top-past-day'
+const _topPastWeek = 'top-past-week'
+const _topPastMonth = 'top-past-month'
+const _topPastYear = 'top-past-year'
+
+const leftItems = [
+  {
+    label: 'Subscribed',
+    value: _subscribedKey
+  },
+  {
+    label: 'All Podcasts',
+    value: _allPodcastsKey
+  }
+]
+
+const rightItems = [
+  {
+    label: 'most recent',
+    value: _mostRecentKey
+  },
+  {
+    label: 'top - past day',
+    value: _topPastDay
+  },
+  {
+    label: 'top - past week',
+    value: _topPastWeek
+  },
+  {
+    label: 'top - past month',
+    value: _topPastMonth
+  },
+  {
+    label: 'top - past year',
+    value: _topPastYear
+  }
+]
+
+const styles = {
+  ListHeaderComponent: {
+    borderBottomWidth: 0,
+    borderTopWidth: 0,
+    flex: 0,
+    height: PV.FlatList.searchBar.height,
+    justifyContent: 'center'
+  },
+  view: {
+    flex: 1
   }
 }

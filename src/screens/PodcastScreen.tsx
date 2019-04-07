@@ -101,8 +101,8 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
-    const { endOfResultsReached, queryPage = 1, viewType } = this.state
-    if (viewType !== _downloadedKey && !endOfResultsReached) {
+    const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = this.state
+    if (viewType !== _downloadedKey && !endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
         this.setState({
           isLoadingMore: true

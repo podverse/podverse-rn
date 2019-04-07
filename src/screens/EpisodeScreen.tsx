@@ -53,7 +53,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const { viewType } = this.state
 
     if (viewType === _clipsKey) {
-      const newState = await this._queryClipsData(_clipsKey)
+      const newState = await this._queryClipData(_clipsKey)
       this.setState(newState)
     }
   }
@@ -72,7 +72,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       viewType: selectedKey
     }, async () => {
       if (selectedKey === _clipsKey) {
-        const newState = await this._queryClipsData(selectedKey)
+        const newState = await this._queryClipData(selectedKey)
         this.setState(newState)
       }
     })
@@ -90,19 +90,19 @@ export class EpisodeScreen extends React.Component<Props, State> {
       isLoading: true,
       querySort: selectedKey
     }, async () => {
-      const newState = await this._queryClipsData(selectedKey)
+      const newState = await this._queryClipData(selectedKey)
       this.setState(newState)
     })
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
-    const { endOfResultsReached, queryPage = 1, viewType } = this.state
-    if (viewType === _clipsKey && !endOfResultsReached) {
+    const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = this.state
+    if (viewType === _clipsKey && !endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
         this.setState({
           isLoadingMore: true
         }, async () => {
-          const newState = await this._queryClipsData(viewType, { queryPage: queryPage + 1 })
+          const newState = await this._queryClipData(viewType, { queryPage: queryPage + 1 })
           this.setState(newState)
         })
       }
@@ -151,7 +151,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = async (viewType: string | null, queryOptions: any) => {
-    const state = await this._queryClipsData(viewType, { searchAllFieldsText: queryOptions.searchAllFieldsText })
+    const state = await this._queryClipData(viewType, { searchAllFieldsText: queryOptions.searchAllFieldsText })
     this.setState(state)
   }
 
@@ -202,7 +202,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     )
   }
 
-  _queryClipsData = async (filterKey: string, queryOptions: {
+  _queryClipData = async (filterKey: string, queryOptions: {
     queryPage?: number, searchAllFieldsText?: string
   } = {}) => {
     const { episode, flatListData, queryPage, querySort, searchBarText: searchAllFieldsText } = this.state

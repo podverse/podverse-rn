@@ -74,8 +74,8 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
-    const { endOfResultsReached } = this.state
-    if (!endOfResultsReached) {
+    const { endOfResultsReached, isLoadingMore } = this.state
+    if (!endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
         this.setState({
           isLoadingMore: true
