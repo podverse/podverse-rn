@@ -64,6 +64,11 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
   }
 }
 
+export const removeHTMLFromString = (text: string) => {
+  const regex = /(<([^>]+)>)/ig
+  return text.replace(regex, '')
+}
+
 export const generateAuthorsText = (authors: any) => {
   let authorText = ''
   for (let i = 0; i < authors.length; i++) {

@@ -3,22 +3,23 @@ import { Text, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
 
 type Props = {
-  onPress: any
+  onPress: any,
+  styles?: any
 }
 
 export const SwipeRowBack = (props: Props) => {
-  const { onPress } = props
+  const { onPress, styles } = props
   const [globalTheme] = useGlobal('globalTheme')
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.swipeRowBack, globalTheme.swipeRowBack]}>
+      style={[styles, s.swipeRowBack, globalTheme.swipeRowBack]}>
       <Text>Remove</Text>
     </TouchableOpacity>
   )
 }
 
-const styles = {
+const s = {
   swipeRowBack: {
     alignItems: 'flex-end',
     alignSelf: 'stretch',

@@ -5,13 +5,13 @@ import { PV } from '../resources'
 import { Text, View } from './'
 
 type Props = {
-  pubDate?: string
   description?: string
-  title?: string
   handleMorePress?: any
   handleNavigationPress?: any
   podcastImageUrl?: string
   podcastTitle?: string
+  pubDate?: string
+  title?: string
 }
 
 export const EpisodeTableCell = (props: Props) => {
@@ -22,8 +22,9 @@ export const EpisodeTableCell = (props: Props) => {
     <View style={styles.wrapper}>
       <View style={styles.wrapperTop}>
         <TouchableWithoutFeedback
-          onPress={handleNavigationPress}>
-          <View>
+          onPress={handleNavigationPress}
+          style={{flex: 1}}>
+          <View style={{flex: 1}}>
             {
               podcastImageUrl &&
               <Image
@@ -62,11 +63,14 @@ export const EpisodeTableCell = (props: Props) => {
       </View>
       {
         description &&
+        <TouchableWithoutFeedback
+          onPress={handleNavigationPress}>
           <Text
             numberOfLines={5}
             style={styles.description}>
             {description}
           </Text>
+        </TouchableWithoutFeedback>
       }
     </View>
   )
@@ -81,7 +85,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: PV.Fonts.sizes.md,
-    marginBottom: 8,
     marginLeft: 8,
     marginRight: 8,
     marginTop: 11
@@ -122,9 +125,11 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.semibold
   },
   wrapper: {
+    marginBottom: 8,
     marginTop: 8
   },
   wrapperTop: {
+    flex: 1,
     flexDirection: 'row'
   }
 })
