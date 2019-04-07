@@ -16,13 +16,13 @@ type Props = {
   handleGetItemLayout?: any
   initialScrollIndex?: number
   isLoadingMore?: boolean
-  isRefreshing: boolean
+  isRefreshing?: boolean
   ItemSeparatorComponent?: any
   ListHeaderComponent?: any
   onEndReached: any
   onEndReachedThreshold?: number
   onRefresh?: any
-  renderHiddenItem: any
+  renderHiddenItem?: any
   renderItem: any
 }
 

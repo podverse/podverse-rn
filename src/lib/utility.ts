@@ -64,6 +64,26 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
   }
 }
 
+export const generateAuthorsText = (authors: any) => {
+  let authorText = ''
+  for (let i = 0; i < authors.length; i++) {
+    const author = authors[i]
+    authorText += `${author.name}${i < authors.length - 1 ? ', ' : ''}`
+  }
+
+  return authorText
+}
+
+export const generateCategoriesText = (categories: any) => {
+  let categoryText = ''
+  for (let i = 0; i < categories.length; i++) {
+    const category = categories[i]
+    categoryText += `${category.title}${i < categories.length - 1 ? ', ' : ''}`
+  }
+
+  return categoryText
+}
+
 export const generateCategoryItems = (categories: any[]) => {
   const items = []
 

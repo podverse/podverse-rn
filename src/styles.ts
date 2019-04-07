@@ -5,6 +5,18 @@ export const darkTheme = StyleSheet.create({
   activityIndicator: {
     color: PV.Colors.grayLighter
   },
+  buttonGroup: {
+    backgroundColor: PV.Colors.grayDarkest
+  },
+  buttonGroupSelected: {
+    backgroundColor: PV.Colors.grayDark
+  },
+  buttonGroupText: {
+    color: PV.Colors.grayLighter
+  },
+  buttonGroupTextSelected: {
+    color: PV.Colors.white
+  },
   buttonPrimaryText: {
     color: PV.Colors.white
   },
@@ -70,6 +82,18 @@ export const darkTheme = StyleSheet.create({
 export const lightTheme = StyleSheet.create({
   activityIndicator: {
     color: PV.Colors.grayDarker
+  },
+  buttonGroup: {
+    backgroundColor: PV.Colors.grayLightest
+  },
+  buttonGroupSelected: {
+    backgroundColor: PV.Colors.grayLight
+  },
+  buttonGroupText: {
+    color: PV.Colors.grayDarker
+  },
+  buttonGroupTextSelected: {
+    color: PV.Colors.black
   },
   buttonPrimaryText: {
     color: PV.Colors.black

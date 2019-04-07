@@ -1,5 +1,7 @@
 export interface GlobalTheme {
   activityIndicator?: any
+  buttonGroupText?: any
+  buttonGroupTextSelected?: any
   buttonPrimaryText?: any
   buttonPrimaryTextDisabled?: any
   buttonPrimaryWrapper?: any

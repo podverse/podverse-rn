@@ -29,52 +29,64 @@ export const PodcastTableCell = (props: Props) => {
         <View style={styles.textWrapper}>
           <Text
             numberOfLines={3}
-            style={styles.title}>{podcastTitle}</Text>
-          <View style={styles.bottomTextWrapper}>
-            <View style={styles.bottomTextWrapperLeft}>
-              {
-                !!podcastCategories &&
+            style={styles.title}>
+            {podcastTitle}
+          </Text>
+          <View style={styles.textWrapperRow}>
+            {
+              !!podcastCategories &&
+                <View style={styles.textWrapperRowLeft}>
                   <Text
                     isSecondary={true}
+                    numberOfLines={1}
                     style={styles.bottomText}>
                     {podcastCategories}
                   </Text>
-              }
-              {
-                !!podcastAuthors &&
-                  <Text
-                    isSecondary={true}
-                    style={styles.bottomText}>
-                    {podcastAuthors}
-                  </Text>
-              }
-              {
-                !!downloadCount || downloadCount === 0 &&
-                  <Text
-                    isSecondary={true}
-                    style={styles.bottomText}>
-                    {`${downloadCount} downloaded`}
-                  </Text>
-              }
-            </View>
-            <View style={styles.bottomTextWrapperRight}>
-              {
-                autoDownloadOn &&
+                </View>
+            }
+            {
+              autoDownloadOn &&
+                <View style={styles.textWrapperRowRight}>
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
                     Auto DL On
                   </Text>
-              }
-              {
-                lastEpisodePubDate &&
+                </View>
+            }
+          </View>
+          <View style={styles.textWrapperRow}>
+            {
+              !!podcastAuthors &&
+                <View style={styles.textWrapperRowLeft}>
+                  <Text
+                    isSecondary={true}
+                    numberOfLines={1}
+                    style={styles.bottomText}>
+                    {podcastAuthors}
+                  </Text>
+                </View>
+            }
+            {
+              !!downloadCount || downloadCount === 0 &&
+                <View style={styles.textWrapperRowLeft}>
+                  <Text
+                    isSecondary={true}
+                    style={styles.bottomText}>
+                    {`${downloadCount} downloaded`}
+                  </Text>
+                </View>
+            }
+            {
+              lastEpisodePubDate &&
+                <View style={styles.textWrapperRowRight}>
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
                     {readableDate(lastEpisodePubDate)}
                   </Text>
-              }
-            </View>
+                </View>
+            }
           </View>
         </View>
       </View>
@@ -89,15 +101,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 2
   },
-  bottomTextWrapper: {
-    flex: 1,
+  textWrapperRow: {
+    flex: 0,
     flexDirection: 'row'
   },
-  bottomTextWrapperLeft: {
+  textWrapperRowLeft: {
     flex: 1,
     justifyContent: 'flex-end'
   },
-  bottomTextWrapperRight: {
+  textWrapperRowRight: {
     alignItems: 'flex-end',
     flex: 1,
     justifyContent: 'flex-end'

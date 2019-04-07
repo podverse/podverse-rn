@@ -86,24 +86,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
-  _querySubscribedPodcasts = async () => {
-    const results = await getSubscribedPodcasts(this.global.session.userInfo.subscribedPodcastIds || [])
-    return results
-  }
-
-  _queryAllPodcasts = async (sort: string | null, page: number = 1) => {
-    const { searchBarText: searchTitle } = this.state
-    const results = await getPodcasts({ sort, page, ...(searchTitle ? { searchTitle } : {}) }, this.global.settings.nsfwMode)
-    return results
-  }
-
-  _queryPodcastsByCategory = async (categoryId: string | null, sort: string | null, page: number = 1) => {
-    const { searchBarText: searchTitle } = this.state
-    const results = await getPodcasts({ categories: categoryId, sort, page,
-      ...(searchTitle ? { searchTitle } : {}) }, this.global.settings.nsfwMode)
-    return results
-  }
-
   selectLeftItem = async (selectedKey: string) => {
     if (!selectedKey) {
       this.setState({ queryFrom: null })
@@ -304,6 +286,26 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }
       </View>
     )
+  }
+
+  _querySubscribedPodcasts = async () => {
+    const results = await getSubscribedPodcasts(this.global.session.userInfo.subscribedPodcastIds || [])
+    return results
+  }
+
+  _queryAllPodcasts = async (sort: string | null, page: number = 1) => {
+    const { searchBarText: searchTitle } = this.state
+    const results = await getPodcasts({ sort, page, ...(searchTitle ? { searchTitle } : {}) }, this.global.settings.nsfwMode)
+    return results
+  }
+
+  _queryPodcastsByCategory = async (categoryId: string | null, sort: string | null, page: number = 1) => {
+    const { searchBarText: searchTitle } = this.state
+    const results = await getPodcasts({
+      categories: categoryId, sort, page,
+      ...(searchTitle ? { searchTitle } : {})
+    }, this.global.settings.nsfwMode)
+    return results
   }
 
   _queryPodcastData = async (
