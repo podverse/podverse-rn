@@ -166,7 +166,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         <EpisodeTableHeader
           handleMorePress={() => console.log('handleMorePress')}
-          podcastImageUrl={episode.podcast.imageUrl}
+          podcastImageUrl={(episode.podcast && episode.podcast_imageUrl) || episode.podcast_imageUrl}
           pubDate={episode.pubDate}
           title={episode.title} />
         <TableSectionSelectors
