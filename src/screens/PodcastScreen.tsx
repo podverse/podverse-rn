@@ -245,7 +245,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         {
           viewType === _aboutKey &&
             <View style={styles.aboutView}>
-              <Text>{podcast.description}</Text>
+              <Text style={styles.aboutViewText}>{podcast.description}</Text>
             </View>
         }
       </View>
@@ -368,6 +368,9 @@ const styles = {
     marginRight: 8,
     marginTop: 12
   },
+  aboutViewText: {
+    fontSize: PV.Fonts.sizes.lg
+  },
   ListHeaderComponent: {
     borderBottomWidth: 0,
     borderTopWidth: 0,
@@ -380,8 +383,6 @@ const styles = {
     marginTop: 8
   },
   view: {
-    flex: 1,
-    backgroundColor: 'yellow',
-    borderColor: 'yellow'
+    flex: 1
   }
 }
