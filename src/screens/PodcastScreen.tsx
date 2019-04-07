@@ -35,20 +35,34 @@ export class PodcastScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
+    const viewType = this.props.navigation.getParam('viewType') || _allEpisodesKey
+
     this.state = {
       endOfResultsReached: false,
       searchBarText: '',
       flatListData: [], // TODO: initially load downloaded
-      isLoading: false, // TODO: initially handle downloaded
+      isLoading: viewType !== _aboutKey, // TODO: initially handle downloaded
       isLoadingMore: false,
       isRefreshing: false,
       podcast: props.navigation.getParam('podcast'),
       queryPage: 1,
       querySort: _mostRecentKey,
-      viewType: this.props.navigation.getParam('viewType') || _downloadedKey
+      viewType
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
+  }
+
+  async componentDidMount() {
+    const { viewType } = this.state
+
+    if (viewType === _allEpisodesKey) {
+      const newState = await this._queryData(_allEpisodesKey)
+      this.setState(newState)
+    } else if (viewType === _clipsKey) {
+      const newState = await this._queryData(_clipsKey)
+      this.setState(newState)
+    }
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -131,7 +145,12 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _renderItem = ({ item }) => {
-    const { viewType } = this.state
+    const { podcast, viewType } = this.state
+
+    const episode = {
+      ...item,
+      podcast
+    }
 
     if (viewType === _downloadedKey) {
       return (
@@ -139,7 +158,9 @@ export class PodcastScreen extends React.Component<Props, State> {
           key={item.id}
           description={removeHTMLFromString(item.description)}
           handleMorePress={() => console.log('more press')}
-          handleNavigationPress={() => console.log('navigation press')}
+          handleNavigationPress={() => this.props.navigation.navigate(
+            PV.RouteNames.EpisodeScreen, { episode }
+          )}
           pubDate={item.pubDate}
           title={item.title} />
       )
@@ -149,7 +170,9 @@ export class PodcastScreen extends React.Component<Props, State> {
           key={item.id}
           description={removeHTMLFromString(item.description)}
           handleMorePress={() => console.log('more press')}
-          handleNavigationPress={() => console.log('navigation press')}
+          handleNavigationPress={() => this.props.navigation.navigate(
+            PV.RouteNames.EpisodeScreen, { episode }
+          )}
           pubDate={item.pubDate}
           title={item.title} />
       )
@@ -268,7 +291,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     return results
   }
 
-  _queryData = async (filterKey: string | null, queryOptions: { searchAllFieldsText?: string } = {}) => {
+  _queryData = async (filterKey: string | null, queryOptions: { queryPage?: number, searchAllFieldsText?: string } = {}) => {
     const { flatListData, podcast, queryPage, querySort, viewType } = this.state
     const newState = {
       isLoading: false,
@@ -363,10 +386,7 @@ const rightItems = [
 
 const styles = {
   aboutView: {
-    marginBottom: 12,
-    marginLeft: 8,
-    marginRight: 8,
-    marginTop: 12
+    margin: 8
   },
   aboutViewText: {
     fontSize: PV.Fonts.sizes.lg

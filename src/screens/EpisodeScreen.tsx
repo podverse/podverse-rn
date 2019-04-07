@@ -1,20 +1,26 @@
-import { FlatList } from 'react-native-gesture-handler'
+import debounce from 'lodash/debounce'
 import React from 'reactn'
-import { ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, TableSectionSelectors, View
-  } from '../components'
+import { ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, SearchBar,
+  TableSectionSelectors, Text, View } from '../components'
+import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
 }
 
 type State = {
+  endOfResultsReached: boolean
   episode: any
-  fromSelected: string
+  flatListData: any[]
   isLoading: boolean
-  mediaRefs: any[]
-  sortSelected: string
+  isLoadingMore: boolean
+  queryPage: number
+  querySort: string | null
+  searchBarText: string
+  viewType: string | null
 }
 
 export class EpisodeScreen extends React.Component<Props, State> {
@@ -25,127 +31,271 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    const episode = this.props.navigation.getParam('episode')
+
+    const viewType = this.props.navigation.getParam('viewType') || _clipsKey
 
     this.state = {
-      episode: episode ? episode : {},
-      fromSelected: 'Clips',
-      isLoading: true,
-      mediaRefs: [],
-      sortSelected: 'most recent'
+      endOfResultsReached: false,
+      episode: props.navigation.getParam('episode'),
+      flatListData: [],
+      isLoading: viewType === _clipsKey,
+      isLoadingMore: false,
+      queryPage: 1,
+      querySort: _mostRecentKey,
+      searchBarText: '',
+      viewType
     }
+
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
   }
 
   async componentDidMount() {
-    const { episode } = this.state
-    const { settings } = this.global
-    const { nsfwMode } = settings
-    const results = await getMediaRefs(episode.id, nsfwMode)
+    const { viewType } = this.state
+
+    if (viewType === _clipsKey) {
+      const newState = await this._queryClipsData(_clipsKey)
+      this.setState(newState)
+    }
+  }
+
+  selectLeftItem = async (selectedKey: string) => {
+    if (!selectedKey) {
+      this.setState({ viewType: null })
+      return
+    }
+
     this.setState({
-      isLoading: false,
-      mediaRefs: results[0] || []
+      endOfResultsReached: selectedKey !== _clipsKey,
+      flatListData: [],
+      isLoading: selectedKey === _clipsKey,
+      queryPage: 1,
+      viewType: selectedKey
+    }, async () => {
+      if (selectedKey === _clipsKey) {
+        const newState = await this._queryClipsData(selectedKey)
+        this.setState(newState)
+      }
     })
   }
 
-  selectLeftItem = (fromSelected: string) => {
-    this.setState({ fromSelected })
+  selectRightItem = async (selectedKey: string) => {
+    if (!selectedKey) {
+      this.setState({ querySort: null })
+      return
+    }
+
+    this.setState({
+      flatListData: [],
+      endOfResultsReached: false,
+      isLoading: true,
+      querySort: selectedKey
+    }, async () => {
+      const newState = await this._queryClipsData(selectedKey)
+      this.setState(newState)
+    })
   }
 
-  selectRightItem = (sortSelected: string) => {
-    this.setState({ sortSelected })
+  _onEndReached = ({ distanceFromEnd }) => {
+    const { endOfResultsReached, queryPage = 1, viewType } = this.state
+    if (viewType === _clipsKey && !endOfResultsReached) {
+      if (distanceFromEnd > -1) {
+        this.setState({
+          isLoadingMore: true
+        }, async () => {
+          const newState = await this._queryClipsData(viewType, { queryPage: queryPage + 1 })
+          this.setState(newState)
+        })
+      }
+    }
   }
 
-  _renderClipTableCell = ({ item }) => {
+  _ListHeaderComponent = () => {
+    const { searchBarText } = this.state
+
     return (
-      <ClipTableCell
-        key={item.id}
-        endTime={item.endTime}
-        startTime={item.startTime}
-        title={item.title} />
+      <View style={styles.ListHeaderComponent}>
+        <SearchBar
+          containerStyle={styles.ListHeaderComponent}
+          inputContainerStyle={core.searchBar}
+          onChangeText={this._handleSearchBarTextChange}
+          onClear={this._handleSearchBarClear}
+          value={searchBarText} />
+      </View>
     )
   }
 
+  _ItemSeparatorComponent = () => {
+    return <Divider noMargin={true} />
+  }
+
+  _renderItem = ({ item }) => (
+    <ClipTableCell
+      key={item.id}
+      endTime={item.endTime}
+      handleMorePress={() => console.log('handleMorePress')}
+      startTime={item.startTime}
+      title={item.title} />
+  )
+
+  _handleSearchBarTextChange = (text: string) => {
+    const { viewType } = this.state
+
+    this.setState({
+      flatListData: [],
+      isLoadingMore: true,
+      queryPage: 1,
+      searchBarText: text
+    }, async () => {
+      this._handleSearchBarTextQuery(viewType, { searchAllFieldsText: text })
+    })
+  }
+
+  _handleSearchBarTextQuery = async (viewType: string | null, queryOptions: any) => {
+    const state = await this._queryClipsData(viewType, { searchAllFieldsText: queryOptions.searchAllFieldsText })
+    this.setState(state)
+  }
+
+  _handleSearchBarClear = (text: string) => {
+    this.setState({ searchBarText: '' })
+  }
+
   render() {
-    const { episode, fromSelected, isLoading, mediaRefs, sortSelected } = this.state
+    const { episode, flatListData, isLoading, isLoadingMore, querySort, viewType } = this.state
 
     return (
       <View style={styles.view}>
         <EpisodeTableHeader
-          podcastImageUrl={episode.podcast && episode.podcast.imageUrl}
+          handleMorePress={() => console.log('handleMorePress')}
+          podcastImageUrl={episode.podcast.imageUrl}
           pubDate={episode.pubDate}
           title={episode.title} />
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={rightItems}
-          selectedLeftItemKey={fromSelected}
-          selectedRightItemKey={sortSelected} />
+          rightItems={viewType && viewType !== _aboutKey ? rightItems : []}
+          selectedLeftItemKey={viewType}
+          selectedRightItemKey={querySort} />
         {
           isLoading &&
           <ActivityIndicator />
         }
         {
-          !isLoading &&
-            <FlatList
-              data={mediaRefs}
-              ItemSeparatorComponent={() => <Divider noMargin={true} />}
-              keyExtractor={(item) => item.id}
-              renderItem={this._renderClipTableCell} 
-              style={styles.flatList} />
+          !isLoading && viewType !== _aboutKey && flatListData &&
+          <FlatList
+            data={flatListData}
+            disableLeftSwipe={true}
+            extraData={flatListData}
+            isLoadingMore={isLoadingMore}
+            ItemSeparatorComponent={this._ItemSeparatorComponent}
+            {...(viewType === _clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
+            onEndReached={this._onEndReached}
+            renderItem={this._renderItem} />
+        }
+        {
+          viewType === _aboutKey &&
+          <View style={styles.aboutView}>
+            <Text style={styles.aboutViewText}>{removeHTMLFromString(episode.description)}</Text>
+          </View>
         }
       </View>
     )
   }
-}
 
-const styles = {
-  flatList: {
-    flex: 1,
-  },
-  view: {
-    flex: 1
+  _queryClipsData = async (filterKey: string, queryOptions: {
+    queryPage?: number, searchAllFieldsText?: string
+  } = {}) => {
+    const { episode, flatListData, queryPage, querySort, searchBarText: searchAllFieldsText } = this.state
+    const newState = {
+      isLoading: false,
+      isLoadingMore: false
+    } as State
+
+    if (rightItems.some((option) => option.value === filterKey)) {
+      const results = await getMediaRefs({
+        sort: filterKey,
+        page: queryPage,
+        episodeId: episode.id,
+        ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+      }, this.global.settings.nsfwMode)
+
+      newState.flatListData = [...flatListData, ...results[0]]
+      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+    } else if (!filterKey) {
+      newState.flatListData = []
+      newState.endOfResultsReached = true
+    } else {
+      const results = await getMediaRefs({
+        sort: querySort,
+        page: queryPage,
+        episodeId: episode.id,
+        ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+      }, this.global.settings.nsfwMode)
+      newState.flatListData = [...flatListData, ...results[0]]
+      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+    }
+
+    return newState
   }
 }
 
+const _clipsKey = 'clips'
+const _aboutKey = 'about'
+const _mostRecentKey = 'most-recent'
+const _topPastDay = 'top-past-day'
+const _topPastWeek = 'top-past-week'
+const _topPastMonth = 'top-past-month'
+const _topPastYear = 'top-past-year'
+
 const leftItems = [
   {
-    label: 'Downloaded',
-    value: 'Downloaded'
-  },
-  {
-    label: 'All Episodes',
-    value: 'All Episodes'
-  },
-  {
     label: 'Clips',
-    value: 'Clips'
+    value: _clipsKey
   },
   {
     label: 'About',
-    value: 'About'
+    value: _aboutKey
   }
 ]
 
 const rightItems = [
   {
     label: 'most recent',
-    value: 'most recent'
+    value: _mostRecentKey
   },
   {
     label: 'top - past day',
-    value: 'top - past day'
+    value: _topPastDay
   },
   {
     label: 'top - past week',
-    value: 'top - past week'
+    value: _topPastWeek
   },
   {
     label: 'top - past month',
-    value: 'top - past month'
+    value: _topPastMonth
   },
   {
     label: 'top - past year',
-    value: 'top - past year'
+    value: _topPastYear
   }
 ]
+
+const styles = {
+  aboutView: {
+    margin: 8
+  },
+  aboutViewText: {
+    fontSize: PV.Fonts.sizes.lg
+  },
+  ListHeaderComponent: {
+    borderBottomWidth: 0,
+    borderTopWidth: 0,
+    flex: 0,
+    height: PV.FlatList.searchBar.height,
+    justifyContent: 'center'
+  },
+  view: {
+    flex: 1
+  }
+}
