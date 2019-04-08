@@ -18,8 +18,8 @@ export const PVSearchBar = (props: Props) => {
   return (
     <SearchBar
       clearIcon={true}
-      containerStyle={[containerStyle, globalTheme.textInputWrapper]}
-      inputContainerStyle={[inputContainerStyle, globalTheme.textInput]}
+      containerStyle={[globalTheme.textInputWrapper, containerStyle]}
+      inputContainerStyle={[globalTheme.textInput, inputContainerStyle]}
       onChangeText={onChangeText}
       onClear={onClear}
       placeholder={placeholder}
