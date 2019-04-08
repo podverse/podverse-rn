@@ -105,7 +105,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           podcastTitle='The Joe Rogan Experience' />
         <Divider />
         <PlaylistTableCell
-          itemsTotal={123}
+          itemCount={123}
           title='Playlist Title #1' />
         <Divider />
         <ProfileTableCell title='Prof Chaos' />

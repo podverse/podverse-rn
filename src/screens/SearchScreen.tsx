@@ -121,7 +121,7 @@ export class SearchScreen extends React.Component<Props, State> {
           onClear={this._handleSearchBarClear}
           value={searchBarText} />
         {
-          !isLoading && flatListData &&
+          !isLoading && flatListData && flatListData.length > 0 &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={true}

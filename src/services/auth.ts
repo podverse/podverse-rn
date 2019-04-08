@@ -54,16 +54,10 @@ export const getLoggedInUserMediaRefs = async (query: any = {}, nsfwMode?: boole
   return response.json()
 }
 
-export const getLoggedInUserPlaylists = async (query: any = {}, nsfwMode?: boolean) => {
-  const filteredQuery = {
-    ...(query.page ? { page: query.page } : { page: 1 }),
-    ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' })
-  } as any
-
+export const getLoggedInUserPlaylists = async (nsfwMode?: boolean) => {
   const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
   const response = await request({
     endpoint: '/auth/playlists',
-    query: filteredQuery,
     headers: { Authorization: bearerToken }
   }, nsfwMode)
 

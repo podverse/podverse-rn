@@ -4,27 +4,27 @@ import { PV } from '../resources'
 import { Text, View } from './'
 
 type Props = {
-  itemsTotal?: number
+  itemCount?: number
   title?: string
 }
 
 export const PlaylistTableCell = (props: Props) => {
-  const { itemsTotal = 0, title } = props
+  const { itemCount = 0, title = 'untitled playlist' } = props
 
   return (
     <View style={styles.wrapper}>
       <Text style={styles.title}>{title}</Text>
       <Text
         isSecondary={true}
-        style={styles.itemsTotal}>
-        items: {itemsTotal}
+        style={styles.itemCount}>
+        items: {itemCount}
       </Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  itemsTotal: {
+  itemCount: {
     fontSize: PV.Fonts.sizes.md
   },
   title: {

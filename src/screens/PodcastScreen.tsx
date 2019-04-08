@@ -248,22 +248,22 @@ export class PodcastScreen extends React.Component<Props, State> {
           selectedRightItemKey={querySort} />
         {
           isLoading &&
-          <ActivityIndicator />
+            <ActivityIndicator />
         }
         {
-          !isLoading && viewType !== _aboutKey && flatListData &&
-          <FlatList
-            data={flatListData}
-            disableLeftSwipe={viewType !== _downloadedKey}
-            extraData={flatListData}
-            {...(viewType === _downloadedKey ? { handleHiddenItemPress: this._handleHiddenItemPress } : {})}
-            isLoadingMore={isLoadingMore}
-            isRefreshing={isRefreshing}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
-            {...(viewType === _allEpisodesKey || viewType === _clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
-            onEndReached={this._onEndReached}
-            renderHiddenItem={this._renderHiddenItem}
-            renderItem={this._renderItem} />
+          !isLoading && viewType !== _aboutKey && flatListData && flatListData.length > 0 &&
+            <FlatList
+              data={flatListData}
+              disableLeftSwipe={viewType !== _downloadedKey}
+              extraData={flatListData}
+              {...(viewType === _downloadedKey ? { handleHiddenItemPress: this._handleHiddenItemPress } : {})}
+              isLoadingMore={isLoadingMore}
+              isRefreshing={isRefreshing}
+              ItemSeparatorComponent={this._ItemSeparatorComponent}
+              {...(viewType === _allEpisodesKey || viewType === _clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
+              onEndReached={this._onEndReached}
+              renderHiddenItem={this._renderHiddenItem}
+              renderItem={this._renderItem} />
         }
         {
           viewType === _aboutKey &&

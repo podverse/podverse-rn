@@ -19,7 +19,7 @@ type Props = {
   isRefreshing?: boolean
   ItemSeparatorComponent?: any
   ListHeaderComponent?: any
-  onEndReached: any
+  onEndReached?: any
   onEndReachedThreshold?: number
   onRefresh?: any
   renderHiddenItem?: any

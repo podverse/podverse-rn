@@ -11,7 +11,7 @@ type Props = {
   leftItems: any[]
   placeholderLeft?: any
   placeholderRight?: any
-  rightItems: any[]
+  rightItems?: any[]
   selectedLeftItemKey: string | null
   selectedRightItemKey?: string | null
 }

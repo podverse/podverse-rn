@@ -267,7 +267,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && queryFrom && flatListData &&
+          !isLoading && queryFrom && flatListData && flatListData.length > 0 &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={queryFrom !== _subscribedKey}
