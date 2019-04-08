@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { SearchBar } from 'react-native-elements'
 import { useGlobal } from 'reactn'
 
