@@ -1,4 +1,5 @@
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
+import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { request } from './request'
 
@@ -16,39 +17,6 @@ export const getAuthenticatedUserInfo = async () => {
   return response.json()
 }
 
-// export const getLoggedInUserMediaRefs = async (bearerToken, nsfwMode, sort = 'most-recent', page = 1) => {
-//   let filteredQuery: any = {}
-//   filteredQuery.sort = sort
-//   filteredQuery.page = page
-//   const queryString = convertObjectToQueryString(filteredQuery)
-
-//   return axios(`${API_BASE_URL}/auth/mediaRefs?${queryString}`, {
-//     method: 'get',
-//     headers: {
-//       Authorization: bearerToken,
-//       nsfwMode
-//     },
-//     credentials: 'include'
-//   })
-// }
-
-// export const getLoggedInUserPlaylists = async (bearerToken, page = 1) => {
-//   let filteredQuery: any = {}
-//   filteredQuery.page = page
-//   const queryString = convertObjectToQueryString(filteredQuery)
-
-//   return axios(`${API_BASE_URL}/auth/playlists?${queryString}`, {
-//     method: 'get',
-//     data: {
-//       page
-//     },
-//     headers: {
-//       Authorization: bearerToken
-//     },
-//     credentials: 'include'
-//   })
-// }
-
 export const login = async (email: string, password: string) => {
   const response = await request({
     method: 'POST',
@@ -58,12 +26,8 @@ export const login = async (email: string, password: string) => {
       email,
       password
     },
-    query: {
-      includeBodyToken: true
-    },
-    opts: {
-      credentials: 'include'
-    }
+    query: { includeBodyToken: true },
+    opts: { credentials: 'include' }
   })
 
   const data = await response.json()
@@ -74,34 +38,51 @@ export const login = async (email: string, password: string) => {
   return data
 }
 
-export const logout = async () => {
-  return request({
-    endpoint: '/auth/logout',
-    method: 'POST',
-    opts: {
-      credentials: 'include'
-    }
-  })
+export const getLoggedInUserMediaRefs = async (query: any = {}, nsfwMode?: boolean) => {
+  const filteredQuery = {
+    ...(query.page ? { page: query.page } : { page: 1 }),
+    ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' })
+  } as any
+
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const response = await request({
+    endpoint: '/auth/mediaRefs',
+    query: filteredQuery,
+    headers: { Authorization: bearerToken }
+  }, nsfwMode)
+
+  return response.json()
 }
 
-// export const resetPassword = async (password?: string, resetPasswordToken?: string) => {
-//   return fetch(`${API_BASE_URL}/auth/reset-password`, {
-//     method: 'POST',
-//     body: JSON.stringify({
-//       password,
-//       resetPasswordToken
-//     })
-//   })
-// }
+export const getLoggedInUserPlaylists = async (query: any = {}, nsfwMode?: boolean) => {
+  const filteredQuery = {
+    ...(query.page ? { page: query.page } : { page: 1 }),
+    ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' })
+  } as any
 
-// export const sendResetPassword = async (email: string) => {
-//   return fetch(`${API_BASE_URL}/auth/send-reset-password`, {
-//     method: 'POST',
-//     body: JSON.stringify({
-//       email
-//     })
-//   })
-// }
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const response = await request({
+    endpoint: '/auth/playlists',
+    query: filteredQuery,
+    headers: { Authorization: bearerToken }
+  }, nsfwMode)
+
+  return response.json()
+}
+
+export const sendResetPassword = async (email: string) => {
+  const response = await request({
+    endpoint: '/auth/send-reset-password',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: {
+      email
+    },
+    opts: { credentials: 'include' }
+  })
+
+  return response.json()
+}
 
 export const signUp = async (email: string, password: string, name: string) => {
   const response = await request({
@@ -113,9 +94,7 @@ export const signUp = async (email: string, password: string, name: string) => {
       password,
       name
     },
-    query: {
-      includeBodyToken: true
-    },
+    query: { includeBodyToken: true },
     opts: { credentials: 'include' }
   })
 
@@ -128,6 +107,74 @@ export const signUp = async (email: string, password: string, name: string) => {
   return data
 }
 
-// export const verifyEmail = async (token: string) => {
-//   return fetch(`${API_BASE_URL}/auth/verify-email?token=${token}`)
-// }
+export const deleteLoggedInUser = async () => {
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const response = await request({
+    endpoint: '/auth/user',
+    method: 'DELETE',
+    headers: { Authorization: bearerToken },
+    opts: { credentials: 'include' }
+  })
+
+  return response.json()
+}
+
+export const updateLoggedInUser = async (data: any) => {
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const response = await request({
+    endpoint: '/auth/user',
+    method: 'PATCH',
+    headers: {
+      'Authorization': bearerToken,
+      'Content-Type': 'application/json'
+    },
+    body: data,
+    opts: { credentials: 'include' }
+  })
+
+  return response.json()
+}
+
+export const addOrUpdateUserHistoryItem = async (nowPlayingItem: NowPlayingItem) => {
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const response = await request({
+    endpoint: '/auth/user/add-or-update-history-item',
+    method: 'PATCH',
+    headers: {
+      'Authorization': bearerToken,
+      'Content-Type': 'application/json'
+    },
+    body: { historyItem: nowPlayingItem },
+    opts: { credentials: 'include' }
+  })
+
+  return response.json()
+}
+
+export const downloadLoggedInUserData = async (id: string) => {
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const response = await request({
+    endpoint: '/auth/user/download',
+    method: 'GET',
+    headers: { Authorization: bearerToken },
+    opts: { credentials: 'include' }
+  })
+
+  return response.json()
+}
+
+export const updateUserQueueItems = async (data: any) => {
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const response = await request({
+    endpoint: '/auth/user/update-queue',
+    method: 'PATCH',
+    headers: {
+      'Authorization': bearerToken,
+      'Content-Type': 'application/json'
+    },
+    body: data,
+    opts: { credentials: 'include' }
+  })
+
+  return response.json()
+}
