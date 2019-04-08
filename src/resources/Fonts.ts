@@ -11,6 +11,7 @@ export const Fonts: FontType = {
   weights: {
     thin: '300',
     normal: '400',
+    semibold: '500',
     bold: '600',
     extraBold: '700'
   }

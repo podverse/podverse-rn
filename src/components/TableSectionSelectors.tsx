@@ -9,7 +9,8 @@ type Props = {
   handleSelectLeftItem?: any
   handleSelectRightItem?: any
   leftItems: any[]
-  placeholder?: any
+  placeholderLeft?: any
+  placeholderRight?: any
   rightItems: any[]
   selectedLeftItemKey: string | null
   selectedRightItemKey?: string | null
@@ -17,7 +18,7 @@ type Props = {
 
 export const TableSectionSelectors = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
-  const { handleSelectLeftItem, handleSelectRightItem, leftItems = [], placeholder,
+  const { handleSelectLeftItem, handleSelectRightItem, leftItems = [], placeholderLeft, placeholderRight,
     rightItems = [], selectedLeftItemKey, selectedRightItemKey } = props
 
   const selectedLeftItem = leftItems.filter((x) => x.value === selectedLeftItemKey)[0] || {}
@@ -31,11 +32,11 @@ export const TableSectionSelectors = (props: Props) => {
         <RNPickerSelect
           items={leftItems}
           onValueChange={handleSelectLeftItem}
-          placeholder={placeholder}
+          placeholder={placeholderLeft || _placeholderDefault}
           style={styles.tableSectionHeaderButton}
           value={selectedLeftItemKey}>
           <Text style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
-            {selectedLeftItem.label || 'Select...'} &#9662;
+            {selectedLeftItem.label || (placeholderLeft && placeholderLeft.label) || _placeholderDefault.label} &#9662;
           </Text>
         </RNPickerSelect>
         {
@@ -43,11 +44,11 @@ export const TableSectionSelectors = (props: Props) => {
             <RNPickerSelect
               items={rightItems}
               onValueChange={handleSelectRightItem}
-              placeholder={placeholder}
+              placeholder={placeholderRight || _placeholderDefault}
               style={styles.tableSectionHeaderButton}
               value={selectedRightItemKey}>
               <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                {selectedRightItem.label || 'Select...'} &#9662;
+                {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label} &#9662;
               </Text>
             </RNPickerSelect>
 
@@ -58,11 +59,16 @@ export const TableSectionSelectors = (props: Props) => {
   )
 }
 
+const _placeholderDefault = {
+  label: 'Select...',
+  value: null
+}
+
 const styles = {
   tableSectionHeader: {
     alignItems: 'stretch',
     flexDirection: 'row',
-    height: 40,
+    height: PV.Table.sectionHeader.height,
     justifyContent: 'space-between',
     paddingLeft: 8,
     paddingRight: 8
@@ -74,12 +80,12 @@ const styles = {
   tableSectionHeaderTextLeft: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    lineHeight: 40,
+    lineHeight: PV.Table.sectionHeader.height,
     paddingRight: 8
   },
   tableSectionHeaderTextRight: {
     fontSize: PV.Fonts.sizes.xl,
-    lineHeight: 40,
+    lineHeight: PV.Table.sectionHeader.height,
     paddingLeft: 8
   }
 }

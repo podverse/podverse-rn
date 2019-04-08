@@ -5,6 +5,18 @@ export const darkTheme = StyleSheet.create({
   activityIndicator: {
     color: PV.Colors.grayLighter
   },
+  buttonGroup: {
+    backgroundColor: PV.Colors.grayDarkest
+  },
+  buttonGroupSelected: {
+    backgroundColor: PV.Colors.grayDark
+  },
+  buttonGroupText: {
+    color: PV.Colors.grayLighter
+  },
+  buttonGroupTextSelected: {
+    color: PV.Colors.white
+  },
   buttonPrimaryText: {
     color: PV.Colors.white
   },
@@ -25,6 +37,10 @@ export const darkTheme = StyleSheet.create({
   },
   player: {
     borderColor: PV.Colors.gray
+  },
+  swipeRowBack: {
+    backgroundColor: PV.Colors.gray,
+    color: PV.Colors.white
   },
   tabbar: {
     backgroundColor: PV.Colors.black
@@ -67,6 +83,18 @@ export const lightTheme = StyleSheet.create({
   activityIndicator: {
     color: PV.Colors.grayDarker
   },
+  buttonGroup: {
+    backgroundColor: PV.Colors.grayLightest
+  },
+  buttonGroupSelected: {
+    backgroundColor: PV.Colors.grayLight
+  },
+  buttonGroupText: {
+    color: PV.Colors.grayDarker
+  },
+  buttonGroupTextSelected: {
+    color: PV.Colors.black
+  },
   buttonPrimaryText: {
     color: PV.Colors.black
   },
@@ -87,6 +115,10 @@ export const lightTheme = StyleSheet.create({
   },
   player: {
     borderColor: PV.Colors.gray
+  },
+  swipeRowBack: {
+    backgroundColor: PV.Colors.gray,
+    color: PV.Colors.black
   },
   tabbar: {
     backgroundColor: PV.Colors.white
@@ -170,8 +202,11 @@ export const core = StyleSheet.create({
 })
 
 export const table = StyleSheet.create({
-  cellWrapper: {
-    height: 50,
-    justifyContent: 'center'
+  cellText: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.semibold,
+    height: PV.Table.cells.standard.height,
+    lineHeight: PV.Table.cells.standard.height,
+    paddingLeft: 8
   }
 })

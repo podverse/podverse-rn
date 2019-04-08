@@ -1,5 +1,7 @@
 export interface GlobalTheme {
   activityIndicator?: any
+  buttonGroupText?: any
+  buttonGroupTextSelected?: any
   buttonPrimaryText?: any
   buttonPrimaryTextDisabled?: any
   buttonPrimaryWrapper?: any
@@ -7,6 +9,7 @@ export interface GlobalTheme {
   divider?: any
   flatList?: any
   player?: any
+  swipeRowBack?: any
   tabbar?: any
   tabbarItem?: any
   tableCellTextPrimary?: any

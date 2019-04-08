@@ -5,9 +5,9 @@ import { createAppContainer, createStackNavigator, createSwitchNavigator,
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { PVTabBar } from './components'
 import { PV } from './resources'
-import { AuthScreen, ClipsScreen, DownloadsScreen, EpisodeScreen, EpisodesScreen, FindScreen,
+import { AuthScreen, ClipsScreen, DownloadsScreen, EpisodeScreen, EpisodesScreen,
   MoreScreen, MyProfileScreen, OnboardingScreen, PlaylistScreen, PlaylistsScreen,
-  PodcastScreen, PodcastsScreen, ProfileScreen, ProfilesScreen, SettingsScreen
+  PodcastScreen, PodcastsScreen, ProfileScreen, ProfilesScreen, SearchScreen, SettingsScreen
   } from './screens'
 
 const defaultNavigationOptions = {
@@ -90,16 +90,17 @@ const ClipsNavigator = createStackNavigator(
   }
 )
 
-const FindNavigator = createStackNavigator(
+const SearchNavigator = createStackNavigator(
   {
-    [PV.RouteNames.FindScreen]: FindScreen
+    [PV.RouteNames.SearchScreen]: SearchScreen,
+    [PV.RouteNames.SearchPodcastScreen]: PodcastScreen
   },
   {
     defaultNavigationOptions,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => (
         <Image
-          source={PV.Tabs.Find.icon}
+          source={PV.Tabs.Search.icon}
           height={25}
           width={25}
           style={{ tintColor }}
@@ -148,7 +149,7 @@ const TabNavigator = createBottomTabNavigator({
   Podcasts: PodcastsNavigator,
   Episodes: EpisodesNavigator,
   Clips: ClipsNavigator,
-  Find: FindNavigator,
+  Search: SearchNavigator,
   More: MoreNavigator
 }, {
   tabBarComponent: (props: any) => <PVTabBar {...props} />,

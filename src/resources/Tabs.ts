@@ -14,9 +14,9 @@ export const Tabs = {
     icon: require('./images/tab-clips.png'),
     index: 2
   },
-  Find: {
-    title: 'Find',
-    icon: require('./images/tab-find.png'),
+  Search: {
+    title: 'Search',
+    icon: require('./images/tab-search.png'),
     index: 3
   },
   More: {

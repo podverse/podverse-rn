@@ -119,12 +119,12 @@ const styles = StyleSheet.create({
   title: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.bold,
+    fontWeight: PV.Fonts.weights.semibold,
     justifyContent: 'flex-end'
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.bold
+    fontWeight: PV.Fonts.weights.semibold
   },
   image: {
     flex: 0,

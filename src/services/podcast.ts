@@ -21,7 +21,8 @@ export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
-    ...(query.searchTitle ? { searchTitle: query.searchTitle } : {})
+    ...(query.searchTitle ? { searchTitle: query.searchTitle } : {}),
+    ...(query.searchAuthor ? { searchAuthor: query.searchAuthor } : {})
   } as any
 
   if (query.categories) {

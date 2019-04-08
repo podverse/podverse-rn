@@ -7,8 +7,8 @@ import { Text, View } from './'
 type Props = {
   autoDownloadOn?: boolean
   downloadCount?: number
-  handleNavigationPress?: any
   lastEpisodePubDate?: string
+  onPress?: any
   podcastAuthors?: string
   podcastCategories?: string
   podcastImageUrl?: string
@@ -16,12 +16,12 @@ type Props = {
 }
 
 export const PodcastTableCell = (props: Props) => {
-  const { autoDownloadOn, downloadCount, handleNavigationPress, lastEpisodePubDate, podcastAuthors,
+  const { autoDownloadOn, downloadCount, lastEpisodePubDate, onPress, podcastAuthors,
     podcastCategories, podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,podcastTitle = 'untitled podcast'
     } = props
 
   return (
-    <TouchableWithoutFeedback onPress={handleNavigationPress}>
+    <TouchableWithoutFeedback onPress={onPress}>
       <View style={styles.wrapper}>
         <Image
           source={{ uri: podcastImageUrl }}
@@ -29,52 +29,64 @@ export const PodcastTableCell = (props: Props) => {
         <View style={styles.textWrapper}>
           <Text
             numberOfLines={3}
-            style={styles.title}>{podcastTitle}</Text>
-          <View style={styles.bottomTextWrapper}>
-            <View style={styles.bottomTextWrapperLeft}>
-              {
-                !!podcastCategories &&
+            style={styles.title}>
+            {podcastTitle}
+          </Text>
+          <View style={styles.textWrapperRow}>
+            {
+              !!podcastCategories &&
+                <View style={styles.textWrapperRowLeft}>
                   <Text
                     isSecondary={true}
+                    numberOfLines={1}
                     style={styles.bottomText}>
                     {podcastCategories}
                   </Text>
-              }
-              {
-                !!podcastAuthors &&
-                  <Text
-                    isSecondary={true}
-                    style={styles.bottomText}>
-                    {podcastAuthors}
-                  </Text>
-              }
-              {
-                !!downloadCount || downloadCount === 0 &&
-                  <Text
-                    isSecondary={true}
-                    style={styles.bottomText}>
-                    {`${downloadCount} downloaded`}
-                  </Text>
-              }
-            </View>
-            <View style={styles.bottomTextWrapperRight}>
-              {
-                autoDownloadOn &&
+                </View>
+            }
+            {
+              autoDownloadOn &&
+                <View style={styles.textWrapperRowRight}>
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
                     Auto DL On
                   </Text>
-              }
-              {
-                lastEpisodePubDate &&
+                </View>
+            }
+          </View>
+          <View style={styles.textWrapperRow}>
+            {
+              !!podcastAuthors &&
+                <View style={styles.textWrapperRowLeft}>
+                  <Text
+                    isSecondary={true}
+                    numberOfLines={1}
+                    style={styles.bottomText}>
+                    {podcastAuthors}
+                  </Text>
+                </View>
+            }
+            {
+              !!downloadCount || downloadCount === 0 &&
+                <View style={styles.textWrapperRowLeft}>
+                  <Text
+                    isSecondary={true}
+                    style={styles.bottomText}>
+                    {`${downloadCount} downloaded`}
+                  </Text>
+                </View>
+            }
+            {
+              lastEpisodePubDate &&
+                <View style={styles.textWrapperRowRight}>
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
                     {readableDate(lastEpisodePubDate)}
                   </Text>
-              }
-            </View>
+                </View>
+            }
           </View>
         </View>
       </View>
@@ -89,24 +101,24 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 2
   },
-  bottomTextWrapper: {
-    flex: 1,
+  textWrapperRow: {
+    flex: 0,
     flexDirection: 'row'
   },
-  bottomTextWrapperLeft: {
+  textWrapperRowLeft: {
     flex: 1,
     justifyContent: 'flex-end'
   },
-  bottomTextWrapperRight: {
+  textWrapperRowRight: {
     alignItems: 'flex-end',
     flex: 1,
     justifyContent: 'flex-end'
   },
   image: {
     flex: 0,
-    height: PV.Cells.podcast.image.height,
+    height: PV.Table.cells.podcast.image.height,
     marginRight: 12,
-    width: PV.Cells.podcast.image.width
+    width: PV.Table.cells.podcast.image.width
   },
   textWrapper: {
     flex: 1,
@@ -117,7 +129,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.bold
+    fontWeight: PV.Fonts.weights.semibold
   },
   wrapper: {
     flexDirection: 'row'
