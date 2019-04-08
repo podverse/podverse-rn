@@ -1,20 +1,21 @@
 import React from 'react'
-import { FlatList, TextInput } from 'react-native'
+import { FlatList } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { GlobalTheme } from '../resources/Interfaces'
-import { core } from '../styles'
 import { ActivityIndicator, View } from './'
 
 type Props = {
   data?: any
   extraData?: any
-  filterInputText?: string
+  searchBarText?: string
   handleFilterInputChangeText?: any
+  handleFilterInputClear?: any
   handleGetItemLayout?: any
   initialScrollIndex?: number
   isLoadingMore?: boolean
   ItemSeparatorComponent?: any
+  ListHeaderComponent?: any
   onEndReached: any
   onEndReachedThreshold?: number
   renderItem: any
@@ -22,8 +23,7 @@ type Props = {
 
 export const PVFlatList = (props: Props) => {
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
-  const { data, filterInputText, handleFilterInputChangeText,
-    isLoadingMore, ItemSeparatorComponent, onEndReached,
+  const { data, isLoadingMore, ItemSeparatorComponent, ListHeaderComponent, onEndReached,
     onEndReachedThreshold = 0.8, renderItem, extraData } = props
 
   let flatList: FlatList<any> | null
@@ -34,31 +34,20 @@ export const PVFlatList = (props: Props) => {
         extraData={extraData}
         ItemSeparatorComponent={ItemSeparatorComponent}
         keyExtractor={(item) => item.id}
-        onEndReached={onEndReached}
-        onLayout={() => {
-          flatList && flatList.scrollToOffset({ offset: PV.FlatList.filterInput.height, animated: false })
-        }}
-        ref={(ref) => {
-          flatList = ref
-        }}
-        onEndReachedThreshold={onEndReachedThreshold}
         ListFooterComponent={() => {
           if (isLoadingMore) {
             return <ActivityIndicator styles={styles.lastCell} />
           }
           return null
         }}
-        ListHeaderComponent={() => {
-          return (
-            <View style={styles.firstCell}>
-              <View style={[core.textInputWrapper, globalTheme.textInputWrapper]}>
-                <TextInput
-                  onChangeText={handleFilterInputChangeText}
-                  style={[core.textInput, globalTheme.textInput]}
-                  value={filterInputText} />
-              </View>
-            </View>
-          )
+        {...(ListHeaderComponent ? { ListHeaderComponent } : {})}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={onEndReachedThreshold}
+        onLayout={() => {
+          ListHeaderComponent && flatList && flatList.scrollToOffset({ offset: PV.FlatList.searchBar.height, animated: false })
+        }}
+        ref={(ref) => {
+          flatList = ref
         }}
         renderItem={renderItem}
         style={[globalTheme.flatList]} />
@@ -67,14 +56,6 @@ export const PVFlatList = (props: Props) => {
 }
 
 const styles = {
-  firstCell: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.md,
-    height: PV.FlatList.filterInput.height,
-    justifyContent: 'center',
-    lineHeight: PV.FlatList.filterInput.height,
-    textAlign: 'center'
-  },
   lastCell: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,

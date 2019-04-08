@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import debounce from 'lodash/debounce'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import React from 'reactn'
-import { ActivityIndicator, Divider, FlatList, PodcastTableCell, TableSectionSelectors,
+import { ActivityIndicator, Divider, FlatList, PodcastTableCell, SearchBar, TableSectionSelectors,
   View } from '../components'
 import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
@@ -9,6 +10,7 @@ import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { getSubscribedPodcasts } from '../state/actions/podcasts'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
@@ -17,7 +19,7 @@ type Props = {
 type State = {
   categoryItems: any[]
   endOfResultsReached: boolean
-  filterInputText: string
+  searchBarText: string
   flatListData: any[]
   isLoading: boolean
   isLoadingMore: boolean
@@ -40,7 +42,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.state = {
       categoryItems: [],
       endOfResultsReached: false,
-      filterInputText: '',
+      searchBarText: '',
       flatListData: [],
       isLoading: true,
       isLoadingMore: false,
@@ -51,6 +53,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       selectedSubCategory: null,
       subCategoryItems: []
     }
+
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
   }
 
   async componentDidMount() {
@@ -86,16 +90,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _queryAllPodcasts = async (sort: string | null, page: number = 1) => {
-    const results = await getPodcasts({ sort, page }, this.global.settings.nsfwMode)
+    const { searchBarText: searchTitle } = this.state
+    const results = await getPodcasts({ sort, page, ...(searchTitle ? { searchTitle } : {}) }, this.global.settings.nsfwMode)
     return results
   }
 
   _queryPodcastsByCategory = async (categoryId: string | null, sort: string | null, page: number = 1) => {
-    const results = await getPodcasts({
-      categories: categoryId,
-      sort,
-      page
-    }, this.global.settings.nsfwMode)
+    const { searchBarText: searchTitle } = this.state
+    const results = await getPodcasts({ categories: categoryId, sort, page,
+      ...(searchTitle ? { searchTitle } : {}) }, this.global.settings.nsfwMode)
     return results
   }
 
@@ -192,15 +195,48 @@ export class PodcastsScreen extends React.Component<Props, State> {
     return <Divider noMargin={true} />
   }
 
-  _handleFilterInputTextChange = (text: string) => {
+  _handleSearchBarTextChange = (text: string) => {
+    const { queryFrom } = this.state
+
     this.setState({
-      filterInputText: text
+      flatListData: [],
+      isLoadingMore: true,
+      queryPage: 1,
+      searchBarText: text
+    }, async () => {
+      this._handleSearchBarTextQuery(queryFrom, this.state, {}, { searchTitle: text })
     })
   }
 
+  _handleSearchBarTextQuery = async (queryFrom: string | null, prevState: any, newState: any, queryOptions: any) => {
+    const state = await this._queryPodcastData(queryFrom, prevState, newState, { searchTitle: queryOptions.searchTitle })
+    this.setState(state)
+  }
+
+  _handleSearchBarClear = (text: string) => {
+    this.setState({
+      searchBarText: ''
+    })
+  }
+
+  _ListHeaderComponent = () => {
+    const { searchBarText } = this.state
+
+    return (
+      <View style={styles.ListHeaderComponent}>
+        <SearchBar
+          containerStyle={styles.ListHeaderComponent}
+          inputContainerStyle={core.searchBar}
+          onChangeText={this._handleSearchBarTextChange}
+          onClear={this._handleSearchBarClear}
+          value={searchBarText} />
+      </View>
+    )
+  }
+
   render() {
-    const { categoryItems, filterInputText, flatListData, queryFrom, isLoading,
-      isLoadingMore, querySort, selectedCategory, selectedSubCategory, subCategoryItems } = this.state
+    const { categoryItems, flatListData, queryFrom, isLoading, isLoadingMore, querySort,
+      selectedCategory, selectedSubCategory, subCategoryItems } = this.state
 
     return (
       <View style={styles.view}>
@@ -230,10 +266,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
             <FlatList
               data={flatListData}
               extraData={flatListData}
-              filterInputText={filterInputText}
-              handleFilterInputChangeText={this._handleFilterInputTextChange}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
+              {...(queryFrom !== _subscribedKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
               onEndReached={this._onEndReached}
               renderItem={this._renderPodcastItem} />
         }
@@ -241,13 +276,17 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _queryPodcastData = async (filterKey: string | null, prevState: State, nextState?: {}, queryOptions: {isSubCategory?: boolean} = {}) => {
+  _queryPodcastData = async (
+    filterKey: string | null, prevState: State, nextState?: {},
+    queryOptions: { isSubCategory?: boolean, searchTitle?: string } = {}) => {
     const newState = {
       isLoading: false,
+      isLoadingMore: false,
       ...nextState
     } as State
 
-    const { flatListData = [], querySort } = prevState
+    const { searchBarText: searchTitle, flatListData = [], querySort, selectedCategory,
+      selectedSubCategory } = prevState
     const { settings } = this.global
     const { nsfwMode } = settings
     if (filterKey === _subscribedKey) {
@@ -275,10 +314,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.selectedCategory = _allCategoriesKey
       }
     } else if (rightItems.some((option) => option.value === filterKey)) {
-      const { selectedCategory, selectedSubCategory } = prevState
       const results = await getPodcasts({
         ...(selectedSubCategory || selectedCategory ? { categories: selectedSubCategory || selectedCategory } : {}) as object,
-        sort: filterKey
+        sort: filterKey, ...(searchTitle ? { searchTitle } : {})
       }, nsfwMode)
       newState.flatListData = results[0]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
@@ -290,10 +328,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.selectedSubCategory = _allCategoriesKey
       }
 
-      const results = await getPodcasts({
-        categories: filterKey,
-        sort: querySort
-      }, nsfwMode)
+      const results = await getPodcasts({ categories: filterKey, sort: querySort, ...(searchTitle ? { searchTitle } : {}) }, nsfwMode)
       newState.endOfResultsReached = results.length < 20
       newState.flatListData = results[0]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
@@ -357,6 +392,16 @@ const rightItems = [
 ]
 
 const styles = {
+  ListHeaderComponent: {
+    borderBottomWidth: 0,
+    borderTopWidth: 0,
+    flex: 0,
+    fontSize: PV.Fonts.sizes.md,
+    height: PV.FlatList.searchBar.height,
+    justifyContent: 'center',
+    lineHeight: PV.FlatList.searchBar.height,
+    textAlign: 'center'
+  },
   view: {
     flex: 1
   }
