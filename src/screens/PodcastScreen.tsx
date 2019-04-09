@@ -2,7 +2,7 @@ import debounce from 'lodash/debounce'
 import React from 'reactn'
 import { ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, PodcastTableHeader, SearchBar,
   SwipeRowBack, TableSectionSelectors, Text, View } from '../components'
-import { removeHTMLFromString } from '../lib/utility'
+import { readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
@@ -181,11 +181,9 @@ export class PodcastScreen extends React.Component<Props, State> {
         <ClipTableCell
           key={item.id}
           endTime={item.endTime}
-          episodePubDate={item.episode.pubDate}
+          episodePubDate={readableDate(item.episode.pubDate)}
           episodeTitle={item.episode.title}
           handleMorePress={() => console.log('more press')}
-          podcastImageUrl={item.episode.podcast.imageUrl}
-          podcastTitle={item.episode.podcast.title}
           startTime={item.startTime}
           title={item.title} />
       )

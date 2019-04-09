@@ -58,12 +58,21 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     return <Divider noMargin={true} />
   }
 
-  _renderPlaylistItem = ({ item }) => (
-    <PlaylistTableCell
-      key={item.id}
-      itemCount={item.itemCount}
-      title={item.title} />
-  )
+  _renderPlaylistItem = ({ item }) => {
+    const { queryFrom } = this.state
+    const ownerName = (item.owner && item.owner.name) || 'anonymous'
+
+    return (
+      <PlaylistTableCell
+        key={item.id}
+        {...(queryFrom === _subscribedPlaylistsKey ? { createdBy: ownerName } : {})}
+        itemCount={item.itemCount}
+        onPress={() => this.props.navigation.navigate(
+          PV.RouteNames.PlaylistScreen, { playlist: item }
+        )}
+        title={item.title} />
+    )
+  }
 
   render() {
     const { flatListData, queryFrom, isLoading, isLoadingMore } = this.state
