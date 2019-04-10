@@ -23,11 +23,14 @@ export const EpisodeTableHeader = (props: Props) => {
         <Text
           numberOfLines={3}
           style={styles.title}>{title}</Text>
-        <Text
-          isSecondary={true}
-          style={styles.pubDate}>
-          {readableDate(pubDate)}
-        </Text>
+        {
+          pubDate &&
+            <Text
+              isSecondary={true}
+              style={styles.pubDate}>
+              {readableDate(pubDate)}
+            </Text>
+        }
       </View>
       {
         handleMorePress &&

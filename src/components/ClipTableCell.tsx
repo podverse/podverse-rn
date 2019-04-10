@@ -1,5 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { useGlobal } from 'reactn'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, View } from './'
@@ -18,10 +19,24 @@ type Props = {
 export const ClipTableCell = (props: Props) => {
   const { endTime, episodePubDate, episodeTitle, handleMorePress, podcastImageUrl, podcastTitle,
     startTime, title = 'untitled clip' } = props
+  const [globalTheme] = useGlobal('globalTheme')
 
   const clipTime = readableClipTime(startTime, endTime)
 
   const showPodcastInfo = episodePubDate || episodeTitle || podcastImageUrl || podcastTitle
+
+  const moreButton = (
+    <View style={styles.buttonView}>
+      <TouchableOpacity
+        onPress={handleMorePress}
+        style={styles.moreButton}>
+        <Image
+          resizeMode='contain'
+          source={PV.Images.MORE}
+          style={[styles.moreButtonImage, globalTheme.buttonImage]} />
+      </TouchableOpacity>
+    </View>
+  )
 
   return (
     <View style={styles.wrapper}>
@@ -46,11 +61,11 @@ export const ClipTableCell = (props: Props) => {
               }
               {
                 episodeTitle &&
-                  <Text
-                    numberOfLines={1}
-                    style={styles.episodeTitle}>
-                    {episodeTitle}
-                  </Text>
+                <Text
+                  numberOfLines={1}
+                  style={styles.episodeTitle}>
+                  {episodeTitle}
+                </Text>
               }
               {
                 episodePubDate &&
@@ -62,13 +77,7 @@ export const ClipTableCell = (props: Props) => {
               }
             </View>
             {
-              handleMorePress &&
-              <View style={styles.buttonView}>
-                <TouchableOpacity
-                  style={styles.moreButton}>
-                  <Image source={PV.Images.MORE} style={styles.moreButtonImage} resizeMode='contain' />
-                </TouchableOpacity>
-              </View>
+              handleMorePress && moreButton
             }
           </View>
       }
@@ -85,13 +94,7 @@ export const ClipTableCell = (props: Props) => {
           </Text>
         </View>
         {
-          !showPodcastInfo && handleMorePress &&
-            <View style={styles.buttonView}>
-              <TouchableOpacity
-                style={styles.moreButton}>
-                <Image source={PV.Images.MORE} style={styles.moreButtonImage} resizeMode='contain' />
-              </TouchableOpacity>
-            </View>
+          !showPodcastInfo && handleMorePress && moreButton
         }
       </View>
     </View>
@@ -115,12 +118,6 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.sm,
     justifyContent: 'flex-end',
     marginTop: 4
-  },
-  title: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold,
-    justifyContent: 'flex-end'
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.md,
@@ -154,7 +151,14 @@ const styles = StyleSheet.create({
   textWrapper: {
     flex: 1,
     justifyContent: 'space-between',
-    paddingRight: 8
+    marginLeft: 8,
+    marginRight: 8
+  },
+  title: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.md,
+    fontWeight: PV.Fonts.weights.semibold,
+    justifyContent: 'flex-end'
   },
   wrapper: {
     marginBottom: 8,

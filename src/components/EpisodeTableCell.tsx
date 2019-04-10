@@ -1,5 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, View } from './'
@@ -17,7 +18,8 @@ type Props = {
 
 export const EpisodeTableCell = (props: Props) => {
   const { pubDate, description, title = 'untitled episode', handleMorePress,
-  handleNavigationPress, moreButtonAlignToTop, podcastImageUrl, podcastTitle } = props
+    handleNavigationPress, moreButtonAlignToTop, podcastImageUrl, podcastTitle } = props
+  const [globalTheme] = useGlobal('globalTheme')
 
   const moreButtonStyles = [styles.moreButton]
   if (moreButtonAlignToTop) moreButtonStyles.push(styles.moreButtonAlignToTop)
@@ -30,19 +32,19 @@ export const EpisodeTableCell = (props: Props) => {
           <View style={styles.innerTouchableView}>
             {
               podcastImageUrl &&
-                <Image
-                  source={{ uri: podcastImageUrl }}
-                  style={styles.image} />
+              <Image
+                source={{ uri: podcastImageUrl }}
+                style={styles.image} />
             }
             <View style={styles.textWrapper}>
               {
                 podcastTitle &&
-                  <Text
-                    isSecondary={true}
-                    numberOfLines={1}
-                    style={styles.podcastTitle}>
-                    {podcastTitle}
-                  </Text>
+                <Text
+                  isSecondary={true}
+                  numberOfLines={1}
+                  style={styles.podcastTitle}>
+                  {podcastTitle}
+                </Text>
               }
               <Text
                 numberOfLines={2}
@@ -51,11 +53,11 @@ export const EpisodeTableCell = (props: Props) => {
               </Text>
               {
                 pubDate &&
-                  <Text
-                    isSecondary={true}
-                    style={styles.bottomText}>
-                    {readableDate(pubDate)}
-                  </Text>
+                <Text
+                  isSecondary={true}
+                  style={styles.bottomText}>
+                  {readableDate(pubDate)}
+                </Text>
               }
             </View>
           </View>
@@ -63,21 +65,25 @@ export const EpisodeTableCell = (props: Props) => {
         {
           handleMorePress &&
             <TouchableOpacity
+              onPress={handleMorePress}
               style={moreButtonStyles}>
-              <Image source={PV.Images.MORE} style={styles.moreButtonImage} resizeMode='contain' />
+              <Image
+                source={PV.Images.MORE}
+                style={[styles.moreButtonImage, globalTheme.buttonImage]}
+                resizeMode='contain' />
             </TouchableOpacity>
         }
       </View>
       {
         description &&
-        <TouchableWithoutFeedback
-          onPress={handleNavigationPress}>
-          <Text
-            numberOfLines={4}
-            style={styles.description}>
-            {description}
-          </Text>
-        </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPress={handleNavigationPress}>
+            <Text
+              numberOfLines={4}
+              style={styles.description}>
+              {description}
+            </Text>
+          </TouchableWithoutFeedback>
       }
     </View>
   )
@@ -114,11 +120,9 @@ const styles = StyleSheet.create({
     marginTop: 'auto'
   },
   moreButtonImage: {
-    borderColor: 'white',
     borderRadius: 22,
     borderWidth: 1,
     height: 44,
-    tintColor: 'white',
     width: 44
   },
   moreButtonAlignToTop: {
@@ -139,8 +143,8 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.semibold
   },
   wrapper: {
-    marginBottom: 12,
-    marginTop: 12
+    paddingBottom: 12,
+    paddingTop: 12
   },
   wrapperTop: {
     flex: 1,

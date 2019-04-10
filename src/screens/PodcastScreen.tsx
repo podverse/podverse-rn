@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce'
 import React from 'reactn'
-import { ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, PodcastTableHeader, SearchBar,
-  SwipeRowBack, TableSectionSelectors, Text, View } from '../components'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
+  PodcastTableHeader, SearchBar, SwipeRowBack, TableSectionSelectors, Text, View } from '../components'
 import { readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
@@ -23,6 +23,7 @@ type State = {
   queryPage: number
   querySort: string | null
   searchBarText: string
+  showActionSheet: boolean
   viewType: string | null
 }
 
@@ -47,6 +48,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       podcast: props.navigation.getParam('podcast'),
       queryPage: 1,
       querySort: _mostRecentKey,
+      showActionSheet: false,
       viewType
     }
 
@@ -144,6 +146,14 @@ export class PodcastScreen extends React.Component<Props, State> {
     return <Divider noMargin={true} />
   }
 
+  _handleCancelPress = () => {
+    this.setState({ showActionSheet: false })
+  }
+
+  _handleMorePress = () => {
+    this.setState({ showActionSheet: true })
+  }
+
   _renderItem = ({ item }) => {
     const { podcast, viewType } = this.state
 
@@ -157,7 +167,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           key={item.id}
           description={removeHTMLFromString(item.description)}
-          handleMorePress={() => console.log('more press')}
+          handleMorePress={this._handleMorePress}
           handleNavigationPress={() => this.props.navigation.navigate(
             PV.RouteNames.EpisodeScreen, { episode }
           )}
@@ -169,7 +179,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           key={item.id}
           description={removeHTMLFromString(item.description)}
-          handleMorePress={() => console.log('more press')}
+          handleMorePress={this._handleMorePress}
           handleNavigationPress={() => this.props.navigation.navigate(
             PV.RouteNames.EpisodeScreen, { episode }
           )}
@@ -183,7 +193,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           endTime={item.endTime}
           episodePubDate={readableDate(item.episode.pubDate)}
           episodeTitle={item.episode.title}
-          handleMorePress={() => console.log('more press')}
+          handleMorePress={this._handleMorePress}
           startTime={item.startTime}
           title={item.title} />
       )
@@ -229,7 +239,9 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, isLoading, isLoadingMore, isRefreshing, podcast, querySort, viewType } = this.state
+    const { flatListData, isLoading, isLoadingMore, isRefreshing, podcast, querySort, showActionSheet,
+      viewType } = this.state
+    const { globalTheme } = this.global
 
     return (
       <View style={styles.view}>
@@ -269,6 +281,11 @@ export class PodcastScreen extends React.Component<Props, State> {
               <Text style={styles.aboutViewText}>{podcast.description}</Text>
             </View>
         }
+        <ActionSheet
+          globalTheme={globalTheme}
+          handleCancelPress={this._handleCancelPress}
+          items={moreButtons}
+          showModal={showActionSheet} />
       </View>
     )
   }
@@ -379,6 +396,34 @@ const rightItems = [
   {
     label: 'top - past year',
     value: _topPastYear
+  }
+]
+
+const moreButtons = [
+  {
+    key: 'stream',
+    text: 'Stream',
+    onPress: () => console.log('Stream')
+  },
+  {
+    key: 'download',
+    text: 'Download',
+    onPress: () => console.log('Download')
+  },
+  {
+    key: 'queueNext',
+    text: 'Queue: Next',
+    onPress: () => console.log('Queue: Next')
+  },
+  {
+    key: 'queueLast',
+    text: 'Queue: Last',
+    onPress: () => console.log('Queue: Last')
+  },
+  {
+    key: 'addToPlaylist',
+    text: 'Add to Playlist',
+    onPress: () => console.log('Add to Playlist')
   }
 ]
 

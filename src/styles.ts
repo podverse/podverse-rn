@@ -2,6 +2,29 @@ import { StyleSheet } from 'react-native'
 import { PV } from './resources'
 
 export const darkTheme = StyleSheet.create({
+  actionSheetButton: {
+    backgroundColor: PV.Colors.grayDarkest,
+    borderColor: PV.Colors.grayDark
+  },
+  actionSheetButtonCancel: {
+    backgroundColor: PV.Colors.grayDarker,
+    borderColor: PV.Colors.grayDark
+  },
+  actionSheetButtonText: {
+    color: PV.Colors.white
+  },
+  actionSheetButtonTextCancel: {
+    color: PV.Colors.white
+  },
+  actionSheetButtonUnderlay: {
+    backgroundColor: PV.Colors.grayDarker
+  },
+  actionSheetButtonCancelUnderlay: {
+    backgroundColor: PV.Colors.grayDark
+  },
+  actionSheetView: {
+    backgroundColor: PV.Colors.grayDarker
+  },
   activityIndicator: {
     color: PV.Colors.grayLighter
   },
@@ -16,6 +39,10 @@ export const darkTheme = StyleSheet.create({
   },
   buttonGroupTextSelected: {
     color: PV.Colors.white
+  },
+  buttonImage: {
+    borderColor: PV.Colors.white,
+    tintColor: PV.Colors.white
   },
   buttonPrimaryText: {
     color: PV.Colors.white
@@ -34,6 +61,9 @@ export const darkTheme = StyleSheet.create({
   },
   flatList: {
     backgroundColor: PV.Colors.black
+  },
+  modalBackdrop: {
+    backgroundColor: '#00000050'
   },
   player: {
     borderColor: PV.Colors.gray
@@ -80,6 +110,26 @@ export const darkTheme = StyleSheet.create({
 })
 
 export const lightTheme = StyleSheet.create({
+  actionSheetButton: {
+    backgroundColor: PV.Colors.white,
+    borderColor: PV.Colors.grayLighter
+  },
+  actionSheetButtonCancel: {
+    backgroundColor: PV.Colors.grayLightest,
+    borderColor: PV.Colors.grayLighter
+  },
+  actionSheetButtonText: {
+    color: PV.Colors.black
+  },
+  actionSheetButtonTextCancel: {
+    color: PV.Colors.black
+  },
+  actionSheetButtonUnderlay: {
+    backgroundColor: PV.Colors.grayLightest
+  },
+  actionSheetButtonCancelUnderlay: {
+    backgroundColor: PV.Colors.grayLighter
+  },
   activityIndicator: {
     color: PV.Colors.grayDarker
   },
@@ -94,6 +144,10 @@ export const lightTheme = StyleSheet.create({
   },
   buttonGroupTextSelected: {
     color: PV.Colors.black
+  },
+  buttonImage: {
+    borderColor: PV.Colors.black,
+    tintColor: PV.Colors.black
   },
   buttonPrimaryText: {
     color: PV.Colors.black
@@ -112,6 +166,9 @@ export const lightTheme = StyleSheet.create({
   },
   flatList: {
     backgroundColor: PV.Colors.white
+  },
+  modalBackdrop: {
+    backgroundColor: '#00000050'
   },
   player: {
     borderColor: PV.Colors.gray

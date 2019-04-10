@@ -1,7 +1,9 @@
 import debounce from 'lodash/debounce'
 import React from 'reactn'
-import { ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, SearchBar,
-  TableSectionSelectors, Text, View } from '../components'
+import {
+  ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, SearchBar,
+  TableSectionSelectors, Text, View
+} from '../components'
 import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
@@ -166,7 +168,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         <EpisodeTableHeader
           handleMorePress={() => console.log('handleMorePress')}
-          podcastImageUrl={(episode.podcast && episode.podcast_imageUrl) || episode.podcast_imageUrl}
+          podcastImageUrl={(episode.podcast && episode.podcast.imageUrl) || episode.podcast_imageUrl}
           pubDate={episode.pubDate}
           title={episode.title} />
         <TableSectionSelectors
@@ -178,25 +180,25 @@ export class EpisodeScreen extends React.Component<Props, State> {
           selectedRightItemKey={querySort} />
         {
           isLoading &&
-          <ActivityIndicator />
+            <ActivityIndicator />
         }
         {
           !isLoading && viewType !== _aboutKey && flatListData && flatListData.length > 0 &&
-          <FlatList
-            data={flatListData}
-            disableLeftSwipe={true}
-            extraData={flatListData}
-            isLoadingMore={isLoadingMore}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
-            {...(viewType === _clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
-            onEndReached={this._onEndReached}
-            renderItem={this._renderItem} />
+            <FlatList
+              data={flatListData}
+              disableLeftSwipe={true}
+              extraData={flatListData}
+              isLoadingMore={isLoadingMore}
+              ItemSeparatorComponent={this._ItemSeparatorComponent}
+              {...(viewType === _clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
+              onEndReached={this._onEndReached}
+              renderItem={this._renderItem} />
         }
         {
           viewType === _aboutKey &&
-          <View style={styles.aboutView}>
-            <Text style={styles.aboutViewText}>{removeHTMLFromString(episode.description)}</Text>
-          </View>
+            <View style={styles.aboutView}>
+              <Text style={styles.aboutViewText}>{removeHTMLFromString(episode.description)}</Text>
+            </View>
         }
       </View>
     )
