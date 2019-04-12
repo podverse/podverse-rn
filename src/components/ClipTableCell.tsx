@@ -45,35 +45,35 @@ export const ClipTableCell = (props: Props) => {
           <View style={styles.wrapperTop}>
             {
               podcastImageUrl &&
-              <Image
-                source={{ uri: podcastImageUrl }}
-                style={styles.image} />
+                <Image
+                  source={{ uri: podcastImageUrl }}
+                  style={styles.image} />
             }
             <View style={styles.textWrapper}>
               {
                 podcastTitle &&
-                <Text
-                  isSecondary={true}
-                  numberOfLines={1}
-                  style={styles.podcastTitle}>
-                  {podcastTitle}
-                </Text>
+                  <Text
+                    isSecondary={true}
+                    numberOfLines={1}
+                    style={styles.podcastTitle}>
+                    {podcastTitle}
+                  </Text>
               }
               {
                 episodeTitle &&
-                <Text
-                  numberOfLines={1}
-                  style={styles.episodeTitle}>
-                  {episodeTitle}
-                </Text>
+                  <Text
+                    numberOfLines={1}
+                    style={styles.episodeTitle}>
+                    {episodeTitle}
+                  </Text>
               }
               {
                 episodePubDate &&
-                <Text
-                  isSecondary={true}
-                  style={styles.bottomText}>
-                  {episodePubDate}
-                </Text>
+                  <Text
+                    isSecondary={true}
+                    style={styles.bottomText}>
+                    {episodePubDate}
+                  </Text>
               }
             </View>
             {

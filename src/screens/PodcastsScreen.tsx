@@ -7,9 +7,9 @@ import { ActivityIndicator, Divider, FlatList, PodcastTableCell, SearchBar, Swip
 import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
-import { getPodcasts, toggleSubscribeToPodcast } from '../services/podcast'
+import { getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { getSubscribedPodcasts } from '../state/actions/podcasts'
+import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcasts'
 import { core } from '../styles'
 
 type Props = {

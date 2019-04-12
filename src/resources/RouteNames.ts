@@ -9,6 +9,7 @@ export const RouteNames = {
   SearchSearchScreen: 'SearchSearchScreen',
   MainApp: 'MainApp',
   MoreScreen: 'MoreScreen',
+  MoreEpisodeScreen: 'MoreEpisodeScreen',
   MyProfileScreen: 'MyProfileScreen',
   Onboarding: 'Onboarding',
   OnboardingScreen: 'OnboardingScreen',
@@ -18,6 +19,7 @@ export const RouteNames = {
   PodcastsScreen: 'PodcastsScreen',
   ProfilesScreen: 'ProfilesScreen',
   ProfileScreen: 'ProfileScreen',
+  SearchEpisodeScreen: 'SearchEpisodeScreen',
   SearchPodcastScreen: 'SearchPodcastScreen',
   SettingsScreen: 'SettingsScreen',
   TabNavigator: 'TabNavigator'

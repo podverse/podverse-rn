@@ -1,11 +1,15 @@
 import debounce from 'lodash/debounce'
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBar, View } from '../components'
+import { ActionSheet, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBar, View
+  } from '../components'
 import { generateAuthorsText, generateCategoriesText } from '../lib/utility'
 import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
+import { toggleSubscribeToPodcast } from '../state/actions/podcasts'
 import { core } from '../styles'
+
+const { aboutKey, allEpisodesKey, clipsKey } = PV.Filters
 
 type Props = {
   navigation?: any
@@ -18,7 +22,9 @@ type State = {
   isLoadingMore?: boolean
   queryPage: number
   searchBarText: string
-  selected: number
+  searchType: number
+  selectedPodcast?: any
+  showActionSheet: boolean
 }
 
 export class SearchScreen extends React.Component<Props, State> {
@@ -36,7 +42,8 @@ export class SearchScreen extends React.Component<Props, State> {
       isLoadingMore: false,
       queryPage: 1,
       searchBarText: '',
-      selected: 0
+      searchType: 0,
+      showActionSheet: false
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
@@ -87,17 +94,34 @@ export class SearchScreen extends React.Component<Props, State> {
     }
   }
 
-  _onPress = (index) => this.setState({ selected: index })
+  _handleSearchTypePress = (index) => this.setState({ searchType: index })
+
+  _handleCancelPress = () => this.setState({ showActionSheet: false })
+
+  _handleMorePress = (podcast: any) => {
+    this.setState({
+      selectedPodcast: podcast,
+      showActionSheet: true
+    })
+  }
+
+  _handleNavigationPress = (podcast: any, viewType: string) => {
+    this.setState({ showActionSheet: false })
+    this.props.navigation.navigate(
+      PV.RouteNames.SearchPodcastScreen, {
+        podcast,
+        viewType,
+        isSearchScreen: true
+      }
+    )
+  }
 
   _renderPodcastItem = ({ item }) => {
-    console.log(item)
     return (
       <PodcastTableCell
         key={item.id}
         lastEpisodePubDate={item.lastEpisodePubDate}
-        onPress={() => this.props.navigation.navigate(
-          PV.RouteNames.SearchPodcastScreen, { podcast: item }
-        )}
+        onPress={() => this._handleMorePress(item)}
         podcastAuthors={generateAuthorsText(item.authors)}
         podcastCategories={generateCategoriesText(item.categories)}
         podcastImageUrl={item.imageUrl}
@@ -105,15 +129,52 @@ export class SearchScreen extends React.Component<Props, State> {
     )
   }
 
+  _moreButtons = (): any[] => {
+    const { selectedPodcast } = this.state
+    const { subscribedPodcastIds } = this.global.session.userInfo
+    const isSubscribed = selectedPodcast && subscribedPodcastIds
+      && subscribedPodcastIds.some((id: any) => id === selectedPodcast.id)
+
+    return [
+      {
+        key: 'toggleSubscribe',
+        text: isSubscribed ? 'Unsubscribe' : 'Subscribe',
+        onPress: () => selectedPodcast && this._toggleSubscribeToPodcast(selectedPodcast.id)
+      },
+      {
+        key: 'episodes',
+        text: 'Episodes',
+        onPress: () => this._handleNavigationPress(selectedPodcast, allEpisodesKey)
+      },
+      {
+        key: 'clips',
+        text: 'Clips',
+        onPress: () => this._handleNavigationPress(selectedPodcast, clipsKey)
+      },
+      {
+        key: 'about',
+        text: 'About',
+        onPress: () => this._handleNavigationPress(selectedPodcast, aboutKey)
+      }
+    ]
+  }
+
+  _toggleSubscribeToPodcast = async (id: string) => {
+    await toggleSubscribeToPodcast(id)
+    this.setState({ showActionSheet: false })
+  }
+
   render() {
-    const { flatListData, isLoading, isLoadingMore, searchBarText, selected } = this.state
+    const { flatListData, isLoading, isLoadingMore, searchBarText, searchType, showActionSheet
+      } = this.state
+    const { globalTheme } = this.global
 
     return (
       <View style={styles.view}>
         <ButtonGroup
           buttons={buttons}
-          onPress={this._onPress}
-          selectedIndex={selected} />
+          onPress={this._handleSearchTypePress}
+          selectedIndex={searchType} />
         <SearchBar
           containerStyle={styles.searchBarContainer}
           inputContainerStyle={core.searchBar}
@@ -131,18 +192,23 @@ export class SearchScreen extends React.Component<Props, State> {
               onEndReached={this._onEndReached}
               renderItem={this._renderPodcastItem} />
         }
+        <ActionSheet
+          globalTheme={globalTheme}
+          handleCancelPress={this._handleCancelPress}
+          items={this._moreButtons()}
+          showModal={showActionSheet} />
       </View>
     )
   }
 
   _queryPodcastData = async (nextPage?: boolean) => {
-    const { flatListData, queryPage, searchBarText, selected } = this.state
+    const { flatListData, queryPage, searchBarText, searchType } = this.state
     const page = nextPage ? queryPage + 1 : 1
 
     const results = await getPodcasts({
       page,
-      ...(selected === _podcastByTitle ? { searchTitle: searchBarText } : {}),
-      ...(selected === _podcastByHost ? { searchAuthor: searchBarText } : {})
+      ...(searchType === _podcastByTitle ? { searchTitle: searchBarText } : {}),
+      ...(searchType === _podcastByHost ? { searchAuthor: searchBarText } : {})
     }, this.global.settings.nsfwMode)
 
     const newFlatListData = [...flatListData, ...results[0]]

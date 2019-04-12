@@ -1,9 +1,7 @@
 import debounce from 'lodash/debounce'
 import React from 'reactn'
-import {
-  ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, SearchBar,
-  TableSectionSelectors, Text, View
-} from '../components'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, SearchBar,
+  TableSectionSelectors, Text, View } from '../components'
 import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
@@ -22,6 +20,7 @@ type State = {
   queryPage: number
   querySort: string | null
   searchBarText: string
+  showActionSheet: boolean
   viewType: string | null
 }
 
@@ -45,6 +44,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       queryPage: 1,
       querySort: _mostRecentKey,
       searchBarText: '',
+      showActionSheet: false,
       viewType
     }
 
@@ -134,10 +134,18 @@ export class EpisodeScreen extends React.Component<Props, State> {
     <ClipTableCell
       key={item.id}
       endTime={item.endTime}
-      handleMorePress={() => console.log('handleMorePress')}
+      handleMorePress={this._handleMorePress}
       startTime={item.startTime}
       title={item.title} />
   )
+
+  _handleCancelPress = () => {
+    this.setState({ showActionSheet: false })
+  }
+
+  _handleMorePress = () => {
+    this.setState({ showActionSheet: true })
+  }
 
   _handleSearchBarTextChange = (text: string) => {
     const { viewType } = this.state
@@ -162,12 +170,14 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { episode, flatListData, isLoading, isLoadingMore, querySort, viewType } = this.state
+    const { episode, flatListData, isLoading, isLoadingMore, querySort, showActionSheet,
+      viewType } = this.state
+    const { globalTheme } = this.global
 
     return (
       <View style={styles.view}>
         <EpisodeTableHeader
-          handleMorePress={() => console.log('handleMorePress')}
+          handleMorePress={this._handleMorePress}
           podcastImageUrl={(episode.podcast && episode.podcast.imageUrl) || episode.podcast_imageUrl}
           pubDate={episode.pubDate}
           title={episode.title} />
@@ -200,6 +210,11 @@ export class EpisodeScreen extends React.Component<Props, State> {
               <Text style={styles.aboutViewText}>{removeHTMLFromString(episode.description)}</Text>
             </View>
         }
+        <ActionSheet
+          globalTheme={globalTheme}
+          handleCancelPress={this._handleCancelPress}
+          items={moreButtons}
+          showModal={showActionSheet} />
       </View>
     )
   }
@@ -207,7 +222,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
   _queryClipData = async (filterKey: string, queryOptions: {
     queryPage?: number, searchAllFieldsText?: string
   } = {}) => {
-    const { episode, flatListData, queryPage, querySort, searchBarText: searchAllFieldsText } = this.state
+    const { episode, flatListData, querySort, searchBarText: searchAllFieldsText } = this.state
     const newState = {
       isLoading: false,
       isLoadingMore: false
@@ -216,7 +231,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     if (rightItems.some((option) => option.value === filterKey)) {
       const results = await getMediaRefs({
         sort: filterKey,
-        page: queryPage,
+        page: queryOptions.queryPage,
         episodeId: episode.id,
         ...(searchAllFieldsText ? { searchAllFieldsText } : {})
       }, this.global.settings.nsfwMode)
@@ -229,13 +244,15 @@ export class EpisodeScreen extends React.Component<Props, State> {
     } else {
       const results = await getMediaRefs({
         sort: querySort,
-        page: queryPage,
+        page: queryOptions.queryPage,
         episodeId: episode.id,
         ...(searchAllFieldsText ? { searchAllFieldsText } : {})
       }, this.global.settings.nsfwMode)
       newState.flatListData = [...flatListData, ...results[0]]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
     }
+
+    newState.queryPage = queryOptions.queryPage || 1
 
     return newState
   }
@@ -280,6 +297,34 @@ const rightItems = [
   {
     label: 'top - past year',
     value: _topPastYear
+  }
+]
+
+const moreButtons = [
+  {
+    key: 'stream',
+    text: 'Stream',
+    onPress: () => console.log('Stream')
+  },
+  {
+    key: 'download',
+    text: 'Download',
+    onPress: () => console.log('Download')
+  },
+  {
+    key: 'queueNext',
+    text: 'Queue: Next',
+    onPress: () => console.log('Queue: Next')
+  },
+  {
+    key: 'queueLast',
+    text: 'Queue: Last',
+    onPress: () => console.log('Queue: Last')
+  },
+  {
+    key: 'addToPlaylist',
+    text: 'Add to Playlist',
+    onPress: () => console.log('Add to Playlist')
   }
 ]
 

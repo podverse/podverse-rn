@@ -70,3 +70,15 @@ export interface FontType {
 export interface ISettings {
   nsfwMode: boolean
 }
+
+export interface FilterTypes {
+  downloadedKey: string
+  allEpisodesKey: string
+  clipsKey: string
+  aboutKey: string
+  mostRecentKey: string
+  topPastDay: string
+  topPastWeek: string
+  topPastMonth: string
+  topPastYear: string
+}

@@ -18,7 +18,7 @@ type Props = {
 
 export const EpisodeTableCell = (props: Props) => {
   const { pubDate, description, title = 'untitled episode', handleMorePress,
-    handleNavigationPress, moreButtonAlignToTop, podcastImageUrl, podcastTitle } = props
+  handleNavigationPress, moreButtonAlignToTop, podcastImageUrl, podcastTitle } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   const moreButtonStyles = [styles.moreButton]
@@ -32,19 +32,19 @@ export const EpisodeTableCell = (props: Props) => {
           <View style={styles.innerTouchableView}>
             {
               podcastImageUrl &&
-              <Image
-                source={{ uri: podcastImageUrl }}
-                style={styles.image} />
+                <Image
+                  source={{ uri: podcastImageUrl }}
+                  style={styles.image} />
             }
             <View style={styles.textWrapper}>
               {
                 podcastTitle &&
-                <Text
-                  isSecondary={true}
-                  numberOfLines={1}
-                  style={styles.podcastTitle}>
-                  {podcastTitle}
-                </Text>
+                  <Text
+                    isSecondary={true}
+                    numberOfLines={1}
+                    style={styles.podcastTitle}>
+                    {podcastTitle}
+                  </Text>
               }
               <Text
                 numberOfLines={2}
@@ -53,11 +53,11 @@ export const EpisodeTableCell = (props: Props) => {
               </Text>
               {
                 pubDate &&
-                <Text
-                  isSecondary={true}
-                  style={styles.bottomText}>
-                  {readableDate(pubDate)}
-                </Text>
+                  <Text
+                    isSecondary={true}
+                    style={styles.bottomText}>
+                    {readableDate(pubDate)}
+                  </Text>
               }
             </View>
           </View>
@@ -76,14 +76,14 @@ export const EpisodeTableCell = (props: Props) => {
       </View>
       {
         description &&
-          <TouchableWithoutFeedback
-            onPress={handleNavigationPress}>
-            <Text
-              numberOfLines={4}
-              style={styles.description}>
-              {description}
-            </Text>
-          </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback
+          onPress={handleNavigationPress}>
+          <Text
+            numberOfLines={4}
+            style={styles.description}>
+            {description}
+          </Text>
+        </TouchableWithoutFeedback>
       }
     </View>
   )

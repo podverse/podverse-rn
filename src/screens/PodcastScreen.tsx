@@ -9,6 +9,9 @@ import { getMediaRefs } from '../services/mediaRef'
 import { getPodcast } from '../services/podcast'
 import { core } from '../styles'
 
+const { aboutKey, allEpisodesKey, clipsKey, downloadedKey, mostRecentKey, topPastDay, topPastMonth,
+  topPastWeek, topPastYear } = PV.Filters
+
 type Props = {
   navigation?: any
 }
@@ -19,6 +22,7 @@ type State = {
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
+  isSearchScreen?: boolean
   podcast: any
   queryPage: number
   querySort: string | null
@@ -36,18 +40,18 @@ export class PodcastScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    const viewType = this.props.navigation.getParam('viewType') || _allEpisodesKey
+    const viewType = this.props.navigation.getParam('viewType') || allEpisodesKey
 
     this.state = {
       endOfResultsReached: false,
       searchBarText: '',
       flatListData: [], // TODO: initially load downloaded
-      isLoading: viewType !== _aboutKey, // TODO: initially handle downloaded
+      isLoading: viewType !== downloadedKey, // TODO: initially handle downloaded
       isLoadingMore: false,
       isRefreshing: false,
       podcast: props.navigation.getParam('podcast'),
       queryPage: 1,
-      querySort: _mostRecentKey,
+      querySort: mostRecentKey,
       showActionSheet: false,
       viewType
     }
@@ -56,14 +60,20 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { viewType } = this.state
+    const { podcast, viewType } = this.state
 
-    if (viewType === _allEpisodesKey) {
-      const newState = await this._queryData(_allEpisodesKey)
+    if (viewType === allEpisodesKey) {
+      const newState = await this._queryData(allEpisodesKey)
       this.setState(newState)
-    } else if (viewType === _clipsKey) {
-      const newState = await this._queryData(_clipsKey)
+    } else if (viewType === clipsKey) {
+      const newState = await this._queryData(clipsKey)
       this.setState(newState)
+    } else if (viewType === aboutKey) {
+      const newPodcast = await getPodcast(podcast.id)
+      this.setState({
+        isLoading: false,
+        podcast: newPodcast
+      })
     }
   }
 
@@ -104,7 +114,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _onEndReached = ({ distanceFromEnd }) => {
     const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = this.state
-    if (viewType !== _downloadedKey && !endOfResultsReached && !isLoadingMore) {
+    if (viewType !== downloadedKey && !endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
         this.setState({
           isLoadingMore: true
@@ -161,28 +171,26 @@ export class PodcastScreen extends React.Component<Props, State> {
       ...item,
       podcast
     }
+    const isSearchScreen = this.props.navigation.getParam('isSearchScreen')
+    const screen = isSearchScreen ? PV.RouteNames.SearchEpisodeScreen : PV.RouteNames.EpisodeScreen
 
-    if (viewType === _downloadedKey) {
+    if (viewType === downloadedKey) {
       return (
         <EpisodeTableCell
           key={item.id}
           description={removeHTMLFromString(item.description)}
           handleMorePress={this._handleMorePress}
-          handleNavigationPress={() => this.props.navigation.navigate(
-            PV.RouteNames.EpisodeScreen, { episode }
-          )}
+          handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
           pubDate={item.pubDate}
           title={item.title} />
       )
-    } else if (viewType === _allEpisodesKey) {
+    } else if (viewType === allEpisodesKey) {
       return (
         <EpisodeTableCell
           key={item.id}
           description={removeHTMLFromString(item.description)}
           handleMorePress={this._handleMorePress}
-          handleNavigationPress={() => this.props.navigation.navigate(
-            PV.RouteNames.EpisodeScreen, { episode }
-          )}
+          handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
           pubDate={item.pubDate}
           title={item.title} />
       )
@@ -253,7 +261,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={viewType && viewType !== _aboutKey ? rightItems : []}
+          rightItems={viewType && viewType !== aboutKey ? rightItems : []}
           selectedLeftItemKey={viewType}
           selectedRightItemKey={querySort} />
         {
@@ -261,22 +269,22 @@ export class PodcastScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && viewType !== _aboutKey && flatListData && flatListData.length > 0 &&
+          !isLoading && viewType !== aboutKey && flatListData && flatListData.length > 0 &&
             <FlatList
               data={flatListData}
-              disableLeftSwipe={viewType !== _downloadedKey}
+              disableLeftSwipe={viewType !== downloadedKey}
               extraData={flatListData}
-              {...(viewType === _downloadedKey ? { handleHiddenItemPress: this._handleHiddenItemPress } : {})}
+              {...(viewType === downloadedKey ? { handleHiddenItemPress: this._handleHiddenItemPress } : {})}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
-              {...(viewType === _allEpisodesKey || viewType === _clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
+              {...(viewType === allEpisodesKey || viewType === clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
               onEndReached={this._onEndReached}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderItem} />
         }
         {
-          viewType === _aboutKey &&
+          viewType === aboutKey &&
             <View style={styles.aboutView}>
               <Text style={styles.aboutViewText}>{podcast.description}</Text>
             </View>
@@ -292,6 +300,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _queryAllEpisodes = async (sort: string | null, page: number = 1) => {
     const { podcast, searchBarText: searchAllFieldsText } = this.state
+    console.log('asdf', page)
     const results = await getEpisodes({
       sort, page, podcastId: podcast.id, ...(searchAllFieldsText ? { searchAllFieldsText } : {})
     }, this.global.settings.nsfwMode)
@@ -307,95 +316,87 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _queryData = async (filterKey: string | null, queryOptions: { queryPage?: number, searchAllFieldsText?: string } = {}) => {
-    const { flatListData, podcast, queryPage, querySort, viewType } = this.state
+    const { flatListData, podcast, querySort, viewType } = this.state
     const newState = {
       isLoading: false,
       isLoadingMore: false,
       isRefreshing: false
     } as State
 
-    if (filterKey === _downloadedKey) {
+    if (filterKey === downloadedKey) {
       console.log('retrieve downloaded from local storage')
       newState.flatListData = []
       newState.endOfResultsReached = true
-    } else if (filterKey === _allEpisodesKey) {
-      const results = await this._queryAllEpisodes(querySort, queryPage)
+    } else if (filterKey === allEpisodesKey) {
+      const results = await this._queryAllEpisodes(querySort, queryOptions.queryPage)
       newState.flatListData = [...flatListData, ...results[0]]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (filterKey === _clipsKey) {
-      const results = await this._queryClips(querySort, queryPage)
+    } else if (filterKey === clipsKey) {
+      const results = await this._queryClips(querySort, queryOptions.queryPage)
       newState.flatListData = [...flatListData, ...results[0]]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
     } else if (rightItems.some((option) => option.value === filterKey)) {
       let results = []
-      if (viewType === _downloadedKey) {
+      if (viewType === downloadedKey) {
         console.log('retrieve downloaded from local storage')
-      } else if (viewType === _allEpisodesKey) {
+      } else if (viewType === allEpisodesKey) {
         results = await this._queryAllEpisodes(querySort)
-      } else if (viewType === _clipsKey) {
+      } else if (viewType === clipsKey) {
         results = await this._queryClips(querySort)
       }
 
       newState.flatListData = [...flatListData, ...results[0]]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (filterKey === _aboutKey) {
+    } else if (filterKey === aboutKey) {
       const newPodcast = await getPodcast(podcast.id)
       newState.podcast = newPodcast
     }
+
+    newState.queryPage = queryOptions.queryPage || 1
 
     return newState
   }
 }
 
-const _downloadedKey = 'downloaded'
-const _allEpisodesKey = 'allEpisodes'
-const _clipsKey = 'clips'
-const _aboutKey = 'about'
-const _mostRecentKey = 'most-recent'
-const _topPastDay = 'top-past-day'
-const _topPastWeek = 'top-past-week'
-const _topPastMonth = 'top-past-month'
-const _topPastYear = 'top-past-year'
-
 const leftItems = [
   {
     label: 'Downloaded',
-    value: _downloadedKey
+    value: downloadedKey
   },
   {
     label: 'All Episodes',
-    value: _allEpisodesKey
+    value: allEpisodesKey
   },
   {
     label: 'Clips',
-    value: _clipsKey
+    value: clipsKey
   },
   {
     label: 'About',
-    value: _aboutKey
+    value: aboutKey
   }
 ]
 
 const rightItems = [
   {
     label: 'most recent',
-    value: _mostRecentKey
+    value: mostRecentKey
   },
   {
     label: 'top - past day',
-    value: _topPastDay
+    value: topPastDay
   },
   {
     label: 'top - past week',
-    value: _topPastWeek
+    value: topPastWeek
   },
   {
     label: 'top - past month',
-    value: _topPastMonth
+    value: topPastMonth
   },
   {
     label: 'top - past year',
-    value: _topPastYear
+    value: topPastYear
   }
 ]
 

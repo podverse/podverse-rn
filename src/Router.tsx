@@ -93,7 +93,8 @@ const ClipsNavigator = createStackNavigator(
 const SearchNavigator = createStackNavigator(
   {
     [PV.RouteNames.SearchScreen]: SearchScreen,
-    [PV.RouteNames.SearchPodcastScreen]: PodcastScreen
+    [PV.RouteNames.SearchPodcastScreen]: PodcastScreen,
+    [PV.RouteNames.SearchEpisodeScreen]: EpisodeScreen
   },
   {
     defaultNavigationOptions,
@@ -119,7 +120,8 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.PlaylistsScreen]: PlaylistsScreen,
     [PV.RouteNames.ProfileScreen]: ProfileScreen,
     [PV.RouteNames.ProfilesScreen]: ProfilesScreen,
-    [PV.RouteNames.SettingsScreen]: SettingsScreen
+    [PV.RouteNames.SettingsScreen]: SettingsScreen,
+    [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen
   },
   {
     defaultNavigationOptions,
