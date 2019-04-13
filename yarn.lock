@@ -910,6 +910,14 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.0.tgz#4c48fed958d6dcf9487195a0ef6456d5f6e0163a"
   integrity sha512-eItQyV43bj4rR3JPV0Skpl1SncRCdziTEK9/v8VwXmV6d/qOUO8/EuWeHBbCZcsfSHfzI5UyMJLCSXtxxznyZg==
 
+"@types/react-native-sortable-list@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@types/react-native-sortable-list/-/react-native-sortable-list-0.0.7.tgz#08966daf13a20e7d8e8129a791babb59b0bb6fde"
+  integrity sha512-xn6rN/WqBVdqNOOWh4t+ahpcjI6F185lbDIpXyYY0UvaPvnm/jX9w/HrVUS30O4IAsMbrQcDlXwPQ0Pn/RRNyQ==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
 "@types/react-native@*", "@types/react-native@^0.57.40":
   version "0.57.42"
   resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.57.42.tgz#06ad92cd1378146402b7667de13cb7b935d194d6"
@@ -5503,6 +5511,13 @@ react-native-secure-key-store@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/react-native-secure-key-store/-/react-native-secure-key-store-2.0.1.tgz#9e5caaff1ca94a986ce896b96c14d6a0a35586ec"
   integrity sha512-HIRW25AyOrTHI9uWfvljIRI/787+dhPFqFNOBi3f6GcWvUcIy779CfMk5mIprvwbg025zWfUjU3s3cdjwWxdWw==
+
+react-native-sortable-list@^0.0.23:
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/react-native-sortable-list/-/react-native-sortable-list-0.0.23.tgz#9a63d0fffb5442ea686aa0576c1ee9113714fdbf"
+  integrity sha512-qfjTWk9878gQCc3do4cqc3MlDEFmQRd98UuvDDwMIjhAGtIFnOWozp6KTv9zTJ3QBqe9VbvtswuK0rpXFgGzew==
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-status-bar-height@^2.2.0:
   version "2.3.1"

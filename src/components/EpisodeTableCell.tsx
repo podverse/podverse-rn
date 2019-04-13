@@ -24,44 +24,59 @@ export const EpisodeTableCell = (props: Props) => {
   const moreButtonStyles = [styles.moreButton]
   if (moreButtonAlignToTop) moreButtonStyles.push(styles.moreButtonAlignToTop)
 
+  const innerTopView = (
+    <View style={styles.innerTopView}>
+      {
+        podcastImageUrl &&
+        <Image
+          source={{ uri: podcastImageUrl }}
+          style={styles.image} />
+      }
+      <View style={styles.textWrapper}>
+        {
+          podcastTitle &&
+          <Text
+            isSecondary={true}
+            numberOfLines={1}
+            style={styles.podcastTitle}>
+            {podcastTitle}
+          </Text>
+        }
+        <Text
+          numberOfLines={2}
+          style={styles.title}>
+          {title}
+        </Text>
+        {
+          pubDate &&
+          <Text
+            isSecondary={true}
+            style={styles.bottomText}>
+            {readableDate(pubDate)}
+          </Text>
+        }
+      </View>
+    </View>
+  )
+
+  const bottomText = (
+    <Text
+      numberOfLines={4}
+      style={styles.description}>
+      {description}
+    </Text>
+  )
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.wrapperTop}>
-        <TouchableWithoutFeedback
-          onPress={handleNavigationPress}>
-          <View style={styles.innerTouchableView}>
-            {
-              podcastImageUrl &&
-                <Image
-                  source={{ uri: podcastImageUrl }}
-                  style={styles.image} />
-            }
-            <View style={styles.textWrapper}>
-              {
-                podcastTitle &&
-                  <Text
-                    isSecondary={true}
-                    numberOfLines={1}
-                    style={styles.podcastTitle}>
-                    {podcastTitle}
-                  </Text>
-              }
-              <Text
-                numberOfLines={2}
-                style={styles.title}>
-                {title}
-              </Text>
-              {
-                pubDate &&
-                  <Text
-                    isSecondary={true}
-                    style={styles.bottomText}>
-                    {readableDate(pubDate)}
-                  </Text>
-              }
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
+        {
+          handleNavigationPress ?
+            <TouchableWithoutFeedback onPress={handleNavigationPress}>
+              {innerTopView}
+            </TouchableWithoutFeedback> :
+            innerTopView
+        }
         {
           handleMorePress &&
             <TouchableOpacity
@@ -75,15 +90,13 @@ export const EpisodeTableCell = (props: Props) => {
         }
       </View>
       {
-        description &&
-        <TouchableWithoutFeedback
-          onPress={handleNavigationPress}>
-          <Text
-            numberOfLines={4}
-            style={styles.description}>
-            {description}
-          </Text>
+        description && handleNavigationPress &&
+        <TouchableWithoutFeedback onPress={handleNavigationPress}>
+          {bottomText}
         </TouchableWithoutFeedback>
+      }
+      {
+        description && !handleNavigationPress && bottomText
       }
     </View>
   )
@@ -108,7 +121,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     width: 60
   },
-  innerTouchableView: {
+  innerTopView: {
     flex: 1,
     flexDirection: 'row'
   },

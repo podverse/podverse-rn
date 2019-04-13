@@ -1,6 +1,6 @@
 import { Text, TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
+import { ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, SortableList, SortableListRow,
   TextInput, View } from '../components'
 import { combineAndSortPlaylistItems, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
@@ -12,10 +12,10 @@ type Props = {
 }
 
 type State = {
-  flatListData: any[]
   isLoading: boolean
   newTitle?: string
   playlist: any
+  sortableListData: any[]
 }
 
 export class EditPlaylistScreen extends React.Component<Props, State> {
@@ -36,10 +36,10 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     const playlist = props.navigation.getParam('playlist')
 
     this.state = {
-      flatListData: [],
       isLoading: true,
       newTitle: playlist.title,
-      playlist
+      playlist,
+      sortableListData: []
     }
   }
 
@@ -50,17 +50,20 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
 
     const newPlaylist = await getPlaylist(playlist.id)
     const { episodes, itemsOrder, mediaRefs } = newPlaylist
-    const flatListData = combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder)
+    const sortableListData = combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder)
 
     this.setState({
-      flatListData,
+      sortableListData,
       isLoading: false,
       playlist: newPlaylist
     })
   }
 
   _updatePlaylist = async () => {
-    const { newTitle, playlist } = this.state
+    const { newTitle, playlist, sortableListData } = this.state
+
+    console.log(sortableListData)
+
     await updatePlaylist({
       id: playlist.id,
       title: newTitle
@@ -72,42 +75,50 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
-  _renderItem = ({ item }) => {
-    if (item.startTime) {
-      return (
+  _renderRow = ({ active, data }) => {
+    let cell
+    if (data.startTime) {
+      cell = (
         <ClipTableCell
-          key={item.id}
-          endTime={item.endTime}
-          episodePubDate={item.episode.pubDate}
-          episodeTitle={item.episode.title}
-          podcastImageUrl={item.episode.podcast.imageUrl}
-          podcastTitle={item.episode.podcast.title}
-          startTime={item.startTime}
-          title={item.title} />
+          key={data.id}
+          endTime={data.endTime}
+          episodePubDate={data.episode.pubDate}
+          episodeTitle={data.episode.title}
+          podcastImageUrl={data.episode.podcast.imageUrl}
+          podcastTitle={data.episode.podcast.title}
+          startTime={data.startTime}
+          title={data.title} />
       )
     } else {
-      return (
+      cell = (
         <EpisodeTableCell
-          key={item.id}
-          description={removeHTMLFromString(item.description)}
-          handleNavigationPress={() => this.props.navigation.navigate(
-            PV.RouteNames.MoreEpisodeScreen,
-            { episode: item })
-          }
-          podcastImageUrl={item.podcast.imageUrl}
-          podcastTitle={item.podcast.title}
-          pubDate={item.pubDate}
-          title={item.title} />
+          key={data.id}
+          description={removeHTMLFromString(data.description)}
+          podcastImageUrl={data.podcast.imageUrl}
+          podcastTitle={data.podcast.title}
+          pubDate={data.pubDate}
+          title={data.title} />
       )
     }
+
+    return (
+      <SortableListRow
+        active={active}
+        cell={cell} />
+    )
   }
 
-  _onChangeTitle = (text) => {
+  _onChangeTitle = (text: string) => {
     this.setState({ newTitle: text })
   }
 
+  _onReleaseRow = (key: number, currentOrder: [string]) => {
+    console.log('key', key)
+    console.log('currentOrder', currentOrder)
+  }
+
   render() {
-    const { flatListData, isLoading, newTitle } = this.state
+    const { sortableListData, isLoading, newTitle } = this.state
 
     return (
       <View style={styles.view}>
@@ -124,13 +135,11 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           <ActivityIndicator />
         }
         {
-          !isLoading && flatListData && flatListData.length > 0 &&
-            <FlatList
-              data={flatListData}
-              disableLeftSwipe={true}
-              extraData={flatListData}
-              ItemSeparatorComponent={this._ItemSeparatorComponent}
-              renderItem={this._renderItem} />
+          !isLoading && sortableListData && sortableListData.length > 0 &&
+            <SortableList
+              data={sortableListData}
+              onReleaseRow={this._onReleaseRow}
+              renderRow={this._renderRow} />
         }
       </View>
     )
