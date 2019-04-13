@@ -1,9 +1,10 @@
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
   PlaylistTableHeader, View } from '../components'
-import { combineAndSortPlaylistItems } from '../lib/utility'
+import { combineAndSortPlaylistItems, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getPlaylist } from '../services/playlist'
+import { toggleSubscribeToPlaylist } from '../state/actions/playlists'
 
 type Props = {
   navigation?: any
@@ -22,18 +23,13 @@ type State = {
 
 export class PlaylistScreen extends React.Component<Props, State> {
 
-  static navigationOptions = {
-    title: 'Playlist'
-  }
+  static navigationOptions = ({ navigation }) => ({
+    title: navigation.getParam('navigationTitle')
+  })
 
   constructor(props: Props) {
     super(props)
     const playlist = props.navigation.getParam('playlist')
-    playlist.owner = {
-      id: this.global.session.userInfo.id,
-      name: 'Mitch'
-    }
-
     const { id, subscribedPlaylistIds } = this.global.session.userInfo
     const isLoggedInUserPlaylist = playlist.owner.id === id
     const isSubscribed = subscribedPlaylistIds.some((x: string) => playlist.id)
@@ -58,12 +54,13 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
     this.setState({
       flatListData,
+      isLoading: false,
       playlist: newPlaylist
     })
   }
 
   _ItemSeparatorComponent = () => {
-    return <Divider noMargin={true} />
+    return <Divider />
   }
 
   _renderItem = ({ item }) => {
@@ -75,8 +72,8 @@ export class PlaylistScreen extends React.Component<Props, State> {
           episodePubDate={item.episode.pubDate}
           episodeTitle={item.episode.title}
           handleMorePress={this._handleMorePress}
-          podcastImageUrl={item.podcast.imageUrl}
-          podcastTitle={item.podcast.title}
+          podcastImageUrl={item.episode.podcast.imageUrl}
+          podcastTitle={item.episode.podcast.title}
           startTime={item.startTime}
           title={item.title} />
       )
@@ -84,12 +81,14 @@ export class PlaylistScreen extends React.Component<Props, State> {
       return (
         <EpisodeTableCell
           key={item.id}
-          description={item.description}
+          description={removeHTMLFromString(item.description)}
           handleMorePress={this._handleMorePress}
           handleNavigationPress={() => this.props.navigation.navigate(
             PV.RouteNames.MoreEpisodeScreen,
             { episode: item })
           }
+          podcastImageUrl={item.podcast.imageUrl}
+          podcastTitle={item.podcast.title}
           pubDate={item.pubDate}
           title={item.title} />
       )
@@ -100,8 +99,12 @@ export class PlaylistScreen extends React.Component<Props, State> {
     console.log('handleEditPress')
   }
 
-  _handleSubscribeToggle = () => {
-    console.log('_handleSubscribeToggle')
+  _handleSubscribeToggle = async (id: string) => {
+    const { playlist } = this.state
+    await toggleSubscribeToPlaylist(id)
+    const { subscribedPlaylistIds } = this.global.session.userInfo
+    const isSubscribed = subscribedPlaylistIds.some((x: string) => playlist.id)
+    this.setState({ isSubscribed })
   }
 
   _handleCancelPress = () => {
@@ -123,9 +126,10 @@ export class PlaylistScreen extends React.Component<Props, State> {
           createdBy={isLoggedInUserPlaylist ? playlist.owner.name : null}
           handleEditPress={isLoggedInUserPlaylist ? this._handleEditPress : null}
           handleSubscribeToggle={isLoggedInUserPlaylist ? null : this._handleSubscribeToggle}
+          id={playlist.id}
           isSubscribed={isSubscribed}
           itemCount={playlist.itemCount}
-          lastUpdated={playlist.lastUpdated}
+          lastUpdated={playlist.updatedAt}
           title={playlist.title} />
         {
           isLoading &&

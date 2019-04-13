@@ -153,7 +153,7 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _ItemSeparatorComponent = () => {
-    return <Divider noMargin={true} />
+    return <Divider />
   }
 
   _handleCancelPress = () => {

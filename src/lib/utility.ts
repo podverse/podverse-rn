@@ -105,14 +105,24 @@ export const generateCategoryItems = (categories: any[]) => {
 }
 
 export const combineAndSortPlaylistItems = (episodes: [any], mediaRefs: [any], itemsOrder: [string]) => {
-  const playlistItems = [...episodes, ...mediaRefs]
+  const allPlaylistItems = [...episodes, ...mediaRefs]
+  const remainingPlaylistItems = [] as any[]
+  
+  const unsortedItems = allPlaylistItems.filter((x: any) => {
+    const isSortedItem = itemsOrder.some(id => x.id === id)
+    if (!isSortedItem) {
+      return x
+    } else {
+      remainingPlaylistItems.push(x)
+    }
+  })
 
-  return itemsOrder.map((id: string) => {
-    const items = playlistItems.filter((x: any) => x.id === id)
+  const sortedItems = itemsOrder.map((id: string) => {
+    const items = remainingPlaylistItems.filter((x: any) => x.id === id)
     if (items.length > 0) {
-      const index = playlistItems.indexOf(items[0])
-      playlistItems.splice(index, 1)
       return items[0]
     }
   })
+
+  return [...sortedItems, ...unsortedItems]
 }

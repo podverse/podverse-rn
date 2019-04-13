@@ -26,7 +26,7 @@ export const TableSectionSelectors = (props: Props) => {
 
   return (
     <View>
-      <Divider noMargin={true} />
+      <Divider />
       <View
         style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
         <RNPickerSelect
@@ -54,7 +54,7 @@ export const TableSectionSelectors = (props: Props) => {
 
         }
       </View>
-      <Divider noMargin={true} />
+      <Divider />
     </View>
   )
 }

@@ -55,7 +55,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
   }
 
   _ItemSeparatorComponent = () => {
-    return <Divider noMargin={true} />
+    return <Divider />
   }
 
   _renderPlaylistItem = ({ item }) => {
@@ -68,7 +68,10 @@ export class PlaylistsScreen extends React.Component<Props, State> {
         {...(queryFrom === _subscribedPlaylistsKey ? { createdBy: ownerName } : {})}
         itemCount={item.itemCount}
         onPress={() => this.props.navigation.navigate(
-          PV.RouteNames.PlaylistScreen, { playlist: item }
+          PV.RouteNames.PlaylistScreen, { 
+            playlist: item,
+            navigationTitle: queryFrom === _myPlaylistsKey ? 'My Playlist' : 'Playlist'
+          }
         )}
         title={item.title} />
     )
@@ -109,14 +112,15 @@ export class PlaylistsScreen extends React.Component<Props, State> {
       isLoadingMore: false
     } as State
     const nsfwMode = this.global.settings.nsfwMode
-
     if (filterKey === _myPlaylistsKey) {
       const results = await getLoggedInUserPlaylists(nsfwMode)
       newState.flatListData = results[0]
     } else {
       const playlistId = this.global.session.userInfo.subscribedPlaylistIds
-      const results = await getPlaylists({ playlistId }, nsfwMode)
-      newState.flatListData = results
+      if (playlistId && playlistId.length > 0) {
+        const results = await getPlaylists({ playlistId }, nsfwMode)
+        newState.flatListData = results
+      }
     }
 
     return newState

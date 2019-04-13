@@ -80,13 +80,13 @@ export class ClipsScreen extends React.Component<Props, State> {
           autoDownloadOn={true}
           podcastImageUrl='https://ssl-static.libsyn.com/p/assets/4/9/9/b/499b28131200cbd4/grumpy-old-geeks_v7.4.jpg'
           podcastTitle='Grumpy Old Geeks' />
-        <Divider noMargin={true} />
+        <Divider />
         <EpisodeTableHeader
           handleMorePress={() => console.log('handleMorePress')}
           podcastImageUrl='https://ssl-static.libsyn.com/p/assets/4/9/9/b/499b28131200cbd4/grumpy-old-geeks_v7.4.jpg'
           pubDate='3/4/19'
           title='One Hot Pocket at a Time' />
-        <Divider noMargin={true} />
+        <Divider />
         <PodcastTableCell
           // autoDownloadOn={true}
           // downloadCount={3}

@@ -52,7 +52,7 @@ export class MoreScreen extends React.Component<Props, State> {
     return (
       <View style={core.backgroundView}>
         <SectionList
-          ItemSeparatorComponent={() => <Divider noMargin={true} />}
+          ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item, separators }) => (
             <TouchableWithoutFeedback onPress={() => this._onPress(item)}>
               <Text style={[table.cellText, globalTheme.tableCellTextPrimary]}>{item.title}</Text>

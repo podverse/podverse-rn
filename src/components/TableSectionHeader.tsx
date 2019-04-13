@@ -14,14 +14,14 @@ export const TableSectionHeader = (props: Props) => {
 
   return (
     <View>
-      <Divider noMargin={true} />
+      <Divider />
       <View
         style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
         <Text style={[styles.tableSectionHeaderText, globalTheme.tableSectionHeaderText]}>
           {title}
         </Text>
       </View>
-      <Divider noMargin={true} />
+      <Divider />
     </View>
   )
 }
