@@ -13,6 +13,7 @@ type Props = {
 
 type State = {
   isLoading: boolean
+  newItemsOrderByIndex?: [string]
   newTitle?: string
   playlist: any
   sortableListData: any[]
@@ -53,22 +54,32 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     const sortableListData = combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder)
 
     this.setState({
-      sortableListData,
       isLoading: false,
-      playlist: newPlaylist
+      playlist: newPlaylist,
+      sortableListData
     })
   }
 
   _updatePlaylist = async () => {
-    const { newTitle, playlist, sortableListData } = this.state
-
-    console.log(sortableListData)
-
+    const { newTitle, playlist } = this.state
+    const itemsOrder = this._getItemsOrder()
     await updatePlaylist({
       id: playlist.id,
+      ...(itemsOrder.length > 0 ? { itemsOrder } : {}),
       title: newTitle
     })
     this.props.navigation.goBack(null)
+  }
+
+  _getItemsOrder = () => {
+    const { newItemsOrderByIndex, sortableListData } = this.state
+    const itemsOrder = []
+    if (newItemsOrderByIndex && newItemsOrderByIndex.length > 0) {
+      for (const index of newItemsOrderByIndex) {
+        itemsOrder.push(sortableListData[index].id)
+      }
+    }
+    return itemsOrder
   }
 
   _ItemSeparatorComponent = () => {
@@ -113,8 +124,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
   }
 
   _onReleaseRow = (key: number, currentOrder: [string]) => {
-    console.log('key', key)
-    console.log('currentOrder', currentOrder)
+    this.setState({ newItemsOrderByIndex: currentOrder })
   }
 
   render() {
