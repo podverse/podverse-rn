@@ -96,7 +96,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   _handleEditPress = () => {
-    console.log('handleEditPress')
+    this.props.navigation.navigate(PV.RouteNames.EditPlaylistScreen, { playlist: this.state.playlist })
   }
 
   _handleSubscribeToggle = async (id: string) => {

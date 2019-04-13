@@ -1,6 +1,7 @@
 export { AuthScreen } from './AuthScreen'
 export { ClipsScreen } from './ClipsScreen'
 export { DownloadsScreen } from './DownloadsScreen'
+export { EditPlaylistScreen } from './EditPlaylistScreen'
 export { EpisodeScreen } from './EpisodeScreen'
 export { EpisodesScreen } from './EpisodesScreen'
 export { MoreScreen } from './MoreScreen'

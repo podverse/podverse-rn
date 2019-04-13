@@ -3,6 +3,7 @@ export const RouteNames = {
   AuthScreen: 'AuthScreen',
   ClipsScreen: 'ClipsScreen',
   DownloadsScreen: 'DownloadsListScreen',
+  EditPlaylistScreen: 'EditPlaylistScreen',
   EpisodeScreen: 'EpisodeScreen',
   EpisodesScreen: 'EpisodesScreen',
   SearchScreen: 'SearchScreen',
