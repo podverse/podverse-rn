@@ -1,9 +1,11 @@
+import { Text, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
   TextInput, View } from '../components'
 import { combineAndSortPlaylistItems, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
-import { getPlaylist } from '../services/playlist'
+import { getPlaylist, updatePlaylist } from '../services/playlist'
+import { navHeader } from '../styles'
 
 type Props = {
   navigation?: any
@@ -18,8 +20,15 @@ type State = {
 
 export class EditPlaylistScreen extends React.Component<Props, State> {
 
-  static navigationOptions = {
-    title: 'Edit Playlist'
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Edit Playlist',
+      headerRight: (
+        <TouchableOpacity onPress={navigation.getParam('updatePlaylist')}>
+          <Text style={navHeader.textButton}>Save</Text>
+        </TouchableOpacity>
+      )
+    }
   }
 
   constructor(props: Props) {
@@ -36,6 +45,9 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { playlist } = this.state
+
+    this.props.navigation.setParams({ updatePlaylist: this._updatePlaylist })
+
     const newPlaylist = await getPlaylist(playlist.id)
     const { episodes, itemsOrder, mediaRefs } = newPlaylist
     const flatListData = combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder)
@@ -45,6 +57,15 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
       isLoading: false,
       playlist: newPlaylist
     })
+  }
+
+  _updatePlaylist = async () => {
+    const { newTitle, playlist } = this.state
+    await updatePlaylist({
+      id: playlist.id,
+      title: newTitle
+    })
+    this.props.navigation.goBack(null)
   }
 
   _ItemSeparatorComponent = () => {
@@ -94,6 +115,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           autoCapitalize='none'
           onChangeText={this._onChangeTitle}
           placeholder='playlist title'
+          style={styles.textInput}
           underlineColorAndroid='transparent'
           value={newTitle} />
         <Divider />
@@ -116,6 +138,9 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
 }
 
 const styles = {
+  textInput: {
+    fontSize: PV.Fonts.sizes.lg
+  },
   view: {
     flex: 1
   }

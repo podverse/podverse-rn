@@ -78,7 +78,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, queryFrom, isLoading, isLoadingMore } = this.state
+    const { flatListData, isLoading, isLoadingMore, queryFrom } = this.state
 
     return (
       <View style={styles.view}>

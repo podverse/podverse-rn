@@ -95,7 +95,11 @@ export const darkTheme = StyleSheet.create({
   },
   textInput: {
     backgroundColor: PV.Colors.black,
-    borderColor: PV.Colors.grayDarker
+    borderColor: PV.Colors.grayDarker,
+    color: PV.Colors.white
+  },
+  textInputPlaceholder: {
+    color: PV.Colors.gray
   },
   textInputWrapper: {
     backgroundColor: PV.Colors.black,
@@ -200,7 +204,11 @@ export const lightTheme = StyleSheet.create({
   },
   textInput: {
     backgroundColor: PV.Colors.white,
-    borderColor: PV.Colors.grayLighter
+    borderColor: PV.Colors.grayLighter,
+    color: PV.Colors.black
+  },
+  textInputPlaceholder: {
+    color: PV.Colors.gray
   },
   textInputWrapper: {
     backgroundColor: PV.Colors.white,
@@ -236,8 +244,9 @@ export const core = StyleSheet.create({
     borderWidth: 1
   },
   textInput: {
-    flex: 1,
-    height: 32,
+    fontSize: PV.Fonts.sizes.md,
+    height: 44,
+    marginVertical: 4,
     paddingLeft: 8,
     paddingRight: 8
   },
@@ -255,6 +264,14 @@ export const core = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center'
+  }
+})
+
+export const navHeader = StyleSheet.create({
+  textButton: {
+    color: PV.Colors.white,
+    fontSize: PV.Fonts.sizes.lg,
+    marginHorizontal: 12
   }
 })
 

@@ -1,6 +1,7 @@
 import React from 'react'
 import { TextInput } from 'react-native'
 import { useGlobal } from 'reactn'
+import { core } from '../styles'
 
 type Props = {
   autoCapitalize?: any
@@ -23,8 +24,9 @@ export const PVTextInput = (props: Props) => {
       keyboardType={keyboardType}
       onChangeText={onChangeText}
       placeholder={placeholder}
+      placeholderTextColor={globalTheme.textInputPlaceholder.color}
       secureTextEntry={secureTextEntry}
-      style={[style, globalTheme.textInput]}
+      style={[globalTheme.textInput, core.textInput, style]}
       underlineColorAndroid={underlineColorAndroid}
       value={value} />
   )
