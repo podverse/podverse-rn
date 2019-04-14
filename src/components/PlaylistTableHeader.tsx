@@ -29,7 +29,7 @@ export const PlaylistTableHeader = (props: Props) => {
             numberOfLines={1}
             style={styles.title}>{title}</Text>
           {
-            createdBy &&
+            !!createdBy &&
               <Text
                 isSecondary={true}
                 numberOfLines={1}

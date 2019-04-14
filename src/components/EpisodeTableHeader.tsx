@@ -26,7 +26,7 @@ export const EpisodeTableHeader = (props: Props) => {
           numberOfLines={3}
           style={styles.title}>{title}</Text>
         {
-          pubDate &&
+          !!pubDate &&
             <Text
               isSecondary={true}
               style={styles.pubDate}>

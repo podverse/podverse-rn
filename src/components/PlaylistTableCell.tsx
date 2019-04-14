@@ -30,7 +30,7 @@ export const PlaylistTableCell = (props: Props) => {
           </Text>
         </View>
         {
-          createdBy &&
+          !!createdBy &&
             <View style={styles.wrapperBottom}>
               <Text
                 isSecondary={true}

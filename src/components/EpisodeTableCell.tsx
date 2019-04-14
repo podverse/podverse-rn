@@ -27,14 +27,14 @@ export const EpisodeTableCell = (props: Props) => {
   const innerTopView = (
     <View style={styles.innerTopView}>
       {
-        podcastImageUrl &&
+        !!podcastImageUrl &&
         <Image
           source={{ uri: podcastImageUrl }}
           style={styles.image} />
       }
       <View style={styles.textWrapper}>
         {
-          podcastTitle &&
+          !!podcastTitle &&
           <Text
             isSecondary={true}
             numberOfLines={1}
@@ -48,7 +48,7 @@ export const EpisodeTableCell = (props: Props) => {
           {title}
         </Text>
         {
-          pubDate &&
+          !!pubDate &&
           <Text
             isSecondary={true}
             style={styles.bottomText}>
@@ -90,13 +90,13 @@ export const EpisodeTableCell = (props: Props) => {
         }
       </View>
       {
-        description && handleNavigationPress &&
+        !!description && handleNavigationPress &&
         <TouchableWithoutFeedback onPress={handleNavigationPress}>
           {bottomText}
         </TouchableWithoutFeedback>
       }
       {
-        description && !handleNavigationPress && bottomText
+        !!description && !handleNavigationPress && bottomText
       }
     </View>
   )

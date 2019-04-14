@@ -41,17 +41,17 @@ export const ClipTableCell = (props: Props) => {
   return (
     <View style={styles.wrapper}>
       {
-        showPodcastInfo &&
+        !!showPodcastInfo &&
           <View style={styles.wrapperTop}>
             {
-              podcastImageUrl &&
+              !!podcastImageUrl &&
                 <Image
                   source={{ uri: podcastImageUrl }}
                   style={styles.image} />
             }
             <View style={styles.textWrapper}>
               {
-                podcastTitle &&
+                !!podcastTitle &&
                   <Text
                     isSecondary={true}
                     numberOfLines={1}
@@ -60,7 +60,7 @@ export const ClipTableCell = (props: Props) => {
                   </Text>
               }
               {
-                episodeTitle &&
+                !!episodeTitle &&
                   <Text
                     numberOfLines={1}
                     style={styles.episodeTitle}>
@@ -68,7 +68,7 @@ export const ClipTableCell = (props: Props) => {
                   </Text>
               }
               {
-                episodePubDate &&
+                !!episodePubDate &&
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
