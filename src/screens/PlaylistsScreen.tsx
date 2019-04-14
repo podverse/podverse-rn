@@ -1,16 +1,15 @@
-import React from 'reactn'
+import React, { setGlobal } from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlaylistTableCell, TableSectionSelectors,
   View } from '../components'
 import { PV } from '../resources'
-import { getLoggedInUserPlaylists } from '../services/auth';
-import { getPlaylists } from '../services/playlist'
+import { getLoggedInUserPlaylists } from '../state/actions/auth';
+import { getPlaylists } from '../state/actions/playlists'
 
 type Props = {
   navigation?: any
 }
 
 type State = {
-  flatListData: any[]
   isLoading: boolean
   isLoadingMore: boolean
   queryFrom: string | null
@@ -25,7 +24,6 @@ export class PlaylistsScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      flatListData: [],
       isLoading: true,
       isLoadingMore: false,
       queryFrom: _myPlaylistsKey
@@ -44,13 +42,16 @@ export class PlaylistsScreen extends React.Component<Props, State> {
       return
     }
 
-    this.setState({
-      flatListData: [],
-      isLoading: true,
-      queryFrom: selectedKey
-    }, async () => {
-      const newState = await this._queryPlaylistData(selectedKey)
-      this.setState(newState)
+    setGlobal({
+      screenPlaylists: { flatListData: [] }
+    }, () => {
+      this.setState({
+        isLoading: true,
+        queryFrom: selectedKey
+      }, async () => {
+        const newState = await this._queryPlaylistData(selectedKey)
+        this.setState(newState)
+      })
     })
   }
 
@@ -78,7 +79,8 @@ export class PlaylistsScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, isLoading, isLoadingMore, queryFrom } = this.state
+    const { isLoading, isLoadingMore, queryFrom } = this.state
+    const { flatListData } = this.global.screenPlaylists
 
     return (
       <View style={styles.view}>
@@ -111,15 +113,14 @@ export class PlaylistsScreen extends React.Component<Props, State> {
       isLoading: false,
       isLoadingMore: false
     } as State
-    const nsfwMode = this.global.settings.nsfwMode
+
     if (filterKey === _myPlaylistsKey) {
-      const results = await getLoggedInUserPlaylists(nsfwMode)
-      newState.flatListData = results[0]
+      await getLoggedInUserPlaylists()
     } else {
       const playlistId = this.global.session.userInfo.subscribedPlaylistIds
+
       if (playlistId && playlistId.length > 0) {
-        const results = await getPlaylists({ playlistId }, nsfwMode)
-        newState.flatListData = results
+        await getPlaylists(playlistId)
       }
     }
 

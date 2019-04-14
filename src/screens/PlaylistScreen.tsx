@@ -1,10 +1,9 @@
-import React from 'reactn'
+import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
   PlaylistTableHeader, View } from '../components'
-import { combineAndSortPlaylistItems, removeHTMLFromString } from '../lib/utility'
+import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
-import { getPlaylist } from '../services/playlist'
-import { toggleSubscribeToPlaylist } from '../state/actions/playlists'
+import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlists'
 
 type Props = {
   navigation?: any
@@ -12,12 +11,10 @@ type Props = {
 
 type State = {
   endOfResultsReached: boolean
-  flatListData: any[]
   isLoading: boolean
   isLoadingMore: boolean
   isLoggedInUserPlaylist: boolean
   isSubscribed: boolean
-  playlist: any
   showActionSheet: boolean
 }
 
@@ -29,34 +26,32 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    const playlist = props.navigation.getParam('playlist')
     const { id, subscribedPlaylistIds } = this.global.session.userInfo
+    const playlist = this.props.navigation.getParam('playlist')
     const isLoggedInUserPlaylist = playlist.owner.id === id
     const isSubscribed = subscribedPlaylistIds.some((x: string) => playlist.id)
 
     this.state = {
       endOfResultsReached: false,
-      flatListData: [],
       isLoading: true,
       isLoadingMore: false,
       isLoggedInUserPlaylist,
       isSubscribed,
-      playlist,
       showActionSheet: false
     }
+
+    setGlobal({
+      screenPlaylist: {
+        flatListData: [],
+        playlist: null
+      }
+    })
   }
 
   async componentDidMount() {
-    const { playlist } = this.state
-    const newPlaylist = await getPlaylist(playlist.id)
-    const { episodes, itemsOrder, mediaRefs } = newPlaylist
-    const flatListData = combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder)
-
-    this.setState({
-      flatListData,
-      isLoading: false,
-      playlist: newPlaylist
-    })
+    const playlist = this.props.navigation.getParam('playlist')
+    await getPlaylist(playlist.id, this.global)
+    this.setState({ isLoading: false })
   }
 
   _ItemSeparatorComponent = () => {
@@ -96,11 +91,14 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   _handleEditPress = () => {
-    this.props.navigation.navigate(PV.RouteNames.EditPlaylistScreen, { playlist: this.state.playlist })
+    this.props.navigation.navigate(
+      PV.RouteNames.EditPlaylistScreen,
+      { playlist: this.global.screenPlaylist.playlist }
+    )
   }
 
   _handleSubscribeToggle = async (id: string) => {
-    const { playlist } = this.state
+    const { playlist } = this.global.screenPlaylist
     await toggleSubscribeToPlaylist(id)
     const { subscribedPlaylistIds } = this.global.session.userInfo
     const isSubscribed = subscribedPlaylistIds.some((x: string) => playlist.id)
@@ -116,9 +114,12 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, isLoading, isLoadingMore, isLoggedInUserPlaylist, isSubscribed, playlist,
+    const { isLoading, isLoadingMore, isLoggedInUserPlaylist, isSubscribed,
       showActionSheet } = this.state
     const { globalTheme } = this.global
+    const playlist = this.global.screenPlaylist.playlist ?
+      this.global.screenPlaylist.playlist : this.props.navigation.getParam('playlist')
+    const flatListData = this.global.screenPlaylist.flatListData || []
 
     return (
       <View style={styles.view}>

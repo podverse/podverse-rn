@@ -45,12 +45,19 @@ export interface UserInfo {
 }
 
 export interface InitialState {
-  globalTheme: GlobalTheme,
+  globalTheme: GlobalTheme
+  screenPlaylist: {
+    flatListData: []
+    playlist?: any
+  }
+  screenPlaylists: {
+    flatListData: []
+  }
   session: {
     userInfo: UserInfo,
     isLoggedIn: boolean
-  },
-  showPlayer: boolean,
+  }
+  showPlayer: boolean
   subscribedPodcasts: [{}]
 }
 

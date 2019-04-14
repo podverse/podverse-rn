@@ -4,7 +4,8 @@ import { ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, SortableLi
   TextInput, View } from '../components'
 import { combineAndSortPlaylistItems, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
-import { getPlaylist, updatePlaylist } from '../services/playlist'
+import { getPlaylist } from '../services/playlist'
+import { updatePlaylist } from '../state/actions/playlists'
 import { navHeader } from '../styles'
 
 type Props = {
@@ -67,7 +68,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
       id: playlist.id,
       ...(itemsOrder.length > 0 ? { itemsOrder } : {}),
       title: newTitle
-    })
+    }, this.global)
     this.props.navigation.goBack(null)
   }
 
