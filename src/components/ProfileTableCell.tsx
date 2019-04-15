@@ -4,21 +4,21 @@ import { PV } from '../resources'
 import { Text, View } from './'
 
 type Props = {
-  title?: string
+  name?: string
 }
 
 export const ProfileTableCell = (props: Props) => {
-  const { title } = props
+  const { name } = props
 
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.name}>{name || 'anonymous'}</Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  title: {
+  name: {
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.semibold
   },

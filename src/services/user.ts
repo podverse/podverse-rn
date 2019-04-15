@@ -24,7 +24,7 @@ export const getUserMediaRefs = async (userId: string, query: any = {}, nsfwMode
   return response.json()
 }
 
-export const getUserPlaylists = async (userId: string, query: any = {}, nsfwMode: boolean) => {
+export const getUserPlaylists = async (userId: string, query: any = {}) => {
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 })
   }
@@ -32,12 +32,12 @@ export const getUserPlaylists = async (userId: string, query: any = {}, nsfwMode
   const response = await request({
     endpoint: `/user/${userId}/playlists`,
     query: filteredQuery
-  }, nsfwMode)
+  })
 
   return response.json()
 }
 
-export const getPublicUsersByQuery = async (query: any = {}, nsfwMode: boolean) => {
+export const getPublicUsersByQuery = async (query: any = {}) => {
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.userIds ? { userIds: query.userIds } : {})
@@ -46,21 +46,7 @@ export const getPublicUsersByQuery = async (query: any = {}, nsfwMode: boolean) 
   const response = await request({
     endpoint: `/user`,
     query: filteredQuery
-  }, nsfwMode)
-
-  return response.json()
-}
-
-export const getPublicUsersByQuery = async (query: any = {}, nsfwMode: boolean) => {
-  const filteredQuery = {
-    ...(query.page ? { page: query.page } : { page: 1 }),
-    ...(query.userIds ? { userIds: query.userIds } : {})
-  }
-
-  const response = await request({
-    endpoint: `/user`,
-    query: filteredQuery
-  }, nsfwMode)
+  })
 
   return response.json()
 }

@@ -272,7 +272,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
               data={flatListData}
               disableLeftSwipe={queryFrom !== _subscribedKey}
               extraData={flatListData}
-              {...(queryFrom !== _subscribedKey ? { handleHiddenItemPress: this._handleHiddenItemPress } : {})}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
