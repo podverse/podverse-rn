@@ -1,19 +1,22 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { PV } from '../resources'
 import { Text, View } from './'
 
 type Props = {
   name?: string
+  onPress?: any
 }
 
 export const ProfileTableCell = (props: Props) => {
-  const { name } = props
+  const { name, onPress } = props
 
   return (
-    <View style={styles.wrapper}>
-      <Text style={styles.name}>{name || 'anonymous'}</Text>
-    </View>
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View style={styles.wrapper}>
+        <Text style={styles.name}>{name || 'anonymous'}</Text>
+      </View>
+    </TouchableWithoutFeedback>
   )
 }
 

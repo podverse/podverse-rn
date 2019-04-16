@@ -61,7 +61,10 @@ export class ProfilesScreen extends React.Component<Props, State> {
     return (
       <ProfileTableCell
         key={item.id}
-        name={item.name} />
+        name={item.name}
+        onPress={() => this.props.navigation.navigate(
+          PV.RouteNames.ProfileScreen, { user: item }
+        )} />
     )
   }
 
