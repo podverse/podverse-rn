@@ -85,19 +85,19 @@ export class ProfilesScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         {
           isLoading &&
-          <ActivityIndicator />
+            <ActivityIndicator />
         }
         {
           !isLoading && flatListData && flatListData.length > 0 &&
-          <FlatList
-            data={flatListData}
-            disableLeftSwipe={false}
-            extraData={flatListData}
-            isLoadingMore={isLoadingMore}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
-            onEndReached={this._onEndReached}
-            renderHiddenItem={this._renderHiddenItem}
-            renderItem={this._renderProfileItem} />
+            <FlatList
+              data={flatListData}
+              disableLeftSwipe={false}
+              extraData={flatListData}
+              isLoadingMore={isLoadingMore}
+              ItemSeparatorComponent={this._ItemSeparatorComponent}
+              onEndReached={this._onEndReached}
+              renderHiddenItem={this._renderHiddenItem}
+              renderItem={this._renderProfileItem} />
         }
       </View>
     )

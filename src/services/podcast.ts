@@ -19,10 +19,12 @@ export const searchPodcasts = async (title?: string, author?: string, nsfwMode?:
 
 export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
   const filteredQuery = {
+    ...(query.includeAuthors ? { includeAuthors: query.includeAuthors } : {}),
+    ...(query.includeCategories ? { includeCategories: query.includeCategories } : {}),
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
-    ...(query.searchTitle ? { searchTitle: query.searchTitle } : {}),
-    ...(query.searchAuthor ? { searchAuthor: query.searchAuthor } : {})
+    ...(query.searchAuthor ? { searchAuthor: query.searchAuthor } : {}),
+    ...(query.searchTitle ? { searchTitle: query.searchTitle } : {})
   } as any
 
   if (query.categories) {

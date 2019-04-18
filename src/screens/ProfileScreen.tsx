@@ -1,9 +1,10 @@
 import React from 'reactn'
 import { ActivityIndicator, ClipTableCell, Divider, FlatList, PlaylistTableCell,
-  PodcastTableCell, TableSectionSelectors, View } from '../components'
+  PodcastTableCell, TableSectionSelectors, Text, View } from '../components'
 import { generateAuthorsText, generateCategoriesText, readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { getPublicUser } from '../services/user'
+import { getPodcasts } from '../services/podcast'
+import { getPublicUser, getUserMediaRefs, getUserPlaylists } from '../services/user'
 
 type Props = {
   navigation?: any
@@ -16,7 +17,7 @@ type State = {
   isLoadingMore: boolean
   queryFrom: string | null
   queryPage: number
-  querySort: string | null
+  querySort?: string | null
   user?: any
 }
 
@@ -43,13 +44,23 @@ export class ProfileScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const { user } = this.state
     const newUser = await getPublicUser(user.id)
-    this.setState({
-      isLoading: false,
-      user: newUser
+
+    this.setState({ user: newUser }, async () => {
+      let newState = {
+        isLoading: false,
+        isLoadingMore: false,
+        queryPage: 1,
+        user: newUser
+      } as State
+
+      newState = await this._queryPodcasts(newState, 1, _alphabeticalKey)
+      this.setState(newState)
     })
+
   }
 
   selectLeftItem = async (selectedKey: string) => {
+    const { querySort } = this.state
     if (!selectedKey) {
       this.setState({ queryFrom: null })
       return
@@ -60,7 +71,8 @@ export class ProfileScreen extends React.Component<Props, State> {
       flatListData: [],
       isLoading: true,
       queryFrom: selectedKey,
-      queryPage: 1
+      queryPage: 1,
+      ...(querySort === _alphabeticalKey && selectedKey !== _podcastsKey ? { querySort: _topPastWeek } : {})
     }, async () => {
       const newState = await this._queryData(selectedKey, 1)
       this.setState(newState)
@@ -163,7 +175,14 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, queryFrom, isLoading, isLoadingMore, querySort } = this.state
+    const { flatListData, isLoading, isLoadingMore, queryFrom, querySort } = this.state
+    let rightOptions = []
+
+    if (queryFrom === _podcastsKey) {
+      rightOptions = rightItemsWithAlphabetical
+    } else if (queryFrom === _clipsKey) {
+      rightOptions = rightItems
+    }
 
     return (
       <View style={styles.view}>
@@ -171,85 +190,87 @@ export class ProfileScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={rightItems}
+          rightItems={rightOptions}
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort} />
         {
           isLoading &&
-          <ActivityIndicator />
+            <ActivityIndicator />
         }
         {
           !isLoading && queryFrom && flatListData && flatListData.length > 0 &&
-          <FlatList
-            data={flatListData}
-            disableLeftSwipe={true}
-            extraData={flatListData}
-            isLoadingMore={isLoadingMore}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
-            onEndReached={this._onEndReached}
-            renderItem={this._renderItem} />
+            <FlatList
+              data={flatListData}
+              disableLeftSwipe={true}
+              extraData={flatListData}
+              isLoadingMore={isLoadingMore}
+              ItemSeparatorComponent={this._ItemSeparatorComponent}
+              onEndReached={this._onEndReached}
+              renderItem={this._renderItem} />
         }
       </View>
     )
   }
 
+  _queryPodcasts = async (newState: any, page: number = 1, sort?: string | null) => {
+    const { flatListData, user } = this.state
+    const query = {
+      includeAuthors: true,
+      includeCategories: true,
+      page,
+      podcastIds: user.subscribedPodcastIds,
+      sort
+    }
+
+    const results = await getPodcasts(query, this.global.settings.nsfwMode)
+    newState.flatListData = [...flatListData, ...results[0]]
+    newState.endOfResultsReached = newState.flatListData.length >= results[1]
+
+    return newState
+  }
+
+  _queryMediaRefs = async (newState: any, page: number = 1, sort?: string | null) => {
+    const { flatListData, user } = this.state
+    const { settings } = this.global
+    const { nsfwMode } = settings
+    const query = { page }
+    const results = await getUserMediaRefs(user.id, query, nsfwMode)
+    newState.flatListData = [...flatListData, ...results[0]]
+    newState.endOfResultsReached = newState.flatListData.length >= results[1]
+    return newState
+  }
+
+  _queryPlaylists = async (newState: any, page: number = 1, sort?: string | null) => {
+    const { flatListData, user } = this.state
+    const query = { page, sort }
+    const results = await getUserPlaylists(user.id, query)
+    newState.flatListData = [...flatListData, ...results[0]]
+    newState.endOfResultsReached = newState.flatListData.length >= results[1]
+    return newState
+  }
+
   _queryData = async (filterKey: string | null, page: number = 1) => {
-    const newState = {
+    const { queryFrom, querySort } = this.state
+    let newState = {
       isLoading: false,
       isLoadingMore: false,
       queryPage: page
     } as State
 
-    const { searchBarText: searchTitle, flatListData = [], querySort, selectedCategory,
-      selectedSubCategory } = prevState
-    const { settings } = this.global
-    const { nsfwMode } = settings
-    if (filterKey === _subscribedKey) {
-      const results = await this._querySubscribedPodcasts()
-      newState.flatListData = results[0]
-    } else if (filterKey === _allPodcastsKey) {
-      const results = await this._queryAllPodcasts(querySort, newState.queryPage)
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (filterKey === _categoryKey) {
-      const { querySort, selectedCategory, selectedSubCategory } = prevState
-      if (selectedSubCategory || selectedCategory) {
-        const results = await this._queryPodcastsByCategory(selectedSubCategory || selectedCategory, querySort, newState.queryPage)
-        newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
-        newState.selectedSubCategory = selectedSubCategory || _allCategoriesKey
-      } else {
-        const categoryResults = await getTopLevelCategories()
-        const podcastResults = await this._queryAllPodcasts(querySort, newState.queryPage)
-        newState.categoryItems = generateCategoryItems(categoryResults[0])
-        newState.flatListData = [...flatListData, ...podcastResults[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
-      }
+    if (filterKey === _podcastsKey) {
+      newState = await this._queryPodcasts(newState, page, querySort)
+    } else if (filterKey === _clipsKey) {
+      newState = await this._queryMediaRefs(newState, page, querySort)
+    } else if (filterKey === _playlistsKey) {
+      newState = await this._queryPlaylists(newState, page, querySort)
     } else if (rightItems.some((option) => option.value === filterKey)) {
-      const results = await getPodcasts({
-        ...(selectedSubCategory || selectedCategory ? { categories: selectedSubCategory || selectedCategory } : {}) as object,
-        sort: filterKey, ...(searchTitle ? { searchTitle } : {})
-      }, nsfwMode)
-      newState.flatListData = results[0]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else {
-      const { isSubCategory } = queryOptions
-      let categories
-      if (isSubCategory) {
-        categories = filterKey === _allCategoriesKey ? selectedCategory : filterKey
-      } else if (filterKey === _allCategoriesKey) {
-        newState.selectedCategory = _allCategoriesKey
-      } else {
-        categories = filterKey
-        const category = await getCategoryById(filterKey || '')
-        newState.subCategoryItems = generateCategoryItems(category.categories)
-        newState.selectedSubCategory = _allCategoriesKey
+      if (queryFrom === _podcastsKey) {
+        newState = await this._queryPodcasts(newState, page, filterKey)
+      } else if (queryFrom === _clipsKey) {
+        newState = await this._queryMediaRefs(newState, page, filterKey)
+      } else if (queryFrom === _playlistsKey) {
+        newState = await this._queryPlaylists(newState, page, filterKey)
       }
-
-      const results = await getPodcasts({ categories, sort: querySort, ...(searchTitle ? { searchTitle } : {}) }, nsfwMode)
-      newState.endOfResultsReached = results.length < 20
-      newState.flatListData = results[0]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
     }
 
     return newState
@@ -282,6 +303,29 @@ const leftItems = [
 ]
 
 const rightItems = [
+  {
+    label: 'most recent',
+    value: _mostRecentKey
+  },
+  {
+    label: 'top - past day',
+    value: _topPastDay
+  },
+  {
+    label: 'top - past week',
+    value: _topPastWeek
+  },
+  {
+    label: 'top - past month',
+    value: _topPastMonth
+  },
+  {
+    label: 'top - past year',
+    value: _topPastYear
+  }
+]
+
+const rightItemsWithAlphabetical = [
   {
     label: 'alphabetical',
     value: _alphabeticalKey
