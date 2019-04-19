@@ -4,6 +4,7 @@ export const RouteNames = {
   ClipsScreen: 'ClipsScreen',
   DownloadsScreen: 'DownloadsListScreen',
   EditPlaylistScreen: 'EditPlaylistScreen',
+  EditProfileScreen: 'EditProfileScreen',
   EpisodeScreen: 'EpisodeScreen',
   EpisodesScreen: 'EpisodesScreen',
   SearchScreen: 'SearchScreen',

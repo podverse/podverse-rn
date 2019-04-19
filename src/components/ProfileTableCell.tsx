@@ -22,7 +22,7 @@ export const ProfileTableCell = (props: Props) => {
 
 const styles = StyleSheet.create({
   name: {
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold
   },
   wrapper: {

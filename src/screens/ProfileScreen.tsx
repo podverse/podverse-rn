@@ -1,10 +1,11 @@
 import React from 'reactn'
 import { ActivityIndicator, ClipTableCell, Divider, FlatList, PlaylistTableCell,
-  PodcastTableCell, TableSectionSelectors, Text, View } from '../components'
+  PodcastTableCell, ProfileTableHeader, TableSectionSelectors, View } from '../components'
 import { generateAuthorsText, generateCategoriesText, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
 import { getPublicUser, getUserMediaRefs, getUserPlaylists } from '../services/user'
+import { toggleSubscribeToUser } from '../state/actions/users'
 
 type Props = {
   navigation?: any
@@ -15,6 +16,8 @@ type State = {
   flatListData: any[]
   isLoading: boolean
   isLoadingMore: boolean
+  isLoggedInUserProfile: boolean
+  isSubscribed: boolean
   queryFrom: string | null
   queryPage: number
   querySort?: string | null
@@ -23,17 +26,24 @@ type State = {
 
 export class ProfileScreen extends React.Component<Props, State> {
 
-  static navigationOptions = {
-    title: 'Profile'
-  }
+  static navigationOptions = ({ navigation }) => ({
+    title: navigation.getParam('navigationTitle')
+  })
 
   constructor(props: Props) {
     super(props)
+    const { id, subscribedUserIds } = this.global.session.userInfo
+    const user = this.props.navigation.getParam('user')
+    const isLoggedInUserProfile = user.id === id
+    const isSubscribed = subscribedUserIds.some((x: string) => user.id)
+
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
       isLoading: true,
       isLoadingMore: false,
+      isLoggedInUserProfile,
+      isSubscribed,
       queryFrom: _podcastsKey,
       queryPage: 1,
       querySort: _alphabeticalKey,
@@ -131,6 +141,22 @@ export class ProfileScreen extends React.Component<Props, State> {
     console.log('playlist pressed')
   }
 
+  _handleEditPress = () => {
+    const { user } = this.state
+    this.props.navigation.navigate(
+      PV.RouteNames.EditProfileScreen,
+      { user }
+    )
+  }
+
+  _handleSubscribeToggle = async (id: string) => {
+    const { user } = this.state
+    await toggleSubscribeToUser(id)
+    const { subscribedUserIds } = this.global.session.userInfo
+    const isSubscribed = subscribedUserIds.some((x: string) => user.id)
+    this.setState({ isSubscribed })
+  }
+
   _renderItem = ({ item }) => {
     const { queryFrom } = this.state
 
@@ -175,8 +201,9 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, isLoading, isLoadingMore, queryFrom, querySort } = this.state
-    let rightOptions = []
+    const { flatListData, isLoading, isLoadingMore, isLoggedInUserProfile, isSubscribed, queryFrom,
+      querySort, user } = this.state
+    let rightOptions = [] as any[]
 
     if (queryFrom === _podcastsKey) {
       rightOptions = rightItemsWithAlphabetical
@@ -186,6 +213,12 @@ export class ProfileScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view}>
+        <ProfileTableHeader
+          handleEditPress={isLoggedInUserProfile ? this._handleEditPress : null}
+          handleSubscribeToggle={isLoggedInUserProfile ? null : this._handleSubscribeToggle}
+          id={user.id}
+          isSubscribed={isSubscribed}
+          name={user.name} />
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}

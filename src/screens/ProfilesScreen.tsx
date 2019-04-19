@@ -63,7 +63,10 @@ export class ProfilesScreen extends React.Component<Props, State> {
         key={item.id}
         name={item.name}
         onPress={() => this.props.navigation.navigate(
-          PV.RouteNames.ProfileScreen, { user: item }
+          PV.RouteNames.ProfileScreen, {
+            user: item,
+            navigationTitle: 'Profile'
+          }
         )} />
     )
   }

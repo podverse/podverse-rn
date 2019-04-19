@@ -1,24 +1,19 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { useGlobal } from 'reactn'
-import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { Divider, Text, View } from './'
+import { Text, View } from './'
 
 type Props = {
-  createdBy?: string
   handleEditPress?: any
   handleSubscribeToggle?: any
   id: string
   isSubscribed?: boolean
-  itemCount: number
-  lastUpdated: string
-  title: string
+  name: string
 }
 
-export const PlaylistTableHeader = (props: Props) => {
-  const { createdBy, handleEditPress, handleSubscribeToggle, id, isSubscribed, itemCount, lastUpdated,
-    title } = props
+export const ProfileTableHeader = (props: Props) => {
+  const { handleEditPress, handleSubscribeToggle, id, isSubscribed, name } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
@@ -27,45 +22,23 @@ export const PlaylistTableHeader = (props: Props) => {
         <View style={styles.textWrapper}>
           <Text
             numberOfLines={1}
-            style={styles.title}>{title}</Text>
-          {
-            !!createdBy &&
-              <Text
-                isSecondary={true}
-                numberOfLines={1}
-                style={styles.createdBy}>by: {createdBy}</Text>
-          }
-          <View style={styles.row}>
-            <Text
-              isSecondary={true}
-              numberOfLines={1}
-              style={styles.itemCount}>
-              items: {itemCount}
-            </Text>
-            <Text
-              isSecondary={true}
-              style={styles.lastUpdated}>
-              {readableDate(lastUpdated)}
-            </Text>
-          </View>
+            style={styles.name}>{name}</Text>
         </View>
         {
           handleEditPress &&
             <View style={styles.buttonView}>
-              <TouchableWithoutFeedback
-                onPress={() => handleEditPress(id)}>
+              <TouchableWithoutFeedback onPress={() => handleEditPress(id)}>
                 <Image
                   resizeMode='contain'
                   source={PV.Images.SQUARE_PLACEHOLDER}
-                  style={[styles.moreButtonImage, globalTheme.buttonImage]} /> 
+                  style={[styles.moreButtonImage, globalTheme.buttonImage]} />
               </TouchableWithoutFeedback>
             </View>
         }
         {
           handleSubscribeToggle &&
             <View style={styles.buttonView}>
-              <TouchableWithoutFeedback
-                onPress={() => handleSubscribeToggle(id)}>
+              <TouchableWithoutFeedback onPress={() => handleSubscribeToggle(id)}>
                 {
                   isSubscribed ?
                     <Image
@@ -81,7 +54,6 @@ export const PlaylistTableHeader = (props: Props) => {
             </View>
         }
       </View>
-      <Divider />
     </View>
   )
 }
@@ -93,20 +65,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 8,
     marginRight: 8
-  },
-  createdBy: {
-    fontSize: PV.Fonts.sizes.sm,
-    marginTop: 3
-  },
-  itemCount: {
-    flex: 1,
-    fontSize: PV.Fonts.sizes.sm,
-    marginTop: 4
-  },
-  lastUpdated: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
-    marginTop: 4
   },
   moreButton: {
     flex: 0,
@@ -121,6 +79,12 @@ const styles = StyleSheet.create({
     tintColor: 'white',
     width: 44
   },
+  name: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    lineHeight: 44
+  },
   row: {
     flexDirection: 'row'
   },
@@ -128,10 +92,5 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 8,
     marginVertical: 8
-  },
-  title: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.bold
   }
 })
