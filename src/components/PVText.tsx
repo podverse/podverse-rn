@@ -6,6 +6,7 @@ type Props = {
   children?: any
   isSecondary?: any
   numberOfLines?: number
+  onPress?: any
   style?: any
 }
 
