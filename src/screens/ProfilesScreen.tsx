@@ -1,8 +1,7 @@
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, ProfileTableCell, SwipeRowBack, View } from '../components'
 import { PV } from '../resources'
-import { getPublicUsersByQuery } from '../services/user'
-import { toggleSubscribeToUser } from '../state/actions/users'
+import { getPublicUsersByQuery, toggleSubscribeToUser } from '../state/actions/users'
 
 type Props = {
   navigation?: any
@@ -10,7 +9,6 @@ type Props = {
 
 type State = {
   endOfResultsReached: boolean
-  flatListData: any[]
   isLoading: boolean
   isLoadingMore: boolean
   queryPage: number
@@ -26,7 +24,6 @@ export class ProfilesScreen extends React.Component<Props, State> {
     super(props)
     this.state = {
       endOfResultsReached: false,
-      flatListData: [],
       isLoading: true,
       isLoadingMore: false,
       queryPage: 1
@@ -75,14 +72,12 @@ export class ProfilesScreen extends React.Component<Props, State> {
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
     rowMap[selectedId].closeRow()
-    const { flatListData } = this.state
     await toggleSubscribeToUser(selectedId)
-    const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
-    this.setState({ flatListData: newFlatListData })
   }
 
   render() {
-    const { flatListData, isLoading, isLoadingMore } = this.state
+    const { isLoading, isLoadingMore } = this.state
+    const { flatListData } = this.global.screenProfiles
 
     return (
       <View style={styles.view}>
@@ -107,7 +102,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
   }
 
   _queryData = async (page: number = 1) => {
-    const { flatListData } = this.state
+    const { flatListData } = this.global.screenProfiles
     const newState = {
       isLoading: false,
       isLoadingMore: false,
@@ -115,15 +110,8 @@ export class ProfilesScreen extends React.Component<Props, State> {
     } as State
 
     const subscribedUserIds = this.global.session.userInfo.subscribedUserIds
-
-    const results = await getPublicUsersByQuery({
-      page: 1,
-      ...(subscribedUserIds.length > 0 ? { userIds: subscribedUserIds } : {})
-    })
-
-    newState.flatListData = [...flatListData, ...results[0]]
-    newState.endOfResultsReached = newState.flatListData.length >= results[1]
-
+    const results = await getPublicUsersByQuery(subscribedUserIds, page)
+    newState.endOfResultsReached = flatListData.length >= results[1]
     return newState
   }
 }

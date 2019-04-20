@@ -62,11 +62,18 @@ export const darkTheme = StyleSheet.create({
   flatList: {
     backgroundColor: PV.Colors.black
   },
+  inputContainerText: {
+    backgroundColor: PV.Colors.black,
+    borderColor: PV.Colors.grayDarker,
+  },
   modalBackdrop: {
     backgroundColor: '#00000050'
   },
   player: {
     borderColor: PV.Colors.gray
+  },
+  selectorText: {
+    color: PV.Colors.white
   },
   swipeRowBack: {
     backgroundColor: PV.Colors.gray,
@@ -171,11 +178,18 @@ export const lightTheme = StyleSheet.create({
   flatList: {
     backgroundColor: PV.Colors.white
   },
+  inputContainerText: {
+    backgroundColor: PV.Colors.white,
+    borderColor: PV.Colors.grayLighter
+  },
   modalBackdrop: {
     backgroundColor: '#00000050'
   },
   player: {
     borderColor: PV.Colors.gray
+  },
+  selectorText: {
+    color: PV.Colors.black
   },
   swipeRowBack: {
     backgroundColor: PV.Colors.gray,
@@ -238,6 +252,13 @@ export const core = StyleSheet.create({
   },
   backgroundView: {
     flex: 1
+  },
+  selectorText: {
+    fontSize: PV.Fonts.sizes.xl,
+    height: 44,
+    justifyContent: 'center',
+    lineHeight: 44,
+    paddingHorizontal: 8
   },
   searchBar: {
     borderBottomWidth: 1,

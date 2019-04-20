@@ -5,9 +5,9 @@ import { createAppContainer, createStackNavigator, createSwitchNavigator,
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { PVTabBar } from './components'
 import { PV } from './resources'
-import { AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EpisodeScreen, EpisodesScreen,
-  MoreScreen, OnboardingScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen, PodcastsScreen,
-  ProfileScreen, ProfilesScreen, SearchScreen, SettingsScreen } from './screens'
+import { AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen, EpisodeScreen,
+  EpisodesScreen, MoreScreen, OnboardingScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen,
+  PodcastsScreen, ProfileScreen, ProfilesScreen, SearchScreen, SettingsScreen } from './screens'
 
 const defaultNavigationOptions = {
   title: PV.Tabs.Podcasts.title,
@@ -118,6 +118,7 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.PlaylistScreen]: PlaylistScreen,
     [PV.RouteNames.PlaylistsScreen]: PlaylistsScreen,
     [PV.RouteNames.EditPlaylistScreen]: EditPlaylistScreen,
+    [PV.RouteNames.EditProfileScreen]: EditProfileScreen,
     [PV.RouteNames.ProfileScreen]: ProfileScreen,
     [PV.RouteNames.ProfilesScreen]: ProfilesScreen,
     [PV.RouteNames.SettingsScreen]: SettingsScreen,

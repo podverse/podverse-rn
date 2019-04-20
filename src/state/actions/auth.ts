@@ -3,7 +3,7 @@ import RNSecureKeyStore from 'react-native-secure-key-store'
 import { setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import { getAuthenticatedUserInfo, getLoggedInUserPlaylists as getLoggedInUserPlaylistsService,
-  login, logout, signUp } from '../../services/auth'
+  login, signUp, updateLoggedInUser as updateLoggedInUserService } from '../../services/auth'
 import { getSubscribedPodcasts } from './podcasts'
 
 export type Credentials = {
@@ -36,7 +36,6 @@ export const getAuthUserInfo = async () => {
 
 export const logoutUser = async () => {
   try {
-    await logout()
     setGlobal({ session: { userInfo: {}, isLoggedIn: false } })
     RNSecureKeyStore.remove(PV.Keys.BEARER_TOKEN)
   } catch (error) {
@@ -49,6 +48,27 @@ export const getLoggedInUserPlaylists = async () => {
   setGlobal({
     screenPlaylists: {
       flatListData: results[0]
+    }
+  })
+}
+
+export const updateLoggedInUser = async (data: any, globalState: any) => {
+  const newUser = await updateLoggedInUserService(data)
+  const screenProfilesFlatListData = globalState.screenProfiles.flatListData
+  const screenProfileFlatListData = globalState.screenProfile.flatListData
+  const foundIndex = screenProfilesFlatListData.findIndex((x: any) => x.id === data.id)
+
+  if (foundIndex > -1) {
+    screenProfilesFlatListData[foundIndex] = newUser
+  }
+
+  setGlobal({
+    screenProfiles: {
+      flatListData: screenProfilesFlatListData
+    },
+    screenProfile: {
+      flatListData: screenProfileFlatListData,
+      user: newUser
     }
   })
 }

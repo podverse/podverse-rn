@@ -9,6 +9,13 @@ const initialTheme: InitialState = {
   screenPlaylists: {
     flatListData: []
   },
+  screenProfile: {
+    flatListData: [],
+    user: null
+  },
+  screenProfiles: {
+    flatListData: []
+  },
   session: {
     userInfo: {},
     isLoggedIn: false

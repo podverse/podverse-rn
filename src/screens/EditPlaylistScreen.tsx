@@ -62,14 +62,18 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
   }
 
   _updatePlaylist = async () => {
-    const { newTitle, playlist } = this.state
-    const itemsOrder = this._getItemsOrder()
-    await updatePlaylist({
-      id: playlist.id,
-      ...(itemsOrder.length > 0 ? { itemsOrder } : {}),
-      title: newTitle
-    }, this.global)
-    this.props.navigation.goBack(null)
+    this.setState({
+      isLoading: true
+    }, async () => {
+      const { newTitle, playlist } = this.state
+      const itemsOrder = this._getItemsOrder()
+      await updatePlaylist({
+        id: playlist.id,
+        ...(itemsOrder.length > 0 ? { itemsOrder } : {}),
+        title: newTitle
+      }, this.global)
+      this.props.navigation.goBack(null)
+    })
   }
 
   _getItemsOrder = () => {
@@ -133,24 +137,29 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view}>
-        <TextInput
-          autoCapitalize='none'
-          onChangeText={this._onChangeTitle}
-          placeholder='playlist title'
-          style={styles.textInput}
-          underlineColorAndroid='transparent'
-          value={newTitle} />
-        <Divider />
         {
-          isLoading &&
-          <ActivityIndicator />
-        }
-        {
-          !isLoading && sortableListData && sortableListData.length > 0 &&
-            <SortableList
-              data={sortableListData}
-              onReleaseRow={this._onReleaseRow}
-              renderRow={this._renderRow} />
+          !isLoading ?
+            <View>
+              <TextInput
+                autoCapitalize='none'
+                onChangeText={this._onChangeTitle}
+                placeholder='playlist title'
+                style={styles.textInput}
+                underlineColorAndroid='transparent'
+                value={newTitle} />
+              <Divider />
+              {
+                isLoading &&
+                <ActivityIndicator />
+              }
+              {
+                !isLoading && sortableListData && sortableListData.length > 0 &&
+                  <SortableList
+                    data={sortableListData}
+                    onReleaseRow={this._onReleaseRow}
+                    renderRow={this._renderRow} />
+              }
+            </View> : <ActivityIndicator />
         }
       </View>
     )

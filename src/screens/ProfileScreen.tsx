@@ -1,11 +1,12 @@
-import React from 'reactn'
+import React, { setGlobal } from 'reactn'
 import { ActivityIndicator, ClipTableCell, Divider, FlatList, PlaylistTableCell,
   PodcastTableCell, ProfileTableHeader, TableSectionSelectors, View } from '../components'
 import { generateAuthorsText, generateCategoriesText, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
-import { getPublicUser, getUserMediaRefs, getUserPlaylists } from '../services/user'
-import { toggleSubscribeToUser } from '../state/actions/users'
+import { getUserMediaRefs, getUserPlaylists } from '../services/user'
+import { getAuthUserInfo } from '../state/actions/auth'
+import { getPublicUser, toggleSubscribeToUser } from '../state/actions/users'
 
 type Props = {
   navigation?: any
@@ -13,15 +14,14 @@ type Props = {
 
 type State = {
   endOfResultsReached: boolean
-  flatListData: any[]
   isLoading: boolean
   isLoadingMore: boolean
   isLoggedInUserProfile: boolean
   isSubscribed: boolean
+  preventSortQuery?: boolean
   queryFrom: string | null
   queryPage: number
   querySort?: string | null
-  user?: any
 }
 
 export class ProfileScreen extends React.Component<Props, State> {
@@ -39,34 +39,49 @@ export class ProfileScreen extends React.Component<Props, State> {
 
     this.state = {
       endOfResultsReached: false,
-      flatListData: [],
       isLoading: true,
       isLoadingMore: false,
       isLoggedInUserProfile,
       isSubscribed,
       queryFrom: _podcastsKey,
       queryPage: 1,
-      querySort: _alphabeticalKey,
-      user: props.navigation.getParam('user')
+      querySort: _alphabeticalKey
     }
+
+    setGlobal({
+      screenProfile: {
+        flatListData: [],
+        user
+      }
+    })
   }
 
   async componentDidMount() {
-    const { user } = this.state
-    const newUser = await getPublicUser(user.id)
+    const { isLoggedInUserProfile } = this.state
 
-    this.setState({ user: newUser }, async () => {
+    if (isLoggedInUserProfile) {
+      await getAuthUserInfo()
+
       let newState = {
         isLoading: false,
         isLoadingMore: false,
-        queryPage: 1,
-        user: newUser
+        queryPage: 1
       } as State
 
       newState = await this._queryPodcasts(newState, 1, _alphabeticalKey)
       this.setState(newState)
-    })
+    } else {
+      const user = this.props.navigation.getParam('user')
+      await getPublicUser(user.id, this.global)
 
+      let newState = {
+        isLoading: false,
+        isLoadingMore: false,
+        queryPage: 1
+      } as State
+      newState = await this._queryPodcasts(newState, 1, _alphabeticalKey)
+      this.setState(newState)
+    }
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -76,20 +91,32 @@ export class ProfileScreen extends React.Component<Props, State> {
       return
     }
 
-    this.setState({
-      endOfResultsReached: false,
-      flatListData: [],
-      isLoading: true,
-      queryFrom: selectedKey,
-      queryPage: 1,
-      ...(querySort === _alphabeticalKey && selectedKey !== _podcastsKey ? { querySort: _topPastWeek } : {})
-    }, async () => {
-      const newState = await this._queryData(selectedKey, 1)
-      this.setState(newState)
+    setGlobal({
+      screenProfile: {
+        flatListData: [],
+        user: this.global.screenProfile.user
+      }
+    }, () => {
+      this.setState({
+        endOfResultsReached: false,
+        isLoading: true,
+        preventSortQuery: true,
+        queryFrom: selectedKey,
+        queryPage: 1,
+        ...(querySort === _alphabeticalKey && selectedKey !== _podcastsKey ? { querySort: _topPastWeek } : {})
+      }, async () => {
+        const newState = await this._queryData(selectedKey, 1)
+        this.setState(newState)
+      })
     })
   }
 
   selectRightItem = async (selectedKey: string) => {
+    if (this.state.preventSortQuery) {
+      this.setState({ preventSortQuery: false })
+      return
+    }
+
     if (!selectedKey) {
       this.setState({ querySort: null })
       return
@@ -97,7 +124,6 @@ export class ProfileScreen extends React.Component<Props, State> {
 
     this.setState({
       endOfResultsReached: false,
-      flatListData: [],
       isLoading: true,
       querySort: selectedKey
     }, async () => {
@@ -142,7 +168,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _handleEditPress = () => {
-    const { user } = this.state
+    const { user } = this.global.screenProfile
     this.props.navigation.navigate(
       PV.RouteNames.EditProfileScreen,
       { user }
@@ -150,7 +176,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _handleSubscribeToggle = async (id: string) => {
-    const { user } = this.state
+    const { user } = this.global.screenProfile
     await toggleSubscribeToUser(id)
     const { subscribedUserIds } = this.global.session.userInfo
     const isSubscribed = subscribedUserIds.some((x: string) => user.id)
@@ -201,8 +227,9 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, isLoading, isLoadingMore, isLoggedInUserProfile, isSubscribed, queryFrom,
-      querySort, user } = this.state
+    const { isLoading, isLoadingMore, isLoggedInUserProfile, isSubscribed, queryFrom,
+      querySort } = this.state
+    const { flatListData, user } = this.global.screenProfile
     let rightOptions = [] as any[]
 
     if (queryFrom === _podcastsKey) {
@@ -246,40 +273,63 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _queryPodcasts = async (newState: any, page: number = 1, sort?: string | null) => {
-    const { flatListData, user } = this.state
-    const query = {
-      includeAuthors: true,
-      includeCategories: true,
-      page,
-      podcastIds: user.subscribedPodcastIds,
-      sort
-    }
+    return new Promise(async (resolve, reject) => {
+      const query = {
+        includeAuthors: true,
+        includeCategories: true,
+        page,
+        podcastIds: this.global.screenProfile.user.subscribedPodcastIds,
+        sort
+      }
 
-    const results = await getPodcasts(query, this.global.settings.nsfwMode)
-    newState.flatListData = [...flatListData, ...results[0]]
-    newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      const results = await getPodcasts(query, this.global.settings.nsfwMode)
 
-    return newState
+      setGlobal({
+        screenProfile: {
+          flatListData: [...this.global.screenProfile.flatListData, ...results[0]],
+          user: this.global.screenProfile.user
+        }
+      }, () => {
+        newState.endOfResultsReached = this.global.screenProfile.flatListData.length >= results[1]
+        resolve(newState)
+      })
+    })
   }
 
   _queryMediaRefs = async (newState: any, page: number = 1, sort?: string | null) => {
-    const { flatListData, user } = this.state
-    const { settings } = this.global
-    const { nsfwMode } = settings
-    const query = { page }
-    const results = await getUserMediaRefs(user.id, query, nsfwMode)
-    newState.flatListData = [...flatListData, ...results[0]]
-    newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    return newState
+    return new Promise(async (resolve, reject) => {
+      const { settings } = this.global
+      const { nsfwMode } = settings
+      const query = { page }
+      const results = await getUserMediaRefs(this.global.screenProfile.user.id, query, nsfwMode)
+
+      setGlobal({
+        screenProfile: {
+          flatListData: [...this.global.screenProfile.flatListData, ...results[0]],
+          user: this.global.screenProfile.user
+        }
+      }, () => {
+        newState.endOfResultsReached = this.global.screenProfile.flatListData.length >= results[1]
+        resolve(newState)
+      })
+    })
   }
 
   _queryPlaylists = async (newState: any, page: number = 1, sort?: string | null) => {
-    const { flatListData, user } = this.state
-    const query = { page, sort }
-    const results = await getUserPlaylists(user.id, query)
-    newState.flatListData = [...flatListData, ...results[0]]
-    newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    return newState
+    return new Promise(async (resolve, reject) => {
+      const query = { page, sort }
+      const results = await getUserPlaylists(this.global.screenProfile.user.id, query)
+
+      setGlobal({
+        screenProfile: {
+          flatListData: [...this.global.screenProfile.flatListData, ...results[0]],
+          user: this.global.screenProfile.user
+        }
+      }, () => {
+        newState.endOfResultsReached = this.global.screenProfile.flatListData.length >= results[1]
+        resolve(newState)
+      })
+    })
   }
 
   _queryData = async (filterKey: string | null, page: number = 1) => {

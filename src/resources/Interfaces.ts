@@ -16,7 +16,9 @@ export interface GlobalTheme {
   buttonPrimaryWrapperDisabled?: any
   divider?: any
   flatList?: any
+  inputContainerText?: any
   player?: any
+  selectorText?: any
   swipeRowBack?: any
   tabbar?: any
   tabbarItem?: any
@@ -51,6 +53,9 @@ export interface InitialState {
     playlist?: any
   }
   screenPlaylists: {
+    flatListData: []
+  }
+  screenProfiles: {
     flatListData: []
   }
   session: {

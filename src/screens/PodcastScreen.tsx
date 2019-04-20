@@ -323,6 +323,8 @@ export class PodcastScreen extends React.Component<Props, State> {
       isRefreshing: false
     } as State
 
+    console.log('hey hey', this.state.queryFrom)
+
     if (filterKey === downloadedKey) {
       console.log('retrieve downloaded from local storage')
       newState.flatListData = []
