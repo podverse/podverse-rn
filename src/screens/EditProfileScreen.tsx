@@ -78,7 +78,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
   render() {
     const { globalTheme } = this.global
     const { isLoading, name, selectedIsPublicKey } = this.state
-    const selectedIsPublicOption = isPublicOptions.filter((x) => x.value === selectedIsPublicKey)[0] || selectPlaceholder
+    const selectedIsPublicOption = isPublicOptions.find((x) => x.value === selectedIsPublicKey) || selectPlaceholder
 
     return (
       <View style={styles.view}>
