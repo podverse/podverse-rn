@@ -248,6 +248,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         episodeId: episode.id,
         ...(searchAllFieldsText ? { searchAllFieldsText } : {})
       }, this.global.settings.nsfwMode)
+
       newState.flatListData = [...flatListData, ...results[0]]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
     }

@@ -1,5 +1,6 @@
 import React from 'reactn'
-import { ActivityIndicator, Divider, FlatList, ProfileTableCell, SwipeRowBack, View } from '../components'
+import { ActivityIndicator, Divider, FlatList, MessageWithAction, ProfileTableCell, SwipeRowBack,
+  View } from '../components'
 import { PV } from '../resources'
 import { getPublicUsersByQuery, toggleSubscribeToUser } from '../state/actions/users'
 
@@ -24,15 +25,17 @@ export class ProfilesScreen extends React.Component<Props, State> {
     super(props)
     this.state = {
       endOfResultsReached: false,
-      isLoading: true,
+      isLoading: this.global.session.isLoggedIn,
       isLoadingMore: false,
       queryPage: 1
     }
   }
 
   async componentDidMount() {
-    const newState = await this._queryData(1)
-    this.setState(newState)
+    if (this.global.session.isLoggedIn) {
+      const newState = await this._queryData(1)
+      this.setState(newState)
+    }
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
@@ -75,6 +78,8 @@ export class ProfilesScreen extends React.Component<Props, State> {
     await toggleSubscribeToUser(selectedId)
   }
 
+  _onPressLogin = () => this.props.navigation.navigate(PV.RouteNames.AuthScreen)
+
   render() {
     const { isLoading, isLoadingMore } = this.state
     const { flatListData } = this.global.screenProfiles
@@ -82,20 +87,38 @@ export class ProfilesScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view}>
         {
-          isLoading &&
-            <ActivityIndicator />
+          !this.global.session.isLoggedIn &&
+            <MessageWithAction
+              actionHandler={this._onPressLogin}
+              actionText='Login'
+              message='Login to view your profiles' />
         }
         {
-          !isLoading && flatListData &&
-            <FlatList
-              data={flatListData}
-              disableLeftSwipe={false}
-              extraData={flatListData}
-              isLoadingMore={isLoadingMore}
-              ItemSeparatorComponent={this._ItemSeparatorComponent}
-              onEndReached={this._onEndReached}
-              renderHiddenItem={this._renderHiddenItem}
-              renderItem={this._renderProfileItem} />
+          this.global.session.isLoggedIn &&
+            <View style={styles.view}>
+              {
+                isLoading &&
+                  <ActivityIndicator />
+              }
+              {
+                !isLoading && flatListData && flatListData.length > 0 &&
+                  <FlatList
+                    data={flatListData}
+                    disableLeftSwipe={false}
+                    extraData={flatListData}
+                    isLoadingMore={isLoadingMore}
+                    ItemSeparatorComponent={this._ItemSeparatorComponent}
+                    onEndReached={this._onEndReached}
+                    renderHiddenItem={this._renderHiddenItem}
+                    renderItem={this._renderProfileItem} />
+              }
+              {
+                !isLoading && flatListData && flatListData.length === 0 &&
+                  <MessageWithAction
+                    message='No profiles found'
+                    subMessage='ask your friends to share a link to their profile, then subscribe to it :)' />
+              }
+            </View>
         }
       </View>
     )

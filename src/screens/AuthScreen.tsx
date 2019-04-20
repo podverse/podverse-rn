@@ -67,7 +67,7 @@ export class AuthScreen extends React.Component<Props, State> {
             <Text
               onPress={this.switchOptions}
               style={styles.switchOptionText}>
-              {this.state.showSignUp ? 'Login' : 'SignUp'}
+              {this.state.showSignUp ? 'Login' : 'Sign Up'}
             </Text>
           </View>
         </View>

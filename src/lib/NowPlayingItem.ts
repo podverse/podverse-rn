@@ -22,10 +22,12 @@ export type NowPlayingItem = {
   userPlaybackPosition?: number
 }
 
-export const convertToNowPlayingItem = (data, userPlaybackPosition = 0) => {
+export const convertToNowPlayingItem = (data, inheritedEpisode, inheritedPodcast, userPlaybackPosition = 0) => {
   let nowPlayingItem: NowPlayingItem = {}
 
   if (!data) { return {} }
+  const e = (data.pubDate && data) || data.episode || inheritedEpisode
+  const p = (data.episode && data.episode.podcast) || data.podcast || inheritedPodcast
 
   // If it has a podcast_id field, assume it is an Episode list item
   if (data.podcast_id) {
@@ -34,9 +36,8 @@ export const convertToNowPlayingItem = (data, userPlaybackPosition = 0) => {
     nowPlayingItem.episodeMediaUrl = data.mediaUrl
     nowPlayingItem.episodePubDate = data.pubDate
     nowPlayingItem.episodeTitle = data.title
-    nowPlayingItem.podcastImageUrl = data.podcast_imageUrl
     nowPlayingItem.podcastId = data.podcast_id
-    nowPlayingItem.podcastIsExplicit = data.podcast_isExplicit
+    nowPlayingItem.podcastImageUrl = data.podcast_imageUrl
     nowPlayingItem.podcastTitle = data.podcast_title
     nowPlayingItem.userPlaybackPosition = userPlaybackPosition || 0
     // If it has a pubDate field, assume it is an Episode
@@ -46,10 +47,10 @@ export const convertToNowPlayingItem = (data, userPlaybackPosition = 0) => {
     nowPlayingItem.episodeMediaUrl = data.mediaUrl
     nowPlayingItem.episodePubDate = data.pubDate
     nowPlayingItem.episodeTitle = data.title
-    nowPlayingItem.podcastImageUrl = data.podcast && data.podcast.imageUrl
-    nowPlayingItem.podcastId = data.podcast && data.podcast.id
-    nowPlayingItem.podcastIsExplicit = data.podcast && data.podcast.isExplicit
-    nowPlayingItem.podcastTitle = data.podcast && data.podcast.title
+    nowPlayingItem.podcastId = p.id
+    nowPlayingItem.podcastImageUrl = p.imageUrl
+    nowPlayingItem.podcastIsExplicit = p.isExplicit
+    nowPlayingItem.podcastTitle = p.title
     nowPlayingItem.userPlaybackPosition = userPlaybackPosition || 0
     // Else assume it is a MediaRef
   } else {
@@ -57,22 +58,22 @@ export const convertToNowPlayingItem = (data, userPlaybackPosition = 0) => {
     nowPlayingItem.clipId = data.id
     nowPlayingItem.clipStartTime = data.startTime
     nowPlayingItem.clipTitle = data.title
-    nowPlayingItem.episodeDescription = data.episode.description
-    nowPlayingItem.episodeId = data.episode.id
-    nowPlayingItem.episodeImageUrl = data.episode.imageUrl
-    nowPlayingItem.episodeMediaUrl = data.episode.mediaUrl
-    nowPlayingItem.episodePubDate = data.episode.pubDate
-    nowPlayingItem.episodeTitle = data.episode.title
+    nowPlayingItem.episodeDescription = e.description
+    nowPlayingItem.episodeId = e.id
+    nowPlayingItem.episodeImageUrl = e.imageUrl
+    nowPlayingItem.episodeMediaUrl = e.mediaUrl
+    nowPlayingItem.episodePubDate = e.pubDate
+    nowPlayingItem.episodeTitle = e.title
     nowPlayingItem.isPublic = data.isPublic
     nowPlayingItem.ownerId = data.owner && data.owner.id
     nowPlayingItem.ownerIsPublic = data.owner && data.owner.isPublic
     nowPlayingItem.ownerName = data.owner && data.owner.name
-    nowPlayingItem.podcastAuthors = data.episode.podcast.authors
-    nowPlayingItem.podcastCategories = data.episode.podcast.categories
-    nowPlayingItem.podcastImageUrl = data.episode.podcast.imageUrl
-    nowPlayingItem.podcastId = data.episode.podcast.id
-    nowPlayingItem.podcastIsExplicit = data.episode.podcast.isExplicit
-    nowPlayingItem.podcastTitle = data.episode.podcast.title
+    nowPlayingItem.podcastAuthors = p.authors
+    nowPlayingItem.podcastCategories = p.categories
+    nowPlayingItem.podcastId = p.id
+    nowPlayingItem.podcastIsExplicit = p.isExplicit
+    nowPlayingItem.podcastImageUrl = p.imageUrl
+    nowPlayingItem.podcastTitle = p.title
     nowPlayingItem.userPlaybackPosition = userPlaybackPosition || data.clipStartTime || 0
   }
 

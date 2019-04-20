@@ -1,8 +1,8 @@
 import React, { setGlobal } from 'reactn'
-import { ActivityIndicator, Divider, FlatList, PlaylistTableCell, TableSectionSelectors,
+import { ActivityIndicator, Divider, FlatList, MessageWithAction, PlaylistTableCell, TableSectionSelectors,
   View } from '../components'
 import { PV } from '../resources'
-import { getLoggedInUserPlaylists } from '../state/actions/auth';
+import { getLoggedInUserPlaylists } from '../state/actions/auth'
 import { getPlaylists } from '../state/actions/playlists'
 
 type Props = {
@@ -23,8 +23,9 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
+
     this.state = {
-      isLoading: true,
+      isLoading: this.global.session.isLoggedIn,
       isLoadingMore: false,
       queryFrom: _myPlaylistsKey
     }
@@ -32,8 +33,11 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { queryFrom } = this.state
-    const newState = await this._queryPlaylistData(queryFrom)
-    this.setState(newState)
+
+    if (this.global.session.isLoggedIn) {
+      const newState = await this._queryPlaylistData(queryFrom)
+      this.setState(newState)
+    }
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -69,7 +73,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
         {...(queryFrom === _subscribedPlaylistsKey ? { createdBy: ownerName } : {})}
         itemCount={item.itemCount}
         onPress={() => this.props.navigation.navigate(
-          PV.RouteNames.PlaylistScreen, { 
+          PV.RouteNames.PlaylistScreen, {
             playlist: item,
             navigationTitle: queryFrom === _myPlaylistsKey ? 'My Playlist' : 'Playlist'
           }
@@ -78,29 +82,47 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     )
   }
 
+  _onPressLogin = () => this.props.navigation.navigate(PV.RouteNames.AuthScreen)
+
   render() {
     const { isLoading, isLoadingMore, queryFrom } = this.state
     const { flatListData } = this.global.screenPlaylists
 
     return (
       <View style={styles.view}>
-        <TableSectionSelectors
-          handleSelectLeftItem={this.selectLeftItem}
-          leftItems={leftItems}
-          selectedLeftItemKey={queryFrom} />
         {
-          isLoading &&
-            <ActivityIndicator />
+          !this.global.session.isLoggedIn &&
+            <MessageWithAction
+              actionHandler={this._onPressLogin}
+              actionText='Login'
+              message='Login to view your playlists' />
         }
         {
-          !isLoading && flatListData &&
-            <FlatList
-              data={flatListData}
-              disableLeftSwipe={true}
-              extraData={flatListData}
-              isLoadingMore={isLoadingMore}
-              ItemSeparatorComponent={this._ItemSeparatorComponent}
-              renderItem={this._renderPlaylistItem} />
+          this.global.session.isLoggedIn &&
+            <View style={styles.view}>
+              <TableSectionSelectors
+                handleSelectLeftItem={this.selectLeftItem}
+                leftItems={leftItems}
+                selectedLeftItemKey={queryFrom} />
+              {
+                isLoading &&
+                <ActivityIndicator />
+              }
+              {
+                !isLoading && flatListData && flatListData.length > 0 &&
+                <FlatList
+                  data={flatListData}
+                  disableLeftSwipe={true}
+                  extraData={flatListData}
+                  isLoadingMore={isLoadingMore}
+                  ItemSeparatorComponent={this._ItemSeparatorComponent}
+                  renderItem={this._renderPlaylistItem} />
+              }
+              {
+                isLoading && flatListData && flatListData.length === 0 &&
+                  <MessageWithAction message='No playlists found' />
+              }
+            </View>
         }
       </View>
     )
