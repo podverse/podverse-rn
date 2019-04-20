@@ -1,5 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, View } from './'
@@ -18,66 +19,84 @@ type Props = {
 export const EpisodeTableCell = (props: Props) => {
   const { pubDate, description, title = 'untitled episode', handleMorePress,
   handleNavigationPress, moreButtonAlignToTop, podcastImageUrl, podcastTitle } = props
+  const [globalTheme] = useGlobal('globalTheme')
 
   const moreButtonStyles = [styles.moreButton]
   if (moreButtonAlignToTop) moreButtonStyles.push(styles.moreButtonAlignToTop)
 
+  const innerTopView = (
+    <View style={styles.innerTopView}>
+      {
+        !!podcastImageUrl &&
+        <Image
+          source={{ uri: podcastImageUrl }}
+          style={styles.image} />
+      }
+      <View style={styles.textWrapper}>
+        {
+          !!podcastTitle &&
+          <Text
+            isSecondary={true}
+            numberOfLines={1}
+            style={styles.podcastTitle}>
+            {podcastTitle}
+          </Text>
+        }
+        <Text
+          numberOfLines={2}
+          style={styles.title}>
+          {title}
+        </Text>
+        {
+          !!pubDate &&
+          <Text
+            isSecondary={true}
+            style={styles.bottomText}>
+            {readableDate(pubDate)}
+          </Text>
+        }
+      </View>
+    </View>
+  )
+
+  const bottomText = (
+    <Text
+      numberOfLines={4}
+      style={styles.description}>
+      {description}
+    </Text>
+  )
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.wrapperTop}>
-        <TouchableWithoutFeedback
-          onPress={handleNavigationPress}>
-          <View style={styles.innerTouchableView}>
-            {
-              podcastImageUrl &&
-                <Image
-                  source={{ uri: podcastImageUrl }}
-                  style={styles.image} />
-            }
-            <View style={styles.textWrapper}>
-              {
-                podcastTitle &&
-                  <Text
-                    isSecondary={true}
-                    numberOfLines={1}
-                    style={styles.podcastTitle}>
-                    {podcastTitle}
-                  </Text>
-              }
-              <Text
-                numberOfLines={2}
-                style={styles.title}>
-                {title}
-              </Text>
-              {
-                pubDate &&
-                  <Text
-                    isSecondary={true}
-                    style={styles.bottomText}>
-                    {readableDate(pubDate)}
-                  </Text>
-              }
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
+        {
+          handleNavigationPress ?
+            <TouchableWithoutFeedback onPress={handleNavigationPress}>
+              {innerTopView}
+            </TouchableWithoutFeedback> :
+            innerTopView
+        }
         {
           handleMorePress &&
             <TouchableOpacity
+              onPress={handleMorePress}
               style={moreButtonStyles}>
-              <Image source={PV.Images.MORE} style={styles.moreButtonImage} resizeMode='contain' />
+              <Image
+                source={PV.Images.MORE}
+                style={[styles.moreButtonImage, globalTheme.buttonImage]}
+                resizeMode='contain' />
             </TouchableOpacity>
         }
       </View>
       {
-        description &&
-        <TouchableWithoutFeedback
-          onPress={handleNavigationPress}>
-          <Text
-            numberOfLines={4}
-            style={styles.description}>
-            {description}
-          </Text>
+        !!description && handleNavigationPress &&
+        <TouchableWithoutFeedback onPress={handleNavigationPress}>
+          {bottomText}
         </TouchableWithoutFeedback>
+      }
+      {
+        !!description && !handleNavigationPress && bottomText
       }
     </View>
   )
@@ -102,7 +121,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     width: 60
   },
-  innerTouchableView: {
+  innerTopView: {
     flex: 1,
     flexDirection: 'row'
   },
@@ -114,11 +133,9 @@ const styles = StyleSheet.create({
     marginTop: 'auto'
   },
   moreButtonImage: {
-    borderColor: 'white',
     borderRadius: 22,
     borderWidth: 1,
     height: 44,
-    tintColor: 'white',
     width: 44
   },
   moreButtonAlignToTop: {
@@ -139,8 +156,8 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.semibold
   },
   wrapper: {
-    marginBottom: 12,
-    marginTop: 12
+    paddingBottom: 12,
+    paddingTop: 12
   },
   wrapperTop: {
     flex: 1,

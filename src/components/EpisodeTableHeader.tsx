@@ -1,5 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, View } from './'
@@ -13,6 +14,7 @@ type Props = {
 
 export const EpisodeTableHeader = (props: Props) => {
   const { handleMorePress, podcastImageUrl, pubDate, title } = props
+  const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <View style={styles.wrapper}>
@@ -23,18 +25,25 @@ export const EpisodeTableHeader = (props: Props) => {
         <Text
           numberOfLines={3}
           style={styles.title}>{title}</Text>
-        <Text
-          isSecondary={true}
-          style={styles.pubDate}>
-          {readableDate(pubDate)}
-        </Text>
+        {
+          !!pubDate &&
+            <Text
+              isSecondary={true}
+              style={styles.pubDate}>
+              {readableDate(pubDate)}
+            </Text>
+        }
       </View>
       {
         handleMorePress &&
           <View style={styles.buttonView}>
             <TouchableOpacity
+              onPress={handleMorePress}
               style={styles.moreButton}>
-              <Image source={PV.Images.MORE} style={styles.moreButtonImage} resizeMode='contain' />
+              <Image
+                resizeMode='contain'
+                source={PV.Images.MORE}
+                style={[styles.moreButtonImage, globalTheme.buttonImage]} />
             </TouchableOpacity>
           </View>
       }

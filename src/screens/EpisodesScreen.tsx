@@ -116,7 +116,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _ItemSeparatorComponent = () => {
-    return <Divider noMargin={true} />
+    return <Divider />
   }
 
   _renderEpisodeItem = ({ item }) => (
@@ -173,7 +173,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           <ActivityIndicator />
         }
         {
-          !isLoading && flatListData &&
+          !isLoading && flatListData && flatListData.length > 0 &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={queryFrom !== _subscribedKey}

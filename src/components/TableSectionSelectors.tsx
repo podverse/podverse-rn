@@ -11,7 +11,7 @@ type Props = {
   leftItems: any[]
   placeholderLeft?: any
   placeholderRight?: any
-  rightItems: any[]
+  rightItems?: any[]
   selectedLeftItemKey: string | null
   selectedRightItemKey?: string | null
 }
@@ -26,7 +26,7 @@ export const TableSectionSelectors = (props: Props) => {
 
   return (
     <View>
-      <Divider noMargin={true} />
+      <Divider />
       <View
         style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
         <RNPickerSelect
@@ -54,7 +54,7 @@ export const TableSectionSelectors = (props: Props) => {
 
         }
       </View>
-      <Divider noMargin={true} />
+      <Divider />
     </View>
   )
 }

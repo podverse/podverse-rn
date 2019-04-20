@@ -1,7 +1,15 @@
 export interface GlobalTheme {
+  actionSheetButton?: any
+  actionSheetButtonCancel?: any
+  actionSheetButtonText?: any
+  actionSheetButtonTextCancel?: any
+  actionSheetButtonUnderlay?: any
+  actionSheetButtonCancelUnderlay?: any
+  actionSheetView?: any
   activityIndicator?: any
   buttonGroupText?: any
   buttonGroupTextSelected?: any
+  buttonImage?: any
   buttonPrimaryText?: any
   buttonPrimaryTextDisabled?: any
   buttonPrimaryWrapper?: any
@@ -37,12 +45,19 @@ export interface UserInfo {
 }
 
 export interface InitialState {
-  globalTheme: GlobalTheme,
+  globalTheme: GlobalTheme
+  screenPlaylist: {
+    flatListData: []
+    playlist?: any
+  }
+  screenPlaylists: {
+    flatListData: []
+  }
   session: {
     userInfo: UserInfo,
     isLoggedIn: boolean
-  },
-  showPlayer: boolean,
+  }
+  showPlayer: boolean
   subscribedPodcasts: [{}]
 }
 
@@ -61,4 +76,16 @@ export interface FontType {
 
 export interface ISettings {
   nsfwMode: boolean
+}
+
+export interface FilterTypes {
+  downloadedKey: string
+  allEpisodesKey: string
+  clipsKey: string
+  aboutKey: string
+  mostRecentKey: string
+  topPastDay: string
+  topPastWeek: string
+  topPastMonth: string
+  topPastYear: string
 }

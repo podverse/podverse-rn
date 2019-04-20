@@ -2,7 +2,8 @@ import { Alert } from 'react-native'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { setGlobal } from 'reactn'
 import { PV } from '../../resources'
-import { getAuthenticatedUserInfo, login, logout, signUp } from '../../services/auth'
+import { getAuthenticatedUserInfo, getLoggedInUserPlaylists as getLoggedInUserPlaylistsService,
+  login, logout, signUp } from '../../services/auth'
 import { getSubscribedPodcasts } from './podcasts'
 
 export type Credentials = {
@@ -41,4 +42,13 @@ export const logoutUser = async () => {
   } catch (error) {
     Alert.alert('Error', error.message, [])
   }
+}
+
+export const getLoggedInUserPlaylists = async () => {
+  const results = await getLoggedInUserPlaylistsService()
+  setGlobal({
+    screenPlaylists: {
+      flatListData: results[0]
+    }
+  })
 }

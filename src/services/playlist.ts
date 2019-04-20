@@ -47,7 +47,7 @@ export const deletePlaylist = async (data: any) => {
   return response.json()
 }
 
-export const getPlaylists = async (query: any = {}, nsfwMode: boolean) => {
+export const getPlaylists = async (query: any = {}) => {
   const filteredQuery = {
     ...(query.playlistId ? { playlistId: query.playlistId } : {})
   }
@@ -55,7 +55,7 @@ export const getPlaylists = async (query: any = {}, nsfwMode: boolean) => {
   const response = await request({
     endpoint: '/playlist',
     query: filteredQuery
-  }, nsfwMode)
+  })
 
   return response.json()
 }

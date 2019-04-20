@@ -1,5 +1,5 @@
 import { setGlobal } from 'reactn'
-import { getPodcasts } from '../../services/podcast'
+import { getPodcasts, toggleSubscribeToPodcast as toggleSubscribe } from '../../services/podcast'
 
 export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   const query = {
@@ -9,4 +9,15 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   const data = await getPodcasts(query, true)
   setGlobal({ subscribedPodcasts: data[0] || [] })
   return data
+}
+
+export const toggleSubscribeToPodcast = async (id: string) => {
+  const subscribedPodcastIds = await toggleSubscribe(id)
+  setGlobal({
+    session: {
+      userInfo: {
+        subscribedPodcastIds
+      }
+    }
+  })
 }

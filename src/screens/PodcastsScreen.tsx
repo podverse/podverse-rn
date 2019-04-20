@@ -7,9 +7,9 @@ import { ActivityIndicator, Divider, FlatList, PodcastTableCell, SearchBar, Swip
 import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
-import { getPodcasts, toggleSubscribeToPodcast } from '../services/podcast'
+import { getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { getSubscribedPodcasts } from '../state/actions/podcasts'
+import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcasts'
 import { core } from '../styles'
 
 type Props = {
@@ -185,7 +185,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _ItemSeparatorComponent = () => {
-    return <Divider noMargin={true} />
+    return <Divider />
   }
 
   _renderPodcastItem = ({ item }) => {
@@ -267,7 +267,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && queryFrom && flatListData &&
+          !isLoading && queryFrom && flatListData && flatListData.length > 0 &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={queryFrom !== _subscribedKey}

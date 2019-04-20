@@ -78,7 +78,7 @@ export const PodcastTableCell = (props: Props) => {
                 </View>
             }
             {
-              lastEpisodePubDate &&
+              !!lastEpisodePubDate &&
                 <View style={styles.textWrapperRowRight}>
                   <Text
                     isSecondary={true}
