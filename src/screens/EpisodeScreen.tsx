@@ -193,7 +193,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && viewType !== _aboutKey && flatListData && flatListData.length > 0 &&
+          !isLoading && viewType !== _aboutKey && flatListData &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={true}

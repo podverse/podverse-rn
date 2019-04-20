@@ -59,9 +59,9 @@ export const PVFlatList = (props: Props) => {
         }}
         onEndReached={onEndReached}
         onEndReachedThreshold={onEndReachedThreshold}
-        onLayout={() => {
-          ListHeaderComponent && flatList && flatList.scrollToOffset({ offset: PV.FlatList.searchBar.height, animated: false })
-        }}
+        // onLayout={() => {
+        //   ListHeaderComponent && flatList && flatList.scrollToOffset({ offset: PV.FlatList.searchBar.height, animated: false })
+        // }}
         {...(onRefresh ? { refreshControl: <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} /> } : {})}
         renderHiddenItem={renderHiddenItem || _renderHiddenItem}
         renderItem={renderItem}

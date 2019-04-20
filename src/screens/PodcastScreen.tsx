@@ -269,7 +269,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && viewType !== aboutKey && flatListData && flatListData.length > 0 &&
+          !isLoading && viewType !== aboutKey && flatListData &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={viewType !== downloadedKey}
@@ -300,7 +300,6 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _queryAllEpisodes = async (sort: string | null, page: number = 1) => {
     const { podcast, searchBarText: searchAllFieldsText } = this.state
-    console.log('asdf', page)
     const results = await getEpisodes({
       sort, page, podcastId: podcast.id, ...(searchAllFieldsText ? { searchAllFieldsText } : {})
     }, this.global.settings.nsfwMode)
@@ -322,8 +321,6 @@ export class PodcastScreen extends React.Component<Props, State> {
       isLoadingMore: false,
       isRefreshing: false
     } as State
-
-    console.log('hey hey', this.state.queryFrom)
 
     if (filterKey === downloadedKey) {
       console.log('retrieve downloaded from local storage')

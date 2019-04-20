@@ -93,7 +93,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && flatListData && flatListData.length > 0 &&
+          !isLoading && flatListData &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={true}

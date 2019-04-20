@@ -258,7 +258,7 @@ export class ProfileScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && queryFrom && flatListData && flatListData.length > 0 &&
+          !isLoading && queryFrom && flatListData &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={true}
