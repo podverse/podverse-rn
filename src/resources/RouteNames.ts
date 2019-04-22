@@ -21,6 +21,7 @@ export const RouteNames = {
   PodcastsScreen: 'PodcastsScreen',
   ProfilesScreen: 'ProfilesScreen',
   ProfileScreen: 'ProfileScreen',
+  QueueScreen: 'QueueScreen',
   SearchEpisodeScreen: 'SearchEpisodeScreen',
   SearchPodcastScreen: 'SearchPodcastScreen',
   SettingsScreen: 'SettingsScreen',

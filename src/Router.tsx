@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image } from 'react-native'
+import { Image, Text, TouchableOpacity } from 'react-native'
 import { createAppContainer, createStackNavigator, createSwitchNavigator,
   NavigationScreenOptions } from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
@@ -7,9 +7,10 @@ import { PVTabBar } from './components'
 import { PV } from './resources'
 import { AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen, EpisodeScreen,
   EpisodesScreen, MoreScreen, OnboardingScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen,
-  PodcastsScreen, ProfileScreen, ProfilesScreen, SearchScreen, SettingsScreen } from './screens'
+  PodcastsScreen, ProfileScreen, ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen } from './screens'
+import { navHeader } from './styles'
 
-const defaultNavigationOptions = {
+const defaultNavigationOptions = ({ navigation }) => ({
   title: PV.Tabs.Podcasts.title,
   headerStyle: {
     backgroundColor: PV.Colors.brandColor
@@ -17,8 +18,14 @@ const defaultNavigationOptions = {
   headerTintColor: PV.Colors.white,
   headerTitleStyle: {
     fontWeight: 'bold'
-  }
-} as NavigationScreenOptions
+  },
+  headerRight: (
+    <TouchableOpacity
+      onPress={() => navigation.navigate(PV.RouteNames.QueueScreen)}>
+      <Text style={navHeader.textButton}>Queue</Text>
+    </TouchableOpacity>
+  )
+}) as NavigationScreenOptions
 
 const AuthNavigator = createStackNavigator(
   {
@@ -162,9 +169,19 @@ const TabNavigator = createBottomTabNavigator({
   }
 })
 
+const QueueNavigator = createStackNavigator({
+  [PV.RouteNames.QueueScreen]: QueueScreen
+}, {
+  defaultNavigationOptions,
+  navigationOptions: {
+    header: null
+  }
+})
+
 const MainApp = createStackNavigator({
   [PV.RouteNames.TabNavigator]: TabNavigator,
-  [PV.RouteNames.AuthNavigator]: AuthNavigator
+  [PV.RouteNames.AuthNavigator]: AuthNavigator,
+  QueueNavigator
 }, {
   mode: 'modal',
   headerMode: 'none'
