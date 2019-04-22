@@ -1,10 +1,9 @@
 import debounce from 'lodash/debounce'
 import React from 'reactn'
-import { ActivityIndicator, Divider, EpisodeTableCell, FlatList, SearchBar, TableSectionSelectors,
+import { ActivityIndicator, ClipTableCell, Divider, FlatList, SearchBar, TableSectionSelectors,
   View } from '../components'
-import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
-import { getEpisodes } from '../services/episode'
+import { getMediaRefs } from '../services/mediaRef'
 import { core } from '../styles'
 
 type Props = {
@@ -46,7 +45,7 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { queryFrom } = this.state
-    const newState = await this._queryEpisodeData(queryFrom)
+    const newState = await this._queryClipData(queryFrom)
     this.setState(newState)
   }
 
@@ -63,7 +62,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       queryFrom: selectedKey,
       queryPage: 1
     }, async () => {
-      const newState = await this._queryEpisodeData(selectedKey)
+      const newState = await this._queryClipData(selectedKey)
       this.setState(newState)
     })
   }
@@ -80,7 +79,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       isLoading: true,
       querySort: selectedKey
     }, async () => {
-      const newState = await this._queryEpisodeData(selectedKey)
+      const newState = await this._queryClipData(selectedKey)
       this.setState(newState)
     })
   }
@@ -93,7 +92,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           isLoadingMore: true,
           queryPage: queryPage + 1
         }, async () => {
-          const newState = await this._queryEpisodeData(queryFrom, { queryPage: this.state.queryPage })
+          const newState = await this._queryClipData(queryFrom, { queryPage: this.state.queryPage })
           this.setState(newState)
         })
       }
@@ -119,18 +118,16 @@ export class ClipsScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
-  _renderEpisodeItem = ({ item }) => (
-    <EpisodeTableCell
+  _renderClipItem = ({ item }) => (
+    <ClipTableCell
       key={item.id}
-      description={removeHTMLFromString(item.description)}
-      handleMorePress={() => console.log('handleMorePress')}
-      handleNavigationPress={() => this.props.navigation.navigate(
-        PV.RouteNames.EpisodeScreen, { episode: item }
-      )}
-      moreButtonAlignToTop={true}
-      podcastImageUrl={item.podcast_imageUrl}
-      podcastTitle={item.podcast_title}
-      pubDate={item.pubDate}
+      endTime={item.endTime}
+      episodePubDate={item.episode.pubDate}
+      episodeTitle={item.episode.title}
+      handleMorePress={() => console.log('handle more')}
+      podcastImageUrl={item.episode.podcast.imageUrl}
+      podcastTitle={item.episode.podcast.title}
+      startTime={item.startTime}
       title={item.title} />
   )
 
@@ -152,7 +149,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = async (queryFrom: string | null, queryOptions: any) => {
-    const state = await this._queryEpisodeData(queryFrom, { searchAllFieldsText: queryOptions.searchAllFieldsText })
+    const state = await this._queryClipData(queryFrom, { searchAllFieldsText: queryOptions.searchAllFieldsText })
     this.setState(state)
   }
 
@@ -170,25 +167,25 @@ export class ClipsScreen extends React.Component<Props, State> {
           selectedRightItemKey={querySort} />
         {
           isLoading &&
-          <ActivityIndicator />
+            <ActivityIndicator />
         }
         {
           !isLoading && flatListData &&
-          <FlatList
-            data={flatListData}
-            disableLeftSwipe={queryFrom !== _subscribedKey}
-            extraData={flatListData}
-            isLoadingMore={isLoadingMore}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
-            ListHeaderComponent={this._ListHeaderComponent}
-            onEndReached={this._onEndReached}
-            renderItem={this._renderEpisodeItem} />
+            <FlatList
+              data={flatListData}
+              disableLeftSwipe={queryFrom !== _subscribedKey}
+              extraData={flatListData}
+              isLoadingMore={isLoadingMore}
+              ItemSeparatorComponent={this._ItemSeparatorComponent}
+              ListHeaderComponent={this._ListHeaderComponent}
+              onEndReached={this._onEndReached}
+              renderItem={this._renderClipItem} />
         }
       </View>
     )
   }
 
-  _queryEpisodeData = async (filterKey: string | null, queryOptions: {
+  _queryClipData = async (filterKey: string | null, queryOptions: {
     queryPage?: number, searchAllFieldsText?: string
   } = {}) => {
     const newState = {
@@ -201,7 +198,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     const { queryPage, searchAllFieldsText } = queryOptions
 
     if (filterKey === _subscribedKey) {
-      const results = await getEpisodes({
+      const results = await getMediaRefs({
         sort: querySort,
         page: queryPage,
         podcastId,
@@ -212,7 +209,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
     } else if (filterKey === _allPodcastsKey) {
       const { searchBarText: searchAllFieldsText } = this.state
-      const results = await getEpisodes({
+      const results = await getMediaRefs({
         sort: querySort,
         page: queryPage,
         ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
@@ -221,7 +218,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       newState.flatListData = [...flatListData, ...results[0]]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
     } else if (rightItems.some((option) => option.value === filterKey)) {
-      const results = await getEpisodes({
+      const results = await getMediaRefs({
         ...(queryFrom === _subscribedKey ? { podcastId } : {}),
         sort: filterKey,
         ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
