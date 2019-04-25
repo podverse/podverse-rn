@@ -15,7 +15,7 @@ export const PVActivityIndicator = (props: Props) => {
   const { size = 'large' } = props
 
   return (
-    <View style={[props.styles, core.view]}>
+    <View style={[core.view, props.styles]}>
       <ActivityIndicator
         color={globalTheme.activityIndicator.color}
         size={size} />

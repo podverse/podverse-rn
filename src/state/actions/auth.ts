@@ -1,9 +1,11 @@
 import { Alert } from 'react-native'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { setGlobal } from 'reactn'
+import { NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
 import { getAuthenticatedUserInfo, getLoggedInUserPlaylists as getLoggedInUserPlaylistsService,
   login, signUp, updateLoggedInUser as updateLoggedInUserService } from '../../services/auth'
+import { addQueueItemLast, addQueueItemNext, removeQueueItem, setAllQueueItems } from '../../services/queue'
 import { getSubscribedPodcasts } from './podcasts'
 
 export type Credentials = {
@@ -71,4 +73,60 @@ export const updateLoggedInUser = async (data: any, globalState: any) => {
       user: newUser
     }
   })
+}
+
+export const updateUserQueueItems = async (queueItems: NowPlayingItem[], isLoggedIn: boolean, globalState: any) => {
+  const results = await setAllQueueItems(queueItems, isLoggedIn)
+  setGlobal({
+    session: {
+      ...globalState.session,
+      userInfo: {
+        ...globalState.session.userInfo,
+        queueItems: results
+      }
+    }
+  })
+  return results
+}
+
+export const addUserQueueItemNext = async (queueItem: NowPlayingItem, isLoggedIn: boolean, globalState: any) => {
+  const results = await addQueueItemNext(queueItem, isLoggedIn)
+  setGlobal({
+    session: {
+      ...globalState.session,
+      userInfo: {
+        ...globalState.session.userInfo,
+        queueItems: results
+      }
+    }
+  })
+  return results
+}
+
+export const addUserQueueItemLast = async (queueItem: NowPlayingItem, isLoggedIn: boolean, globalState: any) => {
+  const results = await addQueueItemLast(queueItem, isLoggedIn)
+  setGlobal({
+    session: {
+      ...globalState.session,
+      userInfo: {
+        ...globalState.session.userInfo,
+        queueItems: results
+      }
+    }
+  })
+  return results
+}
+
+export const removeUserQueueItem = async (queueItem: NowPlayingItem, isLoggedIn: boolean, globalState: any) => {
+  const results = await removeQueueItem(queueItem, isLoggedIn)
+  setGlobal({
+    session: {
+      ...globalState.session,
+      userInfo: {
+        ...globalState.session.userInfo,
+        queueItems: results
+      }
+    }
+  })
+  return results
 }

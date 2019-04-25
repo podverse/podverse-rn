@@ -2,11 +2,14 @@ import debounce from 'lodash/debounce'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
   PodcastTableHeader, SearchBar, SwipeRowBack, TableSectionSelectors, Text, View } from '../components'
+import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
+import { setNowPlayingItem } from '../services/player'
 import { getPodcast } from '../services/podcast'
+import { addUserQueueItemLast, addUserQueueItemNext } from '../state/actions/auth';
 import { core } from '../styles'
 
 const { aboutKey, allEpisodesKey, clipsKey, downloadedKey, mostRecentKey, topPastDay, topPastMonth,
@@ -27,6 +30,7 @@ type State = {
   queryPage: number
   querySort: string | null
   searchBarText: string
+  selectedItem?: any
   showActionSheet: boolean
   viewType: string | null
 }
@@ -160,8 +164,11 @@ export class PodcastScreen extends React.Component<Props, State> {
     this.setState({ showActionSheet: false })
   }
 
-  _handleMorePress = () => {
-    this.setState({ showActionSheet: true })
+  _handleMorePress = (selectedItem: any) => {
+    this.setState({
+      selectedItem,
+      showActionSheet: true
+    })
   }
 
   _renderItem = ({ item }) => {
@@ -179,7 +186,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           key={item.id}
           description={removeHTMLFromString(item.description)}
-          handleMorePress={this._handleMorePress}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
           pubDate={item.pubDate}
           title={item.title} />
@@ -189,7 +196,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           key={item.id}
           description={removeHTMLFromString(item.description)}
-          handleMorePress={this._handleMorePress}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
           pubDate={item.pubDate}
           title={item.title} />
@@ -201,7 +208,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           endTime={item.endTime}
           episodePubDate={readableDate(item.episode.pubDate)}
           episodeTitle={item.episode.title}
-          handleMorePress={this._handleMorePress}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           startTime={item.startTime}
           title={item.title} />
       )
@@ -247,8 +254,8 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, isLoading, isLoadingMore, isRefreshing, podcast, querySort, showActionSheet,
-      viewType } = this.state
+    const { flatListData, isLoading, isLoadingMore, isRefreshing, podcast, querySort, selectedItem,
+      showActionSheet, viewType } = this.state
     const { globalTheme } = this.global
 
     return (
@@ -292,7 +299,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <ActionSheet
           globalTheme={globalTheme}
           handleCancelPress={this._handleCancelPress}
-          items={moreButtons}
+          items={moreButtons(selectedItem, this.global.session.isLoggedIn, this.global)}
           showModal={showActionSheet} />
       </View>
     )
@@ -309,7 +316,11 @@ export class PodcastScreen extends React.Component<Props, State> {
   _queryClips = async (sort: string | null, page: number = 1) => {
     const { podcast, searchBarText: searchAllFieldsText } = this.state
     const results = await getMediaRefs({
-      sort, page, podcastId: podcast.id, ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+      sort,
+      page,
+      podcastId: podcast.id,
+      includeEpisode: true,
+      ...(searchAllFieldsText ? { searchAllFieldsText } : {})
     }, this.global.settings.nsfwMode)
     return results
   }
@@ -399,11 +410,11 @@ const rightItems = [
   }
 ]
 
-const moreButtons = [
+const moreButtons = (item: any, isLoggedIn: boolean, globalState: any) => [
   {
     key: 'stream',
     text: 'Stream',
-    onPress: () => console.log('Stream')
+    onPress: () => setNowPlayingItem(item)
   },
   {
     key: 'download',
@@ -413,12 +424,12 @@ const moreButtons = [
   {
     key: 'queueNext',
     text: 'Queue: Next',
-    onPress: () => console.log('Queue: Next')
+    onPress: () => addUserQueueItemNext(item, isLoggedIn, globalState)
   },
   {
     key: 'queueLast',
     text: 'Queue: Last',
-    onPress: () => console.log('Queue: Last')
+    onPress: () => addUserQueueItemLast(item, isLoggedIn, globalState)
   },
   {
     key: 'addToPlaylist',

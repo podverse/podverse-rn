@@ -157,7 +157,7 @@ export const downloadLoggedInUserData = async (id: string) => {
   return response.json()
 }
 
-export const updateUserQueueItems = async (data: any) => {
+export const updateUserQueueItems = async (queueItems: any) => {
   const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
   const response = await request({
     endpoint: '/auth/user/update-queue',
@@ -166,7 +166,7 @@ export const updateUserQueueItems = async (data: any) => {
       'Authorization': bearerToken,
       'Content-Type': 'application/json'
     },
-    body: data,
+    body: { queueItems },
     opts: { credentials: 'include' }
   })
 

@@ -5,18 +5,18 @@ import { Divider, Text } from '.'
 import { PV } from '../resources'
 
 type Props = {
+  containerStyles?: any
   title?: string
 }
 
 export const TableSectionHeader = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
-  const { title } = props
+  const { containerStyles, title } = props
 
   return (
-    <View>
+    <View style={containerStyles}>
       <Divider />
-      <View
-        style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
+      <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
         <Text style={[styles.tableSectionHeaderText, globalTheme.tableSectionHeaderText]}>
           {title}
         </Text>

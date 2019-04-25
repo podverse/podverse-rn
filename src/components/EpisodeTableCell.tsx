@@ -3,6 +3,7 @@ import { Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'r
 import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
+import { button } from '../styles'
 import { Text, View } from './'
 
 type Props = {
@@ -20,9 +21,6 @@ export const EpisodeTableCell = (props: Props) => {
   const { pubDate, description, title = 'untitled episode', handleMorePress,
   handleNavigationPress, moreButtonAlignToTop, podcastImageUrl, podcastTitle } = props
   const [globalTheme] = useGlobal('globalTheme')
-
-  const moreButtonStyles = [styles.moreButton]
-  if (moreButtonAlignToTop) moreButtonStyles.push(styles.moreButtonAlignToTop)
 
   const innerTopView = (
     <View style={styles.innerTopView}>
@@ -81,19 +79,19 @@ export const EpisodeTableCell = (props: Props) => {
           handleMorePress &&
             <TouchableOpacity
               onPress={handleMorePress}
-              style={moreButtonStyles}>
+              style={moreButtonAlignToTop ? button.iconOnlyAlignToTop : button.iconOnly}>
               <Image
                 source={PV.Images.MORE}
-                style={[styles.moreButtonImage, globalTheme.buttonImage]}
+                style={[button.iconOnlyImage, globalTheme.buttonImage]}
                 resizeMode='contain' />
             </TouchableOpacity>
         }
       </View>
       {
         !!description && handleNavigationPress &&
-        <TouchableWithoutFeedback onPress={handleNavigationPress}>
-          {bottomText}
-        </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={handleNavigationPress}>
+            {bottomText}
+          </TouchableWithoutFeedback>
       }
       {
         !!description && !handleNavigationPress && bottomText
@@ -124,22 +122,6 @@ const styles = StyleSheet.create({
   innerTopView: {
     flex: 1,
     flexDirection: 'row'
-  },
-  moreButton: {
-    flex: 0,
-    marginBottom: 'auto',
-    marginLeft: 8,
-    marginRight: 8,
-    marginTop: 'auto'
-  },
-  moreButtonImage: {
-    borderRadius: 22,
-    borderWidth: 1,
-    height: 44,
-    width: 44
-  },
-  moreButtonAlignToTop: {
-    marginTop: 5
   },
   podcastTitle: {
     flex: 0,
