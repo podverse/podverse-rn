@@ -89,13 +89,10 @@ const addQueueItemLastOnServer = async (item: NowPlayingItem) => {
 
 const removeQueueItemOnServer = async (item: NowPlayingItem) => {
   const items = await getQueueItemsFromServer()
-  console.log(items)
   const filteredItems = filterItemFromQueueItems(items, item)
-  console.log(item)
-  console.log(filteredItems)
   return setAllQueueItemsOnServer(filteredItems)
 }
 
-const filterItemFromQueueItems = (items: NowPlayingItem[], item: NowPlayingItem) => items.filter(x =>
+export const filterItemFromQueueItems = (items: NowPlayingItem[], item: NowPlayingItem) => items.filter(x =>
   (item.clipId && x.clipId !== item.clipId) || (!item.clipId && x.episodeId !== item.episodeId)
 )

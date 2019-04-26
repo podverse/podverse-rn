@@ -8,7 +8,6 @@ import { PV } from './resources'
 import { AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen, EpisodeScreen,
   EpisodesScreen, MoreScreen, OnboardingScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen,
   PodcastsScreen, ProfileScreen, ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen } from './screens'
-import { getNowPlayingItem } from './services/player'
 import { navHeader } from './styles'
 
 const defaultNavigationOptions = ({ navigation }) => ({
@@ -21,14 +20,7 @@ const defaultNavigationOptions = ({ navigation }) => ({
     fontWeight: 'bold'
   },
   headerRight: (
-    <TouchableOpacity
-      onPress={async () => {
-        const nowPlayingItem = await getNowPlayingItem()
-        navigation.navigate(
-          PV.RouteNames.QueueScreen,
-          { nowPlayingItem }
-        )
-      }}>
+    <TouchableOpacity onPress={async () => navigation.navigate(PV.RouteNames.QueueScreen) }>
       <Text style={navHeader.textButton}>Queue</Text>
     </TouchableOpacity>
   )

@@ -1,11 +1,13 @@
 import React, { setGlobal } from 'reactn'
-import { ActivityIndicator, ClipTableCell, Divider, FlatList, PlaylistTableCell,
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, PlaylistTableCell,
   PodcastTableCell, ProfileTableHeader, TableSectionSelectors, View } from '../components'
+import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { generateAuthorsText, generateCategoriesText, readableDate } from '../lib/utility'
 import { PV } from '../resources'
+import { setNowPlayingItem } from '../services/player'
 import { getPodcasts } from '../services/podcast'
 import { getUserMediaRefs, getUserPlaylists } from '../services/user'
-import { getAuthUserInfo } from '../state/actions/auth'
+import { addUserQueueItemLast, addUserQueueItemNext, getAuthUserInfo } from '../state/actions/auth'
 import { getPublicUser, toggleSubscribeToUser } from '../state/actions/users'
 
 type Props = {
@@ -22,6 +24,8 @@ type State = {
   queryFrom: string | null
   queryPage: number
   querySort?: string | null
+  selectedItem?: any
+  showActionSheet: boolean
 }
 
 export class ProfileScreen extends React.Component<Props, State> {
@@ -45,7 +49,8 @@ export class ProfileScreen extends React.Component<Props, State> {
       isSubscribed,
       queryFrom: _podcastsKey,
       queryPage: 1,
-      querySort: _alphabeticalKey
+      querySort: _alphabeticalKey,
+      showActionSheet: false
     }
 
     setGlobal({
@@ -60,7 +65,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     const { isLoggedInUserProfile } = this.state
 
     if (isLoggedInUserProfile) {
-      await getAuthUserInfo()
+      await getAuthUserInfo(this.props.navigation)
 
       let newState = {
         isLoading: false,
@@ -159,8 +164,15 @@ export class ProfileScreen extends React.Component<Props, State> {
     console.log('clip pressed')
   }
 
-  _handleClipMorePress = (clip: any) => {
-    console.log('clip more pressed')
+  _handleCancelPress = () => {
+    this.setState({ showActionSheet: false })
+  }
+
+  _handleMorePress = (selectedItem: any) => {
+    this.setState({
+      selectedItem,
+      showActionSheet: true
+    })
   }
 
   _handlePlaylistPress = (playlist: any) => {
@@ -204,7 +216,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           endTime={item.endTime}
           episodePubDate={readableDate(item.episode.pubDate)}
           episodeTitle={item.episode.title}
-          handleMorePress={() => this._handleClipMorePress(item)}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           podcastImageUrl={item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
           startTime={item.startTime}
@@ -228,9 +240,11 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   render() {
     const { isLoading, isLoadingMore, isLoggedInUserProfile, isSubscribed, queryFrom,
-      querySort } = this.state
-    const { flatListData, user } = this.global.screenProfile
+      querySort, selectedItem, showActionSheet } = this.state
+    const { globalTheme, screenProfile } = this.global
+    const { flatListData, user } = screenProfile
     let rightOptions = [] as any[]
+    const { navigation } = this.props
 
     if (queryFrom === _podcastsKey) {
       rightOptions = rightItemsWithAlphabetical
@@ -268,6 +282,11 @@ export class ProfileScreen extends React.Component<Props, State> {
               onEndReached={this._onEndReached}
               renderItem={this._renderItem} />
         }
+        <ActionSheet
+          globalTheme={globalTheme}
+          handleCancelPress={this._handleCancelPress}
+          items={PV.ActionSheet.media.moreButtons(selectedItem, this.global.session.isLoggedIn, this.global, navigation)}
+          showModal={showActionSheet} />
       </View>
     )
   }

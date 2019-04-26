@@ -1,3 +1,4 @@
+import { ActionSheet } from './ActionSheet'
 import { Colors } from './Colors'
 import { Filters } from './Filters'
 import { FlatList } from './FlatList'
@@ -9,6 +10,7 @@ import { Table } from './Table'
 import { Tabs } from './Tabs'
 
 export const PV = {
+  ActionSheet,
   Colors,
   Filters,
   FlatList,

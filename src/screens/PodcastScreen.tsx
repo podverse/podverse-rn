@@ -9,7 +9,7 @@ import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { setNowPlayingItem } from '../services/player'
 import { getPodcast } from '../services/podcast'
-import { addUserQueueItemLast, addUserQueueItemNext } from '../state/actions/auth';
+import { addUserQueueItemLast, addUserQueueItemNext } from '../state/actions/auth'
 import { core } from '../styles'
 
 const { aboutKey, allEpisodesKey, clipsKey, downloadedKey, mostRecentKey, topPastDay, topPastMonth,
@@ -257,6 +257,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     const { flatListData, isLoading, isLoadingMore, isRefreshing, podcast, querySort, selectedItem,
       showActionSheet, viewType } = this.state
     const { globalTheme } = this.global
+    const { navigation } = this.props
 
     return (
       <View style={styles.view}>
@@ -299,7 +300,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <ActionSheet
           globalTheme={globalTheme}
           handleCancelPress={this._handleCancelPress}
-          items={moreButtons(selectedItem, this.global.session.isLoggedIn, this.global)}
+          items={PV.ActionSheet.media.moreButtons(selectedItem, this.global.session.isLoggedIn, this.global)}
           showModal={showActionSheet} />
       </View>
     )
@@ -407,34 +408,6 @@ const rightItems = [
   {
     label: 'top - past year',
     value: topPastYear
-  }
-]
-
-const moreButtons = (item: any, isLoggedIn: boolean, globalState: any) => [
-  {
-    key: 'stream',
-    text: 'Stream',
-    onPress: () => setNowPlayingItem(item)
-  },
-  {
-    key: 'download',
-    text: 'Download',
-    onPress: () => console.log('Download')
-  },
-  {
-    key: 'queueNext',
-    text: 'Queue: Next',
-    onPress: () => addUserQueueItemNext(item, isLoggedIn, globalState)
-  },
-  {
-    key: 'queueLast',
-    text: 'Queue: Last',
-    onPress: () => addUserQueueItemLast(item, isLoggedIn, globalState)
-  },
-  {
-    key: 'addToPlaylist',
-    text: 'Add to Playlist',
-    onPress: () => console.log('Add to Playlist')
   }
 ]
 

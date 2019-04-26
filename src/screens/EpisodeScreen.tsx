@@ -2,9 +2,12 @@ import debounce from 'lodash/debounce'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, SearchBar,
   TableSectionSelectors, Text, View } from '../components'
+import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
+import { setNowPlayingItem } from '../services/player'
+import { addUserQueueItemLast, addUserQueueItemNext } from '../state/actions/auth'
 import { core } from '../styles'
 
 type Props = {
@@ -20,6 +23,7 @@ type State = {
   queryPage: number
   querySort: string | null
   searchBarText: string
+  selectedItem?: any
   showActionSheet: boolean
   viewType: string | null
 }
@@ -87,8 +91,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
     }
 
     this.setState({
-      flatListData: [],
       endOfResultsReached: false,
+      flatListData: [],
       isLoading: true,
       querySort: selectedKey
     }, async () => {
@@ -130,21 +134,28 @@ export class EpisodeScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
-  _renderItem = ({ item }) => (
-    <ClipTableCell
-      key={item.id}
-      endTime={item.endTime}
-      handleMorePress={this._handleMorePress}
-      startTime={item.startTime}
-      title={item.title} />
-  )
+  _renderItem = ({ item }) => {
+    const { episode } = this.state
+    return (
+      <ClipTableCell
+        key={item.id}
+        endTime={item.endTime}
+        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
+        startTime={item.startTime}
+        title={item.title} />
+    )
+  }
 
   _handleCancelPress = () => {
     this.setState({ showActionSheet: false })
   }
 
-  _handleMorePress = () => {
-    this.setState({ showActionSheet: true })
+  _handleMorePress = (selectedItem: any) => {
+    console.log(selectedItem)
+    this.setState({
+      selectedItem,
+      showActionSheet: true
+    })
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -170,14 +181,15 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { episode, flatListData, isLoading, isLoadingMore, querySort, showActionSheet,
-      viewType } = this.state
+    const { navigation } = this.props
+    const { episode, flatListData, isLoading, isLoadingMore, querySort, selectedItem,
+      showActionSheet, viewType } = this.state
     const { globalTheme } = this.global
 
     return (
       <View style={styles.view}>
         <EpisodeTableHeader
-          handleMorePress={this._handleMorePress}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast))}
           podcastImageUrl={(episode.podcast && episode.podcast.imageUrl) || episode.podcast_imageUrl}
           pubDate={episode.pubDate}
           title={episode.title} />
@@ -213,7 +225,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         <ActionSheet
           globalTheme={globalTheme}
           handleCancelPress={this._handleCancelPress}
-          items={moreButtons}
+          items={PV.ActionSheet.media.moreButtons(selectedItem, this.global.session.isLoggedIn, this.global)}
           showModal={showActionSheet} />
       </View>
     )
@@ -298,34 +310,6 @@ const rightItems = [
   {
     label: 'top - past year',
     value: _topPastYear
-  }
-]
-
-const moreButtons = [
-  {
-    key: 'stream',
-    text: 'Stream',
-    onPress: () => console.log('Stream')
-  },
-  {
-    key: 'download',
-    text: 'Download',
-    onPress: () => console.log('Download')
-  },
-  {
-    key: 'queueNext',
-    text: 'Queue: Next',
-    onPress: () => console.log('Queue: Next')
-  },
-  {
-    key: 'queueLast',
-    text: 'Queue: Last',
-    onPress: () => console.log('Queue: Last')
-  },
-  {
-    key: 'addToPlaylist',
-    text: 'Add to Playlist',
-    onPress: () => console.log('Add to Playlist')
   }
 ]
 

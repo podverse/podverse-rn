@@ -66,24 +66,13 @@ export interface InitialState {
   subscribedPodcasts: [{}]
 }
 
-interface FontSizes {
-  [size: string]: number
+export interface IActionSheet {
+  media: {
+    moreButtons: any
+  }
 }
 
-interface FontWeight {
-  [weight: string]: string
-}
-
-export interface FontType {
-  sizes: FontSizes,
-  weights: FontWeight
-}
-
-export interface ISettings {
-  nsfwMode: boolean
-}
-
-export interface FilterTypes {
+export interface IFilters {
   downloadedKey: string
   allEpisodesKey: string
   clipsKey: string
@@ -93,4 +82,17 @@ export interface FilterTypes {
   topPastWeek: string
   topPastMonth: string
   topPastYear: string
+}
+
+interface IFontSizes {
+  [size: string]: number
+}
+
+interface IFontWeights {
+  [weight: string]: string
+}
+
+export interface IFonts {
+  sizes: IFontSizes,
+  weights: IFontWeights
 }

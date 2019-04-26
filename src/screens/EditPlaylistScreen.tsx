@@ -1,8 +1,8 @@
 import { Text, TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, SortableList, SortableListRow,
-  TextInput, View } from '../components'
-import { combineAndSortPlaylistItems, removeHTMLFromString } from '../lib/utility'
+import { ActivityIndicator, Divider, QueueTableCell, SortableList, SortableListRow, TextInput,
+  View } from '../components'
+import { combineAndSortPlaylistItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getPlaylist } from '../services/playlist'
 import { updatePlaylist } from '../state/actions/playlists'
@@ -95,25 +95,28 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     let cell
     if (data.startTime) {
       cell = (
-        <ClipTableCell
-          key={data.id}
-          endTime={data.endTime}
-          episodePubDate={data.episode.pubDate}
-          episodeTitle={data.episode.title}
-          podcastImageUrl={data.episode.podcast.imageUrl}
-          podcastTitle={data.episode.podcast.title}
-          startTime={data.startTime}
-          title={data.title} />
+        <View>
+          <QueueTableCell
+            clipEndTime={data.endTime}
+            clipStartTime={data.startTime}
+            clipTitle={data.title}
+            episodePubDate={data.episode.pubDate}
+            episodeTitle={data.episode.title}
+            podcastImageUrl={data.episode.podcast.imageUrl}
+            podcastTitle={data.episode.podcast.title} />
+          <Divider style={styles.tableCellDivider} />
+        </View>
       )
     } else {
       cell = (
-        <EpisodeTableCell
-          key={data.id}
-          description={removeHTMLFromString(data.description)}
-          podcastImageUrl={data.podcast.imageUrl}
-          podcastTitle={data.podcast.title}
-          pubDate={data.pubDate}
-          title={data.title} />
+        <View>
+          <QueueTableCell
+            episodePubDate={data.pubDate}
+            episodeTitle={data.title}
+            podcastImageUrl={data.podcast.imageUrl}
+            podcastTitle={data.podcast.title} />
+          <Divider style={styles.tableCellDivider} />
+        </View>
       )
     }
 
@@ -137,29 +140,24 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view}>
+        <TextInput
+          autoCapitalize='none'
+          onChangeText={this._onChangeTitle}
+          placeholder='playlist title'
+          style={styles.textInput}
+          underlineColorAndroid='transparent'
+          value={newTitle} />
+        <Divider />
         {
-          !isLoading ?
-            <View>
-              <TextInput
-                autoCapitalize='none'
-                onChangeText={this._onChangeTitle}
-                placeholder='playlist title'
-                style={styles.textInput}
-                underlineColorAndroid='transparent'
-                value={newTitle} />
-              <Divider />
-              {
-                isLoading &&
-                <ActivityIndicator />
-              }
-              {
-                !isLoading && sortableListData && sortableListData.length > 0 &&
-                  <SortableList
-                    data={sortableListData}
-                    onReleaseRow={this._onReleaseRow}
-                    renderRow={this._renderRow} />
-              }
-            </View> : <ActivityIndicator />
+          isLoading &&
+          <ActivityIndicator />
+        }
+        {
+          !isLoading && sortableListData && sortableListData.length > 0 &&
+            <SortableList
+              data={sortableListData}
+              onReleaseRow={this._onReleaseRow}
+              renderRow={this._renderRow} />
         }
       </View>
     )
@@ -167,6 +165,9 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
 }
 
 const styles = {
+  tableCellDivider: {
+    marginBottom: 2
+  },
   textInput: {
     fontSize: PV.Fonts.sizes.lg
   },

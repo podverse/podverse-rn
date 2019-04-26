@@ -32,6 +32,7 @@ export const getAuthUserInfo = async () => {
     setGlobal({ session: { userInfo: user, isLoggedIn: true } })
     return user
   } catch (error) {
+    setGlobal({ session: { userInfo: null, isLoggedIn: false } })
     Alert.alert('Error', error.message, [])
   }
 }

@@ -23,24 +23,25 @@ export class MoreScreen extends React.Component<Props, State> {
   }
 
   _onPress = (item: any) => {
+    const { navigation } = this.props
     if (item.key === _aboutKey) {
       console.log('about')
     } else if (item.key === _feedbackKey) {
       console.log('feedback')
     } else if (item.key === _logoutKey) {
-      logoutUser()
+      logoutUser(navigation)
     } else if (item.key === _loginKey) {
-      this.props.navigation.navigate(PV.RouteNames.AuthNavigator)
+      navigation.navigate(PV.RouteNames.AuthNavigator)
     } else if (item.key === PV.RouteNames.MyProfileScreen) {
       const user = this.global.session.userInfo
-      this.props.navigation.navigate(
+      navigation.navigate(
         PV.RouteNames.ProfileScreen, {
           user,
           navigationTitle: 'My Profile'
         }
       )
     } else {
-      this.props.navigation.navigate(item.key)
+      navigation.navigate(item.key)
     }
   }
 

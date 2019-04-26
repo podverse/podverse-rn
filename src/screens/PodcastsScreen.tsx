@@ -71,7 +71,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       } else {
         const userToken = await RNSecureKeyStore.get('BEARER_TOKEN')
         if (userToken) {
-          await getAuthUserInfo()
+          await getAuthUserInfo(this.props.navigation)
           const { subscribedPodcasts } = this.global
           flatListData = subscribedPodcasts
         }

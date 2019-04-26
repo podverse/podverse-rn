@@ -43,7 +43,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     this.props.navigation.setParams({ updateUser: this._updateUser })
-    await getAuthUserInfo()
+    await getAuthUserInfo(this.props.navigation)
     this.setState({ isLoading: false })
   }
 

@@ -1,25 +1,30 @@
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { PV } from '../resources'
-import { getQueueItemsLocally, setAllQueueItemsLocally } from './queue'
+import { filterItemFromQueueItems, getQueueItems, setAllQueueItems } from './queue'
 
-export const getNowPlayingItem = async () => {
+export const getNowPlayingItem = async (isLoggedIn: boolean) => {
   try {
     const itemString = await RNSecureKeyStore.get(PV.Keys.NOW_PLAYING_ITEM)
     return JSON.parse(itemString)
   } catch (error) {
-    setNowPlayingItem(null)
-    return []
+    setNowPlayingItem(null, isLoggedIn)
+    return null
   }
 }
 
-export const setNowPlayingItem = async (item?: any) => {
-  const items = await getQueueItemsLocally()
-  const filteredItems = items.filter(x => x !== item)
-  setAllQueueItemsLocally(filteredItems)
+export const setNowPlayingItem = async (item: any, isLoggedIn: boolean) => {
+  const items = await getQueueItems(isLoggedIn)
+  const filteredItems = filterItemFromQueueItems(items, item)
+  await setAllQueueItems(filteredItems, isLoggedIn)
 
   RNSecureKeyStore.set(
     PV.Keys.NOW_PLAYING_ITEM,
     item ? JSON.stringify(item) : null,
     { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
   )
+
+  return {
+    nowPlayingItem: item,
+    queueItems: filteredItems
+  }
 }

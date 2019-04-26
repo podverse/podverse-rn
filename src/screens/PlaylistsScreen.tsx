@@ -106,20 +106,20 @@ export class PlaylistsScreen extends React.Component<Props, State> {
                 selectedLeftItemKey={queryFrom} />
               {
                 isLoading &&
-                <ActivityIndicator />
+                  <ActivityIndicator />
               }
               {
                 !isLoading && flatListData && flatListData.length > 0 &&
-                <FlatList
-                  data={flatListData}
-                  disableLeftSwipe={true}
-                  extraData={flatListData}
-                  isLoadingMore={isLoadingMore}
-                  ItemSeparatorComponent={this._ItemSeparatorComponent}
-                  renderItem={this._renderPlaylistItem} />
+                  <FlatList
+                    data={flatListData}
+                    disableLeftSwipe={true}
+                    extraData={flatListData}
+                    isLoadingMore={isLoadingMore}
+                    ItemSeparatorComponent={this._ItemSeparatorComponent}
+                    renderItem={this._renderPlaylistItem} />
               }
               {
-                isLoading && flatListData && flatListData.length === 0 &&
+                !isLoading && flatListData && flatListData.length === 0 &&
                   <MessageWithAction message='No playlists found' />
               }
             </View>

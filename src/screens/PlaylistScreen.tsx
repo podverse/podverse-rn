@@ -1,8 +1,11 @@
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
   PlaylistTableHeader, View } from '../components'
+import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
+import { setNowPlayingItem } from '../services/player'
+import { addUserQueueItemLast, addUserQueueItemNext } from '../state/actions/auth'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlists'
 
 type Props = {
@@ -15,6 +18,7 @@ type State = {
   isLoadingMore: boolean
   isLoggedInUserPlaylist: boolean
   isSubscribed: boolean
+  selectedItem?: any
   showActionSheet: boolean
 }
 
@@ -66,7 +70,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           endTime={item.endTime}
           episodePubDate={item.episode.pubDate}
           episodeTitle={item.episode.title}
-          handleMorePress={this._handleMorePress}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           podcastImageUrl={item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
           startTime={item.startTime}
@@ -77,7 +81,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           key={item.id}
           description={removeHTMLFromString(item.description)}
-          handleMorePress={this._handleMorePress}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           handleNavigationPress={() => this.props.navigation.navigate(
             PV.RouteNames.MoreEpisodeScreen,
             { episode: item })
@@ -109,17 +113,20 @@ export class PlaylistScreen extends React.Component<Props, State> {
     this.setState({ showActionSheet: false })
   }
 
-  _handleMorePress = () => {
-    this.setState({ showActionSheet: true })
+  _handleMorePress = (selectedItem: any) => {
+    this.setState({
+      selectedItem,
+      showActionSheet: true
+    })
   }
 
   render() {
-    const { isLoading, isLoadingMore, isLoggedInUserPlaylist, isSubscribed,
+    const { isLoading, isLoadingMore, isLoggedInUserPlaylist, isSubscribed, selectedItem,
       showActionSheet } = this.state
-    const { globalTheme } = this.global
-    const playlist = this.global.screenPlaylist.playlist ?
-      this.global.screenPlaylist.playlist : this.props.navigation.getParam('playlist')
-    const flatListData = this.global.screenPlaylist.flatListData || []
+    const { globalTheme, screenPlaylist, session } = this.global
+    const { navigation } = this.props
+    const playlist = screenPlaylist.playlist ? screenPlaylist.playlist : navigation.getParam('playlist')
+    const flatListData = screenPlaylist.flatListData || []
 
     return (
       <View style={styles.view}>
@@ -149,40 +156,12 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <ActionSheet
           globalTheme={globalTheme}
           handleCancelPress={this._handleCancelPress}
-          items={moreButtons}
+          items={PV.ActionSheet.media.moreButtons(selectedItem, session.isLoggedIn, this.global)}
           showModal={showActionSheet} />
       </View>
     )
   }
 }
-
-const moreButtons = [
-  {
-    key: 'stream',
-    text: 'Stream',
-    onPress: () => console.log('Stream')
-  },
-  {
-    key: 'download',
-    text: 'Download',
-    onPress: () => console.log('Download')
-  },
-  {
-    key: 'queueNext',
-    text: 'Queue: Next',
-    onPress: () => console.log('Queue: Next')
-  },
-  {
-    key: 'queueLast',
-    text: 'Queue: Last',
-    onPress: () => console.log('Queue: Last')
-  },
-  {
-    key: 'addToPlaylist',
-    text: 'Add to Playlist',
-    onPress: () => console.log('Add to Playlist')
-  }
-]
 
 const styles = {
   view: {

@@ -13,6 +13,7 @@ type Props = {
   episodePubDate?: string
   episodeTitle?: string
   handleRemovePress?: any
+  hideBottomRow?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
   showMoveButton?: boolean
@@ -21,7 +22,7 @@ type Props = {
 
 export const QueueTableCell = (props: Props) => {
   const { clipEndTime, clipStartTime, clipTitle = 'untitled clip', episodePubDate,
-    episodeTitle = 'untilted episode', handleRemovePress, podcastImageUrl,
+    episodeTitle = 'untilted episode', handleRemovePress, hideBottomRow, podcastImageUrl,
     podcastTitle = 'untitled podcast', showMoveButton, showRemoveButton } = props
   const [globalTheme] = useGlobal('globalTheme')
 
@@ -45,12 +46,12 @@ export const QueueTableCell = (props: Props) => {
           </Text>
           {
             !!episodePubDate &&
-            <Text
-              isSecondary={true}
-              numberOfLines={1}
-              style={styles.episodePubDate}>
-              {readableDate(episodePubDate)}
-            </Text>
+              <Text
+                isSecondary={true}
+                numberOfLines={1}
+                style={styles.episodePubDate}>
+                {readableDate(episodePubDate)}
+              </Text>
           }
         </View>
         {
@@ -75,16 +76,26 @@ export const QueueTableCell = (props: Props) => {
         }
       </View>
       {
-        !!clipStartTime &&
+        !hideBottomRow && !!clipStartTime &&
           <View style={styles.wrapperBottom}>
             <Text
-              numberOfLines={4}
+              numberOfLines={1}
               style={styles.clipTitle}>
               {clipTitle}
             </Text>
             <Text
               style={styles.clipTime}>
               {readableClipTime(clipStartTime, clipEndTime)}
+            </Text>
+          </View>
+      }
+      {
+        !hideBottomRow && !clipStartTime &&
+          <View style={styles.wrapperBottom}>
+            <Text
+              numberOfLines={1}
+              style={styles.clipTitle}>
+              Full Episode
             </Text>
           </View>
       }
@@ -95,14 +106,16 @@ export const QueueTableCell = (props: Props) => {
 const styles = StyleSheet.create({
   clipTime: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
+    fontSize: PV.Fonts.sizes.md,
+    lineHeight: PV.Fonts.sizes.md,
     justifyContent: 'flex-end',
-    marginTop: 4
+    marginLeft: 6
   },
   clipTitle: {
-    flex: 0,
+    flex: 1,
     fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.semibold,
+    lineHeight: PV.Fonts.sizes.md,
     justifyContent: 'flex-end'
   },
   episodePubDate: {
@@ -138,6 +151,7 @@ const styles = StyleSheet.create({
     marginTop: 8
   },
   wrapperBottom: {
+    flexDirection: 'row',
     marginLeft: 8,
     marginRight: 8,
     marginTop: 10

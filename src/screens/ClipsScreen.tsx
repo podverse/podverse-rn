@@ -1,7 +1,8 @@
 import debounce from 'lodash/debounce'
 import React from 'reactn'
-import { ActivityIndicator, ClipTableCell, Divider, FlatList, SearchBar, TableSectionSelectors,
-  View } from '../components'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, SearchBar,
+  TableSectionSelectors, View } from '../components'
+import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
 import { core } from '../styles'
@@ -19,6 +20,8 @@ type State = {
   queryPage: number
   querySort: string | null
   searchBarText: string
+  selectedItem?: any
+  showActionSheet: boolean
 }
 
 export class ClipsScreen extends React.Component<Props, State> {
@@ -37,7 +40,8 @@ export class ClipsScreen extends React.Component<Props, State> {
       queryFrom: _allPodcastsKey,
       queryPage: 1,
       querySort: _mostRecentKey,
-      searchBarText: ''
+      searchBarText: '',
+      showActionSheet: false
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
@@ -118,13 +122,24 @@ export class ClipsScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
+  _handleCancelPress = () => {
+    this.setState({ showActionSheet: false })
+  }
+
+  _handleMorePress = (selectedItem: any) => {
+    this.setState({
+      selectedItem,
+      showActionSheet: true
+    })
+  }
+
   _renderClipItem = ({ item }) => (
     <ClipTableCell
       key={item.id}
       endTime={item.endTime}
       episodePubDate={item.episode.pubDate}
       episodeTitle={item.episode.title}
-      handleMorePress={() => console.log('handle more')}
+      handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
       podcastImageUrl={item.episode.podcast.imageUrl}
       podcastTitle={item.episode.podcast.title}
       startTime={item.startTime}
@@ -154,7 +169,10 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, queryFrom, isLoading, isLoadingMore, querySort } = this.state
+    const { flatListData, queryFrom, isLoading, isLoadingMore, querySort, selectedItem,
+      showActionSheet } = this.state
+    const { globalTheme } = this.global
+    const { navigation } = this.props
 
     return (
       <View style={styles.view}>
@@ -181,6 +199,11 @@ export class ClipsScreen extends React.Component<Props, State> {
               onEndReached={this._onEndReached}
               renderItem={this._renderClipItem} />
         }
+        <ActionSheet
+          globalTheme={globalTheme}
+          handleCancelPress={this._handleCancelPress}
+          items={PV.ActionSheet.media.moreButtons(selectedItem, this.global.session.isLoggedIn, this.global)}
+          showModal={showActionSheet} />
       </View>
     )
   }

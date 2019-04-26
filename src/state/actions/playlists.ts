@@ -50,7 +50,9 @@ export const getPlaylist = async (id: string, globalState: any) => {
 export const updatePlaylist = async (data: any, globalState: any) => {
   const newPlaylist = await updatePlaylistService(data)
   const screenPlaylistsFlatListData = globalState.screenPlaylists.flatListData
-  const screenPlaylistFlatListData = globalState.screenPlaylist.flatListData
+
+  const { episodes, itemsOrder, mediaRefs } = newPlaylist
+  const screenPlaylistFlatListData = combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder)
   const foundIndex = screenPlaylistsFlatListData.findIndex((x: any) => x.id === data.id)
 
   if (foundIndex > -1) {
