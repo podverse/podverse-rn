@@ -7,9 +7,7 @@ import { readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
-import { setNowPlayingItem } from '../services/player'
 import { getPodcast } from '../services/podcast'
-import { addUserQueueItemLast, addUserQueueItemNext } from '../state/actions/auth'
 import { core } from '../styles'
 
 const { aboutKey, allEpisodesKey, clipsKey, downloadedKey, mostRecentKey, topPastDay, topPastMonth,

@@ -1,11 +1,11 @@
 import { TouchableOpacity } from 'react-native'
 import { Divider, Icon } from 'react-native-elements'
 import React from 'reactn'
-import { ActivityIndicator, QueueTableCell, SortableList, SortableListRow, TableSectionHeader, Text,
-  View } from '../components'
+import { ActivityIndicator, HeaderTitleSelector, QueueTableCell, SortableList, SortableListRow, TableSectionHeader,
+  Text, View } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { setNowPlayingItem, getNowPlayingItem } from '../services/player'
+import { getNowPlayingItem, setNowPlayingItem } from '../services/player'
 import { getQueueItems } from '../services/queue'
 import { removeUserQueueItem, updateUserQueueItems } from '../state/actions/auth'
 import { navHeader } from '../styles'
@@ -19,12 +19,23 @@ type State = {
   isLoading?: boolean
   nowPlayingItem?: any
   queueItems: any[]
+  viewType?: string
 }
 
 export class QueueScreen extends React.Component<Props, State> {
 
   static navigationOptions = ({ navigation }) => ({
-    title: 'Queue',
+    headerTitle: (
+      <HeaderTitleSelector
+        items={headerTitleItems}
+        onValueChange={navigation.getParam('_onViewTypeSelect')}
+        placeholder={headerTitleItemPlaceholder}
+        selectedItemKey={
+          navigation.getParam('viewType') ||
+          navigation.getParam('viewType') === false
+          || _queueKey
+        } />
+    ),
     headerLeft: (
       <TouchableOpacity
         onPress={navigation.dismiss}>
@@ -56,13 +67,15 @@ export class QueueScreen extends React.Component<Props, State> {
     this.state = {
       isLoading: true,
       nowPlayingItem: null,
-      queueItems: []
+      queueItems: [],
+      viewType: props.navigation.getParam('viewType') || _queueKey
     }
   }
 
   async componentDidMount() {
     const { navigation } = this.props
     const { isLoggedIn } = this.global.session
+    navigation.setParams({ _onViewTypeSelect: this._onViewTypeSelect })
     navigation.setParams({ _startEditing: this._startEditing })
     navigation.setParams({ _stopEditing: this._stopEditing })
     const nowPlayingItem = await getNowPlayingItem(isLoggedIn)
@@ -86,6 +99,11 @@ export class QueueScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const newItems = await removeUserQueueItem(item, this.global.session.isLoggedIn, this.global, navigation)
     this.setState({ queueItems: newItems })
+  }
+
+  _onViewTypeSelect = async (x: string) => {
+    this.setState({ viewType: x })
+    this.props.navigation.setParams({ viewType: x })
   }
 
   _onPressRow = async (rowIndex) => {
@@ -134,7 +152,7 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, nowPlayingItem, queueItems } = this.state
+    const { isLoading, nowPlayingItem, queueItems, viewType } = this.state
 
     return (
       <View style={styles.view}>
@@ -143,7 +161,7 @@ export class QueueScreen extends React.Component<Props, State> {
             <ActivityIndicator styles={styles.activityIndicator} />
         }
         {
-          !isLoading &&
+          !isLoading && viewType === _queueKey &&
             <View>
               <TableSectionHeader
                 containerStyles={styles.headerNowPlayingItem}
@@ -162,7 +180,7 @@ export class QueueScreen extends React.Component<Props, State> {
             </View>
         }
         {
-          !isLoading &&
+          !isLoading && viewType === _queueKey &&
             <SortableList
               data={queueItems}
               onPressRow={this._onPressRow}
@@ -172,6 +190,25 @@ export class QueueScreen extends React.Component<Props, State> {
       </View>
     )
   }
+}
+
+const _queueKey = 'queue'
+const _historyKey = 'history'
+
+const headerTitleItems = [
+  {
+    label: 'Queue',
+    value: _queueKey
+  },
+  {
+    label: 'History',
+    value: _historyKey
+  }
+]
+
+const headerTitleItemPlaceholder = {
+  label: 'Select...',
+  value: false
 }
 
 const styles = {

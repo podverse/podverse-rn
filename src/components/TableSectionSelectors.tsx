@@ -21,8 +21,8 @@ export const TableSectionSelectors = (props: Props) => {
   const { handleSelectLeftItem, handleSelectRightItem, leftItems = [], placeholderLeft, placeholderRight,
     rightItems = [], selectedLeftItemKey, selectedRightItemKey } = props
 
-  const selectedLeftItem = leftItems.filter((x) => x.value === selectedLeftItemKey)[0] || {}
-  const selectedRightItem = rightItems.filter((x) => x.value === selectedRightItemKey)[0] || {}
+  const selectedLeftItem = leftItems.find((x) => x.value === selectedLeftItemKey) || {}
+  const selectedRightItem = rightItems.find((x) => x.value === selectedRightItemKey) || {}
 
   return (
     <View>
