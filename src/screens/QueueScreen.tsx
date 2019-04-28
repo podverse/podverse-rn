@@ -1,13 +1,15 @@
-import { TouchableOpacity } from 'react-native'
+import { Alert, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
 import { Divider, Icon } from 'react-native-elements'
 import React from 'reactn'
-import { ActivityIndicator, HeaderTitleSelector, QueueTableCell, SortableList, SortableListRow, TableSectionHeader,
-  Text, View } from '../components'
+import { ActivityIndicator, FlatList, HeaderTitleSelector, QueueTableCell, SortableList, SortableListRow,
+  TableSectionHeader, Text, View } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
+import { getHistoryItems } from '../services/history'
 import { getNowPlayingItem, setNowPlayingItem } from '../services/player'
 import { getQueueItems } from '../services/queue'
-import { removeUserQueueItem, updateUserQueueItems } from '../state/actions/auth'
+import { clearUserHistoryItems, removeUserHistoryItem, removeUserQueueItem, updateUserQueueItems
+  } from '../state/actions/users'
 import { navHeader } from '../styles'
 
 type Props = {
@@ -15,6 +17,7 @@ type Props = {
 }
 
 type State = {
+  historyItems: any[]
   isEditing?: boolean
   isLoading?: boolean
   nowPlayingItem?: any
@@ -49,15 +52,51 @@ export class QueueScreen extends React.Component<Props, State> {
       </TouchableOpacity>
     ),
     headerRight: (
-      !navigation.getParam('isEditing') ? (
-        <TouchableOpacity onPress={navigation.getParam('_startEditing')}>
-          <Text style={navHeader.textButton}>Edit</Text>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
-          <Text style={navHeader.textButton}>Done</Text>
-        </TouchableOpacity>
-      )
+      <RNView>
+        {
+          navigation.getParam('viewType') === _historyKey ?
+            (
+              <RNView>
+                {
+                  !navigation.getParam('isEditing') ? (
+                    <RNView style={styles.headerButtonWrapper}>
+                      <TouchableOpacity onPress={navigation.getParam('_clearAll')}>
+                        <Text style={navHeader.textButton}>Clear</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={navigation.getParam('_startEditing')}>
+                        <Text style={[navHeader.textButton, styles.navHeaderTextButton]}>Edit</Text>
+                      </TouchableOpacity>
+                    </RNView>
+                  ) : (
+                    <RNView style={styles.headerButtonWrapper}>
+                      <TouchableOpacity onPress={navigation.getParam('_clearAll')}>
+                        <Text style={navHeader.textButton}>Clear</Text>
+                      </TouchableOpacity>
+                        <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
+                          <Text style={[navHeader.textButton, styles.navHeaderTextButton]}>Done</Text>
+                        </TouchableOpacity>
+                    </RNView>
+                  )
+                }
+              </RNView>
+
+            ) : (
+              <RNView>
+                {
+                  !navigation.getParam('isEditing') ? (
+                    <TouchableOpacity onPress={navigation.getParam('_startEditing')}>
+                      <Text style={[navHeader.textButton, styles.navHeaderTextButton]}>Edit</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
+                      <Text style={[navHeader.textButton, styles.navHeaderTextButton]}>Done</Text>
+                    </TouchableOpacity>
+                  )
+                }
+              </RNView>
+            )
+        }
+      </RNView>
     )
   })
 
@@ -65,6 +104,7 @@ export class QueueScreen extends React.Component<Props, State> {
     super(props)
 
     this.state = {
+      historyItems: [],
       isLoading: true,
       nowPlayingItem: null,
       queueItems: [],
@@ -78,8 +118,9 @@ export class QueueScreen extends React.Component<Props, State> {
     navigation.setParams({ _onViewTypeSelect: this._onViewTypeSelect })
     navigation.setParams({ _startEditing: this._startEditing })
     navigation.setParams({ _stopEditing: this._stopEditing })
+    navigation.setParams({ _clearAll: this._clearAll })
     const nowPlayingItem = await getNowPlayingItem(isLoggedIn)
-    const queueItems = await getQueueItems(isLoggedIn, navigation)
+    const queueItems = await getQueueItems(isLoggedIn)
     this.setState({
       isLoading: false,
       nowPlayingItem,
@@ -95,40 +136,88 @@ export class QueueScreen extends React.Component<Props, State> {
     this.setState({ isEditing: false }, () => this.props.navigation.setParams({ isEditing: false }))
   }
 
-  _handleRemovePress = async (item: NowPlayingItem) => {
-    const { navigation } = this.props
-    const newItems = await removeUserQueueItem(item, this.global.session.isLoggedIn, this.global, navigation)
-    this.setState({ queueItems: newItems })
+  _clearAll = () => {
+    Alert.alert(
+      'Clear History',
+      'Are you sure you want to clear your history?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Yes',
+          onPress: () => {
+            this.setState({
+              isLoading: true
+            }, async () => {
+              await clearUserHistoryItems(this.global.session.isLoggedIn, this.global)
+              this.setState({
+                historyItems: [],
+                isLoading: false
+              })
+            })
+          }
+        }
+      ]
+    )
+    // this.setState({ isEditing: false }, () => this.props.navigation.setParams({ isEditing: false }))
   }
 
   _onViewTypeSelect = async (x: string) => {
-    this.setState({ viewType: x })
-    this.props.navigation.setParams({ viewType: x })
+    const { isLoggedIn } = this.global.session
+    this.setState({
+      historyItems: [],
+      isEditing: false,
+      isLoading: true,
+      nowPlayingItem: null,
+      queueItems: [],
+      viewType: x
+    })
+    this.props.navigation.setParams({
+      isEditing: false,
+      viewType: x
+    })
+
+    if (x === _queueKey) {
+      const nowPlayingItem = await getNowPlayingItem(isLoggedIn)
+      const queueItems = await getQueueItems(isLoggedIn)
+      this.setState({
+        isLoading: false,
+        nowPlayingItem,
+        queueItems
+      })
+    } else if (x === _historyKey) {
+      const historyItems = await getHistoryItems(isLoggedIn)
+      this.setState({
+        historyItems,
+        isLoading: false
+      })
+    }
   }
 
   _onPressRow = async (rowIndex) => {
-    const { navigation } = this.props
     const { queueItems } = this.state
     const item = queueItems[rowIndex]
-    const result = await setNowPlayingItem(item, this.global.session.isLoggedIn, navigation)
+    const result = await setNowPlayingItem(item, this.global.session.isLoggedIn)
     this.setState({
       nowPlayingItem: result.nowPlayingItem,
       queueItems: result.queueItems
     })
   }
 
-  _renderRow = ({ active, data }) => {
+  _renderQueueItemRow = ({ active, data }) => {
     const { isEditing } = this.state
 
     const cell = (
-      <View>
+      <View key={data.clipId || data.episodeId}>
         <QueueTableCell
           clipEndTime={data.clipEndTime}
           clipStartTime={data.clipStartTime}
           clipTitle={data.clipTitle}
           episodePubDate={data.episodePubDate}
           episodeTitle={data.episodeTitle}
-          handleRemovePress={() => this._handleRemovePress(data)}
+          handleRemovePress={() => this._handleRemoveQueueItemPress(data)}
           podcastImageUrl={data.podcastImageUrl}
           podcastTitle={data.podcastTitle}
           showMoveButton={!isEditing}
@@ -144,6 +233,16 @@ export class QueueScreen extends React.Component<Props, State> {
     )
   }
 
+  _handleRemoveQueueItemPress = async (item: NowPlayingItem) => {
+    const newItems = await removeUserQueueItem(item, this.global.session.isLoggedIn, this.global)
+    this.setState({ queueItems: newItems })
+  }
+
+  _handleRemoveHistoryItemPress = async (item: NowPlayingItem) => {
+    const newItems = await removeUserHistoryItem(item, this.global.session.isLoggedIn, this.global)
+    this.setState({ historyItems: newItems })
+  }
+
   _onReleaseRow = async (key: number, currentOrder: [string]) => {
     const { queueItems } = this.state
     const sortedItems = currentOrder.map((index: string) => queueItems[index])
@@ -151,8 +250,32 @@ export class QueueScreen extends React.Component<Props, State> {
     this.setState({ queueItems: newItems })
   }
 
+  _ItemSeparatorComponent = () => {
+    return <Divider />
+  }
+
+  _renderHistoryItem = ({ item }) => {
+    const { isEditing } = this.state
+
+    return (
+      <View>
+        <QueueTableCell
+          clipEndTime={item.clipEndTime}
+          clipStartTime={item.clipStartTime}
+          clipTitle={item.clipTitle}
+          episodePubDate={item.episodePubDate}
+          episodeTitle={item.episodeTitle}
+          handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
+          podcastImageUrl={item.podcastImageUrl}
+          podcastTitle={item.podcastTitle}
+          showRemoveButton={isEditing} />
+        <Divider />
+      </View>
+    )
+  }
+
   render() {
-    const { isLoading, nowPlayingItem, queueItems, viewType } = this.state
+    const { historyItems, isLoading, nowPlayingItem, queueItems, viewType } = this.state
 
     return (
       <View style={styles.view}>
@@ -185,7 +308,16 @@ export class QueueScreen extends React.Component<Props, State> {
               data={queueItems}
               onPressRow={this._onPressRow}
               onReleaseRow={this._onReleaseRow}
-              renderRow={this._renderRow} />
+              renderRow={this._renderQueueItemRow} />
+        }
+        {
+          !isLoading && viewType === _historyKey &&
+            <FlatList
+              data={historyItems}
+              disableLeftSwipe={true}
+              extraData={historyItems}
+              ItemSeparatorComponent={this._ItemSeparatorComponent}
+              renderItem={this._renderHistoryItem} />
         }
       </View>
     )
@@ -211,7 +343,7 @@ const headerTitleItemPlaceholder = {
   value: false
 }
 
-const styles = {
+const styles = StyleSheet.create({
   activityIndicator: {
     justifyContent: 'flex-start',
     marginTop: 24
@@ -221,6 +353,9 @@ const styles = {
     paddingRight: 16,
     paddingVertical: 8
   },
+  headerButtonWrapper: {
+    flexDirection: 'row'
+  },
   headerNextUp: {
     marginBottom: 8,
     marginTop: 2
@@ -228,10 +363,15 @@ const styles = {
   headerNowPlayingItem: {
     marginBottom: 2
   },
+  navHeaderTextButton: {
+    marginLeft: 2,
+    textAlign: 'right',
+    width: 39
+  },
   tableCellDivider: {
     marginBottom: 2
   },
   view: {
     flex: 1
   }
-}
+})

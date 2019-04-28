@@ -10,10 +10,8 @@ type Props = {
   data?: any
   disableLeftSwipe: boolean
   extraData?: any
-  searchBarText?: string
   handleFilterInputChangeText?: any
   handleFilterInputClear?: any
-  handleGetItemLayout?: any
   initialScrollIndex?: number
   isLoadingMore?: boolean
   isRefreshing?: boolean
@@ -24,6 +22,7 @@ type Props = {
   onRefresh?: any
   renderHiddenItem?: any
   renderItem: any
+  searchBarText?: string
 }
 
 // This line silences a ref warning when a Flatlist doesn't need to be swipable.
