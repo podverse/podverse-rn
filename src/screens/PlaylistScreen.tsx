@@ -4,8 +4,6 @@ import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCel
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
-import { setNowPlayingItem } from '../services/player'
-import { addUserQueueItemLast, addUserQueueItemNext } from '../state/actions/auth'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlists'
 
 type Props = {
