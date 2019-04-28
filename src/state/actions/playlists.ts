@@ -1,8 +1,33 @@
 import { setGlobal } from 'reactn'
 import { combineAndSortPlaylistItems } from '../../lib/utility'
-import { getPlaylist as getPlaylistService, getPlaylists as getPlaylistsService,
-  toggleSubscribeToPlaylist as toggleSubscribe, updatePlaylist as updatePlaylistService
-  } from '../../services/playlist'
+import { addOrRemovePlaylistItem as addOrRemovePlaylistItemService, getPlaylist as getPlaylistService,
+  getPlaylists as getPlaylistsService, toggleSubscribeToPlaylist as toggleSubscribe,
+  updatePlaylist as updatePlaylistService } from '../../services/playlist'
+
+export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: string, mediaRefId?: string, globalState?: any) => {
+  const { playlistItemCount } = await addOrRemovePlaylistItemService(playlistId, episodeId, mediaRefId)
+  const screenPlaylistsFlatListData = globalState.screenPlaylists.myPlaylists
+  const foundIndex = screenPlaylistsFlatListData.findIndex((x: any) => x.id === playlistId)
+
+  if (foundIndex > -1) {
+    screenPlaylistsFlatListData[foundIndex] = {
+      ...screenPlaylistsFlatListData[foundIndex],
+      itemCount: playlistItemCount
+    }
+  }
+
+  setGlobal({
+    screenPlaylists: {
+      myPlaylists: screenPlaylistsFlatListData,
+      subscribedPlaylists: globalState.screenPlaylists.subscribedPlaylists
+    },
+    screenPlaylistsAddTo: {
+      myPlaylists: screenPlaylistsFlatListData
+    }
+  })
+
+  return playlistItemCount
+}
 
 export const toggleSubscribeToPlaylist = async (id: string) => {
   const subscribedPlaylistIds = await toggleSubscribe(id)
@@ -15,11 +40,12 @@ export const toggleSubscribeToPlaylist = async (id: string) => {
   })
 }
 
-export const getPlaylists = async (playlistId: string) => {
+export const getPlaylists = async (playlistId: string, globalState: any) => {
   const results = await getPlaylistsService({ playlistId })
   setGlobal({
     screenPlaylists: {
-      flatListData: results
+      myPlaylists: globalState.screenPlaylists.myPlaylists,
+      subscribedPlaylists: results
     }
   })
 }
@@ -27,16 +53,23 @@ export const getPlaylists = async (playlistId: string) => {
 export const getPlaylist = async (id: string, globalState: any) => {
   const newPlaylist = await getPlaylistService(id)
   const { episodes, itemsOrder, mediaRefs } = newPlaylist
-  const screenPlaylistsFlatListData = globalState.screenPlaylists.flatListData
+  const screenPlaylistsMyPlaylists = globalState.screenPlaylists.myPlaylists
+  const screenPlaylistsSubscribed = globalState.screenPlaylists.subscribedPlaylists
+console.log(globalState.screenPlaylists)
+  const foundIndexMy = screenPlaylistsMyPlaylists.findIndex((x: any) => x.id === id)
+  if (foundIndexMy > -1) {
+    screenPlaylistsMyPlaylists[foundIndexMy] = newPlaylist
+  }
 
-  const foundIndex = screenPlaylistsFlatListData.findIndex((x: any) => x.id === id)
-  if (foundIndex > -1) {
-    screenPlaylistsFlatListData[foundIndex] = newPlaylist
+  const foundIndexSubscribed = screenPlaylistsSubscribed.findIndex((x: any) => x.id === id)
+  if (foundIndexSubscribed > -1) {
+    screenPlaylistsSubscribed[foundIndexSubscribed] = newPlaylist
   }
 
   setGlobal({
     screenPlaylists: {
-      flatListData: screenPlaylistsFlatListData
+      myPlaylists: screenPlaylistsMyPlaylists,
+      subscribedPlaylists: screenPlaylistsSubscribed
     },
     screenPlaylist: {
       flatListData: combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder),
@@ -49,7 +82,7 @@ export const getPlaylist = async (id: string, globalState: any) => {
 
 export const updatePlaylist = async (data: any, globalState: any) => {
   const newPlaylist = await updatePlaylistService(data)
-  const screenPlaylistsFlatListData = globalState.screenPlaylists.flatListData
+  const screenPlaylistsFlatListData = globalState.screenPlaylists.myPlaylists
 
   const { episodes, itemsOrder, mediaRefs } = newPlaylist
   const screenPlaylistFlatListData = combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder)
@@ -61,7 +94,8 @@ export const updatePlaylist = async (data: any, globalState: any) => {
 
   setGlobal({
     screenPlaylists: {
-      flatListData: screenPlaylistsFlatListData
+      myPlaylists: screenPlaylistsFlatListData,
+      subscribedPlaylists: globalState.screenPlaylists.subscribedPlaylists
     },
     screenPlaylist: {
       flatListData: screenPlaylistFlatListData,
