@@ -10,11 +10,6 @@ export type NowPlayingItem = {
   episodePubDate?: string
   episodeTitle?: string
   isPublic?: boolean
-  ownerId?: string
-  ownerIsPublic?: boolean
-  ownerName?: string
-  podcastAuthors?: string
-  podcastCategories?: string
   podcastId?: string
   podcastImageUrl?: string
   podcastIsExplicit?: boolean
