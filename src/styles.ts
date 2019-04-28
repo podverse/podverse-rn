@@ -325,3 +325,14 @@ export const table = StyleSheet.create({
     paddingLeft: 8
   }
 })
+
+export const iconStyles = {
+  dark: {
+    color: PV.Colors.white,
+    underlayColor: PV.Colors.black
+  },
+  light: {
+    color: PV.Colors.black,
+    underlayColor: PV.Colors.white
+  }
+}

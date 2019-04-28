@@ -8,6 +8,7 @@ import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { getPodcast } from '../services/podcast'
+import { toggleSubscribeToPodcast } from '../state/actions/podcasts'
 import { core } from '../styles'
 
 const { aboutKey, allEpisodesKey, clipsKey, downloadedKey, mostRecentKey, topPastDay, topPastMonth,
@@ -251,16 +252,26 @@ export class PodcastScreen extends React.Component<Props, State> {
     this.setState({ searchBarText: '' })
   }
 
+  _toggleSubscribeToPodcast = async () => {
+    const { podcast } = this.state
+    await toggleSubscribeToPodcast(podcast.id)
+  }
+
   render() {
     const { flatListData, isLoading, isLoadingMore, isRefreshing, podcast, querySort, selectedItem,
       showActionSheet, viewType } = this.state
     const { globalTheme } = this.global
     const { navigation } = this.props
 
+    const isSubscribed = this.global.session.userInfo.subscribedPodcastIds.some(x => x === podcast.id)
+
     return (
       <View style={styles.view}>
         <PodcastTableHeader
           autoDownloadOn={true}
+          handleToggleAutoDownload={() => console.log('auto dl')}
+          handleToggleSubscribe={this._toggleSubscribeToPodcast}
+          isSubscribed={isSubscribed}
           podcastImageUrl={podcast.imageUrl}
           podcastTitle={podcast.title} />
         <TableSectionSelectors
