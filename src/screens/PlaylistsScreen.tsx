@@ -2,8 +2,8 @@ import React, { setGlobal } from 'reactn'
 import { ActivityIndicator, Divider, FlatList, MessageWithAction, PlaylistTableCell, TableSectionSelectors,
   View } from '../components'
 import { PV } from '../resources'
-import { getLoggedInUserPlaylists } from '../state/actions/auth'
 import { getPlaylists } from '../state/actions/playlists'
+import { getLoggedInUserPlaylists } from '../state/actions/users'
 
 type Props = {
   navigation?: any
@@ -47,7 +47,10 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     }
 
     setGlobal({
-      screenPlaylists: { flatListData: [] }
+      screenPlaylists: {
+        myPlaylists: [],
+        subscribedPlaylists: []
+      }
     }, () => {
       this.setState({
         isLoading: true,
@@ -86,7 +89,8 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
   render() {
     const { isLoading, isLoadingMore, queryFrom } = this.state
-    const { flatListData } = this.global.screenPlaylists
+    const { myPlaylists, subscribedPlaylists } = this.global.screenPlaylists
+    const flatListData = queryFrom === _myPlaylistsKey ? myPlaylists : subscribedPlaylists
 
     return (
       <View style={styles.view}>
@@ -137,12 +141,12 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     } as State
 
     if (filterKey === _myPlaylistsKey) {
-      await getLoggedInUserPlaylists()
+      await getLoggedInUserPlaylists(this.global)
     } else {
       const playlistId = this.global.session.userInfo.subscribedPlaylistIds
 
       if (playlistId && playlistId.length > 0) {
-        await getPlaylists(playlistId)
+        await getPlaylists(playlistId, this.global)
       }
     }
 

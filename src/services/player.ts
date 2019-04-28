@@ -1,5 +1,6 @@
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { PV } from '../resources'
+import { addOrUpdateHistoryItem } from './history'
 import { filterItemFromQueueItems, getQueueItems, setAllQueueItems } from './queue'
 
 export const getNowPlayingItem = async (isLoggedIn: boolean) => {
@@ -16,7 +17,7 @@ export const setNowPlayingItem = async (item: any, isLoggedIn: boolean) => {
   const items = await getQueueItems(isLoggedIn)
   const filteredItems = filterItemFromQueueItems(items, item)
   await setAllQueueItems(filteredItems, isLoggedIn)
-
+  await addOrUpdateHistoryItem(item, isLoggedIn)
   RNSecureKeyStore.set(
     PV.Keys.NOW_PLAYING_ITEM,
     item ? JSON.stringify(item) : null,

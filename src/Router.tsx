@@ -6,8 +6,9 @@ import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { PVTabBar } from './components'
 import { PV } from './resources'
 import { AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen, EpisodeScreen,
-  EpisodesScreen, MoreScreen, OnboardingScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen,
-  PodcastsScreen, ProfileScreen, ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen } from './screens'
+  EpisodesScreen, MoreScreen, OnboardingScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen,
+  PodcastScreen, PodcastsScreen, ProfileScreen, ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen
+  } from './screens'
 import { navHeader } from './styles'
 
 const defaultNavigationOptions = ({ navigation }) => ({
@@ -20,7 +21,7 @@ const defaultNavigationOptions = ({ navigation }) => ({
     fontWeight: 'bold'
   },
   headerRight: (
-    <TouchableOpacity onPress={async () => navigation.navigate(PV.RouteNames.QueueScreen) }>
+    <TouchableOpacity onPress={async () => navigation.navigate(PV.RouteNames.QueueScreen)}>
       <Text style={navHeader.textButton}>Queue</Text>
     </TouchableOpacity>
   )
@@ -168,6 +169,12 @@ const TabNavigator = createBottomTabNavigator({
   }
 })
 
+const PlaylistsAddToNavigator = createStackNavigator({
+  [PV.RouteNames.PlaylistsAddToScreen]: PlaylistsAddToScreen
+}, {
+  defaultNavigationOptions
+})
+
 const QueueNavigator = createStackNavigator({
   [PV.RouteNames.QueueScreen]: QueueScreen
 }, {
@@ -177,6 +184,7 @@ const QueueNavigator = createStackNavigator({
 const MainApp = createStackNavigator({
   [PV.RouteNames.TabNavigator]: TabNavigator,
   [PV.RouteNames.AuthNavigator]: AuthNavigator,
+  PlaylistsAddToNavigator,
   QueueNavigator
 }, {
   mode: 'modal',

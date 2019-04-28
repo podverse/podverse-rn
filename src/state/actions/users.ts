@@ -34,10 +34,10 @@ export const getPublicUser = async (id: string, globalState: any) => {
   }
 
   setGlobal({
-    screenPlaylists: {
+    screenProfiles: {
       flatListData: screenProfilesFlatListData
     },
-    screenPlaylist: {
+    screenProfile: {
       flatListData: screenProfileFlatListData,
       user: newUser
     }
@@ -57,11 +57,15 @@ export const toggleSubscribeToUser = async (id: string) => {
   })
 }
 
-export const getLoggedInUserPlaylists = async () => {
+export const getLoggedInUserPlaylists = async (globalState: any) => {
   const results = await getLoggedInUserPlaylistsService()
   setGlobal({
     screenPlaylists: {
-      flatListData: results[0]
+      myPlaylists: results[0],
+      subscribedPlaylists: globalState.screenPlaylists.subscribedPlaylists
+    },
+    screenPlaylistsAddTo: {
+      myPlaylists: results[0]
     }
   })
 }

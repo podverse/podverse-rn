@@ -1,8 +1,9 @@
 import { IActionSheet } from '../resources/Interfaces'
 import { setNowPlayingItem } from '../services/player'
-import { addUserQueueItemLast, addUserQueueItemNext } from '../state/actions/auth'
+import { addUserQueueItemLast, addUserQueueItemNext } from '../state/actions/users'
+import { PV } from './PV'
 
-const mediaMoreButtons = (item: any, isLoggedIn: boolean, globalState: any) => [
+const mediaMoreButtons = (item: any, isLoggedIn: boolean, globalState: any, navigation: any, handleDismiss: any) => [
   {
     key: 'stream',
     text: 'Stream',
@@ -26,7 +27,13 @@ const mediaMoreButtons = (item: any, isLoggedIn: boolean, globalState: any) => [
   {
     key: 'addToPlaylist',
     text: 'Add to Playlist',
-    onPress: () => console.log('Add to Playlist')
+    onPress: () => {
+      handleDismiss()
+      navigation.navigate(
+        PV.RouteNames.PlaylistsAddToScreen,
+        { ...(item.clipId ? { mediaRefId: item.clipId } : { episodeId: item.episodeId }) }
+      )
+    }
   }
 ]
 

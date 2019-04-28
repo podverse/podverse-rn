@@ -156,7 +156,9 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <ActionSheet
           globalTheme={globalTheme}
           handleCancelPress={this._handleCancelPress}
-          items={PV.ActionSheet.media.moreButtons(selectedItem, session.isLoggedIn, this.global)}
+          items={PV.ActionSheet.media.moreButtons(
+            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+          )}
           showModal={showActionSheet} />
       </View>
     )

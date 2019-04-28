@@ -70,7 +70,7 @@ export const getLoggedInUserMediaRefs = async (query: any = {}, nsfwMode?: boole
 
   const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
   const response = await request({
-    endpoint: '/mediaRefs',
+    endpoint: '/user/mediaRefs',
     query: filteredQuery,
     headers: { Authorization: bearerToken }
   }, nsfwMode)
@@ -81,7 +81,7 @@ export const getLoggedInUserMediaRefs = async (query: any = {}, nsfwMode?: boole
 export const getLoggedInUserPlaylists = async (nsfwMode?: boolean) => {
   const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
   const response = await request({
-    endpoint: '/playlists',
+    endpoint: '/user/playlists',
     headers: { Authorization: bearerToken }
   }, nsfwMode)
 

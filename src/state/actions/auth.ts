@@ -1,11 +1,9 @@
 import { Alert } from 'react-native'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { setGlobal } from 'reactn'
-import { NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
-import { getAuthenticatedUserInfo, getLoggedInUserPlaylists as getLoggedInUserPlaylistsService,
-  login, signUp, updateLoggedInUser as updateLoggedInUserService } from '../../services/auth'
-import { addQueueItemLast, addQueueItemNext, removeQueueItem, setAllQueueItems } from '../../services/queue'
+import { getAuthenticatedUserInfo, login, signUp } from '../../services/auth'
+
 import { getSubscribedPodcasts } from './podcasts'
 
 export type Credentials = {

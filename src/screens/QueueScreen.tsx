@@ -1,7 +1,7 @@
 import { Alert, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
-import { Divider, Icon } from 'react-native-elements'
+import { Icon } from 'react-native-elements'
 import React from 'reactn'
-import { ActivityIndicator, FlatList, HeaderTitleSelector, QueueTableCell, SortableList, SortableListRow,
+import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, QueueTableCell, SortableList, SortableListRow,
   TableSectionHeader, Text, View } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
@@ -206,11 +206,28 @@ export class QueueScreen extends React.Component<Props, State> {
     })
   }
 
+  _renderHistoryItem = ({ item }) => {
+    const { isEditing } = this.state
+
+    return (
+      <QueueTableCell
+        clipEndTime={item.clipEndTime}
+        clipStartTime={item.clipStartTime}
+        clipTitle={item.clipTitle}
+        episodePubDate={item.episodePubDate}
+        episodeTitle={item.episodeTitle}
+        handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
+        podcastImageUrl={item.podcastImageUrl}
+        podcastTitle={item.podcastTitle}
+        showRemoveButton={isEditing} />
+    )
+  }
+
   _renderQueueItemRow = ({ active, data }) => {
     const { isEditing } = this.state
 
     const cell = (
-      <View key={data.clipId || data.episodeId}>
+      <View>
         <QueueTableCell
           clipEndTime={data.clipEndTime}
           clipStartTime={data.clipStartTime}
@@ -252,26 +269,6 @@ export class QueueScreen extends React.Component<Props, State> {
 
   _ItemSeparatorComponent = () => {
     return <Divider />
-  }
-
-  _renderHistoryItem = ({ item }) => {
-    const { isEditing } = this.state
-
-    return (
-      <View>
-        <QueueTableCell
-          clipEndTime={item.clipEndTime}
-          clipStartTime={item.clipStartTime}
-          clipTitle={item.clipTitle}
-          episodePubDate={item.episodePubDate}
-          episodeTitle={item.episodeTitle}
-          handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
-          podcastImageUrl={item.podcastImageUrl}
-          podcastTitle={item.podcastTitle}
-          showRemoveButton={isEditing} />
-        <Divider />
-      </View>
-    )
   }
 
   render() {

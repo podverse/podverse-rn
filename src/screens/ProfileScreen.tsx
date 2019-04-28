@@ -285,7 +285,9 @@ export class ProfileScreen extends React.Component<Props, State> {
         <ActionSheet
           globalTheme={globalTheme}
           handleCancelPress={this._handleCancelPress}
-          items={PV.ActionSheet.media.moreButtons(selectedItem, this.global.session.isLoggedIn, this.global, navigation)}
+          items={PV.ActionSheet.media.moreButtons(
+            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+          )}
           showModal={showActionSheet} />
       </View>
     )

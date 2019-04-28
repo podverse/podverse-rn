@@ -7,7 +7,11 @@ const initialTheme: InitialState = {
     playlist: null
   },
   screenPlaylists: {
-    flatListData: []
+    myPlaylists: [],
+    subscribedPlaylists: []
+  },
+  screenPlaylistsAddTo: {
+    myPlaylists: []
   },
   screenProfile: {
     flatListData: [],

@@ -53,7 +53,11 @@ export interface InitialState {
     playlist?: any
   }
   screenPlaylists: {
-    flatListData: []
+    myPlaylists: []
+    subscribedPlaylists: []
+  }
+  screenPlaylistsAddTo: {
+    myPlaylists: []
   }
   screenProfiles: {
     flatListData: []

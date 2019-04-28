@@ -2,7 +2,7 @@ import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { updateUserQueueItems } from './auth'
+import { updateUserQueueItems } from './user'
 
 export const getQueueItems = async (isLoggedIn: boolean) => {
   return isLoggedIn ? getQueueItemsFromServer() : getQueueItemsLocally()

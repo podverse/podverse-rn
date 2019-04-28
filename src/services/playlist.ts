@@ -2,8 +2,13 @@ import RNSecureKeyStore from 'react-native-secure-key-store'
 import { PV } from '../resources'
 import { request } from './request'
 
-export const addOrRemovePlaylistItem = async (data: any) => {
+export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: string, mediaRefId?: string) => {
   const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const data = {
+    playlistId,
+    ...(!mediaRefId ? { episodeId } : { mediaRefId })
+  }
+
   const response = await request({
     endpoint: '/playlist/add-or-remove',
     method: 'PATCH',
