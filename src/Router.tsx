@@ -5,10 +5,10 @@ import { createAppContainer, createStackNavigator, createSwitchNavigator,
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { PVTabBar } from './components'
 import { PV } from './resources'
-import { AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen, EpisodeScreen,
-  EpisodesScreen, MoreScreen, OnboardingScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen,
-  PodcastScreen, PodcastsScreen, ProfileScreen, ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen
-  } from './screens'
+import { AboutScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
+  EpisodeScreen, EpisodesScreen, FeedbackScreen, MoreScreen, OnboardingScreen, PlaylistsAddToScreen,
+  PlaylistScreen, PlaylistsScreen, PodcastScreen, PodcastsScreen, ProfileScreen, ProfilesScreen, QueueScreen,
+  SearchScreen, SettingsScreen } from './screens'
 import { navHeader } from './styles'
 
 const defaultNavigationOptions = ({ navigation }) => ({
@@ -129,7 +129,9 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.ProfileScreen]: ProfileScreen,
     [PV.RouteNames.ProfilesScreen]: ProfilesScreen,
     [PV.RouteNames.SettingsScreen]: SettingsScreen,
-    [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen
+    [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen,
+    [PV.RouteNames.FeedbackScreen]: FeedbackScreen,
+    [PV.RouteNames.AboutScreen]: AboutScreen
   },
   {
     defaultNavigationOptions,

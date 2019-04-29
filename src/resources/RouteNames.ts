@@ -1,4 +1,5 @@
 export const RouteNames = {
+  AboutScreen: 'AboutScreen',
   AuthNavigator: 'AuthNavigator',
   AuthScreen: 'AuthScreen',
   ClipsScreen: 'ClipsScreen',
@@ -7,6 +8,7 @@ export const RouteNames = {
   EditProfileScreen: 'EditProfileScreen',
   EpisodeScreen: 'EpisodeScreen',
   EpisodesScreen: 'EpisodesScreen',
+  FeedbackScreen: 'FeedbackScreen',
   SearchScreen: 'SearchScreen',
   SearchSearchScreen: 'SearchSearchScreen',
   MainApp: 'MainApp',
