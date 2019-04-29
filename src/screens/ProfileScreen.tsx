@@ -4,10 +4,9 @@ import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, Playl
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { generateAuthorsText, generateCategoriesText, readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { setNowPlayingItem } from '../services/player'
 import { getPodcasts } from '../services/podcast'
 import { getUserMediaRefs, getUserPlaylists } from '../services/user'
-import { addUserQueueItemLast, addUserQueueItemNext, getAuthUserInfo } from '../state/actions/auth'
+import { getAuthUserInfo } from '../state/actions/auth'
 import { getPublicUser, toggleSubscribeToUser } from '../state/actions/users'
 
 type Props = {
@@ -127,15 +126,22 @@ export class ProfileScreen extends React.Component<Props, State> {
       return
     }
 
-    this.setState({
-      endOfResultsReached: false,
-      isLoading: true,
-      querySort: selectedKey
-    }, async () => {
-      const newState = await this._queryData(selectedKey, 1)
-
-      this.setState(newState)
+    setGlobal({
+      screenProfile: {
+        flatListData: [],
+        user: this.global.screenProfile.user
+      }
+    }, () => {
+      this.setState({
+        endOfResultsReached: false,
+        isLoading: true,
+        querySort: selectedKey
+      }, async () => {
+        const newState = await this._queryData(selectedKey, 1)
+        this.setState(newState)
+      })
     })
+
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
@@ -187,9 +193,9 @@ export class ProfileScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleSubscribeToggle = async (id: string) => {
+  _handleToggleSubscribe = async (id: string) => {
     const { user } = this.global.screenProfile
-    await toggleSubscribeToUser(id)
+    await toggleSubscribeToUser(id, this.global)
     const { subscribedUserIds } = this.global.session.userInfo
     const isSubscribed = subscribedUserIds.some((x: string) => user.id)
     this.setState({ isSubscribed })
@@ -256,7 +262,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         <ProfileTableHeader
           handleEditPress={isLoggedInUserProfile ? this._handleEditPress : null}
-          handleSubscribeToggle={isLoggedInUserProfile ? null : this._handleSubscribeToggle}
+          handleToggleSubscribe={() => isLoggedInUserProfile ? null : this._handleToggleSubscribe(user.id)}
           id={user.id}
           isSubscribed={isSubscribed}
           name={user.name} />

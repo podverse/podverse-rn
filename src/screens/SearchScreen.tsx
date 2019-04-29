@@ -160,7 +160,7 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   _toggleSubscribeToPodcast = async (id: string) => {
-    await toggleSubscribeToPodcast(id)
+    await toggleSubscribeToPodcast(id, this.global)
     this.setState({ showActionSheet: false })
   }
 

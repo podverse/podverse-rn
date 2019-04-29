@@ -210,7 +210,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _handleHiddenItemPress = async (selectedId, rowMap) => {
     rowMap[selectedId].closeRow()
     const { flatListData } = this.state
-    await toggleSubscribeToPodcast(selectedId)
+    await toggleSubscribeToPodcast(selectedId, this.global)
     const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
     this.setState({ flatListData: newFlatListData })
   }
@@ -320,6 +320,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { settings } = this.global
     const { nsfwMode } = settings
     if (filterKey === _subscribedKey) {
+      await getAuthUserInfo() // get latest subscribedPodcastIds
       const results = await this._querySubscribedPodcasts()
       newState.flatListData = results[0]
     } else if (filterKey === _allPodcastsKey) {

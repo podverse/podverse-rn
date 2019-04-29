@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Switch } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources'
-import { Icon, Text, View } from './'
+import { SubscribeButton, Text, View } from './'
 
 type Props = {
   autoDownloadOn?: boolean
@@ -26,23 +26,9 @@ export const PodcastTableHeader = (props: Props) => {
           <Text
             numberOfLines={2}
             style={styles.title}>{podcastTitle}</Text>
-          {
-            handleToggleSubscribe &&
-              <View style={styles.buttonView}>
-                {
-                  isSubscribed ?
-                    <Icon
-                      name='star'
-                      onPress={handleToggleSubscribe}
-                      size={32}
-                      solid={true} /> :
-                    <Icon
-                      name='star'
-                      onPress={handleToggleSubscribe}
-                      size={32} />
-                }
-              </View>
-          }
+        <SubscribeButton
+          handleToggleSubscribe={handleToggleSubscribe}
+          isSubscribed={isSubscribed} />
         </View>
         <View style={styles.textWrapperBottom}>
           <Text

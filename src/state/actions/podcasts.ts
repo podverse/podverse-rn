@@ -11,11 +11,13 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   return data
 }
 
-export const toggleSubscribeToPodcast = async (id: string) => {
+export const toggleSubscribeToPodcast = async (id: string, globalState: any) => {
   const subscribedPodcastIds = await toggleSubscribe(id)
   setGlobal({
     session: {
+      ...globalState.session,
       userInfo: {
+        ...globalState.session.userInfo,
         subscribedPodcastIds
       }
     }

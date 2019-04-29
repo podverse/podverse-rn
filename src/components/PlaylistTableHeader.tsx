@@ -3,12 +3,12 @@ import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { Divider, Text, View } from './'
+import { Divider, SubscribeButton, Text, View } from './'
 
 type Props = {
   createdBy?: string
   handleEditPress?: any
-  handleSubscribeToggle?: any
+  handleToggleSubscribe?: any
   id: string
   isSubscribed?: boolean
   itemCount: number
@@ -17,7 +17,7 @@ type Props = {
 }
 
 export const PlaylistTableHeader = (props: Props) => {
-  const { createdBy, handleEditPress, handleSubscribeToggle, id, isSubscribed, itemCount, lastUpdated,
+  const { createdBy, handleEditPress, handleToggleSubscribe, id, isSubscribed, itemCount, lastUpdated,
     title } = props
   const [globalTheme] = useGlobal('globalTheme')
 
@@ -57,28 +57,15 @@ export const PlaylistTableHeader = (props: Props) => {
                 <Image
                   resizeMode='contain'
                   source={PV.Images.SQUARE_PLACEHOLDER}
-                  style={[styles.moreButtonImage, globalTheme.buttonImage]} /> 
+                  style={[styles.moreButtonImage, globalTheme.buttonImage]} />
               </TouchableWithoutFeedback>
             </View>
         }
         {
-          handleSubscribeToggle &&
-            <View style={styles.buttonView}>
-              <TouchableWithoutFeedback
-                onPress={() => handleSubscribeToggle(id)}>
-                {
-                  isSubscribed ?
-                    <Image
-                      resizeMode='contain'
-                      source={PV.Images.MORE}
-                      style={[styles.moreButtonImage, globalTheme.buttonImage]} /> :
-                    <Image
-                      resizeMode='contain'
-                      source={PV.Images.SQUARE_PLACEHOLDER}
-                      style={[styles.moreButtonImage, globalTheme.buttonImage]} />
-                }
-              </TouchableWithoutFeedback>
-            </View>
+          handleToggleSubscribe &&
+            <SubscribeButton
+              handleToggleSubscribe={handleToggleSubscribe}
+              isSubscribed={isSubscribed} />
         }
       </View>
       <Divider />
@@ -91,8 +78,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 0,
     justifyContent: 'center',
-    marginLeft: 8,
-    marginRight: 8
+    marginLeft: 8
   },
   createdBy: {
     fontSize: PV.Fonts.sizes.sm,

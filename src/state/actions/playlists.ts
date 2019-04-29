@@ -1,4 +1,4 @@
-import { setGlobal } from 'reactn'
+import { setGlobal, useGlobal } from 'reactn'
 import { combineAndSortPlaylistItems } from '../../lib/utility'
 import { addOrRemovePlaylistItem as addOrRemovePlaylistItemService, getPlaylist as getPlaylistService,
   getPlaylists as getPlaylistsService, toggleSubscribeToPlaylist as toggleSubscribe,
@@ -29,11 +29,13 @@ export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: st
   return playlistItemCount
 }
 
-export const toggleSubscribeToPlaylist = async (id: string) => {
+export const toggleSubscribeToPlaylist = async (id: string, globalState: any) => {
   const subscribedPlaylistIds = await toggleSubscribe(id)
   setGlobal({
     session: {
+      ...globalState.session,
       userInfo: {
+        ...globalState.session.userInfo,
         subscribedPlaylistIds
       }
     }

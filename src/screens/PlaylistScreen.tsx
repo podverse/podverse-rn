@@ -101,7 +101,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
   _handleSubscribeToggle = async (id: string) => {
     const { playlist } = this.global.screenPlaylist
-    await toggleSubscribeToPlaylist(id)
+    await toggleSubscribeToPlaylist(id, this.global)
     const { subscribedPlaylistIds } = this.global.session.userInfo
     const isSubscribed = subscribedPlaylistIds.some((x: string) => playlist.id)
     this.setState({ isSubscribed })

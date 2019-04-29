@@ -46,11 +46,13 @@ export const getPublicUser = async (id: string, globalState: any) => {
   return newUser
 }
 
-export const toggleSubscribeToUser = async (id: string) => {
+export const toggleSubscribeToUser = async (id: string, globalState: any) => {
   const subscribedUserIds = await toggleSubscribeToUserService(id)
   setGlobal({
     session: {
+      ...globalState.session,
       userInfo: {
+        ...globalState.session.userInfo,
         subscribedUserIds
       }
     }

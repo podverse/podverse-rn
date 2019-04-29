@@ -254,7 +254,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _toggleSubscribeToPodcast = async () => {
     const { podcast } = this.state
-    await toggleSubscribeToPodcast(podcast.id)
+    await toggleSubscribeToPodcast(podcast.id, this.global)
   }
 
   render() {

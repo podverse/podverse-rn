@@ -2,18 +2,18 @@ import React from 'react'
 import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { SubscribeButton, Text, View } from './'
 
 type Props = {
   handleEditPress?: any
-  handleSubscribeToggle?: any
+  handleToggleSubscribe?: any
   id: string
   isSubscribed?: boolean
   name: string
 }
 
 export const ProfileTableHeader = (props: Props) => {
-  const { handleEditPress, handleSubscribeToggle, id, isSubscribed, name } = props
+  const { handleEditPress, handleToggleSubscribe, id, isSubscribed, name } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
@@ -36,22 +36,10 @@ export const ProfileTableHeader = (props: Props) => {
             </View>
         }
         {
-          handleSubscribeToggle &&
-            <View style={styles.buttonView}>
-              <TouchableWithoutFeedback onPress={() => handleSubscribeToggle(id)}>
-                {
-                  isSubscribed ?
-                    <Image
-                      resizeMode='contain'
-                      source={PV.Images.MORE}
-                      style={[styles.moreButtonImage, globalTheme.buttonImage]} /> :
-                    <Image
-                      resizeMode='contain'
-                      source={PV.Images.SQUARE_PLACEHOLDER}
-                      style={[styles.moreButtonImage, globalTheme.buttonImage]} />
-                }
-              </TouchableWithoutFeedback>
-            </View>
+          handleToggleSubscribe &&
+            <SubscribeButton
+              handleToggleSubscribe={handleToggleSubscribe}
+              isSubscribed={isSubscribed} />
         }
       </View>
     </View>
@@ -86,11 +74,11 @@ const styles = StyleSheet.create({
     lineHeight: 44
   },
   row: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginHorizontal: 8
   },
   textWrapper: {
     flex: 1,
-    marginHorizontal: 8,
     marginVertical: 8
   }
 })
