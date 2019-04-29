@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Switch } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { Text, View } from '../components'
-import { core, darkTheme, lightTheme } from '../styles'
+import { SwitchWithText, View } from '../components'
+import { darkTheme, lightTheme } from '../styles'
 
 export class SettingsScreen extends React.Component {
 
@@ -22,13 +22,24 @@ export class SettingsScreen extends React.Component {
 
   render() {
     return (
-      <View style={core.view}>
-        <Text>Settings</Text>
-        <Text>Toggle Dark Mode</Text>
-        <Switch value={this.global.globalTheme === darkTheme} onValueChange={this._toggleTheme} />
-        <Text>Toggle NSFW Mode</Text>
-        <Switch value={this.global.nsfwMode === 'on'} onValueChange={this._toggleNSFWMode} />
+      <View style={styles.wrapper}>
+        <SwitchWithText
+          onValueChange={this._toggleTheme}
+          text={`Dark Mode ${this.global.globalTheme === darkTheme ? 'on' : 'off'}`}
+          value={this.global.globalTheme === darkTheme} />
+        {/* <SwitchWithText
+          onValueChange={this._toggleNSFWMode}
+          text={`NSFW Mode ${this.global.nsfwMode === 'on' ? 'on' : 'off'}`}
+          value={this.global.nsfwMode === 'on'} /> */}
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8
+  }
+})
