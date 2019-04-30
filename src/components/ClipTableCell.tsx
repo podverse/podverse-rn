@@ -1,9 +1,9 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableOpacity } from 'react-native'
-import { useGlobal } from 'reactn'
-import { readableClipTime } from '../lib/utility'
+import { Image, StyleSheet } from 'react-native'
+import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { button } from '../styles'
+import { Icon, Text, View } from './'
 
 type Props = {
   endTime?: number
@@ -19,7 +19,6 @@ type Props = {
 export const ClipTableCell = (props: Props) => {
   const { endTime, episodePubDate, episodeTitle, handleMorePress, podcastImageUrl, podcastTitle,
     startTime, title = 'untitled clip' } = props
-  const [globalTheme] = useGlobal('globalTheme')
 
   const clipTime = readableClipTime(startTime, endTime)
 
@@ -27,14 +26,11 @@ export const ClipTableCell = (props: Props) => {
 
   const moreButton = (
     <View style={styles.buttonView}>
-      <TouchableOpacity
+      <Icon
+        name='ellipsis-h'
         onPress={handleMorePress}
-        style={styles.moreButton}>
-        <Image
-          resizeMode='contain'
-          source={PV.Images.MORE}
-          style={[styles.moreButtonImage, globalTheme.buttonImage]} />
-      </TouchableOpacity>
+        size={26}
+        style={button.iconOnly} />
     </View>
   )
 
@@ -62,7 +58,7 @@ export const ClipTableCell = (props: Props) => {
               {
                 !!episodeTitle &&
                   <Text
-                    numberOfLines={1}
+                    numberOfLines={2}
                     style={styles.episodeTitle}>
                     {episodeTitle}
                   </Text>
@@ -72,7 +68,7 @@ export const ClipTableCell = (props: Props) => {
                   <Text
                     isSecondary={true}
                     style={styles.bottomText}>
-                    {episodePubDate}
+                    {readableDate(episodePubDate)}
                   </Text>
               }
             </View>
@@ -109,9 +105,7 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   buttonView: {
-    flex: 0,
-    marginLeft: 8,
-    marginRight: 8
+    flex: 0
   },
   clipTime: {
     flex: 0,
@@ -121,27 +115,14 @@ const styles = StyleSheet.create({
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold
+    fontWeight: PV.Fonts.weights.semibold,
+    marginTop: 2
   },
   image: {
     flex: 0,
     height: 60,
-    marginLeft: 8,
     marginRight: 12,
     width: 60
-  },
-  moreButton: {
-    flex: 0,
-    marginBottom: 'auto',
-    marginTop: 'auto'
-  },
-  moreButtonImage: {
-    borderColor: 'white',
-    borderRadius: 22,
-    borderWidth: 1,
-    height: 44,
-    tintColor: 'white',
-    width: 44
   },
   podcastTitle: {
     flex: 0,
@@ -149,10 +130,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start'
   },
   textWrapper: {
-    flex: 1,
-    justifyContent: 'space-between',
-    marginLeft: 8,
-    marginRight: 8
+    flex: 1
   },
   title: {
     flex: 0,
@@ -161,19 +139,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   wrapper: {
-    marginBottom: 8,
-    marginTop: 8
+    margin: 8
   },
   wrapperBottom: {
-    flexDirection: 'row',
-    marginLeft: 8,
-    marginRight: 8
+    flexDirection: 'row'
   },
   wrapperBottomTextWrapper: {
     flex: 1
   },
   wrapperTop: {
     flexDirection: 'row',
-    marginBottom: 10
+    marginBottom: 8
   }
 })

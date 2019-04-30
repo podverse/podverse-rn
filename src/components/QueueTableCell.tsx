@@ -56,20 +56,18 @@ export const QueueTableCell = (props: Props) => {
         </View>
         {
           showMoveButton &&
-            <View style={button.iconOnly}>
-              <Icon
-                name='bars'
-                size={28} />
-            </View>
+            <Icon
+              name='bars'
+              size={28}
+              style={button.iconOnly} />
         }
         {
           showRemoveButton && handleRemovePress &&
-            <View style={button.iconOnly}>
-              <Icon
-                name='times'
-                onPress={handleRemovePress}
-                size={28} />
-            </View>
+            <Icon
+              name='times'
+              onPress={handleRemovePress}
+              size={28}
+              style={button.iconOnly} />
         }
       </View>
       {

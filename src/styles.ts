@@ -239,23 +239,16 @@ export const lightTheme = StyleSheet.create({
 export const button = StyleSheet.create({
   iconOnly: {
     flex: 0,
-    marginBottom: 'auto',
-    marginLeft: 8,
-    marginRight: 8,
-    marginTop: 'auto'
+    height: 60,
+    lineHeight: 60,
+    textAlign: 'center',
+    width: 40
   },
   iconOnlyAlignToTop: {
     flex: 0,
     marginBottom: 'auto',
-    marginLeft: 8,
-    marginRight: 8,
-    marginTop: 5
-  },
-  iconOnlyImage: {
-    borderRadius: 22,
-    borderWidth: 1,
-    height: 44,
-    width: 44
+    marginTop: 5,
+    padding: 8
   },
   primaryWrapper: {
     alignItems: 'center',

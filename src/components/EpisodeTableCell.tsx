@@ -4,7 +4,7 @@ import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
-import { Text, View } from './'
+import { Icon, Text, View } from './'
 
 type Props = {
   description?: string
@@ -65,6 +65,16 @@ export const EpisodeTableCell = (props: Props) => {
     </Text>
   )
 
+  const moreButton = (
+    <View style={styles.buttonView}>
+      <Icon
+        name='ellipsis-h'
+        onPress={handleMorePress}
+        size={26}
+        style={button.iconOnly} />
+    </View>
+  )
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.wrapperTop}>
@@ -76,15 +86,7 @@ export const EpisodeTableCell = (props: Props) => {
             innerTopView
         }
         {
-          handleMorePress &&
-            <TouchableOpacity
-              onPress={handleMorePress}
-              style={moreButtonAlignToTop ? button.iconOnlyAlignToTop : button.iconOnly}>
-              <Image
-                source={PV.Images.MORE}
-                style={[button.iconOnlyImage, globalTheme.buttonImage]}
-                resizeMode='contain' />
-            </TouchableOpacity>
+          handleMorePress && moreButton
         }
       </View>
       {
@@ -108,15 +110,12 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   description: {
-    fontSize: PV.Fonts.sizes.md,
-    marginLeft: 8,
-    marginRight: 8,
-    marginTop: 11
+    fontSize: PV.Fonts.sizes.md
   },
   image: {
     flex: 0,
     height: 60,
-    marginLeft: 8,
+    marginRight: 12,
     width: 60
   },
   innerTopView: {
@@ -129,20 +128,18 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start'
   },
   textWrapper: {
-    flex: 1,
-    marginLeft: 8,
-    marginRight: 8
+    flex: 1
   },
   title: {
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold
+    fontWeight: PV.Fonts.weights.semibold,
+    marginTop: 2
   },
   wrapper: {
-    paddingBottom: 12,
-    paddingTop: 12
+    margin: 8
   },
   wrapperTop: {
-    flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginBottom: 8
   }
 })
