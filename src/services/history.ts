@@ -25,14 +25,13 @@ const getHistoryItemsLocally = async () => {
     const itemsString = await RNSecureKeyStore.get(PV.Keys.HISTORY_ITEMS)
     return JSON.parse(itemsString)
   } catch (error) {
-    setAllHistoryItemsLocally([])
     return []
   }
 }
 
 const setAllHistoryItemsLocally = (items: NowPlayingItem[]) => {
   RNSecureKeyStore.set(
-    PV.Keys.QUEUE_ITEMS,
+    PV.Keys.HISTORY_ITEMS,
     JSON.stringify(items),
     { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
   )

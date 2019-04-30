@@ -24,7 +24,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
       headerRight: (
         <TouchableOpacity
           onPress={navigation.getParam('updateUser')}>
-          <Text style={navHeader.textButton}>Save</Text>
+          <Text style={navHeader.button}>Save</Text>
         </TouchableOpacity>
       )
     }

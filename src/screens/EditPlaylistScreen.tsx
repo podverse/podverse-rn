@@ -27,7 +27,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
       title: 'Edit Playlist',
       headerRight: (
         <TouchableOpacity onPress={navigation.getParam('updatePlaylist')}>
-          <Text style={navHeader.textButton}>Save</Text>
+          <Text style={navHeader.button}>Save</Text>
         </TouchableOpacity>
       )
     }

@@ -48,17 +48,19 @@ export const HeaderTitleSelector = (props: Props) => {
 
 const styles = StyleSheet.create({
   closeButton: {
-    paddingLeft: 4,
-    paddingTop: 2
+    height: 44,
+    lineHeight: 44,
+    paddingLeft: 4
   },
   text: {
     color: PV.Colors.white,
     fontSize: 17,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    height: 44,
+    lineHeight: 44
   },
   wrapper: {
     flexDirection: 'row',
-    marginTop: 6,
     paddingVertical: 6
   }
 })

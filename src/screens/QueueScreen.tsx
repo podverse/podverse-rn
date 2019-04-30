@@ -2,7 +2,7 @@ import { Alert, StyleSheet, TouchableOpacity, View as RNView } from 'react-nativ
 import { Icon } from 'react-native-elements'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, QueueTableCell, SortableList, SortableListRow,
-  TableSectionHeader, Text, View } from '../components'
+  TableSectionHeader, Text, View, MessageWithAction } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getHistoryItems } from '../services/history'
@@ -61,19 +61,19 @@ export class QueueScreen extends React.Component<Props, State> {
                   !navigation.getParam('isEditing') ? (
                     <RNView style={styles.headerButtonWrapper}>
                       <TouchableOpacity onPress={navigation.getParam('_clearAll')}>
-                        <Text style={navHeader.textButton}>Clear</Text>
+                        <Text style={navHeader.button}>Clear</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={navigation.getParam('_startEditing')}>
-                        <Text style={[navHeader.textButton, styles.navHeaderTextButton]}>Edit</Text>
+                        <Text style={[navHeader.button, styles.navHeaderTextButton]}>Edit</Text>
                       </TouchableOpacity>
                     </RNView>
                   ) : (
                     <RNView style={styles.headerButtonWrapper}>
                       <TouchableOpacity onPress={navigation.getParam('_clearAll')}>
-                        <Text style={navHeader.textButton}>Clear</Text>
+                        <Text style={navHeader.button}>Clear</Text>
                       </TouchableOpacity>
                         <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
-                          <Text style={[navHeader.textButton, styles.navHeaderTextButton]}>Done</Text>
+                          <Text style={[navHeader.button, styles.navHeaderTextButton]}>Done</Text>
                         </TouchableOpacity>
                     </RNView>
                   )
@@ -85,11 +85,11 @@ export class QueueScreen extends React.Component<Props, State> {
                 {
                   !navigation.getParam('isEditing') ? (
                     <TouchableOpacity onPress={navigation.getParam('_startEditing')}>
-                      <Text style={[navHeader.textButton, styles.navHeaderTextButton]}>Edit</Text>
+                      <Text style={[navHeader.button, styles.navHeaderTextButton]}>Edit</Text>
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
-                      <Text style={[navHeader.textButton, styles.navHeaderTextButton]}>Done</Text>
+                      <Text style={[navHeader.button, styles.navHeaderTextButton]}>Done</Text>
                     </TouchableOpacity>
                   )
                 }
@@ -208,7 +208,6 @@ export class QueueScreen extends React.Component<Props, State> {
 
   _renderHistoryItem = ({ item }) => {
     const { isEditing } = this.state
-
     return (
       <QueueTableCell
         clipEndTime={item.clipEndTime}
@@ -281,26 +280,29 @@ export class QueueScreen extends React.Component<Props, State> {
             <ActivityIndicator styles={styles.activityIndicator} />
         }
         {
-          !isLoading && viewType === _queueKey &&
+          !isLoading && viewType === _queueKey && queueItems.length > 0 &&
             <View>
-              <TableSectionHeader
-                containerStyles={styles.headerNowPlayingItem}
-                title='Now Playing' />
-              <QueueTableCell
-                clipEndTime={nowPlayingItem.clipEndTime}
-                clipStartTime={nowPlayingItem.clipStartTime}
-                clipTitle={nowPlayingItem.clipTitle}
-                episodePubDate={nowPlayingItem.episodePubDate}
-                episodeTitle={nowPlayingItem.episodeTitle}
-                podcastImageUrl={nowPlayingItem.podcastImageUrl}
-                podcastTitle={nowPlayingItem.podcastTitle} />
-              <TableSectionHeader
-                containerStyles={styles.headerNextUp}
-                title='Next Up' />
+              {
+                !!nowPlayingItem &&
+                  <View>
+                    <TableSectionHeader
+                      containerStyles={styles.headerNowPlayingItem}
+                      title='Now Playing' />
+                    <QueueTableCell
+                      clipEndTime={nowPlayingItem.clipEndTime}
+                      clipStartTime={nowPlayingItem.clipStartTime}
+                      clipTitle={nowPlayingItem.clipTitle}
+                      episodePubDate={nowPlayingItem.episodePubDate}
+                      episodeTitle={nowPlayingItem.episodeTitle}
+                      podcastImageUrl={nowPlayingItem.podcastImageUrl}
+                      podcastTitle={nowPlayingItem.podcastTitle} />
+                  </View>
+              }
+              <TableSectionHeader title='Next Up' />
             </View>
         }
         {
-          !isLoading && viewType === _queueKey &&
+          !isLoading && viewType === _queueKey && queueItems.length > 0 &&
             <SortableList
               data={queueItems}
               onPressRow={this._onPressRow}
@@ -308,13 +310,21 @@ export class QueueScreen extends React.Component<Props, State> {
               renderRow={this._renderQueueItemRow} />
         }
         {
-          !isLoading && viewType === _historyKey &&
+          !isLoading && viewType === _queueKey && queueItems.length < 1 &&
+            <MessageWithAction message='Your queue is empty' />
+        }
+        {
+          !isLoading && viewType === _historyKey && historyItems.length > 0 &&
             <FlatList
               data={historyItems}
               disableLeftSwipe={true}
               extraData={historyItems}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               renderItem={this._renderHistoryItem} />
+        }
+        {
+          !isLoading && viewType === _historyKey && historyItems.length < 1 &&
+            <MessageWithAction message='No history items found' />
         }
       </View>
     )
@@ -352,10 +362,6 @@ const styles = StyleSheet.create({
   },
   headerButtonWrapper: {
     flexDirection: 'row'
-  },
-  headerNextUp: {
-    marginBottom: 8,
-    marginTop: 2
   },
   headerNowPlayingItem: {
     marginBottom: 2

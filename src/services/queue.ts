@@ -29,7 +29,6 @@ const getQueueItemsLocally = async () => {
     const itemsString = await RNSecureKeyStore.get(PV.Keys.QUEUE_ITEMS)
     return JSON.parse(itemsString)
   } catch (error) {
-    setAllQueueItemsLocally([])
     return []
   }
 }

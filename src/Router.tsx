@@ -1,9 +1,9 @@
 import React from 'react'
-import { Image, Text, TouchableOpacity } from 'react-native'
+import { Image, View } from 'react-native'
 import { createAppContainer, createStackNavigator, createSwitchNavigator,
   NavigationScreenOptions } from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import { PVTabBar } from './components'
+import { Icon, PVTabBar } from './components'
 import { PV } from './resources'
 import { AboutScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
   EpisodeScreen, EpisodesScreen, FeedbackScreen, MoreScreen, OnboardingScreen, PlaylistsAddToScreen,
@@ -21,9 +21,14 @@ const defaultNavigationOptions = ({ navigation }) => ({
     fontWeight: 'bold'
   },
   headerRight: (
-    <TouchableOpacity onPress={async () => navigation.navigate(PV.RouteNames.QueueScreen)}>
-      <Text style={navHeader.textButton}>Queue</Text>
-    </TouchableOpacity>
+    <View style={navHeader.button}>
+      <Icon
+        color='#fff'
+        name='th-list'
+        onPress={() => navigation.navigate(PV.RouteNames.QueueScreen)}
+        size={22}
+        solid={true} />
+    </View>
   )
 }) as NavigationScreenOptions
 

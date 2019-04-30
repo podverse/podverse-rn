@@ -309,7 +309,7 @@ export const core = StyleSheet.create({
 })
 
 export const navHeader = StyleSheet.create({
-  textButton: {
+  button: {
     color: PV.Colors.white,
     fontSize: PV.Fonts.sizes.lg,
     marginHorizontal: 12
