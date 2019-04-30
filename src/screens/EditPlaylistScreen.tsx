@@ -5,7 +5,7 @@ import { ActivityIndicator, Divider, QueueTableCell, SortableList, SortableListR
 import { combineAndSortPlaylistItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getPlaylist } from '../services/playlist'
-import { updatePlaylist } from '../state/actions/playlists'
+import { updatePlaylist } from '../state/actions/playlist'
 import { navHeader } from '../styles'
 
 type Props = {

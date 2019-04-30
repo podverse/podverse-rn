@@ -8,7 +8,7 @@ import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { getPodcast } from '../services/podcast'
-import { toggleSubscribeToPodcast } from '../state/actions/podcasts'
+import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
 const { aboutKey, allEpisodesKey, clipsKey, downloadedKey, mostRecentKey, topPastDay, topPastMonth,

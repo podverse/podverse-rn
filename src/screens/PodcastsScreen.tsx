@@ -8,7 +8,7 @@ import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcasts'
+import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
 type Props = {

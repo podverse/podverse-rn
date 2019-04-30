@@ -3,8 +3,8 @@ import { Icon } from 'react-native-elements'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlaylistTableCell, View } from '../components'
 import { PV } from '../resources'
-import { addOrRemovePlaylistItem } from '../state/actions/playlists'
-import { getLoggedInUserPlaylists } from '../state/actions/users'
+import { addOrRemovePlaylistItem } from '../state/actions/playlist'
+import { getLoggedInUserPlaylists } from '../state/actions/user'
 
 type Props = {
   navigation?: any

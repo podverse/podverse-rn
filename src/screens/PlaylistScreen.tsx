@@ -4,7 +4,7 @@ import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCel
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
-import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlists'
+import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 
 type Props = {
   navigation?: any

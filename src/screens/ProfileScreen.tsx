@@ -7,7 +7,7 @@ import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
 import { getUserMediaRefs, getUserPlaylists } from '../services/user'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { getPublicUser, toggleSubscribeToUser } from '../state/actions/users'
+import { getPublicUser, toggleSubscribeToUser } from '../state/actions/user'
 
 type Props = {
   navigation?: any

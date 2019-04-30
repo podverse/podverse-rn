@@ -6,7 +6,7 @@ import { ActionSheet, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBa
 import { generateAuthorsText, generateCategoriesText } from '../lib/utility'
 import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
-import { toggleSubscribeToPodcast } from '../state/actions/podcasts'
+import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
 const { aboutKey, allEpisodesKey, clipsKey } = PV.Filters

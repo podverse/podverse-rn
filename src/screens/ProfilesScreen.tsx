@@ -2,7 +2,7 @@ import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, MessageWithAction, ProfileTableCell, SwipeRowBack,
   View } from '../components'
 import { PV } from '../resources'
-import { getPublicUsersByQuery, toggleSubscribeToUser } from '../state/actions/users'
+import { getPublicUsersByQuery, toggleSubscribeToUser } from '../state/actions/user'
 
 type Props = {
   navigation?: any

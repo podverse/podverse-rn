@@ -2,8 +2,8 @@ import React, { setGlobal } from 'reactn'
 import { ActivityIndicator, Divider, FlatList, MessageWithAction, PlaylistTableCell, TableSectionSelectors,
   View } from '../components'
 import { PV } from '../resources'
-import { getPlaylists } from '../state/actions/playlists'
-import { getLoggedInUserPlaylists } from '../state/actions/users'
+import { getPlaylists } from '../state/actions/playlist'
+import { getLoggedInUserPlaylists } from '../state/actions/user'
 
 type Props = {
   navigation?: any

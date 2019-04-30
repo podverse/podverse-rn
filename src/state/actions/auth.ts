@@ -4,7 +4,7 @@ import { setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import { getAuthenticatedUserInfo, login, signUp } from '../../services/auth'
 
-import { getSubscribedPodcasts } from './podcasts'
+import { getSubscribedPodcasts } from './podcast'
 
 export type Credentials = {
   email: string,
