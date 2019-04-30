@@ -22,22 +22,21 @@ export const ClipTableCell = (props: Props) => {
 
   const clipTime = readableClipTime(startTime, endTime)
 
-  const showPodcastInfo = episodePubDate || episodeTitle || podcastImageUrl || podcastTitle
+  const showEpisodeInfo = !!episodePubDate || !!episodeTitle
+  const showPodcastInfo = !!podcastImageUrl || !!podcastTitle
 
   const moreButton = (
-    <View style={styles.buttonView}>
-      <Icon
-        name='ellipsis-h'
-        onPress={handleMorePress}
-        size={26}
-        style={button.iconOnly} />
-    </View>
+    <Icon
+      name='ellipsis-h'
+      onPress={handleMorePress}
+      size={26}
+      style={showPodcastInfo ? button.iconOnly : button.iconOnlySmall} />
   )
 
   return (
     <View style={styles.wrapper}>
       {
-        !!showPodcastInfo &&
+        !!showEpisodeInfo &&
           <View style={styles.wrapperTop}>
             {
               !!podcastImageUrl &&
@@ -90,7 +89,7 @@ export const ClipTableCell = (props: Props) => {
           </Text>
         </View>
         {
-          !showPodcastInfo && handleMorePress && moreButton
+          !showEpisodeInfo && handleMorePress && moreButton
         }
       </View>
     </View>
@@ -138,7 +137,9 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.semibold
   },
   wrapper: {
-    margin: 8
+    paddingBottom: 12,
+    paddingHorizontal: 8,
+    paddingTop: 10
   },
   wrapperBottom: {
     flexDirection: 'row'

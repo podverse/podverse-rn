@@ -244,6 +244,13 @@ export const button = StyleSheet.create({
     textAlign: 'center',
     width: 40
   },
+  iconOnlySmall: {
+    flex: 0,
+    height: 38,
+    lineHeight: 38,
+    textAlign: 'center',
+    width: 40
+  },
   iconOnlyAlignToTop: {
     flex: 0,
     marginBottom: 'auto',

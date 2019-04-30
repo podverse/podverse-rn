@@ -1,7 +1,7 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, Icon, MessageWithAction, QueueTableCell,
-  SortableList, SortableListRow, TableSectionHeader } from '../components'
+  SortableList, SortableListRow, TableSectionHeader, View as PVView } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { getNowPlayingItem, setNowPlayingItem } from '../services/player'
 import { getQueueItems } from '../services/queue'
@@ -267,7 +267,7 @@ export class QueueScreen extends React.Component<Props, State> {
     const { historyItems, isLoading, nowPlayingItem, queueItems, viewType } = this.state
 
     return (
-      <View style={styles.view}>
+      <PVView style={styles.view}>
         {
           isLoading &&
             <ActivityIndicator styles={styles.activityIndicator} />
@@ -319,7 +319,7 @@ export class QueueScreen extends React.Component<Props, State> {
           !isLoading && viewType === _historyKey && historyItems.length < 1 &&
             <MessageWithAction message='No history items found' />
         }
-      </View>
+      </PVView>
     )
   }
 }

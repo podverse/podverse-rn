@@ -1,6 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
-import { useGlobal } from 'reactn'
+import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
@@ -19,26 +18,27 @@ type Props = {
 
 export const EpisodeTableCell = (props: Props) => {
   const { pubDate, description, title = 'untitled episode', handleMorePress,
-  handleNavigationPress, moreButtonAlignToTop, podcastImageUrl, podcastTitle } = props
-  const [globalTheme] = useGlobal('globalTheme')
+  handleNavigationPress, podcastImageUrl, podcastTitle } = props
+
+  const showPodcastInfo = !!podcastImageUrl && !!podcastTitle
 
   const innerTopView = (
     <View style={styles.innerTopView}>
       {
         !!podcastImageUrl &&
-        <Image
-          source={{ uri: podcastImageUrl }}
-          style={styles.image} />
+          <Image
+            source={{ uri: podcastImageUrl }}
+            style={styles.image} />
       }
       <View style={styles.textWrapper}>
         {
           !!podcastTitle &&
-          <Text
-            isSecondary={true}
-            numberOfLines={1}
-            style={styles.podcastTitle}>
-            {podcastTitle}
-          </Text>
+            <Text
+              isSecondary={true}
+              numberOfLines={1}
+              style={styles.podcastTitle}>
+              {podcastTitle}
+            </Text>
         }
         <Text
           numberOfLines={2}
@@ -66,13 +66,11 @@ export const EpisodeTableCell = (props: Props) => {
   )
 
   const moreButton = (
-    <View style={styles.buttonView}>
-      <Icon
-        name='ellipsis-h'
-        onPress={handleMorePress}
-        size={26}
-        style={button.iconOnly} />
-    </View>
+    <Icon
+      name='ellipsis-h'
+      onPress={handleMorePress}
+      size={26}
+      style={showPodcastInfo ? button.iconOnly : button.iconOnlySmall} />
   )
 
   return (
@@ -136,7 +134,9 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   wrapper: {
-    margin: 8
+    paddingBottom: 12,
+    paddingHorizontal: 8,
+    paddingTop: 10
   },
   wrapperTop: {
     flexDirection: 'row',
