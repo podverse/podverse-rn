@@ -94,40 +94,46 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view}>
-        {
-          !this.global.session.isLoggedIn &&
-            <MessageWithAction
-              actionHandler={this._onPressLogin}
-              actionText='Login'
-              message='Login to view your playlists' />
-        }
-        {
-          this.global.session.isLoggedIn &&
-            <View style={styles.view}>
-              <TableSectionSelectors
-                handleSelectLeftItem={this.selectLeftItem}
-                leftItems={leftItems}
-                selectedLeftItemKey={queryFrom} />
-              {
-                isLoading &&
-                  <ActivityIndicator />
-              }
-              {
-                !isLoading && flatListData && flatListData.length > 0 &&
-                  <FlatList
-                    data={flatListData}
-                    disableLeftSwipe={true}
-                    extraData={flatListData}
-                    isLoadingMore={isLoadingMore}
-                    ItemSeparatorComponent={this._ItemSeparatorComponent}
-                    renderItem={this._renderPlaylistItem} />
-              }
-              {
-                !isLoading && flatListData && flatListData.length === 0 &&
-                  <MessageWithAction message='No playlists found' />
-              }
-            </View>
-        }
+        <View style={styles.view}>
+          <TableSectionSelectors
+            handleSelectLeftItem={this.selectLeftItem}
+            leftItems={leftItems}
+            selectedLeftItemKey={queryFrom} />
+          {
+            isLoading &&
+              <ActivityIndicator />
+          }
+          {
+            !isLoading && flatListData && flatListData.length > 0 &&
+              <FlatList
+                data={flatListData}
+                disableLeftSwipe={true}
+                extraData={flatListData}
+                isLoadingMore={isLoadingMore}
+                ItemSeparatorComponent={this._ItemSeparatorComponent}
+                renderItem={this._renderPlaylistItem} />
+          }
+          {
+            !isLoading && queryFrom === _myPlaylistsKey && !this.global.session.isLoggedIn &&
+              <MessageWithAction
+                actionHandler={this._onPressLogin}
+                actionText='Login'
+                message='Login to view your playlists' />
+          }
+          {
+            !isLoading && queryFrom === _myPlaylistsKey && this.global.session.isLoggedIn && flatListData.length < 1 &&
+              <MessageWithAction
+                actionHandler={this._onPressLogin}
+                message='You have not created a playlist' />
+          }
+          {
+            !isLoading && queryFrom === _subscribedPlaylistsKey && flatListData.length < 1 &&
+              <MessageWithAction
+                actionHandler={this._onPressLogin}
+                message='You have no subscribed playlists'
+                subMessage='Ask a friend to send you a link to one of their playlists, then subscribe to it :)' />
+          }
+        </View>
       </View>
     )
   }
@@ -141,7 +147,9 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     } as State
 
     if (filterKey === _myPlaylistsKey) {
-      await getLoggedInUserPlaylists(this.global)
+      if (this.global.session.isLoggedIn) {
+        await getLoggedInUserPlaylists(this.global)
+      }
     } else {
       const playlistId = this.global.session.userInfo.subscribedPlaylistIds
 

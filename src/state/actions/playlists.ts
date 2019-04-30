@@ -1,7 +1,7 @@
-import { setGlobal, useGlobal } from 'reactn'
+import { setGlobal } from 'reactn'
 import { combineAndSortPlaylistItems } from '../../lib/utility'
 import { addOrRemovePlaylistItem as addOrRemovePlaylistItemService, getPlaylist as getPlaylistService,
-  getPlaylists as getPlaylistsService, toggleSubscribeToPlaylist as toggleSubscribe,
+  getPlaylists as getPlaylistsService, toggleSubscribeToPlaylist as toggleSubscribeToPlaylistService,
   updatePlaylist as updatePlaylistService } from '../../services/playlist'
 
 export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: string, mediaRefId?: string, globalState?: any) => {
@@ -30,7 +30,7 @@ export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: st
 }
 
 export const toggleSubscribeToPlaylist = async (id: string, globalState: any) => {
-  const subscribedPlaylistIds = await toggleSubscribe(id)
+  const subscribedPlaylistIds = await toggleSubscribeToPlaylistService(id, globalState.session.isLoggedIn)
   setGlobal({
     session: {
       ...globalState.session,
@@ -57,7 +57,7 @@ export const getPlaylist = async (id: string, globalState: any) => {
   const { episodes, itemsOrder, mediaRefs } = newPlaylist
   const screenPlaylistsMyPlaylists = globalState.screenPlaylists.myPlaylists
   const screenPlaylistsSubscribed = globalState.screenPlaylists.subscribedPlaylists
-console.log(globalState.screenPlaylists)
+
   const foundIndexMy = screenPlaylistsMyPlaylists.findIndex((x: any) => x.id === id)
   if (foundIndexMy > -1) {
     screenPlaylistsMyPlaylists[foundIndexMy] = newPlaylist

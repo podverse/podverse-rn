@@ -86,40 +86,30 @@ export class ProfilesScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view}>
-        {
-          !this.global.session.isLoggedIn &&
-            <MessageWithAction
-              actionHandler={this._onPressLogin}
-              actionText='Login'
-              message='Login to view your profiles' />
-        }
-        {
-          this.global.session.isLoggedIn &&
-            <View style={styles.view}>
-              {
-                isLoading &&
-                  <ActivityIndicator />
-              }
-              {
-                !isLoading && flatListData && flatListData.length > 0 &&
-                  <FlatList
-                    data={flatListData}
-                    disableLeftSwipe={false}
-                    extraData={flatListData}
-                    isLoadingMore={isLoadingMore}
-                    ItemSeparatorComponent={this._ItemSeparatorComponent}
-                    onEndReached={this._onEndReached}
-                    renderHiddenItem={this._renderHiddenItem}
-                    renderItem={this._renderProfileItem} />
-              }
-              {
-                !isLoading && flatListData && flatListData.length === 0 &&
-                  <MessageWithAction
-                    message='No profiles found'
-                    subMessage='ask your friends to share a link to their profile, then subscribe to it :)' />
-              }
-            </View>
-        }
+        <View style={styles.view}>
+          {
+            isLoading &&
+              <ActivityIndicator />
+          }
+          {
+            !isLoading && flatListData && flatListData.length > 0 &&
+              <FlatList
+                data={flatListData}
+                disableLeftSwipe={false}
+                extraData={flatListData}
+                isLoadingMore={isLoadingMore}
+                ItemSeparatorComponent={this._ItemSeparatorComponent}
+                onEndReached={this._onEndReached}
+                renderHiddenItem={this._renderHiddenItem}
+                renderItem={this._renderProfileItem} />
+          }
+          {
+            !isLoading && flatListData && flatListData.length === 0 &&
+              <MessageWithAction
+                message='You have no subscribed profiles'
+                subMessage='Ask a friend to send you a link to their profile, then subscribe to it :)' />
+          }
+        </View>
       </View>
     )
   }

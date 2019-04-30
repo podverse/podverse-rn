@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import RNSecureKeyStore from 'react-native-secure-key-store'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PodcastTableCell, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
@@ -69,12 +68,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
         navigation.navigate(PV.RouteNames.Onboarding)
       } else {
-        const userToken = await RNSecureKeyStore.get('BEARER_TOKEN')
-        if (userToken) {
-          await getAuthUserInfo(this.props.navigation)
-          const { subscribedPodcasts } = this.global
-          flatListData = subscribedPodcasts
-        }
+        await getAuthUserInfo()
+        const { subscribedPodcasts } = this.global
+        flatListData = subscribedPodcasts
       }
     } catch (error) {
       console.log(error.message)
@@ -238,8 +234,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { categoryItems, flatListData, queryFrom, isLoading, isLoadingMore, isRefreshing, querySort,
+    const { categoryItems, queryFrom, isLoading, isLoadingMore, isRefreshing, querySort,
       selectedCategory, selectedSubCategory, subCategoryItems } = this.state
+
+    let flatListData = []
+    if (queryFrom === _subscribedKey) {
+      flatListData = this.global.subscribedPodcasts
+    } else {
+      flatListData = this.state.flatListData
+    }
 
     return (
       <View style={styles.view}>
@@ -320,7 +323,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { settings } = this.global
     const { nsfwMode } = settings
     if (filterKey === _subscribedKey) {
-      await getAuthUserInfo() // get latest subscribedPodcastIds
+      await getAuthUserInfo() // get the latest subscribedPodcastIds first
       const results = await this._querySubscribedPodcasts()
       newState.flatListData = results[0]
     } else if (filterKey === _allPodcastsKey) {

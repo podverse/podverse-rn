@@ -1,4 +1,4 @@
-import RNSecureKeyStore from 'react-native-secure-key-store'
+import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { request } from './request'
@@ -52,7 +52,30 @@ export const getPublicUsersByQuery = async (query: any = {}) => {
   return response.json()
 }
 
-export const toggleSubscribeToUser = async (id: string) => {
+export const toggleSubscribeToUser = async (id: string, isLoggedIn: boolean) => {
+  return isLoggedIn ? toggleSubscribeToUserOnServer(id) : toggleSubscribeToUserLocally(id)
+}
+
+const toggleSubscribeToUserLocally = async (id: string) => {
+  const itemsString = await RNSecureKeyStore.get(PV.Keys.SUBSCRIBED_USER_IDS)
+  const items = JSON.parse(itemsString)
+
+  const index = items.indexOf(id)
+  if (index > -1) {
+    items.splice(index, 1)
+  } else {
+    items.push(id)
+  }
+
+  RNSecureKeyStore.set(
+    PV.Keys.SUBSCRIBED_USER_IDS,
+    JSON.stringify(items),
+    { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
+  )
+  return items
+}
+
+const toggleSubscribeToUserOnServer = async (id: string) => {
   const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
   const response = await request({
     endpoint: `/user/toggle-subscribe/${id}`,

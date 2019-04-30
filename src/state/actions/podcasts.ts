@@ -1,7 +1,8 @@
 import { setGlobal } from 'reactn'
-import { getPodcasts, toggleSubscribeToPodcast as toggleSubscribe } from '../../services/podcast'
+import { getPodcasts, toggleSubscribeToPodcast as toggleSubscribeToPodcastService } from '../../services/podcast'
 
 export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
+  if (subscribedPodcastIds.length < 1) return []
   const query = {
     podcastIds: subscribedPodcastIds,
     sort: 'alphabetical'
@@ -12,7 +13,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
 }
 
 export const toggleSubscribeToPodcast = async (id: string, globalState: any) => {
-  const subscribedPodcastIds = await toggleSubscribe(id)
+  const subscribedPodcastIds = await toggleSubscribeToPodcastService(id, globalState.session.isLoggedIn)
   setGlobal({
     session: {
       ...globalState.session,

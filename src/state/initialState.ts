@@ -21,7 +21,11 @@ const initialTheme: InitialState = {
     flatListData: []
   },
   session: {
-    userInfo: {},
+    userInfo: {
+      subscribedPlaylistIds: [],
+      subscribedPodcastIds: [],
+      subscribedUserIds: []
+    },
     isLoggedIn: false
   },
   settings: {

@@ -1,4 +1,4 @@
-import RNSecureKeyStore from 'react-native-secure-key-store'
+import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { PV } from '../resources'
 import { request } from './request'
 
@@ -39,7 +39,7 @@ export const createPlaylist = async (data: any) => {
   return response.json()
 }
 
-export const deletePlaylist = async (data: any) => {
+export const deletePlaylistOnServer = async (data: any) => {
   const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
   const response = await request({
     endpoint: '/mediaRef',
@@ -73,7 +73,30 @@ export const getPlaylist = async (id: string) => {
   return response.json()
 }
 
-export const toggleSubscribeToPlaylist = async (id: string) => {
+export const toggleSubscribeToPlaylist = async (playlistId: string, isLoggedIn: boolean) => {
+  return isLoggedIn ? toggleSubscribeToPlaylistOnServer(playlistId) : toggleSubscribeToPlaylistLocally(playlistId)
+}
+
+const toggleSubscribeToPlaylistLocally = async (id: string) => {
+  const itemsString = await RNSecureKeyStore.get(PV.Keys.SUBSCRIBED_PLAYLIST_IDS)
+  const items = JSON.parse(itemsString)
+
+  const index = items.indexOf(id)
+  if (index > -1) {
+    items.splice(index, 1)
+  } else {
+    items.push(id)
+  }
+
+  RNSecureKeyStore.set(
+    PV.Keys.SUBSCRIBED_PLAYLIST_IDS,
+    JSON.stringify(items),
+    { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
+  )
+  return items
+}
+
+const toggleSubscribeToPlaylistOnServer = async (id: string) => {
   const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
   const response = await request({
     endpoint: `/playlist/toggle-subscribe/${id}`,
