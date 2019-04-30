@@ -1,6 +1,6 @@
 import { IActionSheet } from '../resources/Interfaces'
 import { setNowPlayingItem } from '../services/player'
-import { addUserQueueItemLast, addUserQueueItemNext } from '../state/actions/users'
+import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
 import { PV } from './PV'
 
 const mediaMoreButtons = (item: any, isLoggedIn: boolean, globalState: any, navigation: any, handleDismiss: any) => [
@@ -17,12 +17,12 @@ const mediaMoreButtons = (item: any, isLoggedIn: boolean, globalState: any, navi
   {
     key: 'queueNext',
     text: 'Queue: Next',
-    onPress: () => addUserQueueItemNext(item, isLoggedIn, globalState)
+    onPress: () => addQueueItemNext(item, isLoggedIn, globalState)
   },
   {
     key: 'queueLast',
     text: 'Queue: Last',
-    onPress: () => addUserQueueItemLast(item, isLoggedIn, globalState)
+    onPress: () => addQueueItemLast(item, isLoggedIn, globalState)
   },
   {
     key: 'addToPlaylist',

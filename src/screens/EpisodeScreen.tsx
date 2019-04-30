@@ -6,8 +6,6 @@ import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
-import { setNowPlayingItem } from '../services/player'
-import { addUserQueueItemLast, addUserQueueItemNext } from '../state/actions/auth'
 import { core } from '../styles'
 
 type Props = {

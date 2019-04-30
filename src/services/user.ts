@@ -1,5 +1,4 @@
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
-import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { request } from './request'
 
@@ -133,54 +132,6 @@ export const updateLoggedInUser = async (data: any) => {
       'Content-Type': 'application/json'
     },
     body: data,
-    opts: { credentials: 'include' }
-  })
-
-  return response.json()
-}
-
-export const addOrUpdateUserHistoryItem = async (nowPlayingItem: NowPlayingItem) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
-  const response = await request({
-    endpoint: '/user/add-or-update-history-item',
-    method: 'PATCH',
-    headers: {
-      'Authorization': bearerToken,
-      'Content-Type': 'application/json'
-    },
-    body: { historyItem: nowPlayingItem },
-    opts: { credentials: 'include' }
-  })
-
-  return response.json()
-}
-
-export const clearUserHistoryItems = async () => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
-  const response = await request({
-    endpoint: '/user/history-item/clear-all',
-    method: 'DELETE',
-    headers: {
-      'Authorization': bearerToken,
-      'Content-Type': 'application/json'
-    },
-    opts: { credentials: 'include' }
-  })
-
-  return response.json()
-}
-
-export const removeUserHistoryItem = async (episodeId?: string, mediaRefId?: string) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
-  const query = { ...(!mediaRefId ? { episodeId } : { mediaRefId }) }
-  const response = await request({
-    endpoint: '/user/history-item',
-    query,
-    method: 'DELETE',
-    headers: {
-      'Authorization': bearerToken,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
     opts: { credentials: 'include' }
   })
 

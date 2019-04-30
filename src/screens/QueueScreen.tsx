@@ -1,15 +1,14 @@
-import { Alert, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity, View as RNView } from 'react-native'
 import { Icon } from 'react-native-elements'
 import React from 'reactn'
-import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, QueueTableCell, SortableList, SortableListRow,
-  TableSectionHeader, Text, View, MessageWithAction } from '../components'
+import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, MessageWithAction, QueueTableCell,
+  SortableList, SortableListRow, TableSectionHeader, View  } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { getHistoryItems } from '../services/history'
 import { getNowPlayingItem, setNowPlayingItem } from '../services/player'
 import { getQueueItems } from '../services/queue'
-import { clearUserHistoryItems, removeUserHistoryItem, removeUserQueueItem, updateUserQueueItems
-  } from '../state/actions/users'
+import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
+import { removeQueueItem, updateQueueItems } from '../state/actions/queue'
 import { navHeader } from '../styles'
 
 type Props = {
@@ -151,7 +150,7 @@ export class QueueScreen extends React.Component<Props, State> {
             this.setState({
               isLoading: true
             }, async () => {
-              await clearUserHistoryItems(this.global.session.isLoggedIn, this.global)
+              await clearHistoryItems(this.global.session.isLoggedIn, this.global)
               this.setState({
                 historyItems: [],
                 isLoading: false
@@ -188,7 +187,7 @@ export class QueueScreen extends React.Component<Props, State> {
         queueItems
       })
     } else if (x === _historyKey) {
-      const historyItems = await getHistoryItems(isLoggedIn)
+      const historyItems = await getHistoryItems(isLoggedIn, this.global)
       this.setState({
         historyItems,
         isLoading: false
@@ -250,19 +249,19 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   _handleRemoveQueueItemPress = async (item: NowPlayingItem) => {
-    const newItems = await removeUserQueueItem(item, this.global.session.isLoggedIn, this.global)
+    const newItems = await removeQueueItem(item, this.global.session.isLoggedIn, this.global)
     this.setState({ queueItems: newItems })
   }
 
   _handleRemoveHistoryItemPress = async (item: NowPlayingItem) => {
-    const newItems = await removeUserHistoryItem(item, this.global.session.isLoggedIn, this.global)
+    const newItems = await removeHistoryItem(item, this.global.session.isLoggedIn, this.global)
     this.setState({ historyItems: newItems })
   }
 
   _onReleaseRow = async (key: number, currentOrder: [string]) => {
     const { queueItems } = this.state
     const sortedItems = currentOrder.map((index: string) => queueItems[index])
-    const newItems = await updateUserQueueItems(sortedItems, this.global.session.isLoggedIn, this.global)
+    const newItems = await updateQueueItems(sortedItems, this.global.session.isLoggedIn, this.global)
     this.setState({ queueItems: newItems })
   }
 

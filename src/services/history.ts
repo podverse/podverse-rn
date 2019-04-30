@@ -2,7 +2,7 @@ import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { addOrUpdateUserHistoryItem, clearUserHistoryItems, removeUserHistoryItem } from './user'
+import { request } from './request'
 
 export const getHistoryItems = async (isLoggedIn: boolean) => {
   return isLoggedIn ? getHistoryItemsFromServer() : getHistoryItemsLocally()
@@ -16,7 +16,7 @@ export const removeHistoryItem = async (item: NowPlayingItem, isLoggedIn: boolea
   return isLoggedIn ? removeHistoryItemOnServer(item.episodeId, item.clipId) : removeHistoryItemLocally(item)
 }
 
-export const clearHistoryItems = async (items: NowPlayingItem[], isLoggedIn: boolean) => {
+export const clearHistoryItems = async (isLoggedIn: boolean) => {
   return isLoggedIn ? clearHistoryItemsOnServer() : clearHistoryItemsLocally()
 }
 
@@ -38,21 +38,27 @@ const setAllHistoryItemsLocally = (items: NowPlayingItem[]) => {
   return items
 }
 
+const addOrUpdateHistoryItemOnServer = async (nowPlayingItem: NowPlayingItem) => {
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const response = await request({
+    endpoint: '/user/add-or-update-history-item',
+    method: 'PATCH',
+    headers: {
+      'Authorization': bearerToken,
+      'Content-Type': 'application/json'
+    },
+    body: { historyItem: nowPlayingItem },
+    opts: { credentials: 'include' }
+  })
+
+  return response.json()
+}
+
 const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem) => {
   const items = await getHistoryItemsLocally()
   const filteredItems = filterItemFromHistoryItems(items, item)
   filteredItems.unshift(item)
   return setAllHistoryItemsLocally(filteredItems)
-}
-
-const removeHistoryItemLocally = async (item: NowPlayingItem) => {
-  const items = await getHistoryItemsLocally()
-  const filteredItems = filterItemFromHistoryItems(items, item)
-  return setAllHistoryItemsLocally(filteredItems)
-}
-
-const clearHistoryItemsLocally = async () => {
-  return setAllHistoryItemsLocally([])
 }
 
 const getHistoryItemsFromServer = async () => {
@@ -61,16 +67,46 @@ const getHistoryItemsFromServer = async () => {
   return historyItems
 }
 
-const addOrUpdateHistoryItemOnServer = async (item: NowPlayingItem) => {
-  return addOrUpdateUserHistoryItem(item)
-}
-
-const removeHistoryItemOnServer = async (episodeId?: string, mediaRefId?: string) => {
-  return removeUserHistoryItem(episodeId, mediaRefId)
+const clearHistoryItemsLocally = async () => {
+  return setAllHistoryItemsLocally([])
 }
 
 const clearHistoryItemsOnServer = async () => {
-  return clearUserHistoryItems()
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const response = await request({
+    endpoint: '/user/history-item/clear-all',
+    method: 'DELETE',
+    headers: {
+      'Authorization': bearerToken,
+      'Content-Type': 'application/json'
+    },
+    opts: { credentials: 'include' }
+  })
+
+  return response.json()
+}
+
+const removeHistoryItemOnServer = async (episodeId?: string, mediaRefId?: string) => {
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const query = { ...(!mediaRefId ? { episodeId } : { mediaRefId }) }
+  const response = await request({
+    endpoint: '/user/history-item',
+    query,
+    method: 'DELETE',
+    headers: {
+      'Authorization': bearerToken,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    opts: { credentials: 'include' }
+  })
+
+  return response.json()
+}
+
+const removeHistoryItemLocally = async (item: NowPlayingItem) => {
+  const items = await getHistoryItemsLocally()
+  const filteredItems = filterItemFromHistoryItems(items, item)
+  return setAllHistoryItemsLocally(filteredItems)
 }
 
 export const filterItemFromHistoryItems = (items: NowPlayingItem[], item: NowPlayingItem) => items.filter(x =>
