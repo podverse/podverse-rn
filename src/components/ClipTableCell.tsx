@@ -135,8 +135,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold,
-    justifyContent: 'flex-end'
+    fontWeight: PV.Fonts.weights.semibold
   },
   wrapper: {
     margin: 8
