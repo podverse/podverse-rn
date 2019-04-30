@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
     lineHeight: 44
   },
   wrapper: {
-    flexDirection: 'row',
-    paddingVertical: 6
+    flexDirection: 'row'
   }
 })

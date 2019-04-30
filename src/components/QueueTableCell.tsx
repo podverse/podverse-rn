@@ -1,7 +1,7 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { Image, StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
-import { Text, View } from '.'
+import { Icon, Text, View } from '.'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
@@ -57,22 +57,19 @@ export const QueueTableCell = (props: Props) => {
         {
           showMoveButton &&
             <View style={button.iconOnly}>
-              <Image
-                source={PV.Images.SQUARE_PLACEHOLDER}
-                style={[button.iconOnlyImage, globalTheme.buttonImage]}
-                resizeMode='contain' />
+              <Icon
+                name='bars'
+                size={28} />
             </View>
         }
         {
           showRemoveButton && handleRemovePress &&
-            <TouchableOpacity
-              onPress={handleRemovePress}
-              style={button.iconOnly}>
-              <Image
-                source={PV.Images.MORE}
-                style={[button.iconOnlyImage, globalTheme.buttonImage]}
-                resizeMode='contain' />
-            </TouchableOpacity>
+            <View style={button.iconOnly}>
+              <Icon
+                name='times'
+                onPress={handleRemovePress}
+                size={28} />
+            </View>
         }
       </View>
       {
@@ -131,7 +128,6 @@ const styles = StyleSheet.create({
   image: {
     flex: 0,
     height: 60,
-    marginLeft: 8,
     marginRight: 12,
     width: 60
   },
@@ -147,13 +143,10 @@ const styles = StyleSheet.create({
     paddingTop: 4
   },
   wrapper: {
-    marginBottom: 8,
-    marginTop: 8
+    margin: 8
   },
   wrapperBottom: {
     flexDirection: 'row',
-    marginLeft: 8,
-    marginRight: 8,
     marginTop: 10
   },
   wrapperTop: {

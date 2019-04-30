@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, View } from 'react-native'
+import { Image } from 'react-native'
 import { createAppContainer, createStackNavigator, createSwitchNavigator,
   NavigationScreenOptions } from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
@@ -21,14 +21,12 @@ const defaultNavigationOptions = ({ navigation }) => ({
     fontWeight: 'bold'
   },
   headerRight: (
-    <View style={navHeader.button}>
-      <Icon
-        color='#fff'
-        name='th-list'
-        onPress={() => navigation.navigate(PV.RouteNames.QueueScreen)}
-        size={22}
-        solid={true} />
-    </View>
+    <Icon
+      color='#fff'
+      name='th-list'
+      onPress={() => navigation.navigate(PV.RouteNames.QueueScreen)}
+      size={22}
+      style={navHeader.buttonIcon} />
   )
 }) as NavigationScreenOptions
 

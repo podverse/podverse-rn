@@ -9,10 +9,11 @@ type Props = {
   onPress?: any
   size: number
   solid?: boolean
+  style?: any
 }
 
 export const PVIcon = (props: Props) => {
-  const { color, name, onPress, size, solid } = props
+  const { color, name, onPress, size, solid, style } = props
   const [globalTheme] = useGlobal('globalTheme')
   const isDarkMode = globalTheme === darkTheme
 
@@ -23,6 +24,7 @@ export const PVIcon = (props: Props) => {
       onPress={onPress}
       size={size}
       {...(solid ? { solid: true } : {})}
+      {...(style ? { style } : {})}
     />
   )
 }

@@ -309,10 +309,18 @@ export const core = StyleSheet.create({
 })
 
 export const navHeader = StyleSheet.create({
-  button: {
+  buttonIcon: {
+    color: PV.Colors.white,
+    height: 44,
+    lineHeight: 44,
+    paddingHorizontal: 12
+  },
+  buttonText: {
     color: PV.Colors.white,
     fontSize: PV.Fonts.sizes.lg,
-    marginHorizontal: 12
+    height: 44,
+    lineHeight: 44,
+    paddingHorizontal: 12
   }
 })
 

@@ -1,10 +1,8 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View as RNView } from 'react-native'
-import { Icon } from 'react-native-elements'
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, MessageWithAction, QueueTableCell,
-  SortableList, SortableListRow, TableSectionHeader, View  } from '../components'
+import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, Icon, MessageWithAction, QueueTableCell,
+  SortableList, SortableListRow, TableSectionHeader } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
-import { PV } from '../resources'
 import { getNowPlayingItem, setNowPlayingItem } from '../services/player'
 import { getQueueItems } from '../services/queue'
 import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
@@ -39,63 +37,59 @@ export class QueueScreen extends React.Component<Props, State> {
         } />
     ),
     headerLeft: (
-      <TouchableOpacity
-        onPress={navigation.dismiss}>
-        <Icon
-          color='#fff'
-          iconStyle={styles.closeButton}
-          name='angle-down'
-          size={32}
-          type='font-awesome'
-          underlayColor={PV.Colors.brandColor} />
-      </TouchableOpacity>
+      <Icon
+        color='#fff'
+        name='chevron-down'
+        onPress={navigation.dismiss}
+        size={22}
+        style={navHeader.buttonIcon} />
     ),
     headerRight: (
-      <RNView>
+      <View>
         {
           navigation.getParam('viewType') === _historyKey ?
             (
-              <RNView>
+              <View>
                 {
                   !navigation.getParam('isEditing') ? (
-                    <RNView style={styles.headerButtonWrapper}>
+                    <View style={styles.headerButtonWrapper}>
                       <TouchableOpacity onPress={navigation.getParam('_clearAll')}>
-                        <Text style={navHeader.button}>Clear</Text>
+                        <Text style={navHeader.buttonText}>Clear</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={navigation.getParam('_startEditing')}>
-                        <Text style={[navHeader.button, styles.navHeaderTextButton]}>Edit</Text>
+                        <Text style={[navHeader.buttonText, styles.navHeaderTextButton]}>Edit</Text>
                       </TouchableOpacity>
-                    </RNView>
+                    </View>
                   ) : (
-                    <RNView style={styles.headerButtonWrapper}>
+                    <View style={styles.headerButtonWrapper}>
                       <TouchableOpacity onPress={navigation.getParam('_clearAll')}>
-                        <Text style={navHeader.button}>Clear</Text>
+                        <Text style={navHeader.buttonText}>Clear</Text>
                       </TouchableOpacity>
                         <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
-                          <Text style={[navHeader.button, styles.navHeaderTextButton]}>Done</Text>
+                          <Text style={[navHeader.buttonText, styles.navHeaderTextButton]}>Done</Text>
                         </TouchableOpacity>
-                    </RNView>
+                    </View>
                   )
                 }
-              </RNView>
+              </View>
 
             ) : (
-              <RNView>
+              <View>
                 {
                   !navigation.getParam('isEditing') ? (
                     <TouchableOpacity onPress={navigation.getParam('_startEditing')}>
-                      <Text style={[navHeader.button, styles.navHeaderTextButton]}>Edit</Text>
+                      <Text style={[navHeader.buttonText, styles.navHeaderTextButton]}>Edit</Text>
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
-                      <Text style={[navHeader.button, styles.navHeaderTextButton]}>Done</Text>
+                      <Text style={[navHeader.buttonText, styles.navHeaderTextButton]}>Done</Text>
                     </TouchableOpacity>
                   )
                 }
-              </RNView>
+              </View>
             )
         }
-      </RNView>
+      </View>
     )
   })
 
@@ -279,7 +273,7 @@ export class QueueScreen extends React.Component<Props, State> {
             <ActivityIndicator styles={styles.activityIndicator} />
         }
         {
-          !isLoading && viewType === _queueKey && queueItems.length > 0 &&
+          !isLoading && viewType === _queueKey && (queueItems.length > 0 || nowPlayingItem) &&
             <View>
               {
                 !!nowPlayingItem &&
@@ -368,7 +362,7 @@ const styles = StyleSheet.create({
   navHeaderTextButton: {
     marginLeft: 2,
     textAlign: 'right',
-    width: 39
+    width: 60
   },
   tableCellDivider: {
     marginBottom: 2
