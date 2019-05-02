@@ -312,7 +312,10 @@ export class ProfileScreen extends React.Component<Props, State> {
         sort
       }
 
-      const results = await getPodcasts(query, this.global.settings.nsfwMode)
+      let results = [[], 0]
+      if (this.global.screenProfile.user.subscribedPodcastIds.length > 1) {
+        results = await getPodcasts(query, this.global.settings.nsfwMode)
+      }
 
       setGlobal({
         screenProfile: {
