@@ -30,7 +30,7 @@ export const ClipTableCell = (props: Props) => {
       name='ellipsis-h'
       onPress={handleMorePress}
       size={26}
-      style={showPodcastInfo ? button.iconOnly : button.iconOnlySmall} />
+      style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
   )
 
   return (

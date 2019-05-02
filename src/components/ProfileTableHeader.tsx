@@ -1,8 +1,8 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import { useGlobal } from 'reactn'
+import { StyleSheet } from 'react-native'
 import { PV } from '../resources'
-import { SubscribeButton, Text, View } from './'
+import { button } from '../styles'
+import { Icon, SubscribeButton, Text, View } from './'
 
 type Props = {
   handleEditPress?: any
@@ -14,7 +14,6 @@ type Props = {
 
 export const ProfileTableHeader = (props: Props) => {
   const { handleEditPress, handleToggleSubscribe, id, isSubscribed, name } = props
-  const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <View>
@@ -26,14 +25,11 @@ export const ProfileTableHeader = (props: Props) => {
         </View>
         {
           handleEditPress &&
-            <View style={styles.buttonView}>
-              <TouchableWithoutFeedback onPress={() => handleEditPress(id)}>
-                <Image
-                  resizeMode='contain'
-                  source={PV.Images.SQUARE_PLACEHOLDER}
-                  style={[styles.moreButtonImage, globalTheme.buttonImage]} />
-              </TouchableWithoutFeedback>
-            </View>
+            <Icon
+              name='pencil-alt'
+              onPress={() => handleEditPress(id)}
+              size={26}
+              style={button.iconOnlyMedium} />
         }
         {
           handleToggleSubscribe &&

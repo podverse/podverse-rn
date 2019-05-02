@@ -99,8 +99,9 @@ export class PlaylistScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleSubscribeToggle = async (id: string) => {
+  _handleToggleSubscribe = async (id: string) => {
     const { playlist } = this.global.screenPlaylist
+    console.log('hi', id, this.global)
     await toggleSubscribeToPlaylist(id, this.global)
     const { subscribedPlaylistIds } = this.global.session.userInfo
     const isSubscribed = subscribedPlaylistIds.some((x: string) => playlist.id)
@@ -121,7 +122,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
   render() {
     const { isLoading, isLoadingMore, isLoggedInUserPlaylist, isSubscribed, selectedItem,
       showActionSheet } = this.state
-    const { globalTheme, screenPlaylist, session } = this.global
+    const { globalTheme, screenPlaylist } = this.global
     const { navigation } = this.props
     const playlist = screenPlaylist.playlist ? screenPlaylist.playlist : navigation.getParam('playlist')
     const flatListData = screenPlaylist.flatListData || []
@@ -131,7 +132,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <PlaylistTableHeader
           createdBy={isLoggedInUserPlaylist ? playlist.owner.name : null}
           handleEditPress={isLoggedInUserPlaylist ? this._handleEditPress : null}
-          handleSubscribeToggle={isLoggedInUserPlaylist ? null : this._handleSubscribeToggle}
+          handleToggleSubscribe={isLoggedInUserPlaylist ? null : () => this._handleToggleSubscribe(playlist.id)}
           id={playlist.id}
           isSubscribed={isSubscribed}
           itemCount={playlist.itemCount}

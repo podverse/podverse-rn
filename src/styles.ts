@@ -237,7 +237,14 @@ export const lightTheme = StyleSheet.create({
 })
 
 export const button = StyleSheet.create({
-  iconOnly: {
+  iconOnlyLarge: {
+    flex: 0,
+    height: 76,
+    lineHeight: 76,
+    textAlign: 'center',
+    width: 40
+  },
+  iconOnlyMedium: {
     flex: 0,
     height: 60,
     lineHeight: 60,

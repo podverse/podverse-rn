@@ -195,7 +195,7 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   _handleToggleSubscribe = async (id: string) => {
     const { user } = this.global.screenProfile
-    await toggleSubscribeToUser(id, this.global)
+    await toggleSubscribeToUser(id, this.global.session.isLoggedIn, this.global)
     const { subscribedUserIds } = this.global.session.userInfo
     const isSubscribed = subscribedUserIds.some((x: string) => user.id)
     this.setState({ isSubscribed })
@@ -262,7 +262,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         <ProfileTableHeader
           handleEditPress={isLoggedInUserProfile ? this._handleEditPress : null}
-          handleToggleSubscribe={() => isLoggedInUserProfile ? null : this._handleToggleSubscribe(user.id)}
+          handleToggleSubscribe={isLoggedInUserProfile ? null : () => this._handleToggleSubscribe(user.id)}
           id={user.id}
           isSubscribed={isSubscribed}
           name={user.name} />

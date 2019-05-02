@@ -1,9 +1,9 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import { useGlobal } from 'reactn'
+import { StyleSheet } from 'react-native'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { Divider, SubscribeButton, Text, View } from './'
+import { button } from '../styles'
+import { Divider, Icon, SubscribeButton, Text, View } from './'
 
 type Props = {
   createdBy?: string
@@ -19,11 +19,10 @@ type Props = {
 export const PlaylistTableHeader = (props: Props) => {
   const { createdBy, handleEditPress, handleToggleSubscribe, id, isSubscribed, itemCount, lastUpdated,
     title } = props
-  const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <View>
-      <View style={styles.row}>
+      <View style={styles.wrapper}>
         <View style={styles.textWrapper}>
           <Text
             numberOfLines={1}
@@ -51,15 +50,11 @@ export const PlaylistTableHeader = (props: Props) => {
         </View>
         {
           handleEditPress &&
-            <View style={styles.buttonView}>
-              <TouchableWithoutFeedback
-                onPress={() => handleEditPress(id)}>
-                <Image
-                  resizeMode='contain'
-                  source={PV.Images.SQUARE_PLACEHOLDER}
-                  style={[styles.moreButtonImage, globalTheme.buttonImage]} />
-              </TouchableWithoutFeedback>
-            </View>
+            <Icon
+              name='pencil-alt'
+              onPress={() => handleEditPress(id)}
+              size={26}
+              style={button.iconOnlyMedium} />
         }
         {
           handleToggleSubscribe &&
@@ -112,12 +107,15 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     flex: 1,
-    marginHorizontal: 8,
-    marginVertical: 8
+    marginRight: 8
   },
   title: {
     flex: 0,
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.bold
+  },
+  wrapper: {
+    flexDirection: 'row',
+    padding: 8
   }
 })

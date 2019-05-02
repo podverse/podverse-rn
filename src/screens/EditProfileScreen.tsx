@@ -3,7 +3,8 @@ import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { ActivityIndicator, Divider, TextInput, View } from '../components'
 import { PV } from '../resources'
-import { getAuthUserInfo, updateLoggedInUser } from '../state/actions/auth'
+import { getAuthUserInfo } from '../state/actions/auth'
+import { updateLoggedInUser } from '../state/actions/user'
 import { core, navHeader } from '../styles'
 
 type Props = {
@@ -24,7 +25,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
       headerRight: (
         <TouchableOpacity
           onPress={navigation.getParam('updateUser')}>
-          <Text style={navHeader.button}>Save</Text>
+          <Text style={navHeader.buttonText}>Save</Text>
         </TouchableOpacity>
       )
     }
@@ -43,7 +44,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     this.props.navigation.setParams({ updateUser: this._updateUser })
-    await getAuthUserInfo(this.props.navigation)
+    await getAuthUserInfo()
     this.setState({ isLoading: false })
   }
 

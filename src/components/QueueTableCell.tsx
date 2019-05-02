@@ -1,6 +1,5 @@
 import React from 'react'
 import { Image, StyleSheet } from 'react-native'
-import { useGlobal } from 'reactn'
 import { Icon, Text, View } from '.'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -24,7 +23,6 @@ export const QueueTableCell = (props: Props) => {
   const { clipEndTime, clipStartTime, clipTitle = 'untitled clip', episodePubDate,
     episodeTitle = 'untilted episode', handleRemovePress, hideBottomRow, podcastImageUrl,
     podcastTitle = 'untitled podcast', showMoveButton, showRemoveButton } = props
-  const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <View style={styles.wrapper}>
@@ -59,7 +57,7 @@ export const QueueTableCell = (props: Props) => {
             <Icon
               name='bars'
               size={28}
-              style={button.iconOnly} />
+              style={button.iconOnlyMedium} />
         }
         {
           showRemoveButton && handleRemovePress &&
@@ -67,7 +65,7 @@ export const QueueTableCell = (props: Props) => {
               name='times'
               onPress={handleRemovePress}
               size={28}
-              style={button.iconOnly} />
+              style={button.iconOnlyMedium} />
         }
       </View>
       {

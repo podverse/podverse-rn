@@ -27,7 +27,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
       title: 'Edit Playlist',
       headerRight: (
         <TouchableOpacity onPress={navigation.getParam('updatePlaylist')}>
-          <Text style={navHeader.button}>Save</Text>
+          <Text style={navHeader.buttonText}>Save</Text>
         </TouchableOpacity>
       )
     }
@@ -103,7 +103,8 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
             episodePubDate={data.episode.pubDate}
             episodeTitle={data.episode.title}
             podcastImageUrl={data.episode.podcast.imageUrl}
-            podcastTitle={data.episode.podcast.title} />
+            podcastTitle={data.episode.podcast.title}
+            showMoveButton={true} />
           <Divider style={styles.tableCellDivider} />
         </View>
       )
@@ -114,7 +115,8 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
             episodePubDate={data.pubDate}
             episodeTitle={data.title}
             podcastImageUrl={data.podcast.imageUrl}
-            podcastTitle={data.podcast.title} />
+            podcastTitle={data.podcast.title}
+            showMoveButton={true} />
           <Divider style={styles.tableCellDivider} />
         </View>
       )
