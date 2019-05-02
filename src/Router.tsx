@@ -133,6 +133,8 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.ProfilesScreen]: ProfilesScreen,
     [PV.RouteNames.SettingsScreen]: SettingsScreen,
     [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen,
+    [PV.RouteNames.MorePlaylistScreen]: PlaylistScreen,
+    [PV.RouteNames.MorePodcastScreen]: PodcastScreen,
     [PV.RouteNames.FeedbackScreen]: FeedbackScreen,
     [PV.RouteNames.AboutScreen]: AboutScreen
   },

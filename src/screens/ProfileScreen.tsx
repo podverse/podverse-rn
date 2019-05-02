@@ -163,11 +163,23 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _handlePodcastPress = (podcast: any) => {
-    console.log('podcast pressed')
+    this.props.navigation.navigate(
+      PV.RouteNames.MorePodcastScreen, {
+        podcast
+      }
+    )
   }
 
   _handleClipPress = (clip: any) => {
     console.log('clip pressed')
+  }
+
+  _handlePlaylistPress = (playlist: any) => {
+    this.props.navigation.navigate(
+      PV.RouteNames.PlaylistScreen, {
+        playlist
+      }
+    )
   }
 
   _handleCancelPress = () => {
@@ -179,10 +191,6 @@ export class ProfileScreen extends React.Component<Props, State> {
       selectedItem,
       showActionSheet: true
     })
-  }
-
-  _handlePlaylistPress = (playlist: any) => {
-    console.log('playlist pressed')
   }
 
   _handleEditPress = () => {
@@ -233,12 +241,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         <PlaylistTableCell
           key={item.id}
           itemCount={item.itemCount}
-          onPress={() => this.props.navigation.navigate(
-            PV.RouteNames.PlaylistScreen, {
-              playlist: item,
-              navigationTitle: 'Playlist'
-            }
-          )}
+          onPress={() => this._handlePlaylistPress(item)}
           title={item.title} />
       )
     }
