@@ -1,7 +1,8 @@
 import debounce from 'lodash/debounce'
+import { View as RNView } from 'react-native'
 import React from 'reactn'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, SearchBar,
-  TableSectionSelectors, Text, View } from '../components'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList,
+  NavQueueIcon, NavShareIcon, SearchBar, TableSectionSelectors, Text, View } from '../components'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
@@ -28,18 +29,28 @@ type State = {
 
 export class EpisodeScreen extends React.Component<Props, State> {
 
-  static navigationOptions = {
-    title: 'Episode'
+  static navigationOptions = ({ navigation }) => {
+    const episode = navigation.getParam('episode')
+    return {
+      title: 'Episode',
+      headerRight: (
+        <RNView style={core.row}>
+          <NavShareIcon url={PV.URLs.episode + episode.id} />
+          <NavQueueIcon navigation={navigation} />
+        </RNView>
+      )
+    } as NavigationScreenOptions
   }
 
   constructor(props: Props) {
     super(props)
 
     const viewType = this.props.navigation.getParam('viewType') || _clipsKey
+    const episode = this.props.navigation.getParam('episode')
 
     this.state = {
       endOfResultsReached: false,
-      episode: props.navigation.getParam('episode'),
+      episode,
       flatListData: [],
       isLoading: viewType === _clipsKey,
       isLoadingMore: false,

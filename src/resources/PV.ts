@@ -8,6 +8,7 @@ import { Keys } from './Keys'
 import { RouteNames } from './RouteNames'
 import { Table } from './Table'
 import { Tabs } from './Tabs'
+import { URLs } from './URLs'
 
 export const PV = {
   ActionSheet,
@@ -19,5 +20,6 @@ export const PV = {
   Keys,
   RouteNames,
   Table,
-  Tabs
+  Tabs,
+  URLs
 }

@@ -1,7 +1,8 @@
 import debounce from 'lodash/debounce'
 import React from 'reactn'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
-  PodcastTableHeader, SearchBar, SwipeRowBack, TableSectionSelectors, Text, View } from '../components'
+import { View as RNView } from 'react-native'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, NavQueueIcon,
+  NavShareIcon, PodcastTableHeader, SearchBar, SwipeRowBack, TableSectionSelectors, Text, View } from '../components'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
@@ -36,25 +37,35 @@ type State = {
 
 export class PodcastScreen extends React.Component<Props, State> {
 
-  static navigationOptions = {
-    title: 'Podcast'
+  static navigationOptions = ({ navigation }) => {
+    const podcast = navigation.getParam('podcast')
+    return {
+      title: 'Podcast',
+      headerRight: (
+        <RNView style={core.row}>
+          <NavShareIcon url={PV.URLs.podcast + podcast.id} />
+          <NavQueueIcon navigation={navigation} />
+        </RNView>
+      )
+    } as NavigationScreenOptions
   }
 
   constructor(props: Props) {
     super(props)
 
     const viewType = this.props.navigation.getParam('viewType') || allEpisodesKey
+    const podcast = this.props.navigation.getParam('podcast')
 
     this.state = {
       endOfResultsReached: false,
-      searchBarText: '',
       flatListData: [], // TODO: initially load downloaded
       isLoading: viewType !== downloadedKey, // TODO: initially handle downloaded
       isLoadingMore: false,
       isRefreshing: false,
-      podcast: props.navigation.getParam('podcast'),
+      podcast,
       queryPage: 1,
       querySort: mostRecentKey,
+      searchBarText: '',
       showActionSheet: false,
       viewType
     }

@@ -2,6 +2,11 @@ import { InitialState } from 'src/resources/Interfaces'
 
 const initialTheme: InitialState = {
   globalTheme: {},
+  player: {
+    isPlaying: false,
+    nowPlayingItem: null,
+    showPlayer: false
+  },
   screenPlaylist: {
     flatListData: [],
     playlist: null
@@ -31,7 +36,6 @@ const initialTheme: InitialState = {
   settings: {
     nsfwMode: true
   },
-  showPlayer: false,
   subscribedPodcasts: []
 }
 

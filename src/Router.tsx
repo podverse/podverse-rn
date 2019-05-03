@@ -3,7 +3,7 @@ import { Image } from 'react-native'
 import { createAppContainer, createStackNavigator, createSwitchNavigator,
   NavigationScreenOptions } from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import { Icon, PVTabBar } from './components'
+import { Icon, NavQueueIcon, PVTabBar } from './components'
 import { PV } from './resources'
 import { AboutScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
   EpisodeScreen, EpisodesScreen, FeedbackScreen, MoreScreen, OnboardingScreen, PlaylistsAddToScreen,
@@ -20,14 +20,7 @@ const defaultNavigationOptions = ({ navigation }) => ({
   headerTitleStyle: {
     fontWeight: 'bold'
   },
-  headerRight: (
-    <Icon
-      color='#fff'
-      name='th-list'
-      onPress={() => navigation.navigate(PV.RouteNames.QueueScreen)}
-      size={22}
-      style={navHeader.buttonIcon} />
-  )
+  headerRight: <NavQueueIcon navigation={navigation} />
 }) as NavigationScreenOptions
 
 const AuthNavigator = createStackNavigator(

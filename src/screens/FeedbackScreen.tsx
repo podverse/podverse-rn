@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native'
 import { WebView } from 'react-native-webview'
 import React from 'reactn'
 import { View } from '../components'
+import { PV } from '../resources'
 
 export class FeedbackScreen extends React.Component {
 
@@ -12,7 +13,7 @@ export class FeedbackScreen extends React.Component {
   render() {
     return (
       <View style={styles.wrapper}>
-        <WebView source={{ uri: 'https://forms.gle/6ZpGwePkDT6BLRsQ9' }} />
+        <WebView source={{ uri: PV.URLs.feedback }} />
       </View>
     )
   }

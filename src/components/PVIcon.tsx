@@ -24,7 +24,6 @@ export const PVIcon = (props: Props) => {
       onPress={onPress}
       size={size}
       {...(solid ? { solid: true } : {})}
-      {...(style ? { style } : {})}
-    />
+      {...(style ? { style } : {})} />
   )
 }

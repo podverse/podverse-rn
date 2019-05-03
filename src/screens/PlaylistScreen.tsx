@@ -1,10 +1,12 @@
 import React, { setGlobal } from 'reactn'
+import { View as RNView } from 'react-native'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
-  PlaylistTableHeader, View } from '../components'
+  NavQueueIcon, NavShareIcon, PlaylistTableHeader, View } from '../components'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
@@ -22,9 +24,18 @@ type State = {
 
 export class PlaylistScreen extends React.Component<Props, State> {
 
-  static navigationOptions = ({ navigation }) => ({
-    title: navigation.getParam('navigationTitle')
-  })
+  static navigationOptions = ({ navigation }) => {
+    const playlist = navigation.getParam('playlist')
+    return {
+      title: 'Playlist',
+      headerRight: (
+        <RNView style={core.row}>
+          <NavShareIcon url={PV.URLs.playlist + playlist.id} />
+          <NavQueueIcon navigation={navigation} />
+        </RNView>
+      )
+    } as NavigationScreenOptions
+  }
 
   constructor(props: Props) {
     super(props)

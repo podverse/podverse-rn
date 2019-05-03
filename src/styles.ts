@@ -72,6 +72,9 @@ export const darkTheme = StyleSheet.create({
   player: {
     borderColor: PV.Colors.gray
   },
+  playerText: {
+    color: PV.Colors.white
+  },
   selectorText: {
     color: PV.Colors.white
   },
@@ -188,6 +191,9 @@ export const lightTheme = StyleSheet.create({
   player: {
     borderColor: PV.Colors.gray
   },
+  playerText: {
+    color: PV.Colors.black
+  },
   selectorText: {
     color: PV.Colors.black
   },
@@ -279,6 +285,10 @@ export const core = StyleSheet.create({
   },
   backgroundView: {
     flex: 1
+  },
+  row: {
+    backgroundColor: 'transparent',
+    flexDirection: 'row'
   },
   selectorText: {
     fontSize: PV.Fonts.sizes.xl,

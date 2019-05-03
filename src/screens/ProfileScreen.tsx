@@ -1,6 +1,7 @@
+import { View as RNView } from 'react-native'
 import React, { setGlobal } from 'reactn'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, PlaylistTableCell,
-  PodcastTableCell, ProfileTableHeader, TableSectionSelectors, View } from '../components'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, NavQueueIcon, NavShareIcon,
+  PlaylistTableCell, PodcastTableCell, ProfileTableHeader, TableSectionSelectors, View } from '../components'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { generateAuthorsText, generateCategoriesText, readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -8,6 +9,7 @@ import { getPodcasts } from '../services/podcast'
 import { getUserMediaRefs, getUserPlaylists } from '../services/user'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { getPublicUser, toggleSubscribeToUser } from '../state/actions/user'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
@@ -29,9 +31,22 @@ type State = {
 
 export class ProfileScreen extends React.Component<Props, State> {
 
-  static navigationOptions = ({ navigation }) => ({
-    title: navigation.getParam('navigationTitle')
-  })
+  static navigationOptions = ({ navigation }) => {
+    const user = navigation.getParam('user')
+
+    return {
+      title: 'Profile',
+      headerRight: (
+        <RNView style={core.row}>
+          {
+            user.isPublic &&
+              <NavShareIcon url={PV.URLs.profile + user.id} />
+          }
+          <NavQueueIcon navigation={navigation} />
+        </RNView>
+      )
+    } as NavigationScreenOptions
+  } 
 
   constructor(props: Props) {
     super(props)
@@ -64,7 +79,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     const { isLoggedInUserProfile } = this.state
 
     if (isLoggedInUserProfile) {
-      await getAuthUserInfo(this.props.navigation)
+      await getAuthUserInfo()
 
       let newState = {
         isLoading: false,

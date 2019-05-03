@@ -1,5 +1,5 @@
 import { IActionSheet } from '../resources/Interfaces'
-import { setNowPlayingItem } from '../services/player'
+import { setNowPlayingItem } from '../state/actions/player'
 import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
 import { PV } from './PV'
 

@@ -1,3 +1,5 @@
+import { NowPlayingItem } from '../lib/NowPlayingItem'
+
 export interface GlobalTheme {
   actionSheetButton?: any
   actionSheetButtonCancel?: any
@@ -18,6 +20,7 @@ export interface GlobalTheme {
   flatList?: any
   inputContainerText?: any
   player?: any
+  playerText?: any
   selectorText?: any
   swipeRowBack?: any
   tabbar?: any
@@ -48,6 +51,9 @@ export interface UserInfo {
 
 export interface InitialState {
   globalTheme: GlobalTheme
+  playerIsPlaying: boolean,
+  playerNowPlayingItem: NowPlayingItem,
+  playerShow: boolean
   screenPlaylist: {
     flatListData: []
     playlist?: any
@@ -66,7 +72,6 @@ export interface InitialState {
     userInfo: UserInfo,
     isLoggedIn: boolean
   }
-  showPlayer: boolean
   subscribedPodcasts: [{}]
 }
 
