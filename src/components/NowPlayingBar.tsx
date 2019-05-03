@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: 26,
-    marginBottom: 4
+    lineHeight: 25,
+    marginBottom: 5
   },
   image: {
     height: 60,
@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: 28,
-    marginTop: 2
+    lineHeight: 27,
+    marginTop: 3
   },
   textWrapper: {
     flex: 1,

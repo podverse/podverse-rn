@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
+import RNSecureKeyStore from 'react-native-secure-key-store'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PodcastTableCell, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
@@ -8,6 +9,7 @@ import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
+import { setNowPlayingItem } from '../state/actions/player'
 import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
@@ -69,6 +71,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
         navigation.navigate(PV.RouteNames.Onboarding)
       } else {
         await getAuthUserInfo()
+        const nowPlayingItemString = await RNSecureKeyStore.get(PV.Keys.NOW_PLAYING_ITEM)
+        if (nowPlayingItemString) {
+          await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global.session.isLoggedIn)
+        }
         const { subscribedPodcasts } = this.global
         flatListData = subscribedPodcasts
       }
