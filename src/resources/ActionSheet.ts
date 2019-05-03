@@ -7,22 +7,34 @@ const mediaMoreButtons = (item: any, isLoggedIn: boolean, globalState: any, navi
   {
     key: 'stream',
     text: 'Stream',
-    onPress: () => setNowPlayingItem(item, isLoggedIn)
+    onPress: async () => {
+      handleDismiss()
+      await setNowPlayingItem(item, isLoggedIn)
+    }
   },
   {
     key: 'download',
     text: 'Download',
-    onPress: () => console.log('Download')
+    onPress: () => {
+      handleDismiss()
+      console.log('Download')
+    }
   },
   {
     key: 'queueNext',
     text: 'Queue: Next',
-    onPress: () => addQueueItemNext(item, isLoggedIn, globalState)
+    onPress: async () => {
+      handleDismiss()
+      await addQueueItemNext(item, isLoggedIn, globalState)
+    }
   },
   {
     key: 'queueLast',
     text: 'Queue: Last',
-    onPress: () => addQueueItemLast(item, isLoggedIn, globalState)
+    onPress: async () => {
+      handleDismiss()
+      await addQueueItemLast(item, isLoggedIn, globalState)
+    }
   },
   {
     key: 'addToPlaylist',

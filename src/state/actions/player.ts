@@ -4,9 +4,18 @@ import { setNowPlayingItem as setNowPlayingItemService } from '../../services/pl
 
 export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolean) => {
   try {
+    setGlobal({
+      player: {
+        isLoading: true,
+        isPlaying: false,
+        nowPlayingItem: item,
+        showPlayer: true
+      }
+    })
     await setNowPlayingItemService(item, isLoggedIn)
     setGlobal({
       player: {
+        isLoading: false,
         isPlaying: false,
         nowPlayingItem: item,
         showPlayer: true

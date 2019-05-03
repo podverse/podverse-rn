@@ -1,13 +1,14 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
+import { View as AnimatableView } from 'react-native-animatable'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import React from 'reactn'
 import { PV } from '../resources'
-import { core, darkTheme, iconStyles } from '../styles'
+import { darkTheme, iconStyles } from '../styles'
 
 export class Player extends React.PureComponent {
   render () {
     const { globalTheme, player } = this.global
-    const { isPlaying, nowPlayingItem } = player
+    const { isLoading, isPlaying, nowPlayingItem } = player
     const isDarkMode = globalTheme === darkTheme
 
     return (
@@ -28,12 +29,29 @@ export class Player extends React.PureComponent {
             {nowPlayingItem.episodeTitle}
           </Text>
         </View>
-        <Icon
-          color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
-          name={isPlaying ? 'pause' : 'play'}
-          onPress={() => console.log('play / pause')}
-          size={30}
-          style={styles.button} />
+        {
+          isLoading &&
+            <AnimatableView
+              animation='rotate'
+              duration={2100}
+              easing='linear'
+              iterationCount='infinite'>
+              <Icon
+                color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
+                name={'spinner'}
+                size={30}
+                style={styles.button} />
+            </AnimatableView>
+        }
+        {
+          !isLoading &&
+            <Icon
+              color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
+              name={isPlaying ? 'pause' : 'play'}
+              onPress={() => console.log('play / pause')}
+              size={30}
+              style={styles.button} />
+        }
       </View>
     )
   }
@@ -51,8 +69,8 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: 25,
-    marginBottom: 5
+    lineHeight: 24,
+    marginBottom: 6
   },
   image: {
     height: 60,
@@ -74,7 +92,7 @@ const styles = StyleSheet.create({
   textWrapper: {
     flex: 1,
     justifyContent: 'center',
-    marginLeft: 8,
+    marginLeft: 10,
     marginRight: 2
   }
 })

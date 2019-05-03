@@ -70,7 +70,7 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: '#00000050'
   },
   player: {
-    borderColor: PV.Colors.grayDark
+    borderColor: PV.Colors.grayDarker
   },
   playerText: {
     color: PV.Colors.white
@@ -189,7 +189,7 @@ export const lightTheme = StyleSheet.create({
     backgroundColor: '#00000050'
   },
   player: {
-    borderColor: PV.Colors.grayLight
+    borderColor: PV.Colors.grayLighter
   },
   playerText: {
     color: PV.Colors.black
