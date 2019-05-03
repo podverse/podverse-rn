@@ -1,5 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
-import { View as AnimatableView } from 'react-native-animatable'
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import React from 'reactn'
 import { PV } from '../resources'
@@ -31,17 +30,10 @@ export class Player extends React.PureComponent {
         </View>
         {
           isLoading &&
-            <AnimatableView
-              animation='rotate'
-              duration={2100}
-              easing='linear'
-              iterationCount='infinite'>
-              <Icon
-                color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
-                name={'spinner'}
-                size={30}
-                style={styles.button} />
-            </AnimatableView>
+            <ActivityIndicator
+              color={globalTheme.activityIndicator.color}
+              size='large'
+              style={styles.button} />
         }
         {
           !isLoading &&
