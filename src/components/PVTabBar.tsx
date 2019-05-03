@@ -3,7 +3,7 @@ import { BottomTabBar } from 'react-navigation-tabs'
 import { useGlobal } from 'reactn'
 import { GlobalTheme } from 'src/resources/Interfaces'
 import { View } from '../components'
-import { Player } from './Player'
+import { Player } from './NowPlayingBar'
 
 type Props = {}
 

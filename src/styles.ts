@@ -64,13 +64,13 @@ export const darkTheme = StyleSheet.create({
   },
   inputContainerText: {
     backgroundColor: PV.Colors.black,
-    borderColor: PV.Colors.grayDarker,
+    borderColor: PV.Colors.grayDarker
   },
   modalBackdrop: {
     backgroundColor: '#00000050'
   },
   player: {
-    borderColor: PV.Colors.gray
+    borderColor: PV.Colors.grayDark
   },
   playerText: {
     color: PV.Colors.white
@@ -189,7 +189,7 @@ export const lightTheme = StyleSheet.create({
     backgroundColor: '#00000050'
   },
   player: {
-    borderColor: PV.Colors.gray
+    borderColor: PV.Colors.grayLight
   },
   playerText: {
     color: PV.Colors.black
