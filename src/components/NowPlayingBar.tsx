@@ -29,19 +29,16 @@ export class Player extends React.PureComponent {
           </Text>
         </View>
         {
-          isLoading &&
-            <ActivityIndicator
-              color={globalTheme.activityIndicator.color}
-              size='large'
-              style={styles.button} />
-        }
-        {
-          !isLoading &&
+          !isLoading ?
             <Icon
               color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
               name={isPlaying ? 'pause' : 'play'}
               onPress={() => console.log('play / pause')}
               size={30}
+              style={styles.button} /> :
+            <ActivityIndicator
+              color={globalTheme.activityIndicator.color}
+              size='large'
               style={styles.button} />
         }
       </View>
