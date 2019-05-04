@@ -57,7 +57,6 @@ export const ClipTableCell = (props: Props) => {
               {
                 !!episodeTitle &&
                   <Text
-                    isSecondary={true}
                     numberOfLines={1}
                     style={styles.episodeTitle}>
                     {episodeTitle}

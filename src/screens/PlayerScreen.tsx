@@ -1,8 +1,9 @@
 import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React from 'reactn'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, Icon, NavAddToPlaylistIcon,
-  NavQueueIcon, NavShareIcon, PlayerTableHeader, TableSectionHeader, TableSectionSelectors, Text, View } from '../components'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
+  Icon, NavAddToPlaylistIcon, NavQueueIcon, NavShareIcon, PlayerTableHeader, TableSectionHeader,
+  TableSectionSelectors, Text, View } from '../components'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
@@ -245,9 +246,9 @@ export class PlayerScreen extends React.Component<Props, State> {
         }
         {
           !isLoading && viewType === _showNotesKey &&
-            <View style={styles.showNotesView}>
-              <Text style={styles.showNotesViewText}>{episode.description}</Text>
-            </View>
+            <HTMLScrollView
+              html={episode.description}
+              navigation={navigation} />
         }
         <ActionSheet
           globalTheme={globalTheme}
@@ -372,12 +373,6 @@ const styles = StyleSheet.create({
     flex: 0,
     height: PV.FlatList.searchBar.height,
     justifyContent: 'center'
-  },
-  showNotesView: {
-    margin: 8
-  },
-  showNotesViewText: {
-    fontSize: PV.Fonts.sizes.lg
   },
   swipeRowBack: {
     marginBottom: 8,

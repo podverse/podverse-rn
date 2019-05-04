@@ -69,27 +69,20 @@ export const QueueTableCell = (props: Props) => {
         }
       </View>
       {
-        !hideBottomRow && !!clipStartTime &&
+        !hideBottomRow &&
           <View style={styles.wrapperBottom}>
             <Text
               numberOfLines={1}
               style={styles.clipTitle}>
-              {clipTitle}
+              {clipStartTime ? clipTitle : 'Full Episode'}
             </Text>
-            <Text
-              style={styles.clipTime}>
-              {readableClipTime(clipStartTime, clipEndTime)}
-            </Text>
-          </View>
-      }
-      {
-        !hideBottomRow && !clipStartTime &&
-          <View style={styles.wrapperBottom}>
-            <Text
-              numberOfLines={1}
-              style={styles.clipTitle}>
-              Full Episode
-            </Text>
+            {
+              !!clipStartTime &&
+                <Text
+                  style={styles.clipTime}>
+                  {readableClipTime(clipStartTime, clipEndTime)}
+                </Text>
+            }
           </View>
       }
     </View>
@@ -100,26 +93,20 @@ const styles = StyleSheet.create({
   clipTime: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    lineHeight: PV.Fonts.sizes.md,
-    justifyContent: 'flex-end',
-    marginLeft: 6
+    marginLeft: 4
   },
   clipTitle: {
     flex: 1,
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: PV.Fonts.sizes.md,
-    justifyContent: 'flex-end'
+    fontWeight: PV.Fonts.weights.bold
   },
   episodePubDate: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
-    justifyContent: 'flex-end',
-    marginTop: 2
+    flex: 1,
+    fontSize: PV.Fonts.sizes.md
   },
   episodeTitle: {
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold
+    flex: 1,
+    fontSize: PV.Fonts.sizes.md
   },
   image: {
     flex: 0,
@@ -128,15 +115,12 @@ const styles = StyleSheet.create({
     width: 60
   },
   podcastTitle: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
-    justifyContent: 'flex-start'
+    flex: 1,
+    fontSize: PV.Fonts.sizes.md
   },
   textWrapper: {
     flex: 1,
-    paddingBottom: 5,
-    paddingRight: 8,
-    paddingTop: 4
+    paddingRight: 8
   },
   wrapper: {
     margin: 8

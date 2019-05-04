@@ -8,7 +8,7 @@ import { PV } from './resources'
 import { AboutScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
   EpisodeScreen, EpisodesScreen, FeedbackScreen, MoreScreen, OnboardingScreen, PlayerScreen, PlaylistsAddToScreen,
   PlaylistScreen, PlaylistsScreen, PodcastScreen, PodcastsScreen, ProfileScreen, ProfilesScreen, QueueScreen,
-  SearchScreen, SettingsScreen } from './screens'
+  SearchScreen, SettingsScreen, WebPageScreen } from './screens'
 
 const defaultNavigationOptions = ({ navigation }) => ({
   title: PV.Tabs.Podcasts.title,
@@ -186,12 +186,19 @@ const PlayerNavigator = createStackNavigator({
   defaultNavigationOptions
 })
 
+const WebPageNavigator = createStackNavigator({
+  [PV.RouteNames.WebPageScreen]: WebPageScreen
+}, {
+  defaultNavigationOptions
+})
+
 const MainApp = createStackNavigator({
   [PV.RouteNames.TabNavigator]: TabNavigator,
   [PV.RouteNames.AuthNavigator]: AuthNavigator,
+  PlayerNavigator,
   PlaylistsAddToNavigator,
   QueueNavigator,
-  PlayerNavigator
+  WebPageNavigator
 }, {
   mode: 'modal',
   headerMode: 'none'

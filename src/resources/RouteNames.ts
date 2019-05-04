@@ -31,5 +31,6 @@ export const RouteNames = {
   SearchEpisodeScreen: 'SearchEpisodeScreen',
   SearchPodcastScreen: 'SearchPodcastScreen',
   SettingsScreen: 'SettingsScreen',
-  TabNavigator: 'TabNavigator'
+  TabNavigator: 'TabNavigator',
+  WebPageScreen: 'WebPageScreen'
 }
