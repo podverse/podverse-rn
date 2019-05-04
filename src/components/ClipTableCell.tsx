@@ -57,7 +57,8 @@ export const ClipTableCell = (props: Props) => {
               {
                 !!episodeTitle &&
                   <Text
-                    numberOfLines={2}
+                    isSecondary={true}
+                    numberOfLines={1}
                     style={styles.episodeTitle}>
                     {episodeTitle}
                   </Text>
@@ -66,7 +67,7 @@ export const ClipTableCell = (props: Props) => {
                 !!episodePubDate &&
                   <Text
                     isSecondary={true}
-                    style={styles.bottomText}>
+                    style={styles.episodePubDate}>
                     {readableDate(episodePubDate)}
                   </Text>
               }
@@ -84,6 +85,7 @@ export const ClipTableCell = (props: Props) => {
             {title}
           </Text>
           <Text
+            isSecondary={true}
             style={styles.clipTime}>
             {clipTime}
           </Text>
@@ -97,24 +99,23 @@ export const ClipTableCell = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
-  bottomText: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
-    justifyContent: 'flex-end',
-    marginTop: 2
-  },
   buttonView: {
     flex: 0
   },
   clipTime: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
+    fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-end',
-    marginTop: 4
+    marginTop: 2
+  },
+  episodePubDate: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.md,
+    justifyContent: 'flex-end',
+    marginTop: 2
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold,
     marginTop: 2
   },
   image: {
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
   },
   podcastTitle: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
+    fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-start'
   },
   textWrapper: {
@@ -133,8 +134,8 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold
+    fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.bold
   },
   wrapper: {
     paddingBottom: 12,

@@ -49,7 +49,7 @@ export const EpisodeTableCell = (props: Props) => {
           !!pubDate &&
           <Text
             isSecondary={true}
-            style={styles.bottomText}>
+            style={styles.pubDate}>
             {readableDate(pubDate)}
           </Text>
         }
@@ -101,12 +101,6 @@ export const EpisodeTableCell = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
-  bottomText: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
-    justifyContent: 'flex-end',
-    marginTop: 2
-  },
   description: {
     fontSize: PV.Fonts.sizes.md
   },
@@ -122,15 +116,21 @@ const styles = StyleSheet.create({
   },
   podcastTitle: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
+    fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-start'
+  },
+  pubDate: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.md,
+    justifyContent: 'flex-end',
+    marginTop: 2
   },
   textWrapper: {
     flex: 1
   },
   title: {
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold,
+    fontWeight: PV.Fonts.weights.bold,
     marginTop: 2
   },
   wrapper: {

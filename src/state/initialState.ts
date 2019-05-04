@@ -5,7 +5,7 @@ const initialTheme: InitialState = {
   player: {
     isPlaying: false,
     nowPlayingItem: null,
-    showPlayer: false
+    showPlayerBar: false
   },
   screenPlaylist: {
     flatListData: [],

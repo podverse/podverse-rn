@@ -3,9 +3,10 @@ import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, Icon, MessageWithAction, QueueTableCell,
   SortableList, SortableListRow, TableSectionHeader, View as PVView } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
-import { getNowPlayingItem, setNowPlayingItem } from '../services/player'
+import { getNowPlayingItem } from '../services/player'
 import { getQueueItems } from '../services/queue'
 import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
+import { setNowPlayingItem } from '../state/actions/player'
 import { removeQueueItem, updateQueueItems } from '../state/actions/queue'
 import { navHeader } from '../styles'
 
@@ -112,7 +113,7 @@ export class QueueScreen extends React.Component<Props, State> {
     navigation.setParams({ _startEditing: this._startEditing })
     navigation.setParams({ _stopEditing: this._stopEditing })
     navigation.setParams({ _clearAll: this._clearAll })
-    const nowPlayingItem = await getNowPlayingItem(isLoggedIn)
+    const nowPlayingItem = await getNowPlayingItem()
     const queueItems = await getQueueItems(isLoggedIn)
     this.setState({
       isLoading: false,

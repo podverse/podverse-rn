@@ -1,6 +1,7 @@
 import debounce from 'lodash/debounce'
-import React from 'reactn'
 import { View as RNView } from 'react-native'
+import { NavigationScreenOptions } from 'react-navigation'
+import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, NavQueueIcon,
   NavShareIcon, PodcastTableHeader, SearchBar, SwipeRowBack, TableSectionSelectors, Text, View } from '../components'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
@@ -58,8 +59,8 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     this.state = {
       endOfResultsReached: false,
-      flatListData: [], // TODO: initially load downloaded
-      isLoading: viewType !== downloadedKey, // TODO: initially handle downloaded
+      flatListData: [],
+      isLoading: viewType !== downloadedKey,
       isLoadingMore: false,
       isRefreshing: false,
       podcast,

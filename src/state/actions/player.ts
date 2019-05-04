@@ -9,25 +9,29 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
         isLoading: true,
         isPlaying: false,
         nowPlayingItem: item,
-        showPlayer: true
+        showPlayerBar: true
       }
     })
-    await setNowPlayingItemService(item, isLoggedIn)
+    const result = await setNowPlayingItemService(item, isLoggedIn)
     setGlobal({
       player: {
         isLoading: false,
         isPlaying: false,
         nowPlayingItem: item,
-        showPlayer: true
+        showPlayerBar: true
       }
     })
+
+    return result
   } catch (error) {
     setGlobal({
       player: {
         isPlaying: false,
         nowPlayingItem: null,
-        showPlayer: false
+        showPlayerBar: false
       }
     })
+
+    return {}
   }
 }

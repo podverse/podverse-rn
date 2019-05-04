@@ -1,20 +1,24 @@
 import React from 'react'
 import { BottomTabBar } from 'react-navigation-tabs'
 import { useGlobal } from 'reactn'
-import { GlobalTheme } from 'src/resources/Interfaces'
 import { View } from '../components'
-import { Player } from './NowPlayingBar'
+import { GlobalTheme } from '../resources/Interfaces'
+import { PlayerBar } from './PlayerBar'
 
-type Props = {}
+type Props = {
+  navigation: any
+}
 
 export const PVTabBar = (props: Props) => {
+  const { navigation } = props
   const [player] = useGlobal<any>('player')
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
 
   return (
     <View>
       {
-        player && player.showPlayer && <Player />
+        player && player.showPlayerBar &&
+          <PlayerBar navigation={navigation} />
       }
       <BottomTabBar {...props} style={globalTheme.tabbar} />
     </View>

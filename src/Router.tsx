@@ -1,15 +1,14 @@
 import React from 'react'
 import { Image } from 'react-native'
-import { createAppContainer, createStackNavigator, createSwitchNavigator,
-  NavigationScreenOptions } from 'react-navigation'
+import { createAppContainer, createStackNavigator, createSwitchNavigator, NavigationScreenOptions
+  } from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import { Icon, NavQueueIcon, PVTabBar } from './components'
+import { NavQueueIcon, PVTabBar } from './components'
 import { PV } from './resources'
 import { AboutScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
-  EpisodeScreen, EpisodesScreen, FeedbackScreen, MoreScreen, OnboardingScreen, PlaylistsAddToScreen,
+  EpisodeScreen, EpisodesScreen, FeedbackScreen, MoreScreen, OnboardingScreen, PlayerScreen, PlaylistsAddToScreen,
   PlaylistScreen, PlaylistsScreen, PodcastScreen, PodcastsScreen, ProfileScreen, ProfilesScreen, QueueScreen,
   SearchScreen, SettingsScreen } from './screens'
-import { navHeader } from './styles'
 
 const defaultNavigationOptions = ({ navigation }) => ({
   title: PV.Tabs.Podcasts.title,
@@ -181,11 +180,18 @@ const QueueNavigator = createStackNavigator({
   defaultNavigationOptions
 })
 
+const PlayerNavigator = createStackNavigator({
+  [PV.RouteNames.PlayerScreen]: PlayerScreen
+}, {
+  defaultNavigationOptions
+})
+
 const MainApp = createStackNavigator({
   [PV.RouteNames.TabNavigator]: TabNavigator,
   [PV.RouteNames.AuthNavigator]: AuthNavigator,
   PlaylistsAddToNavigator,
-  QueueNavigator
+  QueueNavigator,
+  PlayerNavigator
 }, {
   mode: 'modal',
   headerMode: 'none'
