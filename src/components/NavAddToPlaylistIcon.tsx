@@ -15,7 +15,7 @@ export const NavAddToPlaylistIcon = (props: Props) => {
   return (
     <Icon
       color='#fff'
-      name='list'
+      name='plus'
       onPress={() => {
         const mediaRefId = getMediaRefId()
         const episodeId = getEpisodeId()
