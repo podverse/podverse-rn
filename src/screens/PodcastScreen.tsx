@@ -1,9 +1,11 @@
+import linkifyHtml from 'linkifyjs/html'
 import debounce from 'lodash/debounce'
 import { View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React from 'reactn'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, NavQueueIcon,
-  NavShareIcon, PodcastTableHeader, SearchBar, SwipeRowBack, TableSectionSelectors, Text, View } from '../components'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
+  NavQueueIcon, NavShareIcon, PodcastTableHeader, SearchBar, SwipeRowBack, TableSectionSelectors,
+  View } from '../components'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
@@ -76,20 +78,20 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { podcast, viewType } = this.state
-
+    const newPodcast = await getPodcast(podcast.id)
+    let newState = {}
     if (viewType === allEpisodesKey) {
-      const newState = await this._queryData(allEpisodesKey)
-      this.setState(newState)
+      newState = await this._queryData(allEpisodesKey)
     } else if (viewType === clipsKey) {
-      const newState = await this._queryData(clipsKey)
-      this.setState(newState)
-    } else if (viewType === aboutKey) {
-      const newPodcast = await getPodcast(podcast.id)
-      this.setState({
-        isLoading: false,
-        podcast: newPodcast
-      })
+      newState = await this._queryData(clipsKey)
     }
+
+    newPodcast.description = newPodcast.description || 'No summary available.'
+    this.setState({
+      ...newState,
+      isLoading: false,
+      podcast: newPodcast
+    })
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -314,9 +316,9 @@ export class PodcastScreen extends React.Component<Props, State> {
         }
         {
           viewType === aboutKey &&
-            <View style={styles.aboutView}>
-              <Text style={styles.aboutViewText}>{podcast.description}</Text>
-            </View>
+            <HTMLScrollView
+              html={podcast.description}
+              navigation={navigation} />
         }
         <ActionSheet
           globalTheme={globalTheme}

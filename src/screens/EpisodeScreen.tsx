@@ -1,7 +1,8 @@
+import linkifyHtml from 'linkifyjs/html'
 import debounce from 'lodash/debounce'
 import { View as RNView } from 'react-native'
 import React from 'reactn'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList,
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, HTMLScrollView,
   NavQueueIcon, NavShareIcon, SearchBar, TableSectionSelectors, Text, View } from '../components'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { removeHTMLFromString } from '../lib/utility'
@@ -65,12 +66,20 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { viewType } = this.state
+    const { episode, viewType } = this.state
+    let newState = {}
 
     if (viewType === _clipsKey) {
-      const newState = await this._queryClipData(_clipsKey)
-      this.setState(newState)
+      newState = await this._queryClipData(_clipsKey)
     }
+
+    episode.description = episode.description || 'No summary available.'
+    episode.description = linkifyHtml(episode.description)
+
+    this.setState({
+      ...newState,
+      episode
+    })
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -206,7 +215,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={viewType && viewType !== _aboutKey ? rightItems : []}
+          rightItems={viewType && viewType !== _showNotesKey ? rightItems : []}
           selectedLeftItemKey={viewType}
           selectedRightItemKey={querySort} />
         {
@@ -214,7 +223,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && viewType !== _aboutKey && flatListData &&
+          !isLoading && viewType !== _showNotesKey && flatListData &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={true}
@@ -226,10 +235,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
               renderItem={this._renderItem} />
         }
         {
-          viewType === _aboutKey &&
-            <View style={styles.aboutView}>
-              <Text style={styles.aboutViewText}>{removeHTMLFromString(episode.description)}</Text>
-            </View>
+          viewType === _showNotesKey &&
+            <HTMLScrollView
+              html={episode.description}
+              navigation={navigation} />
         }
         <ActionSheet
           globalTheme={globalTheme}
@@ -283,7 +292,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 }
 
 const _clipsKey = 'clips'
-const _aboutKey = 'about'
+const _showNotesKey = 'showNotes'
 const _mostRecentKey = 'most-recent'
 const _topPastDay = 'top-past-day'
 const _topPastWeek = 'top-past-week'
@@ -296,8 +305,8 @@ const leftItems = [
     value: _clipsKey
   },
   {
-    label: 'About',
-    value: _aboutKey
+    label: 'Show Notes',
+    value: _showNotesKey
   }
 ]
 
@@ -325,10 +334,10 @@ const rightItems = [
 ]
 
 const styles = {
-  aboutView: {
+  showNotesView: {
     margin: 8
   },
-  aboutViewText: {
+  showNotesViewText: {
     fontSize: PV.Fonts.sizes.lg
   },
   ListHeaderComponent: {

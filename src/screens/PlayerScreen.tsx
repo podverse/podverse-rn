@@ -1,9 +1,10 @@
+import linkifyHtml from 'linkifyjs/html'
 import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
   Icon, NavAddToPlaylistIcon, NavQueueIcon, NavShareIcon, PlayerTableHeader, TableSectionHeader,
-  TableSectionSelectors, Text, View } from '../components'
+  TableSectionSelectors, View } from '../components'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
@@ -82,6 +83,8 @@ export class PlayerScreen extends React.Component<Props, State> {
     this.props.navigation.setParams({ _getNowPlayingItemUrl: this._getNowPlayingItemUrl })
     const nowPlayingItem = this.props.navigation.getParam('nowPlayingItem')
     const episode = await getEpisode(nowPlayingItem.episodeId)
+    episode.description = episode.description || 'No summary available.'
+    episode.description = linkifyHtml(episode.description)
     this.setState({
       episode,
       isLoading: false
