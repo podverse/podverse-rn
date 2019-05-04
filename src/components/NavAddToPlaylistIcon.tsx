@@ -4,17 +4,25 @@ import { navHeader } from '../styles'
 import { Icon } from './'
 
 type Props = {
+  getEpisodeId: any
+  getMediaRefId: any
   navigation: any
 }
 
 export const NavAddToPlaylistIcon = (props: Props) => {
-  const { navigation } = props
+  const { getEpisodeId, getMediaRefId, navigation } = props
 
   return (
     <Icon
       color='#fff'
       name='list'
-      onPress={() => navigation.navigate(PV.RouteNames.PlaylistsAddToScreen)}
+      onPress={() => {
+        const mediaRefId = getMediaRefId()
+        const episodeId = getEpisodeId()
+        navigation.navigate(PV.RouteNames.PlaylistsAddToScreen,
+          { ...(mediaRefId ? { mediaRefId } : { episodeId }) }
+        )
+      }}
       size={22}
       style={navHeader.buttonIcon} />
   )

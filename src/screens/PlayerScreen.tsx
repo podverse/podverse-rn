@@ -32,9 +32,9 @@ type State = {
 export class PlayerScreen extends React.Component<Props, State> {
 
   static navigationOptions = ({ navigation }) => {
-    const nowPlayingItem = navigation.getParam('nowPlayingItem') || {}
-    const url = nowPlayingItem.clipId ?
-      PV.URLs.clip + nowPlayingItem.clipId : PV.URLs.episode + nowPlayingItem.episodeId
+    const _getEpisodeId = navigation.getParam('_getEpisodeId')
+    const _getMediaRefId = navigation.getParam('_getMediaRefId')
+    const _getNowPlayingItemUrl = navigation.getParam('_getNowPlayingItemUrl')
 
     return {
       title: '',
@@ -48,8 +48,11 @@ export class PlayerScreen extends React.Component<Props, State> {
       ),
       headerRight: (
         <RNView style={core.row}>
-          <NavAddToPlaylistIcon navigation={navigation} />
-          <NavShareIcon url={url} />
+          <NavAddToPlaylistIcon
+            getEpisodeId={_getEpisodeId}
+            getMediaRefId={_getMediaRefId}
+            navigation={navigation} />
+          <NavShareIcon getUrl={_getNowPlayingItemUrl} />
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
@@ -74,12 +77,32 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    this.props.navigation.setParams({ _getEpisodeId: this._getEpisodeId })
+    this.props.navigation.setParams({ _getMediaRefId: this._getMediaRefId })
+    this.props.navigation.setParams({ _getNowPlayingItemUrl: this._getNowPlayingItemUrl })
     const nowPlayingItem = this.props.navigation.getParam('nowPlayingItem')
     const episode = await getEpisode(nowPlayingItem.episodeId)
     this.setState({
       episode,
       isLoading: false
     })
+  }
+
+  _getNowPlayingItemUrl = () => {
+    const { nowPlayingItem } = this.global.player
+    const url = nowPlayingItem.clipId ?
+      PV.URLs.clip + nowPlayingItem.clipId : PV.URLs.episode + nowPlayingItem.episodeId
+    return url
+  }
+
+  _getEpisodeId = () => {
+    const { nowPlayingItem } = this.global.player
+    return nowPlayingItem.episodeId
+  }
+
+  _getMediaRefId = () => {
+    const { nowPlayingItem } = this.global.player
+    return nowPlayingItem.clipId
   }
 
   _selectViewType = async (selectedKey: string) => {
