@@ -33,11 +33,16 @@ export const getAuthUserInfo = async () => {
     setGlobal({ session: { userInfo, isLoggedIn } })
     return userInfo
   } catch (error) {
-    setGlobal({ session: { userInfo: {
-      subscribedPlaylistIds: [],
-      subscribedPodcastIds: [],
-      subscribedUserIds: []
-    }, isLoggedIn: false } })
+    setGlobal({
+      session: {
+        userInfo: {
+          subscribedPlaylistIds: [],
+          subscribedPodcastIds: [],
+          subscribedUserIds: []
+        },
+        isLoggedIn: false
+      }
+    })
     Alert.alert('Error', error.message, [])
   }
 }

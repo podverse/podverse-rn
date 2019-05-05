@@ -1,4 +1,5 @@
 import { View as RNView } from 'react-native'
+import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, NavQueueIcon, NavShareIcon,
   PlaylistTableCell, PodcastTableCell, ProfileTableHeader, TableSectionSelectors, View } from '../components'
@@ -46,7 +47,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         </RNView>
       )
     } as NavigationScreenOptions
-  } 
+  }
 
   constructor(props: Props) {
     super(props)
@@ -70,7 +71,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     setGlobal({
       screenProfile: {
         flatListData: [],
-        user
+        ...(isLoggedInUserProfile ? { user: this.global.session.userInfo } : { user })
       }
     })
   }
@@ -86,13 +87,13 @@ export class ProfileScreen extends React.Component<Props, State> {
         isLoadingMore: false,
         queryPage: 1
       } as State
-
       newState = await this._queryPodcasts(newState, 1, _alphabeticalKey)
+
       this.setState(newState)
     } else {
       const user = this.props.navigation.getParam('user')
-      await getPublicUser(user.id, this.global)
 
+      await getPublicUser(user.id, this.global)
       let newState = {
         isLoading: false,
         isLoadingMore: false,

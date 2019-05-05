@@ -290,6 +290,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                 isLoading={isLoading}
                 navigation={navigation}
                 ownerId={mediaRef.owner.id}
+                ownerIsPublic={mediaRef.owner.isPublic}
                 ownerName={mediaRef.owner.name}
                 startTime={mediaRef.startTime}
                 title={mediaRef.title} />
