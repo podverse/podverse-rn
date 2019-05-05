@@ -9,7 +9,7 @@ const mediaMoreButtons = (item: any, isLoggedIn: boolean, globalState: any, navi
     text: 'Stream',
     onPress: async () => {
       handleDismiss()
-      await setNowPlayingItem(item, isLoggedIn)
+      await setNowPlayingItem(item, isLoggedIn, globalState)
     }
   },
   {

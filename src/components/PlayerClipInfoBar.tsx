@@ -6,6 +6,7 @@ import { PV } from '../resources'
 import { Text } from './'
 
 type Props = {
+  handleOnPress: any
   nowPlayingItem: NowPlayingItem
 }
 
@@ -14,13 +15,13 @@ type State = {}
 export class PlayerClipInfoBar extends React.PureComponent<Props, State> {
 
   render() {
-    const { nowPlayingItem } = this.props
+    const { handleOnPress, nowPlayingItem } = this.props
     const { clipEndTime, clipStartTime } = nowPlayingItem
     const { globalTheme } = this.global
 
     return (
       <TouchableWithoutFeedback
-        onPress={() => console.log('show full clip info')}>
+        onPress={handleOnPress}>
         <View style={[styles.wrapper, globalTheme.player]}>
           <Text
             numberOfLines={1}

@@ -1,15 +1,15 @@
-import linkifyHtml from 'linkifyjs/html'
 import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { addCallback } from 'reactn'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
-  Icon, NavAddToPlaylistIcon, NavQueueIcon, NavShareIcon, PlayerClipInfoBar, PlayerControls, PlayerTableHeader,
-  SafeAreaView, TableSectionHeader, TableSectionSelectors, View } from '../components'
+import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, EpisodeTableCell, FlatList,
+  HTMLScrollView, Icon, NavAddToPlaylistIcon, NavQueueIcon, NavShareIcon, PlayerClipInfoBar, PlayerControls,
+  PlayerTableHeader, SafeAreaView, TableSectionHeader, TableSectionSelectors, View } from '../components'
 import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
 import { haveNowPlayingItemsChanged, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
-import { getEpisode, getEpisodes } from '../services/episode'
+import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
+import { getPlayingEpisode, getPlayingEpisodeAndMediaRef } from '../state/actions/player'
 import { core, navHeader } from '../styles'
 
 type Props = {
@@ -18,7 +18,6 @@ type Props = {
 
 type State = {
   endOfResultsReached: boolean
-  episode: any
   flatListData: any[]
   isLoading: boolean
   isLoadingMore: boolean
@@ -27,11 +26,12 @@ type State = {
   querySort: string | null
   selectedItem?: any
   showActionSheet: boolean
+  showFullClipInfo: boolean
   viewType: string | null
 }
 
 let reactnCallback: any
-let currentNowPlayingItem: NowPlayingItem
+let mostRecentNowPlayingItem: NowPlayingItem
 
 export class PlayerScreen extends React.Component<Props, State> {
 
@@ -68,7 +68,6 @@ export class PlayerScreen extends React.Component<Props, State> {
 
     this.state = {
       endOfResultsReached: false,
-      episode: null,
       flatListData: [],
       isLoading: true,
       isLoadingMore: false,
@@ -76,21 +75,34 @@ export class PlayerScreen extends React.Component<Props, State> {
       queryPage: 1,
       querySort: _topPastWeekKey,
       showActionSheet: false,
+      showFullClipInfo: false,
       viewType: _showNotesKey
     }
 
-    reactnCallback = addCallback(async global => {
-      const hasChanged = haveNowPlayingItemsChanged(currentNowPlayingItem, global.player.nowPlayingItem)
+    reactnCallback = addCallback(async (global) => {
+      if (!mostRecentNowPlayingItem) return
+
+      const hasChanged = haveNowPlayingItemsChanged(mostRecentNowPlayingItem, global.player.nowPlayingItem)
       if (hasChanged) {
-        currentNowPlayingItem = global.player.nowPlayingItem
+        mostRecentNowPlayingItem = global.player.nowPlayingItem
         this.setState({
           endOfResultsReached: false,
           flatListData: [],
           isLoading: true,
           queryPage: 1
         }, async () => {
+          const nowPlayingItem = global.player.nowPlayingItem
+          if (nowPlayingItem.clipId) {
+            await getPlayingEpisodeAndMediaRef(nowPlayingItem.episodeId, nowPlayingItem.clipId, global)
+          } else {
+            await getPlayingEpisode(nowPlayingItem.episodeId, global)
+          }
+
           const newState = await this._queryData(global.player.nowPlayingItem, 1)
-          this.setState(newState)
+          this.setState({
+            ...newState,
+            ...(nowPlayingItem.clipId ? { showFullClipInfo: this.state.showFullClipInfo } : { showFullClipInfo: false })
+          })
         })
       }
     })
@@ -101,15 +113,15 @@ export class PlayerScreen extends React.Component<Props, State> {
     this.props.navigation.setParams({ _getMediaRefId: this._getMediaRefId })
     this.props.navigation.setParams({ _getNowPlayingItemUrl: this._getNowPlayingItemUrl })
     const nowPlayingItem = this.props.navigation.getParam('nowPlayingItem')
-    const episode = await getEpisode(nowPlayingItem.episodeId)
-    episode.description = episode.description || 'No summary available.'
-    episode.description = linkifyHtml(episode.description)
-    this.setState({
-      episode,
-      isLoading: false
-    })
+    if (nowPlayingItem.clipId) {
+      await getPlayingEpisodeAndMediaRef(nowPlayingItem.episodeId, nowPlayingItem.clipId, this.global)
+    } else {
+      await getPlayingEpisode(nowPlayingItem.episodeId, this.global)
+    }
 
-    currentNowPlayingItem = nowPlayingItem
+    this.setState({ isLoading: false })
+
+    mostRecentNowPlayingItem = nowPlayingItem
   }
 
   async componentWillUnmount() {
@@ -206,6 +218,10 @@ export class PlayerScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
+  _toggleShowFullClipInfo = () => {
+    this.setState({ showFullClipInfo: !this.state.showFullClipInfo })
+  }
+
   _handleCancelPress = () => {
     this.setState({ showActionSheet: false })
   }
@@ -218,7 +234,8 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _renderItem = ({ item }) => {
-    const { episode, queryFrom, viewType } = this.state
+    const { queryFrom, viewType } = this.state
+    const { episode } = this.global.player
 
     if (viewType === _episodesKey) {
       return (
@@ -253,10 +270,10 @@ export class PlayerScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { episode, flatListData, isLoading, isLoadingMore, queryFrom, querySort, selectedItem, showActionSheet,
-      viewType } = this.state
+    const { flatListData, isLoading, isLoadingMore, queryFrom, querySort, selectedItem,
+      showActionSheet, showFullClipInfo, viewType } = this.state
     const { globalTheme, player } = this.global
-    const { nowPlayingItem } = player
+    const { episode, mediaRef, nowPlayingItem } = player
 
     return (
       <SafeAreaView>
@@ -264,51 +281,69 @@ export class PlayerScreen extends React.Component<Props, State> {
           <PlayerTableHeader
             nowPlayingItem={nowPlayingItem}
             onPress={() => console.log('playertableheader pressed')} />
-          <TableSectionSelectors
-            handleSelectLeftItem={this._selectViewType}
-            handleSelectRightItem={this._selectQuerySort}
-            leftItems={viewTypeOptions}
-            rightItems={viewType && viewType !== _showNotesKey ? querySortOptions : []}
-            selectedLeftItemKey={viewType}
-            selectedRightItemKey={querySort} />
           {
-            viewType === _clipsKey &&
-              <TableSectionSelectors
-                handleSelectLeftItem={this._selectQueryFrom}
-                leftItems={queryFromOptions}
-                selectedLeftItemKey={queryFrom} />
+            showFullClipInfo && mediaRef &&
+              <ClipInfoView
+                createdAt={mediaRef.createdAt}
+                endTime={mediaRef.endTime}
+                handleClosePress={this._toggleShowFullClipInfo}
+                isLoading={isLoading}
+                navigation={navigation}
+                ownerId={mediaRef.owner.id}
+                ownerName={mediaRef.owner.name}
+                startTime={mediaRef.startTime}
+                title={mediaRef.title} />
           }
           {
-            viewType === _episodesKey &&
-              <TableSectionHeader title='From this podcast' />
-          }
-          {
-            isLoading && <ActivityIndicator />
-          }
-          {
-            !isLoading && viewType !== _showNotesKey && flatListData &&
-              <FlatList
-                data={flatListData}
-                disableLeftSwipe={true}
-                extraData={flatListData}
-                isLoadingMore={isLoadingMore}
-                ItemSeparatorComponent={this._ItemSeparatorComponent}
-                onEndReached={this._onEndReached}
-                renderItem={this._renderItem} />
-          }
-          {
-            !isLoading && viewType === _showNotesKey &&
-              <HTMLScrollView
-                html={episode.description}
-                navigation={navigation} />
+            !showFullClipInfo &&
+              <View style={styles.view}>
+                <TableSectionSelectors
+                  handleSelectLeftItem={this._selectViewType}
+                  handleSelectRightItem={this._selectQuerySort}
+                  leftItems={viewTypeOptions}
+                  rightItems={viewType && viewType !== _showNotesKey ? querySortOptions : []}
+                  selectedLeftItemKey={viewType}
+                  selectedRightItemKey={querySort} />
+                {
+                  viewType === _clipsKey &&
+                  <TableSectionSelectors
+                    handleSelectLeftItem={this._selectQueryFrom}
+                    leftItems={queryFromOptions}
+                    selectedLeftItemKey={queryFrom} />
+                }
+                {
+                  viewType === _episodesKey &&
+                  <TableSectionHeader title='From this podcast' />
+                }
+                {
+                  isLoading && <ActivityIndicator />
+                }
+                {
+                  !isLoading && viewType !== _showNotesKey && flatListData &&
+                    <FlatList
+                      data={flatListData}
+                      disableLeftSwipe={true}
+                      extraData={flatListData}
+                      isLoadingMore={isLoadingMore}
+                      ItemSeparatorComponent={this._ItemSeparatorComponent}
+                      onEndReached={this._onEndReached}
+                      renderItem={this._renderItem} />
+                }
+                {
+                  !isLoading && viewType === _showNotesKey && episode &&
+                    <HTMLScrollView
+                      html={episode.description}
+                      navigation={navigation} />
+                }
+              </View>
           }
           {
             nowPlayingItem.clipId &&
-              <PlayerClipInfoBar nowPlayingItem={nowPlayingItem} />
+              <PlayerClipInfoBar
+                handleOnPress={this._toggleShowFullClipInfo}
+                nowPlayingItem={nowPlayingItem} />
           }
-          <PlayerControls
-
-          />
+          <PlayerControls />
           <ActionSheet
             globalTheme={globalTheme}
             handleCancelPress={this._handleCancelPress}

@@ -193,7 +193,7 @@ export class QueueScreen extends React.Component<Props, State> {
   _onPressRow = async (rowIndex) => {
     const { queueItems } = this.state
     const item = queueItems[rowIndex]
-    const result = await setNowPlayingItem(item, this.global.session.isLoggedIn)
+    const result = await setNowPlayingItem(item, this.global.session.isLoggedIn, this.global)
     this.setState({
       nowPlayingItem: result.nowPlayingItem,
       queueItems: result.queueItems

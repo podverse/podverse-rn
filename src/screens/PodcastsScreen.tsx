@@ -73,7 +73,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await getAuthUserInfo()
         const nowPlayingItemString = await RNSecureKeyStore.get(PV.Keys.NOW_PLAYING_ITEM)
         if (nowPlayingItemString) {
-          await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global.session.isLoggedIn)
+          await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global.session.isLoggedIn, this.global)
         }
         const { subscribedPodcasts } = this.global
         flatListData = subscribedPodcasts

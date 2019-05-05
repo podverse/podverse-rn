@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderTopWidth: 1,
     flexDirection: 'row',
-    height: 60
+    height: 62
   },
   podcastTitle: {
     flex: 1,

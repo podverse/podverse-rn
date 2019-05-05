@@ -1,5 +1,5 @@
 // import Slider from '@react-native-community/slider'
-import { ActivityIndicator, Image, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import React from 'reactn'
 import { Icon } from './'

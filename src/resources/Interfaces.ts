@@ -19,6 +19,7 @@ export interface GlobalTheme {
   divider?: any
   flatList?: any
   inputContainerText?: any
+  link?: any
   player?: any
   playerText?: any
   selectorText?: any

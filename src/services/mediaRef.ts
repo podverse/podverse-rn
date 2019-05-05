@@ -31,7 +31,6 @@ export const deleteMediaRef = async () => {
 }
 
 export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
-  console.log(query)
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
@@ -41,7 +40,7 @@ export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
     ...(query.includeEpisode ? { includeEpisode: true } : {}),
     ...(query.includePodcast ? { includePodcast: true } : {})
   }
-  console.log(filteredQuery)
+
   const response = await request({
     endpoint: '/mediaRef',
     query: filteredQuery

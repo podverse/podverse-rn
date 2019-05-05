@@ -75,7 +75,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
     rowMap[selectedId].closeRow()
-    await toggleSubscribeToUser(selectedId, this.global)
+    await toggleSubscribeToUser(selectedId, this.global.session.isLoggedIn, this.global)
   }
 
   _onPressLogin = () => this.props.navigation.navigate(PV.RouteNames.AuthScreen)

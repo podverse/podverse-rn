@@ -66,6 +66,9 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.black,
     borderColor: PV.Colors.grayDarker
   },
+  link: {
+    color: PV.Colors.blueLighter
+  },
   modalBackdrop: {
     backgroundColor: '#00000050'
   },
@@ -184,6 +187,9 @@ export const lightTheme = StyleSheet.create({
   inputContainerText: {
     backgroundColor: PV.Colors.white,
     borderColor: PV.Colors.grayLighter
+  },
+  link: {
+    color: PV.Colors.blueDarker
   },
   modalBackdrop: {
     backgroundColor: '#00000050'
