@@ -1,8 +1,9 @@
-import { StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
+import { Text } from './'
 
 type Props = {
   nowPlayingItem: NowPlayingItem
@@ -20,15 +21,16 @@ export class PlayerClipInfoBar extends React.PureComponent<Props, State> {
     return (
       <TouchableWithoutFeedback
         onPress={() => console.log('show full clip info')}>
-        <View style={[styles.wrapper, globalTheme.playerText]}>
+        <View style={[styles.wrapper, globalTheme.player]}>
           <Text
             numberOfLines={1}
             style={[styles.title, globalTheme.playerText]}>
-            {nowPlayingItem.podcastTitle}
+            {nowPlayingItem.clipTitle || 'untitiled clip'}
           </Text>
           {
             !!clipStartTime &&
               <Text
+                isSecondary={true}
                 numberOfLines={1}
                 style={[styles.time, globalTheme.playerText]}>
                 {readableClipTime(clipStartTime, clipEndTime)}
@@ -42,13 +44,18 @@ export class PlayerClipInfoBar extends React.PureComponent<Props, State> {
 
 const styles = StyleSheet.create({
   time: {
-    fontSize: PV.Fonts.sizes.md
+    fontSize: PV.Fonts.sizes.lg,
+    marginHorizontal: 8,
+    marginTop: 3
   },
   title: {
-    fontSize: PV.Fonts.sizes.md
+    fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.semibold,
+    marginHorizontal: 8
   },
   wrapper: {
     borderTopWidth: 1,
-    height: 48
+    height: 56,
+    justifyContent: 'center'
   }
 })

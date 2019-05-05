@@ -3,14 +3,15 @@ import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { addCallback } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
-  Icon, NavAddToPlaylistIcon, NavQueueIcon, NavShareIcon, PlayerClipInfoBar, PlayerTableHeader, SafeAreaView,
-  TableSectionHeader, TableSectionSelectors, View } from '../components'
+  Icon, NavAddToPlaylistIcon, NavQueueIcon, NavShareIcon, PlayerClipInfoBar, PlayerControls, PlayerTableHeader,
+  SafeAreaView, TableSectionHeader, TableSectionSelectors, View } from '../components'
 import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
 import { haveNowPlayingItemsChanged, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode, getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { core, navHeader } from '../styles'
+
 type Props = {
   navigation?: any
 }
@@ -305,6 +306,9 @@ export class PlayerScreen extends React.Component<Props, State> {
             nowPlayingItem.clipId &&
               <PlayerClipInfoBar nowPlayingItem={nowPlayingItem} />
           }
+          <PlayerControls
+
+          />
           <ActionSheet
             globalTheme={globalTheme}
             handleCancelPress={this._handleCancelPress}
