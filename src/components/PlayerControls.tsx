@@ -2,7 +2,8 @@
 import { StyleSheet, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import React from 'reactn'
-import { Icon } from './'
+import { PV } from '../resources'
+import { Icon, Text } from './'
 
 type Props = {
   navigation: any
@@ -49,6 +50,20 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             size={32}
             style={styles.icon} />
         </View>
+        <View style={styles.bottomRow}>
+          <Text style={styles.bottomRowText}>1X</Text>
+          <Icon
+            brand={true}
+            name='chromecast'
+            onPress={() => console.log('jump back X seconds')}
+            size={24}
+            style={styles.icon} />
+          <Icon
+            name='infinity'
+            onPress={() => console.log('step-backward')}
+            size={24}
+            style={styles.icon} />
+        </View>
       </View>
     )
   }
@@ -57,7 +72,14 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
 const styles = StyleSheet.create({
   bottomRow: {
-    height: 40
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: 48,
+    justifyContent: 'space-around'
+  },
+  bottomRowText: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold
   },
   icon: {
     padding: 4

@@ -4,6 +4,7 @@ import { useGlobal } from 'reactn'
 import { darkTheme, iconStyles } from '../styles'
 
 type Props = {
+  brand?: boolean
   color?: string
   name: string
   onPress?: any
@@ -13,17 +14,18 @@ type Props = {
 }
 
 export const PVIcon = (props: Props) => {
-  const { color, name, onPress, size, solid, style } = props
+  const { brand, color, name, onPress, size, solid, style } = props
   const [globalTheme] = useGlobal('globalTheme')
   const isDarkMode = globalTheme === darkTheme
 
   return (
     <Icon
+      {...(brand ? { brand } : {})}
       color={color || isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
       name={name}
       onPress={onPress}
       size={size}
-      {...(solid ? { solid: true } : {})}
+      {...(solid ? { solid } : {})}
       {...(style ? { style } : {})} />
   )
 }
