@@ -1,5 +1,5 @@
 // import Slider from '@react-native-community/slider'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import React from 'reactn'
 import { PV } from '../resources'
@@ -24,50 +24,68 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             maximumValue={1} />
         </View>
         <View style={styles.middleRow}>
-          <Icon
-            name='step-backward'
-            onPress={() => console.log('step-backward')}
-            size={32}
-            style={styles.icon} />
-          <Icon
-            name='undo-alt'
+          <TouchableOpacity
+            onPress={() => console.log('step backward')}
+            style={styles.icon}>
+            <Icon
+              name='step-backward'
+              size={32} />
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => console.log('jump back X seconds')}
-            size={32}
-            style={styles.icon} />
-          <Icon
-            name='play-circle'
+            style={styles.icon}>
+            <Icon
+              name='undo-alt'
+              size={32} />
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => console.log('play')}
-            size={52}
-            style={styles.icon} />
-          <Icon
-            name='redo-alt'
+            style={styles.icon}>
+            <Icon
+              name='play-circle'
+              size={48} />
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => console.log('jump back X seconds')}
-            size={32}
-            style={styles.icon} />
-          <Icon
-            name='step-forward'
-            onPress={() => console.log('step-backward')}
-            size={32}
-            style={styles.icon} />
+            style={styles.icon}>
+            <Icon
+              name='redo-alt'
+              size={32} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => console.log('step-forward')}
+            style={styles.icon}>
+            <Icon
+              name='step-forward'
+              size={32} />
+          </TouchableOpacity>
         </View>
         <View style={styles.bottomRow}>
-          <Text style={styles.bottomRowText}>1X</Text>
-          <Icon
-            brand={true}
-            name='chromecast'
-            onPress={() => console.log('jump back X seconds')}
-            size={24}
-            style={styles.icon} />
-          <Icon
-            name='infinity'
-            onPress={() => console.log('step-backward')}
-            size={24}
-            style={styles.icon} />
+          <TouchableOpacity
+            onPress={() => console.log('speed press')}
+            style={styles.icon}>
+            <Text style={styles.bottomRowText}>1X</Text>
+          </TouchableOpacity>
+          {/* brand icons are broke in react-native-vector-icons ~6.4.0  */}
+          {/* <TouchableOpacity
+            onPress={() => console.log('chromecast')}
+            style={styles.icon}>
+            <Icon
+              brand={true}
+              name='chromecast'
+              size={24} />
+          </TouchableOpacity> */}
+          <TouchableOpacity
+            onPress={() => console.log('continuous play')}
+            style={styles.icon}>
+            <Icon
+              name='infinity'
+              size={24} />
+          </TouchableOpacity>
         </View>
       </View>
     )
   }
-
 }
 
 const styles = StyleSheet.create({
@@ -82,7 +100,8 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold
   },
   icon: {
-    padding: 4
+    paddingHorizontal: 12,
+    paddingVertical: 4
   },
   middleRow: {
     alignItems: 'center',
