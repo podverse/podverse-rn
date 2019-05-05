@@ -3,15 +3,14 @@ import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { addCallback } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
-  Icon, NavAddToPlaylistIcon, NavQueueIcon, NavShareIcon, PlayerTableHeader, TableSectionHeader,
-  TableSectionSelectors, View } from '../components'
+  Icon, NavAddToPlaylistIcon, NavQueueIcon, NavShareIcon, PlayerClipInfoBar, PlayerTableHeader, SafeAreaView,
+  TableSectionHeader, TableSectionSelectors, View } from '../components'
 import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
 import { haveNowPlayingItemsChanged, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode, getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { core, navHeader } from '../styles'
-
 type Props = {
   navigation?: any
 }
@@ -259,56 +258,62 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { nowPlayingItem } = player
 
     return (
-      <View style={styles.view}>
-        <PlayerTableHeader
-          nowPlayingItem={nowPlayingItem}
-          onPress={() => console.log('playertableheader pressed')} />
-        <TableSectionSelectors
-          handleSelectLeftItem={this._selectViewType}
-          handleSelectRightItem={this._selectQuerySort}
-          leftItems={viewTypeOptions}
-          rightItems={viewType && viewType !== _showNotesKey ? querySortOptions : []}
-          selectedLeftItemKey={viewType}
-          selectedRightItemKey={querySort} />
-        {
-          viewType === _clipsKey &&
-            <TableSectionSelectors
-              handleSelectLeftItem={this._selectQueryFrom}
-              leftItems={queryFromOptions}
-              selectedLeftItemKey={queryFrom} />
-        }
-        {
-          viewType === _episodesKey &&
-            <TableSectionHeader title='From this podcast' />
-        }
-        {
-          isLoading && <ActivityIndicator />
-        }
-        {
-          !isLoading && viewType !== _showNotesKey && flatListData &&
-            <FlatList
-              data={flatListData}
-              disableLeftSwipe={true}
-              extraData={flatListData}
-              isLoadingMore={isLoadingMore}
-              ItemSeparatorComponent={this._ItemSeparatorComponent}
-              onEndReached={this._onEndReached}
-              renderItem={this._renderItem} />
-        }
-        {
-          !isLoading && viewType === _showNotesKey &&
-            <HTMLScrollView
-              html={episode.description}
-              navigation={navigation} />
-        }
-        <ActionSheet
-          globalTheme={globalTheme}
-          handleCancelPress={this._handleCancelPress}
-          items={PV.ActionSheet.media.moreButtons(
-            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
-          )}
-          showModal={showActionSheet} />
-      </View>
+      <SafeAreaView>
+        <View style={styles.view}>
+          <PlayerTableHeader
+            nowPlayingItem={nowPlayingItem}
+            onPress={() => console.log('playertableheader pressed')} />
+          <TableSectionSelectors
+            handleSelectLeftItem={this._selectViewType}
+            handleSelectRightItem={this._selectQuerySort}
+            leftItems={viewTypeOptions}
+            rightItems={viewType && viewType !== _showNotesKey ? querySortOptions : []}
+            selectedLeftItemKey={viewType}
+            selectedRightItemKey={querySort} />
+          {
+            viewType === _clipsKey &&
+              <TableSectionSelectors
+                handleSelectLeftItem={this._selectQueryFrom}
+                leftItems={queryFromOptions}
+                selectedLeftItemKey={queryFrom} />
+          }
+          {
+            viewType === _episodesKey &&
+              <TableSectionHeader title='From this podcast' />
+          }
+          {
+            isLoading && <ActivityIndicator />
+          }
+          {
+            !isLoading && viewType !== _showNotesKey && flatListData &&
+              <FlatList
+                data={flatListData}
+                disableLeftSwipe={true}
+                extraData={flatListData}
+                isLoadingMore={isLoadingMore}
+                ItemSeparatorComponent={this._ItemSeparatorComponent}
+                onEndReached={this._onEndReached}
+                renderItem={this._renderItem} />
+          }
+          {
+            !isLoading && viewType === _showNotesKey &&
+              <HTMLScrollView
+                html={episode.description}
+                navigation={navigation} />
+          }
+          {
+            nowPlayingItem.clipId &&
+              <PlayerClipInfoBar nowPlayingItem={nowPlayingItem} />
+          }
+          <ActionSheet
+            globalTheme={globalTheme}
+            handleCancelPress={this._handleCancelPress}
+            items={PV.ActionSheet.media.moreButtons(
+              selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+            )}
+            showModal={showActionSheet} />
+        </View>
+      </SafeAreaView>
     )
   }
 

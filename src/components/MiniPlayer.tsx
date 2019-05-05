@@ -10,7 +10,7 @@ type Props = {
 
 type State = {}
 
-export class PlayerBar extends React.PureComponent<Props, State> {
+export class MiniPlayer extends React.PureComponent<Props, State> {
 
   render () {
     const { navigation } = this.props

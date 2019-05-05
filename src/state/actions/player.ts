@@ -9,7 +9,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
         isLoading: true,
         isPlaying: false,
         nowPlayingItem: item,
-        showPlayerBar: true
+        showMiniPlayer: true
       }
     })
     const result = await setNowPlayingItemService(item, isLoggedIn)
@@ -18,7 +18,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
         isLoading: false,
         isPlaying: false,
         nowPlayingItem: item,
-        showPlayerBar: true
+        showMiniPlayer: true
       }
     })
 
@@ -28,7 +28,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
       player: {
         isPlaying: false,
         nowPlayingItem: null,
-        showPlayerBar: false
+        showMiniPlayer: false
       }
     })
 

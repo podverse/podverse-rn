@@ -3,7 +3,7 @@ import { BottomTabBar } from 'react-navigation-tabs'
 import { useGlobal } from 'reactn'
 import { View } from '../components'
 import { GlobalTheme } from '../resources/Interfaces'
-import { PlayerBar } from './PlayerBar'
+import { MiniPlayer } from './MiniPlayer'
 
 type Props = {
   navigation: any
@@ -17,8 +17,8 @@ export const PVTabBar = (props: Props) => {
   return (
     <View>
       {
-        player && player.showPlayerBar &&
-          <PlayerBar navigation={navigation} />
+        player && player.showMiniPlayer &&
+          <MiniPlayer navigation={navigation} />
       }
       <BottomTabBar {...props} style={globalTheme.tabbar} />
     </View>

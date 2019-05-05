@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.2.1",
+    "@react-native-community/slider": "^1.1.0",
     "@types/linkifyjs": "^2.1.1",
     "@types/lodash": "^4.14.123",
     "@types/react-native-sortable-list": "^0.0.7",
