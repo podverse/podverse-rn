@@ -1,12 +1,12 @@
 import linkifyHtml from 'linkifyjs/html'
 import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
-import React from 'reactn'
+import React, { addCallback } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
   Icon, NavAddToPlaylistIcon, NavQueueIcon, NavShareIcon, PlayerTableHeader, TableSectionHeader,
   TableSectionSelectors, View } from '../components'
-import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { readableDate, removeHTMLFromString } from '../lib/utility'
+import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
+import { haveNowPlayingItemsChanged, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode, getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
@@ -29,6 +29,9 @@ type State = {
   showActionSheet: boolean
   viewType: string | null
 }
+
+let reactnCallback: any
+let currentNowPlayingItem: NowPlayingItem
 
 export class PlayerScreen extends React.Component<Props, State> {
 
@@ -75,6 +78,22 @@ export class PlayerScreen extends React.Component<Props, State> {
       showActionSheet: false,
       viewType: _showNotesKey
     }
+
+    reactnCallback = addCallback(async global => {
+      const hasChanged = haveNowPlayingItemsChanged(currentNowPlayingItem, global.player.nowPlayingItem)
+      if (hasChanged) {
+        currentNowPlayingItem = global.player.nowPlayingItem
+        this.setState({
+          endOfResultsReached: false,
+          flatListData: [],
+          isLoading: true,
+          queryPage: 1
+        }, async () => {
+          const newState = await this._queryData(global.player.nowPlayingItem, 1)
+          this.setState(newState)
+        })
+      }
+    })
   }
 
   async componentDidMount() {
@@ -89,6 +108,12 @@ export class PlayerScreen extends React.Component<Props, State> {
       episode,
       isLoading: false
     })
+
+    currentNowPlayingItem = nowPlayingItem
+  }
+
+  async componentWillUnmount() {
+    reactnCallback()
   }
 
   _getNowPlayingItemUrl = () => {
@@ -290,6 +315,7 @@ export class PlayerScreen extends React.Component<Props, State> {
   _queryClips = async () => {
     const { queryFrom, queryPage, querySort } = this.state
     const { nowPlayingItem } = this.global.player
+
     const results = await getMediaRefs({
       sort: querySort,
       page: queryPage,
@@ -300,18 +326,20 @@ export class PlayerScreen extends React.Component<Props, State> {
     return results
   }
 
-  _queryEpisodes = async () => {
+  _queryEpisodes = async (item?: NowPlayingItem, page?: number) => {
     const { queryPage, querySort } = this.state
     const { nowPlayingItem } = this.global.player
+
     const results = await getEpisodes({
       sort: querySort,
-      page: queryPage,
+      page: page || queryPage,
       podcastId: nowPlayingItem.podcastId
     }, this.global.settings.nsfwMode)
+
     return results
   }
 
-  _queryData = async () => {
+  _queryData = async (item?: NowPlayingItem, page?: number) => {
     const { flatListData, viewType } = this.state
     const newState = {
       isLoading: false,
@@ -345,16 +373,16 @@ const _topPastYearKey = 'top-past-year'
 
 const viewTypeOptions = [
   {
-    label: 'Show Notes',
-    value: _showNotesKey
-  },
-  {
     label: 'Episodes',
     value: _episodesKey
   },
   {
     label: 'Clips',
     value: _clipsKey
+  },
+  {
+    label: 'Show Notes',
+    value: _showNotesKey
   }
 ]
 

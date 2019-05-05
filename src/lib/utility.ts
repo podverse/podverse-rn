@@ -1,3 +1,5 @@
+import { NowPlayingItem } from "./NowPlayingItem";
+
 export const readableDate = (date: string) => {
   const dateObj = new Date(date)
   const year = dateObj.getFullYear()
@@ -126,3 +128,8 @@ export const combineAndSortPlaylistItems = (episodes: [any], mediaRefs: [any], i
 
   return [...sortedItems, ...unsortedItems]
 }
+
+export const haveNowPlayingItemsChanged = (lastItem: NowPlayingItem, nextItem: NowPlayingItem) => (
+  (nextItem.clipId && nextItem.clipId !== lastItem.clipId) ||
+  (nextItem.episodeId && nextItem.episodeId !== lastItem.episodeId)
+)
