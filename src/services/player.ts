@@ -6,7 +6,11 @@ import { addOrUpdateHistoryItem } from './history'
 import { filterItemFromQueueItems, getQueueItems, setAllQueueItems } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
-TrackPlayer.setupPlayer()
+TrackPlayer.setupPlayer().then(() => {
+  TrackPlayer.registerPlaybackService(() => require('./playerEvents'))
+})
+
+export const PVTrackPlayer = TrackPlayer
 
 export const getNowPlayingItem = async () => {
   try {
