@@ -113,10 +113,17 @@ export class PlayerScreen extends React.Component<Props, State> {
     this.props.navigation.setParams({ _getMediaRefId: this._getMediaRefId })
     this.props.navigation.setParams({ _getNowPlayingItemUrl: this._getNowPlayingItemUrl })
     const nowPlayingItem = this.props.navigation.getParam('nowPlayingItem')
-    if (nowPlayingItem.clipId) {
-      await getPlayingEpisodeAndMediaRef(nowPlayingItem.episodeId, nowPlayingItem.clipId, this.global)
-    } else {
-      await getPlayingEpisode(nowPlayingItem.episodeId, this.global)
+    const needsToRefreshData = (
+      (!this.global.player.episode && !this.global.player.mediaRef) ||
+      (nowPlayingItem.clipId && this.global.player.mediaRef.id !== nowPlayingItem.clipId) ||
+      (nowPlayingItem.episodeId && this.global.player.episode.id !== nowPlayingItem.episodeId)
+    )
+    if (needsToRefreshData) {
+      if (nowPlayingItem.clipId) {
+        await getPlayingEpisodeAndMediaRef(nowPlayingItem.episodeId, nowPlayingItem.clipId, this.global)
+      } else {
+        await getPlayingEpisode(nowPlayingItem.episodeId, this.global)
+      }
     }
 
     this.setState({ isLoading: false })
