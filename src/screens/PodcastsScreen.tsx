@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import React from 'reactn'
-import { ActivityIndicator, Divider, FlatList, PodcastTableCell, SearchBar, SwipeRowBack,
+import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
 import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
@@ -252,6 +252,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view}>
+        <PlayerEvents />
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}

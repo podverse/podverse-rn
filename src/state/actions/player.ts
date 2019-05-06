@@ -3,17 +3,17 @@ import { setGlobal } from 'reactn'
 import { NowPlayingItem } from '../../lib/NowPlayingItem'
 import { getEpisode } from '../../services/episode'
 import { getMediaRef } from '../../services/mediaRef'
-import { setNowPlayingItem as setNowPlayingItemService } from '../../services/player'
+import { PVTrackPlayer, setNowPlayingItem as setNowPlayingItemService, setPlaybackSpeed as setPlaybackSpeedService,
+  } from '../../services/player'
 
 export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolean, globalState: any) => {
   try {
     setGlobal({
       player: {
         episode: null,
-        isLoading: true,
-        isPlaying: false,
         mediaRef: null,
         nowPlayingItem: item,
+        playbackState: PVTrackPlayer.STATE_BUFFERING,
         showMiniPlayer: true
       }
     })
@@ -21,9 +21,8 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
     setGlobal({
       player: {
         ...globalState.player,
-        isLoading: false,
-        isPlaying: false,
         nowPlayingItem: item,
+        playbackState: PVTrackPlayer.getState(),
         showMiniPlayer: true
       }
     })
@@ -33,8 +32,8 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
     setGlobal({
       player: {
         ...globalState.player,
-        isPlaying: false,
         nowPlayingItem: null,
+        playbackState: PVTrackPlayer.getState(),
         showMiniPlayer: false
       }
     })
@@ -67,6 +66,26 @@ export const getPlayingEpisodeAndMediaRef = async (episodeId: string, mediaRefId
       ...globalState.player,
       episode,
       mediaRef
+    }
+  })
+}
+
+export const setPlaybackSpeed = async (rate: number, globalState: any) => {
+  await setPlaybackSpeedService(rate)
+
+  setGlobal({
+    player: {
+      ...globalState.player,
+      playbackRate: rate
+    }
+  })
+}
+
+export const setPlaybackState = async (playbackState: string, globalState: any) => {
+  setGlobal({
+    player: {
+      ...globalState.player,
+      playbackState
     }
   })
 }

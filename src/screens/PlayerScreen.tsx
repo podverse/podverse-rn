@@ -307,14 +307,14 @@ export class PlayerScreen extends React.Component<Props, State> {
                   selectedRightItemKey={querySort} />
                 {
                   viewType === _clipsKey &&
-                  <TableSectionSelectors
-                    handleSelectLeftItem={this._selectQueryFrom}
-                    leftItems={queryFromOptions}
-                    selectedLeftItemKey={queryFrom} />
+                    <TableSectionSelectors
+                      handleSelectLeftItem={this._selectQueryFrom}
+                      leftItems={queryFromOptions}
+                      selectedLeftItemKey={queryFrom} />
                 }
                 {
                   viewType === _episodesKey &&
-                  <TableSectionHeader title='From this podcast' />
+                    <TableSectionHeader title='From this podcast' />
                 }
                 {
                   isLoading && <ActivityIndicator />

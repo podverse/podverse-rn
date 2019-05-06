@@ -31,13 +31,16 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
   filteredItems = filterItemFromQueueItems(items, item)
   await setAllQueueItems(filteredItems, isLoggedIn)
   await addOrUpdateHistoryItem(item, isLoggedIn)
+
   RNSecureKeyStore.set(
     PV.Keys.NOW_PLAYING_ITEM,
     item ? JSON.stringify(item) : null,
     { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
   )
+
   const id = clipId || episodeId
   if (id && episodeMediaUrl) {
+    const currentTrackId = await TrackPlayer.getCurrentTrack()
     await TrackPlayer.add({
       id,
       url: episodeMediaUrl,
@@ -45,6 +48,10 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
       artist: podcastTitle,
       ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
     })
+
+    if (currentTrackId && id !== currentTrackId) {
+      await TrackPlayer.skipToNext()
+    }
   }
 
   return {
@@ -60,4 +67,8 @@ export const togglePlay = async () => {
   } else {
     TrackPlayer.play()
   }
+}
+
+export const setPlaybackSpeed = async (rate: number) => {
+  await TrackPlayer.setRate(rate)
 }

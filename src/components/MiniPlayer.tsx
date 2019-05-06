@@ -1,7 +1,9 @@
-import { ActivityIndicator, Image, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback,
+  View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import React from 'reactn'
 import { PV } from '../resources'
+import { PVTrackPlayer, togglePlay } from '../services/player'
 import { darkTheme, iconStyles } from '../styles'
 
 type Props = {
@@ -15,7 +17,7 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
   render () {
     const { navigation } = this.props
     const { globalTheme, player } = this.global
-    const { isLoading, isPlaying, nowPlayingItem } = player
+    const { nowPlayingItem, playbackState } = player
     const isDarkMode = globalTheme === darkTheme
 
     return (
@@ -39,13 +41,17 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
             </Text>
           </View>
           {
-            !isLoading ?
+            playbackState !== PVTrackPlayer.STATE_BUFFERING &&
+            <TouchableOpacity onPress={togglePlay}>
               <Icon
                 color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
-                name={isPlaying ? 'pause' : 'play'}
-                onPress={() => console.log('play / pause')}
+                name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
                 size={30}
-                style={styles.button} /> :
+                style={styles.button} />
+            </TouchableOpacity>
+          }
+          {
+            playbackState === PVTrackPlayer.STATE_BUFFERING &&
               <ActivityIndicator
                 color={globalTheme.activityIndicator.color}
                 size='large'
