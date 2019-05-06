@@ -26,7 +26,9 @@
     "react-native-render-html": "^4.1.2",
     "react-native-secure-key-store": "^2.0.1",
     "react-native-sortable-list": "^0.0.23",
+    "react-native-swift": "^1.2.2",
     "react-native-swipe-list-view": "^1.5.3",
+    "react-native-track-player": "^1.1.4",
     "react-native-vector-icons": "^6.4.2",
     "react-native-webview": "^5.7.1",
     "react-navigation": "^3.5.1",
@@ -56,5 +58,6 @@
   },
   "jest": {
     "preset": "react-native"
-  }
+  },
+  "isSwift": true
 }

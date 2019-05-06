@@ -3,6 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import React from 'reactn'
 import { PV } from '../resources'
+import { togglePlay } from '../services/player'
 import { Icon, Text } from './'
 
 type Props = {
@@ -39,7 +40,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               size={32} />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => console.log('play')}
+            onPress={togglePlay}
             style={styles.icon}>
             <Icon
               name='play-circle'
