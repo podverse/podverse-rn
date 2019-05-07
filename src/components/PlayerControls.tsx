@@ -3,14 +3,14 @@ import React from 'reactn'
 import { PV } from '../resources'
 import { playerJumpBackward, playerJumpForward, PVTrackPlayer, togglePlay } from '../services/player'
 import { setPlaybackSpeed } from '../state/actions/player'
-import { ActionSheet, ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
+import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 
 type Props = {
   navigation: any
 }
 
 type State = {
-  showSpeedActionSheet?: boolean
+  progressValue: number
 }
 
 export class PlayerControls extends React.PureComponent<Props, State> {
@@ -19,16 +19,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     super(props)
 
     this.state = {
-      showSpeedActionSheet: false
+      progressValue: 0
     }
-  }
-
-  _hideSpeedActionSheet = () => {
-    this.setState({ showSpeedActionSheet: false })
-  }
-
-  _showSpeedActionSheet = () => {
-    this.setState({ showSpeedActionSheet: true })
   }
 
   _adjustSpeed = async () => {
@@ -44,14 +36,24 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     await setPlaybackSpeed(newSpeed, this.global)
   }
 
+  _playerJumpBackward = async () => {
+    const progressValue = await playerJumpBackward(PV.Player.jumpSeconds)
+    this.setState({ progressValue })
+  }
+
+  _playerJumpForward = async () => {
+    const progressValue = await playerJumpForward(PV.Player.jumpSeconds)
+    this.setState({ progressValue })
+  }
+
   render() {
-    const { showSpeedActionSheet } = this.state
+    const { progressValue } = this.state
     const { globalTheme, player } = this.global
     const { playbackRate, playbackState } = player
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
-        <PlayerProgressBar />
+        <PlayerProgressBar value={progressValue} />
         <View style={styles.middleRow}>
           <TouchableOpacity
             onPress={() => console.log('step backward')}
@@ -61,7 +63,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               size={32} />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => playerJumpBackward(PV.Player.jumpSeconds)}
+            onPress={this._playerJumpBackward}
             style={styles.icon}>
             <Icon
               name='undo-alt'
@@ -82,7 +84,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             }
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => playerJumpForward(PV.Player.jumpSeconds)}
+            onPress={this._playerJumpForward}
             style={styles.icon}>
             <Icon
               name='redo-alt'

@@ -6,7 +6,9 @@ import { PV } from '../resources'
 import { PVTrackPlayer, setPlaybackPosition } from '../services/player'
 import { Text } from './'
 
-type Props = {}
+type Props = {
+  value: number
+}
 
 type State = {
   bufferedPosition: number
@@ -25,6 +27,12 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
       duration: 0,
       position: 0,
       slidingPosition: null
+    }
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
+    if (this.props.value !== nextProps.value) {
+      this.setState({ position: nextProps.value })
     }
   }
 

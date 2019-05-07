@@ -23,12 +23,16 @@ export const getNowPlayingItem = async () => {
 
 export const playerJumpBackward = async (seconds: number) => {
   const position = await TrackPlayer.getPosition()
-  TrackPlayer.seekTo(position - seconds)
+  const newPosition = position - seconds
+  TrackPlayer.seekTo(newPosition)
+  return newPosition
 }
 
 export const playerJumpForward = async (seconds: number) => {
   const position = await TrackPlayer.getPosition()
-  TrackPlayer.seekTo(position + seconds)
+  const newPosition = position + seconds
+  TrackPlayer.seekTo(newPosition)
+  return newPosition
 }
 
 export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolean) => {
