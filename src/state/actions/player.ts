@@ -40,7 +40,7 @@ export const playLastFromHistory = async (isLoggedIn: boolean, globalState: any)
   const { currentlyPlayingItem, lastItem } = await popLastFromHistoryItems(isLoggedIn)
   if (currentlyPlayingItem && lastItem) {
     await addQueueItemNext(currentlyPlayingItem, isLoggedIn)
-    await setNowPlayingItem(lastItem, isLoggedIn, globalState, false)
+    await setNowPlayingItem(lastItem, isLoggedIn, globalState)
   }
 }
 

@@ -4,10 +4,9 @@ import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, Icon, Messag
   SortableList, SortableListRow, TableSectionHeader, View as PVView } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { getNowPlayingItem } from '../services/player'
-import { getQueueItems } from '../services/queue'
 import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
 import { setNowPlayingItem } from '../state/actions/player'
-import { removeQueueItem, updateQueueItems } from '../state/actions/queue'
+import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
 import { navHeader } from '../styles'
 
 type Props = {
@@ -114,7 +113,7 @@ export class QueueScreen extends React.Component<Props, State> {
     navigation.setParams({ _stopEditing: this._stopEditing })
     navigation.setParams({ _clearAll: this._clearAll })
     const nowPlayingItem = await getNowPlayingItem()
-    const queueItems = await getQueueItems(isLoggedIn)
+    const queueItems = await getQueueItems(isLoggedIn, this.global)
     this.setState({
       isLoading: false,
       nowPlayingItem,
@@ -155,7 +154,6 @@ export class QueueScreen extends React.Component<Props, State> {
         }
       ]
     )
-    // this.setState({ isEditing: false }, () => this.props.navigation.setParams({ isEditing: false }))
   }
 
   _onViewTypeSelect = async (x: string) => {
@@ -174,8 +172,8 @@ export class QueueScreen extends React.Component<Props, State> {
     })
 
     if (x === _queueKey) {
-      const nowPlayingItem = await getNowPlayingItem(isLoggedIn)
-      const queueItems = await getQueueItems(isLoggedIn)
+      const nowPlayingItem = await getNowPlayingItem()
+      const queueItems = await getQueueItems(isLoggedIn, this.global)
       this.setState({
         isLoading: false,
         nowPlayingItem,

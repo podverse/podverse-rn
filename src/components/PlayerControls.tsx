@@ -48,16 +48,20 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
   render() {
     const { progressValue } = this.state
-    const { globalTheme, player } = this.global
+    const { globalTheme, player, session } = this.global
     const { playbackRate, playbackState } = player
+    const { historyItems, queueItems } = session.userInfo
+    const hasHistoryItem = historyItems.length > 1
+    const hasQueueItem = queueItems.length > 1
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
         <PlayerProgressBar value={progressValue} />
         <View style={styles.middleRow}>
           <TouchableOpacity
+            disabled={!hasHistoryItem}
             onPress={() => playLastFromHistory(this.global.session.isLoggedIn, this.global)}
-            style={styles.icon}>
+            style={hasHistoryItem ? styles.icon : styles.iconDisabled}>
             <Icon
               name='step-backward'
               size={32} />
@@ -91,8 +95,9 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               size={32} />
           </TouchableOpacity>
           <TouchableOpacity
+            disabled={!hasQueueItem}
             onPress={() => playNextFromQueue(this.global.session.isLoggedIn, this.global)}
-            style={styles.icon}>
+            style={hasQueueItem ? styles.icon : styles.iconDisabled}>
             <Icon
               name='step-forward'
               size={32} />
@@ -145,6 +150,11 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold
   },
   icon: {
+    paddingHorizontal: 12,
+    paddingVertical: 4
+  },
+  iconDisabled: {
+    opacity: 0.5,
     paddingHorizontal: 12,
     paddingVertical: 4
   },
