@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources'
 import { playerJumpBackward, playerJumpForward, PVTrackPlayer, togglePlay } from '../services/player'
-import { setPlaybackSpeed } from '../state/actions/player'
+import { playLastFromHistory, playNextFromQueue, setPlaybackSpeed } from '../state/actions/player'
 import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 
 type Props = {
@@ -56,7 +56,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         <PlayerProgressBar value={progressValue} />
         <View style={styles.middleRow}>
           <TouchableOpacity
-            onPress={() => console.log('step backward')}
+            onPress={() => playLastFromHistory(this.global.session.isLoggedIn, this.global)}
             style={styles.icon}>
             <Icon
               name='step-backward'
@@ -91,7 +91,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               size={32} />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => console.log('step-forward')}
+            onPress={() => playNextFromQueue(this.global.session.isLoggedIn, this.global)}
             style={styles.icon}>
             <Icon
               name='step-forward'

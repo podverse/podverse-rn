@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 14,
     lineHeight: 14,
-    marginHorizontal: 8
+    marginHorizontal: 12
   },
   timeRow: {
     flexDirection: 'row',
