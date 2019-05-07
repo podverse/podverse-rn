@@ -1,11 +1,9 @@
-// import Slider from '@react-native-community/slider'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
-import { Slider } from 'react-native-elements'
 import React from 'reactn'
 import { PV } from '../resources'
-import { PVTrackPlayer, togglePlay } from '../services/player'
+import { playerJumpBackward, playerJumpForward, PVTrackPlayer, togglePlay } from '../services/player'
 import { setPlaybackSpeed } from '../state/actions/player'
-import { ActionSheet, ActivityIndicator, Icon, Text } from './'
+import { ActionSheet, ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 
 type Props = {
   navigation: any
@@ -33,18 +31,27 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     this.setState({ showSpeedActionSheet: true })
   }
 
+  _adjustSpeed = async () => {
+    const { playbackRate } = this.global.player
+    const index = speeds.indexOf(playbackRate)
+    let newSpeed
+    if (speeds.length - 1 === index) {
+      newSpeed = speeds[0]
+    } else {
+      newSpeed = speeds[index + 1]
+    }
+
+    await setPlaybackSpeed(newSpeed, this.global)
+  }
+
   render() {
     const { showSpeedActionSheet } = this.state
     const { globalTheme, player } = this.global
-    const { playbackState } = player
+    const { playbackRate, playbackState } = player
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
-        <View style={styles.topRow}>
-          <Slider
-            minimumValue={0}
-            maximumValue={1} />
-        </View>
+        <PlayerProgressBar />
         <View style={styles.middleRow}>
           <TouchableOpacity
             onPress={() => console.log('step backward')}
@@ -54,16 +61,15 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               size={32} />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => console.log('jump back X seconds')}
+            onPress={() => playerJumpBackward(PV.Player.jumpSeconds)}
             style={styles.icon}>
             <Icon
               name='undo-alt'
               size={32} />
           </TouchableOpacity>
           <TouchableOpacity
-            onLongPress={this._showSpeedActionSheet}
             onPress={togglePlay}
-            style={styles.icon}>
+            style={styles.iconLarge}>
             {
               playbackState !== PVTrackPlayer.STATE_BUFFERING &&
                 <Icon
@@ -76,7 +82,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             }
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => console.log('jump back X seconds')}
+            onPress={() => playerJumpForward(PV.Player.jumpSeconds)}
             style={styles.icon}>
             <Icon
               name='redo-alt'
@@ -91,27 +97,10 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </TouchableOpacity>
         </View>
         <View style={styles.bottomRow}>
-          {/* brand icons are broke in react-native-vector-icons ~6.4.0  */}
-          {/* <TouchableOpacity
-            onPress={() => console.log('chromecast')}
-            style={styles.icon}>
-            <Icon
-              brand={true}
-              name='chromecast'
-              size={24} />
-          </TouchableOpacity> */}
           <TouchableOpacity
-            onPress={() => console.log('chromecast')}
-            style={styles.icon}>
-            <Icon
-              brand={true}
-              name='volume-up'
-              size={24} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => console.log('speed press')}
-            style={styles.icon}>
-            <Text style={styles.bottomRowText}>1X</Text>
+            onPress={this._adjustSpeed}
+            style={styles.speed}>
+            <Text style={styles.bottomRowText}>{`${playbackRate}X`}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => console.log('continuous play')}
@@ -121,11 +110,6 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               size={24} />
           </TouchableOpacity>
         </View>
-        <ActionSheet
-          globalTheme={globalTheme}
-          handleCancelPress={this._hideSpeedActionSheet}
-          items={speedItems(this._hideSpeedActionSheet)}
-          showModal={showSpeedActionSheet} />
       </View>
     )
   }
@@ -137,65 +121,14 @@ const _speedNormalKey = 1.0
 const _speedOneAndAQuarterKey = 1.25
 const _speedOneAndAHalfKey = 1.5
 const _speedDoubleKey = 2
-const _speedCustomKey = 'custom speed'
 
-const speedItems = (handleDismiss: any) => [
-  {
-    key: _speedOneHalfKey,
-    text: _speedOneHalfKey,
-    onPress: async () => {
-      handleDismiss()
-      await setPlaybackSpeed(_speedOneHalfKey)
-    }
-  },
-  {
-    key: _speedThreeQuartersKey,
-    text: _speedThreeQuartersKey,
-    onPress: async () => {
-      handleDismiss()
-      await setPlaybackSpeed(_speedThreeQuartersKey)
-    }
-  },
-  {
-    key: _speedNormalKey,
-    text: _speedNormalKey,
-    onPress: async () => {
-      handleDismiss()
-      await setPlaybackSpeed(_speedNormalKey)
-    }
-  },
-  {
-    key: _speedOneAndAQuarterKey,
-    text: _speedOneAndAQuarterKey,
-    onPress: async () => {
-      handleDismiss()
-      await setPlaybackSpeed(_speedOneAndAQuarterKey)
-    }
-  },
-  {
-    key: _speedOneAndAHalfKey,
-    text: _speedOneAndAHalfKey,
-    onPress: async () => {
-      handleDismiss()
-      await setPlaybackSpeed(_speedOneAndAHalfKey)
-    }
-  },
-  {
-    key: _speedDoubleKey,
-    text: _speedDoubleKey,
-    onPress: async () => {
-      handleDismiss()
-      await setPlaybackSpeed(_speedDoubleKey)
-    }
-  },
-  {
-    key: _speedCustomKey,
-    text: _speedCustomKey,
-    onPress: async () => {
-      handleDismiss()
-      console.log('show custom speed input alert')
-    }
-  }
+const speeds = [
+  _speedOneHalfKey,
+  _speedThreeQuartersKey,
+  _speedNormalKey,
+  _speedOneAndAQuarterKey,
+  _speedOneAndAHalfKey,
+  _speedDoubleKey
 ]
 
 const styles = StyleSheet.create({
@@ -213,11 +146,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 4
   },
+  iconLarge: {
+    minWidth: 74,
+    paddingHorizontal: 12,
+    paddingVertical: 4
+  },
   middleRow: {
     alignItems: 'center',
     flexDirection: 'row',
     height: 60,
     justifyContent: 'space-around'
+  },
+  speed: {
+    alignItems: 'center',
+    paddingVertical: 4,
+    width: 54
   },
   topRow: {
     height: 52,

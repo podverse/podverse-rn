@@ -5,6 +5,7 @@ const initialTheme: InitialState = {
   player: {
     isPlaying: false,
     nowPlayingItem: null,
+    playbackRate: 1,
     showMiniPlayer: false
   },
   screenPlaylist: {

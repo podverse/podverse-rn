@@ -21,6 +21,16 @@ export const getNowPlayingItem = async () => {
   }
 }
 
+export const playerJumpBackward = async (seconds: number) => {
+  const position = await TrackPlayer.getPosition()
+  TrackPlayer.seekTo(position - seconds)
+}
+
+export const playerJumpForward = async (seconds: number) => {
+  const position = await TrackPlayer.getPosition()
+  TrackPlayer.seekTo(position + seconds)
+}
+
 export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolean) => {
   const { clipId, episodeId, episodeMediaUrl, episodeTitle = 'untitled episode', podcastImageUrl,
     podcastTitle = 'untitled podcast' } = item
@@ -60,6 +70,14 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
   }
 }
 
+export const setPlaybackSpeed = async (rate: number) => {
+  await TrackPlayer.setRate(rate)
+}
+
+export const setPlaybackPosition = async (position: number) => {
+  await TrackPlayer.seekTo(position)
+}
+
 export const togglePlay = async () => {
   const state = await TrackPlayer.getState()
   if (state === TrackPlayer.STATE_PLAYING) {
@@ -67,8 +85,4 @@ export const togglePlay = async () => {
   } else {
     TrackPlayer.play()
   }
-}
-
-export const setPlaybackSpeed = async (rate: number) => {
-  await TrackPlayer.setRate(rate)
 }

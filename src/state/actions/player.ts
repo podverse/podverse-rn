@@ -10,6 +10,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
   try {
     setGlobal({
       player: {
+        ...globalState.player,
         episode: null,
         mediaRef: null,
         nowPlayingItem: item,
