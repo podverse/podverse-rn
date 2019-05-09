@@ -133,3 +133,12 @@ export const haveNowPlayingItemsChanged = (lastItem: NowPlayingItem, nextItem: N
   (nextItem.clipId && nextItem.clipId !== lastItem.clipId) ||
   (nextItem.episodeId && nextItem.episodeId !== lastItem.episodeId)
 )
+
+export const clone = obj => {
+  if (null == obj || "object" != typeof obj) return obj
+  var copy = obj.constructor()
+  for (var attr in obj) {
+    if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr]
+  }
+  return copy
+}

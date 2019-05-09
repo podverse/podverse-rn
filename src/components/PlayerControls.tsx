@@ -50,7 +50,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     const { progressValue } = this.state
     const { globalTheme, player, session } = this.global
     const { playbackRate, playbackState } = player
-    const { historyItems, queueItems } = session.userInfo
+    const { historyItems = [], queueItems = [] } = session.userInfo
     const hasHistoryItem = historyItems.length > 1
     const hasQueueItem = queueItems.length > 1
 

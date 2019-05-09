@@ -1,10 +1,12 @@
 import linkifyHtml from 'linkifyjs/html'
 import { setGlobal } from 'reactn'
 import { NowPlayingItem } from '../../lib/NowPlayingItem'
+import { clone } from '../../lib/utility'
+import { PV } from '../../resources'
 import { getEpisode } from '../../services/episode'
 import { popLastFromHistoryItems } from '../../services/history'
 import { getMediaRef } from '../../services/mediaRef'
-import { PVTrackPlayer, setNowPlayingItem as setNowPlayingItemService, setPlaybackSpeed as setPlaybackSpeedService,
+import { PVTrackPlayer, setNowPlayingItem as setNowPlayingItemService, setPlaybackSpeed as setPlaybackSpeedService
   } from '../../services/player'
 import { addQueueItemNext, popNextFromQueue } from '../../services/queue'
 
@@ -21,16 +23,12 @@ export const getPlayingEpisode = async (id: string, globalState: any) => {
   })
 }
 
-export const getPlayingEpisodeAndMediaRef = async (episodeId: string, mediaRefId: string, globalState: any) => {
-  const episode = await getEpisode(episodeId)
-  episode.description = episode.description || 'No summary available.'
-  episode.description = linkifyHtml(episode.description)
+export const getPlayingMediaRef = async (mediaRefId: string, globalState: any) => {
   const mediaRef = await getMediaRef(mediaRefId)
 
   setGlobal({
     player: {
       ...globalState.player,
-      episode,
       mediaRef
     }
   })
@@ -53,7 +51,8 @@ export const playNextFromQueue = async (isLoggedIn: boolean, globalState: any) =
 
 export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolean, globalState: any) => {
   try {
-    setGlobal({
+    const lastNowPlayingItem = clone(globalState.player.nowPlayingItem)
+    const newState = {
       player: {
         ...globalState.player,
         episode: null,
@@ -61,20 +60,46 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
         nowPlayingItem: item,
         playbackState: PVTrackPlayer.STATE_BUFFERING,
         showMiniPlayer: true
+      },
+      screenPlayer: {
+        ...globalState.screenPlayer,
+        isLoading: true
       }
-    })
+    } as any
+
+    const isNewEpisode = !lastNowPlayingItem || item.episodeId !== lastNowPlayingItem.episodeId
+    const isNewMediaRef = item.clipId && item.clipId !== lastNowPlayingItem.clipId
+
+    if (isNewEpisode) {
+      newState.screenPlayer = {
+        ...globalState.screenPlayer,
+        isLoading: true,
+        viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES
+      }
+    }
+
+    setGlobal(newState)
+
     const result = await setNowPlayingItemService(item, isLoggedIn)
+
+    if (isNewEpisode && item.episodeId) {
+      await getPlayingEpisode(item.episodeId, globalState)
+    }
+
+    if (isNewMediaRef && item.clipId) {
+      await getPlayingMediaRef(item.clipId, globalState)
+    }
+
     setGlobal({
-      player: {
-        ...globalState.player,
-        nowPlayingItem: item,
-        playbackState: PVTrackPlayer.getState(),
-        showMiniPlayer: true
+      screenPlayer: {
+        ...globalState.screenPlayer,
+        isLoading: false
       }
     })
 
     return result
   } catch (error) {
+    console.log(error)
     setGlobal({
       player: {
         ...globalState.player,

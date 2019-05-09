@@ -52,9 +52,25 @@ export interface UserInfo {
 
 export interface InitialState {
   globalTheme: GlobalTheme
-  playerIsPlaying: boolean,
-  playerNowPlayingItem: NowPlayingItem,
-  playerShow: boolean
+  player: {
+    isPlaying: boolean
+    nowPlayingItem: any
+    playbackRate: number
+    showMiniPlayer: boolean
+  }
+  screenPlayer: {
+    endOfResultsReached: boolean
+    flatListData: any[]
+    isLoading: boolean
+    isLoadingMore: boolean
+    queryFrom: string | null
+    queryPage: number
+    querySort: string | null
+    selectedItem?: any
+    showActionSheet: boolean
+    showFullClipInfo: boolean
+    viewType: string | null
+  }
   screenPlaylist: {
     flatListData: []
     playlist?: any

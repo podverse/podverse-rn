@@ -1,4 +1,5 @@
-import { InitialState } from 'src/resources/Interfaces'
+import { PV } from '../resources'
+import { InitialState } from '../resources/Interfaces'
 
 const initialTheme: InitialState = {
   globalTheme: {},
@@ -7,6 +8,18 @@ const initialTheme: InitialState = {
     nowPlayingItem: null,
     playbackRate: 1,
     showMiniPlayer: false
+  },
+  screenPlayer: {
+    endOfResultsReached: false,
+    flatListData: [],
+    isLoading: true,
+    isLoadingMore: false,
+    queryFrom: PV.Keys.QUERY_FROM_THIS_PODCAST,
+    queryPage: 1,
+    querySort: PV.Keys.QUERY_SORT_TOP_PAST_WEEK,
+    showActionSheet: false,
+    showFullClipInfo: false,
+    viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES
   },
   screenPlaylist: {
     flatListData: [],

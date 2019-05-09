@@ -1,37 +1,21 @@
 import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
-import React, { addCallback } from 'reactn'
+import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, EpisodeTableCell, FlatList,
   HTMLScrollView, Icon, NavAddToPlaylistIcon, NavQueueIcon, NavShareIcon, PlayerClipInfoBar, PlayerControls,
   PlayerTableHeader, SafeAreaView, TableSectionHeader, TableSectionSelectors, View } from '../components'
 import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
-import { haveNowPlayingItemsChanged, readableDate, removeHTMLFromString } from '../lib/utility'
+import { readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
-import { getPlayingEpisode, getPlayingEpisodeAndMediaRef } from '../state/actions/player'
 import { core, navHeader } from '../styles'
 
 type Props = {
   navigation?: any
 }
 
-type State = {
-  endOfResultsReached: boolean
-  flatListData: any[]
-  isLoading: boolean
-  isLoadingMore: boolean
-  queryFrom: string | null
-  queryPage: number
-  querySort: string | null
-  selectedItem?: any
-  showActionSheet: boolean
-  showFullClipInfo: boolean
-  viewType: string | null
-}
-
-let reactnCallback: any
-let mostRecentNowPlayingItem: NowPlayingItem
+type State = {}
 
 export class PlayerScreen extends React.Component<Props, State> {
 
@@ -66,73 +50,13 @@ export class PlayerScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    this.state = {
-      endOfResultsReached: false,
-      flatListData: [],
-      isLoading: true,
-      isLoadingMore: false,
-      queryFrom: _fromThisPodcastKey,
-      queryPage: 1,
-      querySort: _topPastWeekKey,
-      showActionSheet: false,
-      showFullClipInfo: false,
-      viewType: _showNotesKey
-    }
-
-    reactnCallback = addCallback(async (global) => {
-      if (!mostRecentNowPlayingItem) return
-
-      const hasChanged = haveNowPlayingItemsChanged(mostRecentNowPlayingItem, global.player.nowPlayingItem)
-      if (hasChanged) {
-        mostRecentNowPlayingItem = global.player.nowPlayingItem
-        this.setState({
-          endOfResultsReached: false,
-          flatListData: [],
-          isLoading: true,
-          queryPage: 1
-        }, async () => {
-          const nowPlayingItem = global.player.nowPlayingItem
-          if (nowPlayingItem.clipId) {
-            await getPlayingEpisodeAndMediaRef(nowPlayingItem.episodeId, nowPlayingItem.clipId, global)
-          } else {
-            await getPlayingEpisode(nowPlayingItem.episodeId, global)
-          }
-
-          const newState = await this._queryData(global.player.nowPlayingItem, 1)
-          this.setState({
-            ...newState,
-            ...(nowPlayingItem.clipId ? { showFullClipInfo: this.state.showFullClipInfo } : { showFullClipInfo: false })
-          })
-        })
-      }
-    })
+    this.state = {}
   }
 
   async componentDidMount() {
     this.props.navigation.setParams({ _getEpisodeId: this._getEpisodeId })
     this.props.navigation.setParams({ _getMediaRefId: this._getMediaRefId })
     this.props.navigation.setParams({ _getNowPlayingItemUrl: this._getNowPlayingItemUrl })
-    const nowPlayingItem = this.props.navigation.getParam('nowPlayingItem')
-    const needsToRefreshData = (
-      (!this.global.player.episode && !this.global.player.mediaRef) ||
-      (nowPlayingItem.clipId && this.global.player.mediaRef.id !== nowPlayingItem.clipId) ||
-      (nowPlayingItem.episodeId && this.global.player.episode.id !== nowPlayingItem.episodeId)
-    )
-    if (needsToRefreshData) {
-      if (nowPlayingItem.clipId) {
-        await getPlayingEpisodeAndMediaRef(nowPlayingItem.episodeId, nowPlayingItem.clipId, this.global)
-      } else {
-        await getPlayingEpisode(nowPlayingItem.episodeId, this.global)
-      }
-    }
-
-    this.setState({ isLoading: false })
-
-    mostRecentNowPlayingItem = nowPlayingItem
-  }
-
-  async componentWillUnmount() {
-    reactnCallback()
   }
 
   _getNowPlayingItemUrl = () => {
@@ -154,68 +78,116 @@ export class PlayerScreen extends React.Component<Props, State> {
 
   _selectViewType = async (selectedKey: string) => {
     if (!selectedKey) {
-      this.setState({ viewType: null })
+      setGlobal({
+        screenPlayer: {
+          ...this.global.screenPlayer,
+          viewType: null
+        }
+      })
       return
     }
 
-    this.setState({
-      endOfResultsReached: false,
-      flatListData: [],
-      isLoading: true,
-      queryFrom: _fromThisPodcastKey,
-      queryPage: 1,
-      viewType: selectedKey
+    setGlobal({
+      screenPlayer: {
+        ...this.global.screenPlayer,
+        endOfResultsReached: false,
+        flatListData: [],
+        isLoading: true,
+        queryFrom: PV.Keys.QUERY_FROM_THIS_PODCAST,
+        queryPage: 1,
+        viewType: selectedKey
+      }
     }, async () => {
       const newState = await this._queryData()
-      this.setState(newState)
+      setGlobal({
+        screenPlayer: {
+          ...this.global.screenPlayer,
+          ...newState
+        }
+      })
     })
   }
 
   _selectQueryFrom = async (selectedKey: string) => {
     if (!selectedKey) {
-      this.setState({ queryFrom: null })
+      setGlobal({
+        screenPlayer: {
+          ...this.global.screenPlayer,
+          queryFrom: null
+        }
+      })
       return
     }
 
-    this.setState({
-      endOfResultsReached: false,
-      flatListData: [],
-      isLoading: true,
-      queryFrom: selectedKey,
-      queryPage: 1
+    setGlobal({
+      screenPlayer: {
+        ...this.global.screenPlayer,
+        endOfResultsReached: false,
+        flatListData: [],
+        isLoading: true,
+        queryFrom: selectedKey,
+        queryPage: 1
+      }
     }, async () => {
       const newState = await this._queryData()
-      this.setState(newState)
+      setGlobal({
+        screenPlayer: {
+          ...this.global.screenPlayer,
+          ...newState
+        }
+      })
     })
   }
 
   _selectQuerySort = async (selectedKey: string) => {
     if (!selectedKey) {
-      this.setState({ querySort: null })
+      setGlobal({
+        screenPlayer: {
+          ...this.global.screenPlayer,
+          querySort: null
+        }
+      })
       return
     }
 
-    this.setState({
-      endOfResultsReached: false,
-      flatListData: [],
-      isLoading: true,
-      querySort: selectedKey
+    setGlobal({
+      screenPlayer: {
+        ...this.global.screenPlayer,
+        endOfResultsReached: false,
+        flatListData: [],
+        isLoading: true,
+        querySort: selectedKey
+      }
     }, async () => {
       const newState = await this._queryData()
-      this.setState(newState)
+      setGlobal({
+        screenPlayer: {
+          ...this.global.screenPlayer,
+          ...newState
+        }
+      })
     })
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
-    const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = this.state
-    if (viewType !== _showNotesKey && !endOfResultsReached && !isLoadingMore) {
+    const { screenPlayer } = this.global
+    const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = screenPlayer
+    if (viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES && !endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
-        this.setState({
-          isLoadingMore: true,
-          queryPage: queryPage + 1
+        setGlobal({
+          screenPlayer: {
+            ...this.global.screenPlayer,
+            isLoadingMore: true,
+            queryPage: queryPage + 1
+          }
         }, async () => {
           const newState = await this._queryData()
-          this.setState(newState)
+          setGlobal({
+            screenPlayer: {
+              ...this.global.screenPlayer,
+              ...newState
+            }
+          })
         })
       }
     }
@@ -226,25 +198,39 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _toggleShowFullClipInfo = () => {
-    this.setState({ showFullClipInfo: !this.state.showFullClipInfo })
+    setGlobal({
+      screenPlayer: {
+        ...this.global.screenPlayer,
+        showFullClipInfo: !this.global.screenPlayer.showFullClipInfo
+      }
+    })
   }
 
   _handleCancelPress = () => {
-    this.setState({ showActionSheet: false })
+    setGlobal({
+      screenPlayer: {
+        ...this.global.screenPlayer,
+        showActionSheet: false
+      }
+    })
   }
 
   _handleMorePress = (selectedItem: any) => {
-    this.setState({
-      selectedItem,
-      showActionSheet: true
+    setGlobal({
+      screenPlayer: {
+        ...this.global.screenPlayer,
+        selectedItem,
+        showActionSheet: true
+      }
     })
   }
 
   _renderItem = ({ item }) => {
-    const { queryFrom, viewType } = this.state
-    const { episode } = this.global.player
+    const { player, screenPlayer } = this.global
+    const { episode } = player
+    const { queryFrom, viewType } = screenPlayer
 
-    if (viewType === _episodesKey) {
+    if (viewType === PV.Keys.VIEW_TYPE_EPISODES) {
       return (
         <EpisodeTableCell
           key={item.id}
@@ -255,7 +241,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           title={item.title} />
       )
     } else {
-      if (queryFrom === _fromThisEpisodeKey) {
+      if (queryFrom === PV.Keys.QUERY_FROM_THIS_EPISODE) {
         item = {
           ...item,
           episode
@@ -266,8 +252,8 @@ export class PlayerScreen extends React.Component<Props, State> {
         <ClipTableCell
           key={item.id}
           endTime={item.endTime}
-          {...(queryFrom === _fromThisPodcastKey ? { episodePubDate: readableDate(item.episode.pubDate) } : {})}
-          {...(queryFrom === _fromThisPodcastKey ? { episodeTitle: item.episode.title } : {})}
+          {...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST ? { episodePubDate: readableDate(item.episode.pubDate) } : {})}
+          {...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST ? { episodeTitle: item.episode.title } : {})}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, episode.podcast))}
           startTime={item.startTime}
           title={item.title} />
@@ -277,10 +263,10 @@ export class PlayerScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { flatListData, isLoading, isLoadingMore, queryFrom, querySort, selectedItem,
-      showActionSheet, showFullClipInfo, viewType } = this.state
-    const { globalTheme, player } = this.global
+    const { globalTheme, player, screenPlayer } = this.global
     const { episode, mediaRef, nowPlayingItem } = player
+    const { flatListData, isLoading, isLoadingMore, queryFrom, querySort, selectedItem,
+      showActionSheet, showFullClipInfo, viewType } = screenPlayer
 
     return (
       <SafeAreaView>
@@ -309,25 +295,25 @@ export class PlayerScreen extends React.Component<Props, State> {
                   handleSelectLeftItem={this._selectViewType}
                   handleSelectRightItem={this._selectQuerySort}
                   leftItems={viewTypeOptions}
-                  rightItems={viewType && viewType !== _showNotesKey ? querySortOptions : []}
+                  rightItems={viewType && viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES ? querySortOptions : []}
                   selectedLeftItemKey={viewType}
                   selectedRightItemKey={querySort} />
                 {
-                  viewType === _clipsKey &&
+                  viewType === PV.Keys.VIEW_TYPE_CLIPS &&
                     <TableSectionSelectors
                       handleSelectLeftItem={this._selectQueryFrom}
                       leftItems={queryFromOptions}
                       selectedLeftItemKey={queryFrom} />
                 }
                 {
-                  viewType === _episodesKey &&
+                  viewType === PV.Keys.VIEW_TYPE_EPISODES &&
                     <TableSectionHeader title='From this podcast' />
                 }
                 {
                   isLoading && <ActivityIndicator />
                 }
                 {
-                  !isLoading && viewType !== _showNotesKey && flatListData &&
+                  !isLoading && viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES && flatListData &&
                     <FlatList
                       data={flatListData}
                       disableLeftSwipe={true}
@@ -338,7 +324,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                       renderItem={this._renderItem} />
                 }
                 {
-                  !isLoading && viewType === _showNotesKey && episode &&
+                  !isLoading && viewType === PV.Keys.VIEW_TYPE_SHOW_NOTES && episode &&
                     <HTMLScrollView
                       html={episode.description}
                       navigation={navigation} />
@@ -365,22 +351,24 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _queryClips = async () => {
-    const { queryFrom, queryPage, querySort } = this.state
-    const { nowPlayingItem } = this.global.player
+    const { player, screenPlayer } = this.global
+    const { nowPlayingItem } = player
+    const { queryFrom, queryPage, querySort } = screenPlayer
 
     const results = await getMediaRefs({
       sort: querySort,
       page: queryPage,
-      ...(queryFrom === _fromThisEpisodeKey ? { episodeId: nowPlayingItem.episodeId } : {}),
-      ...(queryFrom === _fromThisPodcastKey ? { podcastId: nowPlayingItem.podcastId } : {}),
-      includeEpisode: queryFrom === _fromThisPodcastKey
+      ...(queryFrom === PV.Keys.QUERY_FROM_THIS_EPISODE ? { episodeId: nowPlayingItem.episodeId } : {}),
+      ...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST ? { podcastId: nowPlayingItem.podcastId } : {}),
+      includeEpisode: queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST
     }, this.global.settings.nsfwMode)
     return results
   }
 
   _queryEpisodes = async (item?: NowPlayingItem, page?: number) => {
-    const { queryPage, querySort } = this.state
-    const { nowPlayingItem } = this.global.player
+    const { player, screenPlayer } = this.global
+    const { nowPlayingItem } = player
+    const { queryPage, querySort } = screenPlayer
 
     const results = await getEpisodes({
       sort: querySort,
@@ -392,17 +380,18 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _queryData = async (item?: NowPlayingItem, page?: number) => {
-    const { flatListData, viewType } = this.state
+    const { screenPlayer } = this.global
+    const { flatListData, viewType } = screenPlayer
     const newState = {
       isLoading: false,
       isLoadingMore: false
-    } as State
+    } as any
 
-    if (viewType === _episodesKey) {
+    if (viewType === PV.Keys.VIEW_TYPE_EPISODES) {
       const results = await this._queryEpisodes()
       newState.flatListData = [...flatListData, ...results[0]]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (viewType === _clipsKey) {
+    } else if (viewType === PV.Keys.VIEW_TYPE_CLIPS) {
       const results = await this._queryClips()
       newState.flatListData = [...flatListData, ...results[0]]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
@@ -412,63 +401,52 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 }
 
-const _episodesKey = 'episodes'
-const _clipsKey = 'clips'
-const _showNotesKey = 'showNotes'
-const _fromThisPodcastKey = 'fromThisPodcast'
-const _fromThisEpisodeKey = 'fromThisEpisode'
-const _mostRecentKey = 'most-recent'
-const _topPastDayKey = 'top-past-day'
-const _topPastWeekKey = 'top-past-week'
-const _topPastMonthKey = 'top-past-month'
-const _topPastYearKey = 'top-past-year'
-
 const viewTypeOptions = [
   {
     label: 'Episodes',
-    value: _episodesKey
+    value: PV.Keys.VIEW_TYPE_EPISODES
   },
   {
     label: 'Clips',
-    value: _clipsKey
+    value: PV.Keys.VIEW_TYPE_CLIPS
   },
   {
     label: 'Show Notes',
-    value: _showNotesKey
+    value: PV.Keys.VIEW_TYPE_SHOW_NOTES
   }
 ]
 
 const querySortOptions = [
   {
     label: 'most recent',
-    value: _mostRecentKey
+    value: PV.Keys.QUERY_SORT_MOST_RECENT
   },
   {
     label: 'top - past day',
-    value: _topPastDayKey
+    value: PV.Keys.QUERY_SORT_TOP_PAST_DAY
   },
   {
     label: 'top - past week',
-    value: _topPastWeekKey
+    value: PV.Keys.QUERY_SORT_TOP_PAST_WEEK
   },
   {
     label: 'top - past month',
-    value: _topPastMonthKey
+    value: PV.Keys.QUERY_SORT_TOP_PAST_MONTH
   },
   {
     label: 'top - past year',
-    value: _topPastYearKey
+    value: PV.Keys.QUERY_SORT_TOP_PAST_YEAR
   }
 ]
 
 const queryFromOptions = [
   {
     label: 'From this podcast',
-    value: _fromThisPodcastKey
+    value: PV.Keys.QUERY_FROM_THIS_PODCAST
   },
   {
     label: 'From this episode',
-    value: _fromThisEpisodeKey
+    value: PV.Keys.QUERY_FROM_THIS_EPISODE
   }
 ]
 

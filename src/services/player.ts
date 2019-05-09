@@ -39,19 +39,6 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
   const { clipId, episodeId, episodeMediaUrl, episodeTitle = 'untitled episode', podcastImageUrl,
     podcastTitle = 'untitled podcast' } = item
 
-  const items = await getQueueItems(isLoggedIn)
-
-  let filteredItems = [] as any[]
-  filteredItems = filterItemFromQueueItems(items, item)
-  await setAllQueueItems(filteredItems, isLoggedIn)
-  await addOrUpdateHistoryItem(item, isLoggedIn)
-
-  RNSecureKeyStore.set(
-    PV.Keys.NOW_PLAYING_ITEM,
-    item ? JSON.stringify(item) : null,
-    { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
-  )
-
   const id = clipId || episodeId
   if (id && episodeMediaUrl) {
     const currentTrackId = await TrackPlayer.getCurrentTrack()
@@ -66,7 +53,22 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
     if (currentTrackId && id !== currentTrackId) {
       await TrackPlayer.skipToNext()
     }
+  } else {
+    return {}
   }
+
+  const items = await getQueueItems(isLoggedIn)
+
+  let filteredItems = [] as any[]
+  filteredItems = filterItemFromQueueItems(items, item)
+  await setAllQueueItems(filteredItems, isLoggedIn)
+  await addOrUpdateHistoryItem(item, isLoggedIn)
+
+  RNSecureKeyStore.set(
+    PV.Keys.NOW_PLAYING_ITEM,
+    item ? JSON.stringify(item) : null,
+    { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
+  )
 
   return {
     nowPlayingItem: item,
