@@ -98,13 +98,15 @@ export class PlayerScreen extends React.Component<Props, State> {
         viewType: selectedKey
       }
     }, async () => {
-      const newState = await this._queryData()
-      setGlobal({
-        screenPlayer: {
-          ...this.global.screenPlayer,
-          ...newState
-        }
-      })
+      if (selectedKey === PV.Keys.VIEW_TYPE_CLIPS || selectedKey === PV.Keys.VIEW_TYPE_EPISODES) {
+        const newState = await this._queryData()
+        setGlobal({
+          screenPlayer: {
+            ...this.global.screenPlayer,
+            ...newState
+          }
+        })
+      }
     })
   }
 
