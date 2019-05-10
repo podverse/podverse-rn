@@ -5,11 +5,12 @@ import { Icon } from './'
 
 type Props = {
   getUrl?: any
+  handlePress?: any
   url?: string
 }
 
 export const NavShareIcon = (props: Props) => {
-  const { getUrl } = props
+  const { getUrl, handlePress } = props
   let { url = '' } = props
 
   const onShare = async () => {
@@ -28,7 +29,7 @@ export const NavShareIcon = (props: Props) => {
     <Icon
       color='#fff'
       name='share'
-      onPress={onShare}
+      onPress={handlePress ? handlePress : onShare}
       size={22}
       style={navHeader.buttonIcon} />
   )

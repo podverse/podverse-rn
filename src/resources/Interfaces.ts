@@ -68,8 +68,10 @@ export interface InitialState {
     queryPage: number
     querySort: string | null
     selectedItem?: any
-    showActionSheet: boolean
     showFullClipInfo: boolean
+    showHeaderActionSheet: boolean
+    showMoreActionSheet: boolean
+    showShareActionSheet: boolean
     viewType: string | null
   }
   screenPlaylist: {
