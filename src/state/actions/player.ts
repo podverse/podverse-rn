@@ -52,29 +52,29 @@ export const playNextFromQueue = async (isLoggedIn: boolean, globalState: any) =
 export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolean, globalState: any) => {
   try {
     const lastNowPlayingItem = clone(globalState.player.nowPlayingItem)
+    const isNewEpisode = !lastNowPlayingItem || item.episodeId !== lastNowPlayingItem.episodeId
+    const isNewMediaRef = item.clipId && (!lastNowPlayingItem || item.clipId !== lastNowPlayingItem.clipId)
     const newState = {
       player: {
         ...globalState.player,
-        episode: null,
-        mediaRef: null,
+        ...(isNewEpisode ? { episode: null } : {}),
+        ...(isNewMediaRef ? { mediaRef: null } : {}),
         nowPlayingItem: item,
         playbackState: PVTrackPlayer.STATE_BUFFERING,
         showMiniPlayer: true
       },
       screenPlayer: {
         ...globalState.screenPlayer,
-        isLoading: true
+        ...(isNewEpisode ? { isLoading: true } : {}),
+        ...(isNewEpisode ? { viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES } : {}),
+        showFullClipInfo: false
       }
     } as any
-
-    const isNewEpisode = !lastNowPlayingItem || item.episodeId !== lastNowPlayingItem.episodeId
-    const isNewMediaRef = item.clipId && item.clipId !== lastNowPlayingItem.clipId
 
     if (isNewEpisode) {
       newState.screenPlayer = {
         ...globalState.screenPlayer,
         isLoading: true,
-        viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES
       }
     }
 

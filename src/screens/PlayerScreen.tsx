@@ -23,6 +23,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const _getEpisodeId = navigation.getParam('_getEpisodeId')
     const _getMediaRefId = navigation.getParam('_getMediaRefId')
     const _getNowPlayingItemUrl = navigation.getParam('_getNowPlayingItemUrl')
+    const _getGlobalTheme = navigation.getParam('_getGlobalTheme')
 
     return {
       title: '',
@@ -38,6 +39,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         <RNView style={core.row}>
           <NavAddToPlaylistIcon
             getEpisodeId={_getEpisodeId}
+            getGlobalTheme={_getGlobalTheme}
             getMediaRefId={_getMediaRefId}
             navigation={navigation} />
           <NavShareIcon getUrl={_getNowPlayingItemUrl} />
@@ -57,6 +59,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     this.props.navigation.setParams({ _getEpisodeId: this._getEpisodeId })
     this.props.navigation.setParams({ _getMediaRefId: this._getMediaRefId })
     this.props.navigation.setParams({ _getNowPlayingItemUrl: this._getNowPlayingItemUrl })
+    this.props.navigation.setParams({ _getGlobalTheme: this._getGlobalTheme })
   }
 
   _getNowPlayingItemUrl = () => {
@@ -74,6 +77,10 @@ export class PlayerScreen extends React.Component<Props, State> {
   _getMediaRefId = () => {
     const { nowPlayingItem } = this.global.player
     return nowPlayingItem.clipId
+  }
+
+  _getGlobalTheme = () => {
+    return this.global.globalTheme
   }
 
   _selectViewType = async (selectedKey: string) => {

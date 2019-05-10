@@ -7,6 +7,7 @@ export interface GlobalTheme {
   actionSheetButtonTextCancel?: any
   actionSheetButtonUnderlay?: any
   actionSheetButtonCancelUnderlay?: any
+  actionSheetHeaderText?: any
   actionSheetView?: any
   activityIndicator?: any
   buttonGroupText?: any

@@ -72,6 +72,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       } else {
         await getAuthUserInfo()
         const nowPlayingItemString = await RNSecureKeyStore.get(PV.Keys.NOW_PLAYING_ITEM)
+
         if (nowPlayingItemString) {
           await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global.session.isLoggedIn, this.global)
         }

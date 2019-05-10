@@ -16,6 +16,7 @@ export const PlayerTableHeader = (props: Props) => {
     <TouchableWithoutFeedback onPress={onPress}>
       <View style={styles.wrapper}>
         <Image
+          key={nowPlayingItem.podcastImageUrl}
           source={{ uri: nowPlayingItem.podcastImageUrl }}
           style={styles.image} />
         <View style={styles.textWrapper}>

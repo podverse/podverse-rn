@@ -22,6 +22,9 @@ export const darkTheme = StyleSheet.create({
   actionSheetButtonCancelUnderlay: {
     backgroundColor: PV.Colors.grayDark
   },
+  actionSheetHeaderText: {
+    color: PV.Colors.grayLighter
+  },
   actionSheetView: {
     backgroundColor: PV.Colors.grayDarker
   },
@@ -146,6 +149,9 @@ export const lightTheme = StyleSheet.create({
   },
   actionSheetButtonCancelUnderlay: {
     backgroundColor: PV.Colors.grayLighter
+  },
+  actionSheetHeaderText: {
+    color: PV.Colors.grayDarker
   },
   activityIndicator: {
     color: PV.Colors.grayDarker
