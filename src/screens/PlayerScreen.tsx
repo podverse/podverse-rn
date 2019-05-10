@@ -493,8 +493,8 @@ export class PlayerScreen extends React.Component<Props, State> {
         onPress: this._handleToggleSubscribe
       },
       {
-        key: 'goToPodcast',
-        text: 'Go to Podcast',
+        key: 'podcast',
+        text: 'Podcast',
         onPress: () => {
           this._dismissHeaderActionSheet()
           navigation.navigate(
@@ -507,11 +507,24 @@ export class PlayerScreen extends React.Component<Props, State> {
     if (podcast.linkUrl) {
       items.push(
         {
-          key: 'goToPodcastHomePage',
-          text: `Go to Podcast's Home Page`,
+          key: 'officialHomePage',
+          text: `Official Home Page`,
           onPress: () => {
             this._dismissHeaderActionSheet()
             navigation.navigate(PV.RouteNames.WebPageScreen, { uri: podcast.linkUrl })
+          }
+        }
+      )
+    }
+
+    if (episode && episode.linkUrl) {
+      items.push(
+        {
+          key: 'officialEpisodePage',
+          text: `Official Episode Page`,
+          onPress: () => {
+            this._dismissHeaderActionSheet()
+            navigation.navigate(PV.RouteNames.WebPageScreen, { uri: episode.linkUrl })
           }
         }
       )
