@@ -44,12 +44,12 @@ export const setContinousPlaybackMode = async (shouldContinuouslyPlay: boolean, 
   return shouldContinuouslyPlay
 }
 
-export const setNowPlayingItem = async (item: NowPlayingItem, globalState: any) => {
+export const setNowPlayingItem = async (item: NowPlayingItem, globalState: any, isInitialLoad?: boolean) => {
   return new Promise(async (resolve, reject) => {
     try {
       const lastNowPlayingItem = await getNowPlayingItem()
-      const isNewEpisode = !lastNowPlayingItem || item.episodeId !== lastNowPlayingItem.episodeId
-      const isNewMediaRef = item.clipId && (!lastNowPlayingItem || item.clipId !== lastNowPlayingItem.clipId)
+      const isNewEpisode = (isInitialLoad || !lastNowPlayingItem) || item.episodeId !== lastNowPlayingItem.episodeId
+      const isNewMediaRef = item.clipId && ((isInitialLoad || !lastNowPlayingItem) || item.clipId !== lastNowPlayingItem.clipId)
 
       const newState = {
         player: {

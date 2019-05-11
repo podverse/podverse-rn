@@ -37,11 +37,13 @@ export const getNowPlayingItem = async () => {
 }
 
 export const getNowPlayingItemEpisode = async () => {
-  return AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM_EPISODE)
+  const itemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM_EPISODE)
+  return itemString ? JSON.parse(itemString) : {}
 }
 
 export const getNowPlayingItemMediaRef = async () => {
-  return AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM_MEDIA_REF)
+  const itemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM_MEDIA_REF)
+  return itemString ? JSON.parse(itemString) : {}
 }
 
 export const handleResumeAfterClipHasEnded = async () => {
