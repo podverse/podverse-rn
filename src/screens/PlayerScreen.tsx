@@ -107,6 +107,13 @@ export class PlayerScreen extends React.Component<Props, State> {
             ...newState
           }
         })
+      } else {
+        setGlobal({
+          screenPlayer: {
+            ...this.global.screenPlayer,
+            isLoading: false
+          }
+        })
       }
     })
   }
