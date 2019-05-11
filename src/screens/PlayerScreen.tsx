@@ -322,7 +322,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           episode
         }
       }
-console.log(item)
+
       return (
         <ClipTableCell
           key={item.id}
