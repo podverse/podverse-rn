@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
@@ -66,14 +67,14 @@ const clearHistoryItemsOnServer = async () => {
   return response.json()
 }
 
-export const filterItemFromHistoryItems = (items: NowPlayingItem[], item: NowPlayingItem) => items.filter(x =>
+export const filterItemFromHistoryItems = (items: NowPlayingItem[], item: NowPlayingItem) => items.filter((x) =>
   (item.clipId && x.clipId !== item.clipId) || (!item.clipId && x.episodeId !== item.episodeId)
 )
 
 const getHistoryItemsLocally = async () => {
   try {
-    const itemsString = await RNSecureKeyStore.get(PV.Keys.HISTORY_ITEMS)
-    return JSON.parse(itemsString)
+    const itemsString = await AsyncStorage.getItem(PV.Keys.HISTORY_ITEMS)
+    return itemsString ? JSON.parse(itemsString) : []
   } catch (error) {
     return []
   }
@@ -141,10 +142,6 @@ const removeHistoryItemOnServer = async (episodeId?: string, mediaRefId?: string
 }
 
 const setAllHistoryItemsLocally = (items: NowPlayingItem[]) => {
-  RNSecureKeyStore.set(
-    PV.Keys.HISTORY_ITEMS,
-    JSON.stringify(items),
-    { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
-  )
+  AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(items))
   return items
 }

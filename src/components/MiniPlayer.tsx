@@ -3,7 +3,8 @@ import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, Touchable
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import React from 'reactn'
 import { PV } from '../resources'
-import { PVTrackPlayer, togglePlay } from '../services/player'
+import { PVTrackPlayer } from '../services/player'
+import { togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles } from '../styles'
 
 type Props = {
@@ -43,7 +44,7 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
           </View>
           {
             playbackState !== PVTrackPlayer.STATE_BUFFERING &&
-            <TouchableOpacity onPress={togglePlay}>
+            <TouchableOpacity onPress={() => togglePlay(this.global)}>
               <Icon
                 color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
                 name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}

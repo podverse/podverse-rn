@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { PV } from '../resources'
 import { request } from './request'
@@ -19,36 +20,30 @@ const getAuthenticatedUserInfoLocally = async () => {
   let subscribedUserIds = []
 
   try {
-    subscribedPlaylistIds = await RNSecureKeyStore.get(PV.Keys.SUBSCRIBED_PLAYLIST_IDS)
-    subscribedPlaylistIds = JSON.parse(subscribedPlaylistIds)
+    const subscribedPlaylistIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS)
+    if (subscribedPlaylistIdsString) {
+      subscribedPlaylistIds = JSON.parse(subscribedPlaylistIdsString)
+    }
   } catch (error) {
-    RNSecureKeyStore.set(
-      PV.Keys.SUBSCRIBED_PLAYLIST_IDS,
-      JSON.stringify(subscribedPlaylistIds),
-      { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
-    )
+    AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS, JSON.stringify(subscribedPlaylistIds))
   }
 
   try {
-    subscribedPodcastIds = await RNSecureKeyStore.get(PV.Keys.SUBSCRIBED_PODCAST_IDS)
-    subscribedPodcastIds = JSON.parse(subscribedPodcastIds)
+    const subscribedPodcastIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
+    if (subscribedPodcastIdsString) {
+      subscribedPodcastIds = JSON.parse(subscribedPodcastIdsString)
+    }
   } catch (error) {
-    RNSecureKeyStore.set(
-      PV.Keys.SUBSCRIBED_PODCAST_IDS,
-      JSON.stringify(subscribedPodcastIds),
-      { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
-    )
+    AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
   }
 
   try {
-    subscribedUserIds = await RNSecureKeyStore.get(PV.Keys.SUBSCRIBED_USER_IDS)
-    subscribedUserIds = JSON.parse(subscribedUserIds)
+    const subscribedUserIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_USER_IDS)
+    if (subscribedUserIdsString) {
+      subscribedUserIds = JSON.parse(subscribedUserIdsString)
+    }
   } catch (error) {
-    RNSecureKeyStore.set(
-      PV.Keys.SUBSCRIBED_USER_IDS,
-      JSON.stringify(subscribedUserIds),
-      { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
-    )
+    AsyncStorage.setItem(PV.Keys.SUBSCRIBED_USER_IDS, JSON.stringify(subscribedUserIds))
   }
 
   return [

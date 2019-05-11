@@ -17,6 +17,21 @@ export type NowPlayingItem = {
   userPlaybackPosition?: number
 }
 
+export const convertNowPlayingItemClipToNowPlayingItemEpisode = (data: any, userPlaybackPosition = 0) => {
+  return {
+    episodeDescription: data.episodeDescription,
+    episodeId: data.episodeId,
+    episodeMediaUrl: data.episodeMediaUrl,
+    episodePubDate: data.episodePubDate,
+    episodeTitle: data.episodeTitle,
+    podcastId: data.podcastId,
+    podcastImageUrl: data.podcastImageUrl,
+    podcastIsExplicit: data.podcastIsExplicit,
+    podcastTitle: data.podcastTitle,
+    userPlaybackPosition: userPlaybackPosition || 0
+  }
+}
+
 export const convertToNowPlayingItem = (data, inheritedEpisode, inheritedPodcast, userPlaybackPosition = 0) => {
   let nowPlayingItem: NowPlayingItem = {}
 

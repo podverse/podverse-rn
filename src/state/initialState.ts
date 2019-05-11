@@ -4,6 +4,7 @@ import { InitialState } from '../resources/Interfaces'
 const initialTheme: InitialState = {
   globalTheme: {},
   player: {
+    clipHasEnded: false,
     isPlaying: false,
     nowPlayingItem: null,
     playbackRate: 1,

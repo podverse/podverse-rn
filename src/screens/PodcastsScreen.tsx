@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import RNSecureKeyStore from 'react-native-secure-key-store'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
@@ -72,7 +71,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       } else {
         await initPlayerState(this.global)
         await getAuthUserInfo()
-        const nowPlayingItemString = await RNSecureKeyStore.get(PV.Keys.NOW_PLAYING_ITEM)
+        const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
 
         if (nowPlayingItemString) {
           await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global.session.isLoggedIn, this.global)

@@ -1,4 +1,4 @@
-import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
+import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
@@ -62,8 +62,8 @@ export const filterItemFromQueueItems = (items: NowPlayingItem[], item: NowPlayi
 
 const getQueueItemsLocally = async () => {
   try {
-    const itemsString = await RNSecureKeyStore.get(PV.Keys.QUEUE_ITEMS)
-    return JSON.parse(itemsString)
+    const itemsString = await AsyncStorage.getItem(PV.Keys.QUEUE_ITEMS)
+    return itemsString ? JSON.parse(itemsString) : []
   } catch (error) {
     return []
   }
@@ -102,11 +102,7 @@ const removeQueueItemOnServer = async (item: NowPlayingItem) => {
 }
 
 const setAllQueueItemsLocally = (items: NowPlayingItem[]) => {
-  RNSecureKeyStore.set(
-    PV.Keys.QUEUE_ITEMS,
-    JSON.stringify(items),
-    { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
-  )
+  AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(items))
   return items
 }
 

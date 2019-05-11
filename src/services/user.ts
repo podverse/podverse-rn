@@ -1,4 +1,5 @@
-import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
+import AsyncStorage from '@react-native-community/async-storage'
+import RNSecureKeyStore from 'react-native-secure-key-store'
 import { PV } from '../resources'
 import { request } from './request'
 
@@ -56,8 +57,12 @@ export const toggleSubscribeToUser = async (id: string, isLoggedIn: boolean) => 
 }
 
 const toggleSubscribeToUserLocally = async (id: string) => {
-  const itemsString = await RNSecureKeyStore.get(PV.Keys.SUBSCRIBED_USER_IDS)
-  const items = JSON.parse(itemsString)
+  let items = []
+  const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_USER_IDS)
+
+  if (itemsString) {
+    items = JSON.parse(itemsString)
+  }
 
   const index = items.indexOf(id)
   if (index > -1) {
@@ -66,11 +71,7 @@ const toggleSubscribeToUserLocally = async (id: string) => {
     items.push(id)
   }
 
-  RNSecureKeyStore.set(
-    PV.Keys.SUBSCRIBED_USER_IDS,
-    JSON.stringify(items),
-    { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
-  )
+  AsyncStorage.setItem(PV.Keys.SUBSCRIBED_USER_IDS, JSON.stringify(items))
   return items
 }
 

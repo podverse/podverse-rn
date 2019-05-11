@@ -1,4 +1,4 @@
-import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
+import AsyncStorage from '@react-native-community/async-storage'
 import TrackPlayer from 'react-native-track-player'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
@@ -12,10 +12,19 @@ TrackPlayer.setupPlayer().then(() => {
 
 export const PVTrackPlayer = TrackPlayer
 
+export const getContinuousPlaybackMode = async () => {
+  const itemString = await AsyncStorage.getItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY)
+  if (itemString) {
+    return JSON.parse(itemString)
+  }
+}
+
 export const getNowPlayingItem = async () => {
   try {
-    const itemString = await RNSecureKeyStore.get(PV.Keys.NOW_PLAYING_ITEM)
-    return JSON.parse(itemString)
+    const itemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
+    if (itemString) {
+      return JSON.parse(itemString)
+    }
   } catch (error) {
     return null
   }
@@ -35,13 +44,14 @@ export const playerJumpForward = async (seconds: number) => {
   return newPosition
 }
 
-export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolean) => {
+export const setNowPlayingItem = async (item: NowPlayingItem, isNewEpisode: boolean, playbackRate: number = 1, isLoggedIn: boolean) => {
   const { clipId, episodeId, episodeMediaUrl, episodeTitle = 'untitled episode', podcastImageUrl,
     podcastTitle = 'untitled podcast' } = item
 
   const id = clipId || episodeId
-  if (id && episodeMediaUrl) {
-    const currentTrackId = await TrackPlayer.getCurrentTrack()
+  if (id && isNewEpisode) {
+    const shouldSkipToNext = await TrackPlayer.getCurrentTrack()
+
     await TrackPlayer.add({
       id,
       url: episodeMediaUrl,
@@ -50,11 +60,9 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
       ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
     })
 
-    if (currentTrackId && id !== currentTrackId) {
+    if (shouldSkipToNext) {
       await TrackPlayer.skipToNext()
     }
-  } else {
-    return {}
   }
 
   const items = await getQueueItems(isLoggedIn)
@@ -64,11 +72,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
   await setAllQueueItems(filteredItems, isLoggedIn)
   await addOrUpdateHistoryItem(item, isLoggedIn)
 
-  RNSecureKeyStore.set(
-    PV.Keys.NOW_PLAYING_ITEM,
-    item ? JSON.stringify(item) : null,
-    { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
-  )
+  AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
 
   return {
     nowPlayingItem: item,
@@ -76,16 +80,10 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
   }
 }
 
-export const getContinuousPlaybackMode = async () => {
-  const itemString = await RNSecureKeyStore.get(PV.Keys.SHOULD_CONTINUOUSLY_PLAY)
-  return JSON.parse(itemString)
-}
-
 export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean) => {
-  await RNSecureKeyStore.set(
+  await AsyncStorage.setItem(
     PV.Keys.SHOULD_CONTINUOUSLY_PLAY,
-    JSON.stringify(shouldContinuouslyPlay),
-    { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
+    JSON.stringify(shouldContinuouslyPlay)
   )
 }
 
@@ -97,11 +95,12 @@ export const setPlaybackPosition = async (position: number) => {
   await TrackPlayer.seekTo(position)
 }
 
-export const togglePlay = async () => {
+export const togglePlay = async (playbackRate: number) => {
   const state = await TrackPlayer.getState()
   if (state === TrackPlayer.STATE_PLAYING) {
     TrackPlayer.pause()
   } else {
     TrackPlayer.play()
+    TrackPlayer.setRate(playbackRate)
   }
 }

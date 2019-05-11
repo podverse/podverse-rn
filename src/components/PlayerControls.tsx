@@ -1,10 +1,10 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources'
-import { playerJumpBackward, playerJumpForward, PVTrackPlayer, togglePlay } from '../services/player'
-import { playLastFromHistory, playNextFromQueue, setContinousPlaybackMode, setPlaybackSpeed } from '../state/actions/player'
+import { playerJumpBackward, playerJumpForward, PVTrackPlayer } from '../services/player'
+import { playLastFromHistory, playNextFromQueue, setContinousPlaybackMode, setPlaybackSpeed, togglePlay
+  } from '../state/actions/player'
 import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 type Props = {
   navigation: any
@@ -84,7 +84,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               size={32} />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={togglePlay}
+            onPress={() => togglePlay(this.global)}
             style={styles.iconLarge}>
             {
               playbackState !== PVTrackPlayer.STATE_BUFFERING &&
