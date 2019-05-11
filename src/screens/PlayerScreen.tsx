@@ -322,7 +322,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           episode
         }
       }
-
+console.log(item)
       return (
         <ClipTableCell
           key={item.id}
@@ -391,7 +391,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                   isLoading && <ActivityIndicator />
                 }
                 {
-                  !isLoading && viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES && flatListData &&
+                  !isLoading && viewType && viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES && flatListData &&
                     <FlatList
                       data={flatListData}
                       disableLeftSwipe={true}
