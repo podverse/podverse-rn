@@ -8,49 +8,15 @@ type Props = {}
 
 type State = {}
 
-let clipEndTimeInterval: any = null
-
 export class PlayerEvents extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     this._onTrackChanged = PVTrackPlayer.addEventListener('playback-track-changed', async (data) => {
-      const { player } = this.global
-      // const { nowPlayingItem } = player
-      // const { clipEndTime, clipId } = nowPlayingItem
 
-      // if (clipEndTimeInterval) {
-      //   clearInterval(clipEndTimeInterval)
-      // }
-
-      // if (clipId) {
-      //   if (clipEndTime) {
-      //     clipEndTimeInterval = setInterval(async () => {
-      //       const currentPosition = await PVTrackPlayer.getPosition()
-      //       if (currentPosition > clipEndTime) {
-      //         clearInterval(clipEndTimeInterval)
-      //         PVTrackPlayer.pause()
-      //         await setClipHasEnded(true, this.global)
-      //       }
-      //     }, 500)
-      //   }
-
-      //   await setPlaybackPosition(nowPlayingItem.clipStartTime)
-      // }
     })
 
     this._onStateChanged = PVTrackPlayer.addEventListener('playback-state', async (data) => {
-      const { player } = this.global
-      // const { clipHasEnded, nowPlayingItem } = player
-      // const { clipEndTime } = nowPlayingItem
-      // const currentPosition = await PVTrackPlayer.getPosition()
-      // const currentState = await PVTrackPlayer.getState()
-      // const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
 
-      // if (clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying) {
-      //   await handleResumeAfterClipHasEnded(this.global)
-      // }
-
-      // await setPlaybackState(data.state, this.global)
     })
 
     this._onQueueEnded = PVTrackPlayer.addEventListener('playback-queue-ended', async (data) => {

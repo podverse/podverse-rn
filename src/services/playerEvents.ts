@@ -1,10 +1,48 @@
-import { PVTrackPlayer } from './player'
+import { getClipHasEnded, getNowPlayingItem, handleResumeAfterClipHasEnded, PVTrackPlayer, setClipHasEnded,
+  setPlaybackPosition } from './player'
+
+let clipEndTimeInterval: any = null
 
 module.exports = async () => {
 
-  PVTrackPlayer.addEventListener('playback-track-changed', (x) => console.log('playback track changed'))
+  PVTrackPlayer.addEventListener('playback-track-changed', async (x) => {
+    // const nowPlayingItem = await getNowPlayingItem()
+    // const { clipEndTime, clipId } = nowPlayingItem
 
-  PVTrackPlayer.addEventListener('playback-state', (x) => console.log('playback state'))
+    // if (clipEndTimeInterval) {
+    //   clearInterval(clipEndTimeInterval)
+    // }
+
+    // if (clipId) {
+    //   if (clipEndTime) {
+    //     clipEndTimeInterval = setInterval(async () => {
+    //       const currentPosition = await PVTrackPlayer.getPosition()
+    //       if (currentPosition > clipEndTime) {
+    //         clearInterval(clipEndTimeInterval)
+    //         PVTrackPlayer.pause()
+    //         await setClipHasEnded(true)
+    //       }
+    //     }, 500)
+    //   }
+
+    //   await setPlaybackPosition(nowPlayingItem.clipStartTime)
+    // }
+  })
+
+  PVTrackPlayer.addEventListener('playback-state', async (x) => {
+    // const clipHasEnded = await getClipHasEnded()
+    // const nowPlayingItem = await getNowPlayingItem()
+    // const { clipEndTime } = nowPlayingItem
+    // const currentPosition = await PVTrackPlayer.getPosition()
+    // const currentState = await PVTrackPlayer.getState()
+    // const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
+
+    // if (clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying) {
+    //   await handleResumeAfterClipHasEnded()
+    // }
+
+    // await setPlaybackState(data.state, this.global)
+  })
 
   PVTrackPlayer.addEventListener('playback-queue-ended', (x) => console.log('playback queue ended'))
 

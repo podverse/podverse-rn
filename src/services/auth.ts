@@ -3,14 +3,18 @@ import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { PV } from '../resources'
 import { request } from './request'
 
-export const getAuthenticatedUserInfo = async () => {
-  let bearerToken
+export const getBearerToken = async () => {
+  let bearerToken = ''
   try {
     bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
   } catch (error) {
-    // is not logged in
+    return bearerToken
   }
+  return bearerToken
+}
 
+export const getAuthenticatedUserInfo = async () => {
+  const bearerToken = await getBearerToken()
   return bearerToken ? getAuthenticatedUserInfoFromServer(bearerToken) : getAuthenticatedUserInfoLocally()
 }
 

@@ -54,7 +54,6 @@ export interface UserInfo {
 export interface InitialState {
   globalTheme: GlobalTheme
   player: {
-    clipHasEnded: boolean
     isPlaying: boolean
     nowPlayingItem: any
     playbackRate: number

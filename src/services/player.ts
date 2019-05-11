@@ -1,8 +1,12 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import linkifyHtml from 'linkifyjs/html'
 import TrackPlayer from 'react-native-track-player'
-import { NowPlayingItem } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
+import { getBearerToken } from './auth'
+import { getEpisode } from './episode'
 import { addOrUpdateHistoryItem } from './history'
+import { getMediaRef } from './mediaRef'
 import { filterItemFromQueueItems, getQueueItems, setAllQueueItems } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
@@ -11,6 +15,10 @@ TrackPlayer.setupPlayer().then(() => {
 })
 
 export const PVTrackPlayer = TrackPlayer
+
+export const getClipHasEnded = async () => {
+  return AsyncStorage.getItem(PV.Keys.CLIP_HAS_ENDED)
+}
 
 export const getContinuousPlaybackMode = async () => {
   const itemString = await AsyncStorage.getItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY)
@@ -22,12 +30,24 @@ export const getContinuousPlaybackMode = async () => {
 export const getNowPlayingItem = async () => {
   try {
     const itemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
-    if (itemString) {
-      return JSON.parse(itemString)
-    }
+    return itemString ? JSON.parse(itemString) : {}
   } catch (error) {
     return null
   }
+}
+
+export const getNowPlayingItemEpisode = async () => {
+  return AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM_EPISODE)
+}
+
+export const getNowPlayingItemMediaRef = async () => {
+  return AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM_MEDIA_REF)
+}
+
+export const handleResumeAfterClipHasEnded = async () => {
+  const nowPlayingItem = await getNowPlayingItem()
+  const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(nowPlayingItem)
+  await setNowPlayingItem(nowPlayingItemEpisode)
 }
 
 export const playerJumpBackward = async (seconds: number) => {
@@ -44,9 +64,17 @@ export const playerJumpForward = async (seconds: number) => {
   return newPosition
 }
 
-export const setNowPlayingItem = async (item: NowPlayingItem, isNewEpisode: boolean, playbackRate: number = 1, isLoggedIn: boolean) => {
+export const setNowPlayingItem = async (item: NowPlayingItem) => {
+  const bearerToken = await getBearerToken()
+  const isLoggedIn = !!bearerToken
   const { clipId, episodeId, episodeMediaUrl, episodeTitle = 'untitled episode', podcastImageUrl,
     podcastTitle = 'untitled podcast' } = item
+
+  const lastNowPlayingItem = await getNowPlayingItem()
+  const isNewEpisode = !lastNowPlayingItem || episodeId !== lastNowPlayingItem.episodeId
+  const isNewMediaRef = clipId && (!lastNowPlayingItem || clipId !== lastNowPlayingItem.clipId)
+
+  await setClipHasEnded(false)
 
   const id = clipId || episodeId
   if (id && isNewEpisode) {
@@ -65,12 +93,24 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isNewEpisode: bool
     }
   }
 
+  if (!isNewEpisode && isNewMediaRef && item.clipStartTime) {
+    await setPlaybackPosition(item.clipStartTime)
+  }
+
   const items = await getQueueItems(isLoggedIn)
 
   let filteredItems = [] as any[]
   filteredItems = filterItemFromQueueItems(items, item)
   await setAllQueueItems(filteredItems, isLoggedIn)
   await addOrUpdateHistoryItem(item, isLoggedIn)
+
+  if (isNewEpisode && episodeId) {
+    await setNowPlayingItemEpisode(episodeId)
+  }
+
+  if (isNewMediaRef && clipId) {
+    await setNowPlayingItemMediaRef(clipId)
+  }
 
   AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
 
@@ -80,10 +120,34 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isNewEpisode: bool
   }
 }
 
+export const setClipHasEnded = async (clipHasEnded: boolean) => {
+  await AsyncStorage.setItem(PV.Keys.CLIP_HAS_ENDED, JSON.stringify(clipHasEnded))
+}
+
 export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean) => {
   await AsyncStorage.setItem(
     PV.Keys.SHOULD_CONTINUOUSLY_PLAY,
     JSON.stringify(shouldContinuouslyPlay)
+  )
+}
+
+export const setNowPlayingItemEpisode = async (id: string) => {
+  const episode = await getEpisode(id)
+  episode.description = episode.description || 'No summary available.'
+  episode.description = linkifyHtml(episode.description)
+
+  await AsyncStorage.setItem(
+    PV.Keys.NOW_PLAYING_ITEM_EPISODE,
+    JSON.stringify(episode)
+  )
+}
+
+export const setNowPlayingItemMediaRef = async (id: string) => {
+  const mediaRef = await getMediaRef(id)
+
+  await AsyncStorage.setItem(
+    PV.Keys.NOW_PLAYING_ITEM_MEDIA_REF,
+    JSON.stringify(mediaRef)
   )
 }
 

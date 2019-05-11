@@ -74,7 +74,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
 
         if (nowPlayingItemString) {
-          await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global.session.isLoggedIn, this.global)
+          await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global)
         }
         const { subscribedPodcasts } = this.global
         flatListData = subscribedPodcasts
