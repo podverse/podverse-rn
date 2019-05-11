@@ -9,7 +9,7 @@ import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { setNowPlayingItem } from '../state/actions/player'
+import { initPlayerState, setNowPlayingItem } from '../state/actions/player'
 import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
@@ -70,6 +70,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
         navigation.navigate(PV.RouteNames.Onboarding)
       } else {
+        await initPlayerState(this.global)
         await getAuthUserInfo()
         const nowPlayingItemString = await RNSecureKeyStore.get(PV.Keys.NOW_PLAYING_ITEM)
 

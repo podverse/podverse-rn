@@ -1,7 +1,8 @@
 import { StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import { PVTrackPlayer } from '../services/player'
-import { setPlaybackState } from '../state/actions/player'
+import { playNextFromQueue, setPlaybackState } from '../state/actions/player'
+
 
 type Props = {}
 
@@ -19,7 +20,12 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     })
 
     this._onQueueEnded = PVTrackPlayer.addEventListener('playback-queue-ended', async (data) => {
-      console.log('_onQueueEnded')
+      const { player, session } = this.global
+      const { shouldContinuouslyPlay } = player
+      const { queueItems } = session.userInfo
+      if (shouldContinuouslyPlay && queueItems.length > 0) {
+        await playNextFromQueue(session.isLoggedIn, this.global)
+      }
     })
 
     this._onError = PVTrackPlayer.addEventListener('playback-error', async (data) => {

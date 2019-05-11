@@ -2,8 +2,9 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources'
 import { playerJumpBackward, playerJumpForward, PVTrackPlayer, togglePlay } from '../services/player'
-import { playLastFromHistory, playNextFromQueue, setPlaybackSpeed } from '../state/actions/player'
+import { playLastFromHistory, playNextFromQueue, setContinousPlaybackMode, setPlaybackSpeed } from '../state/actions/player'
 import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 type Props = {
   navigation: any
@@ -11,6 +12,7 @@ type Props = {
 
 type State = {
   progressValue: number
+  shouldContinuouslyPlay: boolean
 }
 
 export class PlayerControls extends React.PureComponent<Props, State> {
@@ -19,7 +21,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     super(props)
 
     this.state = {
-      progressValue: 0
+      progressValue: 0,
+      shouldContinuouslyPlay: this.global.player.shouldContinuouslyPlay
     }
   }
 
@@ -46,10 +49,17 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     this.setState({ progressValue })
   }
 
+  _toggleContinuousPlaybackMode = async () => {
+    const shouldContinuouslyPlay = await setContinousPlaybackMode(
+      !this.global.player.shouldContinuouslyPlay, this.global
+    )
+    this.setState({ shouldContinuouslyPlay })
+  }
+
   render() {
     const { progressValue } = this.state
     const { globalTheme, player, session } = this.global
-    const { playbackRate, playbackState } = player
+    const { playbackRate, playbackState, shouldContinuouslyPlay } = player
     const { historyItems = [], queueItems = [] } = session.userInfo
     const hasHistoryItem = historyItems.length > 1
     const hasQueueItem = queueItems.length > 1
@@ -104,18 +114,19 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </TouchableOpacity>
         </View>
         <View style={styles.bottomRow}>
-          <TouchableOpacity
+          <TouchableWithoutFeedback
             onPress={this._adjustSpeed}
             style={styles.speed}>
             <Text style={styles.bottomRowText}>{`${playbackRate}X`}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => console.log('continuous play')}
-            style={styles.icon}>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPress={this._toggleContinuousPlaybackMode}
+            style={[styles.icon]}>
             <Icon
               name='infinity'
-              size={24} />
-          </TouchableOpacity>
+              size={24}
+              style={shouldContinuouslyPlay ? globalTheme.buttonActive : null} />
+          </TouchableWithoutFeedback>
         </View>
       </View>
     )

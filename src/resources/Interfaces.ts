@@ -57,6 +57,7 @@ export interface InitialState {
     isPlaying: boolean
     nowPlayingItem: any
     playbackRate: number
+    shouldContinuouslyPlay: boolean
     showMiniPlayer: boolean
   }
   screenPlayer: {
@@ -85,6 +86,10 @@ export interface InitialState {
   screenPlaylistsAddTo: {
     myPlaylists: []
   }
+  screenProfile: {
+    flatListData: []
+    user: any
+  }
   screenProfiles: {
     flatListData: []
   }
@@ -92,7 +97,10 @@ export interface InitialState {
     userInfo: UserInfo,
     isLoggedIn: boolean
   }
-  subscribedPodcasts: [{}]
+  settings: {
+    nsfwMode: boolean
+  }
+  subscribedPodcasts: []
 }
 
 export interface IActionSheet {

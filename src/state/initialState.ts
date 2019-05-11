@@ -7,6 +7,7 @@ const initialTheme: InitialState = {
     isPlaying: false,
     nowPlayingItem: null,
     playbackRate: 1,
+    shouldContinuouslyPlay: false,
     showMiniPlayer: false
   },
   screenPlayer: {
@@ -43,6 +44,13 @@ const initialTheme: InitialState = {
   },
   session: {
     userInfo: {
+      email: '',
+      freeTrialExpiration: '',
+      historyItems: [],
+      id: '',
+      membershipExpiration: null,
+      name: '',
+      playlists: [],
       subscribedPlaylistIds: [],
       subscribedPodcastIds: [],
       subscribedUserIds: []

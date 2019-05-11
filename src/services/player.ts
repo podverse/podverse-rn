@@ -76,6 +76,19 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
   }
 }
 
+export const getContinuousPlaybackMode = async () => {
+  const itemString = await RNSecureKeyStore.get(PV.Keys.SHOULD_CONTINUOUSLY_PLAY)
+  return JSON.parse(itemString)
+}
+
+export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean) => {
+  await RNSecureKeyStore.set(
+    PV.Keys.SHOULD_CONTINUOUSLY_PLAY,
+    JSON.stringify(shouldContinuouslyPlay),
+    { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY }
+  )
+}
+
 export const setPlaybackSpeed = async (rate: number) => {
   await TrackPlayer.setRate(rate)
 }

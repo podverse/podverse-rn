@@ -31,6 +31,12 @@ export const darkTheme = StyleSheet.create({
   activityIndicator: {
     color: PV.Colors.grayLighter
   },
+  buttonActive: {
+    color: PV.Colors.blueLighter
+  },
+  buttonError: {
+    color: PV.Colors.red
+  },
   buttonGroup: {
     backgroundColor: PV.Colors.grayDarkest
   },
@@ -155,6 +161,12 @@ export const lightTheme = StyleSheet.create({
   },
   activityIndicator: {
     color: PV.Colors.grayDarker
+  },
+  buttonActive: {
+    color: PV.Colors.blueDarker
+  },
+  buttonError: {
+    color: PV.Colors.red
   },
   buttonGroup: {
     backgroundColor: PV.Colors.grayLightest

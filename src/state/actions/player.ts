@@ -6,8 +6,8 @@ import { PV } from '../../resources'
 import { getEpisode } from '../../services/episode'
 import { popLastFromHistoryItems } from '../../services/history'
 import { getMediaRef } from '../../services/mediaRef'
-import { PVTrackPlayer, setNowPlayingItem as setNowPlayingItemService, setPlaybackSpeed as setPlaybackSpeedService
-  } from '../../services/player'
+import { getContinuousPlaybackMode, PVTrackPlayer, setContinuousPlaybackMode as setContinuousPlaybackModeService,
+  setNowPlayingItem as setNowPlayingItemService, setPlaybackSpeed as setPlaybackSpeedService } from '../../services/player'
 import { addQueueItemNext, popNextFromQueue } from '../../services/queue'
 
 export const getPlayingEpisode = async (id: string, globalState: any) => {
@@ -30,6 +30,16 @@ export const getPlayingMediaRef = async (mediaRefId: string, globalState: any) =
     player: {
       ...globalState.player,
       mediaRef
+    }
+  })
+}
+
+export const initPlayerState = async (globalState: any) => {
+  const shouldContinuouslyPlay = await getContinuousPlaybackMode()
+  setGlobal({
+    player: {
+      ...globalState.player,
+      shouldContinuouslyPlay
     }
   })
 }
@@ -73,8 +83,8 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
       newState.screenPlayer = {
         ...globalState.screenPlayer,
         isLoading: true,
-        viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES,
-        showFullClipInfo: false
+        showFullClipInfo: false,
+        viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES
       }
     }
 
@@ -111,6 +121,18 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
 
     return {}
   }
+}
+
+export const setContinousPlaybackMode = async (shouldContinuouslyPlay: boolean, globalState: any) => {
+  await setContinuousPlaybackModeService(shouldContinuouslyPlay)
+  setGlobal({
+    player: {
+      ...globalState.player,
+      shouldContinuouslyPlay
+    }
+  })
+
+  return shouldContinuouslyPlay
 }
 
 export const setPlaybackSpeed = async (rate: number, globalState: any) => {
