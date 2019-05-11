@@ -1,4 +1,5 @@
-import { NowPlayingItem } from "./NowPlayingItem";
+import he from 'he'
+import { NowPlayingItem } from './NowPlayingItem'
 
 export const readableDate = (date: string) => {
   const dateObj = new Date(date)
@@ -66,9 +67,12 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
   }
 }
 
-export const removeHTMLFromString = (text: string) => {
-  const regex = /(<([^>]+)>)/ig
-  return text.replace(regex, '')
+export const removeHTMLFromAndDecodeString = (text: string) => {
+  const htmlEntitiesRegex = /(<([^>]+)>)|(\r?\n|\r)/ig
+  const str = text.replace(htmlEntitiesRegex, '')
+  const limitSingleSpaceRegex = /\s\s+/g
+  const finalString = str.replace(limitSingleSpaceRegex, ' ')
+  return he.decode(finalString)
 }
 
 export const generateAuthorsText = (authors: any) => {

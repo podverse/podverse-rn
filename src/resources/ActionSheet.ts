@@ -8,15 +8,15 @@ const mediaMoreButtons = (item: any, isLoggedIn: boolean, globalState: any, navi
     key: 'stream',
     text: 'Stream',
     onPress: async () => {
-      handleDismiss()
+      await handleDismiss()
       await setNowPlayingItem(item, isLoggedIn, globalState)
     }
   },
   {
     key: 'download',
     text: 'Download',
-    onPress: () => {
-      handleDismiss()
+    onPress: async () => {
+      await handleDismiss()
       console.log('Download')
     }
   },
@@ -24,7 +24,7 @@ const mediaMoreButtons = (item: any, isLoggedIn: boolean, globalState: any, navi
     key: 'queueNext',
     text: 'Queue: Next',
     onPress: async () => {
-      handleDismiss()
+      await handleDismiss()
       await addQueueItemNext(item, isLoggedIn, globalState)
     }
   },
@@ -32,15 +32,15 @@ const mediaMoreButtons = (item: any, isLoggedIn: boolean, globalState: any, navi
     key: 'queueLast',
     text: 'Queue: Last',
     onPress: async () => {
-      handleDismiss()
+      await handleDismiss()
       await addQueueItemLast(item, isLoggedIn, globalState)
     }
   },
   {
     key: 'addToPlaylist',
     text: 'Add to Playlist',
-    onPress: () => {
-      handleDismiss()
+    onPress: async () => {
+      await handleDismiss()
       navigation.navigate(
         PV.RouteNames.PlaylistsAddToScreen,
         { ...(item.clipId ? { mediaRefId: item.clipId } : { episodeId: item.episodeId }) }

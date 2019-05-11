@@ -5,10 +5,11 @@ import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, E
   HTMLScrollView, Icon, NavAddToPlaylistIcon, NavQueueIcon, NavShareIcon, PlayerClipInfoBar, PlayerControls,
   PlayerTableHeader, SafeAreaView, TableSectionHeader, TableSectionSelectors, View } from '../components'
 import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
-import { readableDate, removeHTMLFromString } from '../lib/utility'
+import { readableDate, removeHTMLFromAndDecodeString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
+import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core, navHeader } from '../styles'
 
 type Props = {
@@ -209,11 +210,13 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _handleMoreCancelPress = () => {
-    setGlobal({
-      screenPlayer: {
-        ...this.global.screenPlayer,
-        showMoreActionSheet: false
-      }
+    return new Promise((resolve, reject) => {
+      setGlobal({
+        screenPlayer: {
+          ...this.global.screenPlayer,
+          showMoreActionSheet: false
+        }
+      }, () => resolve())
     })
   }
 
@@ -263,8 +266,9 @@ export class PlayerScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleToggleSubscribe = async () => {
-    console.log('toggle subscribe')
+  _handleToggleSubscribe = () => {
+    toggleSubscribeToPodcast(this.global.player.nowPlayingItem.podcastId, this.global)
+    this._dismissHeaderActionSheet()
   }
 
   _handleNavToPodcastScreen = async () => {
@@ -298,7 +302,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       return (
         <EpisodeTableCell
           key={item.id}
-          description={removeHTMLFromString(item.description)}
+          description={removeHTMLFromAndDecodeString(item.description)}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => console.log('handle episode press')}
           pubDate={item.pubDate}
@@ -493,8 +497,8 @@ export class PlayerScreen extends React.Component<Props, State> {
         onPress: this._handleToggleSubscribe
       },
       {
-        key: 'podcast',
-        text: 'Podcast',
+        key: 'podcastPage',
+        text: 'Podcast Page',
         onPress: () => {
           this._dismissHeaderActionSheet()
           navigation.navigate(

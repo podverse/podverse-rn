@@ -25,6 +25,7 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
         onPress={() => navigation.navigate(PV.RouteNames.PlayerScreen, { nowPlayingItem })}>
         <View style={[styles.player, globalTheme.player]}>
           <Image
+            key={nowPlayingItem.podcastImageUrl}
             resizeMode='contain'
             source={{ uri: nowPlayingItem.podcastImageUrl }}
             style={styles.image} />

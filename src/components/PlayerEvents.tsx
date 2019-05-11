@@ -12,7 +12,6 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
   componentDidMount() {
     this._onTrackChanged = PVTrackPlayer.addEventListener('playback-track-changed', async (data) => {
       console.log('_onTrackChanged')
-      console.log(data)
     })
 
     this._onStateChanged = PVTrackPlayer.addEventListener('playback-state', async (data) => {
@@ -21,12 +20,10 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
 
     this._onQueueEnded = PVTrackPlayer.addEventListener('playback-queue-ended', async (data) => {
       console.log('_onQueueEnded')
-      console.log(data)
     })
 
     this._onError = PVTrackPlayer.addEventListener('playback-error', async (data) => {
       console.log('_onError')
-      console.log(data)
     })
   }
 

@@ -3,7 +3,7 @@ import React from 'reactn'
 import { ActionSheet, ActivityIndicator, Divider, EpisodeTableCell, FlatList, SearchBar,
   TableSectionSelectors, View } from '../components'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { removeHTMLFromString } from '../lib/utility'
+import { removeHTMLFromAndDecodeString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { core } from '../styles'
@@ -124,7 +124,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _handleCancelPress = () => {
-    this.setState({ showActionSheet: false })
+    return new Promise((resolve, reject) => {
+      this.setState({ showActionSheet: false }, () => resolve())
+    })
   }
 
   _handleMorePress = (selectedItem: any) => {
@@ -137,7 +139,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   _renderEpisodeItem = ({ item }) => (
     <EpisodeTableCell
         key={item.id}
-        description={removeHTMLFromString(item.description)}
+        description={removeHTMLFromAndDecodeString(item.description)}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
         handleNavigationPress={() => this.props.navigation.navigate(
           PV.RouteNames.EpisodeScreen, { episode: item }
