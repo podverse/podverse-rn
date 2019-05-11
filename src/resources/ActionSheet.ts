@@ -3,6 +3,9 @@ import { setNowPlayingItem } from '../state/actions/player'
 import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
 import { PV } from './PV'
 
+// NOTE: handleDismiss should return a promiseto ensure the state update has completed before calling
+// setNowPlayingItem. setNowPlayingItem seems to be resource intensive, and will delay re-rendering of
+// handleDismiss without the promise.
 const mediaMoreButtons = (item: any, isLoggedIn: boolean, globalState: any, navigation: any, handleDismiss: any) => [
   {
     key: 'stream',

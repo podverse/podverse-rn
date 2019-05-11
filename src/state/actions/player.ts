@@ -65,8 +65,6 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
       },
       screenPlayer: {
         ...globalState.screenPlayer,
-        ...(isNewEpisode ? { isLoading: true } : {}),
-        ...(isNewEpisode ? { viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES } : {}),
         showFullClipInfo: false
       }
     } as any
@@ -75,6 +73,8 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isLoggedIn: boolea
       newState.screenPlayer = {
         ...globalState.screenPlayer,
         isLoading: true,
+        viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES,
+        showFullClipInfo: false
       }
     }
 
