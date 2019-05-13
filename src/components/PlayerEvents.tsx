@@ -1,8 +1,9 @@
 import { StyleSheet, View } from 'react-native'
 import React from 'reactn'
-import { PVTrackPlayer, setPlaybackPosition } from '../services/player'
-import { handleResumeAfterClipHasEnded, playNextFromQueue, setClipHasEnded, setPlaybackState
-  } from '../state/actions/player'
+import { PV } from '../resources'
+import { getNowPlayingItem } from '../services/player'
+import PlayerEventEmitter from '../services/playerEventEmitter'
+import { playNextFromQueue, setNowPlayingItem, updatePlaybackState } from '../state/actions/player'
 
 type Props = {}
 
@@ -11,33 +12,34 @@ type State = {}
 export class PlayerEvents extends React.PureComponent<Props, State> {
 
   componentDidMount() {
-    this._onTrackChanged = PVTrackPlayer.addEventListener('playback-track-changed', async (data) => {
-
-    })
-
-    this._onStateChanged = PVTrackPlayer.addEventListener('playback-state', async (data) => {
-
-    })
-
-    this._onQueueEnded = PVTrackPlayer.addEventListener('playback-queue-ended', async (data) => {
-      const { player, session } = this.global
-      // const { shouldContinuouslyPlay } = player
-      // const { queueItems } = session.userInfo
-      // if (shouldContinuouslyPlay && queueItems.length > 0) {
-      //   await playNextFromQueue(session.isLoggedIn, this.global)
-      // }
-    })
-
-    this._onError = PVTrackPlayer.addEventListener('playback-error', async (data) => {
-      console.log('_onError')
-    })
+    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handlePlayerQueueEnded)
+    PlayerEventEmitter.on(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED, this._handlePlayerResumeAfterClipHasEnded)
+    PlayerEventEmitter.on(PV.Events.PLAYER_STATE_CHANGED, this._handlePlayerStateUpdated)
   }
 
   componentWillUnmount() {
-    this._onTrackChanged.remove()
-    this._onStateChanged.remove()
-    this._onQueueEnded.remove()
-    this._onError.remove()
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_QUEUE_ENDED)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_STATE_CHANGED)
+  }
+
+  _handlePlayerQueueEnded = async () => {
+    const { player, session } = this.global
+    const { shouldContinuouslyPlay } = player
+    const { queueItems } = session.userInfo
+
+    if (shouldContinuouslyPlay && queueItems.length > 0) {
+      await playNextFromQueue(session.isLoggedIn, this.global)
+    }
+  }
+
+  _handlePlayerResumeAfterClipHasEnded = async () => {
+    const nowPlayingItem = await getNowPlayingItem()
+    await setNowPlayingItem(nowPlayingItem, this.global)
+  }
+
+  _handlePlayerStateUpdated = async () => {
+    await updatePlaybackState(this.global)
   }
 
   render() {

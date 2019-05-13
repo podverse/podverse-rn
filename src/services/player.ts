@@ -3,6 +3,7 @@ import linkifyHtml from 'linkifyjs/html'
 import TrackPlayer from 'react-native-track-player'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
+import PlayerEventEmitter from '../services/playerEventEmitter'
 import { getBearerToken } from './auth'
 import { getEpisode } from './episode'
 import { addOrUpdateHistoryItem } from './history'
@@ -50,6 +51,7 @@ export const handleResumeAfterClipHasEnded = async () => {
   const nowPlayingItem = await getNowPlayingItem()
   const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(nowPlayingItem)
   await setNowPlayingItem(nowPlayingItemEpisode)
+  PlayerEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
 export const playerJumpBackward = async (seconds: number) => {
@@ -76,12 +78,14 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
   const isNewEpisode = !lastNowPlayingItem || episodeId !== lastNowPlayingItem.episodeId
   const isNewMediaRef = clipId && (!lastNowPlayingItem || clipId !== lastNowPlayingItem.clipId)
 
+  await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
+
   await setClipHasEnded(false)
 
+  const isTrackLoaded = await TrackPlayer.getCurrentTrack()
   const id = clipId || episodeId
-  if (id && isNewEpisode) {
-    const shouldSkipToNext = await TrackPlayer.getCurrentTrack()
 
+  if (id && (!isTrackLoaded || isNewEpisode)) {
     await TrackPlayer.add({
       id,
       url: episodeMediaUrl,
@@ -90,7 +94,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
       ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
     })
 
-    if (shouldSkipToNext) {
+    if (isTrackLoaded) {
       await TrackPlayer.skipToNext()
     }
   }
@@ -114,7 +118,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
     await setNowPlayingItemMediaRef(clipId)
   }
 
-  AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
+  PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
   return {
     nowPlayingItem: item,
@@ -127,10 +131,7 @@ export const setClipHasEnded = async (clipHasEnded: boolean) => {
 }
 
 export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean) => {
-  await AsyncStorage.setItem(
-    PV.Keys.SHOULD_CONTINUOUSLY_PLAY,
-    JSON.stringify(shouldContinuouslyPlay)
-  )
+  await AsyncStorage.setItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY, JSON.stringify(shouldContinuouslyPlay))
 }
 
 export const setNowPlayingItemEpisode = async (id: string) => {
@@ -138,19 +139,13 @@ export const setNowPlayingItemEpisode = async (id: string) => {
   episode.description = episode.description || 'No summary available.'
   episode.description = linkifyHtml(episode.description)
 
-  await AsyncStorage.setItem(
-    PV.Keys.NOW_PLAYING_ITEM_EPISODE,
-    JSON.stringify(episode)
-  )
+  await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM_EPISODE, JSON.stringify(episode))
 }
 
 export const setNowPlayingItemMediaRef = async (id: string) => {
   const mediaRef = await getMediaRef(id)
 
-  await AsyncStorage.setItem(
-    PV.Keys.NOW_PLAYING_ITEM_MEDIA_REF,
-    JSON.stringify(mediaRef)
-  )
+  await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM_MEDIA_REF, JSON.stringify(mediaRef))
 }
 
 export const setPlaybackSpeed = async (rate: number) => {

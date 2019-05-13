@@ -29,6 +29,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
   _adjustSpeed = async () => {
     const { playbackRate } = this.global.player
     const index = speeds.indexOf(playbackRate)
+
     let newSpeed
     if (speeds.length - 1 === index) {
       newSpeed = speeds[0]
@@ -114,19 +115,14 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </TouchableOpacity>
         </View>
         <View style={styles.bottomRow}>
-          <TouchableWithoutFeedback
-            onPress={this._adjustSpeed}
-            style={styles.speed}>
-            <Text style={styles.bottomRowText}>{`${playbackRate}X`}</Text>
+          <TouchableWithoutFeedback onPress={this._adjustSpeed}>
+            <Text style={[styles.bottomButton, styles.bottomRowText]}>{`${playbackRate}X`}</Text>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
+          <Icon
+            name='infinity'
             onPress={this._toggleContinuousPlaybackMode}
-            style={[styles.icon]}>
-            <Icon
-              name='infinity'
-              size={24}
-              style={shouldContinuouslyPlay ? globalTheme.buttonActive : null} />
-          </TouchableWithoutFeedback>
+            size={24}
+            style={[styles.bottomButton, shouldContinuouslyPlay ? globalTheme.buttonActive : {}]} />
         </View>
       </View>
     )
@@ -150,6 +146,11 @@ const speeds = [
 ]
 
 const styles = StyleSheet.create({
+  bottomButton: {
+    paddingVertical: 4,
+    textAlign: 'center',
+    width: 54
+  },
   bottomRow: {
     alignItems: 'center',
     flexDirection: 'row',
