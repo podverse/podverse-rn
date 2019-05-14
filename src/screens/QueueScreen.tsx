@@ -65,9 +65,9 @@ export class QueueScreen extends React.Component<Props, State> {
                       <TouchableOpacity onPress={navigation.getParam('_clearAll')}>
                         <Text style={navHeader.buttonText}>Clear</Text>
                       </TouchableOpacity>
-                        <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
-                          <Text style={[navHeader.buttonText, styles.navHeaderTextButton]}>Done</Text>
-                        </TouchableOpacity>
+                      <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
+                        <Text style={[navHeader.buttonText, styles.navHeaderTextButton]}>Done</Text>
+                      </TouchableOpacity>
                     </View>
                   )
                 }

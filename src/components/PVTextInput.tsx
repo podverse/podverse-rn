@@ -24,7 +24,7 @@ export const PVTextInput = (props: Props) => {
       keyboardType={keyboardType}
       onChangeText={onChangeText}
       placeholder={placeholder}
-      placeholderTextColor={globalTheme.textInputPlaceholder.color}
+      placeholderTextColor={globalTheme.placeholderText.color}
       secureTextEntry={secureTextEntry}
       style={[globalTheme.textInput, core.textInput, style]}
       underlineColorAndroid={underlineColorAndroid}

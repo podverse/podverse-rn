@@ -68,6 +68,14 @@ export const playerJumpForward = async (seconds: number) => {
   return newPosition
 }
 
+export const setClipHasEnded = async (clipHasEnded: boolean) => {
+  await AsyncStorage.setItem(PV.Keys.CLIP_HAS_ENDED, JSON.stringify(clipHasEnded))
+}
+
+export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean) => {
+  await AsyncStorage.setItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY, JSON.stringify(shouldContinuouslyPlay))
+}
+
 export const setNowPlayingItem = async (item: NowPlayingItem) => {
   const bearerToken = await getBearerToken()
   const isLoggedIn = !!bearerToken
@@ -124,14 +132,6 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
     nowPlayingItem: item,
     queueItems: filteredItems
   }
-}
-
-export const setClipHasEnded = async (clipHasEnded: boolean) => {
-  await AsyncStorage.setItem(PV.Keys.CLIP_HAS_ENDED, JSON.stringify(clipHasEnded))
-}
-
-export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean) => {
-  await AsyncStorage.setItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY, JSON.stringify(shouldContinuouslyPlay))
 }
 
 export const setNowPlayingItemEpisode = async (id: string) => {

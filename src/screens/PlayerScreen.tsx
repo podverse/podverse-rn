@@ -2,13 +2,15 @@ import { Share, StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, EpisodeTableCell, FlatList,
-  HTMLScrollView, Icon, NavAddToPlaylistIcon, NavQueueIcon, NavShareIcon, PlayerClipInfoBar, PlayerControls,
-  PlayerTableHeader, SafeAreaView, TableSectionHeader, TableSectionSelectors, View } from '../components'
+  HTMLScrollView, Icon, NavAddToPlaylistIcon, NavMakeClipIcon, NavQueueIcon, NavShareIcon, PlayerClipInfoBar,
+  PlayerControls, PlayerTableHeader, SafeAreaView, TableSectionHeader, TableSectionSelectors, View
+  } from '../components'
 import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
 import { readableDate, removeHTMLFromAndDecodeString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
+import { PVTrackPlayer } from '../services/player'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core, navHeader } from '../styles'
 
@@ -25,6 +27,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const _getMediaRefId = navigation.getParam('_getMediaRefId')
     const _showShareActionSheet = navigation.getParam('_showShareActionSheet')
     const _getGlobalTheme = navigation.getParam('_getGlobalTheme')
+    const _getInitialProgressValue = navigation.getParam('_getInitialProgressValue')
 
     return {
       title: '',
@@ -38,6 +41,9 @@ export class PlayerScreen extends React.Component<Props, State> {
       ),
       headerRight: (
         <RNView style={core.row}>
+          <NavMakeClipIcon
+            getInitialProgressValue={_getInitialProgressValue}
+            navigation={navigation} />
           <NavAddToPlaylistIcon
             getEpisodeId={_getEpisodeId}
             getGlobalTheme={_getGlobalTheme}
@@ -59,6 +65,7 @@ export class PlayerScreen extends React.Component<Props, State> {
   async componentDidMount() {
     this.props.navigation.setParams({ _getEpisodeId: this._getEpisodeId })
     this.props.navigation.setParams({ _getMediaRefId: this._getMediaRefId })
+    this.props.navigation.setParams({ _getInitialProgressValue: this._getInitialProgressValue })
     this.props.navigation.setParams({ _getGlobalTheme: this._getGlobalTheme })
     this.props.navigation.setParams({ _showShareActionSheet: this._showShareActionSheet })
   }
@@ -71,6 +78,11 @@ export class PlayerScreen extends React.Component<Props, State> {
   _getMediaRefId = () => {
     const { nowPlayingItem } = this.global.player
     return nowPlayingItem.clipId
+  }
+
+  _getInitialProgressValue = async () => {
+    const initialProgressValue = await PVTrackPlayer.getPosition()
+    return initialProgressValue
   }
 
   _getGlobalTheme = () => {

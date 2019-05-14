@@ -4,6 +4,7 @@ import { PV } from '../resources'
 import { playerJumpBackward, playerJumpForward, PVTrackPlayer } from '../services/player'
 import { playLastFromHistory, playNextFromQueue, setContinousPlaybackMode, setPlaybackSpeed, togglePlay
   } from '../state/actions/player'
+import { playerStyles } from '../styles'
 import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 
 type Props = {
@@ -67,26 +68,28 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
-        <PlayerProgressBar value={progressValue} />
+        <View style={styles.progressWrapper}>
+          <PlayerProgressBar value={progressValue} />
+        </View>
         <View style={styles.middleRow}>
           <TouchableOpacity
             disabled={!hasHistoryItem}
             onPress={() => playLastFromHistory(this.global.session.isLoggedIn, this.global)}
-            style={hasHistoryItem ? styles.icon : styles.iconDisabled}>
+            style={hasHistoryItem ? playerStyles.icon : playerStyles.iconDisabled}>
             <Icon
               name='step-backward'
               size={32} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this._playerJumpBackward}
-            style={styles.icon}>
+            style={playerStyles.icon}>
             <Icon
               name='undo-alt'
               size={32} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => togglePlay(this.global)}
-            style={styles.iconLarge}>
+            style={playerStyles.iconLarge}>
             {
               playbackState !== PVTrackPlayer.STATE_BUFFERING &&
                 <Icon
@@ -100,7 +103,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this._playerJumpForward}
-            style={styles.icon}>
+            style={playerStyles.icon}>
             <Icon
               name='redo-alt'
               size={32} />
@@ -108,7 +111,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           <TouchableOpacity
             disabled={!hasQueueItem}
             onPress={() => playNextFromQueue(this.global.session.isLoggedIn, this.global)}
-            style={hasQueueItem ? styles.icon : styles.iconDisabled}>
+            style={hasQueueItem ? playerStyles.icon : playerStyles.iconDisabled}>
             <Icon
               name='step-forward'
               size={32} />
@@ -161,25 +164,14 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold
   },
-  icon: {
-    paddingHorizontal: 12,
-    paddingVertical: 4
-  },
-  iconDisabled: {
-    opacity: 0.5,
-    paddingHorizontal: 12,
-    paddingVertical: 4
-  },
-  iconLarge: {
-    minWidth: 74,
-    paddingHorizontal: 12,
-    paddingVertical: 4
-  },
   middleRow: {
     alignItems: 'center',
     flexDirection: 'row',
     height: 60,
     justifyContent: 'space-around'
+  },
+  progressWrapper: {
+    marginBottom: 8
   },
   speed: {
     alignItems: 'center',

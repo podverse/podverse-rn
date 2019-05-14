@@ -1,5 +1,3 @@
-import { NowPlayingItem } from '../lib/NowPlayingItem'
-
 export interface GlobalTheme {
   actionSheetButton?: any
   actionSheetButtonCancel?: any
@@ -21,6 +19,8 @@ export interface GlobalTheme {
   flatList?: any
   inputContainerText?: any
   link?: any
+  makeClipPlayerControlsWrapper?: any
+  placeholderText?: any
   player?: any
   playerText?: any
   selectorText?: any

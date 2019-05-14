@@ -78,8 +78,14 @@ export const darkTheme = StyleSheet.create({
   link: {
     color: PV.Colors.blueLighter
   },
+  makeClipPlayerControlsWrapper: {
+    backgroundColor: PV.Colors.grayDarker
+  },
   modalBackdrop: {
     backgroundColor: '#00000050'
+  },
+  placeholderText: {
+    color: PV.Colors.grayLighter
   },
   player: {
     borderColor: PV.Colors.grayDarker
@@ -116,12 +122,9 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   textInput: {
-    backgroundColor: PV.Colors.black,
-    borderColor: PV.Colors.grayDarker,
+    backgroundColor: PV.Colors.grayDarker,
+    borderColor: PV.Colors.gray,
     color: PV.Colors.white
-  },
-  textInputPlaceholder: {
-    color: PV.Colors.gray
   },
   textInputWrapper: {
     backgroundColor: PV.Colors.black,
@@ -209,8 +212,14 @@ export const lightTheme = StyleSheet.create({
   link: {
     color: PV.Colors.blueDarker
   },
+  makeClipPlayerControlsWrapper: {
+    backgroundColor: PV.Colors.grayLighter
+  },
   modalBackdrop: {
     backgroundColor: '#00000050'
+  },
+  placeholderText: {
+    color: PV.Colors.grayDarker
   },
   player: {
     borderColor: PV.Colors.grayLighter
@@ -247,12 +256,9 @@ export const lightTheme = StyleSheet.create({
     color: PV.Colors.black
   },
   textInput: {
-    backgroundColor: PV.Colors.white,
-    borderColor: PV.Colors.grayLighter,
+    backgroundColor: PV.Colors.grayLighter,
+    borderColor: PV.Colors.gray,
     color: PV.Colors.black
-  },
-  textInputPlaceholder: {
-    color: PV.Colors.gray
   },
   textInputWrapper: {
     backgroundColor: PV.Colors.white,
@@ -326,21 +332,17 @@ export const core = StyleSheet.create({
     borderWidth: 1
   },
   textInput: {
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.xl,
     height: 44,
+    lineHeight: 44,
     marginVertical: 4,
     paddingLeft: 8,
     paddingRight: 8
   },
-  textInputWrapper: {
-    alignItems: 'center',
-    borderRadius: 4,
-    borderWidth: 1,
-    flexDirection: 'row',
-    height: 34,
-    justifyContent: 'center',
-    marginLeft: 8,
-    marginRight: 8
+  textInputLabel: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    marginBottom: 8
   },
   view: {
     alignItems: 'center',
@@ -358,10 +360,28 @@ export const navHeader = StyleSheet.create({
   },
   buttonText: {
     color: PV.Colors.white,
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.xl,
     height: 44,
     lineHeight: 44,
+    marginRight: 4,
     paddingHorizontal: 12
+  }
+})
+
+export const playerStyles = StyleSheet.create({
+  icon: {
+    paddingHorizontal: 12,
+    paddingVertical: 4
+  },
+  iconDisabled: {
+    opacity: 0.5,
+    paddingHorizontal: 12,
+    paddingVertical: 4
+  },
+  iconLarge: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    width: 74
   }
 })
 

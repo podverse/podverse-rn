@@ -52,7 +52,7 @@ module.exports = async () => {
     PlayerEventEmitter.emit(PV.Events.PLAYER_QUEUE_ENDED)
   })
 
-  PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error'))
+  PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
 
   PVTrackPlayer.addEventListener('remote-play', (x) => console.log('remote play'))
 
