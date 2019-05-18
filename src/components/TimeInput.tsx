@@ -26,13 +26,16 @@ export const TimeInput = (props: Props) => {
     <View style={wrapperStyle}>
       <View style={core.row}>
         <Text style={core.textInputLabel}>{labelText}</Text>
-        <TouchableOpacity onPress={handlePreview}>
-          <Icon
-            color={globalTheme.link.color}
-            name='play'
-            size={16}
-            style={styles.previewIcon} />
-        </TouchableOpacity>
+        {
+          (time || time === 0) &&
+            <TouchableOpacity onPress={handlePreview}>
+              <Icon
+                color={globalTheme.link.color}
+                name='play'
+                size={16}
+                style={styles.previewIcon} />
+            </TouchableOpacity>
+        }
       </View>
       <View style={core.row}>
         <View style={styles.timeInputWrapper}>
