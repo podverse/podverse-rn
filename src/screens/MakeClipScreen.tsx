@@ -1,4 +1,6 @@
-import { Image, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
+import { Image, Modal, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
+import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInput, TimeInput, View
   } from '../components'
@@ -12,8 +14,10 @@ type Props = {
 }
 
 type State = {
-  endTime?: number
+  endTime: number | null
+  isPublicItemSelected: any
   progressValue: number
+  showHowToModal?: boolean
   startTime?: number
   title?: string
 }
@@ -45,6 +49,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
     this.state = {
       endTime: isEditing ? nowPlayingItem.clipEndTime : null,
+      isPublicItemSelected: placeholderItem,
       progressValue: initialProgressValue || 0,
       startTime: isEditing ? nowPlayingItem.clipStartTime : null,
       title: isEditing ? nowPlayingItem.clipTitle : ''
@@ -58,27 +63,39 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const currentPosition = await PVTrackPlayer.getPosition()
     const isEditing = this.props.navigation.getParam('isEditing')
 
-    if (!isEditing) {
-      this.setState({
-        startTime: currentPosition
-      })
-    }
+    const hideHowToModal = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED)
+    const isPublic = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_IS_PUBLIC)
+
+    this.setState({
+      ...(!hideHowToModal ? { showHowToModal: true } : { showHowToModal: false }),
+      ...(!isEditing ? { startTime: currentPosition } : {}),
+      ...(isPublic || isPublic === null ? { isPublicItemSelected: privacyItems[0] }
+        : { isPublicItemSelected: privacyItems[1] })
+    })
   }
 
   _onChangeTitle = (text: string) => {
     this.setState({ title: text })
   }
 
-  _setStartTime = () => {
-    console.log('set start time')
+  _handleSelectPrivacy = async (selectedKey: string) => {
+    const items = [placeholderItem, ...privacyItems]
+    const selectedItem = items.find((x) => x.value === selectedKey)
+    this.setState({ isPublicItemSelected: selectedItem })
   }
 
-  _setEndTime = () => {
-    console.log('set end time')
+  _setStartTime = async () => {
+    const currentPosition = await PVTrackPlayer.getPosition()
+    this.setState({ startTime: currentPosition })
+  }
+
+  _setEndTime = async () => {
+    const currentPosition = await PVTrackPlayer.getPosition()
+    this.setState({ endTime: currentPosition })
   }
 
   _clearEndTime = () => {
-    console.log('clear end time')
+    this.setState({ endTime: null })
   }
 
   _saveMediaRef = () => {
@@ -89,8 +106,13 @@ export class MakeClipScreen extends React.Component<Props, State> {
     console.log('update')
   }
 
-  _showHowTo = () => {
-    console.log('show how to')
+  _hideHowTo = () => {
+    this.setState({ showHowToModal: false })
+  }
+
+  _showHowTo = async () => {
+    await AsyncStorage.setItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED, JSON.stringify(true))
+    this.setState({ showHowToModal: true })
   }
 
   _playerJumpBackward = async () => {
@@ -106,15 +128,26 @@ export class MakeClipScreen extends React.Component<Props, State> {
   render() {
     const { globalTheme, player } = this.global
     const { nowPlayingItem, playbackState } = player
-    const { endTime, progressValue, startTime, title } = this.state
+    const { endTime, isPublicItemSelected, progressValue, showHowToModal, startTime, title } = this.state
 
     return (
       <SafeAreaView>
         <View style={styles.view}>
           <View style={styles.wrapperTop}>
-            <Text style={core.textInputLabel}>
-              Clip Title
-            </Text>
+            <View style={core.row}>
+              <Text style={[core.textInputLabel, styles.textInputLabel]}>
+                Clip Title
+              </Text>
+              <RNPickerSelect
+                items={privacyItems}
+                onValueChange={this._handleSelectPrivacy}
+                placeholder={placeholderItem}
+                value={isPublicItemSelected.value}>
+                <Text style={[styles.isPublicText, globalTheme.text]}>
+                  {isPublicItemSelected.label} &#9662;
+                </Text>
+              </RNPickerSelect>
+            </View>
             <TextInput
               autoCapitalize='none'
               onChangeText={this._onChangeTitle}
@@ -178,17 +211,63 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   size={32} />
               </TouchableOpacity>
             </RNView>
-            <View style={styles.bottomButtonRow}>
-              <TouchableOpacity onPress={this._showHowTo}>
-                <Text style={styles.bottomButton}>How To</Text>
-              </TouchableOpacity>
-            </View>
+            <View style={styles.bottomButtonRow} />
           </View>
         </View>
+        {
+          showHowToModal &&
+            <Modal
+              transparent={true}
+              visible={showHowToModal}>
+              <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
+                <RNView style={[styles.modalInnerWrapper, globalTheme.modalInnerWrapper]}>
+                  <Text style={styles.modalText}>
+                    - Tap the Start and End Time boxes to set them with the current playback time.
+                  </Text>
+                  <Text style={styles.modalText}>
+                    - Swipe left and right on the bottom play button bar to adjust time more precisely.
+                  </Text>
+                  <Text style={styles.modalText}>
+                    - If you set the privacy of a clip to "Only with link",
+                    then only people with a link to that clip will be able to play it.
+                  </Text>
+                  <Text style={styles.modalText}>
+                    - If the podcast uses dynamically inserted ads, the clip start/end times may be inaccurate.
+                  </Text>
+                  <Text style={styles.modalText}>
+                    - For more info, visit podverse.fm/faq
+                  </Text>
+                  <TouchableOpacity
+                    onPress={this._hideHowTo}>
+                    <Text style={styles.modalButton}>Close</Text>
+                  </TouchableOpacity>
+                </RNView>
+              </RNView>
+            </Modal>
+        }
       </SafeAreaView>
     )
   }
 }
+
+const _publicKey = 'public'
+const _onlyWithLinkKey = 'onlyWithLink'
+
+const placeholderItem = {
+  label: 'Select...',
+  value: null
+}
+
+const privacyItems = [
+  {
+    label: 'Public',
+    value: _publicKey
+  },
+  {
+    label: 'Only with link',
+    value: _onlyWithLinkKey
+  }
+]
 
 const styles = StyleSheet.create({
   bottomButton: {
@@ -209,12 +288,35 @@ const styles = StyleSheet.create({
   image: {
     flex: 1
   },
+  isPublicText: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold
+  },
   makeClipPlayerControls: {
     alignItems: 'center',
     flexDirection: 'row',
     height: 60,
     justifyContent: 'space-between',
     marginHorizontal: 8
+  },
+  modalBackdrop: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center'
+  },
+  modalButton: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    marginTop: 16,
+    textAlign: 'center'
+  },
+  modalInnerWrapper: {
+    marginHorizontal: 24,
+    padding: 24
+  },
+  modalText: {
+    fontSize: PV.Fonts.sizes.xl,
+    marginBottom: 16
   },
   navHeaderButtonWrapper: {
     flexDirection: 'row'
@@ -229,6 +331,9 @@ const styles = StyleSheet.create({
   },
   progressWrapper: {
     marginVertical: 8
+  },
+  textInputLabel: {
+    flex: 1
   },
   timeInput: {
     flex: 1,

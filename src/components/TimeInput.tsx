@@ -3,6 +3,7 @@ import { StyleSheet, Text as RNText, TouchableOpacity, TouchableWithoutFeedback,
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
 import { convertSecToHHMMSS } from '../lib/utility'
+import { PV } from '../resources'
 import { core, darkTheme, iconStyles } from '../styles'
 import { Text } from './'
 
@@ -12,7 +13,7 @@ type Props = {
   handleSetTime: any
   labelText: string
   placeholder?: string
-  time?: number
+  time?: number | null
   wrapperStyle?: any
 }
 
@@ -33,28 +34,35 @@ export const TimeInput = (props: Props) => {
             style={styles.previewIcon} />
         </TouchableOpacity>
       </View>
-      <View>
-        <TouchableWithoutFeedback
-          onPress={handleSetTime}
-          style={styles.timeInputTouchable}>
-          <RNText style={[
-            core.textInput,
-            styles.timeInput,
-            globalTheme.textInput,
-            time || time === 0 ? {} : globalTheme.placeholderText
-          ]}>
-            {time ? convertSecToHHMMSS(time) : placeholder}
-          </RNText>
-        </TouchableWithoutFeedback>
+      <View style={core.row}>
+        <View style={styles.timeInputWrapper}>
+          <TouchableWithoutFeedback onPress={handleSetTime}>
+            <View style={[
+              styles.timeInputTouchable,
+              globalTheme.textInput
+            ]}>
+              <RNText style={[
+                styles.timeInputText,
+                globalTheme.textInput,
+                time || time === 0 ? {} : globalTheme.placeholderText
+              ]}>
+                {time || time === 0 ? convertSecToHHMMSS(time) : placeholder}
+              </RNText>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
         {
           handleClearTime &&
-            <TouchableWithoutFeedback
-              onPress={handleClearTime}
-              style={styles.timeInputTouchable}>
-              <Icon
-                color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
-                name='times'
-                size={24} />
+            <TouchableWithoutFeedback onPress={handleClearTime}>
+              <View style={[
+                styles.timeInputTouchableDelete,
+                globalTheme.textInput
+              ]}>
+                <Icon
+                  color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
+                  name='times'
+                  size={24} />
+              </View>
             </TouchableWithoutFeedback>
         }
       </View>
@@ -68,14 +76,29 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingTop: 3
   },
-  timeInput: {
+  timeInputText: {
+    flex: 1,
+    fontSize: PV.Fonts.sizes.xl,
+    height: 44,
+    lineHeight: 44,
     textAlign: 'center'
   },
   timeInputTouchable: {
-    flex: 1
+    flex: 1,
+    height: 44
   },
   timeInputTouchableDelete: {
-    flex: 0,
-    width: 44
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    width: 54
+  },
+  timeInputWrapper: {
+    flex: 1,
+    height: 44
   }
 })
