@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Image, Modal, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
+import { Alert, Clipboard, Image, Modal, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInput, TimeInput, View
   } from '../components'
 import { PV } from '../resources'
-
-import { playEndTimePreview, playerJumpBackward, playerJumpForward, playStartTimePreview, PVTrackPlayer
+import { createMediaRef } from '../services/mediaRef'
+import { playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime, PVTrackPlayer
   } from '../services/player'
 import { togglePlay } from '../state/actions/player'
 import { core, navHeader, playerStyles } from '../styles'
@@ -18,6 +18,7 @@ type Props = {
 type State = {
   endTime: number | null
   isPublicItemSelected: any
+  isSaving: boolean
   progressValue: number
   showHowToModal?: boolean
   startTime?: number
@@ -52,10 +53,17 @@ export class MakeClipScreen extends React.Component<Props, State> {
     this.state = {
       endTime: isEditing ? nowPlayingItem.clipEndTime : null,
       isPublicItemSelected: placeholderItem,
+      isSaving: false,
       progressValue: initialProgressValue || 0,
       startTime: isEditing ? nowPlayingItem.clipStartTime : null,
       title: isEditing ? nowPlayingItem.clipTitle : ''
     }
+
+    this.setGlobal({
+      screenMakeClip: {
+        isShowing: true
+      }
+    })
   }
 
   async componentDidMount() {
@@ -76,6 +84,14 @@ export class MakeClipScreen extends React.Component<Props, State> {
     })
   }
 
+  componentWillUnmount() {
+    this.setGlobal({
+      screenMakeClip: {
+        isShowing: false
+      }
+    })
+  }
+
   _onChangeTitle = (text: string) => {
     this.setState({ title: text })
   }
@@ -88,20 +104,71 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   _setStartTime = async () => {
     const currentPosition = await PVTrackPlayer.getPosition()
-    this.setState({ startTime: currentPosition })
+    this.setState({ startTime: Math.floor(currentPosition) })
   }
 
   _setEndTime = async () => {
     const currentPosition = await PVTrackPlayer.getPosition()
-    this.setState({ endTime: currentPosition })
+    this.setState({ endTime: Math.floor(currentPosition) })
   }
 
   _clearEndTime = () => {
     this.setState({ endTime: null })
   }
 
-  _saveMediaRef = () => {
-    console.log('save')
+  _saveMediaRef = async () => {
+    const { navigation } = this.props
+    const { endTime, isPublicItemSelected, startTime, title } = this.state
+    const { player } = this.global
+    const { nowPlayingItem } = player
+
+    if (startTime === 0) {
+      Alert.alert('Clip Error', 'The start time must be greater than 0 if no end time is provided.', [])
+      return
+    }
+
+    if (!startTime) {
+      Alert.alert('Clip Error', 'A start time must be provided.', [])
+      return
+    }
+
+    if (endTime && startTime >= endTime) {
+      Alert.alert('Clip Error', 'The start time must be before the end time.', [])
+      return
+    }
+
+    this.setState({ isSaving: true }, async () => {
+      const data = {
+        ...(endTime ? { endTime } : {}),
+        episodeId: nowPlayingItem.episodeId,
+        ...(isPublicItemSelected.value ? { isPublic: true } : { isPublic: false }),
+        startTime,
+        title
+      }
+
+      const mediaRef = await createMediaRef(data)
+      const url = PV.URLs.clip + mediaRef.id
+      this.setState({ isSaving: false }, async () => {
+        // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
+        setTimeout(() => {
+          Alert.alert('Clip Created', url, [
+            {
+              text: 'Done',
+              onPress: () => {
+                navigation.goBack(null)
+              }
+            },
+            {
+              text: 'Copy Link',
+              onPress: () => {
+                Clipboard.setString(url)
+                navigation.goBack(null)
+              }
+            }
+          ])
+        }, 100)
+      })
+    })
   }
 
   _updateMediaRef = () => {
@@ -130,7 +197,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
   render() {
     const { globalTheme, player } = this.global
     const { nowPlayingItem, playbackState } = player
-    const { endTime, isPublicItemSelected, progressValue, showHowToModal, startTime, title } = this.state
+    const { endTime, isPublicItemSelected, isSaving, progressValue, showHowToModal, startTime, title } = this.state
 
     return (
       <SafeAreaView>
@@ -169,7 +236,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               <TimeInput
                 handlePreview={() => {
                   if (startTime) {
-                    playStartTimePreview(startTime, endTime)
+                    playerPreviewStartTime(startTime, endTime)
                   }
                 }}
                 handleSetTime={this._setStartTime}
@@ -181,7 +248,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 handleClearTime={endTime ? this._clearEndTime : null}
                 handlePreview={() => {
                   if (endTime) {
-                    playEndTimePreview(endTime)
+                    playerPreviewEndTime(endTime)
                   }
                 }}
                 handleSetTime={this._setEndTime}
@@ -227,10 +294,20 @@ export class MakeClipScreen extends React.Component<Props, State> {
           </View>
         </View>
         {
-          showHowToModal &&
+          isSaving &&
             <Modal
               transparent={true}
-              visible={showHowToModal}>
+              visible={true}>
+              <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
+                <ActivityIndicator styles={styles.activityIndicator} />
+              </RNView>
+            </Modal>
+        }
+        {
+          isSaving &&
+            <Modal
+              transparent={true}
+              visible={true}>
               <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
                 <RNView style={[styles.modalInnerWrapper, globalTheme.modalInnerWrapper]}>
                   <Text style={styles.modalText}>
@@ -282,6 +359,9 @@ const privacyItems = [
 ]
 
 const styles = StyleSheet.create({
+  activityIndicator: {
+    backgroundColor: 'transparent'
+  },
   bottomButton: {
     fontSize: PV.Fonts.sizes.md,
     paddingVertical: 4,

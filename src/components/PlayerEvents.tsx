@@ -24,11 +24,10 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
   }
 
   _handlePlayerQueueEnded = async () => {
-    const { player, session } = this.global
+    const { player, screenMakeClip, session } = this.global
     const { shouldContinuouslyPlay } = player
     const { queueItems } = session.userInfo
-
-    if (shouldContinuouslyPlay && queueItems.length > 0) {
+    if (!screenMakeClip.isShowing && shouldContinuouslyPlay && queueItems.length > 0) {
       await playNextFromQueue(session.isLoggedIn, this.global)
     }
   }

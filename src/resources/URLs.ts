@@ -9,5 +9,5 @@ export const URLs = {
   feedback: 'https://forms.gle/6ZpGwePkDT6BLRsQ9',
   playlist: `${root}/playlist/`,
   podcast: `${root}/podcast/`,
-  profile: `${root}/profile/`,
+  profile: `${root}/profile/`
 }

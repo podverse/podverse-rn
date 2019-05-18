@@ -17,7 +17,6 @@ export const NavMakeClipIcon = (props: Props) => {
       name='cut'
       onPress={async () => {
         const initialProgressValue = await getInitialProgressValue()
-        console.log('yep', initialProgressValue)
         navigation.navigate(PV.RouteNames.MakeClipScreen, { initialProgressValue })
       }}
       size={22}

@@ -62,6 +62,9 @@ export interface InitialState {
     shouldContinuouslyPlay: boolean
     showMiniPlayer: boolean
   }
+  screenMakeClip: {
+    isShowing: boolean
+  }
   screenPlayer: {
     endOfResultsReached: boolean
     flatListData: any[]

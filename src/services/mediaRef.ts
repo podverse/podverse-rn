@@ -8,11 +8,11 @@ export const createMediaRef = async (data: any) => {
     endpoint: '/mediaRef',
     method: 'POST',
     headers: {
-      'Authorization': bearerToken,
+      ...(bearerToken ? { Authorization: bearerToken } : {}),
       'Content-Type': 'application/json'
     },
     body: data,
-    opts: { credentials: 'include' }
+    ...(bearerToken ? { opts: { credentials: 'include' } } : {})
   })
 
   return response.json()

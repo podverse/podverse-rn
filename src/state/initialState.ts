@@ -10,6 +10,9 @@ const initialTheme: InitialState = {
     shouldContinuouslyPlay: false,
     showMiniPlayer: false
   },
+  screenMakeClip: {
+    isShowing: false
+  },
   screenPlayer: {
     endOfResultsReached: false,
     flatListData: [],

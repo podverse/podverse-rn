@@ -82,7 +82,7 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.grayDarker
   },
   modalBackdrop: {
-    backgroundColor: '#00000050'
+    backgroundColor: '#00000075'
   },
   modalInnerWrapper: {
     backgroundColor: PV.Colors.grayDarkest
@@ -219,7 +219,7 @@ export const lightTheme = StyleSheet.create({
     backgroundColor: PV.Colors.grayLighter
   },
   modalBackdrop: {
-    backgroundColor: '#00000050'
+    backgroundColor: '#00000075'
   },
   modalInnerWrapper: {
     backgroundColor: PV.Colors.grayLightest
