@@ -5,7 +5,8 @@ import React from 'reactn'
 import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInput, TimeInput, View
   } from '../components'
 import { PV } from '../resources'
-import { playerJumpBackward, playerJumpForward, PVTrackPlayer } from '../services/player'
+import { playEndTimePreview, playStartTimePreview, playerJumpBackward, playerJumpForward, PVTrackPlayer
+  } from '../services/player'
 import { togglePlay } from '../state/actions/player'
 import { core, navHeader, playerStyles } from '../styles'
 
@@ -165,6 +166,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
           <View style={styles.wrapperBottom}>
             <View style={core.row}>
               <TimeInput
+                handlePreview={() => {
+                  if (startTime) {
+                    playStartTimePreview(startTime, endTime)
+                  }
+                }}
                 handleSetTime={this._setStartTime}
                 labelText='Start Time'
                 placeholder='tap here'
@@ -172,6 +178,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 wrapperStyle={styles.timeInput} />
               <TimeInput
                 handleClearTime={endTime ? this._clearEndTime : null}
+                handlePreview={() => {
+                  if (endTime) {
+                    playEndTimePreview(endTime)
+                  }
+                }}
                 handleSetTime={this._setEndTime}
                 labelText='End Time'
                 placeholder='optional'

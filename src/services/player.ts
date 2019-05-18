@@ -54,6 +54,45 @@ export const handleResumeAfterClipHasEnded = async () => {
   PlayerEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
+let playEndTimePreviewInterval: any = null
+
+export const playEndTimePreview = async (endTime: number) => {
+  if (playEndTimePreviewInterval) {
+    clearInterval(playEndTimePreviewInterval)
+  }
+
+  const previewEndTime = endTime - 3
+  await PVTrackPlayer.seekTo(previewEndTime)
+  PVTrackPlayer.play()
+
+  playEndTimePreviewInterval = setInterval(async () => {
+    const currentPosition = await PVTrackPlayer.getPosition()
+    if (currentPosition >= endTime) {
+      clearInterval(playEndTimePreviewInterval)
+      PVTrackPlayer.pause()
+    }
+  }, 250)
+}
+
+export const playStartTimePreview = async (startTime: number, endTime?: number | null) => {
+  if (playEndTimePreviewInterval) {
+    clearInterval(playEndTimePreviewInterval)
+  }
+
+  TrackPlayer.seekTo(startTime)
+  TrackPlayer.play()
+
+  if (endTime) {
+    playEndTimePreviewInterval = setInterval(async () => {
+      const currentPosition = await PVTrackPlayer.getPosition()
+      if (currentPosition >= endTime) {
+        clearInterval(playEndTimePreviewInterval)
+        PVTrackPlayer.pause()
+      }
+    }, 250)
+  }
+}
+
 export const playerJumpBackward = async (seconds: number) => {
   const position = await TrackPlayer.getPosition()
   const newPosition = position - seconds
