@@ -5,7 +5,8 @@ import React from 'reactn'
 import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInput, TimeInput, View
   } from '../components'
 import { PV } from '../resources'
-import { playEndTimePreview, playStartTimePreview, playerJumpBackward, playerJumpForward, PVTrackPlayer
+
+import { playEndTimePreview, playerJumpBackward, playerJumpForward, playStartTimePreview, PVTrackPlayer
   } from '../services/player'
 import { togglePlay } from '../state/actions/player'
 import { core, navHeader, playerStyles } from '../styles'
