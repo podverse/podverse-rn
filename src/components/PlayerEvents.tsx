@@ -27,6 +27,7 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     const { player, screenMakeClip, session } = this.global
     const { shouldContinuouslyPlay } = player
     const { queueItems } = session.userInfo
+
     if (!screenMakeClip.isShowing && shouldContinuouslyPlay && queueItems.length > 0) {
       await playNextFromQueue(session.isLoggedIn, this.global)
     }

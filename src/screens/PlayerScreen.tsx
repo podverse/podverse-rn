@@ -82,7 +82,7 @@ export class PlayerScreen extends React.Component<Props, State> {
 
   _getInitialProgressValue = async () => {
     const initialProgressValue = await PVTrackPlayer.getPosition()
-    return initialProgressValue
+    return Math.floor(initialProgressValue)
   }
 
   _getGlobalTheme = () => {

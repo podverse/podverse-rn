@@ -5,10 +5,10 @@ import React from 'reactn'
 import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInput, TimeInput, View
   } from '../components'
 import { PV } from '../resources'
-import { createMediaRef } from '../services/mediaRef'
+import { createMediaRef, updateMediaRef } from '../services/mediaRef'
 import { playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime, PVTrackPlayer
   } from '../services/player'
-import { togglePlay } from '../state/actions/player'
+import { setNowPlayingItem, togglePlay } from '../state/actions/player'
 import { core, navHeader, playerStyles } from '../styles'
 
 type Props = {
@@ -28,18 +28,12 @@ type State = {
 export class MakeClipScreen extends React.Component<Props, State> {
 
   static navigationOptions = ({ navigation }) => ({
-    title: 'Make Clip',
+    title: navigation.getParam('isEditing') ? 'Edit Clip' : 'Make Clip',
     headerRight: (
       <RNView style={styles.navHeaderButtonWrapper}>
-        {
-          navigation.getParam('isEditing') ?
-            <TouchableOpacity onPress={navigation.getParam('_updateMediaRef')}>
-              <Text style={[navHeader.buttonText, styles.navHeaderTextButton]}>Update</Text>
-            </TouchableOpacity> :
-            <TouchableOpacity onPress={navigation.getParam('_saveMediaRef')}>
-              <Text style={[navHeader.buttonText, styles.navHeaderTextButton]}>Save</Text>
-            </TouchableOpacity>
-        }
+        <TouchableOpacity onPress={navigation.getParam('_saveMediaRef')}>
+          <Text style={[navHeader.buttonText, styles.navHeaderTextButton]}>Save</Text>
+        </TouchableOpacity>
       </RNView>
     )
   })
@@ -55,8 +49,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       isPublicItemSelected: placeholderItem,
       isSaving: false,
       progressValue: initialProgressValue || 0,
-      startTime: isEditing ? nowPlayingItem.clipStartTime : null,
-      title: isEditing ? nowPlayingItem.clipTitle : ''
+      startTime: isEditing ? nowPlayingItem.clipStartTime : null
     }
 
     this.setGlobal({
@@ -68,7 +61,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
-    navigation.setParams({ _updateMediaRef: this._updateMediaRef })
+    const { player } = this.global
+    const { nowPlayingItem } = player
     navigation.setParams({ _saveMediaRef: this._saveMediaRef })
     const currentPosition = await PVTrackPlayer.getPosition()
     const isEditing = this.props.navigation.getParam('isEditing')
@@ -78,9 +72,10 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
     this.setState({
       ...(!hideHowToModal ? { showHowToModal: true } : { showHowToModal: false }),
-      ...(!isEditing ? { startTime: currentPosition } : {}),
+      ...(!isEditing ? { startTime: Math.floor(currentPosition) } : {}),
       ...(isPublic || isPublic === null ? { isPublicItemSelected: privacyItems[0] }
-        : { isPublicItemSelected: privacyItems[1] })
+        : { isPublicItemSelected: privacyItems[1] }),
+      title: isEditing ? nowPlayingItem.clipTitle : ''
     })
   }
 
@@ -137,21 +132,35 @@ export class MakeClipScreen extends React.Component<Props, State> {
       return
     }
 
+    const isEditing = this.props.navigation.getParam('isEditing')
+
     this.setState({ isSaving: true }, async () => {
       const data = {
         ...(endTime ? { endTime } : {}),
         episodeId: nowPlayingItem.episodeId,
+        ...(isEditing ? { id: nowPlayingItem.clipId } : {}),
         ...(isPublicItemSelected.value ? { isPublic: true } : { isPublic: false }),
         startTime,
         title
       }
-
-      const mediaRef = await createMediaRef(data)
+      const mediaRef = isEditing ? await updateMediaRef(data) : await createMediaRef(data)
       const url = PV.URLs.clip + mediaRef.id
+
+      if (isEditing) {
+        const newItem = {
+          ...nowPlayingItem,
+          clipEndTime: mediaRef.endTime,
+          clipStartTime: mediaRef.startTime,
+          clipTitle: mediaRef.title
+        }
+        await setNowPlayingItem(newItem, this.global, true)
+      }
+
       this.setState({ isSaving: false }, async () => {
         // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
         setTimeout(() => {
-          Alert.alert('Clip Created', url, [
+          const alertText = isEditing ? 'Clip Updated' : 'Clip Created'
+          Alert.alert(alertText, url, [
             {
               text: 'Done',
               onPress: () => {
@@ -169,10 +178,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
         }, 100)
       })
     })
-  }
-
-  _updateMediaRef = () => {
-    console.log('update')
   }
 
   _hideHowTo = () => {
@@ -304,7 +309,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
             </Modal>
         }
         {
-          isSaving &&
+          showHowToModal &&
             <Modal
               transparent={true}
               visible={true}>

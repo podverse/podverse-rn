@@ -1,6 +1,6 @@
 import { PV } from '../resources'
-import { getClipHasEnded, getNowPlayingItem, handleResumeAfterClipHasEnded, PVTrackPlayer,
-  setClipHasEnded, setPlaybackPosition } from './player'
+import { getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem, handleResumeAfterClipHasEnded,
+  PVTrackPlayer, setClipHasEnded, setPlaybackPosition  } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 
 let clipEndTimeInterval: any = null
@@ -20,7 +20,14 @@ PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
         if (currentPosition > clipEndTime) {
           clearInterval(clipEndTimeInterval)
           PVTrackPlayer.pause()
-          await setClipHasEnded(true)
+
+          const shouldContinuouslyPlay = await getContinuousPlaybackMode()
+
+          if (shouldContinuouslyPlay) {
+            PlayerEventEmitter.emit(PV.Events.PLAYER_QUEUE_ENDED)
+          } else {
+            await setClipHasEnded(true)
+          }
         }
       }, 500)
     }

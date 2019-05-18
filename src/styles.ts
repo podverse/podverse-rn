@@ -340,7 +340,6 @@ export const core = StyleSheet.create({
   textInput: {
     fontSize: PV.Fonts.sizes.xl,
     height: 44,
-    lineHeight: 44,
     marginVertical: 4,
     paddingLeft: 8,
     paddingRight: 8
