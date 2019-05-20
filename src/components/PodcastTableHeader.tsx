@@ -1,18 +1,20 @@
-import React from 'react'
 import { Image, StyleSheet, Switch } from 'react-native'
+import React from 'reactn'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { SubscribeButton, Text, View } from './'
 
 type Props = {
   autoDownloadOn?: boolean
   handleToggleAutoDownload?: any
+  handleToggleSubscribe: any
+  isSubscribed?: boolean
   podcastImageUrl?: string
   podcastTitle: string
 }
 
 export const PodcastTableHeader = (props: Props) => {
-  const { autoDownloadOn, handleToggleAutoDownload, podcastImageUrl, podcastTitle = 'untitled podcast'
-    } = props
+  const { autoDownloadOn, handleToggleAutoDownload, handleToggleSubscribe, isSubscribed, podcastImageUrl,
+    podcastTitle = 'untitled podcast' } = props
 
   return (
     <View style={styles.wrapper}>
@@ -20,9 +22,14 @@ export const PodcastTableHeader = (props: Props) => {
         source={{ uri: podcastImageUrl }}
         style={styles.image} />
       <View style={styles.textWrapper}>
-        <Text
-          numberOfLines={2}
-          style={styles.title}>{podcastTitle}</Text>
+        <View style={styles.textWrapperTop}>
+          <Text
+            numberOfLines={2}
+            style={styles.title}>{podcastTitle}</Text>
+        <SubscribeButton
+          handleToggleSubscribe={handleToggleSubscribe}
+          isSubscribed={isSubscribed} />
+        </View>
         <View style={styles.textWrapperBottom}>
           <Text
             isSecondary={true}
@@ -43,6 +50,12 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.sm,
     marginRight: 6
   },
+  buttonView: {
+    alignItems: 'center',
+    flex: 0,
+    justifyContent: 'center',
+    marginLeft: 8
+  },
   image: {
     flex: 0,
     height: 92,
@@ -60,6 +73,12 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end'
+  },
+  textWrapperTop: {
+    alignItems: 'flex-start',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   title: {
     flex: 1,

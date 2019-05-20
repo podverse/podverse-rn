@@ -22,11 +22,20 @@ export const darkTheme = StyleSheet.create({
   actionSheetButtonCancelUnderlay: {
     backgroundColor: PV.Colors.grayDark
   },
+  actionSheetHeaderText: {
+    color: PV.Colors.grayLighter
+  },
   actionSheetView: {
     backgroundColor: PV.Colors.grayDarker
   },
   activityIndicator: {
     color: PV.Colors.grayLighter
+  },
+  buttonActive: {
+    color: PV.Colors.blueLighter
+  },
+  buttonError: {
+    color: PV.Colors.red
   },
   buttonGroup: {
     backgroundColor: PV.Colors.grayDarkest
@@ -62,11 +71,33 @@ export const darkTheme = StyleSheet.create({
   flatList: {
     backgroundColor: PV.Colors.black
   },
+  inputContainerText: {
+    backgroundColor: PV.Colors.black,
+    borderColor: PV.Colors.grayDarker
+  },
+  link: {
+    color: PV.Colors.blueLighter
+  },
+  makeClipPlayerControlsWrapper: {
+    backgroundColor: PV.Colors.grayDarker
+  },
   modalBackdrop: {
-    backgroundColor: '#00000050'
+    backgroundColor: '#00000075'
+  },
+  modalInnerWrapper: {
+    backgroundColor: PV.Colors.grayDarkest
+  },
+  placeholderText: {
+    color: PV.Colors.grayLighter
   },
   player: {
-    borderColor: PV.Colors.gray
+    borderColor: PV.Colors.grayDarker
+  },
+  playerText: {
+    color: PV.Colors.white
+  },
+  selectorText: {
+    color: PV.Colors.white
   },
   swipeRowBack: {
     backgroundColor: PV.Colors.gray,
@@ -94,12 +125,9 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   textInput: {
-    backgroundColor: PV.Colors.black,
-    borderColor: PV.Colors.grayDarker,
+    backgroundColor: PV.Colors.grayDarker,
+    borderColor: PV.Colors.gray,
     color: PV.Colors.white
-  },
-  textInputPlaceholder: {
-    color: PV.Colors.gray
   },
   textInputWrapper: {
     backgroundColor: PV.Colors.black,
@@ -134,8 +162,17 @@ export const lightTheme = StyleSheet.create({
   actionSheetButtonCancelUnderlay: {
     backgroundColor: PV.Colors.grayLighter
   },
+  actionSheetHeaderText: {
+    color: PV.Colors.grayDarker
+  },
   activityIndicator: {
     color: PV.Colors.grayDarker
+  },
+  buttonActive: {
+    color: PV.Colors.blueDarker
+  },
+  buttonError: {
+    color: PV.Colors.red
   },
   buttonGroup: {
     backgroundColor: PV.Colors.grayLightest
@@ -171,11 +208,33 @@ export const lightTheme = StyleSheet.create({
   flatList: {
     backgroundColor: PV.Colors.white
   },
+  inputContainerText: {
+    backgroundColor: PV.Colors.white,
+    borderColor: PV.Colors.grayLighter
+  },
+  link: {
+    color: PV.Colors.blueDarker
+  },
+  makeClipPlayerControlsWrapper: {
+    backgroundColor: PV.Colors.grayLighter
+  },
   modalBackdrop: {
-    backgroundColor: '#00000050'
+    backgroundColor: '#00000075'
+  },
+  modalInnerWrapper: {
+    backgroundColor: PV.Colors.grayLightest
+  },
+  placeholderText: {
+    color: PV.Colors.grayDarker
   },
   player: {
-    borderColor: PV.Colors.gray
+    borderColor: PV.Colors.grayLighter
+  },
+  playerText: {
+    color: PV.Colors.black
+  },
+  selectorText: {
+    color: PV.Colors.black
   },
   swipeRowBack: {
     backgroundColor: PV.Colors.gray,
@@ -203,12 +262,9 @@ export const lightTheme = StyleSheet.create({
     color: PV.Colors.black
   },
   textInput: {
-    backgroundColor: PV.Colors.white,
-    borderColor: PV.Colors.grayLighter,
+    backgroundColor: PV.Colors.grayLighter,
+    borderColor: PV.Colors.gray,
     color: PV.Colors.black
-  },
-  textInputPlaceholder: {
-    color: PV.Colors.gray
   },
   textInputWrapper: {
     backgroundColor: PV.Colors.white,
@@ -223,6 +279,33 @@ export const lightTheme = StyleSheet.create({
 })
 
 export const button = StyleSheet.create({
+  iconOnlyLarge: {
+    flex: 0,
+    height: 76,
+    lineHeight: 76,
+    textAlign: 'center',
+    width: 40
+  },
+  iconOnlyMedium: {
+    flex: 0,
+    height: 60,
+    lineHeight: 60,
+    textAlign: 'center',
+    width: 40
+  },
+  iconOnlySmall: {
+    flex: 0,
+    height: 38,
+    lineHeight: 38,
+    textAlign: 'center',
+    width: 40
+  },
+  iconOnlyAlignToTop: {
+    flex: 0,
+    marginBottom: 'auto',
+    marginTop: 5,
+    padding: 8
+  },
   primaryWrapper: {
     alignItems: 'center',
     borderWidth: 1,
@@ -239,26 +322,32 @@ export const core = StyleSheet.create({
   backgroundView: {
     flex: 1
   },
+  row: {
+    backgroundColor: 'transparent',
+    flexDirection: 'row'
+  },
+  selectorText: {
+    fontSize: PV.Fonts.sizes.xl,
+    height: 44,
+    justifyContent: 'center',
+    lineHeight: 44,
+    paddingHorizontal: 8
+  },
   searchBar: {
     borderBottomWidth: 1,
     borderWidth: 1
   },
   textInput: {
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.xl,
     height: 44,
     marginVertical: 4,
     paddingLeft: 8,
     paddingRight: 8
   },
-  textInputWrapper: {
-    alignItems: 'center',
-    borderRadius: 4,
-    borderWidth: 1,
-    flexDirection: 'row',
-    height: 34,
-    justifyContent: 'center',
-    marginLeft: 8,
-    marginRight: 8
+  textInputLabel: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    marginBottom: 8
   },
   view: {
     alignItems: 'center',
@@ -268,10 +357,36 @@ export const core = StyleSheet.create({
 })
 
 export const navHeader = StyleSheet.create({
-  textButton: {
+  buttonIcon: {
     color: PV.Colors.white,
-    fontSize: PV.Fonts.sizes.lg,
-    marginHorizontal: 12
+    height: 44,
+    lineHeight: 44,
+    paddingHorizontal: 12
+  },
+  buttonText: {
+    color: PV.Colors.white,
+    fontSize: PV.Fonts.sizes.xl,
+    height: 44,
+    lineHeight: 44,
+    marginRight: 4,
+    paddingHorizontal: 12
+  }
+})
+
+export const playerStyles = StyleSheet.create({
+  icon: {
+    paddingHorizontal: 12,
+    paddingVertical: 4
+  },
+  iconDisabled: {
+    opacity: 0.5,
+    paddingHorizontal: 12,
+    paddingVertical: 4
+  },
+  iconLarge: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    width: 74
   }
 })
 
@@ -284,3 +399,14 @@ export const table = StyleSheet.create({
     paddingLeft: 8
   }
 })
+
+export const iconStyles = {
+  dark: {
+    color: PV.Colors.white,
+    underlayColor: PV.Colors.black
+  },
+  light: {
+    color: PV.Colors.black,
+    underlayColor: PV.Colors.white
+  }
+}

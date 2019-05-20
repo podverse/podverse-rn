@@ -6,7 +6,7 @@ import { ActionSheet, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBa
 import { generateAuthorsText, generateCategoriesText } from '../lib/utility'
 import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
-import { toggleSubscribeToPodcast } from '../state/actions/podcasts'
+import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
 const { aboutKey, allEpisodesKey, clipsKey } = PV.Filters
@@ -160,7 +160,7 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   _toggleSubscribeToPodcast = async (id: string) => {
-    await toggleSubscribeToPodcast(id)
+    await toggleSubscribeToPodcast(id, this.global)
     this.setState({ showActionSheet: false })
   }
 
@@ -182,7 +182,7 @@ export class SearchScreen extends React.Component<Props, State> {
           onClear={this._handleSearchBarClear}
           value={searchBarText} />
         {
-          !isLoading && flatListData && flatListData.length > 0 &&
+          !isLoading && flatListData &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={true}

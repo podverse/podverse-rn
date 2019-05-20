@@ -9,20 +9,31 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.2.1",
+    "@react-native-community/slider": "^1.1.0",
+    "@types/he": "^1.1.0",
+    "@types/linkifyjs": "^2.1.1",
     "@types/lodash": "^4.14.123",
     "@types/react-native-sortable-list": "^0.0.7",
+    "@types/react-native-vector-icons": "^6.4.0",
     "@types/react-navigation": "^3.0.5",
+    "eventemitter3": "^3.1.2",
     "fetch": "^1.1.0",
+    "he": "^1.2.0",
+    "linkifyjs": "^2.1.8",
     "lodash": "^4.17.11",
     "react": "16.8.3",
     "react-native": "0.59.0",
     "react-native-elements": "^1.1.0",
     "react-native-gesture-handler": "^1.1.0",
     "react-native-picker-select": "^6.1.0",
+    "react-native-render-html": "^4.1.2",
     "react-native-secure-key-store": "^2.0.1",
     "react-native-sortable-list": "^0.0.23",
+    "react-native-swift": "^1.2.2",
     "react-native-swipe-list-view": "^1.5.3",
+    "react-native-track-player": "^1.1.4",
     "react-native-vector-icons": "^6.4.2",
+    "react-native-webview": "^5.7.1",
     "react-navigation": "^3.5.1",
     "reactn": "^1.0.0"
   },
@@ -50,5 +61,6 @@
   },
   "jest": {
     "preset": "react-native"
-  }
+  },
+  "isSwift": true
 }

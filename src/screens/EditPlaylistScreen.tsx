@@ -1,11 +1,11 @@
 import { Text, TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, SortableList, SortableListRow,
-  TextInput, View } from '../components'
-import { combineAndSortPlaylistItems, removeHTMLFromString } from '../lib/utility'
+import { ActivityIndicator, Divider, QueueTableCell, SortableList, SortableListRow, TextInput,
+  View } from '../components'
+import { combineAndSortPlaylistItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getPlaylist } from '../services/playlist'
-import { updatePlaylist } from '../state/actions/playlists'
+import { updatePlaylist } from '../state/actions/playlist'
 import { navHeader } from '../styles'
 
 type Props = {
@@ -27,7 +27,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
       title: 'Edit Playlist',
       headerRight: (
         <TouchableOpacity onPress={navigation.getParam('updatePlaylist')}>
-          <Text style={navHeader.textButton}>Save</Text>
+          <Text style={navHeader.buttonText}>Save</Text>
         </TouchableOpacity>
       )
     }
@@ -62,14 +62,18 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
   }
 
   _updatePlaylist = async () => {
-    const { newTitle, playlist } = this.state
-    const itemsOrder = this._getItemsOrder()
-    await updatePlaylist({
-      id: playlist.id,
-      ...(itemsOrder.length > 0 ? { itemsOrder } : {}),
-      title: newTitle
-    }, this.global)
-    this.props.navigation.goBack(null)
+    this.setState({
+      isLoading: true
+    }, async () => {
+      const { newTitle, playlist } = this.state
+      const itemsOrder = this._getItemsOrder()
+      await updatePlaylist({
+        id: playlist.id,
+        ...(itemsOrder.length > 0 ? { itemsOrder } : {}),
+        title: newTitle
+      }, this.global)
+      this.props.navigation.goBack(null)
+    })
   }
 
   _getItemsOrder = () => {
@@ -91,25 +95,30 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     let cell
     if (data.startTime) {
       cell = (
-        <ClipTableCell
-          key={data.id}
-          endTime={data.endTime}
-          episodePubDate={data.episode.pubDate}
-          episodeTitle={data.episode.title}
-          podcastImageUrl={data.episode.podcast.imageUrl}
-          podcastTitle={data.episode.podcast.title}
-          startTime={data.startTime}
-          title={data.title} />
+        <View>
+          <QueueTableCell
+            clipEndTime={data.endTime}
+            clipStartTime={data.startTime}
+            clipTitle={data.title}
+            episodePubDate={data.episode.pubDate}
+            episodeTitle={data.episode.title}
+            podcastImageUrl={data.episode.podcast.imageUrl}
+            podcastTitle={data.episode.podcast.title}
+            showMoveButton={true} />
+          <Divider style={styles.tableCellDivider} />
+        </View>
       )
     } else {
       cell = (
-        <EpisodeTableCell
-          key={data.id}
-          description={removeHTMLFromString(data.description)}
-          podcastImageUrl={data.podcast.imageUrl}
-          podcastTitle={data.podcast.title}
-          pubDate={data.pubDate}
-          title={data.title} />
+        <View>
+          <QueueTableCell
+            episodePubDate={data.pubDate}
+            episodeTitle={data.title}
+            podcastImageUrl={data.podcast.imageUrl}
+            podcastTitle={data.podcast.title}
+            showMoveButton={true} />
+          <Divider style={styles.tableCellDivider} />
+        </View>
       )
     }
 
@@ -158,6 +167,9 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
 }
 
 const styles = {
+  tableCellDivider: {
+    marginBottom: 2
+  },
   textInput: {
     fontSize: PV.Fonts.sizes.lg
   },

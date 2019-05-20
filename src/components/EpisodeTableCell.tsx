@@ -1,9 +1,9 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
-import { useGlobal } from 'reactn'
+import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { button } from '../styles'
+import { Icon, Text, View } from './'
 
 type Props = {
   description?: string
@@ -18,29 +18,27 @@ type Props = {
 
 export const EpisodeTableCell = (props: Props) => {
   const { pubDate, description, title = 'untitled episode', handleMorePress,
-  handleNavigationPress, moreButtonAlignToTop, podcastImageUrl, podcastTitle } = props
-  const [globalTheme] = useGlobal('globalTheme')
+  handleNavigationPress, podcastImageUrl, podcastTitle } = props
 
-  const moreButtonStyles = [styles.moreButton]
-  if (moreButtonAlignToTop) moreButtonStyles.push(styles.moreButtonAlignToTop)
+  const showPodcastInfo = !!podcastImageUrl && !!podcastTitle
 
   const innerTopView = (
     <View style={styles.innerTopView}>
       {
         !!podcastImageUrl &&
-        <Image
-          source={{ uri: podcastImageUrl }}
-          style={styles.image} />
+          <Image
+            source={{ uri: podcastImageUrl }}
+            style={styles.image} />
       }
       <View style={styles.textWrapper}>
         {
           !!podcastTitle &&
-          <Text
-            isSecondary={true}
-            numberOfLines={1}
-            style={styles.podcastTitle}>
-            {podcastTitle}
-          </Text>
+            <Text
+              isSecondary={true}
+              numberOfLines={1}
+              style={styles.podcastTitle}>
+              {podcastTitle}
+            </Text>
         }
         <Text
           numberOfLines={2}
@@ -51,7 +49,7 @@ export const EpisodeTableCell = (props: Props) => {
           !!pubDate &&
           <Text
             isSecondary={true}
-            style={styles.bottomText}>
+            style={styles.pubDate}>
             {readableDate(pubDate)}
           </Text>
         }
@@ -67,6 +65,14 @@ export const EpisodeTableCell = (props: Props) => {
     </Text>
   )
 
+  const moreButton = (
+    <Icon
+      name='ellipsis-h'
+      onPress={handleMorePress}
+      size={26}
+      style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
+  )
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.wrapperTop}>
@@ -78,22 +84,14 @@ export const EpisodeTableCell = (props: Props) => {
             innerTopView
         }
         {
-          handleMorePress &&
-            <TouchableOpacity
-              onPress={handleMorePress}
-              style={moreButtonStyles}>
-              <Image
-                source={PV.Images.MORE}
-                style={[styles.moreButtonImage, globalTheme.buttonImage]}
-                resizeMode='contain' />
-            </TouchableOpacity>
+          handleMorePress && moreButton
         }
       </View>
       {
         !!description && handleNavigationPress &&
-        <TouchableWithoutFeedback onPress={handleNavigationPress}>
-          {bottomText}
-        </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={handleNavigationPress}>
+            {bottomText}
+          </TouchableWithoutFeedback>
       }
       {
         !!description && !handleNavigationPress && bottomText
@@ -103,64 +101,45 @@ export const EpisodeTableCell = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
-  bottomText: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
-    justifyContent: 'flex-end',
-    marginTop: 2
-  },
   description: {
-    fontSize: PV.Fonts.sizes.md,
-    marginLeft: 8,
-    marginRight: 8,
-    marginTop: 11
+    fontSize: PV.Fonts.sizes.md
   },
   image: {
     flex: 0,
     height: 60,
-    marginLeft: 8,
+    marginRight: 12,
     width: 60
   },
   innerTopView: {
     flex: 1,
     flexDirection: 'row'
   },
-  moreButton: {
-    flex: 0,
-    marginBottom: 'auto',
-    marginLeft: 8,
-    marginRight: 8,
-    marginTop: 'auto'
-  },
-  moreButtonImage: {
-    borderRadius: 22,
-    borderWidth: 1,
-    height: 44,
-    width: 44
-  },
-  moreButtonAlignToTop: {
-    marginTop: 5
-  },
   podcastTitle: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
+    fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-start'
   },
+  pubDate: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.md,
+    justifyContent: 'flex-end',
+    marginTop: 2
+  },
   textWrapper: {
-    flex: 1,
-    marginLeft: 8,
-    marginRight: 8
+    flex: 1
   },
   title: {
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold
+    fontWeight: PV.Fonts.weights.bold,
+    marginTop: 2
   },
   wrapper: {
     paddingBottom: 12,
-    paddingTop: 12
+    paddingHorizontal: 8,
+    paddingTop: 10
   },
   wrapperTop: {
-    flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginBottom: 8
   }
 })

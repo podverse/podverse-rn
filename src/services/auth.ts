@@ -1,10 +1,66 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
-import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { request } from './request'
 
+export const getBearerToken = async () => {
+  let bearerToken = ''
+  try {
+    bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  } catch (error) {
+    return bearerToken
+  }
+  return bearerToken
+}
+
 export const getAuthenticatedUserInfo = async () => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
+  return bearerToken ? getAuthenticatedUserInfoFromServer(bearerToken) : getAuthenticatedUserInfoLocally()
+}
+
+const getAuthenticatedUserInfoLocally = async () => {
+  let subscribedPlaylistIds = []
+  let subscribedPodcastIds = []
+  let subscribedUserIds = []
+
+  try {
+    const subscribedPlaylistIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS)
+    if (subscribedPlaylistIdsString) {
+      subscribedPlaylistIds = JSON.parse(subscribedPlaylistIdsString)
+    }
+  } catch (error) {
+    AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS, JSON.stringify(subscribedPlaylistIds))
+  }
+
+  try {
+    const subscribedPodcastIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
+    if (subscribedPodcastIdsString) {
+      subscribedPodcastIds = JSON.parse(subscribedPodcastIdsString)
+    }
+  } catch (error) {
+    AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
+  }
+
+  try {
+    const subscribedUserIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_USER_IDS)
+    if (subscribedUserIdsString) {
+      subscribedUserIds = JSON.parse(subscribedUserIdsString)
+    }
+  } catch (error) {
+    AsyncStorage.setItem(PV.Keys.SUBSCRIBED_USER_IDS, JSON.stringify(subscribedUserIds))
+  }
+
+  return [
+    {
+      subscribedPlaylistIds,
+      subscribedPodcastIds,
+      subscribedUserIds
+    },
+    false
+  ]
+}
+
+export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) => {
   const response = await request({
     endpoint: '/auth/get-authenticated-user-info',
     method: 'POST',
@@ -14,7 +70,12 @@ export const getAuthenticatedUserInfo = async () => {
     }
   })
 
-  return response.json()
+  const results = await response.json()
+
+  return [
+    results,
+    true
+  ]
 }
 
 export const login = async (email: string, password: string) => {
@@ -36,32 +97,6 @@ export const login = async (email: string, password: string) => {
   }
 
   return data
-}
-
-export const getLoggedInUserMediaRefs = async (query: any = {}, nsfwMode?: boolean) => {
-  const filteredQuery = {
-    ...(query.page ? { page: query.page } : { page: 1 }),
-    ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' })
-  } as any
-
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
-  const response = await request({
-    endpoint: '/auth/mediaRefs',
-    query: filteredQuery,
-    headers: { Authorization: bearerToken }
-  }, nsfwMode)
-
-  return response.json()
-}
-
-export const getLoggedInUserPlaylists = async (nsfwMode?: boolean) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
-  const response = await request({
-    endpoint: '/auth/playlists',
-    headers: { Authorization: bearerToken }
-  }, nsfwMode)
-
-  return response.json()
 }
 
 export const sendResetPassword = async (email: string) => {
@@ -99,76 +134,4 @@ export const signUp = async (email: string, password: string, name: string) => {
   }
 
   return data
-}
-
-export const deleteLoggedInUser = async () => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
-  const response = await request({
-    endpoint: '/auth/user',
-    method: 'DELETE',
-    headers: { Authorization: bearerToken },
-    opts: { credentials: 'include' }
-  })
-
-  return response.json()
-}
-
-export const updateLoggedInUser = async (data: any) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
-  const response = await request({
-    endpoint: '/auth/user',
-    method: 'PATCH',
-    headers: {
-      'Authorization': bearerToken,
-      'Content-Type': 'application/json'
-    },
-    body: data,
-    opts: { credentials: 'include' }
-  })
-
-  return response.json()
-}
-
-export const addOrUpdateUserHistoryItem = async (nowPlayingItem: NowPlayingItem) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
-  const response = await request({
-    endpoint: '/auth/user/add-or-update-history-item',
-    method: 'PATCH',
-    headers: {
-      'Authorization': bearerToken,
-      'Content-Type': 'application/json'
-    },
-    body: { historyItem: nowPlayingItem },
-    opts: { credentials: 'include' }
-  })
-
-  return response.json()
-}
-
-export const downloadLoggedInUserData = async (id: string) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
-  const response = await request({
-    endpoint: '/auth/user/download',
-    method: 'GET',
-    headers: { Authorization: bearerToken },
-    opts: { credentials: 'include' }
-  })
-
-  return response.json()
-}
-
-export const updateUserQueueItems = async (data: any) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
-  const response = await request({
-    endpoint: '/auth/user/update-queue',
-    method: 'PATCH',
-    headers: {
-      'Authorization': bearerToken,
-      'Content-Type': 'application/json'
-    },
-    body: data,
-    opts: { credentials: 'include' }
-  })
-
-  return response.json()
 }

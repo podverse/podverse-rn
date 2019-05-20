@@ -4,6 +4,7 @@ import SortableList from 'react-native-sortable-list'
 
 type Props = {
   data: any[]
+  onPressRow?: any
   onReleaseRow: any
   renderRow: any
 }
@@ -12,11 +13,12 @@ type State = {}
 
 export class PVSortableList extends React.Component<Props, State> {
   render() {
-    const { data, onReleaseRow, renderRow } = this.props
+    const { data, onPressRow, onReleaseRow, renderRow } = this.props
 
     return (
       <SortableList
         data={data}
+        onPressRow={onPressRow}
         onReleaseRow={onReleaseRow}
         renderRow={renderRow}
         style={styles.list} />

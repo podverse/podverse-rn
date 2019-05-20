@@ -26,8 +26,7 @@ export class AuthScreen extends React.Component<Props, State> {
     const { navigation } = this.props
 
     try {
-      console.log(credentials)
-      await loginUser(credentials)
+      await loginUser(credentials, navigation)
       if (navigation.getParam('isOnboarding', false)) {
         navigation.navigate(PV.RouteNames.MainApp)
       } else {
@@ -41,7 +40,7 @@ export class AuthScreen extends React.Component<Props, State> {
   attemptSignUp = async (credentials: Credentials) => {
     const { navigation } = this.props
     try {
-      await signUpUser(credentials)
+      await signUpUser(credentials, navigation)
       if (navigation.getParam('isOnboarding', false)) {
         navigation.navigate(PV.RouteNames.MainApp)
       } else {
@@ -67,7 +66,7 @@ export class AuthScreen extends React.Component<Props, State> {
             <Text
               onPress={this.switchOptions}
               style={styles.switchOptionText}>
-              {this.state.showSignUp ? 'Login' : 'SignUp'}
+              {this.state.showSignUp ? 'Login' : 'Sign Up'}
             </Text>
           </View>
         </View>

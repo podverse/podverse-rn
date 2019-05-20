@@ -1,9 +1,9 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableOpacity } from 'react-native'
-import { useGlobal } from 'reactn'
-import { readableClipTime } from '../lib/utility'
+import { Image, StyleSheet } from 'react-native'
+import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { button } from '../styles'
+import { Icon, Text, View } from './'
 
 type Props = {
   endTime?: number
@@ -19,29 +19,24 @@ type Props = {
 export const ClipTableCell = (props: Props) => {
   const { endTime, episodePubDate, episodeTitle, handleMorePress, podcastImageUrl, podcastTitle,
     startTime, title = 'untitled clip' } = props
-  const [globalTheme] = useGlobal('globalTheme')
 
   const clipTime = readableClipTime(startTime, endTime)
 
-  const showPodcastInfo = episodePubDate || episodeTitle || podcastImageUrl || podcastTitle
+  const showEpisodeInfo = !!episodePubDate || !!episodeTitle
+  const showPodcastInfo = !!podcastImageUrl || !!podcastTitle
 
   const moreButton = (
-    <View style={styles.buttonView}>
-      <TouchableOpacity
-        onPress={handleMorePress}
-        style={styles.moreButton}>
-        <Image
-          resizeMode='contain'
-          source={PV.Images.MORE}
-          style={[styles.moreButtonImage, globalTheme.buttonImage]} />
-      </TouchableOpacity>
-    </View>
+    <Icon
+      name='ellipsis-h'
+      onPress={handleMorePress}
+      size={26}
+      style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
   )
 
   return (
     <View style={styles.wrapper}>
       {
-        !!showPodcastInfo &&
+        !!showEpisodeInfo &&
           <View style={styles.wrapperTop}>
             {
               !!podcastImageUrl &&
@@ -71,8 +66,8 @@ export const ClipTableCell = (props: Props) => {
                 !!episodePubDate &&
                   <Text
                     isSecondary={true}
-                    style={styles.bottomText}>
-                    {episodePubDate}
+                    style={styles.episodePubDate}>
+                    {readableDate(episodePubDate)}
                   </Text>
               }
             </View>
@@ -89,12 +84,13 @@ export const ClipTableCell = (props: Props) => {
             {title}
           </Text>
           <Text
+            isSecondary={true}
             style={styles.clipTime}>
             {clipTime}
           </Text>
         </View>
         {
-          !showPodcastInfo && handleMorePress && moreButton
+          !showEpisodeInfo && handleMorePress && moreButton
         }
       </View>
     </View>
@@ -102,78 +98,57 @@ export const ClipTableCell = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
-  bottomText: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
-    justifyContent: 'flex-end',
-    marginTop: 2
-  },
   buttonView: {
-    flex: 0,
-    marginLeft: 8,
-    marginRight: 8
+    flex: 0
   },
   clipTime: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
+    fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-end',
-    marginTop: 4
+    marginTop: 2
+  },
+  episodePubDate: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.md,
+    justifyContent: 'flex-end',
+    marginTop: 2
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold
+    marginTop: 2
   },
   image: {
     flex: 0,
     height: 60,
-    marginLeft: 8,
     marginRight: 12,
     width: 60
   },
-  moreButton: {
-    flex: 0,
-    marginBottom: 'auto',
-    marginTop: 'auto'
-  },
-  moreButtonImage: {
-    borderColor: 'white',
-    borderRadius: 22,
-    borderWidth: 1,
-    height: 44,
-    tintColor: 'white',
-    width: 44
-  },
   podcastTitle: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
+    fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-start'
   },
   textWrapper: {
-    flex: 1,
-    justifyContent: 'space-between',
-    marginLeft: 8,
-    marginRight: 8
+    flex: 1
   },
   title: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold,
-    justifyContent: 'flex-end'
+    fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.bold
   },
   wrapper: {
-    marginBottom: 8,
-    marginTop: 8
+    paddingBottom: 12,
+    paddingHorizontal: 8,
+    paddingTop: 10
   },
   wrapperBottom: {
-    flexDirection: 'row',
-    marginLeft: 8,
-    marginRight: 8
+    flexDirection: 'row'
   },
   wrapperBottomTextWrapper: {
     flex: 1
   },
   wrapperTop: {
     flexDirection: 'row',
-    marginBottom: 10
+    marginBottom: 8
   }
 })

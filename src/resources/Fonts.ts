@@ -1,6 +1,6 @@
-import { FontType } from './Interfaces'
+import { IFonts } from './Interfaces'
 
-export const Fonts: FontType = {
+export const Fonts: IFonts = {
   sizes: {
     xs: 13,
     sm: 14,

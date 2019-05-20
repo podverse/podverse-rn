@@ -1,8 +1,9 @@
 import debounce from 'lodash/debounce'
 import React from 'reactn'
-import { ActivityIndicator, Divider, EpisodeTableCell, FlatList, SearchBar, TableSectionSelectors,
-  View } from '../components'
-import { removeHTMLFromString } from '../lib/utility'
+import { ActionSheet, ActivityIndicator, Divider, EpisodeTableCell, FlatList, SearchBar,
+  TableSectionSelectors, View } from '../components'
+import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import { removeHTMLFromAndDecodeString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { core } from '../styles'
@@ -20,6 +21,8 @@ type State = {
   queryPage: number
   querySort: string | null
   searchBarText: string
+  selectedItem?: any
+  showActionSheet: boolean
 }
 
 export class EpisodesScreen extends React.Component<Props, State> {
@@ -38,7 +41,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
       queryFrom: _allPodcastsKey,
       queryPage: 1,
       querySort: _mostRecentKey,
-      searchBarText: ''
+      searchBarText: '',
+      showActionSheet: false
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
@@ -119,11 +123,24 @@ export class EpisodesScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
+  _handleCancelPress = () => {
+    return new Promise((resolve, reject) => {
+      this.setState({ showActionSheet: false }, () => resolve())
+    })
+  }
+
+  _handleMorePress = (selectedItem: any) => {
+    this.setState({
+      selectedItem,
+      showActionSheet: true
+    })
+  }
+
   _renderEpisodeItem = ({ item }) => (
     <EpisodeTableCell
         key={item.id}
-        description={removeHTMLFromString(item.description)}
-        handleMorePress={() => console.log('handleMorePress')}
+        description={removeHTMLFromAndDecodeString(item.description)}
+        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
         handleNavigationPress={() => this.props.navigation.navigate(
           PV.RouteNames.EpisodeScreen, { episode: item }
         )}
@@ -157,7 +174,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, queryFrom, isLoading, isLoadingMore, querySort } = this.state
+    const { flatListData, queryFrom, isLoading, isLoadingMore, querySort, selectedItem,
+      showActionSheet } = this.state
+    const { globalTheme } = this.global
+    const { navigation } = this.props
 
     return (
       <View style={styles.view}>
@@ -173,7 +193,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           <ActivityIndicator />
         }
         {
-          !isLoading && flatListData && flatListData.length > 0 &&
+          !isLoading && flatListData &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={queryFrom !== _subscribedKey}
@@ -184,6 +204,13 @@ export class EpisodesScreen extends React.Component<Props, State> {
               onEndReached={this._onEndReached}
               renderItem={this._renderEpisodeItem} />
         }
+        <ActionSheet
+          globalTheme={globalTheme}
+          handleCancelPress={this._handleCancelPress}
+          items={PV.ActionSheet.media.moreButtons(
+            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+          )}
+          showModal={showActionSheet} />
       </View>
     )
   }

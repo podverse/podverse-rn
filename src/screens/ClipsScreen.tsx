@@ -1,14 +1,27 @@
-import React from 'react'
-import { ClipTableCell, Divider, EpisodeTableCell, EpisodeTableHeader, PlaylistTableCell,
-  PodcastTableCell, PodcastTableHeader, ProfileTableCell, TableSectionSelectors, View } from '../components'
+import debounce from 'lodash/debounce'
+import React from 'reactn'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, SearchBar,
+  TableSectionSelectors, View } from '../components'
+import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import { PV } from '../resources'
+import { getMediaRefs } from '../services/mediaRef'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
 }
 
 type State = {
-  fromSelected: string
-  sortSelected: string
+  endOfResultsReached: boolean
+  flatListData: any[]
+  isLoading: boolean
+  isLoadingMore: boolean
+  queryFrom: string | null
+  queryPage: number
+  querySort: string | null
+  searchBarText: string
+  selectedItem?: any
+  showActionSheet: boolean
 }
 
 export class ClipsScreen extends React.Component<Props, State> {
@@ -20,107 +33,283 @@ export class ClipsScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      fromSelected: 'Subscribed',
-      sortSelected: 'most recent'
+      endOfResultsReached: false,
+      flatListData: [],
+      isLoading: true,
+      isLoadingMore: false,
+      queryFrom: _allPodcastsKey,
+      queryPage: 1,
+      querySort: _mostRecentKey,
+      searchBarText: '',
+      showActionSheet: false
+    }
+
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
+  }
+
+  async componentDidMount() {
+    const { queryFrom } = this.state
+    const newState = await this._queryClipData(queryFrom)
+    this.setState(newState)
+  }
+
+  selectLeftItem = async (selectedKey: string) => {
+    if (!selectedKey) {
+      this.setState({ queryFrom: null })
+      return
+    }
+
+    this.setState({
+      endOfResultsReached: false,
+      flatListData: [],
+      isLoading: true,
+      queryFrom: selectedKey,
+      queryPage: 1
+    }, async () => {
+      const newState = await this._queryClipData(selectedKey)
+      this.setState(newState)
+    })
+  }
+
+  selectRightItem = async (selectedKey: string) => {
+    if (!selectedKey) {
+      this.setState({ querySort: null })
+      return
+    }
+
+    this.setState({
+      endOfResultsReached: false,
+      flatListData: [],
+      isLoading: true,
+      querySort: selectedKey
+    }, async () => {
+      const newState = await this._queryClipData(selectedKey)
+      this.setState(newState)
+    })
+  }
+
+  _onEndReached = ({ distanceFromEnd }) => {
+    const { endOfResultsReached, isLoadingMore, queryFrom, queryPage = 1 } = this.state
+    if (!endOfResultsReached && !isLoadingMore) {
+      if (distanceFromEnd > -1) {
+        this.setState({
+          isLoadingMore: true,
+          queryPage: queryPage + 1
+        }, async () => {
+          const newState = await this._queryClipData(queryFrom, { queryPage: this.state.queryPage })
+          this.setState(newState)
+        })
+      }
     }
   }
 
-  selectLeftItem = (fromSelected: string) => {
-    this.setState({ fromSelected })
+  _ListHeaderComponent = () => {
+    const { searchBarText } = this.state
+
+    return (
+      <View style={styles.ListHeaderComponent}>
+        <SearchBar
+          containerStyle={styles.ListHeaderComponent}
+          inputContainerStyle={core.searchBar}
+          onChangeText={this._handleSearchBarTextChange}
+          onClear={this._handleSearchBarClear}
+          value={searchBarText} />
+      </View>
+    )
   }
 
-  selectRightItem = (sortSelected: string) => {
-    this.setState({ sortSelected })
+  _ItemSeparatorComponent = () => {
+    return <Divider />
+  }
+
+  _handleCancelPress = () => {
+    return new Promise((resolve, reject) => {
+      this.setState({ showActionSheet: false }, () => resolve())
+    })
+  }
+
+  _handleMorePress = (selectedItem: any) => {
+    this.setState({
+      selectedItem,
+      showActionSheet: true
+    })
+  }
+
+  _renderClipItem = ({ item }) => (
+    <ClipTableCell
+      key={item.id}
+      endTime={item.endTime}
+      episodePubDate={item.episode.pubDate}
+      episodeTitle={item.episode.title}
+      handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+      podcastImageUrl={item.episode.podcast.imageUrl}
+      podcastTitle={item.episode.podcast.title}
+      startTime={item.startTime}
+      title={item.title} />
+  )
+
+  _handleSearchBarClear = (text: string) => {
+    this.setState({ searchBarText: '' })
+  }
+
+  _handleSearchBarTextChange = (text: string) => {
+    const { queryFrom } = this.state
+
+    this.setState({
+      flatListData: [],
+      isLoadingMore: true,
+      queryPage: 1,
+      searchBarText: text
+    }, async () => {
+      this._handleSearchBarTextQuery(queryFrom, { searchTitle: text })
+    })
+  }
+
+  _handleSearchBarTextQuery = async (queryFrom: string | null, queryOptions: any) => {
+    const state = await this._queryClipData(queryFrom, { searchAllFieldsText: queryOptions.searchAllFieldsText })
+    this.setState(state)
   }
 
   render() {
-    const { fromSelected, sortSelected } = this.state
+    const { flatListData, queryFrom, isLoading, isLoadingMore, querySort, selectedItem,
+      showActionSheet } = this.state
+    const { globalTheme } = this.global
+    const { navigation } = this.props
 
     return (
-      <View>
+      <View style={styles.view}>
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
-          leftItems={[
-            {
-              label: 'Subscribed',
-              value: 'Subscribed'
-            },
-            {
-              label: 'All Podcasts',
-              value: 'All Podcasts'
-            }
-          ]}
-          rightItems={[
-            {
-              label: 'most recent',
-              value: 'most recent'
-            },
-            {
-              label: 'top - past day',
-              value: 'top - past day'
-            },
-            {
-              label: 'top - past week',
-              value: 'top - past week'
-            },
-            {
-              label: 'top - past month',
-              value: 'top - past month'
-            },
-            {
-              label: 'top - past year',
-              value: 'top - past year'
-            }
-          ]}
-          selectedLeftItemKey={fromSelected}
-          selectedRightItemKey={sortSelected}
-        />
-        <PodcastTableHeader
-          autoDownloadOn={true}
-          podcastImageUrl='https://ssl-static.libsyn.com/p/assets/4/9/9/b/499b28131200cbd4/grumpy-old-geeks_v7.4.jpg'
-          podcastTitle='Grumpy Old Geeks' />
-        <Divider />
-        <EpisodeTableHeader
-          handleMorePress={() => console.log('handleMorePress')}
-          podcastImageUrl='https://ssl-static.libsyn.com/p/assets/4/9/9/b/499b28131200cbd4/grumpy-old-geeks_v7.4.jpg'
-          pubDate='3/4/19'
-          title='One Hot Pocket at a Time' />
-        <Divider />
-        <PodcastTableCell
-          // autoDownloadOn={true}
-          // downloadCount={3}
-          lastEpisodePubDate='3/28/19'
-          podcastAuthors='Dan Carlin, Ben'
-          podcastCategories='History, Education'
-          podcastImageUrl='https://is4-ssl.mzstatic.com/image/thumb/Music71/v4/09/5c/79/095c79d2-17dc-eb92-3f50-ce8b00fc2f4d/source/600x600bb.jpg'
-          podcastTitle={`Dan Carlin's Hardcore History`} />
-        <Divider />
-        <EpisodeTableCell
-          episodePubDate='3/12/2019'
-          episodeSummary='Renée DiResta is the Director of Research at New Knowledge and a Mozilla Fellow in Media, Misinformation, and Trust.'
-          episodeTitle='#1263 - Renée DiResta'
-          handleMorePress={() => console.log('handleMorePress')}
-          podcastImageUrl='http://static.libsyn.com/p/assets/7/1/f/3/71f3014e14ef2722/JREiTunesImage2.jpg'
-          podcastTitle='The Joe Rogan Experience' />
-        <Divider />
-        <PlaylistTableCell
-          itemCount={123}
-          title='Playlist Title #1' />
-        <Divider />
-        <ProfileTableCell title='Prof Chaos' />
-        <Divider />
-        <ClipTableCell
-          clipEndTime={1345}
-          clipStartTime={1234}
-          clipTitle='Hello worlddldlddldl 11!!! 1!1'
-          episodePubDate='3/12/2019'
-          episodeTitle='#1263 - Renée DiResta'
-          handleMorePress={() => console.log('handleMorePress')}
-          podcastImageUrl='http://static.libsyn.com/p/assets/7/1/f/3/71f3014e14ef2722/JREiTunesImage2.jpg'
-          podcastTitle='The Joe Rogan Experience' />
-        <Divider />
+          leftItems={leftItems}
+          rightItems={rightItems}
+          selectedLeftItemKey={queryFrom}
+          selectedRightItemKey={querySort} />
+        {
+          isLoading &&
+            <ActivityIndicator />
+        }
+        {
+          !isLoading && flatListData &&
+            <FlatList
+              data={flatListData}
+              disableLeftSwipe={queryFrom !== _subscribedKey}
+              extraData={flatListData}
+              isLoadingMore={isLoadingMore}
+              ItemSeparatorComponent={this._ItemSeparatorComponent}
+              ListHeaderComponent={this._ListHeaderComponent}
+              onEndReached={this._onEndReached}
+              renderItem={this._renderClipItem} />
+        }
+        <ActionSheet
+          globalTheme={globalTheme}
+          handleCancelPress={this._handleCancelPress}
+          items={PV.ActionSheet.media.moreButtons(
+            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+          )}
+          showModal={showActionSheet} />
       </View>
     )
+  }
+
+  _queryClipData = async (filterKey: string | null, queryOptions: {
+    queryPage?: number, searchAllFieldsText?: string
+  } = {}) => {
+    const newState = {
+      isLoading: false,
+      isLoadingMore: false
+    } as State
+    const { flatListData, queryFrom, querySort } = this.state
+    const podcastId = this.global.session.userInfo.subscribedPodcastIds
+    const nsfwMode = this.global.settings.nsfwMode
+    const { queryPage, searchAllFieldsText } = queryOptions
+
+    if (filterKey === _subscribedKey) {
+      const results = await getMediaRefs({
+        sort: querySort,
+        page: queryPage,
+        podcastId,
+        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+        includePodcast: true
+      }, this.global.settings.nsfwMode)
+      newState.flatListData = [...flatListData, ...results[0]]
+      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+    } else if (filterKey === _allPodcastsKey) {
+      const { searchBarText: searchAllFieldsText } = this.state
+      const results = await getMediaRefs({
+        sort: querySort,
+        page: queryPage,
+        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+        includePodcast: true
+      }, this.global.settings.nsfwMode)
+      newState.flatListData = [...flatListData, ...results[0]]
+      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+    } else if (rightItems.some((option) => option.value === filterKey)) {
+      const results = await getMediaRefs({
+        ...(queryFrom === _subscribedKey ? { podcastId } : {}),
+        sort: filterKey,
+        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+        includePodcast: true
+      }, nsfwMode)
+      newState.flatListData = results[0]
+      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+    }
+
+    return newState
+  }
+}
+
+const _subscribedKey = 'subscribed'
+const _allPodcastsKey = 'allPodcasts'
+const _mostRecentKey = 'most-recent'
+const _topPastDay = 'top-past-day'
+const _topPastWeek = 'top-past-week'
+const _topPastMonth = 'top-past-month'
+const _topPastYear = 'top-past-year'
+
+const leftItems = [
+  {
+    label: 'Subscribed',
+    value: _subscribedKey
+  },
+  {
+    label: 'All Podcasts',
+    value: _allPodcastsKey
+  }
+]
+
+const rightItems = [
+  {
+    label: 'most recent',
+    value: _mostRecentKey
+  },
+  {
+    label: 'top - past day',
+    value: _topPastDay
+  },
+  {
+    label: 'top - past week',
+    value: _topPastWeek
+  },
+  {
+    label: 'top - past month',
+    value: _topPastMonth
+  },
+  {
+    label: 'top - past year',
+    value: _topPastYear
+  }
+]
+
+const styles = {
+  ListHeaderComponent: {
+    borderBottomWidth: 0,
+    borderTopWidth: 0,
+    flex: 0,
+    height: PV.FlatList.searchBar.height,
+    justifyContent: 'center'
+  },
+  view: {
+    flex: 1
   }
 }

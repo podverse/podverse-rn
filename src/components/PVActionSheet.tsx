@@ -6,8 +6,10 @@ type Props = {
   globalTheme: any
   handleCancelPress?: any
   items: any[]
+  message?: string
   omitCancel?: boolean
   showModal?: boolean
+  title?: string
 }
 
 type State = {
@@ -25,12 +27,12 @@ export class PVActionSheet extends React.Component<Props, State> {
   }
 
   generateButtons = (items: any[]) => {
-    const { globalTheme, handleCancelPress } = this.props
+    const { globalTheme, handleCancelPress, message, title } = this.props
     const buttons = []
 
     items.forEach((item, index) => {
       const buttonStyle = [styles.button]
-      if (index === 0) {
+      if (index === 0 && !message && !title) {
         buttonStyle.push(styles.buttonTop)
       } else if (index === items.length - 1) {
         buttonStyle.push(styles.buttonBottom)
@@ -67,7 +69,7 @@ export class PVActionSheet extends React.Component<Props, State> {
   }
 
   render() {
-    const { globalTheme, items, showModal } = this.props
+    const { globalTheme, items, message, showModal, title } = this.props
     const buttons = this.generateButtons(items)
 
     return (
@@ -82,6 +84,23 @@ export class PVActionSheet extends React.Component<Props, State> {
                 transform: [{ translateY: showModal ? _yValueShow : _yValueHide }]
               }
             ]}>
+            {
+              (!!title || !!message) &&
+                <View style={[styles.header, globalTheme.actionSheetButton]}>
+                  {
+                    !!title &&
+                      <Text style={[styles.headerTitle, globalTheme.actionSheetHeaderText]}>
+                        {title}
+                      </Text>
+                  }
+                  {
+                    !!message &&
+                      <Text style={[styles.headerMessage, globalTheme.actionSheetHeaderText]}>
+                        {message}
+                      </Text>
+                  }
+                </View>
+            }
             {buttons}
           </Animated.View>
         </View>
@@ -128,6 +147,24 @@ const styles = {
   },
   buttonText: {
     fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    textAlign: 'center'
+  },
+  header: {
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderTopLeftRadius: 6,
+    borderTopRightRadius: 6,
+    borderTopWidth: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 12
+  },
+  headerMessage: {
+    fontSize: PV.Fonts.sizes.md,
+    textAlign: 'center'
+  },
+  headerTitle: {
+    fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold,
     textAlign: 'center'
   }

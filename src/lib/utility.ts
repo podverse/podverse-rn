@@ -1,3 +1,6 @@
+import he from 'he'
+import { NowPlayingItem } from './NowPlayingItem'
+
 export const readableDate = (date: string) => {
   const dateObj = new Date(date)
   const year = dateObj.getFullYear()
@@ -64,9 +67,12 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
   }
 }
 
-export const removeHTMLFromString = (text: string) => {
-  const regex = /(<([^>]+)>)/ig
-  return text.replace(regex, '')
+export const removeHTMLFromAndDecodeString = (text: string) => {
+  const htmlEntitiesRegex = /(<([^>]+)>)|(\r?\n|\r)/ig
+  const str = text.replace(htmlEntitiesRegex, '')
+  const limitSingleSpaceRegex = /\s\s+/g
+  const finalString = str.replace(limitSingleSpaceRegex, ' ')
+  return he.decode(finalString)
 }
 
 export const generateAuthorsText = (authors: any) => {
@@ -107,7 +113,7 @@ export const generateCategoryItems = (categories: any[]) => {
 export const combineAndSortPlaylistItems = (episodes: [any], mediaRefs: [any], itemsOrder: [string]) => {
   const allPlaylistItems = [...episodes, ...mediaRefs]
   const remainingPlaylistItems = [] as any[]
-  
+
   const unsortedItems = allPlaylistItems.filter((x: any) => {
     const isSortedItem = itemsOrder.some(id => x.id === id)
     if (!isSortedItem) {
@@ -125,4 +131,18 @@ export const combineAndSortPlaylistItems = (episodes: [any], mediaRefs: [any], i
   })
 
   return [...sortedItems, ...unsortedItems]
+}
+
+export const haveNowPlayingItemsChanged = (lastItem: NowPlayingItem, nextItem: NowPlayingItem) => (
+  (nextItem.clipId && nextItem.clipId !== lastItem.clipId) ||
+  (nextItem.episodeId && nextItem.episodeId !== lastItem.episodeId)
+)
+
+export const clone = obj => {
+  if (null == obj || "object" != typeof obj) return obj
+  var copy = obj.constructor()
+  for (var attr in obj) {
+    if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr]
+  }
+  return copy
 }

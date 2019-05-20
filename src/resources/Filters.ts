@@ -1,6 +1,6 @@
-import { FilterTypes } from './Interfaces'
+import { IFilters } from './Interfaces'
 
-export const Filters: FilterTypes = {
+export const Filters: IFilters = {
   downloadedKey: 'downloaded',
   allEpisodesKey: 'allEpisodes',
   clipsKey: 'clips',

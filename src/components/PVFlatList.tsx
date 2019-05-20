@@ -1,5 +1,5 @@
 import React from 'react'
-import { FlatList, RefreshControl } from 'react-native'
+import { RefreshControl } from 'react-native'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
@@ -10,10 +10,8 @@ type Props = {
   data?: any
   disableLeftSwipe: boolean
   extraData?: any
-  searchBarText?: string
   handleFilterInputChangeText?: any
   handleFilterInputClear?: any
-  handleGetItemLayout?: any
   initialScrollIndex?: number
   isLoadingMore?: boolean
   isRefreshing?: boolean
@@ -24,9 +22,10 @@ type Props = {
   onRefresh?: any
   renderHiddenItem?: any
   renderItem: any
+  searchBarText?: string
 }
 
-// This is used to silence a ref warning when a Flatlist doesn't need to be swipable.
+// This line silences a ref warning when a Flatlist doesn't need to be swipable.
 const _renderHiddenItem = () => <View />
 
 export const PVFlatList = (props: Props) => {
@@ -35,7 +34,6 @@ export const PVFlatList = (props: Props) => {
     ListHeaderComponent, onEndReached, onEndReachedThreshold = 0.8, onRefresh, renderHiddenItem,
     renderItem } = props
 
-  let flatList: FlatList<any> | null
   return (
     <View style={styles.view}>
       <SwipeListView
@@ -54,14 +52,8 @@ export const PVFlatList = (props: Props) => {
           return null
         }}
         {...(ListHeaderComponent ? { ListHeaderComponent } : {})}
-        listViewRef={(ref) => {
-          flatList = ref
-        }}
         onEndReached={onEndReached}
         onEndReachedThreshold={onEndReachedThreshold}
-        onLayout={() => {
-          ListHeaderComponent && flatList && flatList.scrollToOffset({ offset: PV.FlatList.searchBar.height, animated: false })
-        }}
         {...(onRefresh ? { refreshControl: <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} /> } : {})}
         renderHiddenItem={renderHiddenItem || _renderHiddenItem}
         renderItem={renderItem}

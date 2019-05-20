@@ -4,28 +4,35 @@ import { PV } from '../resources'
 import { Text, View } from './'
 
 type Props = {
-  title?: string
+  name?: string
+  onPress?: any
 }
 
 export const ProfileTableCell = (props: Props) => {
-  const { title } = props
+  const { name, onPress } = props
 
   return (
-    <View style={styles.wrapper}>
-      <Text style={styles.title}>{title}</Text>
-    </View>
+      <View style={styles.wrapper}>
+        <Text
+          onPress={onPress}
+          style={styles.name}>
+          {name || 'anonymous'}
+        </Text>
+      </View>
   )
 }
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold
+  name: {
+    flex: 1,
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.semibold,
+    height: 50,
+    lineHeight: 50
   },
   wrapper: {
     alignItems: 'center',
     flexDirection: 'row',
-    height: 50,
     paddingLeft: 8,
     paddingRight: 8
   }

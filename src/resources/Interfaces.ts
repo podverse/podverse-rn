@@ -5,6 +5,7 @@ export interface GlobalTheme {
   actionSheetButtonTextCancel?: any
   actionSheetButtonUnderlay?: any
   actionSheetButtonCancelUnderlay?: any
+  actionSheetHeaderText?: any
   actionSheetView?: any
   activityIndicator?: any
   buttonGroupText?: any
@@ -16,7 +17,15 @@ export interface GlobalTheme {
   buttonPrimaryWrapperDisabled?: any
   divider?: any
   flatList?: any
+  inputContainerText?: any
+  link?: any
+  makeClipPlayerControlsWrapper?: any
+  modalBackdrop?: any
+  modalInnerWrapper?: any
+  placeholderText?: any
   player?: any
+  playerText?: any
+  selectorText?: any
   swipeRowBack?: any
   tabbar?: any
   tabbarItem?: any
@@ -46,39 +55,66 @@ export interface UserInfo {
 
 export interface InitialState {
   globalTheme: GlobalTheme
+  player: {
+    isPlaying: boolean
+    nowPlayingItem: any
+    playbackRate: number
+    shouldContinuouslyPlay: boolean
+    showMiniPlayer: boolean
+  }
+  screenMakeClip: {
+    isShowing: boolean
+  }
+  screenPlayer: {
+    endOfResultsReached: boolean
+    flatListData: any[]
+    isLoading: boolean
+    isLoadingMore: boolean
+    queryFrom: string | null
+    queryPage: number
+    querySort: string | null
+    selectedItem?: any
+    showFullClipInfo: boolean
+    showHeaderActionSheet: boolean
+    showMoreActionSheet: boolean
+    showShareActionSheet: boolean
+    viewType: string | null
+  }
   screenPlaylist: {
     flatListData: []
     playlist?: any
   }
   screenPlaylists: {
+    myPlaylists: []
+    subscribedPlaylists: []
+  }
+  screenPlaylistsAddTo: {
+    myPlaylists: []
+  }
+  screenProfile: {
+    flatListData: []
+    user: any
+  }
+  screenProfiles: {
     flatListData: []
   }
   session: {
     userInfo: UserInfo,
     isLoggedIn: boolean
   }
-  showPlayer: boolean
-  subscribedPodcasts: [{}]
+  settings: {
+    nsfwMode: boolean
+  }
+  subscribedPodcasts: []
 }
 
-interface FontSizes {
-  [size: string]: number
+export interface IActionSheet {
+  media: {
+    moreButtons: any
+  }
 }
 
-interface FontWeight {
-  [weight: string]: string
-}
-
-export interface FontType {
-  sizes: FontSizes,
-  weights: FontWeight
-}
-
-export interface ISettings {
-  nsfwMode: boolean
-}
-
-export interface FilterTypes {
+export interface IFilters {
   downloadedKey: string
   allEpisodesKey: string
   clipsKey: string
@@ -88,4 +124,17 @@ export interface FilterTypes {
   topPastWeek: string
   topPastMonth: string
   topPastYear: string
+}
+
+interface IFontSizes {
+  [size: string]: number
+}
+
+interface IFontWeights {
+  [weight: string]: string
+}
+
+export interface IFonts {
+  sizes: IFontSizes,
+  weights: IFontWeights
 }

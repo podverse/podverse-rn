@@ -1,15 +1,15 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import RNSecureKeyStore from 'react-native-secure-key-store'
 import React from 'reactn'
-import { ActivityIndicator, Divider, FlatList, PodcastTableCell, SearchBar, SwipeRowBack,
+import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
 import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcasts'
+import { initPlayerState, setNowPlayingItem } from '../state/actions/player'
+import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
 type Props = {
@@ -69,12 +69,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
         AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
         navigation.navigate(PV.RouteNames.Onboarding)
       } else {
-        const userToken = await RNSecureKeyStore.get('BEARER_TOKEN')
-        if (userToken) {
-          await getAuthUserInfo()
-          const { subscribedPodcasts } = this.global
-          flatListData = subscribedPodcasts
+        await initPlayerState(this.global)
+        await getAuthUserInfo()
+        const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
+
+        if (nowPlayingItemString) {
+          await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global, true)
         }
+        const { subscribedPodcasts } = this.global
+        flatListData = subscribedPodcasts
       }
     } catch (error) {
       console.log(error.message)
@@ -210,7 +213,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _handleHiddenItemPress = async (selectedId, rowMap) => {
     rowMap[selectedId].closeRow()
     const { flatListData } = this.state
-    await toggleSubscribeToPodcast(selectedId)
+    await toggleSubscribeToPodcast(selectedId, this.global)
     const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
     this.setState({ flatListData: newFlatListData })
   }
@@ -238,11 +241,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { categoryItems, flatListData, queryFrom, isLoading, isLoadingMore, isRefreshing, querySort,
+    const { categoryItems, queryFrom, isLoading, isLoadingMore, isRefreshing, querySort,
       selectedCategory, selectedSubCategory, subCategoryItems } = this.state
+
+    let flatListData = []
+    if (queryFrom === _subscribedKey) {
+      flatListData = this.global.subscribedPodcasts
+    } else {
+      flatListData = this.state.flatListData
+    }
 
     return (
       <View style={styles.view}>
+        <PlayerEvents />
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
@@ -267,12 +278,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && queryFrom && flatListData && flatListData.length > 0 &&
+          !isLoading && queryFrom && flatListData &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={queryFrom !== _subscribedKey}
               extraData={flatListData}
-              {...(queryFrom !== _subscribedKey ? { handleHiddenItemPress: this._handleHiddenItemPress } : {})}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
@@ -321,6 +331,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { settings } = this.global
     const { nsfwMode } = settings
     if (filterKey === _subscribedKey) {
+      await getAuthUserInfo() // get the latest subscribedPodcastIds first
       const results = await this._querySubscribedPodcasts()
       newState.flatListData = results[0]
     } else if (filterKey === _allPodcastsKey) {

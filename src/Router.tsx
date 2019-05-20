@@ -1,16 +1,16 @@
 import React from 'react'
 import { Image } from 'react-native'
-import { createAppContainer, createStackNavigator, createSwitchNavigator,
-  NavigationScreenOptions } from 'react-navigation'
+import { createAppContainer, createStackNavigator, createSwitchNavigator, NavigationScreenOptions
+  } from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import { PVTabBar } from './components'
+import { NavQueueIcon, PVTabBar } from './components'
 import { PV } from './resources'
-import { AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EpisodeScreen, EpisodesScreen,
-  MoreScreen, MyProfileScreen, OnboardingScreen, PlaylistScreen, PlaylistsScreen,
-  PodcastScreen, PodcastsScreen, ProfileScreen, ProfilesScreen, SearchScreen, SettingsScreen
-  } from './screens'
+import { AboutScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
+  EpisodeScreen, EpisodesScreen, FeedbackScreen, MakeClipScreen, MoreScreen, OnboardingScreen, PlayerScreen,
+  PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen, PodcastsScreen, ProfileScreen,
+  ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen, WebPageScreen } from './screens'
 
-const defaultNavigationOptions = {
+const defaultNavigationOptions = ({ navigation }) => ({
   title: PV.Tabs.Podcasts.title,
   headerStyle: {
     backgroundColor: PV.Colors.brandColor
@@ -18,8 +18,9 @@ const defaultNavigationOptions = {
   headerTintColor: PV.Colors.white,
   headerTitleStyle: {
     fontWeight: 'bold'
-  }
-} as NavigationScreenOptions
+  },
+  headerRight: <NavQueueIcon navigation={navigation} />
+}) as NavigationScreenOptions
 
 const AuthNavigator = createStackNavigator(
   {
@@ -115,14 +116,19 @@ const MoreNavigator = createStackNavigator(
   {
     [PV.RouteNames.MoreScreen]: MoreScreen,
     [PV.RouteNames.DownloadsScreen]: DownloadsScreen,
-    [PV.RouteNames.MyProfileScreen]: MyProfileScreen,
+    [PV.RouteNames.MyProfileScreen]: ProfileScreen,
     [PV.RouteNames.PlaylistScreen]: PlaylistScreen,
     [PV.RouteNames.PlaylistsScreen]: PlaylistsScreen,
     [PV.RouteNames.EditPlaylistScreen]: EditPlaylistScreen,
+    [PV.RouteNames.EditProfileScreen]: EditProfileScreen,
     [PV.RouteNames.ProfileScreen]: ProfileScreen,
     [PV.RouteNames.ProfilesScreen]: ProfilesScreen,
     [PV.RouteNames.SettingsScreen]: SettingsScreen,
-    [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen
+    [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen,
+    [PV.RouteNames.MorePlaylistScreen]: PlaylistScreen,
+    [PV.RouteNames.MorePodcastScreen]: PodcastScreen,
+    [PV.RouteNames.FeedbackScreen]: FeedbackScreen,
+    [PV.RouteNames.AboutScreen]: AboutScreen
   },
   {
     defaultNavigationOptions,
@@ -162,9 +168,38 @@ const TabNavigator = createBottomTabNavigator({
   }
 })
 
+const PlayerNavigator = createStackNavigator({
+  [PV.RouteNames.PlayerScreen]: PlayerScreen,
+  [PV.RouteNames.MakeClipScreen]: MakeClipScreen
+}, {
+  defaultNavigationOptions
+})
+
+const PlaylistsAddToNavigator = createStackNavigator({
+  [PV.RouteNames.PlaylistsAddToScreen]: PlaylistsAddToScreen
+}, {
+  defaultNavigationOptions
+})
+
+const QueueNavigator = createStackNavigator({
+  [PV.RouteNames.QueueScreen]: QueueScreen
+}, {
+  defaultNavigationOptions
+})
+
+const WebPageNavigator = createStackNavigator({
+  [PV.RouteNames.WebPageScreen]: WebPageScreen
+}, {
+  defaultNavigationOptions
+})
+
 const MainApp = createStackNavigator({
   [PV.RouteNames.TabNavigator]: TabNavigator,
-  [PV.RouteNames.AuthNavigator]: AuthNavigator
+  [PV.RouteNames.AuthNavigator]: AuthNavigator,
+  PlayerNavigator,
+  PlaylistsAddToNavigator,
+  QueueNavigator,
+  WebPageNavigator
 }, {
   mode: 'modal',
   headerMode: 'none'

@@ -1,8 +1,11 @@
+import linkifyHtml from 'linkifyjs/html'
 import debounce from 'lodash/debounce'
+import { View as RNView } from 'react-native'
 import React from 'reactn'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, SearchBar,
-  TableSectionSelectors, Text, View } from '../components'
-import { removeHTMLFromString } from '../lib/utility'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, HTMLScrollView,
+  NavQueueIcon, NavShareIcon, SearchBar, TableSectionSelectors, Text, View } from '../components'
+import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import { removeHTMLFromAndDecodeString } from '../lib/utility'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
 import { core } from '../styles'
@@ -20,24 +23,35 @@ type State = {
   queryPage: number
   querySort: string | null
   searchBarText: string
+  selectedItem?: any
   showActionSheet: boolean
   viewType: string | null
 }
 
 export class EpisodeScreen extends React.Component<Props, State> {
 
-  static navigationOptions = {
-    title: 'Episode'
+  static navigationOptions = ({ navigation }) => {
+    const episode = navigation.getParam('episode')
+    return {
+      title: 'Episode',
+      headerRight: (
+        <RNView style={core.row}>
+          <NavShareIcon url={PV.URLs.episode + episode.id} />
+          <NavQueueIcon navigation={navigation} />
+        </RNView>
+      )
+    } as NavigationScreenOptions
   }
 
   constructor(props: Props) {
     super(props)
 
     const viewType = this.props.navigation.getParam('viewType') || _clipsKey
+    const episode = this.props.navigation.getParam('episode')
 
     this.state = {
       endOfResultsReached: false,
-      episode: props.navigation.getParam('episode'),
+      episode,
       flatListData: [],
       isLoading: viewType === _clipsKey,
       isLoadingMore: false,
@@ -52,12 +66,20 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { viewType } = this.state
+    const { episode, viewType } = this.state
+    let newState = {}
 
     if (viewType === _clipsKey) {
-      const newState = await this._queryClipData(_clipsKey)
-      this.setState(newState)
+      newState = await this._queryClipData(_clipsKey)
     }
+
+    episode.description = episode.description || 'No summary available.'
+    episode.description = linkifyHtml(episode.description)
+
+    this.setState({
+      ...newState,
+      episode
+    })
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -87,8 +109,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
     }
 
     this.setState({
-      flatListData: [],
       endOfResultsReached: false,
+      flatListData: [],
       isLoading: true,
       querySort: selectedKey
     }, async () => {
@@ -130,21 +152,29 @@ export class EpisodeScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
-  _renderItem = ({ item }) => (
-    <ClipTableCell
-      key={item.id}
-      endTime={item.endTime}
-      handleMorePress={this._handleMorePress}
-      startTime={item.startTime}
-      title={item.title} />
-  )
-
-  _handleCancelPress = () => {
-    this.setState({ showActionSheet: false })
+  _renderItem = ({ item }) => {
+    const { episode } = this.state
+    return (
+      <ClipTableCell
+        key={item.id}
+        endTime={item.endTime}
+        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
+        startTime={item.startTime}
+        title={item.title} />
+    )
   }
 
-  _handleMorePress = () => {
-    this.setState({ showActionSheet: true })
+  _handleCancelPress = () => {
+    return new Promise((resolve, reject) => {
+      this.setState({ showActionSheet: false }, () => resolve())
+    })
+  }
+
+  _handleMorePress = (selectedItem: any) => {
+    this.setState({
+      selectedItem,
+      showActionSheet: true
+    })
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -170,14 +200,15 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { episode, flatListData, isLoading, isLoadingMore, querySort, showActionSheet,
-      viewType } = this.state
+    const { navigation } = this.props
+    const { episode, flatListData, isLoading, isLoadingMore, querySort, selectedItem,
+      showActionSheet, viewType } = this.state
     const { globalTheme } = this.global
 
     return (
       <View style={styles.view}>
         <EpisodeTableHeader
-          handleMorePress={this._handleMorePress}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast))}
           podcastImageUrl={(episode.podcast && episode.podcast.imageUrl) || episode.podcast_imageUrl}
           pubDate={episode.pubDate}
           title={episode.title} />
@@ -185,7 +216,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={viewType && viewType !== _aboutKey ? rightItems : []}
+          rightItems={viewType && viewType !== _showNotesKey ? rightItems : []}
           selectedLeftItemKey={viewType}
           selectedRightItemKey={querySort} />
         {
@@ -193,7 +224,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && viewType !== _aboutKey && flatListData && flatListData.length > 0 &&
+          !isLoading && viewType !== _showNotesKey && flatListData &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={true}
@@ -205,15 +236,17 @@ export class EpisodeScreen extends React.Component<Props, State> {
               renderItem={this._renderItem} />
         }
         {
-          viewType === _aboutKey &&
-            <View style={styles.aboutView}>
-              <Text style={styles.aboutViewText}>{removeHTMLFromString(episode.description)}</Text>
-            </View>
+          viewType === _showNotesKey &&
+            <HTMLScrollView
+              html={episode.description}
+              navigation={navigation} />
         }
         <ActionSheet
           globalTheme={globalTheme}
           handleCancelPress={this._handleCancelPress}
-          items={moreButtons}
+          items={PV.ActionSheet.media.moreButtons(
+            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+          )}
           showModal={showActionSheet} />
       </View>
     )
@@ -248,6 +281,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         episodeId: episode.id,
         ...(searchAllFieldsText ? { searchAllFieldsText } : {})
       }, this.global.settings.nsfwMode)
+
       newState.flatListData = [...flatListData, ...results[0]]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
     }
@@ -259,7 +293,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 }
 
 const _clipsKey = 'clips'
-const _aboutKey = 'about'
+const _showNotesKey = 'showNotes'
 const _mostRecentKey = 'most-recent'
 const _topPastDay = 'top-past-day'
 const _topPastWeek = 'top-past-week'
@@ -272,8 +306,8 @@ const leftItems = [
     value: _clipsKey
   },
   {
-    label: 'About',
-    value: _aboutKey
+    label: 'Show Notes',
+    value: _showNotesKey
   }
 ]
 
@@ -300,39 +334,11 @@ const rightItems = [
   }
 ]
 
-const moreButtons = [
-  {
-    key: 'stream',
-    text: 'Stream',
-    onPress: () => console.log('Stream')
-  },
-  {
-    key: 'download',
-    text: 'Download',
-    onPress: () => console.log('Download')
-  },
-  {
-    key: 'queueNext',
-    text: 'Queue: Next',
-    onPress: () => console.log('Queue: Next')
-  },
-  {
-    key: 'queueLast',
-    text: 'Queue: Last',
-    onPress: () => console.log('Queue: Last')
-  },
-  {
-    key: 'addToPlaylist',
-    text: 'Add to Playlist',
-    onPress: () => console.log('Add to Playlist')
-  }
-]
-
 const styles = {
-  aboutView: {
+  showNotesView: {
     margin: 8
   },
-  aboutViewText: {
+  showNotesViewText: {
     fontSize: PV.Fonts.sizes.lg
   },
   ListHeaderComponent: {
