@@ -48,50 +48,48 @@ export class MembershipScreen extends React.Component<Props, State> {
           (isLoading && isLoggedIn) && <ActivityIndicator />
         }
         {
-          !isLoading &&
+          (!isLoading && isLoggedIn) &&
             <View>
-              {
-                isLoggedIn &&
-                  <View>
-                    <View style={styles.textRow}>
-                      <Text style={styles.label}>Status: </Text>
-                      <Text style={[styles.text, membershipTextStyle]}>{membershipStatus}</Text>
-                    </View>
-                    <View style={styles.textRow}>
-                      <Text style={styles.label}>Expires: </Text>
-                      <Text style={[styles.text]}>{readableDate(expirationDate)}</Text>
-                    </View>
-                  </View>
-              }
-              {
-                isLoggedIn ?
-                  <View style={styles.textRow}>
-                    <Text style={[styles.subText]}>
-                      To renew your membership, go to podverse.fm, login, then visit your Settings page.
-                    </Text>
-                  </View> :
-                  <View>
-                    <View style={styles.textRowCentered}>
-                      <Text style={styles.label}>1 year of premium = $5</Text>
-                    </View>
-                    <View style={styles.textRowCentered}>
-                      <TextLink
-                        onPress={() => navigation.navigate(PV.RouteNames.AuthNavigator)}
-                        style={[styles.text]}>
-                        Start 30 day free trial :)
-                  </TextLink>
-                    </View>
-                  </View>
-              }
-              <View style={styles.tableWrapper}>
-                <ComparisonTable
-                  column1Title='Free'
-                  column2Title='Premium'
-                  data={comparisonData}
-                  mainTitle='Features' />
+              <View style={styles.textRow}>
+                <Text style={styles.label}>Status: </Text>
+                <Text style={[styles.text, membershipTextStyle]}>{membershipStatus}</Text>
+              </View>
+              <View style={styles.textRow}>
+                <Text style={styles.label}>Expires: </Text>
+                <Text style={[styles.text]}>{readableDate(expirationDate)}</Text>
+              </View>
+              <View style={styles.textRow}>
+                <Text style={[styles.subText]}>
+                  To renew your membership, go to podverse.fm, login, then visit your Settings page.
+                  </Text>
               </View>
             </View>
         }
+        {
+          (!isLoading && !isLoggedIn) &&
+            <View>
+              <View style={styles.textRowCentered}>
+                <Text style={styles.label}>1 year of premium = $5</Text>
+              </View>
+              <View style={styles.textRowCentered}>
+                <TextLink
+                  onPress={() => navigation.navigate(PV.RouteNames.AuthNavigator)}
+                  style={[styles.text]}>
+                  Start 30 day free trial :)
+                </TextLink>
+              </View>
+            </View>
+        }
+        {
+          !isLoading &&
+            <View style={styles.tableWrapper}>
+              <ComparisonTable
+                column1Title='Free'
+                column2Title='Premium'
+                data={comparisonData}
+                mainTitle='Features' />
+            </View>
+          }
       </View>
     )
   }
@@ -155,6 +153,7 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.lg
   },
   tableWrapper: {
+    flex: 1,
     marginTop: 12
   },
   text: {

@@ -9,7 +9,7 @@ export const ComparisonTable = (props: any) => {
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
-    <View>
+    <View style={styles.wrapper}>
       <View style={[styles.tableHeaderRow, globalTheme.tableSectionHeader]}>
         <Text style={[styles.tableHeaderTextLeft, globalTheme.tableSectionHeaderText]}>{mainTitle}</Text>
         <Text style={[styles.tableHeaderTextRight, globalTheme.tableSectionHeaderText]}>{column1Title}</Text>
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   wrapper: {
-    flex: 1
+    flex: 1,
+    paddingBottom: 8
   }
 })
