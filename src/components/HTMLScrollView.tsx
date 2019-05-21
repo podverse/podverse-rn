@@ -24,9 +24,41 @@ export const HTMLScrollView = (props: Props) => {
         html={html}
         imagesMaxWidth={Dimensions.get('window').width}
         onLinkPress={(event, href) => navigation.navigate(PV.RouteNames.WebPageScreen, { uri: href })}
-        ptSize={PV.Fonts.sizes.lg} />
+        ptSize={PV.Fonts.sizes.lg}
+        tagsStyles={customHTMLTagStyles} />
     </ScrollView>
   )
+}
+
+const customHTMLTagStyles = {
+  h1: {
+    marginBottom: 8,
+    marginTop: 4
+  },
+  h2: {
+    marginBottom: 8,
+    marginTop: 4
+  },
+  h3: {
+    marginBottom: 8,
+    marginTop: 4
+  },
+  h4: {
+    marginBottom: 8,
+    marginTop: 4
+  },
+  h5: {
+    marginBottom: 8,
+    marginTop: 4
+  },
+  h6: {
+    marginBottom: 8,
+    marginTop: 4
+  },
+  p: {
+    marginBottom: 8,
+    marginTop: 4
+  }
 }
 
 const styles = StyleSheet.create({

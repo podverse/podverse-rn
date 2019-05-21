@@ -20,6 +20,9 @@ export interface GlobalTheme {
   inputContainerText?: any
   link?: any
   makeClipPlayerControlsWrapper?: any
+  membershipTextExpired?: any
+  membershipTextExpiring?: any
+  membershipTextPremium?: any
   modalBackdrop?: any
   modalInnerWrapper?: any
   placeholderText?: any

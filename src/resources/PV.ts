@@ -6,6 +6,7 @@ import { FlatList } from './FlatList'
 import { Fonts } from './Fonts'
 import { Images } from './Images'
 import { Keys } from './Keys'
+import { MembershipStatus } from './MembershipStatus'
 import { Player } from './Player'
 import { RouteNames } from './RouteNames'
 import { Table } from './Table'
@@ -21,6 +22,7 @@ export const PV = {
   Fonts,
   Images,
   Keys,
+  MembershipStatus,
   Player,
   RouteNames,
   Table,

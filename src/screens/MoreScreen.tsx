@@ -1,9 +1,10 @@
-import { SectionList, TouchableWithoutFeedback } from 'react-native'
+import { SectionList, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { Divider, TableSectionHeader, Text, View } from '../components'
+import { getMembershipStatus } from '../lib/utility'
 import { PV } from '../resources'
 import { logoutUser } from '../state/actions/auth'
-import { core, table } from '../styles'
+import { core, getMembershipTextStyle, table } from '../styles'
 
 type Props = {
   navigation?: any
@@ -24,7 +25,9 @@ export class MoreScreen extends React.Component<Props, State> {
 
   _onPress = (item: any) => {
     const { navigation } = this.props
-    if (item.key === _aboutKey) {
+    if (item.key === _membershipKey) {
+      navigation.navigate(PV.RouteNames.MembershipScreen)
+    } else if (item.key === _aboutKey) {
       navigation.navigate(PV.RouteNames.AboutScreen)
     } else if (item.key === _feedbackKey) {
       navigation.navigate(PV.RouteNames.FeedbackScreen)
@@ -47,7 +50,7 @@ export class MoreScreen extends React.Component<Props, State> {
 
   render() {
     const { globalTheme, session } = this.global
-    const { isLoggedIn = false } = session
+    const { isLoggedIn = false, userInfo } = session
 
     const featureOptions = moreFeaturesOptions.filter((item = { key: '', title: '' }) => {
       if (isLoggedIn) {
@@ -57,13 +60,27 @@ export class MoreScreen extends React.Component<Props, State> {
       }
     })
 
+    const membershipStatus = getMembershipStatus(userInfo)
+    const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
+    const otherOptions = moreOtherOptions(membershipStatus)
+
     return (
       <View style={core.backgroundView}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
-          renderItem={({ item, separators }) => (
+          renderItem={({ item }) => (
             <TouchableWithoutFeedback onPress={() => this._onPress(item)}>
-              <Text style={[table.cellText, globalTheme.tableCellTextPrimary]}>{item.title}</Text>
+              {
+                item.key !== _membershipKey ?
+                  <Text style={[table.cellText, globalTheme.tableCellTextPrimary]}>{item.title}</Text> :
+                  <RNView style={[core.row]}>
+                    {
+                      isLoggedIn ?
+                        <Text style={[table.cellText, membershipTextStyle]}>{membershipStatus}</Text> :
+                        <Text style={[table.cellText, globalTheme.tableCellTextPrimary]}>Membership</Text>
+                    }
+                  </RNView>
+              }
             </TouchableWithoutFeedback>
           )}
           renderSectionHeader={({ section: { title } }) => (
@@ -71,7 +88,7 @@ export class MoreScreen extends React.Component<Props, State> {
           )}
           sections={[
             { title: 'Features', data: featureOptions },
-            { title: 'Other', data: moreOtherOptions }
+            { title: 'Other', data: otherOptions }
           ]} />
       </View>
     )
@@ -80,6 +97,7 @@ export class MoreScreen extends React.Component<Props, State> {
 
 const _aboutKey = 'about'
 const _feedbackKey = 'feedback'
+const _membershipKey = 'membership'
 const _logoutKey = 'logout'
 const _loginKey = 'login'
 
@@ -114,13 +132,21 @@ const moreFeaturesOptions = [
   }
 ]
 
-const moreOtherOptions = [
-  {
-    title: 'Feedback',
-    key: _feedbackKey
-  },
-  {
-    title: 'About',
-    key: _aboutKey
-  }
-]
+const moreOtherOptions = (membershipStatus?: string) => {
+  const options = [
+    {
+      title: membershipStatus,
+      key: _membershipKey
+    },
+    {
+      title: 'Feedback',
+      key: _feedbackKey
+    },
+    {
+      title: 'About',
+      key: _aboutKey
+    }
+  ]
+
+  return options
+}
