@@ -6,7 +6,7 @@ import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, E
   PlayerControls, PlayerTableHeader, SafeAreaView, TableSectionHeader, TableSectionSelectors, View
   } from '../components'
 import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
-import { readableDate, removeHTMLFromAndDecodeString } from '../lib/utility'
+import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
@@ -235,7 +235,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           ...this.global.screenPlayer,
           showMoreActionSheet: false
         }
-      }, () => resolve())
+      }, resolve)
     })
   }
 
@@ -318,10 +318,12 @@ export class PlayerScreen extends React.Component<Props, State> {
     const podcast = (episode && episode.podcast) || {}
     const { queryFrom, viewType } = screenPlayer
     if (viewType === PV.Keys.VIEW_TYPE_EPISODES) {
+      let description = removeHTMLFromString(item.description)
+      description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
           key={item.id}
-          description={removeHTMLFromAndDecodeString(item.description)}
+          description={description}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => console.log('handle episode press')}
           pubDate={item.pubDate}

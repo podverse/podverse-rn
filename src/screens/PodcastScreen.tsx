@@ -1,4 +1,3 @@
-import linkifyHtml from 'linkifyjs/html'
 import debounce from 'lodash/debounce'
 import { View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
@@ -7,7 +6,7 @@ import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCel
   NavQueueIcon, NavShareIcon, PodcastTableHeader, SearchBar, SwipeRowBack, TableSectionSelectors,
   View } from '../components'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { readableDate, removeHTMLFromAndDecodeString } from '../lib/utility'
+import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
@@ -175,7 +174,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _handleCancelPress = () => {
     return new Promise((resolve, reject) => {
-      this.setState({ showActionSheet: false }, () => resolve())
+      this.setState({ showActionSheet: false }, resolve)
     })
   }
 
@@ -197,20 +196,24 @@ export class PodcastScreen extends React.Component<Props, State> {
     const screen = isSearchScreen ? PV.RouteNames.SearchEpisodeScreen : PV.RouteNames.EpisodeScreen
 
     if (viewType === downloadedKey) {
+      let description = removeHTMLFromString(item.description)
+      description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
           key={item.id}
-          description={removeHTMLFromAndDecodeString(item.description)}
+          description={description}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
           pubDate={item.pubDate}
           title={item.title} />
       )
     } else if (viewType === allEpisodesKey) {
+      let description = removeHTMLFromString(item.description)
+      description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
           key={item.id}
-          description={removeHTMLFromAndDecodeString(item.description)}
+          description={description}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
           pubDate={item.pubDate}

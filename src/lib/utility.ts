@@ -68,12 +68,15 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
   }
 }
 
-export const removeHTMLFromAndDecodeString = (text: string) => {
+export const removeHTMLFromString = (text: string) => {
   const htmlEntitiesRegex = /(<([^>]+)>)|(\r?\n|\r)/ig
-  const str = text.replace(htmlEntitiesRegex, '')
+  return text.replace(htmlEntitiesRegex, '')
+}
+
+export const decodeHTMLString = (text: string) => {
   const limitSingleSpaceRegex = /\s\s+/g
-  const finalString = str.replace(limitSingleSpaceRegex, ' ')
-  return he.decode(finalString)
+  const newString = text.replace(limitSingleSpaceRegex, ' ')
+  return he.decode(newString)
 }
 
 export const generateAuthorsText = (authors: any) => {
