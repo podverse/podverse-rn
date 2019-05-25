@@ -108,10 +108,13 @@ export class QueueScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const { navigation } = this.props
     const { isLoggedIn } = this.global.session
-    navigation.setParams({ _onViewTypeSelect: this._onViewTypeSelect })
-    navigation.setParams({ _startEditing: this._startEditing })
-    navigation.setParams({ _stopEditing: this._stopEditing })
-    navigation.setParams({ _clearAll: this._clearAll })
+    navigation.setParams({
+      _clearAll: this._clearAll,
+      _onViewTypeSelect: this._onViewTypeSelect,
+      _startEditing: this._startEditing,
+      _stopEditing: this._stopEditing
+    })
+
     const nowPlayingItem = await getNowPlayingItem()
     const queueItems = await getQueueItems(isLoggedIn, this.global)
     this.setState({

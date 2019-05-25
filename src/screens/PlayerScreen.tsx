@@ -26,7 +26,6 @@ export class PlayerScreen extends React.Component<Props, State> {
     const _getEpisodeId = navigation.getParam('_getEpisodeId')
     const _getMediaRefId = navigation.getParam('_getMediaRefId')
     const _showShareActionSheet = navigation.getParam('_showShareActionSheet')
-    const _getGlobalTheme = navigation.getParam('_getGlobalTheme')
     const _getInitialProgressValue = navigation.getParam('_getInitialProgressValue')
 
     return {
@@ -46,7 +45,6 @@ export class PlayerScreen extends React.Component<Props, State> {
             navigation={navigation} />
           <NavAddToPlaylistIcon
             getEpisodeId={_getEpisodeId}
-            getGlobalTheme={_getGlobalTheme}
             getMediaRefId={_getMediaRefId}
             navigation={navigation} />
           <NavShareIcon handlePress={_showShareActionSheet} />
@@ -63,11 +61,12 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    this.props.navigation.setParams({ _getEpisodeId: this._getEpisodeId })
-    this.props.navigation.setParams({ _getMediaRefId: this._getMediaRefId })
-    this.props.navigation.setParams({ _getInitialProgressValue: this._getInitialProgressValue })
-    this.props.navigation.setParams({ _getGlobalTheme: this._getGlobalTheme })
-    this.props.navigation.setParams({ _showShareActionSheet: this._showShareActionSheet })
+    this.props.navigation.setParams({
+      _getEpisodeId: this._getEpisodeId,
+      _getInitialProgressValue: this._getInitialProgressValue,
+      _getMediaRefId: this._getMediaRefId,
+      _showShareActionSheet: this._showShareActionSheet
+    })
   }
 
   _getEpisodeId = () => {
@@ -83,10 +82,6 @@ export class PlayerScreen extends React.Component<Props, State> {
   _getInitialProgressValue = async () => {
     const initialProgressValue = await PVTrackPlayer.getPosition()
     return Math.floor(initialProgressValue)
-  }
-
-  _getGlobalTheme = () => {
-    return this.global.globalTheme
   }
 
   _selectViewType = async (selectedKey: string) => {
