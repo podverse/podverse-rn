@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
+import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { request } from './request'
 
@@ -15,7 +16,12 @@ export const getBearerToken = async () => {
 
 export const getAuthenticatedUserInfo = async () => {
   const bearerToken = await getBearerToken()
-  return bearerToken ? getAuthenticatedUserInfoFromServer(bearerToken) : getAuthenticatedUserInfoLocally()
+  const isConnected = await hasValidNetworkConnection()
+  if (isConnected && bearerToken) {
+    return getAuthenticatedUserInfoFromServer(bearerToken)
+  } else {
+    return getAuthenticatedUserInfoLocally()
+  }
 }
 
 const getAuthenticatedUserInfoLocally = async () => {

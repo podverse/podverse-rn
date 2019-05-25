@@ -72,6 +72,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       } else {
         await initPlayerState(this.global)
         await getAuthUserInfo()
+        const { userInfo } = this.global.session
+        await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
         const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
 
         if (nowPlayingItemString) {

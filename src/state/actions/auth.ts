@@ -29,7 +29,6 @@ export const getAuthUserInfo = async () => {
     const results = await getAuthenticatedUserInfo()
     const userInfo = results[0]
     const isLoggedIn = results[1]
-    await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
     setGlobal({ session: { userInfo, isLoggedIn } })
     return userInfo
   } catch (error) {
@@ -43,6 +42,7 @@ export const getAuthUserInfo = async () => {
         isLoggedIn: false
       }
     })
+
     Alert.alert('Error', error.message, [])
   }
 }

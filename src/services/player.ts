@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import TrackPlayer from 'react-native-track-player'
+import { hasValidNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
@@ -149,12 +150,15 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
     await setPlaybackPosition(item.clipStartTime)
   }
 
-  const items = await getQueueItems(isLoggedIn)
+  const isConnected = await hasValidNetworkConnection()
+  const useLocalData = isLoggedIn && !isConnected
+
+  const items = await getQueueItems(useLocalData)
 
   let filteredItems = [] as any[]
   filteredItems = filterItemFromQueueItems(items, item)
-  await setAllQueueItems(filteredItems, isLoggedIn)
-  await addOrUpdateHistoryItem(item, isLoggedIn)
+  await setAllQueueItems(filteredItems, useLocalData)
+  await addOrUpdateHistoryItem(item, useLocalData)
 
   if (isNewEpisode && episodeId) {
     await setNowPlayingItemEpisode(episodeId)

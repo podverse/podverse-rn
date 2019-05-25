@@ -33,6 +33,7 @@ const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem) => {
 }
 
 const addOrUpdateHistoryItemOnServer = async (nowPlayingItem: NowPlayingItem) => {
+  await addOrUpdateHistoryItemLocally(nowPlayingItem)
   const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
   const response = await request({
     endpoint: '/user/add-or-update-history-item',
@@ -53,6 +54,7 @@ const clearHistoryItemsLocally = async () => {
 }
 
 const clearHistoryItemsOnServer = async () => {
+  await clearHistoryItemsLocally()
   const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
   const response = await request({
     endpoint: '/user/history-item/clear-all',
@@ -83,6 +85,7 @@ const getHistoryItemsLocally = async () => {
 const getHistoryItemsFromServer = async () => {
   const user = await getAuthUserInfo()
   const { historyItems } = user
+  await setAllHistoryItemsLocally(historyItems)
   return historyItems
 }
 
@@ -103,6 +106,7 @@ const popLastFromHistoryItemsLocally = async () => {
 }
 
 const popLastFromHistoryItemsFromServer = async () => {
+  await popLastFromHistoryItemsLocally()
   const items = await getHistoryItemsFromServer()
   const currentlyPlayingItem = items.shift()
   const lastItem = items.shift()
