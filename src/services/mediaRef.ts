@@ -1,8 +1,12 @@
 import RNSecureKeyStore from 'react-native-secure-key-store'
+import { hasValidDownloadingConnection, hasValidNetworkConnection, hasValidStreamingConnection } from '../lib/network'
 import { PV } from '../resources'
 import { request } from './request'
 
 export const createMediaRef = async (data: any) => {
+  await hasValidNetworkConnection()
+  await hasValidDownloadingConnection()
+  await hasValidStreamingConnection()
   const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
   const response = await request({
     endpoint: '/mediaRef',
