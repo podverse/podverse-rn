@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActionSheet, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBar, View
   } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { generateAuthorsText, generateCategoriesText } from '../lib/utility'
 import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
@@ -72,7 +73,7 @@ export class SearchScreen extends React.Component<Props, State> {
   _handleSearchBarTextQuery = async (nextPage?: boolean) => {
     if (!this.state.searchBarText) return
 
-    const state = await this._queryPodcastData(nextPage)
+    const state = await this._queryData(nextPage)
     this.setState(state)
   }
 
@@ -87,7 +88,7 @@ export class SearchScreen extends React.Component<Props, State> {
         this.setState({
           isLoadingMore: true
         }, async () => {
-          const newState = await this._queryPodcastData(true)
+          const newState = await this._queryData(true)
           this.setState(newState)
         })
       }
@@ -160,6 +161,9 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   _toggleSubscribeToPodcast = async (id: string) => {
+    const wasAlerted = await alertIfNoNetworkConnection('subscribe to this podcast')
+    if (wasAlerted) return
+
     await toggleSubscribeToPodcast(id, this.global)
     this.setState({ showActionSheet: false })
   }
@@ -199,9 +203,17 @@ export class SearchScreen extends React.Component<Props, State> {
     )
   }
 
-  _queryPodcastData = async (nextPage?: boolean) => {
+  _queryData = async (nextPage?: boolean) => {
     const { flatListData, queryPage, searchBarText, searchType } = this.state
     const page = nextPage ? queryPage + 1 : 1
+
+    const newState = {
+      isLoading: false,
+      isLoadingMore: false
+    }
+
+    const wasAlerted = await alertIfNoNetworkConnection('search podcasts')
+    if (wasAlerted) return newState
 
     const results = await getPodcasts({
       page,
@@ -212,10 +224,9 @@ export class SearchScreen extends React.Component<Props, State> {
     const newFlatListData = [...flatListData, ...results[0]]
 
     return {
+      ...newState,
       endOfResultsReached: newFlatListData.length >= results[1],
       flatListData: newFlatListData,
-      isLoading: false,
-      isLoadingMore: false,
       queryPage: page
     }
   }

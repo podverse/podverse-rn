@@ -2,6 +2,7 @@ import { Text, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, Divider, QueueTableCell, SortableList, SortableListRow, TextInput,
   View } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { combineAndSortPlaylistItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getPlaylist } from '../services/playlist'
@@ -62,6 +63,9 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
   }
 
   _updatePlaylist = async () => {
+    const wasAlerted = await alertIfNoNetworkConnection('update the playlist')
+    if (wasAlerted) return
+
     this.setState({
       isLoading: true
     }, async () => {

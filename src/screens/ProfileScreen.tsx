@@ -3,6 +3,7 @@ import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, NavQueueIcon, NavShareIcon,
   PlaylistTableCell, PodcastTableCell, ProfileTableHeader, TableSectionSelectors, View } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { generateAuthorsText, generateCategoriesText, readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -79,6 +80,17 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { isLoggedInUserProfile } = this.state
+
+    const wasAlerted = await alertIfNoNetworkConnection('load your profile')
+    if (wasAlerted) {
+      this.setState({
+        flatListData: [],
+        isLoading: false,
+        isLoadingMore: false,
+        queryPage: 1
+      })
+      return
+    }
 
     if (isLoggedInUserProfile) {
       await getAuthUserInfo()
@@ -222,6 +234,9 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _handleToggleSubscribe = async (id: string) => {
+    const wasAlerted = await alertIfNoNetworkConnection('subscribe to profile')
+    if (wasAlerted) return
+
     const { user } = this.global.profile
     await toggleSubscribeToUser(id, this.global.session.isLoggedIn, this.global)
     const { subscribedUserIds } = this.global.session.userInfo
@@ -323,6 +338,12 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   _queryPodcasts = async (newState: any, page: number = 1, sort?: string | null) => {
     return new Promise(async (resolve, reject) => {
+      const wasAlerted = await alertIfNoNetworkConnection('load podcasts')
+      if (wasAlerted) {
+        resolve(newState)
+        return
+      }
+
       const { flatListData } = this.state
       const query = {
         includeAuthors: true,
@@ -344,6 +365,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       }, () => {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = flatListData.length >= results[1]
+        newState.queryPage = page
         resolve(newState)
       })
     })
@@ -364,6 +386,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       }, () => {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = flatListData.length >= results[1]
+        newState.queryPage = page
         resolve(newState)
       })
     })
@@ -382,6 +405,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         }
       }, () => {
         newState.endOfResultsReached = flatListData.length >= results[1]
+        newState.queryPage = page
         resolve(newState)
       })
     })
@@ -392,8 +416,10 @@ export class ProfileScreen extends React.Component<Props, State> {
     let newState = {
       isLoading: false,
       isLoadingMore: false,
-      queryPage: page
     } as State
+
+    const wasAlerted = await alertIfNoNetworkConnection('load profile data')
+    if (wasAlerted) return newState
 
     if (filterKey === _podcastsKey) {
       newState = await this._queryPodcasts(newState, page, querySort)

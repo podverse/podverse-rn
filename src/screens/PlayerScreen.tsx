@@ -5,6 +5,7 @@ import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, E
   HTMLScrollView, Icon, NavAddToPlaylistIcon, NavMakeClipIcon, NavQueueIcon, NavShareIcon, PlayerClipInfoBar,
   PlayerControls, PlayerTableHeader, SafeAreaView, TableSectionHeader, TableSectionSelectors, View
   } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
@@ -280,7 +281,10 @@ export class PlayerScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleToggleSubscribe = () => {
+  _handleToggleSubscribe = async () => {
+    const wasAlerted = await alertIfNoNetworkConnection('subscribe to podcast')
+    if (wasAlerted) return
+
     toggleSubscribeToPodcast(this.global.player.nowPlayingItem.podcastId, this.global)
     this._dismissHeaderActionSheet()
   }
@@ -481,6 +485,9 @@ export class PlayerScreen extends React.Component<Props, State> {
       isLoading: false,
       isLoadingMore: false
     } as any
+
+    const wasAlerted = await alertIfNoNetworkConnection('load data')
+    if (wasAlerted) return newState
 
     if (viewType === PV.Keys.VIEW_TYPE_EPISODES) {
       const results = await this._queryEpisodes()

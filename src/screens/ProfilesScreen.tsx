@@ -1,6 +1,7 @@
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, MessageWithAction, ProfileTableCell, SwipeRowBack,
   View } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getPublicUsersByQuery, toggleSubscribeToUser } from '../state/actions/user'
 
@@ -74,6 +75,9 @@ export class ProfilesScreen extends React.Component<Props, State> {
   _renderHiddenItem = ({ item }, rowMap) => <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
+    const wasAlerted = await alertIfNoNetworkConnection('unsubscribe from this profile')
+    if (wasAlerted) return
+
     rowMap[selectedId].closeRow()
     await toggleSubscribeToUser(selectedId, this.global.session.isLoggedIn, this.global)
   }
@@ -118,13 +122,16 @@ export class ProfilesScreen extends React.Component<Props, State> {
     const { flatListData } = this.global.profiles
     const newState = {
       isLoading: false,
-      isLoadingMore: false,
-      queryPage: 1
+      isLoadingMore: false
     } as State
+
+    const wasAlerted = await alertIfNoNetworkConnection('load profiles')
+    if (wasAlerted) return newState
 
     const subscribedUserIds = this.global.session.userInfo.subscribedUserIds
     const results = await getPublicUsersByQuery(subscribedUserIds, page)
     newState.endOfResultsReached = flatListData.length >= results[1]
+    newState.queryPage = page
     return newState
   }
 }

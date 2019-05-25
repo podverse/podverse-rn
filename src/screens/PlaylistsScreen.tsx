@@ -1,6 +1,7 @@
 import React, { setGlobal } from 'reactn'
 import { ActivityIndicator, Divider, FlatList, MessageWithAction, PlaylistTableCell, TableSectionSelectors,
   View } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getPlaylists } from '../state/actions/playlist'
 import { getLoggedInUserPlaylists } from '../state/actions/user'
@@ -35,7 +36,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     const { queryFrom } = this.state
 
     if (this.global.session.isLoggedIn) {
-      const newState = await this._queryPlaylistData(queryFrom)
+      const newState = await this._queryData(queryFrom)
       this.setState(newState)
     }
   }
@@ -56,7 +57,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
         isLoading: true,
         queryFrom: selectedKey
       }, async () => {
-        const newState = await this._queryPlaylistData(selectedKey)
+        const newState = await this._queryData(selectedKey)
         this.setState(newState)
       })
     })
@@ -135,13 +136,16 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     )
   }
 
-  _queryPlaylistData = async (filterKey: string | null, queryOptions: {
+  _queryData = async (filterKey: string | null, queryOptions: {
     queryPage?: number, searchAllFieldsText?: string
   } = {}) => {
     const newState = {
       isLoading: false,
       isLoadingMore: false
     } as State
+
+    const wasAlerted = await alertIfNoNetworkConnection('load playlist items')
+    if (wasAlerted) return newState
 
     if (filterKey === _myPlaylistsKey) {
       if (this.global.session.isLoggedIn) {

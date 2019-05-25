@@ -53,16 +53,6 @@ export const toggleSubscribeToPodcast = async (id: string, isLoggedIn: boolean) 
   return isLoggedIn ? toggleSubscribeToPodcastOnServer(id) : toggleSubscribeToPodcastLocally(id)
 }
 
-const toggleSubscribeToPodcastOnServer = async (id: string) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
-  const response = await request({
-    endpoint: `/podcast/toggle-subscribe/${id}`,
-    headers: { Authorization: bearerToken }
-  })
-
-  return response.json()
-}
-
 const toggleSubscribeToPodcastLocally = async (id: string) => {
   let items = []
 
@@ -80,4 +70,14 @@ const toggleSubscribeToPodcastLocally = async (id: string) => {
 
   AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(items))
   return items
+}
+
+const toggleSubscribeToPodcastOnServer = async (id: string) => {
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const response = await request({
+    endpoint: `/podcast/toggle-subscribe/${id}`,
+    headers: { Authorization: bearerToken }
+  })
+
+  return response.json()
 }
