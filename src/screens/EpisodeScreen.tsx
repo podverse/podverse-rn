@@ -1,4 +1,3 @@
-import linkifyHtml from 'linkifyjs/html'
 import debounce from 'lodash/debounce'
 import { View as RNView } from 'react-native'
 import React from 'reactn'
@@ -72,8 +71,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       newState = await this._queryClipData(_clipsKey)
     }
 
-    episode.description = episode.description || 'No summary available.'
-    episode.description = linkifyHtml(episode.description)
+    episode.description = (episode.description && episode.description.linkifyHtml()) || 'No summary available.'
 
     this.setState({
       ...newState,
