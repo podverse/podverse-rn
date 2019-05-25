@@ -63,10 +63,18 @@ export interface InitialState {
     nowPlayingItem: any
     playbackRate: number
     shouldContinuouslyPlay: boolean
+    showMakeClip: boolean
     showMiniPlayer: boolean
   }
-  screenMakeClip: {
-    isShowing: boolean
+  playlists: {
+    myPlaylists: []
+    subscribedPlaylists: []
+  }
+  profile: {
+    user: any
+  }
+  profiles: {
+    flatListData: []
   }
   screenPlayer: {
     endOfResultsReached: boolean
@@ -86,20 +94,6 @@ export interface InitialState {
   screenPlaylist: {
     flatListData: []
     playlist?: any
-  }
-  screenPlaylists: {
-    myPlaylists: []
-    subscribedPlaylists: []
-  }
-  screenPlaylistsAddTo: {
-    myPlaylists: []
-  }
-  screenProfile: {
-    flatListData: []
-    user: any
-  }
-  screenProfiles: {
-    flatListData: []
   }
   session: {
     userInfo: UserInfo,

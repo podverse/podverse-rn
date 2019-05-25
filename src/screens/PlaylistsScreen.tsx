@@ -47,7 +47,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     }
 
     setGlobal({
-      screenPlaylists: {
+      playlists: {
         myPlaylists: [],
         subscribedPlaylists: []
       }
@@ -89,7 +89,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
   render() {
     const { isLoading, isLoadingMore, queryFrom } = this.state
-    const { myPlaylists, subscribedPlaylists } = this.global.screenPlaylists
+    const { myPlaylists, subscribedPlaylists } = this.global.playlists
     const flatListData = queryFrom === _myPlaylistsKey ? myPlaylists : subscribedPlaylists
 
     return (

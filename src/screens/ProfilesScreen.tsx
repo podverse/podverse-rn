@@ -82,7 +82,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
 
   render() {
     const { isLoading, isLoadingMore } = this.state
-    const { flatListData } = this.global.screenProfiles
+    const { flatListData } = this.global.profiles
 
     return (
       <View style={styles.view}>
@@ -115,7 +115,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
   }
 
   _queryData = async (page: number = 1) => {
-    const { flatListData } = this.global.screenProfiles
+    const { flatListData } = this.global.profiles
     const newState = {
       isLoading: false,
       isLoadingMore: false,

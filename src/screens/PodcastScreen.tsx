@@ -279,7 +279,6 @@ export class PodcastScreen extends React.Component<Props, State> {
   render() {
     const { flatListData, isLoading, isLoadingMore, isRefreshing, podcast, querySort, selectedItem,
       showActionSheet, viewType } = this.state
-    const { globalTheme } = this.global
     const { navigation } = this.props
 
     const isSubscribed = this.global.session.userInfo.subscribedPodcastIds.some((x) => x === podcast.id)
@@ -326,7 +325,6 @@ export class PodcastScreen extends React.Component<Props, State> {
               navigation={navigation} />
         }
         <ActionSheet
-          globalTheme={globalTheme}
           handleCancelPress={this._handleCancelPress}
           items={PV.ActionSheet.media.moreButtons(
             selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress

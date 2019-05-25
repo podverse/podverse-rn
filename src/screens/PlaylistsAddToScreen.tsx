@@ -68,7 +68,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
 
   render() {
     const { isLoading } = this.state
-    const { myPlaylists } = this.global.screenPlaylistsAddTo
+    const { myPlaylists } = this.global.playlists
 
     return (
       <View style={styles.view}>

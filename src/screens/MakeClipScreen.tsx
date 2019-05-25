@@ -53,8 +53,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
     }
 
     this.setGlobal({
-      screenMakeClip: {
-        isShowing: true
+      player: {
+        ...this.global.player,
+        showMakeClip: true
       }
     })
   }
@@ -81,8 +82,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   componentWillUnmount() {
     this.setGlobal({
-      screenMakeClip: {
-        isShowing: false
+      player: {
+        ...this.global.player,
+        showMakeClip: false
       }
     })
   }

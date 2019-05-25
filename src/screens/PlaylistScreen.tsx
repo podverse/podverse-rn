@@ -136,7 +136,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
   render() {
     const { isLoading, isLoadingMore, isLoggedInUserPlaylist, isSubscribed, selectedItem,
       showActionSheet } = this.state
-    const { globalTheme, screenPlaylist } = this.global
+    const { screenPlaylist } = this.global
     const { navigation } = this.props
     const playlist = screenPlaylist.playlist ? screenPlaylist.playlist : navigation.getParam('playlist')
     const flatListData = screenPlaylist.flatListData || []
@@ -167,7 +167,6 @@ export class PlaylistScreen extends React.Component<Props, State> {
               renderItem={this._renderItem} />
         }
         <ActionSheet
-          globalTheme={globalTheme}
           handleCancelPress={this._handleCancelPress}
           items={PV.ActionSheet.media.moreButtons(
             selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress

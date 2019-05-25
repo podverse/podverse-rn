@@ -347,7 +347,7 @@ export class PlayerScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { globalTheme, player, screenPlayer } = this.global
+    const { player, screenPlayer } = this.global
     const { episode, mediaRef, nowPlayingItem } = player
     const { flatListData, isLoading, isLoadingMore, queryFrom, querySort, selectedItem, showHeaderActionSheet,
       showMoreActionSheet, showShareActionSheet, showFullClipInfo, viewType } = screenPlayer
@@ -426,20 +426,17 @@ export class PlayerScreen extends React.Component<Props, State> {
           }
           <PlayerControls />
           <ActionSheet
-            globalTheme={globalTheme}
             handleCancelPress={this._handleMoreCancelPress}
             items={PV.ActionSheet.media.moreButtons(
               selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleMoreCancelPress
             )}
             showModal={showMoreActionSheet} />
           <ActionSheet
-            globalTheme={globalTheme}
             handleCancelPress={this._dismissShareActionSheet}
             items={shareActionSheetButtons(podcastId, episodeId, mediaRefId, this._handleShare)}
             showModal={showShareActionSheet}
             title='Share' />
           <ActionSheet
-            globalTheme={globalTheme}
             handleCancelPress={this._dismissHeaderActionSheet}
             items={this._headerActionSheetButtons()}
             showModal={showHeaderActionSheet} />
