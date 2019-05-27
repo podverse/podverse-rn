@@ -37,7 +37,6 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
 
   _handlePlayerResumeAfterClipHasEnded = async () => {
     const nowPlayingItem = await getNowPlayingItem()
-
     await setNowPlayingItem(nowPlayingItem, this.global)
   }
 

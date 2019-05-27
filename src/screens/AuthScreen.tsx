@@ -11,6 +11,8 @@ type Props = {
 }
 
 type State = {
+  isLoadingLogin: boolean
+  isLoadingSignUp: boolean
   showSignUp?: boolean
 }
 
@@ -19,6 +21,8 @@ export class AuthScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
+      isLoadingLogin: false,
+      isLoadingSignUp: false,
       showSignUp: props.showSignUp || false
     }
   }
@@ -29,16 +33,20 @@ export class AuthScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('login')
     if (wasAlerted) return
 
-    try {
-      await loginUser(credentials, navigation)
-      if (navigation.getParam('isOnboarding', false)) {
-        navigation.navigate(PV.RouteNames.MainApp)
-      } else {
-        navigation.goBack(null)
+    this.setState({ isLoadingLogin: true }, async () => {
+      try {
+        await loginUser(credentials, navigation)
+        if (navigation.getParam('isOnboarding', false)) {
+          navigation.navigate(PV.RouteNames.MainApp)
+        } else {
+          navigation.goBack(null)
+        }
+      } catch (error) {
+        Alert.alert('Error', error.message, [])
       }
-    } catch (error) {
-      Alert.alert('Error', error.message, [])
-    }
+      this.setState({ isLoadingLogin: false })
+    })
+
   }
 
   attemptSignUp = async (credentials: Credentials) => {
@@ -47,16 +55,19 @@ export class AuthScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('sign up')
     if (wasAlerted) return
 
-    try {
-      await signUpUser(credentials, navigation)
-      if (navigation.getParam('isOnboarding', false)) {
-        navigation.navigate(PV.RouteNames.MainApp)
-      } else {
-        navigation.goBack(null)
+    this.setState({ isLoadingSignUp: true }, async () => {
+      try {
+        await signUpUser(credentials, navigation)
+        if (navigation.getParam('isOnboarding', false)) {
+          navigation.navigate(PV.RouteNames.MainApp)
+        } else {
+          navigation.goBack(null)
+        }
+      } catch (error) {
+        Alert.alert('Error', error.message, [])
       }
-    } catch (error) {
-      Alert.alert('Error', error.message, [])
-    }
+      this.setState({ isLoadingSignUp: false })
+    })
   }
 
   switchOptions = () => {
@@ -64,13 +75,22 @@ export class AuthScreen extends React.Component<Props, State> {
   }
 
   render() {
+    const { isLoadingLogin, isLoadingSignUp } = this.state
+
     return (
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.view}>
           <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />
           <View style={styles.contentView}>
-            {!this.state.showSignUp ? <Login onLoginPressed={this.attemptLogin} />
-              : <SignUp onSignUpPressed={this.attemptSignUp} />}
+            {
+              !this.state.showSignUp ?
+                <Login
+                  isLoading={isLoadingLogin}
+                  onLoginPressed={this.attemptLogin} /> :
+                <SignUp
+                  isLoading={isLoadingSignUp}
+                  onSignUpPressed={this.attemptSignUp} />
+            }
             <Text
               onPress={this.switchOptions}
               style={styles.switchOptionText}>
