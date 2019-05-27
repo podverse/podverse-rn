@@ -11,6 +11,7 @@ export const RouteNames = {
   FeedbackScreen: 'FeedbackScreen',
   MainApp: 'MainApp',
   MakeClipScreen: 'MakeClipScreen',
+  MembershipScreen: 'MembershipScreen',
   MoreScreen: 'MoreScreen',
   MoreEpisodeScreen: 'MoreEpisodeScreen',
   MorePlaylistScreen: 'MorePlaylistScreen',

@@ -1,9 +1,8 @@
-import React from 'react'
 import { Animated, Modal, Text, TouchableHighlight, View } from 'react-native'
+import React from 'reactn'
 import { PV } from '../resources/PV'
 
 type Props = {
-  globalTheme: any
   handleCancelPress?: any
   items: any[]
   message?: string
@@ -27,7 +26,8 @@ export class PVActionSheet extends React.Component<Props, State> {
   }
 
   generateButtons = (items: any[]) => {
-    const { globalTheme, handleCancelPress, message, title } = this.props
+    const { handleCancelPress, message, title } = this.props
+    const { globalTheme } = this.global
     const buttons = []
 
     items.forEach((item, index) => {
@@ -69,7 +69,8 @@ export class PVActionSheet extends React.Component<Props, State> {
   }
 
   render() {
-    const { globalTheme, items, message, showModal, title } = this.props
+    const { items, message, showModal, title } = this.props
+    const { globalTheme } = this.global
     const buttons = this.generateButtons(items)
 
     return (

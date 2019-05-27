@@ -14,5 +14,5 @@ export const PVText = (props: Props) => {
   const { isSecondary } = props
   const [globalTheme] = useGlobal('globalTheme')
   const globalThemeText = isSecondary ? globalTheme.textSecondary : globalTheme.text
-  return <Text {...props} style={[props.style, globalThemeText]}>{props.children}</Text>
+  return <Text {...props} style={[globalThemeText, props.style]}>{props.children}</Text>
 }

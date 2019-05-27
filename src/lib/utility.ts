@@ -1,4 +1,5 @@
 import he from 'he'
+import { PV } from '../resources'
 import { NowPlayingItem } from './NowPlayingItem'
 
 export const readableDate = (date: string) => {
@@ -67,12 +68,15 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
   }
 }
 
-export const removeHTMLFromAndDecodeString = (text: string) => {
+export const removeHTMLFromString = (text: string) => {
   const htmlEntitiesRegex = /(<([^>]+)>)|(\r?\n|\r)/ig
-  const str = text.replace(htmlEntitiesRegex, '')
+  return text.replace(htmlEntitiesRegex, '')
+}
+
+export const decodeHTMLString = (text: string) => {
   const limitSingleSpaceRegex = /\s\s+/g
-  const finalString = str.replace(limitSingleSpaceRegex, ' ')
-  return he.decode(finalString)
+  const newString = text.replace(limitSingleSpaceRegex, ' ')
+  return he.decode(newString)
 }
 
 export const generateAuthorsText = (authors: any) => {
@@ -138,11 +142,36 @@ export const haveNowPlayingItemsChanged = (lastItem: NowPlayingItem, nextItem: N
   (nextItem.episodeId && nextItem.episodeId !== lastItem.episodeId)
 )
 
-export const clone = obj => {
-  if (null == obj || "object" != typeof obj) return obj
-  var copy = obj.constructor()
-  for (var attr in obj) {
-    if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr]
+export const getMembershipStatus = (user: any) => {
+  const { freeTrialExpiration, membershipExpiration } = user
+  const freeTrialExpirationDate = new Date(freeTrialExpiration)
+  const membershipExpirationDate = new Date(membershipExpiration)
+  const currentDate = new Date()
+  const weekBeforeCurrentDate = new Date()
+  weekBeforeCurrentDate.setDate(weekBeforeCurrentDate.getDate() + 7)
+
+  if (!membershipExpirationDate && freeTrialExpirationDate > currentDate) {
+    return PV.MembershipStatus.FREE_TRIAL
+  } else if (!membershipExpirationDate && freeTrialExpirationDate <= currentDate) {
+    return PV.MembershipStatus.FREE_TRIAL_EXPIRED
+  } else if (membershipExpirationDate <= currentDate) {
+    return PV.MembershipStatus.PREMIUM_EXPIRED
+  } else if (membershipExpirationDate <= weekBeforeCurrentDate) {
+    return PV.MembershipStatus.PREMIUM_EXPIRING_SOON
+  } else if (membershipExpirationDate > currentDate) {
+    return PV.MembershipStatus.PREMIUM
   }
-  return copy
+
+  return
+}
+
+export const getMembershipExpiration = (user: any) => {
+  const { freeTrialExpiration, membershipExpiration } = user
+
+  if (!membershipExpiration && freeTrialExpiration) {
+    return freeTrialExpiration
+  } else if (membershipExpiration) {
+    return membershipExpiration
+  }
+  return
 }

@@ -4,7 +4,5 @@ import { useGlobal } from 'reactn'
 
 export const PVScrollView = (props: any) => {
   const [globalTheme] = useGlobal('globalTheme')
-  return (
-    <ScrollView style={[props.style, globalTheme.view]}>{props.children}</ScrollView>
-  )
+  return <ScrollView style={[props.style, globalTheme.view]}>{props.children}</ScrollView>
 }

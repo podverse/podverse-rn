@@ -81,6 +81,15 @@ export const darkTheme = StyleSheet.create({
   makeClipPlayerControlsWrapper: {
     backgroundColor: PV.Colors.grayDarker
   },
+  membershipTextExpired: {
+    color: PV.Colors.red
+  },
+  membershipTextExpiring: {
+    color: PV.Colors.yellow
+  },
+  membershipTextPremium: {
+    color: PV.Colors.blue
+  },
   modalBackdrop: {
     backgroundColor: '#00000075'
   },
@@ -108,6 +117,9 @@ export const darkTheme = StyleSheet.create({
   },
   tabbarItem: {
     tintColor: PV.Colors.blue
+  },
+  tableCellBorder: {
+    borderColor: PV.Colors.grayDarker
   },
   tableCellTextPrimary: {
     color: PV.Colors.grayLighter
@@ -218,6 +230,15 @@ export const lightTheme = StyleSheet.create({
   makeClipPlayerControlsWrapper: {
     backgroundColor: PV.Colors.grayLighter
   },
+  membershipTextExpired: {
+    color: PV.Colors.red
+  },
+  membershipTextExpiring: {
+    color: PV.Colors.yellow
+  },
+  membershipTextPremium: {
+    color: PV.Colors.blue
+  },
   modalBackdrop: {
     backgroundColor: '#00000075'
   },
@@ -245,6 +266,9 @@ export const lightTheme = StyleSheet.create({
   },
   tabbarItem: {
     tintColor: PV.Colors.blue
+  },
+  tableCellBorder: {
+    borderColor: PV.Colors.grayLighter
   },
   tableCellTextPrimary: {
     color: PV.Colors.grayLighter
@@ -408,5 +432,20 @@ export const iconStyles = {
   light: {
     color: PV.Colors.black,
     underlayColor: PV.Colors.white
+  }
+}
+
+export const getMembershipTextStyle = (globalTheme: any, membershipStatus?: string) => {
+  switch (membershipStatus) {
+    case PV.MembershipStatus.FREE_TRIAL:
+      return globalTheme.membershipTextPremium
+    case PV.MembershipStatus.FREE_TRIAL_EXPIRED:
+      return globalTheme.membershipTextExpired
+    case PV.MembershipStatus.PREMIUM:
+      return globalTheme.membershipTextPremium
+    case PV.MembershipStatus.PREMIUM_EXPIRED:
+      return globalTheme.membershipTextExpired
+    case PV.MembershipStatus.PREMIUM_EXPIRING_SOON:
+      return globalTheme.membershipTextExpiring
   }
 }

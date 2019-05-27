@@ -124,7 +124,7 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   _handleCancelPress = () => {
     return new Promise((resolve, reject) => {
-      this.setState({ showActionSheet: false }, () => resolve())
+      this.setState({ showActionSheet: false }, resolve)
     })
   }
 
@@ -173,7 +173,6 @@ export class ClipsScreen extends React.Component<Props, State> {
   render() {
     const { flatListData, queryFrom, isLoading, isLoadingMore, querySort, selectedItem,
       showActionSheet } = this.state
-    const { globalTheme } = this.global
     const { navigation } = this.props
 
     return (
@@ -202,7 +201,6 @@ export class ClipsScreen extends React.Component<Props, State> {
               renderItem={this._renderClipItem} />
         }
         <ActionSheet
-          globalTheme={globalTheme}
           handleCancelPress={this._handleCancelPress}
           items={PV.ActionSheet.media.moreButtons(
             selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress

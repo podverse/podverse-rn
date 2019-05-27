@@ -18,6 +18,7 @@ type Props = {
 
 type State = {
   endOfResultsReached: boolean
+  flatListData: any[]
   isLoading: boolean
   isLoadingMore: boolean
   isLoggedInUserProfile: boolean
@@ -58,6 +59,7 @@ export class ProfileScreen extends React.Component<Props, State> {
 
     this.state = {
       endOfResultsReached: false,
+      flatListData: [],
       isLoading: true,
       isLoadingMore: false,
       isLoggedInUserProfile,
@@ -69,8 +71,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
 
     setGlobal({
-      screenProfile: {
-        flatListData: [],
+      profile: {
         ...(isLoggedInUserProfile ? { user: this.global.session.userInfo } : { user })
       }
     })
@@ -93,8 +94,9 @@ export class ProfileScreen extends React.Component<Props, State> {
     } else {
       const user = this.props.navigation.getParam('user')
 
-      await getPublicUser(user.id, this.global)
+      const { profileFlatListData } = await getPublicUser(user.id, this.global)
       let newState = {
+        flatListData: profileFlatListData,
         isLoading: false,
         isLoadingMore: false,
         queryPage: 1
@@ -112,13 +114,13 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
 
     setGlobal({
-      screenProfile: {
-        flatListData: [],
-        user: this.global.screenProfile.user
+      profile: {
+        user: this.global.profile.user
       }
     }, () => {
       this.setState({
         endOfResultsReached: false,
+        flatListData: [],
         isLoading: true,
         preventSortQuery: true,
         queryFrom: selectedKey,
@@ -143,13 +145,13 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
 
     setGlobal({
-      screenProfile: {
-        flatListData: [],
-        user: this.global.screenProfile.user
+      profile: {
+        user: this.global.profile.user
       }
     }, () => {
       this.setState({
         endOfResultsReached: false,
+        flatListData: [],
         isLoading: true,
         querySort: selectedKey
       }, async () => {
@@ -200,7 +202,7 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   _handleCancelPress = () => {
     return new Promise((resolve, reject) => {
-      this.setState({ showActionSheet: false }, () => resolve())
+      this.setState({ showActionSheet: false }, resolve)
     })
   }
 
@@ -212,7 +214,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _handleEditPress = () => {
-    const { user } = this.global.screenProfile
+    const { user } = this.global.profile
     this.props.navigation.navigate(
       PV.RouteNames.EditProfileScreen,
       { user }
@@ -220,7 +222,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _handleToggleSubscribe = async (id: string) => {
-    const { user } = this.global.screenProfile
+    const { user } = this.global.profile
     await toggleSubscribeToUser(id, this.global.session.isLoggedIn, this.global)
     const { subscribedUserIds } = this.global.session.userInfo
     const isSubscribed = subscribedUserIds.some((x: string) => user.id)
@@ -266,10 +268,10 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, isLoadingMore, isLoggedInUserProfile, isSubscribed, queryFrom,
+    const { flatListData, isLoading, isLoadingMore, isLoggedInUserProfile, isSubscribed, queryFrom,
       querySort, selectedItem, showActionSheet } = this.state
-    const { globalTheme, screenProfile } = this.global
-    const { flatListData, user } = screenProfile
+    const { profile } = this.global
+    const { user } = profile
     let rightOptions = [] as any[]
     const { navigation } = this.props
 
@@ -310,7 +312,6 @@ export class ProfileScreen extends React.Component<Props, State> {
               renderItem={this._renderItem} />
         }
         <ActionSheet
-          globalTheme={globalTheme}
           handleCancelPress={this._handleCancelPress}
           items={PV.ActionSheet.media.moreButtons(
             selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
@@ -322,26 +323,27 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   _queryPodcasts = async (newState: any, page: number = 1, sort?: string | null) => {
     return new Promise(async (resolve, reject) => {
+      const { flatListData } = this.state
       const query = {
         includeAuthors: true,
         includeCategories: true,
         page,
-        podcastIds: this.global.screenProfile.user.subscribedPodcastIds,
+        podcastIds: this.global.profile.user.subscribedPodcastIds,
         sort
       }
 
       let results = [[], 0]
-      if (this.global.screenProfile.user.subscribedPodcastIds.length > 1) {
+      if (this.global.profile.user.subscribedPodcastIds.length > 1) {
         results = await getPodcasts(query, this.global.settings.nsfwMode)
       }
 
       setGlobal({
-        screenProfile: {
-          flatListData: [...this.global.screenProfile.flatListData, ...results[0]],
-          user: this.global.screenProfile.user
+        profile: {
+          user: this.global.profile.user
         }
       }, () => {
-        newState.endOfResultsReached = this.global.screenProfile.flatListData.length >= results[1]
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = flatListData.length >= results[1]
         resolve(newState)
       })
     })
@@ -349,18 +351,19 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   _queryMediaRefs = async (newState: any, page: number = 1, sort?: string | null) => {
     return new Promise(async (resolve, reject) => {
+      const { flatListData } = this.state
       const { settings } = this.global
       const { nsfwMode } = settings
       const query = { page }
-      const results = await getUserMediaRefs(this.global.screenProfile.user.id, query, nsfwMode)
+      const results = await getUserMediaRefs(this.global.profile.user.id, query, nsfwMode)
 
       setGlobal({
-        screenProfile: {
-          flatListData: [...this.global.screenProfile.flatListData, ...results[0]],
-          user: this.global.screenProfile.user
+        profile: {
+          user: this.global.profile.user
         }
       }, () => {
-        newState.endOfResultsReached = this.global.screenProfile.flatListData.length >= results[1]
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = flatListData.length >= results[1]
         resolve(newState)
       })
     })
@@ -368,16 +371,17 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   _queryPlaylists = async (newState: any, page: number = 1, sort?: string | null) => {
     return new Promise(async (resolve, reject) => {
+      const { flatListData } = this.state
       const query = { page, sort }
-      const results = await getUserPlaylists(this.global.screenProfile.user.id, query)
+      const results = await getUserPlaylists(this.global.profile.user.id, query)
 
       setGlobal({
-        screenProfile: {
-          flatListData: [...this.global.screenProfile.flatListData, ...results[0]],
-          user: this.global.screenProfile.user
+        profile: {
+          flatListData: [...flatListData, ...results[0]],
+          user: this.global.profile.user
         }
       }, () => {
-        newState.endOfResultsReached = this.global.screenProfile.flatListData.length >= results[1]
+        newState.endOfResultsReached = flatListData.length >= results[1]
         resolve(newState)
       })
     })

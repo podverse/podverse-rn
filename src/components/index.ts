@@ -1,5 +1,6 @@
 export { ClipInfoView } from './ClipInfoView'
 export { ClipTableCell } from './ClipTableCell'
+export { ComparisonTable } from './ComparisonTable'
 export { Divider } from './Divider'
 export { EpisodeTableCell } from './EpisodeTableCell'
 export { EpisodeTableHeader } from './EpisodeTableHeader'

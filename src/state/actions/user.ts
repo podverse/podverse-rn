@@ -11,7 +11,7 @@ export const getPublicUsersByQuery = async (userIds: string, page: number = 1) =
   })
 
   setGlobal({
-    screenProfiles: {
+    profiles: {
       flatListData: results[0]
     }
   })
@@ -21,25 +21,27 @@ export const getPublicUsersByQuery = async (userIds: string, page: number = 1) =
 
 export const getPublicUser = async (id: string, globalState: any) => {
   const newUser = await getPublicUserService(id)
-  const screenProfilesFlatListData = globalState.screenProfiles.flatListData
-  const screenProfileFlatListData = globalState.screenProfile.flatListData
+  const profileFlatListData = globalState.profile.flatListData
+  const profilesFlatListData = globalState.profiles.flatListData
 
-  const foundIndex = screenProfilesFlatListData.findIndex((x: any) => x.id === id)
+  const foundIndex = profilesFlatListData.findIndex((x: any) => x.id === id)
   if (foundIndex > -1) {
-    screenProfilesFlatListData[foundIndex] = newUser
+    profilesFlatListData[foundIndex] = newUser
   }
 
   setGlobal({
-    screenProfiles: {
-      flatListData: screenProfilesFlatListData
-    },
-    screenProfile: {
-      flatListData: screenProfileFlatListData,
+    profile: {
       user: newUser
+    },
+    profiles: {
+      flatListData: profilesFlatListData
     }
   })
 
-  return newUser
+  return {
+    profileFlatListData,
+    user: newUser
+  }
 }
 
 export const toggleSubscribeToUser = async (id: string, isLoggedIn: boolean, globalState: any) => {
@@ -58,33 +60,30 @@ export const toggleSubscribeToUser = async (id: string, isLoggedIn: boolean, glo
 export const getLoggedInUserPlaylists = async (globalState: any) => {
   const results = await getLoggedInUserPlaylistsService()
   setGlobal({
-    screenPlaylists: {
+    playlists: {
       myPlaylists: results[0],
-      subscribedPlaylists: globalState.screenPlaylists.subscribedPlaylists
-    },
-    screenPlaylistsAddTo: {
-      myPlaylists: results[0]
+      subscribedPlaylists: globalState.playlists.subscribedPlaylists
     }
   })
 }
 
 export const updateLoggedInUser = async (data: any, globalState: any) => {
   const userInfo = await updateLoggedInUserService(data)
-  const screenProfilesFlatListData = globalState.screenProfiles.flatListData
-  const screenProfileFlatListData = globalState.screenProfile.flatListData
-  const foundIndex = screenProfilesFlatListData.findIndex((x: any) => x.id === data.id)
+  const profilesFlatListData = globalState.profiles.flatListData
+  const profileFlatListData = globalState.profile.flatListData
+  const foundIndex = profilesFlatListData.findIndex((x: any) => x.id === data.id)
 
   if (foundIndex > -1) {
-    screenProfilesFlatListData[foundIndex] = userInfo
+    profilesFlatListData[foundIndex] = userInfo
   }
 
   setGlobal({
-    screenProfiles: {
-      flatListData: screenProfilesFlatListData
-    },
-    screenProfile: {
-      flatListData: screenProfileFlatListData,
+    profile: {
+      flatListData: profileFlatListData,
       user: userInfo
+    },
+    profiles: {
+      flatListData: profilesFlatListData
     },
     session: {
       ...globalState.session,

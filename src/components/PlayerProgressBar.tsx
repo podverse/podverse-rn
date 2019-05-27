@@ -30,12 +30,6 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
-    if (this.props.value !== nextProps.value) {
-      this.setState({ position: nextProps.value })
-    }
-  }
-
   render() {
     const { duration, position, slidingPosition } = this.state
     const pos = slidingPosition || position

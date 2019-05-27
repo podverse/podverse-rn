@@ -6,7 +6,6 @@ import { ActionSheet, Icon } from './'
 
 type Props = {
   getEpisodeId: any
-  getGlobalTheme: any
   getMediaRefId: any
   navigation: any
 }
@@ -48,10 +47,9 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
   }
 
   render () {
-    const { getEpisodeId, getGlobalTheme, getMediaRefId, navigation } = this.props
+    const { getEpisodeId, getMediaRefId, navigation } = this.props
     const episodeId = getEpisodeId ? getEpisodeId() : null
     const mediaRefId = getMediaRefId ? getMediaRefId() : null
-    const globalTheme = getGlobalTheme ? getGlobalTheme() : null
     const { showActionSheet } = this.state
 
     return (
@@ -62,15 +60,11 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
           onPress={this._handleIconPress}
           size={22}
           style={navHeader.buttonIcon} />
-        {
-          globalTheme &&
-            <ActionSheet
-              globalTheme={globalTheme}
-              handleCancelPress={this._dismissActionSheet}
-              items={actionSheetButtons(episodeId, mediaRefId, navigation, this._dismissActionSheet)}
-              showModal={showActionSheet}
-              title='Add to Playlist' />
-        }
+          <ActionSheet
+            handleCancelPress={this._dismissActionSheet}
+            items={actionSheetButtons(episodeId, mediaRefId, navigation, this._dismissActionSheet)}
+            showModal={showActionSheet}
+            title='Add to Playlist' />
       </View>
     )
   }

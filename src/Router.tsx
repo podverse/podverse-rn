@@ -6,9 +6,10 @@ import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { NavQueueIcon, PVTabBar } from './components'
 import { PV } from './resources'
 import { AboutScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
-  EpisodeScreen, EpisodesScreen, FeedbackScreen, MakeClipScreen, MoreScreen, OnboardingScreen, PlayerScreen,
-  PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen, PodcastsScreen, ProfileScreen,
-  ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen, WebPageScreen } from './screens'
+  EpisodeScreen, EpisodesScreen, FeedbackScreen, MakeClipScreen, MembershipScreen, MoreScreen, OnboardingScreen,
+  PlayerScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen, PodcastsScreen,
+  ProfileScreen, ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen, WebPageScreen } from './screens'
+
 
 const defaultNavigationOptions = ({ navigation }) => ({
   title: PV.Tabs.Podcasts.title,
@@ -127,6 +128,7 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen,
     [PV.RouteNames.MorePlaylistScreen]: PlaylistScreen,
     [PV.RouteNames.MorePodcastScreen]: PodcastScreen,
+    [PV.RouteNames.MembershipScreen]: MembershipScreen,
     [PV.RouteNames.FeedbackScreen]: FeedbackScreen,
     [PV.RouteNames.AboutScreen]: AboutScreen
   },

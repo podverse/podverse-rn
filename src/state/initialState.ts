@@ -8,10 +8,19 @@ const initialTheme: InitialState = {
     nowPlayingItem: null,
     playbackRate: 1,
     shouldContinuouslyPlay: false,
+    showMakeClip: false,
     showMiniPlayer: false
   },
-  screenMakeClip: {
-    isShowing: false
+  playlists: {
+    myPlaylists: [],
+    subscribedPlaylists: []
+  },
+  profile: {
+    flatListData: [],
+    user: null
+  },
+  profiles: {
+    flatListData: []
   },
   screenPlayer: {
     endOfResultsReached: false,
@@ -30,20 +39,6 @@ const initialTheme: InitialState = {
   screenPlaylist: {
     flatListData: [],
     playlist: null
-  },
-  screenPlaylists: {
-    myPlaylists: [],
-    subscribedPlaylists: []
-  },
-  screenPlaylistsAddTo: {
-    myPlaylists: []
-  },
-  screenProfile: {
-    flatListData: [],
-    user: null
-  },
-  screenProfiles: {
-    flatListData: []
   },
   session: {
     userInfo: {

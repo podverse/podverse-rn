@@ -167,7 +167,6 @@ export class SearchScreen extends React.Component<Props, State> {
   render() {
     const { flatListData, isLoading, isLoadingMore, searchBarText, searchType, showActionSheet
       } = this.state
-    const { globalTheme } = this.global
 
     return (
       <View style={styles.view}>
@@ -193,7 +192,6 @@ export class SearchScreen extends React.Component<Props, State> {
               renderItem={this._renderPodcastItem} />
         }
         <ActionSheet
-          globalTheme={globalTheme}
           handleCancelPress={this._handleCancelPress}
           items={this._moreButtons()}
           showModal={showActionSheet} />

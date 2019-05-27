@@ -1,9 +1,9 @@
-import React, { setGlobal } from 'reactn'
 import { View as RNView } from 'react-native'
+import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
   NavQueueIcon, NavShareIcon, PlaylistTableHeader, View } from '../components'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { removeHTMLFromAndDecodeString } from '../lib/utility'
+import { decodeHTMLString, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { core } from '../styles'
@@ -86,10 +86,12 @@ export class PlaylistScreen extends React.Component<Props, State> {
           title={item.title} />
       )
     } else {
+      let description = removeHTMLFromString(item.description)
+      description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
           key={item.id}
-          description={removeHTMLFromAndDecodeString(item.description)}
+          description={description}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           handleNavigationPress={() => this.props.navigation.navigate(
             PV.RouteNames.MoreEpisodeScreen,
@@ -120,7 +122,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
   _handleCancelPress = () => {
     return new Promise((resolve, reject) => {
-      this.setState({ showActionSheet: false }, () => resolve())
+      this.setState({ showActionSheet: false }, resolve)
     })
   }
 
@@ -134,7 +136,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
   render() {
     const { isLoading, isLoadingMore, isLoggedInUserPlaylist, isSubscribed, selectedItem,
       showActionSheet } = this.state
-    const { globalTheme, screenPlaylist } = this.global
+    const { screenPlaylist } = this.global
     const { navigation } = this.props
     const playlist = screenPlaylist.playlist ? screenPlaylist.playlist : navigation.getParam('playlist')
     const flatListData = screenPlaylist.flatListData || []
@@ -165,7 +167,6 @@ export class PlaylistScreen extends React.Component<Props, State> {
               renderItem={this._renderItem} />
         }
         <ActionSheet
-          globalTheme={globalTheme}
           handleCancelPress={this._handleCancelPress}
           items={PV.ActionSheet.media.moreButtons(
             selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress

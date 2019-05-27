@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import linkifyHtml from 'linkifyjs/html'
 import TrackPlayer from 'react-native-track-player'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
@@ -175,8 +174,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
 
 export const setNowPlayingItemEpisode = async (id: string) => {
   const episode = await getEpisode(id)
-  episode.description = episode.description || 'No summary available.'
-  episode.description = linkifyHtml(episode.description)
+  episode.description = (episode.description && episode.description.linkifyHtml()) || 'No summary available.'
 
   await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM_EPISODE, JSON.stringify(episode))
 }

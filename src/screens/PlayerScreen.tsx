@@ -6,7 +6,7 @@ import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, E
   PlayerControls, PlayerTableHeader, SafeAreaView, TableSectionHeader, TableSectionSelectors, View
   } from '../components'
 import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
-import { readableDate, removeHTMLFromAndDecodeString } from '../lib/utility'
+import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
@@ -26,7 +26,6 @@ export class PlayerScreen extends React.Component<Props, State> {
     const _getEpisodeId = navigation.getParam('_getEpisodeId')
     const _getMediaRefId = navigation.getParam('_getMediaRefId')
     const _showShareActionSheet = navigation.getParam('_showShareActionSheet')
-    const _getGlobalTheme = navigation.getParam('_getGlobalTheme')
     const _getInitialProgressValue = navigation.getParam('_getInitialProgressValue')
 
     return {
@@ -46,7 +45,6 @@ export class PlayerScreen extends React.Component<Props, State> {
             navigation={navigation} />
           <NavAddToPlaylistIcon
             getEpisodeId={_getEpisodeId}
-            getGlobalTheme={_getGlobalTheme}
             getMediaRefId={_getMediaRefId}
             navigation={navigation} />
           <NavShareIcon handlePress={_showShareActionSheet} />
@@ -63,11 +61,12 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    this.props.navigation.setParams({ _getEpisodeId: this._getEpisodeId })
-    this.props.navigation.setParams({ _getMediaRefId: this._getMediaRefId })
-    this.props.navigation.setParams({ _getInitialProgressValue: this._getInitialProgressValue })
-    this.props.navigation.setParams({ _getGlobalTheme: this._getGlobalTheme })
-    this.props.navigation.setParams({ _showShareActionSheet: this._showShareActionSheet })
+    this.props.navigation.setParams({
+      _getEpisodeId: this._getEpisodeId,
+      _getInitialProgressValue: this._getInitialProgressValue,
+      _getMediaRefId: this._getMediaRefId,
+      _showShareActionSheet: this._showShareActionSheet
+    })
   }
 
   _getEpisodeId = () => {
@@ -83,10 +82,6 @@ export class PlayerScreen extends React.Component<Props, State> {
   _getInitialProgressValue = async () => {
     const initialProgressValue = await PVTrackPlayer.getPosition()
     return Math.floor(initialProgressValue)
-  }
-
-  _getGlobalTheme = () => {
-    return this.global.globalTheme
   }
 
   _selectViewType = async (selectedKey: string) => {
@@ -235,7 +230,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           ...this.global.screenPlayer,
           showMoreActionSheet: false
         }
-      }, () => resolve())
+      }, resolve)
     })
   }
 
@@ -318,10 +313,12 @@ export class PlayerScreen extends React.Component<Props, State> {
     const podcast = (episode && episode.podcast) || {}
     const { queryFrom, viewType } = screenPlayer
     if (viewType === PV.Keys.VIEW_TYPE_EPISODES) {
+      let description = removeHTMLFromString(item.description)
+      description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
           key={item.id}
-          description={removeHTMLFromAndDecodeString(item.description)}
+          description={description}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => console.log('handle episode press')}
           pubDate={item.pubDate}
@@ -350,7 +347,7 @@ export class PlayerScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { globalTheme, player, screenPlayer } = this.global
+    const { player, screenPlayer } = this.global
     const { episode, mediaRef, nowPlayingItem } = player
     const { flatListData, isLoading, isLoadingMore, queryFrom, querySort, selectedItem, showHeaderActionSheet,
       showMoreActionSheet, showShareActionSheet, showFullClipInfo, viewType } = screenPlayer
@@ -429,20 +426,17 @@ export class PlayerScreen extends React.Component<Props, State> {
           }
           <PlayerControls />
           <ActionSheet
-            globalTheme={globalTheme}
             handleCancelPress={this._handleMoreCancelPress}
             items={PV.ActionSheet.media.moreButtons(
               selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleMoreCancelPress
             )}
             showModal={showMoreActionSheet} />
           <ActionSheet
-            globalTheme={globalTheme}
             handleCancelPress={this._dismissShareActionSheet}
             items={shareActionSheetButtons(podcastId, episodeId, mediaRefId, this._handleShare)}
             showModal={showShareActionSheet}
             title='Share' />
           <ActionSheet
-            globalTheme={globalTheme}
             handleCancelPress={this._dismissHeaderActionSheet}
             items={this._headerActionSheetButtons()}
             showModal={showHeaderActionSheet} />
