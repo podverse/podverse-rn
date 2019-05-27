@@ -1,6 +1,6 @@
 import { PV } from '../resources'
 import { getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem, handleResumeAfterClipHasEnded,
-  PVTrackPlayer, setClipHasEnded, setPlaybackPosition  } from './player'
+  PVTrackPlayer, setClipHasEnded, setPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 
 let clipEndTimeInterval: any = null

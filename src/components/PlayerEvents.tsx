@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native'
+import { Alert, StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources'
 import { getNowPlayingItem } from '../services/player'
@@ -15,12 +15,14 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handlePlayerQueueEnded)
     PlayerEventEmitter.on(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED, this._handlePlayerResumeAfterClipHasEnded)
     PlayerEventEmitter.on(PV.Events.PLAYER_STATE_CHANGED, this._handlePlayerStateUpdated)
+    PlayerEventEmitter.on(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI, this._handlePlayerCannotStreamWithoutWifi)
   }
 
   componentWillUnmount() {
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_QUEUE_ENDED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_STATE_CHANGED)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
   }
 
   _handlePlayerQueueEnded = async () => {
@@ -35,11 +37,18 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
 
   _handlePlayerResumeAfterClipHasEnded = async () => {
     const nowPlayingItem = await getNowPlayingItem()
+
     await setNowPlayingItem(nowPlayingItem, this.global)
   }
 
   _handlePlayerStateUpdated = async () => {
     await updatePlaybackState(this.global)
+  }
+
+  _handlePlayerCannotStreamWithoutWifi = async () => {
+    await Alert.alert(
+      PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.title, PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.message, []
+    )
   }
 
   render() {
