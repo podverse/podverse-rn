@@ -39,6 +39,7 @@ const addQueueItemLastOnServer = async (item: NowPlayingItem) => {
   const items = await getQueueItemsFromServer()
   const filteredItems = filterItemFromQueueItems(items, item)
   filteredItems.push(item)
+  await setAllQueueItemsLocally(filteredItems)
   return setAllQueueItemsOnServer(filteredItems)
 }
 
@@ -53,6 +54,7 @@ const addQueueItemNextOnServer = async (item: NowPlayingItem) => {
   const items = await getQueueItemsFromServer()
   const filteredItems = filterItemFromQueueItems(items, item)
   filteredItems.unshift(item)
+  await setAllQueueItemsLocally(filteredItems)
   return setAllQueueItemsOnServer(filteredItems)
 }
 
@@ -72,6 +74,7 @@ const getQueueItemsLocally = async () => {
 const getQueueItemsFromServer = async () => {
   const user = await getAuthUserInfo()
   const { queueItems } = user
+  await setAllQueueItemsLocally(queueItems)
   return queueItems
 }
 
@@ -83,6 +86,7 @@ const popNextFromQueueLocally = async () => {
 }
 
 const popNextFromQueueFromServer = async () => {
+  await popNextFromQueueLocally()
   const items = await getQueueItemsFromServer()
   const item = items.shift()
   if (item) removeQueueItemOnServer(item)
@@ -96,16 +100,18 @@ const removeQueueItemLocally = async (item: NowPlayingItem) => {
 }
 
 const removeQueueItemOnServer = async (item: NowPlayingItem) => {
+  await removeQueueItemLocally(item)
   const items = await getQueueItemsFromServer()
   const filteredItems = filterItemFromQueueItems(items, item)
   return setAllQueueItemsOnServer(filteredItems)
 }
 
-const setAllQueueItemsLocally = (items: NowPlayingItem[]) => {
-  AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(items))
+const setAllQueueItemsLocally = async (items: NowPlayingItem[]) => {
+  await AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(items))
   return items
 }
 
 const setAllQueueItemsOnServer = async (items: NowPlayingItem[]) => {
+  await setAllQueueItemsLocally(items)
   return updateUserQueueItems(items)
 }

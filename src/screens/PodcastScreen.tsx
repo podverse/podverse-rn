@@ -5,6 +5,7 @@ import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
   NavQueueIcon, NavShareIcon, PodcastTableHeader, SearchBar, SwipeRowBack, TableSectionSelectors,
   View } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
@@ -272,6 +273,9 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _toggleSubscribeToPodcast = async () => {
+    const wasAlerted = await alertIfNoNetworkConnection('subscribe to podcast')
+    if (wasAlerted) return
+
     const { podcast } = this.state
     await toggleSubscribeToPodcast(podcast.id, this.global)
   }
@@ -361,6 +365,9 @@ export class PodcastScreen extends React.Component<Props, State> {
       isLoadingMore: false,
       isRefreshing: false
     } as State
+
+    const wasAlerted = await alertIfNoNetworkConnection('load data')
+    if (wasAlerted) return newState
 
     if (filterKey === downloadedKey) {
       console.log('retrieve downloaded from local storage')

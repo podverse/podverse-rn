@@ -24,9 +24,10 @@ export const SwitchWithText = (props: Props) => {
 
 const styles = StyleSheet.create({
   text: {
+    flex: 1,
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.bold,
-    marginLeft: 12
+    marginHorizontal: 12
   },
   wrapper: {
     alignItems: 'center',

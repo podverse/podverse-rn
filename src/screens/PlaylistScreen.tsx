@@ -2,6 +2,7 @@ import { View as RNView } from 'react-native'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
   NavQueueIcon, NavShareIcon, PlaylistTableHeader, View } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
@@ -113,6 +114,9 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   _handleToggleSubscribe = async (id: string) => {
+    const wasAlerted = await alertIfNoNetworkConnection('subscribe to playlist')
+    if (wasAlerted) return
+
     const { playlist } = this.global.screenPlaylist
     await toggleSubscribeToPlaylist(id, this.global)
     const { subscribedPlaylistIds } = this.global.session.userInfo

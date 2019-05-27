@@ -3,6 +3,7 @@ import debounce from 'lodash/debounce'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
@@ -71,6 +72,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       } else {
         await initPlayerState(this.global)
         await getAuthUserInfo()
+        const { userInfo } = this.global.session
+        await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
         const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
 
         if (nowPlayingItemString) {
@@ -102,7 +105,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       queryFrom: selectedKey,
       queryPage: 1
     }, async () => {
-      const newState = await this._queryPodcastData(selectedKey, this.state)
+      const newState = await this._queryData(selectedKey, this.state)
       this.setState(newState)
     })
   }
@@ -119,7 +122,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       isLoading: true,
       querySort: selectedKey
     }, async () => {
-      const newState = await this._queryPodcastData(selectedKey, this.state)
+      const newState = await this._queryData(selectedKey, this.state)
 
       this.setState(newState)
     })
@@ -140,7 +143,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       ...(!isSubCategory ? { subCategoryItems: [] } : {}),
       flatListData: []
     }, async () => {
-      const newState = await this._queryPodcastData(selectedKey, this.state, {}, { isSubCategory })
+      const newState = await this._queryData(selectedKey, this.state, {}, { isSubCategory })
 
       this.setState(newState)
     })
@@ -154,7 +157,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           isLoadingMore: true
         }, async () => {
           const nextPage = queryPage + 1
-          const newState = await this._queryPodcastData(queryFrom, this.state, { queryPage: nextPage })
+          const newState = await this._queryData(queryFrom, this.state, { queryPage: nextPage })
           this.setState(newState)
         })
       }
@@ -167,7 +170,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.setState({
       isRefreshing: true
     }, async () => {
-      const newState = await this._queryPodcastData(queryFrom, this.state, { queryPage: 1 })
+      const newState = await this._queryData(queryFrom, this.state, { queryPage: 1 })
       this.setState(newState)
     })
   }
@@ -211,6 +214,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _renderHiddenItem = ({ item }, rowMap) => <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
+    const wasAlerted = await alertIfNoNetworkConnection('unsubscribe from podcast')
+    if (wasAlerted) return
+
     rowMap[selectedId].closeRow()
     const { flatListData } = this.state
     await toggleSubscribeToPodcast(selectedId, this.global)
@@ -236,7 +242,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = async (queryFrom: string | null, prevState: any, newState: any, queryOptions: any) => {
-    const state = await this._queryPodcastData(queryFrom, prevState, newState, { searchTitle: queryOptions.searchTitle })
+    const state = await this._queryData(queryFrom, prevState, newState, { searchTitle: queryOptions.searchTitle })
     this.setState(state)
   }
 
@@ -316,7 +322,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     return results
   }
 
-  _queryPodcastData = async (
+  _queryData = async (
     filterKey: string | null, prevState: State, nextState?: {},
     queryOptions: { isSubCategory?: boolean, searchTitle?: string } = {}) => {
     const newState = {
@@ -325,6 +331,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
       isRefreshing: false,
       ...nextState
     } as State
+
+    const wasAlerted = await alertIfNoNetworkConnection('load podcasts')
+    if (wasAlerted) return newState
 
     const { searchBarText: searchTitle, flatListData = [], querySort, selectedCategory,
       selectedSubCategory } = prevState

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Alert, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import { Login, SignUp } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { Credentials, loginUser, signUpUser } from '../state/actions/auth'
 
@@ -25,6 +26,9 @@ export class AuthScreen extends React.Component<Props, State> {
   attemptLogin = async (credentials: Credentials) => {
     const { navigation } = this.props
 
+    const wasAlerted = await alertIfNoNetworkConnection('login')
+    if (wasAlerted) return
+
     try {
       await loginUser(credentials, navigation)
       if (navigation.getParam('isOnboarding', false)) {
@@ -39,6 +43,10 @@ export class AuthScreen extends React.Component<Props, State> {
 
   attemptSignUp = async (credentials: Credentials) => {
     const { navigation } = this.props
+
+    const wasAlerted = await alertIfNoNetworkConnection('sign up')
+    if (wasAlerted) return
+
     try {
       await signUpUser(credentials, navigation)
       if (navigation.getParam('isOnboarding', false)) {

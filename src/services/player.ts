@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import TrackPlayer from 'react-native-track-player'
+import { hasValidNetworkConnection, hasValidStreamingConnection } from '../lib/network'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
@@ -131,17 +132,24 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
   const isTrackLoaded = await TrackPlayer.getCurrentTrack()
   const id = clipId || episodeId
 
-  if (id && (!isTrackLoaded || isNewEpisode)) {
-    await TrackPlayer.add({
-      id,
-      url: episodeMediaUrl,
-      title: episodeTitle,
-      artist: podcastTitle,
-      ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
-    })
+  const isDownloadedFile = false
+  const hasStreamingConnection = await hasValidStreamingConnection()
 
-    if (isTrackLoaded) {
-      await TrackPlayer.skipToNext()
+  const shouldNotLoadFile = !isDownloadedFile && !hasStreamingConnection
+
+  if (id && (!isTrackLoaded || isNewEpisode)) {
+    if (!shouldNotLoadFile) {
+      await TrackPlayer.add({
+        id,
+        url: episodeMediaUrl,
+        title: episodeTitle,
+        artist: podcastTitle,
+        ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
+      })
+
+      if (isTrackLoaded) {
+        await TrackPlayer.skipToNext()
+      }
     }
   }
 
@@ -149,12 +157,15 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
     await setPlaybackPosition(item.clipStartTime)
   }
 
-  const items = await getQueueItems(isLoggedIn)
+  const isConnected = await hasValidNetworkConnection()
+  const useLocalData = isLoggedIn && !isConnected
+
+  const items = await getQueueItems(useLocalData)
 
   let filteredItems = [] as any[]
   filteredItems = filterItemFromQueueItems(items, item)
-  await setAllQueueItems(filteredItems, isLoggedIn)
-  await addOrUpdateHistoryItem(item, isLoggedIn)
+  await setAllQueueItems(filteredItems, useLocalData)
+  await addOrUpdateHistoryItem(item, useLocalData)
 
   if (isNewEpisode && episodeId) {
     await setNowPlayingItemEpisode(episodeId)
@@ -165,6 +176,10 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
   }
 
   PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
+
+  if (shouldNotLoadFile) {
+    PlayerEventEmitter.emit(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
+  }
 
   return {
     nowPlayingItem: item,
@@ -195,6 +210,15 @@ export const setPlaybackPosition = async (position: number) => {
 
 export const togglePlay = async (playbackRate: number) => {
   const state = await TrackPlayer.getState()
+
+  if (state === TrackPlayer.STATE_NONE) {
+    const nowPlayingItem = await getNowPlayingItem()
+    await setNowPlayingItem(nowPlayingItem, true)
+    TrackPlayer.play()
+    TrackPlayer.setRate(playbackRate)
+    return
+  }
+
   if (state === TrackPlayer.STATE_PLAYING) {
     TrackPlayer.pause()
   } else {

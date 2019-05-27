@@ -96,11 +96,8 @@ export interface InitialState {
     playlist?: any
   }
   session: {
-    userInfo: UserInfo,
     isLoggedIn: boolean
-  }
-  settings: {
-    nsfwMode: boolean
+    userInfo: UserInfo
   }
   subscribedPodcasts: []
 }

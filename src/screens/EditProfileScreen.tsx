@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { ActivityIndicator, Divider, TextInput, View } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { updateLoggedInUser } from '../state/actions/user'
@@ -49,6 +50,9 @@ export class EditProfileScreen extends React.Component<Props, State> {
   }
 
   _updateUser = async () => {
+    const wasAlerted = await alertIfNoNetworkConnection('update your profile')
+    if (wasAlerted) return
+
     this.setState({
       isLoading: true
     }, async () => {

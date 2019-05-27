@@ -2,6 +2,7 @@ import debounce from 'lodash/debounce'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, Divider, EpisodeTableCell, FlatList, SearchBar,
   TableSectionSelectors, View } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
@@ -50,7 +51,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { queryFrom } = this.state
-    const newState = await this._queryEpisodeData(queryFrom)
+    const newState = await this._queryData(queryFrom)
     this.setState(newState)
   }
 
@@ -67,7 +68,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       queryFrom: selectedKey,
       queryPage: 1
     }, async () => {
-      const newState = await this._queryEpisodeData(selectedKey)
+      const newState = await this._queryData(selectedKey)
       this.setState(newState)
     })
   }
@@ -84,7 +85,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       isLoading: true,
       querySort: selectedKey
     }, async () => {
-      const newState = await this._queryEpisodeData(selectedKey)
+      const newState = await this._queryData(selectedKey)
       this.setState(newState)
     })
   }
@@ -97,7 +98,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           isLoadingMore: true,
           queryPage: queryPage + 1
         }, async () => {
-          const newState = await this._queryEpisodeData(queryFrom, { queryPage: this.state.queryPage })
+          const newState = await this._queryData(queryFrom, { queryPage: this.state.queryPage })
           this.setState(newState)
         })
       }
@@ -174,7 +175,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = async (queryFrom: string | null, queryOptions: any) => {
-    const state = await this._queryEpisodeData(queryFrom, { searchAllFieldsText: queryOptions.searchAllFieldsText })
+    const state = await this._queryData(queryFrom, { searchAllFieldsText: queryOptions.searchAllFieldsText })
     this.setState(state)
   }
 
@@ -218,13 +219,17 @@ export class EpisodesScreen extends React.Component<Props, State> {
     )
   }
 
-  _queryEpisodeData = async (filterKey: string | null, queryOptions: {
+  _queryData = async (filterKey: string | null, queryOptions: {
     queryPage?: number, searchAllFieldsText?: string
   } = {}) => {
     const newState = {
       isLoading: false,
       isLoadingMore: false
     } as State
+
+    const wasAlerted = await alertIfNoNetworkConnection('load episodes')
+    if (wasAlerted) return newState
+
     const { flatListData, queryFrom, querySort } = this.state
     const podcastId = this.global.session.userInfo.subscribedPodcastIds
     const nsfwMode = this.global.settings.nsfwMode

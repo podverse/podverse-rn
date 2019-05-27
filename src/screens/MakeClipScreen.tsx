@@ -4,6 +4,7 @@ import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInput, TimeInput, View
   } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { createMediaRef, updateMediaRef } from '../services/mediaRef'
 import { playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime, PVTrackPlayer
@@ -119,7 +120,15 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { player } = this.global
     const { nowPlayingItem } = player
 
-    if (startTime === 0) {
+    const wasAlerted = await alertIfNoNetworkConnection('save a clip')
+    if (wasAlerted) return
+
+    if (endTime === 0) {
+      Alert.alert('Clip Error', 'End time cannot be equal to 0.', [])
+      return
+    }
+
+    if (startTime === 0 && !endTime) {
       Alert.alert('Clip Error', 'The start time must be greater than 0 if no end time is provided.', [])
       return
     }

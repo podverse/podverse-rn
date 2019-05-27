@@ -3,6 +3,7 @@ import { View as RNView } from 'react-native'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, HTMLScrollView,
   NavQueueIcon, NavShareIcon, SearchBar, TableSectionSelectors, View } from '../components'
+import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
@@ -68,7 +69,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     let newState = {}
 
     if (viewType === _clipsKey) {
-      newState = await this._queryClipData(_clipsKey)
+      newState = await this._queryData(_clipsKey)
     }
 
     episode.description = (episode.description && episode.description.linkifyHtml()) || 'No summary available.'
@@ -93,7 +94,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       viewType: selectedKey
     }, async () => {
       if (selectedKey === _clipsKey) {
-        const newState = await this._queryClipData(selectedKey)
+        const newState = await this._queryData(selectedKey)
         this.setState(newState)
       }
     })
@@ -111,7 +112,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       isLoading: true,
       querySort: selectedKey
     }, async () => {
-      const newState = await this._queryClipData(selectedKey)
+      const newState = await this._queryData(selectedKey)
       this.setState(newState)
     })
   }
@@ -123,7 +124,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         this.setState({
           isLoadingMore: true
         }, async () => {
-          const newState = await this._queryClipData(viewType, { queryPage: queryPage + 1 })
+          const newState = await this._queryData(viewType, { queryPage: queryPage + 1 })
           this.setState(newState)
         })
       }
@@ -188,7 +189,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = async (viewType: string | null, queryOptions: any) => {
-    const state = await this._queryClipData(viewType, { searchAllFieldsText: queryOptions.searchAllFieldsText })
+    const state = await this._queryData(viewType, { searchAllFieldsText: queryOptions.searchAllFieldsText })
     this.setState(state)
   }
 
@@ -247,7 +248,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     )
   }
 
-  _queryClipData = async (filterKey: string, queryOptions: {
+  _queryData = async (filterKey: string, queryOptions: {
     queryPage?: number, searchAllFieldsText?: string
   } = {}) => {
     const { episode, flatListData, querySort, searchBarText: searchAllFieldsText } = this.state
@@ -255,6 +256,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
       isLoading: false,
       isLoadingMore: false
     } as State
+
+    const wasAlerted = await alertIfNoNetworkConnection('load clips')
+    if (wasAlerted) return newState
 
     if (rightItems.some((option) => option.value === filterKey)) {
       const results = await getMediaRefs({
