@@ -45,7 +45,13 @@ export const request = async (req: PVRequest, nsfwMode?: boolean) => {
   } catch (error) {
     console.log('error message:', error.message)
     console.log('error response:', error.response)
-    Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+
+    if (error.response && error.response.code === PV.ResponseErrorCodes.PREMIUM_MEMBERSHIP_REQUIRED) {
+      Alert.alert(PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.title, PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.message, [])
+    } else {
+      Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+    }
+
     throw error
   }
 }
