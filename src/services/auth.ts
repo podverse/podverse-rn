@@ -102,7 +102,7 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
     }
   })
 
-  const results = await response.json()
+  const results = await response.data
   const { subscribedPodcastIds } = results
   AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
 
@@ -125,7 +125,7 @@ export const login = async (email: string, password: string) => {
     opts: { credentials: 'include' }
   })
 
-  const data = await response.json()
+  const data = await response.data
   if (data.token) {
     RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY })
   }
@@ -144,7 +144,7 @@ export const sendResetPassword = async (email: string) => {
     opts: { credentials: 'include' }
   })
 
-  return response.json()
+  return response.data
 }
 
 export const signUp = async (email: string, password: string, name: string) => {
@@ -161,7 +161,7 @@ export const signUp = async (email: string, password: string, name: string) => {
     opts: { credentials: 'include' }
   })
 
-  const data = await response.json()
+  const data = await response.data
 
   if (data.token) {
     RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY })

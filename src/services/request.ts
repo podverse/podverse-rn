@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 const API_BASE_URL = 'https://api.stage.podverse.fm/api/v1'
 
 type PVRequest = {
@@ -25,18 +27,19 @@ export const request = async (req: PVRequest, nsfwMode?: boolean) => {
     return `${key}=${query[key]}`
   }).join('&')
 
-  const response = await fetch(
-    `${API_BASE_URL}${endpoint}?${queryString}`,
-    {
-      headers,
-      ...(body ? { body: JSON.stringify(body) } : {}),
-      method,
-      ...opts
-    }
-  )
+  const axiosRequest = {
+    url: `${API_BASE_URL}${endpoint}?${queryString}`,
+    headers,
+    ...(body ? { data: body } : {}),
+    method,
+    ...opts,
+    timeout: 20000
+  }
+
+  const response = await axios(axiosRequest)
 
   if (response.status !== 200) {
-    const error = await response.json()
+    const error = await response
     throw new Error(error.message)
   }
 

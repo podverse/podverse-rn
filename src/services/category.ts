@@ -5,12 +5,12 @@ export const getTopLevelCategories = async () => {
     endpoint: '/category',
     query: { topLevelCategories: true }
   })
-  return response.json()
+  return response.data
 }
 
 export const getCategoryById = async (id: string) => {
   const response = await request({
     endpoint: `/category/${id}`
   })
-  return response.json()
+  return response.data
 }

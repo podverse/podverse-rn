@@ -21,7 +21,7 @@ export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: st
     opts: { credentials: 'include' }
   })
 
-  return response.json()
+  return response.data
 }
 
 export const createPlaylist = async (data: any) => {
@@ -37,7 +37,7 @@ export const createPlaylist = async (data: any) => {
     opts: { credentials: 'include' }
   })
 
-  return response.json()
+  return response.data
 }
 
 export const deletePlaylistOnServer = async (data: any) => {
@@ -50,7 +50,7 @@ export const deletePlaylistOnServer = async (data: any) => {
     opts: { credentials: 'include' }
   })
 
-  return response.json()
+  return response.data
 }
 
 export const getPlaylists = async (query: any = {}) => {
@@ -63,7 +63,7 @@ export const getPlaylists = async (query: any = {}) => {
     query: filteredQuery
   })
 
-  return response.json()
+  return response.data
 }
 
 export const getPlaylist = async (id: string) => {
@@ -71,7 +71,7 @@ export const getPlaylist = async (id: string) => {
     endpoint: `/playlist/${id}`
   })
 
-  return response.json()
+  return response.data
 }
 
 export const toggleSubscribeToPlaylist = async (playlistId: string, isLoggedIn: boolean) => {
@@ -104,7 +104,7 @@ const toggleSubscribeToPlaylistOnServer = async (id: string) => {
     headers: { Authorization: bearerToken }
   })
 
-  return response.json()
+  return response.data
 }
 
 export const updatePlaylist = async (data: any) => {
@@ -120,5 +120,5 @@ export const updatePlaylist = async (data: any) => {
     opts: { credentials: 'include' }
   })
 
-  return response.json()
+  return response.data
 }

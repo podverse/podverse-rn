@@ -9,7 +9,7 @@ export const getPodcast = async (id: string) => {
     endpoint: `/podcast/${id}`
   })
 
-  return response.json()
+  return response.data
 }
 
 export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
@@ -33,7 +33,7 @@ export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
     query: filteredQuery
   }, nsfwMode)
 
-  return response.json()
+  return response.data
 }
 
 export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
@@ -66,7 +66,7 @@ export const searchPodcasts = async (title?: string, author?: string, nsfwMode?:
     }
   }, nsfwMode)
 
-  return response.json()
+  return response.data
 }
 
 export const toggleSubscribeToPodcast = async (id: string, isLoggedIn: boolean) => {
@@ -99,5 +99,5 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
     headers: { Authorization: bearerToken }
   })
 
-  return response.json()
+  return response.data
 }
