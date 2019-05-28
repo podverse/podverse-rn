@@ -77,7 +77,7 @@ const getAuthenticatedUserInfoLocally = async () => {
     AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(historyItems))
   }
 
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   isLoggedIn = !!bearerToken
 
   return [
