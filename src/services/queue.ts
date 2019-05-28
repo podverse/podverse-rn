@@ -25,7 +25,6 @@ export const removeQueueItem = async (item: NowPlayingItem, useServerData: boole
 }
 
 export const setAllQueueItems = async (items: NowPlayingItem[], useServerData: boolean) => {
-  console.log('set all queue', useServerData, items)
   return useServerData ? setAllQueueItemsOnServer(items) : setAllQueueItemsLocally(items)
 }
 
