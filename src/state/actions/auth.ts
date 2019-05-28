@@ -42,7 +42,7 @@ export const getAuthUserInfo = async () => {
       }
     })
 
-    Alert.alert('Error', error.message, [])
+    throw error
   }
 }
 

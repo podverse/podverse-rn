@@ -83,7 +83,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         flatListData = subscribedPodcasts
       }
     } catch (error) {
-      console.log(error.message)
+      console.log(error)
     }
 
     this.setState({

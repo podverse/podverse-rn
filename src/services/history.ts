@@ -46,7 +46,7 @@ const addOrUpdateHistoryItemOnServer = async (nowPlayingItem: NowPlayingItem) =>
     opts: { credentials: 'include' }
   })
 
-  return response.data
+  return response && response.data
 }
 
 const clearHistoryItemsLocally = async () => {
@@ -66,7 +66,7 @@ const clearHistoryItemsOnServer = async () => {
     opts: { credentials: 'include' }
   })
 
-  return response.data
+  return response && response.data
 }
 
 export const filterItemFromHistoryItems = (items: NowPlayingItem[], item: NowPlayingItem) => items.filter((x) =>
@@ -142,7 +142,7 @@ const removeHistoryItemOnServer = async (episodeId?: string, mediaRefId?: string
     opts: { credentials: 'include' }
   })
 
-  return response.data
+  return response && response.data
 }
 
 const setAllHistoryItemsLocally = (items: NowPlayingItem[]) => {

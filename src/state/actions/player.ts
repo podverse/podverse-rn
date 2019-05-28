@@ -78,35 +78,39 @@ export const setNowPlayingItem = async (item: NowPlayingItem, globalState: any, 
       }
 
       setGlobal(newState, async () => {
-        const result = await setNowPlayingItemService(item)
 
-        let episode = null
-        let mediaRef = null
-        if (isNewEpisode) {
-          episode = await getNowPlayingItemEpisode()
-        }
+        try {
+          const result = await setNowPlayingItemService(item)
 
-        if (isNewMediaRef) {
-          PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
-          mediaRef = await getNowPlayingItemMediaRef()
-        }
-
-        setGlobal({
-          player: {
-            ...globalState.player,
-            ...(episode ? { episode } : {}),
-            ...(mediaRef ? { mediaRef } : {})
-          },
-          screenPlayer: {
-            ...globalState.screenPlayer,
-            isLoading: false
+          let episode = null
+          let mediaRef = null
+          if (isNewEpisode) {
+            episode = await getNowPlayingItemEpisode()
           }
-        })
 
-        resolve(result)
+          if (isNewMediaRef) {
+            PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+            mediaRef = await getNowPlayingItemMediaRef()
+          }
+
+          setGlobal({
+            player: {
+              ...globalState.player,
+              ...(episode ? { episode } : {}),
+              ...(mediaRef ? { mediaRef } : {})
+            },
+            screenPlayer: {
+              ...globalState.screenPlayer,
+              isLoading: false
+            }
+          })
+
+          resolve(result)
+        } catch (error) {
+          reject(error)
+        }
       })
     } catch (error) {
-      console.log(error)
       setGlobal({
         player: {
           ...globalState.player,
@@ -116,7 +120,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, globalState: any, 
         }
       })
 
-      reject({})
+      reject(error)
     }
   })
 }

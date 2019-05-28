@@ -116,73 +116,78 @@ export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean)
 }
 
 export const setNowPlayingItem = async (item: NowPlayingItem) => {
-  const bearerToken = await getBearerToken()
-  const isLoggedIn = !!bearerToken
-  const { clipId, episodeId, episodeMediaUrl, episodeTitle = 'untitled episode', podcastImageUrl,
-    podcastTitle = 'untitled podcast' } = item
+  try {
+    const bearerToken = await getBearerToken()
+    const isLoggedIn = !!bearerToken
+    const { clipId, episodeId, episodeMediaUrl, episodeTitle = 'untitled episode', podcastImageUrl,
+      podcastTitle = 'untitled podcast' } = item
 
-  const lastNowPlayingItem = await getNowPlayingItem()
-  const isNewEpisode = !lastNowPlayingItem || episodeId !== lastNowPlayingItem.episodeId
-  const isNewMediaRef = clipId && (!lastNowPlayingItem || clipId !== lastNowPlayingItem.clipId)
+    const lastNowPlayingItem = await getNowPlayingItem()
+    const isNewEpisode = !lastNowPlayingItem || episodeId !== lastNowPlayingItem.episodeId
+    const isNewMediaRef = clipId && (!lastNowPlayingItem || clipId !== lastNowPlayingItem.clipId)
 
-  await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
+    await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
 
-  await setClipHasEnded(false)
+    await setClipHasEnded(false)
 
-  const isTrackLoaded = await TrackPlayer.getCurrentTrack()
-  const id = clipId || episodeId
+    const isTrackLoaded = await TrackPlayer.getCurrentTrack()
+    const id = clipId || episodeId
 
-  const isDownloadedFile = false
-  const hasStreamingConnection = await hasValidStreamingConnection()
+    const isDownloadedFile = false
+    const hasStreamingConnection = await hasValidStreamingConnection()
 
-  const shouldNotLoadFile = !isDownloadedFile && !hasStreamingConnection
+    const shouldNotLoadFile = !isDownloadedFile && !hasStreamingConnection
 
-  if (id && (!isTrackLoaded || isNewEpisode)) {
-    if (!shouldNotLoadFile) {
-      await TrackPlayer.add({
-        id,
-        url: episodeMediaUrl,
-        title: episodeTitle,
-        artist: podcastTitle,
-        ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
-      })
+    if (id && (!isTrackLoaded || isNewEpisode)) {
+      if (!shouldNotLoadFile) {
+        await TrackPlayer.add({
+          id,
+          url: episodeMediaUrl,
+          title: episodeTitle,
+          artist: podcastTitle,
+          ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
+        })
 
-      if (isTrackLoaded) {
-        await TrackPlayer.skipToNext()
+        if (isTrackLoaded) {
+          await TrackPlayer.skipToNext()
+        }
       }
     }
-  }
 
-  if (!isNewEpisode && isNewMediaRef && item.clipStartTime && !shouldNotLoadFile) {
-    await setPlaybackPosition(item.clipStartTime)
-  }
+    if (!isNewEpisode && isNewMediaRef && item.clipStartTime && !shouldNotLoadFile) {
+      await setPlaybackPosition(item.clipStartTime)
+    }
 
-  const isConnected = await hasValidNetworkConnection()
-  const useServerData = isLoggedIn && isConnected
-  const items = await getQueueItems(useServerData)
+    const isConnected = await hasValidNetworkConnection()
+    const useServerData = isLoggedIn && isConnected
 
-  let filteredItems = [] as any[]
-  filteredItems = filterItemFromQueueItems(items, item)
-  await setAllQueueItems(filteredItems, useServerData)
-  await addOrUpdateHistoryItem(item, useServerData)
+    const items = await getQueueItems(useServerData)
 
-  if (isNewEpisode && episodeId) {
-    await updateNowPlayingItemEpisode(episodeId, item, useServerData)
-  }
+    let filteredItems = [] as any[]
+    filteredItems = filterItemFromQueueItems(items, item)
+    await setAllQueueItems(filteredItems, useServerData)
+    await addOrUpdateHistoryItem(item, useServerData)
 
-  if (isNewMediaRef && clipId) {
-    await updateNowPlayingItemMediaRef(clipId, item, useServerData)
-  }
+    if (isNewEpisode && episodeId) {
+      await updateNowPlayingItemEpisode(episodeId, item, useServerData)
+    }
 
-  PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
+    if (isNewMediaRef && clipId) {
+      await updateNowPlayingItemMediaRef(clipId, item, useServerData)
+    }
 
-  if (shouldNotLoadFile) {
-    PlayerEventEmitter.emit(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
-  }
+    PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
-  return {
-    nowPlayingItem: item,
-    queueItems: filteredItems
+    if (shouldNotLoadFile) {
+      PlayerEventEmitter.emit(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
+    }
+
+    return {
+      nowPlayingItem: item,
+      queueItems: filteredItems
+    }
+  } catch (error) {
+    throw error
   }
 }
 

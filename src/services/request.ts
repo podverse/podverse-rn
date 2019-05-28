@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { Alert } from 'react-native'
+import { PV } from '../resources'
 
 const API_BASE_URL = 'https://api.stage.podverse.fm/api/v1'
 
@@ -36,12 +38,14 @@ export const request = async (req: PVRequest, nsfwMode?: boolean) => {
     timeout: 20000
   }
 
-  const response = await axios(axiosRequest)
+  try {
+    const response = await axios(axiosRequest)
 
-  if (response.status !== 200) {
-    const error = await response
-    throw new Error(error.message)
+    return response
+  } catch (error) {
+    console.log(error.response)
+    console.log(error.status)
+    Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+    throw error
   }
-
-  return response
 }

@@ -19,7 +19,7 @@ export const createMediaRef = async (data: any) => {
     ...(bearerToken ? { opts: { credentials: 'include' } } : {})
   })
 
-  return response.data
+  return response && response.data
 }
 
 export const deleteMediaRef = async () => {
@@ -31,7 +31,7 @@ export const deleteMediaRef = async () => {
     opts: { credentials: 'include' }
   })
 
-  return response.data
+  return response && response.data
 }
 
 export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
@@ -50,7 +50,7 @@ export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
     query: filteredQuery
   }, nsfwMode)
 
-  return response.data
+  return response && response.data
 }
 
 export const getMediaRef = async (id: string) => {
@@ -58,7 +58,7 @@ export const getMediaRef = async (id: string) => {
     endpoint: `/mediaRef/${id}`
   })
 
-  return response.data
+  return response && response.data
 }
 
 export const updateMediaRef = async (data: any) => {
@@ -74,5 +74,5 @@ export const updateMediaRef = async (data: any) => {
     opts: { credentials: 'include' }
   })
 
-  return response.data
+  return response && response.data
 }
