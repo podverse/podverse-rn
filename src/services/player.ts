@@ -158,14 +158,16 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
   }
 
   const isConnected = await hasValidNetworkConnection()
-  const useLocalData = isLoggedIn && !isConnected
+  const useServerData = isLoggedIn && isConnected
 
-  const items = await getQueueItems(useLocalData)
+  const items = await getQueueItems(useServerData)
 
   let filteredItems = [] as any[]
+
   filteredItems = filterItemFromQueueItems(items, item)
-  await setAllQueueItems(filteredItems, useLocalData)
-  await addOrUpdateHistoryItem(item, useLocalData)
+
+  await setAllQueueItems(filteredItems, useServerData)
+  await addOrUpdateHistoryItem(item, useServerData)
 
   if (isNewEpisode && episodeId) {
     await setNowPlayingItemEpisode(episodeId)

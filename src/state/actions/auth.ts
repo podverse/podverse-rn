@@ -3,7 +3,6 @@ import RNSecureKeyStore from 'react-native-secure-key-store'
 import { setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import { getAuthenticatedUserInfo, login, signUp } from '../../services/auth'
-
 import { getSubscribedPodcasts } from './podcast'
 
 export type Credentials = {

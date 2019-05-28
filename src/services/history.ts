@@ -1,28 +1,28 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
+import RNSecureKeyStore from 'react-native-secure-key-store'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { request } from './request'
 
-export const addOrUpdateHistoryItem = async (item: NowPlayingItem, isLoggedIn: boolean) => {
-  return isLoggedIn ? addOrUpdateHistoryItemOnServer(item) : addOrUpdateHistoryItemLocally(item)
+export const addOrUpdateHistoryItem = async (item: NowPlayingItem, useServerData: boolean) => {
+  return useServerData ? addOrUpdateHistoryItemOnServer(item) : addOrUpdateHistoryItemLocally(item)
 }
 
-export const clearHistoryItems = async (isLoggedIn: boolean) => {
-  return isLoggedIn ? clearHistoryItemsOnServer() : clearHistoryItemsLocally()
+export const clearHistoryItems = async (useServerData: boolean) => {
+  return useServerData ? clearHistoryItemsOnServer() : clearHistoryItemsLocally()
 }
 
-export const getHistoryItems = async (isLoggedIn: boolean) => {
-  return isLoggedIn ? getHistoryItemsFromServer() : getHistoryItemsLocally()
+export const getHistoryItems = async (useServerData: boolean) => {
+  return useServerData ? getHistoryItemsFromServer() : getHistoryItemsLocally()
 }
 
-export const popLastFromHistoryItems = async (isLoggedIn: boolean) => {
-  return isLoggedIn ? popLastFromHistoryItemsFromServer() : popLastFromHistoryItemsLocally()
+export const popLastFromHistoryItems = async (useServerData: boolean) => {
+  return useServerData ? popLastFromHistoryItemsFromServer() : popLastFromHistoryItemsLocally()
 }
 
-export const removeHistoryItem = async (item: NowPlayingItem, isLoggedIn: boolean) => {
-  return isLoggedIn ? removeHistoryItemOnServer(item.episodeId, item.clipId) : removeHistoryItemLocally(item)
+export const removeHistoryItem = async (item: NowPlayingItem, useServerData: boolean) => {
+  return useServerData ? removeHistoryItemOnServer(item.episodeId, item.clipId) : removeHistoryItemLocally(item)
 }
 
 const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem) => {

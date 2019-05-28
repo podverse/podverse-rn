@@ -1,31 +1,32 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { getAuthUserInfo } from '../state/actions/auth'
+import { getAuthenticatedUserInfo } from './auth'
 import { updateUserQueueItems } from './user'
 
-export const addQueueItemLast = async (item: NowPlayingItem, isLoggedIn: boolean) => {
-  return isLoggedIn ? addQueueItemLastOnServer(item) : addQueueItemLastLocally(item)
+export const addQueueItemLast = async (item: NowPlayingItem, useServerData: boolean) => {
+  return useServerData ? addQueueItemLastOnServer(item) : addQueueItemLastLocally(item)
 }
 
-export const addQueueItemNext = async (item: NowPlayingItem, isLoggedIn: boolean) => {
-  return isLoggedIn ? addQueueItemNextOnServer(item) : addQueueItemNextLocally(item)
+export const addQueueItemNext = async (item: NowPlayingItem, useServerData: boolean) => {
+  return useServerData ? addQueueItemNextOnServer(item) : addQueueItemNextLocally(item)
 }
 
-export const getQueueItems = async (isLoggedIn: boolean) => {
-  return isLoggedIn ? getQueueItemsFromServer() : getQueueItemsLocally()
+export const getQueueItems = async (useServerData: boolean) => {
+  return useServerData ? getQueueItemsFromServer() : getQueueItemsLocally()
 }
 
-export const popNextFromQueue = async (isLoggedIn: boolean) => {
-  return isLoggedIn ? popNextFromQueueFromServer() : popNextFromQueueLocally()
+export const popNextFromQueue = async (useServerData: boolean) => {
+  return useServerData ? popNextFromQueueFromServer() : popNextFromQueueLocally()
 }
 
-export const removeQueueItem = async (item: NowPlayingItem, isLoggedIn: boolean) => {
-  return isLoggedIn ? removeQueueItemOnServer(item) : removeQueueItemLocally(item)
+export const removeQueueItem = async (item: NowPlayingItem, useServerData: boolean) => {
+  return useServerData ? removeQueueItemOnServer(item) : removeQueueItemLocally(item)
 }
 
-export const setAllQueueItems = async (items: NowPlayingItem[], isLoggedIn: boolean) => {
-  return isLoggedIn ? setAllQueueItemsOnServer(items) : setAllQueueItemsLocally(items)
+export const setAllQueueItems = async (items: NowPlayingItem[], useServerData: boolean) => {
+  console.log('set all queue', useServerData, items)
+  return useServerData ? setAllQueueItemsOnServer(items) : setAllQueueItemsLocally(items)
 }
 
 const addQueueItemLastLocally = async (item: NowPlayingItem) => {
@@ -72,8 +73,9 @@ const getQueueItemsLocally = async () => {
 }
 
 const getQueueItemsFromServer = async () => {
-  const user = await getAuthUserInfo()
-  const { queueItems } = user
+  const response = await getAuthenticatedUserInfo()
+  const user = response[0]
+  const { queueItems = [] } = user
   await setAllQueueItemsLocally(queueItems)
   return queueItems
 }

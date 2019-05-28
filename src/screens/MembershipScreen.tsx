@@ -48,7 +48,17 @@ export class MembershipScreen extends React.Component<Props, State> {
           (isLoading && isLoggedIn) && <ActivityIndicator />
         }
         {
-          (!isLoading && isLoggedIn) &&
+          (!isLoading && isLoggedIn && !membershipStatus) &&
+            <View>
+              <View style={styles.textRow}>
+                <Text style={[styles.subText]}>
+                  Connect to the internet to view your membership status.
+                </Text>
+              </View>
+            </View>
+        }
+        {
+          (!isLoading && isLoggedIn && membershipStatus) &&
             <View>
               <View style={styles.textRow}>
                 <Text style={styles.label}>Status: </Text>

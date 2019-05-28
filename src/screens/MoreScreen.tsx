@@ -60,7 +60,7 @@ export class MoreScreen extends React.Component<Props, State> {
       }
     })
 
-    const membershipStatus = getMembershipStatus(userInfo)
+    const membershipStatus = getMembershipStatus(userInfo) || 'Membership'
     const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
     const otherOptions = moreOtherOptions(membershipStatus)
 

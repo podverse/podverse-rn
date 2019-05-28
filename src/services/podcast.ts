@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import RNSecureKeyStore from 'react-native-secure-key-store'
+import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { request } from './request'
 
@@ -33,6 +34,25 @@ export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
   }, nsfwMode)
 
   return response.json()
+}
+
+export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
+  if (subscribedPodcastIds.length < 1) return []
+  const query = {
+    podcastIds: subscribedPodcastIds,
+    sort: 'alphabetical'
+  }
+  const isConnected = await hasValidNetworkConnection()
+
+  if (isConnected) {
+    const data = await getPodcasts(query, true)
+    const subscribedPodcasts = data[0]
+    await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts || []))
+    return subscribedPodcasts
+  } else {
+    const subscribedPodcastsJSON = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS)
+    return subscribedPodcastsJSON ? JSON.parse(subscribedPodcastsJSON) : []
+  }
 }
 
 export const searchPodcasts = async (title?: string, author?: string, nsfwMode?: boolean) => {

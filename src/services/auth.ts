@@ -28,6 +28,9 @@ const getAuthenticatedUserInfoLocally = async () => {
   let subscribedPlaylistIds = []
   let subscribedPodcastIds = []
   let subscribedUserIds = []
+  let queueItems = []
+  let historyItems = []
+  let isLoggedIn = false
 
   try {
     const subscribedPlaylistIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS)
@@ -56,13 +59,36 @@ const getAuthenticatedUserInfoLocally = async () => {
     AsyncStorage.setItem(PV.Keys.SUBSCRIBED_USER_IDS, JSON.stringify(subscribedUserIds))
   }
 
+  try {
+    const queueItemsJSON = await AsyncStorage.getItem(PV.Keys.QUEUE_ITEMS)
+    if (queueItemsJSON) {
+      queueItems = JSON.parse(queueItemsJSON)
+    }
+  } catch (error) {
+    AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(queueItems))
+  }
+
+  try {
+    const historyItemsJSON = await AsyncStorage.getItem(PV.Keys.HISTORY_ITEMS)
+    if (historyItemsJSON) {
+      historyItems = JSON.parse(historyItemsJSON)
+    }
+  } catch (error) {
+    AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(historyItems))
+  }
+
+  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  isLoggedIn = !!bearerToken
+
   return [
     {
       subscribedPlaylistIds,
       subscribedPodcastIds,
-      subscribedUserIds
+      subscribedUserIds,
+      queueItems,
+      historyItems
     },
-    false
+    isLoggedIn
   ]
 }
 
