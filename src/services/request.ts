@@ -43,8 +43,8 @@ export const request = async (req: PVRequest, nsfwMode?: boolean) => {
 
     return response
   } catch (error) {
-    console.log(error.response)
-    console.log(error.status)
+    console.log('error message:', error.message)
+    console.log('error response:', error.response)
     Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
     throw error
   }
