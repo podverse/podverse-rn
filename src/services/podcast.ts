@@ -99,5 +99,36 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
     headers: { Authorization: bearerToken }
   })
 
+  let podcastIds = []
+  const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
+  if (itemsString) {
+    podcastIds = JSON.parse(itemsString)
+    podcastIds = addOrRemovePodcastIdFromArray(podcastIds, id)
+  }
+  AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(podcastIds))
+
   return response && response.data
+}
+
+export const insertOrRemovePodcastFromAlphabetizedArray = (podcasts: any[], podcast: any) => {
+  if (podcasts.some((x) => x.id === podcast.id)) {
+    return podcasts.filter((x) => x.id !== podcast.id)
+  } else {
+    podcasts.push(podcast)
+    podcasts.sort((a, b) => {
+      const titleA = a.title.toLowerCase()
+      const titleB = b.title.toLowerCase()
+      return (titleA < titleB) ? -1 : (titleA > titleB) ? 1 : 0
+    })
+    return podcasts
+  }
+}
+
+const addOrRemovePodcastIdFromArray = (podcastIds: any[], podcastId: string) => {
+  if (podcastIds.some((x) => x === podcastId)) {
+    return podcastIds.filter((x) => x !== podcastId)
+  } else {
+    podcastIds.push(podcastId)
+    return podcastIds
+  }
 }

@@ -85,7 +85,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                 <TextLink
                   onPress={() => navigation.navigate(PV.RouteNames.AuthNavigator)}
                   style={[styles.text]}>
-                  Start 30 day free trial :)
+                  Sign up for 30 days free
                 </TextLink>
               </View>
             </View>

@@ -70,19 +70,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
         AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
         navigation.navigate(PV.RouteNames.Onboarding)
       } else {
-        await initPlayerState(this.global)
-        await getAuthUserInfo()
-        const { userInfo } = this.global.session
-        await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
-        const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
-
-        if (nowPlayingItemString) {
-          await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global, true)
-        }
-        const { subscribedPodcasts } = this.global
-        flatListData = subscribedPodcasts
+        await this._initializeScreenData()
       }
     } catch (error) {
+      if (error.name === PV.Errors.FREE_TRIAL_EXPIRED.name || error.name === PV.Errors.PREMIUM_MEMBERSHIP_EXPIRED.name) {
+        // Since the expired user was logged out after the alert in getAuthUserInfo,
+        // we initialiize the screen data again, this time as a local/logged-out user.
+        await this._initializeScreenData()
+      }
       console.log(error)
     }
 
@@ -90,6 +85,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
       flatListData,
       isLoading: false
     })
+  }
+
+  _initializeScreenData = async () => {
+    await initPlayerState(this.global)
+    await getAuthUserInfo()
+    const { userInfo } = this.global.session
+    await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
+    const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
+
+    if (nowPlayingItemString) {
+      await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global, true)
+    }
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -303,8 +310,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _querySubscribedPodcasts = async () => {
-    const results = await getSubscribedPodcasts(this.global.session.userInfo.subscribedPodcastIds || [])
-    return results
+    const { session } = this.global
+    const { userInfo } = session
+    await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
   }
 
   _queryAllPodcasts = async (sort: string | null, page: number = 1) => {
@@ -341,8 +349,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { nsfwMode } = settings
     if (filterKey === _subscribedKey) {
       await getAuthUserInfo() // get the latest subscribedPodcastIds first
-      const results = await this._querySubscribedPodcasts()
-      newState.flatListData = results[0]
+      await this._querySubscribedPodcasts()
     } else if (filterKey === _allPodcastsKey) {
       const results = await this._queryAllPodcasts(querySort, newState.queryPage)
       newState.flatListData = [...flatListData, ...results[0]]
