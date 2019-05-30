@@ -24,6 +24,7 @@ type State = {
   isLoadingMore: boolean
   isLoggedInUserProfile: boolean
   isSubscribed: boolean
+  isSubscribing: boolean
   preventSortQuery?: boolean
   queryFrom: string | null
   queryPage: number
@@ -65,6 +66,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       isLoadingMore: false,
       isLoggedInUserProfile,
       isSubscribed,
+      isSubscribing: false,
       queryFrom: _podcastsKey,
       queryPage: 1,
       querySort: _alphabeticalKey,
@@ -237,11 +239,20 @@ export class ProfileScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('subscribe to profile')
     if (wasAlerted) return
 
-    const { user } = this.global.profile
-    await toggleSubscribeToUser(id, this.global.session.isLoggedIn, this.global)
-    const { subscribedUserIds } = this.global.session.userInfo
-    const isSubscribed = subscribedUserIds.some((x: string) => user.id)
-    this.setState({ isSubscribed })
+    this.setState({ isSubscribing: true }, async () => {
+      try {
+        const { user } = this.global.profile
+        await toggleSubscribeToUser(id, this.global.session.isLoggedIn, this.global)
+        const { subscribedUserIds } = this.global.session.userInfo
+        const isSubscribed = subscribedUserIds.some((x: string) => user.id)
+        this.setState({
+          isSubscribed,
+          isSubscribing: false
+        })
+      } catch (error) {
+        this.setState({ isSubscribing: false })
+      }
+    })
   }
 
   _renderItem = ({ item }) => {
@@ -283,7 +294,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, isLoading, isLoadingMore, isLoggedInUserProfile, isSubscribed, queryFrom,
+    const { flatListData, isLoading, isLoadingMore, isLoggedInUserProfile, isSubscribed, isSubscribing, queryFrom,
       querySort, selectedItem, showActionSheet } = this.state
     const { profile } = this.global
     const { user } = profile
@@ -303,6 +314,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           handleToggleSubscribe={isLoggedInUserProfile ? null : () => this._handleToggleSubscribe(user.id)}
           id={user.id}
           isSubscribed={isSubscribed}
+          isSubscribing={isSubscribing}
           name={user.name} />
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}

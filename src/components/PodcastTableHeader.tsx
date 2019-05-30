@@ -8,13 +8,14 @@ type Props = {
   handleToggleAutoDownload?: any
   handleToggleSubscribe: any
   isSubscribed?: boolean
+  isSubscribing?: boolean
   podcastImageUrl?: string
   podcastTitle: string
 }
 
 export const PodcastTableHeader = (props: Props) => {
-  const { autoDownloadOn, handleToggleAutoDownload, handleToggleSubscribe, isSubscribed, podcastImageUrl,
-    podcastTitle = 'untitled podcast' } = props
+  const { autoDownloadOn, handleToggleAutoDownload, handleToggleSubscribe, isSubscribed, isSubscribing,
+    podcastImageUrl, podcastTitle = 'untitled podcast' } = props
 
   return (
     <View style={styles.wrapper}>
@@ -28,7 +29,8 @@ export const PodcastTableHeader = (props: Props) => {
             style={styles.title}>{podcastTitle}</Text>
         <SubscribeButton
           handleToggleSubscribe={handleToggleSubscribe}
-          isSubscribed={isSubscribed} />
+          isSubscribed={isSubscribed}
+          isSubscribing={isSubscribing} />
         </View>
         <View style={styles.textWrapperBottom}>
           <Text

@@ -19,6 +19,7 @@ type State = {
   isLoadingMore: boolean
   isLoggedInUserPlaylist: boolean
   isSubscribed: boolean
+  isSubscribing: boolean
   selectedItem?: any
   showActionSheet: boolean
 }
@@ -51,6 +52,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
       isLoadingMore: false,
       isLoggedInUserPlaylist,
       isSubscribed,
+      isSubscribing: false,
       showActionSheet: false
     }
 
@@ -117,11 +119,20 @@ export class PlaylistScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('subscribe to playlist')
     if (wasAlerted) return
 
-    const { playlist } = this.global.screenPlaylist
-    await toggleSubscribeToPlaylist(id, this.global)
-    const { subscribedPlaylistIds } = this.global.session.userInfo
-    const isSubscribed = subscribedPlaylistIds.some((x: string) => playlist.id)
-    this.setState({ isSubscribed })
+    this.setState({ isSubscribing: true }, async () => {
+      try {
+        const { playlist } = this.global.screenPlaylist
+        await toggleSubscribeToPlaylist(id, this.global)
+        const { subscribedPlaylistIds } = this.global.session.userInfo
+        const isSubscribed = subscribedPlaylistIds.some((x: string) => playlist.id)
+        this.setState({
+          isSubscribed,
+          isSubscribing: false
+        })
+      } catch (error) {
+        this.setState({ isSubscribing: false })
+      }
+    })
   }
 
   _handleCancelPress = () => {
@@ -138,7 +149,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, isLoadingMore, isLoggedInUserPlaylist, isSubscribed, selectedItem,
+    const { isLoading, isLoadingMore, isLoggedInUserPlaylist, isSubscribed, isSubscribing, selectedItem,
       showActionSheet } = this.state
     const { screenPlaylist } = this.global
     const { navigation } = this.props
@@ -153,6 +164,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           handleToggleSubscribe={isLoggedInUserPlaylist ? null : () => this._handleToggleSubscribe(playlist.id)}
           id={playlist.id}
           isSubscribed={isSubscribed}
+          isSubscribing={isSubscribing}
           itemCount={playlist.itemCount}
           lastUpdated={playlist.updatedAt}
           title={playlist.title} />

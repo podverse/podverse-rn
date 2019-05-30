@@ -29,6 +29,7 @@ type State = {
   isLoadingMore: boolean
   isRefreshing: boolean
   isSearchScreen?: boolean
+  isSubscribing: boolean
   podcast: any
   queryPage: number
   querySort: string | null
@@ -65,6 +66,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       isLoading: viewType !== downloadedKey,
       isLoadingMore: false,
       isRefreshing: false,
+      isSubscribing: false,
       podcast,
       queryPage: 1,
       querySort: mostRecentKey,
@@ -254,11 +256,6 @@ export class PodcastScreen extends React.Component<Props, State> {
   _handleHiddenItemPress = async (selectedId, rowMap) => {
     // TODO: hidden item only appears for removing/deleting downloaded episodes
     console.log('handleHiddenItemPress')
-    // rowMap[selectedId].closeRow()
-    // const { flatListData } = this.state
-    // await toggleSubscribeToPodcast(selectedId)
-    // const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
-    // this.setState({ flatListData: newFlatListData })
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -287,12 +284,19 @@ export class PodcastScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('subscribe to podcast')
     if (wasAlerted) return
 
-    const { podcast } = this.state
-    await toggleSubscribeToPodcast(podcast.id, this.global)
+    this.setState({ isSubscribing: true }, async () => {
+      try {
+        const { podcast } = this.state
+        await toggleSubscribeToPodcast(podcast.id, this.global)
+        this.setState({ isSubscribing: false })
+      } catch (error) {
+        this.setState({ isSubscribing: false })
+      }
+    })
   }
 
   render() {
-    const { flatListData, isLoading, isLoadingMore, isRefreshing, podcast, querySort, selectedItem,
+    const { flatListData, isLoading, isLoadingMore, isRefreshing, isSubscribing, podcast, querySort, selectedItem,
       showActionSheet, viewType } = this.state
     const { navigation } = this.props
 
@@ -305,6 +309,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           handleToggleAutoDownload={() => console.log('auto dl')}
           handleToggleSubscribe={this._toggleSubscribeToPodcast}
           isSubscribed={isSubscribed}
+          isSubscribing={isSubscribing}
           podcastImageUrl={podcast.imageUrl}
           podcastTitle={podcast.title} />
         <TableSectionSelectors
@@ -315,8 +320,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           selectedLeftItemKey={viewType}
           selectedRightItemKey={querySort} />
         {
-          isLoading &&
-            <ActivityIndicator />
+          isLoading && <ActivityIndicator />
         }
         {
           !isLoading && viewType !== aboutKey && flatListData &&

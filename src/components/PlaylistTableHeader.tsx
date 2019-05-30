@@ -11,13 +11,14 @@ type Props = {
   handleToggleSubscribe?: any
   id: string
   isSubscribed?: boolean
+  isSubscribing?: boolean
   itemCount: number
   lastUpdated: string
   title: string
 }
 
 export const PlaylistTableHeader = (props: Props) => {
-  const { createdBy, handleEditPress, handleToggleSubscribe, id, isSubscribed, itemCount, lastUpdated,
+  const { createdBy, handleEditPress, handleToggleSubscribe, id, isSubscribed, isSubscribing, itemCount, lastUpdated,
     title } = props
 
   return (
@@ -60,7 +61,8 @@ export const PlaylistTableHeader = (props: Props) => {
           handleToggleSubscribe &&
             <SubscribeButton
               handleToggleSubscribe={handleToggleSubscribe}
-              isSubscribed={isSubscribed} />
+              isSubscribed={isSubscribed}
+              isSubscribing={isSubscribing} />
         }
       </View>
       <Divider />
