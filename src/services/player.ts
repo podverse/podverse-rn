@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import TrackPlayer from 'react-native-track-player'
 import { hasValidNetworkConnection, hasValidStreamingConnection } from '../lib/network'
-import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem, convertNowPlayingItemToMediaRef, convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemClipToNowPlayingItemEpisode, convertNowPlayingItemToEpisode,
+  convertNowPlayingItemToMediaRef, NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { getBearerToken } from './auth'

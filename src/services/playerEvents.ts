@@ -1,7 +1,10 @@
 import { PV } from '../resources'
+import { getBearerToken } from './auth'
+import { popLastFromHistoryItems } from './history'
 import { getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem, handleResumeAfterClipHasEnded,
-  PVTrackPlayer, setClipHasEnded, setPlaybackPosition } from './player'
+  playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded, setPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
+import { popNextFromQueue } from './queue'
 
 let clipEndTimeInterval: any = null
 
@@ -38,7 +41,11 @@ PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
 
 module.exports = async () => {
 
-  PVTrackPlayer.addEventListener('playback-track-changed', () => console.log('playback track changed'))
+  PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
+
+  PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
+    PlayerEventEmitter.emit(PV.Events.PLAYER_QUEUE_ENDED)
+  })
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
     const clipHasEnded = await getClipHasEnded()
@@ -55,30 +62,49 @@ module.exports = async () => {
     PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
   })
 
-  PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
-    PlayerEventEmitter.emit(PV.Events.PLAYER_QUEUE_ENDED)
+  PVTrackPlayer.addEventListener('playback-track-changed', () => console.log('playback track changed'))
+
+  PVTrackPlayer.addEventListener('remote-jump-backward', async () => {
+    await playerJumpBackward(PV.Player.jumpSeconds)
   })
 
-  PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
+  PVTrackPlayer.addEventListener('remote-jump-forward', async () => {
+    await playerJumpForward(PV.Player.jumpSeconds)
+  })
 
-  PVTrackPlayer.addEventListener('remote-play', (x) => console.log('remote play'))
+  PVTrackPlayer.addEventListener('remote-next', async () => {
+    const bearerToken = await getBearerToken()
+    await popNextFromQueue(!!bearerToken)
+    PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_NEXT)
+  })
 
-  PVTrackPlayer.addEventListener('remote-pause', (x) => console.log('remote pause'))
+  PVTrackPlayer.addEventListener('remote-pause', () => {
+    PVTrackPlayer.pause()
+    PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PAUSE)
+  })
 
-  PVTrackPlayer.addEventListener('remote-stop', (x) => console.log('remote stop'))
+  PVTrackPlayer.addEventListener('remote-play', () => {
+    PVTrackPlayer.play()
+    PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PLAY)
+  })
 
-  PVTrackPlayer.addEventListener('remote-next', (x) => console.log('remote next'))
+  PVTrackPlayer.addEventListener('remote-previous', async () => {
+    const bearerToken = await getBearerToken()
+    await popLastFromHistoryItems(!!bearerToken)
+    PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PREVIOUS)
+  })
 
-  PVTrackPlayer.addEventListener('remote-previous', (x) => console.log('remote previous'))
+  PVTrackPlayer.addEventListener('remote-stop', () => {
+    PVTrackPlayer.pause()
+    PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_STOP)
+  })
 
-  PVTrackPlayer.addEventListener('remote-seek', (x) => console.log('remote seek'))
-
-  PVTrackPlayer.addEventListener('remote-jump-forward', (x) => console.log('remote jump forward'))
-
-  PVTrackPlayer.addEventListener('remote-jump-backward', (x) => console.log('remote jump backward'))
+  PVTrackPlayer.addEventListener('remote-seek', (data) => {
+    if (data.position) {
+      PVTrackPlayer.seekTo(Math.floor(data.position))
+    }
+  })
 
   // PVTrackPlayer.addEventListener('remote-skip', (x) => console.log('remote skip to track in queue'))
-
   // PVTrackPlayer.addEventListener('remote-duck', (x) => console.log('remote duck'))
-
 }
