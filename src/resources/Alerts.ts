@@ -10,6 +10,10 @@ export const Alerts = {
     title: 'Free Trial Expired',
     buttons: [{ text: _logoutButtonText, onPress: logoutUser }]
   },
+  LOGIN_INVALID: {
+    message: 'Invalid username or password.',
+    title: 'Login Error'
+  },
   NETWORK_ERROR: {
     message: (str?: string) => !str ? 'Internet connection required' : `You must be connected to the internet to ${str}.`,
     title: _networkErrorTitle
@@ -26,6 +30,9 @@ export const Alerts = {
   PREMIUM_MEMBERSHIP_REQUIRED: {
     message: 'Sign up for a premium account to use this feature.',
     title: 'Premium Membership Required'
+  },
+  SIGN_UP_ERROR: {
+    title: 'Sign Up Error'
   },
   SOMETHING_WENT_WRONG: {
     message: 'Please check your internet connection and try again.',

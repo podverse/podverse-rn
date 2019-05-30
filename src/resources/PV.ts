@@ -11,6 +11,7 @@ import { Keys } from './Keys'
 import { MembershipStatus } from './MembershipStatus'
 import { Player } from './Player'
 import { ResponseErrorCodes } from './ResponseErrorCodes'
+import { ResponseStatusCodes } from './ResponseStatusCodes'
 import { RouteNames } from './RouteNames'
 import { Table } from './Table'
 import { Tabs } from './Tabs'
@@ -30,6 +31,7 @@ export const PV = {
   MembershipStatus,
   Player,
   ResponseErrorCodes,
+  ResponseStatusCodes,
   RouteNames,
   Table,
   Tabs,

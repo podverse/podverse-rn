@@ -48,7 +48,7 @@ export const request = async (req: PVRequest, nsfwMode?: boolean) => {
 
     if (error.response && error.response.code === PV.ResponseErrorCodes.PREMIUM_MEMBERSHIP_REQUIRED) {
       Alert.alert(PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.title, PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.message, [])
-    } else {
+    } else if (!error.response) {
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
     }
 

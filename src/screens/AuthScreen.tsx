@@ -42,7 +42,11 @@ export class AuthScreen extends React.Component<Props, State> {
           navigation.goBack(null)
         }
       } catch (error) {
-        Alert.alert('Error', error.message, [])
+        if (error.response && error.response.status === PV.ResponseStatusCodes.UNAUTHORIZED) {
+          Alert.alert(PV.Alerts.LOGIN_INVALID.title, PV.Alerts.LOGIN_INVALID.message, [])
+        } else {
+          Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+        }
       }
       this.setState({ isLoadingLogin: false })
     })
@@ -64,7 +68,9 @@ export class AuthScreen extends React.Component<Props, State> {
           navigation.goBack(null)
         }
       } catch (error) {
-        Alert.alert('Error', error.message, [])
+        if (error.response && error.response.data) {
+          Alert.alert(PV.Alerts.SIGN_UP_ERROR.title, error.response.data.message, [])
+        }
       }
       this.setState({ isLoadingSignUp: false })
     })
