@@ -83,7 +83,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, globalState: any, 
           let episode = null
           let mediaRef = null
 
-          const result = await setNowPlayingItemService(item)
+          const result = await setNowPlayingItemService(item, isInitialLoad)
 
           if (isNewMediaRef) {
             PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)

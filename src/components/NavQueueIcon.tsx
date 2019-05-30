@@ -15,7 +15,7 @@ export const NavQueueIcon = (props: Props) => {
       color='#fff'
       name='list'
       onPress={() => navigation.navigate(PV.RouteNames.QueueScreen)}
-      size={22}
+      size={PV.Icons.NAV}
       style={navHeader.buttonIcon} />
   )
 }

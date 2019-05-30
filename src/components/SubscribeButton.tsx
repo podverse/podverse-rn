@@ -1,6 +1,7 @@
 import React from 'react'
 import { ActivityIndicator, StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
+import { PV } from '../resources'
 import { Icon } from './'
 
 type Props = {
@@ -31,12 +32,12 @@ export const SubscribeButton = (props: Props) => {
                 <Icon
                   name='star'
                   onPress={handleToggleSubscribe}
-                  size={22}
+                  size={PV.Icons.NAV}
                   solid={true} /> :
                 <Icon
                   name='star'
                   onPress={handleToggleSubscribe}
-                  size={22} />
+                  size={PV.Icons.NAV} />
             }
           </View>
       }

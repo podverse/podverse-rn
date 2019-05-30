@@ -341,10 +341,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     - Swipe left and right on the bottom play button bar to adjust time more precisely.
                   </Text>
                   <Text style={styles.modalText}>
-                    - If you set the privacy of a clip to "Only with link",
-                    then only people with a link to that clip will be able to play it.
-                  </Text>
-                  <Text style={styles.modalText}>
                     - If the podcast uses dynamically inserted ads, the clip start/end times may be inaccurate.
                   </Text>
                   <Text style={styles.modalText}>

@@ -116,7 +116,7 @@ export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean)
   await AsyncStorage.setItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY, JSON.stringify(shouldContinuouslyPlay))
 }
 
-export const setNowPlayingItem = async (item: NowPlayingItem) => {
+export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: boolean) => {
   try {
     const bearerToken = await getBearerToken()
     const isLoggedIn = !!bearerToken
@@ -124,8 +124,8 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
       podcastTitle = 'untitled podcast' } = item
 
     const lastNowPlayingItem = await getNowPlayingItem()
-    const isNewEpisode = !lastNowPlayingItem || episodeId !== lastNowPlayingItem.episodeId
-    const isNewMediaRef = clipId && (!lastNowPlayingItem || clipId !== lastNowPlayingItem.clipId)
+    const isNewEpisode = (isInitialLoad || !lastNowPlayingItem) || item.episodeId !== lastNowPlayingItem.episodeId
+    const isNewMediaRef = item.clipId && ((isInitialLoad || !lastNowPlayingItem) || item.clipId !== lastNowPlayingItem.clipId)
 
     await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
 

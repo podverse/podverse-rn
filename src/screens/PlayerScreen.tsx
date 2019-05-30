@@ -36,7 +36,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           color='#fff'
           name='chevron-down'
           onPress={navigation.dismiss}
-          size={22}
+          size={PV.Icons.NAV}
           style={navHeader.buttonIcon} />
       ),
       headerRight: (
@@ -380,9 +380,9 @@ export class PlayerScreen extends React.Component<Props, State> {
                 handleClosePress={this._toggleShowFullClipInfo}
                 isLoading={isLoading}
                 navigation={navigation}
-                ownerId={mediaRef.owner.id}
-                ownerIsPublic={mediaRef.owner.isPublic}
-                ownerName={mediaRef.owner.name}
+                ownerId={mediaRef.owner && mediaRef.owner.id}
+                ownerIsPublic={mediaRef.owner && mediaRef.owner.isPublic}
+                ownerName={mediaRef.owner && mediaRef.owner.name}
                 startTime={mediaRef.startTime}
                 title={mediaRef.title} />
           }

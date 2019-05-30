@@ -58,7 +58,7 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
           color='#fff'
           name='plus'
           onPress={this._handleIconPress}
-          size={22}
+          size={PV.Icons.NAV}
           style={navHeader.buttonIcon} />
           <ActionSheet
             handleCancelPress={this._dismissActionSheet}
