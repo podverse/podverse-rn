@@ -12,6 +12,7 @@ import { getAuthUserInfo } from '../state/actions/auth'
 import { initPlayerState, setNowPlayingItem } from '../state/actions/player'
 import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
+import { Alert } from 'react-native';
 
 type Props = {
   navigation?: any
@@ -62,7 +63,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
-    let { flatListData } = this.state
+    const { flatListData } = this.state
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
@@ -224,11 +225,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('unsubscribe from podcast')
     if (wasAlerted) return
 
-    rowMap[selectedId].closeRow()
-    const { flatListData } = this.state
-    await toggleSubscribeToPodcast(selectedId, this.global)
-    const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
-    this.setState({ flatListData: newFlatListData })
+    try {
+      rowMap[selectedId].closeRow()
+      const { flatListData } = this.state
+      await toggleSubscribeToPodcast(selectedId, this.global)
+      const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
+      this.setState({ flatListData: newFlatListData })
+    } catch (error) {
+      await Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message)
+    }
   }
 
   _handleSearchBarClear = (text: string) => {
@@ -343,59 +348,63 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('load podcasts')
     if (wasAlerted) return newState
 
-    const { searchBarText: searchTitle, flatListData = [], querySort, selectedCategory,
-      selectedSubCategory } = prevState
-    const { settings } = this.global
-    const { nsfwMode } = settings
-    if (filterKey === _subscribedKey) {
-      await getAuthUserInfo() // get the latest subscribedPodcastIds first
-      await this._querySubscribedPodcasts()
-    } else if (filterKey === _allPodcastsKey) {
-      const results = await this._queryAllPodcasts(querySort, newState.queryPage)
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (filterKey === _categoryKey) {
-      const { querySort, selectedCategory, selectedSubCategory } = prevState
-      if (selectedSubCategory || selectedCategory) {
-        const results = await this._queryPodcastsByCategory(selectedSubCategory || selectedCategory, querySort, newState.queryPage)
+    try {
+      const { searchBarText: searchTitle, flatListData = [], querySort, selectedCategory,
+        selectedSubCategory } = prevState
+      const { settings } = this.global
+      const { nsfwMode } = settings
+      if (filterKey === _subscribedKey) {
+        await getAuthUserInfo() // get the latest subscribedPodcastIds first
+        await this._querySubscribedPodcasts()
+      } else if (filterKey === _allPodcastsKey) {
+        const results = await this._queryAllPodcasts(querySort, newState.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
-        newState.selectedSubCategory = selectedSubCategory || _allCategoriesKey
+      } else if (filterKey === _categoryKey) {
+        const { querySort, selectedCategory, selectedSubCategory } = prevState
+        if (selectedSubCategory || selectedCategory) {
+          const results = await this._queryPodcastsByCategory(selectedSubCategory || selectedCategory, querySort, newState.queryPage)
+          newState.flatListData = [...flatListData, ...results[0]]
+          newState.endOfResultsReached = newState.flatListData.length >= results[1]
+          newState.selectedSubCategory = selectedSubCategory || _allCategoriesKey
+        } else {
+          const categoryResults = await getTopLevelCategories()
+          const podcastResults = await this._queryAllPodcasts(querySort, newState.queryPage)
+          newState.categoryItems = generateCategoryItems(categoryResults[0])
+          newState.flatListData = [...flatListData, ...podcastResults[0]]
+          newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
+        }
+      } else if (rightItems.some((option) => option.value === filterKey)) {
+        const results = await getPodcasts({
+          ...(selectedSubCategory || selectedCategory ? { categories: selectedSubCategory || selectedCategory } : {}) as object,
+          sort: filterKey, ...(searchTitle ? { searchTitle } : {})
+        }, nsfwMode)
+        newState.flatListData = results[0]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
       } else {
-        const categoryResults = await getTopLevelCategories()
-        const podcastResults = await this._queryAllPodcasts(querySort, newState.queryPage)
-        newState.categoryItems = generateCategoryItems(categoryResults[0])
-        newState.flatListData = [...flatListData, ...podcastResults[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
-      }
-    } else if (rightItems.some((option) => option.value === filterKey)) {
-      const results = await getPodcasts({
-        ...(selectedSubCategory || selectedCategory ? { categories: selectedSubCategory || selectedCategory } : {}) as object,
-        sort: filterKey, ...(searchTitle ? { searchTitle } : {})
-      }, nsfwMode)
-      newState.flatListData = results[0]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else {
-      const { isSubCategory } = queryOptions
-      let categories
-      if (isSubCategory) {
-        categories = filterKey === _allCategoriesKey ? selectedCategory : filterKey
-      } else if (filterKey === _allCategoriesKey) {
-        newState.selectedCategory = _allCategoriesKey
-      } else {
-        categories = filterKey
-        const category = await getCategoryById(filterKey || '')
-        newState.subCategoryItems = generateCategoryItems(category.categories)
-        newState.selectedSubCategory = _allCategoriesKey
+        const { isSubCategory } = queryOptions
+        let categories
+        if (isSubCategory) {
+          categories = filterKey === _allCategoriesKey ? selectedCategory : filterKey
+        } else if (filterKey === _allCategoriesKey) {
+          newState.selectedCategory = _allCategoriesKey
+        } else {
+          categories = filterKey
+          const category = await getCategoryById(filterKey || '')
+          newState.subCategoryItems = generateCategoryItems(category.categories)
+          newState.selectedSubCategory = _allCategoriesKey
+        }
+
+        const results = await getPodcasts({ categories, sort: querySort, ...(searchTitle ? { searchTitle } : {}) }, nsfwMode)
+        newState.endOfResultsReached = results.length < 20
+        newState.flatListData = results[0]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
       }
 
-      const results = await getPodcasts({ categories, sort: querySort, ...(searchTitle ? { searchTitle } : {}) }, nsfwMode)
-      newState.endOfResultsReached = results.length < 20
-      newState.flatListData = results[0]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      return newState
+    } catch (error) {
+      return newState
     }
-
-    return newState
   }
 }
 
