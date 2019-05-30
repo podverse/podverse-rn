@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, MessageWithAction, ProfileTableCell, SwipeRowBack,
   View } from '../components'
@@ -153,7 +154,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   ListHeaderComponent: {
     borderBottomWidth: 0,
     borderTopWidth: 0,
@@ -164,4 +165,4 @@ const styles = {
   view: {
     flex: 1
   }
-}
+})

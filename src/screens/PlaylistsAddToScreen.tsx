@@ -1,4 +1,4 @@
-import { TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import { Icon } from 'react-native-elements'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlaylistTableCell, View } from '../components'
@@ -100,7 +100,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   closeButton: {
     paddingLeft: 8,
     paddingRight: 16,
@@ -109,4 +109,4 @@ const styles = {
   view: {
     flex: 1
   }
-}
+})

@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, HTMLScrollView,
   NavQueueIcon, NavShareIcon, SearchBar, TableSectionSelectors, View } from '../components'
@@ -337,7 +337,7 @@ const rightItems = [
   }
 ]
 
-const styles = {
+const styles = StyleSheet.create({
   showNotesView: {
     margin: 8
   },
@@ -354,4 +354,4 @@ const styles = {
   view: {
     flex: 1
   }
-}
+})

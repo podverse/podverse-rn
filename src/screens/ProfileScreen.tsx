@@ -1,4 +1,4 @@
-import { View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, NavQueueIcon, NavShareIcon,
@@ -539,8 +539,8 @@ const rightItemsWithAlphabetical = [
   }
 ]
 
-const styles = {
+const styles = StyleSheet.create({
   view: {
     flex: 1
   }
-}
+})

@@ -1,4 +1,5 @@
 import debounce from 'lodash/debounce'
+import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, Divider, EpisodeTableCell, FlatList, SearchBar,
   TableSectionSelectors, View } from '../components'
@@ -316,7 +317,7 @@ const rightItems = [
   }
 ]
 
-const styles = {
+const styles = StyleSheet.create({
   ListHeaderComponent: {
     borderBottomWidth: 0,
     borderTopWidth: 0,
@@ -327,4 +328,4 @@ const styles = {
   view: {
     flex: 1
   }
-}
+})

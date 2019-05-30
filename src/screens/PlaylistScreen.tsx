@@ -1,4 +1,4 @@
-import { View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
   NavQueueIcon, NavShareIcon, PlaylistTableHeader, View } from '../components'
@@ -197,8 +197,8 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   view: {
     flex: 1
   }
-}
+})
