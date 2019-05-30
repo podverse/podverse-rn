@@ -33,9 +33,18 @@ const AuthNavigator = createStackNavigator(
 
 const PodcastsNavigator = createStackNavigator(
   {
-    [PV.RouteNames.PodcastsScreen]: PodcastsScreen,
-    [PV.RouteNames.PodcastScreen]: PodcastScreen,
-    [PV.RouteNames.EpisodeScreen]: EpisodeScreen
+    [PV.RouteNames.PodcastsScreen]: {
+      screen: PodcastsScreen,
+      path: 'podcasts'
+    },
+    [PV.RouteNames.PodcastScreen]: {
+      screen: PodcastScreen,
+      path: 'podcast/:id'
+    },
+    [PV.RouteNames.EpisodeScreen]: {
+      screen: EpisodeScreen,
+      path: 'episode/:id'
+    }
   },
   {
     defaultNavigationOptions,
@@ -55,7 +64,10 @@ const PodcastsNavigator = createStackNavigator(
 
 const EpisodesNavigator = createStackNavigator(
   {
-    [PV.RouteNames.EpisodesScreen]: EpisodesScreen,
+    [PV.RouteNames.EpisodesScreen]: {
+      screen: EpisodesScreen,
+      path: 'episodes'
+    },
     [PV.RouteNames.EpisodeScreen]: EpisodeScreen
   },
   {
@@ -196,7 +208,10 @@ const WebPageNavigator = createStackNavigator({
 })
 
 const MainApp = createStackNavigator({
-  [PV.RouteNames.TabNavigator]: TabNavigator,
+  [PV.RouteNames.TabNavigator]: {
+    screen: TabNavigator,
+    path: ''
+  },
   [PV.RouteNames.AuthNavigator]: AuthNavigator,
   PlayerNavigator,
   PlaylistsAddToNavigator,
@@ -214,4 +229,7 @@ const SwitchNavigator = createSwitchNavigator({
   initialRouteName: PV.RouteNames.MainApp
 })
 
-export default createAppContainer(SwitchNavigator)
+const App = createAppContainer(SwitchNavigator)
+const prefix = 'podverse://'
+
+export default () => <App uriPrefix={prefix} />
