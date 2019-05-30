@@ -78,20 +78,31 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { podcast, viewType } = this.state
-    const newPodcast = await getPodcast(podcast.id)
     let newState = {}
-    if (viewType === allEpisodesKey) {
-      newState = await this._queryData(allEpisodesKey)
-    } else if (viewType === clipsKey) {
-      newState = await this._queryData(clipsKey)
-    }
+    let newPodcast: any
 
-    newPodcast.description = newPodcast.description || 'No summary available.'
-    this.setState({
-      ...newState,
-      isLoading: false,
-      podcast: newPodcast
-    })
+    try {
+      const newPodcast = await getPodcast(podcast.id)
+      if (viewType === allEpisodesKey) {
+        newState = await this._queryData(allEpisodesKey)
+      } else if (viewType === clipsKey) {
+        newState = await this._queryData(clipsKey)
+      }
+
+      newPodcast.description = newPodcast.description || 'No summary available.'
+
+      this.setState({
+        ...newState,
+        isLoading: false,
+        podcast: newPodcast
+      })
+    } catch (error) {
+      this.setState({
+        ...newState,
+        isLoading: false,
+        ...(newPodcast ? { podcast: newPodcast } : { podcast })
+      })
+    }
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -369,38 +380,43 @@ export class PodcastScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('load data')
     if (wasAlerted) return newState
 
-    if (filterKey === downloadedKey) {
-      console.log('retrieve downloaded from local storage')
-      newState.flatListData = []
-      newState.endOfResultsReached = true
-    } else if (filterKey === allEpisodesKey) {
-      const results = await this._queryAllEpisodes(querySort, queryOptions.queryPage)
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (filterKey === clipsKey) {
-      const results = await this._queryClips(querySort, queryOptions.queryPage)
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (rightItems.some((option) => option.value === filterKey)) {
-      let results = []
-      if (viewType === downloadedKey) {
+    try {
+      if (filterKey === downloadedKey) {
         console.log('retrieve downloaded from local storage')
-      } else if (viewType === allEpisodesKey) {
-        results = await this._queryAllEpisodes(querySort)
-      } else if (viewType === clipsKey) {
-        results = await this._queryClips(querySort)
+        newState.flatListData = []
+        newState.endOfResultsReached = true
+      } else if (filterKey === allEpisodesKey) {
+        const results = await this._queryAllEpisodes(querySort, queryOptions.queryPage)
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      } else if (filterKey === clipsKey) {
+        const results = await this._queryClips(querySort, queryOptions.queryPage)
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      } else if (rightItems.some((option) => option.value === filterKey)) {
+        let results = []
+        if (viewType === downloadedKey) {
+          console.log('retrieve downloaded from local storage')
+        } else if (viewType === allEpisodesKey) {
+          results = await this._queryAllEpisodes(querySort)
+        } else if (viewType === clipsKey) {
+          results = await this._queryClips(querySort)
+        }
+
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      } else if (filterKey === aboutKey) {
+        const newPodcast = await getPodcast(podcast.id)
+        newState.podcast = newPodcast
       }
 
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (filterKey === aboutKey) {
-      const newPodcast = await getPodcast(podcast.id)
-      newState.podcast = newPodcast
+      newState.queryPage = queryOptions.queryPage || 1
+
+      return newState
+    } catch (error) {
+      return newState
     }
 
-    newState.queryPage = queryOptions.queryPage || 1
-
-    return newState
   }
 }
 
