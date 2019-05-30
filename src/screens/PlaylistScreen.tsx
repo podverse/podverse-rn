@@ -66,7 +66,11 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const playlist = this.props.navigation.getParam('playlist')
-    await getPlaylist(playlist.id, this.global)
+    try {
+      await getPlaylist(playlist.id, this.global)
+    } catch (error) {
+      //
+    }
     this.setState({ isLoading: false })
   }
 

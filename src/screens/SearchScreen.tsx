@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { StyleSheet } from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActionSheet, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBar, View
   } from '../components'
@@ -164,7 +164,11 @@ export class SearchScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('subscribe to this podcast')
     if (wasAlerted) return
 
-    await toggleSubscribeToPodcast(id, this.global)
+    try {
+      await toggleSubscribeToPodcast(id, this.global)
+    } catch (error) {
+      Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+    }
     this.setState({ showActionSheet: false })
   }
 
@@ -215,19 +219,23 @@ export class SearchScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('search podcasts')
     if (wasAlerted) return newState
 
-    const results = await getPodcasts({
-      page,
-      ...(searchType === _podcastByTitle ? { searchTitle: searchBarText } : {}),
-      ...(searchType === _podcastByHost ? { searchAuthor: searchBarText } : {})
-    }, this.global.settings.nsfwMode)
+    try {
+      const results = await getPodcasts({
+        page,
+        ...(searchType === _podcastByTitle ? { searchTitle: searchBarText } : {}),
+        ...(searchType === _podcastByHost ? { searchAuthor: searchBarText } : {})
+      }, this.global.settings.nsfwMode)
 
-    const newFlatListData = [...flatListData, ...results[0]]
+      const newFlatListData = [...flatListData, ...results[0]]
 
-    return {
-      ...newState,
-      endOfResultsReached: newFlatListData.length >= results[1],
-      flatListData: newFlatListData,
-      queryPage: page
+      return {
+        ...newState,
+        endOfResultsReached: newFlatListData.length >= results[1],
+        flatListData: newFlatListData,
+        queryPage: page
+      }
+    } catch (error) {
+      return newState
     }
   }
 }

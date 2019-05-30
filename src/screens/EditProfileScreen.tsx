@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, Alert } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { ActivityIndicator, Divider, TextInput, View } from '../components'
@@ -45,7 +45,11 @@ export class EditProfileScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     this.props.navigation.setParams({ updateUser: this._updateUser })
-    await getAuthUserInfo()
+    try {
+      await getAuthUserInfo()
+    } catch (error) {
+      //
+    }
     this.setState({ isLoading: false })
   }
 
@@ -56,15 +60,21 @@ export class EditProfileScreen extends React.Component<Props, State> {
     this.setState({
       isLoading: true
     }, async () => {
-      const { name, selectedIsPublicKey } = this.state
-      const { id } = this.global.session.userInfo
-      await updateLoggedInUser({
-        id,
-        isPublic: selectedIsPublicKey,
-        name
-      }, this.global)
+      try {
+        const { name, selectedIsPublicKey } = this.state
+        const { id } = this.global.session.userInfo
+        await updateLoggedInUser({
+          id,
+          isPublic: selectedIsPublicKey,
+          name
+        }, this.global)
+        this.props.navigation.goBack(null)
+      } catch (error) {
+        if (error.response) {
+          Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+        }
+      }
       this.setState({ isLoading: false })
-      this.props.navigation.goBack(null)
     })
   }
 

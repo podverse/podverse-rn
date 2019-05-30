@@ -260,34 +260,38 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('load clips')
     if (wasAlerted) return newState
 
-    if (rightItems.some((option) => option.value === filterKey)) {
-      const results = await getMediaRefs({
-        sort: filterKey,
-        page: queryOptions.queryPage,
-        episodeId: episode.id,
-        ...(searchAllFieldsText ? { searchAllFieldsText } : {})
-      }, this.global.settings.nsfwMode)
+    try {
+      if (rightItems.some((option) => option.value === filterKey)) {
+        const results = await getMediaRefs({
+          sort: filterKey,
+          page: queryOptions.queryPage,
+          episodeId: episode.id,
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+        }, this.global.settings.nsfwMode)
 
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (!filterKey) {
-      newState.flatListData = []
-      newState.endOfResultsReached = true
-    } else {
-      const results = await getMediaRefs({
-        sort: querySort,
-        page: queryOptions.queryPage,
-        episodeId: episode.id,
-        ...(searchAllFieldsText ? { searchAllFieldsText } : {})
-      }, this.global.settings.nsfwMode)
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      } else if (!filterKey) {
+        newState.flatListData = []
+        newState.endOfResultsReached = true
+      } else {
+        const results = await getMediaRefs({
+          sort: querySort,
+          page: queryOptions.queryPage,
+          episodeId: episode.id,
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+        }, this.global.settings.nsfwMode)
 
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      }
+
+      newState.queryPage = queryOptions.queryPage || 1
+
+      return newState
+    } catch (error) {
+      return newState
     }
-
-    newState.queryPage = queryOptions.queryPage || 1
-
-    return newState
   }
 }
 

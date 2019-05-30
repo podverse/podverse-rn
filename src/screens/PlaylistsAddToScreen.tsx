@@ -46,7 +46,11 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    await getLoggedInUserPlaylists(this.global)
+    try {
+      await getLoggedInUserPlaylists(this.global)
+    } catch (error) {
+      //
+    }
     this.setState({ isLoading: false })
   }
 
@@ -61,7 +65,13 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
       <PlaylistTableCell
         key={item.id}
         itemCount={item.itemCount}
-        onPress={() => addOrRemovePlaylistItem(item.id, episodeId, mediaRefId, this.global)}
+        onPress={() => {
+          try {
+            addOrRemovePlaylistItem(item.id, episodeId, mediaRefId, this.global)
+          } catch (error) {
+            //
+          }
+        }}
         title={item.title} />
     )
   }

@@ -95,27 +95,33 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
 
     if (isLoggedInUserProfile) {
-      await getAuthUserInfo()
-
       let newState = {
         isLoading: false,
         isLoadingMore: false,
         queryPage: 1
       } as State
-      newState = await this._queryPodcasts(newState, 1, _alphabeticalKey)
-
+      try {
+        await getAuthUserInfo()
+        newState = await this._queryPodcasts(newState, 1, _alphabeticalKey)
+      } catch (error) {
+        //
+      }
       this.setState(newState)
     } else {
       const user = this.props.navigation.getParam('user')
-
-      const { profileFlatListData } = await getPublicUser(user.id, this.global)
       let newState = {
-        flatListData: profileFlatListData,
         isLoading: false,
         isLoadingMore: false,
         queryPage: 1
       } as State
-      newState = await this._queryPodcasts(newState, 1, _alphabeticalKey)
+
+      try {
+        const { profileFlatListData } = await getPublicUser(user.id, this.global)
+        newState.flatListData = profileFlatListData
+        newState = await this._queryPodcasts(newState, 1, _alphabeticalKey)
+      } catch (error) {
+        //
+      }
       this.setState(newState)
     }
   }
@@ -427,29 +433,34 @@ export class ProfileScreen extends React.Component<Props, State> {
     const { queryFrom, querySort } = this.state
     let newState = {
       isLoading: false,
-      isLoadingMore: false,
+      isLoadingMore: false
     } as State
 
     const wasAlerted = await alertIfNoNetworkConnection('load profile data')
     if (wasAlerted) return newState
 
-    if (filterKey === _podcastsKey) {
-      newState = await this._queryPodcasts(newState, page, querySort)
-    } else if (filterKey === _clipsKey) {
-      newState = await this._queryMediaRefs(newState, page, querySort)
-    } else if (filterKey === _playlistsKey) {
-      newState = await this._queryPlaylists(newState, page, querySort)
-    } else if (rightItems.some((option) => option.value === filterKey)) {
-      if (queryFrom === _podcastsKey) {
-        newState = await this._queryPodcasts(newState, page, filterKey)
-      } else if (queryFrom === _clipsKey) {
-        newState = await this._queryMediaRefs(newState, page, filterKey)
-      } else if (queryFrom === _playlistsKey) {
-        newState = await this._queryPlaylists(newState, page, filterKey)
+    try {
+      if (filterKey === _podcastsKey) {
+        newState = await this._queryPodcasts(newState, page, querySort)
+      } else if (filterKey === _clipsKey) {
+        newState = await this._queryMediaRefs(newState, page, querySort)
+      } else if (filterKey === _playlistsKey) {
+        newState = await this._queryPlaylists(newState, page, querySort)
+      } else if (rightItems.some((option) => option.value === filterKey)) {
+        if (queryFrom === _podcastsKey) {
+          newState = await this._queryPodcasts(newState, page, filterKey)
+        } else if (queryFrom === _clipsKey) {
+          newState = await this._queryMediaRefs(newState, page, filterKey)
+        } else if (queryFrom === _playlistsKey) {
+          newState = await this._queryPlaylists(newState, page, filterKey)
+        }
       }
+
+      return newState
+    } catch (error) {
+      return newState
     }
 
-    return newState
   }
 }
 

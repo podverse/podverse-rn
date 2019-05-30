@@ -147,19 +147,23 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('load playlist items')
     if (wasAlerted) return newState
 
-    if (filterKey === _myPlaylistsKey) {
-      if (this.global.session.isLoggedIn) {
-        await getLoggedInUserPlaylists(this.global)
-      }
-    } else {
-      const playlistId = this.global.session.userInfo.subscribedPlaylistIds
+    try {
+      if (filterKey === _myPlaylistsKey) {
+        if (this.global.session.isLoggedIn) {
+          await getLoggedInUserPlaylists(this.global)
+        }
+      } else {
+        const playlistId = this.global.session.userInfo.subscribedPlaylistIds
 
-      if (playlistId && playlistId.length > 0) {
-        await getPlaylists(playlistId, this.global)
+        if (playlistId && playlistId.length > 0) {
+          await getPlaylists(playlistId, this.global)
+        }
       }
+
+      return newState
+    } catch (error) {
+      return newState
     }
-
-    return newState
   }
 }
 
@@ -177,7 +181,7 @@ const leftItems = [
   }
 ]
 
-const styles = {
+const styles = StyleSheet.create({
   ListHeaderComponent: {
     borderBottomWidth: 0,
     borderTopWidth: 0,
@@ -188,4 +192,4 @@ const styles = {
   view: {
     flex: 1
   }
-}
+})

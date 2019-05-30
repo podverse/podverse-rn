@@ -1,4 +1,4 @@
-import { Share, StyleSheet, View as RNView } from 'react-native'
+import { Alert, Share, StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, EpisodeTableCell, FlatList,
@@ -285,8 +285,15 @@ export class PlayerScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('subscribe to podcast')
     if (wasAlerted) return
 
-    toggleSubscribeToPodcast(this.global.player.nowPlayingItem.podcastId, this.global)
-    this._dismissHeaderActionSheet()
+    try {
+      toggleSubscribeToPodcast(this.global.player.nowPlayingItem.podcastId, this.global)
+      this._dismissHeaderActionSheet()
+    } catch (error) {
+      this._dismissHeaderActionSheet()
+      if (error.response) {
+        Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+      }
+    }
   }
 
   _handleNavToPodcastScreen = async () => {
@@ -489,17 +496,21 @@ export class PlayerScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('load data')
     if (wasAlerted) return newState
 
-    if (viewType === PV.Keys.VIEW_TYPE_EPISODES) {
-      const results = await this._queryEpisodes()
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (viewType === PV.Keys.VIEW_TYPE_CLIPS) {
-      const results = await this._queryClips()
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    }
+    try {
+      if (viewType === PV.Keys.VIEW_TYPE_EPISODES) {
+        const results = await this._queryEpisodes()
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      } else if (viewType === PV.Keys.VIEW_TYPE_CLIPS) {
+        const results = await this._queryClips()
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      }
 
-    return newState
+      return newState
+    } catch (error) {
+      return newState
+    }
   }
 
   _headerActionSheetButtons = () => {

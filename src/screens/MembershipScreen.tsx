@@ -29,7 +29,11 @@ export class MembershipScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    await getAuthUserInfo()
+    try {
+      await getAuthUserInfo()
+    } catch (error) {
+      //
+    }
     this.setState({ isLoading: false })
   }
 

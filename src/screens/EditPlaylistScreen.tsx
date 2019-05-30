@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity } from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, Divider, QueueTableCell, SortableList, SortableListRow, TextInput,
   View } from '../components'
@@ -51,15 +51,19 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
 
     this.props.navigation.setParams({ updatePlaylist: this._updatePlaylist })
 
-    const newPlaylist = await getPlaylist(playlist.id)
-    const { episodes, itemsOrder, mediaRefs } = newPlaylist
-    const sortableListData = combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder)
+    try {
+      const newPlaylist = await getPlaylist(playlist.id)
+      const { episodes, itemsOrder, mediaRefs } = newPlaylist
+      const sortableListData = combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder)
 
-    this.setState({
-      isLoading: false,
-      playlist: newPlaylist,
-      sortableListData
-    })
+      this.setState({
+        isLoading: false,
+        playlist: newPlaylist,
+        sortableListData
+      })
+    } catch (error) {
+      this.setState({ isLoading: false })
+    }
   }
 
   _updatePlaylist = async () => {
@@ -71,12 +75,19 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     }, async () => {
       const { newTitle, playlist } = this.state
       const itemsOrder = this._getItemsOrder()
-      await updatePlaylist({
-        id: playlist.id,
-        ...(itemsOrder.length > 0 ? { itemsOrder } : {}),
-        title: newTitle
-      }, this.global)
-      this.props.navigation.goBack(null)
+      try {
+        await updatePlaylist({
+          id: playlist.id,
+          ...(itemsOrder.length > 0 ? { itemsOrder } : {}),
+          title: newTitle
+        }, this.global)
+        this.props.navigation.goBack(null)
+      } catch (error) {
+        if (error.response) {
+          Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+        }
+      }
+      this.setState({ isLoading: false })
     })
   }
 
@@ -170,7 +181,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   tableCellDivider: {
     marginBottom: 2
   },
@@ -180,4 +191,4 @@ const styles = {
   view: {
     flex: 1
   }
-}
+})

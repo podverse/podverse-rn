@@ -141,11 +141,15 @@ export class ProfilesScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('load profiles')
     if (wasAlerted) return newState
 
-    const subscribedUserIds = this.global.session.userInfo.subscribedUserIds
-    const results = await getPublicUsersByQuery(subscribedUserIds, page)
-    newState.endOfResultsReached = flatListData.length >= results[1]
-    newState.queryPage = page
-    return newState
+    try {
+      const subscribedUserIds = this.global.session.userInfo.subscribedUserIds
+      const results = await getPublicUsersByQuery(subscribedUserIds, page)
+      newState.endOfResultsReached = flatListData.length >= results[1]
+      newState.queryPage = page
+      return newState
+    } catch (error) {
+      return newState
+    }
   }
 }
 

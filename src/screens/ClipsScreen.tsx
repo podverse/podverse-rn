@@ -226,51 +226,55 @@ export class ClipsScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('load clips')
     if (wasAlerted) return newState
 
-    const { flatListData, queryFrom, querySort } = this.state
-    const podcastId = this.global.session.userInfo.subscribedPodcastIds
-    const nsfwMode = this.global.settings.nsfwMode
-    const { queryPage, searchAllFieldsText } = queryOptions
+    try {
+      const { flatListData, queryFrom, querySort } = this.state
+      const podcastId = this.global.session.userInfo.subscribedPodcastIds
+      const nsfwMode = this.global.settings.nsfwMode
+      const { queryPage, searchAllFieldsText } = queryOptions
 
-    if (filterKey === _subscribedKey) {
-      const results = await getMediaRefs({
-        sort: querySort,
-        page: queryPage,
-        podcastId,
-        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-        includePodcast: true
-      }, this.global.settings.nsfwMode)
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (filterKey === _allPodcastsKey) {
-      const { searchBarText: searchAllFieldsText } = this.state
-      const results = await getMediaRefs({
-        sort: querySort,
-        page: queryPage,
-        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-        includePodcast: true
-      }, this.global.settings.nsfwMode)
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (filterKey === _myClipsKey) {
-      const results = await getLoggedInUserMediaRefs({
-        sort: querySort,
-        page: queryPage,
-        includePodcast: true
-      }, this.global.settings.nsfwMode)
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (rightItems.some((option) => option.value === filterKey)) {
-      const results = await getMediaRefs({
-        ...(queryFrom === _subscribedKey ? { podcastId } : {}),
-        sort: filterKey,
-        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-        includePodcast: true
-      }, nsfwMode)
-      newState.flatListData = results[0]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      if (filterKey === _subscribedKey) {
+        const results = await getMediaRefs({
+          sort: querySort,
+          page: queryPage,
+          podcastId,
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          includePodcast: true
+        }, this.global.settings.nsfwMode)
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      } else if (filterKey === _allPodcastsKey) {
+        const { searchBarText: searchAllFieldsText } = this.state
+        const results = await getMediaRefs({
+          sort: querySort,
+          page: queryPage,
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          includePodcast: true
+        }, this.global.settings.nsfwMode)
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      } else if (filterKey === _myClipsKey) {
+        const results = await getLoggedInUserMediaRefs({
+          sort: querySort,
+          page: queryPage,
+          includePodcast: true
+        }, this.global.settings.nsfwMode)
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      } else if (rightItems.some((option) => option.value === filterKey)) {
+        const results = await getMediaRefs({
+          ...(queryFrom === _subscribedKey ? { podcastId } : {}),
+          sort: filterKey,
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          includePodcast: true
+        }, nsfwMode)
+        newState.flatListData = results[0]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      }
+
+      return newState
+    } catch (error) {
+      return newState
     }
-
-    return newState
   }
 }
 
