@@ -13,6 +13,16 @@ import { filterItemFromQueueItems, getQueueItems, setAllQueueItems } from './que
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
 TrackPlayer.setupPlayer().then(() => {
+  TrackPlayer.updateOptions({
+    capabilities: [
+      TrackPlayer.CAPABILITY_JUMP_BACKWARD,
+      TrackPlayer.CAPABILITY_JUMP_FORWARD,
+      TrackPlayer.CAPABILITY_PAUSE,
+      TrackPlayer.CAPABILITY_PLAY,
+      TrackPlayer.CAPABILITY_SEEK_TO
+    ],
+    stopWithApp: true
+  })
   TrackPlayer.registerPlaybackService(() => require('./playerEvents'))
 })
 

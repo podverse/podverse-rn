@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     borderTopWidth: 1,
-    height: 56,
+    height: 62,
     justifyContent: 'center'
   }
 })
