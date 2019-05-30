@@ -34,9 +34,9 @@ PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
         }
       }, 500)
     }
-
-    await setPlaybackPosition(nowPlayingItem.clipStartTime)
   }
+
+  await setPlaybackPosition(nowPlayingItem.clipStartTime)
 })
 
 module.exports = async () => {

@@ -80,17 +80,18 @@ export const setNowPlayingItem = async (item: NowPlayingItem, globalState: any, 
       setGlobal(newState, async () => {
 
         try {
-          const result = await setNowPlayingItemService(item)
-
           let episode = null
           let mediaRef = null
-          if (isNewEpisode) {
-            episode = await getNowPlayingItemEpisode()
-          }
+
+          const result = await setNowPlayingItemService(item)
 
           if (isNewMediaRef) {
             PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
             mediaRef = await getNowPlayingItemMediaRef()
+          }
+
+          if (isNewEpisode) {
+            episode = await getNowPlayingItemEpisode()
           }
 
           setGlobal({

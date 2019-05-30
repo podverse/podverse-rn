@@ -141,6 +141,10 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
 
     if (id && (!isTrackLoaded || isNewEpisode)) {
       if (!shouldNotLoadFile) {
+        if (isTrackLoaded) {
+          await TrackPlayer.reset()
+        }
+
         await TrackPlayer.add({
           id,
           url: episodeMediaUrl,
@@ -148,10 +152,6 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
           artist: podcastTitle,
           ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
         })
-
-        if (isTrackLoaded) {
-          await TrackPlayer.skipToNext()
-        }
       }
     }
 
@@ -183,12 +183,51 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
       PlayerEventEmitter.emit(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
     }
 
+    if (isTrackLoaded) {
+      const shouldContinuouslyPlay = await getContinuousPlaybackMode()
+      // Give the player a second to load the file before playing.
+      // Without this, the player will play a split second of the beginning of an episode
+      // before adjusting to the clip's start time position.
+      setTimeout(() => {
+        if (shouldContinuouslyPlay) {
+          TrackPlayer.play()
+        }
+      }, 1000)
+    }
+
     return {
       nowPlayingItem: item,
       queueItems: filteredItems
     }
   } catch (error) {
     throw error
+  }
+}
+
+export const setPlaybackPosition = async (position: number) => {
+  await TrackPlayer.seekTo(position)
+}
+
+export const setPlaybackSpeed = async (rate: number) => {
+  await TrackPlayer.setRate(rate)
+}
+
+export const togglePlay = async (playbackRate: number) => {
+  const state = await TrackPlayer.getState()
+
+  if (state === TrackPlayer.STATE_NONE) {
+    const nowPlayingItem = await getNowPlayingItem()
+    await setNowPlayingItem(nowPlayingItem, true)
+    TrackPlayer.play()
+    TrackPlayer.setRate(playbackRate)
+    return
+  }
+
+  if (state === TrackPlayer.STATE_PLAYING) {
+    TrackPlayer.pause()
+  } else {
+    TrackPlayer.play()
+    TrackPlayer.setRate(playbackRate)
   }
 }
 
@@ -216,31 +255,4 @@ export const updateNowPlayingItemMediaRef = async (id: string, item: NowPlayingI
   mediaRef.episode.description = (mediaRef.episode.description && mediaRef.episode.description.linkifyHtml()) || 'No summary available.'
 
   await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM_MEDIA_REF, JSON.stringify(mediaRef))
-}
-
-export const setPlaybackSpeed = async (rate: number) => {
-  await TrackPlayer.setRate(rate)
-}
-
-export const setPlaybackPosition = async (position: number) => {
-  await TrackPlayer.seekTo(position)
-}
-
-export const togglePlay = async (playbackRate: number) => {
-  const state = await TrackPlayer.getState()
-
-  if (state === TrackPlayer.STATE_NONE) {
-    const nowPlayingItem = await getNowPlayingItem()
-    await setNowPlayingItem(nowPlayingItem, true)
-    TrackPlayer.play()
-    TrackPlayer.setRate(playbackRate)
-    return
-  }
-
-  if (state === TrackPlayer.STATE_PLAYING) {
-    TrackPlayer.pause()
-  } else {
-    TrackPlayer.play()
-    TrackPlayer.setRate(playbackRate)
-  }
 }
