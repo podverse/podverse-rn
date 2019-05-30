@@ -12,7 +12,6 @@ import { getAuthUserInfo } from '../state/actions/auth'
 import { initPlayerState, setNowPlayingItem } from '../state/actions/player'
 import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
-import { Alert } from 'react-native';
 
 type Props = {
   navigation?: any
@@ -25,6 +24,7 @@ type State = {
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
+  isUnsubscribing: boolean
   queryFrom: string | null
   queryPage: number
   querySort: string | null
@@ -49,6 +49,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       isLoading: true,
       isLoadingMore: false,
       isRefreshing: false,
+      isUnsubscribing: false,
       queryFrom: _subscribedKey,
       queryPage: 1,
       querySort: _alphabeticalKey,
@@ -219,21 +220,29 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderHiddenItem = ({ item }, rowMap) => <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
+  _renderHiddenItem = ({ item }, rowMap) => (
+    <SwipeRowBack
+      isLoading={this.state.isUnsubscribing}
+      onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
+  )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
     const wasAlerted = await alertIfNoNetworkConnection('unsubscribe from podcast')
     if (wasAlerted) return
-
-    try {
-      rowMap[selectedId].closeRow()
-      const { flatListData } = this.state
-      await toggleSubscribeToPodcast(selectedId, this.global)
-      const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
-      this.setState({ flatListData: newFlatListData })
-    } catch (error) {
-      await Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message)
-    }
+    this.setState({ isUnsubscribing: true }, async () => {
+      try {
+        const { flatListData } = this.state
+        await toggleSubscribeToPodcast(selectedId, this.global)
+        const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
+        rowMap[selectedId].closeRow()
+        this.setState({
+          flatListData: newFlatListData,
+          isUnsubscribing: true
+        })
+      } catch (error) {
+        this.setState({ isUnsubscribing: true })
+      }
+    })
   }
 
   _handleSearchBarClear = (text: string) => {

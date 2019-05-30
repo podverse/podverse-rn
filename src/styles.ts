@@ -31,6 +31,9 @@ export const darkTheme = StyleSheet.create({
   activityIndicator: {
     color: PV.Colors.grayLighter
   },
+  activityIndicatorAlternate: {
+    color: PV.Colors.grayDarkest
+  },
   buttonActive: {
     color: PV.Colors.blueLighter
   },
@@ -179,6 +182,9 @@ export const lightTheme = StyleSheet.create({
   },
   activityIndicator: {
     color: PV.Colors.grayDarker
+  },
+  activityIndicatorAlternate: {
+    color: PV.Colors.grayLightest
   },
   buttonActive: {
     color: PV.Colors.blueDarker
