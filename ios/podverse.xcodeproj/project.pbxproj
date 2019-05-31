@@ -59,7 +59,6 @@
 		35EB716054CC48DE83AFC7AB /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C5AC4999E4F14BB0A47CF143 /* SimpleLineIcons.ttf */; };
 		4F90C45393B743BB85880E4B /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 906C41522B5C49E8AB200F6C /* Zocial.ttf */; };
 		D1456E00F66B4CB2A0843217 /* libRNCWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B3C3454228C4195982A893E /* libRNCWebView.a */; };
-		28C2E41ADDD2423C8835B4EF /* libRNCSlider.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 56365D5F83A14051852A5418 /* libRNCSlider.a */; };
 		B56D969042D4474E96CA3545 /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6691576913D848DB82D699AD /* RNPlaceholder.swift */; };
 		F34CCE474A034110AA4D18CC /* libRNTrackPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D34680EAC494BCE8D7497E1 /* libRNTrackPlayer.a */; };
 		68C8FDCC95B445C793852515 /* libRNCNetInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B0C9B19449742A4A94CD232 /* libRNCNetInfo.a */; };
@@ -424,8 +423,6 @@
 		906C41522B5C49E8AB200F6C /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		DA602DA953CA43D282148422 /* RNCWebView.xcodeproj */ = {isa = PBXFileReference; name = "RNCWebView.xcodeproj"; path = "../node_modules/react-native-webview/ios/RNCWebView.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		2B3C3454228C4195982A893E /* libRNCWebView.a */ = {isa = PBXFileReference; name = "libRNCWebView.a"; path = "libRNCWebView.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		25BE114A008A4C438B296D98 /* RNCSlider.xcodeproj */ = {isa = PBXFileReference; name = "RNCSlider.xcodeproj"; path = "../node_modules/@react-native-community/slider/ios/RNCSlider.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		56365D5F83A14051852A5418 /* libRNCSlider.a */ = {isa = PBXFileReference; name = "libRNCSlider.a"; path = "libRNCSlider.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		6691576913D848DB82D699AD /* RNPlaceholder.swift */ = {isa = PBXFileReference; name = "RNPlaceholder.swift"; path = "RNPlaceholder.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
 		1CDADA242C0F4915ADB560A9 /* RNTrackPlayer.xcodeproj */ = {isa = PBXFileReference; name = "RNTrackPlayer.xcodeproj"; path = "../node_modules/react-native-track-player/ios/RNTrackPlayer.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		0D34680EAC494BCE8D7497E1 /* libRNTrackPlayer.a */ = {isa = PBXFileReference; name = "libRNTrackPlayer.a"; path = "libRNTrackPlayer.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
@@ -465,7 +462,6 @@
 				F0E48A7666CE459AB31F1C4C /* libRNCAsyncStorage.a in Frameworks */,
 				8B553234C61B464D93F48555 /* libRNVectorIcons.a in Frameworks */,
 				D1456E00F66B4CB2A0843217 /* libRNCWebView.a in Frameworks */,
-				28C2E41ADDD2423C8835B4EF /* libRNCSlider.a in Frameworks */,
 				F34CCE474A034110AA4D18CC /* libRNTrackPlayer.a in Frameworks */,
 				68C8FDCC95B445C793852515 /* libRNCNetInfo.a in Frameworks */,
 			);
@@ -662,7 +658,6 @@
 				A03DD274412C447F81CDFCCA /* RNCAsyncStorage.xcodeproj */,
 				0B8FD4669CE745A8A6C6A8D2 /* RNVectorIcons.xcodeproj */,
 				DA602DA953CA43D282148422 /* RNCWebView.xcodeproj */,
-				25BE114A008A4C438B296D98 /* RNCSlider.xcodeproj */,
 				1CDADA242C0F4915ADB560A9 /* RNTrackPlayer.xcodeproj */,
 				CD0C116AC52F42A6AB17EDEA /* RNCNetInfo.xcodeproj */,
 			);
@@ -1409,7 +1404,6 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
-					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 				);
@@ -1449,7 +1443,6 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
-					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 				);
@@ -1491,7 +1484,6 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
-					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 				);
@@ -1522,7 +1514,6 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
-					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 				);
@@ -1559,7 +1550,6 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
-					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 				);
@@ -1607,7 +1597,6 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
-					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 				);
@@ -1654,7 +1643,6 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
-					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 				);
@@ -1701,7 +1689,6 @@
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
-					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 					"$(SRCROOT)/../node_modules/react-native-track-player/ios/RNTrackPlayer/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/netinfo/ios",
 				);

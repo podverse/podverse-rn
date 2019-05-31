@@ -850,11 +850,6 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-3.1.3.tgz#dd03cd8e23c363e0f66c82345e3aff91db1badc6"
   integrity sha512-T9fFuxnMSZdVtpygW3BdmoE2o70BXrryi95Xi7FnRYmdr7PtEjNxEziR8i+VvrXXNG8KkQ2Bngc0YUqrNxNMtA==
 
-"@react-native-community/slider@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-1.1.0.tgz#98e4fbc5e40304be1d02216aea4fded4349301d8"
-  integrity sha512-73kn+OaPJ4e5gvxlG97GLSmCzUq/twQHfvqA+/6OjKfScOtPCs4em8e4V0mn2hSje/PNLtSqnjzNUNviB4f0+w==
-
 "@react-navigation/core@3.2.0":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-3.2.0.tgz#329dfe54f305ee22ed750d51cb09c5d18562d56f"
@@ -5672,10 +5667,10 @@ react-native-safe-area-view@^0.13.0:
   resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-1.0.0-alpha.22.tgz#7a120377b52aa9bbb94d0b8541a014026be9289b"
   integrity sha512-kSyAt0AeVU6N7ZonfV6dP6iZF8B7Bce+tk3eujXhzBGsLg0VSLnU7uE9VqJF0xdQrHR91ZjGgVMieo/8df9KTA==
 
-react-native-secure-key-store@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-secure-key-store/-/react-native-secure-key-store-2.0.1.tgz#9e5caaff1ca94a986ce896b96c14d6a0a35586ec"
-  integrity sha512-HIRW25AyOrTHI9uWfvljIRI/787+dhPFqFNOBi3f6GcWvUcIy779CfMk5mIprvwbg025zWfUjU3s3cdjwWxdWw==
+react-native-secure-key-store@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-secure-key-store/-/react-native-secure-key-store-2.0.2.tgz#da7c5d5d5f771a004184b963becbc4c497d57525"
+  integrity sha512-XJ1d+6S9H1mB3DvvOQmhPaOWiWErWroNx49uEWahA7uWA0HVYWM28z52MN0HavyMgZ1MCrvid8z7ahCVuEvnNQ==
 
 react-native-sortable-list@^0.0.23:
   version "0.0.23"
