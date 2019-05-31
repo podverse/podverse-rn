@@ -25,7 +25,7 @@
     "linkifyjs": "^2.1.8",
     "lodash": "^4.17.11",
     "react": "16.8.3",
-    "react-native": "0.59.0",
+    "react-native": "0.59.8",
     "react-native-elements": "^1.1.0",
     "react-native-gesture-handler": "^1.1.0",
     "react-native-picker-select": "^6.1.0",

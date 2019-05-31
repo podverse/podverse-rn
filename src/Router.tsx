@@ -35,7 +35,7 @@ const PodcastsNavigator = createStackNavigator(
   {
     [PV.RouteNames.PodcastsScreen]: {
       screen: PodcastsScreen,
-      path: 'podcasts'
+      path: 'list'
     },
     [PV.RouteNames.PodcastScreen]: {
       screen: PodcastScreen,
@@ -66,7 +66,7 @@ const EpisodesNavigator = createStackNavigator(
   {
     [PV.RouteNames.EpisodesScreen]: {
       screen: EpisodesScreen,
-      path: 'episodes'
+      path: 'list'
     },
     [PV.RouteNames.EpisodeScreen]: EpisodeScreen
   },
@@ -127,8 +127,8 @@ const SearchNavigator = createStackNavigator(
 
 const MoreNavigator = createStackNavigator(
   {
-    [PV.RouteNames.MoreScreen]: MoreScreen,
-    [PV.RouteNames.DownloadsScreen]: DownloadsScreen,
+    [PV.RouteNames.MoreScreen]: { screen: MoreScreen, path: 'list' },
+    [PV.RouteNames.DownloadsScreen]: { screen: DownloadsScreen, path: 'downloads' },
     [PV.RouteNames.MyProfileScreen]: ProfileScreen,
     [PV.RouteNames.PlaylistScreen]: PlaylistScreen,
     [PV.RouteNames.PlaylistsScreen]: PlaylistsScreen,
@@ -169,11 +169,11 @@ const OnboardingNavigator = createStackNavigator({
 })
 
 const TabNavigator = createBottomTabNavigator({
-  Podcasts: PodcastsNavigator,
-  Episodes: EpisodesNavigator,
-  Clips: ClipsNavigator,
-  Search: SearchNavigator,
-  More: MoreNavigator
+  Podcasts: { screen: PodcastsNavigator, path: 'podcasts' },
+  Episodes: { screen: EpisodesNavigator, path: 'episodes' },
+  Clips: { screen: ClipsNavigator, path: 'clips' },
+  Search: { screen: SearchNavigator, path: 'search' },
+  More: { screen: MoreNavigator, path: 'more' }
 }, {
   tabBarComponent: (props: any) => <PVTabBar {...props} />,
   tabBarOptions: {
@@ -210,7 +210,7 @@ const WebPageNavigator = createStackNavigator({
 const MainApp = createStackNavigator({
   [PV.RouteNames.TabNavigator]: {
     screen: TabNavigator,
-    path: ''
+    path: 'tab'
   },
   [PV.RouteNames.AuthNavigator]: AuthNavigator,
   PlayerNavigator,
@@ -223,7 +223,7 @@ const MainApp = createStackNavigator({
 })
 
 const SwitchNavigator = createSwitchNavigator({
-  MainApp,
+  MainApp: { screen: MainApp, path: 'main' },
   Onboarding: OnboardingNavigator
 }, {
   initialRouteName: PV.RouteNames.MainApp
