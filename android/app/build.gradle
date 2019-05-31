@@ -138,15 +138,14 @@ android {
 
 dependencies {
     implementation project(':@react-native-community_netinfo')
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation project(':react-native-track-player')
-    implementation project(':@react-native-community_slider')
     implementation project(':react-native-webview')
     implementation project(':react-native-vector-icons')
     implementation project(':@react-native-community_async-storage')
     compile project(':react-native-secure-key-store')
     compile project(':react-native-gesture-handler')
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
 }
 
