@@ -44,7 +44,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       headerRight: (
         <RNView style={core.row}>
           {
-            userIsPublic &&
+            userIsPublic && userId &&
               <NavShareIcon url={PV.URLs.profile + userId} />
           }
           <NavQueueIcon navigation={navigation} />
