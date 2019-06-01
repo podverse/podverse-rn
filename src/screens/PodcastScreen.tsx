@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { View as RNView } from 'react-native'
+import { View as RNView, Linking } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
@@ -31,6 +31,7 @@ type State = {
   isSearchScreen?: boolean
   isSubscribing: boolean
   podcast: any
+  podcastId?: string
   queryPage: number
   querySort: string | null
   searchBarText: string
@@ -42,12 +43,12 @@ type State = {
 export class PodcastScreen extends React.Component<Props, State> {
 
   static navigationOptions = ({ navigation }) => {
-    const podcast = navigation.getParam('podcast')
+    const podcastId = navigation.getParam('podcastId')
     return {
       title: 'Podcast',
       headerRight: (
         <RNView style={core.row}>
-          <NavShareIcon url={PV.URLs.podcast + podcast.id} />
+          <NavShareIcon url={PV.URLs.podcast + podcastId} />
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
@@ -59,15 +60,21 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     const viewType = this.props.navigation.getParam('viewType') || allEpisodesKey
     const podcast = this.props.navigation.getParam('podcast')
+    const podcastId = (podcast && podcast.id) || this.props.navigation.getParam('podcastId')
+
+    if (podcast && podcast.id) {
+      this.props.navigation.setParams({ podcastId: podcast.id })
+    }
 
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
-      isLoading: viewType !== downloadedKey,
+      isLoading: viewType !== downloadedKey || !podcast,
       isLoadingMore: false,
       isRefreshing: false,
       isSubscribing: false,
       podcast,
+      podcastId,
       queryPage: 1,
       querySort: mostRecentKey,
       searchBarText: '',
@@ -79,32 +86,51 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    Linking.addEventListener('url', () => this._initializePageData())
+
+    this._initializePageData()
+  }
+
+  async componentWillUnmount() {
+    Linking.removeEventListener('url', () => this._initializePageData())
+  }
+
+  async _initializePageData() {
     const { podcast, viewType } = this.state
-    let newState = {}
-    let newPodcast: any
+    const podcastId = this.props.navigation.getParam('podcastId') || this.state.podcastId
 
-    try {
-      const newPodcast = await getPodcast(podcast.id)
-      if (viewType === allEpisodesKey) {
-        newState = await this._queryData(allEpisodesKey)
-      } else if (viewType === clipsKey) {
-        newState = await this._queryData(clipsKey)
+    this.setState({
+      flatListData: [],
+      isLoading: true,
+      podcastId,
+      queryPage: 1
+    }, async () => {
+      let newState = {}
+      let newPodcast: any
+
+      try {
+        newPodcast = await getPodcast(podcastId)
+        if (viewType === allEpisodesKey) {
+          newState = await this._queryData(allEpisodesKey)
+        } else if (viewType === clipsKey) {
+          newState = await this._queryData(clipsKey)
+        }
+
+        newPodcast.description = newPodcast.description || 'No summary available.'
+
+        this.setState({
+          ...newState,
+          isLoading: false,
+          podcast: newPodcast
+        })
+      } catch (error) {
+        this.setState({
+          ...newState,
+          isLoading: false,
+          ...(newPodcast ? { podcast: newPodcast } : { podcast })
+        })
       }
-
-      newPodcast.description = newPodcast.description || 'No summary available.'
-
-      this.setState({
-        ...newState,
-        isLoading: false,
-        podcast: newPodcast
-      })
-    } catch (error) {
-      this.setState({
-        ...newState,
-        isLoading: false,
-        ...(newPodcast ? { podcast: newPodcast } : { podcast })
-      })
-    }
+    })
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -132,8 +158,8 @@ export class PodcastScreen extends React.Component<Props, State> {
     }
 
     this.setState({
-      flatListData: [],
       endOfResultsReached: false,
+      flatListData: [],
       isLoading: true,
       querySort: selectedKey
     }, async () => {
@@ -281,13 +307,13 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _toggleSubscribeToPodcast = async () => {
+    const { podcastId } = this.state
     const wasAlerted = await alertIfNoNetworkConnection('subscribe to podcast')
     if (wasAlerted) return
 
     this.setState({ isSubscribing: true }, async () => {
       try {
-        const { podcast } = this.state
-        await toggleSubscribeToPodcast(podcast.id, this.global)
+        await toggleSubscribeToPodcast(podcastId, this.global)
         this.setState({ isSubscribing: false })
       } catch (error) {
         this.setState({ isSubscribing: false })
@@ -296,11 +322,10 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, isLoading, isLoadingMore, isRefreshing, isSubscribing, podcast, querySort, selectedItem,
-      showActionSheet, viewType } = this.state
     const { navigation } = this.props
-
-    const isSubscribed = this.global.session.userInfo.subscribedPodcastIds.some((x) => x === podcast.id)
+    const { flatListData, isLoading, isLoadingMore, isRefreshing, isSubscribing, podcast, podcastId, querySort,
+      selectedItem, showActionSheet, viewType } = this.state
+    const isSubscribed = this.global.session.userInfo.subscribedPodcastIds.some((x) => x === podcastId)
 
     return (
       <View style={styles.view}>
@@ -308,10 +333,12 @@ export class PodcastScreen extends React.Component<Props, State> {
           autoDownloadOn={true}
           handleToggleAutoDownload={() => console.log('auto dl')}
           handleToggleSubscribe={this._toggleSubscribeToPodcast}
+          isLoading={isLoading && !podcast}
+          isNotFound={!isLoading && !podcast}
           isSubscribed={isSubscribed}
           isSubscribing={isSubscribing}
-          podcastImageUrl={podcast.imageUrl}
-          podcastTitle={podcast.title} />
+          podcastImageUrl={podcast && podcast.imageUrl}
+          podcastTitle={podcast && podcast.title} />
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
@@ -323,7 +350,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           isLoading && <ActivityIndicator />
         }
         {
-          !isLoading && viewType !== aboutKey && flatListData &&
+          !isLoading && viewType !== aboutKey && flatListData && podcast &&
             <FlatList
               data={flatListData}
               disableLeftSwipe={viewType !== downloadedKey}
@@ -338,7 +365,7 @@ export class PodcastScreen extends React.Component<Props, State> {
               renderItem={this._renderItem} />
         }
         {
-          viewType === aboutKey &&
+          !isLoading && viewType === aboutKey && podcast &&
             <HTMLScrollView
               html={podcast.description}
               navigation={navigation} />
@@ -354,19 +381,19 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _queryAllEpisodes = async (sort: string | null, page: number = 1) => {
-    const { podcast, searchBarText: searchAllFieldsText } = this.state
+    const { podcastId, searchBarText: searchAllFieldsText } = this.state
     const results = await getEpisodes({
-      sort, page, podcastId: podcast.id, ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+      sort, page, podcastId, ...(searchAllFieldsText ? { searchAllFieldsText } : {})
     }, this.global.settings.nsfwMode)
     return results
   }
 
   _queryClips = async (sort: string | null, page: number = 1) => {
-    const { podcast, searchBarText: searchAllFieldsText } = this.state
+    const { podcastId, searchBarText: searchAllFieldsText } = this.state
     const results = await getMediaRefs({
       sort,
       page,
-      podcastId: podcast.id,
+      podcastId,
       includeEpisode: true,
       ...(searchAllFieldsText ? { searchAllFieldsText } : {})
     }, this.global.settings.nsfwMode)
@@ -374,7 +401,7 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _queryData = async (filterKey: string | null, queryOptions: { queryPage?: number, searchAllFieldsText?: string } = {}) => {
-    const { flatListData, podcast, querySort, viewType } = this.state
+    const { flatListData, podcastId, querySort, viewType } = this.state
     const newState = {
       isLoading: false,
       isLoadingMore: false,
@@ -410,7 +437,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
       } else if (filterKey === aboutKey) {
-        const newPodcast = await getPodcast(podcast.id)
+        const newPodcast = await getPodcast(podcastId)
         newState.podcast = newPodcast
       }
 

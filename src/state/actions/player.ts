@@ -46,7 +46,8 @@ export const setContinousPlaybackMode = async (shouldContinuouslyPlay: boolean, 
   return shouldContinuouslyPlay
 }
 
-export const setNowPlayingItem = async (item: NowPlayingItem, globalState: any, isInitialLoad?: boolean) => {
+export const setNowPlayingItem = async (
+  item: NowPlayingItem, globalState: any, isInitialLoad?: boolean, inheritedEpisode?: any, inheritedMediaRef?: any) => {
   return new Promise(async (resolve, reject) => {
     try {
       const lastNowPlayingItem = await getNowPlayingItem()
@@ -84,11 +85,17 @@ export const setNowPlayingItem = async (item: NowPlayingItem, globalState: any, 
 
           let episode = null
           let mediaRef = null
-          if (isNewEpisode) {
+
+          if (inheritedEpisode) {
+            episode = inheritedEpisode
+          } else if (isNewEpisode) {
             episode = await getNowPlayingItemEpisode()
           }
 
-          if (isNewMediaRef) {
+          if (inheritedMediaRef) {
+            PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+            mediaRef = inheritedMediaRef
+          } else if (isNewMediaRef) {
             PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
             mediaRef = await getNowPlayingItemMediaRef()
           }

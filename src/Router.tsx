@@ -39,12 +39,9 @@ const PodcastsNavigator = createStackNavigator(
     },
     [PV.RouteNames.PodcastScreen]: {
       screen: PodcastScreen,
-      path: 'podcast/:id'
+      path: 'podcast/:podcastId'
     },
-    [PV.RouteNames.EpisodeScreen]: {
-      screen: EpisodeScreen,
-      path: 'episode/:id'
-    }
+    [PV.RouteNames.EpisodeScreen]: EpisodeScreen
   },
   {
     defaultNavigationOptions,
@@ -183,7 +180,10 @@ const TabNavigator = createBottomTabNavigator({
 })
 
 const PlayerNavigator = createStackNavigator({
-  [PV.RouteNames.PlayerScreen]: PlayerScreen,
+  [PV.RouteNames.PlayerScreen]: {
+    screen: PlayerScreen,
+    path: ':episodeId/:mediaRefId?'
+  },
   [PV.RouteNames.MakeClipScreen]: MakeClipScreen
 }, {
   defaultNavigationOptions
@@ -213,7 +213,10 @@ const MainApp = createStackNavigator({
     path: 'tab'
   },
   [PV.RouteNames.AuthNavigator]: AuthNavigator,
-  PlayerNavigator,
+  [PV.RouteNames.PlayerNavigator]: {
+    screen: PlayerNavigator,
+    path: 'player'
+  },
   PlaylistsAddToNavigator,
   QueueNavigator,
   WebPageNavigator

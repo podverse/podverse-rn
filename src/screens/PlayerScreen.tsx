@@ -1,4 +1,4 @@
-import { Alert, Share, StyleSheet, View as RNView } from 'react-native'
+import { Alert, Linking, Share, StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, EpisodeTableCell, FlatList,
@@ -9,9 +9,11 @@ import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
-import { getEpisodes } from '../services/episode'
-import { getMediaRefs } from '../services/mediaRef'
-import { PVTrackPlayer } from '../services/player'
+import { getEpisode, getEpisodes } from '../services/episode'
+import { getMediaRef, getMediaRefs } from '../services/mediaRef'
+import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
+import { addQueueItemNext } from '../services/queue'
+import { setNowPlayingItem } from '../state/actions/player'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core, navHeader } from '../styles'
 
@@ -62,11 +64,69 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    const { navigation } = this.props
+
+    const episodeId = navigation.getParam('episodeId')
+    if (episodeId) {
+      await this._initializeScreenData()
+    }
+
     this.props.navigation.setParams({
       _getEpisodeId: this._getEpisodeId,
       _getInitialProgressValue: this._getInitialProgressValue,
       _getMediaRefId: this._getMediaRefId,
       _showShareActionSheet: this._showShareActionSheet
+    })
+
+    Linking.addEventListener('url', () => this._initializeScreenData())
+  }
+
+  async componentWillUnmount() {
+    Linking.addEventListener('url', () => this._initializeScreenData())
+  }
+
+  _initializeScreenData = () => {
+    const { isLoggedIn } = this.global.session
+
+    setGlobal({
+      screenPlayer: {
+        ...this.global.screenPlayer,
+        endOfResultsReached: false,
+        flatListData: [],
+        isLoading: true,
+        queryPage: 1
+      }
+    }, async () => {
+      const { navigation } = this.props
+      const mediaRefId = navigation.getParam('mediaRefId')
+      const episodeId = navigation.getParam('episodeId')
+
+      try {
+        const currentItem = await getNowPlayingItem()
+        const episode = await getEpisode(episodeId)
+
+        if (!mediaRefId) {
+          await addQueueItemNext(currentItem, isLoggedIn)
+          const newItem = convertToNowPlayingItem(episode, null, null)
+          await setNowPlayingItem(newItem, this.global, false, episode)
+        } else {
+          const mediaRef = await getMediaRef(mediaRefId)
+          if (mediaRef) {
+            await addQueueItemNext(currentItem, isLoggedIn)
+            const newItem = convertToNowPlayingItem(mediaRef, null, null)
+            await setNowPlayingItem(newItem, this.global, false, episode, mediaRef)
+          }
+        }
+      } catch (error) {
+        //
+      }
+
+      setGlobal({
+        screenPlayer: {
+          ...this.global.screenPlayer,
+          isLoading: false
+        }
+      })
     })
   }
 
