@@ -33,14 +33,8 @@ const AuthNavigator = createStackNavigator(
 
 const PodcastsNavigator = createStackNavigator(
   {
-    [PV.RouteNames.PodcastsScreen]: {
-      screen: PodcastsScreen,
-      path: 'list'
-    },
-    [PV.RouteNames.PodcastScreen]: {
-      screen: PodcastScreen,
-      path: 'podcast/:podcastId'
-    },
+    [PV.RouteNames.PodcastsScreen]: { screen: PodcastsScreen, path: 'list' },
+    [PV.RouteNames.PodcastScreen]: { screen: PodcastScreen, path: 'podcast/:podcastId' },
     [PV.RouteNames.EpisodeScreen]: EpisodeScreen
   },
   {
@@ -61,10 +55,7 @@ const PodcastsNavigator = createStackNavigator(
 
 const EpisodesNavigator = createStackNavigator(
   {
-    [PV.RouteNames.EpisodesScreen]: {
-      screen: EpisodesScreen,
-      path: 'list'
-    },
+    [PV.RouteNames.EpisodesScreen]: { screen: EpisodesScreen, path: 'list' },
     [PV.RouteNames.EpisodeScreen]: EpisodeScreen
   },
   {
@@ -84,7 +75,7 @@ const EpisodesNavigator = createStackNavigator(
 
 const ClipsNavigator = createStackNavigator(
   {
-    [PV.RouteNames.ClipsScreen]: ClipsScreen
+    [PV.RouteNames.ClipsScreen]: { screen: ClipsScreen, path: 'list' }
   },
   {
     defaultNavigationOptions,
@@ -103,7 +94,7 @@ const ClipsNavigator = createStackNavigator(
 
 const SearchNavigator = createStackNavigator(
   {
-    [PV.RouteNames.SearchScreen]: SearchScreen,
+    [PV.RouteNames.SearchScreen]: { screen: SearchScreen, path: '/' },
     [PV.RouteNames.SearchPodcastScreen]: PodcastScreen,
     [PV.RouteNames.SearchEpisodeScreen]: EpisodeScreen
   },
@@ -124,15 +115,15 @@ const SearchNavigator = createStackNavigator(
 
 const MoreNavigator = createStackNavigator(
   {
-    [PV.RouteNames.MoreScreen]: { screen: MoreScreen, path: 'list' },
+    [PV.RouteNames.MoreScreen]: { screen: MoreScreen, path: '/' },
     [PV.RouteNames.DownloadsScreen]: { screen: DownloadsScreen, path: 'downloads' },
     [PV.RouteNames.MyProfileScreen]: ProfileScreen,
-    [PV.RouteNames.PlaylistScreen]: PlaylistScreen,
-    [PV.RouteNames.PlaylistsScreen]: PlaylistsScreen,
+    [PV.RouteNames.PlaylistScreen]: { screen: PlaylistScreen, path: 'playlist' },
+    [PV.RouteNames.PlaylistsScreen]: { screen: PlaylistsScreen, path: 'playlists' },
     [PV.RouteNames.EditPlaylistScreen]: EditPlaylistScreen,
     [PV.RouteNames.EditProfileScreen]: EditProfileScreen,
-    [PV.RouteNames.ProfileScreen]: ProfileScreen,
-    [PV.RouteNames.ProfilesScreen]: ProfilesScreen,
+    [PV.RouteNames.ProfileScreen]: { screen: ProfileScreen, path: 'profile' },
+    [PV.RouteNames.ProfilesScreen]: { screen: ProfilesScreen, path: 'profiles' },
     [PV.RouteNames.SettingsScreen]: SettingsScreen,
     [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen,
     [PV.RouteNames.MorePlaylistScreen]: PlaylistScreen,
@@ -180,10 +171,7 @@ const TabNavigator = createBottomTabNavigator({
 })
 
 const PlayerNavigator = createStackNavigator({
-  [PV.RouteNames.PlayerScreen]: {
-    screen: PlayerScreen,
-    path: ':episodeId/:mediaRefId?'
-  },
+  [PV.RouteNames.PlayerScreen]: { screen: PlayerScreen, path: ':episodeId/:mediaRefId?' },
   [PV.RouteNames.MakeClipScreen]: MakeClipScreen
 }, {
   defaultNavigationOptions
@@ -208,15 +196,9 @@ const WebPageNavigator = createStackNavigator({
 })
 
 const MainApp = createStackNavigator({
-  [PV.RouteNames.TabNavigator]: {
-    screen: TabNavigator,
-    path: 'tab'
-  },
+  [PV.RouteNames.TabNavigator]: { screen: TabNavigator, path: 'tab' },
   [PV.RouteNames.AuthNavigator]: AuthNavigator,
-  [PV.RouteNames.PlayerNavigator]: {
-    screen: PlayerNavigator,
-    path: 'player'
-  },
+  [PV.RouteNames.PlayerNavigator]: { screen: PlayerNavigator, path: 'player' },
   PlaylistsAddToNavigator,
   QueueNavigator,
   WebPageNavigator

@@ -103,18 +103,21 @@ export class PlayerScreen extends React.Component<Props, State> {
 
       try {
         const currentItem = await getNowPlayingItem()
-        const episode = await getEpisode(episodeId)
 
-        if (!mediaRefId) {
-          await addQueueItemNext(currentItem, isLoggedIn)
-          const newItem = convertToNowPlayingItem(episode, null, null)
-          await setNowPlayingItem(newItem, this.global, false, episode)
-        } else {
-          const mediaRef = await getMediaRef(mediaRefId)
-          if (mediaRef) {
+        if ((episodeId && episodeId !== currentItem.episodeId) || (mediaRefId && mediaRefId !== currentItem.mediaRefId)) {
+          const episode = await getEpisode(episodeId)
+
+          if (!mediaRefId) {
             await addQueueItemNext(currentItem, isLoggedIn)
-            const newItem = convertToNowPlayingItem(mediaRef, null, null)
-            await setNowPlayingItem(newItem, this.global, false, episode, mediaRef)
+            const newItem = convertToNowPlayingItem(episode, null, null)
+            await setNowPlayingItem(newItem, this.global, false, episode)
+          } else {
+            const mediaRef = await getMediaRef(mediaRefId)
+            if (mediaRef) {
+              await addQueueItemNext(currentItem, isLoggedIn)
+              const newItem = convertToNowPlayingItem(mediaRef, null, null)
+              await setNowPlayingItem(newItem, this.global, false, episode, mediaRef)
+            }
           }
         }
       } catch (error) {
