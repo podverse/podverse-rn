@@ -35,7 +35,7 @@ const PodcastsNavigator = createStackNavigator(
   {
     [PV.RouteNames.PodcastsScreen]: { screen: PodcastsScreen, path: 'podcasts' },
     [PV.RouteNames.PodcastScreen]: { screen: PodcastScreen, path: 'podcast/:podcastId' },
-    [PV.RouteNames.EpisodeScreen]: { screen: EpisodeScreen, path: 'episode/' }
+    [PV.RouteNames.EpisodeScreen]: { screen: EpisodeScreen, path: 'episode/:episodeId' }
   },
   {
     defaultNavigationOptions,
@@ -55,7 +55,7 @@ const PodcastsNavigator = createStackNavigator(
 
 const EpisodesNavigator = createStackNavigator(
   {
-    [PV.RouteNames.EpisodesScreen]: { screen: EpisodesScreen, path: 'list' },
+    [PV.RouteNames.EpisodesScreen]: EpisodesScreen,
     [PV.RouteNames.EpisodeScreen]: EpisodeScreen
   },
   {

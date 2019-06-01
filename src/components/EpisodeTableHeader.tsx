@@ -3,48 +3,65 @@ import { Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { core } from '../styles'
+import { ActivityIndicator, Text, View } from './'
 
 type Props = {
   handleMorePress?: any
+  isLoading?: boolean
+  isNotFound?: boolean
   podcastImageUrl?: string
   pubDate?: string
   title: string
 }
 
 export const EpisodeTableHeader = (props: Props) => {
-  const { handleMorePress, podcastImageUrl, pubDate, title } = props
+  const { handleMorePress, isLoading, isNotFound, podcastImageUrl, pubDate, title } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <View style={styles.wrapper}>
-      <Image
-        source={{ uri: podcastImageUrl }}
-        style={styles.image} />
-      <View style={styles.textWrapper}>
-        <Text
-          numberOfLines={3}
-          style={styles.title}>{title}</Text>
-        {
-          !!pubDate &&
-            <Text
-              isSecondary={true}
-              style={styles.pubDate}>
-              {readableDate(pubDate)}
-            </Text>
-        }
-      </View>
       {
-        handleMorePress &&
-          <View style={styles.buttonView}>
-            <TouchableOpacity
-              onPress={handleMorePress}
-              style={styles.moreButton}>
-              <Image
-                resizeMode='contain'
-                source={PV.Images.MORE}
-                style={[styles.moreButtonImage, globalTheme.buttonImage]} />
-            </TouchableOpacity>
+        isLoading && <ActivityIndicator />
+      }
+      {
+        !isLoading && !isNotFound &&
+          <View style={styles.innerWrapper}>
+            <Image
+              source={{ uri: podcastImageUrl }}
+              style={styles.image} />
+            <View style={styles.textWrapper}>
+              <Text
+                numberOfLines={3}
+                style={styles.title}>{title}</Text>
+              {
+                !!pubDate &&
+                  <Text
+                    isSecondary={true}
+                    style={styles.pubDate}>
+                    {readableDate(pubDate)}
+                  </Text>
+              }
+            </View>
+            {
+              handleMorePress &&
+                <View style={styles.buttonView}>
+                  <TouchableOpacity
+                    onPress={handleMorePress}
+                    style={styles.moreButton}>
+                    <Image
+                      resizeMode='contain'
+                      source={PV.Images.MORE}
+                      style={[styles.moreButtonImage, globalTheme.buttonImage]} />
+                  </TouchableOpacity>
+                </View>
+            }
+          </View>
+      }
+      {
+        !isLoading && isNotFound &&
+          <View style={core.view}>
+            <Text style={styles.notFoundText}>Episode Not Found</Text>
           </View>
       }
     </View>
@@ -59,9 +76,13 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 0,
-    height: 88,
+    height: 92,
     marginRight: 12,
-    width: 88
+    width: 92
+  },
+  innerWrapper: {
+    flex: 1,
+    flexDirection: 'row'
   },
   moreButton: {
     flex: 0,
@@ -75,6 +96,10 @@ const styles = StyleSheet.create({
     height: 44,
     tintColor: 'white',
     width: 44
+  },
+  notFoundText: {
+    fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.bold
   },
   pubDate: {
     flex: 0,
@@ -93,6 +118,7 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold
   },
   wrapper: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    height: 92
   }
 })

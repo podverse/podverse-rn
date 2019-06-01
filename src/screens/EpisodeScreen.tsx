@@ -1,11 +1,13 @@
 import debounce from 'lodash/debounce'
-import { StyleSheet, View as RNView } from 'react-native'
+import { Linking, StyleSheet, View as RNView } from 'react-native'
+import { NavigationScreenOptions } from 'react-navigation'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, HTMLScrollView,
   NavQueueIcon, NavShareIcon, SearchBar, TableSectionSelectors, View } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
+import { getEpisode } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { core } from '../styles'
 
@@ -15,7 +17,8 @@ type Props = {
 
 type State = {
   endOfResultsReached: boolean
-  episode: any
+  episode?: any
+  episodeId?: any
   flatListData: any[]
   isLoading: boolean
   isLoadingMore: boolean
@@ -30,12 +33,12 @@ type State = {
 export class EpisodeScreen extends React.Component<Props, State> {
 
   static navigationOptions = ({ navigation }) => {
-    const episode = navigation.getParam('episode')
+    const episodeId = navigation.getParam('episodeId')
     return {
       title: 'Episode',
       headerRight: (
         <RNView style={core.row}>
-          <NavShareIcon url={PV.URLs.episode + episode.id} />
+          <NavShareIcon url={PV.URLs.episode + episodeId} />
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
@@ -47,10 +50,16 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     const viewType = this.props.navigation.getParam('viewType') || _clipsKey
     const episode = this.props.navigation.getParam('episode')
+    const episodeId = (episode && episode.id) || this.props.navigation.getParam('episodeId')
+
+    if (episode && episode.id) {
+      this.props.navigation.setParams({ episodeId: episode.id })
+    }
 
     this.state = {
       endOfResultsReached: false,
       episode,
+      episodeId,
       flatListData: [],
       isLoading: viewType === _clipsKey,
       isLoadingMore: false,
@@ -65,19 +74,51 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    Linking.addEventListener('url', () => this._initializePageData())
+
+    this._initializePageData()
+  }
+
+  async componentWillUnmount() {
+    Linking.removeEventListener('url', () => this._initializePageData())
+  }
+
+  async _initializePageData() {
     const { episode, viewType } = this.state
-    let newState = {}
-
-    if (viewType === _clipsKey) {
-      newState = await this._queryData(_clipsKey)
-    }
-
-    episode.description = (episode.description && episode.description.linkifyHtml()) || 'No summary available.'
+    const episodeId = this.props.navigation.getParam('episodeId') || this.state.episodeId
 
     this.setState({
-      ...newState,
-      episode
+      endOfResultsReached: false,
+      episodeId,
+      flatListData: [],
+      isLoading: true,
+      queryPage: 1
+    }, async () => {
+      let newState = {}
+      let newEpisode: any
+
+      try {
+        newEpisode = await getEpisode(episodeId)
+        if (viewType === _clipsKey) {
+          newState = await this._queryData(_clipsKey)
+        }
+
+        newEpisode.description = (newEpisode.description && newEpisode.description.linkifyHtml()) || 'No summary available.'
+
+        this.setState({
+          ...newState,
+          isLoading: false,
+          episode: newEpisode
+        })
+      } catch (error) {
+        this.setState({
+          ...newState,
+          isLoading: false,
+          ...(newEpisode ? { episode: newEpisode } : { episode })
+        })
+      }
     })
+
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -201,14 +242,16 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { episode, flatListData, isLoading, isLoadingMore, querySort, selectedItem,
       showActionSheet, viewType } = this.state
-
+console.log(isLoading, episode)
     return (
       <View style={styles.view}>
         <EpisodeTableHeader
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast))}
-          podcastImageUrl={(episode.podcast && episode.podcast.imageUrl) || episode.podcast_imageUrl}
-          pubDate={episode.pubDate}
-          title={episode.title} />
+          isLoading={isLoading && !episode}
+          isNotFound={!isLoading && !episode}
+          podcastImageUrl={(episode && ((episode.podcast && episode.podcast.imageUrl) || episode.podcast_imageUrl))}
+          pubDate={episode && episode.pubDate}
+          title={episode && episode.title} />
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
