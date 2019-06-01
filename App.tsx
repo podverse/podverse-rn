@@ -19,6 +19,7 @@ class App extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
     StatusBar.setBarStyle('light-content')
+    StatusBar.setBackgroundColor(PV.Colors.brandColor)
     this.state = {
       appReady: false
     }

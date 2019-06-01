@@ -5,7 +5,6 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.guichaguri.trackplayer.TrackPlayer;
-import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
@@ -33,7 +32,6 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new NetInfoPackage(),
             new TrackPlayer(),
-            new ReactSliderPackage(),
             new RNCWebViewPackage(),
             new VectorIconsPackage(),
             new AsyncStoragePackage(),
