@@ -2,6 +2,7 @@ import { setGlobal } from 'reactn'
 import { NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
 import { popLastFromHistoryItems } from '../../services/history'
+import { getMediaRef } from '../../services/mediaRef'
 import { getContinuousPlaybackMode, getNowPlayingItem, getNowPlayingItemEpisode, getNowPlayingItemMediaRef, PVTrackPlayer,
   setContinuousPlaybackMode as setContinuousPlaybackModeService, setNowPlayingItem as setNowPlayingItemService,
   setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService } from '../../services/player'
@@ -47,7 +48,7 @@ export const setContinousPlaybackMode = async (shouldContinuouslyPlay: boolean, 
 }
 
 export const setNowPlayingItem = async (
-  item: NowPlayingItem, globalState: any, isInitialLoad?: boolean, inheritedEpisode?: any, inheritedMediaRef?: any) => {
+  item: NowPlayingItem, globalState: any, isInitialLoad?: boolean) => {
   return new Promise(async (resolve, reject) => {
     try {
       const lastNowPlayingItem = await getNowPlayingItem()
@@ -86,18 +87,17 @@ export const setNowPlayingItem = async (
           let episode = null
           let mediaRef = null
 
-          if (inheritedEpisode) {
-            episode = inheritedEpisode
-          } else if (isNewEpisode) {
+          if (isNewEpisode) {
             episode = await getNowPlayingItemEpisode()
           }
 
-          if (inheritedMediaRef) {
+          if (isNewMediaRef) {
+            if (isInitialLoad && item.clipId) {
+              mediaRef = await getMediaRef(item.clipId)
+            } else {
+              mediaRef = await getNowPlayingItemMediaRef()
+            }
             PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
-            mediaRef = inheritedMediaRef
-          } else if (isNewMediaRef) {
-            PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
-            mediaRef = await getNowPlayingItemMediaRef()
           }
 
           setGlobal({

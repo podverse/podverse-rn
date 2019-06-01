@@ -9,7 +9,7 @@ import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
-import { getEpisode, getEpisodes } from '../services/episode'
+import { getEpisodes } from '../services/episode'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
 import { addQueueItemNext } from '../services/queue'
@@ -66,8 +66,8 @@ export class PlayerScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const { navigation } = this.props
 
-    const episodeId = navigation.getParam('episodeId')
-    if (episodeId) {
+    const mediaRefId = navigation.getParam('mediaRefId')
+    if (mediaRefId) {
       await this._initializeScreenData()
     }
 
@@ -99,25 +99,16 @@ export class PlayerScreen extends React.Component<Props, State> {
     }, async () => {
       const { navigation } = this.props
       const mediaRefId = navigation.getParam('mediaRefId')
-      const episodeId = navigation.getParam('episodeId')
 
       try {
         const currentItem = await getNowPlayingItem()
 
-        if ((episodeId && episodeId !== currentItem.episodeId) || (mediaRefId && mediaRefId !== currentItem.mediaRefId)) {
-          const episode = await getEpisode(episodeId)
-
-          if (!mediaRefId) {
+        if ((mediaRefId && mediaRefId !== currentItem.mediaRefId)) {
+          const mediaRef = await getMediaRef(mediaRefId)
+          if (mediaRef) {
             await addQueueItemNext(currentItem, isLoggedIn)
-            const newItem = convertToNowPlayingItem(episode, null, null)
-            await setNowPlayingItem(newItem, this.global, false, episode)
-          } else {
-            const mediaRef = await getMediaRef(mediaRefId)
-            if (mediaRef) {
-              await addQueueItemNext(currentItem, isLoggedIn)
-              const newItem = convertToNowPlayingItem(mediaRef, null, null)
-              await setNowPlayingItem(newItem, this.global, false, episode, mediaRef)
-            }
+            const newItem = convertToNowPlayingItem(mediaRef, null, null)
+            await setNowPlayingItem(newItem, this.global, false)
           }
         }
       } catch (error) {
@@ -443,9 +434,9 @@ export class PlayerScreen extends React.Component<Props, State> {
                 handleClosePress={this._toggleShowFullClipInfo}
                 isLoading={isLoading}
                 navigation={navigation}
-                ownerId={mediaRef.owner.id}
-                ownerIsPublic={mediaRef.owner.isPublic}
-                ownerName={mediaRef.owner.name}
+                {...(mediaRef.owner ? { ownerId: mediaRef.owner.id } : {})}
+                {...(mediaRef.owner ? { ownerIsPublic: mediaRef.owner.isPublic } : {})}
+                {...(mediaRef.owner ? { ownerName: mediaRef.owner.name } : {})}
                 startTime={mediaRef.startTime}
                 title={mediaRef.title} />
           }

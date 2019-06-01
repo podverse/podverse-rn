@@ -169,11 +169,11 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
     await addOrUpdateHistoryItem(item, useServerData)
 
     if (isNewEpisode && episodeId) {
-      await updateNowPlayingItemEpisode(episodeId, item, useServerData)
+      await updateNowPlayingItemEpisode(episodeId, item, isConnected)
     }
 
     if (isNewMediaRef && clipId) {
-      await updateNowPlayingItemMediaRef(clipId, item, useServerData)
+      await updateNowPlayingItemMediaRef(clipId, item, isConnected)
     }
 
     PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
@@ -188,6 +188,33 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
     }
   } catch (error) {
     throw error
+  }
+}
+
+export const setPlaybackSpeed = async (rate: number) => {
+  await TrackPlayer.setRate(rate)
+}
+
+export const setPlaybackPosition = async (position: number) => {
+  await TrackPlayer.seekTo(position)
+}
+
+export const togglePlay = async (playbackRate: number) => {
+  const state = await TrackPlayer.getState()
+
+  if (state === TrackPlayer.STATE_NONE) {
+    const nowPlayingItem = await getNowPlayingItem()
+    await setNowPlayingItem(nowPlayingItem)
+    TrackPlayer.play()
+    TrackPlayer.setRate(playbackRate)
+    return
+  }
+
+  if (state === TrackPlayer.STATE_PLAYING) {
+    TrackPlayer.pause()
+  } else {
+    TrackPlayer.play()
+    TrackPlayer.setRate(playbackRate)
   }
 }
 
@@ -212,34 +239,8 @@ export const updateNowPlayingItemMediaRef = async (id: string, item: NowPlayingI
   } else {
     mediaRef = convertNowPlayingItemToMediaRef(item)
   }
+
   mediaRef.episode.description = (mediaRef.episode.description && mediaRef.episode.description.linkifyHtml()) || 'No summary available.'
 
   await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM_MEDIA_REF, JSON.stringify(mediaRef))
-}
-
-export const setPlaybackSpeed = async (rate: number) => {
-  await TrackPlayer.setRate(rate)
-}
-
-export const setPlaybackPosition = async (position: number) => {
-  await TrackPlayer.seekTo(position)
-}
-
-export const togglePlay = async (playbackRate: number) => {
-  const state = await TrackPlayer.getState()
-
-  if (state === TrackPlayer.STATE_NONE) {
-    const nowPlayingItem = await getNowPlayingItem()
-    await setNowPlayingItem(nowPlayingItem, true)
-    TrackPlayer.play()
-    TrackPlayer.setRate(playbackRate)
-    return
-  }
-
-  if (state === TrackPlayer.STATE_PLAYING) {
-    TrackPlayer.pause()
-  } else {
-    TrackPlayer.play()
-    TrackPlayer.setRate(playbackRate)
-  }
 }
