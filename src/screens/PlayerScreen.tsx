@@ -38,7 +38,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           color='#fff'
           name='chevron-down'
           onPress={navigation.dismiss}
-          size={22}
+          size={PV.Icons.NAV}
           style={navHeader.buttonIcon} />
       ),
       headerRight: (

@@ -6,6 +6,7 @@ import { Events } from './Events'
 import { Filters } from './Filters'
 import { FlatList } from './FlatList'
 import { Fonts } from './Fonts'
+import { Icons } from './Icons'
 import { Images } from './Images'
 import { Keys } from './Keys'
 import { MembershipStatus } from './MembershipStatus'
@@ -26,6 +27,7 @@ export const PV = {
   Filters,
   FlatList,
   Fonts,
+  Icons,
   Images,
   Keys,
   MembershipStatus,

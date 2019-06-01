@@ -3,6 +3,7 @@ import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, Icon, MessageWithAction, QueueTableCell,
   SortableList, SortableListRow, TableSectionHeader, View as PVView } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
+import { PV } from '../resources'
 import { getNowPlayingItem } from '../services/player'
 import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
 import { setNowPlayingItem } from '../state/actions/player'
@@ -41,7 +42,7 @@ export class QueueScreen extends React.Component<Props, State> {
         color='#fff'
         name='chevron-down'
         onPress={navigation.dismiss}
-        size={22}
+        size={PV.Icons.NAV}
         style={navHeader.buttonIcon} />
     ),
     headerRight: (

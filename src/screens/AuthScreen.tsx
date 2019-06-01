@@ -1,9 +1,10 @@
 import React from 'react'
 import { Alert, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
-import { Login, SignUp } from '../components'
+import { Icon, Login, SafeAreaView, SignUp } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { Credentials, loginUser, signUpUser } from '../state/actions/auth'
+import { button } from '../styles'
 
 type Props = {
   navigation?: any
@@ -81,55 +82,71 @@ export class AuthScreen extends React.Component<Props, State> {
   }
 
   render() {
+    const { navigation } = this.props
     const { isLoadingLogin, isLoadingSignUp } = this.state
 
     return (
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.view}>
-          <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />
-          <View style={styles.contentView}>
-            {
-              !this.state.showSignUp ?
-                <Login
-                  isLoading={isLoadingLogin}
-                  onLoginPressed={this.attemptLogin} /> :
-                <SignUp
-                  isLoading={isLoadingSignUp}
-                  onSignUpPressed={this.attemptSignUp} />
-            }
-            <Text
-              onPress={this.switchOptions}
-              style={styles.switchOptionText}>
-              {this.state.showSignUp ? 'Login' : 'Sign Up'}
-            </Text>
+      <SafeAreaView style={styles.safeAreaView}>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View style={styles.view}>
+            <Icon
+              name='times'
+              onPress={navigation.dismiss}
+              size={26}
+              style={[button.iconOnlyMedium, styles.closeButton]} />
+            <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />
+            <View style={styles.contentView}>
+              {
+                !this.state.showSignUp ?
+                  <Login
+                    isLoading={isLoadingLogin}
+                    onLoginPressed={this.attemptLogin} /> :
+                  <SignUp
+                    isLoading={isLoadingSignUp}
+                    onSignUpPressed={this.attemptSignUp} />
+              }
+              <Text
+                onPress={this.switchOptions}
+                style={styles.switchOptionText}>
+                {this.state.showSignUp ? 'Login' : 'Sign Up'}
+              </Text>
+            </View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </SafeAreaView>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: PV.Colors.brandColor,
-    paddingTop: 100
+  banner: {
+    marginBottom: 60,
+    width: '80%'
+  },
+  closeButton: {
+    position: 'absolute',
+    right: 16,
+    top: 8
   },
   contentView: {
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center'
   },
-  banner: {
-    marginBottom: 60,
-    width: '80%'
+  safeAreaView: {
+    backgroundColor: PV.Colors.brandColor
   },
   switchOptionText: {
     fontSize: 18,
     color: PV.Colors.white,
     marginTop: 30,
     textDecorationLine: 'underline'
+  },
+  view: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: PV.Colors.brandColor,
+    paddingTop: 100
   }
 })

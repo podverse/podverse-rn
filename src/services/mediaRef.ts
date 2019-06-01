@@ -34,6 +34,14 @@ export const deleteMediaRef = async () => {
   return response && response.data
 }
 
+export const getMediaRef = async (id: string) => {
+  const response = await request({
+    endpoint: `/mediaRef/${id}`
+  })
+
+  return response && response.data
+}
+
 export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
@@ -49,14 +57,6 @@ export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
     endpoint: '/mediaRef',
     query: filteredQuery
   }, nsfwMode)
-
-  return response && response.data
-}
-
-export const getMediaRef = async (id: string) => {
-  const response = await request({
-    endpoint: `/mediaRef/${id}`
-  })
 
   return response && response.data
 }

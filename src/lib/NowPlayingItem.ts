@@ -36,11 +36,11 @@ export const convertNowPlayingItemToEpisode = (item: NowPlayingItem) => {
 export const convertNowPlayingItemToMediaRef = (item: NowPlayingItem) => {
   return {
     endTime: item.clipEndTime,
+    episode: convertNowPlayingItemToEpisode(item),
     id: item.clipId,
     isPublic: item.isPublic,
     startTime: item.clipStartTime,
-    title: item.clipTitle,
-    episode: convertNowPlayingItemToEpisode(item)
+    title: item.clipTitle
   }
 }
 

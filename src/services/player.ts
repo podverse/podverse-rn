@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import TrackPlayer from 'react-native-track-player'
 import { hasValidNetworkConnection, hasValidStreamingConnection } from '../lib/network'
-import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem, convertNowPlayingItemToMediaRef, convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemClipToNowPlayingItemEpisode, convertNowPlayingItemToEpisode,
+  convertNowPlayingItemToMediaRef, NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { getBearerToken } from './auth'
@@ -12,6 +13,16 @@ import { filterItemFromQueueItems, getQueueItems, setAllQueueItems } from './que
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
 TrackPlayer.setupPlayer().then(() => {
+  TrackPlayer.updateOptions({
+    capabilities: [
+      TrackPlayer.CAPABILITY_JUMP_BACKWARD,
+      TrackPlayer.CAPABILITY_JUMP_FORWARD,
+      TrackPlayer.CAPABILITY_PAUSE,
+      TrackPlayer.CAPABILITY_PLAY,
+      TrackPlayer.CAPABILITY_SEEK_TO
+    ],
+    stopWithApp: true
+  })
   TrackPlayer.registerPlaybackService(() => require('./playerEvents'))
 })
 
@@ -115,7 +126,7 @@ export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean)
   await AsyncStorage.setItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY, JSON.stringify(shouldContinuouslyPlay))
 }
 
-export const setNowPlayingItem = async (item: NowPlayingItem) => {
+export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: boolean) => {
   try {
     const bearerToken = await getBearerToken()
     const isLoggedIn = !!bearerToken
@@ -123,8 +134,8 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
       podcastTitle = 'untitled podcast' } = item
 
     const lastNowPlayingItem = await getNowPlayingItem()
-    const isNewEpisode = !lastNowPlayingItem || episodeId !== lastNowPlayingItem.episodeId
-    const isNewMediaRef = clipId && (!lastNowPlayingItem || clipId !== lastNowPlayingItem.clipId)
+    const isNewEpisode = (isInitialLoad || !lastNowPlayingItem) || item.episodeId !== lastNowPlayingItem.episodeId
+    const isNewMediaRef = item.clipId && ((isInitialLoad || !lastNowPlayingItem) || item.clipId !== lastNowPlayingItem.clipId)
 
     await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
 
@@ -140,6 +151,10 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
 
     if (id && (!isTrackLoaded || isNewEpisode)) {
       if (!shouldNotLoadFile) {
+        if (isTrackLoaded) {
+          await TrackPlayer.reset()
+        }
+
         await TrackPlayer.add({
           id,
           url: episodeMediaUrl,
@@ -147,10 +162,6 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
           artist: podcastTitle,
           ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
         })
-
-        if (isTrackLoaded) {
-          await TrackPlayer.skipToNext()
-        }
       }
     }
 
@@ -182,6 +193,18 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
       PlayerEventEmitter.emit(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
     }
 
+    if (isTrackLoaded) {
+      const shouldContinuouslyPlay = await getContinuousPlaybackMode()
+      // Give the player a second to load the file before playing.
+      // Without this, the player will play a split second of the beginning of an episode
+      // before adjusting to the clip's start time position.
+      setTimeout(() => {
+        if (shouldContinuouslyPlay) {
+          TrackPlayer.play()
+        }
+      }, 1000)
+    }
+
     return {
       nowPlayingItem: item,
       queueItems: filteredItems
@@ -191,12 +214,12 @@ export const setNowPlayingItem = async (item: NowPlayingItem) => {
   }
 }
 
-export const setPlaybackSpeed = async (rate: number) => {
-  await TrackPlayer.setRate(rate)
-}
-
 export const setPlaybackPosition = async (position: number) => {
   await TrackPlayer.seekTo(position)
+}
+
+export const setPlaybackSpeed = async (rate: number) => {
+  await TrackPlayer.setRate(rate)
 }
 
 export const togglePlay = async (playbackRate: number) => {
@@ -204,7 +227,7 @@ export const togglePlay = async (playbackRate: number) => {
 
   if (state === TrackPlayer.STATE_NONE) {
     const nowPlayingItem = await getNowPlayingItem()
-    await setNowPlayingItem(nowPlayingItem)
+    await setNowPlayingItem(nowPlayingItem, true)
     TrackPlayer.play()
     TrackPlayer.setRate(playbackRate)
     return
@@ -239,7 +262,6 @@ export const updateNowPlayingItemMediaRef = async (id: string, item: NowPlayingI
   } else {
     mediaRef = convertNowPlayingItemToMediaRef(item)
   }
-
   mediaRef.episode.description = (mediaRef.episode.description && mediaRef.episode.description.linkifyHtml()) || 'No summary available.'
 
   await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM_MEDIA_REF, JSON.stringify(mediaRef))

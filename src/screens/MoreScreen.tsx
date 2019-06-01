@@ -51,8 +51,9 @@ export class MoreScreen extends React.Component<Props, State> {
   render() {
     const { globalTheme, session } = this.global
     const { isLoggedIn = false, userInfo } = session
+    const options = moreFeaturesOptions(isLoggedIn)
 
-    const featureOptions = moreFeaturesOptions.filter((item = { key: '', title: '' }) => {
+    const featureOptions = options.filter((item = { key: '', title: '' }) => {
       if (isLoggedIn) {
         return item.key !== _loginKey
       } else {
@@ -101,36 +102,43 @@ const _membershipKey = 'membership'
 const _logoutKey = 'logout'
 const _loginKey = 'login'
 
-const moreFeaturesOptions = [
-  {
-    title: 'Downloads',
-    key: PV.RouteNames.DownloadsScreen
-  },
-  {
-    title: 'Playlists',
-    key: PV.RouteNames.PlaylistsScreen
-  },
-  {
-    title: 'Profiles',
-    key: PV.RouteNames.ProfilesScreen
-  },
-  {
-    title: 'My Profile',
-    key: PV.RouteNames.MyProfileScreen
-  },
-  {
-    title: 'Settings',
-    key: PV.RouteNames.SettingsScreen
-  },
-  {
-    title: 'Log out',
-    key: _logoutKey
-  },
-  {
-    title: 'Log In',
-    key: _loginKey
+const moreFeaturesOptions = (isLoggedIn?: boolean) => {
+  const items = [
+    {
+      title: 'Downloads',
+      key: PV.RouteNames.DownloadsScreen
+    },
+    {
+      title: 'Playlists',
+      key: PV.RouteNames.PlaylistsScreen
+    },
+    {
+      title: 'Profiles',
+      key: PV.RouteNames.ProfilesScreen
+    },
+    {
+      title: 'Settings',
+      key: PV.RouteNames.SettingsScreen
+    },
+    {
+      title: 'Log out',
+      key: _logoutKey
+    },
+    {
+      title: 'Log In',
+      key: _loginKey
+    }
+  ]
+
+  if (isLoggedIn) {
+    items.splice(3, 0, {
+      title: 'My Profile',
+      key: PV.RouteNames.MyProfileScreen
+    })
   }
-]
+
+  return items
+}
 
 const moreOtherOptions = (membershipStatus?: string) => {
   const options = [
