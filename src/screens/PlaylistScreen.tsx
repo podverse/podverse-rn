@@ -1,4 +1,5 @@
-import { StyleSheet, View as RNView } from 'react-native'
+import { Linking, StyleSheet, View as RNView } from 'react-native'
+import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
   NavQueueIcon, NavShareIcon, PlaylistTableHeader, View } from '../components'
@@ -17,9 +18,10 @@ type State = {
   endOfResultsReached: boolean
   isLoading: boolean
   isLoadingMore: boolean
-  isLoggedInUserPlaylist: boolean
   isSubscribed: boolean
   isSubscribing: boolean
+  playlist?: any
+  playlistId?: string
   selectedItem?: any
   showActionSheet: boolean
 }
@@ -27,12 +29,12 @@ type State = {
 export class PlaylistScreen extends React.Component<Props, State> {
 
   static navigationOptions = ({ navigation }) => {
-    const playlist = navigation.getParam('playlist')
+    const playlistId = navigation.getParam('playlistId')
     return {
       title: 'Playlist',
       headerRight: (
         <RNView style={core.row}>
-          <NavShareIcon url={PV.URLs.playlist + playlist.id} />
+          <NavShareIcon url={PV.URLs.playlist + playlistId} />
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
@@ -41,18 +43,23 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    const { id, subscribedPlaylistIds } = this.global.session.userInfo
+    const { subscribedPlaylistIds } = this.global.session.userInfo
     const playlist = this.props.navigation.getParam('playlist')
-    const isLoggedInUserPlaylist = playlist.owner.id === id
-    const isSubscribed = subscribedPlaylistIds.some((x: string) => playlist.id)
+    const playlistId = (playlist && playlist.id) || this.props.navigation.getParam('playlistId')
+    const isSubscribed = subscribedPlaylistIds.some((x: string) => playlistId)
+
+    if (playlist && playlist.id) {
+      this.props.navigation.setParams({ playlistId: playlist.id })
+    }
 
     this.state = {
       endOfResultsReached: false,
       isLoading: true,
       isLoadingMore: false,
-      isLoggedInUserPlaylist,
       isSubscribed,
       isSubscribing: false,
+      playlist,
+      playlistId,
       showActionSheet: false
     }
 
@@ -65,13 +72,25 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    const playlist = this.props.navigation.getParam('playlist')
-    try {
-      await getPlaylist(playlist.id, this.global)
-    } catch (error) {
-      //
-    }
-    this.setState({ isLoading: false })
+    Linking.addEventListener('url', () => this._initializePageData())
+    this._initializePageData()
+  }
+
+  async componentWillUnmount() {
+    Linking.removeEventListener('url', () => this._initializePageData())
+  }
+
+  async _initializePageData() {
+    const playlistId = this.props.navigation.getParam('playlistId') || this.state.playlistId
+
+    this.setState({ isLoading: true }, async () => {
+      try {
+        await getPlaylist(playlistId, this.global)
+      } catch (error) {
+        //
+      }
+      this.setState({ isLoading: false })
+    })
   }
 
   _ItemSeparatorComponent = () => {
@@ -125,10 +144,9 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
     this.setState({ isSubscribing: true }, async () => {
       try {
-        const { playlist } = this.global.screenPlaylist
         await toggleSubscribeToPlaylist(id, this.global)
         const { subscribedPlaylistIds } = this.global.session.userInfo
-        const isSubscribed = subscribedPlaylistIds.some((x: string) => playlist.id)
+        const isSubscribed = subscribedPlaylistIds.some((x: string) => id)
         this.setState({
           isSubscribed,
           isSubscribing: false
@@ -153,25 +171,28 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, isLoadingMore, isLoggedInUserPlaylist, isSubscribed, isSubscribing, selectedItem,
-      showActionSheet } = this.state
-    const { screenPlaylist } = this.global
     const { navigation } = this.props
+    const { isLoading, isLoadingMore, isSubscribed, isSubscribing, playlistId,
+      selectedItem, showActionSheet } = this.state
+    const { screenPlaylist, session } = this.global
     const playlist = screenPlaylist.playlist ? screenPlaylist.playlist : navigation.getParam('playlist')
     const flatListData = screenPlaylist.flatListData || []
+    const isLoggedInUserPlaylist = ((playlist && playlist.owner && playlist.owner.id) === session.userInfo.id)
 
     return (
       <View style={styles.view}>
         <PlaylistTableHeader
-          createdBy={isLoggedInUserPlaylist ? playlist.owner.name : null}
+          createdBy={isLoggedInUserPlaylist && playlist && playlist.owner ? playlist.owner.name : null}
           handleEditPress={isLoggedInUserPlaylist ? this._handleEditPress : null}
-          handleToggleSubscribe={isLoggedInUserPlaylist ? null : () => this._handleToggleSubscribe(playlist.id)}
-          id={playlist.id}
+          handleToggleSubscribe={isLoggedInUserPlaylist ? null : () => this._handleToggleSubscribe(playlistId)}
+          id={playlistId}
+          isLoading={isLoading && !playlist}
+          isNotFound={!isLoading && !playlist}
           isSubscribed={isSubscribed}
           isSubscribing={isSubscribing}
-          itemCount={playlist.itemCount}
-          lastUpdated={playlist.updatedAt}
-          title={playlist.title} />
+          itemCount={playlist && playlist.itemCount}
+          lastUpdated={playlist && playlist.updatedAt}
+          title={playlist && playlist.title} />
         {
           isLoading &&
             <ActivityIndicator />

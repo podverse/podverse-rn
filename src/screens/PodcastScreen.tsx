@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { View as RNView, Linking } from 'react-native'
+import { Linking, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
@@ -30,7 +30,7 @@ type State = {
   isRefreshing: boolean
   isSearchScreen?: boolean
   isSubscribing: boolean
-  podcast: any
+  podcast?: any
   podcastId?: string
   queryPage: number
   querySort: string | null

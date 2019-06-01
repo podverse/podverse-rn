@@ -115,14 +115,14 @@ const SearchNavigator = createStackNavigator(
 
 const MoreNavigator = createStackNavigator(
   {
-    [PV.RouteNames.MoreScreen]: { screen: MoreScreen, path: '/' },
-    [PV.RouteNames.DownloadsScreen]: { screen: DownloadsScreen, path: 'downloads' },
+    [PV.RouteNames.MoreScreen]: MoreScreen,
+    [PV.RouteNames.DownloadsScreen]: DownloadsScreen,
     [PV.RouteNames.MyProfileScreen]: ProfileScreen,
-    [PV.RouteNames.PlaylistScreen]: { screen: PlaylistScreen, path: 'playlist' },
+    [PV.RouteNames.PlaylistScreen]: { screen: PlaylistScreen, path: 'playlist/:playlistId' },
     [PV.RouteNames.PlaylistsScreen]: { screen: PlaylistsScreen, path: 'playlists' },
     [PV.RouteNames.EditPlaylistScreen]: EditPlaylistScreen,
     [PV.RouteNames.EditProfileScreen]: EditProfileScreen,
-    [PV.RouteNames.ProfileScreen]: { screen: ProfileScreen, path: 'profile' },
+    [PV.RouteNames.ProfileScreen]: { screen: ProfileScreen, path: 'profile/:profileId' },
     [PV.RouteNames.ProfilesScreen]: { screen: ProfilesScreen, path: 'profiles' },
     [PV.RouteNames.SettingsScreen]: SettingsScreen,
     [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen,

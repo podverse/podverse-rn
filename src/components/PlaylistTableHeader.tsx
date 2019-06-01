@@ -2,14 +2,16 @@ import React from 'react'
 import { StyleSheet } from 'react-native'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { button } from '../styles'
-import { Divider, Icon, SubscribeButton, Text, View } from './'
+import { button, core } from '../styles'
+import { ActivityIndicator, Divider, Icon, SubscribeButton, Text, View } from './'
 
 type Props = {
   createdBy?: string
   handleEditPress?: any
   handleToggleSubscribe?: any
-  id: string
+  id?: string
+  isLoading?: boolean
+  isNotFound?: boolean
   isSubscribed?: boolean
   isSubscribing?: boolean
   itemCount: number
@@ -18,51 +20,62 @@ type Props = {
 }
 
 export const PlaylistTableHeader = (props: Props) => {
-  const { createdBy, handleEditPress, handleToggleSubscribe, id, isSubscribed, isSubscribing, itemCount, lastUpdated,
-    title } = props
+  const { createdBy, handleEditPress, handleToggleSubscribe, id, isLoading, isNotFound, isSubscribed,
+    isSubscribing, itemCount, lastUpdated, title } = props
 
   return (
     <View>
-      <View style={styles.wrapper}>
-        <View style={styles.textWrapper}>
-          <Text
-            numberOfLines={1}
-            style={styles.title}>{title}</Text>
-          {
-            !!createdBy &&
-              <Text
-                isSecondary={true}
-                numberOfLines={1}
-                style={styles.createdBy}>by: {createdBy}</Text>
-          }
-          <View style={styles.row}>
-            <Text
-              isSecondary={true}
-              numberOfLines={1}
-              style={styles.itemCount}>
-              items: {itemCount}
-            </Text>
-            <Text
-              isSecondary={true}
-              style={styles.lastUpdated}>
-              {readableDate(lastUpdated)}
-            </Text>
-          </View>
-        </View>
+      <View style={core.row}>
         {
-          handleEditPress &&
-            <Icon
-              name='pencil-alt'
-              onPress={() => handleEditPress(id)}
-              size={26}
-              style={button.iconOnlyMedium} />
+          isLoading &&
+            <View style={[styles.wrapper, core.view]}>
+              <ActivityIndicator />
+            </View>
         }
         {
-          handleToggleSubscribe &&
-            <SubscribeButton
-              handleToggleSubscribe={handleToggleSubscribe}
-              isSubscribed={isSubscribed}
-              isSubscribing={isSubscribing} />
+          !isLoading && !isNotFound &&
+            <View style={[styles.wrapper, core.view]}>
+              <View style={styles.textWrapper}>
+                <Text
+                  numberOfLines={1}
+                  style={styles.title}>{title}</Text>
+                {
+                  !!createdBy &&
+                    <Text
+                      isSecondary={true}
+                      numberOfLines={1}
+                      style={styles.createdBy}>by: {createdBy}</Text>
+                }
+                <View style={styles.row}>
+                  <Text
+                    isSecondary={true}
+                    numberOfLines={1}
+                    style={styles.itemCount}>
+                    items: {itemCount}
+                  </Text>
+                  <Text
+                    isSecondary={true}
+                    style={styles.lastUpdated}>
+                    {readableDate(lastUpdated)}
+                  </Text>
+                </View>
+              </View>
+              {
+                handleEditPress &&
+                  <Icon
+                    name='pencil-alt'
+                    onPress={() => handleEditPress(id)}
+                    size={26}
+                    style={button.iconOnlyMedium} />
+              }
+              {
+                handleToggleSubscribe &&
+                  <SubscribeButton
+                    handleToggleSubscribe={handleToggleSubscribe}
+                    isSubscribed={isSubscribed}
+                    isSubscribing={isSubscribing} />
+              }
+            </View>
         }
       </View>
       <Divider />
@@ -118,6 +131,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexDirection: 'row',
+    height: 80,
     padding: 8
   }
 })
