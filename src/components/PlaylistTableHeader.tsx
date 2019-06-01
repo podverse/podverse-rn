@@ -77,6 +77,12 @@ export const PlaylistTableHeader = (props: Props) => {
               }
             </View>
         }
+        {
+          !isLoading && isNotFound &&
+            <View style={[styles.wrapper, core.view]}>
+              <Text style={styles.notFoundText}>Playlist Not Found</Text>
+            </View>
+        }
       </View>
       <Divider />
     </View>
@@ -116,6 +122,10 @@ const styles = StyleSheet.create({
     height: 44,
     tintColor: 'white',
     width: 44
+  },
+  notFoundText: {
+    fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.bold
   },
   row: {
     flexDirection: 'row'

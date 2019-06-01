@@ -83,13 +83,22 @@ export class PlaylistScreen extends React.Component<Props, State> {
   async _initializePageData() {
     const playlistId = this.props.navigation.getParam('playlistId') || this.state.playlistId
 
-    this.setState({ isLoading: true }, async () => {
-      try {
-        await getPlaylist(playlistId, this.global)
-      } catch (error) {
-        //
-      }
-      this.setState({ isLoading: false })
+    this.setState({
+      endOfResultsReached: false,
+      isLoading: true,
+      playlistId
+    }, async () => {
+      setGlobal({
+        flatListData: [],
+        playlist: null
+      }, async () => {
+        try {
+          await getPlaylist(playlistId, this.global)
+        } catch (error) {
+          //
+        }
+        this.setState({ isLoading: false })
+      })
     })
   }
 

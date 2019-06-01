@@ -1,4 +1,4 @@
-import { StyleSheet, View as RNView } from 'react-native'
+import { Linking, StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, NavQueueIcon, NavShareIcon,
@@ -8,7 +8,7 @@ import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { generateAuthorsText, generateCategoriesText, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
-import { getUserMediaRefs, getUserPlaylists } from '../services/user'
+import { getLoggedInUserMediaRefs, getLoggedInUserPlaylists, getUserMediaRefs, getUserPlaylists } from '../services/user'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { getPublicUser, toggleSubscribeToUser } from '../state/actions/user'
 import { core } from '../styles'
@@ -22,7 +22,6 @@ type State = {
   flatListData: any[]
   isLoading: boolean
   isLoadingMore: boolean
-  isLoggedInUserProfile: boolean
   isSubscribed: boolean
   isSubscribing: boolean
   preventSortQuery?: boolean
@@ -31,20 +30,22 @@ type State = {
   querySort?: string | null
   selectedItem?: any
   showActionSheet: boolean
+  userId?: string
 }
 
 export class ProfileScreen extends React.Component<Props, State> {
 
   static navigationOptions = ({ navigation }) => {
-    const user = navigation.getParam('user')
+    const userId = navigation.getParam('userId')
+    const userIsPublic = navigation.getParam('userIsPublic')
 
     return {
       title: 'Profile',
       headerRight: (
         <RNView style={core.row}>
           {
-            user.isPublic &&
-              <NavShareIcon url={PV.URLs.profile + user.id} />
+            userIsPublic &&
+              <NavShareIcon url={PV.URLs.profile + userId} />
           }
           <NavQueueIcon navigation={navigation} />
         </RNView>
@@ -56,21 +57,29 @@ export class ProfileScreen extends React.Component<Props, State> {
     super(props)
     const { id, subscribedUserIds } = this.global.session.userInfo
     const user = this.props.navigation.getParam('user')
-    const isLoggedInUserProfile = user.id === id
-    const isSubscribed = subscribedUserIds.some((x: string) => user.id)
+    const userId = (user && user.id) || this.props.navigation.getParam('userId')
+    const isLoggedInUserProfile = userId === id
+    const isSubscribed = subscribedUserIds.some((x: string) => userId)
+
+    if (user && user.id) {
+      this.props.navigation.setParams({
+        userId: user.id,
+        userIsPublic: user.isPublic
+      })
+    }
 
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
       isLoading: true,
       isLoadingMore: false,
-      isLoggedInUserProfile,
       isSubscribed,
       isSubscribing: false,
       queryFrom: _podcastsKey,
       queryPage: 1,
       querySort: _alphabeticalKey,
-      showActionSheet: false
+      showActionSheet: false,
+      userId
     }
 
     setGlobal({
@@ -81,49 +90,77 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { isLoggedInUserProfile } = this.state
+    Linking.addEventListener('url', () => this._initializeScreenData())
+    this._initializeScreenData()
+  }
 
-    const wasAlerted = await alertIfNoNetworkConnection('load your profile')
-    if (wasAlerted) {
-      this.setState({
-        flatListData: [],
-        isLoading: false,
-        isLoadingMore: false,
-        queryPage: 1
-      })
-      return
-    }
+  async componentWillUnmount() {
+    Linking.removeEventListener('url', () => this._initializeScreenData())
+  }
 
-    if (isLoggedInUserProfile) {
-      let newState = {
-        isLoading: false,
-        isLoadingMore: false,
-        queryPage: 1
-      } as State
-      try {
-        await getAuthUserInfo()
-        newState = await this._queryPodcasts(newState, 1, _alphabeticalKey)
-      } catch (error) {
-        //
+  async _initializeScreenData() {
+    const userId = this.props.navigation.getParam('userId') || this.state.userId
+    const { queryFrom } = this.state
+
+    this.setState({
+      endOfResultsReached: false,
+      flatListData: [],
+      isLoading: true,
+      userId
+    }, async () => {
+      const { id } = this.global.session.userInfo
+      const isLoggedInUserProfile = userId === id
+      let newState = {} as any
+
+      const wasAlerted = await alertIfNoNetworkConnection('load your profile')
+      if (wasAlerted) {
+        this.setState({
+          flatListData: [],
+          isLoading: false,
+          isLoadingMore: false,
+          queryPage: 1
+        })
+        return
       }
-      this.setState(newState)
-    } else {
-      const user = this.props.navigation.getParam('user')
-      let newState = {
-        isLoading: false,
-        isLoadingMore: false,
-        queryPage: 1
-      } as State
 
-      try {
-        const { profileFlatListData } = await getPublicUser(user.id, this.global)
-        newState.flatListData = profileFlatListData
-        newState = await this._queryPodcasts(newState, 1, _alphabeticalKey)
-      } catch (error) {
-        //
+      if (isLoggedInUserProfile) {
+        newState = {
+          isLoading: false,
+          isLoadingMore: false,
+          queryPage: 1
+        } as State
+
+        try {
+          await getAuthUserInfo()
+          setGlobal({
+            profile: {
+              ...this.global.profile,
+              user: this.global.session.userInfo
+            }
+          }, async () => {
+            newState = await this._queryData(queryFrom, 1)
+            this.setState(newState)
+          })
+        } catch (error) {
+          this.setState(newState)
+        }
+      } else {
+        newState = {
+          isLoading: false,
+          isLoadingMore: false,
+          queryPage: 1
+        } as State
+
+        try {
+          const { profileFlatListData } = await getPublicUser(userId, this.global)
+          newState.flatListData = profileFlatListData
+          newState = await this._queryData(queryFrom, 1)
+        } catch (error) {
+          //
+        }
+        this.setState(newState)
       }
-      this.setState(newState)
-    }
+    })
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -242,15 +279,15 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _handleToggleSubscribe = async (id: string) => {
+    const { userId } = this.state
     const wasAlerted = await alertIfNoNetworkConnection('subscribe to profile')
     if (wasAlerted) return
 
     this.setState({ isSubscribing: true }, async () => {
       try {
-        const { user } = this.global.profile
         await toggleSubscribeToUser(id, this.global.session.isLoggedIn, this.global)
         const { subscribedUserIds } = this.global.session.userInfo
-        const isSubscribed = subscribedUserIds.some((x: string) => user.id)
+        const isSubscribed = subscribedUserIds.some((x: string) => userId)
         this.setState({
           isSubscribed,
           isSubscribing: false
@@ -300,12 +337,14 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, isLoading, isLoadingMore, isLoggedInUserProfile, isSubscribed, isSubscribing, queryFrom,
-      querySort, selectedItem, showActionSheet } = this.state
-    const { profile } = this.global
+    const { flatListData, isLoading, isLoadingMore, isSubscribed, isSubscribing, queryFrom,
+      querySort, selectedItem, showActionSheet, userId } = this.state
+    const { profile, session } = this.global
     const { user } = profile
+    const { id } = session.userInfo
     let rightOptions = [] as any[]
     const { navigation } = this.props
+    const isLoggedInUserProfile = userId === id
 
     if (queryFrom === _podcastsKey) {
       rightOptions = rightItemsWithAlphabetical
@@ -317,11 +356,13 @@ export class ProfileScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         <ProfileTableHeader
           handleEditPress={isLoggedInUserProfile ? this._handleEditPress : null}
-          handleToggleSubscribe={isLoggedInUserProfile ? null : () => this._handleToggleSubscribe(user.id)}
-          id={user.id}
+          handleToggleSubscribe={isLoggedInUserProfile ? null : () => this._handleToggleSubscribe(userId)}
+          id={userId}
+          isLoading={isLoading && !user}
+          isNotFound={!isLoading && !user}
           isSubscribed={isSubscribed}
           isSubscribing={isSubscribing}
-          name={user.name} />
+          name={user && user.name} />
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
@@ -391,11 +432,19 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   _queryMediaRefs = async (newState: any, page: number = 1, sort?: string | null) => {
     return new Promise(async (resolve, reject) => {
-      const { flatListData } = this.state
+      const { flatListData, userId } = this.state
       const { settings } = this.global
       const { nsfwMode } = settings
       const query = { page }
-      const results = await getUserMediaRefs(this.global.profile.user.id, query, nsfwMode)
+      const { id } = this.global.session.userInfo
+      const isLoggedInUserProfile = userId === id
+      let results = [] as any[]
+
+      if (isLoggedInUserProfile) {
+        results = await getLoggedInUserMediaRefs(query)
+      } else {
+        results = await getUserMediaRefs(this.global.profile.user.id, query, nsfwMode)
+      }
 
       setGlobal({
         profile: {
@@ -412,20 +461,22 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   _queryPlaylists = async (newState: any, page: number = 1, sort?: string | null) => {
     return new Promise(async (resolve, reject) => {
-      const { flatListData } = this.state
+      const { flatListData, userId } = this.state
+      const { id } = this.global.session.userInfo
       const query = { page, sort }
-      const results = await getUserPlaylists(this.global.profile.user.id, query)
+      const isLoggedInUserProfile = userId === id
+      let results = [] as any[]
 
-      setGlobal({
-        profile: {
-          flatListData: [...flatListData, ...results[0]],
-          user: this.global.profile.user
-        }
-      }, () => {
-        newState.endOfResultsReached = flatListData.length >= results[1]
-        newState.queryPage = page
-        resolve(newState)
-      })
+      if (isLoggedInUserProfile) {
+        results = await getLoggedInUserPlaylists()
+      } else {
+        results = await getUserPlaylists(this.global.profile.user.id, query)
+      }
+
+      newState.endOfResultsReached = flatListData.length >= results[1]
+      newState.flatListData = results[0]
+      newState.queryPage = page
+      resolve(newState)
     })
   }
 

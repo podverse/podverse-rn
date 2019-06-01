@@ -100,6 +100,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     const podcastId = this.props.navigation.getParam('podcastId') || this.state.podcastId
 
     this.setState({
+      endOfResultsReached: false,
       flatListData: [],
       isLoading: true,
       podcastId,
