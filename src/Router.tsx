@@ -33,7 +33,7 @@ const AuthNavigator = createStackNavigator(
 
 const PodcastsNavigator = createStackNavigator(
   {
-    [PV.RouteNames.PodcastsScreen]: { screen: PodcastsScreen, path: 'list' },
+    [PV.RouteNames.PodcastsScreen]: { screen: PodcastsScreen, path: 'podcasts' },
     [PV.RouteNames.PodcastScreen]: { screen: PodcastScreen, path: 'podcast/:podcastId' },
     [PV.RouteNames.EpisodeScreen]: { screen: EpisodeScreen, path: 'episode/' }
   },
@@ -75,7 +75,7 @@ const EpisodesNavigator = createStackNavigator(
 
 const ClipsNavigator = createStackNavigator(
   {
-    [PV.RouteNames.ClipsScreen]: { screen: ClipsScreen, path: 'list' }
+    [PV.RouteNames.ClipsScreen]: ClipsScreen
   },
   {
     defaultNavigationOptions,
@@ -94,7 +94,7 @@ const ClipsNavigator = createStackNavigator(
 
 const SearchNavigator = createStackNavigator(
   {
-    [PV.RouteNames.SearchScreen]: { screen: SearchScreen, path: '/' },
+    [PV.RouteNames.SearchScreen]: { screen: SearchScreen, path: '' },
     [PV.RouteNames.SearchPodcastScreen]: PodcastScreen,
     [PV.RouteNames.SearchEpisodeScreen]: EpisodeScreen
   },
@@ -157,11 +157,11 @@ const OnboardingNavigator = createStackNavigator({
 })
 
 const TabNavigator = createBottomTabNavigator({
-  Podcasts: { screen: PodcastsNavigator, path: 'podcasts' },
-  Episodes: { screen: EpisodesNavigator, path: 'episodes' },
-  Clips: { screen: ClipsNavigator, path: 'clips' },
+  Podcasts: { screen: PodcastsNavigator, path: '' },
+  Episodes: EpisodesNavigator,
+  Clips: ClipsNavigator,
   Search: { screen: SearchNavigator, path: 'search' },
-  More: { screen: MoreNavigator, path: 'more' }
+  More: { screen: MoreNavigator, path: '' }
 }, {
   tabBarComponent: (props: any) => <PVTabBar {...props} />,
   tabBarOptions: {
