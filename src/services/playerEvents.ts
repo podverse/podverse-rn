@@ -1,7 +1,7 @@
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getBearerToken } from './auth'
-import { addOrUpdateHistoryItem, getHistoryItems, popLastFromHistoryItems } from './history'
+import { addOrUpdateHistoryItem, popLastFromHistoryItems } from './history'
 import { getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem, handleResumeAfterClipHasEnded,
   playerJumpBackward, playerJumpForward, playNextFromQueue, PVTrackPlayer, setClipHasEnded,
   setPlaybackPosition } from './player'
