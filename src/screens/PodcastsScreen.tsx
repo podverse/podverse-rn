@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { StyleSheet } from 'react-native'
+import { Linking, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
@@ -67,6 +67,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { flatListData } = this.state
 
+    if (Platform.OS === 'android') {
+      Linking.getInitialURL().then((url) => {
+        if (url) this._handleOpenURL(url)
+      })
+    } else {
+      Linking.addEventListener('url', this._handleOpenURLEvent)
+    }
+
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
       if (!appHasLaunched) {
@@ -88,6 +96,23 @@ export class PodcastsScreen extends React.Component<Props, State> {
       flatListData,
       isLoading: false
     })
+  }
+
+  componentWillUnmount() {
+    Linking.removeEventListener('url', this._handleOpenURLEvent)
+  }
+
+  _handleOpenURLEvent = (event: any) => {
+    if (event) this._handleOpenURL(event.url)
+  }
+
+  _handleOpenURL = async (url: string) => {
+    if (url) {
+      const route = url.replace(/.*?:\/\//g, '')
+      const path = route.substring(route.indexOf('/') + 1)
+      const finalUrl = 'podverse://' + path
+      await Linking.openURL(finalUrl)
+    }
   }
 
   _initializeScreenData = async () => {
