@@ -2,43 +2,54 @@ import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import React from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { ActivityIndicator, Text, View } from './'
 
 type Props = {
+  isLoading?: boolean
   nowPlayingItem: any
   onPress: any
 }
 
 export const PlayerTableHeader = (props: Props) => {
-  const { nowPlayingItem, onPress } = props
+  const { isLoading, nowPlayingItem, onPress } = props
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>
-      <View style={styles.wrapper}>
-        <Image
-          key={nowPlayingItem.podcastImageUrl}
-          source={{ uri: nowPlayingItem.podcastImageUrl }}
-          style={styles.image} />
-        <View style={styles.textWrapper}>
-            <Text
-              numberOfLines={1}
-              style={styles.podcastTitle}>
-              {nowPlayingItem.podcastTitle}
-            </Text>
-            <Text
-              isSecondary={true}
-              numberOfLines={2}
-              style={styles.episodeTitle}>
-              {nowPlayingItem.episodeTitle}
-            </Text>
-            <Text
-              isSecondary={true}
-              numberOfLines={1}
-              style={styles.episodePubDate}>
-              {readableDate(nowPlayingItem.episodePubDate)}
-            </Text>
-
-        </View>
+      <View>
+        {
+          isLoading &&
+            <View style={styles.wrapper}>
+              <ActivityIndicator />
+            </View>
+        }
+        {
+          !isLoading && !!nowPlayingItem &&
+            <View style={styles.wrapper}>
+              <Image
+                key={nowPlayingItem.podcastImageUrl}
+                source={{ uri: nowPlayingItem.podcastImageUrl }}
+                style={styles.image} />
+              <View style={styles.textWrapper}>
+                  <Text
+                    numberOfLines={1}
+                    style={styles.podcastTitle}>
+                    {nowPlayingItem.podcastTitle}
+                  </Text>
+                  <Text
+                    isSecondary={true}
+                    numberOfLines={2}
+                    style={styles.episodeTitle}>
+                    {nowPlayingItem.episodeTitle}
+                  </Text>
+                  <Text
+                    isSecondary={true}
+                    numberOfLines={1}
+                    style={styles.episodePubDate}>
+                    {readableDate(nowPlayingItem.episodePubDate)}
+                  </Text>
+              </View>
+            </View>
+        }
       </View>
     </TouchableWithoutFeedback>
   )

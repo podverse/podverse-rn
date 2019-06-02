@@ -1,6 +1,7 @@
 import { ActionSheet } from './ActionSheet'
 import { Alerts } from './Alerts'
 import { Colors } from './Colors'
+import { DeepLinks } from './DeepLinks'
 import { Errors } from './Errors'
 import { Events } from './Events'
 import { Filters } from './Filters'
@@ -22,6 +23,7 @@ export const PV = {
   ActionSheet,
   Alerts,
   Colors,
+  DeepLinks,
   Errors,
   Events,
   Filters,

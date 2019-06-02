@@ -1,4 +1,4 @@
-import { Linking, StyleSheet, View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, NavQueueIcon, NavShareIcon,
@@ -90,12 +90,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    Linking.addEventListener('url', () => this._initializeScreenData())
     this._initializeScreenData()
-  }
-
-  async componentWillUnmount() {
-    Linking.removeEventListener('url', () => this._initializeScreenData())
   }
 
   async _initializeScreenData() {
@@ -362,7 +357,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           isNotFound={!isLoading && !user}
           isSubscribed={isSubscribed}
           isSubscribing={isSubscribing}
-          name={user && user.name} />
+          name={user && user.name || 'anonymous'} />
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}

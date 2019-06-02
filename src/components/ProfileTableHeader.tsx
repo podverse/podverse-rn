@@ -17,7 +17,7 @@ type Props = {
 
 export const ProfileTableHeader = (props: Props) => {
   const { handleEditPress, handleToggleSubscribe, id, isLoading, isNotFound, isSubscribed, isSubscribing,
-    name } = props
+    name = 'anonymous' } = props
 
   return (
     <View>

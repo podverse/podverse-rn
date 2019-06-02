@@ -8,7 +8,8 @@ import { alertIfNoNetworkConnection } from '../lib/network'
 import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
-import { getPodcasts } from '../services/podcast'
+import { getEpisode } from '../services/episode'
+import { getPodcast, getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { initPlayerState, setNowPlayingItem } from '../state/actions/player'
 import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
@@ -107,11 +108,50 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleOpenURL = async (url: string) => {
-    if (url) {
-      const route = url.replace(/.*?:\/\//g, '')
-      const path = route.substring(route.indexOf('/') + 1)
-      const finalUrl = 'podverse://' + path
-      await Linking.openURL(finalUrl)
+    const { navigate } = this.props.navigation
+
+    try {
+      if (url) {
+        const route = url.replace(/.*?:\/\//g, '')
+        const splitPath = route.split('/')
+        const path = splitPath[1] ? splitPath[1] : ''
+        const id = splitPath[2] ? splitPath[2] : ''
+
+        if (path === PV.DeepLinks.Clip.pathPrefix) {
+          await navigate(PV.RouteNames.PodcastsScreen)
+          await navigate(PV.RouteNames.PlayerScreen, { mediaRefId: id })
+        } else if (path === PV.DeepLinks.Episode.pathPrefix) {
+          await navigate(PV.RouteNames.PodcastsScreen)
+          const episode = await getEpisode(id)
+          if (episode) {
+            const podcast = await getPodcast(episode.podcast.id)
+            await navigate(PV.RouteNames.PodcastScreen, { podcast, navToEpisodeWithId: id })
+          }
+        } else if (path === PV.DeepLinks.Playlist.pathPrefix) {
+          await navigate(PV.RouteNames.MoreScreen)
+          await navigate(PV.RouteNames.PlaylistsScreen, { navToPlaylistWithId: id })
+        } else if (path === PV.DeepLinks.Playlists.path) {
+          await navigate(PV.RouteNames.MoreScreen)
+          await navigate(PV.RouteNames.PlaylistsScreen)
+        } else if (path === PV.DeepLinks.Podcast.pathPrefix) {
+          await navigate(PV.RouteNames.PodcastsScreen)
+          await navigate(PV.RouteNames.PodcastScreen, { podcastId: id })
+        } else if (path === PV.DeepLinks.Podcasts.path) {
+          await navigate(PV.RouteNames.PodcastsScreen)
+        } else if (path === PV.DeepLinks.Profile.pathPrefix) {
+          await navigate(PV.RouteNames.MoreScreen)
+          await navigate(PV.RouteNames.ProfilesScreen, { navToProfileWithId: id })
+        } else if (path === PV.DeepLinks.Profiles.path) {
+          await navigate(PV.RouteNames.MoreScreen)
+          await navigate(PV.RouteNames.ProfilesScreen)
+        } else if (path === PV.DeepLinks.Search.path) {
+          await navigate(PV.RouteNames.SearchScreen)
+        } else {
+          await navigate(PV.RouteNames.PodcastsScreen)
+        }
+      }
+    } catch (error) {
+      //
     }
   }
 
