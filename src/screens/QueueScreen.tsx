@@ -3,6 +3,7 @@ import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, Icon, MessageWithAction, QueueTableCell,
   SortableList, SortableListRow, TableSectionHeader, View as PVView } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
+import { PV } from '../resources'
 import { getNowPlayingItem } from '../services/player'
 import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
 import { setNowPlayingItem } from '../state/actions/player'
@@ -41,7 +42,7 @@ export class QueueScreen extends React.Component<Props, State> {
         color='#fff'
         name='chevron-down'
         onPress={navigation.dismiss}
-        size={22}
+        size={PV.Icons.NAV}
         style={navHeader.buttonIcon} />
     ),
     headerRight: (
@@ -115,13 +116,17 @@ export class QueueScreen extends React.Component<Props, State> {
       _stopEditing: this._stopEditing
     })
 
-    const nowPlayingItem = await getNowPlayingItem()
-    const queueItems = await getQueueItems(isLoggedIn, this.global)
-    this.setState({
-      isLoading: false,
-      nowPlayingItem,
-      queueItems
-    })
+    try {
+      const nowPlayingItem = await getNowPlayingItem()
+      const queueItems = await getQueueItems(isLoggedIn, this.global)
+      this.setState({
+        isLoading: false,
+        nowPlayingItem,
+        queueItems
+      })
+    } catch (error) {
+      this.setState({ isLoading: false })
+    }
   }
 
   _startEditing = () => {
@@ -147,11 +152,15 @@ export class QueueScreen extends React.Component<Props, State> {
             this.setState({
               isLoading: true
             }, async () => {
-              await clearHistoryItems(this.global.session.isLoggedIn, this.global)
-              this.setState({
-                historyItems: [],
-                isLoading: false
-              })
+              try {
+                await clearHistoryItems(this.global.session.isLoggedIn, this.global)
+                this.setState({
+                  historyItems: [],
+                  isLoading: false
+                })
+              } catch (error) {
+                this.setState({ isLoading: false })
+              }
             })
           }
         }
@@ -174,31 +183,40 @@ export class QueueScreen extends React.Component<Props, State> {
       viewType: x
     })
 
-    if (x === _queueKey) {
-      const nowPlayingItem = await getNowPlayingItem()
-      const queueItems = await getQueueItems(isLoggedIn, this.global)
-      this.setState({
-        isLoading: false,
-        nowPlayingItem,
-        queueItems
-      })
-    } else if (x === _historyKey) {
-      const historyItems = await getHistoryItems(isLoggedIn, this.global)
-      this.setState({
-        historyItems,
-        isLoading: false
-      })
+    try {
+      if (x === _queueKey) {
+        const nowPlayingItem = await getNowPlayingItem()
+        const queueItems = await getQueueItems(isLoggedIn, this.global)
+        this.setState({
+          isLoading: false,
+          nowPlayingItem,
+          queueItems
+        })
+      } else if (x === _historyKey) {
+        const historyItems = await getHistoryItems(isLoggedIn, this.global)
+        this.setState({
+          historyItems,
+          isLoading: false
+        })
+      }
+    } catch (error) {
+      this.setState({ isLoading: false })
     }
   }
 
   _onPressRow = async (rowIndex) => {
     const { queueItems } = this.state
     const item = queueItems[rowIndex]
-    const result = await setNowPlayingItem(item, this.global)
-    this.setState({
-      nowPlayingItem: result.nowPlayingItem,
-      queueItems: result.queueItems
-    })
+
+    try {
+      const result = await setNowPlayingItem(item, this.global)
+      this.setState({
+        nowPlayingItem: result.nowPlayingItem,
+        queueItems: result.queueItems
+      })
+    } catch (error) {
+      //
+    }
   }
 
   _renderHistoryItem = ({ item }) => {
@@ -245,20 +263,32 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   _handleRemoveQueueItemPress = async (item: NowPlayingItem) => {
-    const newItems = await removeQueueItem(item, this.global.session.isLoggedIn, this.global)
-    this.setState({ queueItems: newItems })
+    try {
+      const newItems = await removeQueueItem(item, this.global.session.isLoggedIn, this.global)
+      this.setState({ queueItems: newItems })
+    } catch (error) {
+      //
+    }
   }
 
   _handleRemoveHistoryItemPress = async (item: NowPlayingItem) => {
-    const newItems = await removeHistoryItem(item, this.global.session.isLoggedIn, this.global)
-    this.setState({ historyItems: newItems })
+    try {
+      const newItems = await removeHistoryItem(item, this.global.session.isLoggedIn, this.global)
+      this.setState({ historyItems: newItems })
+    } catch (error) {
+      //
+    }
   }
 
   _onReleaseRow = async (key: number, currentOrder: [string]) => {
-    const { queueItems } = this.state
-    const sortedItems = currentOrder.map((index: string) => queueItems[index])
-    const newItems = await updateQueueItems(sortedItems, this.global.session.isLoggedIn, this.global)
-    this.setState({ queueItems: newItems })
+    try {
+      const { queueItems } = this.state
+      const sortedItems = currentOrder.map((index: string) => queueItems[index])
+      const newItems = await updateQueueItems(sortedItems, this.global.session.isLoggedIn, this.global)
+      this.setState({ queueItems: newItems })
+    } catch (error) {
+      //
+    }
   }
 
   _ItemSeparatorComponent = () => {

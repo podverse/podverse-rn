@@ -2,6 +2,7 @@ import { setGlobal } from 'reactn'
 import { NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
 import { popLastFromHistoryItems } from '../../services/history'
+import { getMediaRef } from '../../services/mediaRef'
 import { getContinuousPlaybackMode, getNowPlayingItem, getNowPlayingItemEpisode, getNowPlayingItemMediaRef, PVTrackPlayer,
   setContinuousPlaybackMode as setContinuousPlaybackModeService, setNowPlayingItem as setNowPlayingItemService,
   setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService } from '../../services/player'
@@ -46,12 +47,13 @@ export const setContinousPlaybackMode = async (shouldContinuouslyPlay: boolean, 
   return shouldContinuouslyPlay
 }
 
-export const setNowPlayingItem = async (item: NowPlayingItem, globalState: any, isInitialLoad?: boolean) => {
+export const setNowPlayingItem = async (
+  item: NowPlayingItem, globalState: any, isInitialLoad?: boolean) => {
   return new Promise(async (resolve, reject) => {
     try {
       const lastNowPlayingItem = await getNowPlayingItem()
-      const isNewEpisode = true
-      const isNewMediaRef = true
+      const isNewEpisode = (isInitialLoad || !lastNowPlayingItem) || item.episodeId !== lastNowPlayingItem.episodeId
+      const isNewMediaRef = item.clipId && ((isInitialLoad || !lastNowPlayingItem) || item.clipId !== lastNowPlayingItem.clipId)
 
       const newState = {
         player: {
@@ -78,35 +80,44 @@ export const setNowPlayingItem = async (item: NowPlayingItem, globalState: any, 
       }
 
       setGlobal(newState, async () => {
-        const result = await setNowPlayingItemService(item)
 
-        let episode = null
-        let mediaRef = null
-        if (isNewEpisode) {
-          episode = await getNowPlayingItemEpisode()
-        }
+        try {
+          let episode = null
+          let mediaRef = null
 
-        if (isNewMediaRef) {
-          PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
-          mediaRef = await getNowPlayingItemMediaRef()
-        }
+          const result = await setNowPlayingItemService(item, isInitialLoad)
 
-        setGlobal({
-          player: {
-            ...globalState.player,
-            ...(episode ? { episode } : {}),
-            ...(mediaRef ? { mediaRef } : {})
-          },
-          screenPlayer: {
-            ...globalState.screenPlayer,
-            isLoading: false
+          if (isNewMediaRef) {
+            if (isInitialLoad && item.clipId) {
+              mediaRef = await getMediaRef(item.clipId)
+            } else {
+              mediaRef = await getNowPlayingItemMediaRef()
+            }
+            PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
           }
-        })
 
-        resolve(result)
+          if (isNewEpisode) {
+            episode = await getNowPlayingItemEpisode()
+          }
+
+          setGlobal({
+            player: {
+              ...globalState.player,
+              ...(episode ? { episode } : {}),
+              ...(mediaRef ? { mediaRef } : {})
+            },
+            screenPlayer: {
+              ...globalState.screenPlayer,
+              isLoading: false
+            }
+          })
+
+          resolve(result)
+        } catch (error) {
+          reject(error)
+        }
       })
     } catch (error) {
-      console.log(error)
       setGlobal({
         player: {
           ...globalState.player,
@@ -116,7 +127,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, globalState: any, 
         }
       })
 
-      reject({})
+      reject(error)
     }
   })
 }

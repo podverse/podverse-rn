@@ -8,6 +8,7 @@ export interface GlobalTheme {
   actionSheetHeaderText?: any
   actionSheetView?: any
   activityIndicator?: any
+  activityIndicatorAlternate?: any
   buttonGroupText?: any
   buttonGroupTextSelected?: any
   buttonImage?: any

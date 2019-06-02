@@ -1,4 +1,4 @@
-import { TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import { Icon } from 'react-native-elements'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlaylistTableCell, View } from '../components'
@@ -46,7 +46,11 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    await getLoggedInUserPlaylists(this.global)
+    try {
+      await getLoggedInUserPlaylists(this.global)
+    } catch (error) {
+      //
+    }
     this.setState({ isLoading: false })
   }
 
@@ -61,7 +65,13 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
       <PlaylistTableCell
         key={item.id}
         itemCount={item.itemCount}
-        onPress={() => addOrRemovePlaylistItem(item.id, episodeId, mediaRefId, this.global)}
+        onPress={() => {
+          try {
+            addOrRemovePlaylistItem(item.id, episodeId, mediaRefId, this.global)
+          } catch (error) {
+            //
+          }
+        }}
         title={item.title} />
     )
   }
@@ -90,7 +100,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   closeButton: {
     paddingLeft: 8,
     paddingRight: 16,
@@ -99,4 +109,4 @@ const styles = {
   view: {
     flex: 1
   }
-}
+})

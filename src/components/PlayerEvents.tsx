@@ -12,20 +12,36 @@ type State = {}
 export class PlayerEvents extends React.PureComponent<Props, State> {
 
   componentDidMount() {
-    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handlePlayerQueueEnded)
-    PlayerEventEmitter.on(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED, this._handlePlayerResumeAfterClipHasEnded)
-    PlayerEventEmitter.on(PV.Events.PLAYER_STATE_CHANGED, this._handlePlayerStateUpdated)
-    PlayerEventEmitter.on(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI, this._handlePlayerCannotStreamWithoutWifi)
+    PlayerEventEmitter.on(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI, this._playerCannotStreamWithoutWifi)
+    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._playerQueueEnded)
+    PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_NEXT, this._refreshNowPlayingItem)
+    PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PAUSE, this._playerStateUpdated)
+    PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PLAY, this._playerStateUpdated)
+    PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PREVIOUS, this._refreshNowPlayingItem)
+    PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_STOP, this._playerStateUpdated)
+    PlayerEventEmitter.on(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED, this._refreshNowPlayingItem)
+    PlayerEventEmitter.on(PV.Events.PLAYER_STATE_CHANGED, this._playerStateUpdated)
   }
 
   componentWillUnmount() {
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_QUEUE_ENDED)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_NEXT)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_PAUSE)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_PLAY)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_PREVIOUS)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_STOP)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_STATE_CHANGED)
-    PlayerEventEmitter.removeListener(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
   }
 
-  _handlePlayerQueueEnded = async () => {
+  _playerCannotStreamWithoutWifi = async () => {
+    await Alert.alert(
+      PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.title, PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.message, []
+    )
+  }
+
+  _playerQueueEnded = async () => {
     const { player, session } = this.global
     const { shouldContinuouslyPlay, showMakeClip } = player
     const { queueItems } = session.userInfo
@@ -35,20 +51,13 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     }
   }
 
-  _handlePlayerResumeAfterClipHasEnded = async () => {
-    const nowPlayingItem = await getNowPlayingItem()
-
-    await setNowPlayingItem(nowPlayingItem, this.global)
-  }
-
-  _handlePlayerStateUpdated = async () => {
+  _playerStateUpdated = async () => {
     await updatePlaybackState(this.global)
   }
 
-  _handlePlayerCannotStreamWithoutWifi = async () => {
-    await Alert.alert(
-      PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.title, PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.message, []
-    )
+  _refreshNowPlayingItem = async () => {
+    const nowPlayingItem = await getNowPlayingItem()
+    await setNowPlayingItem(nowPlayingItem, this.global)
   }
 
   render() {

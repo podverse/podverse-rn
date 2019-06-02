@@ -1,8 +1,9 @@
 import React from 'react'
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { PV } from '../resources'
 
 type Props = {
+  isLoading: boolean
   onSignUpPressed?: any
   style?: any
 }
@@ -55,7 +56,7 @@ export class SignUp extends React.Component<Props, State> {
   }
 
   render () {
-    const { style } = this.props
+    const { isLoading, style } = this.props
     const { password, passwordVerification } = this.state
     const disabled = !this.inputsValid()
     const disabledStyle = disabled ? { backgroundColor: PV.Colors.grayDark } : null
@@ -98,9 +99,13 @@ export class SignUp extends React.Component<Props, State> {
           placeholder='Name'/>
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
-          disabled={disabled}
+          disabled={disabled || isLoading}
           onPress={this.signUp}>
-          <Text style={[styles.signInButtonText, disabledTextStyle]}>Sign Up</Text>
+          {
+            isLoading ?
+              <ActivityIndicator color={PV.Colors.white} size='small' />
+              : <Text style={[styles.signInButtonText, disabledTextStyle]}>Sign Up</Text>
+          }
         </TouchableOpacity>
       </View>
     )

@@ -19,6 +19,7 @@ export const RouteNames = {
   MyProfileScreen: 'MyProfileScreen',
   Onboarding: 'Onboarding',
   OnboardingScreen: 'OnboardingScreen',
+  PlayerNavigator: 'PlayerNavigator',
   PlayerScreen: 'PlayerScreen',
   PlaylistScreen: 'PlaylistScreen',
   PlaylistsScreen: 'PlaylistsScreen',

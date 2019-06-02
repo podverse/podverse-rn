@@ -58,7 +58,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       <View style={styles.wrapper}>
         <SwitchWithText
           onValueChange={this._toggleTheme}
-          text={`Dark Mode ${this.global.globalTheme === darkTheme ? 'on' : 'off'}`}
+          text={`${this.global.globalTheme === darkTheme ? 'Dark Mode' : 'Light Mode'}`}
           value={this.global.globalTheme === darkTheme} />
         <SwitchWithText
           onValueChange={this._toggleDownloadingWifiOnly}

@@ -14,7 +14,7 @@ export const getEpisodes = async (query: any = {}, nsfwMode: boolean) => {
     query: filteredQuery
   }, nsfwMode)
 
-  return response.json()
+  return response && response.data
 }
 
 export const getEpisode = async (id: string) => {
@@ -22,5 +22,5 @@ export const getEpisode = async (id: string) => {
     endpoint: `/episode/${id}`
   })
 
-  return response.json()
+  return response && response.data
 }

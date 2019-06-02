@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native'
 import React, { setGlobal } from 'reactn'
 import { ActivityIndicator, Divider, FlatList, MessageWithAction, PlaylistTableCell, TableSectionSelectors,
   View } from '../components'
@@ -129,7 +130,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
             !isLoading && queryFrom === _subscribedPlaylistsKey && flatListData.length < 1 &&
               <MessageWithAction
                 message='You have no subscribed playlists'
-                subMessage='Ask a friend to send you a link to one of their playlists, then subscribe to it :)' />
+                subMessage='Ask a friend to send you a link to one of their playlists, then subscribe to it' />
           }
         </View>
       </View>
@@ -147,19 +148,23 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('load playlist items')
     if (wasAlerted) return newState
 
-    if (filterKey === _myPlaylistsKey) {
-      if (this.global.session.isLoggedIn) {
-        await getLoggedInUserPlaylists(this.global)
-      }
-    } else {
-      const playlistId = this.global.session.userInfo.subscribedPlaylistIds
+    try {
+      if (filterKey === _myPlaylistsKey) {
+        if (this.global.session.isLoggedIn) {
+          await getLoggedInUserPlaylists(this.global)
+        }
+      } else {
+        const playlistId = this.global.session.userInfo.subscribedPlaylistIds
 
-      if (playlistId && playlistId.length > 0) {
-        await getPlaylists(playlistId, this.global)
+        if (playlistId && playlistId.length > 0) {
+          await getPlaylists(playlistId, this.global)
+        }
       }
+
+      return newState
+    } catch (error) {
+      return newState
     }
-
-    return newState
   }
 }
 
@@ -177,7 +182,7 @@ const leftItems = [
   }
 ]
 
-const styles = {
+const styles = StyleSheet.create({
   ListHeaderComponent: {
     borderBottomWidth: 0,
     borderTopWidth: 0,
@@ -188,4 +193,4 @@ const styles = {
   view: {
     flex: 1
   }
-}
+})

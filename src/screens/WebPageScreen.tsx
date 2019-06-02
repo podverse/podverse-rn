@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native'
 import { WebView } from 'react-native-webview'
 import React from 'reactn'
 import { Icon, View } from '../components'
+import { PV } from '../resources'
 import { navHeader } from '../styles'
 
 type Props = {
@@ -22,7 +23,7 @@ export class WebPageScreen extends React.Component<Props, State> {
           color='#fff'
           name='chevron-down'
           onPress={navigation.dismiss}
-          size={22}
+          size={PV.Icons.NAV}
           style={navHeader.buttonIcon} />
       )
     }

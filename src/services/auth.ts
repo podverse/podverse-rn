@@ -28,6 +28,9 @@ const getAuthenticatedUserInfoLocally = async () => {
   let subscribedPlaylistIds = []
   let subscribedPodcastIds = []
   let subscribedUserIds = []
+  let queueItems = []
+  let historyItems = []
+  let isLoggedIn = false
 
   try {
     const subscribedPlaylistIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS)
@@ -56,13 +59,36 @@ const getAuthenticatedUserInfoLocally = async () => {
     AsyncStorage.setItem(PV.Keys.SUBSCRIBED_USER_IDS, JSON.stringify(subscribedUserIds))
   }
 
+  try {
+    const queueItemsJSON = await AsyncStorage.getItem(PV.Keys.QUEUE_ITEMS)
+    if (queueItemsJSON) {
+      queueItems = JSON.parse(queueItemsJSON)
+    }
+  } catch (error) {
+    AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(queueItems))
+  }
+
+  try {
+    const historyItemsJSON = await AsyncStorage.getItem(PV.Keys.HISTORY_ITEMS)
+    if (historyItemsJSON) {
+      historyItems = JSON.parse(historyItemsJSON)
+    }
+  } catch (error) {
+    AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(historyItems))
+  }
+
+  const bearerToken = await getBearerToken()
+  isLoggedIn = !!bearerToken
+
   return [
     {
       subscribedPlaylistIds,
       subscribedPodcastIds,
-      subscribedUserIds
+      subscribedUserIds,
+      queueItems,
+      historyItems
     },
-    false
+    isLoggedIn
   ]
 }
 
@@ -76,10 +102,12 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
     }
   })
 
-  const results = await response.json()
+  const data = response && response.data || []
+  const { subscribedPodcastIds } = data
+  AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
 
   return [
-    results,
+    data,
     true
   ]
 }
@@ -97,7 +125,7 @@ export const login = async (email: string, password: string) => {
     opts: { credentials: 'include' }
   })
 
-  const data = await response.json()
+  const data = response && response.data || []
   if (data.token) {
     RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY })
   }
@@ -116,7 +144,7 @@ export const sendResetPassword = async (email: string) => {
     opts: { credentials: 'include' }
   })
 
-  return response.json()
+  return response && response.data
 }
 
 export const signUp = async (email: string, password: string, name: string) => {
@@ -133,8 +161,7 @@ export const signUp = async (email: string, password: string, name: string) => {
     opts: { credentials: 'include' }
   })
 
-  const data = await response.json()
-
+  const data = response && response.data || []
   if (data.token) {
     RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY })
   }

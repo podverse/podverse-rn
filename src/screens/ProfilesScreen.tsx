@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, MessageWithAction, ProfileTableCell, SwipeRowBack,
   View } from '../components'
@@ -13,6 +14,7 @@ type State = {
   endOfResultsReached: boolean
   isLoading: boolean
   isLoadingMore: boolean
+  isUnsubscribing: boolean
   queryPage: number
 }
 
@@ -28,6 +30,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       isLoading: this.global.session.isLoggedIn,
       isLoadingMore: false,
+      isUnsubscribing: false,
       queryPage: 1
     }
   }
@@ -72,14 +75,25 @@ export class ProfilesScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderHiddenItem = ({ item }, rowMap) => <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
+  _renderHiddenItem = ({ item }, rowMap) => (
+    <SwipeRowBack
+      isLoading={this.state.isUnsubscribing}
+      onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
+  )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
     const wasAlerted = await alertIfNoNetworkConnection('unsubscribe from this profile')
     if (wasAlerted) return
 
-    rowMap[selectedId].closeRow()
-    await toggleSubscribeToUser(selectedId, this.global.session.isLoggedIn, this.global)
+    this.setState({ isUnsubscribing: true }, async () => {
+      try {
+        await toggleSubscribeToUser(selectedId, this.global.session.isLoggedIn, this.global)
+        rowMap[selectedId].closeRow()
+        this.setState({ isUnsubscribing: true })
+      } catch (error) {
+        this.setState({ isUnsubscribing: true })
+      }
+    })
   }
 
   _onPressLogin = () => this.props.navigation.navigate(PV.RouteNames.AuthScreen)
@@ -128,15 +142,19 @@ export class ProfilesScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('load profiles')
     if (wasAlerted) return newState
 
-    const subscribedUserIds = this.global.session.userInfo.subscribedUserIds
-    const results = await getPublicUsersByQuery(subscribedUserIds, page)
-    newState.endOfResultsReached = flatListData.length >= results[1]
-    newState.queryPage = page
-    return newState
+    try {
+      const subscribedUserIds = this.global.session.userInfo.subscribedUserIds
+      const results = await getPublicUsersByQuery(subscribedUserIds, page)
+      newState.endOfResultsReached = flatListData.length >= results[1]
+      newState.queryPage = page
+      return newState
+    } catch (error) {
+      return newState
+    }
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   ListHeaderComponent: {
     borderBottomWidth: 0,
     borderTopWidth: 0,
@@ -147,4 +165,4 @@ const styles = {
   view: {
     flex: 1
   }
-}
+})

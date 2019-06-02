@@ -17,6 +17,33 @@ export type NowPlayingItem = {
   userPlaybackPosition?: number
 }
 
+export const convertNowPlayingItemToEpisode = (item: NowPlayingItem) => {
+  return {
+    description: item.episodeDescription,
+    id: item.episodeId,
+    mediaUrl: item.episodeMediaUrl,
+    pubDate: item.episodePubDate,
+    title: item.episodeTitle,
+    podcast: {
+      id: item.podcastId,
+      imageUrl: item.podcastImageUrl,
+      isExplicit: item.podcastIsExplicit,
+      title: item.podcastTitle
+    }
+  }
+}
+
+export const convertNowPlayingItemToMediaRef = (item: NowPlayingItem) => {
+  return {
+    endTime: item.clipEndTime,
+    episode: convertNowPlayingItemToEpisode(item),
+    id: item.clipId,
+    isPublic: item.isPublic,
+    startTime: item.clipStartTime,
+    title: item.clipTitle
+  }
+}
+
 export const convertNowPlayingItemClipToNowPlayingItemEpisode = (data: any, userPlaybackPosition = 0) => {
   return {
     episodeDescription: data.episodeDescription,

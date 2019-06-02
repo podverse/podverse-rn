@@ -28,6 +28,7 @@ export const QueueTableCell = (props: Props) => {
     <View style={styles.wrapper}>
       <View style={styles.wrapperTop}>
         <Image
+          key={podcastImageUrl}
           source={{ uri: podcastImageUrl }}
           style={styles.image} />
         <View style={styles.textWrapper}>

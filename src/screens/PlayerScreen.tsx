@@ -1,4 +1,4 @@
-import { Share, StyleSheet, View as RNView } from 'react-native'
+import { Alert, Linking, Share, StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, EpisodeTableCell, FlatList,
@@ -10,8 +10,10 @@ import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
-import { getMediaRefs } from '../services/mediaRef'
-import { PVTrackPlayer } from '../services/player'
+import { getMediaRef, getMediaRefs } from '../services/mediaRef'
+import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
+import { addQueueItemNext } from '../services/queue'
+import { setNowPlayingItem } from '../state/actions/player'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core, navHeader } from '../styles'
 
@@ -36,7 +38,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           color='#fff'
           name='chevron-down'
           onPress={navigation.dismiss}
-          size={22}
+          size={PV.Icons.NAV}
           style={navHeader.buttonIcon} />
       ),
       headerRight: (
@@ -62,11 +64,63 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    const { navigation } = this.props
+
+    const mediaRefId = navigation.getParam('mediaRefId')
+    if (mediaRefId) {
+      await this._initializeScreenData()
+    }
+
     this.props.navigation.setParams({
       _getEpisodeId: this._getEpisodeId,
       _getInitialProgressValue: this._getInitialProgressValue,
       _getMediaRefId: this._getMediaRefId,
       _showShareActionSheet: this._showShareActionSheet
+    })
+
+    Linking.addEventListener('url', () => this._initializeScreenData())
+  }
+
+  async componentWillUnmount() {
+    Linking.addEventListener('url', () => this._initializeScreenData())
+  }
+
+  _initializeScreenData = () => {
+    const { isLoggedIn } = this.global.session
+
+    setGlobal({
+      screenPlayer: {
+        ...this.global.screenPlayer,
+        endOfResultsReached: false,
+        flatListData: [],
+        isLoading: true,
+        queryPage: 1
+      }
+    }, async () => {
+      const { navigation } = this.props
+      const mediaRefId = navigation.getParam('mediaRefId')
+
+      try {
+        const currentItem = await getNowPlayingItem()
+
+        if ((mediaRefId && mediaRefId !== currentItem.mediaRefId)) {
+          const mediaRef = await getMediaRef(mediaRefId)
+          if (mediaRef) {
+            await addQueueItemNext(currentItem, isLoggedIn)
+            const newItem = convertToNowPlayingItem(mediaRef, null, null)
+            await setNowPlayingItem(newItem, this.global, false)
+          }
+        }
+      } catch (error) {
+        //
+      }
+
+      setGlobal({
+        screenPlayer: {
+          ...this.global.screenPlayer,
+          isLoading: false
+        }
+      })
     })
   }
 
@@ -285,8 +339,15 @@ export class PlayerScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('subscribe to podcast')
     if (wasAlerted) return
 
-    toggleSubscribeToPodcast(this.global.player.nowPlayingItem.podcastId, this.global)
-    this._dismissHeaderActionSheet()
+    try {
+      toggleSubscribeToPodcast(this.global.player.nowPlayingItem.podcastId, this.global)
+      this._dismissHeaderActionSheet()
+    } catch (error) {
+      this._dismissHeaderActionSheet()
+      if (error.response) {
+        Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+      }
+    }
   }
 
   _handleNavToPodcastScreen = async () => {
@@ -373,9 +434,9 @@ export class PlayerScreen extends React.Component<Props, State> {
                 handleClosePress={this._toggleShowFullClipInfo}
                 isLoading={isLoading}
                 navigation={navigation}
-                ownerId={mediaRef.owner.id}
-                ownerIsPublic={mediaRef.owner.isPublic}
-                ownerName={mediaRef.owner.name}
+                {...(mediaRef.owner ? { ownerId: mediaRef.owner.id } : {})}
+                {...(mediaRef.owner ? { ownerIsPublic: mediaRef.owner.isPublic } : {})}
+                {...(mediaRef.owner ? { ownerName: mediaRef.owner.name } : {})}
                 startTime={mediaRef.startTime}
                 title={mediaRef.title} />
           }
@@ -489,17 +550,21 @@ export class PlayerScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('load data')
     if (wasAlerted) return newState
 
-    if (viewType === PV.Keys.VIEW_TYPE_EPISODES) {
-      const results = await this._queryEpisodes()
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    } else if (viewType === PV.Keys.VIEW_TYPE_CLIPS) {
-      const results = await this._queryClips()
-      newState.flatListData = [...flatListData, ...results[0]]
-      newState.endOfResultsReached = newState.flatListData.length >= results[1]
-    }
+    try {
+      if (viewType === PV.Keys.VIEW_TYPE_EPISODES) {
+        const results = await this._queryEpisodes()
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      } else if (viewType === PV.Keys.VIEW_TYPE_CLIPS) {
+        const results = await this._queryClips()
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      }
 
-    return newState
+      return newState
+    } catch (error) {
+      return newState
+    }
   }
 
   _headerActionSheetButtons = () => {

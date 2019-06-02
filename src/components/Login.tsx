@@ -1,14 +1,15 @@
 import React from 'react'
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { PV } from '../resources'
 
 type Props = {
+  isLoading: boolean
   onLoginPressed?: any
   style?: any
 }
 
 type State = {
-  email: string,
+  email: string
   password: string
 }
 
@@ -39,7 +40,7 @@ export class Login extends React.Component<Props, State> {
   }
 
   render() {
-    const { style } = this.props
+    const { isLoading, style } = this.props
     const { password } = this.state
     const disabled = !this.inputsValid()
     const disabledStyle = disabled ? { backgroundColor: PV.Colors.gray } : null
@@ -64,9 +65,13 @@ export class Login extends React.Component<Props, State> {
           placeholder='Password' />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
-          disabled={disabled}
+          disabled={disabled || isLoading}
           onPress={this.login}>
-          <Text style={[styles.signInButtonText, disabledTextStyle]}>Login</Text>
+          {
+            isLoading ?
+              <ActivityIndicator color={PV.Colors.gray} size='small' />
+              : <Text style={[styles.signInButtonText, disabledTextStyle]}>Login</Text>
+          }
         </TouchableOpacity>
       </View>
     )

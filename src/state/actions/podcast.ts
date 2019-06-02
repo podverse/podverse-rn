@@ -1,19 +1,20 @@
 import { setGlobal } from 'reactn'
-import { getPodcasts, toggleSubscribeToPodcast as toggleSubscribeToPodcastService } from '../../services/podcast'
+import { getPodcast as getPodcastService, getSubscribedPodcasts as getSubscribedPodcastsService,
+  insertOrRemovePodcastFromAlphabetizedArray, toggleSubscribeToPodcast as toggleSubscribeToPodcastService
+  } from '../../services/podcast'
 
 export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
-  if (subscribedPodcastIds.length < 1) return []
-  const query = {
-    podcastIds: subscribedPodcastIds,
-    sort: 'alphabetical'
-  }
-  const data = await getPodcasts(query, true)
-  setGlobal({ subscribedPodcasts: data[0] || [] })
-  return data
+  const subscribedPodcasts = await getSubscribedPodcastsService(subscribedPodcastIds)
+  setGlobal({ subscribedPodcasts })
+  return subscribedPodcasts
 }
 
 export const toggleSubscribeToPodcast = async (id: string, globalState: any) => {
   const subscribedPodcastIds = await toggleSubscribeToPodcastService(id, globalState.session.isLoggedIn)
+  const subscribedPodcast = await getPodcastService(id)
+  let { subscribedPodcasts } = globalState
+  subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast)
+
   setGlobal({
     session: {
       ...globalState.session,
@@ -21,6 +22,7 @@ export const toggleSubscribeToPodcast = async (id: string, globalState: any) => 
         ...globalState.session.userInfo,
         subscribedPodcastIds
       }
-    }
+    },
+    subscribedPodcasts
   })
 }

@@ -1,3 +1,7 @@
+import axios from 'axios'
+import { Alert } from 'react-native'
+import { PV } from '../resources'
+
 const API_BASE_URL = 'https://api.stage.podverse.fm/api/v1'
 
 type PVRequest = {
@@ -25,20 +29,29 @@ export const request = async (req: PVRequest, nsfwMode?: boolean) => {
     return `${key}=${query[key]}`
   }).join('&')
 
-  const response = await fetch(
-    `${API_BASE_URL}${endpoint}?${queryString}`,
-    {
-      headers,
-      ...(body ? { body: JSON.stringify(body) } : {}),
-      method,
-      ...opts
-    }
-  )
-
-  if (response.status !== 200) {
-    const error = await response.json()
-    throw new Error(error.message)
+  const axiosRequest = {
+    url: `${API_BASE_URL}${endpoint}?${queryString}`,
+    headers,
+    ...(body ? { data: body } : {}),
+    method,
+    ...opts,
+    timeout: 20000
   }
 
-  return response
+  try {
+    const response = await axios(axiosRequest)
+
+    return response
+  } catch (error) {
+    console.log('error message:', error.message)
+    console.log('error response:', error.response)
+
+    if (error.response && error.response.code === PV.ResponseErrorCodes.PREMIUM_MEMBERSHIP_REQUIRED) {
+      Alert.alert(PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.title, PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.message, [])
+    } else if (!error.response) {
+      Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+    }
+
+    throw error
+  }
 }

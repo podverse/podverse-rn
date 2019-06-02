@@ -8,7 +8,7 @@ export const getPublicUser = async (id: string) => {
     endpoint: `/user/${id}`
   })
 
-  return response.json()
+  return response && response.data
 }
 
 export const getUserMediaRefs = async (userId: string, query: any = {}, nsfwMode: boolean) => {
@@ -22,7 +22,7 @@ export const getUserMediaRefs = async (userId: string, query: any = {}, nsfwMode
     query: filteredQuery
   }, nsfwMode)
 
-  return response.json()
+  return response && response.data
 }
 
 export const getUserPlaylists = async (userId: string, query: any = {}) => {
@@ -35,7 +35,7 @@ export const getUserPlaylists = async (userId: string, query: any = {}) => {
     query: filteredQuery
   })
 
-  return response.json()
+  return response && response.data
 }
 
 export const getPublicUsersByQuery = async (query: any = {}) => {
@@ -49,7 +49,7 @@ export const getPublicUsersByQuery = async (query: any = {}) => {
     query: filteredQuery
   })
 
-  return response.json()
+  return response && response.data
 }
 
 export const toggleSubscribeToUser = async (id: string, isLoggedIn: boolean) => {
@@ -82,7 +82,7 @@ const toggleSubscribeToUserOnServer = async (id: string) => {
     headers: { Authorization: bearerToken }
   })
 
-  return response.json()
+  return response && response.data
 }
 
 export const getLoggedInUserMediaRefs = async (query: any = {}, nsfwMode?: boolean) => {
@@ -98,7 +98,7 @@ export const getLoggedInUserMediaRefs = async (query: any = {}, nsfwMode?: boole
     headers: { Authorization: bearerToken }
   }, nsfwMode)
 
-  return response.json()
+  return response && response.data
 }
 
 export const getLoggedInUserPlaylists = async (nsfwMode?: boolean) => {
@@ -108,7 +108,7 @@ export const getLoggedInUserPlaylists = async (nsfwMode?: boolean) => {
     headers: { Authorization: bearerToken }
   }, nsfwMode)
 
-  return response.json()
+  return response && response.data
 }
 
 export const deleteLoggedInUser = async () => {
@@ -120,7 +120,7 @@ export const deleteLoggedInUser = async () => {
     opts: { credentials: 'include' }
   })
 
-  return response.json()
+  return response && response.data
 }
 
 export const updateLoggedInUser = async (data: any) => {
@@ -136,7 +136,7 @@ export const updateLoggedInUser = async (data: any) => {
     opts: { credentials: 'include' }
   })
 
-  return response.json()
+  return response && response.data
 }
 
 export const downloadLoggedInUserData = async (id: string) => {
@@ -148,7 +148,7 @@ export const downloadLoggedInUserData = async (id: string) => {
     opts: { credentials: 'include' }
   })
 
-  return response.json()
+  return response && response.data
 }
 
 export const updateUserQueueItems = async (queueItems: any) => {
@@ -164,5 +164,5 @@ export const updateUserQueueItems = async (queueItems: any) => {
     opts: { credentials: 'include' }
   })
 
-  return response.json()
+  return response && response.data
 }

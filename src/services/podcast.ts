@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import RNSecureKeyStore from 'react-native-secure-key-store'
+import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { request } from './request'
 
@@ -8,7 +9,7 @@ export const getPodcast = async (id: string) => {
     endpoint: `/podcast/${id}`
   })
 
-  return response.json()
+  return response && response.data
 }
 
 export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
@@ -32,7 +33,26 @@ export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
     query: filteredQuery
   }, nsfwMode)
 
-  return response.json()
+  return response && response.data
+}
+
+export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
+  if (subscribedPodcastIds.length < 1) return []
+  const query = {
+    podcastIds: subscribedPodcastIds,
+    sort: 'alphabetical'
+  }
+  const isConnected = await hasValidNetworkConnection()
+
+  if (isConnected) {
+    const data = await getPodcasts(query, true)
+    const subscribedPodcasts = data[0]
+    await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts || []))
+    return subscribedPodcasts
+  } else {
+    const subscribedPodcastsJSON = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS)
+    return subscribedPodcastsJSON ? JSON.parse(subscribedPodcastsJSON) : []
+  }
 }
 
 export const searchPodcasts = async (title?: string, author?: string, nsfwMode?: boolean) => {
@@ -46,7 +66,7 @@ export const searchPodcasts = async (title?: string, author?: string, nsfwMode?:
     }
   }, nsfwMode)
 
-  return response.json()
+  return response && response.data
 }
 
 export const toggleSubscribeToPodcast = async (id: string, isLoggedIn: boolean) => {
@@ -79,5 +99,36 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
     headers: { Authorization: bearerToken }
   })
 
-  return response.json()
+  let podcastIds = []
+  const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
+  if (itemsString) {
+    podcastIds = JSON.parse(itemsString)
+    podcastIds = addOrRemovePodcastIdFromArray(podcastIds, id)
+  }
+  AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(podcastIds))
+
+  return response && response.data
+}
+
+export const insertOrRemovePodcastFromAlphabetizedArray = (podcasts: any[], podcast: any) => {
+  if (podcasts.some((x) => x.id === podcast.id)) {
+    return podcasts.filter((x) => x.id !== podcast.id)
+  } else {
+    podcasts.push(podcast)
+    podcasts.sort((a, b) => {
+      const titleA = a.title.toLowerCase()
+      const titleB = b.title.toLowerCase()
+      return (titleA < titleB) ? -1 : (titleA > titleB) ? 1 : 0
+    })
+    return podcasts
+  }
+}
+
+const addOrRemovePodcastIdFromArray = (podcastIds: any[], podcastId: string) => {
+  if (podcastIds.some((x) => x === podcastId)) {
+    return podcastIds.filter((x) => x !== podcastId)
+  } else {
+    podcastIds.push(podcastId)
+    return podcastIds
+  }
 }

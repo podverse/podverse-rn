@@ -29,7 +29,11 @@ export class MembershipScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    await getAuthUserInfo()
+    try {
+      await getAuthUserInfo()
+    } catch (error) {
+      //
+    }
     this.setState({ isLoading: false })
   }
 
@@ -48,7 +52,17 @@ export class MembershipScreen extends React.Component<Props, State> {
           (isLoading && isLoggedIn) && <ActivityIndicator />
         }
         {
-          (!isLoading && isLoggedIn) &&
+          (!isLoading && isLoggedIn && !membershipStatus) &&
+            <View>
+              <View style={styles.textRow}>
+                <Text style={[styles.subText]}>
+                  Connect to the internet to view your membership status.
+                </Text>
+              </View>
+            </View>
+        }
+        {
+          (!isLoading && isLoggedIn && membershipStatus) &&
             <View>
               <View style={styles.textRow}>
                 <Text style={styles.label}>Status: </Text>
@@ -75,7 +89,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                 <TextLink
                   onPress={() => navigation.navigate(PV.RouteNames.AuthNavigator)}
                   style={[styles.text]}>
-                  Start 30 day free trial :)
+                  Sign up for 30 days free
                 </TextLink>
               </View>
             </View>

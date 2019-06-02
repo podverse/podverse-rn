@@ -154,40 +154,48 @@ export class MakeClipScreen extends React.Component<Props, State> {
         startTime,
         title
       }
-      const mediaRef = isEditing ? await updateMediaRef(data) : await createMediaRef(data)
-      const url = PV.URLs.clip + mediaRef.id
 
-      if (isEditing) {
-        const newItem = {
-          ...nowPlayingItem,
-          clipEndTime: mediaRef.endTime,
-          clipStartTime: mediaRef.startTime,
-          clipTitle: mediaRef.title
+      try {
+        const mediaRef = isEditing ? await updateMediaRef(data) : await createMediaRef(data)
+        const url = PV.URLs.clip + mediaRef.id
+
+        if (isEditing) {
+          const newItem = {
+            ...nowPlayingItem,
+            clipEndTime: mediaRef.endTime,
+            clipStartTime: mediaRef.startTime,
+            clipTitle: mediaRef.title
+          }
+          await setNowPlayingItem(newItem, this.global, true)
         }
-        await setNowPlayingItem(newItem, this.global, true)
-      }
 
-      this.setState({ isSaving: false }, async () => {
-        // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
-        setTimeout(() => {
-          const alertText = isEditing ? 'Clip Updated' : 'Clip Created'
-          Alert.alert(alertText, url, [
-            {
-              text: 'Done',
-              onPress: () => {
-                navigation.goBack(null)
+        this.setState({ isSaving: false }, async () => {
+          // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
+          setTimeout(() => {
+            const alertText = isEditing ? 'Clip Updated' : 'Clip Created'
+            Alert.alert(alertText, url, [
+              {
+                text: 'Done',
+                onPress: () => {
+                  navigation.goBack(null)
+                }
+              },
+              {
+                text: 'Copy Link',
+                onPress: () => {
+                  Clipboard.setString(url)
+                  navigation.goBack(null)
+                }
               }
-            },
-            {
-              text: 'Copy Link',
-              onPress: () => {
-                Clipboard.setString(url)
-                navigation.goBack(null)
-              }
-            }
-          ])
-        }, 100)
-      })
+            ])
+          }, 100)
+        })
+      } catch (error) {
+        if (error.response) {
+          Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, error.response.data.message, [])
+        }
+      }
+      this.setState({ isSaving: false })
     })
   }
 
@@ -331,10 +339,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   </Text>
                   <Text style={styles.modalText}>
                     - Swipe left and right on the bottom play button bar to adjust time more precisely.
-                  </Text>
-                  <Text style={styles.modalText}>
-                    - If you set the privacy of a clip to "Only with link",
-                    then only people with a link to that clip will be able to play it.
                   </Text>
                   <Text style={styles.modalText}>
                     - If the podcast uses dynamically inserted ads, the clip start/end times may be inaccurate.

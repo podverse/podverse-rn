@@ -1,30 +1,43 @@
 import React from 'react'
-import { Text, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useGlobal } from 'reactn'
 
 type Props = {
-  onPress: any,
+  isLoading?: boolean
+  onPress: any
   styles?: any
 }
 
 export const SwipeRowBack = (props: Props) => {
-  const { onPress, styles } = props
+  const { isLoading, onPress, styles } = props
   const [globalTheme] = useGlobal('globalTheme')
+
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[styles, s.swipeRowBack, globalTheme.swipeRowBack]}>
-      <Text>Remove</Text>
+      {
+        isLoading ?
+          <View style={s.textWrapper}>
+            <ActivityIndicator
+              color={globalTheme.activityIndicatorAlternate.color}
+              size='large' />
+          </View>
+           : <Text style={s.textWrapper}>Remove</Text>
+      }
     </TouchableOpacity>
   )
 }
 
-const s = {
+const s = StyleSheet.create({
   swipeRowBack: {
     alignItems: 'flex-end',
     alignSelf: 'stretch',
     flex: 1,
     paddingRight: 8,
     justifyContent: 'center'
+  },
+  textWrapper: {
+    width: 52
   }
-}
+})

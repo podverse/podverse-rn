@@ -19,7 +19,7 @@ export const NavMakeClipIcon = (props: Props) => {
         const initialProgressValue = await getInitialProgressValue()
         navigation.navigate(PV.RouteNames.MakeClipScreen, { initialProgressValue })
       }}
-      size={22}
+      size={PV.Icons.NAV}
       style={navHeader.buttonIcon} />
   )
 }

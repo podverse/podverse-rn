@@ -1,5 +1,6 @@
 import React from 'react'
 import { Share } from 'react-native'
+import { PV } from '../resources'
 import { navHeader } from '../styles'
 import { Icon } from './'
 
@@ -30,7 +31,7 @@ export const NavShareIcon = (props: Props) => {
       color='#fff'
       name='share'
       onPress={handlePress ? handlePress : onShare}
-      size={22}
+      size={PV.Icons.NAV}
       style={navHeader.buttonIcon} />
   )
 }
