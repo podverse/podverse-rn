@@ -38,6 +38,9 @@
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* podverseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* podverseTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
+		3048199222A3E4C700A42CD6 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 70D5A083AF52489D947BEA06 /* MaterialIcons.ttf */; };
+		304819C322A3E4CC00A42CD6 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 135E63CF38CB4C2F932BC917 /* FontAwesome.ttf */; };
+		304819C422A3E4D000A42CD6 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 561A50109F0A4186B62063BE /* AntDesign.ttf */; };
 		30490952229F993400CA1B95 /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6691576913D848DB82D699AD /* RNPlaceholder.swift */; };
 		30490953229F993400CA1B95 /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6691576913D848DB82D699AD /* RNPlaceholder.swift */; };
 		30490954229F993400CA1B95 /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6691576913D848DB82D699AD /* RNPlaceholder.swift */; };
@@ -1450,6 +1453,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				304819C422A3E4D000A42CD6 /* AntDesign.ttf in Resources */,
+				304819C322A3E4CC00A42CD6 /* FontAwesome.ttf in Resources */,
+				3048199222A3E4C700A42CD6 /* MaterialIcons.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				635E03EDDB8042269CE8180A /* Entypo.ttf in Resources */,
