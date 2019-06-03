@@ -23,7 +23,6 @@ TrackPlayer.setupPlayer().then(() => {
     ],
     stopWithApp: true
   })
-  TrackPlayer.registerPlaybackService(() => require('./playerEvents'))
 })
 
 export const PVTrackPlayer = TrackPlayer

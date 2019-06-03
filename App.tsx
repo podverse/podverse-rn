@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import React, { Component } from 'react'
-import { Image, StatusBar, View } from 'react-native'
+import { Image, Platform, StatusBar, View } from 'react-native'
+import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
 import { GlobalTheme } from 'src/resources/Interfaces'
 import { PV } from './src/resources'
@@ -19,13 +20,14 @@ class App extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
     StatusBar.setBarStyle('light-content')
-    StatusBar.setBackgroundColor(PV.Colors.brandColor)
+    Platform.OS === 'android' && StatusBar.setBackgroundColor(PV.Colors.brandColor)
     this.state = {
       appReady: false
     }
   }
 
   async componentDidMount() {
+    TrackPlayer.registerPlaybackService(() => require('./src/services/playerEvents'))
     const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
     this.setupGlobalState(darkModeEnabled ? darkTheme : lightTheme)
   }

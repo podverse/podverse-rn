@@ -41,7 +41,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   constructor (props: Props) {
     super(props)
-    const { nowPlayingItem } = this.global.player
+    const { nowPlayingItem = {} } = this.global.player
     const isEditing = this.props.navigation.getParam('isEditing')
     const initialProgressValue = this.props.navigation.getParam('initialProgressValue')
 

@@ -51,7 +51,7 @@ module.exports = async () => {
     const isConnected = await hasValidNetworkConnection()
     const useServerData = isLoggedIn && isConnected
 
-    const nowPlayingItem = await getNowPlayingItem()
+    const nowPlayingItem = await getNowPlayingItem() || {}
     nowPlayingItem.userPlaybackPosition = 0
     await addOrUpdateHistoryItem(nowPlayingItem, useServerData)
 
@@ -67,7 +67,7 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
     const clipHasEnded = await getClipHasEnded()
-    const nowPlayingItem = await getNowPlayingItem()
+    const nowPlayingItem = await getNowPlayingItem() || {}
     const { clipEndTime } = nowPlayingItem
     const currentPosition = await PVTrackPlayer.getPosition()
     const currentState = await PVTrackPlayer.getState()
