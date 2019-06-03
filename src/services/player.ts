@@ -42,7 +42,7 @@ export const getContinuousPlaybackMode = async () => {
 export const getNowPlayingItem = async () => {
   try {
     const itemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
-    return itemString ? JSON.parse(itemString) : {}
+    return itemString ? JSON.parse(itemString) : null
   } catch (error) {
     return null
   }

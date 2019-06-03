@@ -377,7 +377,6 @@ const headerTitleItemPlaceholder = {
 
 const styles = StyleSheet.create({
   activityIndicator: {
-    justifyContent: 'flex-start',
     marginTop: 24
   },
   closeButton: {
