@@ -25,20 +25,28 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
+    const { isLoggedIn } = this.global.session
 
     this.state = {
-      isLoading: this.global.session.isLoggedIn,
+      isLoading: isLoggedIn,
       isLoadingMore: false,
-      queryFrom: _myPlaylistsKey
+      queryFrom: isLoggedIn ? _myPlaylistsKey : _subscribedPlaylistsKey
     }
   }
 
   async componentDidMount() {
+    const { navigation } = this.props
     const { queryFrom } = this.state
 
     if (this.global.session.isLoggedIn) {
       const newState = await this._queryData(queryFrom)
       this.setState(newState)
+    }
+
+    const playlistId = navigation.getParam('navToPlaylistWithId')
+
+    if (playlistId) {
+      navigation.navigate(PV.RouteNames.MorePlaylistScreen, { playlistId })
     }
   }
 

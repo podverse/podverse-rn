@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { Linking, View as RNView } from 'react-native'
+import { View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
@@ -86,13 +86,13 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    Linking.addEventListener('url', () => this._initializePageData())
-
+    const { navigation } = this.props
+    const episodeId = navigation.getParam('navToEpisodeWithId')
     this._initializePageData()
-  }
 
-  async componentWillUnmount() {
-    Linking.removeEventListener('url', () => this._initializePageData())
+    if (episodeId) {
+      navigation.navigate(PV.RouteNames.EpisodeScreen, { episodeId })
+    }
   }
 
   async _initializePageData() {

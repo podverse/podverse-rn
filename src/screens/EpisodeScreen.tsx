@@ -48,7 +48,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    const viewType = this.props.navigation.getParam('viewType') || _clipsKey
+    const viewType = this.props.navigation.getParam('viewType') || _showNotesKey
     const episode = this.props.navigation.getParam('episode')
     const episodeId = (episode && episode.id) || this.props.navigation.getParam('episodeId')
 
@@ -74,13 +74,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    Linking.addEventListener('url', () => this._initializePageData())
-
     this._initializePageData()
-  }
-
-  async componentWillUnmount() {
-    Linking.removeEventListener('url', () => this._initializePageData())
   }
 
   async _initializePageData() {
@@ -242,7 +236,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { episode, flatListData, isLoading, isLoadingMore, querySort, selectedItem,
       showActionSheet, viewType } = this.state
-console.log(isLoading, episode)
+
     return (
       <View style={styles.view}>
         <EpisodeTableHeader
@@ -276,7 +270,7 @@ console.log(isLoading, episode)
               renderItem={this._renderItem} />
         }
         {
-          viewType === _showNotesKey &&
+          viewType === _showNotesKey && episode &&
             <HTMLScrollView
               html={episode.description}
               navigation={navigation} />

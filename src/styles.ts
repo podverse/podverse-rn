@@ -125,7 +125,7 @@ export const darkTheme = StyleSheet.create({
     borderColor: PV.Colors.grayDarker
   },
   tableCellTextPrimary: {
-    color: PV.Colors.grayLighter
+    color: PV.Colors.white
   },
   tableCellTextSecondary: {
     color: PV.Colors.white
@@ -277,7 +277,7 @@ export const lightTheme = StyleSheet.create({
     borderColor: PV.Colors.grayLighter
   },
   tableCellTextPrimary: {
-    color: PV.Colors.grayLighter
+    color: PV.Colors.black
   },
   tableCellTextSecondary: {
     color: PV.Colors.white

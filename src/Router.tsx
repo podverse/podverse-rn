@@ -33,9 +33,9 @@ const AuthNavigator = createStackNavigator(
 
 const PodcastsNavigator = createStackNavigator(
   {
-    [PV.RouteNames.PodcastsScreen]: { screen: PodcastsScreen, path: 'podcasts' },
-    [PV.RouteNames.PodcastScreen]: { screen: PodcastScreen, path: 'podcast/:podcastId' },
-    [PV.RouteNames.EpisodeScreen]: { screen: EpisodeScreen, path: 'episode/:episodeId' }
+    [PV.RouteNames.PodcastsScreen]: { screen: PodcastsScreen, path: PV.DeepLinks.Podcasts.path },
+    [PV.RouteNames.PodcastScreen]: { screen: PodcastScreen, path: PV.DeepLinks.Podcast.path },
+    [PV.RouteNames.EpisodeScreen]: { screen: EpisodeScreen, path: PV.DeepLinks.Episode.path }
   },
   {
     defaultNavigationOptions,
@@ -118,12 +118,12 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.MoreScreen]: MoreScreen,
     [PV.RouteNames.DownloadsScreen]: DownloadsScreen,
     [PV.RouteNames.MyProfileScreen]: ProfileScreen,
-    [PV.RouteNames.PlaylistScreen]: { screen: PlaylistScreen, path: 'playlist/:playlistId' },
-    [PV.RouteNames.PlaylistsScreen]: { screen: PlaylistsScreen, path: 'playlists' },
+    [PV.RouteNames.PlaylistScreen]: { screen: PlaylistScreen, path: PV.DeepLinks.Playlist.path },
+    [PV.RouteNames.PlaylistsScreen]: { screen: PlaylistsScreen, path: PV.DeepLinks.Playlists.path },
     [PV.RouteNames.EditPlaylistScreen]: EditPlaylistScreen,
     [PV.RouteNames.EditProfileScreen]: EditProfileScreen,
-    [PV.RouteNames.ProfileScreen]: { screen: ProfileScreen, path: 'profile/:userId' },
-    [PV.RouteNames.ProfilesScreen]: { screen: ProfilesScreen, path: 'profiles' },
+    [PV.RouteNames.ProfileScreen]: { screen: ProfileScreen, path: PV.DeepLinks.Profile.path },
+    [PV.RouteNames.ProfilesScreen]: { screen: ProfilesScreen, path: PV.DeepLinks.Profiles.path },
     [PV.RouteNames.SettingsScreen]: SettingsScreen,
     [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen,
     [PV.RouteNames.MorePlaylistScreen]: PlaylistScreen,
@@ -160,7 +160,7 @@ const TabNavigator = createBottomTabNavigator({
   Podcasts: { screen: PodcastsNavigator, path: '' },
   Episodes: EpisodesNavigator,
   Clips: ClipsNavigator,
-  Search: { screen: SearchNavigator, path: 'search' },
+  Search: { screen: SearchNavigator, path: PV.DeepLinks.Search.path },
   More: { screen: MoreNavigator, path: '' }
 }, {
   tabBarComponent: (props: any) => <PVTabBar {...props} />,
@@ -171,7 +171,7 @@ const TabNavigator = createBottomTabNavigator({
 })
 
 const PlayerNavigator = createStackNavigator({
-  [PV.RouteNames.PlayerScreen]: { screen: PlayerScreen, path: 'clip/:mediaRefId' },
+  [PV.RouteNames.PlayerScreen]: { screen: PlayerScreen, path: PV.DeepLinks.Clip.path },
   [PV.RouteNames.MakeClipScreen]: MakeClipScreen
 }, {
   defaultNavigationOptions
@@ -215,6 +215,6 @@ const SwitchNavigator = createSwitchNavigator({
 })
 
 const App = createAppContainer(SwitchNavigator)
-const prefix = 'podverse://'
+const prefix = PV.DeepLinks.prefix
 
 export default () => <App uriPrefix={prefix} />

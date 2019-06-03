@@ -36,9 +36,17 @@ export class ProfilesScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    const { navigation } = this.props
+
     if (this.global.session.isLoggedIn) {
       const newState = await this._queryData(1)
       this.setState(newState)
+    }
+
+    const userId = navigation.getParam('navToProfileWithId')
+
+    if (userId) {
+      navigation.navigate(PV.RouteNames.ProfileScreen, { userId })
     }
   }
 

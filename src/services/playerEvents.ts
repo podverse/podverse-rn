@@ -1,10 +1,12 @@
+import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getBearerToken } from './auth'
-import { popLastFromHistoryItems } from './history'
+import { addOrUpdateHistoryItem, popLastFromHistoryItems } from './history'
 import { getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem, handleResumeAfterClipHasEnded,
-  playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded, setPlaybackPosition } from './player'
+  playerJumpBackward, playerJumpForward, playNextFromQueue, PVTrackPlayer, setClipHasEnded,
+  setPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
-import { popNextFromQueue } from './queue'
+import { getQueueItems, popNextFromQueue } from './queue'
 
 let clipEndTimeInterval: any = null
 
@@ -43,7 +45,23 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
 
-  PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
+  PVTrackPlayer.addEventListener('playback-queue-ended', async (x) => {
+    const bearerToken = await getBearerToken()
+    const isLoggedIn = !!bearerToken
+    const isConnected = await hasValidNetworkConnection()
+    const useServerData = isLoggedIn && isConnected
+
+    const nowPlayingItem = await getNowPlayingItem()
+    nowPlayingItem.userPlaybackPosition = 0
+    await addOrUpdateHistoryItem(nowPlayingItem, useServerData)
+
+    const queueItems = await getQueueItems(useServerData)
+    const shouldContinuouslyPlay = await getContinuousPlaybackMode()
+
+    if (shouldContinuouslyPlay && queueItems.length > 0) {
+      await playNextFromQueue(useServerData)
+    }
+
     PlayerEventEmitter.emit(PV.Events.PLAYER_QUEUE_ENDED)
   })
 
@@ -60,6 +78,16 @@ module.exports = async () => {
     }
 
     PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
+
+    // handle updating history item after event emit, because it is less urgent than the UI update
+    const bearerToken = await getBearerToken()
+    const isLoggedIn = !!bearerToken
+    const isConnected = await hasValidNetworkConnection()
+    const useServerData = isLoggedIn && isConnected
+
+    nowPlayingItem.userPlaybackPosition = currentPosition
+
+    await addOrUpdateHistoryItem(nowPlayingItem, useServerData)
   })
 
   PVTrackPlayer.addEventListener('playback-track-changed', () => console.log('playback track changed'))

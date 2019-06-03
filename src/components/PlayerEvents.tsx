@@ -3,7 +3,7 @@ import React from 'reactn'
 import { PV } from '../resources'
 import { getNowPlayingItem } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { playNextFromQueue, setNowPlayingItem, updatePlaybackState } from '../state/actions/player'
+import { setNowPlayingItem, updatePlaybackState } from '../state/actions/player'
 
 type Props = {}
 
@@ -13,7 +13,7 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     PlayerEventEmitter.on(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI, this._playerCannotStreamWithoutWifi)
-    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._playerQueueEnded)
+    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._refreshNowPlayingItem)
     PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_NEXT, this._refreshNowPlayingItem)
     PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PAUSE, this._playerStateUpdated)
     PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PLAY, this._playerStateUpdated)
@@ -39,16 +39,6 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     await Alert.alert(
       PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.title, PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.message, []
     )
-  }
-
-  _playerQueueEnded = async () => {
-    const { player, session } = this.global
-    const { shouldContinuouslyPlay, showMakeClip } = player
-    const { queueItems } = session.userInfo
-
-    if (!showMakeClip.isShowing && shouldContinuouslyPlay && queueItems.length > 0) {
-      await playNextFromQueue(session.isLoggedIn, this.global)
-    }
   }
 
   _playerStateUpdated = async () => {

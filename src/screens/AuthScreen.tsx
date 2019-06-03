@@ -69,7 +69,7 @@ export class AuthScreen extends React.Component<Props, State> {
           navigation.goBack(null)
         }
       } catch (error) {
-        if (error.response && error.response.data) {
+        if (error.response && error.response.data && error.response.data.message) {
           Alert.alert(PV.Alerts.SIGN_UP_ERROR.title, error.response.data.message, [])
         }
       }

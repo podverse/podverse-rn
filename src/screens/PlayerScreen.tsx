@@ -1,4 +1,4 @@
-import { Alert, Linking, Share, StyleSheet, View as RNView } from 'react-native'
+import { Alert, Share, StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, EpisodeTableCell, FlatList,
@@ -77,12 +77,6 @@ export class PlayerScreen extends React.Component<Props, State> {
       _getMediaRefId: this._getMediaRefId,
       _showShareActionSheet: this._showShareActionSheet
     })
-
-    Linking.addEventListener('url', () => this._initializeScreenData())
-  }
-
-  async componentWillUnmount() {
-    Linking.addEventListener('url', () => this._initializeScreenData())
   }
 
   _initializeScreenData = () => {
@@ -484,7 +478,7 @@ export class PlayerScreen extends React.Component<Props, State> {
               </View>
           }
           {
-            nowPlayingItem.clipId &&
+            nowPlayingItem && nowPlayingItem.clipId &&
               <PlayerClipInfoBar
                 handleOnPress={this._toggleShowFullClipInfo}
                 nowPlayingItem={nowPlayingItem} />

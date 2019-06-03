@@ -1,4 +1,4 @@
-import { Linking, StyleSheet, View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
@@ -72,12 +72,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    Linking.addEventListener('url', () => this._initializePageData())
     this._initializePageData()
-  }
-
-  async componentWillUnmount() {
-    Linking.removeEventListener('url', () => this._initializePageData())
   }
 
   async _initializePageData() {

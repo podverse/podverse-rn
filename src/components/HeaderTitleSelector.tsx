@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Icon } from 'react-native-elements'
 import RNPickerSelect from 'react-native-picker-select'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 import { PV } from '../resources'
 
 type Props = {
@@ -22,11 +22,9 @@ export const HeaderTitleSelector = (props: Props) => {
       </Text>
       <Icon
         color='#fff'
-        iconStyle={styles.closeButton}
         name='angle-down'
         size={16}
-        type='font-awesome'
-        underlayColor={PV.Colors.brandColor} />
+        style={styles.closeButton} />
     </View>
   )
 

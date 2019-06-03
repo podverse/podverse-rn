@@ -7,9 +7,9 @@ import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { getBearerToken } from './auth'
 import { getEpisode } from './episode'
-import { addOrUpdateHistoryItem } from './history'
+import { addOrUpdateHistoryItem, getHistoryItems } from './history'
 import { getMediaRef } from './mediaRef'
-import { filterItemFromQueueItems, getQueueItems, setAllQueueItems } from './queue'
+import { filterItemFromQueueItems, getQueueItems, popNextFromQueue, setAllQueueItems } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
 TrackPlayer.setupPlayer().then(() => {
@@ -42,7 +42,7 @@ export const getContinuousPlaybackMode = async () => {
 export const getNowPlayingItem = async () => {
   try {
     const itemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
-    return itemString ? JSON.parse(itemString) : {}
+    return itemString ? JSON.parse(itemString) : null
   } catch (error) {
     return null
   }
@@ -63,6 +63,13 @@ export const handleResumeAfterClipHasEnded = async () => {
   const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(nowPlayingItem)
   await setNowPlayingItem(nowPlayingItemEpisode)
   PlayerEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
+}
+
+export const playNextFromQueue = async (isLoggedIn: boolean) => {
+  const item = await popNextFromQueue(isLoggedIn)
+  if (item) {
+    await setNowPlayingItem(item)
+  }
 }
 
 export const playerJumpBackward = async (seconds: number) => {
@@ -171,6 +178,12 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
 
     const isConnected = await hasValidNetworkConnection()
     const useServerData = isLoggedIn && isConnected
+
+    if (isNewEpisode && !isNewMediaRef) {
+      const historyItems = await getHistoryItems(useServerData)
+      const oldItem = historyItems.find((x) => x.episodeId === item.episodeId)
+      await setPlaybackPosition(oldItem && oldItem.userPlaybackPosition || 0)
+    }
 
     const items = await getQueueItems(useServerData)
 
