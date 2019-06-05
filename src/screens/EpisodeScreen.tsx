@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { Linking, StyleSheet, View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, HTMLScrollView,
