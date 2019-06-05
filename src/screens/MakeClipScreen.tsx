@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Alert, Clipboard, Image, Modal, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
+import { Alert, AppState, Clipboard, Image, Modal, StyleSheet, TouchableOpacity, View as RNView
+  } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInput, TimeInput, View
@@ -7,8 +8,9 @@ import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInp
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { createMediaRef, updateMediaRef } from '../services/mediaRef'
-import { playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime, PVTrackPlayer
-  } from '../services/player'
+import { getNowPlayingItem, playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime,
+  PVTrackPlayer } from '../services/player'
+import PlayerEventEmitter from '../services/playerEventEmitter'
 import { setNowPlayingItem, togglePlay } from '../state/actions/player'
 import { core, navHeader, playerStyles } from '../styles'
 
@@ -79,6 +81,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
         : { isPublicItemSelected: privacyItems[1] }),
       title: isEditing ? nowPlayingItem.clipTitle : ''
     })
+
+    AppState.addEventListener('change', this._handleAppStateChange)
+    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handleAppStateChange)
   }
 
   componentWillUnmount() {
@@ -88,6 +93,21 @@ export class MakeClipScreen extends React.Component<Props, State> {
         showMakeClip: false
       }
     })
+
+    AppState.removeEventListener('change', this._handleAppStateChange)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_QUEUE_ENDED)
+  }
+
+  _handleAppStateChange = async () => {
+    const { dismiss } = this.props.navigation
+    const { nowPlayingItem: lastItem } = this.global
+    const currentItem = await getNowPlayingItem()
+
+    if (!currentItem) {
+      dismiss()
+    } else if (lastItem && currentItem.episodeId !== lastItem.episodeId) {
+      await setNowPlayingItem(currentItem, this.global)
+    }
   }
 
   _onChangeTitle = (text: string) => {
@@ -252,7 +272,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
           <View style={styles.wrapperMiddle}>
             <Image
               resizeMode='contain'
-              source={{ uri: nowPlayingItem.podcastImageUrl }}
+              source={{ uri: nowPlayingItem && nowPlayingItem.podcastImageUrl }}
               style={styles.image} />
           </View>
           <View style={styles.wrapperBottom}>

@@ -28,6 +28,15 @@ TrackPlayer.setupPlayer().then(() => {
 
 export const PVTrackPlayer = TrackPlayer
 
+export const clearNowPlayingItem = async () => {
+  try {
+    await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, '')
+    await TrackPlayer.reset()
+  } catch (error) {
+    throw error
+  }
+}
+
 export const getClipHasEnded = async () => {
   return AsyncStorage.getItem(PV.Keys.CLIP_HAS_ENDED)
 }

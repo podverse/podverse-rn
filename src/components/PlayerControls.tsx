@@ -63,8 +63,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     const { globalTheme, player, session } = this.global
     const { playbackRate, playbackState, shouldContinuouslyPlay } = player
     const { historyItems = [], queueItems = [] } = session.userInfo
-    const hasHistoryItem = historyItems.length > 1
-    const hasQueueItem = queueItems.length > 1
+    const hasHistoryItem = historyItems.length > 0
+    const hasQueueItem = queueItems.length > 0
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>

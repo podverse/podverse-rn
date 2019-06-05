@@ -17,7 +17,7 @@ export const PVTabBar = (props: Props) => {
   return (
     <View>
       {
-        player && player.showMiniPlayer &&
+        player && player.showMiniPlayer && player.nowPlayingItem &&
           <MiniPlayer navigation={navigation} />
       }
       <BottomTabBar {...props} style={globalTheme.tabbar} />

@@ -1,4 +1,4 @@
-import { Alert, Share, StyleSheet, View as RNView } from 'react-native'
+import { Alert, AppState, Share, StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, EpisodeTableCell, FlatList,
@@ -12,11 +12,11 @@ import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
+import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
 import { setNowPlayingItem } from '../state/actions/player'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core, navHeader } from '../styles'
-
 type Props = {
   navigation?: any
 }
@@ -77,6 +77,27 @@ export class PlayerScreen extends React.Component<Props, State> {
       _getMediaRefId: this._getMediaRefId,
       _showShareActionSheet: this._showShareActionSheet
     })
+
+    AppState.addEventListener('change', this._handleAppStateChange)
+    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handleAppStateChange)
+  }
+
+  async componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_QUEUE_ENDED)
+  }
+
+  _handleAppStateChange = async () => {
+    const { dismiss } = this.props.navigation
+    const { nowPlayingItem: lastItem } = this.global
+    const currentItem = await getNowPlayingItem()
+
+    if (!currentItem) {
+      dismiss()
+    } else if ((currentItem && !lastItem) ||
+      (currentItem && lastItem && currentItem.episodeId !== lastItem.episodeId)) {
+      await setNowPlayingItem(currentItem, this.global)
+    }
   }
 
   _initializeScreenData = () => {
@@ -120,12 +141,12 @@ export class PlayerScreen extends React.Component<Props, State> {
 
   _getEpisodeId = () => {
     const { nowPlayingItem } = this.global.player
-    return nowPlayingItem.episodeId
+    return nowPlayingItem && nowPlayingItem.episodeId
   }
 
   _getMediaRefId = () => {
     const { nowPlayingItem } = this.global.player
-    return nowPlayingItem.clipId
+    return nowPlayingItem && nowPlayingItem.clipId
   }
 
   _getInitialProgressValue = async () => {
@@ -332,9 +353,9 @@ export class PlayerScreen extends React.Component<Props, State> {
   _handleToggleSubscribe = async () => {
     const wasAlerted = await alertIfNoNetworkConnection('subscribe to podcast')
     if (wasAlerted) return
-
+    const { nowPlayingItem } = this.global.player
     try {
-      toggleSubscribeToPodcast(this.global.player.nowPlayingItem.podcastId, this.global)
+      if (nowPlayingItem) toggleSubscribeToPodcast(nowPlayingItem.podcastId, this.global)
       this._dismissHeaderActionSheet()
     } catch (error) {
       this._dismissHeaderActionSheet()
@@ -512,8 +533,8 @@ export class PlayerScreen extends React.Component<Props, State> {
     const results = await getMediaRefs({
       sort: querySort,
       page: queryPage,
-      ...(queryFrom === PV.Keys.QUERY_FROM_THIS_EPISODE ? { episodeId: nowPlayingItem.episodeId } : {}),
-      ...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST ? { podcastId: nowPlayingItem.podcastId } : {}),
+      ...(queryFrom === PV.Keys.QUERY_FROM_THIS_EPISODE && nowPlayingItem ? { episodeId: nowPlayingItem.episodeId } : {}),
+      ...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST && nowPlayingItem ? { podcastId: nowPlayingItem.podcastId } : {}),
       includeEpisode: queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST
     }, this.global.settings.nsfwMode)
     return results
@@ -527,7 +548,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const results = await getEpisodes({
       sort: querySort,
       page: page || queryPage,
-      podcastId: nowPlayingItem.podcastId
+      podcastId: nowPlayingItem && nowPlayingItem.podcastId
     }, this.global.settings.nsfwMode)
 
     return results
@@ -567,7 +588,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { episode, nowPlayingItem } = player
     const podcast = (episode && episode.podcast) || {}
     const { userInfo } = session
-    const isSubscribed = userInfo.subscribedPodcastIds.some((x: string) => x === nowPlayingItem.podcastId)
+    const isSubscribed = userInfo.subscribedPodcastIds.some((x: string) => x === nowPlayingItem && nowPlayingItem.podcastId)
 
     const items = [
       {
