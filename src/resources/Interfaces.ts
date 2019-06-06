@@ -28,6 +28,7 @@ export interface GlobalTheme {
   modalInnerWrapper?: any
   placeholderText?: any
   player?: any
+  playerClipTimeFlag?: any
   playerText?: any
   selectorText?: any
   swipeRowBack?: any

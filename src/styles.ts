@@ -105,6 +105,9 @@ export const darkTheme = StyleSheet.create({
   player: {
     borderColor: PV.Colors.grayDarker
   },
+  playerClipTimeFlag: {
+    backgroundColor: PV.Colors.yellow
+  },
   playerText: {
     color: PV.Colors.white
   },
@@ -256,6 +259,9 @@ export const lightTheme = StyleSheet.create({
   },
   player: {
     borderColor: PV.Colors.grayLighter
+  },
+  playerClipTimeFlag: {
+    backgroundColor: PV.Colors.yellow
   },
   playerText: {
     color: PV.Colors.black

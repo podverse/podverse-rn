@@ -61,7 +61,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
   render() {
     const { progressValue } = this.state
     const { globalTheme, player, session } = this.global
-    const { playbackRate, playbackState, shouldContinuouslyPlay } = player
+    const { nowPlayingItem, playbackRate, playbackState, shouldContinuouslyPlay } = player
     const { historyItems = [], queueItems = [] } = session.userInfo
     const hasHistoryItem = historyItems.length > 0
     const hasQueueItem = queueItems.length > 0
@@ -69,7 +69,11 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
         <View style={styles.progressWrapper}>
-          <PlayerProgressBar value={progressValue} />
+          <PlayerProgressBar
+            {...(nowPlayingItem && nowPlayingItem.clipEndTime ? { clipEndTime: nowPlayingItem.clipEndTime } : {})}
+            {...(nowPlayingItem && nowPlayingItem.clipStartTime ? { clipStartTime: nowPlayingItem.clipStartTime } : {})}
+            globalTheme={globalTheme}
+            value={progressValue} />
         </View>
         <View style={styles.middleRow}>
           <TouchableOpacity

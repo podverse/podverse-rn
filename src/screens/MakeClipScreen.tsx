@@ -303,7 +303,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 wrapperStyle={styles.timeInput} />
             </View>
             <View style={styles.progressWrapper}>
-              <PlayerProgressBar value={progressValue} />
+              <PlayerProgressBar
+                clipEndTime={endTime}
+                clipStartTime={startTime}
+                globalTheme={globalTheme}
+                value={progressValue} />
             </View>
             <RNView style={[styles.makeClipPlayerControls, globalTheme.makeClipPlayerControlsWrapper]}>
               <TouchableOpacity
