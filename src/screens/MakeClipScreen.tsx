@@ -72,6 +72,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const isEditing = this.props.navigation.getParam('isEditing')
 
     const hideHowToModal = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED)
+
+    if (!hideHowToModal) {
+      await AsyncStorage.setItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED, JSON.stringify(true))
+    }
+
     const isPublic = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_IS_PUBLIC)
 
     this.setState({
@@ -214,6 +219,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         if (error.response) {
           Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, error.response.data.message, [])
         }
+        console.log(error)
       }
       this.setState({ isSaving: false })
     })
@@ -221,11 +227,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   _hideHowTo = () => {
     this.setState({ showHowToModal: false })
-  }
-
-  _showHowTo = async () => {
-    await AsyncStorage.setItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED, JSON.stringify(true))
-    this.setState({ showHowToModal: true })
   }
 
   _playerJumpBackward = async () => {
