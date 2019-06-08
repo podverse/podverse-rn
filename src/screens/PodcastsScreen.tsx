@@ -487,7 +487,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }
 
         const results = await getPodcasts({ categories, sort: querySort, ...(searchTitle ? { searchTitle } : {}) }, nsfwMode)
-        newState.endOfResultsReached = results.length < 20
         newState.flatListData = results[0]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]

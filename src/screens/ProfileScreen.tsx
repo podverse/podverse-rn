@@ -439,7 +439,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         }
       }, () => {
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = flatListData.length >= results[1]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
         newState.queryPage = page
         resolve(newState)
@@ -469,7 +469,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         }
       }, () => {
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = flatListData.length >= results[1]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
         newState.queryPage = page
         resolve(newState)
@@ -479,7 +479,7 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   _queryPlaylists = async (newState: any, page: number = 1, sort?: string | null) => {
     return new Promise(async (resolve, reject) => {
-      const { flatListData, userId } = this.state
+      const { userId } = this.state
       const { id } = this.global.session.userInfo
       const query = { page, sort }
       const isLoggedInUserProfile = userId === id
@@ -491,8 +491,8 @@ export class ProfileScreen extends React.Component<Props, State> {
         results = await getUserPlaylists(this.global.profile.user.id, query)
       }
 
-      newState.endOfResultsReached = flatListData.length >= results[1]
       newState.flatListData = results[0]
+      newState.endOfResultsReached = newState.flatListData.length >= results[1]
       newState.flatListDataTotalCount = results[1]
       newState.queryPage = page
       resolve(newState)
