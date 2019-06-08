@@ -12,7 +12,8 @@ export const getPublicUsersByQuery = async (userIds: string, page: number = 1) =
 
   setGlobal({
     profiles: {
-      flatListData: results[0]
+      flatListData: results[0],
+      flatListDataTotalCount: results[1]
     }
   })
 
@@ -34,6 +35,7 @@ export const getPublicUser = async (id: string, globalState: any) => {
       user: newUser
     },
     profiles: {
+      ...globalState.profiles,
       flatListData: profilesFlatListData
     }
   })
@@ -83,6 +85,7 @@ export const updateLoggedInUser = async (data: any, globalState: any) => {
       user: userInfo
     },
     profiles: {
+      ...globalState.profiles,
       flatListData: profilesFlatListData
     },
     session: {

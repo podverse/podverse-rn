@@ -1,6 +1,4 @@
-import RNSecureKeyStore from 'react-native-secure-key-store'
 import { hasValidDownloadingConnection, hasValidNetworkConnection, hasValidStreamingConnection } from '../lib/network'
-import { PV } from '../resources'
 import { getBearerToken } from './auth'
 import { request } from './request'
 
@@ -53,6 +51,10 @@ export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
     ...(query.searchAllFieldsText ? { searchAllFieldsText: query.searchAllFieldsText } : {}),
     ...(query.includeEpisode ? { includeEpisode: true } : {}),
     ...(query.includePodcast ? { includePodcast: true } : {})
+  }
+
+  if (query.subscribedOnly && query.podcastId && query.podcastId.length === 0) {
+    return [0, 0]
   }
 
   const response = await request({

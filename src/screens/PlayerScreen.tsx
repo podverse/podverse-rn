@@ -108,6 +108,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         ...this.global.screenPlayer,
         endOfResultsReached: false,
         flatListData: [],
+        flatListDataTotalCount: null,
         isLoading: true,
         queryPage: 1
       }
@@ -170,6 +171,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         ...this.global.screenPlayer,
         endOfResultsReached: false,
         flatListData: [],
+        flatListDataTotalCount: null,
         isLoading: true,
         queryFrom: PV.Keys.QUERY_FROM_THIS_PODCAST,
         queryPage: 1,
@@ -211,6 +213,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         ...this.global.screenPlayer,
         endOfResultsReached: false,
         flatListData: [],
+        flatListDataTotalCount: null,
         isLoading: true,
         queryFrom: selectedKey,
         queryPage: 1
@@ -242,6 +245,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         ...this.global.screenPlayer,
         endOfResultsReached: false,
         flatListData: [],
+        flatListDataTotalCount: null,
         isLoading: true,
         querySort: selectedKey
       }
@@ -429,8 +433,8 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { player, screenPlayer } = this.global
     const { episode, mediaRef, nowPlayingItem } = player
-    const { flatListData, isLoading, isLoadingMore, queryFrom, querySort, selectedItem, showHeaderActionSheet,
-      showMoreActionSheet, showShareActionSheet, showFullClipInfo, viewType } = screenPlayer
+    const { flatListData, flatListDataTotalCount, isLoading, isLoadingMore, queryFrom, querySort, selectedItem,
+      showHeaderActionSheet, showMoreActionSheet, showShareActionSheet, showFullClipInfo, viewType } = screenPlayer
     const podcastId = nowPlayingItem ? nowPlayingItem.podcastId : null
     const episodeId = episode ? episode.id : null
     const mediaRefId = mediaRef ? mediaRef.id : null
@@ -483,6 +487,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                   !isLoading && viewType && viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES && flatListData &&
                     <FlatList
                       data={flatListData}
+                      dataTotalCount={flatListDataTotalCount}
                       disableLeftSwipe={true}
                       extraData={flatListData}
                       isLoadingMore={isLoadingMore}
@@ -570,10 +575,12 @@ export class PlayerScreen extends React.Component<Props, State> {
         const results = await this._queryEpisodes()
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       } else if (viewType === PV.Keys.VIEW_TYPE_CLIPS) {
         const results = await this._queryClips()
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       }
 
       return newState

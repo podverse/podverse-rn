@@ -113,6 +113,17 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
           !isLoading && myPlaylists && myPlaylists.length > 0 &&
             <FlatList
               data={myPlaylists}
+              dataTotalCount={myPlaylists.length}
+              disableLeftSwipe={true}
+              extraData={myPlaylists}
+              ItemSeparatorComponent={this._ItemSeparatorComponent}
+              renderItem={this._renderPlaylistItem} />
+        }
+        {
+          !isLoading && myPlaylists && myPlaylists.length === 0 &&
+            <FlatList
+              data={myPlaylists}
+              dataTotalCount={0}
               disableLeftSwipe={true}
               extraData={myPlaylists}
               ItemSeparatorComponent={this._ItemSeparatorComponent}

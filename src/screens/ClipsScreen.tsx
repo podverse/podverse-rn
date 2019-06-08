@@ -16,6 +16,7 @@ type Props = {
 type State = {
   endOfResultsReached: boolean
   flatListData: any[]
+  flatListDataTotalCount: number | null
   isLoading: boolean
   isLoadingMore: boolean
   queryFrom: string | null
@@ -37,6 +38,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: true,
       isLoadingMore: false,
       queryFrom: _allPodcastsKey,
@@ -64,6 +66,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     this.setState({
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: true,
       queryFrom: selectedKey,
       queryPage: 1
@@ -82,6 +85,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     this.setState({
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: true,
       querySort: selectedKey
     }, async () => {
@@ -159,6 +163,7 @@ export class ClipsScreen extends React.Component<Props, State> {
 
     this.setState({
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoadingMore: true,
       queryPage: 1,
       searchBarText: text
@@ -174,7 +179,7 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { flatListData, queryFrom, isLoading, isLoadingMore, querySort, selectedItem,
+    const { flatListData, flatListDataTotalCount, queryFrom, isLoading, isLoadingMore, querySort, selectedItem,
       showActionSheet } = this.state
     const { session } = this.global
     const { isLoggedIn } = session
@@ -196,11 +201,13 @@ export class ClipsScreen extends React.Component<Props, State> {
           !isLoading && flatListData &&
             <FlatList
               data={flatListData}
+              dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={queryFrom !== _subscribedKey}
               extraData={flatListData}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               ListHeaderComponent={this._ListHeaderComponent}
+              noSubscribedPodcasts={queryFrom === _subscribedKey && flatListData.length === 0}
               onEndReached={this._onEndReached}
               renderItem={this._renderClipItem} />
         }
@@ -238,10 +245,12 @@ export class ClipsScreen extends React.Component<Props, State> {
           page: queryPage,
           podcastId,
           ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          subscribedOnly: true,
           includePodcast: true
         }, this.global.settings.nsfwMode)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       } else if (filterKey === _allPodcastsKey) {
         const { searchBarText: searchAllFieldsText } = this.state
         const results = await getMediaRefs({
@@ -252,6 +261,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         }, this.global.settings.nsfwMode)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       } else if (filterKey === _myClipsKey) {
         const results = await getLoggedInUserMediaRefs({
           sort: querySort,
@@ -260,15 +270,18 @@ export class ClipsScreen extends React.Component<Props, State> {
         }, this.global.settings.nsfwMode)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       } else if (rightItems.some((option) => option.value === filterKey)) {
         const results = await getMediaRefs({
           ...(queryFrom === _subscribedKey ? { podcastId } : {}),
           sort: filterKey,
           ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          subscribedOnly: queryFrom === _subscribedKey,
           includePodcast: true
         }, nsfwMode)
         newState.flatListData = results[0]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       }
 
       return newState
