@@ -2,7 +2,9 @@ import React from 'react'
 import { BottomTabBar } from 'react-navigation-tabs'
 import { useGlobal } from 'reactn'
 import { View } from '../components'
+import { PV } from '../resources'
 import { GlobalTheme } from '../resources/Interfaces'
+import { darkTheme } from '../styles'
 import { MiniPlayer } from './MiniPlayer'
 
 type Props = {
@@ -13,6 +15,7 @@ export const PVTabBar = (props: Props) => {
   const { navigation } = props
   const [player] = useGlobal<any>('player')
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
+  const isDarkMode = globalTheme === darkTheme
 
   return (
     <View>
@@ -20,7 +23,11 @@ export const PVTabBar = (props: Props) => {
         player && player.showMiniPlayer && player.nowPlayingItem &&
           <MiniPlayer navigation={navigation} />
       }
-      <BottomTabBar {...props} style={globalTheme.tabbar} />
+      <BottomTabBar
+        {...props}
+        activeTintColor={isDarkMode ? PV.Colors.blueLighter : PV.Colors.blueDarker}
+        inactiveTintColor={isDarkMode ? PV.Colors.grayLighter : PV.Colors.grayDarker}
+        style={globalTheme.tabbar} />
     </View>
   )
 }
