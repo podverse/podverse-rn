@@ -111,9 +111,6 @@ export const darkTheme = StyleSheet.create({
   playerText: {
     color: PV.Colors.white
   },
-  selectorText: {
-    color: PV.Colors.white
-  },
   swipeRowBack: {
     backgroundColor: PV.Colors.gray,
     color: PV.Colors.white
@@ -266,9 +263,6 @@ export const lightTheme = StyleSheet.create({
   playerText: {
     color: PV.Colors.black
   },
-  selectorText: {
-    color: PV.Colors.black
-  },
   swipeRowBack: {
     backgroundColor: PV.Colors.gray,
     color: PV.Colors.black
@@ -362,28 +356,31 @@ export const core = StyleSheet.create({
     backgroundColor: 'transparent',
     flexDirection: 'row'
   },
-  selectorText: {
-    fontSize: PV.Fonts.sizes.xl,
-    height: 44,
-    justifyContent: 'center',
-    lineHeight: 44,
-    paddingHorizontal: 8
-  },
   searchBar: {
     borderBottomWidth: 1,
     borderWidth: 1
   },
+  selectorText: {
+    fontSize: PV.Fonts.sizes.xl,
+    height: 44,
+    lineHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: 8
+  },
   textInput: {
     fontSize: PV.Fonts.sizes.xl,
     height: 44,
-    marginVertical: 4,
-    paddingLeft: 8,
-    paddingRight: 8
+    justifyContent: 'center',
+    paddingHorizontal: 8
   },
   textInputLabel: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
     marginBottom: 8
+  },
+  textInputSubTitle: {
+    fontSize: PV.Fonts.sizes.md,
+    marginVertical: 8
   },
   view: {
     alignItems: 'center',

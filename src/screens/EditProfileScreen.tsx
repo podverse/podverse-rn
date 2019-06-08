@@ -1,7 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, Alert } from 'react-native'
+import { Alert, StyleSheet, TouchableOpacity } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { ActivityIndicator, Divider, TextInput, View } from '../components'
+import { ActivityIndicator, Divider, Text, TextInput, View } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
@@ -15,7 +15,7 @@ type Props = {
 type State = {
   isLoading?: boolean
   name?: string
-  selectedIsPublicKey?: string
+  selectedIsPublicKey?: boolean
 }
 
 export class EditProfileScreen extends React.Component<Props, State> {
@@ -82,7 +82,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
-  _onChangeIsPublic = (key: string) => {
+  _onChangeIsPublic = (key: boolean) => {
     this.setState({ selectedIsPublicKey: key })
   }
 
@@ -91,15 +91,24 @@ export class EditProfileScreen extends React.Component<Props, State> {
   }
 
   render() {
+    const user = this.props.navigation.getParam('user')
     const { globalTheme } = this.global
     const { isLoading, name, selectedIsPublicKey } = this.state
     const selectedIsPublicOption = isPublicOptions.find((x) => x.value === selectedIsPublicKey) || selectPlaceholder
+    let privacySubtitleVerbTenseText = 'will be'
+
+    if (user.isPublic && user.isPublic === selectedIsPublicKey) {
+      privacySubtitleVerbTenseText = 'are'
+    } else if (!user.isPublic && user.isPublic === selectedIsPublicKey) {
+      privacySubtitleVerbTenseText = 'is'
+    }
 
     return (
       <View style={styles.view}>
           {
             !isLoading ?
               <View>
+                <Text style={core.textInputLabel}>Name</Text>
                 <TextInput
                   autoCapitalize='none'
                   onChangeText={this._onChangeName}
@@ -107,14 +116,27 @@ export class EditProfileScreen extends React.Component<Props, State> {
                   style={[styles.textInput, globalTheme.textInput]}
                   underlineColorAndroid='transparent'
                   value={name} />
+                <Text style={core.textInputLabel}>Profile Privacy</Text>
                 <RNPickerSelect
                   items={isPublicOptions}
                   onValueChange={this._onChangeIsPublic}
                   placeholder={selectPlaceholder}
                   value={selectedIsPublicKey}>
-                  <Text style={[core.selectorText, globalTheme.selectorText]}>
+                  <Text style={[core.selectorText, globalTheme.textInput]}>
                     {selectedIsPublicOption.label} &#9662;
                   </Text>
+                  {
+                    selectedIsPublicKey &&
+                      <Text style={[core.textInputSubTitle, globalTheme.textSecondary]}>
+                        {`Podcasts, clips, and playlists ${privacySubtitleVerbTenseText} visible on your profile page.`}
+                      </Text>
+                  }
+                  {
+                    selectedIsPublicKey === false &&
+                      <Text style={[core.textInputSubTitle, globalTheme.textSecondary]}>
+                        {`Your profile page ${privacySubtitleVerbTenseText} hidden. Your clip and playlist links ${privacySubtitleVerbTenseText === 'is' ? 'are' : privacySubtitleVerbTenseText} still accessible to anyone with the links.`}
+                      </Text>
+                  }
                 </RNPickerSelect>
               </View> : <ActivityIndicator />
           }
@@ -142,9 +164,12 @@ const isPublicOptions = [
 
 const styles = StyleSheet.create({
   textInput: {
-    fontSize: PV.Fonts.sizes.xl
+    fontSize: PV.Fonts.sizes.xl,
+    marginBottom: 16
   },
   view: {
-    flex: 1
+    flex: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 16
   }
 })
