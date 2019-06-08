@@ -27,6 +27,9 @@ export const PVTabBar = (props: Props) => {
         {...props}
         activeTintColor={isDarkMode ? PV.Colors.blueLighter : PV.Colors.blueDarker}
         inactiveTintColor={isDarkMode ? PV.Colors.grayLighter : PV.Colors.grayDarker}
+        labelStyle={{
+          fontSize: PV.Fonts.sizes.tiny
+        }}
         style={globalTheme.tabbar} />
     </View>
   )
