@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     flex: 1,
-    paddingBottom: 5,
+    paddingBottom: 4,
     paddingRight: 8,
     paddingTop: 6
   },
