@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, Divider, EpisodeTableCell, FlatList, SearchBar,
   TableSectionSelectors, View } from '../components'
+import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, removeHTMLFromString } from '../lib/utility'
@@ -180,6 +181,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
     this.setState(state)
   }
 
+  _handleDownloadPressed = () => {
+    downloadEpisode({ id: this.state.selectedItem.episodeId, url: this.state.selectedItem.episodeMediaUrl })
+  }
+
   render() {
     const { flatListData, queryFrom, isLoading, isLoadingMore, querySort, selectedItem,
       showActionSheet } = this.state
@@ -213,7 +218,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={PV.ActionSheet.media.moreButtons(
-            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
           )}
           showModal={showActionSheet} />
       </View>

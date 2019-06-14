@@ -12,6 +12,7 @@
 #import <React/RCTRootView.h>
 
 #import "React/RCTLinkingManager.h"
+#import <RNBackgroundDownloader.h>
 
 @implementation AppDelegate
 
@@ -50,6 +51,11 @@
   return [RCTLinkingManager application:application
                    continueUserActivity:userActivity
                      restorationHandler:restorationHandler];
+}
+
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler
+{
+  [RNBackgroundDownloader setCompletionHandlerWithIdentifier:identifier completionHandler:completionHandler];
 }
 
 @end

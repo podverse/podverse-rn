@@ -58,7 +58,8 @@ const initialTheme: InitialState = {
   settings: {
     nsfwMode: true
   },
-  subscribedPodcasts: []
+  subscribedPodcasts: [],
+  downloads: []
 }
 
 export default initialTheme
