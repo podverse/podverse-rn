@@ -219,7 +219,7 @@ export class QueueScreen extends React.Component<Props, State> {
     }
   }
 
-  _renderHistoryItem = ({ item }) => {
+  _renderHistoryItem = ({ item = {} }) => {
     const { isEditing } = this.state
     return (
       <QueueTableCell
@@ -235,7 +235,7 @@ export class QueueScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderQueueItemRow = ({ active, data }) => {
+  _renderQueueItemRow = ({ active, data = {} }) => {
     const { isEditing } = this.state
 
     const cell = (
@@ -296,7 +296,7 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { historyItems, isLoading, nowPlayingItem, queueItems, viewType } = this.state
+    const { historyItems, isLoading, nowPlayingItem = {}, queueItems, viewType } = this.state
 
     return (
       <PVView style={styles.view}>

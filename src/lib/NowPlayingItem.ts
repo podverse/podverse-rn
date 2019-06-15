@@ -35,7 +35,7 @@ export const convertNowPlayingItemToEpisode = (item: NowPlayingItem) => {
   }
 }
 
-export const convertNowPlayingItemToMediaRef = (item: NowPlayingItem) => {
+export const convertNowPlayingItemToMediaRef = (item: NowPlayingItem = {}) => {
   return {
     endTime: item.clipEndTime,
     episode: convertNowPlayingItemToEpisode(item),
@@ -62,7 +62,7 @@ export const convertNowPlayingItemClipToNowPlayingItemEpisode = (data: any, user
 }
 
 export const convertToNowPlayingItem = (data, inheritedEpisode, inheritedPodcast, userPlaybackPosition = 0) => {
-  let nowPlayingItem: NowPlayingItem = {}
+  const nowPlayingItem: NowPlayingItem = {}
 
   if (!data) { return {} }
   const e = (data.pubDate && data) || data.episode || inheritedEpisode

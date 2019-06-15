@@ -53,7 +53,7 @@ module.exports = async () => {
     const isConnected = await hasValidNetworkConnection()
     const useServerData = isLoggedIn && isConnected
 
-    const nowPlayingItem = await getNowPlayingItem()
+    const nowPlayingItem = await getNowPlayingItem() || {}
     nowPlayingItem.userPlaybackPosition = 0
     await addOrUpdateHistoryItem(nowPlayingItem, useServerData)
 

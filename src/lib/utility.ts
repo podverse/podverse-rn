@@ -119,7 +119,7 @@ export const combineAndSortPlaylistItems = (episodes: [any], mediaRefs: [any], i
   const remainingPlaylistItems = [] as any[]
 
   const unsortedItems = allPlaylistItems.filter((x: any) => {
-    const isSortedItem = itemsOrder.some(id => x.id === id)
+    const isSortedItem = itemsOrder.some((id) => x.id === id)
     if (!isSortedItem) {
       return x
     } else {
@@ -183,4 +183,21 @@ export const getMembershipExpiration = (user: any) => {
     return membershipExpiration
   }
   return
+}
+
+export const getExtensionFromUrl = (url: string) => {
+  const path = url.split('?') // Remove query params
+
+  if (path[0]) {
+    const filePathArr = path[0].split('/') // Split url in paths
+    if (filePathArr.length > 0) {
+      const filePath = filePathArr.pop() || '' // Grab last path in url
+      if (filePath) {
+        const extension = filePath.split('.').pop() // Split last path in name.extension and grab extension
+        return `.${extension || 'mp3'}`
+      }
+    }
+  }
+
+  return '.mp3' // If all else fails, assume mp3
 }
