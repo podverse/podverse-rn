@@ -4,30 +4,44 @@ export enum DownloadStatus {
   DOWNLOADING,
   PAUSED,
   STOPPED,
-  UNKNOWN
-}
-
-type DownloadTask = {
-  id: string,
-  percent: string
+  UNKNOWN,
+  PENDING,
+  FINISHED
 }
 
 type DownloadTaskState = {
-  id: string,
-  percent: string,
-  status: DownloadStatus
+  bytesWritten?: string
+  completed?: boolean
+  episodeId: string
+  episodeTitle?: string
+  percent?: string
+  podcastImageUrl?: string
+  podcastTitle?: string
+  status?: DownloadStatus
+  bytesTotal?: string
 }
 
-export const addDownloadTask = (downloadTask: DownloadTask) => {
-  const { downloads } = getGlobal()
-  const downloadTaskState: DownloadTaskState = {
-    id: downloadTask.id,
-    status: DownloadStatus.DOWNLOADING,
-    percent: downloadTask.percent
+export const getDownloadStatusText = (status?: number) => {
+  if (status === DownloadStatus.DOWNLOADING) {
+    return 'Downloading'
+  } else if (status === DownloadStatus.PAUSED) {
+    return 'Paused'
+  } else if (status === DownloadStatus.STOPPED) {
+    return 'Cancelled'
+  } else if (status === DownloadStatus.PENDING) {
+    return 'Pending'
+  } else if (status === DownloadStatus.FINISHED) {
+    return 'Finished'
+  } else {
+    return ''
   }
+}
 
+export const addDownloadTask = (downloadTask: DownloadTaskState) => {
+  const { downloads } = getGlobal()
+  downloadTask.status = DownloadStatus.PENDING
   setGlobal({
-    downloads: [...downloads, downloadTaskState]
+    downloads: [...downloads, downloadTask]
   })
 }
 
@@ -57,8 +71,8 @@ export const toggleDownloadTaskStatus = (downloadTaskId: string) => {
 export const clearDownloadTask = (downloadTaskId: string) => {
   const { downloads } = getGlobal()
 
-  const newDownloads = downloads.filter((task: DownloadTask) => {
-    return task.id !== downloadTaskId
+  const newDownloads = downloads.filter((task: DownloadTaskState) => {
+    return task.episodeId !== downloadTaskId
   })
 
   setGlobal({
@@ -66,12 +80,32 @@ export const clearDownloadTask = (downloadTaskId: string) => {
   })
 }
 
-export const updateDownloadPercent = (downloadTaskId: string, percent: string) => {
+export const updateDownloadProgress = (downloadTaskId: string, percent: number, bytesWritten: string, bytesTotal: string) => {
   const { downloads } = getGlobal()
 
   for (const task of downloads) {
-    if (task.id === downloadTaskId) {
+    if (task.episodeId === downloadTaskId) {
       task.percent = percent
+      task.bytesWritten = bytesWritten
+      task.bytesTotal = bytesTotal
+      task.completed = false
+      task.status = DownloadStatus.DOWNLOADING
+      break
+    }
+  }
+
+  setGlobal({
+    downloads: [...downloads]
+  })
+}
+
+export const updateDownloadComplete = (downloadTaskId: string) => {
+  const { downloads } = getGlobal()
+
+  for (const task of downloads) {
+    if (task.episodeId === downloadTaskId) {
+      task.completed = true
+      task.status = DownloadStatus.FINISHED
       break
     }
   }

@@ -1,26 +1,31 @@
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import * as DownloadState from '../state/actions/downloads'
-import { getExtensionFromUrl } from './utility'
-let downloadTasks: any[] = []
+import { convertBytesToHumanReadableString, getExtensionFromUrl } from './utility'
+const downloadTasks: any[] = []
 
-export const downloadEpisode = ({ id = '', url = '' }) => {
-  const ext = getExtensionFromUrl(url)
+export const downloadEpisode = ({ episodeId, episodeMediaUrl, episodeTitle, podcastImageUrl,
+  podcastTitle }) => {
+  const ext = getExtensionFromUrl(episodeMediaUrl)
   const task = RNBackgroundDownloader
     .download({
-        id,
-        url,
-        destination: `${RNBackgroundDownloader.directories.documents}/${id}${ext}`
+      id: episodeId,
+      url: episodeMediaUrl,
+      destination: `${RNBackgroundDownloader.directories.documents}/${episodeId}${ext}`
     })
     .begin(() => {
-        downloadTasks.push(task)
-        DownloadState.addDownloadTask(task)
-    }).progress((percent: string) => {
-// tslint:disable-next-line: radix
-        console.log('ID: ', id, ' | percent: ', (Number(percent) * 100),'%')
-        DownloadState.updateDownloadPercent(id, percent)
+      downloadTasks.push(task)
+      DownloadState.addDownloadTask({
+        episodeId,
+        episodeTitle,
+        podcastImageUrl,
+        podcastTitle
+      })
+    }).progress((percent: number, bytesWritten: number, bytesTotal: number) => {
+      const written = convertBytesToHumanReadableString(bytesWritten)
+      const total = convertBytesToHumanReadableString(bytesTotal)
+      DownloadState.updateDownloadProgress(episodeId, percent, written, total)
     }).done(() => {
-        console.log(`Done. Saved at: ${RNBackgroundDownloader.directories.documents}/${id}.mp3`)
-        downloadTasks = downloadTasks.filter((dTask) => dTask.id !== task.id)
+      DownloadState.updateDownloadComplete(episodeId)
     }).error((error: string) => {
       console.log('Download canceled due to error: ', error)
     })

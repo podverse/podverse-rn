@@ -182,7 +182,14 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _handleDownloadPressed = () => {
-    downloadEpisode({ id: this.state.selectedItem.episodeId, url: this.state.selectedItem.episodeMediaUrl })
+    const { episodeId, episodeMediaUrl, episodeTitle, podcastImageUrl, podcastTitle } = this.state.selectedItem
+    downloadEpisode({
+      episodeId,
+      episodeMediaUrl,
+      episodeTitle,
+      podcastImageUrl,
+      podcastTitle
+    })
   }
 
   render() {
