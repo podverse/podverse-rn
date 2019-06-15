@@ -4,6 +4,7 @@ import { NavigationScreenOptions } from 'react-navigation'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, HTMLScrollView,
   NavQueueIcon, NavShareIcon, SearchBar, TableSectionSelectors, View } from '../components'
+import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
@@ -232,6 +233,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
     this.setState({ searchBarText: '' })
   }
 
+  _handleDownloadPressed = () => {
+    downloadEpisode({ id: this.state.selectedItem.episodeId, url: this.state.selectedItem.episodeMediaUrl })
+  }
+
   render() {
     const { navigation } = this.props
     const { episode, flatListData, isLoading, isLoadingMore, querySort, selectedItem,
@@ -278,7 +283,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={PV.ActionSheet.media.moreButtons(
-            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
           )}
           showModal={showActionSheet} />
       </View>

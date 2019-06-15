@@ -137,6 +137,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-fs')
+    implementation project(':react-native-background-downloader')
     implementation project(':@react-native-community_async-storage')
     implementation project(':@react-native-community_netinfo')
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"

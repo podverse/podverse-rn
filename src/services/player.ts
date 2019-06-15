@@ -1,8 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import RNFS from 'react-native-fs'
 import TrackPlayer from 'react-native-track-player'
 import { hasValidNetworkConnection, hasValidStreamingConnection } from '../lib/network'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, convertNowPlayingItemToEpisode,
   convertNowPlayingItemToMediaRef, NowPlayingItem } from '../lib/NowPlayingItem'
+import { getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { getBearerToken } from './auth'
@@ -23,7 +25,6 @@ TrackPlayer.setupPlayer().then(() => {
     ],
     stopWithApp: true
   })
-  TrackPlayer.registerPlaybackService(() => require('./playerEvents'))
 })
 
 export const PVTrackPlayer = TrackPlayer
@@ -137,7 +138,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
   try {
     const bearerToken = await getBearerToken()
     const isLoggedIn = !!bearerToken
-    const { clipId, episodeId, episodeMediaUrl, episodeTitle = 'untitled episode', podcastImageUrl,
+    const { clipId, episodeId, episodeMediaUrl = '', episodeTitle = 'untitled episode', podcastImageUrl,
       podcastTitle = 'untitled podcast' } = item
 
     const lastNowPlayingItem = await getNowPlayingItem()
@@ -151,28 +152,48 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
     const isTrackLoaded = await TrackPlayer.getCurrentTrack()
     const id = clipId || episodeId
 
-    const isDownloadedFile = false
+    const ext = getExtensionFromUrl(episodeMediaUrl)
+    const filePath = `${RNFS.DocumentDirectoryPath}/${id}${ext}`
+    let isDownloadedFile = true
+    try {
+      await RNFS.stat(filePath)
+    } catch (innerErr) {
+      isDownloadedFile = false
+    }
+
     const hasStreamingConnection = await hasValidStreamingConnection()
 
-    const shouldNotLoadFile = !isDownloadedFile && !hasStreamingConnection
-
     if (id && (!isTrackLoaded || isNewEpisode)) {
-      if (!shouldNotLoadFile) {
-        if (isTrackLoaded) {
-          await TrackPlayer.reset()
-        }
+      if (isTrackLoaded) {
+        await TrackPlayer.reset()
+      }
 
+      if (!isDownloadedFile) {
+        if (hasStreamingConnection) {
+          await TrackPlayer.add({
+            id,
+            url: episodeMediaUrl,
+            title: episodeTitle,
+            artist: podcastTitle,
+            ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
+          })
+        }
+      } else {
         await TrackPlayer.add({
           id,
-          url: episodeMediaUrl,
+          url: `file://${filePath}`,
           title: episodeTitle,
           artist: podcastTitle,
           ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
+        }).catch((error) => {
+          console.log('Error: ', error)
         })
       }
     }
 
-    if (!isNewEpisode && isNewMediaRef && item.clipStartTime && !shouldNotLoadFile) {
+    const hasValidPlayingFile = isDownloadedFile || hasStreamingConnection
+
+    if (!isNewEpisode && isNewMediaRef && item.clipStartTime && hasValidPlayingFile) {
       await setPlaybackPosition(item.clipStartTime)
     }
 
@@ -202,7 +223,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
 
     PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
-    if (shouldNotLoadFile) {
+    if (!hasStreamingConnection) {
       PlayerEventEmitter.emit(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
     }
 

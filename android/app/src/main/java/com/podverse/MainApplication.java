@@ -3,6 +3,8 @@ package com.podverse;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rnfs.RNFSPackage;
+import com.eko.RNBackgroundDownloaderPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.guichaguri.trackplayer.TrackPlayer;
@@ -30,6 +32,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFSPackage(),
+            new RNBackgroundDownloaderPackage(),
             new AsyncStoragePackage(),
             new NetInfoPackage(),
             new TrackPlayer(),
