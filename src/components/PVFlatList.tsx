@@ -16,6 +16,7 @@ type Props = {
   isLoadingMore?: boolean
   isRefreshing?: boolean
   ItemSeparatorComponent?: any
+  keyExtractor: any
   ListHeaderComponent?: any
   onEndReached?: any
   onEndReachedThreshold?: number
@@ -31,7 +32,7 @@ const _renderHiddenItem = () => <View />
 export const PVFlatList = (props: Props) => {
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
   const { data, disableLeftSwipe = true, extraData, isLoadingMore, isRefreshing = false, ItemSeparatorComponent,
-    ListHeaderComponent, onEndReached, onEndReachedThreshold = 0.8, onRefresh, renderHiddenItem,
+    keyExtractor, ListHeaderComponent, onEndReached, onEndReachedThreshold = 0.8, onRefresh, renderHiddenItem,
     renderItem } = props
 
   return (
@@ -44,7 +45,7 @@ export const PVFlatList = (props: Props) => {
         disableRightSwipe={true}
         extraData={extraData}
         ItemSeparatorComponent={ItemSeparatorComponent}
-        keyExtractor={(item) => item.id}
+        keyExtractor={keyExtractor ? keyExtractor : (item: any) => item.id}
         ListFooterComponent={() => {
           if (isLoadingMore) {
             return <ActivityIndicator styles={styles.lastCell} />

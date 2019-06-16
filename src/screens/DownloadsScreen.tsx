@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { Divider, DownloadTableCell, FlatList, MessageWithAction, SwipeRowBack, View } from '../components'
+import { removeDownloadingEpisode } from '../state/actions/downloads'
 
 type Props = {
   navigation?: any
@@ -35,45 +36,31 @@ export class DownloadsScreen extends React.Component<Props, State> {
   }
 
   _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
+    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.episodeId, rowMap)} />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
-    // const wasAlerted = await alertIfNoNetworkConnection('unsubscribe from podcast')
-    // if (wasAlerted) return
-    // this.setState({ isUnsubscribing: true }, async () => {
-    //   try {
-    //     const { flatListData } = this.state
-    //     await toggleSubscribeToPodcast(selectedId, this.global)
-    //     const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
-    //     rowMap[selectedId].closeRow()
-    //     this.setState({
-    //       flatListData: newFlatListData,
-    //       isUnsubscribing: true
-    //     })
-    //   } catch (error) {
-    //     this.setState({ isUnsubscribing: true })
-    //   }
-    // })
+    rowMap[selectedId].closeRow()
+    await removeDownloadingEpisode(selectedId)
   }
 
   render() {
     const { downloads } = this.global
-    const flatListData = downloads
 
     return (
       <View style={styles.view}>
         {
-          !flatListData &&
+          !downloads || downloads.length === 0 &&
             <MessageWithAction message='No downloads in progress' />
         }
         {
-          flatListData.length > 0 &&
+          downloads.length > 0 &&
             <FlatList
-              data={flatListData}
+              data={downloads}
               disableLeftSwipe={false}
-              extraData={flatListData}
+              extraData={downloads}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
+              keyExtractor={(item: any) => item.episodeId}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderItem} />
         }

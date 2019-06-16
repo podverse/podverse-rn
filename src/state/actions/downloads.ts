@@ -1,5 +1,6 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { DownloadStatus, initDownloadTasks as initDownloadTasksService } from '../../lib/downloader'
+import { removeDownloadingEpisode as removeDownloadingEpisodeService } from '../../lib/downloadingEpisode'
 
 export type DownloadTaskState = {
   bytesTotal?: string
@@ -71,16 +72,19 @@ export const toggleDownloadTaskStatus = (downloadTaskId: string) => {
   return newStatus
 }
 
-export const clearDownloadTask = (downloadTaskId: string) => {
+export const removeDownloadingEpisode = async (episodeId: string) => {
   const { downloads } = getGlobal()
+  await removeDownloadingEpisodeService(episodeId)
 
   const newDownloads = downloads.filter((task: DownloadTaskState) => {
-    return task.episodeId !== downloadTaskId
+    return task.episodeId !== episodeId
   })
 
   setGlobal({
     downloads: [...newDownloads]
   })
+
+  return newDownloads
 }
 
 export const updateDownloadProgress = (downloadTaskId: string, percent: number, bytesWritten: string, bytesTotal: string) => {

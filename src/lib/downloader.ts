@@ -15,6 +15,11 @@ export enum DownloadStatus {
 
 const downloadTasks: any[] = []
 
+export const cancelDownloadTask = (episodeId: string) => {
+  const task = downloadTasks.find((x: any) => x.id === episodeId)
+  if (task) task.stop()
+}
+
 export const downloadEpisode = (episode: any, podcast: any) => {
   const ext = getExtensionFromUrl(episode.mediaUrl)
 
