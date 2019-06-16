@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Alert, Clipboard, Image, Modal, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
+import { Alert, AppState, Clipboard, Image, Modal, StyleSheet, TouchableOpacity, View as RNView
+  } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInput, TimeInput, View
@@ -7,8 +8,9 @@ import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInp
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { createMediaRef, updateMediaRef } from '../services/mediaRef'
-import { playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime, PVTrackPlayer
-  } from '../services/player'
+import { getNowPlayingItem, playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime,
+  PVTrackPlayer } from '../services/player'
+import PlayerEventEmitter from '../services/playerEventEmitter'
 import { setNowPlayingItem, togglePlay } from '../state/actions/player'
 import { core, navHeader, playerStyles } from '../styles'
 
@@ -70,6 +72,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const isEditing = this.props.navigation.getParam('isEditing')
 
     const hideHowToModal = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED)
+
+    if (!hideHowToModal) {
+      await AsyncStorage.setItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED, JSON.stringify(true))
+    }
+
     const isPublic = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_IS_PUBLIC)
 
     this.setState({
@@ -79,6 +86,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
         : { isPublicItemSelected: privacyItems[1] }),
       title: isEditing ? nowPlayingItem.clipTitle : ''
     })
+
+    AppState.addEventListener('change', this._handleAppStateChange)
+    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handleAppStateChange)
   }
 
   componentWillUnmount() {
@@ -88,6 +98,21 @@ export class MakeClipScreen extends React.Component<Props, State> {
         showMakeClip: false
       }
     })
+
+    AppState.removeEventListener('change', this._handleAppStateChange)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_QUEUE_ENDED)
+  }
+
+  _handleAppStateChange = async () => {
+    const { dismiss } = this.props.navigation
+    const { nowPlayingItem: lastItem } = this.global
+    const currentItem = await getNowPlayingItem()
+
+    if (!currentItem) {
+      dismiss()
+    } else if (lastItem && currentItem.episodeId !== lastItem.episodeId) {
+      await setNowPlayingItem(currentItem, this.global)
+    }
   }
 
   _onChangeTitle = (text: string) => {
@@ -194,6 +219,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         if (error.response) {
           Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, error.response.data.message, [])
         }
+        console.log(error)
       }
       this.setState({ isSaving: false })
     })
@@ -201,11 +227,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   _hideHowTo = () => {
     this.setState({ showHowToModal: false })
-  }
-
-  _showHowTo = async () => {
-    await AsyncStorage.setItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED, JSON.stringify(true))
-    this.setState({ showHowToModal: true })
   }
 
   _playerJumpBackward = async () => {
@@ -252,7 +273,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
           <View style={styles.wrapperMiddle}>
             <Image
               resizeMode='contain'
-              source={{ uri: nowPlayingItem.podcastImageUrl }}
+              source={{ uri: nowPlayingItem && nowPlayingItem.podcastImageUrl }}
               style={styles.image} />
           </View>
           <View style={styles.wrapperBottom}>
@@ -282,7 +303,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 wrapperStyle={styles.timeInput} />
             </View>
             <View style={styles.progressWrapper}>
-              <PlayerProgressBar value={progressValue} />
+              <PlayerProgressBar
+                clipEndTime={endTime}
+                clipStartTime={startTime}
+                globalTheme={globalTheme}
+                value={progressValue} />
             </View>
             <RNView style={[styles.makeClipPlayerControls, globalTheme.makeClipPlayerControlsWrapper]}>
               <TouchableOpacity

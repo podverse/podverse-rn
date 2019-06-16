@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native'
+import { Dimensions, StyleSheet, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import React from 'reactn'
 import { convertSecToHHMMSS } from '../lib/utility'
@@ -7,6 +7,9 @@ import { PVTrackPlayer, setPlaybackPosition } from '../services/player'
 import { Text } from './'
 
 type Props = {
+  clipEndTime?: number | null
+  clipStartTime?: number | null
+  globalTheme: any
   value: number
 }
 
@@ -31,12 +34,35 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
   }
 
   render() {
+    const { clipEndTime, clipStartTime, globalTheme } = this.props
     const { duration, position, slidingPosition } = this.state
     const pos = slidingPosition || position
     const value = duration > 0 ? pos / duration : 0
 
+    const clipStartTimePosition = { left: 0 }
+    const clipEndTimePosition = { left: 0 }
+    const screenWidth = Dimensions.get('window').width
+
+    if (clipStartTime && duration > 0) {
+      const leftPosition = screenWidth * (clipStartTime / duration)
+      clipStartTimePosition.left = leftPosition
+    }
+
+    if (clipEndTime && duration > 0) {
+      const leftPosition = (screenWidth * (clipEndTime / duration))
+      clipEndTimePosition.left = leftPosition
+    }
+
     return (
       <View style={styles.wrapper}>
+        {
+          (duration > 0 && (clipStartTime || clipStartTime === 0)) &&
+            <View style={[styles.clipStartTimeFlag, globalTheme.playerClipTimeFlag, clipStartTimePosition]} />
+        }
+        {
+          (duration > 0 && clipEndTime) &&
+            <View style={[styles.clipEndTimeFlag, globalTheme.playerClipTimeFlag, clipEndTimePosition]} />
+        }
         <Slider
           minimumValue={0}
           maximumValue={1}
@@ -62,6 +88,20 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
 }
 
 const styles = StyleSheet.create({
+  clipEndTimeFlag: {
+    height: 36,
+    left: 0,
+    position: 'absolute',
+    top: 2,
+    width: 2
+  },
+  clipStartTimeFlag: {
+    height: 36,
+    left: 0,
+    position: 'absolute',
+    top: 2,
+    width: 2
+  },
   thumbStyle: {
     borderRadius: 0,
     height: 24,
@@ -77,6 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   wrapper: {
-    height: 56
+    height: 56,
+    position: 'relative'
   }
 })

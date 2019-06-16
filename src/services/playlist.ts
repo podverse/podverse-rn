@@ -1,10 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { PV } from '../resources'
+import { getBearerToken } from './auth'
 import { request } from './request'
 
 export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: string, mediaRefId?: string) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const data = {
     playlistId,
     ...(!mediaRefId ? { episodeId } : { mediaRefId })
@@ -25,7 +26,7 @@ export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: st
 }
 
 export const createPlaylist = async (data: any) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: '/playlist',
     method: 'POST',
@@ -41,7 +42,7 @@ export const createPlaylist = async (data: any) => {
 }
 
 export const deletePlaylistOnServer = async (data: any) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: '/mediaRef',
     method: 'DELETE',
@@ -98,7 +99,7 @@ const toggleSubscribeToPlaylistLocally = async (id: string) => {
 }
 
 const toggleSubscribeToPlaylistOnServer = async (id: string) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: `/playlist/toggle-subscribe/${id}`,
     headers: { Authorization: bearerToken }
@@ -108,7 +109,7 @@ const toggleSubscribeToPlaylistOnServer = async (id: string) => {
 }
 
 export const updatePlaylist = async (data: any) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: '/playlist',
     method: 'PATCH',

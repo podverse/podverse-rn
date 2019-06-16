@@ -2,9 +2,9 @@ import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getBearerToken } from './auth'
 import { addOrUpdateHistoryItem, popLastFromHistoryItems } from './history'
-import { getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem, handleResumeAfterClipHasEnded,
-  playerJumpBackward, playerJumpForward, playNextFromQueue, PVTrackPlayer, setClipHasEnded,
-  setPlaybackPosition } from './player'
+import { clearNowPlayingItem ,getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem,
+  handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, playNextFromQueue, PVTrackPlayer,
+  setClipHasEnded, setPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 import { getQueueItems, popNextFromQueue } from './queue'
 
@@ -12,33 +12,35 @@ let clipEndTimeInterval: any = null
 
 PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
   const nowPlayingItem = await getNowPlayingItem()
-  const { clipEndTime, clipId } = nowPlayingItem
+  if (nowPlayingItem) {
+    const { clipEndTime, clipId } = nowPlayingItem
 
-  if (clipEndTimeInterval) {
-    clearInterval(clipEndTimeInterval)
-  }
-
-  if (clipId) {
-    if (clipEndTime) {
-      clipEndTimeInterval = setInterval(async () => {
-        const currentPosition = await PVTrackPlayer.getPosition()
-        if (currentPosition > clipEndTime) {
-          clearInterval(clipEndTimeInterval)
-          PVTrackPlayer.pause()
-
-          const shouldContinuouslyPlay = await getContinuousPlaybackMode()
-
-          if (shouldContinuouslyPlay) {
-            PlayerEventEmitter.emit(PV.Events.PLAYER_QUEUE_ENDED)
-          } else {
-            await setClipHasEnded(true)
-          }
-        }
-      }, 500)
+    if (clipEndTimeInterval) {
+      clearInterval(clipEndTimeInterval)
     }
-  }
 
-  await setPlaybackPosition(nowPlayingItem.clipStartTime)
+    if (clipId) {
+      if (clipEndTime) {
+        clipEndTimeInterval = setInterval(async () => {
+          const currentPosition = await PVTrackPlayer.getPosition()
+          if (currentPosition > clipEndTime) {
+            clearInterval(clipEndTimeInterval)
+            PVTrackPlayer.pause()
+
+            const shouldContinuouslyPlay = await getContinuousPlaybackMode()
+
+            if (shouldContinuouslyPlay) {
+              PlayerEventEmitter.emit(PV.Events.PLAYER_QUEUE_ENDED)
+            } else {
+              await setClipHasEnded(true)
+            }
+          }
+        }, 500)
+      }
+    }
+
+    await setPlaybackPosition(nowPlayingItem.clipStartTime)
+  }
 })
 
 module.exports = async () => {
@@ -60,6 +62,8 @@ module.exports = async () => {
 
     if (shouldContinuouslyPlay && queueItems.length > 0) {
       await playNextFromQueue(useServerData)
+    } else if (queueItems.length === 0) {
+      await clearNowPlayingItem()
     }
 
     PlayerEventEmitter.emit(PV.Events.PLAYER_QUEUE_ENDED)
@@ -67,27 +71,28 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
     const clipHasEnded = await getClipHasEnded()
-    const nowPlayingItem = await getNowPlayingItem() || {}
-    const { clipEndTime } = nowPlayingItem
-    const currentPosition = await PVTrackPlayer.getPosition()
-    const currentState = await PVTrackPlayer.getState()
-    const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
+    const nowPlayingItem = await getNowPlayingItem()
+    if (nowPlayingItem) {
+      const { clipEndTime } = nowPlayingItem
+      const currentPosition = await PVTrackPlayer.getPosition()
+      const currentState = await PVTrackPlayer.getState()
+      const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
 
-    if (clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying) {
-      await handleResumeAfterClipHasEnded()
+      if (clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying) {
+        await handleResumeAfterClipHasEnded()
+      }
+
+      PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
+
+      // handle updating history item after event emit, because it is less urgent than the UI update
+      const bearerToken = await getBearerToken()
+      const isLoggedIn = !!bearerToken
+      const isConnected = await hasValidNetworkConnection()
+      const useServerData = isLoggedIn && isConnected
+
+      nowPlayingItem.userPlaybackPosition = currentPosition
+      await addOrUpdateHistoryItem(nowPlayingItem, useServerData)
     }
-
-    PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
-
-    // handle updating history item after event emit, because it is less urgent than the UI update
-    const bearerToken = await getBearerToken()
-    const isLoggedIn = !!bearerToken
-    const isConnected = await hasValidNetworkConnection()
-    const useServerData = isLoggedIn && isConnected
-
-    nowPlayingItem.userPlaybackPosition = currentPosition
-
-    await addOrUpdateHistoryItem(nowPlayingItem, useServerData)
   })
 
   PVTrackPlayer.addEventListener('playback-track-changed', () => console.log('playback track changed'))

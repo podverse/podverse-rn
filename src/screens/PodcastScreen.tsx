@@ -25,6 +25,7 @@ type Props = {
 type State = {
   endOfResultsReached: boolean
   flatListData: any[]
+  flatListDataTotalCount: number | null
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
@@ -69,6 +70,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: viewType !== downloadedKey || !podcast,
       isLoadingMore: false,
       isRefreshing: false,
@@ -102,6 +104,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     this.setState({
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: true,
       podcastId,
       queryPage: 1
@@ -143,6 +146,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     this.setState({
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: true,
       queryPage: 1,
       viewType: selectedKey
@@ -161,6 +165,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     this.setState({
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: true,
       querySort: selectedKey
     }, async () => {
@@ -290,6 +295,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     this.setState({
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoadingMore: true,
       queryPage: 1,
       searchBarText: text
@@ -324,8 +330,8 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { flatListData, isLoading, isLoadingMore, isRefreshing, isSubscribing, podcast, podcastId, querySort,
-      selectedItem, showActionSheet, viewType } = this.state
+    const { flatListData, flatListDataTotalCount, isLoading, isLoadingMore, isRefreshing, isSubscribing, podcast,
+      podcastId, querySort, selectedItem, showActionSheet, viewType } = this.state
     const isSubscribed = this.global.session.userInfo.subscribedPodcastIds.some((x) => x === podcastId)
 
     return (
@@ -354,6 +360,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           !isLoading && viewType !== aboutKey && flatListData && podcast &&
             <FlatList
               data={flatListData}
+              dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={viewType !== downloadedKey}
               extraData={flatListData}
               {...(viewType === downloadedKey ? { handleHiddenItemPress: this._handleHiddenItemPress } : {})}
@@ -421,10 +428,12 @@ export class PodcastScreen extends React.Component<Props, State> {
         const results = await this._queryAllEpisodes(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       } else if (filterKey === clipsKey) {
         const results = await this._queryClips(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       } else if (rightItems.some((option) => option.value === filterKey)) {
         let results = []
         if (viewType === downloadedKey) {
@@ -437,6 +446,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       } else if (filterKey === aboutKey) {
         const newPodcast = await getPodcast(podcastId)
         newState.podcast = newPodcast

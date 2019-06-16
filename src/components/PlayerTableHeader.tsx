@@ -2,6 +2,7 @@ import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import React from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
+import { core } from '../styles'
 import { ActivityIndicator, Text, View } from './'
 
 type Props = {
@@ -15,16 +16,16 @@ export const PlayerTableHeader = (props: Props) => {
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>
-      <View>
+      <View style={styles.wrapper}>
         {
           isLoading &&
-            <View style={styles.wrapper}>
+            <View style={core.row}>
               <ActivityIndicator />
             </View>
         }
         {
           !isLoading && !!nowPlayingItem &&
-            <View style={styles.wrapper}>
+            <View style={core.row}>
               <Image
                 key={nowPlayingItem.podcastImageUrl}
                 source={{ uri: nowPlayingItem.podcastImageUrl }}
@@ -69,16 +70,16 @@ const styles = StyleSheet.create({
     height: 92,
     width: 92
   },
+  podcastTitle: {
+    fontSize: PV.Fonts.sizes.md,
+    fontWeight: PV.Fonts.weights.bold
+  },
   textWrapper: {
     flex: 1,
     marginHorizontal: 8,
     marginTop: 6
   },
-  podcastTitle: {
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.bold
-  },
   wrapper: {
-    flexDirection: 'row'
+    height: 92
   }
 })

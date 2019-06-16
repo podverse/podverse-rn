@@ -22,45 +22,50 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
     const isDarkMode = globalTheme === darkTheme
 
     return (
-      <TouchableWithoutFeedback
-        onPress={() => navigation.navigate(PV.RouteNames.PlayerScreen, { nowPlayingItem })}>
-        <View style={[styles.player, globalTheme.player]}>
-          <Image
-            key={nowPlayingItem.podcastImageUrl}
-            resizeMode='contain'
-            source={{ uri: nowPlayingItem.podcastImageUrl }}
-            style={styles.image} />
-          <View style={styles.textWrapper}>
-            <Text
-              numberOfLines={1}
-              style={[styles.podcastTitle, globalTheme.playerText]}>
-              {nowPlayingItem.podcastTitle}
-            </Text>
-            <Text
-              numberOfLines={1}
-              style={[styles.episodeTitle, globalTheme.playerText]}>
-              {nowPlayingItem.episodeTitle}
-            </Text>
-          </View>
-          {
-            playbackState !== PVTrackPlayer.STATE_BUFFERING &&
-            <TouchableOpacity onPress={() => togglePlay(this.global)}>
-              <Icon
-                color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
-                name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
-                size={30}
-                style={styles.button} />
-            </TouchableOpacity>
-          }
-          {
-            playbackState === PVTrackPlayer.STATE_BUFFERING &&
-              <ActivityIndicator
-                color={globalTheme.activityIndicator.color}
-                size='large'
-                style={styles.button} />
-          }
-        </View>
-      </TouchableWithoutFeedback>
+      <View>
+        {
+          nowPlayingItem &&
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate(PV.RouteNames.PlayerScreen, { nowPlayingItem })}>
+              <View style={[styles.player, globalTheme.player]}>
+                <Image
+                  key={nowPlayingItem.podcastImageUrl}
+                  resizeMode='contain'
+                  source={{ uri: nowPlayingItem.podcastImageUrl }}
+                  style={styles.image} />
+                <View style={styles.textWrapper}>
+                  <Text
+                    numberOfLines={1}
+                    style={[styles.podcastTitle, globalTheme.playerText]}>
+                    {nowPlayingItem.podcastTitle}
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    style={[styles.episodeTitle, globalTheme.playerText]}>
+                    {nowPlayingItem.episodeTitle}
+                  </Text>
+                </View>
+                {
+                  playbackState !== PVTrackPlayer.STATE_BUFFERING &&
+                  <TouchableOpacity onPress={() => togglePlay(this.global)}>
+                    <Icon
+                      color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
+                      name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
+                      size={30}
+                      style={styles.button} />
+                  </TouchableOpacity>
+                }
+                {
+                  playbackState === PVTrackPlayer.STATE_BUFFERING &&
+                  <ActivityIndicator
+                    color={globalTheme.activityIndicator.color}
+                    size='large'
+                    style={styles.button} />
+                }
+              </View>
+            </TouchableWithoutFeedback>
+        }
+      </View>
     )
   }
 

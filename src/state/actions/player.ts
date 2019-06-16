@@ -3,11 +3,28 @@ import { NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
 import { popLastFromHistoryItems } from '../../services/history'
 import { getMediaRef } from '../../services/mediaRef'
-import { getContinuousPlaybackMode, getNowPlayingItem, getNowPlayingItemEpisode, getNowPlayingItemMediaRef, PVTrackPlayer,
+import { clearNowPlayingItem as clearNowPlayingItemService, getContinuousPlaybackMode, getNowPlayingItem,
+  getNowPlayingItemEpisode, getNowPlayingItemMediaRef, PVTrackPlayer,
   setContinuousPlaybackMode as setContinuousPlaybackModeService, setNowPlayingItem as setNowPlayingItemService,
   setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService } from '../../services/player'
 import PlayerEventEmitter from '../../services/playerEventEmitter'
 import { addQueueItemNext, popNextFromQueue } from '../../services/queue'
+
+export const clearNowPlayingItem = async (globalState: any) => {
+  await clearNowPlayingItemService()
+  setGlobal({
+    player: {
+      ...globalState.player,
+      nowPlayingItem: null,
+      playbackState: PVTrackPlayer.STATE_STOPPED,
+      showMiniPlayer: false
+    },
+    screenPlayer: {
+      ...globalState.screenPlayer,
+      showFullClipInfo: false
+    }
+  })
+}
 
 export const initPlayerState = async (globalState: any) => {
   const shouldContinuouslyPlay = await getContinuousPlaybackMode()

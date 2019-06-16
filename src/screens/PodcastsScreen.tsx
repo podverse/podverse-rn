@@ -23,6 +23,7 @@ type State = {
   categoryItems: any[]
   endOfResultsReached: boolean
   flatListData: any[]
+  flatListDataTotalCount: number | null
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
@@ -48,6 +49,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       categoryItems: [],
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: true,
       isLoadingMore: false,
       isRefreshing: false,
@@ -95,6 +97,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     this.setState({
       flatListData,
+      flatListDataTotalCount: null,
       isLoading: false
     })
   }
@@ -176,6 +179,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.setState({
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: true,
       queryFrom: selectedKey,
       queryPage: 1
@@ -194,6 +198,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.setState({
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: true,
       querySort: selectedKey
     }, async () => {
@@ -216,7 +221,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       isLoading: true,
       ...(isSubCategory ? { selectedSubCategory: selectedKey } : { selectedCategory: selectedKey }) as any,
       ...(!isSubCategory ? { subCategoryItems: [] } : {}),
-      flatListData: []
+      flatListData: [],
+      flatListDataTotalCount: null
     }, async () => {
       const newState = await this._queryData(selectedKey, this.state, {}, { isSubCategory })
 
@@ -303,6 +309,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         rowMap[selectedId].closeRow()
         this.setState({
           flatListData: newFlatListData,
+          flatListDataTotalCount: newFlatListData.length,
           isUnsubscribing: true
         })
       } catch (error) {
@@ -320,6 +327,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     this.setState({
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoadingMore: true,
       queryPage: 1,
       searchBarText: text
@@ -338,10 +346,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
       selectedCategory, selectedSubCategory, subCategoryItems } = this.state
 
     let flatListData = []
+    let flatListDataTotalCount = null
     if (queryFrom === _subscribedKey) {
       flatListData = this.global.subscribedPodcasts
     } else {
       flatListData = this.state.flatListData
+      flatListDataTotalCount = this.state.flatListDataTotalCount
     }
 
     return (
@@ -374,12 +384,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
           !isLoading && queryFrom && flatListData &&
             <FlatList
               data={flatListData}
+              dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={queryFrom !== _subscribedKey}
               extraData={flatListData}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               {...(queryFrom !== _subscribedKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
+              noSubscribedPodcasts={queryFrom === _subscribedKey && flatListData.length === 0}
               onEndReached={this._onEndReached}
               onRefresh={queryFrom === _subscribedKey ? this._onRefresh : null}
               renderHiddenItem={this._renderHiddenItem}
@@ -435,12 +447,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const results = await this._queryAllPodcasts(querySort, newState.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       } else if (filterKey === _categoryKey) {
         const { querySort, selectedCategory, selectedSubCategory } = prevState
         if (selectedSubCategory || selectedCategory) {
           const results = await this._queryPodcastsByCategory(selectedSubCategory || selectedCategory, querySort, newState.queryPage)
           newState.flatListData = [...flatListData, ...results[0]]
           newState.endOfResultsReached = newState.flatListData.length >= results[1]
+          newState.flatListDataTotalCount = results[1]
           newState.selectedSubCategory = selectedSubCategory || _allCategoriesKey
         } else {
           const categoryResults = await getTopLevelCategories()
@@ -448,6 +462,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           newState.categoryItems = generateCategoryItems(categoryResults[0])
           newState.flatListData = [...flatListData, ...podcastResults[0]]
           newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
+          newState.flatListDataTotalCount = podcastResults[1]
         }
       } else if (rightItems.some((option) => option.value === filterKey)) {
         const results = await getPodcasts({
@@ -456,6 +471,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }, nsfwMode)
         newState.flatListData = results[0]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       } else {
         const { isSubCategory } = queryOptions
         let categories
@@ -471,9 +487,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }
 
         const results = await getPodcasts({ categories, sort: querySort, ...(searchTitle ? { searchTitle } : {}) }, nsfwMode)
-        newState.endOfResultsReached = results.length < 20
         newState.flatListData = results[0]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       }
 
       return newState

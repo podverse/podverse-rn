@@ -3,6 +3,7 @@ import RNSecureKeyStore from 'react-native-secure-key-store'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
+import { getBearerToken } from './auth'
 import { request } from './request'
 
 export const addOrUpdateHistoryItem = async (item: NowPlayingItem, useServerData: boolean) => {
@@ -34,7 +35,7 @@ const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem) => {
 
 const addOrUpdateHistoryItemOnServer = async (nowPlayingItem: NowPlayingItem) => {
   await addOrUpdateHistoryItemLocally(nowPlayingItem)
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: '/user/add-or-update-history-item',
     method: 'PATCH',
@@ -55,7 +56,7 @@ const clearHistoryItemsLocally = async () => {
 
 const clearHistoryItemsOnServer = async () => {
   await clearHistoryItemsLocally()
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: '/user/history-item/clear-all',
     method: 'DELETE',
@@ -129,7 +130,7 @@ const removeHistoryItemLocally = async (item: NowPlayingItem) => {
 }
 
 const removeHistoryItemOnServer = async (episodeId?: string, mediaRefId?: string) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const query = { ...(!mediaRefId ? { episodeId } : { mediaRefId }) }
   const response = await request({
     endpoint: '/user/history-item',

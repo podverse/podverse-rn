@@ -1,7 +1,7 @@
 import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, NavQueueIcon, NavShareIcon,
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, MessageWithAction, NavQueueIcon, NavShareIcon,
   PlaylistTableCell, PodcastTableCell, ProfileTableHeader, TableSectionSelectors, View } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
@@ -20,6 +20,7 @@ type Props = {
 type State = {
   endOfResultsReached: boolean
   flatListData: any[]
+  flatListDataTotalCount: number | null
   isLoading: boolean
   isLoadingMore: boolean
   isSubscribed: boolean
@@ -71,6 +72,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: true,
       isLoadingMore: false,
       isSubscribed,
@@ -100,6 +102,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     this.setState({
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: true,
       userId
     }, async () => {
@@ -111,6 +114,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       if (wasAlerted) {
         this.setState({
           flatListData: [],
+          flatListDataTotalCount: null,
           isLoading: false,
           isLoadingMore: false,
           queryPage: 1
@@ -173,6 +177,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       this.setState({
         endOfResultsReached: false,
         flatListData: [],
+        flatListDataTotalCount: null,
         isLoading: true,
         preventSortQuery: true,
         queryFrom: selectedKey,
@@ -204,6 +209,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       this.setState({
         endOfResultsReached: false,
         flatListData: [],
+        flatListDataTotalCount: null,
         isLoading: true,
         querySort: selectedKey
       }, async () => {
@@ -331,15 +337,17 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
   }
 
+  _onPressLogin = () => this.props.navigation.navigate(PV.RouteNames.AuthScreen)
+
   render() {
-    const { flatListData, isLoading, isLoadingMore, isSubscribed, isSubscribing, queryFrom,
+    const { flatListData, flatListDataTotalCount, isLoading, isLoadingMore, isSubscribed, isSubscribing, queryFrom,
       querySort, selectedItem, showActionSheet, userId } = this.state
     const { profile, session } = this.global
     const { user } = profile
     const { id } = session.userInfo
     let rightOptions = [] as any[]
     const { navigation } = this.props
-    const isLoggedInUserProfile = userId === id
+    const isLoggedInUserProfile = userId && id && userId === id
 
     if (queryFrom === _podcastsKey) {
       rightOptions = rightItemsWithAlphabetical
@@ -349,43 +357,56 @@ export class ProfileScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view}>
-        <ProfileTableHeader
-          handleEditPress={isLoggedInUserProfile ? this._handleEditPress : null}
-          handleToggleSubscribe={isLoggedInUserProfile ? null : () => this._handleToggleSubscribe(userId)}
-          id={userId}
-          isLoading={isLoading && !user}
-          isNotFound={!isLoading && !user}
-          isSubscribed={isSubscribed}
-          isSubscribing={isSubscribing}
-          name={user && user.name || 'anonymous'} />
-        <TableSectionSelectors
-          handleSelectLeftItem={this.selectLeftItem}
-          handleSelectRightItem={this.selectRightItem}
-          leftItems={leftItems}
-          rightItems={rightOptions}
-          selectedLeftItemKey={queryFrom}
-          selectedRightItemKey={querySort} />
         {
-          isLoading &&
-            <ActivityIndicator />
+          !isLoggedInUserProfile &&
+            <MessageWithAction
+              actionHandler={this._onPressLogin}
+              actionText='Login'
+              message='Login to view your profile' />
         }
         {
-          !isLoading && queryFrom && flatListData &&
-            <FlatList
-              data={flatListData}
-              disableLeftSwipe={true}
-              extraData={flatListData}
-              isLoadingMore={isLoadingMore}
-              ItemSeparatorComponent={this._ItemSeparatorComponent}
-              onEndReached={this._onEndReached}
-              renderItem={this._renderItem} />
+          isLoggedInUserProfile &&
+            <View style={styles.view}>
+              <ProfileTableHeader
+                handleEditPress={isLoggedInUserProfile ? this._handleEditPress : null}
+                handleToggleSubscribe={isLoggedInUserProfile ? null : () => this._handleToggleSubscribe(userId)}
+                id={userId}
+                isLoading={isLoading && !user}
+                isNotFound={!isLoading && !user}
+                isSubscribed={isSubscribed}
+                isSubscribing={isSubscribing}
+                name={user && user.name || 'anonymous'} />
+              <TableSectionSelectors
+                handleSelectLeftItem={this.selectLeftItem}
+                handleSelectRightItem={this.selectRightItem}
+                leftItems={leftItems}
+                rightItems={rightOptions}
+                selectedLeftItemKey={queryFrom}
+                selectedRightItemKey={querySort} />
+              {
+                isLoading &&
+                  <ActivityIndicator />
+              }
+              {
+                !isLoading && queryFrom && flatListData &&
+                  <FlatList
+                    data={flatListData}
+                    dataTotalCount={flatListDataTotalCount}
+                    disableLeftSwipe={true}
+                    extraData={flatListData}
+                    isLoadingMore={isLoadingMore}
+                    ItemSeparatorComponent={this._ItemSeparatorComponent}
+                    onEndReached={this._onEndReached}
+                    renderItem={this._renderItem} />
+              }
+              <ActionSheet
+                handleCancelPress={this._handleCancelPress}
+                items={PV.ActionSheet.media.moreButtons(
+                  selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+                )}
+                showModal={showActionSheet} />
+            </View>
         }
-        <ActionSheet
-          handleCancelPress={this._handleCancelPress}
-          items={PV.ActionSheet.media.moreButtons(
-            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
-          )}
-          showModal={showActionSheet} />
       </View>
     )
   }
@@ -418,7 +439,8 @@ export class ProfileScreen extends React.Component<Props, State> {
         }
       }, () => {
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = flatListData.length >= results[1]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
         newState.queryPage = page
         resolve(newState)
       })
@@ -447,7 +469,8 @@ export class ProfileScreen extends React.Component<Props, State> {
         }
       }, () => {
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = flatListData.length >= results[1]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
         newState.queryPage = page
         resolve(newState)
       })
@@ -456,7 +479,7 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   _queryPlaylists = async (newState: any, page: number = 1, sort?: string | null) => {
     return new Promise(async (resolve, reject) => {
-      const { flatListData, userId } = this.state
+      const { userId } = this.state
       const { id } = this.global.session.userInfo
       const query = { page, sort }
       const isLoggedInUserProfile = userId === id
@@ -468,8 +491,9 @@ export class ProfileScreen extends React.Component<Props, State> {
         results = await getUserPlaylists(this.global.profile.user.id, query)
       }
 
-      newState.endOfResultsReached = flatListData.length >= results[1]
       newState.flatListData = results[0]
+      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      newState.flatListDataTotalCount = results[1]
       newState.queryPage = page
       resolve(newState)
     })
@@ -586,6 +610,14 @@ const rightItemsWithAlphabetical = [
 ]
 
 const styles = StyleSheet.create({
+  msgView: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center'
+  },
+  msgViewText: {
+    fontSize: PV.Fonts.sizes.lg
+  },
   view: {
     flex: 1
   }

@@ -105,10 +105,10 @@ export const darkTheme = StyleSheet.create({
   player: {
     borderColor: PV.Colors.grayDarker
   },
-  playerText: {
-    color: PV.Colors.white
+  playerClipTimeFlag: {
+    backgroundColor: PV.Colors.yellow
   },
-  selectorText: {
+  playerText: {
     color: PV.Colors.white
   },
   swipeRowBack: {
@@ -257,10 +257,10 @@ export const lightTheme = StyleSheet.create({
   player: {
     borderColor: PV.Colors.grayLighter
   },
-  playerText: {
-    color: PV.Colors.black
+  playerClipTimeFlag: {
+    backgroundColor: PV.Colors.yellow
   },
-  selectorText: {
+  playerText: {
     color: PV.Colors.black
   },
   swipeRowBack: {
@@ -356,28 +356,31 @@ export const core = StyleSheet.create({
     backgroundColor: 'transparent',
     flexDirection: 'row'
   },
-  selectorText: {
-    fontSize: PV.Fonts.sizes.xl,
-    height: 44,
-    justifyContent: 'center',
-    lineHeight: 44,
-    paddingHorizontal: 8
-  },
   searchBar: {
     borderBottomWidth: 1,
     borderWidth: 1
   },
+  selectorText: {
+    fontSize: PV.Fonts.sizes.xl,
+    height: 44,
+    lineHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: 8
+  },
   textInput: {
     fontSize: PV.Fonts.sizes.xl,
     height: 44,
-    marginVertical: 4,
-    paddingLeft: 8,
-    paddingRight: 8
+    justifyContent: 'center',
+    paddingHorizontal: 8
   },
   textInputLabel: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
     marginBottom: 8
+  },
+  textInputSubTitle: {
+    fontSize: PV.Fonts.sizes.md,
+    marginVertical: 8
   },
   view: {
     alignItems: 'center',
