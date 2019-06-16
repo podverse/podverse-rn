@@ -1,6 +1,6 @@
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import * as DownloadState from '../state/actions/downloads'
-import { addDownloadedPodcastEpisode } from './downloadedPodcast'
+import { addDownloadedPodcastEpisode, getDownloadedPodcasts } from './downloadedPodcast'
 import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode } from './downloadingEpisode'
 import { hasValidDownloadingConnection } from './network'
 import { convertBytesToHumanReadableString, getExtensionFromUrl } from './utility'
@@ -21,8 +21,17 @@ export const cancelDownloadTask = (episodeId: string) => {
   if (task) task.stop()
 }
 
-export const downloadEpisode = (episode: any, podcast: any) => {
+export const downloadEpisode = async (episode: any, podcast: any) => {
   const ext = getExtensionFromUrl(episode.mediaUrl)
+
+  const downloadingEpisodes = await getDownloadingEpisodes()
+  if (downloadingEpisodes.some((x: any) => x.id === episode.id)) return
+
+  const downloadedPodcasts = await getDownloadedPodcasts()
+  for (const downloadedPodcast of downloadedPodcasts) {
+    if (downloadedPodcast.episodes &&
+      downloadedPodcast.episodes.some((x: any) => x.id === episode.id)) return
+  }
 
   const task = RNBackgroundDownloader
     .download({
