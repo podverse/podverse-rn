@@ -41,7 +41,7 @@ export const initDownloadTasks = async () => {
 export const addDownloadTask = (downloadTask: DownloadTaskState) => {
   const { downloads } = getGlobal()
 
-  if (!downloads.some((x: any) => x.id === downloadTask.episodeId)) {
+  if (!downloads.some((x: any) => x.episodeId === downloadTask.episodeId)) {
     downloadTask.status = DownloadStatus.PENDING
     setGlobal({
       downloads: [...downloads, downloadTask]

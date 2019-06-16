@@ -1,5 +1,6 @@
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import * as DownloadState from '../state/actions/downloads'
+import { addDownloadedPodcastEpisode } from './downloadedPodcast'
 import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode } from './downloadingEpisode'
 import { hasValidDownloadingConnection } from './network'
 import { convertBytesToHumanReadableString, getExtensionFromUrl } from './utility'
@@ -32,7 +33,6 @@ export const downloadEpisode = (episode: any, podcast: any) => {
     .begin(() => {
       downloadTasks.push(task)
       episode.podcast = podcast
-
       DownloadState.addDownloadTask({
         episodeId: episode.id,
         episodeTitle: episode.title,
@@ -47,6 +47,7 @@ export const downloadEpisode = (episode: any, podcast: any) => {
     }).done(() => {
       DownloadState.updateDownloadComplete(episode.id)
       removeDownloadingEpisode(episode.id)
+      addDownloadedPodcastEpisode(episode, podcast)
       console.log('downloadEpisode complete')
     }).error((error: string) => {
       console.log('Download canceled due to error: ', error)
