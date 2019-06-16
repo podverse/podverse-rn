@@ -54,7 +54,7 @@ export const downloadEpisode = (episode: any, podcast: any) => {
     })
 }
 
-const resumeDownloadTask = (downloadTask: any, episodeId: string) => {
+const restartDownloadTask = (downloadTask: any, episodeId: string) => {
   downloadTask.progress((percent: number, bytesWritten: number, bytesTotal: number) => {
     const written = convertBytesToHumanReadableString(bytesWritten)
     const total = convertBytesToHumanReadableString(bytesTotal)
@@ -62,7 +62,7 @@ const resumeDownloadTask = (downloadTask: any, episodeId: string) => {
   }).done(() => {
     DownloadState.updateDownloadComplete(episodeId)
     removeDownloadingEpisode(episodeId)
-    console.log('resumeDownloadTask complete')
+    console.log('restartDownloadTask complete')
   }).error((error: string) => {
     console.log('Resumed download canceled due to error: ', error)
   })
@@ -102,7 +102,7 @@ export const initDownloadTasks = async () => {
       const episode = episodes.find((x: any) => x.id === filteredDownloadTask.episodeId)
       if (shouldDownload && filteredDownloadTask.status === DownloadStatus.DOWNLOADING) {
         const task = downloadTasks.find((x: any) => x.id === filteredDownloadTask.episodeId)
-        resumeDownloadTask(task, episode.id)
+        restartDownloadTask(task, episode.id)
       }
     }
   }
@@ -110,15 +110,12 @@ export const initDownloadTasks = async () => {
   return filteredDownloadTasks
 }
 
-export const togglePauseDownload = (id: string) => {
-  const task = downloadTasks.find((task) => task.id === id)
+export const resumeDownloadTask = (episodeId: string) => {
+  const task = downloadTasks.find((task) => task.id === episodeId)
+  if (task) task.resume()
+}
 
-  if (task) {
-    const status = DownloadState.toggleDownloadTaskStatus(id)
-    if (status === DownloadStatus.DOWNLOADING) {
-      task.pause()
-    } else {
-      task.resume()
-    }
-  }
+export const pauseDownloadTask = (episodeId: string) => {
+  const task = downloadTasks.find((task) => task.id === episodeId)
+  if (task) task.pause()
 }

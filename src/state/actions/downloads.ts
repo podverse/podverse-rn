@@ -1,5 +1,5 @@
 import { getGlobal, setGlobal } from 'reactn'
-import { DownloadStatus, initDownloadTasks as initDownloadTasksService } from '../../lib/downloader'
+import { DownloadStatus, initDownloadTasks as initDownloadTasksService, resumeDownloadTask, pauseDownloadTask } from '../../lib/downloader'
 import { removeDownloadingEpisode as removeDownloadingEpisodeService } from '../../lib/downloadingEpisode'
 
 export type DownloadTaskState = {
@@ -49,18 +49,13 @@ export const addDownloadTask = (downloadTask: DownloadTaskState) => {
   }
 }
 
-export const toggleDownloadTaskStatus = (downloadTaskId: string) => {
+export const resumeDownloadingEpisode = (episodeId: string) => {
   const { downloads } = getGlobal()
-  let newStatus = DownloadStatus.UNKNOWN
-  for (const task of downloads) {
-    if (task.id === downloadTaskId) {
-      if (task.status === DownloadStatus.PAUSED) {
-        newStatus = DownloadStatus.DOWNLOADING
-      } else {
-        newStatus = DownloadStatus.PAUSED
-      }
+  resumeDownloadTask(episodeId)
 
-      task.status = newStatus
+  for (const task of downloads) {
+    if (task.episodeId === episodeId) {
+      task.status = DownloadStatus.DOWNLOADING
       break
     }
   }
@@ -68,8 +63,22 @@ export const toggleDownloadTaskStatus = (downloadTaskId: string) => {
   setGlobal({
     downloads: [...downloads]
   })
+}
 
-  return newStatus
+export const pauseDownloadingEpisode = (episodeId: string) => {
+  const { downloads } = getGlobal()
+  pauseDownloadTask(episodeId)
+
+  for (const task of downloads) {
+    if (task.episodeId === episodeId) {
+      task.status = DownloadStatus.PAUSED
+      break
+    }
+  }
+
+  setGlobal({
+    downloads: [...downloads]
+  })
 }
 
 export const removeDownloadingEpisode = async (episodeId: string) => {

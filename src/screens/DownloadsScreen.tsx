@@ -1,7 +1,8 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { Divider, DownloadTableCell, FlatList, MessageWithAction, SwipeRowBack, View } from '../components'
-import { removeDownloadingEpisode } from '../state/actions/downloads'
+import { DownloadStatus } from '../lib/downloader'
+import { pauseDownloadingEpisode, removeDownloadingEpisode, resumeDownloadingEpisode } from '../state/actions/downloads'
 
 type Props = {
   navigation?: any
@@ -19,6 +20,16 @@ export class DownloadsScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
+  _handleItemPress = (downloadTask: any) => {
+    if (downloadTask.status === DownloadStatus.FINISHED) {
+      return
+    } else if (downloadTask.status === DownloadStatus.PAUSED) {
+      resumeDownloadingEpisode(downloadTask.episodeId)
+    } else {
+      pauseDownloadingEpisode(downloadTask.episodeId)
+    }
+  }
+
   _renderItem = ({ item }) => {
     return (
       <DownloadTableCell
@@ -27,7 +38,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
         bytesWritten={item.bytesWritten}
         completed={item.completed}
         episodeTitle={item.episodeTitle}
-        onPress={() => console.log('pressed!')}
+        onPress={() => this._handleItemPress(item)}
         percent={item.percent}
         podcastImageUrl={item.podcastImageUrl}
         podcastTitle={item.podcastTitle}
