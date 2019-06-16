@@ -5,7 +5,7 @@ import { ActionSheet, ActivityIndicator, Divider, EpisodeTableCell, FlatList, Se
   TableSectionSelectors, View } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import { convertToNowPlayingItem, convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
 import { decodeHTMLString, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
@@ -182,14 +182,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _handleDownloadPressed = () => {
-    const { episodeId, episodeMediaUrl, episodeTitle, podcastImageUrl, podcastTitle } = this.state.selectedItem
-    downloadEpisode({
-      episodeId,
-      episodeMediaUrl,
-      episodeTitle,
-      podcastImageUrl,
-      podcastTitle
-    })
+    if (this.state.selectedItem) {
+      const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
+      downloadEpisode(episode, episode.podcast)
+    }
   }
 
   render() {

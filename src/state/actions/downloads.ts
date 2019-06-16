@@ -1,15 +1,8 @@
 import { getGlobal, setGlobal } from 'reactn'
+import { DownloadStatus, initDownloadTasks as initDownloadTasksService } from '../../lib/downloader'
 
-export enum DownloadStatus {
-  DOWNLOADING,
-  PAUSED,
-  STOPPED,
-  UNKNOWN,
-  PENDING,
-  FINISHED
-}
-
-type DownloadTaskState = {
+export type DownloadTaskState = {
+  bytesTotal?: string
   bytesWritten?: string
   completed?: boolean
   episodeId: string
@@ -18,10 +11,9 @@ type DownloadTaskState = {
   podcastImageUrl?: string
   podcastTitle?: string
   status?: DownloadStatus
-  bytesTotal?: string
 }
 
-export const getDownloadStatusText = (status?: number) => {
+export const getDownloadStatusText = (status?: string) => {
   if (status === DownloadStatus.DOWNLOADING) {
     return 'Downloading'
   } else if (status === DownloadStatus.PAUSED) {
@@ -37,12 +29,23 @@ export const getDownloadStatusText = (status?: number) => {
   }
 }
 
+export const initDownloadTasks = async () => {
+  const downloads = await initDownloadTasksService()
+
+  setGlobal({
+    downloads: [...downloads]
+  })
+}
+
 export const addDownloadTask = (downloadTask: DownloadTaskState) => {
   const { downloads } = getGlobal()
-  downloadTask.status = DownloadStatus.PENDING
-  setGlobal({
-    downloads: [...downloads, downloadTask]
-  })
+
+  if (!downloads.some((x: any) => x.id === downloadTask.episodeId)) {
+    downloadTask.status = DownloadStatus.PENDING
+    setGlobal({
+      downloads: [...downloads, downloadTask]
+    })
+  }
 }
 
 export const toggleDownloadTaskStatus = (downloadTaskId: string) => {
