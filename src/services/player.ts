@@ -134,14 +134,23 @@ export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean)
   await AsyncStorage.setItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY, JSON.stringify(shouldContinuouslyPlay))
 }
 
-export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: boolean) => {
+export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: boolean, startPlayer?: boolean) => {
   try {
     const bearerToken = await getBearerToken()
     const isLoggedIn = !!bearerToken
     const { clipId, episodeId, episodeMediaUrl = '', episodeTitle = 'untitled episode', podcastImageUrl,
       podcastTitle = 'untitled podcast' } = item
 
+    const isConnected = await hasValidNetworkConnection()
+    const useServerData = isLoggedIn && isConnected
+
     const lastNowPlayingItem = await getNowPlayingItem()
+    if (lastNowPlayingItem) {
+      const currentPosition = await PVTrackPlayer.getPosition()
+      lastNowPlayingItem.userPlaybackPosition = currentPosition || 0
+      await addOrUpdateHistoryItem(lastNowPlayingItem, useServerData)
+    }
+
     const isNewEpisode = (isInitialLoad || !lastNowPlayingItem) || item.episodeId !== lastNowPlayingItem.episodeId
     const isNewMediaRef = item.clipId && ((isInitialLoad || !lastNowPlayingItem) || item.clipId !== lastNowPlayingItem.clipId)
 
@@ -197,9 +206,6 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
       await setPlaybackPosition(item.clipStartTime)
     }
 
-    const isConnected = await hasValidNetworkConnection()
-    const useServerData = isLoggedIn && isConnected
-
     if (isNewEpisode && !isNewMediaRef) {
       const historyItems = await getHistoryItems(useServerData)
       const oldItem = historyItems.find((x) => x.episodeId === item.episodeId)
@@ -229,14 +235,14 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
 
     if (isTrackLoaded) {
       const shouldContinuouslyPlay = await getContinuousPlaybackMode()
-      // Give the player a second to load the file before playing.
-      // Without this, the player will play a split second of the beginning of an episode
-      // before adjusting to the clip's start time position.
-      setTimeout(() => {
-        if (shouldContinuouslyPlay) {
-          TrackPlayer.play()
-        }
-      }, 1000)
+      if (isNewMediaRef && (shouldContinuouslyPlay || startPlayer)) {
+        // Give the player a second to load the file before playing.
+        // Without this, the player will play a split second of the beginning of an episode
+        // before adjusting to the clip's start time position.
+        setTimeout(() => TrackPlayer.play(), 1000)
+      } else if (shouldContinuouslyPlay || startPlayer) {
+        TrackPlayer.play()
+      }
     }
 
     return {

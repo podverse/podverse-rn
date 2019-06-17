@@ -1,5 +1,7 @@
 import { getGlobal, setGlobal } from 'reactn'
-import { DownloadStatus, initDownloadTasks as initDownloadTasksService, resumeDownloadTask, pauseDownloadTask } from '../../lib/downloader'
+import { getDownloadedEpisodeIds as getDownloadedEpisodeIdsService } from '../../lib/downloadedPodcast'
+import { removeDownloadedPodcastEpisode as removeDownloadedPodcastEpisodeService } from '../../lib/downloadedPodcast'
+import { DownloadStatus, initDownloads as initDownloadsService, pauseDownloadTask, resumeDownloadTask } from '../../lib/downloader'
 import { removeDownloadingEpisode as removeDownloadingEpisodeService } from '../../lib/downloadingEpisode'
 
 export type DownloadTaskState = {
@@ -30,11 +32,21 @@ export const getDownloadStatusText = (status?: string) => {
   }
 }
 
-export const initDownloadTasks = async () => {
-  const downloads = await initDownloadTasksService()
+export const initDownloads = async () => {
+  const downloads = await initDownloadsService()
+  const downloadedEpisodeIds = await getDownloadedEpisodeIdsService()
 
   setGlobal({
-    downloads: [...downloads]
+    downloads: [...downloads],
+    downloadedEpisodeIds: [...downloadedEpisodeIds]
+  })
+}
+
+export const updateDownloadedEpisodeIds = async () => {
+  const downloadedEpisodeIds = await getDownloadedEpisodeIdsService()
+
+  setGlobal({
+    downloadedEpisodeIds: [...downloadedEpisodeIds]
   })
 }
 
@@ -128,5 +140,13 @@ export const updateDownloadComplete = (downloadTaskId: string) => {
 
   setGlobal({
     downloads: [...downloads]
+  })
+}
+
+export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
+  const { downloadedEpisodeIds } = await removeDownloadedPodcastEpisodeService(episodeId)
+
+  setGlobal({
+    downloadedEpisodeIds: [...downloadedEpisodeIds]
   })
 }

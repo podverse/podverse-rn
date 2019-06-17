@@ -5,7 +5,7 @@ import { ActivityIndicator } from '.';
 
 type Props = {
   handleCancelPress?: any
-  items: any[]
+  items: any
   message?: string
   omitCancel?: boolean
   showModal?: boolean
@@ -81,7 +81,8 @@ export class PVActionSheet extends React.Component<Props, State> {
   render() {
     const { items, message, showModal, title } = this.props
     const { globalTheme } = this.global
-    const buttons = this.generateButtons(items)
+    const finalItems = typeof items === 'function' ? items() : items
+    const buttons = this.generateButtons(finalItems)
 
     return (
       <Modal

@@ -48,7 +48,7 @@ export const setContinousPlaybackMode = async (shouldContinuouslyPlay: boolean, 
 }
 
 export const setNowPlayingItem = async (
-  item: NowPlayingItem, globalState: any, isInitialLoad?: boolean) => {
+  item: NowPlayingItem, globalState: any, isInitialLoad?: boolean, startPlayer?: boolean) => {
   return new Promise(async (resolve, reject) => {
     try {
       const lastNowPlayingItem = await getNowPlayingItem()
@@ -85,7 +85,7 @@ export const setNowPlayingItem = async (
           let episode = null
           let mediaRef = null
 
-          const result = await setNowPlayingItemService(item, isInitialLoad)
+          const result = await setNowPlayingItemService(item, isInitialLoad, startPlayer)
 
           if (isNewMediaRef) {
             if (isInitialLoad && item.clipId) {
@@ -148,8 +148,12 @@ export const togglePlay = async (globalState: any) => {
   await togglePlayService(playbackRate)
 }
 
-export const updatePlaybackState = async (globalState: any) => {
-  const playbackState = await PVTrackPlayer.getState()
+export const updatePlaybackState = async (globalState: any, state?: any) => {
+  let playbackState = state
+  if (!playbackState) {
+    playbackState = await PVTrackPlayer.getState()
+  }
+
   const playbackRate = await PVTrackPlayer.getRate()
 
   setGlobal({

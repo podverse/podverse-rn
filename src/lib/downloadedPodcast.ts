@@ -1,9 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
-
-// const filterDownloadingEpisodeById = (episodes: DownloadingEpisode[], episodeId: string) => episodes.filter((x) =>
-//   x.id !== episodeId
-// )
+import { deleteDownloadedEpisode } from './downloader';
 
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
   delete episode.podcast
@@ -30,6 +27,30 @@ export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) =>
   }
 }
 
+export const getDownloadedEpisodeIds = async () => {
+  const episodeIds = []
+  const downloadedPodcasts = await getDownloadedPodcasts()
+  for (const podcast of downloadedPodcasts) {
+    for (const episode of podcast.episodes) {
+      episodeIds.push(episode.id)
+    }
+  }
+  return episodeIds
+}
+
+export const getDownloadedEpisodes = async () => {
+  const episodes = []
+  const downloadedPodcasts = await getDownloadedPodcasts()
+  for (const podcast of downloadedPodcasts) {
+    for (const episode of podcast.episodes) {
+      episode.podcast = podcast
+      episodes.push(episode)
+    }
+  }
+  episodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
+  return episodes
+}
+
 export const getDownloadedPodcasts = async () => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_PODCASTS)
@@ -39,11 +60,33 @@ export const getDownloadedPodcasts = async () => {
   }
 }
 
-// export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
-//   const episodes = await getDownloadedPodcasts()
-//   const filteredEpisodes = filterDownloadingEpisodeById(episodes, episodeId)
-//   return setDownloadingEpisodes(filteredEpisodes)
-// }
+export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
+  const newPodcasts = []
+  const newDownloadedEpisodeIds = []
+  const podcasts = await getDownloadedPodcasts()
+  for (const podcast of podcasts) {
+    const newEpisodes = []
+    for (const episode of podcast.episodes) {
+      if (episode.id !== episodeId) {
+        newEpisodes.push(episode)
+        newDownloadedEpisodeIds.push(episode.id)
+      } else {
+        await deleteDownloadedEpisode(episode)
+      }
+    }
+
+    podcast.episodes = newEpisodes
+    if (podcast.episodes.length > 0) {
+      newPodcasts.push(podcast)
+    }
+  }
+  setDownloadedPodcasts(newPodcasts)
+
+  return {
+    downloadedEpisodeIds: newDownloadedEpisodeIds,
+    downloadedPodcasts: newPodcasts
+  }
+}
 
 const setDownloadedPodcasts = (podcasts: any[]) => {
   AsyncStorage.setItem(PV.Keys.DOWNLOADED_PODCASTS, JSON.stringify(podcasts))

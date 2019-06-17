@@ -61,6 +61,8 @@ export interface UserInfo {
 
 export interface InitialState {
   globalTheme: GlobalTheme
+  downloads: any[]
+  downloadedEpisodeIds: any[]
   player: {
     isPlaying: boolean
     nowPlayingItem: any

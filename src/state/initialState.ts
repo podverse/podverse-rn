@@ -3,6 +3,8 @@ import { InitialState } from '../resources/Interfaces'
 
 const initialTheme: InitialState = {
   globalTheme: {},
+  downloads: [],
+  downloadedEpisodeIds: [],
   player: {
     isPlaying: false,
     nowPlayingItem: null,
@@ -58,8 +60,7 @@ const initialTheme: InitialState = {
   settings: {
     nsfwMode: true
   },
-  subscribedPodcasts: [],
-  downloads: []
+  subscribedPodcasts: []
 }
 
 export default initialTheme

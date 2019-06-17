@@ -1,14 +1,16 @@
 import debounce from 'lodash/debounce'
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActionSheet, ActivityIndicator, Divider, EpisodeTableCell, FlatList, SearchBar,
+import { ActionSheet, ActivityIndicator, Divider, EpisodeTableCell, FlatList, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
+import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertToNowPlayingItem, convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
+import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { core } from '../styles'
 
 type Props = {
@@ -142,12 +144,13 @@ export class EpisodesScreen extends React.Component<Props, State> {
   _renderEpisodeItem = ({ item }) => {
     let description = removeHTMLFromString(item.description)
     description = decodeHTMLString(description)
-    const { downloads } = this.global
+    const { downloadedEpisodeIds, downloads } = this.global
 
     return (
       <EpisodeTableCell
           key={item.id}
           description={description}
+          downloadedEpisodeIds={downloadedEpisodeIds}
           downloads={downloads}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           handleNavigationPress={() => this.props.navigation.navigate(
@@ -155,11 +158,22 @@ export class EpisodesScreen extends React.Component<Props, State> {
           )}
           id={item.id}
           moreButtonAlignToTop={true}
-          podcastImageUrl={item.podcast_imageUrl}
-          podcastTitle={item.podcast_title}
+          podcastImageUrl={item.podcast_imageUrl || (item.podcast && item.podcast.imageUrl)}
+          podcastTitle={item.podcast_title || (item.podcast && item.podcast.title)}
           pubDate={item.pubDate}
           title={item.title} />
     )
+  }
+
+  _renderHiddenItem = ({ item }, rowMap) => (
+    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
+  )
+
+  _handleHiddenItemPress = async (selectedId, rowMap) => {
+    rowMap[selectedId].closeRow()
+    await removeDownloadedPodcastEpisode(selectedId)
+    const downloadedEpisodes = await getDownloadedEpisodes()
+    this.setState({ flatListData: downloadedEpisodes })
   }
 
   _handleSearchBarClear = (text: string) => {
@@ -202,7 +216,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={rightItems}
+          rightItems={queryFrom === _downloadedKey ? rightItems(true) : rightItems(false)}
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort} />
         {
@@ -213,17 +227,18 @@ export class EpisodesScreen extends React.Component<Props, State> {
           !isLoading && flatListData &&
             <FlatList
               data={flatListData}
-              disableLeftSwipe={queryFrom !== _subscribedKey}
+              disableLeftSwipe={queryFrom !== _downloadedKey}
               extraData={flatListData}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
-              ListHeaderComponent={this._ListHeaderComponent}
+              ListHeaderComponent={queryFrom !== _downloadedKey ? this._ListHeaderComponent : null}
               onEndReached={this._onEndReached}
+              renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderEpisodeItem} />
         }
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
-          items={PV.ActionSheet.media.moreButtons(
+          items={() => PV.ActionSheet.media.moreButtons(
             selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
           )}
           showModal={showActionSheet} />
@@ -258,6 +273,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
         }, this.global.settings.nsfwMode)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      } else if (filterKey === _downloadedKey) {
+        const downloadedEpisodes = await getDownloadedEpisodes()
+        newState.flatListData = [...downloadedEpisodes]
+        newState.endOfResultsReached = true
       } else if (filterKey === _allPodcastsKey) {
         const { searchBarText: searchAllFieldsText } = this.state
         const results = await getEpisodes({
@@ -286,8 +305,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 }
 
-const _subscribedKey = 'subscribed'
 const _allPodcastsKey = 'allPodcasts'
+const _downloadedKey = 'downloaded'
+const _subscribedKey = 'subscribed'
 const _mostRecentKey = 'most-recent'
 const _topPastDay = 'top-past-day'
 const _topPastWeek = 'top-past-week'
@@ -300,33 +320,46 @@ const leftItems = [
     value: _subscribedKey
   },
   {
+    label: 'Downloaded',
+    value: _downloadedKey
+  },
+  {
     label: 'All Podcasts',
     value: _allPodcastsKey
   }
 ]
 
-const rightItems = [
-  {
-    label: 'most recent',
-    value: _mostRecentKey
-  },
-  {
-    label: 'top - past day',
-    value: _topPastDay
-  },
-  {
-    label: 'top - past week',
-    value: _topPastWeek
-  },
-  {
-    label: 'top - past month',
-    value: _topPastMonth
-  },
-  {
-    label: 'top - past year',
-    value: _topPastYear
-  }
-]
+const rightItems = (onlyMostRecent?: boolean) => [
+  ...(onlyMostRecent ?
+  [
+    {
+      label: 'most recent',
+      value: _mostRecentKey
+    }
+  ] :
+  [
+    {
+      label: 'most recent',
+      value: _mostRecentKey
+    },
+    {
+      label: 'top - past day',
+      value: _topPastDay
+    },
+    {
+      label: 'top - past week',
+      value: _topPastWeek
+    },
+    {
+      label: 'top - past month',
+      value: _topPastMonth
+    },
+    {
+      label: 'top - past year',
+      value: _topPastYear
+    }
+  ]
+)]
 
 const styles = StyleSheet.create({
   ListHeaderComponent: {

@@ -8,6 +8,7 @@ import { ActivityIndicator, Icon, Text, View } from './'
 
 type Props = {
   description?: string
+  downloadedEpisodeIds?: any
   downloads?: any
   handleMorePress?: any
   handleNavigationPress?: any
@@ -20,10 +21,20 @@ type Props = {
 }
 
 export const EpisodeTableCell = (props: Props) => {
-  const { downloads = [], id, pubDate, description, title = 'untitled episode', handleMorePress,
-  handleNavigationPress, podcastImageUrl, podcastTitle } = props
+  const { downloadedEpisodeIds = [], downloads = [], id, pubDate = '', description, title = 'untitled episode',
+  handleMorePress, handleNavigationPress, podcastImageUrl, podcastTitle } = props
 
   const showPodcastInfo = !!podcastImageUrl && !!podcastTitle
+
+  let isDownloading = false
+  const downloadingEpisode = downloads.find((x: any) => x.episodeId === id)
+
+  if (downloadingEpisode && (downloadingEpisode.status === DownloadStatus.DOWNLOADING ||
+    downloadingEpisode.status === DownloadStatus.PAUSED)) {
+    isDownloading = true
+  }
+
+  const isDownloaded = downloadedEpisodeIds.some((x: any) => x === id)
 
   const innerTopView = (
     <View style={styles.innerTopView}>
@@ -48,14 +59,21 @@ export const EpisodeTableCell = (props: Props) => {
           style={styles.title}>
           {title}
         </Text>
-        {
-          !!pubDate &&
+        <View style={styles.textWrapperBottomRow}>
           <Text
             isSecondary={true}
             style={styles.pubDate}>
             {readableDate(pubDate)}
           </Text>
-        }
+          {
+            isDownloaded &&
+              <Icon
+                isSecondary={true}
+                name='download'
+                size={15}
+                style={styles.downloadedIcon} />
+          }
+        </View>
       </View>
     </View>
   )
@@ -75,14 +93,6 @@ export const EpisodeTableCell = (props: Props) => {
       size={26}
       style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
   )
-
-  let isDownloading = false
-  const downloadingEpisode = downloads.find((x: any) => x.episodeId === id)
-
-  if (downloadingEpisode && (downloadingEpisode.status === DownloadStatus.DOWNLOADING ||
-    downloadingEpisode.status === DownloadStatus.PAUSED)) {
-    isDownloading = true
-  }
 
   return (
     <View style={styles.wrapper}>
@@ -121,6 +131,11 @@ const styles = StyleSheet.create({
   description: {
     fontSize: PV.Fonts.sizes.md
   },
+  downloadedIcon: {
+    flex: 0,
+    marginLeft: 12,
+    marginTop: 3
+  },
   image: {
     flex: 0,
     height: 60,
@@ -140,11 +155,14 @@ const styles = StyleSheet.create({
   pubDate: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    justifyContent: 'flex-end',
     marginTop: 2
   },
   textWrapper: {
     flex: 1
+  },
+  textWrapperBottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start'
   },
   title: {
     fontSize: PV.Fonts.sizes.md,

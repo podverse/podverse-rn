@@ -1,4 +1,5 @@
 import RNBackgroundDownloader from 'react-native-background-downloader'
+import RNFS from 'react-native-fs'
 import * as DownloadState from '../state/actions/downloads'
 import { addDownloadedPodcastEpisode, getDownloadedPodcasts } from './downloadedPodcast'
 import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode } from './downloadingEpisode'
@@ -20,6 +21,18 @@ let existingDownloadTasks: any[] = []
 export const cancelDownloadTask = (episodeId: string) => {
   const task = downloadTasks.find((x: any) => x.id === episodeId)
   if (task) task.stop()
+}
+
+export const deleteDownloadedEpisode = async (episode: any) => {
+  const ext = getExtensionFromUrl(episode.mediaUrl)
+  const path = `${RNBackgroundDownloader.directories.documents}/${episode.id}${ext}`
+
+  try {
+    await RNFS.unlink(path)
+    return true
+  } catch (error) {
+    return false
+  }
 }
 
 // NOTE: I was unable to get RNBackgroundDownloader to successfully resume tasks that were
@@ -82,10 +95,11 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
         const written = convertBytesToHumanReadableString(bytesWritten)
         const total = convertBytesToHumanReadableString(bytesTotal)
         DownloadState.updateDownloadProgress(episode.id, percent, written, total)
-      }).done(() => {
+      }).done(async () => {
         DownloadState.updateDownloadComplete(episode.id)
         removeDownloadingEpisode(episode.id)
-        addDownloadedPodcastEpisode(episode, podcast)
+        await addDownloadedPodcastEpisode(episode, podcast)
+        DownloadState.updateDownloadedEpisodeIds()
         console.log('downloadEpisode complete')
       }).error((error: string) => {
         console.log('Download canceled due to error: ', error)
@@ -93,7 +107,7 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
   }, timeout)
 }
 
-export const initDownloadTasks = async () => {
+export const initDownloads = async () => {
   const episodes = await getDownloadingEpisodes()
   existingDownloadTasks = await RNBackgroundDownloader.checkForExistingDownloads()
 

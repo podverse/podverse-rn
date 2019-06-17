@@ -447,8 +447,16 @@ export const iconStyles = {
     color: PV.Colors.white,
     underlayColor: PV.Colors.black
   },
+  darkSecondary: {
+    color: PV.Colors.grayLighter,
+    underlayColor: PV.Colors.black
+  },
   light: {
     color: PV.Colors.black,
+    underlayColor: PV.Colors.white
+  },
+  lightSecondary: {
+    color: PV.Colors.grayDarker,
     underlayColor: PV.Colors.white
   }
 }

@@ -40,7 +40,7 @@ export const TableSectionSelectors = (props: Props) => {
           </Text>
         </RNPickerSelect>
         {
-          rightItems.length > 0 &&
+          rightItems.length > 1 &&
             <RNPickerSelect
               items={rightItems}
               onValueChange={handleSelectRightItem}
@@ -52,6 +52,14 @@ export const TableSectionSelectors = (props: Props) => {
               </Text>
             </RNPickerSelect>
 
+        }
+        {
+          rightItems.length === 1 &&
+            <View style={styles.tableSectionHeaderButton}>
+              <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
+                {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label}
+              </Text>
+            </View>
         }
       </View>
       <Divider />
@@ -74,7 +82,7 @@ const styles = {
     paddingRight: 8
   },
   tableSectionHeaderButton: {
-    flex: 1,
+    flex: 0,
     justifyContent: 'center'
   },
   tableSectionHeaderTextLeft: {

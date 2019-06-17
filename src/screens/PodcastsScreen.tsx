@@ -11,7 +11,7 @@ import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getEpisode } from '../services/episode'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { initDownloadTasks } from '../state/actions/downloads'
+import { initDownloads } from '../state/actions/downloads'
 import { initPlayerState, setNowPlayingItem } from '../state/actions/player'
 import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
@@ -161,7 +161,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     await getAuthUserInfo()
     const { userInfo } = this.global.session
     await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
-    await initDownloadTasks()
+    await initDownloads()
     const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
 
     if (nowPlayingItemString) {
