@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { PV } from '../resources'
+import { getBearerToken } from './auth'
 import { request } from './request'
 
 export const getPublicUser = async (id: string) => {
@@ -76,7 +77,7 @@ const toggleSubscribeToUserLocally = async (id: string) => {
 }
 
 const toggleSubscribeToUserOnServer = async (id: string) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: `/user/toggle-subscribe/${id}`,
     headers: { Authorization: bearerToken }
@@ -91,7 +92,7 @@ export const getLoggedInUserMediaRefs = async (query: any = {}, nsfwMode?: boole
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' })
   } as any
 
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: '/user/mediaRefs',
     query: filteredQuery,
@@ -102,7 +103,7 @@ export const getLoggedInUserMediaRefs = async (query: any = {}, nsfwMode?: boole
 }
 
 export const getLoggedInUserPlaylists = async (nsfwMode?: boolean) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: '/user/playlists',
     headers: { Authorization: bearerToken }
@@ -112,7 +113,7 @@ export const getLoggedInUserPlaylists = async (nsfwMode?: boolean) => {
 }
 
 export const deleteLoggedInUser = async () => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: '/user',
     method: 'DELETE',
@@ -124,7 +125,7 @@ export const deleteLoggedInUser = async () => {
 }
 
 export const updateLoggedInUser = async (data: any) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: '/user',
     method: 'PATCH',
@@ -140,7 +141,7 @@ export const updateLoggedInUser = async (data: any) => {
 }
 
 export const downloadLoggedInUserData = async (id: string) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: '/user/download',
     method: 'GET',
@@ -152,7 +153,7 @@ export const downloadLoggedInUserData = async (id: string) => {
 }
 
 export const updateUserQueueItems = async (queueItems: any) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: '/user/update-queue',
     method: 'PATCH',

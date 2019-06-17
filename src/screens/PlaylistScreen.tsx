@@ -66,6 +66,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
     setGlobal({
       screenPlaylist: {
         flatListData: [],
+        flatListDataTotalCount: null,
         playlist: null
       }
     })
@@ -85,6 +86,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
     }, async () => {
       setGlobal({
         flatListData: [],
+        flatListDataTotalCount: null,
         playlist: null
       }, async () => {
         try {
@@ -184,6 +186,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
     const { screenPlaylist, session } = this.global
     const playlist = screenPlaylist.playlist ? screenPlaylist.playlist : navigation.getParam('playlist')
     const flatListData = screenPlaylist.flatListData || []
+    const flatListDataTotalCount = screenPlaylist.flatListDataTotalCount || 0
     const isLoggedInUserPlaylist = ((playlist && playlist.owner && playlist.owner.id) === session.userInfo.id)
 
     return (
@@ -208,6 +211,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           !isLoading && flatListData &&
             <FlatList
               data={flatListData}
+              dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={true}
               extraData={flatListData}
               isLoadingMore={isLoadingMore}

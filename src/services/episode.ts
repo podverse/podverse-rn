@@ -9,6 +9,10 @@ export const getEpisodes = async (query: any = {}, nsfwMode: boolean) => {
     ...(query.includePodcast ? { includePodcast: query.includePodcast } : {})
   }
 
+  if (query.subscribedOnly && query.podcastId && query.podcastId.length === 0) {
+    return [0, 0]
+  }
+
   const response = await request({
     endpoint: '/episode',
     query: filteredQuery

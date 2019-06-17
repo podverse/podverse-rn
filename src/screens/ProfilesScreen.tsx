@@ -108,7 +108,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
 
   render() {
     const { isLoading, isLoadingMore } = this.state
-    const { flatListData } = this.global.profiles
+    const { flatListData, flatListDataTotalCount } = this.global.profiles
 
     return (
       <View style={styles.view}>
@@ -121,6 +121,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
             !isLoading && flatListData && flatListData.length > 0 &&
               <FlatList
                 data={flatListData}
+                dataTotalCount={flatListDataTotalCount}
                 disableLeftSwipe={false}
                 extraData={flatListData}
                 isLoadingMore={isLoadingMore}
@@ -133,7 +134,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
             !isLoading && flatListData && flatListData.length === 0 &&
               <MessageWithAction
                 message='You have no subscribed profiles'
-                subMessage='Ask a friend to send you a link to their profile, then subscribe to it :)' />
+                subMessage='Ask a friend to send you a link to their profile, then subscribe to it' />
           }
         </View>
       </View>

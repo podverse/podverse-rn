@@ -1,7 +1,7 @@
 import React from 'react'
 import { Image } from 'react-native'
-import { createAppContainer, createStackNavigator, createSwitchNavigator, NavigationScreenOptions
-  } from 'react-navigation'
+import { createAppContainer, createStackNavigator, createSwitchNavigator,
+  NavigationScreenOptions } from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { NavQueueIcon, PVTabBar } from './components'
 import { PV } from './resources'
@@ -9,7 +9,6 @@ import { AboutScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScre
   EpisodeScreen, EpisodesScreen, FeedbackScreen, MakeClipScreen, MembershipScreen, MoreScreen, OnboardingScreen,
   PlayerScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen, PodcastsScreen,
   ProfileScreen, ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen, WebPageScreen } from './screens'
-
 
 const defaultNavigationOptions = ({ navigation }) => ({
   title: PV.Tabs.Podcasts.title,
@@ -163,11 +162,7 @@ const TabNavigator = createBottomTabNavigator({
   Search: { screen: SearchNavigator, path: PV.DeepLinks.Search.path },
   More: { screen: MoreNavigator, path: '' }
 }, {
-  tabBarComponent: (props: any) => <PVTabBar {...props} />,
-  tabBarOptions: {
-    inactiveTintColor: PV.Colors.grayDark,
-    activeTintColor: PV.Colors.brandColor
-  }
+  tabBarComponent: (props: any) => <PVTabBar {...props} />
 })
 
 const PlayerNavigator = createStackNavigator({

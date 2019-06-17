@@ -30,6 +30,7 @@ export interface GlobalTheme {
   modalInnerWrapper?: any
   placeholderText?: any
   player?: any
+  playerClipTimeFlag?: any
   playerText?: any
   selectorText?: any
   swipeRowBack?: any
@@ -79,11 +80,13 @@ export interface InitialState {
     user: any
   }
   profiles: {
-    flatListData: []
+    flatListData: [],
+    flatListDataTotalCount: null
   }
   screenPlayer: {
     endOfResultsReached: boolean
     flatListData: any[]
+    flatListDataTotalCount: number | null
     isLoading: boolean
     isLoadingMore: boolean
     queryFrom: string | null
@@ -98,6 +101,7 @@ export interface InitialState {
   }
   screenPlaylist: {
     flatListData: []
+    flatListDataTotalCount: number | null
     playlist?: any
   }
   session: {

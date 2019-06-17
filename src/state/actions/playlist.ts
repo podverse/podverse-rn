@@ -64,14 +64,15 @@ export const getPlaylist = async (id: string, globalState: any) => {
   if (foundIndexSubscribed > -1) {
     playlistsSubscribed[foundIndexSubscribed] = newPlaylist
   }
-
+  const flatListData = combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder)
   setGlobal({
     playlists: {
       myPlaylists: playlistsMyPlaylists,
       subscribedPlaylists: playlistsSubscribed
     },
     screenPlaylist: {
-      flatListData: combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder),
+      flatListData,
+      flatListDataTotalCount: flatListData.length,
       playlist: newPlaylist
     }
   })
@@ -98,6 +99,7 @@ export const updatePlaylist = async (data: any, globalState: any) => {
     },
     screenPlaylist: {
       flatListData: screenPlaylistFlatListData,
+      flatListDataTotalCount: screenPlaylistFlatListData.length,
       playlist: newPlaylist
     }
   })

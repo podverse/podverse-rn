@@ -22,11 +22,13 @@ const initialTheme: InitialState = {
     user: null
   },
   profiles: {
-    flatListData: []
+    flatListData: [],
+    flatListDataTotalCount: null
   },
   screenPlayer: {
     endOfResultsReached: false,
     flatListData: [],
+    flatListDataTotalCount: null,
     isLoading: true,
     isLoadingMore: false,
     queryFrom: PV.Keys.QUERY_FROM_THIS_PODCAST,
@@ -40,6 +42,7 @@ const initialTheme: InitialState = {
   },
   screenPlaylist: {
     flatListData: [],
+    flatListDataTotalCount: null,
     playlist: null
   },
   session: {

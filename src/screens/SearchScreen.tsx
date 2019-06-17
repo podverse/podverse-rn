@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce'
 import { Alert, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActionSheet, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBar, View
+import { ActionSheet, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBar, View, ActivityIndicator
   } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { generateAuthorsText, generateCategoriesText } from '../lib/utility'
@@ -19,6 +19,7 @@ type Props = {
 type State = {
   endOfResultsReached?: boolean
   flatListData: any[]
+  flatListDataTotalCount: number | null
   isLoading?: boolean
   isLoadingMore?: boolean
   queryPage: number
@@ -39,6 +40,7 @@ export class SearchScreen extends React.Component<Props, State> {
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: false,
       isLoadingMore: false,
       queryPage: 1,
@@ -53,16 +55,18 @@ export class SearchScreen extends React.Component<Props, State> {
   _handleSearchBarClear = (text: string) => {
     this.setState({
       flatListData: [],
+      flatListDataTotalCount: null,
       searchBarText: ''
     })
   }
 
   _handleSearchBarTextChange = (text: string) => {
-    const { isLoadingMore } = this.state
+    const { isLoading } = this.state
 
     this.setState({
       flatListData: [],
-      ...(!isLoadingMore && text ? { isLoadingMore: true } : {}),
+      flatListDataTotalCount: null,
+      ...(!isLoading && text ? { isLoading: true } : {}),
       queryPage: 1,
       searchBarText: text
     }, async () => {
@@ -173,8 +177,8 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, isLoading, isLoadingMore, searchBarText, searchType, showActionSheet
-      } = this.state
+    const { flatListData, flatListDataTotalCount, isLoading, isLoadingMore, searchBarText, searchType,
+      showActionSheet } = this.state
 
     return (
       <View style={styles.view}>
@@ -192,12 +196,17 @@ export class SearchScreen extends React.Component<Props, State> {
           !isLoading && flatListData &&
             <FlatList
               data={flatListData}
+              dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={true}
               extraData={flatListData}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               onEndReached={this._onEndReached}
               renderItem={this._renderPodcastItem} />
+        }
+        {
+          isLoading &&
+            <ActivityIndicator />
         }
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
@@ -232,6 +241,7 @@ export class SearchScreen extends React.Component<Props, State> {
         ...newState,
         endOfResultsReached: newFlatListData.length >= results[1],
         flatListData: newFlatListData,
+        flatListDataTotalCount: results[1],
         queryPage: page
       }
     } catch (error) {

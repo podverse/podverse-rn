@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { Linking, StyleSheet, View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHeader, FlatList, HTMLScrollView,
@@ -21,6 +21,7 @@ type State = {
   episode?: any
   episodeId?: any
   flatListData: any[]
+  flatListDataTotalCount: number | null
   isLoading: boolean
   isLoadingMore: boolean
   queryPage: number
@@ -62,6 +63,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       episode,
       episodeId,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: viewType === _clipsKey,
       isLoadingMore: false,
       queryPage: 1,
@@ -86,6 +88,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       episodeId,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: true,
       queryPage: 1
     }, async () => {
@@ -125,6 +128,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     this.setState({
       endOfResultsReached: selectedKey !== _clipsKey,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: selectedKey === _clipsKey,
       queryPage: 1,
       viewType: selectedKey
@@ -145,6 +149,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     this.setState({
       endOfResultsReached: false,
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoading: true,
       querySort: selectedKey
     }, async () => {
@@ -216,6 +221,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     this.setState({
       flatListData: [],
+      flatListDataTotalCount: null,
       isLoadingMore: true,
       queryPage: 1,
       searchBarText: text
@@ -242,7 +248,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { episode, flatListData, isLoading, isLoadingMore, querySort, selectedItem,
+    const { episode, flatListData, flatListDataTotalCount, isLoading, isLoadingMore, querySort, selectedItem,
       showActionSheet, viewType } = this.state
 
     return (
@@ -269,6 +275,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           !isLoading && viewType !== _showNotesKey && flatListData &&
             <FlatList
               data={flatListData}
+              dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={true}
               extraData={flatListData}
               isLoadingMore={isLoadingMore}
@@ -316,9 +323,11 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       } else if (!filterKey) {
         newState.flatListData = []
         newState.endOfResultsReached = true
+        newState.flatListDataTotalCount = null
       } else {
         const results = await getMediaRefs({
           sort: querySort,
@@ -329,6 +338,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       }
 
       newState.queryPage = queryOptions.queryPage || 1

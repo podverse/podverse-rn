@@ -117,6 +117,10 @@ const moreFeaturesOptions = (isLoggedIn?: boolean) => {
       key: PV.RouteNames.ProfilesScreen
     },
     {
+      title: 'My Profile',
+      key: PV.RouteNames.MyProfileScreen
+    },
+    {
       title: 'Settings',
       key: PV.RouteNames.SettingsScreen
     },
@@ -129,13 +133,6 @@ const moreFeaturesOptions = (isLoggedIn?: boolean) => {
       key: _loginKey
     }
   ]
-
-  if (isLoggedIn) {
-    items.splice(3, 0, {
-      title: 'My Profile',
-      key: PV.RouteNames.MyProfileScreen
-    })
-  }
 
   return items
 }

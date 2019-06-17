@@ -1,13 +1,13 @@
-import { Alert, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { Alert, StyleSheet, Text as RNText, TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, Divider, QueueTableCell, SortableList, SortableListRow, TextInput,
+import { ActivityIndicator, Divider, QueueTableCell, SortableList, SortableListRow, Text, TextInput,
   View } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { combineAndSortPlaylistItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getPlaylist } from '../services/playlist'
 import { updatePlaylist } from '../state/actions/playlist'
-import { navHeader } from '../styles'
+import { core, navHeader } from '../styles'
 
 type Props = {
   navigation?: any
@@ -28,7 +28,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
       title: 'Edit Playlist',
       headerRight: (
         <TouchableOpacity onPress={navigation.getParam('updatePlaylist')}>
-          <Text style={navHeader.buttonText}>Save</Text>
+          <RNText style={navHeader.buttonText}>Save</RNText>
         </TouchableOpacity>
       )
     }
@@ -157,13 +157,16 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view}>
-        <TextInput
-          autoCapitalize='none'
-          onChangeText={this._onChangeTitle}
-          placeholder='playlist title'
-          style={styles.textInput}
-          underlineColorAndroid='transparent'
-          value={newTitle} />
+        <View style={styles.topWrapper}>
+          <Text style={core.textInputLabel}>Title</Text>
+          <TextInput
+            autoCapitalize='none'
+            onChangeText={this._onChangeTitle}
+            placeholder='playlist title'
+            style={styles.textInput}
+            underlineColorAndroid='transparent'
+            value={newTitle} />
+        </View>
         <Divider />
         {
           isLoading &&
@@ -186,7 +189,11 @@ const styles = StyleSheet.create({
     marginBottom: 2
   },
   textInput: {
-    fontSize: PV.Fonts.sizes.lg
+    fontSize: PV.Fonts.sizes.xl
+  },
+  topWrapper: {
+    marginHorizontal: 8,
+    marginVertical: 16
   },
   view: {
     flex: 1

@@ -10,6 +10,6 @@ export const FlatList = {
     height: 72
   },
   lastCell: {
-    height: 68
+    height: 72
   }
 }

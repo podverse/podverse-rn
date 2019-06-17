@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import RNSecureKeyStore from 'react-native-secure-key-store'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
+import { getBearerToken } from './auth'
 import { request } from './request'
 
 export const getPodcast = async (id: string) => {
@@ -93,7 +93,7 @@ const toggleSubscribeToPodcastLocally = async (id: string) => {
 }
 
 const toggleSubscribeToPodcastOnServer = async (id: string) => {
-  const bearerToken = await RNSecureKeyStore.get(PV.Keys.BEARER_TOKEN)
+  const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: `/podcast/toggle-subscribe/${id}`,
     headers: { Authorization: bearerToken }

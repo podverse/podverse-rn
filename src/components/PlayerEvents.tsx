@@ -3,7 +3,7 @@ import React from 'reactn'
 import { PV } from '../resources'
 import { getNowPlayingItem } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { setNowPlayingItem, updatePlaybackState } from '../state/actions/player'
+import { clearNowPlayingItem, setNowPlayingItem, updatePlaybackState } from '../state/actions/player'
 
 type Props = {}
 
@@ -47,7 +47,12 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
 
   _refreshNowPlayingItem = async () => {
     const nowPlayingItem = await getNowPlayingItem()
-    await setNowPlayingItem(nowPlayingItem, this.global)
+
+    if (nowPlayingItem) {
+      await setNowPlayingItem(nowPlayingItem, this.global)
+    } else {
+      await clearNowPlayingItem(this.global)
+    }
   }
 
   render() {

@@ -1,8 +1,11 @@
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { AppState, StyleSheet, TouchableOpacity } from 'react-native'
 import { Icon } from 'react-native-elements'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlaylistTableCell, View } from '../components'
 import { PV } from '../resources'
+import { getNowPlayingItem } from '../services/player'
+import PlayerEventEmitter from '../services/playerEventEmitter'
+import { setNowPlayingItem } from '../state/actions/player'
 import { addOrRemovePlaylistItem } from '../state/actions/playlist'
 import { getLoggedInUserPlaylists } from '../state/actions/user'
 
@@ -52,6 +55,26 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
       //
     }
     this.setState({ isLoading: false })
+
+    AppState.addEventListener('change', this._handleAppStateChange)
+    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handleAppStateChange)
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_QUEUE_ENDED)
+  }
+
+  _handleAppStateChange = async () => {
+    const { dismiss } = this.props.navigation
+    const { nowPlayingItem: lastItem } = this.global
+    const currentItem = await getNowPlayingItem()
+
+    if (!currentItem) {
+      dismiss()
+    } else if (lastItem && currentItem.episodeId !== lastItem.episodeId) {
+      await setNowPlayingItem(currentItem, this.global)
+    }
   }
 
   _ItemSeparatorComponent = () => {
@@ -90,6 +113,17 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
           !isLoading && myPlaylists && myPlaylists.length > 0 &&
             <FlatList
               data={myPlaylists}
+              dataTotalCount={myPlaylists.length}
+              disableLeftSwipe={true}
+              extraData={myPlaylists}
+              ItemSeparatorComponent={this._ItemSeparatorComponent}
+              renderItem={this._renderPlaylistItem} />
+        }
+        {
+          !isLoading && myPlaylists && myPlaylists.length === 0 &&
+            <FlatList
+              data={myPlaylists}
+              dataTotalCount={0}
               disableLeftSwipe={true}
               extraData={myPlaylists}
               ItemSeparatorComponent={this._ItemSeparatorComponent}

@@ -2,6 +2,7 @@ import { IFonts } from './Interfaces'
 
 export const Fonts: IFonts = {
   sizes: {
+    tiny: 12,
     xs: 14,
     sm: 15,
     md: 16,

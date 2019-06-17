@@ -5,7 +5,9 @@ import { SwitchWithText, View } from '../components'
 import { PV } from '../resources'
 import { darkTheme, lightTheme } from '../styles'
 
-type Props = {}
+type Props = {
+  navigation: any
+}
 
 type State = {
   downloadingWifiOnly?: boolean
