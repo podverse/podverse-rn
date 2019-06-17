@@ -105,6 +105,12 @@ export const initDownloadTasks = async () => {
     }
   }
 
+  for (const episode of episodes) {
+    if (!existingDownloadTasks.some((x: any) => x.id === episode.id)) {
+      await removeDownloadingEpisode(episode.id)
+    }
+  }
+
   const downloadTaskStates = []
   for (const downloadTask of existingDownloadTasks) {
     const episode = episodes.find((x: any) =>
