@@ -142,15 +142,18 @@ export class EpisodesScreen extends React.Component<Props, State> {
   _renderEpisodeItem = ({ item }) => {
     let description = removeHTMLFromString(item.description)
     description = decodeHTMLString(description)
+    const { downloads } = this.global
 
     return (
       <EpisodeTableCell
           key={item.id}
           description={description}
+          downloads={downloads}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           handleNavigationPress={() => this.props.navigation.navigate(
             PV.RouteNames.EpisodeScreen, { episode: item }
           )}
+          id={item.id}
           moreButtonAlignToTop={true}
           podcastImageUrl={item.podcast_imageUrl}
           podcastTitle={item.podcast_title}

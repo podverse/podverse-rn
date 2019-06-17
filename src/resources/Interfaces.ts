@@ -1,8 +1,10 @@
 export interface GlobalTheme {
   actionSheetButton?: any
   actionSheetButtonCancel?: any
+  actionSheetButtonDisabled?: any
   actionSheetButtonText?: any
   actionSheetButtonTextCancel?: any
+  actionSheetButtonTextDisabled?: any
   actionSheetButtonUnderlay?: any
   actionSheetButtonCancelUnderlay?: any
   actionSheetHeaderText?: any

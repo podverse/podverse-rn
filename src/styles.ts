@@ -10,11 +10,17 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.grayDarker,
     borderColor: PV.Colors.grayDark
   },
+  actionSheetButtonDisabled: {
+    backgroundColor: PV.Colors.grayDarkest
+  },
   actionSheetButtonText: {
     color: PV.Colors.white
   },
   actionSheetButtonTextCancel: {
     color: PV.Colors.white
+  },
+  actionSheetButtonTextDisabled: {
+    color: PV.Colors.grayLightest
   },
   actionSheetButtonUnderlay: {
     backgroundColor: PV.Colors.grayDarker
@@ -165,11 +171,17 @@ export const lightTheme = StyleSheet.create({
     backgroundColor: PV.Colors.grayLightest,
     borderColor: PV.Colors.grayLighter
   },
+  actionSheetButtonDisabled: {
+    backgroundColor: PV.Colors.white
+  },
   actionSheetButtonText: {
     color: PV.Colors.black
   },
   actionSheetButtonTextCancel: {
     color: PV.Colors.black
+  },
+  actionSheetButtonTextDisabled: {
+    color: PV.Colors.grayDarkest
   },
   actionSheetButtonUnderlay: {
     backgroundColor: PV.Colors.grayLightest

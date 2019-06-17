@@ -8,7 +8,7 @@ export type DownloadTaskState = {
   completed?: boolean
   episodeId: string
   episodeTitle?: string
-  percent?: string
+  percent?: number
   podcastImageUrl?: string
   podcastTitle?: string
   status?: DownloadStatus

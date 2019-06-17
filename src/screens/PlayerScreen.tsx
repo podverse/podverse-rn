@@ -367,7 +367,7 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _renderItem = ({ item }) => {
-    const { player, screenPlayer } = this.global
+    const { downloads, player, screenPlayer } = this.global
     const { episode } = player
     const podcast = (episode && episode.podcast) || {}
     const { queryFrom, viewType } = screenPlayer
@@ -378,8 +378,10 @@ export class PlayerScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           key={item.id}
           description={description}
+          downloads={downloads}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => console.log('handle episode press')}
+          id={item.id}
           pubDate={item.pubDate}
           title={item.title} />
       )

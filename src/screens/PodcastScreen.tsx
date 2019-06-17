@@ -228,6 +228,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _renderItem = ({ item }) => {
     const { podcast, viewType } = this.state
+    const { downloads } = this.global
 
     const episode = {
       ...item,
@@ -243,8 +244,10 @@ export class PodcastScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           key={item.id}
           description={description}
+          downloads={downloads}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
+          id={item.id}
           pubDate={item.pubDate}
           title={item.title} />
       )
@@ -255,8 +258,10 @@ export class PodcastScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           key={item.id}
           description={description}
+          downloads={downloads}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
+          id={item.id}
           pubDate={item.pubDate}
           title={item.title} />
       )

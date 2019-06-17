@@ -15,74 +15,98 @@ export enum DownloadStatus {
 }
 
 const downloadTasks: any[] = []
+let existingDownloadTasks: any[] = []
 
 export const cancelDownloadTask = (episodeId: string) => {
   const task = downloadTasks.find((x: any) => x.id === episodeId)
   if (task) task.stop()
 }
 
-export const downloadEpisode = async (episode: any, podcast: any) => {
+// NOTE: I was unable to get RNBackgroundDownloader to successfully resume tasks that were
+// retrieved from checkForExistingDownloads, so as a workaround, I am forcing those existing tasks
+// to always be restarted instead of resumed.
+export const downloadEpisode = async (episode: any, podcast: any, restart?: boolean) => {
+  const shouldDownload = await hasValidDownloadingConnection()
+  if (!shouldDownload) return
   const ext = getExtensionFromUrl(episode.mediaUrl)
 
-  const downloadingEpisodes = await getDownloadingEpisodes()
-  if (downloadingEpisodes.some((x: any) => x.id === episode.id)) return
+  if (!restart) {
+    const downloadingEpisodes = await getDownloadingEpisodes()
+    if (downloadingEpisodes.some((x: any) => x.id === episode.id)) return
 
-  const downloadedPodcasts = await getDownloadedPodcasts()
-  for (const downloadedPodcast of downloadedPodcasts) {
-    if (downloadedPodcast.episodes &&
-      downloadedPodcast.episodes.some((x: any) => x.id === episode.id)) return
+    const downloadedPodcasts = await getDownloadedPodcasts()
+    for (const downloadedPodcast of downloadedPodcasts) {
+      if (downloadedPodcast.episodes &&
+        downloadedPodcast.episodes.some((x: any) => x.id === episode.id)) return
+    }
   }
 
-  const task = RNBackgroundDownloader
-    .download({
-      id: episode.id,
-      url: episode.mediaUrl,
-      destination: `${RNBackgroundDownloader.directories.documents}/${episode.id}${ext}`
-    })
-    .begin(() => {
-      downloadTasks.push(task)
-      episode.podcast = podcast
-      DownloadState.addDownloadTask({
-        episodeId: episode.id,
-        episodeTitle: episode.title,
-        podcastImageUrl: podcast.imageUrl,
-        podcastTitle: podcast.title
-      })
-      addDownloadingEpisode(episode)
-    }).progress((percent: number, bytesWritten: number, bytesTotal: number) => {
-      const written = convertBytesToHumanReadableString(bytesWritten)
-      const total = convertBytesToHumanReadableString(bytesTotal)
-      DownloadState.updateDownloadProgress(episode.id, percent, written, total)
-    }).done(() => {
-      DownloadState.updateDownloadComplete(episode.id)
-      removeDownloadingEpisode(episode.id)
-      addDownloadedPodcastEpisode(episode, podcast)
-      console.log('downloadEpisode complete')
-    }).error((error: string) => {
-      console.log('Download canceled due to error: ', error)
-    })
-}
+  let timeout = 0
+  const existingTasks = existingDownloadTasks.filter((x: any) => x.id === episode.id)
+  for (const t of existingTasks) {
+    if (t.id === episode.id) {
+      await t.stop()
+      timeout = 1000
+    }
+  }
 
-const restartDownloadTask = (downloadTask: any, episodeId: string) => {
-  downloadTask.progress((percent: number, bytesWritten: number, bytesTotal: number) => {
-    const written = convertBytesToHumanReadableString(bytesWritten)
-    const total = convertBytesToHumanReadableString(bytesTotal)
-    DownloadState.updateDownloadProgress(episodeId, percent, written, total)
-  }).done(() => {
-    DownloadState.updateDownloadComplete(episodeId)
-    removeDownloadingEpisode(episodeId)
-    console.log('restartDownloadTask complete')
-  }).error((error: string) => {
-    console.log('Resumed download canceled due to error: ', error)
-  })
+  // Wait for t.stop() to complete
+  setTimeout(() => {
+    const task = RNBackgroundDownloader
+      .download({
+        id: episode.id,
+        url: episode.mediaUrl,
+        destination: `${RNBackgroundDownloader.directories.documents}/${episode.id}${ext}`
+      })
+      .begin(() => {
+        if (!restart) {
+          downloadTasks.push(task)
+          episode.podcast = podcast
+          DownloadState.addDownloadTask({
+            episodeId: episode.id,
+            episodeTitle: episode.title,
+            podcastImageUrl: podcast.imageUrl,
+            podcastTitle: podcast.title
+          })
+          addDownloadingEpisode(episode)
+        } else {
+          const downloadTaskIndex = downloadTasks.indexOf((x: any) => x.episodeId === episode.id)
+          if (downloadTaskIndex > -1) {
+            downloadTasks[downloadTaskIndex] = task
+          } else {
+            downloadTasks.push(task)
+          }
+        }
+
+      }).progress((percent: number, bytesWritten: number, bytesTotal: number) => {
+        const written = convertBytesToHumanReadableString(bytesWritten)
+        const total = convertBytesToHumanReadableString(bytesTotal)
+        DownloadState.updateDownloadProgress(episode.id, percent, written, total)
+      }).done(() => {
+        DownloadState.updateDownloadComplete(episode.id)
+        removeDownloadingEpisode(episode.id)
+        addDownloadedPodcastEpisode(episode, podcast)
+        console.log('downloadEpisode complete')
+      }).error((error: string) => {
+        console.log('Download canceled due to error: ', error)
+      })
+  }, timeout)
 }
 
 export const initDownloadTasks = async () => {
   const episodes = await getDownloadingEpisodes()
-  const downloadTasks = await RNBackgroundDownloader.checkForExistingDownloads()
+  existingDownloadTasks = await RNBackgroundDownloader.checkForExistingDownloads()
 
-  const filteredDownloadTasks = []
-  for (const downloadTask of downloadTasks) {
+  let timeout = 0
+  for (const task of existingDownloadTasks) {
+    if (!episodes.some((x: any) => x.id === task.id)) {
+      await task.stop()
+      timeout = 1000
+    }
+  }
+
+  const downloadTaskStates = []
+  for (const downloadTask of existingDownloadTasks) {
     const episode = episodes.find((x: any) =>
       x.id === downloadTask.id && x.status !== DownloadStatus.STOPPED &&
       x.status !== DownloadStatus.UNKNOWN &&
@@ -91,13 +115,13 @@ export const initDownloadTasks = async () => {
 
     if (episode) {
       const bytesTotal = downloadTask.totalBytes ? convertBytesToHumanReadableString(downloadTask.totalBytes) : '---'
-      const bytesWritten = downloadTask.bytesWritten ? convertBytesToHumanReadableString(downloadTask.bytesWritten) : '0 KB'
-      filteredDownloadTasks.push({
+
+      downloadTaskStates.push({
         bytesTotal,
-        bytesWritten,
+        bytesWritten: '0 KB',
         episodeId: episode.id,
         episodeTitle: episode.title,
-        percent: downloadTask.percent,
+        percent: 0,
         podcastImageUrl: episode.podcast.imageUrl,
         podcastTitle: episode.podcast.title,
         status: downloadTask.state
@@ -105,23 +129,32 @@ export const initDownloadTasks = async () => {
     }
   }
 
-  const shouldDownload = await hasValidDownloadingConnection()
-  if (shouldDownload) {
-    for (const filteredDownloadTask of filteredDownloadTasks) {
-      const episode = episodes.find((x: any) => x.id === filteredDownloadTask.episodeId)
-      if (shouldDownload && filteredDownloadTask.status === DownloadStatus.DOWNLOADING) {
-        const task = downloadTasks.find((x: any) => x.id === filteredDownloadTask.episodeId)
-        restartDownloadTask(task, episode.id)
+  for (const filteredDownloadTask of downloadTaskStates) {
+    const episode = episodes.find((x: any) => x.id === filteredDownloadTask.episodeId)
+    if (filteredDownloadTask.status === DownloadStatus.DOWNLOADING) {
+      if (existingDownloadTasks.some((x: any) => x.id === filteredDownloadTask.episodeId)) {
+        // Wait for task.stop() to complete
+        setTimeout(() => {
+          downloadEpisode(episode, episode.podcast, true)
+        }, timeout)
       }
     }
   }
 
-  return filteredDownloadTasks
+  return downloadTaskStates
 }
 
-export const resumeDownloadTask = (episodeId: string) => {
+export const resumeDownloadTask = async (episodeId: string) => {
   const task = downloadTasks.find((task) => task.id === episodeId)
-  if (task) task.resume()
+
+  if (existingDownloadTasks.some((x: any) => x.id === episodeId)) {
+    const downloadingEpisodes = await getDownloadingEpisodes()
+    const episode = downloadingEpisodes.find((x: any) => x.id === episodeId)
+    await downloadEpisode(episode, episode.podcast, true)
+    existingDownloadTasks = existingDownloadTasks.filter((x: any) => x.id !== episodeId)
+  } else if (task) {
+    task.resume()
+  }
 }
 
 export const pauseDownloadTask = (episodeId: string) => {

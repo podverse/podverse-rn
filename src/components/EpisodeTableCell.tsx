@@ -1,14 +1,17 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { DownloadStatus } from '../lib/downloader'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
-import { Icon, Text, View } from './'
+import { ActivityIndicator, Icon, Text, View } from './'
 
 type Props = {
   description?: string
+  downloads?: any
   handleMorePress?: any
   handleNavigationPress?: any
+  id: string
   moreButtonAlignToTop?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
@@ -17,7 +20,7 @@ type Props = {
 }
 
 export const EpisodeTableCell = (props: Props) => {
-  const { pubDate, description, title = 'untitled episode', handleMorePress,
+  const { downloads = [], id, pubDate, description, title = 'untitled episode', handleMorePress,
   handleNavigationPress, podcastImageUrl, podcastTitle } = props
 
   const showPodcastInfo = !!podcastImageUrl && !!podcastTitle
@@ -73,6 +76,14 @@ export const EpisodeTableCell = (props: Props) => {
       style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
   )
 
+  let isDownloading = false
+  const downloadingEpisode = downloads.find((x: any) => x.episodeId === id)
+
+  if (downloadingEpisode && (downloadingEpisode.status === DownloadStatus.DOWNLOADING ||
+    downloadingEpisode.status === DownloadStatus.PAUSED)) {
+    isDownloading = true
+  }
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.wrapperTop}>
@@ -84,7 +95,13 @@ export const EpisodeTableCell = (props: Props) => {
             innerTopView
         }
         {
-          handleMorePress && moreButton
+          !isDownloading && handleMorePress && moreButton
+        }
+        {
+          isDownloading &&
+            <ActivityIndicator
+              onPress={handleMorePress}
+              styles={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
         }
       </View>
       {
@@ -112,7 +129,8 @@ const styles = StyleSheet.create({
   },
   innerTopView: {
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginRight: 4
   },
   podcastTitle: {
     flex: 0,
