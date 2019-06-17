@@ -1,8 +1,9 @@
 import { getGlobal, setGlobal } from 'reactn'
-import { getDownloadedEpisodeIds as getDownloadedEpisodeIdsService } from '../../lib/downloadedPodcast'
-import { removeDownloadedPodcastEpisode as removeDownloadedPodcastEpisodeService } from '../../lib/downloadedPodcast'
+import { getDownloadedEpisodeIds as getDownloadedEpisodeIdsService,
+  removeDownloadedPodcastEpisode as removeDownloadedPodcastEpisodeService } from '../../lib/downloadedPodcast'
 import { DownloadStatus, initDownloads as initDownloadsService, pauseDownloadTask, resumeDownloadTask } from '../../lib/downloader'
 import { removeDownloadingEpisode as removeDownloadingEpisodeService } from '../../lib/downloadingEpisode'
+import { clearNowPlayingItem } from './player'
 
 export type DownloadTaskState = {
   bytesTotal?: string
@@ -144,9 +145,13 @@ export const updateDownloadComplete = (downloadTaskId: string) => {
 }
 
 export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
-  const { downloadedEpisodeIds } = await removeDownloadedPodcastEpisodeService(episodeId)
+  const { clearedNowPlayingItem, downloadedEpisodeIds } = await removeDownloadedPodcastEpisodeService(episodeId)
 
   setGlobal({
     downloadedEpisodeIds: [...downloadedEpisodeIds]
+  }, () => {
+    if (clearedNowPlayingItem) {
+      clearNowPlayingItem()
+    }
   })
 }

@@ -1,4 +1,4 @@
-import { setGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
 import { popLastFromHistoryItems } from '../../services/history'
@@ -10,7 +10,8 @@ import { clearNowPlayingItem as clearNowPlayingItemService, getContinuousPlaybac
 import PlayerEventEmitter from '../../services/playerEventEmitter'
 import { addQueueItemNext, popNextFromQueue } from '../../services/queue'
 
-export const clearNowPlayingItem = async (globalState: any) => {
+export const clearNowPlayingItem = async () => {
+  const globalState = getGlobal()
   await clearNowPlayingItemService()
   setGlobal({
     player: {

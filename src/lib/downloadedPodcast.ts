@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
-import { deleteDownloadedEpisode } from './downloader';
+import { clearNowPlayingItem, getNowPlayingItem } from '../services/player'
+import { deleteDownloadedEpisode } from './downloader'
 
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
   delete episode.podcast
@@ -82,7 +83,15 @@ export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
   }
   setDownloadedPodcasts(newPodcasts)
 
+  const nowPlayingItem = await getNowPlayingItem()
+  let clearedNowPlayingItem = false
+  if (nowPlayingItem.episodeId === episodeId) {
+    clearNowPlayingItem()
+    clearedNowPlayingItem = true
+  }
+
   return {
+    clearedNowPlayingItem,
     downloadedEpisodeIds: newDownloadedEpisodeIds,
     downloadedPodcasts: newPodcasts
   }
