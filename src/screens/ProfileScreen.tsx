@@ -306,6 +306,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       return (
         <PodcastTableCell
           key={item.id}
+          id={item.id}
           lastEpisodePubDate={item.lastEpisodePubDate}
           onPress={() => this._handlePodcastPress(item)}
           podcastAuthors={generateAuthorsText(item.authors)}

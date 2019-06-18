@@ -5,6 +5,7 @@ const initialTheme: InitialState = {
   globalTheme: {},
   downloads: [],
   downloadedEpisodeIds: [],
+  downloadedPodcastEpisodeCounts: [],
   player: {
     isPlaying: false,
     nowPlayingItem: null,

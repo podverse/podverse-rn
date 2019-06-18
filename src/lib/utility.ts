@@ -81,9 +81,12 @@ export const decodeHTMLString = (text: string) => {
 
 export const generateAuthorsText = (authors: any) => {
   let authorText = ''
-  for (let i = 0; i < authors.length; i++) {
-    const author = authors[i]
-    authorText += `${author.name}${i < authors.length - 1 ? ', ' : ''}`
+
+  if (authors) {
+    for (let i = 0; i < authors.length; i++) {
+      const author = authors[i]
+      authorText += `${author.name}${i < authors.length - 1 ? ', ' : ''}`
+    }
   }
 
   return authorText
@@ -91,9 +94,12 @@ export const generateAuthorsText = (authors: any) => {
 
 export const generateCategoriesText = (categories: any) => {
   let categoryText = ''
-  for (let i = 0; i < categories.length; i++) {
-    const category = categories[i]
-    categoryText += `${category.title}${i < categories.length - 1 ? ', ' : ''}`
+
+  if (categories) {
+    for (let i = 0; i < categories.length; i++) {
+      const category = categories[i]
+      categoryText += `${category.title}${i < categories.length - 1 ? ', ' : ''}`
+    }
   }
 
   return categoryText

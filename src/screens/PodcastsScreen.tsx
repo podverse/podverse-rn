@@ -4,8 +4,9 @@ import { Linking, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
+import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { generateCategoryItems } from '../lib/utility'
+import { generateAuthorsText, generateCategoriesText, generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getEpisode } from '../services/episode'
@@ -278,19 +279,23 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _renderPodcastItem = ({ item }) => {
-    const downloadCount = item.episodes ? item.episodes.length : 0
+    const userLocalPodcastView = this.state.queryFrom === _subscribedKey || this.state.queryFrom === _downloadedKey
 
     return (
       <PodcastTableCell
         key={item.id}
         autoDownloadOn={true}
-        downloadCount={downloadCount}
+        id={item.id}
         lastEpisodePubDate={item.lastEpisodePubDate}
         onPress={() => this.props.navigation.navigate(
           PV.RouteNames.PodcastScreen, { podcast: item }
         )}
+        podcastAuthors={userLocalPodcastView ? '' : generateAuthorsText(item.authors)}
+        podcastCategories={userLocalPodcastView ? '' : generateCategoriesText(item.categories)}
         podcastImageUrl={item.imageUrl}
-        podcastTitle={item.title} />
+        podcastTitle={item.title}
+        showAutoDownload={userLocalPodcastView}
+        showDownloadCount={userLocalPodcastView} />
     )
   }
 
@@ -351,6 +356,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     let flatListDataTotalCount = null
     if (queryFrom === _subscribedKey) {
       flatListData = this.global.subscribedPodcasts
+    } else if (queryFrom === _downloadedKey) {
+      flatListData = this.global.downloadedPodcasts
     } else {
       flatListData = this.state.flatListData
       flatListDataTotalCount = this.state.flatListDataTotalCount
@@ -363,7 +370,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={!queryFrom || queryFrom === _subscribedKey ? [] : rightItems}
+          rightItems={!queryFrom || queryFrom === _subscribedKey || queryFrom === _downloadedKey ? [] : rightItems}
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort} />
         {
@@ -392,7 +399,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
-              {...(queryFrom !== _subscribedKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
+              {...(queryFrom !== _subscribedKey && queryFrom !== _downloadedKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
               noSubscribedPodcasts={queryFrom === _subscribedKey && flatListData.length === 0}
               onEndReached={this._onEndReached}
               onRefresh={queryFrom === _subscribedKey ? this._onRefresh : null}
@@ -411,7 +418,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _queryAllPodcasts = async (sort: string | null, page: number = 1) => {
     const { searchBarText: searchTitle } = this.state
-    const results = await getPodcasts({ sort, page, ...(searchTitle ? { searchTitle } : {}) }, this.global.settings.nsfwMode)
+    const results = await getPodcasts({
+      sort,
+      page,
+      includeAuthors: true,
+      includeCategories: true,
+      ...(searchTitle ? { searchTitle } : {}) }, this.global.settings.nsfwMode)
     return results
   }
 
@@ -419,6 +431,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { searchBarText: searchTitle } = this.state
     const results = await getPodcasts({
       categories: categoryId, sort, page,
+      includeAuthors: true,
       ...(searchTitle ? { searchTitle } : {})
     }, this.global.settings.nsfwMode)
     return results
@@ -445,6 +458,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
       if (filterKey === _subscribedKey) {
         await getAuthUserInfo() // get the latest subscribedPodcastIds first
         await this._querySubscribedPodcasts()
+      } else if (filterKey === _downloadedKey) {
+        const podcasts = await getDownloadedPodcasts()
+        newState.endOfResultsReached = true
+        newState.flatListDataTotalCount = podcasts.length
       } else if (filterKey === _allPodcastsKey) {
         const results = await this._queryAllPodcasts(querySort, newState.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
@@ -488,7 +505,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
           newState.selectedSubCategory = _allCategoriesKey
         }
 
-        const results = await getPodcasts({ categories, sort: querySort, ...(searchTitle ? { searchTitle } : {}) }, nsfwMode)
+        const results = await getPodcasts({
+          categories,
+          sort: querySort,
+          includeAuthors: true,
+          ...(searchTitle ? { searchTitle } : {}) }, nsfwMode)
         newState.flatListData = results[0]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
@@ -502,6 +523,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 }
 
 const _subscribedKey = 'subscribed'
+const _downloadedKey = 'downloaded'
 const _allPodcastsKey = 'allPodcasts'
 const _categoryKey = 'category'
 const _allCategoriesKey = 'allCategories'
@@ -516,6 +538,10 @@ const leftItems = [
   {
     label: 'Subscribed',
     value: _subscribedKey
+  },
+  {
+    label: 'Downloaded',
+    value: _downloadedKey
   },
   {
     label: 'All Podcasts',

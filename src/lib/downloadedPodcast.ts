@@ -10,6 +10,7 @@ export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) =>
   const podcastIndex = downloadedPodcasts.findIndex((x: any) => x.id === podcast.id)
   if (podcastIndex === -1) {
     podcast.episodes = [episode]
+    podcast.lastEpisodePubDate = episode.pubDate
     downloadedPodcasts.push(podcast)
     downloadedPodcasts = sortPodcastArray(downloadedPodcasts)
     await setDownloadedPodcasts(downloadedPodcasts)
@@ -21,6 +22,9 @@ export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) =>
     if (episodeIndex === -1) {
       downloadedEpisodes.push(episode)
       downloadedEpisodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
+    }
+    if (downloadedEpisodes.length > 0) {
+      downloadedPodcast.lastEpisodePubDate = downloadedEpisodes[0].pubDate
     }
     downloadedPodcasts[podcastIndex] = downloadedPodcast
     downloadedPodcasts = sortPodcastArray(downloadedPodcasts)
@@ -37,6 +41,17 @@ export const getDownloadedEpisodeIds = async () => {
     }
   }
   return episodeIds
+}
+
+export const getDownloadedPodcastEpisodeCounts = async () => {
+  const podcastEpisodeCounts = {}
+  const downloadedPodcasts = await getDownloadedPodcasts()
+  for (const podcast of downloadedPodcasts) {
+    const length = (podcast.episodes && podcast.episodes.length) || 0
+    podcastEpisodeCounts[podcast.id] = length
+  }
+
+  return podcastEpisodeCounts
 }
 
 export const getDownloadedEpisodes = async () => {
@@ -85,7 +100,7 @@ export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
 
   const nowPlayingItem = await getNowPlayingItem()
   let clearedNowPlayingItem = false
-  if (nowPlayingItem.episodeId === episodeId) {
+  if (nowPlayingItem && nowPlayingItem.episodeId === episodeId) {
     clearNowPlayingItem()
     clearedNowPlayingItem = true
   }

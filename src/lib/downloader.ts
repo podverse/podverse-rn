@@ -99,7 +99,7 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
         DownloadState.updateDownloadComplete(episode.id)
         removeDownloadingEpisode(episode.id)
         await addDownloadedPodcastEpisode(episode, podcast)
-        DownloadState.updateDownloadedEpisodeIds()
+        DownloadState.updateDownloadedPodcasts()
         console.log('downloadEpisode complete')
       }).error((error: string) => {
         console.log('Download canceled due to error: ', error)

@@ -64,6 +64,7 @@ export interface InitialState {
   globalTheme: GlobalTheme
   downloads: any[]
   downloadedEpisodeIds: any[]
+  downloadedPodcastEpisodeCounts: any[]
   player: {
     isPlaying: boolean
     nowPlayingItem: any

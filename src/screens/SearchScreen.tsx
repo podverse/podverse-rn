@@ -128,6 +128,7 @@ export class SearchScreen extends React.Component<Props, State> {
     return (
       <PodcastTableCell
         key={item.id}
+        id={item.id}
         lastEpisodePubDate={item.lastEpisodePubDate}
         onPress={() => this._handleMorePress(item)}
         podcastAuthors={generateAuthorsText(item.authors)}

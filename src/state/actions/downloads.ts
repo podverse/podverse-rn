@@ -1,5 +1,6 @@
 import { getGlobal, setGlobal } from 'reactn'
-import { getDownloadedEpisodeIds as getDownloadedEpisodeIdsService,
+import { getDownloadedEpisodeIds as getDownloadedEpisodeIdsService, getDownloadedPodcastEpisodeCounts as
+  getDownloadedPodcastEpisodeCountsService, getDownloadedPodcasts as getDownloadedPodcastsService,
   removeDownloadedPodcastEpisode as removeDownloadedPodcastEpisodeService } from '../../lib/downloadedPodcast'
 import { DownloadStatus, initDownloads as initDownloadsService, pauseDownloadTask, resumeDownloadTask } from '../../lib/downloader'
 import { removeDownloadingEpisode as removeDownloadingEpisodeService } from '../../lib/downloadingEpisode'
@@ -36,18 +37,26 @@ export const getDownloadStatusText = (status?: string) => {
 export const initDownloads = async () => {
   const downloads = await initDownloadsService()
   const downloadedEpisodeIds = await getDownloadedEpisodeIdsService()
+  const downloadedPodcastEpisodeCounts = await getDownloadedPodcastEpisodeCountsService()
+  const downloadedPodcasts = await getDownloadedPodcastsService()
 
   setGlobal({
-    downloads: [...downloads],
-    downloadedEpisodeIds: [...downloadedEpisodeIds]
+    downloads,
+    downloadedEpisodeIds,
+    downloadedPodcastEpisodeCounts,
+    downloadedPodcasts
   })
 }
 
-export const updateDownloadedEpisodeIds = async () => {
+export const updateDownloadedPodcasts = async () => {
   const downloadedEpisodeIds = await getDownloadedEpisodeIdsService()
+  const downloadedPodcastEpisodeCounts = await getDownloadedPodcastEpisodeCountsService()
+  const downloadedPodcasts = await getDownloadedPodcastsService()
 
   setGlobal({
-    downloadedEpisodeIds: [...downloadedEpisodeIds]
+    downloadedEpisodeIds,
+    downloadedPodcastEpisodeCounts,
+    downloadedPodcasts
   })
 }
 
@@ -145,13 +154,10 @@ export const updateDownloadComplete = (downloadTaskId: string) => {
 }
 
 export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
-  const { clearedNowPlayingItem, downloadedEpisodeIds } = await removeDownloadedPodcastEpisodeService(episodeId)
+  const { clearedNowPlayingItem } = await removeDownloadedPodcastEpisodeService(episodeId)
+  await updateDownloadedPodcasts()
 
-  setGlobal({
-    downloadedEpisodeIds: [...downloadedEpisodeIds]
-  }, () => {
-    if (clearedNowPlayingItem) {
-      clearNowPlayingItem()
-    }
-  })
+  if (clearedNowPlayingItem) {
+    clearNowPlayingItem()
+  }
 }
