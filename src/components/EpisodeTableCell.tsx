@@ -21,8 +21,9 @@ type Props = {
 }
 
 export const EpisodeTableCell = (props: Props) => {
-  const { downloadedEpisodeIds = [], downloads = [], id, pubDate = '', description, title = 'untitled episode',
+  const { downloadedEpisodeIds = [], downloads = [], id, pubDate = '',
   handleMorePress, handleNavigationPress, podcastImageUrl, podcastTitle } = props
+  let { description, title } = props
 
   const showPodcastInfo = !!podcastImageUrl && !!podcastTitle
 
@@ -35,6 +36,9 @@ export const EpisodeTableCell = (props: Props) => {
   }
 
   const isDownloaded = downloadedEpisodeIds.some((x: any) => x === id)
+
+  if (!description) description = '(no episode summary)'
+  if (!title) title = 'Untitled episode'
 
   const innerTopView = (
     <View style={styles.innerTopView}>
