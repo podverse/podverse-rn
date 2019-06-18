@@ -37,7 +37,7 @@ export const EpisodeTableCell = (props: Props) => {
 
   const isDownloaded = downloadedEpisodeIds.some((x: any) => x === id)
 
-  if (!description) description = '(no episode summary)'
+  if (!description) description = 'No show notes available'
   if (!title) title = 'Untitled episode'
 
   const innerTopView = (
