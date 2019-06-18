@@ -148,6 +148,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   _renderEpisodeItem = ({ item }) => {
     let description = removeHTMLFromString(item.description)
     description = decodeHTMLString(description)
+
     const { downloadedEpisodeIds, downloads } = this.global
 
     return (

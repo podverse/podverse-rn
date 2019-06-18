@@ -74,7 +74,7 @@ export const removeHTMLFromString = (text: string) => {
 }
 
 export const decodeHTMLString = (text: string) => {
-  const limitSingleSpaceRegex = /\s\s+/g
+  const limitSingleSpaceRegex = /\s+/g
   const newString = text.replace(limitSingleSpaceRegex, ' ')
   return he.decode(newString)
 }

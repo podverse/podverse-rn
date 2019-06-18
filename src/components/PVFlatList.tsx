@@ -54,7 +54,7 @@ export const PVFlatList = (props: Props) => {
       {
         noSubscribedPodcasts &&
           <View style={styles.msgView}>
-            <Text style={[styles.lastCellText]}>{`You have no subscribed podcasts`}</Text>
+            <Text style={[styles.lastCellText]}>{`You are not subscribed to any podcasts`}</Text>
           </View>
       }
       {

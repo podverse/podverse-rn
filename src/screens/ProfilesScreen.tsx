@@ -133,7 +133,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
           {
             !isLoading && flatListData && flatListData.length === 0 &&
               <MessageWithAction
-                message='You have no subscribed profiles'
+                message='You are not subscribed to any profiles'
                 subMessage='Ask a friend to send you a link to their profile, then subscribe to it' />
           }
         </View>
