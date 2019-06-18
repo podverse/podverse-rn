@@ -159,7 +159,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           downloads={downloads}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           handleNavigationPress={() => this.props.navigation.navigate(
-            PV.RouteNames.EpisodeScreen, { episode: item }
+            PV.RouteNames.EpisodeScreen, { episode: item, includeGoToPodcast: true }
           )}
           id={item.id}
           moreButtonAlignToTop={true}

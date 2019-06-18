@@ -79,6 +79,17 @@ const mediaMoreButtons = (item: any = {}, isLoggedIn: boolean, globalState: any,
     }
   )
 
+  if (navigation.getParam('includeGoToPodcast')) {
+    buttons.push({
+      key: 'goToPodcast',
+      text: 'Go to Podcast',
+      onPress: async () => {
+        await handleDismiss()
+        navigation.navigate(PV.RouteNames.EpisodePodcastScreen,{ podcastId: item.podcastId })
+      }
+    })
+  }
+
   return buttons
 }
 

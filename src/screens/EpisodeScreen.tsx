@@ -268,7 +268,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           selectedLeftItemKey={viewType}
           selectedRightItemKey={querySort} />
         {
-          isLoading &&
+          isLoading && viewType !== _showNotesKey &&
             <ActivityIndicator />
         }
         {
