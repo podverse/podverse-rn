@@ -335,9 +335,25 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { flatListData, flatListDataTotalCount, isLoading, isLoadingMore, isRefreshing, isSubscribing, podcast,
-      podcastId, querySort, selectedItem, showActionSheet, viewType } = this.state
-    const isSubscribed = this.global.session.userInfo.subscribedPodcastIds.some((x) => x === podcastId)
+    const { isLoading, isLoadingMore, isRefreshing, isSubscribing, podcast, podcastId, querySort,
+      selectedItem, showActionSheet, viewType } = this.state
+    const isSubscribed = this.global.session.userInfo.subscribedPodcastIds.some((x: string) => x === podcastId)
+    let { flatListData, flatListDataTotalCount } = this.state
+
+    let items = rightItems(false)
+    if (viewType === downloadedKey) {
+      const { downloadedPodcasts } = this.global
+      const downloadedPodcast = downloadedPodcasts.find((x: any) => ((podcast && x.id === podcast.id) || x.id === podcastId))
+      flatListData = (downloadedPodcast && downloadedPodcast.episodes) || []
+      flatListDataTotalCount = flatListData.length
+      items = rightItems(true)
+    } else if (!viewType || viewType === aboutKey) {
+      items = []
+    }
+
+    const resultsText = (viewType === downloadedKey && 'episodes') ||
+      (viewType === allEpisodesKey && 'episodes') ||
+      (viewType === clipsKey && 'clips') || 'results'
 
     return (
       <View style={styles.view}>
@@ -355,7 +371,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={viewType && viewType !== aboutKey ? rightItems : []}
+          rightItems={items}
           selectedLeftItemKey={viewType}
           selectedRightItemKey={querySort} />
         {
@@ -375,7 +391,8 @@ export class PodcastScreen extends React.Component<Props, State> {
               {...(viewType === allEpisodesKey || viewType === clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
               onEndReached={this._onEndReached}
               renderHiddenItem={this._renderHiddenItem}
-              renderItem={this._renderItem} />
+              renderItem={this._renderItem}
+              resultsText={resultsText} />
         }
         {
           !isLoading && viewType === aboutKey && podcast &&
@@ -425,11 +442,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     if (wasAlerted) return newState
 
     try {
-      if (filterKey === downloadedKey) {
-        console.log('retrieve downloaded from local storage')
-        newState.flatListData = []
-        newState.endOfResultsReached = true
-      } else if (filterKey === allEpisodesKey) {
+      if (filterKey === allEpisodesKey) {
         const results = await this._queryAllEpisodes(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
@@ -441,9 +454,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         newState.flatListDataTotalCount = results[1]
       } else if (rightItems.some((option) => option.value === filterKey)) {
         let results = []
-        if (viewType === downloadedKey) {
-          console.log('retrieve downloaded from local storage')
-        } else if (viewType === allEpisodesKey) {
+        if (viewType === allEpisodesKey) {
           results = await this._queryAllEpisodes(querySort)
         } else if (viewType === clipsKey) {
           results = await this._queryClips(querySort)
@@ -486,28 +497,37 @@ const leftItems = [
   }
 ]
 
-const rightItems = [
-  {
-    label: 'most recent',
-    value: mostRecentKey
-  },
-  {
-    label: 'top - past day',
-    value: topPastDay
-  },
-  {
-    label: 'top - past week',
-    value: topPastWeek
-  },
-  {
-    label: 'top - past month',
-    value: topPastMonth
-  },
-  {
-    label: 'top - past year',
-    value: topPastYear
-  }
-]
+const rightItems = (onlyMostRecent?: boolean) => [
+  ...(onlyMostRecent ?
+  [
+    {
+      label: 'most recent',
+      value: mostRecentKey
+    }
+  ] :
+  [
+    {
+      label: 'most recent',
+      value: mostRecentKey
+    },
+    {
+      label: 'top - past day',
+      value: topPastDay
+    },
+    {
+      label: 'top - past week',
+      value: topPastWeek
+    },
+    {
+      label: 'top - past month',
+      value: topPastMonth
+    },
+    {
+      label: 'top - past year',
+      value: topPastYear
+    }
+  ]
+)]
 
 const styles = {
   aboutView: {

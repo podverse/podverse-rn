@@ -6,7 +6,7 @@ import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHea
   NavQueueIcon, NavShareIcon, SearchBar, TableSectionSelectors, View } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertToNowPlayingItem, convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
