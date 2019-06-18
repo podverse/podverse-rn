@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce'
 import { Alert, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActionSheet, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBar, View, ActivityIndicator
+import { ActionSheet, ActivityIndicator, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBar, View
   } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { generateAuthorsText, generateCategoriesText } from '../lib/utility'
@@ -40,7 +40,7 @@ export class SearchScreen extends React.Component<Props, State> {
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
-      flatListDataTotalCount: null,
+      flatListDataTotalCount: 0,
       isLoading: false,
       isLoadingMore: false,
       queryPage: 1,
@@ -192,6 +192,7 @@ export class SearchScreen extends React.Component<Props, State> {
           onChangeText={this._handleSearchBarTextChange}
           onClear={this._handleSearchBarClear}
           value={searchBarText} />
+        <Divider />
         {
           !isLoading && flatListData &&
             <FlatList
