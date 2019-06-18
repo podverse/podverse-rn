@@ -356,8 +356,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     let flatListDataTotalCount = null
     if (queryFrom === _subscribedKey) {
       flatListData = this.global.subscribedPodcasts
+      flatListDataTotalCount = this.global.subscribedPodcasts.length
     } else if (queryFrom === _downloadedKey) {
       flatListData = this.global.downloadedPodcasts
+      flatListDataTotalCount = this.global.downloadedPodcasts.length
     } else {
       flatListData = this.state.flatListData
       flatListDataTotalCount = this.state.flatListDataTotalCount
@@ -404,7 +406,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
               onEndReached={this._onEndReached}
               onRefresh={queryFrom === _subscribedKey ? this._onRefresh : null}
               renderHiddenItem={this._renderHiddenItem}
-              renderItem={this._renderPodcastItem} />
+              renderItem={this._renderPodcastItem}
+              resultsText='podcasts' />
         }
       </View>
     )
