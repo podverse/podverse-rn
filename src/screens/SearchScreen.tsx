@@ -40,7 +40,7 @@ export class SearchScreen extends React.Component<Props, State> {
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
-      flatListDataTotalCount: 0,
+      flatListDataTotalCount: null,
       isLoading: false,
       isLoadingMore: false,
       queryPage: 1,
@@ -55,7 +55,7 @@ export class SearchScreen extends React.Component<Props, State> {
   _handleSearchBarClear = (text: string) => {
     this.setState({
       flatListData: [],
-      flatListDataTotalCount: 0,
+      flatListDataTotalCount: null,
       searchBarText: ''
     })
   }
@@ -75,7 +75,10 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = async (nextPage?: boolean) => {
-    if (!this.state.searchBarText) return
+    if (!this.state.searchBarText) {
+      this.setState({ isLoading: false })
+      return
+    }
 
     const state = await this._queryData(nextPage)
     this.setState(state)
@@ -191,6 +194,7 @@ export class SearchScreen extends React.Component<Props, State> {
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
           onClear={this._handleSearchBarClear}
+          placeholder='search'
           value={searchBarText} />
         <Divider />
         {
@@ -203,7 +207,8 @@ export class SearchScreen extends React.Component<Props, State> {
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               onEndReached={this._onEndReached}
-              renderItem={this._renderPodcastItem} />
+              renderItem={this._renderPodcastItem}
+              resultsText='podcasts' />
         }
         {
           isLoading &&
