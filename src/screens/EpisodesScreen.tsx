@@ -175,7 +175,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
-    rowMap[selectedId].closeRow()
     await removeDownloadedPodcastEpisode(selectedId)
     const downloadedEpisodes = await getDownloadedEpisodes()
     this.setState({ flatListData: downloadedEpisodes })
@@ -242,7 +241,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
               noSubscribedPodcasts={queryFrom === _subscribedKey && flatListData.length === 0}
               onEndReached={this._onEndReached}
               renderHiddenItem={this._renderHiddenItem}
-              renderItem={this._renderEpisodeItem} />
+              renderItem={this._renderEpisodeItem}
+              resultsText='episodes' />
         }
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
@@ -282,10 +282,12 @@ export class EpisodesScreen extends React.Component<Props, State> {
         }, this.global.settings.nsfwMode)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       } else if (filterKey === _downloadedKey) {
         const downloadedEpisodes = await getDownloadedEpisodes()
         newState.flatListData = [...downloadedEpisodes]
         newState.endOfResultsReached = true
+        newState.flatListDataTotalCount = downloadedEpisodes.length
       } else if (filterKey === _allPodcastsKey) {
         const { searchBarText: searchAllFieldsText } = this.state
         const results = await getEpisodes({
