@@ -55,7 +55,7 @@ export class SearchScreen extends React.Component<Props, State> {
   _handleSearchBarClear = (text: string) => {
     this.setState({
       flatListData: [],
-      flatListDataTotalCount: null,
+      flatListDataTotalCount: 0,
       searchBarText: ''
     })
   }
