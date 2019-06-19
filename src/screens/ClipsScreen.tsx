@@ -2,6 +2,7 @@ import debounce from 'lodash/debounce'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, SearchBar,
   TableSectionSelectors, View } from '../components'
+import { getDownloadedEpisodeIds } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
@@ -201,7 +202,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems(isLoggedIn)}
-          rightItems={rightItems}
+          rightItems={queryFrom ? rightItems : []}
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort} />
         {
@@ -262,6 +263,19 @@ export class ClipsScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
+      } else if (filterKey === _downloadedKey) {
+        const downloadedEpisodeIds = await getDownloadedEpisodeIds()
+        const results = await getMediaRefs({
+          sort: querySort,
+          page: queryPage,
+          episodeId: downloadedEpisodeIds,
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          subscribedOnly: true,
+          includePodcast: true
+        }, this.global.settings.nsfwMode)
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       } else if (filterKey === _allPodcastsKey) {
         const { searchBarText: searchAllFieldsText } = this.state
         const results = await getMediaRefs({
@@ -303,6 +317,7 @@ export class ClipsScreen extends React.Component<Props, State> {
 }
 
 const _subscribedKey = 'subscribed'
+const _downloadedKey = 'downloaded'
 const _allPodcastsKey = 'allPodcasts'
 const _myClipsKey = 'myClips'
 const _mostRecentKey = 'most-recent'
@@ -316,6 +331,10 @@ const leftItems = (isLoggedIn: boolean) => {
     {
       label: 'Subscribed',
       value: _subscribedKey
+    },
+    {
+      label: 'Downloaded',
+      value: _downloadedKey
     },
     {
       label: 'All Podcasts',
