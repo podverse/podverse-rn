@@ -74,7 +74,7 @@ export const EpisodeTableCell = (props: Props) => {
               <Icon
                 isSecondary={true}
                 name='download'
-                size={15}
+                size={14}
                 style={styles.downloadedIcon} />
           }
         </View>

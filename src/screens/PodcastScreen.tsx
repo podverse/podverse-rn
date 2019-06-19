@@ -14,7 +14,7 @@ import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { getPodcast } from '../services/podcast'
-import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
+import { removeDownloadedPodcastEpisode, updateAutoDownloadSettings } from '../state/actions/downloads'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
@@ -347,12 +347,21 @@ export class PodcastScreen extends React.Component<Props, State> {
     }
   }
 
+  _handleToggleAutoDownload = (autoDownloadOn: boolean) => {
+    const { podcast, podcastId } = this.state
+    const id = (podcast && podcast.id) || podcastId
+    if (id) updateAutoDownloadSettings(id, autoDownloadOn)
+  }
+
   render() {
     const { navigation } = this.props
     const { isLoading, isLoadingMore, isRefreshing, isSubscribing, podcast, podcastId, querySort,
       selectedItem, showActionSheet, viewType } = this.state
     const isSubscribed = this.global.session.userInfo.subscribedPodcastIds.some((x: string) => x === podcastId)
     let { flatListData, flatListDataTotalCount } = this.state
+    const { autoDownloadSettings } = this.global
+    const autoDownloadOn = (podcast && autoDownloadSettings[podcast.id])
+      || (podcastId && autoDownloadSettings[podcastId])
 
     let items = rightItems(false)
     if (viewType === downloadedKey) {
@@ -372,8 +381,8 @@ export class PodcastScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view}>
         <PodcastTableHeader
-          autoDownloadOn={true}
-          handleToggleAutoDownload={() => console.log('auto dl')}
+          autoDownloadOn={autoDownloadOn}
+          handleToggleAutoDownload={this._handleToggleAutoDownload}
           handleToggleSubscribe={this._toggleSubscribeToPodcast}
           isLoading={isLoading && !podcast}
           isNotFound={!isLoading && !podcast}

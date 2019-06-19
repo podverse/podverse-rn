@@ -4,6 +4,8 @@ import { getDownloadedEpisodeIds as getDownloadedEpisodeIdsService, getDownloade
   removeDownloadedPodcastEpisode as removeDownloadedPodcastEpisodeService } from '../../lib/downloadedPodcast'
 import { DownloadStatus, initDownloads as initDownloadsService, pauseDownloadTask, resumeDownloadTask } from '../../lib/downloader'
 import { removeDownloadingEpisode as removeDownloadingEpisodeService } from '../../lib/downloadingEpisode'
+import { getAutoDownloadSettings as getAutoDownloadSettingsService, updateAutoDownloadSettings
+  as updateAutoDownloadSettingsService } from '../../services/autoDownloads'
 import { clearNowPlayingItem } from './player'
 
 export type DownloadTaskState = {
@@ -39,12 +41,26 @@ export const initDownloads = async () => {
   const downloadedEpisodeIds = await getDownloadedEpisodeIdsService()
   const downloadedPodcastEpisodeCounts = await getDownloadedPodcastEpisodeCountsService()
   const downloadedPodcasts = await getDownloadedPodcastsService()
+  const autoDownloadSettings = await getAutoDownloadSettingsService()
 
   setGlobal({
+    autoDownloadSettings,
     downloads,
     downloadedEpisodeIds,
     downloadedPodcastEpisodeCounts,
     downloadedPodcasts
+  })
+}
+
+export const updateAutoDownloadSettings = async (podcastId: string, autoDownloadOn: boolean) => {
+  const { autoDownloadSettings } = getGlobal()
+  autoDownloadSettings[podcastId] = autoDownloadOn
+
+  setGlobal({
+    autoDownloadSettings
+  }, async () => {
+    const newAutoDownloadSettings = await updateAutoDownloadSettingsService(podcastId)
+    setGlobal({ autoDownloadSettings: newAutoDownloadSettings })
   })
 }
 

@@ -1,11 +1,11 @@
 import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import React, { getGlobal } from 'reactn'
+import React from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { Icon, Text, View } from './'
 
 type Props = {
-  autoDownloadOn?: boolean
+  autoDownloadSettings?: any
   downloadCount?: number
   downloadedPodcastEpisodeCounts?: any
   id: string
@@ -20,13 +20,18 @@ type Props = {
 }
 
 export const PodcastTableCell = (props: Props) => {
-  const { autoDownloadOn, downloadedPodcastEpisodeCounts, id, lastEpisodePubDate, onPress, podcastAuthors,
-    podcastCategories, podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,podcastTitle = 'untitled podcast',
-    showAutoDownload, showDownloadCount } = props
+  const { autoDownloadSettings, downloadedPodcastEpisodeCounts, id, lastEpisodePubDate,
+    onPress, podcastAuthors, podcastCategories, podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
+    podcastTitle = 'untitled podcast', showAutoDownload, showDownloadCount } = props
 
   let downloadCount = 0
   if (showDownloadCount && downloadedPodcastEpisodeCounts) {
     downloadCount = downloadedPodcastEpisodeCounts[id] || 0
+  }
+
+  let shouldAutoDownload = false
+  if (showAutoDownload) {
+    shouldAutoDownload = autoDownloadSettings[id]
   }
 
   return (
@@ -54,13 +59,13 @@ export const PodcastTableCell = (props: Props) => {
               }
             </View>
             {
-              showAutoDownload && autoDownloadOn &&
+              showAutoDownload && shouldAutoDownload &&
                 <View style={styles.textWrapperRowRight}>
-                  <Text
+                  <Icon
                     isSecondary={true}
-                    style={styles.bottomText}>
-                    Auto DL On
-                  </Text>
+                    name='download'
+                    size={14}
+                    style={styles.autoDownloadIcon} />
                 </View>
             }
           </View>
@@ -104,6 +109,9 @@ export const PodcastTableCell = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
+  autoDownloadIcon: {
+    flex: 0
+  },
   bottomText: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
@@ -121,6 +129,7 @@ const styles = StyleSheet.create({
   textWrapperRowRight: {
     alignItems: 'flex-end',
     flex: 0,
+    flexDirection: 'row',
     justifyContent: 'flex-end',
     marginLeft: 4
   },

@@ -279,13 +279,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _renderPodcastItem = ({ item }) => {
-    const { downloadedPodcastEpisodeCounts } = this.global
+    const { autoDownloadSettings, downloadedPodcastEpisodeCounts } = this.global
     const userLocalPodcastView = this.state.queryFrom === _subscribedKey || this.state.queryFrom === _downloadedKey
 
     return (
       <PodcastTableCell
         key={item.id}
-        autoDownloadOn={true}
+        autoDownloadSettings={autoDownloadSettings}
         downloadedPodcastEpisodeCounts={downloadedPodcastEpisodeCounts}
         id={item.id}
         lastEpisodePubDate={item.lastEpisodePubDate}

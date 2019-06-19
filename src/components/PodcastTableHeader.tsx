@@ -2,7 +2,7 @@ import { Image, StyleSheet, Switch } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources'
 import { core } from '../styles'
-import { ActivityIndicator, SubscribeButton, Text, View } from './'
+import { ActivityIndicator, Icon, SubscribeButton, Text, View } from './'
 
 type Props = {
   autoDownloadOn?: boolean
@@ -47,9 +47,14 @@ export const PodcastTableHeader = (props: Props) => {
               <View style={styles.textWrapperBottom}>
                 <Text
                   isSecondary={true}
-                  style={styles.autoDownload}>
-                  Auto Download
-                  </Text>
+                  style={styles.autoDownloadText}>
+                  Auto
+                </Text>
+                <Icon
+                  isSecondary={true}
+                  name='download'
+                  size={14}
+                  style={styles.autoDownloadIcon} />
                 <Switch
                   onValueChange={handleToggleAutoDownload}
                   value={autoDownloadOn} />
@@ -68,9 +73,14 @@ export const PodcastTableHeader = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
-  autoDownload: {
+  autoDownloadIcon: {
+    marginRight: 8
+  },
+  autoDownloadText: {
     fontSize: PV.Fonts.sizes.sm,
-    marginRight: 6
+    fontWeight: PV.Fonts.weights.semibold,
+    marginRight: 6,
+    marginTop: 2
   },
   buttonView: {
     alignItems: 'center',

@@ -3,9 +3,10 @@ import { InitialState } from '../resources/Interfaces'
 
 const initialTheme: InitialState = {
   globalTheme: {},
+  autoDownloadSettings: {},
   downloads: [],
   downloadedEpisodeIds: [],
-  downloadedPodcastEpisodeCounts: [],
+  downloadedPodcastEpisodeCounts: {},
   player: {
     isPlaying: false,
     nowPlayingItem: null,

@@ -62,9 +62,10 @@ export interface UserInfo {
 
 export interface InitialState {
   globalTheme: GlobalTheme
+  autoDownloadSettings: any
   downloads: any[]
   downloadedEpisodeIds: any[]
-  downloadedPodcastEpisodeCounts: any[]
+  downloadedPodcastEpisodeCounts: any
   player: {
     isPlaying: boolean
     nowPlayingItem: any
@@ -78,10 +79,11 @@ export interface InitialState {
     subscribedPlaylists: []
   }
   profile: {
+    flatListData: []
     user: any
   }
   profiles: {
-    flatListData: [],
+    flatListData: []
     flatListDataTotalCount: null
   }
   screenPlayer: {
