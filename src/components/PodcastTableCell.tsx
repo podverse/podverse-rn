@@ -7,6 +7,7 @@ import { Text, View } from './'
 type Props = {
   autoDownloadOn?: boolean
   downloadCount?: number
+  downloadedPodcastEpisodeCounts?: any
   id: string
   lastEpisodePubDate?: string
   onPress?: any
@@ -19,13 +20,12 @@ type Props = {
 }
 
 export const PodcastTableCell = (props: Props) => {
-  const { autoDownloadOn, id, lastEpisodePubDate, onPress, podcastAuthors,
+  const { autoDownloadOn, downloadedPodcastEpisodeCounts, id, lastEpisodePubDate, onPress, podcastAuthors,
     podcastCategories, podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,podcastTitle = 'untitled podcast',
     showAutoDownload, showDownloadCount } = props
 
   let downloadCount = 0
-  if (showDownloadCount) {
-    const { downloadedPodcastEpisodeCounts } = getGlobal()
+  if (showDownloadCount && downloadedPodcastEpisodeCounts) {
     downloadCount = downloadedPodcastEpisodeCounts[id] || 0
   }
 

@@ -5,6 +5,7 @@ import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
   NavQueueIcon, NavShareIcon, PodcastTableHeader, SearchBar, SwipeRowBack, TableSectionSelectors,
   View } from '../components'
+import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
@@ -12,6 +13,7 @@ import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { getPodcast } from '../services/podcast'
+import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
@@ -233,7 +235,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _renderItem = ({ item }) => {
     const { podcast, viewType } = this.state
-    const { downloads } = this.global
+    const { downloads, downloadedEpisodeIds } = this.global
 
     const episode = {
       ...item,
@@ -249,6 +251,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           key={item.id}
           description={description}
+          downloadedEpisodeIds={downloadedEpisodeIds}
           downloads={downloads}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
@@ -263,6 +266,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           key={item.id}
           description={description}
+          downloadedEpisodeIds={downloadedEpisodeIds}
           downloads={downloads}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
@@ -285,14 +289,13 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      styles={styles.swipeRowBack} />
+    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
-    // TODO: hidden item only appears for removing/deleting downloaded episodes
-    console.log('handleHiddenItemPress')
+    await removeDownloadedPodcastEpisode(selectedId)
+    const downloadedEpisodes = await getDownloadedEpisodes()
+    this.setState({ flatListData: downloadedEpisodes })
   }
 
   _handleSearchBarTextChange = (text: string) => {
