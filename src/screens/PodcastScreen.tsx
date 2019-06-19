@@ -6,8 +6,9 @@ import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCel
   NavQueueIcon, NavShareIcon, PodcastTableHeader, SearchBar, SwipeRowBack, TableSectionSelectors,
   View } from '../components'
 import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
+import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
@@ -278,7 +279,10 @@ export class PodcastScreen extends React.Component<Props, State> {
       return (
         <ClipTableCell
           key={item.id}
+          downloadedEpisodeIds={this.global.downloadedEpisodeIds}
+          downloads={this.global.downloads}
           endTime={item.endTime}
+          episodeId={item.episode.id}
           episodePubDate={readableDate(item.episode.pubDate)}
           episodeTitle={item.episode.title}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
@@ -334,6 +338,13 @@ export class PodcastScreen extends React.Component<Props, State> {
         this.setState({ isSubscribing: false })
       }
     })
+  }
+
+  _handleDownloadPressed = () => {
+    if (this.state.selectedItem) {
+      const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
+      downloadEpisode(episode, episode.podcast)
+    }
   }
 
   render() {
@@ -405,8 +416,8 @@ export class PodcastScreen extends React.Component<Props, State> {
         }
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
-          items={PV.ActionSheet.media.moreButtons(
-            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+          items={() => PV.ActionSheet.media.moreButtons(
+            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
           )}
           showModal={showActionSheet} />
       </View>

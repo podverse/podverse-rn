@@ -196,6 +196,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
     return (
       <ClipTableCell
         key={item.id}
+        downloadedEpisodeIds={this.global.downloadedEpisodeIds}
+        downloads={this.global.downloads}
+        episodeId={episode.id}
         endTime={item.endTime}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
         startTime={item.startTime}
@@ -292,7 +295,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         }
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
-          items={PV.ActionSheet.media.moreButtons(
+          items={() => PV.ActionSheet.media.moreButtons(
             selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
           )}
           showModal={showActionSheet} />

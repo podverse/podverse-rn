@@ -2,8 +2,9 @@ import debounce from 'lodash/debounce'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, SearchBar,
   TableSectionSelectors, View } from '../components'
+import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
 import { getLoggedInUserMediaRefs } from '../services/user'
@@ -144,7 +145,10 @@ export class ClipsScreen extends React.Component<Props, State> {
   _renderClipItem = ({ item }) => (
     <ClipTableCell
       key={item.id}
+      downloadedEpisodeIds={this.global.downloadedEpisodeIds}
+      downloads={this.global.downloads}
       endTime={item.endTime}
+      episodeId={item.episode.id}
       episodePubDate={item.episode.pubDate}
       episodeTitle={item.episode.title}
       handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
@@ -175,6 +179,13 @@ export class ClipsScreen extends React.Component<Props, State> {
   _handleSearchBarTextQuery = async (queryFrom: string | null, queryOptions: any) => {
     const state = await this._queryData(queryFrom, { searchAllFieldsText: queryOptions.searchAllFieldsText })
     this.setState(state)
+  }
+
+  _handleDownloadPressed = () => {
+    if (this.state.selectedItem) {
+      const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
+      downloadEpisode(episode, episode.podcast)
+    }
   }
 
   render() {
@@ -213,8 +224,8 @@ export class ClipsScreen extends React.Component<Props, State> {
         }
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
-          items={PV.ActionSheet.media.moreButtons(
-            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+          items={() => PV.ActionSheet.media.moreButtons(
+            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
           )}
           showModal={showActionSheet} />
       </View>
