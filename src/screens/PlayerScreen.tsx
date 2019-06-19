@@ -1,4 +1,4 @@
-import { Alert, AppState, Share, StyleSheet, View as RNView } from 'react-native'
+import { Alert, AppState, Linking, Share, StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, EpisodeTableCell, FlatList,
@@ -637,7 +637,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           text: `Official Home Page`,
           onPress: () => {
             this._dismissHeaderActionSheet()
-            navigation.navigate(PV.RouteNames.WebPageScreen, { uri: podcast.linkUrl })
+            Linking.openURL(podcast.linkUrl)
           }
         }
       )
