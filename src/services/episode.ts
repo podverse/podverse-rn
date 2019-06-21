@@ -6,7 +6,8 @@ export const getEpisodes = async (query: any = {}, nsfwMode: boolean) => {
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
     ...(query.podcastId ? { podcastId: query.podcastId } : {}),
     ...(query.searchAllFieldsText ? { searchAllFieldsText: query.searchAllFieldsText } : {}),
-    ...(query.includePodcast ? { includePodcast: query.includePodcast } : {})
+    ...(query.includePodcast ? { includePodcast: query.includePodcast } : {}),
+    ...(query.sincePubDate ? { sincePubDate: query.sincePubDate } : {})
   }
 
   if (query.subscribedOnly && query.podcastId && query.podcastId.length === 0) {

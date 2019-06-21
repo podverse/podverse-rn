@@ -1,7 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getBearerToken } from './auth'
+import { getAutoDownloadEpisodes, removeAutoDownloadSetting } from './autoDownloads'
 import { request } from './request'
 
 export const getPodcast = async (id: string) => {
@@ -45,10 +47,34 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   const isConnected = await hasValidNetworkConnection()
 
   if (isConnected) {
-    const data = await getPodcasts(query, true)
-    const subscribedPodcasts = data[0]
-    await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts || []))
-    return subscribedPodcasts
+    try {
+      // let date = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED)
+      const date = new Date()
+      date.setMonth(date.getMonth() - 1)
+
+      const autoDownloadSettingsString = await AsyncStorage.getItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS)
+      const autoDownloadSettings = autoDownloadSettingsString ? JSON.parse(autoDownloadSettingsString) : {}
+      const data = await getPodcasts(query, true)
+      const subscribedPodcasts = data[0]
+      const podcastIds = Object.keys(autoDownloadSettings)
+      const autoDownloadEpisodes = await getAutoDownloadEpisodes(date.toISOString(), podcastIds)
+
+      for (const episode of autoDownloadEpisodes[0]) {
+        const podcast = {
+          id: episode.podcast_id,
+          imageUrl: episode.podcast_imageUrl,
+          title: episode.podcast_title
+        }
+        downloadEpisode(episode, podcast)
+      }
+
+      await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED, new Date().toISOString())
+      await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts || []))
+      return subscribedPodcasts
+    } catch (error) {
+      console.log(error)
+      return []
+    }
   } else {
     const subscribedPodcastsJSON = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS)
     return subscribedPodcastsJSON ? JSON.parse(subscribedPodcastsJSON) : []
@@ -84,6 +110,7 @@ const toggleSubscribeToPodcastLocally = async (id: string) => {
   const index = items.indexOf(id)
   if (index > -1) {
     items.splice(index, 1)
+    await removeAutoDownloadSetting(id)
   } else {
     items.push(id)
   }

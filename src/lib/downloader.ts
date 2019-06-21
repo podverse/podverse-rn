@@ -40,6 +40,7 @@ export const deleteDownloadedEpisode = async (episode: any) => {
 // to always be restarted instead of resumed.
 export const downloadEpisode = async (episode: any, podcast: any, restart?: boolean) => {
   const shouldDownload = await hasValidDownloadingConnection()
+
   if (!shouldDownload) return
   const ext = getExtensionFromUrl(episode.mediaUrl)
 
@@ -56,6 +57,7 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
 
   let timeout = 0
   const existingTasks = existingDownloadTasks.filter((x: any) => x.id === episode.id)
+
   for (const t of existingTasks) {
     if (t.id === episode.id) {
       await t.stop()
@@ -90,7 +92,6 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
             downloadTasks.push(task)
           }
         }
-
       }).progress((percent: number, bytesWritten: number, bytesTotal: number) => {
         const written = convertBytesToHumanReadableString(bytesWritten)
         const total = convertBytesToHumanReadableString(bytesTotal)
