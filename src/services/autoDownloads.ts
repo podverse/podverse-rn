@@ -10,7 +10,7 @@ export const getAutoDownloadEpisodes = async (sincePubDate: string, podcastIds: 
       includePodcast: true
     }, true)
   } else {
-    return []
+    return [[], null]
   }
 }
 
