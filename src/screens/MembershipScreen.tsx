@@ -126,7 +126,7 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'create shareable clips',
+    text: 'create shareable clips of any length',
     column1: true,
     column2: true
   },
