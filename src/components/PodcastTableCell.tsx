@@ -64,7 +64,7 @@ export const PodcastTableCell = (props: Props) => {
                   <Icon
                     isSecondary={true}
                     name='download'
-                    size={14}
+                    size={13}
                     style={styles.autoDownloadIcon} />
                 </View>
             }
@@ -110,7 +110,7 @@ export const PodcastTableCell = (props: Props) => {
 
 const styles = StyleSheet.create({
   autoDownloadIcon: {
-    flex: 0
+    flex: 0,
   },
   bottomText: {
     flex: 0,

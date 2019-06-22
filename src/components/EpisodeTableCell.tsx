@@ -74,7 +74,7 @@ export const EpisodeTableCell = (props: Props) => {
               <Icon
                 isSecondary={true}
                 name='download'
-                size={14}
+                size={13}
                 style={styles.downloadedIcon} />
           }
         </View>
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   },
   downloadedIcon: {
     flex: 0,
-    marginLeft: 12,
+    marginLeft: 8,
     marginTop: 3
   },
   image: {
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   },
   pubDate: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.sm,
     marginTop: 2
   },
   textWrapper: {

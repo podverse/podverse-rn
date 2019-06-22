@@ -3,8 +3,8 @@ import { IFonts } from './Interfaces'
 export const Fonts: IFonts = {
   sizes: {
     tiny: 12,
-    xs: 14,
-    sm: 15,
+    xs: 13,
+    sm: 14,
     md: 16,
     lg: 17,
     xl: 18

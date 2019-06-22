@@ -62,7 +62,7 @@ export const EpisodeTableHeader = (props: Props) => {
                     <Icon
                       isSecondary={true}
                       name='download'
-                      size={15}
+                      size={13}
                       style={styles.downloadedIcon} />
                 }
               </View>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   downloadedIcon: {
     flex: 0,
-    marginLeft: 12,
+    marginLeft: 8,
     marginTop: 3
   },
   image: {

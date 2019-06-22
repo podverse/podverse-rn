@@ -53,7 +53,7 @@ export const PodcastTableHeader = (props: Props) => {
                 <Icon
                   isSecondary={true}
                   name='download'
-                  size={14}
+                  size={13}
                   style={styles.autoDownloadIcon} />
                 <Switch
                   onValueChange={handleToggleAutoDownload}

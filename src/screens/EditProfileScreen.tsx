@@ -170,9 +170,6 @@ const isPublicOptions = [
 ]
 
 const styles = StyleSheet.create({
-  selectorIcon: {
-    
-  },
   selectorWrapper: {
     flexDirection: 'row'
   },

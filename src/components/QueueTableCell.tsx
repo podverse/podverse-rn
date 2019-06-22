@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
   episodePubDate: {
     flex: 1,
-    fontSize: PV.Fonts.sizes.md
+    fontSize: PV.Fonts.sizes.sm
   },
   episodeTitle: {
     flex: 1,
