@@ -86,7 +86,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
 
     return (
       <PlaylistTableCell
-        key={item.id}
+        key={`PlaylistsAddToScreen_${item.id}`}
         itemCount={item.itemCount}
         onPress={() => {
           try {

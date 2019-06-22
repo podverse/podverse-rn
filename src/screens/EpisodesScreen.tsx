@@ -153,7 +153,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
     return (
       <EpisodeTableCell
-          key={item.id}
+          key={`EpisodesScreen_${item.id}`}
           description={description}
           downloadedEpisodeIds={downloadedEpisodeIds}
           downloadsActive={downloadsActive}

@@ -284,7 +284,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     return (
       <PodcastTableCell
-        key={item.id}
+        key={`PodcastsScreen_${item.id}`}
         autoDownloadSettings={autoDownloadSettings}
         downloadedPodcastEpisodeCounts={downloadedPodcastEpisodeCounts}
         id={item.id}

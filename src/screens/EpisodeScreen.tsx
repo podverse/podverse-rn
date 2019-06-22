@@ -195,7 +195,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const { episode } = this.state
     return (
       <ClipTableCell
-        key={item.id}
+        key={`EpisodeScreen_${item.id}`}
         downloadedEpisodeIds={this.global.downloadedEpisodeIds}
         downloadsActive={this.global.downloadsActive}
         episodeId={episode.id}

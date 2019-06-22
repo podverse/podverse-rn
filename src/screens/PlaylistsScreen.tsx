@@ -82,7 +82,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
     return (
       <PlaylistTableCell
-        key={item.id}
+        key={`PlaylistsScreen_${item.id}`}
         {...(queryFrom === _subscribedPlaylistsKey ? { createdBy: ownerName } : {})}
         itemCount={item.itemCount}
         onPress={() => this.props.navigation.navigate(

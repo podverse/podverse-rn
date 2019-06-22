@@ -145,7 +145,7 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   _renderClipItem = ({ item }) => (
     <ClipTableCell
-      key={item.id}
+      key={`ClipsScreen_${item.id}`}
       downloadedEpisodeIds={this.global.downloadedEpisodeIds}
       downloadsActive={this.global.downloadsActive}
       endTime={item.endTime}

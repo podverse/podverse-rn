@@ -313,7 +313,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     if (queryFrom === _podcastsKey) {
       return (
         <PodcastTableCell
-          key={item.id}
+          key={`ProfileScreen_podcast_${item.id}`}
           id={item.id}
           lastEpisodePubDate={item.lastEpisodePubDate}
           onPress={() => this._handlePodcastPress(item)}
@@ -325,7 +325,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     } else if (queryFrom === _clipsKey) {
       return (
         <ClipTableCell
-          key={item.id}
+          key={`ProfileScreen_clip_${item.id}`}
           downloadedEpisodeIds={this.global.downloadedEpisodeIds}
           downloadsActive={this.global.downloadsActive}
           endTime={item.endTime}
@@ -341,7 +341,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     } else {
       return (
         <PlaylistTableCell
-          key={item.id}
+          key={`ProfileScreen_playlist_${item.id}`}
           itemCount={item.itemCount}
           onPress={() => this._handlePlaylistPress(item)}
           title={item.title} />

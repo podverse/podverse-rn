@@ -127,7 +127,7 @@ export class SearchScreen extends React.Component<Props, State> {
   _renderPodcastItem = ({ item }) => {
     return (
       <PodcastTableCell
-        key={item.id}
+        key={`SearchScreen_${item.id}`}
         id={item.id}
         lastEpisodePubDate={item.lastEpisodePubDate}
         onPress={() => this._handleMorePress(item)}

@@ -410,7 +410,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
-          key={item.id}
+          key={`PlayerScreen_episode_${item.id}`}
           description={description}
           downloadedEpisodeIds={downloadedEpisodeIds}
           downloadsActive={downloadsActive}
@@ -430,7 +430,7 @@ export class PlayerScreen extends React.Component<Props, State> {
 
       return (
         <ClipTableCell
-          key={item.id}
+          key={`PlayerScreen_clip_${item.id}`}
           downloadedEpisodeIds={this.global.downloadedEpisodeIds}
           downloadsActive={this.global.downloadsActive}
           endTime={item.endTime}

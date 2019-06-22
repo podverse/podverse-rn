@@ -72,7 +72,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
   _renderProfileItem = ({ item }) => {
     return (
       <ProfileTableCell
-        key={item.id}
+        key={`ProfilesScreen_${item.id}`}
         name={item.name}
         onPress={() => this.props.navigation.navigate(
           PV.RouteNames.ProfileScreen, {

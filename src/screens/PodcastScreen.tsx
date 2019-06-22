@@ -250,7 +250,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
-          key={item.id}
+          key={`PodcastScreen_episode_downloaded_${item.id}`}
           description={description}
           downloadedEpisodeIds={downloadedEpisodeIds}
           downloadsActive={downloadsActive}
@@ -265,7 +265,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
-          key={item.id}
+          key={`PodcastScreen_episode_all_${item.id}`}
           description={description}
           downloadedEpisodeIds={downloadedEpisodeIds}
           downloadsActive={downloadsActive}
@@ -278,7 +278,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     } else {
       return (
         <ClipTableCell
-          key={item.id}
+          key={`PodcastScreen_clip_${item.id}`}
           downloadedEpisodeIds={this.global.downloadedEpisodeIds}
           downloadsActive={downloadsActive}
           endTime={item.endTime}
