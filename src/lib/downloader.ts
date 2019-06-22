@@ -84,7 +84,7 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
   const progressLimiter = new Bottleneck({
     highWater: 0,
     maxConcurrent: 1,
-    minTime: 2500
+    minTime: 3000
   })
 
   // Wait for t.stop() to complete
