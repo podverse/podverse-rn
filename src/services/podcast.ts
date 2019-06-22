@@ -48,25 +48,28 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
 
   if (isConnected) {
     try {
-      // let date = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED)
-      const date = new Date()
-      date.setMonth(date.getMonth() - 1)
+      const date = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED)
+      const dateObj = date || new Date().toISOString()
 
       const autoDownloadSettingsString = await AsyncStorage.getItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS)
       const autoDownloadSettings = autoDownloadSettingsString ? JSON.parse(autoDownloadSettingsString) : {}
       const data = await getPodcasts(query, true)
       const subscribedPodcasts = data[0]
-      const podcastIds = Object.keys(autoDownloadSettings)
-      const autoDownloadEpisodes = await getAutoDownloadEpisodes(date.toISOString(), podcastIds)
+      const podcastIds = Object.keys(autoDownloadSettings).filter((key: string) => autoDownloadSettings[key] === true)
+      const autoDownloadEpisodes = await getAutoDownloadEpisodes(dateObj, podcastIds)
 
-      for (const episode of autoDownloadEpisodes[0]) {
-        const podcast = {
-          id: episode.podcast_id,
-          imageUrl: episode.podcast_imageUrl,
-          title: episode.podcast_title
+      // Wait for app to initialize. Without this setTimeout, then when getSubscribedPodcasts is called in
+      // PodcastsScreen _initializeScreenData, then downloadEpisode will not successfully update global state
+      setTimeout(async () => {
+        for (const episode of autoDownloadEpisodes[0]) {
+          const podcast = {
+            id: episode.podcast_id,
+            imageUrl: episode.podcast_imageUrl,
+            title: episode.podcast_title
+          }
+          await downloadEpisode(episode, podcast, false, true)
         }
-        downloadEpisode(episode, podcast)
-      }
+      }, 3000)
 
       await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED, new Date().toISOString())
       await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts || []))

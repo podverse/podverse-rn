@@ -37,16 +37,20 @@ export const deleteDownloadedEpisode = async (episode: any) => {
   }
 }
 
+const addDLTask = async (episode: any, podcast: any) => DownloadState.addDownloadTask({
+  episodeId: episode.id,
+  episodeTitle: episode.title,
+  podcastImageUrl: podcast.imageUrl,
+  podcastTitle: podcast.title
+})
+
 // NOTE: I was unable to get RNBackgroundDownloader to successfully resume tasks that were
 // retrieved from checkForExistingDownloads, so as a workaround, I am forcing those existing tasks
 // to always be restarted instead of resumed.
-export const downloadEpisode = async (episode: any, podcast: any, restart?: boolean) => {
-  await DownloadState.addDownloadTask({
-    episodeId: episode.id,
-    episodeTitle: episode.title,
-    podcastImageUrl: podcast.imageUrl,
-    podcastTitle: podcast.title
-  })
+export const downloadEpisode = async (episode: any, podcast: any, restart?: boolean, waitToAddTask?: boolean) => {
+
+  // Updates UI immediately
+  if (!waitToAddTask) await addDLTask(episode, podcast)
 
   const shouldDownload = await hasValidDownloadingConnection()
 
@@ -64,6 +68,9 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
     }
   }
 
+  // Updates UI only after the previous conditionals pass and it confirmed we want to download the episode
+  if (waitToAddTask) await addDLTask(episode, podcast)
+
   let timeout = 0
   const existingTasks = existingDownloadTasks.filter((x: any) => x.id === episode.id)
 
@@ -77,7 +84,7 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
   const progressLimiter = new Bottleneck({
     highWater: 0,
     maxConcurrent: 1,
-    minTime: 3000
+    minTime: 2500
   })
 
   // Wait for t.stop() to complete
@@ -196,7 +203,6 @@ export const initDownloads = async () => {
 
 export const resumeDownloadTask = async (episodeId: string) => {
   const task = downloadTasks.find((task) => task.id === episodeId)
-
   if (existingDownloadTasks.some((x: any) => x.id === episodeId)) {
     const downloadingEpisodes = await getDownloadingEpisodes()
     const episode = downloadingEpisodes.find((x: any) => x.id === episodeId)
