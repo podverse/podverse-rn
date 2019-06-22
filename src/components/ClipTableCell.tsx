@@ -20,13 +20,13 @@ type Props = {
 }
 
 export const ClipTableCell = (props: Props) => {
-  const { downloadedEpisodeIds = [], downloadsActive = {}, endTime, episodeId, episodePubDate = '', episodeTitle, handleMorePress,
+  const { downloadedEpisodeIds = {}, downloadsActive = {}, endTime, episodeId, episodePubDate = '', episodeTitle, handleMorePress,
     podcastImageUrl, podcastTitle, startTime, title = 'untitled clip' } = props
 
   const clipTime = readableClipTime(startTime, endTime)
 
   const isDownloading = downloadsActive[episodeId]
-  const isDownloaded = downloadedEpisodeIds.some((x: any) => x === episodeId)
+  const isDownloaded = downloadedEpisodeIds[episodeId]
 
   const showEpisodeInfo = !!episodePubDate || !!episodeTitle
   const showPodcastInfo = !!podcastImageUrl || !!podcastTitle

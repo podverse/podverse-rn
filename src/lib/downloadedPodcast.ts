@@ -33,11 +33,11 @@ export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) =>
 }
 
 export const getDownloadedEpisodeIds = async () => {
-  const episodeIds = []
+  const episodeIds = {}
   const downloadedPodcasts = await getDownloadedPodcasts()
   for (const podcast of downloadedPodcasts) {
     for (const episode of podcast.episodes) {
-      episodeIds.push(episode.id)
+      episodeIds[episode.id] = true
     }
   }
   return episodeIds
@@ -78,14 +78,14 @@ export const getDownloadedPodcasts = async () => {
 
 export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
   const newPodcasts = []
-  const newDownloadedEpisodeIds = []
+  const newDownloadedEpisodeIds = {}
   const podcasts = await getDownloadedPodcasts()
   for (const podcast of podcasts) {
     const newEpisodes = []
     for (const episode of podcast.episodes) {
       if (episode.id !== episodeId) {
         newEpisodes.push(episode)
-        newDownloadedEpisodeIds.push(episode.id)
+        newDownloadedEpisodeIds[episodeId] = true
       } else {
         await deleteDownloadedEpisode(episode)
       }

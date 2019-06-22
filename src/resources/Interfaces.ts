@@ -67,7 +67,7 @@ export interface InitialState {
   autoDownloadSettings: any
   downloadsActive: any
   downloadsArray: any[]
-  downloadedEpisodeIds: any[]
+  downloadedEpisodeIds: any
   downloadedPodcastEpisodeCounts: any
   player: {
     isPlaying: boolean

@@ -81,12 +81,11 @@ export const updateDownloadedPodcasts = async () => {
 
 export const addDownloadTask = (downloadTask: DownloadTaskState) => {
   const { downloadsActive, downloadsArray } = getGlobal()
-  const newDownloadsActive = downloadsActive
   if (!downloadsArray.some((x: any) => x.episodeId === downloadTask.episodeId)) {
     downloadTask.status = DownloadStatus.PENDING
-    newDownloadsActive[downloadTask.episodeId] = true
+    downloadsActive[downloadTask.episodeId] = true
     setGlobal({
-      downloadsActive: newDownloadsActive,
+      downloadsActive,
       downloadsArray: [...downloadsArray, downloadTask]
     })
   }
@@ -163,7 +162,6 @@ export const updateDownloadProgress = (downloadTaskId: string, percent: number, 
   }
 
   setGlobal({
-    downloadsActive,
     downloadsArray
   })
 }

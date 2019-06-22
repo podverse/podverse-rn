@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { Divider, DownloadTableCell, FlatList, MessageWithAction, SwipeRowBack, View } from '../components'
-import { DownloadStatus } from '../lib/downloader'
+import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
 import { pauseDownloadingEpisode, removeDownloadingEpisode, resumeDownloadingEpisode } from '../state/actions/downloads'
 
 type Props = {
@@ -53,6 +53,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
   _handleHiddenItemPress = async (selectedId, rowMap) => {
     rowMap[selectedId].closeRow()
     await removeDownloadingEpisode(selectedId)
+    await cancelDownloadTask(selectedId)
   }
 
   render() {

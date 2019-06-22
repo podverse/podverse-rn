@@ -6,7 +6,7 @@ const initialTheme: InitialState = {
   autoDownloadSettings: {},
   downloadsArray: [],
   downloadsActive: {},
-  downloadedEpisodeIds: [],
+  downloadedEpisodeIds: {},
   downloadedPodcastEpisodeCounts: {},
   player: {
     isPlaying: false,

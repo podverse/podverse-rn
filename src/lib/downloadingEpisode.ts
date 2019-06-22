@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
-import { cancelDownloadTask } from './downloader'
 
 type DownloadingEpisode = {
   id: string
@@ -31,7 +30,6 @@ export const getDownloadingEpisodes = async () => {
 }
 
 export const removeDownloadingEpisode = async (episodeId: string) => {
-  cancelDownloadTask(episodeId)
   const episodes = await getDownloadingEpisodes()
   const filteredEpisodes = filterDownloadingEpisodeById(episodes, episodeId)
   return setDownloadingEpisodes(filteredEpisodes)

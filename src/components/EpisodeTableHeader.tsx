@@ -1,7 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
-import { DownloadStatus } from '../lib/downloader'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button, core } from '../styles'
@@ -20,12 +19,12 @@ type Props = {
 }
 
 export const EpisodeTableHeader = (props: Props) => {
-  const { downloadedEpisodeIds, downloadsActive = {}, handleMorePress, id, isLoading, isNotFound, podcastImageUrl,
+  const { downloadedEpisodeIds = {}, downloadsActive = {}, handleMorePress, id, isLoading, isNotFound, podcastImageUrl,
     pubDate = '', title } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   const isDownloading = downloadsActive[id]
-  const isDownloaded = downloadedEpisodeIds.some((x: any) => x === id)
+  const isDownloaded = downloadedEpisodeIds[id]
 
   return (
     <View style={styles.wrapper}>

@@ -20,14 +20,14 @@ type Props = {
 }
 
 export const EpisodeTableCell = (props: Props) => {
-  const { downloadedEpisodeIds = [], downloadsActive = {}, id, pubDate = '',
+  const { downloadedEpisodeIds = {}, downloadsActive = {}, id, pubDate = '',
   handleMorePress, handleNavigationPress, podcastImageUrl, podcastTitle } = props
   let { description, title } = props
 
   const showPodcastInfo = !!podcastImageUrl && !!podcastTitle
 
   const isDownloading = downloadsActive[id]
-  const isDownloaded = downloadedEpisodeIds.some((x: any) => x === id)
+  const isDownloaded = downloadedEpisodeIds[id]
 
   if (!description) description = 'No show notes available'
   if (!title) title = 'Untitled episode'

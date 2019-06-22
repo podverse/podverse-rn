@@ -1,3 +1,4 @@
+import Bottleneck from 'bottleneck'
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
 import * as DownloadState from '../state/actions/downloads'
@@ -73,6 +74,12 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
     }
   }
 
+  const progressLimiter = new Bottleneck({
+    highWater: 0,
+    maxConcurrent: 1,
+    minTime: 3000
+  })
+
   // Wait for t.stop() to complete
   setTimeout(() => {
     const task = RNBackgroundDownloader
@@ -94,11 +101,17 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
             downloadTasks.push(task)
           }
         }
-      }).progress((percent: number, bytesWritten: number, bytesTotal: number) => {
-        const written = convertBytesToHumanReadableString(bytesWritten)
-        const total = convertBytesToHumanReadableString(bytesTotal)
-        DownloadState.updateDownloadProgress(episode.id, percent, written, total)
+      }).progress(async (percent: number, bytesWritten: number, bytesTotal: number) => {
+        progressLimiter.schedule(async () => {
+          const written = convertBytesToHumanReadableString(bytesWritten)
+          const total = convertBytesToHumanReadableString(bytesTotal)
+          DownloadState.updateDownloadProgress(episode.id, percent, written, total)
+        })
+        .catch(() => {
+          // limiter has been stopped
+        })
       }).done(async () => {
+        await progressLimiter.stop()
         DownloadState.updateDownloadComplete(episode.id)
         removeDownloadingEpisode(episode.id)
         await addDownloadedPodcastEpisode(episode, podcast)

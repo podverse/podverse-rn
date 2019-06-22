@@ -11,7 +11,7 @@ const mediaMoreButtons = (item: any = {}, isLoggedIn: boolean, globalState: any,
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
   const downloadingText = isDownloading ? 'Downloading' : 'Download'
 
-  const isDownloaded = globalState.downloadedEpisodeIds.some((x: any) => x === item.episodeId)
+  const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
 
   const buttons = []
 

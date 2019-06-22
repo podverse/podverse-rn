@@ -268,7 +268,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         const results = await getMediaRefs({
           sort: querySort,
           page: queryPage,
-          episodeId: downloadedEpisodeIds,
+          episodeId: Object.keys(downloadedEpisodeIds),
           ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
           subscribedOnly: true,
           includePodcast: true
