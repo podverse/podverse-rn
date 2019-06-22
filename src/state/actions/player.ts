@@ -168,16 +168,15 @@ export const togglePlay = async (globalState: any) => {
 
 export const updatePlaybackState = async (globalState: any, state?: any) => {
   let playbackState = state
+
   if (!playbackState) {
     playbackState = await PVTrackPlayer.getState()
   }
 
-  const playbackRate = await PVTrackPlayer.getRate()
-
   setGlobal({
     player: {
       ...globalState.player,
-      playbackState: playbackRate > 0 ? PVTrackPlayer.STATE_PLAYING : playbackState
+      playbackState
     }
   })
 }
