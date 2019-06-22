@@ -147,7 +147,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     <ClipTableCell
       key={item.id}
       downloadedEpisodeIds={this.global.downloadedEpisodeIds}
-      downloads={this.global.downloads}
+      downloadsActive={this.global.downloadsActive}
       endTime={item.endTime}
       episodeId={item.episode.id}
       episodePubDate={item.episode.pubDate}

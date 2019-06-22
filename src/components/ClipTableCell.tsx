@@ -1,6 +1,5 @@
 import React from 'react'
 import { Image, StyleSheet } from 'react-native'
-import { DownloadStatus } from '../lib/downloader'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
@@ -8,7 +7,7 @@ import { ActivityIndicator, Icon, Text, View } from './'
 
 type Props = {
   downloadedEpisodeIds?: any
-  downloads?: any
+  downloadsActive?: any
   endTime?: number
   episodeId: string
   episodePubDate?: string
@@ -21,19 +20,12 @@ type Props = {
 }
 
 export const ClipTableCell = (props: Props) => {
-  const { downloadedEpisodeIds = [], downloads = [], endTime, episodeId, episodePubDate = '', episodeTitle, handleMorePress,
+  const { downloadedEpisodeIds = [], downloadsActive = {}, endTime, episodeId, episodePubDate = '', episodeTitle, handleMorePress,
     podcastImageUrl, podcastTitle, startTime, title = 'untitled clip' } = props
 
   const clipTime = readableClipTime(startTime, endTime)
 
-  let isDownloading = false
-  const downloadingEpisode = downloads.find((x: any) => x.episodeId === episodeId)
-
-  if (downloadingEpisode && (downloadingEpisode.status === DownloadStatus.DOWNLOADING ||
-    downloadingEpisode.status === DownloadStatus.PAUSED)) {
-    isDownloading = true
-  }
-
+  const isDownloading = downloadsActive[episodeId]
   const isDownloaded = downloadedEpisodeIds.some((x: any) => x === episodeId)
 
   const showEpisodeInfo = !!episodePubDate || !!episodeTitle

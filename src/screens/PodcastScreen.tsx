@@ -236,7 +236,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _renderItem = ({ item }) => {
     const { podcast, viewType } = this.state
-    const { downloads, downloadedEpisodeIds } = this.global
+    const { downloadsActive, downloadedEpisodeIds } = this.global
 
     const episode = {
       ...item,
@@ -253,7 +253,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           key={item.id}
           description={description}
           downloadedEpisodeIds={downloadedEpisodeIds}
-          downloads={downloads}
+          downloadsActive={downloadsActive}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
           id={item.id}
@@ -268,7 +268,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           key={item.id}
           description={description}
           downloadedEpisodeIds={downloadedEpisodeIds}
-          downloads={downloads}
+          downloadsActive={downloadsActive}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
           id={item.id}
@@ -280,7 +280,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <ClipTableCell
           key={item.id}
           downloadedEpisodeIds={this.global.downloadedEpisodeIds}
-          downloads={this.global.downloads}
+          downloadsActive={downloadsActive}
           endTime={item.endTime}
           episodeId={item.episode.id}
           episodePubDate={readableDate(item.episode.pubDate)}

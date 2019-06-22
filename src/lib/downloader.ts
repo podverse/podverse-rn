@@ -165,7 +165,20 @@ export const initDownloads = async () => {
     }
   }
 
-  return downloadTaskStates
+  const downloadsActive = {}
+  for (const downloadTaskState of downloadTaskStates) {
+    if (downloadTaskState.episodeId &&
+        (downloadTaskState.status === DownloadStatus.DOWNLOADING ||
+        downloadTaskState.status === DownloadStatus.PENDING ||
+        downloadTaskState.status === DownloadStatus.PAUSED)) {
+      downloadsActive[downloadTaskState.episodeId] = true
+    }
+  }
+
+  return {
+    downloadsArray: downloadTaskStates,
+    downloadsActive
+  }
 }
 
 export const resumeDownloadTask = async (episodeId: string) => {

@@ -65,7 +65,8 @@ export interface UserInfo {
 export interface InitialState {
   globalTheme: GlobalTheme
   autoDownloadSettings: any
-  downloads: any[]
+  downloadsActive: any
+  downloadsArray: any[]
   downloadedEpisodeIds: any[]
   downloadedPodcastEpisodeCounts: any
   player: {

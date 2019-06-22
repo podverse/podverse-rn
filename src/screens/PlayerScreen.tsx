@@ -401,7 +401,7 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _renderItem = ({ item }) => {
-    const { downloadedEpisodeIds, downloads, player, screenPlayer } = this.global
+    const { downloadedEpisodeIds, downloadsActive, player, screenPlayer } = this.global
     const { episode } = player
     const podcast = (episode && episode.podcast) || {}
     const { queryFrom, viewType } = screenPlayer
@@ -413,7 +413,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           key={item.id}
           description={description}
           downloadedEpisodeIds={downloadedEpisodeIds}
-          downloads={downloads}
+          downloadsActive={downloadsActive}
           id={item.id}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => console.log('handle episode press')}
@@ -432,7 +432,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         <ClipTableCell
           key={item.id}
           downloadedEpisodeIds={this.global.downloadedEpisodeIds}
-          downloads={this.global.downloads}
+          downloadsActive={this.global.downloadsActive}
           endTime={item.endTime}
           episodeId={item.episode.id}
           {...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST ? { episodePubDate: readableDate(item.episode.pubDate) } : {})}

@@ -1,6 +1,5 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import { DownloadStatus } from '../lib/downloader'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
@@ -9,7 +8,7 @@ import { ActivityIndicator, Icon, Text, View } from './'
 type Props = {
   description?: string
   downloadedEpisodeIds?: any
-  downloads?: any
+  downloadsActive?: any
   handleMorePress?: any
   handleNavigationPress?: any
   id: string
@@ -21,20 +20,13 @@ type Props = {
 }
 
 export const EpisodeTableCell = (props: Props) => {
-  const { downloadedEpisodeIds = [], downloads = [], id, pubDate = '',
+  const { downloadedEpisodeIds = [], downloadsActive = {}, id, pubDate = '',
   handleMorePress, handleNavigationPress, podcastImageUrl, podcastTitle } = props
   let { description, title } = props
 
   const showPodcastInfo = !!podcastImageUrl && !!podcastTitle
 
-  let isDownloading = false
-  const downloadingEpisode = downloads.find((x: any) => x.episodeId === id)
-
-  if (downloadingEpisode && (downloadingEpisode.status === DownloadStatus.DOWNLOADING ||
-    downloadingEpisode.status === DownloadStatus.PAUSED)) {
-    isDownloading = true
-  }
-
+  const isDownloading = downloadsActive[id]
   const isDownloaded = downloadedEpisodeIds.some((x: any) => x === id)
 
   if (!description) description = 'No show notes available'

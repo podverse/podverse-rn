@@ -56,20 +56,20 @@ export class DownloadsScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { downloads } = this.global
+    const { downloadsArray } = this.global
 
     return (
       <View style={styles.view}>
         {
-          !downloads || downloads.length === 0 &&
+          !downloadsArray || downloadsArray.length === 0 &&
             <MessageWithAction message='No downloads in progress' />
         }
         {
-          downloads.length > 0 &&
+          downloadsArray.length > 0 &&
             <FlatList
-              data={downloads}
+              data={downloadsArray}
               disableLeftSwipe={false}
-              extraData={downloads}
+              extraData={downloadsArray}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               keyExtractor={(item: any) => item.episodeId}
               renderHiddenItem={this._renderHiddenItem}

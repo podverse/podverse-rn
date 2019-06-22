@@ -9,9 +9,9 @@ import { ActivityIndicator, Icon, Text, View } from './'
 
 type Props = {
   downloadedEpisodeIds?: any
-  downloads?: any
+  downloadsActive?: any
   handleMorePress?: any
-  id?: string
+  id: string
   isLoading?: boolean
   isNotFound?: boolean
   podcastImageUrl?: string
@@ -20,18 +20,11 @@ type Props = {
 }
 
 export const EpisodeTableHeader = (props: Props) => {
-  const { downloadedEpisodeIds, downloads, handleMorePress, id, isLoading, isNotFound, podcastImageUrl,
+  const { downloadedEpisodeIds, downloadsActive = {}, handleMorePress, id, isLoading, isNotFound, podcastImageUrl,
     pubDate = '', title } = props
   const [globalTheme] = useGlobal('globalTheme')
 
-  let isDownloading = false
-  const downloadingEpisode = downloads.find((x: any) => x.episodeId === id)
-
-  if (downloadingEpisode && (downloadingEpisode.status === DownloadStatus.DOWNLOADING ||
-    downloadingEpisode.status === DownloadStatus.PAUSED)) {
-    isDownloading = true
-  }
-
+  const isDownloading = downloadsActive[id]
   const isDownloaded = downloadedEpisodeIds.some((x: any) => x === id)
 
   return (

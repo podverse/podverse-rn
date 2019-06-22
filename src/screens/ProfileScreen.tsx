@@ -327,7 +327,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         <ClipTableCell
           key={item.id}
           downloadedEpisodeIds={this.global.downloadedEpisodeIds}
-          downloads={this.global.downloads}
+          downloadsActive={this.global.downloadsActive}
           endTime={item.endTime}
           episodeId={item.episode.id}
           episodePubDate={readableDate(item.episode.pubDate)}

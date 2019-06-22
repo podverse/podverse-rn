@@ -197,7 +197,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       <ClipTableCell
         key={item.id}
         downloadedEpisodeIds={this.global.downloadedEpisodeIds}
-        downloads={this.global.downloads}
+        downloadsActive={this.global.downloadsActive}
         episodeId={episode.id}
         endTime={item.endTime}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
@@ -253,13 +253,13 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { episode, flatListData, flatListDataTotalCount, isLoading, isLoadingMore, querySort, selectedItem,
       showActionSheet, viewType } = this.state
-    const { downloadedEpisodeIds, downloads } = this.global
+    const { downloadedEpisodeIds, downloadsActive } = this.global
 
     return (
       <View style={styles.view}>
         <EpisodeTableHeader
           downloadedEpisodeIds={downloadedEpisodeIds}
-          downloads={downloads}
+          downloadsActive={downloadsActive}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast))}
           id={episode && episode.id}
           isLoading={isLoading && !episode}

@@ -105,13 +105,13 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   _renderItem = ({ item }) => {
-    const { downloadedEpisodeIds, downloads } = this.global
+    const { downloadedEpisodeIds, downloadsActive } = this.global
     if (item.startTime) {
       return (
         <ClipTableCell
           key={item.id}
           downloadedEpisodeIds={this.global.downloadedEpisodeIds}
-          downloads={this.global.downloads}
+          downloadsActive={downloadsActive}
           endTime={item.endTime}
           episodeId={item.episode.id}
           episodePubDate={item.episode.pubDate}
@@ -130,7 +130,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           key={item.id}
           description={description}
           downloadedEpisodeIds={downloadedEpisodeIds}
-          downloads={downloads}
+          downloadsActive={downloadsActive}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           handleNavigationPress={() => this.props.navigation.navigate(
             PV.RouteNames.MoreEpisodeScreen,

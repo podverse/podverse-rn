@@ -1,4 +1,3 @@
-import { DownloadStatus } from '../lib/downloader'
 import { IActionSheet } from '../resources/Interfaces'
 import { setNowPlayingItem } from '../state/actions/player'
 import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
@@ -9,9 +8,7 @@ import { PV } from './PV'
 // handleDismiss without the promise.
 const mediaMoreButtons = (item: any = {}, isLoggedIn: boolean, globalState: any, navigation: any,
                           handleDismiss: any, handleDownload: any) => {
-  const isDownloading = globalState.downloads.some((x: any) =>
-    x.episodeId === item.episodeId && x.status !== DownloadStatus.FINISHED
-  )
+  const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
   const downloadingText = isDownloading ? 'Downloading' : 'Download'
 
   const isDownloaded = globalState.downloadedEpisodeIds.some((x: any) => x === item.episodeId)

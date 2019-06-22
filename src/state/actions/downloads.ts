@@ -39,7 +39,7 @@ export const getDownloadStatusText = (status?: string) => {
 }
 
 export const initDownloads = async () => {
-  const downloads = await initDownloadsService()
+  const { downloadsActive, downloadsArray } = await initDownloadsService()
   const downloadedEpisodeIds = await getDownloadedEpisodeIdsService()
   const downloadedPodcastEpisodeCounts = await getDownloadedPodcastEpisodeCountsService()
   const downloadedPodcasts = await getDownloadedPodcastsService()
@@ -47,7 +47,8 @@ export const initDownloads = async () => {
 
   setGlobal({
     autoDownloadSettings,
-    downloads,
+    downloadsActive,
+    downloadsArray,
     downloadedEpisodeIds,
     downloadedPodcastEpisodeCounts,
     downloadedPodcasts
@@ -79,95 +80,126 @@ export const updateDownloadedPodcasts = async () => {
 }
 
 export const addDownloadTask = (downloadTask: DownloadTaskState) => {
-  const { downloads } = getGlobal()
-
-  if (!downloads.some((x: any) => x.episodeId === downloadTask.episodeId)) {
+  const { downloadsActive, downloadsArray } = getGlobal()
+  const newDownloadsActive = downloadsActive
+  if (!downloadsArray.some((x: any) => x.episodeId === downloadTask.episodeId)) {
     downloadTask.status = DownloadStatus.PENDING
+    newDownloadsActive[downloadTask.episodeId] = true
     setGlobal({
-      downloads: [...downloads, downloadTask]
+      downloadsActive: newDownloadsActive,
+      downloadsArray: [...downloadsArray, downloadTask]
     })
   }
 }
 
 export const resumeDownloadingEpisode = (episodeId: string) => {
-  const { downloads } = getGlobal()
+  const { downloadsActive, downloadsArray } = getGlobal()
   resumeDownloadTask(episodeId)
 
-  for (const task of downloads) {
+  for (const task of downloadsArray) {
     if (task.episodeId === episodeId) {
       task.status = DownloadStatus.DOWNLOADING
+      downloadsActive[episodeId] = true
       break
     }
   }
 
   setGlobal({
-    downloads: [...downloads]
+    downloadsActive,
+    downloadsArray
   })
 }
 
 export const pauseDownloadingEpisode = (episodeId: string) => {
-  const { downloads } = getGlobal()
+  const { downloadsActive, downloadsArray } = getGlobal()
   pauseDownloadTask(episodeId)
 
-  for (const task of downloads) {
+  for (const task of downloadsArray) {
     if (task.episodeId === episodeId) {
       task.status = DownloadStatus.PAUSED
+      downloadsActive[episodeId] = true
       break
     }
   }
 
   setGlobal({
-    downloads: [...downloads]
+    downloadsActive,
+    downloadsArray
   })
 }
 
 export const removeDownloadingEpisode = async (episodeId: string) => {
-  const { downloads } = getGlobal()
+  const { downloadsActive, downloadsArray } = getGlobal()
   await removeDownloadingEpisodeService(episodeId)
 
-  const newDownloads = downloads.filter((task: DownloadTaskState) => {
-    return task.episodeId !== episodeId
+  const newDownloadsArray = downloadsArray.filter((task: DownloadTaskState) => {
+    if (task.episodeId !== episodeId) {
+      return true
+    } else {
+      downloadsActive[episodeId] = false
+      return false
+    }
   })
 
   setGlobal({
-    downloads: [...newDownloads]
+    downloadsActive,
+    downloadsArray: newDownloadsArray
   })
-
-  return newDownloads
 }
 
 export const updateDownloadProgress = (downloadTaskId: string, percent: number, bytesWritten: string, bytesTotal: string) => {
-  const { downloads } = getGlobal()
+  const { downloadsActive, downloadsArray } = getGlobal()
 
-  for (const task of downloads) {
+  for (const task of downloadsArray) {
     if (task.episodeId === downloadTaskId) {
       task.percent = percent
       task.bytesWritten = bytesWritten
       task.bytesTotal = bytesTotal
       task.completed = false
       task.status = DownloadStatus.DOWNLOADING
+      downloadsActive[downloadTaskId] = true
       break
     }
   }
 
   setGlobal({
-    downloads: [...downloads]
+    downloadsActive,
+    downloadsArray
   })
 }
 
 export const updateDownloadComplete = (downloadTaskId: string) => {
-  const { downloads } = getGlobal()
+  const { downloadsActive, downloadsArray } = getGlobal()
 
-  for (const task of downloads) {
+  for (const task of downloadsArray) {
     if (task.episodeId === downloadTaskId) {
       task.completed = true
       task.status = DownloadStatus.FINISHED
+      downloadsActive[downloadTaskId] = false
       break
     }
   }
 
   setGlobal({
-    downloads: [...downloads]
+    downloadsActive,
+    downloadsArray
+  })
+}
+
+export const updateDownloadError = (downloadTaskId: string) => {
+  const { downloadsActive, downloadsArray } = getGlobal()
+
+  for (const task of downloadsArray) {
+    if (task.episodeId === downloadTaskId) {
+      task.status = DownloadStatus.ERROR
+      downloadsActive[downloadTaskId] = false
+      break
+    }
+  }
+
+  setGlobal({
+    downloadsActive,
+    downloadsArray
   })
 }
 

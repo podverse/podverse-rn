@@ -149,14 +149,14 @@ export class EpisodesScreen extends React.Component<Props, State> {
     let description = removeHTMLFromString(item.description)
     description = decodeHTMLString(description)
 
-    const { downloadedEpisodeIds, downloads } = this.global
+    const { downloadedEpisodeIds, downloadsActive } = this.global
 
     return (
       <EpisodeTableCell
           key={item.id}
           description={description}
           downloadedEpisodeIds={downloadedEpisodeIds}
-          downloads={downloads}
+          downloadsActive={downloadsActive}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           handleNavigationPress={() => this.props.navigation.navigate(
             PV.RouteNames.EpisodeScreen, { episode: item, includeGoToPodcast: true }
