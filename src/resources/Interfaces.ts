@@ -39,9 +39,11 @@ export interface GlobalTheme {
   tableCellTextPrimary?: any
   tableCellTextSecondary?: any
   tableSectionHeader?: any
+  tableSectionHeaderIcon?: any
   tableSectionHeaderText?: any
   text?: any
   textInput?: any
+  textInputIcon?: any
   textInputWrapper?: any
   view?: any
 }

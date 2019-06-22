@@ -139,6 +139,9 @@ export const darkTheme = StyleSheet.create({
   tableSectionHeader: {
     backgroundColor: PV.Colors.grayDarker
   },
+  tableSectionHeaderIcon: {
+    color: PV.Colors.white
+  },
   tableSectionHeaderText: {
     color: PV.Colors.white
   },
@@ -147,7 +150,10 @@ export const darkTheme = StyleSheet.create({
   },
   textInput: {
     backgroundColor: PV.Colors.grayDarker,
-    borderColor: PV.Colors.gray,
+    color: PV.Colors.white
+  },
+  textInputIcon: {
+    backgroundColor: PV.Colors.grayDarker,
     color: PV.Colors.white
   },
   textInputWrapper: {
@@ -297,6 +303,9 @@ export const lightTheme = StyleSheet.create({
   tableSectionHeader: {
     backgroundColor: PV.Colors.grayLighter
   },
+  tableSectionHeaderIcon: {
+    color: PV.Colors.black
+  },
   tableSectionHeaderText: {
     color: PV.Colors.black
   },
@@ -305,7 +314,10 @@ export const lightTheme = StyleSheet.create({
   },
   textInput: {
     backgroundColor: PV.Colors.grayLighter,
-    borderColor: PV.Colors.gray,
+    color: PV.Colors.black
+  },
+  textInputIcon: {
+    backgroundColor: PV.Colors.grayLighter,
     color: PV.Colors.black
   },
   textInputWrapper: {
@@ -371,6 +383,12 @@ export const core = StyleSheet.create({
   searchBar: {
     borderBottomWidth: 1,
     borderWidth: 1
+  },
+  selectorIcon: {
+    height: 44,
+    lineHeight: 44,
+    paddingLeft: 4,
+    paddingRight: 12
   },
   selectorText: {
     fontSize: PV.Fonts.sizes.xl,

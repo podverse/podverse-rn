@@ -1,7 +1,7 @@
 import { Alert, StyleSheet, TouchableOpacity } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { ActivityIndicator, Divider, Text, TextInput, View } from '../components'
+import { ActivityIndicator, Divider, Icon, Text, TextInput, View } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
@@ -122,9 +122,16 @@ export class EditProfileScreen extends React.Component<Props, State> {
                   onValueChange={this._onChangeIsPublic}
                   placeholder={selectPlaceholder}
                   value={selectedIsPublicKey}>
-                  <Text style={[core.selectorText, globalTheme.textInput]}>
-                    {selectedIsPublicOption.label} &#9662;
-                  </Text>
+                    <View style={styles.selectorWrapper}>
+                      <Text style={[core.selectorText, globalTheme.textInput]}>
+                        {selectedIsPublicOption.label}
+                      </Text>
+                      <Icon
+                        name='angle-down'
+                        size={14}
+                        style={[core.selectorIcon, globalTheme.textInputIcon]} />
+                    </View>
+
                   {
                     selectedIsPublicKey &&
                       <Text style={[core.textInputSubTitle, globalTheme.textSecondary]}>
@@ -163,6 +170,12 @@ const isPublicOptions = [
 ]
 
 const styles = StyleSheet.create({
+  selectorIcon: {
+    
+  },
+  selectorWrapper: {
+    flexDirection: 'row'
+  },
   textInput: {
     fontSize: PV.Fonts.sizes.xl,
     marginBottom: 16

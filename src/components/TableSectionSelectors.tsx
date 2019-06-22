@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { Divider, Text } from './'
+import { Divider, Icon, Text } from './'
 
 type Props = {
   handleSelectLeftItem?: any
@@ -33,11 +33,16 @@ export const TableSectionSelectors = (props: Props) => {
           items={leftItems}
           onValueChange={handleSelectLeftItem}
           placeholder={placeholderLeft || _placeholderDefault}
-          style={styles.tableSectionHeaderButton}
           value={selectedLeftItemKey}>
-          <Text style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
-            {selectedLeftItem.label || (placeholderLeft && placeholderLeft.label) || _placeholderDefault.label} &#9662;
-          </Text>
+          <View style={styles.tableSectionHeaderButton}>
+            <Text style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
+              {selectedLeftItem.label || (placeholderLeft && placeholderLeft.label) || _placeholderDefault.label}
+            </Text>
+            <Icon
+              name='angle-down'
+              size={14}
+              style={[styles.tableSectionHeaderIconLeft, globalTheme.tableSectionHeaderIcon]} />
+          </View>
         </RNPickerSelect>
         {
           rightItems.length > 1 &&
@@ -45,11 +50,16 @@ export const TableSectionSelectors = (props: Props) => {
               items={rightItems}
               onValueChange={handleSelectRightItem}
               placeholder={placeholderRight || _placeholderDefault}
-              style={styles.tableSectionHeaderButton}
               value={selectedRightItemKey}>
-              <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label} &#9662;
-              </Text>
+              <View style={styles.tableSectionHeaderButton}>
+                <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
+                  {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label}
+                </Text>
+                <Icon
+                  name='angle-down'
+                  size={14}
+                  style={[styles.tableSectionHeaderIconRight, globalTheme.tableSectionHeaderIcon]} />
+              </View>
             </RNPickerSelect>
 
         }
@@ -82,16 +92,30 @@ const styles = {
     paddingRight: 8
   },
   tableSectionHeaderButton: {
+    flexDirection: 'row'
+  },
+  tableSectionHeaderIconLeft: {
     flex: 0,
-    justifyContent: 'center'
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    lineHeight: PV.Table.sectionHeader.height,
+    paddingRight: 8
+  },
+  tableSectionHeaderIconRight: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.xl,
+    lineHeight: PV.Table.sectionHeader.height,
+    paddingLeft: 8
   },
   tableSectionHeaderTextLeft: {
+    flex: 0,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
     lineHeight: PV.Table.sectionHeader.height,
     paddingRight: 8
   },
   tableSectionHeaderTextRight: {
+    flex: 0,
     fontSize: PV.Fonts.sizes.xl,
     lineHeight: PV.Table.sectionHeader.height,
     paddingLeft: 8

@@ -257,9 +257,15 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 onValueChange={this._handleSelectPrivacy}
                 placeholder={placeholderItem}
                 value={isPublicItemSelected.value}>
-                <Text style={[styles.isPublicText, globalTheme.text]}>
-                  {isPublicItemSelected.label} &#9662;
-                </Text>
+                <View style={styles.selectorWrapper}>
+                  <Text style={[styles.isPublicText, globalTheme.text]}>
+                    {isPublicItemSelected.label}
+                  </Text>
+                  <Icon
+                    name='angle-down'
+                    size={14}
+                    style={[styles.isPublicTextIcon, globalTheme.text]} />
+                </View>
               </RNPickerSelect>
             </View>
             <TextInput
@@ -429,6 +435,10 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold
   },
+  isPublicTextIcon: {
+    lineHeight: PV.Fonts.sizes.xl,
+    paddingHorizontal: 4
+  },
   makeClipPlayerControls: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -468,6 +478,9 @@ const styles = StyleSheet.create({
   },
   progressWrapper: {
     marginVertical: 8
+  },
+  selectorWrapper: {
+    flexDirection: 'row'
   },
   textInputLabel: {
     flex: 1
