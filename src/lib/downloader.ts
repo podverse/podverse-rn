@@ -12,7 +12,8 @@ export enum DownloadStatus {
   STOPPED = 'STOPPED',
   UNKNOWN = 'UNKNOWN',
   PENDING = 'PENDING',
-  FINISHED = 'FINISHED'
+  FINISHED = 'FINISHED',
+  ERROR = 'ERROR'
 }
 
 const downloadTasks: any[] = []
@@ -39,6 +40,13 @@ export const deleteDownloadedEpisode = async (episode: any) => {
 // retrieved from checkForExistingDownloads, so as a workaround, I am forcing those existing tasks
 // to always be restarted instead of resumed.
 export const downloadEpisode = async (episode: any, podcast: any, restart?: boolean) => {
+  await DownloadState.addDownloadTask({
+    episodeId: episode.id,
+    episodeTitle: episode.title,
+    podcastImageUrl: podcast.imageUrl,
+    podcastTitle: podcast.title
+  })
+
   const shouldDownload = await hasValidDownloadingConnection()
 
   if (!shouldDownload) return
@@ -77,12 +85,6 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
         if (!restart) {
           downloadTasks.push(task)
           episode.podcast = podcast
-          DownloadState.addDownloadTask({
-            episodeId: episode.id,
-            episodeTitle: episode.title,
-            podcastImageUrl: podcast.imageUrl,
-            podcastTitle: podcast.title
-          })
           addDownloadingEpisode(episode)
         } else {
           const downloadTaskIndex = downloadTasks.indexOf((x: any) => x.episodeId === episode.id)
@@ -103,6 +105,7 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
         DownloadState.updateDownloadedPodcasts()
         console.log('downloadEpisode complete')
       }).error((error: string) => {
+        DownloadState.updateDownloadError(episode.id)
         console.log('Download canceled due to error: ', error)
       })
   }, timeout)

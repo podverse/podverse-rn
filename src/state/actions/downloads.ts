@@ -31,6 +31,8 @@ export const getDownloadStatusText = (status?: string) => {
     return 'Pending'
   } else if (status === DownloadStatus.FINISHED) {
     return 'Finished'
+  } else if (status === DownloadStatus.ERROR) {
+    return 'Error'
   } else {
     return ''
   }
