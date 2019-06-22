@@ -335,7 +335,7 @@ export class QueueScreen extends React.Component<Props, State> {
               data={queueItems}
               onPressRow={this._onPressRow}
               onReleaseRow={this._onReleaseRow}
-              renderRow={this._renderHistoryItem} />
+              renderRow={this._renderQueueItemRow} />
         }
         {
           !isLoading && viewType === _queueKey && queueItems.length < 1 &&
