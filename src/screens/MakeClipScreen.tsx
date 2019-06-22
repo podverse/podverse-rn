@@ -436,10 +436,15 @@ const styles = StyleSheet.create({
   },
   isPublicText: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold
+    fontWeight: PV.Fonts.weights.bold,
+    height: 48,
+    lineHeight: 40,
+    paddingBottom: 8
   },
   isPublicTextIcon: {
-    lineHeight: PV.Fonts.sizes.xl,
+    height: 48,
+    lineHeight: 40,
+    paddingBottom: 8,
     paddingHorizontal: 4
   },
   makeClipPlayerControls: {
