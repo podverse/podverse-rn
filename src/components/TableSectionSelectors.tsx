@@ -3,6 +3,7 @@ import { View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
+import { darkTheme, hidePickerIconOnAndroidSectionSelector } from '../styles'
 import { Divider, Icon, Text } from './'
 
 type Props = {
@@ -18,6 +19,7 @@ type Props = {
 
 export const TableSectionSelectors = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
+  const isDarkMode = globalTheme === darkTheme
   const { handleSelectLeftItem, handleSelectRightItem, leftItems = [], placeholderLeft, placeholderRight,
     rightItems = [], selectedLeftItemKey, selectedRightItemKey } = props
 
@@ -33,6 +35,8 @@ export const TableSectionSelectors = (props: Props) => {
           items={leftItems}
           onValueChange={handleSelectLeftItem}
           placeholder={placeholderLeft || _placeholderDefault}
+          style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
+          useNativeAndroidPickerStyle={false}
           value={selectedLeftItemKey}>
           <View style={styles.tableSectionHeaderButton}>
             <Text style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
@@ -50,6 +54,8 @@ export const TableSectionSelectors = (props: Props) => {
               items={rightItems}
               onValueChange={handleSelectRightItem}
               placeholder={placeholderRight || _placeholderDefault}
+              style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
+              useNativeAndroidPickerStyle={false}
               value={selectedRightItemKey}>
               <View style={styles.tableSectionHeaderButton}>
                 <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>

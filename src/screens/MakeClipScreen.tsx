@@ -12,7 +12,7 @@ import { getNowPlayingItem, playerJumpBackward, playerJumpForward, playerPreview
   PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { setNowPlayingItem, togglePlay } from '../state/actions/player'
-import { core, navHeader, playerStyles } from '../styles'
+import { core, darkTheme, hidePickerIconOnAndroidTransparent, navHeader, playerStyles } from '../styles'
 
 type Props = {
   navigation?: any
@@ -35,7 +35,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     headerRight: (
       <RNView style={styles.navHeaderButtonWrapper}>
         <TouchableOpacity onPress={navigation.getParam('_saveMediaRef')}>
-          <Text style={[navHeader.buttonText, styles.navHeaderTextButton]}>Save</Text>
+          <Text style={navHeader.buttonText}>Save</Text>
         </TouchableOpacity>
       </RNView>
     )
@@ -241,6 +241,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   render() {
     const { globalTheme, player } = this.global
+    const isDarkMode = globalTheme === darkTheme
     const { nowPlayingItem, playbackState } = player
     const { endTime, isPublicItemSelected, isSaving, progressValue, showHowToModal, startTime, title } = this.state
 
@@ -256,6 +257,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 items={privacyItems}
                 onValueChange={this._handleSelectPrivacy}
                 placeholder={placeholderItem}
+                style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+                useNativeAndroidPickerStyle={false}
                 value={isPublicItemSelected.value}>
                 <View style={styles.selectorWrapper}>
                   <Text style={[styles.isPublicText, globalTheme.text]}>
@@ -468,11 +471,6 @@ const styles = StyleSheet.create({
   navHeaderButtonWrapper: {
     flexDirection: 'row'
   },
-  navHeaderTextButton: {
-    marginLeft: 2,
-    textAlign: 'right',
-    width: 60
-  },
   playButton: {
     marginHorizontal: 'auto'
   },
@@ -483,7 +481,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   textInputLabel: {
-    flex: 1
+    flex: 1,
+    lineHeight: PV.Table.sectionHeader.height
   },
   timeInput: {
     flex: 1,
