@@ -70,6 +70,8 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
+    PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
+
     const clipHasEnded = await getClipHasEnded()
     const nowPlayingItem = await getNowPlayingItem()
     if (nowPlayingItem) {
@@ -81,8 +83,6 @@ module.exports = async () => {
       if (clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying) {
         await handleResumeAfterClipHasEnded()
       }
-
-      PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
       // handle updating history item after event emit, because it is less urgent than the UI update
       const bearerToken = await getBearerToken()
