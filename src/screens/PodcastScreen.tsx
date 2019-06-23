@@ -297,9 +297,14 @@ export class PodcastScreen extends React.Component<Props, State> {
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
-    await removeDownloadedPodcastEpisode(selectedId)
-    const downloadedEpisodes = await getDownloadedEpisodes()
-    this.setState({ flatListData: downloadedEpisodes })
+    const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
+    this.setState({
+      flatListData: filteredEpisodes
+    }, async () => {
+      await removeDownloadedPodcastEpisode(selectedId)
+      const finalDownloadedEpisodes = await getDownloadedEpisodes()
+      this.setState({ flatListData: finalDownloadedEpisodes })
+    })
   }
 
   _handleSearchBarTextChange = (text: string) => {
