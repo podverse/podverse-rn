@@ -432,7 +432,8 @@ const styles = StyleSheet.create({
     marginLeft: 8
   },
   image: {
-    flex: 1
+    flex: 1,
+    marginVertical: 16
   },
   isPublicText: {
     fontSize: PV.Fonts.sizes.xl,
