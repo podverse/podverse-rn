@@ -1,13 +1,15 @@
 import debounce from 'lodash/debounce'
+import { Alert } from 'react-native'
+import Dialog from 'react-native-dialog'
 import React from 'reactn'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, SearchBar,
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
 import { getDownloadedEpisodeIds } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { getMediaRefs } from '../services/mediaRef'
+import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getLoggedInUserMediaRefs } from '../services/user'
 import { core } from '../styles'
 
@@ -21,12 +23,14 @@ type State = {
   flatListDataTotalCount: number | null
   isLoading: boolean
   isLoadingMore: boolean
+  mediaRefIdToDelete?: string
   queryFrom: string | null
   queryPage: number
   querySort: string | null
   searchBarText: string
   selectedItem?: any
   showActionSheet: boolean
+  showDeleteConfirmDialog?: boolean
 }
 
 export class ClipsScreen extends React.Component<Props, State> {
@@ -189,10 +193,58 @@ export class ClipsScreen extends React.Component<Props, State> {
     }
   }
 
+  _renderHiddenItem = ({ item }, rowMap) => (
+    <SwipeRowBack
+      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
+      text='Delete' />
+  )
+
+  _handleHiddenItemPress = (selectedId, rowMap) => {
+    this.setState({
+      mediaRefIdToDelete: selectedId,
+      showDeleteConfirmDialog: true
+    })
+  }
+
+  _deleteMediaRef = async () => {
+    const { mediaRefIdToDelete } = this.state
+    let { flatListData, flatListDataTotalCount } = this.state
+
+    if (mediaRefIdToDelete) {
+      this.setState({
+        isLoading: true,
+        showDeleteConfirmDialog: false
+      }, async () => {
+        try {
+          await deleteMediaRef(mediaRefIdToDelete)
+          flatListData = flatListData.filter((x: any) => x.id !== mediaRefIdToDelete)
+          flatListDataTotalCount = flatListData.length
+        } catch (error) {
+          if (error.response) {
+            Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+          }
+        }
+        this.setState({
+          flatListData,
+          flatListDataTotalCount,
+          isLoading: false,
+          mediaRefIdToDelete: ''
+        })
+      })
+    }
+  }
+
+  _cancelDeleteMediaRef = async () => {
+    this.setState({
+      mediaRefIdToDelete: '',
+      showDeleteConfirmDialog: false
+    })
+  }
+
   render() {
     const { navigation } = this.props
     const { flatListData, flatListDataTotalCount, queryFrom, isLoading, isLoadingMore, querySort, selectedItem,
-      showActionSheet } = this.state
+      showActionSheet, showDeleteConfirmDialog } = this.state
     const { session } = this.global
     const { isLoggedIn } = session
 
@@ -214,13 +266,14 @@ export class ClipsScreen extends React.Component<Props, State> {
             <FlatList
               data={flatListData}
               dataTotalCount={flatListDataTotalCount}
-              disableLeftSwipe={queryFrom !== _subscribedKey}
+              disableLeftSwipe={queryFrom !== _myClipsKey}
               extraData={flatListData}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               ListHeaderComponent={this._ListHeaderComponent}
               noSubscribedPodcasts={queryFrom === _subscribedKey && flatListData.length === 0}
               onEndReached={this._onEndReached}
+              renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderClipItem} />
         }
         <ActionSheet
@@ -229,6 +282,16 @@ export class ClipsScreen extends React.Component<Props, State> {
             selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
           )}
           showModal={showActionSheet} />
+        <Dialog.Container visible={showDeleteConfirmDialog}>
+          <Dialog.Title>Delete Clip</Dialog.Title>
+          <Dialog.Description>Are you sure?</Dialog.Description>
+          <Dialog.Button
+            label='Cancel'
+            onPress={this._cancelDeleteMediaRef} />
+          <Dialog.Button
+            label='Delete'
+            onPress={this._deleteMediaRef} />
+        </Dialog.Container>
       </View>
     )
   }

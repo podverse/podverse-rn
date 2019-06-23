@@ -6,10 +6,11 @@ type Props = {
   isLoading?: boolean
   onPress: any
   styles?: any
+  text?: string
 }
 
 export const SwipeRowBack = (props: Props) => {
-  const { isLoading, onPress, styles } = props
+  const { isLoading, onPress, styles, text = 'Remove' } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
@@ -23,7 +24,7 @@ export const SwipeRowBack = (props: Props) => {
               color={globalTheme.activityIndicatorAlternate.color}
               size='large' />
           </View>
-           : <Text style={s.textWrapper}>Remove</Text>
+           : <Text style={s.textWrapper}>{text}</Text>
       }
     </TouchableOpacity>
   )
@@ -38,6 +39,7 @@ const s = StyleSheet.create({
     justifyContent: 'center'
   },
   textWrapper: {
+    textAlign: 'center',
     width: 52
   }
 })
