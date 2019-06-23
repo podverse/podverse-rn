@@ -1,8 +1,9 @@
-import React from 'react'
-import { Image } from 'react-native'
+import { Image, View } from 'react-native'
+import { Badge } from 'react-native-elements'
 import { createAppContainer, createStackNavigator, createSwitchNavigator,
   NavigationScreenOptions } from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
+import React, { getGlobal } from 'reactn'
 import { NavQueueIcon, PVTabBar } from './components'
 import { PV } from './resources'
 import { AboutScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
@@ -43,8 +44,6 @@ const PodcastsNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }) => (
         <Image
           source={PV.Tabs.Podcasts.icon}
-          height={25}
-          width={25}
           style={{ tintColor }}
           resizeMode='contain' />
       )
@@ -64,8 +63,6 @@ const EpisodesNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }) => (
         <Image
           source={PV.Tabs.Episodes.icon}
-          height={25}
-          width={25}
           style={{ tintColor }}
           resizeMode='contain' />
       )
@@ -83,8 +80,6 @@ const ClipsNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }) => (
         <Image
           source={PV.Tabs.Clips.icon}
-          height={25}
-          width={25}
           style={{ tintColor }}
           resizeMode='contain' />
       )
@@ -104,8 +99,6 @@ const SearchNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }) => (
         <Image
           source={PV.Tabs.Search.icon}
-          height={25}
-          width={25}
           style={{ tintColor }}
           resizeMode='contain' />
       )
@@ -135,17 +128,43 @@ const MoreNavigator = createStackNavigator(
   {
     defaultNavigationOptions,
     navigationOptions: {
-      tabBarIcon: ({ tintColor }) => (
-        <Image
-          source={PV.Tabs.More.icon}
-          height={25}
-          width={25}
-          style={{ tintColor }}
-          resizeMode='contain' />
-      )
+      tabBarIcon: ({ tintColor }) => {
+        return (
+          <View>
+            <Image
+              source={PV.Tabs.More.icon}
+              style={{ tintColor }}
+              resizeMode='contain' />
+            <DownloadsActiveTabBadge />
+          </View>
+        )
+      }
     }
   }
 )
+
+const DownloadsActiveTabBadge = () => {
+  const { downloadsActive } = getGlobal()
+  let downloadsActiveCount = 0
+  for (const id of Object.keys(downloadsActive)) {
+    if (downloadsActive[id]) downloadsActiveCount++
+  }
+
+  return (
+    <View style={{
+      position: 'absolute',
+      top: 3,
+      right: -4,
+      zIndex: 1000000 }}>
+      {
+        downloadsActiveCount > 0 &&
+          <Badge
+            status='error'
+            value={downloadsActiveCount} />
+      }
+    </View>
+  )
+}
 
 const OnboardingNavigator = createStackNavigator({
   [PV.RouteNames.OnboardingScreen]: OnboardingScreen,

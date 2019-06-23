@@ -471,6 +471,7 @@ export const playerStyles = StyleSheet.create({
 
 export const table = StyleSheet.create({
   cellText: {
+    flex: 0,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
     height: PV.Table.cells.standard.height,
