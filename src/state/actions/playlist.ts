@@ -1,7 +1,7 @@
 import { setGlobal } from 'reactn'
 import { combineAndSortPlaylistItems } from '../../lib/utility'
-import { addOrRemovePlaylistItem as addOrRemovePlaylistItemService, getPlaylist as getPlaylistService,
-  getPlaylists as getPlaylistsService, toggleSubscribeToPlaylist as toggleSubscribeToPlaylistService,
+import { addOrRemovePlaylistItem as addOrRemovePlaylistItemService, createPlaylist as createPlaylistService , 
+  getPlaylist as getPlaylistService, getPlaylists as getPlaylistsService, toggleSubscribeToPlaylist as toggleSubscribeToPlaylistService,
   updatePlaylist as updatePlaylistService } from '../../services/playlist'
 
 export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: string, mediaRefId?: string, globalState?: any) => {
@@ -101,6 +101,18 @@ export const updatePlaylist = async (data: any, globalState: any) => {
       flatListData: screenPlaylistFlatListData,
       flatListDataTotalCount: screenPlaylistFlatListData.length,
       playlist: newPlaylist
+    }
+  })
+}
+
+export const createPlaylist = async (data: any, globalState: any) => {
+  const newPlaylist = await createPlaylistService(data)
+  const playlistsFlatListData = globalState.playlists.myPlaylists
+
+  setGlobal({
+    playlists: {
+      myPlaylists: [newPlaylist, ...playlistsFlatListData],
+      subscribedPlaylists: globalState.playlists.subscribedPlaylists
     }
   })
 }

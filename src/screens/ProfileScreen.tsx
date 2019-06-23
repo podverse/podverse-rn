@@ -367,6 +367,13 @@ export class ProfileScreen extends React.Component<Props, State> {
       rightOptions = rightItems
     }
 
+    let resultsText = 'podcasts'
+    if (queryFrom === _clipsKey) {
+      resultsText = 'clips'
+    } else if (queryFrom === _playlistsKey) {
+      resultsText = 'playlists'
+    }
+
     return (
       <View style={styles.view}>
         {
@@ -409,7 +416,8 @@ export class ProfileScreen extends React.Component<Props, State> {
                     isLoadingMore={isLoadingMore}
                     ItemSeparatorComponent={this._ItemSeparatorComponent}
                     onEndReached={this._onEndReached}
-                    renderItem={this._renderItem} />
+                    renderItem={this._renderItem}
+                    resultsText={resultsText} />
               }
               <ActionSheet
                 handleCancelPress={this._handleCancelPress}
