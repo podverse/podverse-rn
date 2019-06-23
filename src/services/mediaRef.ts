@@ -22,10 +22,10 @@ export const createMediaRef = async (data: any) => {
   return response && response.data
 }
 
-export const deleteMediaRef = async () => {
+export const deleteMediaRef = async (id: string) => {
   const bearerToken = await getBearerToken()
   const response = await request({
-    endpoint: '/mediaRef',
+    endpoint: `/mediaRef/${id}`,
     method: 'DELETE',
     headers: { Authorization: bearerToken },
     opts: { credentials: 'include' }

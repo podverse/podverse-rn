@@ -112,17 +112,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   moreButton: {
+    alignItems: 'center',
     flex: 0,
+    height: 44,
+    justifyContent: 'center',
     marginBottom: 'auto',
-    marginTop: 'auto'
+    marginTop: 'auto',
+    width: 44
   },
   moreButtonImage: {
-    borderColor: 'white',
-    borderRadius: 22,
-    borderWidth: 1,
-    height: 44,
+    height: 36,
     tintColor: 'white',
-    width: 44
+    width: 36
   },
   notFoundText: {
     fontSize: PV.Fonts.sizes.lg,

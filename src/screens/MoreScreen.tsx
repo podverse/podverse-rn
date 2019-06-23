@@ -97,7 +97,7 @@ export class MoreScreen extends React.Component<Props, State> {
                           <Badge
                             containerStyle={{
                               position: 'absolute',
-                              right: -25,
+                              right: -22,
                               top: 19
                             }}
                             status='error'

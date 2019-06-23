@@ -154,7 +154,7 @@ const DownloadsActiveTabBadge = () => {
     <View style={{
       position: 'absolute',
       top: 3,
-      right: -4,
+      right: -5,
       zIndex: 1000000 }}>
       {
         downloadsActiveCount > 0 &&
