@@ -41,7 +41,6 @@ export class PVActionSheet extends React.Component<Props, State> {
 
       buttons.push(
         <TouchableHighlight
-          disabled={item.isDownloading}
           key={item.key}
           onPress={item.onPress}
           style={[...buttonStyle, globalTheme.actionSheetButton]}

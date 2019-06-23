@@ -10,9 +10,7 @@ const mediaMoreButtons = (item: any = {}, isLoggedIn: boolean, globalState: any,
                           handleDismiss: any, handleDownload: any) => {
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
   const downloadingText = isDownloading ? 'Downloading' : 'Download'
-
   const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
-
   const buttons = []
 
   if (isDownloaded) {
@@ -39,8 +37,13 @@ const mediaMoreButtons = (item: any = {}, isLoggedIn: boolean, globalState: any,
         text: downloadingText,
         isDownloading,
         onPress: async () => {
-          await handleDismiss()
-          handleDownload()
+          if (isDownloading) {
+            await handleDismiss()
+            navigation.navigate(PV.RouteNames.DownloadsScreen)
+          } else {
+            await handleDismiss()
+            handleDownload()
+          }
         }
       }
     )
