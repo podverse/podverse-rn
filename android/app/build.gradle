@@ -137,6 +137,9 @@ android {
 }
 
 dependencies {
+    implementation project(':appcenter-analytics')
+    implementation project(':appcenter-crashes')
+    implementation project(':appcenter')
     implementation project(':react-native-fs')
     implementation project(':react-native-background-downloader')
     implementation project(':@react-native-community_async-storage')

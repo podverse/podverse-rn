@@ -1,0 +1,34 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'podverse' do
+  pod 'AppCenter/Analytics', '~> 2.1.0'
+  pod 'AppCenter/Crashes', '~> 2.1.0'
+  pod 'AppCenterReactNativeShared', '~> 2.1.0'
+  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
+  # use_frameworks!
+
+  # Pods for podverse
+
+  
+
+  platform :ios, '9.0'
+  target 'podverseTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end
+
+target 'podverse-tvOS' do
+  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
+  # use_frameworks!
+
+  # Pods for podverse-tvOS
+
+  target 'podverse-tvOSTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end
