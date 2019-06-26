@@ -3,8 +3,9 @@ import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, MessageWithAction, NavQueueIcon, NavShareIcon,
   PlaylistTableCell, PodcastTableCell, ProfileTableHeader, TableSectionSelectors, View } from '../components'
+import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { generateAuthorsText, generateCategoriesText, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
@@ -299,13 +300,21 @@ export class ProfileScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleDownloadPressed = () => {
+    if (this.state.selectedItem) {
+      const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
+      downloadEpisode(episode, episode.podcast)
+    }
+  } 
+
   _renderItem = ({ item }) => {
     const { queryFrom } = this.state
 
     if (queryFrom === _podcastsKey) {
       return (
         <PodcastTableCell
-          key={item.id}
+          key={`ProfileScreen_podcast_${item.id}`}
+          id={item.id}
           lastEpisodePubDate={item.lastEpisodePubDate}
           onPress={() => this._handlePodcastPress(item)}
           podcastAuthors={generateAuthorsText(item.authors)}
@@ -316,8 +325,11 @@ export class ProfileScreen extends React.Component<Props, State> {
     } else if (queryFrom === _clipsKey) {
       return (
         <ClipTableCell
-          key={item.id}
+          key={`ProfileScreen_clip_${item.id}`}
+          downloadedEpisodeIds={this.global.downloadedEpisodeIds}
+          downloadsActive={this.global.downloadsActive}
           endTime={item.endTime}
+          episodeId={item.episode.id}
           episodePubDate={readableDate(item.episode.pubDate)}
           episodeTitle={item.episode.title}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
@@ -329,7 +341,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     } else {
       return (
         <PlaylistTableCell
-          key={item.id}
+          key={`ProfileScreen_playlist_${item.id}`}
           itemCount={item.itemCount}
           onPress={() => this._handlePlaylistPress(item)}
           title={item.title} />
@@ -353,6 +365,13 @@ export class ProfileScreen extends React.Component<Props, State> {
       rightOptions = rightItemsWithAlphabetical
     } else if (queryFrom === _clipsKey) {
       rightOptions = rightItems
+    }
+
+    let resultsText = 'podcasts'
+    if (queryFrom === _clipsKey) {
+      resultsText = 'clips'
+    } else if (queryFrom === _playlistsKey) {
+      resultsText = 'playlists'
     }
 
     return (
@@ -397,12 +416,13 @@ export class ProfileScreen extends React.Component<Props, State> {
                     isLoadingMore={isLoadingMore}
                     ItemSeparatorComponent={this._ItemSeparatorComponent}
                     onEndReached={this._onEndReached}
-                    renderItem={this._renderItem} />
+                    renderItem={this._renderItem}
+                    resultsText={resultsText} />
               }
               <ActionSheet
                 handleCancelPress={this._handleCancelPress}
-                items={PV.ActionSheet.media.moreButtons(
-                  selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+                items={() => PV.ActionSheet.media.moreButtons(
+                  selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
                 )}
                 showModal={showActionSheet} />
             </View>

@@ -1,14 +1,16 @@
 import debounce from 'lodash/debounce'
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActionSheet, ActivityIndicator, Divider, EpisodeTableCell, FlatList, SearchBar,
+import { ActionSheet, ActivityIndicator, Divider, EpisodeTableCell, FlatList, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
+import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
+import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { core } from '../styles'
 
 type Props = {
@@ -147,20 +149,40 @@ export class EpisodesScreen extends React.Component<Props, State> {
     let description = removeHTMLFromString(item.description)
     description = decodeHTMLString(description)
 
+    const { downloadedEpisodeIds, downloadsActive } = this.global
+
     return (
       <EpisodeTableCell
-          key={item.id}
+          key={`EpisodesScreen_${item.id}`}
           description={description}
+          downloadedEpisodeIds={downloadedEpisodeIds}
+          downloadsActive={downloadsActive}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           handleNavigationPress={() => this.props.navigation.navigate(
-            PV.RouteNames.EpisodeScreen, { episode: item }
+            PV.RouteNames.EpisodeScreen, { episode: item, includeGoToPodcast: true }
           )}
+          id={item.id}
           moreButtonAlignToTop={true}
-          podcastImageUrl={item.podcast_imageUrl}
-          podcastTitle={item.podcast_title}
+          podcastImageUrl={item.podcast_imageUrl || (item.podcast && item.podcast.imageUrl)}
+          podcastTitle={item.podcast_title || (item.podcast && item.podcast.title)}
           pubDate={item.pubDate}
           title={item.title} />
     )
+  }
+
+  _renderHiddenItem = ({ item }, rowMap) => (
+    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
+  )
+
+  _handleHiddenItemPress = async (selectedId, rowMap) => {
+    const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
+    this.setState({
+      flatListData: filteredEpisodes
+    }, async () => {
+      await removeDownloadedPodcastEpisode(selectedId)
+      const finalDownloadedEpisodes = await getDownloadedEpisodes()
+      this.setState({ flatListData: finalDownloadedEpisodes })
+    })
   }
 
   _handleSearchBarClear = (text: string) => {
@@ -187,7 +209,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _handleDownloadPressed = () => {
-    downloadEpisode({ id: this.state.selectedItem.episodeId, url: this.state.selectedItem.episodeMediaUrl })
+    if (this.state.selectedItem) {
+      const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
+      downloadEpisode(episode, episode.podcast)
+    }
   }
 
   render() {
@@ -201,7 +226,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={rightItems}
+          rightItems={queryFrom === _downloadedKey ? rightItems(true) : rightItems(false)}
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort} />
         {
@@ -213,18 +238,20 @@ export class EpisodesScreen extends React.Component<Props, State> {
             <FlatList
               data={flatListData}
               dataTotalCount={flatListDataTotalCount}
-              disableLeftSwipe={queryFrom !== _subscribedKey}
+              disableLeftSwipe={queryFrom !== _downloadedKey}
               extraData={flatListData}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
-              ListHeaderComponent={this._ListHeaderComponent}
+              ListHeaderComponent={queryFrom !== _downloadedKey ? this._ListHeaderComponent : null}
               noSubscribedPodcasts={queryFrom === _subscribedKey && flatListData.length === 0}
               onEndReached={this._onEndReached}
-              renderItem={this._renderEpisodeItem} />
+              renderHiddenItem={this._renderHiddenItem}
+              renderItem={this._renderEpisodeItem}
+              resultsText='episodes' />
         }
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
-          items={PV.ActionSheet.media.moreButtons(
+          items={() => PV.ActionSheet.media.moreButtons(
             selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
           )}
           showModal={showActionSheet} />
@@ -261,6 +288,11 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
+      } else if (filterKey === _downloadedKey) {
+        const downloadedEpisodes = await getDownloadedEpisodes()
+        newState.flatListData = [...downloadedEpisodes]
+        newState.endOfResultsReached = true
+        newState.flatListDataTotalCount = downloadedEpisodes.length
       } else if (filterKey === _allPodcastsKey) {
         const { searchBarText: searchAllFieldsText } = this.state
         const results = await getEpisodes({
@@ -292,8 +324,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 }
 
-const _subscribedKey = 'subscribed'
 const _allPodcastsKey = 'allPodcasts'
+const _downloadedKey = 'downloaded'
+const _subscribedKey = 'subscribed'
 const _mostRecentKey = 'most-recent'
 const _topPastDay = 'top-past-day'
 const _topPastWeek = 'top-past-week'
@@ -306,33 +339,46 @@ const leftItems = [
     value: _subscribedKey
   },
   {
+    label: 'Downloaded',
+    value: _downloadedKey
+  },
+  {
     label: 'All Podcasts',
     value: _allPodcastsKey
   }
 ]
 
-const rightItems = [
-  {
-    label: 'most recent',
-    value: _mostRecentKey
-  },
-  {
-    label: 'top - past day',
-    value: _topPastDay
-  },
-  {
-    label: 'top - past week',
-    value: _topPastWeek
-  },
-  {
-    label: 'top - past month',
-    value: _topPastMonth
-  },
-  {
-    label: 'top - past year',
-    value: _topPastYear
-  }
-]
+const rightItems = (onlyMostRecent?: boolean) => [
+  ...(onlyMostRecent ?
+  [
+    {
+      label: 'most recent',
+      value: _mostRecentKey
+    }
+  ] :
+  [
+    {
+      label: 'most recent',
+      value: _mostRecentKey
+    },
+    {
+      label: 'top - past day',
+      value: _topPastDay
+    },
+    {
+      label: 'top - past week',
+      value: _topPastWeek
+    },
+    {
+      label: 'top - past month',
+      value: _topPastMonth
+    },
+    {
+      label: 'top - past year',
+      value: _topPastYear
+    }
+  ]
+)]
 
 const styles = StyleSheet.create({
   ListHeaderComponent: {

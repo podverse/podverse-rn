@@ -1,12 +1,13 @@
-import { Alert, AppState, Share, StyleSheet, View as RNView } from 'react-native'
+import { Alert, AppState, Linking, Share, StyleSheet, View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, EpisodeTableCell, FlatList,
   HTMLScrollView, Icon, NavAddToPlaylistIcon, NavMakeClipIcon, NavQueueIcon, NavShareIcon, PlayerClipInfoBar,
   PlayerControls, PlayerTableHeader, SafeAreaView, TableSectionHeader, TableSectionSelectors, View
   } from '../components'
+import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
@@ -391,8 +392,16 @@ export class PlayerScreen extends React.Component<Props, State> {
     this._dismissShareActionSheet()
   }
 
+  _handleDownloadPressed = () => {
+    const { selectedItem } = this.global.screenPlayer
+    if (selectedItem) {
+      const episode = convertNowPlayingItemToEpisode(selectedItem)
+      downloadEpisode(episode, episode.podcast)
+    }
+  }
+
   _renderItem = ({ item }) => {
-    const { player, screenPlayer } = this.global
+    const { downloadedEpisodeIds, downloadsActive, player, screenPlayer } = this.global
     const { episode } = player
     const podcast = (episode && episode.podcast) || {}
     const { queryFrom, viewType } = screenPlayer
@@ -401,8 +410,11 @@ export class PlayerScreen extends React.Component<Props, State> {
       description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
-          key={item.id}
+          key={`PlayerScreen_episode_${item.id}`}
           description={description}
+          downloadedEpisodeIds={downloadedEpisodeIds}
+          downloadsActive={downloadsActive}
+          id={item.id}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => console.log('handle episode press')}
           pubDate={item.pubDate}
@@ -418,8 +430,11 @@ export class PlayerScreen extends React.Component<Props, State> {
 
       return (
         <ClipTableCell
-          key={item.id}
+          key={`PlayerScreen_clip_${item.id}`}
+          downloadedEpisodeIds={this.global.downloadedEpisodeIds}
+          downloadsActive={this.global.downloadsActive}
           endTime={item.endTime}
+          episodeId={item.episode.id}
           {...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST ? { episodePubDate: readableDate(item.episode.pubDate) } : {})}
           {...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST ? { episodeTitle: item.episode.title } : {})}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
@@ -512,8 +527,8 @@ export class PlayerScreen extends React.Component<Props, State> {
           <PlayerControls />
           <ActionSheet
             handleCancelPress={this._handleMoreCancelPress}
-            items={PV.ActionSheet.media.moreButtons(
-              selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleMoreCancelPress
+            items={() => PV.ActionSheet.media.moreButtons(
+              selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleMoreCancelPress, this._handleDownloadPressed
             )}
             showModal={showMoreActionSheet} />
           <ActionSheet
@@ -622,7 +637,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           text: `Official Home Page`,
           onPress: () => {
             this._dismissHeaderActionSheet()
-            navigation.navigate(PV.RouteNames.WebPageScreen, { uri: podcast.linkUrl })
+            Linking.openURL(podcast.linkUrl)
           }
         }
       )

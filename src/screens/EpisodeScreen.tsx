@@ -6,7 +6,7 @@ import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableHea
   NavQueueIcon, NavShareIcon, SearchBar, TableSectionSelectors, View } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
@@ -195,7 +195,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const { episode } = this.state
     return (
       <ClipTableCell
-        key={item.id}
+        key={`EpisodeScreen_${item.id}`}
+        downloadedEpisodeIds={this.global.downloadedEpisodeIds}
+        downloadsActive={this.global.downloadsActive}
+        episodeId={episode.id}
         endTime={item.endTime}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
         startTime={item.startTime}
@@ -240,18 +243,25 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   _handleDownloadPressed = () => {
-    downloadEpisode({ id: this.state.selectedItem.episodeId, url: this.state.selectedItem.episodeMediaUrl })
+    if (this.state.selectedItem) {
+      const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
+      downloadEpisode(episode, episode.podcast)
+    }
   }
 
   render() {
     const { navigation } = this.props
     const { episode, flatListData, flatListDataTotalCount, isLoading, isLoadingMore, querySort, selectedItem,
       showActionSheet, viewType } = this.state
+    const { downloadedEpisodeIds, downloadsActive } = this.global
 
     return (
       <View style={styles.view}>
         <EpisodeTableHeader
+          downloadedEpisodeIds={downloadedEpisodeIds}
+          downloadsActive={downloadsActive}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast))}
+          id={episode && episode.id}
           isLoading={isLoading && !episode}
           isNotFound={!isLoading && !episode}
           podcastImageUrl={(episode && ((episode.podcast && episode.podcast.imageUrl) || episode.podcast_imageUrl))}
@@ -265,7 +275,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           selectedLeftItemKey={viewType}
           selectedRightItemKey={querySort} />
         {
-          isLoading &&
+          isLoading && viewType !== _showNotesKey &&
             <ActivityIndicator />
         }
         {
@@ -289,7 +299,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         }
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
-          items={PV.ActionSheet.media.moreButtons(
+          items={() => PV.ActionSheet.media.moreButtons(
             selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
           )}
           showModal={showActionSheet} />

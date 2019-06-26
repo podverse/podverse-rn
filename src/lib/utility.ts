@@ -74,16 +74,19 @@ export const removeHTMLFromString = (text: string) => {
 }
 
 export const decodeHTMLString = (text: string) => {
-  const limitSingleSpaceRegex = /\s\s+/g
+  const limitSingleSpaceRegex = /\s+/g
   const newString = text.replace(limitSingleSpaceRegex, ' ')
   return he.decode(newString)
 }
 
 export const generateAuthorsText = (authors: any) => {
   let authorText = ''
-  for (let i = 0; i < authors.length; i++) {
-    const author = authors[i]
-    authorText += `${author.name}${i < authors.length - 1 ? ', ' : ''}`
+
+  if (authors) {
+    for (let i = 0; i < authors.length; i++) {
+      const author = authors[i]
+      authorText += `${author.name}${i < authors.length - 1 ? ', ' : ''}`
+    }
   }
 
   return authorText
@@ -91,9 +94,12 @@ export const generateAuthorsText = (authors: any) => {
 
 export const generateCategoriesText = (categories: any) => {
   let categoryText = ''
-  for (let i = 0; i < categories.length; i++) {
-    const category = categories[i]
-    categoryText += `${category.title}${i < categories.length - 1 ? ', ' : ''}`
+
+  if (categories) {
+    for (let i = 0; i < categories.length; i++) {
+      const category = categories[i]
+      categoryText += `${category.title}${i < categories.length - 1 ? ', ' : ''}`
+    }
   }
 
   return categoryText
@@ -200,4 +206,18 @@ export const getExtensionFromUrl = (url: string) => {
   }
 
   return '.mp3' // If all else fails, assume mp3
+}
+
+export const convertBytesToHumanReadableString = (bytes: number) => {
+  const thresh = 1000
+  if (Math.abs(bytes) < thresh) {
+    return bytes + ' B'
+  }
+  const units = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  let u = -1
+  do {
+    bytes /= thresh
+    ++u
+  } while (Math.abs(bytes) >= thresh && u < units.length - 1)
+  return bytes.toFixed(1) + ' ' + units[u]
 }

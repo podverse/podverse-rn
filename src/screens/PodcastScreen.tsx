@@ -5,13 +5,16 @@ import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
   NavQueueIcon, NavShareIcon, PodcastTableHeader, SearchBar, SwipeRowBack, TableSectionSelectors,
   View } from '../components'
+import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
+import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { getPodcast } from '../services/podcast'
+import { removeDownloadedPodcastEpisode, updateAutoDownloadSettings } from '../state/actions/downloads'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
@@ -233,6 +236,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _renderItem = ({ item }) => {
     const { podcast, viewType } = this.state
+    const { downloadsActive, downloadedEpisodeIds } = this.global
 
     const episode = {
       ...item,
@@ -246,10 +250,13 @@ export class PodcastScreen extends React.Component<Props, State> {
       description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
-          key={item.id}
+          key={`PodcastScreen_episode_downloaded_${item.id}`}
           description={description}
+          downloadedEpisodeIds={downloadedEpisodeIds}
+          downloadsActive={downloadsActive}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
+          id={item.id}
           pubDate={item.pubDate}
           title={item.title} />
       )
@@ -258,18 +265,24 @@ export class PodcastScreen extends React.Component<Props, State> {
       description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
-          key={item.id}
+          key={`PodcastScreen_episode_all_${item.id}`}
           description={description}
+          downloadedEpisodeIds={downloadedEpisodeIds}
+          downloadsActive={downloadsActive}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
+          id={item.id}
           pubDate={item.pubDate}
           title={item.title} />
       )
     } else {
       return (
         <ClipTableCell
-          key={item.id}
+          key={`PodcastScreen_clip_${item.id}`}
+          downloadedEpisodeIds={this.global.downloadedEpisodeIds}
+          downloadsActive={downloadsActive}
           endTime={item.endTime}
+          episodeId={item.episode.id}
           episodePubDate={readableDate(item.episode.pubDate)}
           episodeTitle={item.episode.title}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
@@ -280,14 +293,18 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      styles={styles.swipeRowBack} />
+    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
-    // TODO: hidden item only appears for removing/deleting downloaded episodes
-    console.log('handleHiddenItemPress')
+    const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
+    this.setState({
+      flatListData: filteredEpisodes
+    }, async () => {
+      await removeDownloadedPodcastEpisode(selectedId)
+      const finalDownloadedEpisodes = await getDownloadedEpisodes()
+      this.setState({ flatListData: finalDownloadedEpisodes })
+    })
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -328,17 +345,49 @@ export class PodcastScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleDownloadPressed = () => {
+    if (this.state.selectedItem) {
+      const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
+      downloadEpisode(episode, episode.podcast)
+    }
+  }
+
+  _handleToggleAutoDownload = (autoDownloadOn: boolean) => {
+    const { podcast, podcastId } = this.state
+    const id = (podcast && podcast.id) || podcastId
+    if (id) updateAutoDownloadSettings(id, autoDownloadOn)
+  }
+
   render() {
     const { navigation } = this.props
-    const { flatListData, flatListDataTotalCount, isLoading, isLoadingMore, isRefreshing, isSubscribing, podcast,
-      podcastId, querySort, selectedItem, showActionSheet, viewType } = this.state
-    const isSubscribed = this.global.session.userInfo.subscribedPodcastIds.some((x) => x === podcastId)
+    const { isLoading, isLoadingMore, isRefreshing, isSubscribing, podcast, podcastId, querySort,
+      selectedItem, showActionSheet, viewType } = this.state
+    const isSubscribed = this.global.session.userInfo.subscribedPodcastIds.some((x: string) => x === podcastId)
+    let { flatListData, flatListDataTotalCount } = this.state
+    const { autoDownloadSettings } = this.global
+    const autoDownloadOn = (podcast && autoDownloadSettings[podcast.id])
+      || (podcastId && autoDownloadSettings[podcastId])
+
+    let items = rightItems(false)
+    if (viewType === downloadedKey) {
+      const { downloadedPodcasts } = this.global
+      const downloadedPodcast = downloadedPodcasts.find((x: any) => ((podcast && x.id === podcast.id) || x.id === podcastId))
+      flatListData = (downloadedPodcast && downloadedPodcast.episodes) || []
+      flatListDataTotalCount = flatListData.length
+      items = rightItems(true)
+    } else if (!viewType || viewType === aboutKey) {
+      items = []
+    }
+
+    const resultsText = (viewType === downloadedKey && 'episodes') ||
+      (viewType === allEpisodesKey && 'episodes') ||
+      (viewType === clipsKey && 'clips') || 'results'
 
     return (
       <View style={styles.view}>
         <PodcastTableHeader
-          autoDownloadOn={true}
-          handleToggleAutoDownload={() => console.log('auto dl')}
+          autoDownloadOn={autoDownloadOn}
+          handleToggleAutoDownload={this._handleToggleAutoDownload}
           handleToggleSubscribe={this._toggleSubscribeToPodcast}
           isLoading={isLoading && !podcast}
           isNotFound={!isLoading && !podcast}
@@ -350,7 +399,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={viewType && viewType !== aboutKey ? rightItems : []}
+          rightItems={items}
           selectedLeftItemKey={viewType}
           selectedRightItemKey={querySort} />
         {
@@ -370,7 +419,8 @@ export class PodcastScreen extends React.Component<Props, State> {
               {...(viewType === allEpisodesKey || viewType === clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
               onEndReached={this._onEndReached}
               renderHiddenItem={this._renderHiddenItem}
-              renderItem={this._renderItem} />
+              renderItem={this._renderItem}
+              resultsText={resultsText} />
         }
         {
           !isLoading && viewType === aboutKey && podcast &&
@@ -380,8 +430,8 @@ export class PodcastScreen extends React.Component<Props, State> {
         }
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
-          items={PV.ActionSheet.media.moreButtons(
-            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+          items={() => PV.ActionSheet.media.moreButtons(
+            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
           )}
           showModal={showActionSheet} />
       </View>
@@ -420,11 +470,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     if (wasAlerted) return newState
 
     try {
-      if (filterKey === downloadedKey) {
-        console.log('retrieve downloaded from local storage')
-        newState.flatListData = []
-        newState.endOfResultsReached = true
-      } else if (filterKey === allEpisodesKey) {
+      if (filterKey === allEpisodesKey) {
         const results = await this._queryAllEpisodes(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
@@ -436,9 +482,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         newState.flatListDataTotalCount = results[1]
       } else if (rightItems.some((option) => option.value === filterKey)) {
         let results = []
-        if (viewType === downloadedKey) {
-          console.log('retrieve downloaded from local storage')
-        } else if (viewType === allEpisodesKey) {
+        if (viewType === allEpisodesKey) {
           results = await this._queryAllEpisodes(querySort)
         } else if (viewType === clipsKey) {
           results = await this._queryClips(querySort)
@@ -481,28 +525,37 @@ const leftItems = [
   }
 ]
 
-const rightItems = [
-  {
-    label: 'most recent',
-    value: mostRecentKey
-  },
-  {
-    label: 'top - past day',
-    value: topPastDay
-  },
-  {
-    label: 'top - past week',
-    value: topPastWeek
-  },
-  {
-    label: 'top - past month',
-    value: topPastMonth
-  },
-  {
-    label: 'top - past year',
-    value: topPastYear
-  }
-]
+const rightItems = (onlyMostRecent?: boolean) => [
+  ...(onlyMostRecent ?
+  [
+    {
+      label: 'most recent',
+      value: mostRecentKey
+    }
+  ] :
+  [
+    {
+      label: 'most recent',
+      value: mostRecentKey
+    },
+    {
+      label: 'top - past day',
+      value: topPastDay
+    },
+    {
+      label: 'top - past week',
+      value: topPastWeek
+    },
+    {
+      label: 'top - past month',
+      value: topPastMonth
+    },
+    {
+      label: 'top - past year',
+      value: topPastYear
+    }
+  ]
+)]
 
 const styles = {
   aboutView: {

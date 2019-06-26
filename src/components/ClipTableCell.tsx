@@ -3,10 +3,13 @@ import { Image, StyleSheet } from 'react-native'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
-import { Icon, Text, View } from './'
+import { ActivityIndicator, Icon, Text, View } from './'
 
 type Props = {
+  downloadedEpisodeIds?: any
+  downloadsActive?: any
   endTime?: number
+  episodeId: string
   episodePubDate?: string
   episodeTitle?: string
   handleMorePress?: any
@@ -17,10 +20,13 @@ type Props = {
 }
 
 export const ClipTableCell = (props: Props) => {
-  const { endTime, episodePubDate, episodeTitle, handleMorePress, podcastImageUrl, podcastTitle,
-    startTime, title = 'untitled clip' } = props
+  const { downloadedEpisodeIds = {}, downloadsActive = {}, endTime, episodeId, episodePubDate = '', episodeTitle, handleMorePress,
+    podcastImageUrl, podcastTitle, startTime, title = 'untitled clip' } = props
 
   const clipTime = readableClipTime(startTime, endTime)
+
+  const isDownloading = downloadsActive[episodeId]
+  const isDownloaded = downloadedEpisodeIds[episodeId]
 
   const showEpisodeInfo = !!episodePubDate || !!episodeTitle
   const showPodcastInfo = !!podcastImageUrl || !!podcastTitle
@@ -62,17 +68,30 @@ export const ClipTableCell = (props: Props) => {
                     {episodeTitle}
                   </Text>
               }
-              {
-                !!episodePubDate &&
-                  <Text
+              <View style={styles.textWrapperBottomRow}>
+                <Text
+                  isSecondary={true}
+                  style={styles.episodePubDate}>
+                  {readableDate(episodePubDate)}
+                </Text>
+                {
+                  isDownloaded &&
+                  <Icon
                     isSecondary={true}
-                    style={styles.episodePubDate}>
-                    {readableDate(episodePubDate)}
-                  </Text>
-              }
+                    name='download'
+                    size={13}
+                    style={styles.downloadedIcon} />
+                }
+              </View>
             </View>
             {
-              handleMorePress && moreButton
+              !isDownloading && handleMorePress && moreButton
+            }
+            {
+              isDownloading &&
+                <ActivityIndicator
+                  onPress={handleMorePress}
+                  styles={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
             }
           </View>
       }
@@ -107,9 +126,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 2
   },
+  downloadedIcon: {
+    flex: 0,
+    marginLeft: 8,
+    marginTop: 3
+  },
   episodePubDate: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.sm,
     justifyContent: 'flex-end',
     marginTop: 2
   },
@@ -130,6 +154,10 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     flex: 1
+  },
+  textWrapperBottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start'
   },
   title: {
     flex: 0,

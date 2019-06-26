@@ -3,8 +3,9 @@ import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList,
   NavQueueIcon, NavShareIcon, PlaylistTableHeader, View } from '../components'
+import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { decodeHTMLString, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
@@ -104,11 +105,15 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   _renderItem = ({ item }) => {
+    const { downloadedEpisodeIds, downloadsActive } = this.global
     if (item.startTime) {
       return (
         <ClipTableCell
-          key={item.id}
+          key={`PlaylistScreen_clip_${item.id}`}
+          downloadedEpisodeIds={this.global.downloadedEpisodeIds}
+          downloadsActive={downloadsActive}
           endTime={item.endTime}
+          episodeId={item.episode.id}
           episodePubDate={item.episode.pubDate}
           episodeTitle={item.episode.title}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
@@ -122,13 +127,16 @@ export class PlaylistScreen extends React.Component<Props, State> {
       description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
-          key={item.id}
+          key={`PlaylistScreen_episode_${item.id}`}
           description={description}
+          downloadedEpisodeIds={downloadedEpisodeIds}
+          downloadsActive={downloadsActive}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           handleNavigationPress={() => this.props.navigation.navigate(
             PV.RouteNames.MoreEpisodeScreen,
             { episode: item })
           }
+          id={item.id}
           podcastImageUrl={item.podcast.imageUrl}
           podcastTitle={item.podcast.title}
           pubDate={item.pubDate}
@@ -176,6 +184,13 @@ export class PlaylistScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleDownloadPressed = () => {
+    if (this.state.selectedItem) {
+      const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
+      downloadEpisode(episode, episode.podcast)
+    }
+  }
+
   render() {
     const { navigation } = this.props
     const { isLoading, isLoadingMore, isSubscribed, isSubscribing, playlistId,
@@ -217,8 +232,8 @@ export class PlaylistScreen extends React.Component<Props, State> {
         }
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
-          items={PV.ActionSheet.media.moreButtons(
-            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress
+          items={() => PV.ActionSheet.media.moreButtons(
+            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
           )}
           showModal={showActionSheet} />
       </View>

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { PV } from '../resources'
+import { hidePickerIconOnAndroid } from '../styles'
 
 type Props = {
   items: any[]
@@ -36,6 +37,8 @@ export const HeaderTitleSelector = (props: Props) => {
             items={items}
             onValueChange={onValueChange}
             placeholder={placeholder}
+            style={hidePickerIconOnAndroid}
+            useNativeAndroidPickerStyle={false}
             value={selectedItemKey}>
             {textNode}
           </RNPickerSelect> : textNode

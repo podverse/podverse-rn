@@ -82,7 +82,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
     return (
       <PlaylistTableCell
-        key={item.id}
+        key={`PlaylistsScreen_${item.id}`}
         {...(queryFrom === _subscribedPlaylistsKey ? { createdBy: ownerName } : {})}
         itemCount={item.itemCount}
         onPress={() => this.props.navigation.navigate(
@@ -138,7 +138,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
             !isLoading && queryFrom === _subscribedPlaylistsKey && flatListData.length < 1 &&
               <MessageWithAction
                 message='You have no subscribed playlists'
-                subMessage='Ask a friend to send you a link to one of their playlists, then subscribe to it' />
+                subMessage='Ask a friend to send a link to one of their playlists, then subscribe to it' />
           }
         </View>
       </View>

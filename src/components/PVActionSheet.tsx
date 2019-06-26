@@ -1,10 +1,11 @@
 import { Animated, Modal, Text, TouchableHighlight, View } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources/PV'
+import { ActivityIndicator } from '.';
 
 type Props = {
   handleCancelPress?: any
-  items: any[]
+  items: any
   message?: string
   omitCancel?: boolean
   showModal?: boolean
@@ -44,9 +45,17 @@ export class PVActionSheet extends React.Component<Props, State> {
           onPress={item.onPress}
           style={[...buttonStyle, globalTheme.actionSheetButton]}
           underlayColor={globalTheme.actionSheetButtonUnderlay.backgroundColor}>
-          <Text style={[styles.buttonText, globalTheme.actionSheetButtonText]}>
-            {item.text}
-          </Text>
+          <View style={styles.buttonRow}>
+            <Text style={[styles.buttonText, globalTheme.actionSheetButtonText]}>
+              {item.text}
+            </Text>
+            {
+              item.isDownloading &&
+                <ActivityIndicator
+                  size='small'
+                  styles={styles.activityIndicator} />
+            }
+          </View>
         </TouchableHighlight>
       )
     })
@@ -71,7 +80,8 @@ export class PVActionSheet extends React.Component<Props, State> {
   render() {
     const { items, message, showModal, title } = this.props
     const { globalTheme } = this.global
-    const buttons = this.generateButtons(items)
+    const finalItems = typeof items === 'function' ? items() : items
+    const buttons = this.generateButtons(finalItems)
 
     return (
       <Modal
@@ -114,6 +124,10 @@ const _yValueShow = new Animated.Value(0)
 const _yValueHide = new Animated.Value(400)
 
 const styles = {
+  activityIndicator: {
+    flex: 0,
+    marginLeft: 12
+  },
   animatedView: {
     marginBottom: 24,
     marginHorizontal: 15
@@ -135,6 +149,10 @@ const styles = {
     borderBottomRightRadius: 6,
     borderTopWidth: 1
   },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
   buttonTop: {
     borderTopLeftRadius: 6,
     borderTopRightRadius: 6
@@ -147,6 +165,7 @@ const styles = {
     justifyContent: 'center'
   },
   buttonText: {
+    flex: 0,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
     textAlign: 'center'

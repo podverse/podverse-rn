@@ -1,4 +1,5 @@
 import { SectionList, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Badge } from 'react-native-elements'
 import React from 'reactn'
 import { Divider, TableSectionHeader, Text, View } from '../components'
 import { getMembershipStatus } from '../lib/utility'
@@ -49,9 +50,14 @@ export class MoreScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { globalTheme, session } = this.global
+    const { downloadsActive, globalTheme, session } = this.global
     const { isLoggedIn = false, userInfo } = session
     const options = moreFeaturesOptions(isLoggedIn)
+
+    let downloadsActiveCount = 0
+    for (const id of Object.keys(downloadsActive)) {
+      if (downloadsActive[id]) downloadsActiveCount++
+    }
 
     const featureOptions = options.filter((item = { key: '', title: '' }) => {
       if (isLoggedIn) {
@@ -71,17 +77,39 @@ export class MoreScreen extends React.Component<Props, State> {
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
             <TouchableWithoutFeedback onPress={() => this._onPress(item)}>
-              {
-                item.key !== _membershipKey ?
-                  <Text style={[table.cellText, globalTheme.tableCellTextPrimary]}>{item.title}</Text> :
-                  <RNView style={[core.row]}>
-                    {
-                      isLoggedIn ?
-                        <Text style={[table.cellText, membershipTextStyle]}>{membershipStatus}</Text> :
-                        <Text style={[table.cellText, globalTheme.tableCellTextPrimary]}>Membership</Text>
-                    }
-                  </RNView>
-              }
+              <RNView style={core.row}>
+                {
+                  item.key === _membershipKey &&
+                    <RNView style={core.row}>
+                      {
+                        isLoggedIn ?
+                          <Text style={[table.cellText, membershipTextStyle]}>{membershipStatus}</Text> :
+                          <Text style={[table.cellText, globalTheme.tableCellTextPrimary]}>Membership</Text>
+                      }
+                    </RNView>
+                }
+                {
+                  item.key === PV.RouteNames.DownloadsScreen &&
+                    <RNView style={[core.row, { position: 'relative' }]}>
+                      <Text style={table.cellText}>Downloads</Text>
+                      {
+                        downloadsActiveCount > 0 &&
+                          <Badge
+                            containerStyle={{
+                              position: 'absolute',
+                              right: -22,
+                              top: 19
+                            }}
+                            status='error'
+                            value={downloadsActiveCount} />
+                      }
+                    </RNView>
+                }
+                {
+                  item.key !== _membershipKey && item.key !== PV.RouteNames.DownloadsScreen &&
+                    <Text style={[table.cellText, globalTheme.tableCellTextPrimary]}>{item.title}</Text>
+                }
+              </RNView>
             </TouchableWithoutFeedback>
           )}
           renderSectionHeader={({ section: { title } }) => (

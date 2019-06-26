@@ -1,8 +1,10 @@
 export interface GlobalTheme {
   actionSheetButton?: any
   actionSheetButtonCancel?: any
+  actionSheetButtonDisabled?: any
   actionSheetButtonText?: any
   actionSheetButtonTextCancel?: any
+  actionSheetButtonTextDisabled?: any
   actionSheetButtonUnderlay?: any
   actionSheetButtonCancelUnderlay?: any
   actionSheetHeaderText?: any
@@ -37,9 +39,11 @@ export interface GlobalTheme {
   tableCellTextPrimary?: any
   tableCellTextSecondary?: any
   tableSectionHeader?: any
+  tableSectionHeaderIcon?: any
   tableSectionHeaderText?: any
   text?: any
   textInput?: any
+  textInputIcon?: any
   textInputWrapper?: any
   view?: any
 }
@@ -60,6 +64,11 @@ export interface UserInfo {
 
 export interface InitialState {
   globalTheme: GlobalTheme
+  autoDownloadSettings: any
+  downloadsActive: any
+  downloadsArray: any[]
+  downloadedEpisodeIds: any
+  downloadedPodcastEpisodeCounts: any
   player: {
     isPlaying: boolean
     nowPlayingItem: any
@@ -73,10 +82,11 @@ export interface InitialState {
     subscribedPlaylists: []
   }
   profile: {
+    flatListData: []
     user: any
   }
   profiles: {
-    flatListData: [],
+    flatListData: []
     flatListDataTotalCount: null
   }
   screenPlayer: {

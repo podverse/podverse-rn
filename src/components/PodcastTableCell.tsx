@@ -1,24 +1,38 @@
-import React from 'react'
 import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import React from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { Icon, Text, View } from './'
 
 type Props = {
-  autoDownloadOn?: boolean
+  autoDownloadSettings?: any
   downloadCount?: number
+  downloadedPodcastEpisodeCounts?: any
+  id: string
   lastEpisodePubDate?: string
   onPress?: any
   podcastAuthors?: string
   podcastCategories?: string
   podcastImageUrl?: string
   podcastTitle: string
+  showAutoDownload?: boolean
+  showDownloadCount?: boolean
 }
 
 export const PodcastTableCell = (props: Props) => {
-  const { autoDownloadOn, downloadCount, lastEpisodePubDate, onPress, podcastAuthors,
-    podcastCategories, podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,podcastTitle = 'untitled podcast'
-    } = props
+  const { autoDownloadSettings, downloadedPodcastEpisodeCounts, id, lastEpisodePubDate,
+    onPress, podcastAuthors, podcastCategories, podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
+    podcastTitle = 'untitled podcast', showAutoDownload, showDownloadCount } = props
+
+  let downloadCount = 0
+  if (showDownloadCount && downloadedPodcastEpisodeCounts) {
+    downloadCount = downloadedPodcastEpisodeCounts[id] || 0
+  }
+
+  let shouldAutoDownload = false
+  if (showAutoDownload) {
+    shouldAutoDownload = autoDownloadSettings[id]
+  }
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>
@@ -33,25 +47,25 @@ export const PodcastTableCell = (props: Props) => {
             {podcastTitle}
           </Text>
           <View style={styles.textWrapperRow}>
+            <View style={styles.textWrapperRowLeft}>
+              {
+                !!podcastCategories &&
+                    <Text
+                      isSecondary={true}
+                      numberOfLines={1}
+                      style={styles.bottomText}>
+                      {podcastCategories}
+                    </Text>
+              }
+            </View>
             {
-              !!podcastCategories &&
-                <View style={styles.textWrapperRowLeft}>
-                  <Text
-                    isSecondary={true}
-                    numberOfLines={1}
-                    style={styles.bottomText}>
-                    {podcastCategories}
-                  </Text>
-                </View>
-            }
-            {
-              autoDownloadOn &&
+              showAutoDownload && shouldAutoDownload &&
                 <View style={styles.textWrapperRowRight}>
-                  <Text
+                  <Icon
                     isSecondary={true}
-                    style={styles.bottomText}>
-                    Auto DL On
-                  </Text>
+                    name='download'
+                    size={13}
+                    style={styles.autoDownloadIcon} />
                 </View>
             }
           </View>
@@ -68,7 +82,7 @@ export const PodcastTableCell = (props: Props) => {
                 </View>
             }
             {
-              !!downloadCount || downloadCount === 0 &&
+              showDownloadCount &&
                 <View style={styles.textWrapperRowLeft}>
                   <Text
                     isSecondary={true}
@@ -95,6 +109,9 @@ export const PodcastTableCell = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
+  autoDownloadIcon: {
+    flex: 0,
+  },
   bottomText: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
@@ -111,8 +128,10 @@ const styles = StyleSheet.create({
   },
   textWrapperRowRight: {
     alignItems: 'flex-end',
-    flex: 1,
-    justifyContent: 'flex-end'
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginLeft: 4
   },
   image: {
     flex: 0,

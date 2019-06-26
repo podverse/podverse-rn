@@ -17,6 +17,7 @@ type Props = {
   isLoadingMore?: boolean
   isRefreshing?: boolean
   ItemSeparatorComponent?: any
+  keyExtractor: any
   ListHeaderComponent?: any
   noSubscribedPodcasts?: boolean
   onEndReached?: any
@@ -34,7 +35,7 @@ const _renderHiddenItem = () => <View />
 export const PVFlatList = (props: Props) => {
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
   const { data, dataTotalCount, disableLeftSwipe = true, extraData, isLoadingMore, isRefreshing = false,
-    ItemSeparatorComponent, ListHeaderComponent, noSubscribedPodcasts, onEndReached, onEndReachedThreshold = 0.8,
+    ItemSeparatorComponent, keyExtractor, ListHeaderComponent, noSubscribedPodcasts, onEndReached, onEndReachedThreshold = 0.9,
     onRefresh, renderHiddenItem, renderItem, resultsText = 'results' } = props
 
   let noResultsFound = false
@@ -72,7 +73,7 @@ export const PVFlatList = (props: Props) => {
             disableRightSwipe={true}
             extraData={extraData}
             ItemSeparatorComponent={ItemSeparatorComponent}
-            keyExtractor={(item) => item.id}
+            keyExtractor={keyExtractor ? keyExtractor : (item: any) => item.id}
             ListFooterComponent={() => {
               if (isLoadingMore) {
                 return (

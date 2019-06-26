@@ -15,6 +15,9 @@ export const PVTabBar = (props: Props) => {
   const { navigation } = props
   const [player] = useGlobal<any>('player')
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
+  // include downloadsActive so the More tab downloading badge will re-render on downloadsActive updates
+  const [downloadsActive] = useGlobal('downloadsActive')
+
   const isDarkMode = globalTheme === darkTheme
 
   return (

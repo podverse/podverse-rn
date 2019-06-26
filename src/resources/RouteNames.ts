@@ -6,6 +6,7 @@ export const RouteNames = {
   DownloadsScreen: 'DownloadsListScreen',
   EditPlaylistScreen: 'EditPlaylistScreen',
   EditProfileScreen: 'EditProfileScreen',
+  EpisodePodcastScreen: 'EpisodePodcastScreen',
   EpisodeScreen: 'EpisodeScreen',
   EpisodesScreen: 'EpisodesScreen',
   FeedbackScreen: 'FeedbackScreen',

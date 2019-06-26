@@ -3,12 +3,15 @@ import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
-import { Icon, Text, View } from './'
+import { ActivityIndicator, Icon, Text, View } from './'
 
 type Props = {
   description?: string
+  downloadedEpisodeIds?: any
+  downloadsActive?: any
   handleMorePress?: any
   handleNavigationPress?: any
+  id: string
   moreButtonAlignToTop?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
@@ -17,10 +20,17 @@ type Props = {
 }
 
 export const EpisodeTableCell = (props: Props) => {
-  const { pubDate, description, title = 'untitled episode', handleMorePress,
-  handleNavigationPress, podcastImageUrl, podcastTitle } = props
+  const { downloadedEpisodeIds = {}, downloadsActive = {}, id, pubDate = '',
+  handleMorePress, handleNavigationPress, podcastImageUrl, podcastTitle } = props
+  let { description, title } = props
 
   const showPodcastInfo = !!podcastImageUrl && !!podcastTitle
+
+  const isDownloading = downloadsActive[id]
+  const isDownloaded = downloadedEpisodeIds[id]
+
+  if (!description) description = 'No show notes available'
+  if (!title) title = 'Untitled episode'
 
   const innerTopView = (
     <View style={styles.innerTopView}>
@@ -45,14 +55,21 @@ export const EpisodeTableCell = (props: Props) => {
           style={styles.title}>
           {title}
         </Text>
-        {
-          !!pubDate &&
+        <View style={styles.textWrapperBottomRow}>
           <Text
             isSecondary={true}
             style={styles.pubDate}>
             {readableDate(pubDate)}
           </Text>
-        }
+          {
+            isDownloaded &&
+              <Icon
+                isSecondary={true}
+                name='download'
+                size={13}
+                style={styles.downloadedIcon} />
+          }
+        </View>
       </View>
     </View>
   )
@@ -84,7 +101,13 @@ export const EpisodeTableCell = (props: Props) => {
             innerTopView
         }
         {
-          handleMorePress && moreButton
+          !isDownloading && handleMorePress && moreButton
+        }
+        {
+          isDownloading &&
+            <ActivityIndicator
+              onPress={handleMorePress}
+              styles={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
         }
       </View>
       {
@@ -104,6 +127,11 @@ const styles = StyleSheet.create({
   description: {
     fontSize: PV.Fonts.sizes.md
   },
+  downloadedIcon: {
+    flex: 0,
+    marginLeft: 8,
+    marginTop: 3
+  },
   image: {
     flex: 0,
     height: 60,
@@ -112,7 +140,8 @@ const styles = StyleSheet.create({
   },
   innerTopView: {
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginRight: 4
   },
   podcastTitle: {
     flex: 0,
@@ -121,12 +150,15 @@ const styles = StyleSheet.create({
   },
   pubDate: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.md,
-    justifyContent: 'flex-end',
+    fontSize: PV.Fonts.sizes.sm,
     marginTop: 2
   },
   textWrapper: {
     flex: 1
+  },
+  textWrapperBottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start'
   },
   title: {
     fontSize: PV.Fonts.sizes.md,

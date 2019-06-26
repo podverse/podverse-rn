@@ -126,7 +126,7 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'create shareable clips',
+    text: 'create clips of any length',
     column1: true,
     column2: true
   },
@@ -136,7 +136,7 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'create sharable playlists',
+    text: 'create playlists',
     column1: false,
     column2: true
   },

@@ -10,11 +10,17 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.grayDarker,
     borderColor: PV.Colors.grayDark
   },
+  actionSheetButtonDisabled: {
+    backgroundColor: PV.Colors.grayDarkest
+  },
   actionSheetButtonText: {
     color: PV.Colors.white
   },
   actionSheetButtonTextCancel: {
     color: PV.Colors.white
+  },
+  actionSheetButtonTextDisabled: {
+    color: PV.Colors.grayLightest
   },
   actionSheetButtonUnderlay: {
     backgroundColor: PV.Colors.grayDarker
@@ -133,6 +139,9 @@ export const darkTheme = StyleSheet.create({
   tableSectionHeader: {
     backgroundColor: PV.Colors.grayDarker
   },
+  tableSectionHeaderIcon: {
+    color: PV.Colors.white
+  },
   tableSectionHeaderText: {
     color: PV.Colors.white
   },
@@ -141,7 +150,10 @@ export const darkTheme = StyleSheet.create({
   },
   textInput: {
     backgroundColor: PV.Colors.grayDarker,
-    borderColor: PV.Colors.gray,
+    color: PV.Colors.white
+  },
+  textInputIcon: {
+    backgroundColor: PV.Colors.grayDarker,
     color: PV.Colors.white
   },
   textInputWrapper: {
@@ -165,11 +177,17 @@ export const lightTheme = StyleSheet.create({
     backgroundColor: PV.Colors.grayLightest,
     borderColor: PV.Colors.grayLighter
   },
+  actionSheetButtonDisabled: {
+    backgroundColor: PV.Colors.white
+  },
   actionSheetButtonText: {
     color: PV.Colors.black
   },
   actionSheetButtonTextCancel: {
     color: PV.Colors.black
+  },
+  actionSheetButtonTextDisabled: {
+    color: PV.Colors.grayDarkest
   },
   actionSheetButtonUnderlay: {
     backgroundColor: PV.Colors.grayLightest
@@ -285,6 +303,9 @@ export const lightTheme = StyleSheet.create({
   tableSectionHeader: {
     backgroundColor: PV.Colors.grayLighter
   },
+  tableSectionHeaderIcon: {
+    color: PV.Colors.black
+  },
   tableSectionHeaderText: {
     color: PV.Colors.black
   },
@@ -293,7 +314,10 @@ export const lightTheme = StyleSheet.create({
   },
   textInput: {
     backgroundColor: PV.Colors.grayLighter,
-    borderColor: PV.Colors.gray,
+    color: PV.Colors.black
+  },
+  textInputIcon: {
+    backgroundColor: PV.Colors.grayLighter,
     color: PV.Colors.black
   },
   textInputWrapper: {
@@ -360,6 +384,12 @@ export const core = StyleSheet.create({
     borderBottomWidth: 1,
     borderWidth: 1
   },
+  selectorIcon: {
+    height: 44,
+    lineHeight: 44,
+    paddingLeft: 4,
+    paddingRight: 12
+  },
   selectorText: {
     fontSize: PV.Fonts.sizes.xl,
     height: 44,
@@ -388,6 +418,22 @@ export const core = StyleSheet.create({
     justifyContent: 'center'
   }
 })
+
+export const hidePickerIconOnAndroidSectionSelector = (isDarkMode: boolean) => {
+  return {
+    inputAndroidContainer: {
+      backgroundColor: isDarkMode ? PV.Colors.grayDarker : PV.Colors.grayLighter
+    }
+  }
+}
+
+export const hidePickerIconOnAndroidTransparent = (isDarkMode: boolean) => {
+  return {
+    inputAndroidContainer: {
+      backgroundColor: isDarkMode ? PV.Colors.black : PV.Colors.red
+    }
+  }
+}
 
 export const navHeader = StyleSheet.create({
   buttonIcon: {
@@ -425,6 +471,7 @@ export const playerStyles = StyleSheet.create({
 
 export const table = StyleSheet.create({
   cellText: {
+    flex: 0,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
     height: PV.Table.cells.standard.height,
@@ -438,8 +485,16 @@ export const iconStyles = {
     color: PV.Colors.white,
     underlayColor: PV.Colors.black
   },
+  darkSecondary: {
+    color: PV.Colors.grayLighter,
+    underlayColor: PV.Colors.black
+  },
   light: {
     color: PV.Colors.black,
+    underlayColor: PV.Colors.white
+  },
+  lightSecondary: {
+    color: PV.Colors.grayDarker,
     underlayColor: PV.Colors.white
   }
 }

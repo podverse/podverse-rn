@@ -3,11 +3,14 @@ import { Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { core } from '../styles'
-import { ActivityIndicator, Text, View } from './'
+import { button, core } from '../styles'
+import { ActivityIndicator, Icon, Text, View } from './'
 
 type Props = {
+  downloadedEpisodeIds?: any
+  downloadsActive?: any
   handleMorePress?: any
+  id: string
   isLoading?: boolean
   isNotFound?: boolean
   podcastImageUrl?: string
@@ -16,8 +19,12 @@ type Props = {
 }
 
 export const EpisodeTableHeader = (props: Props) => {
-  const { handleMorePress, isLoading, isNotFound, podcastImageUrl, pubDate, title } = props
+  const { downloadedEpisodeIds = {}, downloadsActive = {}, handleMorePress, id, isLoading, isNotFound, podcastImageUrl,
+    pubDate = '', title } = props
   const [globalTheme] = useGlobal('globalTheme')
+
+  const isDownloading = downloadsActive[id]
+  const isDownloaded = downloadedEpisodeIds[id]
 
   return (
     <View style={styles.wrapper}>
@@ -33,18 +40,27 @@ export const EpisodeTableHeader = (props: Props) => {
             <View style={styles.textWrapper}>
               <Text
                 numberOfLines={3}
-                style={styles.title}>{title}</Text>
-              {
-                !!pubDate &&
-                  <Text
-                    isSecondary={true}
-                    style={styles.pubDate}>
-                    {readableDate(pubDate)}
-                  </Text>
-              }
+                style={styles.title}>
+                {title}
+              </Text>
+              <View style={styles.textWrapperBottomRow}>
+                <Text
+                  isSecondary={true}
+                  style={styles.pubDate}>
+                  {readableDate(pubDate)}
+                </Text>
+                {
+                  isDownloaded &&
+                    <Icon
+                      isSecondary={true}
+                      name='download'
+                      size={13}
+                      style={styles.downloadedIcon} />
+                }
+              </View>
             </View>
             {
-              handleMorePress &&
+              !isDownloading && handleMorePress &&
                 <View style={styles.buttonView}>
                   <TouchableOpacity
                     onPress={handleMorePress}
@@ -56,6 +72,12 @@ export const EpisodeTableHeader = (props: Props) => {
                   </TouchableOpacity>
                 </View>
             }
+          {
+            isDownloading &&
+              <ActivityIndicator
+                onPress={handleMorePress}
+                styles={button.iconOnlyMedium} />
+          }
           </View>
       }
       {
@@ -74,6 +96,11 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     marginRight: 8
   },
+  downloadedIcon: {
+    flex: 0,
+    marginLeft: 8,
+    marginTop: 3
+  },
   image: {
     flex: 0,
     height: 92,
@@ -85,17 +112,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   moreButton: {
+    alignItems: 'center',
     flex: 0,
+    height: 44,
+    justifyContent: 'center',
     marginBottom: 'auto',
-    marginTop: 'auto'
+    marginTop: 'auto',
+    width: 44
   },
   moreButtonImage: {
-    borderColor: 'white',
-    borderRadius: 22,
-    borderWidth: 1,
-    height: 44,
+    height: 36,
     tintColor: 'white',
-    width: 44
+    width: 36
   },
   notFoundText: {
     fontSize: PV.Fonts.sizes.lg,
@@ -111,6 +139,10 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingRight: 8,
     paddingTop: 6
+  },
+  textWrapperBottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start'
   },
   title: {
     flex: 0,

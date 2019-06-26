@@ -12,7 +12,7 @@ import { getNowPlayingItem, playerJumpBackward, playerJumpForward, playerPreview
   PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { setNowPlayingItem, togglePlay } from '../state/actions/player'
-import { core, navHeader, playerStyles } from '../styles'
+import { core, darkTheme, hidePickerIconOnAndroidTransparent, navHeader, playerStyles } from '../styles'
 
 type Props = {
   navigation?: any
@@ -35,7 +35,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     headerRight: (
       <RNView style={styles.navHeaderButtonWrapper}>
         <TouchableOpacity onPress={navigation.getParam('_saveMediaRef')}>
-          <Text style={[navHeader.buttonText, styles.navHeaderTextButton]}>Save</Text>
+          <Text style={navHeader.buttonText}>Save</Text>
         </TouchableOpacity>
       </RNView>
     )
@@ -241,6 +241,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   render() {
     const { globalTheme, player } = this.global
+    const isDarkMode = globalTheme === darkTheme
     const { nowPlayingItem, playbackState } = player
     const { endTime, isPublicItemSelected, isSaving, progressValue, showHowToModal, startTime, title } = this.state
 
@@ -256,10 +257,18 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 items={privacyItems}
                 onValueChange={this._handleSelectPrivacy}
                 placeholder={placeholderItem}
+                style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+                useNativeAndroidPickerStyle={false}
                 value={isPublicItemSelected.value}>
-                <Text style={[styles.isPublicText, globalTheme.text]}>
-                  {isPublicItemSelected.label} &#9662;
-                </Text>
+                <View style={styles.selectorWrapper}>
+                  <Text style={[styles.isPublicText, globalTheme.text]}>
+                    {isPublicItemSelected.label}
+                  </Text>
+                  <Icon
+                    name='angle-down'
+                    size={14}
+                    style={[styles.isPublicTextIcon, globalTheme.text]} />
+                </View>
               </RNPickerSelect>
             </View>
             <TextInput
@@ -423,11 +432,21 @@ const styles = StyleSheet.create({
     marginLeft: 8
   },
   image: {
-    flex: 1
+    flex: 1,
+    marginVertical: 16
   },
   isPublicText: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold
+    fontWeight: PV.Fonts.weights.bold,
+    height: 48,
+    lineHeight: 40,
+    paddingBottom: 8
+  },
+  isPublicTextIcon: {
+    height: 48,
+    lineHeight: 40,
+    paddingBottom: 8,
+    paddingHorizontal: 4
   },
   makeClipPlayerControls: {
     alignItems: 'center',
@@ -458,19 +477,18 @@ const styles = StyleSheet.create({
   navHeaderButtonWrapper: {
     flexDirection: 'row'
   },
-  navHeaderTextButton: {
-    marginLeft: 2,
-    textAlign: 'right',
-    width: 60
-  },
   playButton: {
     marginHorizontal: 'auto'
   },
   progressWrapper: {
     marginVertical: 8
   },
+  selectorWrapper: {
+    flexDirection: 'row'
+  },
   textInputLabel: {
-    flex: 1
+    flex: 1,
+    lineHeight: PV.Table.sectionHeader.height
   },
   timeInput: {
     flex: 1,

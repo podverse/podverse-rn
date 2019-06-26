@@ -1,4 +1,4 @@
-import { setGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
 import { popLastFromHistoryItems } from '../../services/history'
@@ -10,7 +10,8 @@ import { clearNowPlayingItem as clearNowPlayingItemService, getContinuousPlaybac
 import PlayerEventEmitter from '../../services/playerEventEmitter'
 import { addQueueItemNext, popNextFromQueue } from '../../services/queue'
 
-export const clearNowPlayingItem = async (globalState: any) => {
+export const clearNowPlayingItem = async () => {
+  const globalState = getGlobal()
   await clearNowPlayingItemService()
   setGlobal({
     player: {
@@ -65,7 +66,7 @@ export const setContinousPlaybackMode = async (shouldContinuouslyPlay: boolean, 
 }
 
 export const setNowPlayingItem = async (
-  item: NowPlayingItem, globalState: any, isInitialLoad?: boolean) => {
+  item: NowPlayingItem, globalState: any, isInitialLoad?: boolean, startPlayer?: boolean) => {
   return new Promise(async (resolve, reject) => {
     try {
       const lastNowPlayingItem = await getNowPlayingItem()
@@ -102,7 +103,7 @@ export const setNowPlayingItem = async (
           let episode = null
           let mediaRef = null
 
-          const result = await setNowPlayingItemService(item, isInitialLoad)
+          const result = await setNowPlayingItemService(item, isInitialLoad, startPlayer)
 
           if (isNewMediaRef) {
             if (isInitialLoad && item.clipId) {
@@ -165,14 +166,17 @@ export const togglePlay = async (globalState: any) => {
   await togglePlayService(playbackRate)
 }
 
-export const updatePlaybackState = async (globalState: any) => {
-  const playbackState = await PVTrackPlayer.getState()
-  const playbackRate = await PVTrackPlayer.getRate()
+export const updatePlaybackState = async (globalState: any, state?: any) => {
+  let playbackState = state
+
+  if (!playbackState) {
+    playbackState = await PVTrackPlayer.getState()
+  }
 
   setGlobal({
     player: {
       ...globalState.player,
-      playbackState: playbackRate > 0 ? PVTrackPlayer.STATE_PLAYING : playbackState
+      playbackState
     }
   })
 }

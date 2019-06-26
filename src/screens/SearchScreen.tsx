@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce'
 import { Alert, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActionSheet, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBar, View, ActivityIndicator
+import { ActionSheet, ActivityIndicator, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBar, View
   } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { generateAuthorsText, generateCategoriesText } from '../lib/utility'
@@ -75,7 +75,10 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = async (nextPage?: boolean) => {
-    if (!this.state.searchBarText) return
+    if (!this.state.searchBarText) {
+      this.setState({ isLoading: false })
+      return
+    }
 
     const state = await this._queryData(nextPage)
     this.setState(state)
@@ -124,7 +127,8 @@ export class SearchScreen extends React.Component<Props, State> {
   _renderPodcastItem = ({ item }) => {
     return (
       <PodcastTableCell
-        key={item.id}
+        key={`SearchScreen_${item.id}`}
+        id={item.id}
         lastEpisodePubDate={item.lastEpisodePubDate}
         onPress={() => this._handleMorePress(item)}
         podcastAuthors={generateAuthorsText(item.authors)}
@@ -191,7 +195,9 @@ export class SearchScreen extends React.Component<Props, State> {
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
           onClear={this._handleSearchBarClear}
+          placeholder='search'
           value={searchBarText} />
+        <Divider />
         {
           !isLoading && flatListData &&
             <FlatList
@@ -202,7 +208,8 @@ export class SearchScreen extends React.Component<Props, State> {
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               onEndReached={this._onEndReached}
-              renderItem={this._renderPodcastItem} />
+              renderItem={this._renderPodcastItem}
+              resultsText='podcasts' />
         }
         {
           isLoading &&
