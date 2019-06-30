@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingBottom: 12,
     paddingHorizontal: 8,
-    paddingTop: 10
+    paddingTop: 12
   },
   wrapperBottom: {
     flexDirection: 'row'
