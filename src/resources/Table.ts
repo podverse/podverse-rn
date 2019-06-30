@@ -5,11 +5,11 @@ export const Table = {
     },
     podcast: {
       wrapper: {
-        height: 92
+        height: 100
       },
       image: {
-        height: 92,
-        width: 92
+        height: 100,
+        width: 100
       }
     }
   },
