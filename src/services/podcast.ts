@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
+import { removeArticles } from '../lib/utility'
 import { PV } from '../resources'
 import { getBearerToken } from './auth'
 import { getAutoDownloadEpisodes, removeAutoDownloadSetting } from './autoDownloads'
@@ -146,8 +147,10 @@ export const insertOrRemovePodcastFromAlphabetizedArray = (podcasts: any[], podc
   } else {
     podcasts.push(podcast)
     podcasts.sort((a, b) => {
-      const titleA = a.title.toLowerCase()
-      const titleB = b.title.toLowerCase()
+      let titleA = a.title.toLowerCase()
+      let titleB = b.title.toLowerCase()
+      titleA = removeArticles(titleA)
+      titleB = removeArticles(titleA)
       return (titleA < titleB) ? -1 : (titleA > titleB) ? 1 : 0
     })
     return podcasts

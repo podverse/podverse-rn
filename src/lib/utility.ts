@@ -221,3 +221,12 @@ export const convertBytesToHumanReadableString = (bytes: number) => {
   } while (Math.abs(bytes) >= thresh && u < units.length - 1)
   return bytes.toFixed(1) + ' ' + units[u]
 }
+
+export const removeArticles = (str: string) => {
+  const words = str.split(' ')
+  if (words.length <= 1) return str
+  if (words[0] === 'a' || words[0] === 'the' || words[0] === 'an') {
+    return words.splice(1).join(' ')
+  }
+  return str
+}
