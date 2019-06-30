@@ -124,7 +124,8 @@ const styles = StyleSheet.create({
     paddingRight: 8
   },
   wrapper: {
-    margin: 8
+    margin: 8,
+    paddingTop: 2
   },
   wrapperBottom: {
     flexDirection: 'row',
