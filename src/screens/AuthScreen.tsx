@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     backgroundColor: PV.Colors.brandColor
   },
   switchOptionText: {
-    fontSize: 18,
+    fontSize: PV.Fonts.sizes.lg,
     color: PV.Colors.white,
     marginTop: 30,
     textDecorationLine: 'underline'

@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     width: 6
   },
   time: {
-    fontSize: 14,
+    fontSize: PV.Fonts.sizes.xs,
     lineHeight: 14,
     marginHorizontal: 12
   },

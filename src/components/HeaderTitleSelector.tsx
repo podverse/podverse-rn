@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: PV.Colors.white,
-    fontSize: 17,
+    fontSize: PV.Fonts.sizes.md,
     fontWeight: 'bold',
     height: 44,
     lineHeight: 44

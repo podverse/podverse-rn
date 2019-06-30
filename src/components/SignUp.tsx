@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   signInButtonText: {
-    fontSize: 17,
+    fontSize: PV.Fonts.sizes.md,
     color: PV.Colors.white,
     fontWeight: 'bold'
   }
