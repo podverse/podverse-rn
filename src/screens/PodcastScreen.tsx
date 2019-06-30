@@ -482,7 +482,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (rightItems.some((option) => option.value === filterKey)) {
+      } else if (rightItems(viewType === downloadedKey).some((option) => option.value === filterKey)) {
         let results = []
         if (viewType === allEpisodesKey) {
           results = await this._queryAllEpisodes(querySort)
@@ -497,11 +497,10 @@ export class PodcastScreen extends React.Component<Props, State> {
         const newPodcast = await getPodcast(podcastId)
         newState.podcast = newPodcast
       }
-
       newState.queryPage = queryOptions.queryPage || 1
-
       return newState
     } catch (error) {
+      console.log(error)
       return newState
     }
 
