@@ -19,6 +19,7 @@ type Props = {
 type State = {
   episodeId?: string
   isLoading: boolean
+  isSavingId?: string
   mediaRefId?: string
   newPlaylistTitle?: string
   showNewPlaylistDialog?: boolean
@@ -124,17 +125,24 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
   _ItemSeparatorComponent = () => <Divider />
 
   _renderPlaylistItem = ({ item }) => {
-    const { episodeId, mediaRefId } = this.state
+    const { episodeId, isSavingId, mediaRefId } = this.state
 
     return (
       <PlaylistTableCell
-        key={`PlaylistsAddToScreen_${item.id}`}
+        isSaving={item.id && item.id === isSavingId}
         itemCount={item.itemCount}
+        key={`PlaylistsAddToScreen_${item.id}`}
         onPress={() => {
           try {
-            addOrRemovePlaylistItem(item.id, episodeId, mediaRefId, this.global)
+            this.setState({
+              isSavingId: item.id
+            }, async () => {
+              await addOrRemovePlaylistItem(item.id, episodeId, mediaRefId, this.global)
+              this.setState({ isSavingId: '' })
+            })
           } catch (error) {
-            //
+            console.log(error)
+            this.setState({ isSavingId: '' })
           }
         }}
         title={item.title} />
