@@ -1,8 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { removeArticles } from '../lib/utility'
 import { PV } from '../resources'
+import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { getBearerToken } from './auth'
 import { getAutoDownloadEpisodes, removeAutoDownloadSetting } from './autoDownloads'
 import { request } from './request'
@@ -100,6 +102,14 @@ export const searchPodcasts = async (title?: string, author?: string, nsfwMode?:
 }
 
 export const toggleSubscribeToPodcast = async (id: string, isLoggedIn: boolean) => {
+  const downloadedPodcasts = await getDownloadedPodcasts()
+  const downloadedPodcast = downloadedPodcasts.find((x: any) => x.id === id)
+  const episodes = downloadedPodcast && downloadedPodcast.episodes || []
+  if (downloadedPodcast) {
+    for (const episode of episodes) {
+      removeDownloadedPodcastEpisode(episode.id)
+    }
+  }
   return isLoggedIn ? toggleSubscribeToPodcastOnServer(id) : toggleSubscribeToPodcastLocally(id)
 }
 
@@ -150,7 +160,7 @@ export const insertOrRemovePodcastFromAlphabetizedArray = (podcasts: any[], podc
       let titleA = a.title.toLowerCase()
       let titleB = b.title.toLowerCase()
       titleA = removeArticles(titleA)
-      titleB = removeArticles(titleA)
+      titleB = removeArticles(titleB)
       return (titleA < titleB) ? -1 : (titleA > titleB) ? 1 : 0
     })
     return podcasts
