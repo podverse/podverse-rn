@@ -20,7 +20,22 @@ type State = {
   slidingPosition: number | null
 }
 
+let lastPropsValue = ''
+
 export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, State> {
+
+  static getDerivedStateFromProps(nextProps: any, prevState: any) {
+    const { value } = nextProps
+    const { position } = prevState
+    if (value && value !== position && value !== lastPropsValue) {
+      lastPropsValue = value
+      return {
+        ...prevState,
+        position: value
+      }
+    }
+    return prevState
+  }
 
   constructor(props: Props) {
     super(props)
