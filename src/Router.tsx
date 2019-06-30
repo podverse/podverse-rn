@@ -159,6 +159,8 @@ const DownloadsActiveTabBadge = () => {
       {
         downloadsActiveCount > 0 &&
           <Badge
+            badgeStyle={{ borderWidth: 0 }}
+            textStyle={{ fontSize: PV.Fonts.sizes.sm }}
             status='error'
             value={downloadsActiveCount} />
       }
