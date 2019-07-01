@@ -49,7 +49,7 @@ export class SearchScreen extends React.Component<Props, State> {
       showActionSheet: false
     }
 
-    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
   _handleSearchBarClear = (text: string) => {
@@ -64,10 +64,7 @@ export class SearchScreen extends React.Component<Props, State> {
     const { isLoading } = this.state
 
     this.setState({
-      flatListData: [],
-      flatListDataTotalCount: null,
       ...(!isLoading && text ? { isLoading: true } : {}),
-      queryPage: 1,
       searchBarText: text
     }, async () => {
       this._handleSearchBarTextQuery()
@@ -76,12 +73,24 @@ export class SearchScreen extends React.Component<Props, State> {
 
   _handleSearchBarTextQuery = async (nextPage?: boolean) => {
     if (!this.state.searchBarText) {
-      this.setState({ isLoading: false })
+      this.setState({
+        flatListData: [],
+        flatListDataTotalCount: null,
+        isLoading: false,
+        queryPage: 1
+      })
       return
     }
 
-    const state = await this._queryData(nextPage)
-    this.setState(state)
+    this.setState({
+      flatListData: [],
+      flatListDataTotalCount: null,
+      queryPage: 1
+    }, async () => {
+      const state = await this._queryData(nextPage)
+      this.setState(state)
+    })
+
   }
 
   _ItemSeparatorComponent = () => {

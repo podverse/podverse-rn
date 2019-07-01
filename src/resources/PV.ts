@@ -15,6 +15,7 @@ import { Player } from './Player'
 import { ResponseErrorCodes } from './ResponseErrorCodes'
 import { ResponseStatusCodes } from './ResponseStatusCodes'
 import { RouteNames } from './RouteNames'
+import { SearchBar } from './SearchBar'
 import { Table } from './Table'
 import { Tabs } from './Tabs'
 import { URLs } from './URLs'
@@ -37,6 +38,7 @@ export const PV = {
   ResponseErrorCodes,
   ResponseStatusCodes,
   RouteNames,
+  SearchBar,
   Table,
   Tabs,
   URLs
