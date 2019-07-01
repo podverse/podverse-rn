@@ -37,18 +37,18 @@ export const initPlayerState = async (globalState: any) => {
   })
 }
 
-export const playLastFromHistory = async (isLoggedIn: boolean, globalState: any) => {
+export const playLastFromHistory = async (isLoggedIn: boolean, globalState: any, shouldPlay: boolean) => {
   const { currentlyPlayingItem, lastItem } = await popLastFromHistoryItems(isLoggedIn)
   if (currentlyPlayingItem && lastItem) {
     await addQueueItemNext(currentlyPlayingItem, isLoggedIn)
-    await setNowPlayingItem(lastItem, globalState)
+    await setNowPlayingItem(lastItem, globalState, false, shouldPlay)
   }
 }
 
-export const playNextFromQueue = async (isLoggedIn: boolean, globalState: any) => {
+export const playNextFromQueue = async (isLoggedIn: boolean, globalState: any, shouldPlay: boolean) => {
   const item = await popNextFromQueue(isLoggedIn)
   if (item) {
-    await setNowPlayingItem(item, globalState)
+    await setNowPlayingItem(item, globalState, false, shouldPlay)
   }
 }
 

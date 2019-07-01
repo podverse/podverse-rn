@@ -65,6 +65,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     const { historyItems = [], queueItems = [] } = session.userInfo
     const hasHistoryItem = historyItems.length > 0
     const hasQueueItem = queueItems.length > 0
+    const shouldPlay = playbackState === PVTrackPlayer.STATE_PLAYING
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
@@ -78,7 +79,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         <View style={styles.middleRow}>
           <TouchableOpacity
             disabled={!hasHistoryItem}
-            onPress={() => playLastFromHistory(this.global.session.isLoggedIn, this.global)}
+            onPress={() => playLastFromHistory(this.global.session.isLoggedIn, this.global, shouldPlay)}
             style={hasHistoryItem ? playerStyles.icon : playerStyles.iconDisabled}>
             <Icon
               name='step-backward'
@@ -114,7 +115,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </TouchableOpacity>
           <TouchableOpacity
             disabled={!hasQueueItem}
-            onPress={() => playNextFromQueue(this.global.session.isLoggedIn, this.global)}
+            onPress={() => playNextFromQueue(this.global.session.isLoggedIn, this.global, shouldPlay)}
             style={hasQueueItem ? playerStyles.icon : playerStyles.iconDisabled}>
             <Icon
               name='step-forward'

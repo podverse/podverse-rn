@@ -9,9 +9,9 @@ import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { getBearerToken } from './auth'
 import { getEpisode } from './episode'
-import { addOrUpdateHistoryItem, getHistoryItems } from './history'
+import { addOrUpdateHistoryItem, getHistoryItems, popLastFromHistoryItems } from './history'
 import { getMediaRef } from './mediaRef'
-import { filterItemFromQueueItems, getQueueItems, popNextFromQueue, setAllQueueItems } from './queue'
+import { addQueueItemNext, filterItemFromQueueItems, getQueueItems, popNextFromQueue, setAllQueueItems } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
 TrackPlayer.setupPlayer().then(() => {
@@ -74,10 +74,18 @@ export const handleResumeAfterClipHasEnded = async () => {
   PlayerEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
-export const playNextFromQueue = async (isLoggedIn: boolean) => {
+export const playLastFromHistory = async (isLoggedIn: boolean, shouldPlay: boolean) => {
+  const { currentlyPlayingItem, lastItem } = await popLastFromHistoryItems(isLoggedIn)
+  if (currentlyPlayingItem && lastItem) {
+    await addQueueItemNext(currentlyPlayingItem, isLoggedIn)
+    await setNowPlayingItem(lastItem, false, shouldPlay)
+  }
+}
+
+export const playNextFromQueue = async (isLoggedIn: boolean, shouldPlay: boolean) => {
   const item = await popNextFromQueue(isLoggedIn)
   if (item) {
-    await setNowPlayingItem(item)
+    await setNowPlayingItem(item, false, shouldPlay)
   }
 }
 
