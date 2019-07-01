@@ -58,6 +58,10 @@ export const PVFlatList = (props: Props) => {
           </View>
       }
       {
+        noResultsFound && !noSubscribedPodcasts && ListHeaderComponent &&
+          <ListHeaderComponent />
+      }
+      {
         noResultsFound && !noSubscribedPodcasts &&
           <View style={styles.msgView}>
             <Text style={[styles.lastCellText]}>{`No ${resultsText} found`}</Text>
