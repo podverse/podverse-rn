@@ -60,8 +60,9 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
   render() {
     const { progressValue } = this.state
-    const { globalTheme, player, session } = this.global
+    const { globalTheme, player, screenPlayer, session } = this.global
     const { nowPlayingItem, playbackRate, playbackState, shouldContinuouslyPlay } = player
+    const { isLoading } = screenPlayer
     const { historyItems = [], queueItems = [] } = session.userInfo
     const hasHistoryItem = historyItems.length > 0
     const hasQueueItem = queueItems.length > 0
@@ -74,6 +75,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             {...(nowPlayingItem && nowPlayingItem.clipEndTime ? { clipEndTime: nowPlayingItem.clipEndTime } : {})}
             {...(nowPlayingItem && nowPlayingItem.clipStartTime ? { clipStartTime: nowPlayingItem.clipStartTime } : {})}
             globalTheme={globalTheme}
+            isLoading={isLoading}
             value={progressValue} />
         </View>
         <View style={styles.middleRow}>
@@ -96,13 +98,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             onPress={() => togglePlay(this.global)}
             style={playerStyles.iconLarge}>
             {
-              playbackState !== PVTrackPlayer.STATE_BUFFERING &&
+              (!isLoading && playbackState !== PVTrackPlayer.STATE_BUFFERING) &&
                 <Icon
                   name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause-circle' : 'play-circle'}
                   size={48} />
             }
             {
-              playbackState === PVTrackPlayer.STATE_BUFFERING &&
+              (isLoading || playbackState === PVTrackPlayer.STATE_BUFFERING) &&
                 <ActivityIndicator />
             }
           </TouchableOpacity>
