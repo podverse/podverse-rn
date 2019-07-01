@@ -48,7 +48,7 @@ export const playLastFromHistory = async (isLoggedIn: boolean, globalState: any,
 export const playNextFromQueue = async (isLoggedIn: boolean, globalState: any, shouldPlay: boolean) => {
   const item = await popNextFromQueue(isLoggedIn)
   if (item) {
-    await setNowPlayingItem(item, globalState, false, shouldPlay)
+    await setNowPlayingItem(item, globalState, false, shouldPlay, item.userPlaybackPosition)
   }
 }
 
