@@ -1,10 +1,10 @@
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getBearerToken } from './auth'
-import { addOrUpdateHistoryItem, popLastFromHistoryItems } from './history'
+import { addOrUpdateHistoryItem } from './history'
 import { clearNowPlayingItem ,getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem,
-  handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, playNextFromQueue, PVTrackPlayer,
-  setClipHasEnded, setPlaybackPosition } from './player'
+  handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, playLastFromHistory,
+  playNextFromQueue, PVTrackPlayer, setClipHasEnded, setPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 import { getQueueItems } from './queue'
 
@@ -127,7 +127,7 @@ module.exports = async () => {
     const bearerToken = await getBearerToken()
     const playerState = await PVTrackPlayer.getState()
     const shouldPlay = playerState === PVTrackPlayer.STATE_PLAYING
-    await popLastFromHistoryItems(!!bearerToken, shouldPlay)
+    await playLastFromHistory(!!bearerToken, shouldPlay)
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PREVIOUS)
   })
 

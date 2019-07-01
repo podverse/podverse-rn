@@ -41,7 +41,7 @@ export const playLastFromHistory = async (isLoggedIn: boolean, globalState: any,
   const { currentlyPlayingItem, lastItem } = await popLastFromHistoryItems(isLoggedIn)
   if (currentlyPlayingItem && lastItem) {
     await addQueueItemNext(currentlyPlayingItem, isLoggedIn)
-    await setNowPlayingItem(lastItem, globalState, false, shouldPlay)
+    await setNowPlayingItem(lastItem, globalState, false, shouldPlay, lastItem.userPlaybackPosition, true)
   }
 }
 
@@ -66,7 +66,8 @@ export const setContinousPlaybackMode = async (shouldContinuouslyPlay: boolean, 
 }
 
 export const setNowPlayingItem = async (
-  item: NowPlayingItem, globalState: any, isInitialLoad?: boolean, startPlayer?: boolean) => {
+  item: NowPlayingItem, globalState: any, isInitialLoad?: boolean, startPlayer?: boolean, userPlaybackPosition?: number,
+  skipAddToHistory?: boolean) => {
   return new Promise(async (resolve, reject) => {
     try {
       const lastNowPlayingItem = await getNowPlayingItem()
@@ -103,7 +104,7 @@ export const setNowPlayingItem = async (
           let episode = null
           let mediaRef = null
 
-          const result = await setNowPlayingItemService(item, isInitialLoad, startPlayer)
+          const result = await setNowPlayingItemService(item, isInitialLoad, startPlayer, userPlaybackPosition, skipAddToHistory)
 
           if (isNewMediaRef) {
             if (isInitialLoad && item.clipId) {

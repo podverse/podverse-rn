@@ -78,7 +78,7 @@ export const playLastFromHistory = async (isLoggedIn: boolean, shouldPlay: boole
   const { currentlyPlayingItem, lastItem } = await popLastFromHistoryItems(isLoggedIn)
   if (currentlyPlayingItem && lastItem) {
     await addQueueItemNext(currentlyPlayingItem, isLoggedIn)
-    await setNowPlayingItem(lastItem, false, shouldPlay)
+    await setNowPlayingItem(lastItem, false, shouldPlay, lastItem.userPlaybackPosition)
   }
 }
 
@@ -150,7 +150,8 @@ export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean)
   await AsyncStorage.setItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY, JSON.stringify(shouldContinuouslyPlay))
 }
 
-export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: boolean, startPlayer?: boolean) => {
+export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: boolean, startPlayer?: boolean,
+                                        userPlaybackPosition?: number, skipAddToHistory?: boolean) => {
   try {
     const bearerToken = await getBearerToken()
     const isLoggedIn = !!bearerToken
@@ -161,7 +162,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
     const useServerData = isLoggedIn && isConnected
 
     const lastNowPlayingItem = await getNowPlayingItem()
-    if (lastNowPlayingItem) {
+    if (!skipAddToHistory && lastNowPlayingItem) {
       const currentPosition = await PVTrackPlayer.getPosition()
       lastNowPlayingItem.userPlaybackPosition = currentPosition || 0
       await addOrUpdateHistoryItem(lastNowPlayingItem, useServerData)
@@ -224,8 +225,8 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
 
     if (isNewEpisode && !isNewMediaRef) {
       const historyItems = await getHistoryItems(useServerData)
-      const oldItem = historyItems.find((x) => x.episodeId === item.episodeId)
-      await setPlaybackPosition(oldItem && oldItem.userPlaybackPosition || 0)
+      const oldItem = historyItems.find((x: any) => x.episodeId === item.episodeId)
+      await setPlaybackPosition(userPlaybackPosition || (oldItem && oldItem.userPlaybackPosition) || 0)
     }
 
     const items = await getQueueItems(useServerData)
