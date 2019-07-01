@@ -84,6 +84,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
       if (!appHasLaunched) {
         AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
+        AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
+        AsyncStorage.setItem(PV.Keys.STREAMING_WIFI_ONLY, 'TRUE')
         navigation.navigate(PV.RouteNames.Onboarding)
       } else {
         await this._initializeScreenData()
