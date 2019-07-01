@@ -1,4 +1,4 @@
-import { Dimensions, ScrollView, StyleSheet } from 'react-native'
+import { Dimensions, Linking, ScrollView, StyleSheet } from 'react-native'
 import HTML from 'react-native-render-html'
 import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
@@ -23,7 +23,7 @@ export const HTMLScrollView = (props: Props) => {
         containerStyle={styles.html}
         html={html}
         imagesMaxWidth={Dimensions.get('window').width}
-        onLinkPress={(event, href) => navigation.navigate(PV.RouteNames.WebPageScreen, { uri: href })}
+        onLinkPress={(event: any, href: string) => Linking.openURL(href)}
         ptSize={PV.Fonts.sizes.lg}
         tagsStyles={customHTMLTagStyles} />
     </ScrollView>
