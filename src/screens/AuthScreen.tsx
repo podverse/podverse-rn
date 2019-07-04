@@ -77,6 +77,11 @@ export class AuthScreen extends React.Component<Props, State> {
     })
   }
 
+  _showMembership = () => {
+    const { navigation } = this.props
+    navigation.navigate(PV.RouteNames.MembershipScreen)
+  }
+
   switchOptions = () => {
     this.setState({ showSignUp: !this.state.showSignUp })
   }
@@ -106,7 +111,7 @@ export class AuthScreen extends React.Component<Props, State> {
                     onSignUpPressed={this.attemptSignUp} />
               }
               <Text
-                onPress={this.switchOptions}
+                onPress={this._showMembership}
                 style={styles.switchOptionText}>
                 {this.state.showSignUp ? 'Login' : 'Sign Up'}
               </Text>
