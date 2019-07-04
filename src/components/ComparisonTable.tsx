@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
+    height: 56,
     justifyContent: 'center'
   },
   wrapper: {
