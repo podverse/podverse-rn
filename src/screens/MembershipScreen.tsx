@@ -83,12 +83,7 @@ export class MembershipScreen extends React.Component<Props, State> {
             <View>
               <View style={styles.textRowCentered}>
                 <Text style={styles.subTextCentered}>
-                  Sorry! Podverse premium accounts are currently available by invite only.
-                </Text>
-              </View>
-            <View style={styles.textRowCentered}>
-                <Text style={styles.subTextCentered}>
-                  We need to grow our team and resources before we can support unlimited users.
+                  Podverse premium accounts are currently available by invite only.
                 </Text>
               </View>
               <View style={styles.textRowCentered}>
