@@ -6,8 +6,8 @@ import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { getGlobal } from 'reactn'
 import { NavQueueIcon, PVTabBar } from './components'
 import { PV } from './resources'
-import { AboutScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
-  EpisodeScreen, EpisodesScreen, FeedbackScreen, MakeClipScreen, MembershipScreen, MoreScreen, OnboardingScreen,
+import { AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
+  EpisodeScreen, EpisodesScreen, MakeClipScreen, MembershipScreen, MoreScreen, OnboardingScreen,
   PlayerScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen, PodcastsScreen,
   ProfileScreen, ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen, WebPageScreen } from './screens'
 
@@ -121,9 +121,7 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen,
     [PV.RouteNames.MorePlaylistScreen]: PlaylistScreen,
     [PV.RouteNames.MorePodcastScreen]: PodcastScreen,
-    [PV.RouteNames.MembershipScreen]: MembershipScreen,
-    [PV.RouteNames.FeedbackScreen]: FeedbackScreen,
-    [PV.RouteNames.AboutScreen]: AboutScreen
+    [PV.RouteNames.MembershipScreen]: MembershipScreen
   },
   {
     defaultNavigationOptions,
@@ -159,6 +157,8 @@ const DownloadsActiveTabBadge = () => {
       {
         downloadsActiveCount > 0 &&
           <Badge
+            badgeStyle={{ borderWidth: 0 }}
+            textStyle={{ fontSize: PV.Fonts.sizes.sm }}
             status='error'
             value={downloadsActiveCount} />
       }

@@ -1,8 +1,8 @@
-import { Alert, AppState, StyleSheet, Text as RNText, TouchableOpacity } from 'react-native'
+import { Alert, AppState, StyleSheet, Text as RNText, TouchableOpacity, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { Icon } from 'react-native-elements'
 import React from 'reactn'
-import { ActivityIndicator, Divider, FlatList, PlaylistTableCell, View } from '../components'
+import { ActivityIndicator, Divider, FlatList, MessageWithAction, PlaylistTableCell, View } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getNowPlayingItem } from '../services/player'
@@ -19,6 +19,7 @@ type Props = {
 type State = {
   episodeId?: string
   isLoading: boolean
+  isSavingId?: string
   mediaRefId?: string
   newPlaylistTitle?: string
   showNewPlaylistDialog?: boolean
@@ -41,20 +42,28 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
       </TouchableOpacity>
     ),
     headerRight: (
-      <TouchableOpacity onPress={navigation.getParam('showNewPlaylistDialog')}>
-        <RNText style={navHeader.buttonText}>New</RNText>
-      </TouchableOpacity>
+      <RNView>
+        {
+          navigation.getParam('isLoggedIn') &&
+            <TouchableOpacity onPress={navigation.getParam('showNewPlaylistDialog')}>
+              <RNText style={navHeader.buttonText}>New</RNText>
+            </TouchableOpacity>
+        }
+      </RNView>
     )
   })
 
   constructor(props: Props) {
     super(props)
     const { navigation } = props
+    const { isLoggedIn } = this.global.session
     this.state = {
       episodeId: navigation.getParam('episodeId'),
       isLoading: true,
       mediaRefId: navigation.getParam('mediaRefId')
     }
+
+    navigation.setParams({ isLoggedIn })
   }
 
   async componentDidMount() {
@@ -124,66 +133,89 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
   _ItemSeparatorComponent = () => <Divider />
 
   _renderPlaylistItem = ({ item }) => {
-    const { episodeId, mediaRefId } = this.state
+    const { episodeId, isSavingId, mediaRefId } = this.state
 
     return (
       <PlaylistTableCell
-        key={`PlaylistsAddToScreen_${item.id}`}
+        isSaving={item.id && item.id === isSavingId}
         itemCount={item.itemCount}
+        key={`PlaylistsAddToScreen_${item.id}`}
         onPress={() => {
           try {
-            addOrRemovePlaylistItem(item.id, episodeId, mediaRefId, this.global)
+            this.setState({
+              isSavingId: item.id
+            }, async () => {
+              await addOrRemovePlaylistItem(item.id, episodeId, mediaRefId, this.global)
+              this.setState({ isSavingId: '' })
+            })
           } catch (error) {
-            //
+            console.log(error)
+            this.setState({ isSavingId: '' })
           }
         }}
         title={item.title} />
     )
   }
 
+  _onPressLogin = () => this.props.navigation.navigate(PV.RouteNames.AuthScreen)
+
   render() {
     const { isLoading, newPlaylistTitle, showNewPlaylistDialog } = this.state
-    const { myPlaylists } = this.global.playlists
+    const { playlists, session } = this.global
+    const { myPlaylists } = playlists
+    const { isLoggedIn } = session
 
     return (
       <View style={styles.view}>
         {
-          isLoading &&
-            <ActivityIndicator />
+          !isLoggedIn &&
+            <MessageWithAction
+              actionHandler={this._onPressLogin}
+              actionText='Login'
+              message='Login to add to playlists' />
         }
         {
-          !isLoading && myPlaylists && myPlaylists.length > 0 &&
-            <FlatList
-              data={myPlaylists}
-              dataTotalCount={myPlaylists.length}
-              disableLeftSwipe={true}
-              extraData={myPlaylists}
-              ItemSeparatorComponent={this._ItemSeparatorComponent}
-              renderItem={this._renderPlaylistItem} />
+          isLoggedIn &&
+            <View style={styles.view}>
+              {
+                isLoading &&
+                <ActivityIndicator />
+              }
+              {
+                !isLoading && myPlaylists && myPlaylists.length > 0 &&
+                <FlatList
+                  data={myPlaylists}
+                  dataTotalCount={myPlaylists.length}
+                  disableLeftSwipe={true}
+                  extraData={myPlaylists}
+                  ItemSeparatorComponent={this._ItemSeparatorComponent}
+                  renderItem={this._renderPlaylistItem} />
+              }
+              {
+                !isLoading && myPlaylists && myPlaylists.length === 0 &&
+                <FlatList
+                  data={myPlaylists}
+                  dataTotalCount={0}
+                  disableLeftSwipe={true}
+                  extraData={myPlaylists}
+                  ItemSeparatorComponent={this._ItemSeparatorComponent}
+                  renderItem={this._renderPlaylistItem} />
+              }
+              <Dialog.Container visible={showNewPlaylistDialog}>
+                <Dialog.Title>New Playlist</Dialog.Title>
+                <Dialog.Input
+                  onChangeText={this._handleNewPlaylistTextChange}
+                  placeholder='title of playlist'
+                  value={newPlaylistTitle} />
+                <Dialog.Button
+                  label='Cancel'
+                  onPress={this._handleNewPlaylistDismiss} />
+                <Dialog.Button
+                  label='Save'
+                  onPress={this._saveNewPlaylist} />
+              </Dialog.Container>
+            </View>
         }
-        {
-          !isLoading && myPlaylists && myPlaylists.length === 0 &&
-            <FlatList
-              data={myPlaylists}
-              dataTotalCount={0}
-              disableLeftSwipe={true}
-              extraData={myPlaylists}
-              ItemSeparatorComponent={this._ItemSeparatorComponent}
-              renderItem={this._renderPlaylistItem} />
-        }
-        <Dialog.Container visible={showNewPlaylistDialog}>
-          <Dialog.Title>New Playlist</Dialog.Title>
-          <Dialog.Input
-            onChangeText={this._handleNewPlaylistTextChange}
-            placeholder='title of playlist'
-            value={newPlaylistTitle} />
-          <Dialog.Button
-            label='Cancel'
-            onPress={this._handleNewPlaylistDismiss} />
-          <Dialog.Button
-            label='Save'
-            onPress={this._saveNewPlaylist} />
-        </Dialog.Container>
       </View>
     )
   }

@@ -52,7 +52,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       showActionSheet: false
     }
 
-    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
   async componentDidMount() {
@@ -193,19 +193,21 @@ export class EpisodesScreen extends React.Component<Props, State> {
     const { queryFrom } = this.state
 
     this.setState({
-      flatListData: [],
-      flatListDataTotalCount: null,
       isLoadingMore: true,
-      queryPage: 1,
       searchBarText: text
-    }, async () => {
-      this._handleSearchBarTextQuery(queryFrom, { searchTitle: text })
     })
+    this._handleSearchBarTextQuery(queryFrom, { searchTitle: text })
   }
 
   _handleSearchBarTextQuery = async (queryFrom: string | null, queryOptions: any) => {
-    const state = await this._queryData(queryFrom, { searchAllFieldsText: queryOptions.searchAllFieldsText })
-    this.setState(state)
+    this.setState({
+      flatListData: [],
+      flatListDataTotalCount: null,
+      queryPage: 1
+    }, async () => {
+      const state = await this._queryData(queryFrom, { searchAllFieldsText: queryOptions.searchAllFieldsText })
+      this.setState(state)
+    })
   }
 
   _handleDownloadPressed = () => {

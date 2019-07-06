@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { Alert, StyleSheet } from 'react-native'
+import { Alert, StyleSheet, Linking } from 'react-native'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBar, View
   } from '../components'
@@ -49,7 +49,7 @@ export class SearchScreen extends React.Component<Props, State> {
       showActionSheet: false
     }
 
-    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
   _handleSearchBarClear = (text: string) => {
@@ -64,10 +64,7 @@ export class SearchScreen extends React.Component<Props, State> {
     const { isLoading } = this.state
 
     this.setState({
-      flatListData: [],
-      flatListDataTotalCount: null,
       ...(!isLoading && text ? { isLoading: true } : {}),
-      queryPage: 1,
       searchBarText: text
     }, async () => {
       this._handleSearchBarTextQuery()
@@ -76,12 +73,24 @@ export class SearchScreen extends React.Component<Props, State> {
 
   _handleSearchBarTextQuery = async (nextPage?: boolean) => {
     if (!this.state.searchBarText) {
-      this.setState({ isLoading: false })
+      this.setState({
+        flatListData: [],
+        flatListDataTotalCount: null,
+        isLoading: false,
+        queryPage: 1
+      })
       return
     }
 
-    const state = await this._queryData(nextPage)
-    this.setState(state)
+    this.setState({
+      flatListData: [],
+      flatListDataTotalCount: null,
+      queryPage: 1
+    }, async () => {
+      const state = await this._queryData(nextPage)
+      this.setState(state)
+    })
+
   }
 
   _ItemSeparatorComponent = () => {
@@ -180,6 +189,12 @@ export class SearchScreen extends React.Component<Props, State> {
     this.setState({ showActionSheet: false })
   }
 
+  _navToRequestPodcastForm = async () => {
+    Linking.openURL(
+      'https://docs.google.com/forms/d/e/1FAIpQLSdewKP-YrE8zGjDPrkmoJEwCxPl_gizEkmzAlTYsiWAuAk1Ng/viewform?usp=sf_link'
+    )
+  }
+
   render() {
     const { flatListData, flatListDataTotalCount, isLoading, isLoadingMore, searchBarText, searchType,
       showActionSheet } = this.state
@@ -205,11 +220,13 @@ export class SearchScreen extends React.Component<Props, State> {
               dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={true}
               extraData={flatListData}
+              handleRequestPodcast={this._navToRequestPodcastForm}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               onEndReached={this._onEndReached}
               renderItem={this._renderPodcastItem}
-              resultsText='podcasts' />
+              resultsText='podcasts'
+              showRequestPodcast={true} />
         }
         {
           isLoading &&

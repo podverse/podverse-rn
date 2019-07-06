@@ -60,11 +60,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
   render() {
     const { progressValue } = this.state
-    const { globalTheme, player, session } = this.global
+    const { globalTheme, player, screenPlayer, session } = this.global
     const { nowPlayingItem, playbackRate, playbackState, shouldContinuouslyPlay } = player
+    const { isLoading } = screenPlayer
     const { historyItems = [], queueItems = [] } = session.userInfo
     const hasHistoryItem = historyItems.length > 0
     const hasQueueItem = queueItems.length > 0
+    const shouldPlay = playbackState === PVTrackPlayer.STATE_PLAYING
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
@@ -73,12 +75,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             {...(nowPlayingItem && nowPlayingItem.clipEndTime ? { clipEndTime: nowPlayingItem.clipEndTime } : {})}
             {...(nowPlayingItem && nowPlayingItem.clipStartTime ? { clipStartTime: nowPlayingItem.clipStartTime } : {})}
             globalTheme={globalTheme}
+            isLoading={isLoading}
             value={progressValue} />
         </View>
         <View style={styles.middleRow}>
           <TouchableOpacity
             disabled={!hasHistoryItem}
-            onPress={() => playLastFromHistory(this.global.session.isLoggedIn, this.global)}
+            onPress={() => playLastFromHistory(this.global.session.isLoggedIn, this.global, shouldPlay)}
             style={hasHistoryItem ? playerStyles.icon : playerStyles.iconDisabled}>
             <Icon
               name='step-backward'
@@ -95,13 +98,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             onPress={() => togglePlay(this.global)}
             style={playerStyles.iconLarge}>
             {
-              playbackState !== PVTrackPlayer.STATE_BUFFERING &&
+              (!isLoading && playbackState !== PVTrackPlayer.STATE_BUFFERING) &&
                 <Icon
                   name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause-circle' : 'play-circle'}
                   size={48} />
             }
             {
-              playbackState === PVTrackPlayer.STATE_BUFFERING &&
+              (isLoading || playbackState === PVTrackPlayer.STATE_BUFFERING) &&
                 <ActivityIndicator />
             }
           </TouchableOpacity>
@@ -114,7 +117,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </TouchableOpacity>
           <TouchableOpacity
             disabled={!hasQueueItem}
-            onPress={() => playNextFromQueue(this.global.session.isLoggedIn, this.global)}
+            onPress={() => playNextFromQueue(this.global.session.isLoggedIn, this.global, shouldPlay)}
             style={hasQueueItem ? playerStyles.icon : playerStyles.iconDisabled}>
             <Icon
               name='step-forward'

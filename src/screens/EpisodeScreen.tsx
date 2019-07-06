@@ -73,7 +73,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       viewType
     }
 
-    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
   async componentDidMount() {
@@ -223,10 +223,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const { viewType } = this.state
 
     this.setState({
-      flatListData: [],
-      flatListDataTotalCount: null,
       isLoadingMore: true,
-      queryPage: 1,
       searchBarText: text
     }, async () => {
       this._handleSearchBarTextQuery(viewType, { searchAllFieldsText: text })
@@ -234,8 +231,14 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = async (viewType: string | null, queryOptions: any) => {
-    const state = await this._queryData(viewType, { searchAllFieldsText: queryOptions.searchAllFieldsText })
-    this.setState(state)
+    this.setState({
+      flatListData: [],
+      flatListDataTotalCount: null,
+      queryPage: 1
+    }, async () => {
+      const state = await this._queryData(viewType, { searchAllFieldsText: queryOptions.searchAllFieldsText })
+      this.setState(state)
+    })
   }
 
   _handleSearchBarClear = (text: string) => {
@@ -307,7 +310,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     )
   }
 
-  _queryData = async (filterKey: string, queryOptions: {
+  _queryData = async (filterKey: string | null, queryOptions: {
     queryPage?: number, searchAllFieldsText?: string
   } = {}) => {
     const { episode, flatListData, querySort, searchBarText: searchAllFieldsText } = this.state

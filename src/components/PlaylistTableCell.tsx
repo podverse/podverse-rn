@@ -1,17 +1,18 @@
 import React from 'react'
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { ActivityIndicator, Text, View } from './'
 
 type Props = {
   createdBy?: string
+  isSaving?: boolean
   itemCount?: number
   onPress?: any
   title?: string
 }
 
 export const PlaylistTableCell = (props: Props) => {
-  const { createdBy, itemCount = 0, onPress, title = 'untitled playlist' } = props
+  const { createdBy, isSaving, itemCount = 0, onPress, title = 'untitled playlist' } = props
 
   const wrapperTopStyles = [styles.wrapperTop]
   if (createdBy) wrapperTopStyles.push(styles.wrapperTopWithCreatedBy)
@@ -23,11 +24,15 @@ export const PlaylistTableCell = (props: Props) => {
           <Text
             numberOfLines={1}
             style={styles.title}>{title}</Text>
-          <Text
-            isSecondary={true}
-            style={styles.itemCount}>
-            items: {itemCount}
-          </Text>
+          {
+            isSaving ?
+              <ActivityIndicator styles={styles.activityIndicator} /> :
+              <Text
+                isSecondary={true}
+                style={styles.itemCount}>
+                items: {itemCount}
+              </Text>
+          }
         </View>
         {
           !!createdBy &&
@@ -45,6 +50,9 @@ export const PlaylistTableCell = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
+  activityIndicator: {
+    flex: 0
+  },
   createdBy: {
     alignContent: 'flex-start',
     flex: 1,

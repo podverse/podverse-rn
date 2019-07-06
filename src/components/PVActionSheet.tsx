@@ -140,7 +140,7 @@ const styles = {
     borderLeftWidth: 1,
     borderRightWidth: 1,
     borderTopWidth: 1,
-    height: 58,
+    height: 62,
     justifyContent: 'center'
   },
   buttonBottom: {
@@ -161,7 +161,7 @@ const styles = {
     borderRadius: 6,
     borderWidth: 1,
     marginTop: 8,
-    height: 58,
+    height: 62,
     justifyContent: 'center'
   },
   buttonText: {

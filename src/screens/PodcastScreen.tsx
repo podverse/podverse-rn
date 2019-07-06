@@ -62,9 +62,11 @@ export class PodcastScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    const viewType = this.props.navigation.getParam('viewType') || allEpisodesKey
     const podcast = this.props.navigation.getParam('podcast')
     const podcastId = (podcast && podcast.id) || this.props.navigation.getParam('podcastId')
+    const episodeCount = this.props.navigation.getParam('episodeCount') || 0
+    const viewType = this.props.navigation.getParam('viewType')
+      || episodeCount > 0 ? downloadedKey : allEpisodesKey
 
     if (podcast && podcast.id) {
       this.props.navigation.setParams({ podcastId: podcast.id })
@@ -87,7 +89,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       viewType
     }
 
-    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
   async componentDidMount() {
@@ -311,10 +313,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     const { viewType } = this.state
 
     this.setState({
-      flatListData: [],
-      flatListDataTotalCount: null,
       isLoadingMore: true,
-      queryPage: 1,
       searchBarText: text
     }, async () => {
       this._handleSearchBarTextQuery(viewType, { searchAllFieldsText: text })
@@ -322,8 +321,14 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = async (viewType: string | null, queryOptions: any) => {
-    const state = await this._queryData(viewType, { searchAllFieldsText: queryOptions.searchAllFieldsText })
-    this.setState(state)
+    this.setState({
+      flatListData: [],
+      flatListDataTotalCount: null,
+      queryPage: 1
+    }, async () => {
+      const state = await this._queryData(viewType, { searchAllFieldsText: queryOptions.searchAllFieldsText })
+      this.setState(state)
+    })
   }
 
   _handleSearchBarClear = (text: string) => {
@@ -480,7 +485,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (rightItems.some((option) => option.value === filterKey)) {
+      } else if (rightItems(viewType === downloadedKey).some((option) => option.value === filterKey)) {
         let results = []
         if (viewType === allEpisodesKey) {
           results = await this._queryAllEpisodes(querySort)
@@ -495,11 +500,10 @@ export class PodcastScreen extends React.Component<Props, State> {
         const newPodcast = await getPodcast(podcastId)
         newState.podcast = newPodcast
       }
-
       newState.queryPage = queryOptions.queryPage || 1
-
       return newState
     } catch (error) {
+      console.log(error)
       return newState
     }
 

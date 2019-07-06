@@ -90,9 +90,9 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 0,
-    height: 92,
+    height: PV.Table.cells.podcast.image.height,
     marginRight: 12,
-    width: 92
+    width: PV.Table.cells.podcast.image.width
   },
   notFoundText: {
     fontSize: PV.Fonts.sizes.lg,
@@ -124,6 +124,6 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     flexDirection: 'row',
-    height: 92
+    height: PV.Table.cells.podcast.wrapper.height
   }
 })

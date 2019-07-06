@@ -65,7 +65,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       subCategoryItems: []
     }
 
-    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, 1000)
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
   async componentDidMount() {
@@ -84,6 +84,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
       if (!appHasLaunched) {
         AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
+        AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
+        AsyncStorage.setItem(PV.Keys.STREAMING_WIFI_ONLY, 'TRUE')
         navigation.navigate(PV.RouteNames.Onboarding)
       } else {
         await this._initializeScreenData()
@@ -281,6 +283,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _renderPodcastItem = ({ item }) => {
     const { autoDownloadSettings, downloadedPodcastEpisodeCounts } = this.global
     const userLocalPodcastView = this.state.queryFrom === _subscribedKey || this.state.queryFrom === _downloadedKey
+    const episodeCount = downloadedPodcastEpisodeCounts[item.id]
 
     return (
       <PodcastTableCell
@@ -290,7 +293,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
         id={item.id}
         lastEpisodePubDate={item.lastEpisodePubDate}
         onPress={() => this.props.navigation.navigate(
-          PV.RouteNames.PodcastScreen, { podcast: item }
+          PV.RouteNames.PodcastScreen, {
+            podcast: item,
+            episodeCount
+          }
         )}
         podcastAuthors={userLocalPodcastView ? '' : generateAuthorsText(item.authors)}
         podcastCategories={userLocalPodcastView ? '' : generateCategoriesText(item.categories)}
@@ -335,10 +341,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { queryFrom } = this.state
 
     this.setState({
-      flatListData: [],
-      flatListDataTotalCount: null,
       isLoadingMore: true,
-      queryPage: 1,
       searchBarText: text
     }, async () => {
       this._handleSearchBarTextQuery(queryFrom, this.state, {}, { searchTitle: text })
@@ -346,8 +349,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextQuery = async (queryFrom: string | null, prevState: any, newState: any, queryOptions: any) => {
-    const state = await this._queryData(queryFrom, prevState, newState, { searchTitle: queryOptions.searchTitle })
-    this.setState(state)
+    this.setState({
+      flatListData: [],
+      flatListDataTotalCount: null,
+      queryPage: 1
+    }, async () => {
+      const state = await this._queryData(queryFrom, prevState, newState, { searchTitle: queryOptions.searchTitle })
+      this.setState(state)
+    })
   }
 
   render() {

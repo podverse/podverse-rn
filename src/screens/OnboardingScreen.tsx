@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
   skipSignInText: {
     color: PV.Colors.white,
-    fontSize: 16
+    fontSize: PV.Fonts.sizes.sm
   },
   signInButton: {
     alignItems: 'center',
@@ -89,18 +89,18 @@ const styles = StyleSheet.create({
   },
   signInButtonText: {
     color: PV.Colors.white,
-    fontSize: 17,
+    fontSize: PV.Fonts.sizes.md,
     fontWeight: 'bold'
   },
   title: {
     color: PV.Colors.white,
-    fontSize: 17,
+    fontSize: PV.Fonts.sizes.md,
     fontWeight: 'bold',
     marginTop: 15
   },
   text: {
     color: PV.Colors.white,
-    fontSize: 17,
+    fontSize: PV.Fonts.sizes.md,
     marginVertical: 10,
     paddingLeft: 20
   }

@@ -10,6 +10,7 @@ type Props = {
   clipEndTime?: number | null
   clipStartTime?: number | null
   globalTheme: any
+  isLoading?: boolean
   value: number
 }
 
@@ -20,7 +21,22 @@ type State = {
   slidingPosition: number | null
 }
 
+let lastPropsValue = ''
+
 export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, State> {
+
+  static getDerivedStateFromProps(nextProps: any, prevState: any) {
+    const { value } = nextProps
+    const { position } = prevState
+    if (value && value !== position && value !== lastPropsValue) {
+      lastPropsValue = value
+      return {
+        ...prevState,
+        position: value
+      }
+    }
+    return prevState
+  }
 
   constructor(props: Props) {
     super(props)
@@ -34,7 +50,7 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
   }
 
   render() {
-    const { clipEndTime, clipStartTime, globalTheme } = this.props
+    const { clipEndTime, clipStartTime, globalTheme, isLoading } = this.props
     const { duration, position, slidingPosition } = this.state
     const pos = slidingPosition || position
     const value = duration > 0 ? pos / duration : 0
@@ -65,7 +81,7 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
         }
         <Slider
           minimumValue={0}
-          maximumValue={1}
+          maximumValue={isLoading ? 0 : 1}
           onSlidingComplete={(value) => {
             const position = value * duration
             setPlaybackPosition(position)
@@ -77,11 +93,21 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
           onValueChange={(value) => this.setState({ slidingPosition: value * duration })}
           thumbStyle={styles.thumbStyle}
           thumbTintColor={PV.Colors.brandColor}
-          value={value} />
-        <View style={styles.timeRow}>
-          <Text style={styles.time}>{convertSecToHHMMSS(slidingPosition || position)}</Text>
-          <Text style={styles.time}>{duration > 0 ? convertSecToHHMMSS(duration) : '--:--'}</Text>
-        </View>
+          value={isLoading ? 0 : value} />
+        {
+          !isLoading &&
+            <View style={styles.timeRow}>
+              <Text style={styles.time}>{convertSecToHHMMSS(slidingPosition || position)}</Text>
+              <Text style={styles.time}>{duration > 0 ? convertSecToHHMMSS(duration) : '--:--'}</Text>
+            </View>
+        }
+        {
+          isLoading &&
+            <View style={styles.timeRow}>
+              <Text style={styles.time}>{'--:--'}</Text>
+              <Text style={styles.time}>{'--:--'}</Text>
+            </View>
+        }
       </View>
     )
   }
@@ -108,7 +134,7 @@ const styles = StyleSheet.create({
     width: 6
   },
   time: {
-    fontSize: 14,
+    fontSize: PV.Fonts.sizes.xs,
     lineHeight: 14,
     marginHorizontal: 12
   },

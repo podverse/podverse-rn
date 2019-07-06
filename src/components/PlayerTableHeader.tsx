@@ -67,8 +67,8 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 0,
-    height: 92,
-    width: 92
+    height: PV.Table.cells.podcast.image.height,
+    width: PV.Table.cells.podcast.image.width
   },
   podcastTitle: {
     fontSize: PV.Fonts.sizes.md,
@@ -80,6 +80,6 @@ const styles = StyleSheet.create({
     marginTop: 6
   },
   wrapper: {
-    height: 92
+    height: PV.Table.cells.podcast.wrapper.height
   }
 })

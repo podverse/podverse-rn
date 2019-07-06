@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
   },
   timeInputWrapper: {
     flex: 1,
-    height: 44
+    height: 44,
+    marginTop: 2
   }
 })

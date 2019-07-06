@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Linking, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
 import { getMembershipExpiration, getMembershipStatus, readableDate } from '../lib/utility'
@@ -38,7 +38,6 @@ export class MembershipScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { navigation } = this.props
     const { isLoading } = this.state
     const { globalTheme, session } = this.global
     const { isLoggedIn, userInfo } = session
@@ -72,24 +71,28 @@ export class MembershipScreen extends React.Component<Props, State> {
                 <Text style={styles.label}>Expires: </Text>
                 <Text style={[styles.text]}>{readableDate(expirationDate)}</Text>
               </View>
-              <View style={styles.textRow}>
+              {/* <View style={styles.textRow}>
                 <Text style={[styles.subText]}>
                   To renew your membership, go to podverse.fm, login, then visit your Settings page.
-                  </Text>
-              </View>
+                </Text>
+              </View> */}
             </View>
         }
         {
           (!isLoading && !isLoggedIn) &&
             <View>
               <View style={styles.textRowCentered}>
-                <Text style={styles.label}>1 year of premium = $5</Text>
+                <Text style={styles.subTextCentered}>
+                  Podverse premium accounts are currently available by invite only.
+                </Text>
               </View>
               <View style={styles.textRowCentered}>
                 <TextLink
-                  onPress={() => navigation.navigate(PV.RouteNames.AuthNavigator)}
-                  style={[styles.text]}>
-                  Sign up for 30 days free
+                  onPress={() => Linking.openURL(
+                    'https://docs.google.com/forms/d/e/1FAIpQLSd0LJcAQ4zViL7lrl-yg192kHOQN49rvcLcf_RPTcPn-wjmgg/viewform?usp=sf_link'
+                  )}
+                  style={[styles.subText]}>
+                  Join Waiting List
                 </TextLink>
               </View>
             </View>
@@ -126,8 +129,13 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'create clips of any length',
+    text: 'create sharable clips of any length',
     column1: true,
+    column2: true
+  },
+  {
+    text: 'create publicly discoverable clips',
+    column1: false,
     column2: true
   },
   {
@@ -166,6 +174,10 @@ const styles = StyleSheet.create({
   subText: {
     fontSize: PV.Fonts.sizes.lg
   },
+  subTextCentered: {
+    fontSize: PV.Fonts.sizes.lg,
+    textAlign: 'center'
+  },
   tableWrapper: {
     flex: 1,
     marginTop: 12
@@ -174,6 +186,11 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold
   },
+  textCentered: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.semibold,
+    textAlign: 'center'
+  },
   textRow: {
     flexDirection: 'row',
     margin: 8
@@ -181,7 +198,8 @@ const styles = StyleSheet.create({
   textRowCentered: {
     flexDirection: 'row',
     margin: 8,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    textAlign: 'center'
   },
   wrapper: {
     flex: 1,

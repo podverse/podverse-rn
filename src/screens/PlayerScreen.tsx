@@ -610,7 +610,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { episode, nowPlayingItem } = player
     const podcast = (episode && episode.podcast) || {}
     const { userInfo } = session
-    const isSubscribed = userInfo.subscribedPodcastIds.some((x: string) => x === nowPlayingItem && nowPlayingItem.podcastId)
+    const isSubscribed = userInfo.subscribedPodcastIds.some((x: string) => nowPlayingItem && nowPlayingItem.podcastId === x)
 
     const items = [
       {

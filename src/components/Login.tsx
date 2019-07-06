@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     backgroundColor: PV.Colors.white
   },
   signInButtonText: {
-    fontSize: 17,
+    fontSize: PV.Fonts.sizes.md,
     color: PV.Colors.brandColor,
     fontWeight: 'bold'
   }

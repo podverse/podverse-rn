@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Alert, AppState, Clipboard, Image, Modal, StyleSheet, TouchableOpacity, View as RNView
+import { Alert, AppState, Clipboard, Image, Modal, StyleSheet, TouchableOpacity, View as RNView, TouchableWithoutFeedback
   } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
@@ -77,7 +77,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
       await AsyncStorage.setItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED, JSON.stringify(true))
     }
 
-    const isPublic = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_IS_PUBLIC)
+    const isPublicString = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_IS_PUBLIC)
+    let isPublic = null
+    if (isPublicString) {
+      isPublic = JSON.parse(isPublicString)
+    }
 
     this.setState({
       ...(!hideHowToModal ? { showHowToModal: true } : { showHowToModal: false }),
@@ -122,6 +126,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
   _handleSelectPrivacy = async (selectedKey: string) => {
     const items = [placeholderItem, ...privacyItems]
     const selectedItem = items.find((x) => x.value === selectedKey)
+    if (selectedItem) {
+      AsyncStorage.setItem(PV.Keys.MAKE_CLIP_IS_PUBLIC, JSON.stringify(selectedItem.value === _publicKey))
+    }
     this.setState({ isPublicItemSelected: selectedItem })
   }
 
@@ -142,8 +149,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
   _saveMediaRef = async () => {
     const { navigation } = this.props
     const { endTime, isPublicItemSelected, startTime, title } = this.state
-    const { player } = this.global
+    const { player, session } = this.global
     const { nowPlayingItem } = player
+    const { isLoggedIn } = session
 
     const wasAlerted = await alertIfNoNetworkConnection('save a clip')
     if (wasAlerted) return
@@ -175,7 +183,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         ...(endTime ? { endTime } : {}),
         episodeId: nowPlayingItem.episodeId,
         ...(isEditing ? { id: nowPlayingItem.clipId } : {}),
-        ...(isPublicItemSelected.value ? { isPublic: true } : { isPublic: false }),
+        ...(isLoggedIn && isPublicItemSelected.value ? { isPublic: true } : { isPublic: false }),
         startTime,
         title
       }
@@ -239,10 +247,26 @@ export class MakeClipScreen extends React.Component<Props, State> {
     this.setState({ progressValue })
   }
 
+  _showClipPrivacyNote = async () => {
+    Alert.alert(
+      'Clip Settings',
+`Only with Link means only people who have your clip's link can play it.
+
+These clips are not private, but they will not show up automatically in lists on Podverse.
+
+A premium account is required to create Public clips.`,
+      [
+        { text: 'Ok' },
+        { text: 'Membership Info', onPress: () => this.props.navigation.navigate(PV.RouteNames.MembershipScreen) }
+      ]
+    )
+  }
+
   render() {
-    const { globalTheme, player } = this.global
+    const { globalTheme, player, session } = this.global
     const isDarkMode = globalTheme === darkTheme
     const { nowPlayingItem, playbackState } = player
+    const { isLoggedIn } = session
     const { endTime, isPublicItemSelected, isSaving, progressValue, showHowToModal, startTime, title } = this.state
 
     return (
@@ -253,23 +277,40 @@ export class MakeClipScreen extends React.Component<Props, State> {
               <Text style={[core.textInputLabel, styles.textInputLabel]}>
                 Clip Title
               </Text>
-              <RNPickerSelect
-                items={privacyItems}
-                onValueChange={this._handleSelectPrivacy}
-                placeholder={placeholderItem}
-                style={hidePickerIconOnAndroidTransparent(isDarkMode)}
-                useNativeAndroidPickerStyle={false}
-                value={isPublicItemSelected.value}>
-                <View style={styles.selectorWrapper}>
-                  <Text style={[styles.isPublicText, globalTheme.text]}>
-                    {isPublicItemSelected.label}
-                  </Text>
-                  <Icon
-                    name='angle-down'
-                    size={14}
-                    style={[styles.isPublicTextIcon, globalTheme.text]} />
-                </View>
-              </RNPickerSelect>
+              {
+                !isLoggedIn &&
+                  <TouchableWithoutFeedback onPress={this._showClipPrivacyNote}>
+                    <View style={styles.selectorWrapper}>
+                      <Text style={[styles.isPublicText, globalTheme.text]}>
+                        Only with Link
+                      </Text>
+                      <Icon
+                        name='link'
+                        size={14}
+                        style={[styles.isPublicTextIcon, globalTheme.text]} />
+                    </View>
+                  </TouchableWithoutFeedback>
+              }
+              {
+                isLoggedIn &&
+                  <RNPickerSelect
+                    items={privacyItems}
+                    onValueChange={this._handleSelectPrivacy}
+                    placeholder={placeholderItem}
+                    style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+                    useNativeAndroidPickerStyle={false}
+                    value={isPublicItemSelected.value}>
+                    <View style={styles.selectorWrapper}>
+                      <Text style={[styles.isPublicText, globalTheme.text]}>
+                        {isPublicItemSelected.label}
+                      </Text>
+                      <Icon
+                        name='angle-down'
+                        size={14}
+                        style={[styles.isPublicTextIcon, globalTheme.text]} />
+                    </View>
+                  </RNPickerSelect>
+              }
             </View>
             <TextInput
               autoCapitalize='none'
@@ -369,16 +410,13 @@ export class MakeClipScreen extends React.Component<Props, State> {
               <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
                 <RNView style={[styles.modalInnerWrapper, globalTheme.modalInnerWrapper]}>
                   <Text style={styles.modalText}>
-                    - Tap the Start and End Time boxes to set them with the current playback time.
+                    - Tap the Start and End Time boxes to set them with the current time.
                   </Text>
+                  {/* <Text style={styles.modalText}>
+                    - Swipe left and right on the bottom playback bar to adjust time more slowly.
+                  </Text> */}
                   <Text style={styles.modalText}>
-                    - Swipe left and right on the bottom play button bar to adjust time more precisely.
-                  </Text>
-                  <Text style={styles.modalText}>
-                    - If the podcast uses dynamically inserted ads, the clip start/end times may be inaccurate.
-                  </Text>
-                  <Text style={styles.modalText}>
-                    - For more info, visit podverse.fm/faq
+                    - If the podcast has dynamically inserted ads, the clip start/end times may not stay accurate.
                   </Text>
                   <TouchableOpacity
                     onPress={this._hideHowTo}>
@@ -467,7 +505,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   modalInnerWrapper: {
-    marginHorizontal: 24,
+    marginHorizontal: 12,
     padding: 24
   },
   modalText: {

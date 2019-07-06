@@ -1,4 +1,4 @@
-import { SectionList, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { SectionList, TouchableWithoutFeedback, View as RNView, Linking } from 'react-native'
 import { Badge } from 'react-native-elements'
 import React from 'reactn'
 import { Divider, TableSectionHeader, Text, View } from '../components'
@@ -29,9 +29,11 @@ export class MoreScreen extends React.Component<Props, State> {
     if (item.key === _membershipKey) {
       navigation.navigate(PV.RouteNames.MembershipScreen)
     } else if (item.key === _aboutKey) {
-      navigation.navigate(PV.RouteNames.AboutScreen)
+      Linking.openURL(PV.URLs.about)
     } else if (item.key === _feedbackKey) {
-      navigation.navigate(PV.RouteNames.FeedbackScreen)
+      Linking.openURL(PV.URLs.feedback)
+    } else if (item.key === _termsKey) {
+      Linking.openURL(PV.URLs.terms)
     } else if (item.key === _logoutKey) {
       logoutUser()
     } else if (item.key === _loginKey) {
@@ -127,6 +129,7 @@ export class MoreScreen extends React.Component<Props, State> {
 const _aboutKey = 'about'
 const _feedbackKey = 'feedback'
 const _membershipKey = 'membership'
+const _termsKey = 'terms'
 const _logoutKey = 'logout'
 const _loginKey = 'login'
 
@@ -178,6 +181,10 @@ const moreOtherOptions = (membershipStatus?: string) => {
     {
       title: 'About',
       key: _aboutKey
+    },
+    {
+      title: 'Terms',
+      key: _termsKey
     }
   ]
 

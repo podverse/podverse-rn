@@ -1,12 +1,12 @@
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getBearerToken } from './auth'
-import { addOrUpdateHistoryItem, popLastFromHistoryItems } from './history'
+import { addOrUpdateHistoryItem } from './history'
 import { clearNowPlayingItem ,getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem,
-  handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, playNextFromQueue, PVTrackPlayer,
-  setClipHasEnded, setPlaybackPosition } from './player'
+  handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, playLastFromHistory,
+  playNextFromQueue, PVTrackPlayer, setClipHasEnded, setPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
-import { getQueueItems, popNextFromQueue } from './queue'
+import { getQueueItems } from './queue'
 
 let clipEndTimeInterval: any = null
 
@@ -61,7 +61,7 @@ module.exports = async () => {
     const shouldContinuouslyPlay = await getContinuousPlaybackMode()
 
     if (shouldContinuouslyPlay && queueItems.length > 0) {
-      await playNextFromQueue(useServerData)
+      await playNextFromQueue(useServerData, true)
     } else if (queueItems.length === 0) {
       await clearNowPlayingItem()
     }
@@ -107,7 +107,9 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('remote-next', async () => {
     const bearerToken = await getBearerToken()
-    await popNextFromQueue(!!bearerToken)
+    const playerState = await PVTrackPlayer.getState()
+    const shouldPlay = playerState === PVTrackPlayer.STATE_PLAYING
+    await playNextFromQueue(!!bearerToken, shouldPlay)
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_NEXT)
   })
 
@@ -123,7 +125,9 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('remote-previous', async () => {
     const bearerToken = await getBearerToken()
-    await popLastFromHistoryItems(!!bearerToken)
+    const playerState = await PVTrackPlayer.getState()
+    const shouldPlay = playerState === PVTrackPlayer.STATE_PLAYING
+    await playLastFromHistory(!!bearerToken, shouldPlay)
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PREVIOUS)
   })
 
