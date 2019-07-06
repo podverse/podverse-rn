@@ -250,7 +250,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
   _showClipPrivacyNote = async () => {
     Alert.alert(
       'Clip Settings',
-`Only with Link means that only people who have your clip's link can play it.
+`Only with Link means only people who have your clip's link can play it.
 
 These clips are not private, but they will not show up automatically in lists on Podverse.
 
