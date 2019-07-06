@@ -9,5 +9,6 @@ export const URLs = {
   feedback: 'https://docs.google.com/forms/d/e/1FAIpQLSe-1_1qmv5Z21ZLc37KWke3cXFluItnzmstjqGwm9_BT7BGRg/viewform',
   playlist: `${root}/playlist/`,
   podcast: `${root}/podcast/`,
-  profile: `${root}/profile/`
+  profile: `${root}/profile/`,
+  terms: `${root}/terms`
 }

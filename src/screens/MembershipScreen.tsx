@@ -71,11 +71,11 @@ export class MembershipScreen extends React.Component<Props, State> {
                 <Text style={styles.label}>Expires: </Text>
                 <Text style={[styles.text]}>{readableDate(expirationDate)}</Text>
               </View>
-              <View style={styles.textRow}>
+              {/* <View style={styles.textRow}>
                 <Text style={[styles.subText]}>
                   To renew your membership, go to podverse.fm, login, then visit your Settings page.
-                  </Text>
-              </View>
+                </Text>
+              </View> */}
             </View>
         }
         {
