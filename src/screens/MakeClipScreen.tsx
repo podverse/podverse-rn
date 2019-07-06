@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Alert, AppState, Clipboard, Image, Modal, StyleSheet, TouchableOpacity, View as RNView
+import { Alert, AppState, Clipboard, Image, Modal, StyleSheet, TouchableOpacity, View as RNView, TouchableWithoutFeedback
   } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
@@ -247,6 +247,21 @@ export class MakeClipScreen extends React.Component<Props, State> {
     this.setState({ progressValue })
   }
 
+  _showClipPrivacyNote = async () => {
+    Alert.alert(
+      'Clip Settings',
+`Only with Link means that only people who have your clip's link can play it.
+
+These clips are not private, but they will not show up automatically in lists on Podverse.
+
+A premium account is required to create Public clips.`,
+      [
+        { text: 'Ok' },
+        { text: 'Membership Info', onPress: () => this.props.navigation.navigate(PV.RouteNames.MembershipScreen) }
+      ]
+    )
+  }
+
   render() {
     const { globalTheme, player, session } = this.global
     const isDarkMode = globalTheme === darkTheme
@@ -264,15 +279,17 @@ export class MakeClipScreen extends React.Component<Props, State> {
               </Text>
               {
                 !isLoggedIn &&
-                  <View style={styles.selectorWrapper}>
-                    <Text style={[styles.isPublicText, globalTheme.text]}>
-                      Only with Link
-                    </Text>
-                    <Icon
-                      name='link'
-                      size={14}
-                      style={[styles.isPublicTextIcon, globalTheme.text]} />
-                  </View>
+                  <TouchableWithoutFeedback onPress={this._showClipPrivacyNote}>
+                    <View style={styles.selectorWrapper}>
+                      <Text style={[styles.isPublicText, globalTheme.text]}>
+                        Only with Link
+                      </Text>
+                      <Icon
+                        name='link'
+                        size={14}
+                        style={[styles.isPublicTextIcon, globalTheme.text]} />
+                    </View>
+                  </TouchableWithoutFeedback>
               }
               {
                 isLoggedIn &&
