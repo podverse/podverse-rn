@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { Alert, StyleSheet } from 'react-native'
+import { Alert, StyleSheet, Linking } from 'react-native'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBar, View
   } from '../components'
@@ -189,6 +189,12 @@ export class SearchScreen extends React.Component<Props, State> {
     this.setState({ showActionSheet: false })
   }
 
+  _navToRequestPodcastForm = async () => {
+    Linking.openURL(
+      'https://docs.google.com/forms/d/e/1FAIpQLSdewKP-YrE8zGjDPrkmoJEwCxPl_gizEkmzAlTYsiWAuAk1Ng/viewform?usp=sf_link'
+    )
+  }
+
   render() {
     const { flatListData, flatListDataTotalCount, isLoading, isLoadingMore, searchBarText, searchType,
       showActionSheet } = this.state
@@ -214,11 +220,13 @@ export class SearchScreen extends React.Component<Props, State> {
               dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={true}
               extraData={flatListData}
+              handleRequestPodcast={this._navToRequestPodcastForm}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               onEndReached={this._onEndReached}
               renderItem={this._renderPodcastItem}
-              resultsText='podcasts' />
+              resultsText='podcasts'
+              showRequestPodcast={true} />
         }
         {
           isLoading &&

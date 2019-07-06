@@ -4,7 +4,7 @@ import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { GlobalTheme } from '../resources/Interfaces'
-import { ActivityIndicator, Text, View } from './'
+import { ActivityIndicator, Text, TextLink, View } from './'
 
 type Props = {
   data?: any
@@ -13,6 +13,7 @@ type Props = {
   extraData?: any
   handleFilterInputChangeText?: any
   handleFilterInputClear?: any
+  handleRequestPodcast?: any
   initialScrollIndex?: number
   isLoadingMore?: boolean
   isRefreshing?: boolean
@@ -26,7 +27,7 @@ type Props = {
   renderHiddenItem?: any
   renderItem: any
   resultsText?: string
-  searchBarText?: string
+  showRequestPodcast?: boolean
 }
 
 // This line silences a ref warning when a Flatlist doesn't need to be swipable.
@@ -34,9 +35,9 @@ const _renderHiddenItem = () => <View />
 
 export const PVFlatList = (props: Props) => {
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
-  const { data, dataTotalCount, disableLeftSwipe = true, extraData, isLoadingMore, isRefreshing = false,
+  const { data, dataTotalCount, disableLeftSwipe = true, extraData, handleRequestPodcast, isLoadingMore, isRefreshing = false,
     ItemSeparatorComponent, keyExtractor, ListHeaderComponent, noSubscribedPodcasts, onEndReached, onEndReachedThreshold = 0.9,
-    onRefresh, renderHiddenItem, renderItem, resultsText = 'results' } = props
+    onRefresh, renderHiddenItem, renderItem, resultsText = 'results', showRequestPodcast } = props
 
   let noResultsFound = false
   let endOfResults = false
@@ -48,6 +49,14 @@ export const PVFlatList = (props: Props) => {
   if (!isLoadingMore && data && dataTotalCount && dataTotalCount > 0 && data.length >= dataTotalCount) {
     endOfResults = true
   }
+
+  const requestPodcastTextLink = (
+    <TextLink
+      onPress={handleRequestPodcast}
+      style={[styles.textLink]}>
+      Request a podcast
+    </TextLink>
+  )
 
   return (
     <View style={styles.view}>
@@ -65,6 +74,10 @@ export const PVFlatList = (props: Props) => {
         noResultsFound && !noSubscribedPodcasts &&
           <View style={styles.msgView}>
             <Text style={[styles.lastCellText]}>{`No ${resultsText} found`}</Text>
+            {
+              showRequestPodcast &&
+                requestPodcastTextLink
+            }
           </View>
       }
       {
@@ -89,6 +102,10 @@ export const PVFlatList = (props: Props) => {
                 return (
                   <View style={[styles.lastCell, globalTheme.tableCellBorder]}>
                     <Text style={[styles.lastCellText]}>{`End of ${resultsText}`}</Text>
+                    {
+                      showRequestPodcast &&
+                        requestPodcastTextLink
+                    }
                   </View>
                 )
               }
@@ -110,9 +127,8 @@ export const PVFlatList = (props: Props) => {
 const styles = StyleSheet.create({
   lastCell: {
     borderTopWidth: 1,
-    height: PV.FlatList.lastCell.height,
     justifyContent: 'center',
-    lineHeight: PV.FlatList.lastCell.height
+    padding: 24
   },
   lastCellText: {
     fontSize: PV.Fonts.sizes.lg,
@@ -122,6 +138,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center'
+  },
+  textLink: {
+    fontSize: PV.Fonts.sizes.lg,
+    marginVertical: 12,
+    paddingVertical: 12,
+    textAlign: 'center'
   },
   view: {
     flex: 1
