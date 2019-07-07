@@ -104,7 +104,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                 column1Title='Free'
                 column2Title='Premium'
                 data={comparisonData}
-                mainTitle='Features' />
+                mainTitle='Podverse Features' />
             </View>
           }
       </View>
@@ -124,17 +124,17 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'manage your player queue',
+    text: 'manage your queue',
     column1: true,
     column2: true
   },
   {
-    text: 'create sharable clips of any length',
+    text: 'create clips of any length',
     column1: true,
     column2: true
   },
   {
-    text: 'create publicly discoverable clips',
+    text: 'create more discoverable clips',
     column1: false,
     column2: true
   },
