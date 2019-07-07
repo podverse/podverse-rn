@@ -268,27 +268,6 @@
 			remoteGlobalIDString = B5027B1B2237B30F00F1AABA;
 			remoteInfo = "RNCNetInfo-tvOS";
 		};
-		30BDF56122B6129B00A1D5C4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CC0EDE2045F74D99B67EFDBB /* RNBackgroundDownloader.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 134814201AA4EA6300B7C361;
-			remoteInfo = RNBackgroundDownloader;
-		};
-		30BDF56522B6129B00A1D5C4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CAB39295C544427A9BDE7EF5 /* RNFS.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
-			remoteInfo = RNFS;
-		};
-		30BDF56722B6129B00A1D5C4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CAB39295C544427A9BDE7EF5 /* RNFS.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6456441F1EB8DA9100672408;
-			remoteInfo = "RNFS-tvOS";
-		};
 		30C62C1422A3789F006C8D44 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0B260F9F732F4DE6AC2E9365 /* RNSecureKeyStore.xcodeproj */;
@@ -829,23 +808,6 @@
 			children = (
 				3049099A229F993700CA1B95 /* libRNCNetInfo.a */,
 				3049099C229F993700CA1B95 /* libRNCNetInfo-tvOS.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		30BDF55C22B6129B00A1D5C4 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				30BDF56622B6129B00A1D5C4 /* libRNFS.a */,
-				30BDF56822B6129B00A1D5C4 /* libRNFS.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		30BDF55E22B6129B00A1D5C4 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				30BDF56222B6129B00A1D5C4 /* libRNBackgroundDownloader.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1488,27 +1450,6 @@
 			fileType = archive.ar;
 			path = "libRNCNetInfo-tvOS.a";
 			remoteRef = 3049099B229F993700CA1B95 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		30BDF56222B6129B00A1D5C4 /* libRNBackgroundDownloader.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNBackgroundDownloader.a;
-			remoteRef = 30BDF56122B6129B00A1D5C4 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		30BDF56622B6129B00A1D5C4 /* libRNFS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNFS.a;
-			remoteRef = 30BDF56522B6129B00A1D5C4 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		30BDF56822B6129B00A1D5C4 /* libRNFS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNFS.a;
-			remoteRef = 30BDF56722B6129B00A1D5C4 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		30C62C1522A3789F006C8D44 /* libRNSecureKeyStore-tvOS.a */ = {
