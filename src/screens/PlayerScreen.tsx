@@ -481,7 +481,8 @@ export class PlayerScreen extends React.Component<Props, State> {
                   handleSelectLeftItem={this._selectViewType}
                   handleSelectRightItem={this._selectQuerySort}
                   leftItems={viewTypeOptions}
-                  rightItems={viewType && viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES ? querySortOptions : []}
+                  rightItems={viewType && viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES ?
+                    querySortOptions(viewType === PV.Keys.VIEW_TYPE_EPISODES) : []}
                   selectedLeftItemKey={viewType}
                   selectedRightItemKey={querySort} />
                 {
@@ -675,28 +676,42 @@ const viewTypeOptions = [
   }
 ]
 
-const querySortOptions = [
-  {
-    label: 'most recent',
-    value: PV.Keys.QUERY_SORT_MOST_RECENT
-  },
-  {
-    label: 'top - past day',
-    value: PV.Keys.QUERY_SORT_TOP_PAST_DAY
-  },
-  {
-    label: 'top - past week',
-    value: PV.Keys.QUERY_SORT_TOP_PAST_WEEK
-  },
-  {
-    label: 'top - past month',
-    value: PV.Keys.QUERY_SORT_TOP_PAST_MONTH
-  },
-  {
-    label: 'top - past year',
-    value: PV.Keys.QUERY_SORT_TOP_PAST_YEAR
+const querySortOptions = (includeOldest?: boolean) => {
+  const items = [
+    {
+      label: 'most recent',
+      value: PV.Keys.QUERY_SORT_MOST_RECENT
+    }
+  ]
+
+  if (includeOldest) {
+    items.push({
+      label: 'oldest',
+      value: PV.Keys.QUERY_SORT_OLDEST
+    })
   }
-]
+
+  items.push(
+    {
+      label: 'top - past day',
+      value: PV.Keys.QUERY_SORT_TOP_PAST_DAY
+    },
+    {
+      label: 'top - past week',
+      value: PV.Keys.QUERY_SORT_TOP_PAST_WEEK
+    },
+    {
+      label: 'top - past month',
+      value: PV.Keys.QUERY_SORT_TOP_PAST_MONTH
+    },
+    {
+      label: 'top - past year',
+      value: PV.Keys.QUERY_SORT_TOP_PAST_YEAR
+    }
+  )
+
+  return items
+}
 
 const queryFromOptions = [
   {
