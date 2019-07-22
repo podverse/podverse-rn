@@ -2,8 +2,6 @@ import axios from 'axios'
 import { Alert } from 'react-native'
 import { PV } from '../resources'
 
-const API_BASE_URL = 'https://api.stage.podverse.fm/api/v1'
-
 type PVRequest = {
   endpoint?: string,
   query?: {},
@@ -30,7 +28,7 @@ export const request = async (req: PVRequest, nsfwMode?: boolean) => {
   }).join('&')
 
   const axiosRequest = {
-    url: `${API_BASE_URL}${endpoint}?${queryString}`,
+    url: `${PV.URLs.baseUrl}${endpoint}?${queryString}`,
     headers,
     ...(body ? { data: body } : {}),
     method,

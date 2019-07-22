@@ -2031,6 +2031,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
+				WEB_DOMAIN = stage.podverse.fm;
 			};
 			name = Debug;
 		};
@@ -2071,6 +2072,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
+				WEB_DOMAIN = podverse.fm;
 			};
 			name = Release;
 		};
