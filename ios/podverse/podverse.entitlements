@@ -4,8 +4,8 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:stage.podverse.fm</string>
-		<string>activitycontinuation:stage.podverse.fm</string>
+		<string>applinks:$(WEB_DOMAIN)</string>
+		<string>activitycontinuation:$(WEB_DOMAIN)</string>
 	</array>
 </dict>
 </plist>
