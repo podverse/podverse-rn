@@ -41,15 +41,17 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
+    const { isLoggedIn } = this.global.session
+
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
       isLoading: true,
       isLoadingMore: false,
-      queryFrom: _allPodcastsKey,
+      queryFrom: isLoggedIn ? _subscribedKey : _allPodcastsKey,
       queryPage: 1,
-      querySort: _mostRecentKey,
+      querySort: _topPastWeek,
       searchBarText: '',
       showActionSheet: false
     }
