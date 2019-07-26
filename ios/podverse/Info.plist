@@ -88,5 +88,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Please allow Poverse to use your location to provide you with a better user experience.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Please allow Poverse to use your location to provide you with a better user experience.</string>
 </dict>
 </plist>
