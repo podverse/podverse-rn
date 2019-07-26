@@ -18,6 +18,7 @@ export const Keys = {
   QUERY_FROM_THIS_EPISODE: 'QUERY_FROM_THIS_EPISODE',
   QUERY_FROM_THIS_PODCAST: 'QUERY_FROM_THIS_PODCAST',
   QUERY_SORT_MOST_RECENT: 'most-recent',
+  QUERY_SORT_OLDEST: 'oldest',
   QUERY_SORT_TOP_PAST_DAY: 'top-past-day',
   QUERY_SORT_TOP_PAST_WEEK: 'top-past-week',
   QUERY_SORT_TOP_PAST_MONTH: 'top-past-month',

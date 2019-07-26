@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet } from 'react-native'
+import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { Icon, Text, View } from '.'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -11,6 +11,7 @@ type Props = {
   clipTitle?: string
   episodePubDate?: string
   episodeTitle?: string
+  handleOnPress?: any
   handleRemovePress?: any
   hideBottomRow?: boolean
   podcastImageUrl?: string
@@ -21,72 +22,75 @@ type Props = {
 
 export const QueueTableCell = (props: Props) => {
   const { clipEndTime, clipStartTime, clipTitle = 'untitled clip', episodePubDate,
-    episodeTitle = 'untilted episode', handleRemovePress, hideBottomRow, podcastImageUrl,
+    episodeTitle = 'untilted episode', handleOnPress, handleRemovePress, hideBottomRow, podcastImageUrl,
     podcastTitle = 'untitled podcast', showMoveButton, showRemoveButton } = props
 
   return (
-    <View style={styles.wrapper}>
-      <View style={styles.wrapperTop}>
-        <Image
-          key={podcastImageUrl}
-          source={{ uri: podcastImageUrl }}
-          style={styles.image} />
-        <View style={styles.textWrapper}>
-          <Text
-            isSecondary={true}
-            numberOfLines={1}
-            style={styles.podcastTitle}>
-            {podcastTitle}
-          </Text>
-          <Text
-            numberOfLines={1}
-            style={styles.episodeTitle}>
-            {episodeTitle}
-          </Text>
-          {
-            !!episodePubDate &&
-              <Text
-                isSecondary={true}
-                numberOfLines={1}
-                style={styles.episodePubDate}>
-                {readableDate(episodePubDate)}
-              </Text>
-          }
-        </View>
-        {
-          showMoveButton &&
-            <Icon
-              name='bars'
-              size={28}
-              style={button.iconOnlyMedium} />
-        }
-        {
-          showRemoveButton && handleRemovePress &&
-            <Icon
-              name='times'
-              onPress={handleRemovePress}
-              size={28}
-              style={button.iconOnlyMedium} />
-        }
-      </View>
-      {
-        !hideBottomRow &&
-          <View style={styles.wrapperBottom}>
+    <TouchableWithoutFeedback
+      {...(handleOnPress && (!showMoveButton && !showRemoveButton) ? { onPress: handleOnPress } : {})}>
+      <View style={styles.wrapper}>
+        <View style={styles.wrapperTop}>
+          <Image
+            key={podcastImageUrl}
+            source={{ uri: podcastImageUrl }}
+            style={styles.image} />
+          <View style={styles.textWrapper}>
+            <Text
+              isSecondary={true}
+              numberOfLines={1}
+              style={styles.podcastTitle}>
+              {podcastTitle}
+            </Text>
             <Text
               numberOfLines={1}
-              style={styles.clipTitle}>
-              {clipStartTime ? clipTitle : 'Full Episode'}
+              style={styles.episodeTitle}>
+              {episodeTitle}
             </Text>
             {
-              !!clipStartTime &&
+              !!episodePubDate &&
                 <Text
-                  style={styles.clipTime}>
-                  {readableClipTime(clipStartTime, clipEndTime)}
+                  isSecondary={true}
+                  numberOfLines={1}
+                  style={styles.episodePubDate}>
+                  {readableDate(episodePubDate)}
                 </Text>
             }
           </View>
-      }
-    </View>
+          {
+            showMoveButton &&
+              <Icon
+                name='bars'
+                size={28}
+                style={button.iconOnlyMedium} />
+          }
+          {
+            showRemoveButton && handleRemovePress &&
+              <Icon
+                name='times'
+                onPress={handleRemovePress}
+                size={28}
+                style={button.iconOnlyMedium} />
+          }
+        </View>
+        {
+          !hideBottomRow &&
+            <View style={styles.wrapperBottom}>
+              <Text
+                numberOfLines={1}
+                style={styles.clipTitle}>
+                {clipStartTime ? clipTitle : 'Full Episode'}
+              </Text>
+              {
+                !!clipStartTime &&
+                  <Text
+                    style={styles.clipTime}>
+                    {readableClipTime(clipStartTime, clipEndTime)}
+                  </Text>
+              }
+            </View>
+        }
+      </View>
+    </TouchableWithoutFeedback>
   )
 }
 

@@ -204,19 +204,28 @@ export class QueueScreen extends React.Component<Props, State> {
     }
   }
 
-  _onPressRow = async (rowIndex) => {
-    const { queueItems } = this.state
-    const item = queueItems[rowIndex]
-
+  _handlePlayItem = async (item: NowPlayingItem) => {
     try {
-      const result = await setNowPlayingItem(item, this.global)
-      this.setState({
-        nowPlayingItem: result.nowPlayingItem,
-        queueItems: result.queueItems
+      const { navigation } = this.props
+      this.setState({ isLoading: true }, async () => {
+        navigation.goBack()
+        navigation.navigate(PV.RouteNames.PlayerScreen)
+        const result = await setNowPlayingItem(item, this.global, false, true)
+        this.setState({
+          isLoading: false,
+          nowPlayingItem: result.nowPlayingItem,
+          queueItems: result.queueItems
+        })
       })
     } catch (error) {
       //
     }
+  }
+
+  _onPressRow = async (rowIndex: number) => {
+    const { queueItems } = this.state
+    const item = queueItems[rowIndex]
+    this._handlePlayItem(item)
   }
 
   _renderHistoryItem = ({ item = {} }) => {
@@ -229,6 +238,7 @@ export class QueueScreen extends React.Component<Props, State> {
         clipTitle={item.clipTitle}
         episodePubDate={item.episodePubDate}
         episodeTitle={item.episodeTitle}
+        handleOnPress={() => this._handlePlayItem(item)}
         handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
         key={`QueueScreen_history_item_${item.clipId || item.episodeId}`}
         podcastImageUrl={item.podcastImageUrl}
@@ -397,7 +407,7 @@ const styles = StyleSheet.create({
   navHeaderTextButton: {
     marginLeft: 2,
     textAlign: 'right',
-    width: 60
+    width: 66
   },
   tableCellDivider: {
     marginBottom: 2

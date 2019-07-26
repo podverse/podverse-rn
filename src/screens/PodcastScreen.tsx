@@ -18,8 +18,8 @@ import { removeDownloadedPodcastEpisode, updateAutoDownloadSettings } from '../s
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
-const { aboutKey, allEpisodesKey, clipsKey, downloadedKey, mostRecentKey, topPastDay, topPastMonth,
-  topPastWeek, topPastYear } = PV.Filters
+const { aboutKey, allEpisodesKey, clipsKey, downloadedKey, mostRecentKey, oldestKey, topPastDay,
+  topPastMonth, topPastWeek, topPastYear } = PV.Filters
 
 type Props = {
   navigation?: any
@@ -373,7 +373,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     const autoDownloadOn = (podcast && autoDownloadSettings[podcast.id])
       || (podcastId && autoDownloadSettings[podcastId])
 
-    let items = rightItems(false)
+    let items = rightItems(false, viewType === allEpisodesKey)
     if (viewType === downloadedKey) {
       const { downloadedPodcasts } = this.global
       const downloadedPodcast = downloadedPodcasts.find((x: any) => ((podcast && x.id === podcast.id) || x.id === podcastId))
@@ -485,8 +485,9 @@ export class PodcastScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (rightItems(viewType === downloadedKey).some((option) => option.value === filterKey)) {
+      } else if (rightItems(viewType === downloadedKey, viewType === allEpisodesKey).some((option) => option.value === filterKey)) {
         let results = []
+
         if (viewType === allEpisodesKey) {
           results = await this._queryAllEpisodes(querySort)
         } else if (viewType === clipsKey) {
@@ -529,37 +530,51 @@ const leftItems = [
   }
 ]
 
-const rightItems = (onlyMostRecent?: boolean) => [
-  ...(onlyMostRecent ?
-  [
-    {
+const rightItems = (onlyMostRecent?: boolean, includeOldest?: boolean) => {
+  const items = []
+
+  if (onlyMostRecent) {
+    items.push({
       label: 'most recent',
       value: mostRecentKey
+    })
+  } else {
+    items.push(
+      {
+        label: 'most recent',
+        value: mostRecentKey
+      }
+    )
+
+    if (includeOldest) {
+      items.push({
+        label: 'oldest',
+        value: oldestKey
+      })
     }
-  ] :
-  [
-    {
-      label: 'most recent',
-      value: mostRecentKey
-    },
-    {
-      label: 'top - past day',
-      value: topPastDay
-    },
-    {
-      label: 'top - past week',
-      value: topPastWeek
-    },
-    {
-      label: 'top - past month',
-      value: topPastMonth
-    },
-    {
-      label: 'top - past year',
-      value: topPastYear
-    }
-  ]
-)]
+
+    items.push(
+      {
+        label: 'top - past day',
+        value: topPastDay
+      },
+      {
+        label: 'top - past week',
+        value: topPastWeek
+      },
+      {
+        label: 'top - past month',
+        value: topPastMonth
+      },
+      {
+        label: 'top - past year',
+        value: topPastYear
+      }
+    )
+  }
+
+  return items
+}
 
 const styles = {
   aboutView: {

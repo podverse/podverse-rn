@@ -69,7 +69,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { navigation } = this.props
     const { flatListData } = this.state
 
     if (Platform.OS === 'android') {
@@ -86,7 +85,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
         AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
         AsyncStorage.setItem(PV.Keys.STREAMING_WIFI_ONLY, 'TRUE')
-        navigation.navigate(PV.RouteNames.Onboarding)
+        // navigation.navigate(PV.RouteNames.Onboarding)
       } else {
         await this._initializeScreenData()
       }

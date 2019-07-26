@@ -103,7 +103,8 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
   })
 
   const data = response && response.data || []
-  const { subscribedPodcastIds } = data
+  const { subscribedPodcastIds = [] } = data
+
   AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
 
   return [
