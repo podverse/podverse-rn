@@ -378,7 +378,7 @@ A premium account is required to create Public clips.`,
                 }
                 {
                   playbackState === PVTrackPlayer.STATE_BUFFERING &&
-                    <ActivityIndicator />
+                    <ActivityIndicator styles={styles.activityIndicator} />
                 }
               </TouchableOpacity>
               <TouchableOpacity
