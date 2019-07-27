@@ -94,7 +94,7 @@ export const PVFlatList = (props: Props) => {
             ListFooterComponent={() => {
               if (isLoadingMore) {
                 return (
-                  <View styles={[styles.lastCell, globalTheme.tableCellBorder]}>
+                  <View style={[styles.lastCell, globalTheme.tableCellBorder]}>
                     <ActivityIndicator />
                   </View>
                 )
