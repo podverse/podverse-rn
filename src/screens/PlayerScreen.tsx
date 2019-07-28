@@ -88,16 +88,18 @@ export class PlayerScreen extends React.Component<Props, State> {
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_QUEUE_ENDED)
   }
 
-  _handleAppStateChange = async () => {
-    const { dismiss } = this.props.navigation
-    const { nowPlayingItem: lastItem } = this.global
-    const currentItem = await getNowPlayingItem()
+  _handleAppStateChange = async (nextAppState: any) => {
+    if (nextAppState === 'active') {
+      const { dismiss } = this.props.navigation
+      const { nowPlayingItem: lastItem } = this.global.player
+      const currentItem = await getNowPlayingItem()
 
-    if (!currentItem) {
-      dismiss()
-    } else if ((currentItem && !lastItem) ||
-      (currentItem && lastItem && currentItem.episodeId !== lastItem.episodeId)) {
-      await setNowPlayingItem(currentItem, this.global)
+      if (!currentItem) {
+        dismiss()
+      } else if ((currentItem && !lastItem) ||
+        (currentItem && lastItem && currentItem.episodeId !== lastItem.episodeId)) {
+        await setNowPlayingItem(currentItem, this.global)
+      }
     }
   }
 

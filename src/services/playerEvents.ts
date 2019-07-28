@@ -92,7 +92,6 @@ module.exports = async () => {
         const isConnected = await hasValidNetworkConnection()
         const useServerData = isLoggedIn && isConnected
         nowPlayingItem.userPlaybackPosition = currentPosition
-        console.log('playbackstate', nowPlayingItem, x)
         await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(nowPlayingItem))
         await addOrUpdateHistoryItem(nowPlayingItem, useServerData)
       }
