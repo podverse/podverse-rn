@@ -229,6 +229,10 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
       await setPlaybackPosition(userPlaybackPosition || (oldItem && oldItem.userPlaybackPosition) || 0)
     }
 
+    if (!isNewEpisode && !isNewMediaRef && (userPlaybackPosition || userPlaybackPosition === 0)) {
+      await setPlaybackPosition(userPlaybackPosition)
+    }
+
     const items = await getQueueItems(useServerData)
 
     let filteredItems = [] as any[]

@@ -4,7 +4,7 @@ import { getBearerToken } from './auth'
 import { addOrUpdateHistoryItem } from './history'
 import { clearNowPlayingItem ,getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem,
   handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, playLastFromHistory,
-  playNextFromQueue, PVTrackPlayer, setClipHasEnded, setPlaybackPosition } from './player'
+  playNextFromQueue, PVTrackPlayer, setClipHasEnded, setPlaybackPosition, setNowPlayingItem } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 import { getQueueItems } from './queue'
 
@@ -55,7 +55,7 @@ module.exports = async () => {
 
     const nowPlayingItem = await getNowPlayingItem() || {}
     nowPlayingItem.userPlaybackPosition = 0
-    await addOrUpdateHistoryItem(nowPlayingItem, useServerData)
+    await setNowPlayingItem(nowPlayingItem, false, false, 0, false)
 
     const queueItems = await getQueueItems(useServerData)
     const shouldContinuouslyPlay = await getContinuousPlaybackMode()
