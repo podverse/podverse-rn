@@ -129,6 +129,7 @@ export interface IFilters {
   clipsKey: string
   aboutKey: string
   mostRecentKey: string
+  mostRecentAllKey: string
   oldestKey: string
   topPastDay: string
   topPastWeek: string

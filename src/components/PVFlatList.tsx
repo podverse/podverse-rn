@@ -14,6 +14,7 @@ type Props = {
   handleFilterInputChangeText?: any
   handleFilterInputClear?: any
   handleRequestPodcast?: any
+  hideEndOfResults?: boolean
   initialScrollIndex?: number
   isLoadingMore?: boolean
   isRefreshing?: boolean
@@ -35,9 +36,9 @@ const _renderHiddenItem = () => <View />
 
 export const PVFlatList = (props: Props) => {
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
-  const { data, dataTotalCount, disableLeftSwipe = true, extraData, handleRequestPodcast, isLoadingMore, isRefreshing = false,
-    ItemSeparatorComponent, keyExtractor, ListHeaderComponent, noSubscribedPodcasts, onEndReached, onEndReachedThreshold = 0.9,
-    onRefresh, renderHiddenItem, renderItem, resultsText = 'results', showRequestPodcast } = props
+  const { data, dataTotalCount, disableLeftSwipe = true, extraData, handleRequestPodcast, hideEndOfResults,
+    isLoadingMore, isRefreshing = false, ItemSeparatorComponent, keyExtractor, ListHeaderComponent, noSubscribedPodcasts, onEndReached,
+    onEndReachedThreshold = 0.9, onRefresh, renderHiddenItem, renderItem, resultsText = 'results', showRequestPodcast } = props
 
   let noResultsFound = false
   let endOfResults = false
@@ -98,7 +99,7 @@ export const PVFlatList = (props: Props) => {
                     <ActivityIndicator />
                   </View>
                 )
-              } else if (endOfResults) {
+              } else if (endOfResults && !hideEndOfResults) {
                 return (
                   <View style={[styles.lastCell, globalTheme.tableCellBorder]}>
                     <Text style={[styles.lastCellText]}>{`End of ${resultsText}`}</Text>
