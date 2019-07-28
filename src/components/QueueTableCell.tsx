@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { Image, StyleSheet } from 'react-native'
 import { Icon, Text, View } from '.'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -11,7 +11,6 @@ type Props = {
   clipTitle?: string
   episodePubDate?: string
   episodeTitle?: string
-  handleOnPress?: any
   handleRemovePress?: any
   hideBottomRow?: boolean
   podcastImageUrl?: string
@@ -22,12 +21,11 @@ type Props = {
 
 export const QueueTableCell = (props: Props) => {
   const { clipEndTime, clipStartTime, clipTitle = 'untitled clip', episodePubDate,
-    episodeTitle = 'untilted episode', handleOnPress, handleRemovePress, hideBottomRow, podcastImageUrl,
+    episodeTitle = 'untilted episode', handleRemovePress, hideBottomRow, podcastImageUrl,
     podcastTitle = 'untitled podcast', showMoveButton, showRemoveButton } = props
 
   return (
-    <TouchableWithoutFeedback
-      {...(handleOnPress && (!showMoveButton && !showRemoveButton) ? { onPress: handleOnPress } : {})}>
+
       <View style={styles.wrapper}>
         <View style={styles.wrapperTop}>
           <Image
@@ -90,7 +88,6 @@ export const QueueTableCell = (props: Props) => {
             </View>
         }
       </View>
-    </TouchableWithoutFeedback>
   )
 }
 

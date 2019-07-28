@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getBearerToken } from './auth'
@@ -56,6 +57,7 @@ module.exports = async () => {
     const nowPlayingItem = await getNowPlayingItem() || {}
     nowPlayingItem.userPlaybackPosition = 0
     await addOrUpdateHistoryItem(nowPlayingItem, useServerData)
+    await setPlaybackPosition(0)
 
     const queueItems = await getQueueItems(useServerData)
     const shouldContinuouslyPlay = await getContinuousPlaybackMode()
@@ -84,14 +86,16 @@ module.exports = async () => {
         await handleResumeAfterClipHasEnded()
       }
 
-      // handle updating history item after event emit, because it is less urgent than the UI update
-      const bearerToken = await getBearerToken()
-      const isLoggedIn = !!bearerToken
-      const isConnected = await hasValidNetworkConnection()
-      const useServerData = isLoggedIn && isConnected
-
-      nowPlayingItem.userPlaybackPosition = currentPosition
-      await addOrUpdateHistoryItem(nowPlayingItem, useServerData)
+      if (x.state === 'playing' || x.state === 'paused') {
+        // handle updating history item after event emit, because it is less of a priority than the UI update
+        const bearerToken = await getBearerToken()
+        const isLoggedIn = !!bearerToken
+        const isConnected = await hasValidNetworkConnection()
+        const useServerData = isLoggedIn && isConnected
+        nowPlayingItem.userPlaybackPosition = currentPosition
+        await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(nowPlayingItem))
+        await addOrUpdateHistoryItem(nowPlayingItem, useServerData)
+      }
     }
   })
 

@@ -66,7 +66,8 @@ const initialTheme: InitialState = {
   settings: {
     nsfwMode: true
   },
-  subscribedPodcasts: []
+  subscribedPodcasts: [],
+  subscribedPodcastsTotalCount: 0
 }
 
 export default initialTheme

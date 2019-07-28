@@ -170,7 +170,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
 
     if (nowPlayingItemString) {
-      await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global, true)
+      await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global, true, false, null, true)
     }
   }
 
@@ -366,7 +366,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     let flatListDataTotalCount = null
     if (queryFrom === _subscribedKey) {
       flatListData = this.global.subscribedPodcasts
-      flatListDataTotalCount = this.global.subscribedPodcasts.length
+      flatListDataTotalCount = this.global.subscribedPodcastsTotalCount
     } else if (queryFrom === _downloadedKey) {
       flatListData = this.global.downloadedPodcasts
       flatListDataTotalCount = this.global.downloadedPodcasts.length

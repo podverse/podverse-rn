@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import RNSecureKeyStore from 'react-native-secure-key-store'
 import { PV } from '../resources'
 import { getBearerToken } from './auth'
 import { request } from './request'

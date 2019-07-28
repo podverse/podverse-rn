@@ -4,8 +4,10 @@ import { getPodcast as getPodcastService, getSubscribedPodcasts as getSubscribed
   } from '../../services/podcast'
 
 export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
-  const subscribedPodcasts = await getSubscribedPodcastsService(subscribedPodcastIds)
-  setGlobal({ subscribedPodcasts })
+  const data = await getSubscribedPodcastsService(subscribedPodcastIds)
+  const subscribedPodcasts = data[0]
+  const subscribedPodcastsTotalCount = data[1]
+  setGlobal({ subscribedPodcasts, subscribedPodcastsTotalCount })
   return subscribedPodcasts
 }
 
