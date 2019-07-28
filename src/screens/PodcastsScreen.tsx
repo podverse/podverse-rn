@@ -170,7 +170,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
 
     if (nowPlayingItemString) {
-      await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global, true)
+      await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global, true, false, null, true)
     }
   }
 
