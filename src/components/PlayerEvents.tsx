@@ -49,9 +49,9 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     const nowPlayingItem = await getNowPlayingItem()
 
     if (nowPlayingItem) {
-      await setNowPlayingItem(nowPlayingItem, this.global)
+      await setNowPlayingItem(nowPlayingItem, this.global, false, false, null, false)
     } else {
-      await clearNowPlayingItem(this.global)
+      await clearNowPlayingItem()
     }
   }
 

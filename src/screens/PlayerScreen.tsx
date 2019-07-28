@@ -98,7 +98,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         dismiss()
       } else if ((currentItem && !lastItem) ||
         (currentItem && lastItem && currentItem.episodeId !== lastItem.episodeId)) {
-        await setNowPlayingItem(currentItem, this.global)
+        await setNowPlayingItem(currentItem, this.global, false, false, null, false)
       }
     }
   }
