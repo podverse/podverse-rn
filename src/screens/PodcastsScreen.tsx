@@ -366,7 +366,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     let flatListDataTotalCount = null
     if (queryFrom === _subscribedKey) {
       flatListData = this.global.subscribedPodcasts
-      flatListDataTotalCount = this.global.subscribedPodcasts.length
+      flatListDataTotalCount = this.global.subscribedPodcastsTotalCount
     } else if (queryFrom === _downloadedKey) {
       flatListData = this.global.downloadedPodcasts
       flatListDataTotalCount = this.global.downloadedPodcasts.length

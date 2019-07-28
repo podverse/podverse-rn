@@ -21,6 +21,7 @@ export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
   const filteredQuery = {
     ...(query.includeAuthors ? { includeAuthors: query.includeAuthors } : {}),
     ...(query.includeCategories ? { includeCategories: query.includeCategories } : {}),
+    ...(query.maxResults ? { maxResults: true } : {}),
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
     ...(query.searchAuthor ? { searchAuthor: query.searchAuthor } : {}),
@@ -45,7 +46,8 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   if (subscribedPodcastIds.length < 1) return []
   const query = {
     podcastIds: subscribedPodcastIds,
-    sort: 'alphabetical'
+    sort: 'alphabetical',
+    maxResults: true
   }
   const isConnected = await hasValidNetworkConnection()
 
@@ -58,6 +60,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
       const autoDownloadSettings = autoDownloadSettingsString ? JSON.parse(autoDownloadSettingsString) : {}
       const data = await getPodcasts(query, true)
       const subscribedPodcasts = data[0]
+      const subscribedPodcastsTotalCount = data[1]
       const podcastIds = Object.keys(autoDownloadSettings).filter((key: string) => autoDownloadSettings[key] === true)
       const autoDownloadEpisodes = await getAutoDownloadEpisodes(dateObj, podcastIds)
 
@@ -76,7 +79,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
 
       await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED, new Date().toISOString())
       await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts || []))
-      return subscribedPodcasts
+      return [subscribedPodcasts, subscribedPodcastsTotalCount]
     } catch (error) {
       console.log(error)
       return []
