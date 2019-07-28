@@ -29,13 +29,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
   _adjustSpeed = async () => {
     const { playbackRate } = this.global.player
-    const index = speeds.indexOf(playbackRate)
+    const index = PV.Player.speeds.indexOf(playbackRate)
 
     let newSpeed
-    if (speeds.length - 1 === index) {
-      newSpeed = speeds[0]
+    if (PV.Player.speeds.length - 1 === index) {
+      newSpeed = PV.Player.speeds[0]
     } else {
-      newSpeed = speeds[index + 1]
+      newSpeed = PV.Player.speeds[index + 1]
     }
 
     await setPlaybackSpeed(newSpeed, this.global)
@@ -138,22 +138,6 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     )
   }
 }
-
-const _speedOneHalfKey = 0.5
-const _speedThreeQuartersKey = 0.75
-const _speedNormalKey = 1.0
-const _speedOneAndAQuarterKey = 1.25
-const _speedOneAndAHalfKey = 1.5
-const _speedDoubleKey = 2
-
-const speeds = [
-  _speedOneHalfKey,
-  _speedThreeQuartersKey,
-  _speedNormalKey,
-  _speedOneAndAQuarterKey,
-  _speedOneAndAHalfKey,
-  _speedDoubleKey
-]
 
 const styles = StyleSheet.create({
   bottomButton: {
