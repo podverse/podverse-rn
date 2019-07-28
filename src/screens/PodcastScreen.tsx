@@ -18,7 +18,7 @@ import { removeDownloadedPodcastEpisode, updateAutoDownloadSettings } from '../s
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
-const { aboutKey, allEpisodesKey, clipsKey, downloadedKey, mostRecentKey, oldestKey, topPastDay,
+const { aboutKey, allEpisodesKey, clipsKey, downloadedKey, mostRecentKey, mostRecentAllKey, oldestKey, topPastDay,
   topPastMonth, topPastWeek, topPastYear } = PV.Filters
 
 type Props = {
@@ -418,6 +418,7 @@ export class PodcastScreen extends React.Component<Props, State> {
               disableLeftSwipe={viewType !== downloadedKey}
               extraData={flatListData}
               {...(viewType === downloadedKey ? { handleHiddenItemPress: this._handleHiddenItemPress } : {})}
+              hideEndOfResults={querySort === mostRecentAllKey}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
@@ -448,6 +449,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     const results = await getEpisodes({
       sort, page, podcastId, ...(searchAllFieldsText ? { searchAllFieldsText } : {})
     }, this.global.settings.nsfwMode)
+
     return results
   }
 
@@ -569,6 +571,10 @@ const rightItems = (onlyMostRecent?: boolean, includeOldest?: boolean) => {
       {
         label: 'top - past year',
         value: topPastYear
+      },
+      {
+        label: 'most recent (all)',
+        value: mostRecentAllKey
       }
     )
   }

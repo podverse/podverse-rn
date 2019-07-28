@@ -6,6 +6,7 @@ export const Filters: IFilters = {
   clipsKey: 'clips',
   aboutKey: 'about',
   mostRecentKey: 'most-recent',
+  mostRecentAllKey: 'most-recent-all',
   oldestKey: 'oldest',
   topPastDay: 'top-past-day',
   topPastWeek: 'top-past-week',

@@ -115,6 +115,7 @@ export interface InitialState {
     userInfo: UserInfo
   }
   subscribedPodcasts: []
+  subscribedPodcastsTotalCount: number
 }
 
 export interface IActionSheet {
@@ -129,6 +130,7 @@ export interface IFilters {
   clipsKey: string
   aboutKey: string
   mostRecentKey: string
+  mostRecentAllKey: string
   oldestKey: string
   topPastDay: string
   topPastWeek: string

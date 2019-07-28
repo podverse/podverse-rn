@@ -238,7 +238,6 @@ export class QueueScreen extends React.Component<Props, State> {
         clipTitle={item.clipTitle}
         episodePubDate={item.episodePubDate}
         episodeTitle={item.episodeTitle}
-        handleOnPress={() => this._handlePlayItem(item)}
         handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
         key={`QueueScreen_history_item_${item.clipId || item.episodeId}`}
         podcastImageUrl={item.podcastImageUrl}

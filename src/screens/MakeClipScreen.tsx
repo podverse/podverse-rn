@@ -11,7 +11,7 @@ import { createMediaRef, updateMediaRef } from '../services/mediaRef'
 import { getNowPlayingItem, playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime,
   PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { setNowPlayingItem, togglePlay } from '../state/actions/player'
+import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, navHeader, playerStyles } from '../styles'
 
 type Props = {
@@ -54,13 +54,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
       progressValue: initialProgressValue || 0,
       startTime: isEditing ? nowPlayingItem.clipStartTime : null
     }
-
-    this.setGlobal({
-      player: {
-        ...this.global.player,
-        showMakeClip: true
-      }
-    })
   }
 
   async componentDidMount() {
@@ -83,16 +76,23 @@ export class MakeClipScreen extends React.Component<Props, State> {
       isPublic = JSON.parse(isPublicString)
     }
 
-    this.setState({
-      ...(!hideHowToModal ? { showHowToModal: true } : { showHowToModal: false }),
-      ...(!isEditing ? { startTime: Math.floor(currentPosition) } : {}),
-      ...(isPublic || isPublic === null ? { isPublicItemSelected: privacyItems[0] }
-        : { isPublicItemSelected: privacyItems[1] }),
-      title: isEditing ? nowPlayingItem.clipTitle : ''
-    })
+    this.setGlobal({
+      player: {
+        ...this.global.player,
+        showMakeClip: true
+      }
+    }, () => {
+      this.setState({
+        ...(!hideHowToModal ? { showHowToModal: true } : { showHowToModal: false }),
+        ...(!isEditing ? { startTime: Math.floor(currentPosition) } : {}),
+        ...(isPublic || isPublic === null ? { isPublicItemSelected: privacyItems[0] }
+          : { isPublicItemSelected: privacyItems[1] }),
+        title: isEditing ? nowPlayingItem.clipTitle : ''
+      })
 
-    AppState.addEventListener('change', this._handleAppStateChange)
-    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handleAppStateChange)
+      AppState.addEventListener('change', this._handleAppStateChange)
+      PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handleAppStateChange)
+    })
   }
 
   componentWillUnmount() {
@@ -140,6 +140,20 @@ export class MakeClipScreen extends React.Component<Props, State> {
   _setEndTime = async () => {
     const currentPosition = await PVTrackPlayer.getPosition()
     this.setState({ endTime: Math.floor(currentPosition) })
+  }
+
+  _adjustSpeed = async () => {
+    const { playbackRate } = this.global.player
+    const index = PV.Player.speeds.indexOf(playbackRate)
+
+    let newSpeed
+    if (PV.Player.speeds.length - 1 === index) {
+      newSpeed = PV.Player.speeds[0]
+    } else {
+      newSpeed = PV.Player.speeds[index + 1]
+    }
+
+    await setPlaybackSpeed(newSpeed, this.global)
   }
 
   _clearEndTime = () => {
@@ -265,7 +279,7 @@ A premium account is required to create Public clips.`,
   render() {
     const { globalTheme, player, session } = this.global
     const isDarkMode = globalTheme === darkTheme
-    const { nowPlayingItem, playbackState } = player
+    const { nowPlayingItem, playbackRate, playbackState } = player
     const { isLoggedIn } = session
     const { endTime, isPublicItemSelected, isSaving, progressValue, showHowToModal, startTime, title } = this.state
 
@@ -378,7 +392,7 @@ A premium account is required to create Public clips.`,
                 }
                 {
                   playbackState === PVTrackPlayer.STATE_BUFFERING &&
-                    <ActivityIndicator />
+                    <ActivityIndicator styles={styles.activityIndicator} />
                 }
               </TouchableOpacity>
               <TouchableOpacity
@@ -389,7 +403,12 @@ A premium account is required to create Public clips.`,
                   size={32} />
               </TouchableOpacity>
             </RNView>
-            <View style={styles.bottomButtonRow} />
+            <View style={styles.bottomRow}>
+              <TouchableWithoutFeedback onPress={this._adjustSpeed}>
+                <Text style={[styles.bottomButton, styles.bottomRowText]}>{`${playbackRate}X`}</Text>
+              </TouchableWithoutFeedback>
+              <View style={styles.bottomButton} />
+            </View>
           </View>
         </View>
         {
@@ -460,10 +479,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: 60
   },
-  bottomButtonRow: {
+  bottomRow: {
     alignItems: 'center',
+    flexDirection: 'row',
     height: 48,
-    justifyContent: 'center'
+    justifyContent: 'space-around'
+  },
+  bottomRowText: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold
   },
   endTime: {
     flex: 1,

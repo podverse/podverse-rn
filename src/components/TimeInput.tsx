@@ -92,12 +92,12 @@ const styles = StyleSheet.create({
   },
   timeInputTouchableDelete: {
     alignItems: 'center',
-    bottom: 0,
+    height: 44,
     justifyContent: 'center',
     paddingHorizontal: 4,
     position: 'absolute',
     right: 0,
-    top: 0,
+    top: 2,
     width: 54
   },
   timeInputWrapper: {

@@ -66,7 +66,7 @@ export const setContinousPlaybackMode = async (shouldContinuouslyPlay: boolean, 
 }
 
 export const setNowPlayingItem = async (
-  item: NowPlayingItem, globalState: any, isInitialLoad?: boolean, startPlayer?: boolean, userPlaybackPosition?: number,
+  item: NowPlayingItem, globalState: any, isInitialLoad?: boolean, startPlayer?: boolean, userPlaybackPosition?: number | null,
   skipAddToHistory?: boolean) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -133,6 +133,13 @@ export const setNowPlayingItem = async (
 
           resolve(result)
         } catch (error) {
+          setGlobal({
+            screenPlayer: {
+              ...globalState.screenPlayer,
+              isLoading: false
+            }
+          })
+
           reject(error)
         }
       })
