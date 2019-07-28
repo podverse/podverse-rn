@@ -133,6 +133,13 @@ export const setNowPlayingItem = async (
 
           resolve(result)
         } catch (error) {
+          setGlobal({
+            screenPlayer: {
+              ...globalState.screenPlayer,
+              isLoading: false
+            }
+          })
+
           reject(error)
         }
       })
