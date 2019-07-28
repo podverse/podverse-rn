@@ -54,13 +54,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
       progressValue: initialProgressValue || 0,
       startTime: isEditing ? nowPlayingItem.clipStartTime : null
     }
-
-    this.setGlobal({
-      player: {
-        ...this.global.player,
-        showMakeClip: true
-      }
-    })
   }
 
   async componentDidMount() {
@@ -83,16 +76,23 @@ export class MakeClipScreen extends React.Component<Props, State> {
       isPublic = JSON.parse(isPublicString)
     }
 
-    this.setState({
-      ...(!hideHowToModal ? { showHowToModal: true } : { showHowToModal: false }),
-      ...(!isEditing ? { startTime: Math.floor(currentPosition) } : {}),
-      ...(isPublic || isPublic === null ? { isPublicItemSelected: privacyItems[0] }
-        : { isPublicItemSelected: privacyItems[1] }),
-      title: isEditing ? nowPlayingItem.clipTitle : ''
-    })
+    this.setGlobal({
+      player: {
+        ...this.global.player,
+        showMakeClip: true
+      }
+    }, () => {
+      this.setState({
+        ...(!hideHowToModal ? { showHowToModal: true } : { showHowToModal: false }),
+        ...(!isEditing ? { startTime: Math.floor(currentPosition) } : {}),
+        ...(isPublic || isPublic === null ? { isPublicItemSelected: privacyItems[0] }
+          : { isPublicItemSelected: privacyItems[1] }),
+        title: isEditing ? nowPlayingItem.clipTitle : ''
+      })
 
-    AppState.addEventListener('change', this._handleAppStateChange)
-    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handleAppStateChange)
+      AppState.addEventListener('change', this._handleAppStateChange)
+      PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handleAppStateChange)
+    })
   }
 
   componentWillUnmount() {
