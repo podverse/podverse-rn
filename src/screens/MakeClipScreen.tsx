@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Alert, AppState, Clipboard, Image, Modal, StyleSheet, TouchableOpacity, View as RNView, TouchableWithoutFeedback
-  } from 'react-native'
+import { Alert, AppState, Image, Modal, Share, StyleSheet, TouchableOpacity, TouchableWithoutFeedback,
+  View as RNView } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInput, TimeInput, View
@@ -228,9 +228,13 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 }
               },
               {
-                text: 'Copy Link',
-                onPress: () => {
-                  Clipboard.setString(url)
+                text: 'Share',
+                onPress: async () => {
+                  try {
+                    await Share.share({ url })
+                  } catch (error) {
+                    alert(error.message)
+                  }
                   navigation.goBack(null)
                 }
               }
