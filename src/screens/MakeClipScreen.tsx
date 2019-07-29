@@ -230,10 +230,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
               {
                 text: 'Share',
                 onPress: async () => {
-                  try {
-                    await Share.share({ url })
-                  } catch (error) {
-                    alert(error.message)
+                  if (!isEditing) {
+                    try {
+                      await Share.share({ url })
+                    } catch (error) {
+                      alert(error.message)
+                    }
                   }
                   navigation.goBack(null)
                 }
