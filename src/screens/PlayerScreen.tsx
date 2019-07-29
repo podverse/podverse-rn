@@ -537,6 +537,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           <ActionSheet
             handleCancelPress={this._dismissShareActionSheet}
             items={shareActionSheetButtons(podcastId, episodeId, mediaRefId, this._handleShare)}
+            message='What link do you want to share?'
             showModal={showShareActionSheet}
             title='Share' />
           <ActionSheet
