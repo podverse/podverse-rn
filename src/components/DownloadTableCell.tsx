@@ -19,8 +19,8 @@ type Props = {
 }
 
 export const DownloadTableCell = (props: Props) => {
-  const { bytesTotal = '---', bytesWritten = '---', completed, episodeTitle = 'untitled episode', onPress, percent,
-    podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER, podcastTitle = 'untitled podcast', status } = props
+  const { bytesTotal = '---', bytesWritten = '---', completed, episodeTitle = 'Untitled episode', onPress, percent,
+    podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER, podcastTitle = 'Untitled podcast', status } = props
   const per = completed ? 1 : percent
   const statusText = getDownloadStatusText(status)
 

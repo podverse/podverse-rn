@@ -155,8 +155,8 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
   try {
     const bearerToken = await getBearerToken()
     const isLoggedIn = !!bearerToken
-    const { clipId, episodeId, episodeMediaUrl = '', episodeTitle = 'untitled episode', podcastImageUrl,
-      podcastTitle = 'untitled podcast' } = item
+    const { clipId, episodeId, episodeMediaUrl = '', episodeTitle = 'Untitled episode', podcastImageUrl,
+      podcastTitle = 'Untitled podcast' } = item
 
     const isConnected = await hasValidNetworkConnection()
     const useServerData = isLoggedIn && isConnected
