@@ -197,7 +197,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         ...(endTime ? { endTime } : {}),
         episodeId: nowPlayingItem.episodeId,
         ...(isEditing ? { id: nowPlayingItem.clipId } : {}),
-        ...(isLoggedIn && isPublicItemSelected.value ? { isPublic: true } : { isPublic: false }),
+        ...(isLoggedIn && isPublicItemSelected.value === _publicKey ? { isPublic: true } : { isPublic: false }),
         startTime,
         title
       }
