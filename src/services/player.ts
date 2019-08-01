@@ -252,6 +252,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
 
     if (!hasStreamingConnection) {
       PlayerEventEmitter.emit(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
+      return
     }
 
     if (isTrackLoaded) {
