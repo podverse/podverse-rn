@@ -92,7 +92,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                           style={styles.link}>
                           {ownerName}
                         </TextLink> :
-                        <Text style={styles.inlineText}>{ownerName}</Text>
+                        <Text style={styles.inlineText}>anonymous</Text>
                     }
                   </View>
                 </ScrollView>
