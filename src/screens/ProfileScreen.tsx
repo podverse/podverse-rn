@@ -356,7 +356,8 @@ export class ProfileScreen extends React.Component<Props, State> {
       querySort, selectedItem, showActionSheet, userId } = this.state
     const { profile, session } = this.global
     const { user } = profile
-    const { id } = session.userInfo
+    const { isLoggedIn, userInfo } = session
+    const { id } = userInfo
     let rightOptions = [] as any[]
     const { navigation } = this.props
     const isLoggedInUserProfile = userId && id && userId === id
@@ -373,18 +374,18 @@ export class ProfileScreen extends React.Component<Props, State> {
     } else if (queryFrom === _playlistsKey) {
       resultsText = 'playlists'
     }
-
+    const isMyProfile = navigation.getParam('isMyProfile')
     return (
       <View style={styles.view}>
         {
-          !isLoggedInUserProfile &&
+          isMyProfile && !isLoggedIn &&
             <MessageWithAction
               actionHandler={this._onPressLogin}
               actionText='Login'
               message='Login to view your profile' />
         }
         {
-          isLoggedInUserProfile &&
+          !(isMyProfile && !isLoggedIn) &&
             <View style={styles.view}>
               <ProfileTableHeader
                 handleEditPress={isLoggedInUserProfile ? this._handleEditPress : null}
