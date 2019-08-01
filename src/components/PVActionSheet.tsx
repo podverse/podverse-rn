@@ -1,7 +1,7 @@
 import { Animated, Modal, Text, TouchableHighlight, View } from 'react-native'
 import React from 'reactn'
+import { ActivityIndicator } from '.'
 import { PV } from '../resources/PV'
-import { ActivityIndicator } from '.';
 
 type Props = {
   handleCancelPress?: any
@@ -180,7 +180,8 @@ const styles = {
     paddingVertical: 12
   },
   headerMessage: {
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.sm,
+    marginTop: 4,
     textAlign: 'center'
   },
   headerTitle: {

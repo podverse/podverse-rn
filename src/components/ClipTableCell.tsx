@@ -21,7 +21,7 @@ type Props = {
 
 export const ClipTableCell = (props: Props) => {
   const { downloadedEpisodeIds = {}, downloadsActive = {}, endTime, episodeId, episodePubDate = '', episodeTitle, handleMorePress,
-    podcastImageUrl, podcastTitle, startTime, title = 'untitled clip' } = props
+    podcastImageUrl, podcastTitle, startTime, title = 'Untitled clip' } = props
 
   const clipTime = readableClipTime(startTime, endTime)
 

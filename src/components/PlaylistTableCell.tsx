@@ -12,7 +12,7 @@ type Props = {
 }
 
 export const PlaylistTableCell = (props: Props) => {
-  const { createdBy, isSaving, itemCount = 0, onPress, title = 'untitled playlist' } = props
+  const { createdBy, isSaving, itemCount = 0, onPress, title = 'Untitled playlist' } = props
 
   const wrapperTopStyles = [styles.wrapperTop]
   if (createdBy) wrapperTopStyles.push(styles.wrapperTopWithCreatedBy)

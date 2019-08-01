@@ -18,7 +18,7 @@ type Props = {
 
 export const PodcastTableHeader = (props: Props) => {
   const { autoDownloadOn, handleToggleAutoDownload, handleToggleSubscribe, isLoading, isNotFound, isSubscribed,
-    isSubscribing, podcastImageUrl, podcastTitle = 'untitled podcast' } = props
+    isSubscribing, podcastImageUrl, podcastTitle = 'Untitled podcast' } = props
 
   return (
     <View style={core.row}>

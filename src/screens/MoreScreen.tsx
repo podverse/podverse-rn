@@ -43,7 +43,8 @@ export class MoreScreen extends React.Component<Props, State> {
       navigation.navigate(
         PV.RouteNames.ProfileScreen, {
           user,
-          navigationTitle: 'My Profile'
+          navigationTitle: 'My Profile',
+          isMyProfile: true
         }
       )
     } else {

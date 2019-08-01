@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
-import { Alert } from 'react-native'
+import { Alert, Share } from 'react-native'
 import { IActionSheet } from '../resources/Interfaces'
 import { setNowPlayingItem } from '../state/actions/player'
 import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
@@ -87,6 +87,25 @@ const mediaMoreButtons = (item: any = {}, isLoggedIn: boolean, globalState: any,
       }
     }
   )
+
+  buttons.push({
+    key: 'share',
+    text: 'Share',
+    onPress: async () => {
+      try {
+        let url = ''
+        if (item.clipId) {
+          url = PV.URLs.clip + item.clipId
+        } else if (item.episodeId) {
+          url = PV.URLs.episode + item.episodeId
+        }
+        await Share.share({ url })
+      } catch (error) {
+        alert(error.message)
+      }
+      await handleDismiss()
+    }
+  })
 
   if (navigation.getParam('includeGoToPodcast')) {
     buttons.push({

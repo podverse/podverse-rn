@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Alert, AppState, Clipboard, Image, Modal, StyleSheet, TouchableOpacity, View as RNView, TouchableWithoutFeedback
-  } from 'react-native'
+import { Alert, AppState, Image, Modal, Share, StyleSheet, TouchableOpacity, TouchableWithoutFeedback,
+  View as RNView } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInput, TimeInput, View
@@ -197,7 +197,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         ...(endTime ? { endTime } : {}),
         episodeId: nowPlayingItem.episodeId,
         ...(isEditing ? { id: nowPlayingItem.clipId } : {}),
-        ...(isLoggedIn && isPublicItemSelected.value ? { isPublic: true } : { isPublic: false }),
+        ...(isLoggedIn && isPublicItemSelected.value === _publicKey ? { isPublic: true } : { isPublic: false }),
         startTime,
         title
       }
@@ -228,9 +228,15 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 }
               },
               {
-                text: 'Copy Link',
-                onPress: () => {
-                  Clipboard.setString(url)
+                text: 'Share',
+                onPress: async () => {
+                  if (!isEditing) {
+                    try {
+                      await Share.share({ url })
+                    } catch (error) {
+                      alert(error.message)
+                    }
+                  }
                   navigation.goBack(null)
                 }
               }
@@ -264,11 +270,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
   _showClipPrivacyNote = async () => {
     Alert.alert(
       'Clip Settings',
-`Only with Link means only people who have your clip's link can play it.
-
-These clips will not show up automatically in lists on Podverse.
-
-A premium account is required to create Public clips.`,
+      `Only with Link means only people who have your clip's link can play it. These clips will not show up automatically in lists on Podverse. A premium account is required to create Public clips.`,
       [
         { text: 'Premium Info', onPress: () => this.props.navigation.navigate(PV.RouteNames.MembershipScreen) },
         { text: 'Ok' }
