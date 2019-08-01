@@ -211,6 +211,10 @@ export class ClipsScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleSearchNavigation = () => {
+    this.props.navigation.navigate(PV.RouteNames.SearchScreen)
+  }
+
   _deleteMediaRef = async () => {
     const { mediaRefIdToDelete } = this.state
     let { flatListData, flatListDataTotalCount } = this.state
@@ -267,16 +271,17 @@ export class ClipsScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && flatListData &&
+          !isLoading && queryFrom &&
             <FlatList
               data={flatListData}
               dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={queryFrom !== _myClipsKey}
               extraData={flatListData}
+              handleSearchNavigation={this._handleSearchNavigation}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               ListHeaderComponent={this._ListHeaderComponent}
-              noSubscribedPodcasts={queryFrom === _subscribedKey && flatListData.length === 0}
+              noSubscribedPodcasts={queryFrom === _subscribedKey && (!flatListData || flatListData.length === 0)}
               onEndReached={this._onEndReached}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderClipItem} />

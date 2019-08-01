@@ -23,7 +23,8 @@ TrackPlayer.setupPlayer().then(() => {
       TrackPlayer.CAPABILITY_PLAY,
       TrackPlayer.CAPABILITY_SEEK_TO
     ],
-    stopWithApp: true
+    stopWithApp: true,
+    alwaysPauseOnInterruption: true
   })
 })
 

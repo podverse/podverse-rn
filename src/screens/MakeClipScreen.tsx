@@ -267,6 +267,16 @@ export class MakeClipScreen extends React.Component<Props, State> {
     this.setState({ progressValue })
   }
 
+  _playerMiniJumpBackward = async () => {
+    const progressValue = await playerJumpBackward(PV.Player.miniJumpSeconds)
+    this.setState({ progressValue })
+  }
+
+  _playerMiniJumpForward = async () => {
+    const progressValue = await playerJumpForward(PV.Player.miniJumpSeconds)
+    this.setState({ progressValue })
+  }
+
   _showClipPrivacyNote = async () => {
     Alert.alert(
       'Clip Settings',
@@ -352,7 +362,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 }}
                 handleSetTime={this._setStartTime}
                 labelText='Start Time'
-                placeholder='tap here'
+                placeholder='--:--'
                 time={startTime}
                 wrapperStyle={styles.timeInput} />
               <TimeInput
@@ -384,6 +394,13 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   size={32} />
               </TouchableOpacity>
               <TouchableOpacity
+                onPress={this._playerMiniJumpBackward}
+                style={playerStyles.icon}>
+                <Icon
+                  name='angle-left'
+                  size={24} />
+              </TouchableOpacity>
+              <TouchableOpacity
                 onPress={() => togglePlay(this.global)}
                 style={[playerStyles.iconLarge, styles.playButton]}>
                 {
@@ -396,6 +413,13 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   playbackState === PVTrackPlayer.STATE_BUFFERING &&
                     <ActivityIndicator styles={styles.activityIndicator} />
                 }
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={this._playerMiniJumpForward}
+                style={playerStyles.icon}>
+                <Icon
+                  name='angle-right'
+                  size={24} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={this._playerJumpForward}
@@ -433,9 +457,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   <Text style={styles.modalText}>
                     - Tap the Start and End Time boxes to set them with the current time.
                   </Text>
-                  {/* <Text style={styles.modalText}>
-                    - Swipe left and right on the bottom playback bar to adjust time more slowly.
-                  </Text> */}
                   <Text style={styles.modalText}>
                     - If the podcast has dynamically inserted ads, the clip start/end times may not stay accurate.
                   </Text>

@@ -212,6 +212,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleSearchNavigation = () => {
+    this.props.navigation.navigate(PV.RouteNames.SearchScreen)
+  }
+
   _handleDownloadPressed = () => {
     if (this.state.selectedItem) {
       const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
@@ -238,16 +242,17 @@ export class EpisodesScreen extends React.Component<Props, State> {
           <ActivityIndicator />
         }
         {
-          !isLoading && flatListData &&
+          !isLoading && queryFrom &&
             <FlatList
               data={flatListData}
               dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={queryFrom !== _downloadedKey}
               extraData={flatListData}
+              handleSearchNavigation={this._handleSearchNavigation}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               ListHeaderComponent={queryFrom !== _downloadedKey ? this._ListHeaderComponent : null}
-              noSubscribedPodcasts={queryFrom === _subscribedKey && flatListData.length === 0}
+              noSubscribedPodcasts={queryFrom === _subscribedKey && (!flatListData || flatListData.length === 0)}
               onEndReached={this._onEndReached}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderEpisodeItem}
