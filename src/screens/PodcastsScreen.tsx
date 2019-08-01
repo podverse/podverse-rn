@@ -357,6 +357,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleSearchNavigation = () => {
+    this.props.navigation.navigate(PV.RouteNames.SearchScreen)
+  }
+
   render() {
     const { categoryItems, queryFrom, isLoading, isLoadingMore, isRefreshing, querySort,
       selectedCategory, selectedSubCategory, subCategoryItems } = this.state
@@ -401,17 +405,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && queryFrom && flatListData &&
+          !isLoading && queryFrom &&
             <FlatList
               data={flatListData}
               dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={queryFrom !== _subscribedKey}
               extraData={flatListData}
+              handleSearchNavigation={this._handleSearchNavigation}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               {...(queryFrom !== _subscribedKey && queryFrom !== _downloadedKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
-              noSubscribedPodcasts={queryFrom === _subscribedKey && flatListData.length === 0}
+              noSubscribedPodcasts={queryFrom === _subscribedKey && (!flatListData || flatListData.length === 0)}
               onEndReached={this._onEndReached}
               onRefresh={queryFrom === _subscribedKey ? this._onRefresh : null}
               renderHiddenItem={this._renderHiddenItem}
