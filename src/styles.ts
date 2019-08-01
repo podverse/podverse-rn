@@ -454,8 +454,10 @@ export const navHeader = StyleSheet.create({
 
 export const playerStyles = StyleSheet.create({
   icon: {
-    paddingHorizontal: 12,
-    paddingVertical: 4
+    alignItems: 'center',
+    height: 60,
+    justifyContent: 'center',
+    width: 60
   },
   iconDisabled: {
     opacity: 0.5,
