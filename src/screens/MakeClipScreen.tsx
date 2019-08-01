@@ -362,7 +362,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 }}
                 handleSetTime={this._setStartTime}
                 labelText='Start Time'
-                placeholder='tap here'
+                placeholder='--:--'
                 time={startTime}
                 wrapperStyle={styles.timeInput} />
               <TimeInput
