@@ -146,6 +146,17 @@ module.exports = async () => {
     }
   })
 
+  PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
+    const { paused, permanent } = x
+    if (permanent) {
+      PVTrackPlayer.stop()
+    } else if (paused) {
+      PVTrackPlayer.pause()
+    } else {
+      PVTrackPlayer.play()
+    }
+    PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_DUCK)
+  })
+
   // PVTrackPlayer.addEventListener('remote-skip', (x) => console.log('remote skip to track in queue'))
-  // PVTrackPlayer.addEventListener('remote-duck', (x) => console.log('remote duck'))
 }

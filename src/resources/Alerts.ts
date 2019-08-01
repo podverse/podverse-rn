@@ -35,7 +35,7 @@ export const Alerts = {
     title: 'Sign Up Error'
   },
   SOMETHING_WENT_WRONG: {
-    message: 'Please check your internet connection and try again.',
+    message: 'Please check your internet connection and try again later.',
     title: _networkErrorTitle
   }
 }
