@@ -397,7 +397,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 onPress={this._playerMiniJumpBackward}
                 style={playerStyles.icon}>
                 <Icon
-                  name='angle-double-left'
+                  name='angle-left'
                   size={24} />
               </TouchableOpacity>
               <TouchableOpacity
@@ -418,7 +418,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 onPress={this._playerMiniJumpForward}
                 style={playerStyles.icon}>
                 <Icon
-                  name='angle-double-right'
+                  name='angle-right'
                   size={24} />
               </TouchableOpacity>
               <TouchableOpacity

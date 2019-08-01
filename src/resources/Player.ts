@@ -15,7 +15,7 @@ const speeds = [
 ]
 
 export const Player = {
-  miniJumpSeconds: 5,
+  miniJumpSeconds: 1,
   jumpSeconds: 15,
   speeds
 }
