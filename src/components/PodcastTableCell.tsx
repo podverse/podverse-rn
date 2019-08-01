@@ -22,7 +22,7 @@ type Props = {
 export const PodcastTableCell = (props: Props) => {
   const { autoDownloadSettings, downloadedPodcastEpisodeCounts, id, lastEpisodePubDate,
     onPress, podcastAuthors, podcastCategories, podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
-    podcastTitle = 'untitled podcast', showAutoDownload, showDownloadCount } = props
+    podcastTitle = 'Untitled podcast', showAutoDownload, showDownloadCount } = props
 
   let downloadCount = 0
   if (showDownloadCount && downloadedPodcastEpisodeCounts) {

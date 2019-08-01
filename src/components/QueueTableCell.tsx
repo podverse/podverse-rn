@@ -20,9 +20,9 @@ type Props = {
 }
 
 export const QueueTableCell = (props: Props) => {
-  const { clipEndTime, clipStartTime, clipTitle = 'untitled clip', episodePubDate,
-    episodeTitle = 'untilted episode', handleRemovePress, hideBottomRow, podcastImageUrl,
-    podcastTitle = 'untitled podcast', showMoveButton, showRemoveButton } = props
+  const { clipEndTime, clipStartTime, clipTitle = 'Untitled clip', episodePubDate,
+    episodeTitle = 'Untilted episode', handleRemovePress, hideBottomRow, podcastImageUrl,
+    podcastTitle = 'Untitled podcast', showMoveButton, showRemoveButton } = props
 
   return (
 

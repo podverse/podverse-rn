@@ -4,6 +4,7 @@ import { ActivityIndicator, Divider, FlatList, MessageWithAction, ProfileTableCe
   View } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
+import { getAuthUserInfo } from '../state/actions/auth'
 import { getPublicUsersByQuery, toggleSubscribeToUser } from '../state/actions/user'
 
 type Props = {
@@ -39,6 +40,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
     const { navigation } = this.props
 
     if (this.global.session.isLoggedIn) {
+      await getAuthUserInfo()
       const newState = await this._queryData(1)
       this.setState(newState)
     }
@@ -109,16 +111,24 @@ export class ProfilesScreen extends React.Component<Props, State> {
   render() {
     const { isLoading, isLoadingMore } = this.state
     const { flatListData, flatListDataTotalCount } = this.global.profiles
+    const { isLoggedIn } = this.global.session
 
     return (
       <View style={styles.view}>
         <View style={styles.view}>
           {
+            !isLoading && !isLoggedIn &&
+              <MessageWithAction
+                actionHandler={this._onPressLogin}
+                actionText='Login'
+                message='Login to view your profiles' />
+          }
+          {
             isLoading &&
               <ActivityIndicator />
           }
           {
-            !isLoading && flatListData && flatListData.length > 0 &&
+            isLoggedIn && !isLoading && flatListData && flatListData.length > 0 &&
               <FlatList
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
@@ -131,7 +141,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
                 renderItem={this._renderProfileItem} />
           }
           {
-            !isLoading && flatListData && flatListData.length === 0 &&
+            isLoggedIn && !isLoading && flatListData && flatListData.length === 0 &&
               <MessageWithAction
                 message='You have no subscribed profiles'
                 subMessage='Ask a friend to send a link to their profile, then subscribe to it' />

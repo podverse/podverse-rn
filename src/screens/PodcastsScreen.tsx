@@ -229,7 +229,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       flatListDataTotalCount: null
     }, async () => {
       const newState = await this._queryData(selectedKey, this.state, {}, { isSubCategory })
-
       this.setState(newState)
     })
   }
@@ -358,6 +357,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleSearchNavigation = () => {
+    this.props.navigation.navigate(PV.RouteNames.SearchScreen)
+  }
+
   render() {
     const { categoryItems, queryFrom, isLoading, isLoadingMore, isRefreshing, querySort,
       selectedCategory, selectedSubCategory, subCategoryItems } = this.state
@@ -402,17 +405,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
             <ActivityIndicator />
         }
         {
-          !isLoading && queryFrom && flatListData &&
+          !isLoading && queryFrom &&
             <FlatList
               data={flatListData}
               dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={queryFrom !== _subscribedKey}
               extraData={flatListData}
+              handleSearchNavigation={this._handleSearchNavigation}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               {...(queryFrom !== _subscribedKey && queryFrom !== _downloadedKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
-              noSubscribedPodcasts={queryFrom === _subscribedKey && flatListData.length === 0}
+              noSubscribedPodcasts={queryFrom === _subscribedKey && (!flatListData || flatListData.length === 0)}
               onEndReached={this._onEndReached}
               onRefresh={queryFrom === _subscribedKey ? this._onRefresh : null}
               renderHiddenItem={this._renderHiddenItem}
@@ -482,8 +486,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === _categoryKey) {
         const { querySort, selectedCategory, selectedSubCategory } = prevState
-        if (selectedSubCategory || selectedCategory) {
-          const results = await this._queryPodcastsByCategory(selectedSubCategory || selectedCategory, querySort, newState.queryPage)
+        if (selectedCategory && selectedSubCategory === _allCategoriesKey) {
+          const results = await this._queryPodcastsByCategory(selectedCategory, querySort, newState.queryPage)
+          newState.flatListData = [...flatListData, ...results[0]]
+          newState.endOfResultsReached = newState.flatListData.length >= results[1]
+          newState.flatListDataTotalCount = results[1]
+        } else if (selectedSubCategory) {
+          const results = await this._queryPodcastsByCategory(selectedSubCategory, querySort, newState.queryPage)
           newState.flatListData = [...flatListData, ...results[0]]
           newState.endOfResultsReached = newState.flatListData.length >= results[1]
           newState.flatListDataTotalCount = results[1]
@@ -516,6 +525,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           const category = await getCategoryById(filterKey || '')
           newState.subCategoryItems = generateCategoryItems(category.categories)
           newState.selectedSubCategory = _allCategoriesKey
+          newState.selectedCategory = filterKey
         }
 
         const results = await getPodcasts({

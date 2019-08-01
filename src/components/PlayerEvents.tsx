@@ -14,6 +14,7 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
   componentDidMount() {
     PlayerEventEmitter.on(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI, this._playerCannotStreamWithoutWifi)
     PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._refreshNowPlayingItem)
+    PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_DUCK, this._refreshNowPlayingItem)
     PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_NEXT, this._refreshNowPlayingItem)
     PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PAUSE, this._playerStateUpdated)
     PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PLAY, this._playerStateUpdated)
@@ -26,6 +27,7 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
   componentWillUnmount() {
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_QUEUE_ENDED)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_DUCK)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_NEXT)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_PAUSE)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_PLAY)

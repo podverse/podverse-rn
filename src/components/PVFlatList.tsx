@@ -4,7 +4,7 @@ import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { GlobalTheme } from '../resources/Interfaces'
-import { ActivityIndicator, Text, TextLink, View } from './'
+import { ActivityIndicator, MessageWithAction, Text, TextLink, View } from './'
 
 type Props = {
   data?: any
@@ -14,6 +14,7 @@ type Props = {
   handleFilterInputChangeText?: any
   handleFilterInputClear?: any
   handleRequestPodcast?: any
+  handleSearchNavigation?: any
   hideEndOfResults?: boolean
   initialScrollIndex?: number
   isLoadingMore?: boolean
@@ -36,7 +37,7 @@ const _renderHiddenItem = () => <View />
 
 export const PVFlatList = (props: Props) => {
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
-  const { data, dataTotalCount, disableLeftSwipe = true, extraData, handleRequestPodcast, hideEndOfResults,
+  const { data, dataTotalCount, disableLeftSwipe = true, extraData, handleSearchNavigation, handleRequestPodcast, hideEndOfResults,
     isLoadingMore, isRefreshing = false, ItemSeparatorComponent, keyExtractor, ListHeaderComponent, noSubscribedPodcasts, onEndReached,
     onEndReachedThreshold = 0.9, onRefresh, renderHiddenItem, renderItem, resultsText = 'results', showRequestPodcast } = props
 
@@ -63,9 +64,10 @@ export const PVFlatList = (props: Props) => {
     <View style={styles.view}>
       {
         noSubscribedPodcasts &&
-          <View style={styles.msgView}>
-            <Text style={[styles.lastCellText]}>{`You have no subscribed podcasts`}</Text>
-          </View>
+          <MessageWithAction
+            actionHandler={handleSearchNavigation}
+            actionText='Search'
+            message='You have no subscribed podcasts' />
       }
       {
         noResultsFound && !noSubscribedPodcasts && ListHeaderComponent &&

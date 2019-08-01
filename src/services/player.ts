@@ -23,7 +23,8 @@ TrackPlayer.setupPlayer().then(() => {
       TrackPlayer.CAPABILITY_PLAY,
       TrackPlayer.CAPABILITY_SEEK_TO
     ],
-    stopWithApp: true
+    stopWithApp: true,
+    alwaysPauseOnInterruption: true
   })
 })
 
@@ -155,8 +156,8 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
   try {
     const bearerToken = await getBearerToken()
     const isLoggedIn = !!bearerToken
-    const { clipId, episodeId, episodeMediaUrl = '', episodeTitle = 'untitled episode', podcastImageUrl,
-      podcastTitle = 'untitled podcast' } = item
+    const { clipId, episodeId, episodeMediaUrl = '', episodeTitle = 'Untitled episode', podcastImageUrl,
+      podcastTitle = 'Untitled podcast' } = item
 
     const isConnected = await hasValidNetworkConnection()
     const useServerData = isLoggedIn && isConnected
@@ -252,6 +253,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
 
     if (!hasStreamingConnection) {
       PlayerEventEmitter.emit(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
+      return
     }
 
     if (isTrackLoaded) {
