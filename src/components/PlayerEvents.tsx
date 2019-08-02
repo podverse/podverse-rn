@@ -1,3 +1,4 @@
+import debounce from 'lodash/debounce'
 import { Alert, StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources'
@@ -10,6 +11,12 @@ type Props = {}
 type State = {}
 
 export class PlayerEvents extends React.PureComponent<Props, State> {
+
+  constructor(props: Props) {
+    super(props)
+
+    this._playerCannotStreamWithoutWifi = debounce(this._playerCannotStreamWithoutWifi, 3000)
+  }
 
   componentDidMount() {
     PlayerEventEmitter.on(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI, this._playerCannotStreamWithoutWifi)
