@@ -71,7 +71,9 @@ export const setNowPlayingItem = async (
   return new Promise(async (resolve, reject) => {
     try {
       const lastNowPlayingItem = await getNowPlayingItem()
-      const isNewEpisode = (isInitialLoad || !lastNowPlayingItem) || item.episodeId !== lastNowPlayingItem.episodeId
+      const isNewEpisode = (isInitialLoad || !lastNowPlayingItem)
+        || (item.episodeId !== lastNowPlayingItem.episodeId)
+        || (globalState.player && globalState.player.episode && item.episodeId !== globalState.player.episode.id)
       const isNewMediaRef = item.clipId && ((isInitialLoad || !lastNowPlayingItem) || item.clipId !== lastNowPlayingItem.clipId)
 
       const newState = {
