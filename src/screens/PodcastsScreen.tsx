@@ -12,7 +12,7 @@ import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getEpisode } from '../services/episode'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { initDownloads } from '../state/actions/downloads'
+import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
 import { initPlayerState, setNowPlayingItem } from '../state/actions/player'
 import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
@@ -312,21 +312,32 @@ export class PodcastsScreen extends React.Component<Props, State> {
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
-    const wasAlerted = await alertIfNoNetworkConnection('unsubscribe from podcast')
+    const { queryFrom } = this.state
+
+    let wasAlerted = false
+    if (queryFrom === _subscribedKey) {
+      wasAlerted = await alertIfNoNetworkConnection('unsubscribe from podcast')
+    }
+
     if (wasAlerted) return
     this.setState({ isUnsubscribing: true }, async () => {
       try {
         const { flatListData } = this.state
-        await toggleSubscribeToPodcast(selectedId, this.global)
+
+        if (queryFrom === _subscribedKey) {
+          await toggleSubscribeToPodcast(selectedId, this.global)
+        } else if (queryFrom === _downloadedKey) {
+          await removeDownloadedPodcast(selectedId)
+        }
         const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
         rowMap[selectedId].closeRow()
         this.setState({
           flatListData: newFlatListData,
           flatListDataTotalCount: newFlatListData.length,
-          isUnsubscribing: true
+          isUnsubscribing: false
         })
       } catch (error) {
-        this.setState({ isUnsubscribing: true })
+        this.setState({ isUnsubscribing: false })
       }
     })
   }
@@ -409,7 +420,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             <FlatList
               data={flatListData}
               dataTotalCount={flatListDataTotalCount}
-              disableLeftSwipe={queryFrom !== _subscribedKey}
+              disableLeftSwipe={queryFrom !== _subscribedKey && queryFrom !== _downloadedKey}
               extraData={flatListData}
               handleSearchNavigation={this._handleSearchNavigation}
               isLoadingMore={isLoadingMore}

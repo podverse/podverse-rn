@@ -1,10 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
+import { removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { removeArticles } from '../lib/utility'
 import { PV } from '../resources'
-import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { getBearerToken } from './auth'
 import { getAutoDownloadEpisodes, removeAutoDownloadSetting } from './autoDownloads'
 import { request } from './request'
@@ -105,8 +104,19 @@ export const searchPodcasts = async (title?: string, author?: string, nsfwMode?:
 }
 
 export const toggleSubscribeToPodcast = async (id: string, isLoggedIn: boolean) => {
+  const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
+  let isUnsubscribing = false
+  if (itemsString) {
+    const podcastIds = JSON.parse(itemsString)
+    isUnsubscribing = podcastIds.some((x: string) => id === x)
+  }
+
   const items = isLoggedIn ? toggleSubscribeToPodcastOnServer(id) : toggleSubscribeToPodcastLocally(id)
-  await deleteDownloadedPodcasts(id)
+
+  if (isUnsubscribing) {
+    await removeDownloadedPodcast(id)
+  }
+
   return items
 }
 
@@ -146,24 +156,6 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
   AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(podcastIds))
 
   return response && response.data
-}
-
-const deleteDownloadedPodcasts = async (id: string) => {
-  const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
-  if (itemsString) {
-    const podcastIds = JSON.parse(itemsString)
-    const isUnsubscribing = podcastIds.some((x: string) => id === x)
-    if (isUnsubscribing) {
-      const downloadedPodcasts = await getDownloadedPodcasts()
-      const downloadedPodcast = downloadedPodcasts.find((x: any) => x.id === id)
-      const episodes = downloadedPodcast && downloadedPodcast.episodes || []
-      if (downloadedPodcast) {
-        for (const episode of episodes) {
-          await removeDownloadedPodcastEpisode(episode.id)
-        }
-      }
-    }
-  }
 }
 
 export const insertOrRemovePodcastFromAlphabetizedArray = (podcasts: any[], podcast: any) => {
