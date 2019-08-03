@@ -5,7 +5,8 @@ import { getBearerToken } from './auth'
 import { addOrUpdateHistoryItem } from './history'
 import { clearNowPlayingItem ,getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem,
   handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, playLastFromHistory,
-  playNextFromQueue, PVTrackPlayer, setClipHasEnded, setPlaybackPosition } from './player'
+  playNextFromQueue, PVTrackPlayer, setClipHasEnded, setPlaybackPosition, setPlaybackPositionWhenDurationIsAvailable
+} from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 import { getQueueItems } from './queue'
 
@@ -40,7 +41,7 @@ PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
       }
     }
 
-    await setPlaybackPosition(nowPlayingItem.clipStartTime)
+    await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.clipStartTime)
   }
 })
 

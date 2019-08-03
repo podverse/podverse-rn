@@ -221,17 +221,17 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
     const hasValidPlayingFile = isDownloadedFile || hasStreamingConnection
 
     if (!isNewEpisode && isNewMediaRef && item.clipStartTime && hasValidPlayingFile) {
-      await setPlaybackPosition(item.clipStartTime)
+      await setPlaybackPositionWhenDurationIsAvailable(item.clipStartTime)
     }
 
     if (isNewEpisode && !isNewMediaRef) {
       const historyItems = await getHistoryItems(useServerData)
       const oldItem = historyItems.find((x: any) => x.episodeId === item.episodeId)
-      await setPlaybackPosition(userPlaybackPosition || (oldItem && oldItem.userPlaybackPosition) || 0)
+      await setPlaybackPositionWhenDurationIsAvailable(userPlaybackPosition || (oldItem && oldItem.userPlaybackPosition) || 0)
     }
 
     if (!isNewEpisode && !isNewMediaRef && (userPlaybackPosition || userPlaybackPosition === 0)) {
-      await setPlaybackPosition(userPlaybackPosition)
+      await setPlaybackPositionWhenDurationIsAvailable(userPlaybackPosition)
     }
 
     const items = await getQueueItems(useServerData)
@@ -279,6 +279,18 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
 
 export const setPlaybackPosition = async (position: number) => {
   await TrackPlayer.seekTo(position)
+}
+
+// Sometimes the duration is not immediately available for certain episodes.
+// For those cases, use a setInterval before adjusting playback position.
+export const setPlaybackPositionWhenDurationIsAvailable = async (position: number) => {
+  const interval = setInterval(async () => {
+    const duration = await TrackPlayer.getDuration()
+    if (duration && duration > 0) {
+      clearInterval(interval)
+      await TrackPlayer.seekTo(position)
+    }
+  }, 250)
 }
 
 export const setPlaybackSpeed = async (rate: number) => {
