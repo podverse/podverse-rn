@@ -112,6 +112,21 @@ export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
   }
 }
 
+export const removeDownloadedPodcast = async (podcastId: string) => {
+  const downloadedPodcasts = await getDownloadedPodcasts()
+  const downloadedPodcast = downloadedPodcasts.find((x: any) => x.id === podcastId)
+  const episodes = downloadedPodcast && downloadedPodcast.episodes || []
+  let clearedNowPlayingItem = false
+  if (downloadedPodcast) {
+    for (const episode of episodes) {
+      const clearedItem = await removeDownloadedPodcastEpisode(episode.id)
+      if (clearedItem) clearedNowPlayingItem = true
+    }
+  }
+
+  return { clearedNowPlayingItem }
+}
+
 const setDownloadedPodcasts = (podcasts: any[]) => {
   AsyncStorage.setItem(PV.Keys.DOWNLOADED_PODCASTS, JSON.stringify(podcasts))
 }

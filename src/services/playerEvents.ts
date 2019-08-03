@@ -148,9 +148,7 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
     const { paused, permanent } = x
-    if (permanent) {
-      PVTrackPlayer.stop()
-    } else if (paused) {
+    if (permanent || paused) {
       PVTrackPlayer.pause()
     } else {
       PVTrackPlayer.play()
