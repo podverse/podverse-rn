@@ -105,15 +105,9 @@ export const searchPodcasts = async (title?: string, author?: string, nsfwMode?:
 }
 
 export const toggleSubscribeToPodcast = async (id: string, isLoggedIn: boolean) => {
-  const downloadedPodcasts = await getDownloadedPodcasts()
-  const downloadedPodcast = downloadedPodcasts.find((x: any) => x.id === id)
-  const episodes = downloadedPodcast && downloadedPodcast.episodes || []
-  if (downloadedPodcast) {
-    for (const episode of episodes) {
-      removeDownloadedPodcastEpisode(episode.id)
-    }
-  }
-  return isLoggedIn ? toggleSubscribeToPodcastOnServer(id) : toggleSubscribeToPodcastLocally(id)
+  const items = isLoggedIn ? toggleSubscribeToPodcastOnServer(id) : toggleSubscribeToPodcastLocally(id)
+  await deleteDownloadedPodcasts(id)
+  return items
 }
 
 const toggleSubscribeToPodcastLocally = async (id: string) => {
@@ -152,6 +146,24 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
   AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(podcastIds))
 
   return response && response.data
+}
+
+const deleteDownloadedPodcasts = async (id: string) => {
+  const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
+  if (itemsString) {
+    const podcastIds = JSON.parse(itemsString)
+    const isUnsubscribing = podcastIds.some((x: string) => id === x)
+    if (isUnsubscribing) {
+      const downloadedPodcasts = await getDownloadedPodcasts()
+      const downloadedPodcast = downloadedPodcasts.find((x: any) => x.id === id)
+      const episodes = downloadedPodcast && downloadedPodcast.episodes || []
+      if (downloadedPodcast) {
+        for (const episode of episodes) {
+          await removeDownloadedPodcastEpisode(episode.id)
+        }
+      }
+    }
+  }
 }
 
 export const insertOrRemovePodcastFromAlphabetizedArray = (podcasts: any[], podcast: any) => {
