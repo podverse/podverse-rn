@@ -2,6 +2,7 @@ import { setGlobal } from 'reactn'
 import { getPodcast as getPodcastService, getSubscribedPodcasts as getSubscribedPodcastsService,
   insertOrRemovePodcastFromAlphabetizedArray, toggleSubscribeToPodcast as toggleSubscribeToPodcastService
   } from '../../services/podcast'
+import { updateDownloadedPodcasts } from './downloads'
 
 export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   const data = await getSubscribedPodcastsService(subscribedPodcastIds)
@@ -26,5 +27,7 @@ export const toggleSubscribeToPodcast = async (id: string, globalState: any) => 
       }
     },
     subscribedPodcasts
+  }, async () => {
+    await updateDownloadedPodcasts()
   })
 }

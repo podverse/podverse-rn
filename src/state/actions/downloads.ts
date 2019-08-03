@@ -1,7 +1,8 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { getDownloadedEpisodeIds as getDownloadedEpisodeIdsService, getDownloadedPodcastEpisodeCounts as
   getDownloadedPodcastEpisodeCountsService, getDownloadedPodcasts as getDownloadedPodcastsService,
-  removeDownloadedPodcastEpisode as removeDownloadedPodcastEpisodeService } from '../../lib/downloadedPodcast'
+  removeDownloadedPodcast as removeDownloadedPodcastService, removeDownloadedPodcastEpisode as removeDownloadedPodcastEpisodeService
+  } from '../../lib/downloadedPodcast'
 import { DownloadStatus, initDownloads as initDownloadsService, pauseDownloadTask, resumeDownloadTask } from '../../lib/downloader'
 import { removeDownloadingEpisode as removeDownloadingEpisodeService } from '../../lib/downloadingEpisode'
 import { getAutoDownloadSettings as getAutoDownloadSettingsService, updateAutoDownloadSettings
@@ -201,6 +202,15 @@ export const updateDownloadError = (downloadTaskId: string) => {
     downloadsActive,
     downloadsArray
   })
+}
+
+export const removeDownloadedPodcast = async (podcastId: string) => {
+  const { clearedNowPlayingItem } = await removeDownloadedPodcastService(podcastId)
+  await updateDownloadedPodcasts()
+
+  if (clearedNowPlayingItem) {
+    clearNowPlayingItem()
+  }
 }
 
 export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
