@@ -25,6 +25,7 @@
     "bottleneck": "^2.19.1",
     "eventemitter3": "3.1.2",
     "he": "1.2.0",
+    "jetifier": "1.6.3",
     "linkifyjs": "2.1.8",
     "lodash": "4.17.11",
     "react": "16.8.3",
@@ -46,8 +47,8 @@
     "reactn": "2.1.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.3.4",
-    "@babel/runtime": "^7.3.4",
+    "@babel/core": "^7.4.5",
+    "@babel/runtime": "^7.4.5",
     "@types/react": "^16.8.8",
     "@types/react-native": "^0.57.40",
     "babel-eslint": "^10.0.1",
@@ -57,7 +58,7 @@
     "eslint-plugin-react": "^7.12.1",
     "eslint-plugin-react-native": "^3.5.0",
     "jest": "^24.4.0",
-    "metro-react-native-babel-preset": "^0.53.0",
+    "metro-react-native-babel-preset": "^0.54.1",
     "prettier": "^1.16.4",
     "react-native-typescript-transformer": "^1.2.12",
     "react-test-renderer": "16.8.3",
