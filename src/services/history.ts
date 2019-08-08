@@ -2,26 +2,31 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { getBearerToken } from './auth'
+import { checkIfShouldUseServerData, getBearerToken } from './auth'
 import { request } from './request'
 
-export const addOrUpdateHistoryItem = async (item: NowPlayingItem, useServerData: boolean) => {
+export const addOrUpdateHistoryItem = async (item: NowPlayingItem) => {
+  const useServerData = await checkIfShouldUseServerData()
   return useServerData ? addOrUpdateHistoryItemOnServer(item) : addOrUpdateHistoryItemLocally(item)
 }
 
-export const clearHistoryItems = async (useServerData: boolean) => {
+export const clearHistoryItems = async () => {
+  const useServerData = await checkIfShouldUseServerData()
   return useServerData ? clearHistoryItemsOnServer() : clearHistoryItemsLocally()
 }
 
-export const getHistoryItems = async (useServerData: boolean) => {
+export const getHistoryItems = async () => {
+  const useServerData = await checkIfShouldUseServerData()
   return useServerData ? getHistoryItemsFromServer() : getHistoryItemsLocally()
 }
 
-export const popLastFromHistoryItems = async (useServerData: boolean) => {
+export const popLastFromHistoryItems = async () => {
+  const useServerData = await checkIfShouldUseServerData()
   return useServerData ? popLastFromHistoryItemsFromServer() : popLastFromHistoryItemsLocally()
 }
 
-export const removeHistoryItem = async (item: NowPlayingItem, useServerData: boolean) => {
+export const removeHistoryItem = async (item: NowPlayingItem) => {
+  const useServerData = await checkIfShouldUseServerData()
   return useServerData ? removeHistoryItemOnServer(item.episodeId, item.clipId) : removeHistoryItemLocally(item)
 }
 
@@ -85,7 +90,7 @@ const getHistoryItemsLocally = async () => {
 const getHistoryItemsFromServer = async () => {
   const user = await getAuthUserInfo()
   const { historyItems } = user
-  await setAllHistoryItemsLocally(historyItems)
+  setAllHistoryItemsLocally(historyItems)
   return historyItems
 }
 

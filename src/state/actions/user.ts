@@ -1,4 +1,4 @@
-import { setGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { getLoggedInUserPlaylists as getLoggedInUserPlaylistsService,
   getPublicUser as getPublicUserService, getPublicUsersByQuery as getPublicUsersByQueryService,
   toggleSubscribeToUser as toggleSubscribeToUserService, updateLoggedInUser as updateLoggedInUserService
@@ -20,7 +20,8 @@ export const getPublicUsersByQuery = async (userIds: string, page: number = 1) =
   return results
 }
 
-export const getPublicUser = async (id: string, globalState: any) => {
+export const getPublicUser = async (id: string) => {
+  const globalState = getGlobal()
   const newUser = await getPublicUserService(id)
   const profileFlatListData = globalState.profile.flatListData
   const profilesFlatListData = globalState.profiles.flatListData
@@ -46,8 +47,10 @@ export const getPublicUser = async (id: string, globalState: any) => {
   }
 }
 
-export const toggleSubscribeToUser = async (id: string, isLoggedIn: boolean, globalState: any) => {
-  const subscribedUserIds = await toggleSubscribeToUserService(id, isLoggedIn)
+export const toggleSubscribeToUser = async (id: string) => {
+  const globalState = getGlobal()
+  const subscribedUserIds = await toggleSubscribeToUserService(id)
+
   setGlobal({
     session: {
       ...globalState.session,
@@ -59,8 +62,10 @@ export const toggleSubscribeToUser = async (id: string, isLoggedIn: boolean, glo
   })
 }
 
-export const getLoggedInUserPlaylists = async (globalState: any) => {
+export const getLoggedInUserPlaylists = async () => {
+  const globalState = getGlobal()
   const results = await getLoggedInUserPlaylistsService()
+
   setGlobal({
     playlists: {
       myPlaylists: results[0],
@@ -69,7 +74,8 @@ export const getLoggedInUserPlaylists = async (globalState: any) => {
   })
 }
 
-export const updateLoggedInUser = async (data: any, globalState: any) => {
+export const updateLoggedInUser = async (data: any) => {
+  const globalState = getGlobal()
   const userInfo = await updateLoggedInUserService(data)
   const profilesFlatListData = globalState.profiles.flatListData
   const profileFlatListData = globalState.profile.flatListData

@@ -108,7 +108,6 @@ export class QueueScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
-    const { isLoggedIn } = this.global.session
     navigation.setParams({
       _clearAll: this._clearAll,
       _onViewTypeSelect: this._onViewTypeSelect,
@@ -118,7 +117,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
     try {
       const nowPlayingItem = await getNowPlayingItem()
-      const queueItems = await getQueueItems(isLoggedIn, this.global)
+      const queueItems = await getQueueItems()
       this.setState({
         isLoading: false,
         nowPlayingItem,
@@ -153,7 +152,7 @@ export class QueueScreen extends React.Component<Props, State> {
               isLoading: true
             }, async () => {
               try {
-                await clearHistoryItems(this.global.session.isLoggedIn, this.global)
+                await clearHistoryItems()
                 this.setState({
                   historyItems: [],
                   isLoading: false
@@ -169,7 +168,6 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   _onViewTypeSelect = async (x: string) => {
-    const { isLoggedIn } = this.global.session
     this.setState({
       historyItems: [],
       isEditing: false,
@@ -186,14 +184,14 @@ export class QueueScreen extends React.Component<Props, State> {
     try {
       if (x === _queueKey) {
         const nowPlayingItem = await getNowPlayingItem()
-        const queueItems = await getQueueItems(isLoggedIn, this.global)
+        const queueItems = await getQueueItems()
         this.setState({
           isLoading: false,
           nowPlayingItem,
           queueItems
         })
       } else if (x === _historyKey) {
-        const historyItems = await getHistoryItems(isLoggedIn, this.global)
+        const historyItems = await getHistoryItems()
         this.setState({
           historyItems,
           isLoading: false
@@ -210,7 +208,7 @@ export class QueueScreen extends React.Component<Props, State> {
       this.setState({ isLoading: true }, async () => {
         navigation.goBack()
         navigation.navigate(PV.RouteNames.PlayerScreen)
-        const result = await setNowPlayingItem(item, this.global, false, true)
+        const result = await setNowPlayingItem(item, false, true)
         this.setState({
           isLoading: false,
           nowPlayingItem: result.nowPlayingItem,
@@ -276,7 +274,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
   _handleRemoveQueueItemPress = async (item: NowPlayingItem) => {
     try {
-      const newItems = await removeQueueItem(item, this.global.session.isLoggedIn, this.global)
+      const newItems = await removeQueueItem(item)
       this.setState({ queueItems: newItems })
     } catch (error) {
       //
@@ -285,7 +283,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
   _handleRemoveHistoryItemPress = async (item: NowPlayingItem) => {
     try {
-      const newItems = await removeHistoryItem(item, this.global.session.isLoggedIn, this.global)
+      const newItems = await removeHistoryItem(item)
       this.setState({ historyItems: newItems })
     } catch (error) {
       //
@@ -296,7 +294,7 @@ export class QueueScreen extends React.Component<Props, State> {
     try {
       const { queueItems } = this.state
       const sortedItems = currentOrder.map((index: string) => queueItems[index])
-      const newItems = await updateQueueItems(sortedItems, this.global.session.isLoggedIn, this.global)
+      const newItems = await updateQueueItems(sortedItems)
       this.setState({ queueItems: newItems })
     } catch (error) {
       //

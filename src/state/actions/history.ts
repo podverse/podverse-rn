@@ -1,11 +1,12 @@
-import { setGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { NowPlayingItem } from '../../lib/NowPlayingItem'
 import { addOrUpdateHistoryItem as addOrUpdateHistoryItemService, clearHistoryItems as clearHistoryItemsService,
   filterItemFromHistoryItems, getHistoryItems as getHistoryItemsService, removeHistoryItem as removeHistoryItemService
   } from '../../services/history'
 
-export const addOrUpdateHistoryItem = async (item: NowPlayingItem, isLoggedIn: boolean, globalState: any) => {
-  const results = await addOrUpdateHistoryItemService(item, isLoggedIn)
+export const addOrUpdateHistoryItem = async (item: NowPlayingItem) => {
+  const globalState = getGlobal()
+  const results = await addOrUpdateHistoryItemService(item)
   setGlobal({
     session: {
       ...globalState.session,
@@ -18,8 +19,9 @@ export const addOrUpdateHistoryItem = async (item: NowPlayingItem, isLoggedIn: b
   return results
 }
 
-export const clearHistoryItems = async (isLoggedIn: boolean, globalState: any) => {
-  await clearHistoryItemsService(isLoggedIn)
+export const clearHistoryItems = async () => {
+  const globalState = getGlobal()
+  await clearHistoryItemsService()
   setGlobal({
     session: {
       ...globalState.session,
@@ -32,8 +34,9 @@ export const clearHistoryItems = async (isLoggedIn: boolean, globalState: any) =
   return []
 }
 
-export const getHistoryItems = async (isLoggedIn: boolean, globalState: any) => {
-  const historyItems = await getHistoryItemsService(isLoggedIn)
+export const getHistoryItems = async () => {
+  const globalState = getGlobal()
+  const historyItems = await getHistoryItemsService()
   setGlobal({
     session: {
       ...globalState.session,
@@ -46,8 +49,9 @@ export const getHistoryItems = async (isLoggedIn: boolean, globalState: any) => 
   return historyItems
 }
 
-export const removeHistoryItem = async (item: NowPlayingItem, isLoggedIn: boolean, globalState: any) => {
-  await removeHistoryItemService(item, isLoggedIn)
+export const removeHistoryItem = async (item: NowPlayingItem) => {
+  const globalState = getGlobal()
+  await removeHistoryItemService(item)
   const results = filterItemFromHistoryItems(globalState.session.userInfo.historyItems, item)
   setGlobal({
     session: {

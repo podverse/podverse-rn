@@ -30,6 +30,7 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_STOP, this._playerStateUpdated)
     PlayerEventEmitter.on(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED, this._refreshNowPlayingItem)
     PlayerEventEmitter.on(PV.Events.PLAYER_STATE_CHANGED, this._playerStateUpdated)
+    PlayerEventEmitter.on(PV.Events.PLAYER_TRACK_CHANGED, this._handlePlayerTrackChanged)
   }
 
   componentWillUnmount() {
@@ -43,15 +44,16 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_STOP)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_STATE_CHANGED)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_TRACK_CHANGED)
   }
 
-  _handleQueueEnded = async () => {
+  _handlePlayerTrackChanged = async () => {
     await this._refreshNowPlayingItem()
     refreshDownloadedPodcasts()
   }
 
   _playerCannotStreamWithoutWifi = async () => {
-    await Alert.alert(
+    Alert.alert(
       PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.title, PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.message, []
     )
   }
@@ -61,13 +63,13 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
   }
 
   _refreshNowPlayingItem = async () => {
-    const nowPlayingItem = await getNowPlayingItem()
+    // const nowPlayingItem = await getNowPlayingItem()
 
-    if (nowPlayingItem) {
-      await setNowPlayingItem(nowPlayingItem, this.global, false, false, null, false)
-    } else {
-      await clearNowPlayingItem()
-    }
+    // if (nowPlayingItem) {
+    //   await setNowPlayingItem(nowPlayingItem, this.global, false, false, null, false)
+    // } else {
+    //   await clearNowPlayingItem()
+    // }
   }
 
   render() {

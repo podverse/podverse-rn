@@ -81,7 +81,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         <View style={styles.middleRow}>
           <TouchableOpacity
             disabled={!hasHistoryItem}
-            onPress={() => playLastFromHistory(this.global.session.isLoggedIn, this.global, shouldPlay)}
+            onPress={() => playLastFromHistory(shouldPlay)}
             style={hasHistoryItem ? playerStyles.icon : playerStyles.iconDisabled}>
             <Icon
               name='step-backward'
@@ -117,7 +117,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </TouchableOpacity>
           <TouchableOpacity
             disabled={!hasQueueItem}
-            onPress={() => playNextFromQueue(this.global.session.isLoggedIn, this.global, shouldPlay)}
+            onPress={() => playNextFromQueue(shouldPlay)}
             style={hasQueueItem ? playerStyles.icon : playerStyles.iconDisabled}>
             <Icon
               name='step-forward'

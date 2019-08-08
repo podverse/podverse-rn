@@ -37,22 +37,23 @@ export const initPlayerState = async (globalState: any) => {
   })
 }
 
-export const playLastFromHistory = async (isLoggedIn: boolean, globalState: any, shouldPlay: boolean) => {
-  const { currentlyPlayingItem, lastItem } = await popLastFromHistoryItems(isLoggedIn)
+export const playLastFromHistory = async (shouldPlay: boolean) => {
+  const { currentlyPlayingItem, lastItem } = await popLastFromHistoryItems()
   if (currentlyPlayingItem && lastItem) {
-    await addQueueItemNext(currentlyPlayingItem, isLoggedIn)
-    await setNowPlayingItem(lastItem, globalState, false, shouldPlay, lastItem.userPlaybackPosition, true)
+    await addQueueItemNext(currentlyPlayingItem)
+    await setNowPlayingItem(lastItem, false, shouldPlay, lastItem.userPlaybackPosition, true)
   }
 }
 
-export const playNextFromQueue = async (isLoggedIn: boolean, globalState: any, shouldPlay: boolean) => {
-  const item = await popNextFromQueue(isLoggedIn)
+export const playNextFromQueue = async (shouldPlay: boolean) => {
+  const item = await popNextFromQueue()
   if (item) {
-    await setNowPlayingItem(item, globalState, false, shouldPlay, item.userPlaybackPosition)
+    await setNowPlayingItem(item, false, shouldPlay, item.userPlaybackPosition)
   }
 }
 
-export const setContinousPlaybackMode = async (shouldContinuouslyPlay: boolean, globalState: any) => {
+export const setContinousPlaybackMode = async (shouldContinuouslyPlay: boolean) => {
+  const globalState = getGlobal()
   await setContinuousPlaybackModeService(shouldContinuouslyPlay)
 
   setGlobal({
@@ -66,9 +67,10 @@ export const setContinousPlaybackMode = async (shouldContinuouslyPlay: boolean, 
 }
 
 export const setNowPlayingItem = async (
-  item: NowPlayingItem, globalState: any, isInitialLoad?: boolean, startPlayer?: boolean, userPlaybackPosition?: number | null,
+  item: NowPlayingItem, isInitialLoad?: boolean, startPlayer?: boolean, userPlaybackPosition?: number | null,
   skipAddToHistory?: boolean) => {
   return new Promise(async (resolve, reject) => {
+    const globalState = getGlobal()
     try {
       const lastNowPlayingItem = await getNowPlayingItem()
       const isNewEpisode = (isInitialLoad || !lastNowPlayingItem)

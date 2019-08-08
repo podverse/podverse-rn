@@ -1,11 +1,13 @@
-import { setGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { NowPlayingItem } from '../../lib/NowPlayingItem'
 import { addQueueItemLast as addQueueItemLastService, addQueueItemNext as addQueueItemNextService,
   getQueueItems as getQueueItemsService, removeQueueItem as removeQueueItemService,
   setAllQueueItems as setAllQueueItemsService } from '../../services/queue'
 
-export const addQueueItemLast = async (queueItem: NowPlayingItem, isLoggedIn: boolean, globalState: any) => {
-  const results = await addQueueItemLastService(queueItem, isLoggedIn)
+export const addQueueItemLast = async (queueItem: NowPlayingItem) => {
+  const globalState = getGlobal()
+  const results = await addQueueItemLastService(queueItem)
+
   setGlobal({
     session: {
       ...globalState.session,
@@ -15,11 +17,14 @@ export const addQueueItemLast = async (queueItem: NowPlayingItem, isLoggedIn: bo
       }
     }
   })
+
   return results
 }
 
-export const addQueueItemNext = async (queueItem: NowPlayingItem, isLoggedIn: boolean, globalState: any) => {
-  const results = await addQueueItemNextService(queueItem, isLoggedIn)
+export const addQueueItemNext = async (queueItem: NowPlayingItem) => {
+  const globalState = getGlobal()
+  const results = await addQueueItemNextService(queueItem)
+
   setGlobal({
     session: {
       ...globalState.session,
@@ -29,11 +34,14 @@ export const addQueueItemNext = async (queueItem: NowPlayingItem, isLoggedIn: bo
       }
     }
   })
+
   return results
 }
 
-export const getQueueItems = async (isLoggedIn: boolean, globalState: any) => {
-  const results = await getQueueItemsService(isLoggedIn)
+export const getQueueItems = async () => {
+  const globalState = getGlobal()
+  const results = await getQueueItemsService()
+
   setGlobal({
     session: {
       ...globalState.session,
@@ -43,11 +51,14 @@ export const getQueueItems = async (isLoggedIn: boolean, globalState: any) => {
       }
     }
   })
+
   return results
 }
 
-export const removeQueueItem = async (queueItem: NowPlayingItem, isLoggedIn: boolean, globalState: any) => {
-  const results = await removeQueueItemService(queueItem, isLoggedIn)
+export const removeQueueItem = async (queueItem: NowPlayingItem) => {
+  const globalState = getGlobal()
+  const results = await removeQueueItemService(queueItem)
+
   setGlobal({
     session: {
       ...globalState.session,
@@ -57,11 +68,14 @@ export const removeQueueItem = async (queueItem: NowPlayingItem, isLoggedIn: boo
       }
     }
   })
+
   return results
 }
 
-export const updateQueueItems = async (queueItems: NowPlayingItem[], isLoggedIn: boolean, globalState: any) => {
-  const results = await setAllQueueItemsService(queueItems, isLoggedIn)
+export const updateQueueItems = async (queueItems: NowPlayingItem[]) => {
+  const globalState = getGlobal()
+  const results = await setAllQueueItemsService(queueItems)
+
   setGlobal({
     session: {
       ...globalState.session,
@@ -71,5 +85,6 @@ export const updateQueueItems = async (queueItems: NowPlayingItem[], isLoggedIn:
       }
     }
   })
+
   return results
 }

@@ -1,10 +1,11 @@
-import { setGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import { combineAndSortPlaylistItems } from '../../lib/utility'
 import { addOrRemovePlaylistItem as addOrRemovePlaylistItemService, createPlaylist as createPlaylistService , 
   getPlaylist as getPlaylistService, getPlaylists as getPlaylistsService, toggleSubscribeToPlaylist as toggleSubscribeToPlaylistService,
   updatePlaylist as updatePlaylistService } from '../../services/playlist'
 
-export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: string, mediaRefId?: string, globalState?: any) => {
+export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: string, mediaRefId?: string) => {
+  const globalState = getGlobal()
   const { playlistItemCount } = await addOrRemovePlaylistItemService(playlistId, episodeId, mediaRefId)
   const playlistsFlatListData = globalState.playlists.myPlaylists
   const foundIndex = playlistsFlatListData.findIndex((x: any) => x.id === playlistId)
@@ -26,8 +27,9 @@ export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: st
   return playlistItemCount
 }
 
-export const toggleSubscribeToPlaylist = async (id: string, globalState: any) => {
-  const subscribedPlaylistIds = await toggleSubscribeToPlaylistService(id, globalState.session.isLoggedIn)
+export const toggleSubscribeToPlaylist = async (id: string) => {
+  const globalState = getGlobal()
+  const subscribedPlaylistIds = await toggleSubscribeToPlaylistService(id)
   setGlobal({
     session: {
       ...globalState.session,
@@ -39,7 +41,8 @@ export const toggleSubscribeToPlaylist = async (id: string, globalState: any) =>
   })
 }
 
-export const getPlaylists = async (playlistId: string, globalState: any) => {
+export const getPlaylists = async (playlistId: string) => {
+  const globalState = getGlobal()
   const results = await getPlaylistsService({ playlistId })
   setGlobal({
     playlists: {
@@ -49,7 +52,8 @@ export const getPlaylists = async (playlistId: string, globalState: any) => {
   })
 }
 
-export const getPlaylist = async (id: string, globalState: any) => {
+export const getPlaylist = async (id: string) => {
+  const globalState = getGlobal()
   const newPlaylist = await getPlaylistService(id)
   const { episodes, itemsOrder, mediaRefs } = newPlaylist
   const playlistsMyPlaylists = globalState.playlists.myPlaylists
@@ -80,7 +84,8 @@ export const getPlaylist = async (id: string, globalState: any) => {
   return newPlaylist
 }
 
-export const updatePlaylist = async (data: any, globalState: any) => {
+export const updatePlaylist = async (data: any) => {
+  const globalState = getGlobal()
   const newPlaylist = await updatePlaylistService(data)
   const playlistsFlatListData = globalState.playlists.myPlaylists
 
@@ -105,7 +110,8 @@ export const updatePlaylist = async (data: any, globalState: any) => {
   })
 }
 
-export const createPlaylist = async (data: any, globalState: any) => {
+export const createPlaylist = async (data: any) => {
+  const globalState = getGlobal()
   const newPlaylist = await createPlaylistService(data)
   const playlistsFlatListData = globalState.playlists.myPlaylists
 

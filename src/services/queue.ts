@@ -1,75 +1,74 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { getAuthenticatedUserInfo } from './auth'
-import { updatePlayerQueue } from './player'
+import { checkIfShouldUseServerData, getAuthenticatedUserInfo } from './auth'
 import { updateUserQueueItems } from './user'
 
-export const addQueueItemLast = async (item: NowPlayingItem, useServerData: boolean) => {
+export const addQueueItemLast = async (item: NowPlayingItem) => {
   let results = []
+  const useServerData = await checkIfShouldUseServerData()
+
   if (useServerData) {
     results = await addQueueItemLastOnServer(item)
   } else {
     results = await addQueueItemLastLocally(item)
   }
 
-  await updatePlayerQueue(results)
-
   return results
 }
 
-export const addQueueItemNext = async (item: NowPlayingItem, useServerData: boolean) => {
+export const addQueueItemNext = async (item: NowPlayingItem) => {
   let results = []
+  const useServerData = await checkIfShouldUseServerData()
+
   if (useServerData) {
     results = await addQueueItemNextOnServer(item)
   } else {
     results = await addQueueItemNextLocally(item)
   }
 
-  await updatePlayerQueue(results)
-
   return results
 }
 
-export const getQueueItems = async (useServerData: boolean) => {
+export const getQueueItems = async () => {
+  const useServerData = await checkIfShouldUseServerData()
   return useServerData ? getQueueItemsFromServer() : getQueueItemsLocally()
 }
 
-export const popNextFromQueue = async (useServerData: boolean) => {
+export const popNextFromQueue = async () => {
   let item = {}
+  const useServerData = await checkIfShouldUseServerData()
+
   if (useServerData) {
     item = await popNextFromQueueFromServer()
   } else {
     item = await popNextFromQueueLocally()
   }
 
-  const items = await getQueueItems(useServerData)
-  await updatePlayerQueue(items)
-
   return item
 }
 
-export const removeQueueItem = async (item: NowPlayingItem, useServerData: boolean) => {
+export const removeQueueItem = async (item: NowPlayingItem) => {
   let items = []
+  const useServerData = await checkIfShouldUseServerData()
+
   if (useServerData) {
     items = await removeQueueItemOnServer(item)
   } else {
     items = await removeQueueItemLocally(item)
   }
 
-  await updatePlayerQueue(items)
-
   return items
 }
 
-export const setAllQueueItems = async (items: NowPlayingItem[], useServerData: boolean) => {
+export const setAllQueueItems = async (items: NowPlayingItem[]) => {
+  const useServerData = await checkIfShouldUseServerData()
+
   if (useServerData) {
     await setAllQueueItemsOnServer(items)
   } else {
     await setAllQueueItemsLocally(items)
   }
-
-  await updatePlayerQueue(items)
 
   return items
 }

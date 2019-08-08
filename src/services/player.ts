@@ -1,13 +1,13 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import RNFS from 'react-native-fs'
 import TrackPlayer from 'react-native-track-player'
-import { hasValidNetworkConnection, hasValidStreamingConnection } from '../lib/network'
+import { hasValidStreamingConnection, hasValidNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, convertNowPlayingItemToEpisode,
   convertNowPlayingItemToMediaRef, NowPlayingItem } from '../lib/NowPlayingItem'
 import { getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { getBearerToken } from './auth'
+import { checkIfShouldUseServerData, checkIfLoggedIn } from './auth'
 import { getEpisode } from './episode'
 import { addOrUpdateHistoryItem, getHistoryItems, popLastFromHistoryItems } from './history'
 import { getMediaRef } from './mediaRef'
@@ -75,16 +75,16 @@ export const handleResumeAfterClipHasEnded = async () => {
   PlayerEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
-export const playLastFromHistory = async (isLoggedIn: boolean, shouldPlay: boolean) => {
-  const { currentlyPlayingItem, lastItem } = await popLastFromHistoryItems(isLoggedIn)
+export const playLastFromHistory = async (shouldPlay: boolean) => {
+  const { currentlyPlayingItem, lastItem } = await popLastFromHistoryItems()
   if (currentlyPlayingItem && lastItem) {
-    await addQueueItemNext(currentlyPlayingItem, isLoggedIn)
+    await addQueueItemNext(currentlyPlayingItem)
     await setNowPlayingItem(lastItem, false, shouldPlay, lastItem.userPlaybackPosition)
   }
 }
 
-export const playNextFromQueue = async (isLoggedIn: boolean, shouldPlay: boolean) => {
-  const item = await popNextFromQueue(isLoggedIn)
+export const playNextFromQueue = async (shouldPlay: boolean) => {
+  const item = await popNextFromQueue()
   if (item) {
     await setNowPlayingItem(item, false, shouldPlay, item.userPlaybackPosition)
   }
@@ -151,22 +151,24 @@ export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean)
   await AsyncStorage.setItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY, JSON.stringify(shouldContinuouslyPlay))
 }
 
+// export const loadItemInPlayer = async (item: NowPlayingItem) => {
+//   try {
+
+//   } catch (error) {
+
+//   }
+// }
+
 export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: boolean, startPlayer?: boolean,
                                         userPlaybackPosition?: number, skipAddToHistory?: boolean) => {
   try {
-    const bearerToken = await getBearerToken()
-    const isLoggedIn = !!bearerToken
     const { clipId, episodeId, episodeMediaUrl = '', episodeTitle = 'Untitled episode', podcastImageUrl,
       podcastTitle = 'Untitled podcast' } = item
-
-    const isConnected = await hasValidNetworkConnection()
-    const useServerData = isLoggedIn && isConnected
-
     const lastNowPlayingItem = await getNowPlayingItem()
     if (!skipAddToHistory && lastNowPlayingItem) {
       const currentPosition = await PVTrackPlayer.getPosition()
       lastNowPlayingItem.userPlaybackPosition = currentPosition || 0
-      await addOrUpdateHistoryItem(lastNowPlayingItem, useServerData)
+      await addOrUpdateHistoryItem(lastNowPlayingItem)
     }
 
     const isNewEpisode = (isInitialLoad || !lastNowPlayingItem) || item.episodeId !== lastNowPlayingItem.episodeId
@@ -225,7 +227,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
     }
 
     if (isNewEpisode && !isNewMediaRef) {
-      const historyItems = await getHistoryItems(useServerData)
+      const historyItems = await getHistoryItems()
       const oldItem = historyItems.find((x: any) => x.episodeId === item.episodeId)
       await setPlaybackPositionWhenDurationIsAvailable(userPlaybackPosition || (oldItem && oldItem.userPlaybackPosition) || 0)
     }
@@ -234,19 +236,19 @@ export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: bo
       await setPlaybackPositionWhenDurationIsAvailable(userPlaybackPosition)
     }
 
-    const items = await getQueueItems(useServerData)
+    const items = await getQueueItems()
 
     let filteredItems = [] as any[]
     filteredItems = filterItemFromQueueItems(items, item)
-    await setAllQueueItems(filteredItems, useServerData)
-    await addOrUpdateHistoryItem(item, useServerData)
+    await setAllQueueItems(filteredItems)
+    await addOrUpdateHistoryItem(item)
 
     if (isNewEpisode && episodeId) {
-      await updateNowPlayingItemEpisode(episodeId, item, isConnected)
+      await updateNowPlayingItemEpisode(episodeId, item)
     }
 
     if (isNewMediaRef && clipId) {
-      await updateNowPlayingItemMediaRef(clipId, item, isConnected)
+      await updateNowPlayingItemMediaRef(clipId, item)
     }
 
     PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
@@ -316,8 +318,9 @@ export const togglePlay = async (playbackRate: number) => {
   }
 }
 
-export const updateNowPlayingItemEpisode = async (id: string, item: NowPlayingItem, useServerData: boolean) => {
+export const updateNowPlayingItemEpisode = async (id: string, item: NowPlayingItem) => {
   let episode = {} as any
+  const useServerData = await checkIfShouldUseServerData()
 
   if (useServerData) {
     episode = await getEpisode(id)
@@ -329,8 +332,9 @@ export const updateNowPlayingItemEpisode = async (id: string, item: NowPlayingIt
   await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM_EPISODE, JSON.stringify(episode))
 }
 
-export const updateNowPlayingItemMediaRef = async (id: string, item: NowPlayingItem, useServerData: boolean) => {
+export const updateNowPlayingItemMediaRef = async (id: string, item: NowPlayingItem) => {
   let mediaRef = {} as any
+  const useServerData = await checkIfShouldUseServerData()
 
   if (useServerData) {
     mediaRef = await getMediaRef(id)

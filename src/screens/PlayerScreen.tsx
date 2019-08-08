@@ -104,8 +104,6 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _initializeScreenData = () => {
-    const { isLoggedIn } = this.global.session
-
     setGlobal({
       screenPlayer: {
         ...this.global.screenPlayer,
@@ -125,7 +123,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         if ((mediaRefId && mediaRefId !== currentItem.mediaRefId)) {
           const mediaRef = await getMediaRef(mediaRefId)
           if (mediaRef) {
-            await addQueueItemNext(currentItem, isLoggedIn)
+            await addQueueItemNext(currentItem)
             const newItem = convertToNowPlayingItem(mediaRef, null, null)
             await setNowPlayingItem(newItem, this.global, false)
           }
@@ -531,7 +529,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           <ActionSheet
             handleCancelPress={this._handleMoreCancelPress}
             items={() => PV.ActionSheet.media.moreButtons(
-              selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleMoreCancelPress, this._handleDownloadPressed
+              selectedItem, navigation, this._handleMoreCancelPress, this._handleDownloadPressed
             )}
             showModal={showMoreActionSheet} />
           <ActionSheet
