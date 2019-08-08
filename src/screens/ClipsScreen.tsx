@@ -11,6 +11,7 @@ import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/
 import { PV } from '../resources'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getLoggedInUserMediaRefs } from '../services/user'
+import { setNowPlayingItem } from '../state/actions/player'
 import { core } from '../styles'
 
 type Props = {
@@ -159,6 +160,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       episodePubDate={item.episode.pubDate}
       episodeTitle={item.episode.title}
       handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+      handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, null))}
       podcastImageUrl={item.episode.podcast.imageUrl}
       podcastTitle={item.episode.podcast.title}
       startTime={item.startTime}
@@ -248,6 +250,10 @@ export class ClipsScreen extends React.Component<Props, State> {
       mediaRefIdToDelete: '',
       showDeleteConfirmDialog: false
     })
+  }
+
+  _handleNavigationPress = (selectedItem: any) => {
+    setNowPlayingItem(selectedItem, this.global, false, true, null, false)
   }
 
   render() {

@@ -16,6 +16,7 @@ import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloa
 import { initPlayerState, setNowPlayingItem } from '../state/actions/player'
 import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
+import { PVTrackPlayer } from '../services/player'
 
 type Props = {
   navigation?: any
@@ -85,6 +86,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
         AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
         AsyncStorage.setItem(PV.Keys.STREAMING_WIFI_ONLY, 'TRUE')
+        AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE')
         // navigation.navigate(PV.RouteNames.Onboarding)
       } else {
         await this._initializeScreenData()

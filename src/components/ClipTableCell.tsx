@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet } from 'react-native'
+import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
@@ -13,6 +13,7 @@ type Props = {
   episodePubDate?: string
   episodeTitle?: string
   handleMorePress?: any
+  handleNavigationPress?: any
   podcastImageUrl?: string
   podcastTitle?: string
   startTime: number
@@ -21,7 +22,7 @@ type Props = {
 
 export const ClipTableCell = (props: Props) => {
   const { downloadedEpisodeIds = {}, downloadsActive = {}, endTime, episodeId, episodePubDate = '', episodeTitle, handleMorePress,
-    podcastImageUrl, podcastTitle, startTime, title = 'Untitled clip' } = props
+    handleNavigationPress, podcastImageUrl, podcastTitle, startTime, title = 'Untitled clip' } = props
 
   const clipTime = readableClipTime(startTime, endTime)
 
@@ -39,79 +40,100 @@ export const ClipTableCell = (props: Props) => {
       style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
   )
 
+  const innerTopView = (
+    <View style={styles.innerTopView}>
+      {
+        !!podcastImageUrl &&
+        <Image
+          source={{ uri: podcastImageUrl }}
+          style={styles.image} />
+      }
+      <View style={styles.textWrapper}>
+        {
+          !!podcastTitle &&
+          <Text
+            isSecondary={true}
+            numberOfLines={1}
+            style={styles.podcastTitle}>
+            {podcastTitle}
+          </Text>
+        }
+        {
+          !!episodeTitle &&
+          <Text
+            numberOfLines={1}
+            style={styles.episodeTitle}>
+            {episodeTitle}
+          </Text>
+        }
+        <View style={styles.textWrapperBottomRow}>
+          <Text
+            isSecondary={true}
+            style={styles.episodePubDate}>
+            {readableDate(episodePubDate)}
+          </Text>
+          {
+            isDownloaded &&
+            <Icon
+              isSecondary={true}
+              name='download'
+              size={13}
+              style={styles.downloadedIcon} />
+          }
+        </View>
+      </View>
+      {
+        !isDownloading && handleMorePress && moreButton
+      }
+      {
+        isDownloading &&
+        <ActivityIndicator
+          onPress={handleMorePress}
+          styles={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
+      }
+    </View>
+  )
+
+  const bottomText = (
+    <View style={styles.wrapperBottom}>
+      <View style={styles.wrapperBottomTextWrapper}>
+        <Text
+          numberOfLines={4}
+          style={styles.title}>
+          {title}
+        </Text>
+        <Text
+          isSecondary={true}
+          style={styles.clipTime}>
+          {clipTime}
+        </Text>
+      </View>
+      {
+        !showEpisodeInfo && handleMorePress && moreButton
+      }
+    </View>
+  )
+
   return (
     <View style={styles.wrapper}>
       {
         !!showEpisodeInfo &&
           <View style={styles.wrapperTop}>
             {
-              !!podcastImageUrl &&
-                <Image
-                  source={{ uri: podcastImageUrl }}
-                  style={styles.image} />
-            }
-            <View style={styles.textWrapper}>
-              {
-                !!podcastTitle &&
-                  <Text
-                    isSecondary={true}
-                    numberOfLines={1}
-                    style={styles.podcastTitle}>
-                    {podcastTitle}
-                  </Text>
-              }
-              {
-                !!episodeTitle &&
-                  <Text
-                    numberOfLines={1}
-                    style={styles.episodeTitle}>
-                    {episodeTitle}
-                  </Text>
-              }
-              <View style={styles.textWrapperBottomRow}>
-                <Text
-                  isSecondary={true}
-                  style={styles.episodePubDate}>
-                  {readableDate(episodePubDate)}
-                </Text>
-                {
-                  isDownloaded &&
-                  <Icon
-                    isSecondary={true}
-                    name='download'
-                    size={13}
-                    style={styles.downloadedIcon} />
-                }
-              </View>
-            </View>
-            {
-              !isDownloading && handleMorePress && moreButton
-            }
-            {
-              isDownloading &&
-                <ActivityIndicator
-                  onPress={handleMorePress}
-                  styles={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
+              handleNavigationPress ?
+                <TouchableWithoutFeedback onPress={handleNavigationPress}>
+                  {innerTopView}
+                </TouchableWithoutFeedback> :
+                innerTopView
             }
           </View>
       }
-      <View style={styles.wrapperBottom}>
-        <View style={styles.wrapperBottomTextWrapper}>
-          <Text
-            numberOfLines={4}
-            style={styles.title}>
-            {title}
-          </Text>
-          <Text
-            isSecondary={true}
-            style={styles.clipTime}>
-            {clipTime}
-          </Text>
-        </View>
-        {
-          !showEpisodeInfo && handleMorePress && moreButton
-        }
-      </View>
+      {
+        handleNavigationPress ?
+          <TouchableWithoutFeedback onPress={handleNavigationPress}>
+            {bottomText}
+          </TouchableWithoutFeedback> : bottomText
+      }
     </View>
   )
 }
@@ -146,6 +168,11 @@ const styles = StyleSheet.create({
     height: 60,
     marginRight: 12,
     width: 60
+  },
+  innerTopView: {
+    flex: 1,
+    flexDirection: 'row',
+    marginRight: 4
   },
   podcastTitle: {
     flex: 0,

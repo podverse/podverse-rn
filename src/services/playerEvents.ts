@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { deleteDownloadedEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
+import { convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getBearerToken } from './auth'
 import { addOrUpdateHistoryItem } from './history'
@@ -63,6 +65,12 @@ module.exports = async () => {
     const queueItems = await getQueueItems(useServerData)
     const shouldContinuouslyPlay = await getContinuousPlaybackMode()
 
+    const shouldDeleteEpisode = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+    if (shouldDeleteEpisode === 'TRUE') {
+      const episode = convertNowPlayingItemToEpisode(nowPlayingItem)
+      await deleteDownloadedEpisode(episode)
+    }
+
     if (shouldContinuouslyPlay && queueItems.length > 0) {
       await playNextFromQueue(useServerData, true)
     } else if (queueItems.length === 0) {
@@ -111,11 +119,11 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('remote-next', async () => {
-    const bearerToken = await getBearerToken()
-    const playerState = await PVTrackPlayer.getState()
-    const shouldPlay = playerState === PVTrackPlayer.STATE_PLAYING
-    await playNextFromQueue(!!bearerToken, shouldPlay)
-    PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_NEXT)
+    // const bearerToken = await getBearerToken()
+    // const playerState = await PVTrackPlayer.getState()
+    // const shouldPlay = playerState === PVTrackPlayer.STATE_PLAYING
+    // await playNextFromQueue(!!bearerToken, shouldPlay)
+    // PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_NEXT)
   })
 
   PVTrackPlayer.addEventListener('remote-pause', () => {
@@ -129,11 +137,11 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('remote-previous', async () => {
-    const bearerToken = await getBearerToken()
-    const playerState = await PVTrackPlayer.getState()
-    const shouldPlay = playerState === PVTrackPlayer.STATE_PLAYING
-    await playLastFromHistory(!!bearerToken, shouldPlay)
-    PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PREVIOUS)
+    // const bearerToken = await getBearerToken()
+    // const playerState = await PVTrackPlayer.getState()
+    // const shouldPlay = playerState === PVTrackPlayer.STATE_PLAYING
+    // await playLastFromHistory(!!bearerToken, shouldPlay)
+    // PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PREVIOUS)
   })
 
   PVTrackPlayer.addEventListener('remote-stop', () => {
@@ -147,15 +155,16 @@ module.exports = async () => {
     }
   })
 
-  PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
-    const { paused, permanent } = x
-    if (permanent || paused) {
-      PVTrackPlayer.pause()
-    } else {
-      PVTrackPlayer.play()
-    }
-    PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_DUCK)
-  })
+  // PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
+  //   if (permanent) {
+  //     PVTrackPlayer.stop()
+  //   } else if (paused) {
+  //     PVTrackPlayer.pause()
+  //   } else {
+  //     PVTrackPlayer.play()
+  //   }
+  //   PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_DUCK)
+  // })
 
   // PVTrackPlayer.addEventListener('remote-skip', (x) => console.log('remote skip to track in queue'))
 }

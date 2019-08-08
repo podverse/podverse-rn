@@ -33,7 +33,7 @@ export const request = async (req: PVRequest, nsfwMode?: boolean) => {
     ...(body ? { data: body } : {}),
     method,
     ...opts,
-    timeout: 20000
+    timeout: 30000
   }
 
   try {

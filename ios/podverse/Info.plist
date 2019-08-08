@@ -52,6 +52,10 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Please allow Poverse to use your location to provide you with a better user experience.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Please allow Poverse to use your location to provide you with a better user experience.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -83,14 +87,8 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Please allow Poverse to use your location to provide you with a better user experience.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Please allow Poverse to use your location to provide you with a better user experience.</string>
 </dict>
 </plist>

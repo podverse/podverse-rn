@@ -2,14 +2,33 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getAuthenticatedUserInfo } from './auth'
+import { updatePlayerQueue } from './player'
 import { updateUserQueueItems } from './user'
 
 export const addQueueItemLast = async (item: NowPlayingItem, useServerData: boolean) => {
-  return useServerData ? addQueueItemLastOnServer(item) : addQueueItemLastLocally(item)
+  let results = []
+  if (useServerData) {
+    results = await addQueueItemLastOnServer(item)
+  } else {
+    results = await addQueueItemLastLocally(item)
+  }
+
+  await updatePlayerQueue(results)
+
+  return results
 }
 
 export const addQueueItemNext = async (item: NowPlayingItem, useServerData: boolean) => {
-  return useServerData ? addQueueItemNextOnServer(item) : addQueueItemNextLocally(item)
+  let results = []
+  if (useServerData) {
+    results = await addQueueItemNextOnServer(item)
+  } else {
+    results = await addQueueItemNextLocally(item)
+  }
+
+  await updatePlayerQueue(results)
+
+  return results
 }
 
 export const getQueueItems = async (useServerData: boolean) => {
@@ -17,15 +36,42 @@ export const getQueueItems = async (useServerData: boolean) => {
 }
 
 export const popNextFromQueue = async (useServerData: boolean) => {
-  return useServerData ? popNextFromQueueFromServer() : popNextFromQueueLocally()
+  let item = {}
+  if (useServerData) {
+    item = await popNextFromQueueFromServer()
+  } else {
+    item = await popNextFromQueueLocally()
+  }
+
+  const items = await getQueueItems(useServerData)
+  await updatePlayerQueue(items)
+
+  return item
 }
 
 export const removeQueueItem = async (item: NowPlayingItem, useServerData: boolean) => {
-  return useServerData ? removeQueueItemOnServer(item) : removeQueueItemLocally(item)
+  let items = []
+  if (useServerData) {
+    items = await removeQueueItemOnServer(item)
+  } else {
+    items = await removeQueueItemLocally(item)
+  }
+
+  await updatePlayerQueue(items)
+
+  return items
 }
 
 export const setAllQueueItems = async (items: NowPlayingItem[], useServerData: boolean) => {
-  return useServerData ? setAllQueueItemsOnServer(items) : setAllQueueItemsLocally(items)
+  if (useServerData) {
+    await setAllQueueItemsOnServer(items)
+  } else {
+    await setAllQueueItemsLocally(items)
+  }
+
+  await updatePlayerQueue(items)
+
+  return items
 }
 
 const addQueueItemLastLocally = async (item: NowPlayingItem) => {

@@ -1,6 +1,7 @@
 import debounce from 'lodash/debounce'
 import { Alert, StyleSheet, View } from 'react-native'
 import React from 'reactn'
+import { refreshDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
 import { getNowPlayingItem } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
@@ -42,6 +43,11 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_STOP)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_STATE_CHANGED)
+  }
+
+  _handleQueueEnded = async () => {
+    await this._refreshNowPlayingItem()
+    refreshDownloadedPodcasts()
   }
 
   _playerCannotStreamWithoutWifi = async () => {
