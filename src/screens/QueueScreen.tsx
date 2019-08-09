@@ -6,7 +6,7 @@ import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getNowPlayingItem } from '../services/player'
 import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
-import { addItemsToPlayerQueueNext } from '../state/actions/player'
+import { loadTrackFromQueue } from '../state/actions/player'
 import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
 import { navHeader } from '../styles'
 
@@ -208,7 +208,7 @@ export class QueueScreen extends React.Component<Props, State> {
       this.setState({ isLoading: true }, async () => {
         navigation.goBack()
         navigation.navigate(PV.RouteNames.PlayerScreen)
-        await addItemsToPlayerQueueNext([item], true, true)
+        await loadTrackFromQueue(item)
         const nowPlayingItem = await getNowPlayingItem()
         const queueItems = await getQueueItems()
         this.setState({

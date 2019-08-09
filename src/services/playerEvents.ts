@@ -5,7 +5,7 @@ import { PV } from '../resources'
 import { addOrUpdateHistoryItem, getHistoryItems } from './history'
 import { clearNowPlayingItem ,getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem,
   handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, loadNextFromQueue,
-  PVTrackPlayer, setClipHasEnded, setPlaybackPosition, setPlaybackPositionWhenDurationIsAvailable
+  PVTrackPlayer, setClipHasEnded, setPlaybackPosition, setPlaybackPositionWhenDurationIsAvailable, setNowPlayingItem
 } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 import { getQueueItems } from './queue'
@@ -35,7 +35,7 @@ module.exports = async () => {
       if (x.state === 'playing' || x.state === 'paused') {
         // handle updating history item after event emit, because it is less of a priority than the UI update
         nowPlayingItem.userPlaybackPosition = currentPosition
-        await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(nowPlayingItem))
+        await setNowPlayingItem(nowPlayingItem)
         if (x.state === 'playing') await addOrUpdateHistoryItem(nowPlayingItem)
       }
     }
@@ -91,7 +91,9 @@ module.exports = async () => {
 let clipEndTimeInterval: any = null
 
 PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
+  console.log('PLAYER_CLIP_LOADED event')
   const nowPlayingItem = await getNowPlayingItem()
+
   if (nowPlayingItem) {
     const { clipEndTime, clipId } = nowPlayingItem
 
@@ -100,6 +102,7 @@ PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
     if (clipId && clipEndTime) {
       clipEndTimeInterval = setInterval(async () => {
         const currentPosition = await PVTrackPlayer.getPosition()
+
         if (currentPosition > clipEndTime) {
           clearInterval(clipEndTimeInterval)
           PVTrackPlayer.pause()
@@ -114,6 +117,6 @@ PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
       }, 500)
     }
 
-    await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.clipStartTime)
+    await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.clipStartTime, nowPlayingItem.clipId)
   }
 })

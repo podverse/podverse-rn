@@ -3,6 +3,7 @@ import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
+import { setNowPlayingItem } from './player'
 import { request } from './request'
 
 export const addOrUpdateHistoryItem = async (item: NowPlayingItem) => {
@@ -24,7 +25,7 @@ export const popLastFromHistoryItems = async () => {
   const useServerData = await checkIfShouldUseServerData()
   const { currentlyPlayingItem, lastItem } =
     useServerData ? await popLastFromHistoryItemsFromServer() : await popLastFromHistoryItemsLocally()
-  await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(lastItem))
+  await setNowPlayingItem(lastItem)
   return {
     currentlyPlayingItem,
     lastItem

@@ -148,6 +148,10 @@ export const loadLastFromHistory = async () => {
 
 export const loadNextFromQueue = async () => {
   const item = await popNextFromQueue()
+  await loadTrackFromQueue(item)
+}
+
+export const loadTrackFromQueue = async (item: NowPlayingItem) => {
   if (item) {
     await updatePlayerState(item)
     await loadTrackFromQueueService(item)
