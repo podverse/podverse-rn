@@ -5,7 +5,7 @@ import { refreshDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
 import { getNowPlayingItem } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { clearNowPlayingItem, setNowPlayingItem, updatePlaybackState } from '../state/actions/player'
+import { clearNowPlayingItem, updatePlaybackState, updatePlayerState } from '../state/actions/player'
 
 type Props = {}
 
@@ -21,13 +21,9 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     PlayerEventEmitter.on(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI, this._playerCannotStreamWithoutWifi)
-    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._refreshNowPlayingItem)
-    PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_DUCK, this._refreshNowPlayingItem)
-    PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_NEXT, this._refreshNowPlayingItem)
-    PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PAUSE, this._playerStateUpdated)
-    PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PLAY, this._playerStateUpdated)
-    PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PREVIOUS, this._refreshNowPlayingItem)
-    PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_STOP, this._playerStateUpdated)
+    // PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PAUSE, this._playerStateUpdated)
+    // PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PLAY, this._playerStateUpdated)
+    // PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_STOP, this._playerStateUpdated)
     PlayerEventEmitter.on(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED, this._refreshNowPlayingItem)
     PlayerEventEmitter.on(PV.Events.PLAYER_STATE_CHANGED, this._playerStateUpdated)
     PlayerEventEmitter.on(PV.Events.PLAYER_TRACK_CHANGED, this._handlePlayerTrackChanged)
@@ -35,20 +31,15 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
 
   componentWillUnmount() {
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
-    PlayerEventEmitter.removeListener(PV.Events.PLAYER_QUEUE_ENDED)
-    PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_DUCK)
-    PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_NEXT)
-    PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_PAUSE)
-    PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_PLAY)
-    PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_PREVIOUS)
-    PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_STOP)
+    // PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_PAUSE)
+    // PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_PLAY)
+    // PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_STOP)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_STATE_CHANGED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_TRACK_CHANGED)
   }
 
   _handlePlayerTrackChanged = async () => {
-    await this._refreshNowPlayingItem()
     refreshDownloadedPodcasts()
   }
 
@@ -58,18 +49,18 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     )
   }
 
-  _playerStateUpdated = async () => {
-    await updatePlaybackState(this.global)
-  }
+  _playerStateUpdated = () => updatePlaybackState()
 
   _refreshNowPlayingItem = async () => {
-    // const nowPlayingItem = await getNowPlayingItem()
+    const nowPlayingItem = await getNowPlayingItem()
 
-    // if (nowPlayingItem) {
-    //   await setNowPlayingItem(nowPlayingItem, this.global, false, false, null, false)
-    // } else {
-    //   await clearNowPlayingItem()
-    // }
+    if (nowPlayingItem) {
+      await updatePlayerState(nowPlayingItem)
+    } else {
+      await clearNowPlayingItem()
+    }
+
+    await updatePlaybackState()
   }
 
   render() {

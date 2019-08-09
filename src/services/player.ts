@@ -1,17 +1,17 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import RNFS from 'react-native-fs'
 import TrackPlayer from 'react-native-track-player'
-import { hasValidStreamingConnection, hasValidNetworkConnection } from '../lib/network'
+import { hasValidStreamingConnection } from '../lib/network'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, convertNowPlayingItemToEpisode,
   convertNowPlayingItemToMediaRef, NowPlayingItem } from '../lib/NowPlayingItem'
 import { getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { checkIfShouldUseServerData, checkIfLoggedIn } from './auth'
+import { checkIfShouldUseServerData } from './auth'
 import { getEpisode } from './episode'
-import { addOrUpdateHistoryItem, getHistoryItems, popLastFromHistoryItems } from './history'
+import { addOrUpdateHistoryItem } from './history'
 import { getMediaRef } from './mediaRef'
-import { addQueueItemNext, filterItemFromQueueItems, getQueueItems, popNextFromQueue, setAllQueueItems } from './queue'
+import { filterItemFromQueueItems, getQueueItems, popNextFromQueue, removeQueueItem } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
 TrackPlayer.setupPlayer().then(() => {
@@ -71,23 +71,26 @@ export const getNowPlayingItemMediaRef = async () => {
 export const handleResumeAfterClipHasEnded = async () => {
   const nowPlayingItem = await getNowPlayingItem()
   const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(nowPlayingItem)
-  await setNowPlayingItem(nowPlayingItemEpisode)
+  await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(nowPlayingItemEpisode))
   PlayerEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
-export const playLastFromHistory = async (shouldPlay: boolean) => {
-  const { currentlyPlayingItem, lastItem } = await popLastFromHistoryItems()
-  if (currentlyPlayingItem && lastItem) {
-    await addQueueItemNext(currentlyPlayingItem)
-    await setNowPlayingItem(lastItem, false, shouldPlay, lastItem.userPlaybackPosition)
-  }
+export const loadNextFromQueue = async () => {
+  const item = await popNextFromQueue()
+  if (item) await loadTrackFromQueue(item)
+  return item
 }
 
-export const playNextFromQueue = async (shouldPlay: boolean) => {
-  const item = await popNextFromQueue()
-  if (item) {
-    await setNowPlayingItem(item, false, shouldPlay, item.userPlaybackPosition)
+export const loadTrackFromQueue = async (item: NowPlayingItem) => {
+  const { clipId, episodeId } = item
+  const id = clipId || episodeId
+  try {
+    if (id) await TrackPlayer.skip(id)
+  } catch (error) {
+    // If track is not found, catch the error, then add it
+    await addItemsToPlayerQueueNext([item])
   }
+  await addOrUpdateHistoryItem(item)
 }
 
 export const playerJumpBackward = async (seconds: number) => {
@@ -151,131 +154,109 @@ export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean)
   await AsyncStorage.setItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY, JSON.stringify(shouldContinuouslyPlay))
 }
 
-// export const loadItemInPlayer = async (item: NowPlayingItem) => {
-//   try {
-
-//   } catch (error) {
-
-//   }
-// }
-
-export const setNowPlayingItem = async (item: NowPlayingItem, isInitialLoad?: boolean, startPlayer?: boolean,
-                                        userPlaybackPosition?: number, skipAddToHistory?: boolean) => {
+const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
+  const ext = getExtensionFromUrl(episodeMediaUrl)
+  const filePath = `${RNFS.DocumentDirectoryPath}/${id}${ext}`
+  let isDownloadedFile = true
   try {
-    const { clipId, episodeId, episodeMediaUrl = '', episodeTitle = 'Untitled episode', podcastImageUrl,
-      podcastTitle = 'Untitled podcast' } = item
-    const lastNowPlayingItem = await getNowPlayingItem()
-    if (!skipAddToHistory && lastNowPlayingItem) {
-      const currentPosition = await PVTrackPlayer.getPosition()
-      lastNowPlayingItem.userPlaybackPosition = currentPosition || 0
-      await addOrUpdateHistoryItem(lastNowPlayingItem)
-    }
+    await RNFS.stat(filePath)
+  } catch (innerErr) {
+    isDownloadedFile = false
+  }
+  return isDownloadedFile
+}
 
-    const isNewEpisode = (isInitialLoad || !lastNowPlayingItem) || item.episodeId !== lastNowPlayingItem.episodeId
-    const isNewMediaRef = item.clipId && ((isInitialLoad || !lastNowPlayingItem) || item.clipId !== lastNowPlayingItem.clipId)
+export const initializePlayerQueue = async () => {
+  const queueItems = await getQueueItems()
+  let filteredItems = [] as any
+  const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
+  let nowPlayingItem = null
+  if (nowPlayingItemString) {
+    nowPlayingItem = JSON.parse(nowPlayingItemString)
+    filteredItems = filterItemFromQueueItems(queueItems, nowPlayingItem)
+    filteredItems.unshift(nowPlayingItem)
+  }
 
-    await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
+  await addItemsToPlayerQueueNext(filteredItems)
 
-    await setClipHasEnded(false)
+  return nowPlayingItem
+}
 
-    const isTrackLoaded = await TrackPlayer.getCurrentTrack()
-    const id = clipId || episodeId
+export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldPlay?: boolean, shouldRemoveFromPVQueue?: boolean) => {
+  const queuedTracks = await TrackPlayer.getQueue()
+  const currentTrackId = await TrackPlayer.getCurrentTrack()
+  let indexOfCurrentTrack = -1
+  for (let i = 0; queuedTracks.length > i; i++) {
+    if (queuedTracks[i].id === currentTrackId) indexOfCurrentTrack = i
+  }
+  const nextTrackId = queuedTracks.length > indexOfCurrentTrack + 1 ? queuedTracks[indexOfCurrentTrack + 1].id : null
+  await addItemsToPlayerQueue(items, nextTrackId)
+  if (currentTrackId) await TrackPlayer.skipToNext()
+  if (shouldPlay) TrackPlayer.play()
 
-    const ext = getExtensionFromUrl(episodeMediaUrl)
-    const filePath = `${RNFS.DocumentDirectoryPath}/${id}${ext}`
-    let isDownloadedFile = true
-    try {
-      await RNFS.stat(filePath)
-    } catch (innerErr) {
-      isDownloadedFile = false
-    }
+  const newCurrentTrackId = await TrackPlayer.getCurrentTrack()
+  const nextItem = items.find((x: NowPlayingItem) => {
+    if (x.clipId) return x.clipId === newCurrentTrackId
+    if (x.episodeId) return x.episodeId === newCurrentTrackId
+    return false
+  })
+  if (nextItem) {
+    await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(nextItem))
+    // NOTE: the PLAYER_CLIP_LOADED event listener uses the NOW_PLAYING_ITEM to get clip info
+    PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+    await addOrUpdateHistoryItem(nextItem)
+    if (shouldRemoveFromPVQueue) await removeQueueItem(nextItem)
+  }
+}
 
+export const addItemsToPlayerQueue = async (items: NowPlayingItem[], insertBeforeId: any = null) => {
+  try {
+    const tracks = [] as any
     const hasStreamingConnection = await hasValidStreamingConnection()
 
-    if (id && (!isTrackLoaded || isNewEpisode)) {
-      if (isTrackLoaded) {
-        await TrackPlayer.reset()
-      }
+    for (const item of items) {
+      const { clipId, episodeId, episodeMediaUrl = '', episodeTitle = 'Untitled episode', podcastImageUrl,
+        podcastTitle = 'Untitled podcast' } = item
+      const id = clipId || episodeId
+      if (!id) return
 
-      if (!isDownloadedFile) {
-        if (hasStreamingConnection) {
-          await TrackPlayer.add({
-            id,
-            url: episodeMediaUrl,
-            title: episodeTitle,
-            artist: podcastTitle,
-            ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
-          })
-        }
-      } else {
-        await TrackPlayer.add({
+      let track = null
+      const isDownloadedFile = await checkIfFileIsDownloaded(id, episodeMediaUrl)
+
+      if (isDownloadedFile) {
+        track = {
           id,
           url: `file://${filePath}`,
           title: episodeTitle,
           artist: podcastTitle,
           ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
-        }).catch((error) => {
-          console.log('Error: ', error)
-        })
+        }
+      } else if (!isDownloadedFile && hasStreamingConnection) {
+        track = {
+          id,
+          url: episodeMediaUrl,
+          title: episodeTitle,
+          artist: podcastTitle,
+          ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
+        }
+      } else {
+        PlayerEventEmitter.emit(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
+        throw new Error('Player cannot stream without wifi')
       }
-    }
 
-    const hasValidPlayingFile = isDownloadedFile || hasStreamingConnection
-
-    if (!isNewEpisode && isNewMediaRef && item.clipStartTime && hasValidPlayingFile) {
-      await setPlaybackPositionWhenDurationIsAvailable(item.clipStartTime)
-    }
-
-    if (isNewEpisode && !isNewMediaRef) {
-      const historyItems = await getHistoryItems()
-      const oldItem = historyItems.find((x: any) => x.episodeId === item.episodeId)
-      await setPlaybackPositionWhenDurationIsAvailable(userPlaybackPosition || (oldItem && oldItem.userPlaybackPosition) || 0)
-    }
-
-    if (!isNewEpisode && !isNewMediaRef && (userPlaybackPosition || userPlaybackPosition === 0)) {
-      await setPlaybackPositionWhenDurationIsAvailable(userPlaybackPosition)
-    }
-
-    const items = await getQueueItems()
-
-    let filteredItems = [] as any[]
-    filteredItems = filterItemFromQueueItems(items, item)
-    await setAllQueueItems(filteredItems)
-    await addOrUpdateHistoryItem(item)
-
-    if (isNewEpisode && episodeId) {
-      await updateNowPlayingItemEpisode(episodeId, item)
-    }
-
-    if (isNewMediaRef && clipId) {
-      await updateNowPlayingItemMediaRef(clipId, item)
-    }
-
-    PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
-
-    if (!hasStreamingConnection && !isDownloadedFile) {
-      PlayerEventEmitter.emit(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
-      return
-    }
-
-    if (isTrackLoaded) {
-      const shouldContinuouslyPlay = await getContinuousPlaybackMode()
-      if (isNewMediaRef && (shouldContinuouslyPlay || startPlayer)) {
-        // Give the player a second to load the file before playing.
-        // Without this, the player will play a split second of the beginning of an episode
-        // before adjusting to the clip's start time position.
-        setTimeout(() => TrackPlayer.play(), 1000)
-      } else if (shouldContinuouslyPlay || startPlayer) {
-        TrackPlayer.play()
+      try {
+        const existingTrack = await TrackPlayer.getTrack(id)
+        if (existingTrack) await TrackPlayer.remove(id)
+      } catch (error) {
+        // do nothing
       }
+
+      tracks.push(track)
     }
 
-    return {
-      nowPlayingItem: item,
-      queueItems: filteredItems
-    }
+    await TrackPlayer.add(tracks, insertBeforeId)
   } catch (error) {
-    throw error
+    console.log(error)
   }
 }
 
@@ -303,8 +284,6 @@ export const togglePlay = async (playbackRate: number) => {
   const state = await TrackPlayer.getState()
 
   if (state === TrackPlayer.STATE_NONE) {
-    const nowPlayingItem = await getNowPlayingItem()
-    await setNowPlayingItem(nowPlayingItem, true)
     TrackPlayer.play()
     TrackPlayer.setRate(playbackRate)
     return

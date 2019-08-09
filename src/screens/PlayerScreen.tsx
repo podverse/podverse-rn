@@ -15,7 +15,6 @@ import { getMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
-import { setNowPlayingItem } from '../state/actions/player'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core, navHeader } from '../styles'
 type Props = {
@@ -98,7 +97,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         dismiss()
       } else if ((currentItem && !lastItem) ||
         (currentItem && lastItem && currentItem.episodeId !== lastItem.episodeId)) {
-        await setNowPlayingItem(currentItem, this.global, false, false, null, true)
+        // TODO: REFRESH VIEW ON RETURN TO FOREGROUND
       }
     }
   }
@@ -125,7 +124,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           if (mediaRef) {
             await addQueueItemNext(currentItem)
             const newItem = convertToNowPlayingItem(mediaRef, null, null)
-            await setNowPlayingItem(newItem, this.global, false)
+            // TODO: LOAD NEW CLIP
           }
         }
       } catch (error) {

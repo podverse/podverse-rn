@@ -22,7 +22,13 @@ export const getHistoryItems = async () => {
 
 export const popLastFromHistoryItems = async () => {
   const useServerData = await checkIfShouldUseServerData()
-  return useServerData ? popLastFromHistoryItemsFromServer() : popLastFromHistoryItemsLocally()
+  const { currentlyPlayingItem, lastItem } =
+    useServerData ? await popLastFromHistoryItemsFromServer() : await popLastFromHistoryItemsLocally()
+  await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(lastItem))
+  return {
+    currentlyPlayingItem,
+    lastItem
+  }
 }
 
 export const removeHistoryItem = async (item: NowPlayingItem) => {

@@ -11,7 +11,7 @@ import { createMediaRef, updateMediaRef } from '../services/mediaRef'
 import { getNowPlayingItem, playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime,
   PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
+import { setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, navHeader, playerStyles } from '../styles'
 
 type Props = {
@@ -115,7 +115,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     if (!currentItem) {
       dismiss()
     } else if (lastItem && currentItem.episodeId !== lastItem.episodeId) {
-      await setNowPlayingItem(currentItem, this.global)
+      // TODO: REFRESH ON RETURN TO FOREGROUND
     }
   }
 
@@ -213,7 +213,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
             clipStartTime: mediaRef.startTime,
             clipTitle: mediaRef.title
           }
-          await setNowPlayingItem(newItem, this.global, true)
+          // TODO: UPDATE CURRENT NOW PLAYING ITEM
         }
 
         this.setState({ isSaving: false }, async () => {

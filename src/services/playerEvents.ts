@@ -2,9 +2,9 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { deleteDownloadedEpisode } from '../lib/downloader'
 import { convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { addOrUpdateHistoryItem } from './history'
+import { addOrUpdateHistoryItem, getHistoryItems } from './history'
 import { clearNowPlayingItem ,getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem,
-  handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, playNextFromQueue,
+  handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, loadNextFromQueue,
   PVTrackPlayer, setClipHasEnded, setPlaybackPosition, setPlaybackPositionWhenDurationIsAvailable
 } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
@@ -17,6 +17,7 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-queue-ended', (x) => console.log('playback-queue-ended', x))
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
+    console.log('playback-state', x)
     PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
     const clipHasEnded = await getClipHasEnded()
@@ -35,31 +36,30 @@ module.exports = async () => {
         // handle updating history item after event emit, because it is less of a priority than the UI update
         nowPlayingItem.userPlaybackPosition = currentPosition
         await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(nowPlayingItem))
-        await addOrUpdateHistoryItem(nowPlayingItem)
+        if (x.state === 'playing') await addOrUpdateHistoryItem(nowPlayingItem)
       }
     }
   })
 
-  PVTrackPlayer.addEventListener('playback-track-changed', async () => {
-    const nowPlayingItem = await getNowPlayingItem()
-    nowPlayingItem.userPlaybackPosition = 0
-    await addOrUpdateHistoryItem(nowPlayingItem)
-    await setPlaybackPosition(0)
+  PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
+    console.log('playback-track-changed', x)
+    const { nextTrack, track, position } = x
+    const previousTrackDuration = await PVTrackPlayer.getDuration()
+    const previousNowPlayingItem = await getNowPlayingItem()
 
-    const queueItems = await getQueueItems()
-    const shouldContinuouslyPlay = await getContinuousPlaybackMode()
+    // If previous track was close to the end, reset playback position to 0 in history
+    if (track && position + 20 > previousTrackDuration) {
+      previousNowPlayingItem.userPlaybackPosition = 0
+      await addOrUpdateHistoryItem(previousNowPlayingItem)
 
-    const shouldDeleteEpisode = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
-    if (shouldDeleteEpisode === 'TRUE') {
-      const episode = convertNowPlayingItemToEpisode(nowPlayingItem)
-      await deleteDownloadedEpisode(episode)
+      const shouldDeleteEpisode = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+      if (shouldDeleteEpisode === 'TRUE') {
+        const episode = convertNowPlayingItemToEpisode(previousNowPlayingItem)
+        await deleteDownloadedEpisode(episode)
+      }
     }
 
-    if (shouldContinuouslyPlay && queueItems.length > 0) {
-      await playNextFromQueue(true)
-    } else if (queueItems.length === 0) {
-      await clearNowPlayingItem()
-    }
+    // await setClipHasEnded(false)
 
     PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
   })
@@ -67,8 +67,6 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('remote-jump-backward', () => playerJumpBackward(PV.Player.jumpSeconds))
 
   PVTrackPlayer.addEventListener('remote-jump-forward', () => playerJumpForward(PV.Player.jumpSeconds))
-
-  PVTrackPlayer.addEventListener('remote-next', () => console.log('remote-next'))
 
   PVTrackPlayer.addEventListener('remote-pause', () => {
     PVTrackPlayer.pause()
@@ -80,8 +78,6 @@ module.exports = async () => {
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PLAY)
   })
 
-  PVTrackPlayer.addEventListener('remote-previous', () => console.log('remote-previous'))
-
   PVTrackPlayer.addEventListener('remote-seek', (data) => {
     if (data.position) PVTrackPlayer.seekTo(Math.floor(data.position))
   })
@@ -90,19 +86,6 @@ module.exports = async () => {
     PVTrackPlayer.pause()
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_STOP)
   })
-
-  // PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
-  //   if (permanent) {
-  //     PVTrackPlayer.stop()
-  //   } else if (paused) {
-  //     PVTrackPlayer.pause()
-  //   } else {
-  //     PVTrackPlayer.play()
-  //   }
-  //   PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_DUCK)
-  // })
-
-  // PVTrackPlayer.addEventListener('remote-skip', (x) => console.log('remote-skip'))
 }
 
 let clipEndTimeInterval: any = null
@@ -112,28 +95,23 @@ PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
   if (nowPlayingItem) {
     const { clipEndTime, clipId } = nowPlayingItem
 
-    if (clipEndTimeInterval) {
-      clearInterval(clipEndTimeInterval)
-    }
+    if (clipEndTimeInterval) clearInterval(clipEndTimeInterval)
 
-    if (clipId) {
-      if (clipEndTime) {
-        clipEndTimeInterval = setInterval(async () => {
-          const currentPosition = await PVTrackPlayer.getPosition()
-          if (currentPosition > clipEndTime) {
-            clearInterval(clipEndTimeInterval)
-            PVTrackPlayer.pause()
+    if (clipId && clipEndTime) {
+      clipEndTimeInterval = setInterval(async () => {
+        const currentPosition = await PVTrackPlayer.getPosition()
+        if (currentPosition > clipEndTime) {
+          clearInterval(clipEndTimeInterval)
+          PVTrackPlayer.pause()
 
-            const shouldContinuouslyPlay = await getContinuousPlaybackMode()
-
-            if (shouldContinuouslyPlay) {
-              PlayerEventEmitter.emit(PV.Events.PLAYER_QUEUE_ENDED)
-            } else {
-              await setClipHasEnded(true)
-            }
+          const shouldContinuouslyPlay = await getContinuousPlaybackMode()
+          if (shouldContinuouslyPlay) {
+            PlayerEventEmitter.emit(PV.Events.PLAYER_QUEUE_ENDED)
+          } else {
+            await setClipHasEnded(true)
           }
-        }, 500)
-      }
+        }
+      }, 500)
     }
 
     await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.clipStartTime)

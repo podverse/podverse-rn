@@ -36,7 +36,7 @@ export const getQueueItems = async () => {
 }
 
 export const popNextFromQueue = async () => {
-  let item = {}
+  let item = null
   const useServerData = await checkIfShouldUseServerData()
 
   if (useServerData) {

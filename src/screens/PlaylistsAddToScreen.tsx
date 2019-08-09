@@ -7,7 +7,6 @@ import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getNowPlayingItem } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { setNowPlayingItem } from '../state/actions/player'
 import { addOrRemovePlaylistItem, createPlaylist } from '../state/actions/playlist'
 import { getLoggedInUserPlaylists } from '../state/actions/user'
 import { navHeader } from '../styles'
@@ -93,7 +92,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
     if (!currentItem) {
       dismiss()
     } else if (lastItem && currentItem.episodeId !== lastItem.episodeId) {
-      await setNowPlayingItem(currentItem, this.global)
+      // TODO: REFRESH PAGE ON RETURN TO FOREGROUND
     }
   }
 

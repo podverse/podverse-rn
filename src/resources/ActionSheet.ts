@@ -3,13 +3,10 @@ import NetInfo from '@react-native-community/netinfo'
 import { Alert, Share } from 'react-native'
 import { getGlobal } from 'reactn'
 import { IActionSheet } from '../resources/Interfaces'
-import { setNowPlayingItem } from '../state/actions/player'
+import { addItemsToPlayerQueueNext } from '../state/actions/player'
 import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
 import { PV } from './PV'
 
-// NOTE: handleDismiss should return a promiseto ensure the state update has completed before calling
-// setNowPlayingItem. setNowPlayingItem seems to be resource intensive, and will delay re-rendering of
-// handleDismiss without the promise.
 const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, handleDownload: any) => {
   const globalState = getGlobal()
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
@@ -23,7 +20,7 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
       text: 'Play',
       onPress: async () => {
         await handleDismiss()
-        await setNowPlayingItem(item, false, true)
+        await addItemsToPlayerQueueNext([item], true)
       }
     })
   } else {
@@ -36,7 +33,7 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
           if (showAlert) return
 
           await handleDismiss()
-          await setNowPlayingItem(item, false, true)
+          await addItemsToPlayerQueueNext([item], true)
         }
       },
       {

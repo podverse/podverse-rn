@@ -11,7 +11,6 @@ import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/
 import { PV } from '../resources'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getLoggedInUserMediaRefs } from '../services/user'
-import { setNowPlayingItem } from '../state/actions/player'
 import { core } from '../styles'
 
 type Props = {
@@ -253,7 +252,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _handleNavigationPress = (selectedItem: any) => {
-    setNowPlayingItem(selectedItem, this.global, false, true, null, false)
+    // TODO: LOAD CLIP AND PLAY
   }
 
   render() {
@@ -295,8 +294,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={() => PV.ActionSheet.media.moreButtons(
-            selectedItem, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
-          )}
+            selectedItem, navigation, this._handleCancelPress, this._handleDownloadPressed)}
           showModal={showActionSheet} />
         <Dialog.Container visible={showDeleteConfirmDialog}>
           <Dialog.Title>Delete Clip</Dialog.Title>

@@ -13,10 +13,10 @@ import { getEpisode } from '../services/episode'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
-import { initPlayerState, setNowPlayingItem } from '../state/actions/player'
+import { initializePlayerQueue, initPlayerState } from '../state/actions/player'
 import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
-import { PVTrackPlayer } from '../services/player'
+import { getQueueItems } from '../services/queue'
 
 type Props = {
   navigation?: any
@@ -169,11 +169,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { userInfo } = this.global.session
     await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
     await initDownloads()
-    const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
-
-    if (nowPlayingItemString) {
-      await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global, true, false, null, true)
-    }
+    await initializePlayerQueue()
   }
 
   selectLeftItem = async (selectedKey: string) => {
