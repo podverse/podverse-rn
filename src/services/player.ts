@@ -65,25 +65,26 @@ export const handleResumeAfterClipHasEnded = async () => {
   PlayerEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
-export const loadNextFromQueue = async () => {
+export const loadNextFromQueue = async (shouldPlay: boolean) => {
   const item = await popNextFromQueue()
-  if (item) await loadTrackFromQueue(item)
+  if (item) await loadTrackFromQueue(item, shouldPlay)
   return item
 }
 
-export const loadTrackFromQueue = async (item: NowPlayingItem) => {
+export const loadTrackFromQueue = async (item: NowPlayingItem, shouldPlay: boolean) => {
   const { clipId, episodeId } = item
   const id = clipId || episodeId
+  await setNowPlayingItem(item)
   try {
     if (id) {
       await TrackPlayer.stop()
       await TrackPlayer.skip(id)
     }
-    await setNowPlayingItem(item)
+    if (shouldPlay) await TrackPlayer.play()
     if (clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   } catch (error) {
     // If track is not found, catch the error, then add it
-    await addItemsToPlayerQueueNext([item])
+    await addItemsToPlayerQueueNext([item], shouldPlay)
   }
   await addOrUpdateHistoryItem(item)
 }
@@ -195,12 +196,13 @@ const getValidQueueItemInsertBeforeId = (items: NowPlayingItem[], queuedTracks: 
 }
 
 export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldPlay?: boolean, shouldRemoveFromPVQueue?: boolean) => {
+  if (items.length < 1) return
   const queuedTracks = await TrackPlayer.getQueue()
   const currentTrackId = await TrackPlayer.getCurrentTrack()
   const insertBeforeId = getValidQueueItemInsertBeforeId(items, queuedTracks, currentTrackId)
   await addItemsToPlayerQueue(items, insertBeforeId)
 
-  if (currentTrackId && items.length > 0) {
+  if (currentTrackId) {
     const nextItemToPlayId = items[0].clipId || items[0].episodeId
     if (nextItemToPlayId) {
       try {
@@ -287,15 +289,19 @@ export const setPlaybackPosition = async (position: number) => {
 
 // Sometimes the duration is not immediately available for certain episodes.
 // For those cases, use a setInterval before adjusting playback position.
-export const setPlaybackPositionWhenDurationIsAvailable = async (position: number, trackId?: string) => {
-  const interval = setInterval(async () => {
-    const duration = await TrackPlayer.getDuration()
-    const currentTrackId = await TrackPlayer.getCurrentTrack()
-    if (duration && duration > 0 && (!trackId || trackId === currentTrackId)) {
-      clearInterval(interval)
-      await TrackPlayer.seekTo(position)
-    }
-  }, 250)
+export const setPlaybackPositionWhenDurationIsAvailable = async (position: number, trackId?: string, resolveImmediately?: boolean) => {
+  return new Promise((resolve, reject) => {
+    const interval = setInterval(async () => {
+      const duration = await TrackPlayer.getDuration()
+      const currentTrackId = await TrackPlayer.getCurrentTrack()
+      if (duration && duration > 0 && (!trackId || trackId === currentTrackId)) {
+        clearInterval(interval)
+        await TrackPlayer.seekTo(position)
+        resolve()
+      }
+      if (resolveImmediately) resolve()
+    }, 250)
+  })
 }
 
 export const setPlaybackSpeed = async (rate: number) => {

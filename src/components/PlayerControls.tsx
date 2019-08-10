@@ -116,7 +116,11 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </TouchableOpacity>
           <TouchableOpacity
             disabled={!hasQueueItem}
-            onPress={() => loadNextFromQueue()}
+            onPress={async () => {
+              const playbackState = await PVTrackPlayer.getState()
+              const shouldPlay = playbackState === PVTrackPlayer.STATE_PLAYING
+              loadNextFromQueue(shouldPlay)
+            }}
             style={hasQueueItem ? playerStyles.icon : playerStyles.iconDisabled}>
             <Icon
               name='step-forward'

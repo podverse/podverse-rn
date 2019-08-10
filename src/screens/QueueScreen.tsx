@@ -208,7 +208,7 @@ export class QueueScreen extends React.Component<Props, State> {
       this.setState({ isLoading: true }, async () => {
         navigation.goBack()
         navigation.navigate(PV.RouteNames.PlayerScreen)
-        await loadTrackFromQueue(item)
+        await loadTrackFromQueue(item, true)
         const nowPlayingItem = await getNowPlayingItem()
         const queueItems = await getQueueItems()
         this.setState({

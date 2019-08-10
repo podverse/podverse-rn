@@ -3,7 +3,7 @@ import NetInfo from '@react-native-community/netinfo'
 import { Alert, Share } from 'react-native'
 import { getGlobal } from 'reactn'
 import { IActionSheet } from '../resources/Interfaces'
-import { addItemsToPlayerQueueNext } from '../state/actions/player'
+import { safelyHandleLoadTrack } from '../state/actions/player'
 import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
 import { PV } from './PV'
 
@@ -20,7 +20,7 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
       text: 'Play',
       onPress: async () => {
         await handleDismiss()
-        await addItemsToPlayerQueueNext([item], true)
+        await safelyHandleLoadTrack(item, true)
       }
     })
   } else {
@@ -33,7 +33,7 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
           if (showAlert) return
 
           await handleDismiss()
-          await addItemsToPlayerQueueNext([item], true)
+          await safelyHandleLoadTrack(item, true)
         }
       },
       {

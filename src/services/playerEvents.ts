@@ -4,7 +4,7 @@ import { convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { addOrUpdateHistoryItem, getHistoryItems } from './history'
 import { clearNowPlayingItem ,getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem,
-  handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, loadNextFromQueue,
+  handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward,
   PVTrackPlayer, setClipHasEnded, setPlaybackPosition, setPlaybackPositionWhenDurationIsAvailable, setNowPlayingItem
 } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
@@ -32,11 +32,16 @@ module.exports = async () => {
         await handleResumeAfterClipHasEnded()
       }
 
-      if (x.state === 'playing' || x.state === 'paused') {
-        // handle updating history item after event emit, because it is less of a priority than the UI update
+      if (x.state === 'paused') {
         nowPlayingItem.userPlaybackPosition = currentPosition
+        // handle updating history item after event emit, because it is less of a priority than the UI update
         await setNowPlayingItem(nowPlayingItem)
-        if (x.state === 'playing') await addOrUpdateHistoryItem(nowPlayingItem)
+        if (currentPosition > 0) {
+          await addOrUpdateHistoryItem(nowPlayingItem)
+        }
+      } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition) {
+        await setNowPlayingItem(nowPlayingItem)
+        await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
       }
     }
   })

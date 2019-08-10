@@ -85,7 +85,7 @@ export const filterItemFromHistoryItems = (items: NowPlayingItem[], item: NowPla
   (item.clipId && x.clipId !== item.clipId) || (!item.clipId && x.episodeId !== item.episodeId)
 )
 
-const getHistoryItemsLocally = async () => {
+export const getHistoryItemsLocally = async () => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.HISTORY_ITEMS)
     return itemsString ? JSON.parse(itemsString) : []
