@@ -148,11 +148,12 @@ export const initPlayerState = async (globalState: any) => {
 }
 
 export const loadLastFromHistory = async (shouldPlay: boolean) => {
-  const { currentlyPlayingItem, lastItem } = await popLastFromHistoryItems()
-  if (currentlyPlayingItem && lastItem) {
-    await addQueueItemNext(currentlyPlayingItem)
-    await updatePlayerState(lastItem)
-    await loadTrackFromQueueService(lastItem, shouldPlay)
+  const lastPlayingItem = await getNowPlayingItem()
+  const newItemFromHistory = await popLastFromHistoryItems()
+  if (newItemFromHistory) {
+    await addQueueItemNext(lastPlayingItem)
+    await updatePlayerState(newItemFromHistory)
+    await loadTrackFromQueueService(newItemFromHistory, shouldPlay)
   }
 
   const globalState = getGlobal()

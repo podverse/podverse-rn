@@ -150,8 +150,11 @@ export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean)
   await AsyncStorage.setItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY, JSON.stringify(shouldContinuouslyPlay))
 }
 
-export const setNowPlayingItem = async (item: NowPlayingItem | string) =>
-  AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
+export const setNowPlayingItem = async (item: NowPlayingItem | string) => {
+  if (item) {
+    AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
+  }
+}
 
 const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
   const ext = getExtensionFromUrl(episodeMediaUrl)

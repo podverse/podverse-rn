@@ -23,13 +23,9 @@ export const getHistoryItems = async () => {
 
 export const popLastFromHistoryItems = async () => {
   const useServerData = await checkIfShouldUseServerData()
-  const { currentlyPlayingItem, lastItem } =
-    useServerData ? await popLastFromHistoryItemsFromServer() : await popLastFromHistoryItemsLocally()
-  await setNowPlayingItem(lastItem)
-  return {
-    currentlyPlayingItem,
-    lastItem
-  }
+  const item = useServerData ? await popLastFromHistoryItemsFromServer() : await popLastFromHistoryItemsLocally()
+  await setNowPlayingItem(item)
+  return item
 }
 
 export const removeHistoryItem = async (item: NowPlayingItem) => {
@@ -103,15 +99,11 @@ const getHistoryItemsFromServer = async () => {
 
 const popLastFromHistoryItemsLocally = async () => {
   const items = await getHistoryItemsLocally()
-  const currentlyPlayingItem = items.shift()
-  const lastItem = items.shift()
-  if (lastItem) {
-    await removeHistoryItemLocally(currentlyPlayingItem)
-    await removeHistoryItemLocally(lastItem)
-    return {
-      currentlyPlayingItem,
-      lastItem
-    }
+  const currentItem = items.shift()
+  const itemToPop = items.shift()
+  if (itemToPop) {
+    await removeHistoryItemLocally(currentItem)
+    return itemToPop
   }
 
   return {}
@@ -120,15 +112,11 @@ const popLastFromHistoryItemsLocally = async () => {
 const popLastFromHistoryItemsFromServer = async () => {
   await popLastFromHistoryItemsLocally()
   const items = await getHistoryItemsFromServer()
-  const currentlyPlayingItem = items.shift()
-  const lastItem = items.shift()
-  if (lastItem) {
-    await removeHistoryItemOnServer(currentlyPlayingItem.episodeId, currentlyPlayingItem.clipId)
-    await removeHistoryItemOnServer(lastItem.episodeId, lastItem.clipId)
-    return {
-      currentlyPlayingItem,
-      lastItem
-    }
+  const currentItem = items.shift()
+  const itemToPop = items.shift()
+  if (itemToPop) {
+    await removeHistoryItemOnServer(currentItem.episodeId, currentItem.clipId)
+    return itemToPop
   }
 
   return {}

@@ -107,7 +107,7 @@ export const filterItemFromQueueItems = (items: NowPlayingItem[], item: NowPlayi
   (item.clipId && x.clipId !== item.clipId) || (!item.clipId && x.episodeId !== item.episodeId)
 )
 
-const getQueueItemsLocally = async () => {
+export const getQueueItemsLocally = async () => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.QUEUE_ITEMS)
     return itemsString ? JSON.parse(itemsString) : []

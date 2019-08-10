@@ -2,13 +2,12 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { deleteDownloadedEpisode } from '../lib/downloader'
 import { convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { addOrUpdateHistoryItem, getHistoryItems } from './history'
-import { clearNowPlayingItem ,getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem,
-  handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward,
-  PVTrackPlayer, setClipHasEnded, setPlaybackPosition, setPlaybackPositionWhenDurationIsAvailable, setNowPlayingItem
-} from './player'
+import { addOrUpdateHistoryItem } from './history'
+import { getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem, handleResumeAfterClipHasEnded,
+  playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded, setNowPlayingItem,
+  setPlaybackPositionWhenDurationIsAvailable } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
-import { getQueueItems } from './queue'
+import { getQueueItems } from './queue';
 
 module.exports = async () => {
 
@@ -39,7 +38,7 @@ module.exports = async () => {
         if (currentPosition > 0) {
           await addOrUpdateHistoryItem(nowPlayingItem)
         }
-      } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition) {
+      } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition && !nowPlayingItem.clipId) {
         await setNowPlayingItem(nowPlayingItem)
         await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
       }
@@ -49,11 +48,12 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
     console.log('playback-track-changed', x)
     const { nextTrack, track, position } = x
+    PVTrackPlayer.seekTo(0)
     const previousTrackDuration = await PVTrackPlayer.getDuration()
     const previousNowPlayingItem = await getNowPlayingItem()
 
     // If previous track was close to the end, reset playback position to 0 in history
-    if (track && position + 20 > previousTrackDuration) {
+    if (previousTrackDuration && track && position + 20 > previousTrackDuration) {
       previousNowPlayingItem.userPlaybackPosition = 0
       await addOrUpdateHistoryItem(previousNowPlayingItem)
 
@@ -64,9 +64,7 @@ module.exports = async () => {
       }
     }
 
-    // await setClipHasEnded(false)
-
-    PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
+    PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED, track)
   })
 
   PVTrackPlayer.addEventListener('remote-jump-backward', () => playerJumpBackward(PV.Player.jumpSeconds))
