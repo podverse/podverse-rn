@@ -3,10 +3,8 @@ import { Alert, StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import { refreshDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
-import { getHistoryItemsLocally } from '../services/history'
-import { getNowPlayingItem, setNowPlayingItem } from '../services/player'
+import { getNowPlayingItem } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { getQueueItemsLocally } from '../services/queue'
 import { clearNowPlayingItem, updatePlaybackState, updatePlayerState } from '../state/actions/player'
 
 type Props = {}
@@ -41,21 +39,8 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_TRACK_CHANGED)
   }
 
-  _handlePlayerTrackChanged = async (trackId: string) => {
+  _handlePlayerTrackChanged = async () => {
     refreshDownloadedPodcasts()
-
-    if (trackId) {
-      const queueItems = await getQueueItemsLocally()
-      let currentNowPlayingItem = queueItems.find((x: any) =>
-        trackId === x.clipId || (!x.clipId && trackId === x.episodeId))
-      if (!currentNowPlayingItem) {
-        const historyItems = await getHistoryItemsLocally()
-        currentNowPlayingItem = historyItems.find((x: any) =>
-          trackId === x.clipId || (!x.clipId && trackId === x.episodeId))
-      }
-      await setNowPlayingItem(currentNowPlayingItem)
-    }
-
     this._refreshNowPlayingItem()
   }
 

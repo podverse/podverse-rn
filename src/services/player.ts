@@ -11,7 +11,7 @@ import { checkIfShouldUseServerData } from './auth'
 import { getEpisode } from './episode'
 import { addOrUpdateHistoryItem } from './history'
 import { getMediaRef } from './mediaRef'
-import { filterItemFromQueueItems, getQueueItems, popNextFromQueue, removeQueueItem } from './queue'
+import { filterItemFromQueueItems, getQueueItems, popNextFromQueue, removeQueueItem, getQueueItemsLocally } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
 TrackPlayer.setupPlayer().then(() => {
@@ -74,6 +74,11 @@ export const loadNextFromQueue = async (shouldPlay: boolean) => {
 export const loadTrackFromQueue = async (item: NowPlayingItem, shouldPlay: boolean) => {
   const { clipId, episodeId } = item
   const id = clipId || episodeId
+  const playerQueue = await TrackPlayer.getQueue()
+  let pvQueueItems = await getQueueItemsLocally()
+  if (playerQueue.some((x: any) => (clipId && x.id === clipId) || (!clipId && x.id === episodeId))) {
+    pvQueueItems = pvQueueItems.filter((x: any) => (clipId && x.clipId !== clipId) || (!clipId && x.episodeId !== episodeId))
+  }
   await setNowPlayingItem(item)
   try {
     if (id) {
@@ -84,7 +89,7 @@ export const loadTrackFromQueue = async (item: NowPlayingItem, shouldPlay: boole
     if (clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   } catch (error) {
     // If track is not found, catch the error, then add it
-    await addItemsToPlayerQueueNext([item], shouldPlay)
+    await addItemsToPlayerQueueNext([item, ...pvQueueItems], shouldPlay)
   }
   await addOrUpdateHistoryItem(item)
 }

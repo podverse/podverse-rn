@@ -2,12 +2,14 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { deleteDownloadedEpisode } from '../lib/downloader'
 import { convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { addOrUpdateHistoryItem } from './history'
+import { addOrUpdateHistoryItem, getHistoryItemsLocally } from './history'
 import { getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem, handleResumeAfterClipHasEnded,
   playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded, setNowPlayingItem,
   setPlaybackPositionWhenDurationIsAvailable } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
-import { getQueueItems } from './queue';
+import { getQueueItemsLocally, removeQueueItem } from './queue'
+
+let shouldPauseWhenReady = false
 
 module.exports = async () => {
 
@@ -18,6 +20,12 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
     console.log('playback-state', x)
     PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
+
+    if (shouldPauseWhenReady) {
+      shouldPauseWhenReady = false
+      PVTrackPlayer.pause()
+      return
+    }
 
     const clipHasEnded = await getClipHasEnded()
     const nowPlayingItem = await getNowPlayingItem()
@@ -31,13 +39,15 @@ module.exports = async () => {
         await handleResumeAfterClipHasEnded()
       }
 
+      const shouldContinuouslyPlay = await getContinuousPlaybackMode()
+      if (shouldContinuouslyPlay && x.state === 'ready') {
+        PVTrackPlayer.play()
+      }
+
       if (x.state === 'paused') {
         nowPlayingItem.userPlaybackPosition = currentPosition
-        // handle updating history item after event emit, because it is less of a priority than the UI update
         await setNowPlayingItem(nowPlayingItem)
-        if (currentPosition > 0) {
-          await addOrUpdateHistoryItem(nowPlayingItem)
-        }
+        if (currentPosition > 0) await addOrUpdateHistoryItem(nowPlayingItem)
       } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition && !nowPlayingItem.clipId) {
         await setNowPlayingItem(nowPlayingItem)
         await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
@@ -49,6 +59,12 @@ module.exports = async () => {
     console.log('playback-track-changed', x)
     const { nextTrack, track, position } = x
     PVTrackPlayer.seekTo(0)
+
+    const shouldContinuouslyPlay = await getContinuousPlaybackMode()
+    if (!shouldContinuouslyPlay) {
+      shouldPauseWhenReady = true
+    }
+
     const previousTrackDuration = await PVTrackPlayer.getDuration()
     const previousNowPlayingItem = await getNowPlayingItem()
 
@@ -64,7 +80,23 @@ module.exports = async () => {
       }
     }
 
-    PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED, track)
+    if (track) {
+      const queueItems = await getQueueItemsLocally()
+      const queueItemIndex = queueItems.findIndex((x: any) =>
+        track === x.clipId || (!x.clipId && track === x.episodeId))
+      let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
+      if (currentNowPlayingItem) await removeQueueItem(currentNowPlayingItem)
+
+      if (!currentNowPlayingItem) {
+        const historyItems = await getHistoryItemsLocally()
+        currentNowPlayingItem = historyItems.find((x: any) =>
+          track === x.clipId || (!x.clipId && track === x.episodeId))
+      }
+
+      await setNowPlayingItem(currentNowPlayingItem)
+    }
+
+    PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
   })
 
   PVTrackPlayer.addEventListener('remote-jump-backward', () => playerJumpBackward(PV.Player.jumpSeconds))
@@ -109,13 +141,11 @@ PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
         if (currentPosition > clipEndTime) {
           clearInterval(clipEndTimeInterval)
           PVTrackPlayer.pause()
-
-          const shouldContinuouslyPlay = await getContinuousPlaybackMode()
-          if (shouldContinuouslyPlay) {
-            PlayerEventEmitter.emit(PV.Events.PLAYER_QUEUE_ENDED)
-          } else {
-            await setClipHasEnded(true)
-          }
+          await setClipHasEnded(true)
+          // const shouldContinuouslyPlay = await getContinuousPlaybackMode()
+          // if (shouldContinuouslyPlay) {
+          //   PlayerEventEmitter.emit(PV.Events.PLAYER_QUEUE_ENDED)
+          // }
         }
       }, 500)
     }
