@@ -10,6 +10,7 @@ import PlayerEventEmitter from './playerEventEmitter'
 import { getQueueItemsLocally, removeQueueItem } from './queue'
 
 let shouldPauseWhenReady = false
+let isFirstTrackToLoad = true
 
 module.exports = async () => {
 
@@ -61,8 +62,9 @@ module.exports = async () => {
     PVTrackPlayer.seekTo(0)
 
     const shouldContinuouslyPlay = await getContinuousPlaybackMode()
-    if (!shouldContinuouslyPlay) {
+    if (!shouldContinuouslyPlay || isFirstTrackToLoad) {
       shouldPauseWhenReady = true
+      isFirstTrackToLoad = false
     }
 
     const previousTrackDuration = await PVTrackPlayer.getDuration()
