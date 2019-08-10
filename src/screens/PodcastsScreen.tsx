@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { Linking, Platform, StyleSheet } from 'react-native'
+import KeepAwake from 'react-native-keep-awake'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
@@ -16,7 +17,6 @@ import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloa
 import { initializePlayerQueue, initPlayerState } from '../state/actions/player'
 import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
-import { getQueueItems } from '../services/queue'
 
 type Props = {
   navigation?: any
@@ -432,6 +432,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               renderItem={this._renderPodcastItem}
               resultsText='podcasts' />
         }
+        <KeepAwake />
       </View>
     )
   }

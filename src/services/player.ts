@@ -2,16 +2,12 @@ import AsyncStorage from '@react-native-community/async-storage'
 import RNFS from 'react-native-fs'
 import TrackPlayer from 'react-native-track-player'
 import { hasValidStreamingConnection } from '../lib/network'
-import { convertNowPlayingItemClipToNowPlayingItemEpisode, convertNowPlayingItemToEpisode,
-  convertNowPlayingItemToMediaRef, NowPlayingItem } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
 import { getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { checkIfShouldUseServerData } from './auth'
-import { getEpisode } from './episode'
 import { addOrUpdateHistoryItem } from './history'
-import { getMediaRef } from './mediaRef'
-import { filterItemFromQueueItems, getQueueItems, popNextFromQueue, removeQueueItem, getQueueItemsLocally } from './queue'
+import { filterItemFromQueueItems, getQueueItems, getQueueItemsLocally, popNextFromQueue, removeQueueItem } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
 TrackPlayer.setupPlayer().then(() => {
