@@ -4,7 +4,7 @@ import { convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { addOrUpdateHistoryItem, getHistoryItemsLocally } from './history'
 import { getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem, handleResumeAfterClipHasEnded,
-  playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded, setNowPlayingItem,
+  loadNextFromQueue, playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded, setNowPlayingItem,
   setPlaybackPositionWhenDurationIsAvailable } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 import { getQueueItemsLocally, removeQueueItem } from './queue'
@@ -94,6 +94,7 @@ module.exports = async () => {
       }
 
       await setNowPlayingItem(currentNowPlayingItem)
+      if (currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
     }
 
     PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
@@ -137,15 +138,15 @@ PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
     if (clipId && clipEndTime) {
       clipEndTimeInterval = setInterval(async () => {
         const currentPosition = await PVTrackPlayer.getPosition()
-
         if (currentPosition > clipEndTime) {
           clearInterval(clipEndTimeInterval)
           PVTrackPlayer.pause()
           await setClipHasEnded(true)
-          // const shouldContinuouslyPlay = await getContinuousPlaybackMode()
-          // if (shouldContinuouslyPlay) {
-          //   PlayerEventEmitter.emit(PV.Events.PLAYER_QUEUE_ENDED)
-          // }
+          const shouldContinuouslyPlay = await getContinuousPlaybackMode()
+          if (shouldContinuouslyPlay) {
+            await loadNextFromQueue(true)
+            PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_ENDED)
+          }
         }
       }, 500)
     }
