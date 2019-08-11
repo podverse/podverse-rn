@@ -50,7 +50,7 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
   const currentTrackIndex = playerQueueItems.findIndex((x: any) => currentTrackId === x.id)
   let insertBeforeId = null
 
-  if (playerQueueItems.length >= currentTrackIndex + 1) {
+  if (playerQueueItems.length >= currentTrackIndex + 1 && playerQueueItems[currentTrackIndex + 1]) {
     insertBeforeId = playerQueueItems[currentTrackIndex + 1].id
   }
 
