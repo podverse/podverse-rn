@@ -4,8 +4,8 @@ import { PV } from '../../resources'
 import { getHistoryItemsLocally, popLastFromHistoryItems } from '../../services/history'
 import { addItemsToPlayerQueueNext as addItemsToPlayerQueueNextService, clearNowPlayingItem as clearNowPlayingItemService,
   getContinuousPlaybackMode, getNowPlayingItem, initializePlayerQueue as initializePlayerQueueService,
-  loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer, setContinuousPlaybackMode as setContinuousPlaybackModeService,
-  setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService, setNowPlayingItem} from '../../services/player'
+  loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer, setNowPlayingItem,
+  setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService} from '../../services/player'
 import { addQueueItemNext, popNextFromQueue } from '../../services/queue'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
@@ -167,7 +167,7 @@ export const loadLastFromHistory = async (shouldPlay: boolean) => {
 
 export const loadNextFromQueue = async (shouldPlay: boolean) => {
   const item = await popNextFromQueue()
-  await loadTrackFromQueue(item, shouldPlay)
+  if (item) await loadTrackFromQueue(item, shouldPlay)
 }
 
 export const loadTrackFromQueue = async (item: NowPlayingItem, shouldPlay: boolean) => {
@@ -183,20 +183,6 @@ export const loadTrackFromQueue = async (item: NowPlayingItem, shouldPlay: boole
       isLoading: false
     }
   })
-}
-
-export const setContinousPlaybackMode = async (shouldContinuouslyPlay: boolean) => {
-  const globalState = getGlobal()
-  await setContinuousPlaybackModeService(shouldContinuouslyPlay)
-
-  setGlobal({
-    player: {
-      ...globalState.player,
-      shouldContinuouslyPlay
-    }
-  })
-
-  return shouldContinuouslyPlay
 }
 
 export const setPlaybackSpeed = async (rate: number, globalState: any) => {

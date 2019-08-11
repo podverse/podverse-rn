@@ -31,8 +31,6 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
   let results = []
   const useServerData = await checkIfShouldUseServerData()
 
-  const queue = await PVTrackPlayer.getQueue()
-
   if (useServerData) {
     results = await addQueueItemNextOnServer(item)
   } else {
@@ -40,7 +38,7 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
   }
 
   try {
-    PVTrackPlayer.remove(item.clipId || item.episodeId)
+    await PVTrackPlayer.remove(item.clipId || item.episodeId)
   } catch (error) {
     //
   }

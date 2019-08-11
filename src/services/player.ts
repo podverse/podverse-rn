@@ -77,6 +77,7 @@ export const loadTrackFromQueue = async (item: NowPlayingItem, shouldPlay: boole
   if (playerQueue.some((x: any) => (clipId && x.id === clipId) || (!clipId && x.id === episodeId))) {
     pvQueueItems = pvQueueItems.filter((x: any) => (clipId && x.clipId !== clipId) || (!clipId && x.episodeId !== episodeId))
   }
+
   await setNowPlayingItem(item)
   try {
     if (id) {
