@@ -79,6 +79,7 @@ export const loadTrackFromQueue = async (item: NowPlayingItem, shouldPlay: boole
   }
 
   await setNowPlayingItem(item)
+
   try {
     if (id) {
       await TrackPlayer.skip(id)
