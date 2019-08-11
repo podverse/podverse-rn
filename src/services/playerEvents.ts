@@ -78,17 +78,17 @@ module.exports = async () => {
       }
     }
 
-    if (nextTrack) {
+    if (track) {
       const queueItems = await getQueueItemsLocally()
       const queueItemIndex = queueItems.findIndex((x: any) =>
-        nextTrack === x.clipId || (!x.clipId && nextTrack === x.episodeId))
+        track === x.clipId || (!x.clipId && track === x.episodeId))
       let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
       if (currentNowPlayingItem) await removeQueueItem(currentNowPlayingItem)
 
       if (!currentNowPlayingItem) {
         const historyItems = await getHistoryItemsLocally()
         currentNowPlayingItem = historyItems.find((x: any) =>
-          nextTrack === x.clipId || (!x.clipId && nextTrack === x.episodeId))
+          track === x.clipId || (!x.clipId && track === x.episodeId))
       }
 
       await setNowPlayingItem(currentNowPlayingItem)

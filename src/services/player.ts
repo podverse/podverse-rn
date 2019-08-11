@@ -252,7 +252,7 @@ export const movePlayerItemToNewPosition = async (id: string, insertBeforeId: st
   }
 }
 
-const createTrack = async (item: NowPlayingItem) => {
+export const createTrack = async (item: NowPlayingItem) => {
   const { clipId, episodeId, episodeMediaUrl = '', episodeTitle = 'Untitled episode', podcastImageUrl,
     podcastTitle = 'Untitled podcast' } = item
   const id = clipId || episodeId

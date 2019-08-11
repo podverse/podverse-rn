@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getAuthenticatedUserInfo } from './auth'
+import { createTrack, PVTrackPlayer } from './player'
 import { updateUserQueueItems } from './user'
 
 export const addQueueItemLast = async (item: NowPlayingItem) => {
@@ -14,6 +15,15 @@ export const addQueueItemLast = async (item: NowPlayingItem) => {
     results = await addQueueItemLastLocally(item)
   }
 
+  try {
+    PVTrackPlayer.remove(item.clipId || item.episodeId)
+  } catch (error) {
+    //
+  }
+
+  const track = await createTrack(item)
+  PVTrackPlayer.add([track])
+
   return results
 }
 
@@ -21,11 +31,31 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
   let results = []
   const useServerData = await checkIfShouldUseServerData()
 
+  const queue = await PVTrackPlayer.getQueue()
+
   if (useServerData) {
     results = await addQueueItemNextOnServer(item)
   } else {
     results = await addQueueItemNextLocally(item)
   }
+
+  try {
+    PVTrackPlayer.remove(item.clipId || item.episodeId)
+  } catch (error) {
+    //
+  }
+
+  const playerQueueItems = await PVTrackPlayer.getQueue()
+  const currentTrackId = await PVTrackPlayer.getCurrentTrack()
+  const currentTrackIndex = playerQueueItems.findIndex((x: any) => currentTrackId === x.id)
+  let insertBeforeId = null
+
+  if (playerQueueItems.length >= currentTrackIndex + 1) {
+    insertBeforeId = playerQueueItems[currentTrackIndex + 1].id
+  }
+
+  const track = await createTrack(item)
+  PVTrackPlayer.add([track], insertBeforeId)
 
   return results
 }
