@@ -10,7 +10,9 @@ import { addOrUpdateHistoryItem } from './history'
 import { filterItemFromQueueItems, getQueueItems, getQueueItemsLocally, popNextFromQueue, removeQueueItem } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
-TrackPlayer.setupPlayer().then(() => {
+TrackPlayer.setupPlayer({
+  waitForBuffer: false
+}).then(() => {
   TrackPlayer.updateOptions({
     capabilities: [
       TrackPlayer.CAPABILITY_JUMP_BACKWARD,
@@ -78,10 +80,8 @@ export const loadTrackFromQueue = async (item: NowPlayingItem, shouldPlay: boole
   await setNowPlayingItem(item)
   try {
     if (id) {
-      await TrackPlayer.stop()
       await TrackPlayer.skip(id)
     }
-    if (shouldPlay) await TrackPlayer.play()
     if (clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   } catch (error) {
     // If track is not found, catch the error, then add it
@@ -147,10 +147,6 @@ export const setClipHasEnded = async (clipHasEnded: boolean) => {
   await AsyncStorage.setItem(PV.Keys.CLIP_HAS_ENDED, JSON.stringify(clipHasEnded))
 }
 
-export const setContinuousPlaybackMode = async (shouldContinuouslyPlay: boolean) => {
-  await AsyncStorage.setItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY, JSON.stringify(shouldContinuouslyPlay))
-}
-
 export const setNowPlayingItem = async (item: NowPlayingItem | string) => {
   if (item) {
     AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
@@ -210,15 +206,12 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
     const nextItemToPlayId = items[0].clipId || items[0].episodeId
     if (nextItemToPlayId) {
       try {
-        await TrackPlayer.stop()
         await TrackPlayer.skip(nextItemToPlayId)
       } catch (error) {
         console.log(error)
       }
     }
   }
-
-  if (shouldPlay) TrackPlayer.play()
 
   const newCurrentTrackId = await TrackPlayer.getCurrentTrack()
   const nextItem = items.find((x: NowPlayingItem) => {

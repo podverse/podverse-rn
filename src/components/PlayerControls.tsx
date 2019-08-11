@@ -13,7 +13,6 @@ type Props = {
 
 type State = {
   progressValue: number
-  shouldContinuouslyPlay: boolean
 }
 
 export class PlayerControls extends React.PureComponent<Props, State> {
@@ -22,8 +21,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     super(props)
 
     this.state = {
-      progressValue: 0,
-      shouldContinuouslyPlay: this.global.player.shouldContinuouslyPlay
+      progressValue: 0
     }
   }
 
@@ -51,17 +49,10 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     this.setState({ progressValue })
   }
 
-  _toggleContinuousPlaybackMode = async () => {
-    const shouldContinuouslyPlay = await setContinousPlaybackMode(
-      !this.global.player.shouldContinuouslyPlay, this.global
-    )
-    this.setState({ shouldContinuouslyPlay })
-  }
-
   render() {
     const { progressValue } = this.state
     const { globalTheme, player, screenPlayer, session } = this.global
-    const { nowPlayingItem, playbackRate, playbackState, shouldContinuouslyPlay } = player
+    const { nowPlayingItem, playbackRate, playbackState } = player
     const { isLoading } = screenPlayer
     const { historyItems = [], queueItems = [] } = session.userInfo
     const hasHistoryItem = historyItems.length > 0
@@ -131,11 +122,6 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           <TouchableWithoutFeedback onPress={this._adjustSpeed}>
             <Text style={[styles.bottomButton, styles.bottomRowText]}>{`${playbackRate}X`}</Text>
           </TouchableWithoutFeedback>
-          <Icon
-            name='infinity'
-            onPress={this._toggleContinuousPlaybackMode}
-            size={24}
-            style={[styles.bottomButton, shouldContinuouslyPlay ? globalTheme.buttonActive : {}]} />
         </View>
       </View>
     )

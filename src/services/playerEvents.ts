@@ -20,13 +20,15 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
     console.log('playback-state', x)
-    PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
     if (shouldPauseWhenReady) {
       shouldPauseWhenReady = false
       PVTrackPlayer.pause()
+      PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
       return
     }
+
+    PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
     const clipHasEnded = await getClipHasEnded()
     const nowPlayingItem = await getNowPlayingItem()
@@ -38,11 +40,6 @@ module.exports = async () => {
 
       if (clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying) {
         await handleResumeAfterClipHasEnded()
-      }
-
-      const shouldContinuouslyPlay = await getContinuousPlaybackMode()
-      if (shouldContinuouslyPlay && x.state === 'ready') {
-        PVTrackPlayer.play()
       }
 
       if (x.state === 'paused') {
@@ -58,13 +55,12 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
     console.log('playback-track-changed', x)
-    const { nextTrack, track, position } = x
+    const { nextTrack, position, track } = x
     PVTrackPlayer.seekTo(0)
 
-    const shouldContinuouslyPlay = await getContinuousPlaybackMode()
-    if (!shouldContinuouslyPlay || isFirstTrackToLoad) {
-      shouldPauseWhenReady = true
+    if (isFirstTrackToLoad) {
       isFirstTrackToLoad = false
+      shouldPauseWhenReady = true
     }
 
     const previousTrackDuration = await PVTrackPlayer.getDuration()
@@ -82,21 +78,21 @@ module.exports = async () => {
       }
     }
 
-    if (track) {
+    if (nextTrack) {
       const queueItems = await getQueueItemsLocally()
       const queueItemIndex = queueItems.findIndex((x: any) =>
-        track === x.clipId || (!x.clipId && track === x.episodeId))
+        nextTrack === x.clipId || (!x.clipId && nextTrack === x.episodeId))
       let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
       if (currentNowPlayingItem) await removeQueueItem(currentNowPlayingItem)
 
       if (!currentNowPlayingItem) {
         const historyItems = await getHistoryItemsLocally()
         currentNowPlayingItem = historyItems.find((x: any) =>
-          track === x.clipId || (!x.clipId && track === x.episodeId))
+          nextTrack === x.clipId || (!x.clipId && nextTrack === x.episodeId))
       }
 
       await setNowPlayingItem(currentNowPlayingItem)
-      if (currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+      if (currentNowPlayingItem && currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
     }
 
     PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
@@ -144,11 +140,7 @@ PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
           clearInterval(clipEndTimeInterval)
           PVTrackPlayer.pause()
           await setClipHasEnded(true)
-          const shouldContinuouslyPlay = await getContinuousPlaybackMode()
-          if (shouldContinuouslyPlay) {
-            await loadNextFromQueue(true)
-            PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_ENDED)
-          }
+          // PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_ENDED)
         }
       }, 500)
     }

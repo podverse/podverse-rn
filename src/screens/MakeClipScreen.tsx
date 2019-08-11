@@ -435,7 +435,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
               <TouchableWithoutFeedback onPress={this._adjustSpeed}>
                 <Text style={[styles.bottomButton, styles.bottomRowText]}>{`${playbackRate}X`}</Text>
               </TouchableWithoutFeedback>
-              <View style={styles.bottomButton} />
             </View>
           </View>
         </View>
