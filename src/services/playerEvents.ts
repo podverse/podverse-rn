@@ -5,7 +5,8 @@ import { PV } from '../resources'
 import { addOrUpdateHistoryItem, getHistoryItemsLocally } from './history'
 import { getClipHasEnded, getNowPlayingItem, handleResumeAfterClipHasEnded,
   loadNextFromQueue, playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded, setNowPlayingItem,
-  setPlaybackPositionWhenDurationIsAvailable } from './player'
+  setPlaybackPositionWhenDurationIsAvailable, 
+  updateUserPlaybackPosition} from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 import { getQueueItemsLocally, removeQueueItem } from './queue'
 
@@ -34,9 +35,8 @@ module.exports = async () => {
       }
 
       if (x.state === 'paused' || x.state === 'playing') {
-        nowPlayingItem.userPlaybackPosition = currentPosition
         await setNowPlayingItem(nowPlayingItem)
-        if (currentPosition > 0) await addOrUpdateHistoryItem(nowPlayingItem)
+        updateUserPlaybackPosition(nowPlayingItem)
       } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition && !nowPlayingItem.clipId) {
         await setNowPlayingItem(nowPlayingItem)
         await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
@@ -96,18 +96,24 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('remote-jump-forward', () => playerJumpForward(PV.Player.jumpSeconds))
 
-  PVTrackPlayer.addEventListener('remote-pause', () => {
+  PVTrackPlayer.addEventListener('remote-pause', async () => {
     PVTrackPlayer.pause()
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PAUSE)
+    const nowPlayingItem = await getNowPlayingItem()
+    updateUserPlaybackPosition(nowPlayingItem)
   })
 
-  PVTrackPlayer.addEventListener('remote-play', () => {
+  PVTrackPlayer.addEventListener('remote-play', async () => {
     PVTrackPlayer.play()
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PLAY)
+    const nowPlayingItem = await getNowPlayingItem()
+    updateUserPlaybackPosition(nowPlayingItem)
   })
 
-  PVTrackPlayer.addEventListener('remote-seek', (data) => {
+  PVTrackPlayer.addEventListener('remote-seek', async (data) => {
     if (data.position) PVTrackPlayer.seekTo(Math.floor(data.position))
+    const nowPlayingItem = await getNowPlayingItem()
+    updateUserPlaybackPosition(nowPlayingItem)
   })
 
   PVTrackPlayer.addEventListener('remote-stop', () => {

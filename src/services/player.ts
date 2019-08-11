@@ -185,8 +185,14 @@ export const loadNextFromQueue = async (shouldPlay: boolean) => {
 export const updateUserPlaybackPosition = async (item?: NowPlayingItem) => {
   if (item) {
     const lastPosition = await TrackPlayer.getPosition()
-    item.userPlaybackPosition = lastPosition || 0
-    await addOrUpdateHistoryItem(item)
+    const duration = await TrackPlayer.getDuration()
+    if (duration > 0 && lastPosition >= duration - 10) {
+      item.userPlaybackPosition = 0
+      await addOrUpdateHistoryItem(item)
+    } else if (lastPosition > 0) {
+      item.userPlaybackPosition = lastPosition
+      await addOrUpdateHistoryItem(item)
+    }
   }
 }
 
@@ -274,7 +280,6 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
         await TrackPlayer.stop()
         await TrackPlayer.skip(nextItemToPlayId)
       } catch (error) {
-        console.log('addItemsToPlayerQueueNext, after stop/skip', error, newQueuedTracks)
         // NOTE: iOS seems to have a delay after .stop() is called where the whole player queue
         // gets reset/cleared :( In the event that happens, all items are added back to the queue
         const newQueuedTracksAsNowPlayingItems = createNowPlayingItemsFromPlayerTracks(newQueuedTracks)

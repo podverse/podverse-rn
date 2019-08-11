@@ -149,12 +149,17 @@ export const initPlayerState = async (globalState: any) => {
 }
 
 export const loadLastFromHistory = async (shouldPlay: boolean) => {
-  const lastPlayingItem = await getNowPlayingItem()
+  const playingItem = await getNowPlayingItem()
   const newItemFromHistory = await popLastFromHistoryItems()
   if (newItemFromHistory) {
-    const currentPlaybackPosition = await PVTrackPlayer.getPosition()
-    lastPlayingItem.userPlaybackPosition = currentPlaybackPosition || 0
-    await addQueueItemNext(lastPlayingItem)
+    const playbackPosition = await PVTrackPlayer.getPosition()
+    const duration = await PVTrackPlayer.getDuration()
+    if (duration > 0 && playbackPosition >= duration - 10) {
+      playingItem.userPlaybackPosition = 0
+    } else if (playbackPosition > 0) {
+      playingItem.userPlaybackPosition = playbackPosition
+    }
+    await addQueueItemNext(playingItem)
     await updatePlayerState(newItemFromHistory)
     await loadTrackFromQueueService(newItemFromHistory, shouldPlay, true)
   }
