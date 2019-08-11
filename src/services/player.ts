@@ -372,7 +372,7 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (position: numbe
     const interval = setInterval(async () => {
       const duration = await TrackPlayer.getDuration()
       const currentTrackId = await TrackPlayer.getCurrentTrack()
-      if (duration && duration > 0 && (!trackId || trackId === currentTrackId)) {
+      if (duration && duration > 0 && (!trackId || trackId === currentTrackId) && position >= 0) {
         clearInterval(interval)
         await TrackPlayer.seekTo(position)
         resolve()
