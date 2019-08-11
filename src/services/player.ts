@@ -153,10 +153,15 @@ export const setNowPlayingItem = async (item: NowPlayingItem | string) => {
   }
 }
 
-const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
+const getDownloadedFilePath = (id: string, episodeMediaUrl: string) => {
   const ext = getExtensionFromUrl(episodeMediaUrl)
-  const filePath = `${RNFS.DocumentDirectoryPath}/${id}${ext}`
+  return `${RNFS.DocumentDirectoryPath}/${id}${ext}`
+}
+
+const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
   let isDownloadedFile = true
+  const filePath = getDownloadedFilePath(id, episodeMediaUrl)
+
   try {
     await RNFS.stat(filePath)
   } catch (innerErr) {
@@ -243,6 +248,7 @@ export const addItemsToPlayerQueue = async (items: NowPlayingItem[], insertBefor
 
       let track = null
       const isDownloadedFile = await checkIfFileIsDownloaded(id, episodeMediaUrl)
+      const filePath = getDownloadedFilePath(id, episodeMediaUrl)
 
       if (isDownloadedFile) {
         track = {
