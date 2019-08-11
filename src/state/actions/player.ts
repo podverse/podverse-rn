@@ -152,6 +152,8 @@ export const loadLastFromHistory = async (shouldPlay: boolean) => {
   const lastPlayingItem = await getNowPlayingItem()
   const newItemFromHistory = await popLastFromHistoryItems()
   if (newItemFromHistory) {
+    const currentPlaybackPosition = await PVTrackPlayer.getPosition()
+    lastPlayingItem.userPlaybackPosition = currentPlaybackPosition || 0
     await addQueueItemNext(lastPlayingItem)
     await updatePlayerState(newItemFromHistory)
     await loadTrackFromQueueService(newItemFromHistory, shouldPlay, true)
