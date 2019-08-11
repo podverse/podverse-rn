@@ -1,3 +1,3 @@
 export const SearchBar = {
-  textInputDebounceTime: 1500
+  textInputDebounceTime: 1250
 }
