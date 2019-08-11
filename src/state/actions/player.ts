@@ -80,41 +80,44 @@ export const safelyHandleLoadTrack = async (item: NowPlayingItem, shouldPlay: bo
 export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldPlay?: boolean, shouldRemoveFromPVQueue?: boolean) => {
   if (items.length < 1) return
   const item = items[0]
+
   try {
-    await updatePlayerState(item)
+    await addItemsToPlayerQueueNextService(items, shouldPlay, shouldRemoveFromPVQueue)
+    const episode = convertNowPlayingItemToEpisode(item)
+    const mediaRef = convertNowPlayingItemToMediaRef(item)
+
     try {
-      await addItemsToPlayerQueueNextService(items, shouldPlay, shouldRemoveFromPVQueue)
-      const episode = convertNowPlayingItemToEpisode(item)
-      const mediaRef = convertNowPlayingItemToMediaRef(item)
+      await updatePlayerState(item)
+    } catch (error) {
       const globalState = getGlobal()
       setGlobal({
         player: {
           ...globalState.player,
-          ...(episode && episode.id ? { episode } : {}),
-          ...(mediaRef && mediaRef.id ? { mediaRef } : {})
-        },
-        screenPlayer: {
-          ...globalState.screenPlayer,
-          isLoading: false
-        }
-      })
-    } catch (error) {
-      const globalState = getGlobal()
-      setGlobal({
-        screenPlayer: {
-          ...globalState.screenPlayer,
-          isLoading: false
+          nowPlayingItem: null,
+          playbackState: PVTrackPlayer.getState(),
+          showMiniPlayer: false
         }
       })
     }
-  } catch (error) {
+
     const globalState = getGlobal()
     setGlobal({
       player: {
         ...globalState.player,
-        nowPlayingItem: null,
-        playbackState: PVTrackPlayer.getState(),
-        showMiniPlayer: false
+        ...(episode && episode.id ? { episode } : {}),
+        ...(mediaRef && mediaRef.id ? { mediaRef } : {})
+      },
+      screenPlayer: {
+        ...globalState.screenPlayer,
+        isLoading: false
+      }
+    })
+  } catch (error) {
+    const globalState = getGlobal()
+    setGlobal({
+      screenPlayer: {
+        ...globalState.screenPlayer,
+        isLoading: false
       }
     })
   }

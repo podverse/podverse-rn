@@ -218,7 +218,7 @@ export const loadTrackFromQueue = async (item: NowPlayingItem, shouldPlay: boole
     if (id) {
       await TrackPlayer.stop()
       await TrackPlayer.skip(id)
-      if (shouldPlay) TrackPlayer.play()
+      if (shouldPlay) setTimeout(() => TrackPlayer.play(), 1500)
     }
     if (clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   } catch (error) {
@@ -301,7 +301,7 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
     return false
   })
 
-  if (shouldPlay) TrackPlayer.play()
+  if (shouldPlay) setTimeout(() => TrackPlayer.play(), 1500)
 
   if (nextItem) {
     await setNowPlayingItem(nextItem)
