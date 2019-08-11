@@ -304,7 +304,6 @@ export class QueueScreen extends React.Component<Props, State> {
         const nextItem = queueItems[newQueueItemIndex]
         await movePlayerItemToNewPosition(item.clipId || item.episodeId, nextItem.clipId || nextItem.episodeId)
       }
-      const finalItems = await PVTrackPlayer.getQueue()
       this.setState({ queueItems: newItems })
     } catch (error) {
       //
