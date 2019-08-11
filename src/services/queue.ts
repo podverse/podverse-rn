@@ -29,6 +29,7 @@ export const addQueueItemLast = async (item: NowPlayingItem) => {
 
 export const addQueueItemNext = async (item: NowPlayingItem) => {
   let results = []
+
   const useServerData = await checkIfShouldUseServerData()
 
   if (useServerData) {
@@ -38,8 +39,9 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
   }
 
   try {
-    await PVTrackPlayer.remove(item.clipId || item.episodeId)
+    PVTrackPlayer.remove(item.clipId || item.episodeId)
   } catch (error) {
+    console.log('addQueueItemNext', error)
     //
   }
 
