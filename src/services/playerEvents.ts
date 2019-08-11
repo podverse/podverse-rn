@@ -35,7 +35,7 @@ module.exports = async () => {
       }
 
       if (x.state === 'paused' || x.state === 'playing') {
-        updateUserPlaybackPosition(nowPlayingItem)
+        updateUserPlaybackPosition()
       } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition && !nowPlayingItem.clipId) {
         await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
         await addOrUpdateHistoryItem(nowPlayingItem)
@@ -96,21 +96,18 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('remote-pause', async () => {
     PVTrackPlayer.pause()
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PAUSE)
-    const nowPlayingItem = await getNowPlayingItem()
-    updateUserPlaybackPosition(nowPlayingItem)
+    updateUserPlaybackPosition()
   })
 
   PVTrackPlayer.addEventListener('remote-play', async () => {
     PVTrackPlayer.play()
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PLAY)
-    const nowPlayingItem = await getNowPlayingItem()
-    updateUserPlaybackPosition(nowPlayingItem)
+    updateUserPlaybackPosition()
   })
 
   PVTrackPlayer.addEventListener('remote-seek', async (data) => {
     if (data.position) PVTrackPlayer.seekTo(Math.floor(data.position))
-    const nowPlayingItem = await getNowPlayingItem()
-    updateUserPlaybackPosition(nowPlayingItem)
+    updateUserPlaybackPosition()
   })
 
   PVTrackPlayer.addEventListener('remote-stop', () => {
