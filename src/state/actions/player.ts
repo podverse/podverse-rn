@@ -4,7 +4,7 @@ import { PV } from '../../resources'
 import { getHistoryItemsLocally, popLastFromHistoryItems } from '../../services/history'
 import { addItemsToPlayerQueueNext as addItemsToPlayerQueueNextService, clearNowPlayingItem as clearNowPlayingItemService,
   getContinuousPlaybackMode, getNowPlayingItem, initializePlayerQueue as initializePlayerQueueService,
-  loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer, setNowPlayingItem,
+  loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer,
   setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService, updateUserPlaybackPosition} from '../../services/player'
 import { addQueueItemNext, popNextFromQueue } from '../../services/queue'
 

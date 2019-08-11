@@ -4,7 +4,7 @@ import { convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { addOrUpdateHistoryItem, getHistoryItemsLocally } from './history'
 import { getClipHasEnded, getNowPlayingItem, handleResumeAfterClipHasEnded,
-  loadNextFromQueue, playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded, setNowPlayingItem,
+  loadNextFromQueue, playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded,
   setPlaybackPositionWhenDurationIsAvailable, 
   updateUserPlaybackPosition} from './player'
 import PlayerEventEmitter from './playerEventEmitter'
@@ -37,7 +37,6 @@ module.exports = async () => {
       if (x.state === 'paused' || x.state === 'playing') {
         updateUserPlaybackPosition(nowPlayingItem)
       } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition && !nowPlayingItem.clipId) {
-        await setNowPlayingItem(nowPlayingItem)
         await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
         await addOrUpdateHistoryItem(nowPlayingItem)
       } else if (x.state === 'ready') {
