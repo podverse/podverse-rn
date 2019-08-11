@@ -7,16 +7,19 @@ import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, E
   } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem, NowPlayingItem, convertNowPlayingItemToMediaRef } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, convertToNowPlayingItem, NowPlayingItem
+  } from '../lib/NowPlayingItem'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
-import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
+import { getNowPlayingItem, PVTrackPlayer, getNowPlayingItemFromQueueOrHistoryByTrackId } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
+import { updatePlayerState } from '../state/actions/player'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core, navHeader } from '../styles'
+
 type Props = {
   navigation?: any
 }
@@ -67,9 +70,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { navigation } = this.props
 
     const mediaRefId = navigation.getParam('mediaRefId')
-    if (mediaRefId) {
-      await this._initializeScreenData()
-    }
+    if (mediaRefId) this._initializeScreenData()
 
     this.props.navigation.setParams({
       _getEpisodeId: this._getEpisodeId,
@@ -91,13 +92,13 @@ export class PlayerScreen extends React.Component<Props, State> {
     if (nextAppState === 'active') {
       const { dismiss } = this.props.navigation
       const { nowPlayingItem: lastItem } = this.global.player
-      const currentItem = await getNowPlayingItem()
+      const trackId = await PVTrackPlayer.getCurrentTrack()
+      const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
 
       if (!currentItem) {
         dismiss()
-      } else if ((currentItem && !lastItem) ||
-        (currentItem && lastItem && currentItem.episodeId !== lastItem.episodeId)) {
-        // TODO: REFRESH VIEW ON RETURN TO FOREGROUND
+      } else if ((!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
+        updatePlayerState(currentItem)
       }
     }
   }

@@ -1,17 +1,39 @@
 import { PV } from '../resources'
-import { addOrUpdateHistoryItem, getHistoryItemsLocally } from './history'
+import { addOrUpdateHistoryItem } from './history'
 import { getClipHasEnded, getNowPlayingItem, handleResumeAfterClipHasEnded,
   playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded,
   setPlaybackPositionWhenDurationIsAvailable, 
-  updateUserPlaybackPosition} from './player'
+  updateUserPlaybackPosition,
+  getNowPlayingItemFromQueueOrHistoryByTrackId,
+  setNowPlayingItem} from './player'
 import PlayerEventEmitter from './playerEventEmitter'
-import { getQueueItemsLocally, removeQueueItem } from './queue'
+
+const syncNowPlayingItenWithTrack = async (trackId: string) => {
+  const previousNowPlayingItem = await getNowPlayingItem()
+  const previousTrackId = previousNowPlayingItem.clipId || previousNowPlayingItem.episodeId
+  const newTrackShouldPlay = previousTrackId !== trackId
+  if (newTrackShouldPlay) {
+    const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
+    await setNowPlayingItem(currentNowPlayingItem)
+    if (currentNowPlayingItem && currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+  } else {
+    setTimeout(async () => {
+      const trackId = await PVTrackPlayer.getCurrentTrack()
+      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
+      await setNowPlayingItem(currentNowPlayingItem)
+    }, 1500)
+  }
+}
 
 module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
 
-  PVTrackPlayer.addEventListener('playback-queue-ended', (x) => console.log('playback-queue-ended', x))
+  PVTrackPlayer.addEventListener('playback-queue-ended', async (x) => {
+    const { track: trackId } = x
+    await syncNowPlayingItenWithTrack(trackId)
+    PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
+  })
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
     console.log('playback-state', x)
@@ -44,9 +66,11 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
     console.log('playback-track-changed', x)
-    const { nextTrack, position, track } = x
+    const { nextTrack, position, track: trackId } = x
 
     PVTrackPlayer.seekTo(0)
+
+    await syncNowPlayingItenWithTrack(trackId)
 
     // const previousTrackDuration = await PVTrackPlayer.getDuration()
     //
@@ -63,25 +87,6 @@ module.exports = async () => {
     //     await deleteDownloadedEpisode(episode)
     //   }
     // }
-
-    const previousNowPlayingItem = await getNowPlayingItem()
-    const previousTrackId = previousNowPlayingItem.clipId || previousNowPlayingItem.episodeId
-    const newTrackShouldPlay = previousTrackId !== track
-    if (newTrackShouldPlay) {
-      const queueItems = await getQueueItemsLocally()
-      const queueItemIndex = queueItems.findIndex((x: any) =>
-        track === x.clipId || (!x.clipId && track === x.episodeId))
-      let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
-      if (currentNowPlayingItem) await removeQueueItem(currentNowPlayingItem)
-
-      if (!currentNowPlayingItem) {
-        const historyItems = await getHistoryItemsLocally()
-        currentNowPlayingItem = historyItems.find((x: any) =>
-          track === x.clipId || (!x.clipId && track === x.episodeId))
-      }
-
-      if (currentNowPlayingItem && currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
-    }
 
     PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
   })

@@ -5,7 +5,7 @@ import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from
 import { getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { addOrUpdateHistoryItem, getHistoryItems } from './history'
+import { addOrUpdateHistoryItem, getHistoryItems, getHistoryItemsLocally } from './history'
 import { filterItemFromQueueItems, getQueueItems, getQueueItemsLocally, popNextFromQueue, removeQueueItem } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
@@ -384,6 +384,22 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (position: numbe
 
 export const setPlaybackSpeed = async (rate: number) => {
   await TrackPlayer.setRate(rate)
+}
+
+export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: string) => {
+  const queueItems = await getQueueItemsLocally()
+  const queueItemIndex = queueItems.findIndex((x: any) =>
+    trackId === x.clipId || (!x.clipId && trackId === x.episodeId))
+  let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
+  if (currentNowPlayingItem) await removeQueueItem(currentNowPlayingItem)
+  
+  if (!currentNowPlayingItem) {
+    const historyItems = await getHistoryItemsLocally()
+    currentNowPlayingItem = historyItems.find((x: any) =>
+      trackId === x.clipId || (!x.clipId && trackId === x.episodeId))
+  }
+
+  return currentNowPlayingItem
 }
 
 export const togglePlay = async (playbackRate: number) => {
