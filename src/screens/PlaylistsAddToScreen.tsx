@@ -91,10 +91,8 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
     const trackId = await PVTrackPlayer.getCurrentTrack()
     const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
 
-    if (!currentItem) {
+    if (!currentItem || (!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
       dismiss()
-    } else if ((!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
-      updatePlayerState(currentItem)
     }
   }
 
