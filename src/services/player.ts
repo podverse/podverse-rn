@@ -182,7 +182,7 @@ const getValidQueueItemInsertBeforeId = (items: NowPlayingItem[], queuedTracks: 
 
 export const loadNextFromQueue = async (shouldPlay: boolean) => {
   const item = await popNextFromQueue()
-  if (item) await loadTrackFromQueue(item, shouldPlay)
+  if (item) await loadTrackFromQueue(item, shouldPlay, false)
   return item
 }
 
@@ -218,6 +218,7 @@ export const loadTrackFromQueue = async (item: NowPlayingItem, shouldPlay: boole
     if (id) {
       await TrackPlayer.stop()
       await TrackPlayer.skip(id)
+      if (shouldPlay) TrackPlayer.play()
     }
     if (clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   } catch (error) {
@@ -300,6 +301,8 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
     return false
   })
 
+  if (shouldPlay) TrackPlayer.play()
+
   if (nextItem) {
     await setNowPlayingItem(nextItem)
     // NOTE: the PLAYER_CLIP_LOADED event listener uses the NOW_PLAYING_ITEM to get clip info
@@ -358,8 +361,8 @@ export const createTrack = async (item: NowPlayingItem) => {
   return track
 }
 
-export const setPlaybackPosition = async (position: number) => {
-  await TrackPlayer.seekTo(position)
+export const setPlaybackPosition = async (position?: number) => {
+  if (position || position === 0 || (position && position > 0)) await TrackPlayer.seekTo(position)
 }
 
 // Sometimes the duration is not immediately available for certain episodes.

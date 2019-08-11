@@ -1,10 +1,7 @@
-import AsyncStorage from '@react-native-community/async-storage'
-import { deleteDownloadedEpisode } from '../lib/downloader'
-import { convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { addOrUpdateHistoryItem, getHistoryItemsLocally } from './history'
 import { getClipHasEnded, getNowPlayingItem, handleResumeAfterClipHasEnded,
-  loadNextFromQueue, playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded,
+  playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded,
   setPlaybackPositionWhenDurationIsAvailable, 
   updateUserPlaybackPosition} from './player'
 import PlayerEventEmitter from './playerEventEmitter'
@@ -48,7 +45,7 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
     console.log('playback-track-changed', x)
     const { nextTrack, position, track } = x
-    const queueItems = await PVTrackPlayer.getQueue()
+
     PVTrackPlayer.seekTo(0)
 
     // const previousTrackDuration = await PVTrackPlayer.getDuration()
@@ -106,7 +103,7 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('remote-seek', async (data) => {
-    if (data.position) PVTrackPlayer.seekTo(Math.floor(data.position))
+    if (data.position || data.position >= 0) PVTrackPlayer.seekTo(Math.floor(data.position))
     updateUserPlaybackPosition()
   })
 
