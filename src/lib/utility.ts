@@ -39,10 +39,8 @@ export const convertSecToHHMMSS = (sec: number) => {
 
   if (seconds >= 10) {
     result += seconds
-  } else if (seconds >= 1 && minutes >= 1) {
-    result += '0' + seconds
   } else if (seconds >= 1) {
-    result += seconds
+    result += '0' + seconds
   } else {
     result += '00'
   }
