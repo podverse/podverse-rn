@@ -234,52 +234,75 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
   }
 }
 
+export const movePlayerItemToNewPosition = async (id: string, insertBeforeId: string) => {
+  const playerQueueItems = await TrackPlayer.getQueue()
+  if (playerQueueItems.some((x: any) => x.id === id)) {
+    try {
+      await TrackPlayer.getTrack(id)
+      await TrackPlayer.remove(id)
+      const pvQueueItems = await getQueueItemsLocally()
+      const itemToMove = pvQueueItems.find((x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id))
+      if (itemToMove) {
+        const track = await createTrack(itemToMove)
+        await TrackPlayer.add([track], insertBeforeId)
+      }
+    } catch (error) {
+      console.log('movePlayerItemToNewPosition error:', error)
+    }
+  }
+}
+
+const createTrack = async (item: NowPlayingItem) => {
+  const { clipId, episodeId, episodeMediaUrl = '', episodeTitle = 'Untitled episode', podcastImageUrl,
+    podcastTitle = 'Untitled podcast' } = item
+  const id = clipId || episodeId
+  let track = null
+  if (id) {
+    const hasStreamingConnection = await hasValidStreamingConnection()
+    const isDownloadedFile = await checkIfFileIsDownloaded(id, episodeMediaUrl)
+    const filePath = getDownloadedFilePath(id, episodeMediaUrl)
+  
+    if (isDownloadedFile) {
+      track = {
+        id,
+        url: `file://${filePath}`,
+        title: episodeTitle,
+        artist: podcastTitle,
+        ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
+      }
+    } else if (!isDownloadedFile && hasStreamingConnection) {
+      track = {
+        id,
+        url: episodeMediaUrl,
+        title: episodeTitle,
+        artist: podcastTitle,
+        ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
+      }
+    } else {
+      PlayerEventEmitter.emit(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
+      throw new Error('Player cannot stream without wifi')
+    }
+  
+  }
+  return track
+}
+
 export const addItemsToPlayerQueue = async (items: NowPlayingItem[], insertBeforeId: any = null) => {
   const tracks = [] as any
-
   try {
-    const hasStreamingConnection = await hasValidStreamingConnection()
-
     for (const item of items) {
-      const { clipId, episodeId, episodeMediaUrl = '', episodeTitle = 'Untitled episode', podcastImageUrl,
-        podcastTitle = 'Untitled podcast' } = item
+      const { clipId, episodeId } = item
       const id = clipId || episodeId
       if (!id) return
-
-      let track = null
-      const isDownloadedFile = await checkIfFileIsDownloaded(id, episodeMediaUrl)
-      const filePath = getDownloadedFilePath(id, episodeMediaUrl)
-
-      if (isDownloadedFile) {
-        track = {
-          id,
-          url: `file://${filePath}`,
-          title: episodeTitle,
-          artist: podcastTitle,
-          ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
-        }
-      } else if (!isDownloadedFile && hasStreamingConnection) {
-        track = {
-          id,
-          url: episodeMediaUrl,
-          title: episodeTitle,
-          artist: podcastTitle,
-          ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
-        }
-      } else {
-        PlayerEventEmitter.emit(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
-        throw new Error('Player cannot stream without wifi')
-      }
-
+      const track = await createTrack(item)
       try {
-        const existingTrack = await TrackPlayer.getTrack(id)
-        if (existingTrack) await TrackPlayer.remove(id)
+        await TrackPlayer.getTrack(id)
+        await TrackPlayer.remove(id)
         tracks.push(track)
       } catch (error) {
         tracks.push(track)
       }
     }
-
     await TrackPlayer.add(tracks, insertBeforeId)
   } catch (error) {
     console.log(error)

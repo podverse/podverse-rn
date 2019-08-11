@@ -4,7 +4,7 @@ import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, Icon, Messag
   SortableList, SortableListRow, TableSectionHeader, View as PVView } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { getNowPlayingItem } from '../services/player'
+import { getNowPlayingItem, movePlayerItemToNewPosition, PVTrackPlayer } from '../services/player'
 import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
 import { loadTrackFromQueue } from '../state/actions/player'
 import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
@@ -295,8 +295,16 @@ export class QueueScreen extends React.Component<Props, State> {
   _onReleaseRow = async (key: number, currentOrder: [string]) => {
     try {
       const { queueItems } = this.state
+      const item = queueItems[key]
+      const id = item.clipId || item.episodeId
       const sortedItems = currentOrder.map((index: string) => queueItems[index])
       const newItems = await updateQueueItems(sortedItems)
+      const newQueueItemIndex = newItems.findIndex((x: any) => id === x.clipId || (!x.clipId && id === x.episodeId))
+      if (newItems.length >= newQueueItemIndex) {
+        const nextItem = queueItems[newQueueItemIndex]
+        await movePlayerItemToNewPosition(item.clipId || item.episodeId, nextItem.clipId || nextItem.episodeId)
+      }
+      const finalItems = await PVTrackPlayer.getQueue()
       this.setState({ queueItems: newItems })
     } catch (error) {
       //
