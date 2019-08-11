@@ -76,10 +76,6 @@ export class SettingsScreen extends React.Component<Props, State> {
           text='Only allow downloading when connected to Wifi'
           value={!!downloadingWifiOnly} />
         <SwitchWithText
-          onValueChange={this._toggleStreamingWifiOnly}
-          text='Only allow streaming when connected to Wifi'
-          value={!!streamingWifiOnly} />
-        <SwitchWithText
           onValueChange={this._toggleAutoDeleteEpisodeOnEnd}
           text='Delete downloaded episodes after end is reached'
           value={!!autoDeleteEpisodeOnEnd} />

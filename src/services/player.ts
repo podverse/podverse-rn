@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import RNFS from 'react-native-fs'
 import TrackPlayer from 'react-native-track-player'
-import { hasValidStreamingConnection } from '../lib/network'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
 import { getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
@@ -329,7 +328,6 @@ export const createTrack = async (item: NowPlayingItem) => {
   const id = clipId || episodeId
   let track = null
   if (id) {
-    const hasStreamingConnection = await hasValidStreamingConnection()
     const isDownloadedFile = await checkIfFileIsDownloaded(id, episodeMediaUrl)
     const filePath = getDownloadedFilePath(id, episodeMediaUrl)
   
@@ -341,7 +339,7 @@ export const createTrack = async (item: NowPlayingItem) => {
         artist: podcastTitle,
         ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
       }
-    } else if (!isDownloadedFile && hasStreamingConnection) {
+    } else {
       track = {
         id,
         url: episodeMediaUrl,
@@ -349,9 +347,6 @@ export const createTrack = async (item: NowPlayingItem) => {
         artist: podcastTitle,
         ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
       }
-    } else {
-      PlayerEventEmitter.emit(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
-      throw new Error('Player cannot stream without wifi')
     }
   
   }
