@@ -70,7 +70,7 @@ export const safelyHandleLoadTrack = async (item: NowPlayingItem, shouldPlay: bo
     await setNowPlayingItem(item)
   }
 
-  if (!queueItems.some((x: any) => x.id === id)) {
+  if (queueItems.some((x: any) => (x.id === item.clipId) || (!x.clipId && x.id === item.episodeId))) {
     await loadTrackFromQueue(item, shouldPlay)
   } else {
     await addItemsToPlayerQueueNext([item], shouldPlay, shouldRemoveFromPVQueue)
