@@ -8,7 +8,7 @@ import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInp
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { createMediaRef, updateMediaRef } from '../services/mediaRef'
-import { getNowPlayingItem, playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime,
+import { getNowPlayingItemFromQueueOrHistoryByTrackId, playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime,
   PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { setPlaybackSpeed, togglePlay, updatePlayerState } from '../state/actions/player'
@@ -113,10 +113,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const trackId = await PVTrackPlayer.getCurrentTrack()
     const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
 
-    if (!currentItem) {
+    if (!currentItem || (!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
       dismiss()
-    } else if ((!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
-      updatePlayerState(currentItem)
     }
   }
 
