@@ -33,7 +33,7 @@ module.exports = async () => {
         await handleResumeAfterClipHasEnded()
       }
 
-      if (x.state === 'paused') {
+      if (x.state === 'paused' || x.state === 'playing') {
         nowPlayingItem.userPlaybackPosition = currentPosition
         await setNowPlayingItem(nowPlayingItem)
         if (currentPosition > 0) await addOrUpdateHistoryItem(nowPlayingItem)
