@@ -13,7 +13,7 @@ import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/uti
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
-import { getNowPlayingItem, PVTrackPlayer, getNowPlayingItemFromQueueOrHistoryByTrackId } from '../services/player'
+import { getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
 import { updatePlayerState } from '../state/actions/player'
@@ -98,7 +98,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       if (!currentItem) {
         dismiss()
       } else if ((!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
-        updatePlayerState(currentItem)
+        await updatePlayerState(currentItem)
       }
     }
   }

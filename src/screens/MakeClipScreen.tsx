@@ -11,7 +11,7 @@ import { createMediaRef, updateMediaRef } from '../services/mediaRef'
 import { getNowPlayingItemFromQueueOrHistoryByTrackId, playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime,
   PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { setPlaybackSpeed, togglePlay, updatePlayerState } from '../state/actions/player'
+import { setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, navHeader, playerStyles } from '../styles'
 
 type Props = {

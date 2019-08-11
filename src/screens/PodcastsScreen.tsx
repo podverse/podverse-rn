@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { Linking, Platform, StyleSheet } from 'react-native'
+import { AppState, Linking, Platform, StyleSheet } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
@@ -11,10 +11,11 @@ import { generateAuthorsText, generateCategoriesText, generateCategoryItems } fr
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getEpisode } from '../services/episode'
+import { getNowPlayingItemFromQueueOrHistoryByTrackId, PVTrackPlayer } from '../services/player'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
-import { initializePlayerQueue, initPlayerState } from '../state/actions/player'
+import { initializePlayerQueue, initPlayerState, updatePlaybackState, updatePlayerState } from '../state/actions/player'
 import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
@@ -80,6 +81,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       Linking.addEventListener('url', this._handleOpenURLEvent)
     }
 
+    AppState.addEventListener('change', this._handleAppStateChange)
+
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
       if (!appHasLaunched) {
@@ -108,7 +111,21 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange)
     Linking.removeEventListener('url', this._handleOpenURLEvent)
+  }
+
+  _handleAppStateChange = async (nextAppState: any) => {
+    if (nextAppState === 'active') {
+      const { nowPlayingItem: lastItem } = this.global.player
+      const trackId = await PVTrackPlayer.getCurrentTrack()
+      const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
+
+      if ((!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
+        await updatePlayerState(currentItem)
+      }
+      await updatePlaybackState()
+    }
   }
 
   _handleOpenURLEvent = (event: any) => {
