@@ -35,7 +35,6 @@ module.exports = async () => {
       }
 
       if (x.state === 'paused' || x.state === 'playing') {
-        await setNowPlayingItem(nowPlayingItem)
         updateUserPlaybackPosition(nowPlayingItem)
       } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition && !nowPlayingItem.clipId) {
         await setNowPlayingItem(nowPlayingItem)
@@ -85,7 +84,6 @@ module.exports = async () => {
           track === x.clipId || (!x.clipId && track === x.episodeId))
       }
 
-      await setNowPlayingItem(currentNowPlayingItem)
       if (currentNowPlayingItem && currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
     }
 
