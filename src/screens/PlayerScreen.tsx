@@ -7,7 +7,7 @@ import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, E
   } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem, NowPlayingItem, convertNowPlayingItemToMediaRef } from '../lib/NowPlayingItem'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
@@ -446,12 +446,14 @@ export class PlayerScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const { player, screenPlayer } = this.global
-    const { episode, mediaRef, nowPlayingItem } = player
+    const { episode, nowPlayingItem } = player
     const { flatListData, flatListDataTotalCount, isLoading, isLoadingMore, queryFrom, querySort, selectedItem,
       showHeaderActionSheet, showMoreActionSheet, showShareActionSheet, showFullClipInfo, viewType } = screenPlayer
     const podcastId = nowPlayingItem ? nowPlayingItem.podcastId : null
     const episodeId = episode ? episode.id : null
     const mediaRefId = mediaRef ? mediaRef.id : null
+    let { mediaRef } = player
+    if (nowPlayingItem.clipId) mediaRef = convertNowPlayingItemToMediaRef(nowPlayingItem)
 
     return (
       <SafeAreaView>
@@ -460,7 +462,7 @@ export class PlayerScreen extends React.Component<Props, State> {
             nowPlayingItem={nowPlayingItem}
             onPress={this._showHeaderActionSheet} />
           {
-            showFullClipInfo && mediaRef &&
+            showFullClipInfo && (mediaRef || nowPlayingItem.clipId) &&
               <ClipInfoView
                 createdAt={mediaRef.createdAt}
                 endTime={mediaRef.endTime}
