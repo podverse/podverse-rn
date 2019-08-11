@@ -40,6 +40,9 @@ module.exports = async () => {
       } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition && !nowPlayingItem.clipId) {
         await setNowPlayingItem(nowPlayingItem)
         await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
+        await addOrUpdateHistoryItem(nowPlayingItem)
+      } else if (x.state === 'ready') {
+        await addOrUpdateHistoryItem(nowPlayingItem)
       }
     }
   })
@@ -47,10 +50,11 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
     console.log('playback-track-changed', x)
     const { nextTrack, position, track } = x
+    const queueItems = await PVTrackPlayer.getQueue()
+    PVTrackPlayer.seekTo(0)
 
-    const previousTrackDuration = await PVTrackPlayer.getDuration()
-    const previousNowPlayingItem = await getNowPlayingItem()
-
+    // const previousTrackDuration = await PVTrackPlayer.getDuration()
+    //
     // If previous track was close to the end, reset playback position to 0 in history
     // console.log('yoooo', previousTrackDuration, track, position, previousNowPlayingItem)
     // if (previousTrackDuration && track && position + 20 > previousTrackDuration) {
@@ -65,17 +69,20 @@ module.exports = async () => {
     //   }
     // }
 
-    if (nextTrack) {
+    const previousNowPlayingItem = await getNowPlayingItem()
+    const previousTrackId = previousNowPlayingItem.clipId || previousNowPlayingItem.episodeId
+    const newTrackShouldPlay = previousTrackId !== track
+    if (newTrackShouldPlay) {
       const queueItems = await getQueueItemsLocally()
       const queueItemIndex = queueItems.findIndex((x: any) =>
-        nextTrack === x.clipId || (!x.clipId && nextTrack === x.episodeId))
+        track === x.clipId || (!x.clipId && track === x.episodeId))
       let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
       if (currentNowPlayingItem) await removeQueueItem(currentNowPlayingItem)
 
       if (!currentNowPlayingItem) {
         const historyItems = await getHistoryItemsLocally()
         currentNowPlayingItem = historyItems.find((x: any) =>
-          nextTrack === x.clipId || (!x.clipId && nextTrack === x.episodeId))
+          track === x.clipId || (!x.clipId && track === x.episodeId))
       }
 
       await setNowPlayingItem(currentNowPlayingItem)

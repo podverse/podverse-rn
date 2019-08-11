@@ -20,7 +20,7 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
       text: 'Play',
       onPress: async () => {
         await handleDismiss()
-        await safelyHandleLoadTrack(item, true)
+        await safelyHandleLoadTrack(item, true, false)
       }
     })
   } else {
@@ -33,7 +33,7 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
           if (showAlert) return
 
           await handleDismiss()
-          await safelyHandleLoadTrack(item, true)
+          await safelyHandleLoadTrack(item, true, false)
         }
       },
       {
