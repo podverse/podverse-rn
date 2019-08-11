@@ -93,7 +93,7 @@ export const playerPreviewEndTime = async (endTime: number) => {
       clearInterval(playerPreviewEndTimeInterval)
       PVTrackPlayer.pause()
     }
-  }, 250)
+  }, 500)
 }
 
 export const playerPreviewStartTime = async (startTime: number, endTime?: number | null) => {
@@ -111,7 +111,7 @@ export const playerPreviewStartTime = async (startTime: number, endTime?: number
         clearInterval(playerPreviewEndTimeInterval)
         PVTrackPlayer.pause()
       }
-    }, 250)
+    }, 500)
   }
 }
 
@@ -370,7 +370,7 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (position: numbe
         resolve()
       }
       if (resolveImmediately) resolve()
-    }, 250)
+    }, 500)
   })
 }
 
