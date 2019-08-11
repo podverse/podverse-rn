@@ -3,14 +3,11 @@ import { deleteDownloadedEpisode } from '../lib/downloader'
 import { convertNowPlayingItemToEpisode } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { addOrUpdateHistoryItem, getHistoryItemsLocally } from './history'
-import { getClipHasEnded, getContinuousPlaybackMode, getNowPlayingItem, handleResumeAfterClipHasEnded,
+import { getClipHasEnded, getNowPlayingItem, handleResumeAfterClipHasEnded,
   loadNextFromQueue, playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded, setNowPlayingItem,
   setPlaybackPositionWhenDurationIsAvailable } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 import { getQueueItemsLocally, removeQueueItem } from './queue'
-
-let shouldPauseWhenReady = false
-let isFirstTrackToLoad = true
 
 module.exports = async () => {
 
@@ -21,17 +18,11 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
     console.log('playback-state', x)
 
-    if (shouldPauseWhenReady) {
-      shouldPauseWhenReady = false
-      PVTrackPlayer.pause()
-      PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
-      return
-    }
-
     PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
     const clipHasEnded = await getClipHasEnded()
     const nowPlayingItem = await getNowPlayingItem()
+
     if (nowPlayingItem) {
       const { clipEndTime } = nowPlayingItem
       const currentPosition = await PVTrackPlayer.getPosition()
@@ -56,27 +47,23 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
     console.log('playback-track-changed', x)
     const { nextTrack, position, track } = x
-    PVTrackPlayer.seekTo(0)
-
-    if (isFirstTrackToLoad) {
-      isFirstTrackToLoad = false
-      shouldPauseWhenReady = true
-    }
 
     const previousTrackDuration = await PVTrackPlayer.getDuration()
     const previousNowPlayingItem = await getNowPlayingItem()
 
     // If previous track was close to the end, reset playback position to 0 in history
-    if (previousTrackDuration && track && position + 20 > previousTrackDuration) {
-      previousNowPlayingItem.userPlaybackPosition = 0
-      await addOrUpdateHistoryItem(previousNowPlayingItem)
+    // console.log('yoooo', previousTrackDuration, track, position, previousNowPlayingItem)
+    // if (previousTrackDuration && track && position + 20 > previousTrackDuration) {
+    //   console.log('inside!')
+    //   previousNowPlayingItem.userPlaybackPosition = 0
+    //   await addOrUpdateHistoryItem(previousNowPlayingItem)
 
-      const shouldDeleteEpisode = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
-      if (shouldDeleteEpisode === 'TRUE') {
-        const episode = convertNowPlayingItemToEpisode(previousNowPlayingItem)
-        await deleteDownloadedEpisode(episode)
-      }
-    }
+    //   const shouldDeleteEpisode = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+    //   if (shouldDeleteEpisode === 'TRUE') {
+    //     const episode = convertNowPlayingItemToEpisode(previousNowPlayingItem)
+    //     await deleteDownloadedEpisode(episode)
+    //   }
+    // }
 
     if (nextTrack) {
       const queueItems = await getQueueItemsLocally()
@@ -148,3 +135,4 @@ PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
     await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.clipStartTime, nowPlayingItem.clipId)
   }
 })
+

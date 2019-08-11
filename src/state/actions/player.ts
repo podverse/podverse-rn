@@ -5,7 +5,7 @@ import { getHistoryItemsLocally, popLastFromHistoryItems } from '../../services/
 import { addItemsToPlayerQueueNext as addItemsToPlayerQueueNextService, clearNowPlayingItem as clearNowPlayingItemService,
   getContinuousPlaybackMode, getNowPlayingItem, initializePlayerQueue as initializePlayerQueueService,
   loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer, setNowPlayingItem,
-  setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService} from '../../services/player'
+  setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService, updateUserPlaybackPosition} from '../../services/player'
 import { addQueueItemNext, popNextFromQueue } from '../../services/queue'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
@@ -68,11 +68,12 @@ export const safelyHandleLoadTrack = async (item: NowPlayingItem, shouldPlay: bo
   if (oldItem) {
     item.userPlaybackPosition = oldItem.userPlaybackPosition
   }
-  await setNowPlayingItem(item)
 
   if (queueItems.some((x: any) => (x.id === item.clipId) || (!item.clipId && x.id === item.episodeId))) {
     await loadTrackFromQueue(item, shouldPlay)
   } else {
+    const previousItem = await getNowPlayingItem()
+    await updateUserPlaybackPosition(previousItem)
     await addItemsToPlayerQueueNext([item], shouldPlay, shouldRemoveFromPVQueue)
   }
 }
@@ -153,7 +154,7 @@ export const loadLastFromHistory = async (shouldPlay: boolean) => {
   if (newItemFromHistory) {
     await addQueueItemNext(lastPlayingItem)
     await updatePlayerState(newItemFromHistory)
-    await loadTrackFromQueueService(newItemFromHistory, shouldPlay)
+    await loadTrackFromQueueService(newItemFromHistory, shouldPlay, true)
   }
 
   const globalState = getGlobal()

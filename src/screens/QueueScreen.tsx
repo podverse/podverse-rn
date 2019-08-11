@@ -4,7 +4,7 @@ import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, Icon, Messag
   SortableList, SortableListRow, TableSectionHeader, View as PVView } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { getNowPlayingItem, movePlayerItemToNewPosition, PVTrackPlayer } from '../services/player'
+import { getNowPlayingItem, movePlayerItemToNewPosition } from '../services/player'
 import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
 import { loadTrackFromQueue } from '../state/actions/player'
 import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'

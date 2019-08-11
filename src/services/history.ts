@@ -3,7 +3,6 @@ import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
-import { setNowPlayingItem } from './player'
 import { request } from './request'
 
 export const addOrUpdateHistoryItem = async (item: NowPlayingItem) => {
@@ -24,7 +23,6 @@ export const getHistoryItems = async () => {
 export const popLastFromHistoryItems = async () => {
   const useServerData = await checkIfShouldUseServerData()
   const item = useServerData ? await popLastFromHistoryItemsFromServer() : await popLastFromHistoryItemsLocally()
-  await setNowPlayingItem(item)
   return item
 }
 
@@ -114,6 +112,7 @@ const popLastFromHistoryItemsFromServer = async () => {
   const items = await getHistoryItemsFromServer()
   const currentItem = items.shift()
   const itemToPop = items.shift()
+
   if (itemToPop) {
     await removeHistoryItemOnServer(currentItem.episodeId, currentItem.clipId)
     return itemToPop

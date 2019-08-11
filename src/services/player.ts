@@ -63,35 +63,6 @@ export const handleResumeAfterClipHasEnded = async () => {
   PlayerEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
-export const loadNextFromQueue = async (shouldPlay: boolean) => {
-  const item = await popNextFromQueue()
-  if (item) await loadTrackFromQueue(item, shouldPlay)
-  return item
-}
-
-export const loadTrackFromQueue = async (item: NowPlayingItem, shouldPlay: boolean) => {
-  const { clipId, episodeId } = item
-  const id = clipId || episodeId
-  const playerQueue = await TrackPlayer.getQueue()
-  let pvQueueItems = await getQueueItemsLocally()
-  if (playerQueue.some((x: any) => (clipId && x.id === clipId) || (!clipId && x.id === episodeId))) {
-    pvQueueItems = pvQueueItems.filter((x: any) => (clipId && x.clipId !== clipId) || (!clipId && x.episodeId !== episodeId))
-  }
-
-  await setNowPlayingItem(item)
-
-  try {
-    if (id) {
-      await TrackPlayer.skip(id)
-    }
-    if (clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
-  } catch (error) {
-    // If track is not found, catch the error, then add it
-    await addItemsToPlayerQueueNext([item, ...pvQueueItems], shouldPlay)
-  }
-  await addOrUpdateHistoryItem(item)
-}
-
 export const playerJumpBackward = async (seconds: number) => {
   const position = await TrackPlayer.getPosition()
   const newPosition = position - seconds
@@ -190,15 +161,101 @@ export const initializePlayerQueue = async () => {
 
 const getValidQueueItemInsertBeforeId = (items: NowPlayingItem[], queuedTracks: any, currentTrackId?: string) => {
   let indexOfCurrentTrack = -1
+
   for (let i = 0; queuedTracks.length > i; i++) {
     if (queuedTracks[i].id === currentTrackId) indexOfCurrentTrack = i
   }
+
   let insertBeforeId = queuedTracks.length > indexOfCurrentTrack + 1 ? queuedTracks[indexOfCurrentTrack + 1].id : null
   if (items.length > 0 && insertBeforeId) {
     if ((items[0].clipId === insertBeforeId || items[0].episodeId === insertBeforeId) &&
       queuedTracks.length > indexOfCurrentTrack + 1) {
       insertBeforeId = queuedTracks[indexOfCurrentTrack + 2].id
     }
+  }
+  return insertBeforeId
+}
+
+export const loadNextFromQueue = async (shouldPlay: boolean) => {
+  const item = await popNextFromQueue()
+  if (item) await loadTrackFromQueue(item, shouldPlay)
+  return item
+}
+
+export const updateUserPlaybackPosition = async (item?: NowPlayingItem) => {
+  if (item) {
+    const lastPosition = await TrackPlayer.getPosition()
+    item.userPlaybackPosition = lastPosition || 0
+    await addOrUpdateHistoryItem(item)
+  }
+}
+
+export const loadTrackFromQueue = async (item: NowPlayingItem, shouldPlay: boolean, skipUpdatePlaybackPosition: boolean) => {
+  const { clipId, episodeId } = item
+  const id = clipId || episodeId
+  const playerQueue = await TrackPlayer.getQueue()
+  let pvQueueItems = await getQueueItemsLocally()
+  if (playerQueue.some((x: any) => (clipId && x.id === clipId) || (!clipId && x.id === episodeId))) {
+    pvQueueItems = pvQueueItems.filter((x: any) => (clipId && x.clipId !== clipId) || (!clipId && x.episodeId !== episodeId))
+  }
+
+  if (!skipUpdatePlaybackPosition) {
+    const previousItem = await getNowPlayingItem()
+    await updateUserPlaybackPosition(previousItem)
+  }
+
+  try {
+    if (id) {
+      await TrackPlayer.stop()
+      await TrackPlayer.skip(id)
+    }
+    if (clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+  } catch (error) {
+    console.log('loadTrackFromQueue could not skip', error)
+    // If track is not found, catch the error, then add it
+    await addItemsToPlayerQueueNext([item, ...pvQueueItems], shouldPlay)
+  }
+  await addOrUpdateHistoryItem(item)
+}
+
+export const addItemsToPlayerQueue = async (items: NowPlayingItem[], insertBeforeId: any = null) => {
+  const tracks = [] as any
+  try {
+    for (const item of items) {
+      const { clipId, episodeId } = item
+      const id = clipId || episodeId
+      if (!id) return
+      const track = await createTrack(item)
+      try {
+        await TrackPlayer.getTrack(id)
+        await TrackPlayer.remove(id)
+        tracks.push(track)
+      } catch (error) {
+        tracks.push(track)
+      }
+    }
+    await TrackPlayer.add(tracks, insertBeforeId)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const createNowPlayingItemsFromPlayerTracks = (tracks: any[]) => {
+  const items = []
+  for (const track of tracks) {
+    const item = createNowPlayingItemFromPlayerTrack(track)
+    items.push(item)
+  }
+  return items
+}
+
+const createNowPlayingItemFromPlayerTrack = (track: any) => {
+  return {
+    episodeId: track.id,
+    episodeMediaUrl: track.url,
+    episodeTitle: track.title,
+    podcastTitle: track.artist,
+    ...(track.artwork ? { podcastImageUrl: track.artwork } : {})
   }
 }
 
@@ -208,14 +265,21 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
   const currentTrackId = await TrackPlayer.getCurrentTrack()
   const insertBeforeId = getValidQueueItemInsertBeforeId(items, queuedTracks, currentTrackId)
   await addItemsToPlayerQueue(items, insertBeforeId)
+  const newQueuedTracks = await TrackPlayer.getQueue()
 
   if (currentTrackId) {
     const nextItemToPlayId = items[0].clipId || items[0].episodeId
     if (nextItemToPlayId) {
       try {
+        await TrackPlayer.stop()
         await TrackPlayer.skip(nextItemToPlayId)
       } catch (error) {
-        console.log(error)
+        console.log('addItemsToPlayerQueueNext, after stop/skip', error, newQueuedTracks)
+        // NOTE: iOS seems to have a delay after .stop() is called where the whole player queue
+        // gets reset/cleared :( In the event that happens, all items are added back to the queue
+        const newQueuedTracksAsNowPlayingItems = createNowPlayingItemsFromPlayerTracks(newQueuedTracks)
+        await addItemsToPlayerQueue(newQueuedTracksAsNowPlayingItems)
+        await TrackPlayer.skip(nextItemToPlayId)
       }
     }
   }
@@ -287,28 +351,6 @@ export const createTrack = async (item: NowPlayingItem) => {
   
   }
   return track
-}
-
-export const addItemsToPlayerQueue = async (items: NowPlayingItem[], insertBeforeId: any = null) => {
-  const tracks = [] as any
-  try {
-    for (const item of items) {
-      const { clipId, episodeId } = item
-      const id = clipId || episodeId
-      if (!id) return
-      const track = await createTrack(item)
-      try {
-        await TrackPlayer.getTrack(id)
-        await TrackPlayer.remove(id)
-        tracks.push(track)
-      } catch (error) {
-        tracks.push(track)
-      }
-    }
-    await TrackPlayer.add(tracks, insertBeforeId)
-  } catch (error) {
-    console.log(error)
-  }
 }
 
 export const setPlaybackPosition = async (position: number) => {
