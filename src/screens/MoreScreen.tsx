@@ -55,7 +55,7 @@ export class MoreScreen extends React.Component<Props, State> {
   render() {
     const { downloadsActive, globalTheme, session } = this.global
     const { isLoggedIn = false, userInfo } = session
-    const options = moreFeaturesOptions(isLoggedIn)
+    const options = moreFeaturesOptions()
 
     let downloadsActiveCount = 0
     for (const id of Object.keys(downloadsActive)) {
@@ -134,7 +134,7 @@ const _termsKey = 'terms'
 const _logoutKey = 'logout'
 const _loginKey = 'login'
 
-const moreFeaturesOptions = (isLoggedIn?: boolean) => {
+const moreFeaturesOptions = () => {
   const items = [
     {
       title: 'Downloads',

@@ -81,19 +81,19 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                         </View>
                     }
                   </View>
-                  <Divider style={styles.divider} />
-                  <Text style={styles.text}>Created: {readableDate(createdAt)}</Text>
-                  <View style={core.row}>
-                    <Text style={styles.inlineText}>By: </Text>
-                    {
-                      ownerIsPublic ?
-                        <TextLink
-                          onPress={this._navToProfileScreen}
-                          style={styles.link}>
-                          {ownerName}
-                        </TextLink> :
-                        <Text style={styles.inlineText}>anonymous</Text>
-                    }
+                  <View style={styles.bottomTextWrapper}>
+                    <View style={core.row}>
+                      <Text style={styles.inlineText}>By: </Text>
+                      {
+                        ownerIsPublic ?
+                          <TextLink
+                            onPress={this._navToProfileScreen}
+                            style={styles.link}>
+                            {ownerName}
+                          </TextLink> :
+                          <Text style={styles.inlineText}>anonymous</Text>
+                      }
+                    </View>
                   </View>
                 </ScrollView>
               </View>
@@ -104,6 +104,9 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
 }
 
 const styles = StyleSheet.create({
+  bottomTextWrapper: {
+    marginVertical: 12
+  },
   divider: {
     marginBottom: 8
   },

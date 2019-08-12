@@ -8,10 +8,10 @@ import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInp
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { createMediaRef, updateMediaRef } from '../services/mediaRef'
-import { getNowPlayingItem, playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime,
+import { getNowPlayingItemFromQueueOrHistoryByTrackId, playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime,
   PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
+import { setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, navHeader, playerStyles } from '../styles'
 
 type Props = {
@@ -110,12 +110,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
   _handleAppStateChange = async () => {
     const { dismiss } = this.props.navigation
     const { nowPlayingItem: lastItem } = this.global
-    const currentItem = await getNowPlayingItem()
+    const trackId = await PVTrackPlayer.getCurrentTrack()
+    const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
 
-    if (!currentItem) {
+    if (!currentItem || (!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
       dismiss()
-    } else if (lastItem && currentItem.episodeId !== lastItem.episodeId) {
-      await setNowPlayingItem(currentItem, this.global)
     }
   }
 
@@ -213,7 +212,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
             clipStartTime: mediaRef.startTime,
             clipTitle: mediaRef.title
           }
-          await setNowPlayingItem(newItem, this.global, true)
+          // TODO: UPDATE CURRENT NOW PLAYING ITEM
         }
 
         this.setState({ isSaving: false }, async () => {
@@ -280,7 +279,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
   _showClipPrivacyNote = async () => {
     Alert.alert(
       'Clip Settings',
-      `Only with Link means only people who have your clip's link can play it. These clips will not show up automatically in lists on Podverse. A premium account is required to create Public clips.`,
+      'Only with Link means only people who have your clip\'s' +
+      'link can play it. These clips will not show up automatically in lists on Podverse.' +
+      'A premium account is required to create Public clips.',
       [
         { text: 'Premium Info', onPress: () => this.props.navigation.navigate(PV.RouteNames.MembershipScreen) },
         { text: 'Ok' }
@@ -401,7 +402,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   size={24} />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => togglePlay(this.global)}
+                onPress={() => togglePlay()}
                 style={[playerStyles.iconLarge, styles.playButton]}>
                 {
                   playbackState !== PVTrackPlayer.STATE_BUFFERING &&
@@ -433,7 +434,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
               <TouchableWithoutFeedback onPress={this._adjustSpeed}>
                 <Text style={[styles.bottomButton, styles.bottomRowText]}>{`${playbackRate}X`}</Text>
               </TouchableWithoutFeedback>
-              <View style={styles.bottomButton} />
             </View>
           </View>
         </View>

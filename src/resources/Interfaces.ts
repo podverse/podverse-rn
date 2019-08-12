@@ -73,7 +73,6 @@ export interface InitialState {
     isPlaying: boolean
     nowPlayingItem: any
     playbackRate: number
-    shouldContinuouslyPlay: boolean
     showMakeClip: boolean
     showMiniPlayer: boolean
   }

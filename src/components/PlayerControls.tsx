@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 're
 import React from 'reactn'
 import { PV } from '../resources'
 import { playerJumpBackward, playerJumpForward, PVTrackPlayer } from '../services/player'
-import { playLastFromHistory, playNextFromQueue, setContinousPlaybackMode, setPlaybackSpeed, togglePlay
+import { loadLastFromHistory, loadNextFromQueue, setContinousPlaybackMode, setPlaybackSpeed, togglePlay
   } from '../state/actions/player'
 import { playerStyles } from '../styles'
 import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
@@ -13,7 +13,6 @@ type Props = {
 
 type State = {
   progressValue: number
-  shouldContinuouslyPlay: boolean
 }
 
 export class PlayerControls extends React.PureComponent<Props, State> {
@@ -22,8 +21,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     super(props)
 
     this.state = {
-      progressValue: 0,
-      shouldContinuouslyPlay: this.global.player.shouldContinuouslyPlay
+      progressValue: 0
     }
   }
 
@@ -51,22 +49,14 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     this.setState({ progressValue })
   }
 
-  _toggleContinuousPlaybackMode = async () => {
-    const shouldContinuouslyPlay = await setContinousPlaybackMode(
-      !this.global.player.shouldContinuouslyPlay, this.global
-    )
-    this.setState({ shouldContinuouslyPlay })
-  }
-
   render() {
     const { progressValue } = this.state
     const { globalTheme, player, screenPlayer, session } = this.global
-    const { nowPlayingItem, playbackRate, playbackState, shouldContinuouslyPlay } = player
+    const { nowPlayingItem, playbackRate, playbackState } = player
     const { isLoading } = screenPlayer
     const { historyItems = [], queueItems = [] } = session.userInfo
     const hasHistoryItem = historyItems.length > 0
     const hasQueueItem = queueItems.length > 0
-    const shouldPlay = playbackState === PVTrackPlayer.STATE_PLAYING
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
@@ -81,7 +71,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         <View style={styles.middleRow}>
           <TouchableOpacity
             disabled={!hasHistoryItem}
-            onPress={() => playLastFromHistory(this.global.session.isLoggedIn, this.global, shouldPlay)}
+            onPress={() => loadLastFromHistory()}
             style={hasHistoryItem ? playerStyles.icon : playerStyles.iconDisabled}>
             <Icon
               name='step-backward'
@@ -117,7 +107,11 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </TouchableOpacity>
           <TouchableOpacity
             disabled={!hasQueueItem}
-            onPress={() => playNextFromQueue(this.global.session.isLoggedIn, this.global, shouldPlay)}
+            onPress={async () => {
+              const playbackState = await PVTrackPlayer.getState()
+              const shouldPlay = playbackState === PVTrackPlayer.STATE_PLAYING
+              loadNextFromQueue(shouldPlay)
+            }}
             style={hasQueueItem ? playerStyles.icon : playerStyles.iconDisabled}>
             <Icon
               name='step-forward'
@@ -128,11 +122,6 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           <TouchableWithoutFeedback onPress={this._adjustSpeed}>
             <Text style={[styles.bottomButton, styles.bottomRowText]}>{`${playbackRate}X`}</Text>
           </TouchableWithoutFeedback>
-          <Icon
-            name='infinity'
-            onPress={this._toggleContinuousPlaybackMode}
-            size={24}
-            style={[styles.bottomButton, shouldContinuouslyPlay ? globalTheme.buttonActive : {}]} />
         </View>
       </View>
     )

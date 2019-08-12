@@ -76,6 +76,11 @@ export const getDownloadedPodcasts = async () => {
   }
 }
 
+export const refreshDownloadedPodcasts = async () => {
+  const downloadedPodcasts = await getDownloadedPodcasts()
+  setDownloadedPodcasts(downloadedPodcasts)
+}
+
 export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
   const newPodcasts = []
   const newDownloadedEpisodeIds = {}

@@ -1,16 +1,14 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
 import { Alert, Share } from 'react-native'
+import { getGlobal } from 'reactn'
 import { IActionSheet } from '../resources/Interfaces'
-import { setNowPlayingItem } from '../state/actions/player'
+import { safelyHandleLoadTrack } from '../state/actions/player'
 import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
 import { PV } from './PV'
 
-// NOTE: handleDismiss should return a promiseto ensure the state update has completed before calling
-// setNowPlayingItem. setNowPlayingItem seems to be resource intensive, and will delay re-rendering of
-// handleDismiss without the promise.
-const mediaMoreButtons = (item: any = {}, isLoggedIn: boolean, globalState: any, navigation: any,
-                          handleDismiss: any, handleDownload: any) => {
+const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, handleDownload: any) => {
+  const globalState = getGlobal()
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
   const downloadingText = isDownloading ? 'Downloading' : 'Download'
   const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
@@ -22,7 +20,7 @@ const mediaMoreButtons = (item: any = {}, isLoggedIn: boolean, globalState: any,
       text: 'Play',
       onPress: async () => {
         await handleDismiss()
-        await setNowPlayingItem(item, globalState, false, true)
+        await safelyHandleLoadTrack(item, true, false)
       }
     })
   } else {
@@ -35,7 +33,7 @@ const mediaMoreButtons = (item: any = {}, isLoggedIn: boolean, globalState: any,
           if (showAlert) return
 
           await handleDismiss()
-          await setNowPlayingItem(item, globalState, false, true)
+          await safelyHandleLoadTrack(item, true, false)
         }
       },
       {
@@ -64,7 +62,7 @@ const mediaMoreButtons = (item: any = {}, isLoggedIn: boolean, globalState: any,
       text: 'Queue: Next',
       onPress: async () => {
         await handleDismiss()
-        await addQueueItemNext(item, isLoggedIn, globalState)
+        await addQueueItemNext(item)
       }
     },
     {
@@ -72,7 +70,7 @@ const mediaMoreButtons = (item: any = {}, isLoggedIn: boolean, globalState: any,
       text: 'Queue: Last',
       onPress: async () => {
         await handleDismiss()
-        await addQueueItemLast(item, isLoggedIn, globalState)
+        await addQueueItemLast(item)
       }
     },
     {
@@ -157,6 +155,8 @@ const hasTriedAlert = async (handleDismiss: any, navigation: any, download: bool
 
     return showAlert
   }
+
+  return
 }
 
 export const ActionSheet: IActionSheet = {

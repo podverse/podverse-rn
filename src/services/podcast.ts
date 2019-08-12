@@ -4,7 +4,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { removeArticles } from '../lib/utility'
 import { PV } from '../resources'
-import { getBearerToken } from './auth'
+import { checkIfLoggedIn, getBearerToken } from './auth'
 import { getAutoDownloadEpisodes, removeAutoDownloadSetting } from './autoDownloads'
 import { request } from './request'
 
@@ -103,7 +103,8 @@ export const searchPodcasts = async (title?: string, author?: string, nsfwMode?:
   return response && response.data
 }
 
-export const toggleSubscribeToPodcast = async (id: string, isLoggedIn: boolean) => {
+export const toggleSubscribeToPodcast = async (id: string) => {
+  const isLoggedIn = await checkIfLoggedIn()
   const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
   let isUnsubscribing = false
   if (itemsString) {

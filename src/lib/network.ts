@@ -24,9 +24,3 @@ export const hasValidDownloadingConnection = async () => {
   const state = await NetInfo.fetch()
   return downloadingWifiOnly ? state.type === 'wifi' : state.isConnected
 }
-
-export const hasValidStreamingConnection = async () => {
-  const streamingWifiOnly = await AsyncStorage.getItem(PV.Keys.STREAMING_WIFI_ONLY)
-  const state = await NetInfo.fetch()
-  return streamingWifiOnly ? state.type === 'wifi' : state.isConnected
-}

@@ -287,7 +287,7 @@ export class ProfileScreen extends React.Component<Props, State> {
 
     this.setState({ isSubscribing: true }, async () => {
       try {
-        await toggleSubscribeToUser(id, this.global.session.isLoggedIn, this.global)
+        await toggleSubscribeToUser(id)
         const { subscribedUserIds } = this.global.session.userInfo
         const isSubscribed = subscribedUserIds.some((x: string) => userId)
         this.setState({
@@ -423,7 +423,7 @@ export class ProfileScreen extends React.Component<Props, State> {
               <ActionSheet
                 handleCancelPress={this._handleCancelPress}
                 items={() => PV.ActionSheet.media.moreButtons(
-                  selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
+                  selectedItem, navigation, this._handleCancelPress, this._handleDownloadPressed
                 )}
                 showModal={showActionSheet} />
             </View>

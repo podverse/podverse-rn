@@ -10,6 +10,7 @@ type Props = {
 }
 
 type State = {
+  autoDeleteEpisodeOnEnd?: boolean
   downloadingWifiOnly?: boolean
   streamingWifiOnly?: boolean
 }
@@ -28,8 +29,10 @@ export class SettingsScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
     const streamingWifiOnly = await AsyncStorage.getItem(PV.Keys.STREAMING_WIFI_ONLY)
+    const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
 
     this.setState({
+      autoDeleteEpisodeOnEnd: !!autoDeleteEpisodeOnEnd,
       downloadingWifiOnly: !!downloadingWifiOnly,
       streamingWifiOnly: !!streamingWifiOnly
     })
@@ -53,8 +56,14 @@ export class SettingsScreen extends React.Component<Props, State> {
     })
   }
 
+  _toggleAutoDeleteEpisodeOnEnd = (value: boolean) => {
+    this.setState({ autoDeleteEpisodeOnEnd: value }, () => {
+      value ? AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE') : AsyncStorage.removeItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+    })
+  }
+
   render() {
-    const { downloadingWifiOnly, streamingWifiOnly } = this.state
+    const { autoDeleteEpisodeOnEnd, downloadingWifiOnly, streamingWifiOnly } = this.state
 
     return (
       <View style={styles.wrapper}>
@@ -67,9 +76,9 @@ export class SettingsScreen extends React.Component<Props, State> {
           text='Only allow downloading when connected to Wifi'
           value={!!downloadingWifiOnly} />
         <SwitchWithText
-          onValueChange={this._toggleStreamingWifiOnly}
-          text='Only allow streaming when connected to Wifi'
-          value={!!streamingWifiOnly} />
+          onValueChange={this._toggleAutoDeleteEpisodeOnEnd}
+          text='Delete downloaded episodes after end is reached'
+          value={!!autoDeleteEpisodeOnEnd} />
       </View>
     )
   }

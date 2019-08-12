@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import RNSecureKeyStore from 'react-native-secure-key-store'
 import { PV } from '../resources'
-import { getBearerToken } from './auth'
+import { checkIfLoggedIn, getBearerToken } from './auth'
 import { request } from './request'
 
 export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: string, mediaRefId?: string) => {
@@ -75,7 +74,8 @@ export const getPlaylist = async (id: string) => {
   return response && response.data
 }
 
-export const toggleSubscribeToPlaylist = async (playlistId: string, isLoggedIn: boolean) => {
+export const toggleSubscribeToPlaylist = async (playlistId: string) => {
+  const isLoggedIn = await checkIfLoggedIn()
   return isLoggedIn ? toggleSubscribeToPlaylistOnServer(playlistId) : toggleSubscribeToPlaylistLocally(playlistId)
 }
 

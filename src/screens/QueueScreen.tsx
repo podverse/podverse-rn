@@ -4,9 +4,9 @@ import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, Icon, Messag
   SortableList, SortableListRow, TableSectionHeader, View as PVView } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { getNowPlayingItem } from '../services/player'
+import { getNowPlayingItem, movePlayerItemToNewPosition } from '../services/player'
 import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
-import { setNowPlayingItem } from '../state/actions/player'
+import { safelyHandleLoadTrack } from '../state/actions/player'
 import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
 import { navHeader } from '../styles'
 
@@ -108,7 +108,6 @@ export class QueueScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
-    const { isLoggedIn } = this.global.session
     navigation.setParams({
       _clearAll: this._clearAll,
       _onViewTypeSelect: this._onViewTypeSelect,
@@ -118,7 +117,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
     try {
       const nowPlayingItem = await getNowPlayingItem()
-      const queueItems = await getQueueItems(isLoggedIn, this.global)
+      const queueItems = await getQueueItems()
       this.setState({
         isLoading: false,
         nowPlayingItem,
@@ -153,7 +152,7 @@ export class QueueScreen extends React.Component<Props, State> {
               isLoading: true
             }, async () => {
               try {
-                await clearHistoryItems(this.global.session.isLoggedIn, this.global)
+                await clearHistoryItems()
                 this.setState({
                   historyItems: [],
                   isLoading: false
@@ -169,7 +168,6 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   _onViewTypeSelect = async (x: string) => {
-    const { isLoggedIn } = this.global.session
     this.setState({
       historyItems: [],
       isEditing: false,
@@ -186,14 +184,14 @@ export class QueueScreen extends React.Component<Props, State> {
     try {
       if (x === _queueKey) {
         const nowPlayingItem = await getNowPlayingItem()
-        const queueItems = await getQueueItems(isLoggedIn, this.global)
+        const queueItems = await getQueueItems()
         this.setState({
           isLoading: false,
           nowPlayingItem,
           queueItems
         })
       } else if (x === _historyKey) {
-        const historyItems = await getHistoryItems(isLoggedIn, this.global)
+        const historyItems = await getHistoryItems()
         this.setState({
           historyItems,
           isLoading: false
@@ -208,13 +206,16 @@ export class QueueScreen extends React.Component<Props, State> {
     try {
       const { navigation } = this.props
       this.setState({ isLoading: true }, async () => {
-        navigation.goBack()
+        navigation.goBack(null)
         navigation.navigate(PV.RouteNames.PlayerScreen)
-        const result = await setNowPlayingItem(item, this.global, false, true)
+        await removeQueueItem(item)
+        await safelyHandleLoadTrack(item, true, false)
+        const nowPlayingItem = await getNowPlayingItem()
+        const queueItems = await getQueueItems()
         this.setState({
           isLoading: false,
-          nowPlayingItem: result.nowPlayingItem,
-          queueItems: result.queueItems
+          nowPlayingItem,
+          queueItems
         })
       })
     } catch (error) {
@@ -276,7 +277,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
   _handleRemoveQueueItemPress = async (item: NowPlayingItem) => {
     try {
-      const newItems = await removeQueueItem(item, this.global.session.isLoggedIn, this.global)
+      const newItems = await removeQueueItem(item)
       this.setState({ queueItems: newItems })
     } catch (error) {
       //
@@ -285,7 +286,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
   _handleRemoveHistoryItemPress = async (item: NowPlayingItem) => {
     try {
-      const newItems = await removeHistoryItem(item, this.global.session.isLoggedIn, this.global)
+      const newItems = await removeHistoryItem(item)
       this.setState({ historyItems: newItems })
     } catch (error) {
       //
@@ -295,8 +296,15 @@ export class QueueScreen extends React.Component<Props, State> {
   _onReleaseRow = async (key: number, currentOrder: [string]) => {
     try {
       const { queueItems } = this.state
+      const item = queueItems[key]
+      const id = item.clipId || item.episodeId
       const sortedItems = currentOrder.map((index: string) => queueItems[index])
-      const newItems = await updateQueueItems(sortedItems, this.global.session.isLoggedIn, this.global)
+      const newItems = await updateQueueItems(sortedItems)
+      const newQueueItemIndex = newItems.findIndex((x: any) => id === x.clipId || (!x.clipId && id === x.episodeId))
+      if (newItems.length >= newQueueItemIndex) {
+        const nextItem = queueItems[newQueueItemIndex]
+        await movePlayerItemToNewPosition(item.clipId || item.episodeId, nextItem.clipId || nextItem.episodeId)
+      }
       this.setState({ queueItems: newItems })
     } catch (error) {
       //

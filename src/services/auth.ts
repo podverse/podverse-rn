@@ -14,6 +14,17 @@ export const getBearerToken = async () => {
   return bearerToken
 }
 
+export const checkIfLoggedIn = async () => {
+  const bearerToken = await getBearerToken()
+  return !!bearerToken
+}
+
+export const checkIfShouldUseServerData = async () => {
+  const isLoggedIn = await checkIfLoggedIn()
+  const isConnected = await hasValidNetworkConnection()
+  return isLoggedIn && isConnected
+}
+
 export const getAuthenticatedUserInfo = async () => {
   const bearerToken = await getBearerToken()
   const isConnected = await hasValidNetworkConnection()
