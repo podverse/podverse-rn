@@ -41,6 +41,8 @@ type State = {
   subCategoryItems: any[]
 }
 
+let isInitialLoad = true
+
 export class PodcastsScreen extends React.Component<Props, State> {
 
   static navigationOptions = {
@@ -116,7 +118,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleAppStateChange = async (nextAppState: any) => {
-    if (nextAppState === 'active') {
+    if (nextAppState === 'active' && !isInitialLoad) {
       const { nowPlayingItem: lastItem } = this.global.player
       const trackId = await PVTrackPlayer.getCurrentTrack()
       const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
@@ -125,6 +127,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await updatePlayerState(currentItem)
       }
       await updatePlaybackState()
+    } else {
+      isInitialLoad = false
     }
   }
 
