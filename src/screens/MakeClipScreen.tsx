@@ -126,7 +126,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const items = [placeholderItem, ...privacyItems]
     const selectedItem = items.find((x) => x.value === selectedKey)
     if (selectedItem) {
-      AsyncStorage.setItem(PV.Keys.MAKE_CLIP_IS_PUBLIC, JSON.stringify(selectedItem.value === _publicKey))
+      await AsyncStorage.setItem(PV.Keys.MAKE_CLIP_IS_PUBLIC, JSON.stringify(selectedItem.value === _publicKey))
     }
     this.setState({ isPublicItemSelected: selectedItem })
   }

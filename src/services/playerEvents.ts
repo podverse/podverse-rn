@@ -1,27 +1,37 @@
+import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { addOrUpdateHistoryItem } from './history'
-import { getClipHasEnded, getNowPlayingItem, handleResumeAfterClipHasEnded,
-  playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded,
-  setPlaybackPositionWhenDurationIsAvailable, 
-  updateUserPlaybackPosition,
-  getNowPlayingItemFromQueueOrHistoryByTrackId,
-  setNowPlayingItem} from './player'
+import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, handleResumeAfterClipHasEnded,
+  playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded, setNowPlayingItem,
+  setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 
-const syncNowPlayingItenWithTrack = async (trackId: string) => {
+const syncNowPlayingItemWithTrack = async (trackId: string) => {
   const previousNowPlayingItem = await getNowPlayingItem()
   const previousTrackId = previousNowPlayingItem.clipId || previousNowPlayingItem.episodeId
   const newTrackShouldPlay = previousTrackId !== trackId
+
   if (newTrackShouldPlay) {
     const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
+    if (!currentNowPlayingItem) return
     await setNowPlayingItem(currentNowPlayingItem)
-    if (currentNowPlayingItem && currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+    handleClipLoadedEvent(currentNowPlayingItem)
+    PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
   } else {
     setTimeout(async () => {
       const trackId = await PVTrackPlayer.getCurrentTrack()
       const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
+      if (!currentNowPlayingItem) return
       await setNowPlayingItem(currentNowPlayingItem)
+      handleClipLoadedEvent(currentNowPlayingItem)
+      PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
     }, 1500)
+  }
+}
+
+const handleClipLoadedEvent = (currentNowPlayingItem?: NowPlayingItem) => {
+  if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
+    PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   }
 }
 
@@ -30,9 +40,10 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
 
   PVTrackPlayer.addEventListener('playback-queue-ended', async (x) => {
+    console.log('playback-queue-ended', x)
     const { track: trackId } = x
-    await syncNowPlayingItenWithTrack(trackId)
-    PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
+
+    await syncNowPlayingItemWithTrack(trackId)
   })
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
@@ -66,11 +77,14 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
     console.log('playback-track-changed', x)
-    const { nextTrack, position, track: trackId } = x
+    const currentId = await PVTrackPlayer.getCurrentTrack()
+    const { nextTrack, track } = x
+    const id = currentId && currentId === track ? track : nextTrack
+    await PVTrackPlayer.seekTo(0)
 
-    PVTrackPlayer.seekTo(0)
+    if (!track) return
 
-    await syncNowPlayingItenWithTrack(trackId)
+    await syncNowPlayingItemWithTrack(id)
 
     // const previousTrackDuration = await PVTrackPlayer.getDuration()
     //
@@ -87,8 +101,6 @@ module.exports = async () => {
     //     await deleteDownloadedEpisode(episode)
     //   }
     // }
-
-    PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
   })
 
   PVTrackPlayer.addEventListener('remote-jump-backward', () => playerJumpBackward(PV.Player.jumpSeconds))
@@ -123,7 +135,6 @@ let clipEndTimeInterval: any = null
 PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
   console.log('PLAYER_CLIP_LOADED event')
   const nowPlayingItem = await getNowPlayingItem()
-
   if (nowPlayingItem) {
     const { clipEndTime, clipId } = nowPlayingItem
 
@@ -136,12 +147,12 @@ PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
           clearInterval(clipEndTimeInterval)
           PVTrackPlayer.pause()
           await setClipHasEnded(true)
-          // PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_ENDED)
         }
       }, 500)
     }
-
-    await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.clipStartTime, nowPlayingItem.clipId)
+    const resolveImmediately = false
+    const shouldPlay = true
+    await setPlaybackPositionWhenDurationIsAvailable(
+      nowPlayingItem.clipStartTime, nowPlayingItem.clipId, resolveImmediately, shouldPlay)
   }
 })
-

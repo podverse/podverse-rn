@@ -22,7 +22,14 @@ export const getHistoryItems = async () => {
 
 export const popLastFromHistoryItems = async () => {
   const useServerData = await checkIfShouldUseServerData()
-  const item = useServerData ? await popLastFromHistoryItemsFromServer() : await popLastFromHistoryItemsLocally()
+
+  let item = null
+  if (useServerData) {
+    item = await popLastFromHistoryItemsFromServer()
+  } else {
+    item = await popLastFromHistoryItemsLocally()
+  }
+
   return item
 }
 
@@ -144,7 +151,7 @@ const removeHistoryItemOnServer = async (episodeId?: string, mediaRefId?: string
   return response && response.data
 }
 
-const setAllHistoryItemsLocally = (items: NowPlayingItem[]) => {
-  AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(items))
+const setAllHistoryItemsLocally = async (items: NowPlayingItem[]) => {
+  if (Array.isArray(items)) await AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(items))
   return items
 }

@@ -2,8 +2,7 @@ import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 're
 import React from 'reactn'
 import { PV } from '../resources'
 import { playerJumpBackward, playerJumpForward, PVTrackPlayer } from '../services/player'
-import { loadLastFromHistory, loadNextFromQueue, setContinousPlaybackMode, setPlaybackSpeed, togglePlay
-  } from '../state/actions/player'
+import { loadLastFromHistory, loadNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { playerStyles } from '../styles'
 import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 

@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getAuthenticatedUserInfo } from './auth'
+import { addOrUpdateHistoryItem } from './history'
 import { createTrack, PVTrackPlayer } from './player'
 import { updateUserQueueItems } from './user'
 
@@ -22,7 +23,7 @@ export const addQueueItemLast = async (item: NowPlayingItem) => {
   }
 
   const track = await createTrack(item)
-  PVTrackPlayer.add([track])
+  await PVTrackPlayer.add([track])
 
   return results
 }
@@ -55,7 +56,7 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
   }
 
   const track = await createTrack(item)
-  PVTrackPlayer.add([track], insertBeforeId)
+  await PVTrackPlayer.add([track], insertBeforeId)
 
   return results
 }
@@ -78,7 +79,25 @@ export const popNextFromQueue = async () => {
   return item
 }
 
-export const removeQueueItem = async (item: NowPlayingItem) => {
+export const getNextFromQueue = async (moveToHistory?: boolean) => {
+  let item = null
+  const useServerData = await checkIfShouldUseServerData()
+
+  if (useServerData) {
+    item = await getNextFromQueueFromServer()
+  } else {
+    item = await getNextFromQueueLocally()
+  }
+
+  if (item && moveToHistory) {
+    await removeQueueItem(item, false)
+    await addOrUpdateHistoryItem(item)
+  }
+
+  return item
+}
+
+export const removeQueueItem = async (item: NowPlayingItem, removeFromPlayerQueue: boolean) => {
   let items = []
   const useServerData = await checkIfShouldUseServerData()
 
@@ -86,6 +105,14 @@ export const removeQueueItem = async (item: NowPlayingItem) => {
     items = await removeQueueItemOnServer(item)
   } else {
     items = await removeQueueItemLocally(item)
+  }
+
+  if (removeFromPlayerQueue) {
+    try {
+      PVTrackPlayer.remove(item.clipId || item.episodeId)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return items
@@ -137,6 +164,18 @@ export const filterItemFromQueueItems = (items: NowPlayingItem[], item: NowPlayi
   (item.clipId && x.clipId !== item.clipId) || (!item.clipId && x.episodeId !== item.episodeId)
 )
 
+const getNextFromQueueLocally = async () => {
+  const items = await getQueueItemsLocally()
+  const item = items.shift()
+  return item
+}
+
+const getNextFromQueueFromServer = async () => {
+  const items = await getQueueItemsFromServer()
+  const item = items.shift()
+  return item
+}
+
 export const getQueueItemsLocally = async () => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.QUEUE_ITEMS)
@@ -183,7 +222,7 @@ const removeQueueItemOnServer = async (item: NowPlayingItem) => {
 }
 
 const setAllQueueItemsLocally = async (items: NowPlayingItem[]) => {
-  await AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(items))
+  if (Array.isArray(items)) await AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(items))
   return items
 }
 

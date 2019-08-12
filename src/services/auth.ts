@@ -49,7 +49,7 @@ const getAuthenticatedUserInfoLocally = async () => {
       subscribedPlaylistIds = JSON.parse(subscribedPlaylistIdsString)
     }
   } catch (error) {
-    AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS, JSON.stringify(subscribedPlaylistIds))
+    if (Array.isArray(subscribedPlaylistIds)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS, JSON.stringify(subscribedPlaylistIds))
   }
 
   try {
@@ -58,7 +58,7 @@ const getAuthenticatedUserInfoLocally = async () => {
       subscribedPodcastIds = JSON.parse(subscribedPodcastIdsString)
     }
   } catch (error) {
-    AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
+    if (Array.isArray(subscribedPodcastIds)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
   }
 
   try {
@@ -67,7 +67,7 @@ const getAuthenticatedUserInfoLocally = async () => {
       subscribedUserIds = JSON.parse(subscribedUserIdsString)
     }
   } catch (error) {
-    AsyncStorage.setItem(PV.Keys.SUBSCRIBED_USER_IDS, JSON.stringify(subscribedUserIds))
+    if (Array.isArray(subscribedUserIds)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_USER_IDS, JSON.stringify(subscribedUserIds))
   }
 
   try {
@@ -76,7 +76,7 @@ const getAuthenticatedUserInfoLocally = async () => {
       queueItems = JSON.parse(queueItemsJSON)
     }
   } catch (error) {
-    AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(queueItems))
+    if (Array.isArray(queueItems)) await AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(queueItems))
   }
 
   try {
@@ -85,7 +85,7 @@ const getAuthenticatedUserInfoLocally = async () => {
       historyItems = JSON.parse(historyItemsJSON)
     }
   } catch (error) {
-    AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(historyItems))
+    if (Array.isArray(historyItems)) await AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(historyItems))
   }
 
   const bearerToken = await getBearerToken()
@@ -116,7 +116,7 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
   const data = response && response.data || []
   const { subscribedPodcastIds = [] } = data
 
-  AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
+  if (Array.isArray(subscribedPodcastIds)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
 
   return [
     data,

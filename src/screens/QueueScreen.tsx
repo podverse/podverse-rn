@@ -208,7 +208,6 @@ export class QueueScreen extends React.Component<Props, State> {
       this.setState({ isLoading: true }, async () => {
         navigation.goBack(null)
         navigation.navigate(PV.RouteNames.PlayerScreen)
-        await removeQueueItem(item)
         await safelyHandleLoadTrack(item, true, false)
         const nowPlayingItem = await getNowPlayingItem()
         const queueItems = await getQueueItems()
@@ -277,7 +276,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
   _handleRemoveQueueItemPress = async (item: NowPlayingItem) => {
     try {
-      const newItems = await removeQueueItem(item)
+      const newItems = await removeQueueItem(item, true)
       this.setState({ queueItems: newItems })
     } catch (error) {
       //

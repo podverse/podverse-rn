@@ -129,9 +129,9 @@ const hasTriedAlert = async (handleDismiss: any, navigation: any, download: bool
 
   if (showAlert) {
     if (download) {
-      AsyncStorage.setItem(PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI, 'TRUE')
+      await AsyncStorage.setItem(PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI, 'TRUE')
     } else {
-      AsyncStorage.setItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI, 'TRUE')
+      await AsyncStorage.setItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI, 'TRUE')
     }
     Alert.alert(
       'No Wifi Connection',

@@ -6,7 +6,7 @@ import { addItemsToPlayerQueueNext as addItemsToPlayerQueueNextService, clearNow
   getContinuousPlaybackMode, getNowPlayingItem, initializePlayerQueue as initializePlayerQueueService,
   loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer,
   setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService, updateUserPlaybackPosition} from '../../services/player'
-import { addQueueItemNext, popNextFromQueue } from '../../services/queue'
+import { addQueueItemNext, getNextFromQueue } from '../../services/queue'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
   return new Promise(async (resolve, reject) => {
@@ -70,7 +70,9 @@ export const safelyHandleLoadTrack = async (item: NowPlayingItem, shouldPlay: bo
   }
 
   if (queueItems.some((x: any) => (x.id === item.clipId) || (!item.clipId && x.id === item.episodeId))) {
-    await loadTrackFromQueue(item, shouldPlay)
+    const shouldRemoveFromPVQueue = false
+    const shouldStartClip = true
+    await loadTrackFromQueue(item, shouldPlay, shouldRemoveFromPVQueue, shouldStartClip)
   } else {
     await updateUserPlaybackPosition()
     await addItemsToPlayerQueueNext([item], shouldPlay, shouldRemoveFromPVQueue)
@@ -163,7 +165,9 @@ export const loadLastFromHistory = async (shouldPlay: boolean) => {
     }
     await addQueueItemNext(playingItem)
     await updatePlayerState(newItemFromHistory)
-    await loadTrackFromQueueService(newItemFromHistory, shouldPlay, true)
+    const skipUpdatePlaybackPosition = true
+    const shouldStartClip = true
+    await loadTrackFromQueueService(newItemFromHistory, shouldPlay, skipUpdatePlaybackPosition, shouldStartClip)
   }
 
   const globalState = getGlobal()
@@ -176,14 +180,17 @@ export const loadLastFromHistory = async (shouldPlay: boolean) => {
 }
 
 export const loadNextFromQueue = async (shouldPlay: boolean) => {
-  const item = await popNextFromQueue()
-  if (item) await loadTrackFromQueue(item, shouldPlay)
+  const item = await getNextFromQueue(true)
+  const skipUpdatePlaybackPosition = true
+  const shouldStartClip = true
+  if (item) await loadTrackFromQueue(item, shouldPlay, skipUpdatePlaybackPosition, shouldStartClip)
 }
 
-export const loadTrackFromQueue = async (item: NowPlayingItem, shouldPlay: boolean) => {
+export const loadTrackFromQueue = async (
+  item: NowPlayingItem, shouldPlay: boolean, skipUpdatePlaybackPosition: boolean, shouldStartClip: boolean) => {
   if (item) {
     await updatePlayerState(item)
-    await loadTrackFromQueueService(item, shouldPlay)
+    await loadTrackFromQueueService(item, shouldPlay, skipUpdatePlaybackPosition, shouldStartClip)
   }
 
   const globalState = getGlobal()

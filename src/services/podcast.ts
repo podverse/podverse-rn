@@ -77,7 +77,8 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
       }, 3000)
 
       await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED, new Date().toISOString())
-      await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts || []))
+      if (Array.isArray(subscribedPodcasts)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts))
+
       return [subscribedPodcasts, subscribedPodcastsTotalCount]
     } catch (error) {
       console.log(error)
@@ -137,7 +138,7 @@ const toggleSubscribeToPodcastLocally = async (id: string) => {
     items.push(id)
   }
 
-  AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(items))
+  if (Array.isArray(items)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(items))
   return items
 }
 
@@ -154,7 +155,7 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
     podcastIds = JSON.parse(itemsString)
     podcastIds = addOrRemovePodcastIdFromArray(podcastIds, id)
   }
-  AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(podcastIds))
+  if (Array.isArray(podcastIds)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(podcastIds))
 
   return response && response.data
 }

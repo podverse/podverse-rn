@@ -27,13 +27,13 @@ export const updateAutoDownloadSettings = async (podcastId: string) => {
   const settings = await getAutoDownloadSettings()
   const currentSetting = settings[podcastId]
   settings[podcastId] = !currentSetting
-  AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS, JSON.stringify(settings))
+  await AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS, JSON.stringify(settings))
   return settings
 }
 
 export const removeAutoDownloadSetting = async (podcastId: string) => {
   const settings = await getAutoDownloadSettings()
   delete settings[podcastId]
-  AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS, JSON.stringify(settings))
+  await AsyncStorage.setItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS, JSON.stringify(settings))
   return settings
 }

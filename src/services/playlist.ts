@@ -94,7 +94,8 @@ const toggleSubscribeToPlaylistLocally = async (id: string) => {
     items.push(id)
   }
 
-  AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS, JSON.stringify(items))
+  if (Array.isArray(items)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS, JSON.stringify(items))
+
   return items
 }
 
