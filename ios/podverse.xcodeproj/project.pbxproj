@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -77,6 +76,7 @@
 		EF059A5F931AD1AFE7E5C96E /* libPods-podverse-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C14FA68353E936AD5344BB /* libPods-podverse-tvOS.a */; };
 		F34CCE474A034110AA4D18CC /* libRNTrackPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D34680EAC494BCE8D7497E1 /* libRNTrackPlayer.a */; };
 		FC464EDC7B06410BA1767386 /* libAppCenterReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C67D26D3D98A4A42A672C042 /* libAppCenterReactNative.a */; };
+		E6249B271D064801BB8ACAEC /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7099E33ED216484EA9903CB8 /* Fontisto.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -575,6 +575,7 @@
 		ECC325FF2C5D416A9519146C /* AppCenterReactNativeCrashes.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AppCenterReactNativeCrashes.xcodeproj; path = "../node_modules/appcenter-crashes/ios/AppCenterReactNativeCrashes.xcodeproj"; sourceTree = "<group>"; };
 		ECFB5AD1B471F586B67DCED4 /* Pods-podverse-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-podverse-tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-podverse-tvOS/Pods-podverse-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		FD5C7B2E37CB49F586255917 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
+		7099E33ED216484EA9903CB8 /* Fontisto.ttf */ = {isa = PBXFileReference; name = "Fontisto.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1050,6 +1051,7 @@
 				9C9F8A6B14A641E59714A4B4 /* Octicons.ttf */,
 				C5AC4999E4F14BB0A47CF143 /* SimpleLineIcons.ttf */,
 				906C41522B5C49E8AB200F6C /* Zocial.ttf */,
+				7099E33ED216484EA9903CB8 /* Fontisto.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1724,6 +1726,7 @@
 				35EB716054CC48DE83AFC7AB /* SimpleLineIcons.ttf in Resources */,
 				4F90C45393B743BB85880E4B /* Zocial.ttf in Resources */,
 				E58770308C43465B815B53A7 /* AppCenter-Config.plist in Resources */,
+				E6249B271D064801BB8ACAEC /* Fontisto.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
