@@ -11,6 +11,7 @@ import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/
 import { PV } from '../resources'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getLoggedInUserMediaRefs } from '../services/user'
+import { safelyHandleLoadTrack } from '../state/actions/player'
 import { core } from '../styles'
 
 type Props = {
@@ -159,6 +160,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       episodePubDate={item.episode.pubDate}
       episodeTitle={item.episode.title}
       handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+      handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, null))}
       podcastImageUrl={item.episode.podcast.imageUrl}
       podcastTitle={item.episode.podcast.title}
       startTime={item.startTime}
@@ -250,6 +252,10 @@ export class ClipsScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleNavigationPress = (selectedItem: any) => {
+    safelyHandleLoadTrack(selectedItem, true, false)
+  }
+
   render() {
     const { navigation } = this.props
     const { flatListData, flatListDataTotalCount, queryFrom, isLoading, isLoadingMore, querySort, selectedItem,
@@ -289,8 +295,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={() => PV.ActionSheet.media.moreButtons(
-            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
-          )}
+            selectedItem, navigation, this._handleCancelPress, this._handleDownloadPressed)}
           showModal={showActionSheet} />
         <Dialog.Container visible={showDeleteConfirmDialog}>
           <Dialog.Title>Delete Clip</Dialog.Title>

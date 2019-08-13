@@ -4,7 +4,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { removeArticles } from '../lib/utility'
 import { PV } from '../resources'
-import { getBearerToken } from './auth'
+import { checkIfLoggedIn, getBearerToken } from './auth'
 import { getAutoDownloadEpisodes, removeAutoDownloadSetting } from './autoDownloads'
 import { request } from './request'
 
@@ -77,7 +77,8 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
       }, 3000)
 
       await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED, new Date().toISOString())
-      await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts || []))
+      if (Array.isArray(subscribedPodcasts)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts))
+
       return [subscribedPodcasts, subscribedPodcastsTotalCount]
     } catch (error) {
       console.log(error)
@@ -103,7 +104,8 @@ export const searchPodcasts = async (title?: string, author?: string, nsfwMode?:
   return response && response.data
 }
 
-export const toggleSubscribeToPodcast = async (id: string, isLoggedIn: boolean) => {
+export const toggleSubscribeToPodcast = async (id: string) => {
+  const isLoggedIn = await checkIfLoggedIn()
   const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
   let isUnsubscribing = false
   if (itemsString) {
@@ -136,7 +138,7 @@ const toggleSubscribeToPodcastLocally = async (id: string) => {
     items.push(id)
   }
 
-  AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(items))
+  if (Array.isArray(items)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(items))
   return items
 }
 
@@ -153,7 +155,7 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
     podcastIds = JSON.parse(itemsString)
     podcastIds = addOrRemovePodcastIdFromArray(podcastIds, id)
   }
-  AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(podcastIds))
+  if (Array.isArray(podcastIds)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(podcastIds))
 
   return response && response.data
 }

@@ -7,17 +7,19 @@ import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, E
   } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem, NowPlayingItem } from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, convertToNowPlayingItem, NowPlayingItem
+  } from '../lib/NowPlayingItem'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
-import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
+import { getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
-import { setNowPlayingItem } from '../state/actions/player'
+import { updatePlayerState } from '../state/actions/player'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core, navHeader } from '../styles'
+
 type Props = {
   navigation?: any
 }
@@ -68,9 +70,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { navigation } = this.props
 
     const mediaRefId = navigation.getParam('mediaRefId')
-    if (mediaRefId) {
-      await this._initializeScreenData()
-    }
+    if (mediaRefId) this._initializeScreenData()
 
     this.props.navigation.setParams({
       _getEpisodeId: this._getEpisodeId,
@@ -92,20 +92,18 @@ export class PlayerScreen extends React.Component<Props, State> {
     if (nextAppState === 'active') {
       const { dismiss } = this.props.navigation
       const { nowPlayingItem: lastItem } = this.global.player
-      const currentItem = await getNowPlayingItem()
+      const trackId = await PVTrackPlayer.getCurrentTrack()
+      const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
 
       if (!currentItem) {
         dismiss()
-      } else if ((currentItem && !lastItem) ||
-        (currentItem && lastItem && currentItem.episodeId !== lastItem.episodeId)) {
-        await setNowPlayingItem(currentItem, this.global, false, false, null, true)
+      } else if ((!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
+        await updatePlayerState(currentItem)
       }
     }
   }
 
   _initializeScreenData = () => {
-    const { isLoggedIn } = this.global.session
-
     setGlobal({
       screenPlayer: {
         ...this.global.screenPlayer,
@@ -125,9 +123,9 @@ export class PlayerScreen extends React.Component<Props, State> {
         if ((mediaRefId && mediaRefId !== currentItem.mediaRefId)) {
           const mediaRef = await getMediaRef(mediaRefId)
           if (mediaRef) {
-            await addQueueItemNext(currentItem, isLoggedIn)
+            await addQueueItemNext(currentItem)
             const newItem = convertToNowPlayingItem(mediaRef, null, null)
-            await setNowPlayingItem(newItem, this.global, false)
+            // TODO: LOAD NEW CLIP
           }
         }
       } catch (error) {
@@ -449,12 +447,14 @@ export class PlayerScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const { player, screenPlayer } = this.global
-    const { episode, mediaRef, nowPlayingItem } = player
+    const { episode, nowPlayingItem } = player
     const { flatListData, flatListDataTotalCount, isLoading, isLoadingMore, queryFrom, querySort, selectedItem,
       showHeaderActionSheet, showMoreActionSheet, showShareActionSheet, showFullClipInfo, viewType } = screenPlayer
     const podcastId = nowPlayingItem ? nowPlayingItem.podcastId : null
     const episodeId = episode ? episode.id : null
     const mediaRefId = mediaRef ? mediaRef.id : null
+    let { mediaRef } = player
+    if (nowPlayingItem.clipId) mediaRef = convertNowPlayingItemToMediaRef(nowPlayingItem)
 
     return (
       <SafeAreaView>
@@ -463,7 +463,7 @@ export class PlayerScreen extends React.Component<Props, State> {
             nowPlayingItem={nowPlayingItem}
             onPress={this._showHeaderActionSheet} />
           {
-            showFullClipInfo && mediaRef &&
+            showFullClipInfo && (mediaRef || nowPlayingItem.clipId) &&
               <ClipInfoView
                 createdAt={mediaRef.createdAt}
                 endTime={mediaRef.endTime}
@@ -531,7 +531,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           <ActionSheet
             handleCancelPress={this._handleMoreCancelPress}
             items={() => PV.ActionSheet.media.moreButtons(
-              selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleMoreCancelPress, this._handleDownloadPressed
+              selectedItem, navigation, this._handleMoreCancelPress, this._handleDownloadPressed
             )}
             showModal={showMoreActionSheet} />
           <ActionSheet

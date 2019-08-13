@@ -261,7 +261,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={() => PV.ActionSheet.media.moreButtons(
-            selectedItem, this.global.session.isLoggedIn, this.global, navigation, this._handleCancelPress, this._handleDownloadPressed
+            selectedItem, navigation, this._handleCancelPress, this._handleDownloadPressed
           )}
           showModal={showActionSheet} />
       </View>

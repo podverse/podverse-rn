@@ -5,9 +5,8 @@ import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, MessageWithAction, PlaylistTableCell, View } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
-import { getNowPlayingItem } from '../services/player'
+import { getNowPlayingItemFromQueueOrHistoryByTrackId, PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { setNowPlayingItem } from '../state/actions/player'
 import { addOrRemovePlaylistItem, createPlaylist } from '../state/actions/playlist'
 import { getLoggedInUserPlaylists } from '../state/actions/user'
 import { navHeader } from '../styles'
@@ -88,12 +87,11 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
   _handleAppStateChange = async () => {
     const { dismiss } = this.props.navigation
     const { nowPlayingItem: lastItem } = this.global
-    const currentItem = await getNowPlayingItem()
+    const trackId = await PVTrackPlayer.getCurrentTrack()
+    const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
 
-    if (!currentItem) {
+    if (!currentItem || (!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
       dismiss()
-    } else if (lastItem && currentItem.episodeId !== lastItem.episodeId) {
-      await setNowPlayingItem(currentItem, this.global)
     }
   }
 

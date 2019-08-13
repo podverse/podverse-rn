@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { Linking, Platform, StyleSheet } from 'react-native'
+import { AppState, Linking, Platform, StyleSheet } from 'react-native'
+import KeepAwake from 'react-native-keep-awake'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
@@ -10,10 +11,11 @@ import { generateAuthorsText, generateCategoriesText, generateCategoryItems } fr
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getEpisode } from '../services/episode'
+import { getNowPlayingItemFromQueueOrHistoryByTrackId, PVTrackPlayer } from '../services/player'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
-import { initPlayerState, setNowPlayingItem } from '../state/actions/player'
+import { initializePlayerQueue, initPlayerState, updatePlaybackState, updatePlayerState } from '../state/actions/player'
 import { getSubscribedPodcasts, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
@@ -38,6 +40,8 @@ type State = {
   selectedSubCategory: string | null
   subCategoryItems: any[]
 }
+
+let isInitialLoad = true
 
 export class PodcastsScreen extends React.Component<Props, State> {
 
@@ -79,12 +83,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
       Linking.addEventListener('url', this._handleOpenURLEvent)
     }
 
+    AppState.addEventListener('change', this._handleAppStateChange)
+
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
       if (!appHasLaunched) {
-        AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
-        AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
-        AsyncStorage.setItem(PV.Keys.STREAMING_WIFI_ONLY, 'TRUE')
+        await AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
+        await AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
+        await AsyncStorage.setItem(PV.Keys.STREAMING_WIFI_ONLY, 'TRUE')
+        await AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE')
         // navigation.navigate(PV.RouteNames.Onboarding)
       } else {
         await this._initializeScreenData()
@@ -106,7 +113,23 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange)
     Linking.removeEventListener('url', this._handleOpenURLEvent)
+  }
+
+  _handleAppStateChange = async (nextAppState: any) => {
+    if (nextAppState === 'active' && !isInitialLoad) {
+      const { nowPlayingItem: lastItem } = this.global.player
+      const trackId = await PVTrackPlayer.getCurrentTrack()
+      const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
+
+      if ((!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
+        await updatePlayerState(currentItem)
+      }
+      await updatePlaybackState()
+    } else {
+      isInitialLoad = false
+    }
   }
 
   _handleOpenURLEvent = (event: any) => {
@@ -167,11 +190,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { userInfo } = this.global.session
     await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
     await initDownloads()
-    const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
-
-    if (nowPlayingItemString) {
-      await setNowPlayingItem(JSON.parse(nowPlayingItemString), this.global, true, false, null, true)
-    }
+    await initializePlayerQueue()
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -434,6 +453,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               renderItem={this._renderPodcastItem}
               resultsText='podcasts' />
         }
+        <KeepAwake />
       </View>
     )
   }

@@ -35,6 +35,6 @@ export const removeDownloadingEpisode = async (episodeId: string) => {
   return setDownloadingEpisodes(filteredEpisodes)
 }
 
-const setDownloadingEpisodes = (downloadingEpisodes: DownloadingEpisode[]) => {
-  AsyncStorage.setItem(PV.Keys.DOWNLOADING_EPISODES, JSON.stringify(downloadingEpisodes))
+const setDownloadingEpisodes = async (downloadingEpisodes: DownloadingEpisode[]) => {
+  if (Array.isArray(downloadingEpisodes)) await AsyncStorage.setItem(PV.Keys.DOWNLOADING_EPISODES, JSON.stringify(downloadingEpisodes))
 }

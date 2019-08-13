@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
-import { getBearerToken } from './auth'
+import { checkIfLoggedIn, getBearerToken } from './auth'
 import { request } from './request'
 
 export const getPublicUser = async (id: string) => {
@@ -52,7 +52,8 @@ export const getPublicUsersByQuery = async (query: any = {}) => {
   return response && response.data
 }
 
-export const toggleSubscribeToUser = async (id: string, isLoggedIn: boolean) => {
+export const toggleSubscribeToUser = async (id: string) => {
+  const isLoggedIn = await checkIfLoggedIn()
   return isLoggedIn ? toggleSubscribeToUserOnServer(id) : toggleSubscribeToUserLocally(id)
 }
 
@@ -71,7 +72,7 @@ const toggleSubscribeToUserLocally = async (id: string) => {
     items.push(id)
   }
 
-  AsyncStorage.setItem(PV.Keys.SUBSCRIBED_USER_IDS, JSON.stringify(items))
+  if (Array.isArray(items)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_USER_IDS, JSON.stringify(items))
   return items
 }
 

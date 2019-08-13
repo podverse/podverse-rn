@@ -2,26 +2,39 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { getBearerToken } from './auth'
+import { checkIfShouldUseServerData, getBearerToken } from './auth'
 import { request } from './request'
 
-export const addOrUpdateHistoryItem = async (item: NowPlayingItem, useServerData: boolean) => {
+export const addOrUpdateHistoryItem = async (item: NowPlayingItem) => {
+  const useServerData = await checkIfShouldUseServerData()
   return useServerData ? addOrUpdateHistoryItemOnServer(item) : addOrUpdateHistoryItemLocally(item)
 }
 
-export const clearHistoryItems = async (useServerData: boolean) => {
+export const clearHistoryItems = async () => {
+  const useServerData = await checkIfShouldUseServerData()
   return useServerData ? clearHistoryItemsOnServer() : clearHistoryItemsLocally()
 }
 
-export const getHistoryItems = async (useServerData: boolean) => {
+export const getHistoryItems = async () => {
+  const useServerData = await checkIfShouldUseServerData()
   return useServerData ? getHistoryItemsFromServer() : getHistoryItemsLocally()
 }
 
-export const popLastFromHistoryItems = async (useServerData: boolean) => {
-  return useServerData ? popLastFromHistoryItemsFromServer() : popLastFromHistoryItemsLocally()
+export const popLastFromHistoryItems = async () => {
+  const useServerData = await checkIfShouldUseServerData()
+
+  let item = null
+  if (useServerData) {
+    item = await popLastFromHistoryItemsFromServer()
+  } else {
+    item = await popLastFromHistoryItemsLocally()
+  }
+
+  return item
 }
 
-export const removeHistoryItem = async (item: NowPlayingItem, useServerData: boolean) => {
+export const removeHistoryItem = async (item: NowPlayingItem) => {
+  const useServerData = await checkIfShouldUseServerData()
   return useServerData ? removeHistoryItemOnServer(item.episodeId, item.clipId) : removeHistoryItemLocally(item)
 }
 
@@ -73,7 +86,7 @@ export const filterItemFromHistoryItems = (items: NowPlayingItem[], item: NowPla
   (item.clipId && x.clipId !== item.clipId) || (!item.clipId && x.episodeId !== item.episodeId)
 )
 
-const getHistoryItemsLocally = async () => {
+export const getHistoryItemsLocally = async () => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.HISTORY_ITEMS)
     return itemsString ? JSON.parse(itemsString) : []
@@ -85,21 +98,17 @@ const getHistoryItemsLocally = async () => {
 const getHistoryItemsFromServer = async () => {
   const user = await getAuthUserInfo()
   const { historyItems } = user
-  await setAllHistoryItemsLocally(historyItems)
+  setAllHistoryItemsLocally(historyItems)
   return historyItems
 }
 
 const popLastFromHistoryItemsLocally = async () => {
   const items = await getHistoryItemsLocally()
-  const currentlyPlayingItem = items.shift()
-  const lastItem = items.shift()
-  if (lastItem) {
-    await removeHistoryItemLocally(currentlyPlayingItem)
-    await removeHistoryItemLocally(lastItem)
-    return {
-      currentlyPlayingItem,
-      lastItem
-    }
+  const currentItem = items.shift()
+  const itemToPop = items.shift()
+  if (itemToPop) {
+    await removeHistoryItemLocally(currentItem)
+    return itemToPop
   }
 
   return {}
@@ -108,15 +117,12 @@ const popLastFromHistoryItemsLocally = async () => {
 const popLastFromHistoryItemsFromServer = async () => {
   await popLastFromHistoryItemsLocally()
   const items = await getHistoryItemsFromServer()
-  const currentlyPlayingItem = items.shift()
-  const lastItem = items.shift()
-  if (lastItem) {
-    await removeHistoryItemOnServer(currentlyPlayingItem.episodeId, currentlyPlayingItem.clipId)
-    await removeHistoryItemOnServer(lastItem.episodeId, lastItem.clipId)
-    return {
-      currentlyPlayingItem,
-      lastItem
-    }
+  const currentItem = items.shift()
+  const itemToPop = items.shift()
+
+  if (itemToPop) {
+    await removeHistoryItemOnServer(currentItem.episodeId, currentItem.clipId)
+    return itemToPop
   }
 
   return {}
@@ -145,7 +151,7 @@ const removeHistoryItemOnServer = async (episodeId?: string, mediaRefId?: string
   return response && response.data
 }
 
-const setAllHistoryItemsLocally = (items: NowPlayingItem[]) => {
-  AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(items))
+const setAllHistoryItemsLocally = async (items: NowPlayingItem[]) => {
+  if (Array.isArray(items)) await AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(items))
   return items
 }
