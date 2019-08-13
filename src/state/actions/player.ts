@@ -1,7 +1,7 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
-import { getHistoryItemsLocally, popLastFromHistoryItems } from '../../services/history'
+import { getHistoryItemsLocally, popLastFromHistoryItems, addOrUpdateHistoryItem } from '../../services/history'
 import { addItemsToPlayerQueueNext as addItemsToPlayerQueueNextService, clearNowPlayingItem as clearNowPlayingItemService,
   getContinuousPlaybackMode, getNowPlayingItem, initializePlayerQueue as initializePlayerQueueService,
   loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer,
@@ -154,6 +154,7 @@ export const initPlayerState = async (globalState: any) => {
 
 export const loadLastFromHistory = async (shouldPlay: boolean) => {
   const playingItem = await getNowPlayingItem()
+  await addOrUpdateHistoryItem(playingItem)
   const newItemFromHistory = await popLastFromHistoryItems()
   if (newItemFromHistory) {
     const playbackPosition = await PVTrackPlayer.getPosition()
@@ -181,7 +182,7 @@ export const loadLastFromHistory = async (shouldPlay: boolean) => {
 
 export const loadNextFromQueue = async (shouldPlay: boolean) => {
   const item = await getNextFromQueue(true)
-  const skipUpdatePlaybackPosition = true
+  const skipUpdatePlaybackPosition = false
   const shouldStartClip = true
   if (item) await loadTrackFromQueue(item, shouldPlay, skipUpdatePlaybackPosition, shouldStartClip)
 }
