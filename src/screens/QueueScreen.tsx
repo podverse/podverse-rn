@@ -3,6 +3,7 @@ import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, Icon, MessageWithAction, QueueTableCell,
   SortableList, SortableListRow, TableSectionHeader, View as PVView } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
+import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
 import { getNowPlayingItem, movePlayerItemToNewPosition } from '../services/player'
 import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
@@ -299,7 +300,7 @@ export class QueueScreen extends React.Component<Props, State> {
       const id = item.clipId || item.episodeId
       const sortedItems = currentOrder.map((index: string) => queueItems[index])
       const newItems = await updateQueueItems(sortedItems)
-      const newQueueItemIndex = newItems.findIndex((x: any) => id === x.clipId || (!x.clipId && id === x.episodeId))
+      const newQueueItemIndex = newItems.findIndex((x: any) => checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId))
       if (newItems.length >= newQueueItemIndex) {
         const nextItem = queueItems[newQueueItemIndex]
         await movePlayerItemToNewPosition(item.clipId || item.episodeId, nextItem.clipId || nextItem.episodeId)

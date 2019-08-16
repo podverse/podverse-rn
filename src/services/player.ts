@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import RNFS from 'react-native-fs'
 import TrackPlayer from 'react-native-track-player'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
-import { getExtensionFromUrl } from '../lib/utility'
+import { getExtensionFromUrl, checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addOrUpdateHistoryItem, getHistoryItems, getHistoryItemsLocally } from './history'
@@ -149,10 +149,11 @@ export const initializePlayerQueue = async () => {
   if (nowPlayingItemString) {
     nowPlayingItem = JSON.parse(nowPlayingItemString)
     filteredItems = filterItemFromQueueItems(queueItems, nowPlayingItem)
-
     const historyItems = await getHistoryItems()
-    const historyItem = historyItems.find((x: NowPlayingItem) =>
-      (x.clipId && nowPlayingItem.clipId === x.clipId) || (x.episodeId && nowPlayingItem.episodeId === x.episodeId))
+    const historyItem = historyItems.find((x: NowPlayingItem) => {
+      const id = x.clipId || x.episodeId
+      return checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId)
+    })
     if (historyItem) nowPlayingItem.userPlaybackPosition = historyItem.userPlaybackPosition
     filteredItems.unshift(nowPlayingItem)
   }
@@ -200,13 +201,11 @@ export const loadTrackFromQueue = async (
   const id = clipId || episodeId
   const playerQueue = await TrackPlayer.getQueue()
   let pvQueueItems = await getQueueItemsLocally()
-  if (playerQueue.some((x: any) => (clipId && x.id === clipId) || (!clipId && x.id === episodeId))) {
-    pvQueueItems = pvQueueItems.filter((x: any) => (clipId && x.clipId !== clipId) || (!clipId && x.episodeId !== episodeId))
+  if (playerQueue.some((x: any) => checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId))) {
+    pvQueueItems = pvQueueItems.filter((x: any) => (checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId)))
   }
 
-  if (!skipUpdatePlaybackPosition) {
-    await updateUserPlaybackPosition()
-  }
+  if (!skipUpdatePlaybackPosition) await updateUserPlaybackPosition()
 
   try {
     if (id) {
@@ -315,7 +314,7 @@ export const movePlayerItemToNewPosition = async (id: string, insertBeforeId: st
   if (playerQueueItems.some((x: any) => x.id === id) && id !== insertBeforeId) {
     try {
       const pvQueueItems = await getQueueItemsLocally()
-      const itemToMove = pvQueueItems.find((x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id))
+      const itemToMove = pvQueueItems.find((x: any) => checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId))
 
       if (itemToMove) {
         await TrackPlayer.getTrack(id)
@@ -330,15 +329,11 @@ export const movePlayerItemToNewPosition = async (id: string, insertBeforeId: st
         await TrackPlayer.getTrack(insertBeforeId)
         TrackPlayer.remove(insertBeforeId)
         const insertBeforeIdPVQueueItem = pvQueueItems.find((x: any) =>
-          (x.clipId && x.clipId === insertBeforeId) || (!x.clipId && x.episodeId === insertBeforeId))
+          checkIfIdMatchesClipIdOrEpisodeId(insertBeforeId, x.clipId, x.episodeId))
         const insertBeforeIdTrack = await createTrack(insertBeforeIdPVQueueItem)
         tracks.push(insertBeforeIdTrack)
 
-        if (trackAfterTrackId) {
-          await TrackPlayer.add(tracks, trackAfterTrackId)
-        } else {
-          await TrackPlayer.add(tracks)
-        }
+        trackAfterTrackId ? await TrackPlayer.add(tracks, trackAfterTrackId) : await TrackPlayer.add(tracks)
       }
     } catch (error) {
       console.log('movePlayerItemToNewPosition error:', error)
@@ -416,15 +411,14 @@ export const setPlaybackSpeed = async (rate: number) => {
 export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: string) => {
   const queueItems = await getQueueItemsLocally()
   const queueItemIndex = queueItems.findIndex((x: any) =>
-    trackId === x.clipId || (!x.clipId && trackId === x.episodeId))
+    checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId))
   let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
 
   if (currentNowPlayingItem) await removeQueueItem(currentNowPlayingItem, false)
 
   if (!currentNowPlayingItem) {
     const historyItems = await getHistoryItemsLocally()
-    currentNowPlayingItem = historyItems.find((x: any) =>
-      trackId === x.clipId || (!x.clipId && trackId === x.episodeId))
+    currentNowPlayingItem = historyItems.find((x: any) => checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId))
   }
 
   return currentNowPlayingItem

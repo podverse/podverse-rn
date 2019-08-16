@@ -228,3 +228,7 @@ export const removeArticles = (str: string) => {
   }
   return str
 }
+
+export const checkIfIdMatchesClipIdOrEpisodeId = (id?: string, clipId?: string, episodeId?: string) => {
+  return id === clipId || (!clipId && episodeId && id === episodeId)
+}
