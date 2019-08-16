@@ -18,6 +18,7 @@ type Props = {
 type State = {
   isEditing?: boolean
   isLoading?: boolean
+  isRemoving?: boolean
   nowPlayingItem?: any
   viewType?: string
 }
@@ -98,6 +99,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
     this.state = {
       isLoading: true,
+      isRemoving: false,
       nowPlayingItem: null,
       viewType: props.navigation.getParam('viewType') || _queueKey
     }
@@ -265,19 +267,25 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   _handleRemoveQueueItemPress = async (item: NowPlayingItem) => {
-    try {
-      await removeQueueItem(item, true)
-    } catch (error) {
-      //
-    }
+    this.setState({ isRemoving: true }, async () => {
+      try {
+        await removeQueueItem(item, true)
+      } catch (error) {
+        //
+      }
+      this.setState({ isRemoving: false })
+    })
   }
 
   _handleRemoveHistoryItemPress = async (item: NowPlayingItem) => {
-    try {
-      await removeHistoryItem(item)
-    } catch (error) {
-      //
-    }
+    this.setState({ isRemoving: true }, async () => {
+      try {
+        await removeHistoryItem(item)
+      } catch (error) {
+        //
+      }
+      this.setState({ isRemoving: false })
+    })
   }
 
   _onReleaseRow = async (key: number, currentOrder: [string]) => {
@@ -303,14 +311,10 @@ export class QueueScreen extends React.Component<Props, State> {
 
   render() {
     const { historyItems, queueItems } = this.global.session.userInfo
-    const { isLoading, nowPlayingItem = {}, viewType } = this.state
+    const { isLoading, isRemoving, nowPlayingItem = {}, viewType } = this.state
 
     return (
       <PVView style={styles.view}>
-        {
-          isLoading &&
-            <ActivityIndicator styles={styles.activityIndicator} />
-        }
         {
           !isLoading && viewType === _queueKey && (queueItems.length > 0 || nowPlayingItem) &&
             <View>
@@ -358,6 +362,12 @@ export class QueueScreen extends React.Component<Props, State> {
         {
           !isLoading && viewType === _historyKey && historyItems.length < 1 &&
             <MessageWithAction message='No history items found' />
+        }
+        {
+          (isLoading || isRemoving) &&
+            <ActivityIndicator
+              isOverlay={isRemoving}
+              styles={styles.activityIndicator} />
         }
       </PVView>
     )

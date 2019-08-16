@@ -160,9 +160,14 @@ const addQueueItemNextOnServer = async (item: NowPlayingItem) => {
   return setAllQueueItemsOnServer(filteredItems)
 }
 
-export const filterItemFromQueueItems = (items: NowPlayingItem[], item: NowPlayingItem) => items.filter((x) =>
-  (item.clipId && x.clipId !== item.clipId) || (!item.clipId && x.episodeId !== item.episodeId)
-)
+export const filterItemFromQueueItems = (items: NowPlayingItem[], item: NowPlayingItem) => items.filter((x) => {
+  if (item.clipId && x.clipId === item.clipId) {
+    return false
+  } else if (!item.clipId && !x.clipId && x.episodeId === item.episodeId) {
+    return false
+  }
+  return true
+})
 
 const getNextFromQueueLocally = async () => {
   const items = await getQueueItemsLocally()

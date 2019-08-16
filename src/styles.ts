@@ -345,14 +345,14 @@ export const button = StyleSheet.create({
     height: 60,
     lineHeight: 60,
     textAlign: 'center',
-    width: 40
+    width: 48
   },
   iconOnlySmall: {
     flex: 0,
     height: 38,
     lineHeight: 38,
     textAlign: 'center',
-    width: 40
+    width: 48
   },
   iconOnlyAlignToTop: {
     flex: 0,

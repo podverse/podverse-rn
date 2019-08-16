@@ -132,7 +132,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
           }
           {
             !isLoading && queryFrom === _myPlaylistsKey && this.global.session.isLoggedIn && flatListData.length < 1 &&
-              <MessageWithAction message='You have not created a playlist' />
+              <MessageWithAction message='You have no subscribed playlists' />
           }
           {
             !isLoading && queryFrom === _subscribedPlaylistsKey && flatListData.length < 1 &&

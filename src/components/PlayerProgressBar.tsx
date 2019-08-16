@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   thumbStyle: {
     borderRadius: 0,
     height: 24,
-    width: 6
+    width: 7
   },
   time: {
     fontSize: PV.Fonts.sizes.xs,
