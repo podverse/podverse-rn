@@ -4,7 +4,7 @@ import { PV } from '../../resources'
 import { addOrUpdateHistoryItem, getHistoryItemsLocally, popLastFromHistoryItems } from '../../services/history'
 import { addItemsToPlayerQueueNext as addItemsToPlayerQueueNextService, clearNowPlayingItem as clearNowPlayingItemService,
   getContinuousPlaybackMode, getNowPlayingItem, initializePlayerQueue as initializePlayerQueueService,
-  loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer,
+  loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer, setNowPlayingItem as setNowPlayingItemService,
   setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService, updateUserPlaybackPosition} from '../../services/player'
 import { addQueueItemNext, getNextFromQueue } from '../../services/queue'
 
@@ -231,4 +231,13 @@ export const updatePlaybackState = async (state?: any) => {
       playbackState
     }
   })
+}
+
+export const setNowPlayingItem = async (item: NowPlayingItem | null) => {
+  if (item) {
+    await setNowPlayingItemService(item)
+    await updatePlayerState(item)
+  } else {
+    await clearNowPlayingItem()
+  }
 }

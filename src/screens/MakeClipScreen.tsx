@@ -11,7 +11,7 @@ import { createMediaRef, updateMediaRef } from '../services/mediaRef'
 import { getNowPlayingItemFromQueueOrHistoryByTrackId, playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime,
   PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { setPlaybackSpeed, togglePlay } from '../state/actions/player'
+import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, navHeader, playerStyles } from '../styles'
 
 type Props = {
@@ -213,7 +213,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
             clipStartTime: mediaRef.startTime,
             clipTitle: mediaRef.title
           }
-          // TODO: UPDATE CURRENT NOW PLAYING ITEM
+          await setNowPlayingItem(newItem)
         }
 
         this.setState({ isSaving: false }, async () => {

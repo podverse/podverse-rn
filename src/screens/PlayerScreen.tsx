@@ -454,6 +454,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const episodeId = episode ? episode.id : null
     const mediaRefId = mediaRef ? mediaRef.id : null
     let { mediaRef } = player
+
     if (nowPlayingItem.clipId) mediaRef = convertNowPlayingItemToMediaRef(nowPlayingItem)
 
     return (
