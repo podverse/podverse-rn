@@ -79,10 +79,10 @@ export class SettingsScreen extends React.Component<Props, State> {
           onValueChange={this._toggleDownloadingWifiOnly}
           text='Only allow downloading when connected to Wifi'
           value={!!downloadingWifiOnly} />
-        <SwitchWithText
+        {/* <SwitchWithText
           onValueChange={this._toggleAutoDeleteEpisodeOnEnd}
           text='Delete downloaded episodes after end is reached'
-          value={!!autoDeleteEpisodeOnEnd} />
+          value={!!autoDeleteEpisodeOnEnd} /> */}
       </View>
     )
   }
