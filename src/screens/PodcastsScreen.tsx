@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { AppState, Linking, Platform, StyleSheet } from 'react-native'
-import KeepAwake from 'react-native-keep-awake'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
@@ -454,7 +453,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
               renderItem={this._renderPodcastItem}
               resultsText='podcasts' />
         }
-        <KeepAwake />
       </View>
     )
   }
