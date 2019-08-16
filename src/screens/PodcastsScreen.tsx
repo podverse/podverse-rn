@@ -92,6 +92,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.STREAMING_WIFI_ONLY, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE')
+        await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5')
         // navigation.navigate(PV.RouteNames.Onboarding)
       } else {
         await this._initializeScreenData()

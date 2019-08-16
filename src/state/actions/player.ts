@@ -1,7 +1,7 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
-import { getHistoryItemsLocally, popLastFromHistoryItems, addOrUpdateHistoryItem } from '../../services/history'
+import { addOrUpdateHistoryItem, getHistoryItemsLocally, popLastFromHistoryItems } from '../../services/history'
 import { addItemsToPlayerQueueNext as addItemsToPlayerQueueNextService, clearNowPlayingItem as clearNowPlayingItemService,
   getContinuousPlaybackMode, getNowPlayingItem, initializePlayerQueue as initializePlayerQueueService,
   loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer,

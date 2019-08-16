@@ -26,13 +26,14 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
   _adjustSpeed = async () => {
     const { playbackRate } = this.global.player
-    const index = PV.Player.speeds.indexOf(playbackRate)
+    const speeds = await PV.Player.speeds()
+    const index = speeds.indexOf(playbackRate)
 
     let newSpeed
-    if (PV.Player.speeds.length - 1 === index) {
-      newSpeed = PV.Player.speeds[0]
+    if (speeds.length - 1 === index) {
+      newSpeed = speeds[0]
     } else {
-      newSpeed = PV.Player.speeds[index + 1]
+      newSpeed = speeds[index + 1]
     }
 
     await setPlaybackSpeed(newSpeed, this.global)
