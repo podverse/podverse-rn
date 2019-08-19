@@ -105,13 +105,9 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   _renderItem = ({ item }) => {
-    const { downloadedEpisodeIds, downloadsActive } = this.global
     if (item.startTime) {
       return (
         <ClipTableCell
-          key={`PlaylistScreen_clip_${item.id}`}
-          downloadedEpisodeIds={this.global.downloadedEpisodeIds}
-          downloadsActive={downloadsActive}
           endTime={item.endTime}
           episodeId={item.episode.id}
           episodePubDate={item.episode.pubDate}
@@ -127,10 +123,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
       description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
-          key={`PlaylistScreen_episode_${item.id}`}
           description={description}
-          downloadedEpisodeIds={downloadedEpisodeIds}
-          downloadsActive={downloadsActive}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           handleNavigationPress={() => this.props.navigation.navigate(
             PV.RouteNames.MoreEpisodeScreen,

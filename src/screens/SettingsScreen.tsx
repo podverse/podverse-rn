@@ -1,9 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet } from 'react-native'
+import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { SwitchWithText, View } from '../components'
+import { Icon, SwitchWithText, Text, View } from '../components'
 import { PV } from '../resources'
-import { darkTheme, lightTheme } from '../styles'
+import { darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {
   navigation: any
@@ -12,6 +13,7 @@ type Props = {
 type State = {
   autoDeleteEpisodeOnEnd?: boolean
   downloadingWifiOnly?: boolean
+  maximumSpeedOptionSelected?: any
   streamingWifiOnly?: boolean
 }
 
@@ -23,18 +25,25 @@ export class SettingsScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    this.state = {}
+    const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
+    this.state = {
+      maximumSpeedOptionSelected: maximumSpeedSelectOptions[1]
+    }
   }
 
   async componentDidMount() {
     const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
     const streamingWifiOnly = await AsyncStorage.getItem(PV.Keys.STREAMING_WIFI_ONLY)
     const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+    const maximumSpeed = await AsyncStorage.getItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
+    const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
+    const maximumSpeedOptionSelected = maximumSpeedSelectOptions.find((x: any) => x.value === Number(maximumSpeed))
 
     this.setState({
       autoDeleteEpisodeOnEnd: !!autoDeleteEpisodeOnEnd,
       downloadingWifiOnly: !!downloadingWifiOnly,
-      streamingWifiOnly: !!streamingWifiOnly
+      streamingWifiOnly: !!streamingWifiOnly,
+      maximumSpeedOptionSelected: maximumSpeedOptionSelected || maximumSpeedSelectOptions[1]
     })
   }
 
@@ -66,32 +75,100 @@ export class SettingsScreen extends React.Component<Props, State> {
     })
   }
 
+  _setMaximumSpeed = (value: string) => {
+    const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
+    const maximumSpeedOptionSelected = maximumSpeedSelectOptions.find((x: any) => x.value === value) || placeholderItem
+    this.setState({ maximumSpeedOptionSelected }, async () => {
+      value ? await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, value)
+        : await AsyncStorage.removeItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
+    })
+  }
+
   render() {
-    const { autoDeleteEpisodeOnEnd, downloadingWifiOnly } = this.state
+    const { downloadingWifiOnly, maximumSpeedOptionSelected } = this.state
+    const { globalTheme } = this.global
+    const isDarkMode = globalTheme === darkTheme
 
     return (
       <View style={styles.wrapper}>
         <SwitchWithText
           onValueChange={this._toggleTheme}
-          text={`${this.global.globalTheme === darkTheme ? 'Dark Mode' : 'Light Mode'}`}
-          value={this.global.globalTheme === darkTheme} />
+          text={`${globalTheme === darkTheme ? 'Dark Mode' : 'Light Mode'}`}
+          value={globalTheme === darkTheme} />
         <SwitchWithText
           onValueChange={this._toggleDownloadingWifiOnly}
           text='Only allow downloading when connected to Wifi'
           value={!!downloadingWifiOnly} />
-        <SwitchWithText
+        {/* <SwitchWithText
           onValueChange={this._toggleAutoDeleteEpisodeOnEnd}
           text='Delete downloaded episodes after end is reached'
-          value={!!autoDeleteEpisodeOnEnd} />
+          value={!!autoDeleteEpisodeOnEnd} /> */}
+        <RNPickerSelect
+          items={PV.Player.maximumSpeedSelectOptions}
+          onValueChange={this._setMaximumSpeed}
+          placeholder={placeholderItem}
+          style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+          useNativeAndroidPickerStyle={false}
+          value={maximumSpeedOptionSelected.value}>
+          <View style={styles.selectorWrapper}>
+            <View style={styles.selectorWrapperLeft}>
+              <Text style={[styles.pickerSelect, globalTheme.text]}>
+                {maximumSpeedOptionSelected.label}
+              </Text>
+              <Icon
+                name='angle-down'
+                size={14}
+                style={[styles.pickerSelectIcon, globalTheme.text]} />
+            </View>
+            <View style={styles.selectorWrapperRight}>
+              <Text style={[styles.pickerSelect, globalTheme.text]}>
+                Maximum playback speed
+              </Text>
+            </View>
+          </View>
+        </RNPickerSelect>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  pickerSelect: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    height: 48,
+    lineHeight: 40,
+    paddingBottom: 8
+  },
+  pickerSelectIcon: {
+    height: 48,
+    lineHeight: 40,
+    paddingBottom: 8,
+    paddingHorizontal: 4
+  },
+  selectorWrapper: {
+    flexDirection: 'row'
+  },
+  selectorWrapperLeft: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    textAlign: 'center',
+    width: 51
+  },
+  selectorWrapperRight: {
+    flexBasis: 'auto',
+    justifyContent: 'flex-start',
+    marginHorizontal: 12
+  },
   wrapper: {
     flex: 1,
     paddingHorizontal: 12,
     paddingVertical: 8
   }
 })
+
+const placeholderItem = {
+  label: 'Select...',
+  value: null
+}

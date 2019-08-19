@@ -7,7 +7,6 @@ import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { decodeHTMLString, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
@@ -93,6 +92,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       flatListData: [],
       flatListDataTotalCount: null,
       isLoading: true,
+      queryPage: 1,
       querySort: selectedKey
     }, async () => {
       const newState = await this._queryData(selectedKey)
@@ -147,30 +147,20 @@ export class EpisodesScreen extends React.Component<Props, State> {
     })
   }
 
-  _renderEpisodeItem = ({ item }) => {
-    let description = removeHTMLFromString(item.description)
-    description = decodeHTMLString(description)
-
-    const { downloadedEpisodeIds, downloadsActive } = this.global
-
-    return (
-      <EpisodeTableCell
-          key={`EpisodesScreen_${item.id}`}
-          description={description}
-          downloadedEpisodeIds={downloadedEpisodeIds}
-          downloadsActive={downloadsActive}
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
-          handleNavigationPress={() => this.props.navigation.navigate(
-            PV.RouteNames.EpisodeScreen, { episode: item, includeGoToPodcast: true }
-          )}
-          id={item.id}
-          moreButtonAlignToTop={true}
-          podcastImageUrl={item.podcast_imageUrl || (item.podcast && item.podcast.imageUrl)}
-          podcastTitle={item.podcast_title || (item.podcast && item.podcast.title)}
-          pubDate={item.pubDate}
-          title={item.title} />
-    )
-  }
+  _renderEpisodeItem = ({ item }) => (
+    <EpisodeTableCell
+      description={item.description}
+      handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+      handleNavigationPress={() => this.props.navigation.navigate(
+        PV.RouteNames.EpisodeScreen, { episode: item, includeGoToPodcast: true }
+      )}
+      id={item.id}
+      moreButtonAlignToTop={true}
+      podcastImageUrl={item.podcast_imageUrl || (item.podcast && item.podcast.imageUrl)}
+      podcastTitle={item.podcast_title || (item.podcast && item.podcast.title)}
+      pubDate={item.pubDate}
+      title={item.title} />
+  )
 
   _renderHiddenItem = ({ item }, rowMap) => (
     <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
@@ -285,6 +275,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
       const nsfwMode = this.global.settings.nsfwMode
       const { queryPage, searchAllFieldsText } = queryOptions
 
+      const sortingItems = queryFrom === _downloadedKey ? rightItems(true) : rightItems(false)
+
       if (filterKey === _subscribedKey) {
         const results = await getEpisodes({
           sort: querySort,
@@ -313,7 +305,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (rightItems.some((option) => option.value === filterKey)) {
+      } else if (sortingItems.some((option) => option.value === filterKey)) {
         const results = await getEpisodes({
           ...(queryFrom === _subscribedKey ? { podcastId } : {}),
           sort: filterKey,
@@ -328,6 +320,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
       return newState
     } catch (error) {
+      console.log(error)
       return newState
     }
   }

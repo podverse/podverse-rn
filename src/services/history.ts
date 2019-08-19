@@ -82,9 +82,14 @@ const clearHistoryItemsOnServer = async () => {
   return response && response.data
 }
 
-export const filterItemFromHistoryItems = (items: NowPlayingItem[], item: NowPlayingItem) => items.filter((x) =>
-  (item.clipId && x.clipId !== item.clipId) || (!item.clipId && x.episodeId !== item.episodeId)
-)
+export const filterItemFromHistoryItems = (items: NowPlayingItem[], item: NowPlayingItem) => items.filter((x) => {
+  if (item.clipId && x.clipId === item.clipId) {
+    return false
+  } else if (!item.clipId && !x.clipId && x.episodeId === item.episodeId) {
+    return false
+  }
+  return true
+})
 
 export const getHistoryItemsLocally = async () => {
   try {

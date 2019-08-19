@@ -212,6 +212,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         flatListData: [],
         flatListDataTotalCount: null,
         isLoading: true,
+        queryPage: 1,
         querySort: selectedKey
       }, async () => {
         const newState = await this._queryData(selectedKey, 1)
@@ -313,7 +314,6 @@ export class ProfileScreen extends React.Component<Props, State> {
     if (queryFrom === _podcastsKey) {
       return (
         <PodcastTableCell
-          key={`ProfileScreen_podcast_${item.id}`}
           id={item.id}
           lastEpisodePubDate={item.lastEpisodePubDate}
           onPress={() => this._handlePodcastPress(item)}
@@ -325,9 +325,6 @@ export class ProfileScreen extends React.Component<Props, State> {
     } else if (queryFrom === _clipsKey) {
       return (
         <ClipTableCell
-          key={`ProfileScreen_clip_${item.id}`}
-          downloadedEpisodeIds={this.global.downloadedEpisodeIds}
-          downloadsActive={this.global.downloadsActive}
           endTime={item.endTime}
           episodeId={item.episode.id}
           episodePubDate={readableDate(item.episode.pubDate)}
@@ -341,7 +338,6 @@ export class ProfileScreen extends React.Component<Props, State> {
     } else {
       return (
         <PlaylistTableCell
-          key={`ProfileScreen_playlist_${item.id}`}
           itemCount={item.itemCount}
           onPress={() => this._handlePlaylistPress(item)}
           title={item.title} />

@@ -37,14 +37,15 @@ const _renderHiddenItem = () => <View />
 
 export const PVFlatList = (props: Props) => {
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
-  const { data, dataTotalCount, disableLeftSwipe = true, extraData, handleSearchNavigation, handleRequestPodcast, hideEndOfResults,
-    isLoadingMore, isRefreshing = false, ItemSeparatorComponent, keyExtractor, ListHeaderComponent, noSubscribedPodcasts, onEndReached,
-    onEndReachedThreshold = 0.9, onRefresh, renderHiddenItem, renderItem, resultsText = 'results', showRequestPodcast } = props
+  const { data, dataTotalCount, disableLeftSwipe = true, extraData, handleSearchNavigation, handleRequestPodcast,
+    hideEndOfResults, isLoadingMore, isRefreshing = false, ItemSeparatorComponent, keyExtractor, ListHeaderComponent,
+    noSubscribedPodcasts, onEndReached, onEndReachedThreshold = 0.9, onRefresh, renderHiddenItem, renderItem, resultsText = 'results',
+    showRequestPodcast } = props
 
   let noResultsFound = false
   let endOfResults = false
 
-  if (dataTotalCount === 0) {
+  if (dataTotalCount === 0 || dataTotalCount === null) {
     noResultsFound = true
   }
 

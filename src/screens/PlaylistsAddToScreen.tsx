@@ -137,13 +137,12 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
       <PlaylistTableCell
         isSaving={item.id && item.id === isSavingId}
         itemCount={item.itemCount}
-        key={`PlaylistsAddToScreen_${item.id}`}
         onPress={() => {
           try {
             this.setState({
               isSavingId: item.id
             }, async () => {
-              await addOrRemovePlaylistItem(item.id, episodeId, mediaRefId, this.global)
+              await addOrRemovePlaylistItem(item.id, episodeId, mediaRefId)
               this.setState({ isSavingId: '' })
             })
           } catch (error) {

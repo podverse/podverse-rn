@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import RNFS from 'react-native-fs'
 import TrackPlayer from 'react-native-track-player'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
-import { getExtensionFromUrl, checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
+import { checkIfIdMatchesClipIdOrEpisodeId, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addOrUpdateHistoryItem, getHistoryItems, getHistoryItemsLocally } from './history'
@@ -424,12 +424,11 @@ export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: stri
   return currentNowPlayingItem
 }
 
-export const togglePlay = async (playbackRate: number) => {
+export const togglePlay = async () => {
   const state = await TrackPlayer.getState()
 
   if (state === TrackPlayer.STATE_NONE) {
     TrackPlayer.play()
-    TrackPlayer.setRate(playbackRate)
     return
   }
 
@@ -437,6 +436,5 @@ export const togglePlay = async (playbackRate: number) => {
     TrackPlayer.pause()
   } else {
     TrackPlayer.play()
-    TrackPlayer.setRate(playbackRate)
   }
 }

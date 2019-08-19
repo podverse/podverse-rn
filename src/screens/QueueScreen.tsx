@@ -16,11 +16,10 @@ type Props = {
 }
 
 type State = {
-  historyItems: any[]
   isEditing?: boolean
   isLoading?: boolean
+  isRemoving?: boolean
   nowPlayingItem?: any
-  queueItems: any[]
   viewType?: string
 }
 
@@ -99,10 +98,9 @@ export class QueueScreen extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      historyItems: [],
       isLoading: true,
+      isRemoving: false,
       nowPlayingItem: null,
-      queueItems: [],
       viewType: props.navigation.getParam('viewType') || _queueKey
     }
   }
@@ -170,11 +168,9 @@ export class QueueScreen extends React.Component<Props, State> {
 
   _onViewTypeSelect = async (x: string) => {
     this.setState({
-      historyItems: [],
       isEditing: false,
       isLoading: true,
       nowPlayingItem: null,
-      queueItems: [],
       viewType: x
     })
     this.props.navigation.setParams({
@@ -185,18 +181,14 @@ export class QueueScreen extends React.Component<Props, State> {
     try {
       if (x === _queueKey) {
         const nowPlayingItem = await getNowPlayingItem()
-        const queueItems = await getQueueItems()
+        await getQueueItems()
         this.setState({
           isLoading: false,
           nowPlayingItem,
-          queueItems
         })
       } else if (x === _historyKey) {
-        const historyItems = await getHistoryItems()
-        this.setState({
-          historyItems,
-          isLoading: false
-        })
+        await getHistoryItems()
+        this.setState({ isLoading: false })
       }
     } catch (error) {
       this.setState({ isLoading: false })
@@ -211,11 +203,10 @@ export class QueueScreen extends React.Component<Props, State> {
         navigation.navigate(PV.RouteNames.PlayerScreen)
         await safelyHandleLoadTrack(item, true, false)
         const nowPlayingItem = await getNowPlayingItem()
-        const queueItems = await getQueueItems()
+        await getQueueItems()
         this.setState({
           isLoading: false,
-          nowPlayingItem,
-          queueItems
+          nowPlayingItem
         })
       })
     } catch (error) {
@@ -224,12 +215,12 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   _onPressRow = async (rowIndex: number) => {
-    const { queueItems } = this.state
+    const { queueItems } = this.global.session.userInfo
     const item = queueItems[rowIndex]
     this._handlePlayItem(item)
   }
 
-  _renderHistoryItem = ({ item = {} }) => {
+  _renderHistoryItem = ({ item = {} as NowPlayingItem }) => {
     const { isEditing } = this.state
 
     return (
@@ -240,14 +231,13 @@ export class QueueScreen extends React.Component<Props, State> {
         episodePubDate={item.episodePubDate}
         episodeTitle={item.episodeTitle}
         handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
-        key={`QueueScreen_history_item_${item.clipId || item.episodeId}`}
         podcastImageUrl={item.podcastImageUrl}
         podcastTitle={item.podcastTitle}
         showRemoveButton={isEditing} />
     )
   }
 
-  _renderQueueItemRow = ({ active, data = {} }) => {
+  _renderQueueItemRow = ({ active, data = {} as NowPlayingItem }) => {
     const { isEditing } = this.state
 
     const cell = (
@@ -259,7 +249,6 @@ export class QueueScreen extends React.Component<Props, State> {
           episodePubDate={data.episodePubDate}
           episodeTitle={data.episodeTitle}
           handleRemovePress={() => this._handleRemoveQueueItemPress(data)}
-          key={`QueueScreen_queue_item_${data.clipId || data.episodeId}`}
           podcastImageUrl={data.podcastImageUrl}
           podcastTitle={data.podcastTitle}
           showMoveButton={!isEditing}
@@ -276,36 +265,39 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   _handleRemoveQueueItemPress = async (item: NowPlayingItem) => {
-    try {
-      const newItems = await removeQueueItem(item, true)
-      this.setState({ queueItems: newItems })
-    } catch (error) {
-      //
-    }
+    this.setState({ isRemoving: true }, async () => {
+      try {
+        await removeQueueItem(item, true)
+      } catch (error) {
+        //
+      }
+      this.setState({ isRemoving: false })
+    })
   }
 
   _handleRemoveHistoryItemPress = async (item: NowPlayingItem) => {
-    try {
-      const newItems = await removeHistoryItem(item)
-      this.setState({ historyItems: newItems })
-    } catch (error) {
-      //
-    }
+    this.setState({ isRemoving: true }, async () => {
+      try {
+        await removeHistoryItem(item)
+      } catch (error) {
+        //
+      }
+      this.setState({ isRemoving: false })
+    })
   }
 
   _onReleaseRow = async (key: number, currentOrder: [string]) => {
     try {
-      const { queueItems } = this.state
+      const { queueItems } = this.global.session.userInfo
       const item = queueItems[key]
       const id = item.clipId || item.episodeId
       const sortedItems = currentOrder.map((index: string) => queueItems[index])
-      const newItems = await updateQueueItems(sortedItems)
+      await updateQueueItems(sortedItems)
       const newQueueItemIndex = newItems.findIndex((x: any) => checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId))
-      if (newItems.length >= newQueueItemIndex) {
+      if (queueItems.length >= newQueueItemIndex) {
         const nextItem = queueItems[newQueueItemIndex]
         await movePlayerItemToNewPosition(item.clipId || item.episodeId, nextItem.clipId || nextItem.episodeId)
       }
-      this.setState({ queueItems: newItems })
     } catch (error) {
       //
     }
@@ -316,14 +308,11 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { historyItems, isLoading, nowPlayingItem = {}, queueItems, viewType } = this.state
+    const { historyItems, queueItems } = this.global.session.userInfo
+    const { isLoading, isRemoving, nowPlayingItem = {}, viewType } = this.state
 
     return (
       <PVView style={styles.view}>
-        {
-          isLoading &&
-            <ActivityIndicator styles={styles.activityIndicator} />
-        }
         {
           !isLoading && viewType === _queueKey && (queueItems.length > 0 || nowPlayingItem) &&
             <View>
@@ -362,7 +351,7 @@ export class QueueScreen extends React.Component<Props, State> {
           !isLoading && viewType === _historyKey && historyItems.length > 0 &&
             <FlatList
               data={historyItems}
-              dataTotalCount={null}
+              dataTotalCount={historyItems.length}
               disableLeftSwipe={true}
               extraData={historyItems}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
@@ -371,6 +360,12 @@ export class QueueScreen extends React.Component<Props, State> {
         {
           !isLoading && viewType === _historyKey && historyItems.length < 1 &&
             <MessageWithAction message='No history items found' />
+        }
+        {
+          (isLoading || isRemoving) &&
+            <ActivityIndicator
+              isOverlay={isRemoving}
+              styles={styles.activityIndicator} />
         }
       </PVView>
     )
