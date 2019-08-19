@@ -7,6 +7,8 @@ import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistory
   setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 
+const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1250)
+
 const handleSyncNowPlayingItem = async (trackId: string) => {
   const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
   if (!currentNowPlayingItem) return
@@ -15,7 +17,7 @@ const handleSyncNowPlayingItem = async (trackId: string) => {
   PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
 
   if (Platform.OS === 'android' && !currentNowPlayingItem.clipId) {
-    setPlaybackPositionWhenDurationIsAvailable(currentNowPlayingItem.userPlaybackPosition, trackId)
+    debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
   }
 }
 

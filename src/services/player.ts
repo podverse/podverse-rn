@@ -407,11 +407,11 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
           } else {
             await TrackPlayer.seekTo(position)
           }
-        }, 500)
+        }, 250)
         resolve()
       }
       if (resolveImmediately) resolve()
-    }, 500)
+    }, 250)
   })
 }
 
