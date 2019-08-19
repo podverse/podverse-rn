@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { addOrUpdateHistoryItem } from './history'
@@ -64,13 +65,17 @@ module.exports = async () => {
         await handleResumeAfterClipHasEnded()
       }
 
-      if (x.state === 'paused' || x.state === 'playing') {
-        updateUserPlaybackPosition()
-      } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition && !nowPlayingItem.clipId) {
-        await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
-        await addOrUpdateHistoryItem(nowPlayingItem)
-      } else if (x.state === 'ready') {
-        await addOrUpdateHistoryItem(nowPlayingItem)
+      if (Platform.OS === 'ios') {
+        if (x.state === 'paused' || x.state === 'playing') {
+          updateUserPlaybackPosition()
+        } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition && !nowPlayingItem.clipId) {
+          await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
+          await addOrUpdateHistoryItem(nowPlayingItem)
+        } else if (x.state === 'ready') {
+          await addOrUpdateHistoryItem(nowPlayingItem)
+        }
+      } else if (Platform.OS === 'android') {
+
       }
     }
   })
