@@ -63,7 +63,7 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
           <ActionSheet
             handleCancelPress={this._dismissActionSheet}
             items={actionSheetButtons(episodeId, mediaRefId, navigation, this._dismissActionSheet)}
-            {...(mediaRefId ? { message: 'Do you want to add this episode or clip?' } : {})}
+            {...(mediaRefId ? { message: 'Do you want to add this episode or clip?' } : '')}
             showModal={showActionSheet}
             title='Add to Playlist' />
       </View>
