@@ -299,15 +299,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _renderPodcastItem = ({ item }) => {
-    const { autoDownloadSettings, downloadedPodcastEpisodeCounts } = this.global
     const userLocalPodcastView = this.state.queryFrom === _subscribedKey || this.state.queryFrom === _downloadedKey
     const episodeCount = downloadedPodcastEpisodeCounts[item.id]
 
     return (
       <PodcastTableCell
-        key={`PodcastsScreen_${item.id}`}
-        autoDownloadSettings={autoDownloadSettings}
-        downloadedPodcastEpisodeCounts={downloadedPodcastEpisodeCounts}
         id={item.id}
         lastEpisodePubDate={item.lastEpisodePubDate}
         onPress={() => this.props.navigation.navigate(
