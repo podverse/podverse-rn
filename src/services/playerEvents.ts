@@ -75,7 +75,7 @@ module.exports = async () => {
           await addOrUpdateHistoryItem(nowPlayingItem)
         }
       } else if (Platform.OS === 'android') {
-
+        // TODO add android playback-state logic
       }
     }
   })

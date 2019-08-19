@@ -90,8 +90,8 @@ export const getNextFromQueue = async (moveToHistory?: boolean) => {
   }
 
   if (item && moveToHistory) {
-    await removeQueueItem(item, false)
-    await addOrUpdateHistoryItem(item)
+    removeQueueItem(item, false)
+    addOrUpdateHistoryItem(item)
   }
 
   return item
