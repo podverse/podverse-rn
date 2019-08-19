@@ -179,6 +179,7 @@ export const loadNextFromQueue = async (shouldPlay: boolean) => {
 
 export const loadTrackFromQueue = async (
   item: NowPlayingItem, shouldPlay: boolean, skipUpdatePlaybackPosition: boolean, shouldStartClip: boolean) => {
+
   if (item) {
     await updatePlayerState(item)
     await loadTrackFromQueueService(item, shouldPlay, skipUpdatePlaybackPosition, shouldStartClip)

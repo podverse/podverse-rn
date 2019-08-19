@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 import TrackPlayer from 'react-native-track-player'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
@@ -31,7 +32,7 @@ export const clearNowPlayingItem = async () => {
   try {
     AsyncStorage.removeItem(PV.Keys.NOW_PLAYING_ITEM)
   } catch (error) {
-    console.log(error)
+    console.log('clearNowPlayingItem', error)
     throw error
   }
 }
@@ -209,7 +210,8 @@ export const loadTrackFromQueue = async (
 
   try {
     if (id) {
-      await TrackPlayer.stop()
+      // await TrackPlayer.stop() // bug on iOS makes .stop() the same as .reset()
+      await TrackPlayer.reset()
       await TrackPlayer.skip(id)
       if (shouldPlay) setTimeout(() => TrackPlayer.play(), 1500)
     }
@@ -237,12 +239,14 @@ export const addItemsToPlayerQueue = async (items: NowPlayingItem[], insertBefor
         TrackPlayer.remove(id)
         tracks.push(track)
       } catch (error) {
+        console.log('addItemsToPlayerQueue', error)
         tracks.push(track)
       }
     }
+
     await TrackPlayer.add(tracks, insertBeforeId)
   } catch (error) {
-    console.log(error)
+    console.log('addItemsToPlayerQueue service', error)
   }
 }
 
@@ -277,11 +281,15 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
     const nextItemToPlayId = items[0].clipId || items[0].episodeId
     if (nextItemToPlayId) {
       try {
-        await TrackPlayer.stop()
+        // await TrackPlayer.stop() // bug on iOS makes .stop() the same as .reset()
+        await TrackPlayer.reset()
         await TrackPlayer.skip(nextItemToPlayId)
       } catch (error) {
+        console.log('addItemsToPlayerQueueNext', error)
         // NOTE: iOS seems to have a delay after .stop() is called where the whole player queue
-        // gets reset/cleared :( In the event that happens, all items are added back to the queue
+        // gets reset/cleared :(
+        // To work around this, when the queue is cleared, all items are added back to the queue.
+        // NOTE: force Android to .reset() to duplicate the behavior and handling on iOS.
         const newQueuedTracksAsNowPlayingItems = createNowPlayingItemsFromPlayerTracks(newQueuedTracks)
         await addItemsToPlayerQueue(newQueuedTracksAsNowPlayingItems)
         await TrackPlayer.skip(nextItemToPlayId)
@@ -302,7 +310,7 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
     await setNowPlayingItem(nextItem)
     if (shouldRemoveFromPVQueue) await removeQueueItem(nextItem, false)
     // NOTE: the PLAYER_CLIP_LOADED event listener uses the NOW_PLAYING_ITEM to get clip info
-    if (nextItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+    if (Platform.OS === 'ios' && nextItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
     await addOrUpdateHistoryItem(nextItem)
   }
 }
@@ -383,6 +391,9 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
     const interval = setInterval(async () => {
       const duration = await TrackPlayer.getDuration()
       const currentTrackId = await TrackPlayer.getCurrentTrack()
+
+      setTimeout(() => { if (interval) clearInterval(interval) }, 20000)
+
       if (duration && duration > 0 && (!trackId || trackId === currentTrackId) && position >= 0) {
         clearInterval(interval)
         await TrackPlayer.seekTo(position)

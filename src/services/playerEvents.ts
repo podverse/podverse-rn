@@ -1,5 +1,5 @@
+import debounce from 'lodash/debounce'
 import { Platform } from 'react-native'
-import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { addOrUpdateHistoryItem } from './history'
 import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, handleResumeAfterClipHasEnded,
@@ -7,32 +7,30 @@ import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistory
   setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 
+const handleSyncNowPlayingItem = async (trackId: string) => {
+  const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
+  if (!currentNowPlayingItem) return
+  await setNowPlayingItem(currentNowPlayingItem)
+  if (currentNowPlayingItem && currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+  PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
+
+  if (Platform.OS === 'android' && !currentNowPlayingItem.clipId) {
+    setPlaybackPositionWhenDurationIsAvailable(currentNowPlayingItem.userPlaybackPosition, trackId)
+  }
+}
+
 const syncNowPlayingItemWithTrack = async (trackId: string) => {
   const previousNowPlayingItem = await getNowPlayingItem()
   const previousTrackId = previousNowPlayingItem && (previousNowPlayingItem.clipId || previousNowPlayingItem.episodeId)
   const newTrackShouldPlay = trackId && previousTrackId !== trackId
 
   if (newTrackShouldPlay) {
-    const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
-    if (!currentNowPlayingItem) return
-    await setNowPlayingItem(currentNowPlayingItem)
-    handleClipLoadedEvent(currentNowPlayingItem)
-    PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
+    await handleSyncNowPlayingItem(trackId)
   } else {
     setTimeout(async () => {
       const trackId = await PVTrackPlayer.getCurrentTrack()
-      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
-      if (!currentNowPlayingItem) return
-      await setNowPlayingItem(currentNowPlayingItem)
-      handleClipLoadedEvent(currentNowPlayingItem)
-      PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
+      await handleSyncNowPlayingItem(trackId)
     }, 1500)
-  }
-}
-
-const handleClipLoadedEvent = (currentNowPlayingItem?: NowPlayingItem) => {
-  if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
-    PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   }
 }
 
@@ -82,14 +80,19 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
     console.log('playback-track-changed', x)
-    const currentId = await PVTrackPlayer.getCurrentTrack()
     const { nextTrack, track } = x
-    const id = currentId && currentId === track ? track : nextTrack
-    await PVTrackPlayer.seekTo(0)
 
-    if (!track) return
+    if (Platform.OS === 'ios') {
+      const currentId = await PVTrackPlayer.getCurrentTrack()
+      const id = currentId && currentId === track ? track : nextTrack
+      await PVTrackPlayer.seekTo(0)
 
-    await syncNowPlayingItemWithTrack(id)
+      if (!track) return
+
+      await syncNowPlayingItemWithTrack(id)
+    } else if (Platform.OS === 'android') {
+      await syncNowPlayingItemWithTrack(nextTrack)
+    }
 
     // const previousTrackDuration = await PVTrackPlayer.getDuration()
     //
@@ -137,7 +140,7 @@ module.exports = async () => {
 
 let clipEndTimeInterval: any = null
 
-PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
+const handlePlayerClipLoaded = async () => {
   console.log('PLAYER_CLIP_LOADED event')
   const nowPlayingItem = await getNowPlayingItem()
   if (nowPlayingItem) {
@@ -156,8 +159,11 @@ PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, async () => {
       }, 500)
     }
     const resolveImmediately = false
-    const shouldPlay = true
     await setPlaybackPositionWhenDurationIsAvailable(
-      nowPlayingItem.clipStartTime, nowPlayingItem.clipId, resolveImmediately, shouldPlay)
+      nowPlayingItem.clipStartTime, nowPlayingItem.clipId, resolveImmediately)
   }
-})
+}
+
+const debouncedHandlePlayerClipLoaded = debounce(handlePlayerClipLoaded, 1250)
+
+PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, debouncedHandlePlayerClipLoaded)
