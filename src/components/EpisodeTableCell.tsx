@@ -1,14 +1,12 @@
-import React from 'react'
 import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import { readableDate } from '../lib/utility'
+import React from 'reactn'
+import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
 import { ActivityIndicator, Icon, Text, View } from './'
 
 type Props = {
   description?: string
-  downloadedEpisodeIds?: any
-  downloadsActive?: any
   handleMorePress?: any
   handleNavigationPress?: any
   id: string
@@ -19,108 +17,116 @@ type Props = {
   title?: string
 }
 
-export const EpisodeTableCell = (props: Props) => {
-  const { downloadedEpisodeIds = {}, downloadsActive = {}, id, pubDate = '',
-  handleMorePress, handleNavigationPress, podcastImageUrl, podcastTitle } = props
-  let { description, title } = props
+export class EpisodeTableCell extends React.PureComponent<Props> {
 
-  const showPodcastInfo = !!podcastImageUrl && !!podcastTitle
+  render () {
+    const { id, pubDate = '', handleMorePress, handleNavigationPress, podcastImageUrl, podcastTitle
+      } = this.props
+    let { description = '', title } = this.props
+    description = removeHTMLFromString(description)
+    description = decodeHTMLString(description)
 
-  const isDownloading = downloadsActive[id]
-  const isDownloaded = downloadedEpisodeIds[id]
+    const { downloadedEpisodeIds, downloadsActive } = this.global
 
-  if (!description) description = 'No show notes available'
-  if (!title) title = 'Untitled episode'
+    const showPodcastInfo = !!podcastImageUrl && !!podcastTitle
 
-  const innerTopView = (
-    <View style={styles.innerTopView}>
-      {
-        !!podcastImageUrl &&
-          <Image
-            source={{ uri: podcastImageUrl }}
-            style={styles.image} />
-      }
-      <View style={styles.textWrapper}>
+    const isDownloading = downloadsActive[id]
+    const isDownloaded = downloadedEpisodeIds[id]
+
+    if (!description) description = 'No show notes available'
+    if (!title) title = 'Untitled episode'
+
+    const innerTopView = (
+      <View style={styles.innerTopView}>
         {
-          !!podcastTitle &&
+          !!podcastImageUrl &&
+            <Image
+              source={{ uri: podcastImageUrl }}
+              style={styles.image} />
+        }
+        <View style={styles.textWrapper}>
+          {
+            !!podcastTitle &&
+              <Text
+                isSecondary={true}
+                numberOfLines={1}
+                style={styles.podcastTitle}>
+                {podcastTitle}
+              </Text>
+          }
+          <Text
+            numberOfLines={2}
+            style={styles.title}>
+            {title}
+          </Text>
+          <View style={styles.textWrapperBottomRow}>
             <Text
               isSecondary={true}
-              numberOfLines={1}
-              style={styles.podcastTitle}>
-              {podcastTitle}
+              style={styles.pubDate}>
+              {readableDate(pubDate)}
             </Text>
-        }
-        <Text
-          numberOfLines={2}
-          style={styles.title}>
-          {title}
-        </Text>
-        <View style={styles.textWrapperBottomRow}>
-          <Text
-            isSecondary={true}
-            style={styles.pubDate}>
-            {readableDate(pubDate)}
-          </Text>
-          {
-            isDownloaded &&
-              <Icon
-                isSecondary={true}
-                name='download'
-                size={13}
-                style={styles.downloadedIcon} />
-          }
+            {
+              isDownloaded &&
+                <Icon
+                  isSecondary={true}
+                  name='download'
+                  size={13}
+                  style={styles.downloadedIcon} />
+            }
+          </View>
         </View>
       </View>
-    </View>
-  )
+    )
 
-  const bottomText = (
-    <Text
-      numberOfLines={4}
-      style={styles.description}>
-      {description}
-    </Text>
-  )
+    const bottomText = (
+      <Text
+        numberOfLines={4}
+        style={styles.description}>
+        {description}
+      </Text>
+    )
 
-  const moreButton = (
-    <Icon
-      name='ellipsis-h'
-      onPress={handleMorePress}
-      size={26}
-      style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
-  )
+    const moreButton = (
+      <Icon
+        name='ellipsis-h'
+        onPress={handleMorePress}
+        size={26}
+        style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
+    )
 
-  return (
-    <View style={styles.wrapper}>
-      <View style={styles.wrapperTop}>
+    return (
+      <View style={styles.wrapper}>
+        <View style={styles.wrapperTop}>
+          {
+            handleNavigationPress ?
+              <TouchableWithoutFeedback onPress={handleNavigationPress}>
+                {innerTopView}
+              </TouchableWithoutFeedback> :
+              innerTopView
+          }
+          {
+            !isDownloading && handleMorePress && moreButton
+          }
+          {
+            isDownloading &&
+              <ActivityIndicator
+                onPress={handleMorePress}
+                styles={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
+          }
+        </View>
         {
-          handleNavigationPress ?
+          !!description && handleNavigationPress &&
             <TouchableWithoutFeedback onPress={handleNavigationPress}>
-              {innerTopView}
-            </TouchableWithoutFeedback> :
-            innerTopView
+              {bottomText}
+            </TouchableWithoutFeedback>
         }
         {
-          !isDownloading && handleMorePress && moreButton
-        }
-        {
-          isDownloading &&
-            <ActivityIndicator
-              onPress={handleMorePress}
-              styles={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
+          !!description && !handleNavigationPress && bottomText
         }
       </View>
-      {
-        !!description && handleNavigationPress &&
-          <TouchableWithoutFeedback onPress={handleNavigationPress}>
-            {bottomText}
-          </TouchableWithoutFeedback>
-      }
-      {
-        !!description && !handleNavigationPress && bottomText
-      }
-    </View>
-  )
+    )
+  }
+
 }
 
 const styles = StyleSheet.create({

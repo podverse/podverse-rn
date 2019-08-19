@@ -96,6 +96,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       flatListData: [],
       flatListDataTotalCount: null,
       isLoading: true,
+      queryPage: 1,
       querySort: selectedKey
     }, async () => {
       const newState = await this._queryData(selectedKey)
@@ -152,9 +153,6 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   _renderClipItem = ({ item }) => (
     <ClipTableCell
-      key={`ClipsScreen_${item.id}`}
-      downloadedEpisodeIds={this.global.downloadedEpisodeIds}
-      downloadsActive={this.global.downloadsActive}
       endTime={item.endTime}
       episodeId={item.episode.id}
       episodePubDate={item.episode.pubDate}

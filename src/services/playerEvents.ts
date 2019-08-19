@@ -8,8 +8,8 @@ import PlayerEventEmitter from './playerEventEmitter'
 
 const syncNowPlayingItemWithTrack = async (trackId: string) => {
   const previousNowPlayingItem = await getNowPlayingItem()
-  const previousTrackId = previousNowPlayingItem.clipId || previousNowPlayingItem.episodeId
-  const newTrackShouldPlay = previousTrackId !== trackId
+  const previousTrackId = previousNowPlayingItem && (previousNowPlayingItem.clipId || previousNowPlayingItem.episodeId)
+  const newTrackShouldPlay = trackId && previousTrackId !== trackId
 
   if (newTrackShouldPlay) {
     const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)

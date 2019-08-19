@@ -172,6 +172,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       flatListData: [],
       flatListDataTotalCount: null,
       isLoading: true,
+      queryPage: 1,
       querySort: selectedKey
     }, async () => {
       const newState = await this._queryData(selectedKey)
@@ -238,7 +239,6 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _renderItem = ({ item }) => {
     const { podcast, viewType } = this.state
-    const { downloadsActive, downloadedEpisodeIds } = this.global
 
     const episode = {
       ...item,
@@ -252,10 +252,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
-          key={`PodcastScreen_episode_downloaded_${item.id}`}
           description={description}
-          downloadedEpisodeIds={downloadedEpisodeIds}
-          downloadsActive={downloadsActive}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
           id={item.id}
@@ -267,10 +264,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
-          key={`PodcastScreen_episode_all_${item.id}`}
           description={description}
-          downloadedEpisodeIds={downloadedEpisodeIds}
-          downloadsActive={downloadsActive}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this.props.navigation.navigate(screen, { episode })}
           id={item.id}
@@ -280,9 +274,6 @@ export class PodcastScreen extends React.Component<Props, State> {
     } else {
       return (
         <ClipTableCell
-          key={`PodcastScreen_clip_${item.id}`}
-          downloadedEpisodeIds={this.global.downloadedEpisodeIds}
-          downloadsActive={downloadsActive}
           endTime={item.endTime}
           episodeId={item.episode.id}
           episodePubDate={readableDate(item.episode.pubDate)}

@@ -220,7 +220,7 @@ export class QueueScreen extends React.Component<Props, State> {
     this._handlePlayItem(item)
   }
 
-  _renderHistoryItem = ({ item = {} }) => {
+  _renderHistoryItem = ({ item = {} as NowPlayingItem }) => {
     const { isEditing } = this.state
 
     return (
@@ -231,14 +231,13 @@ export class QueueScreen extends React.Component<Props, State> {
         episodePubDate={item.episodePubDate}
         episodeTitle={item.episodeTitle}
         handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
-        key={`QueueScreen_history_item_${item.clipId || item.episodeId}`}
         podcastImageUrl={item.podcastImageUrl}
         podcastTitle={item.podcastTitle}
         showRemoveButton={isEditing} />
     )
   }
 
-  _renderQueueItemRow = ({ active, data = {} }) => {
+  _renderQueueItemRow = ({ active, data = {} as NowPlayingItem }) => {
     const { isEditing } = this.state
 
     const cell = (
@@ -250,7 +249,6 @@ export class QueueScreen extends React.Component<Props, State> {
           episodePubDate={data.episodePubDate}
           episodeTitle={data.episodeTitle}
           handleRemovePress={() => this._handleRemoveQueueItemPress(data)}
-          key={`QueueScreen_queue_item_${data.clipId || data.episodeId}`}
           podcastImageUrl={data.podcastImageUrl}
           podcastTitle={data.podcastTitle}
           showMoveButton={!isEditing}

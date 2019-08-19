@@ -223,6 +223,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       flatListData: [],
       flatListDataTotalCount: null,
       isLoading: true,
+      queryPage: 1,
       querySort: selectedKey
     }, async () => {
       const newState = await this._queryData(selectedKey, this.state)

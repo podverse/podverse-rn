@@ -33,7 +33,6 @@ export class DownloadsScreen extends React.Component<Props, State> {
   _renderItem = ({ item }) => {
     return (
       <DownloadTableCell
-        key={`DownloadsScreen_${item.episodeId}`}
         bytesTotal={item.bytesTotal}
         bytesWritten={item.bytesWritten}
         completed={item.completed}

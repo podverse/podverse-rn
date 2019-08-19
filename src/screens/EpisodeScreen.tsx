@@ -151,6 +151,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       flatListData: [],
       flatListDataTotalCount: null,
       isLoading: true,
+      queryPage: 1,
       querySort: selectedKey
     }, async () => {
       const newState = await this._queryData(selectedKey)
@@ -195,9 +196,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const { episode } = this.state
     return (
       <ClipTableCell
-        key={`EpisodeScreen_${item.id}`}
-        downloadedEpisodeIds={this.global.downloadedEpisodeIds}
-        downloadsActive={this.global.downloadsActive}
         episodeId={episode.id}
         endTime={item.endTime}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
