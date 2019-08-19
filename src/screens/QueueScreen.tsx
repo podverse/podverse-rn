@@ -351,7 +351,7 @@ export class QueueScreen extends React.Component<Props, State> {
           !isLoading && viewType === _historyKey && historyItems.length > 0 &&
             <FlatList
               data={historyItems}
-              dataTotalCount={null}
+              dataTotalCount={historyItems.length}
               disableLeftSwipe={true}
               extraData={historyItems}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
