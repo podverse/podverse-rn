@@ -299,6 +299,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _renderPodcastItem = ({ item }) => {
+    const { downloadedPodcastEpisodeCounts } = this.global
     const userLocalPodcastView = this.state.queryFrom === _subscribedKey || this.state.queryFrom === _downloadedKey
     const episodeCount = downloadedPodcastEpisodeCounts[item.id]
 
