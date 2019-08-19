@@ -401,7 +401,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   size={24} />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => togglePlay(this.global)}
+                onPress={() => togglePlay()}
                 style={[playerStyles.iconLarge, styles.playButton]}>
                 {
                   playbackState !== PVTrackPlayer.STATE_BUFFERING &&

@@ -424,12 +424,11 @@ export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: stri
   return currentNowPlayingItem
 }
 
-export const togglePlay = async (playbackRate: number) => {
+export const togglePlay = async () => {
   const state = await TrackPlayer.getState()
 
   if (state === TrackPlayer.STATE_NONE) {
     TrackPlayer.play()
-    TrackPlayer.setRate(playbackRate)
     return
   }
 
@@ -437,6 +436,5 @@ export const togglePlay = async (playbackRate: number) => {
     TrackPlayer.pause()
   } else {
     TrackPlayer.play()
-    TrackPlayer.setRate(playbackRate)
   }
 }

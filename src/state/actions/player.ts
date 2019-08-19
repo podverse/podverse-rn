@@ -214,9 +214,8 @@ export const setPlaybackSpeed = async (rate: number, globalState: any) => {
   })
 }
 
-export const togglePlay = async (globalState: any) => {
-  const { playbackRate } = globalState.player
-  await togglePlayService(playbackRate)
+export const togglePlay = async () => {
+  await togglePlayService()
 }
 
 export const updatePlaybackState = async (state?: any) => {
