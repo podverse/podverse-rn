@@ -42,10 +42,9 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
   try {
     PVTrackPlayer.remove(item.clipId || item.episodeId)
   } catch (error) {
-    console.log('addQueueItemNext', error)
+    console.log('addQueueItemNext service', error)
     //
   }
-
   const playerQueueItems = await PVTrackPlayer.getQueue()
   const currentTrackId = await PVTrackPlayer.getCurrentTrack()
   const currentTrackIndex = playerQueueItems.findIndex((x: any) => currentTrackId === x.id)
@@ -90,8 +89,8 @@ export const getNextFromQueue = async (moveToHistory?: boolean) => {
   }
 
   if (item && moveToHistory) {
-    await removeQueueItem(item, false)
-    await addOrUpdateHistoryItem(item)
+    removeQueueItem(item, false)
+    addOrUpdateHistoryItem(item)
   }
 
   return item
@@ -111,7 +110,7 @@ export const removeQueueItem = async (item: NowPlayingItem, removeFromPlayerQueu
     try {
       PVTrackPlayer.remove(item.clipId || item.episodeId)
     } catch (error) {
-      console.log(error)
+      console.log('removeQueueItem service', error)
     }
   }
 

@@ -9,40 +9,30 @@ import { addItemsToPlayerQueueNext as addItemsToPlayerQueueNextService, clearNow
 import { addQueueItemNext, getNextFromQueue } from '../../services/queue'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
-  return new Promise(async (resolve, reject) => {
-    const globalState = getGlobal()
-    const lastNowPlayingItem = await getNowPlayingItem()
-    const isNewEpisode = !lastNowPlayingItem || (item.episodeId !== lastNowPlayingItem.episodeId)
-    const isNewMediaRef = item.clipId && (!lastNowPlayingItem || item.clipId !== lastNowPlayingItem.clipId)
-    const episode = convertNowPlayingItemToEpisode(item)
-    episode.description = episode.description || 'No show notes available'
-    const mediaRef = convertNowPlayingItemToMediaRef(item)
+  const globalState = getGlobal()
+  const episode = convertNowPlayingItemToEpisode(item)
+  episode.description = episode.description || 'No show notes available'
+  const mediaRef = convertNowPlayingItemToMediaRef(item)
 
-    const newState = {
-      player: {
-        ...globalState.player,
-        episode,
-        ...(isNewMediaRef || !item.clipId ? { mediaRef } : { mediaRef: null }),
-        nowPlayingItem: item,
-        showMiniPlayer: true
-      },
-      screenPlayer: {
-        ...globalState.screenPlayer,
-        showFullClipInfo: false
-      }
-    } as any
-
-    if (isNewEpisode) {
-      newState.screenPlayer = {
-        ...globalState.screenPlayer,
-        isLoading: true,
-        showFullClipInfo: false,
-        viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES
-      }
+  const newState = {
+    player: {
+      ...globalState.player,
+      episode,
+      ...(!item.clipId ? { mediaRef } : { mediaRef: null }),
+      nowPlayingItem: item,
+      showMiniPlayer: true
     }
+  } as any
 
-    setGlobal(newState, () => resolve())
-  })
+  if (!item.clipId) {
+    newState.screenPlayer = {
+      ...globalState.screenPlayer,
+      showFullClipInfo: false,
+      viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES
+    }
+  }
+
+  setGlobal(newState)
 }
 
 export const initializePlayerQueue = async () => {
@@ -189,6 +179,7 @@ export const loadNextFromQueue = async (shouldPlay: boolean) => {
 
 export const loadTrackFromQueue = async (
   item: NowPlayingItem, shouldPlay: boolean, skipUpdatePlaybackPosition: boolean, shouldStartClip: boolean) => {
+
   if (item) {
     await updatePlayerState(item)
     await loadTrackFromQueueService(item, shouldPlay, skipUpdatePlaybackPosition, shouldStartClip)
