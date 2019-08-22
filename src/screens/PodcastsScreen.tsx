@@ -535,7 +535,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }
       } else if (rightItems.some((option) => option.value === filterKey)) {
         const results = await getPodcasts({
-          ...(selectedSubCategory || selectedCategory ? { categories: selectedSubCategory || selectedCategory } : {}) as object,
+          ...((selectedSubCategory && selectedSubCategory !== _allCategoriesKey)
+            || selectedCategory ? { categories: (selectedSubCategory && selectedSubCategory !== _allCategoriesKey) || selectedCategory }
+            : {}) as object,
           sort: filterKey, ...(searchTitle ? { searchTitle } : {})
         }, nsfwMode)
         newState.flatListData = results[0]
