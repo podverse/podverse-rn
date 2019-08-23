@@ -42,10 +42,9 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
   try {
     PVTrackPlayer.remove(item.clipId || item.episodeId)
   } catch (error) {
-    console.log('addQueueItemNext', error)
+    console.log('addQueueItemNext service', error)
     //
   }
-
   const playerQueueItems = await PVTrackPlayer.getQueue()
   const currentTrackId = await PVTrackPlayer.getCurrentTrack()
   const currentTrackIndex = playerQueueItems.findIndex((x: any) => currentTrackId === x.id)
@@ -69,29 +68,19 @@ export const getQueueItems = async () => {
 export const popNextFromQueue = async () => {
   let item = null
   const useServerData = await checkIfShouldUseServerData()
-
-  if (useServerData) {
-    item = await popNextFromQueueFromServer()
-  } else {
-    item = await popNextFromQueueLocally()
-  }
-
+  item = await popNextFromQueueLocally()
+  if (useServerData) popNextFromQueueFromServer()
   return item
 }
 
 export const getNextFromQueue = async (moveToHistory?: boolean) => {
-  let item = null
   const useServerData = await checkIfShouldUseServerData()
-
-  if (useServerData) {
-    item = await getNextFromQueueFromServer()
-  } else {
-    item = await getNextFromQueueLocally()
-  }
+  const item = await getNextFromQueueLocally()
+  if (useServerData) getNextFromQueueFromServer()
 
   if (item && moveToHistory) {
-    await removeQueueItem(item, false)
-    await addOrUpdateHistoryItem(item)
+    removeQueueItem(item, false)
+    addOrUpdateHistoryItem(item)
   }
 
   return item
@@ -111,7 +100,7 @@ export const removeQueueItem = async (item: NowPlayingItem, removeFromPlayerQueu
     try {
       PVTrackPlayer.remove(item.clipId || item.episodeId)
     } catch (error) {
-      console.log(error)
+      console.log('removeQueueItem service', error)
     }
   }
 
@@ -121,11 +110,8 @@ export const removeQueueItem = async (item: NowPlayingItem, removeFromPlayerQueu
 export const setAllQueueItems = async (items: NowPlayingItem[]) => {
   const useServerData = await checkIfShouldUseServerData()
 
-  if (useServerData) {
-    await setAllQueueItemsOnServer(items)
-  } else {
-    await setAllQueueItemsLocally(items)
-  }
+  await setAllQueueItemsLocally(items)
+  if (useServerData) await setAllQueueItemsOnServer(items)
 
   return items
 }
@@ -160,9 +146,14 @@ const addQueueItemNextOnServer = async (item: NowPlayingItem) => {
   return setAllQueueItemsOnServer(filteredItems)
 }
 
-export const filterItemFromQueueItems = (items: NowPlayingItem[], item: NowPlayingItem) => items.filter((x) =>
-  (item.clipId && x.clipId !== item.clipId) || (!item.clipId && x.episodeId !== item.episodeId)
-)
+export const filterItemFromQueueItems = (items: NowPlayingItem[], item: NowPlayingItem) => items.filter((x) => {
+  if (item.clipId && x.clipId === item.clipId) {
+    return false
+  } else if (!item.clipId && !x.clipId && x.episodeId === item.episodeId) {
+    return false
+  }
+  return true
+})
 
 const getNextFromQueueLocally = async () => {
   const items = await getQueueItemsLocally()
@@ -201,7 +192,6 @@ const popNextFromQueueLocally = async () => {
 }
 
 const popNextFromQueueFromServer = async () => {
-  await popNextFromQueueLocally()
   const items = await getQueueItemsFromServer()
   const item = items.shift()
   if (item) removeQueueItemOnServer(item)

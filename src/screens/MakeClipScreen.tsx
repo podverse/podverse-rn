@@ -11,7 +11,7 @@ import { createMediaRef, updateMediaRef } from '../services/mediaRef'
 import { getNowPlayingItemFromQueueOrHistoryByTrackId, playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime,
   PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { setPlaybackSpeed, togglePlay } from '../state/actions/player'
+import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, navHeader, playerStyles } from '../styles'
 
 type Props = {
@@ -125,9 +125,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
   _handleSelectPrivacy = async (selectedKey: string) => {
     const items = [placeholderItem, ...privacyItems]
     const selectedItem = items.find((x) => x.value === selectedKey)
-    if (selectedItem) {
-      await AsyncStorage.setItem(PV.Keys.MAKE_CLIP_IS_PUBLIC, JSON.stringify(selectedItem.value === _publicKey))
-    }
+    if (selectedItem) AsyncStorage.setItem(PV.Keys.MAKE_CLIP_IS_PUBLIC, JSON.stringify(selectedItem.value === _publicKey))
     this.setState({ isPublicItemSelected: selectedItem })
   }
 
@@ -143,13 +141,14 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   _adjustSpeed = async () => {
     const { playbackRate } = this.global.player
-    const index = PV.Player.speeds.indexOf(playbackRate)
+    const speeds = await PV.Player.speeds()
+    const index = speeds.indexOf(playbackRate)
 
     let newSpeed
-    if (PV.Player.speeds.length - 1 === index) {
-      newSpeed = PV.Player.speeds[0]
+    if (speeds.length - 1 === index) {
+      newSpeed = speeds[1]
     } else {
-      newSpeed = PV.Player.speeds[index + 1]
+      newSpeed = speeds[index + 1]
     }
 
     await setPlaybackSpeed(newSpeed, this.global)
@@ -212,7 +211,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
             clipStartTime: mediaRef.startTime,
             clipTitle: mediaRef.title
           }
-          // TODO: UPDATE CURRENT NOW PLAYING ITEM
+          await setNowPlayingItem(newItem)
         }
 
         this.setState({ isSaving: false }, async () => {

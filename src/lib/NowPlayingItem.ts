@@ -45,7 +45,12 @@ export const convertNowPlayingItemToMediaRef = (item: NowPlayingItem = {}) => {
     id: item.clipId,
     isPublic: item.isPublic,
     startTime: item.clipStartTime,
-    title: item.clipTitle
+    title: item.clipTitle,
+    owner: {
+      id: item.ownerId,
+      isPublic: item.isPublic,
+      name: item.ownerName
+    }
   }
 }
 

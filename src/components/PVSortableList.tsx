@@ -21,6 +21,7 @@ export class PVSortableList extends React.Component<Props, State> {
         onPressRow={onPressRow}
         onReleaseRow={onReleaseRow}
         renderRow={renderRow}
+        rowActivationTime={500}
         style={styles.list} />
     )
   }

@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
-import { removeArticles } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { getAutoDownloadEpisodes, removeAutoDownloadSetting } from './autoDownloads'
@@ -86,7 +85,13 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
     }
   } else {
     const subscribedPodcastsJSON = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS)
-    return subscribedPodcastsJSON ? JSON.parse(subscribedPodcastsJSON) : []
+    if (subscribedPodcastsJSON) {
+      const subscribedPodcasts = JSON.parse(subscribedPodcastsJSON)
+      if (Array.isArray(subscribedPodcasts)) return [subscribedPodcasts, subscribedPodcasts.length]
+      return [[], 0]
+    } else {
+      return [[], 0]
+    }
   }
 }
 
@@ -139,6 +144,7 @@ const toggleSubscribeToPodcastLocally = async (id: string) => {
   }
 
   if (Array.isArray(items)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(items))
+
   return items
 }
 
@@ -166,10 +172,10 @@ export const insertOrRemovePodcastFromAlphabetizedArray = (podcasts: any[], podc
   } else {
     podcasts.push(podcast)
     podcasts.sort((a, b) => {
-      let titleA = a.title.toLowerCase()
-      let titleB = b.title.toLowerCase()
-      titleA = removeArticles(titleA)
-      titleB = removeArticles(titleB)
+      let titleA = a.sortableTitle.toLowerCase().trim()
+      let titleB = b.sortableTitle.toLowerCase().trim()
+      titleA = titleA.replace(/#/g, '')
+      titleB = titleB.replace(/#/g, '')
       return (titleA < titleB) ? -1 : (titleA > titleB) ? 1 : 0
     })
     return podcasts

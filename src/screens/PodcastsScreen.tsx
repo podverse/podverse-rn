@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { AppState, Linking, Platform, StyleSheet } from 'react-native'
-import KeepAwake from 'react-native-keep-awake'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
@@ -92,6 +91,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.STREAMING_WIFI_ONLY, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE')
+        await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5')
         // navigation.navigate(PV.RouteNames.Onboarding)
       } else {
         await this._initializeScreenData()
@@ -223,6 +223,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       flatListData: [],
       flatListDataTotalCount: null,
       isLoading: true,
+      queryPage: 1,
       querySort: selectedKey
     }, async () => {
       const newState = await this._queryData(selectedKey, this.state)
@@ -298,15 +299,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _renderPodcastItem = ({ item }) => {
-    const { autoDownloadSettings, downloadedPodcastEpisodeCounts } = this.global
+    const { downloadedPodcastEpisodeCounts } = this.global
     const userLocalPodcastView = this.state.queryFrom === _subscribedKey || this.state.queryFrom === _downloadedKey
     const episodeCount = downloadedPodcastEpisodeCounts[item.id]
 
     return (
       <PodcastTableCell
-        key={`PodcastsScreen_${item.id}`}
-        autoDownloadSettings={autoDownloadSettings}
-        downloadedPodcastEpisodeCounts={downloadedPodcastEpisodeCounts}
         id={item.id}
         lastEpisodePubDate={item.lastEpisodePubDate}
         onPress={() => this.props.navigation.navigate(
@@ -344,7 +342,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const { flatListData } = this.state
 
         if (queryFrom === _subscribedKey) {
-          await toggleSubscribeToPodcast(selectedId, this.global)
+          await toggleSubscribeToPodcast(selectedId)
         } else if (queryFrom === _downloadedKey) {
           await removeDownloadedPodcast(selectedId)
         }
@@ -453,7 +451,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
               renderItem={this._renderPodcastItem}
               resultsText='podcasts' />
         }
-        <KeepAwake />
       </View>
     )
   }
@@ -538,7 +535,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }
       } else if (rightItems.some((option) => option.value === filterKey)) {
         const results = await getPodcasts({
-          ...(selectedSubCategory || selectedCategory ? { categories: selectedSubCategory || selectedCategory } : {}) as object,
+          ...((selectedSubCategory && selectedSubCategory !== _allCategoriesKey)
+            || selectedCategory ? { categories: (selectedSubCategory && selectedSubCategory !== _allCategoriesKey) || selectedCategory }
+            : {}) as object,
           sort: filterKey, ...(searchTitle ? { searchTitle } : {})
         }, nsfwMode)
         newState.flatListData = results[0]

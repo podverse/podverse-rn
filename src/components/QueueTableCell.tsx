@@ -19,13 +19,13 @@ type Props = {
   showRemoveButton?: boolean
 }
 
-export const QueueTableCell = (props: Props) => {
-  const { clipEndTime, clipStartTime, clipTitle = 'Untitled clip', episodePubDate,
-    episodeTitle = 'Untilted episode', handleRemovePress, hideBottomRow, podcastImageUrl,
-    podcastTitle = 'Untitled podcast', showMoveButton, showRemoveButton } = props
+export class QueueTableCell extends React.PureComponent<Props> {
+  render () {
+    const { clipEndTime, clipStartTime, clipTitle = 'Untitled clip', episodePubDate,
+      episodeTitle = 'Untilted episode', handleRemovePress, hideBottomRow, podcastImageUrl,
+      podcastTitle = 'Untitled podcast', showMoveButton, showRemoveButton } = this.props
 
-  return (
-
+    return (
       <View style={styles.wrapper}>
         <View style={styles.wrapperTop}>
           <Image
@@ -88,7 +88,8 @@ export const QueueTableCell = (props: Props) => {
             </View>
         }
       </View>
-  )
+    )
+  }
 }
 
 const styles = StyleSheet.create({

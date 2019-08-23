@@ -133,19 +133,17 @@ export class SearchScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderPodcastItem = ({ item }) => {
-    return (
-      <PodcastTableCell
-        key={`SearchScreen_${item.id}`}
-        id={item.id}
-        lastEpisodePubDate={item.lastEpisodePubDate}
-        onPress={() => this._handleMorePress(item)}
-        podcastAuthors={generateAuthorsText(item.authors)}
-        podcastCategories={generateCategoriesText(item.categories)}
-        podcastImageUrl={item.imageUrl}
-        podcastTitle={item.title} />
-    )
-  }
+  _renderPodcastItem = ({ item }) => (
+    <PodcastTableCell
+      id={item.id}
+      lastEpisodePubDate={item.lastEpisodePubDate}
+      onPress={() => this._handleMorePress(item)}
+      podcastAuthors={generateAuthorsText(item.authors)}
+      podcastCategories={generateCategoriesText(item.categories)}
+      podcastImageUrl={item.imageUrl}
+      podcastTitle={item.title} />
+  )
+
 
   _moreButtons = (): any[] => {
     const { selectedPodcast } = this.state

@@ -8,18 +8,21 @@ type Props = {
   onPress?: any
 }
 
-export const ProfileTableCell = (props: Props) => {
-  const { name, onPress } = props
+export class ProfileTableCell extends React.PureComponent<Props> {
 
-  return (
-      <View style={styles.wrapper}>
-        <Text
-          onPress={onPress}
-          style={styles.name}>
-          {name || 'anonymous'}
-        </Text>
-      </View>
-  )
+  render () {
+    const { name, onPress } = this.props
+
+    return (
+        <View style={styles.wrapper}>
+          <Text
+            onPress={onPress}
+            style={styles.name}>
+            {name || 'anonymous'}
+          </Text>
+        </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({

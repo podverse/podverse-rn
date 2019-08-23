@@ -401,7 +401,7 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _renderItem = ({ item }) => {
-    const { downloadedEpisodeIds, downloadsActive, player, screenPlayer } = this.global
+    const { player, screenPlayer } = this.global
     const { episode } = player
     const podcast = (episode && episode.podcast) || {}
     const { queryFrom, viewType } = screenPlayer
@@ -410,10 +410,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
-          key={`PlayerScreen_episode_${item.id}`}
           description={description}
-          downloadedEpisodeIds={downloadedEpisodeIds}
-          downloadsActive={downloadsActive}
           id={item.id}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => console.log('handle episode press')}
@@ -430,9 +427,6 @@ export class PlayerScreen extends React.Component<Props, State> {
 
       return (
         <ClipTableCell
-          key={`PlayerScreen_clip_${item.id}`}
-          downloadedEpisodeIds={this.global.downloadedEpisodeIds}
-          downloadsActive={this.global.downloadsActive}
           endTime={item.endTime}
           episodeId={item.episode.id}
           {...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST ? { episodePubDate: readableDate(item.episode.pubDate) } : {})}
@@ -454,6 +448,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const episodeId = episode ? episode.id : null
     const mediaRefId = mediaRef ? mediaRef.id : null
     let { mediaRef } = player
+
     if (nowPlayingItem.clipId) mediaRef = convertNowPlayingItemToMediaRef(nowPlayingItem)
 
     return (

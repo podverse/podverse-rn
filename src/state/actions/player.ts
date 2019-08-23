@@ -1,48 +1,38 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
-import { getHistoryItemsLocally, popLastFromHistoryItems, addOrUpdateHistoryItem } from '../../services/history'
+import { addOrUpdateHistoryItem, getHistoryItemsLocally, popLastFromHistoryItems } from '../../services/history'
 import { addItemsToPlayerQueueNext as addItemsToPlayerQueueNextService, clearNowPlayingItem as clearNowPlayingItemService,
   getContinuousPlaybackMode, getNowPlayingItem, initializePlayerQueue as initializePlayerQueueService,
-  loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer,
+  loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer, setNowPlayingItem as setNowPlayingItemService,
   setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService, updateUserPlaybackPosition} from '../../services/player'
 import { addQueueItemNext, getNextFromQueue } from '../../services/queue'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
-  return new Promise(async (resolve, reject) => {
-    const globalState = getGlobal()
-    const lastNowPlayingItem = await getNowPlayingItem()
-    const isNewEpisode = !lastNowPlayingItem || (item.episodeId !== lastNowPlayingItem.episodeId)
-    const isNewMediaRef = item.clipId && (!lastNowPlayingItem || item.clipId !== lastNowPlayingItem.clipId)
-    const episode = convertNowPlayingItemToEpisode(item)
-    episode.description = episode.description || 'No show notes available'
-    const mediaRef = convertNowPlayingItemToMediaRef(item)
+  const globalState = getGlobal()
+  const episode = convertNowPlayingItemToEpisode(item)
+  episode.description = episode.description || 'No show notes available'
+  const mediaRef = convertNowPlayingItemToMediaRef(item)
 
-    const newState = {
-      player: {
-        ...globalState.player,
-        episode,
-        ...(isNewMediaRef || !item.clipId ? { mediaRef } : { mediaRef: null }),
-        nowPlayingItem: item,
-        showMiniPlayer: true
-      },
-      screenPlayer: {
-        ...globalState.screenPlayer,
-        showFullClipInfo: false
-      }
-    } as any
-
-    if (isNewEpisode) {
-      newState.screenPlayer = {
-        ...globalState.screenPlayer,
-        isLoading: true,
-        showFullClipInfo: false,
-        viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES
-      }
+  const newState = {
+    player: {
+      ...globalState.player,
+      episode,
+      ...(!item.clipId ? { mediaRef } : { mediaRef: null }),
+      nowPlayingItem: item,
+      showMiniPlayer: true
     }
+  } as any
 
-    setGlobal(newState, () => resolve())
-  })
+  if (!item.clipId) {
+    newState.screenPlayer = {
+      ...globalState.screenPlayer,
+      showFullClipInfo: false,
+      viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES
+    }
+  }
+
+  setGlobal(newState)
 }
 
 export const initializePlayerQueue = async () => {
@@ -189,6 +179,7 @@ export const loadNextFromQueue = async (shouldPlay: boolean) => {
 
 export const loadTrackFromQueue = async (
   item: NowPlayingItem, shouldPlay: boolean, skipUpdatePlaybackPosition: boolean, shouldStartClip: boolean) => {
+
   if (item) {
     await updatePlayerState(item)
     await loadTrackFromQueueService(item, shouldPlay, skipUpdatePlaybackPosition, shouldStartClip)
@@ -214,9 +205,8 @@ export const setPlaybackSpeed = async (rate: number, globalState: any) => {
   })
 }
 
-export const togglePlay = async (globalState: any) => {
-  const { playbackRate } = globalState.player
-  await togglePlayService(playbackRate)
+export const togglePlay = async () => {
+  await togglePlayService()
 }
 
 export const updatePlaybackState = async (state?: any) => {
@@ -231,4 +221,13 @@ export const updatePlaybackState = async (state?: any) => {
       playbackState
     }
   })
+}
+
+export const setNowPlayingItem = async (item: NowPlayingItem | null) => {
+  if (item) {
+    await setNowPlayingItemService(item)
+    await updatePlayerState(item)
+  } else {
+    await clearNowPlayingItem()
+  }
 }

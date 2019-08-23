@@ -19,7 +19,6 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.corbt.keepawake.KCKeepAwakePackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,8 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
             new RNCWebViewPackage(),
             new VectorIconsPackage(),
             new RNSecureKeyStorePackage(),
-            new RNGestureHandlerPackage(),
-            new KCKeepAwakePackage()
+            new RNGestureHandlerPackage()
       );
     }
 
