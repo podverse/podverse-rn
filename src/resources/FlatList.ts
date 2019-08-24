@@ -7,7 +7,7 @@ export const FlatList = {
   searchBarKey: _searchBarKey as any,
   isLoadingMoreKey: _isLoadingMoreKey as any,
   searchBar: {
-    height: 72
+    height: 44
   },
   lastCell: {
     height: 72

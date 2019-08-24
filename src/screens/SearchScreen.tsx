@@ -283,7 +283,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     flex: 0,
     height: PV.FlatList.searchBar.height,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginVertical: 8
   },
   view: {
     flex: 1,
