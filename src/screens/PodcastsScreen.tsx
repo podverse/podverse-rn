@@ -387,6 +387,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       flatListDataTotalCount: null,
       queryPage: 1
     }, async () => {
+      prevState.flatListData = []
+      prevState.flatListDataTotalCount = null
       const state = await this._queryData(queryFrom, prevState, newState, { searchTitle: queryOptions.searchTitle })
       this.setState(state)
     })
