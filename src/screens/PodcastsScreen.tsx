@@ -288,7 +288,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     return (
       <View style={styles.ListHeaderComponent}>
         <SearchBar
-          containerStyle={styles.ListHeaderComponent}
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
           onClear={this._handleSearchBarClear}
@@ -648,7 +647,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     flex: 0,
     height: PV.FlatList.searchBar.height,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginVertical: 8
   },
   view: {
     flex: 1
