@@ -261,7 +261,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
           isLoadingMore: true
         }, async () => {
           const nextPage = queryPage + 1
-          const newState = await this._queryData(queryFrom, this.state, { queryPage: nextPage })
+          const newState = await this._queryData(queryFrom, this.state, {
+            queryPage: nextPage,
+            searchAllFieldsText: this.state.searchBarText
+          })
           this.setState(newState)
         })
       }
@@ -285,7 +288,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     return (
       <View style={styles.ListHeaderComponent}>
         <SearchBar
-          containerStyle={styles.ListHeaderComponent}
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
           onClear={this._handleSearchBarClear}
@@ -360,7 +362,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarClear = (text: string) => {
-    this.setState({ searchBarText: '' })
+    this.setState({
+      flatListData: [],
+      flatListDataTotalCount: null,
+      searchBarText: ''
+    })
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -380,6 +386,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       flatListDataTotalCount: null,
       queryPage: 1
     }, async () => {
+      prevState.flatListData = []
+      prevState.flatListDataTotalCount = null
       const state = await this._queryData(queryFrom, prevState, newState, { searchTitle: queryOptions.searchTitle })
       this.setState(state)
     })
@@ -639,7 +647,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     flex: 0,
     height: PV.FlatList.searchBar.height,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginVertical: 8
   },
   view: {
     flex: 1

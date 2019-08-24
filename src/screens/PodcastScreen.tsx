@@ -187,7 +187,10 @@ export class PodcastScreen extends React.Component<Props, State> {
         this.setState({
           isLoadingMore: true
         }, async () => {
-          const newState = await this._queryData(viewType, { queryPage: queryPage + 1 })
+          const newState = await this._queryData(viewType, {
+            queryPage: queryPage + 1,
+            searchAllFieldsText: this.state.searchBarText
+          })
           this.setState(newState)
         })
       }
@@ -211,7 +214,6 @@ export class PodcastScreen extends React.Component<Props, State> {
     return (
       <View style={styles.ListHeaderComponent}>
         <SearchBar
-          containerStyle={styles.ListHeaderComponent}
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
           onClear={this._handleSearchBarClear}
@@ -585,7 +587,8 @@ const styles = {
     borderTopWidth: 0,
     flex: 0,
     height: PV.FlatList.searchBar.height,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginVertical: 8
   },
   swipeRowBack: {
     marginBottom: 8,

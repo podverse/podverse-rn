@@ -173,13 +173,6 @@ export class ProfilesScreen extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
-  ListHeaderComponent: {
-    borderBottomWidth: 0,
-    borderTopWidth: 0,
-    flex: 0,
-    height: PV.FlatList.searchBar.height,
-    justifyContent: 'center'
-  },
   view: {
     flex: 1
   }

@@ -91,7 +91,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
         playlist: null
       }, async () => {
         try {
-          await getPlaylist(playlistId, this.global)
+          await getPlaylist(playlistId)
         } catch (error) {
           //
         }

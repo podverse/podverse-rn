@@ -112,7 +112,10 @@ export class ClipsScreen extends React.Component<Props, State> {
           isLoadingMore: true,
           queryPage: queryPage + 1
         }, async () => {
-          const newState = await this._queryData(queryFrom, { queryPage: this.state.queryPage })
+          const newState = await this._queryData(queryFrom, {
+            queryPage: this.state.queryPage,
+            searchAllFieldsText: this.state.searchBarText
+          })
           this.setState(newState)
         })
       }
@@ -125,7 +128,6 @@ export class ClipsScreen extends React.Component<Props, State> {
     return (
       <View style={styles.ListHeaderComponent}>
         <SearchBar
-          containerStyle={styles.ListHeaderComponent}
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
           onClear={this._handleSearchBarClear}
@@ -166,7 +168,11 @@ export class ClipsScreen extends React.Component<Props, State> {
   )
 
   _handleSearchBarClear = (text: string) => {
-    this.setState({ searchBarText: '' })
+    this.setState({
+      flatListData: [],
+      flatListDataTotalCount: null,
+      searchBarText: ''
+    })
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -176,7 +182,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       isLoadingMore: true,
       searchBarText: text
     }, async () => {
-      this._handleSearchBarTextQuery(queryFrom, { searchTitle: text })
+      this._handleSearchBarTextQuery(queryFrom, { searchAllFieldsText: text })
     })
   }
 
@@ -459,7 +465,8 @@ const styles = {
     borderTopWidth: 0,
     flex: 0,
     height: PV.FlatList.searchBar.height,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginVertical: 8
   },
   view: {
     flex: 1
