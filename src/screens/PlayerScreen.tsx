@@ -90,14 +90,11 @@ export class PlayerScreen extends React.Component<Props, State> {
 
   _handleAppStateChange = async (nextAppState: any) => {
     if (nextAppState === 'active') {
-      const { dismiss } = this.props.navigation
       const { nowPlayingItem: lastItem } = this.global.player
       const trackId = await PVTrackPlayer.getCurrentTrack()
       const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
 
-      if (!currentItem) {
-        dismiss()
-      } else if ((!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
+      if ((!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
         await updatePlayerState(currentItem)
       }
     }
@@ -750,13 +747,6 @@ const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefI
 }
 
 const styles = StyleSheet.create({
-  ListHeaderComponent: {
-    borderBottomWidth: 0,
-    borderTopWidth: 0,
-    flex: 0,
-    height: PV.FlatList.searchBar.height,
-    justifyContent: 'center'
-  },
   swipeRowBack: {
     marginBottom: 8,
     marginTop: 8

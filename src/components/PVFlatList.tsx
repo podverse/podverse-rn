@@ -64,18 +64,18 @@ export const PVFlatList = (props: Props) => {
   return (
     <View style={styles.view}>
       {
-        noSubscribedPodcasts &&
+        (noSubscribedPodcasts && !isLoadingMore) &&
           <MessageWithAction
             actionHandler={handleSearchNavigation}
             actionText='Search'
             message='You have no subscribed podcasts' />
       }
       {
-        noResultsFound && !noSubscribedPodcasts && ListHeaderComponent &&
+        ListHeaderComponent &&
           <ListHeaderComponent />
       }
       {
-        noResultsFound && !noSubscribedPodcasts &&
+        (noResultsFound && !noSubscribedPodcasts && !isLoadingMore) &&
           <View style={styles.msgView}>
             <Text style={[styles.lastCellText]}>{`No ${resultsText} found`}</Text>
             {
@@ -85,7 +85,7 @@ export const PVFlatList = (props: Props) => {
           </View>
       }
       {
-        !noSubscribedPodcasts && !noResultsFound &&
+        ((!noSubscribedPodcasts && !noResultsFound) || isLoadingMore) &&
           <SwipeListView
             useFlatList={true}
             closeOnRowPress={true}
@@ -98,7 +98,7 @@ export const PVFlatList = (props: Props) => {
             ListFooterComponent={() => {
               if (isLoadingMore) {
                 return (
-                  <View style={[styles.lastCell, globalTheme.tableCellBorder]}>
+                  <View style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}>
                     <ActivityIndicator />
                   </View>
                 )
@@ -115,7 +115,6 @@ export const PVFlatList = (props: Props) => {
               }
               return null
             }}
-            {...(ListHeaderComponent ? { ListHeaderComponent } : {})}
             onEndReached={onEndReached}
             onEndReachedThreshold={onEndReachedThreshold}
             {...(onRefresh ? { refreshControl: <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} /> } : {})}
@@ -129,6 +128,11 @@ export const PVFlatList = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
+  isLoadingMoreCell: {
+    borderTopWidth: 0,
+    justifyContent: 'center',
+    padding: 24
+  },
   lastCell: {
     borderTopWidth: 1,
     justifyContent: 'center',

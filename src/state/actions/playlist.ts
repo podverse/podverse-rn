@@ -69,6 +69,7 @@ export const getPlaylist = async (id: string) => {
     playlistsSubscribed[foundIndexSubscribed] = newPlaylist
   }
   const flatListData = combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder)
+
   setGlobal({
     playlists: {
       myPlaylists: playlistsMyPlaylists,
