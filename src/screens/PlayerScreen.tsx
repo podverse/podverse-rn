@@ -747,13 +747,6 @@ const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefI
 }
 
 const styles = StyleSheet.create({
-  ListHeaderComponent: {
-    borderBottomWidth: 0,
-    borderTopWidth: 0,
-    flex: 0,
-    height: PV.FlatList.searchBar.height,
-    justifyContent: 'center'
-  },
   swipeRowBack: {
     marginBottom: 8,
     marginTop: 8

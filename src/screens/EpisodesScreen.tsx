@@ -108,7 +108,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
           isLoadingMore: true,
           queryPage: queryPage + 1
         }, async () => {
-          const newState = await this._queryData(queryFrom, { queryPage: this.state.queryPage })
+          const newState = await this._queryData(queryFrom, {
+            queryPage: this.state.queryPage,
+            searchAllFieldsText: this.state.searchBarText
+          })
           this.setState(newState)
         })
       }
@@ -178,7 +181,11 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarClear = (text: string) => {
-    this.setState({ searchBarText: '' })
+    this.setState({
+      flatListData: [],
+      flatListDataTotalCount: null,
+      searchBarText: ''
+    })
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -188,7 +195,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       isLoadingMore: true,
       searchBarText: text
     })
-    this._handleSearchBarTextQuery(queryFrom, { searchTitle: text })
+    this._handleSearchBarTextQuery(queryFrom, { searchAllFieldsText: text })
   }
 
   _handleSearchBarTextQuery = async (queryFrom: string | null, queryOptions: any) => {

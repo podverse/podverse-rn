@@ -166,7 +166,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
         this.setState({
           isLoadingMore: true
         }, async () => {
-          const newState = await this._queryData(viewType, { queryPage: queryPage + 1 })
+          const newState = await this._queryData(viewType, {
+            queryPage: queryPage + 1,
+            searchAllFieldsText: this.state.searchBarText
+          })
           this.setState(newState)
         })
       }
