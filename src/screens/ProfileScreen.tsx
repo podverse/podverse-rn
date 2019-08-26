@@ -170,24 +170,19 @@ export class ProfileScreen extends React.Component<Props, State> {
       return
     }
 
-    setGlobal({
-      profile: {
-        user: this.global.profile.user
-      }
-    }, () => {
-      this.setState({
-        endOfResultsReached: false,
-        flatListData: [],
-        flatListDataTotalCount: null,
-        isLoading: true,
-        preventSortQuery: true,
-        queryFrom: selectedKey,
-        queryPage: 1,
-        ...(querySort === _alphabeticalKey && selectedKey !== _podcastsKey ? { querySort: _topPastWeek } : {})
-      }, async () => {
-        const newState = await this._queryData(selectedKey, 1)
-        this.setState(newState)
-      })
+    this.setState({
+      endOfResultsReached: false,
+      flatListData: [],
+      flatListDataTotalCount: null,
+      isLoading: true,
+      preventSortQuery: true,
+      queryFrom: selectedKey,
+      queryPage: 1,
+      ...(querySort === _alphabeticalKey && selectedKey !== _podcastsKey ? { querySort: _topPastWeek } : {})
+    }, async () => {
+      const newState = await this._queryData(selectedKey, 1)
+      newState.preventSortQuery = false
+      this.setState(newState)
     })
   }
 
@@ -202,24 +197,17 @@ export class ProfileScreen extends React.Component<Props, State> {
       return
     }
 
-    setGlobal({
-      profile: {
-        user: this.global.profile.user
-      }
-    }, () => {
-      this.setState({
-        endOfResultsReached: false,
-        flatListData: [],
-        flatListDataTotalCount: null,
-        isLoading: true,
-        queryPage: 1,
-        querySort: selectedKey
-      }, async () => {
-        const newState = await this._queryData(selectedKey, 1)
-        this.setState(newState)
-      })
+    this.setState({
+      endOfResultsReached: false,
+      flatListData: [],
+      flatListDataTotalCount: null,
+      isLoading: true,
+      queryPage: 1,
+      querySort: selectedKey
+    }, async () => {
+      const newState = await this._queryData(selectedKey, 1)
+      this.setState(newState)
     })
-
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
@@ -527,7 +515,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     if (wasAlerted) return newState
 
     try {
-      if (filterKey === _podcastsKey) {
+      if (filterKey === _podcastsKey || filterKey === _alphabeticalKey) {
         newState = await this._queryPodcasts(newState, page, querySort)
       } else if (filterKey === _clipsKey) {
         newState = await this._queryMediaRefs(newState, page, querySort)
