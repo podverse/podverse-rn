@@ -161,7 +161,7 @@ const handlePlayerClipLoaded = async () => {
       }, 500)
     }
     const resolveImmediately = false
-    await setPlaybackPositionWhenDurationIsAvailable(
+    await debouncedSetPlaybackPosition(
       nowPlayingItem.clipStartTime, nowPlayingItem.clipId, resolveImmediately)
   }
 }

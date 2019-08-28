@@ -18,6 +18,7 @@ export type NowPlayingItem = {
   podcastId?: string
   podcastImageUrl?: string
   podcastIsExplicit?: boolean
+  podcastSortableTitle?: string
   podcastTitle?: string
   userPlaybackPosition?: number
 }
@@ -33,6 +34,7 @@ export const convertNowPlayingItemToEpisode = (item: NowPlayingItem) => {
       id: item.podcastId,
       imageUrl: item.podcastImageUrl,
       isExplicit: item.podcastIsExplicit,
+      sortableTitle: item.podcastSortableTitle,
       title: item.podcastTitle
     }
   }
@@ -64,6 +66,7 @@ export const convertNowPlayingItemClipToNowPlayingItemEpisode = (data: any, user
     podcastId: data.podcastId,
     podcastImageUrl: data.podcastImageUrl,
     podcastIsExplicit: data.podcastIsExplicit,
+    podcastSortableTitle: data.podcastSortableTitle,
     podcastTitle: data.podcastTitle,
     userPlaybackPosition: userPlaybackPosition || 0
   }
@@ -85,6 +88,7 @@ export const convertToNowPlayingItem = (data, inheritedEpisode, inheritedPodcast
     nowPlayingItem.episodeTitle = data.title
     nowPlayingItem.podcastId = data.podcast_id
     nowPlayingItem.podcastImageUrl = data.podcast_imageUrl
+    nowPlayingItem.podcastSortableTitle = data.podcast_sortableTitle
     nowPlayingItem.podcastTitle = data.podcast_title
     nowPlayingItem.userPlaybackPosition = userPlaybackPosition || 0
     // If it has a pubDate field, assume it is an Episode
@@ -97,6 +101,7 @@ export const convertToNowPlayingItem = (data, inheritedEpisode, inheritedPodcast
     nowPlayingItem.podcastId = p.id
     nowPlayingItem.podcastImageUrl = p.imageUrl
     nowPlayingItem.podcastIsExplicit = p.isExplicit
+    nowPlayingItem.podcastSortableTitle = p.sortableTitle
     nowPlayingItem.podcastTitle = p.title
     nowPlayingItem.userPlaybackPosition = userPlaybackPosition || 0
     // Else assume it is a MediaRef
@@ -120,6 +125,7 @@ export const convertToNowPlayingItem = (data, inheritedEpisode, inheritedPodcast
     nowPlayingItem.podcastId = p.id
     nowPlayingItem.podcastIsExplicit = p.isExplicit
     nowPlayingItem.podcastImageUrl = p.imageUrl
+    nowPlayingItem.podcastSortableTitle = p.sortableTitle
     nowPlayingItem.podcastTitle = p.title
     nowPlayingItem.userPlaybackPosition = userPlaybackPosition || data.clipStartTime || 0
   }

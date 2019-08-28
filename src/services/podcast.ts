@@ -166,18 +166,24 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
   return response && response.data
 }
 
+export const sortPodcastArrayAlphabetically = (podcasts: any[]) => {
+  podcasts.sort((a, b) => {
+    let titleA = a.sortableTitle ? a.sortableTitle.toLowerCase().trim() : a.title.toLowerCase().trim()
+    let titleB = b.sortableTitle ? b.sortableTitle.toLowerCase().trim() : b.title.toLowerCase().trim()
+    titleA = titleA.replace(/#/g, '')
+    titleB = titleB.replace(/#/g, '')
+    return (titleA < titleB) ? -1 : (titleA > titleB) ? 1 : 0
+  })
+
+  return podcasts
+}
+
 export const insertOrRemovePodcastFromAlphabetizedArray = (podcasts: any[], podcast: any) => {
   if (podcasts.some((x) => x.id === podcast.id)) {
     return podcasts.filter((x) => x.id !== podcast.id)
   } else {
     podcasts.push(podcast)
-    podcasts.sort((a, b) => {
-      let titleA = a.sortableTitle.toLowerCase().trim()
-      let titleB = b.sortableTitle.toLowerCase().trim()
-      titleA = titleA.replace(/#/g, '')
-      titleB = titleB.replace(/#/g, '')
-      return (titleA < titleB) ? -1 : (titleA > titleB) ? 1 : 0
-    })
+    sortPodcastArrayAlphabetically(podcasts)
     return podcasts
   }
 }

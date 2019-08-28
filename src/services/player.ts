@@ -310,7 +310,7 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
     await setNowPlayingItem(nextItem)
     if (shouldRemoveFromPVQueue) await removeQueueItem(nextItem, false)
     // NOTE: the PLAYER_CLIP_LOADED event listener uses the NOW_PLAYING_ITEM to get clip info
-    if (Platform.OS === 'ios' && nextItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+    // if (Platform.OS === 'ios' && nextItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
     await addOrUpdateHistoryItem(nextItem)
   }
 }

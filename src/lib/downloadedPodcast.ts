@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
 import { clearNowPlayingItem, getNowPlayingItem } from '../services/player'
+import { sortPodcastArrayAlphabetically } from '../services/podcast'
 import { deleteDownloadedEpisode } from './downloader'
 
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
@@ -12,7 +13,7 @@ export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) =>
     podcast.episodes = [episode]
     podcast.lastEpisodePubDate = episode.pubDate
     downloadedPodcasts.push(podcast)
-    downloadedPodcasts = sortPodcastArray(downloadedPodcasts)
+    downloadedPodcasts = sortPodcastArrayAlphabetically(downloadedPodcasts)
     await setDownloadedPodcasts(downloadedPodcasts)
   } else {
     let downloadedPodcast = downloadedPodcasts[podcastIndex]
@@ -27,7 +28,7 @@ export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) =>
       downloadedPodcast.lastEpisodePubDate = downloadedEpisodes[0].pubDate
     }
     downloadedPodcasts[podcastIndex] = downloadedPodcast
-    downloadedPodcasts = sortPodcastArray(downloadedPodcasts)
+    downloadedPodcasts = sortPodcastArrayAlphabetically(downloadedPodcasts)
     await setDownloadedPodcasts(downloadedPodcasts)
   }
 }
@@ -133,13 +134,6 @@ export const removeDownloadedPodcast = async (podcastId: string) => {
 }
 
 const setDownloadedPodcasts = async (podcasts: any[]) => {
+  podcasts = sortPodcastArrayAlphabetically(podcasts)
   if (Array.isArray(podcasts)) await AsyncStorage.setItem(PV.Keys.DOWNLOADED_PODCASTS, JSON.stringify(podcasts))
-}
-
-const sortPodcastArray = (podcasts: any[]) => {
-  return podcasts.sort((a: any, b: any) => {
-    const textA = a.title.toUpperCase()
-    const textB = b.title.toUpperCase()
-    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
-  })
 }
