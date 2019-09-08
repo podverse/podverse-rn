@@ -262,8 +262,8 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { flatListData, flatListDataTotalCount, queryFrom, isLoading, isLoadingMore, querySort, selectedItem,
-      showActionSheet, showDeleteConfirmDialog } = this.state
+    const { flatListData, flatListDataTotalCount, queryFrom, isLoading, isLoadingMore, querySort,
+      searchBarText, selectedItem, showActionSheet, showDeleteConfirmDialog } = this.state
     const { session } = this.global
     const { isLoggedIn } = session
 
@@ -291,7 +291,7 @@ export class ClipsScreen extends React.Component<Props, State> {
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               ListHeaderComponent={this._ListHeaderComponent}
-              noSubscribedPodcasts={queryFrom === _subscribedKey && (!flatListData || flatListData.length === 0)}
+              noSubscribedPodcasts={queryFrom === _subscribedKey && (!flatListData || flatListData.length === 0) && !searchBarText}
               onEndReached={this._onEndReached}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderClipItem} />
