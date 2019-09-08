@@ -64,9 +64,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     const podcast = this.props.navigation.getParam('podcast')
     const podcastId = (podcast && podcast.id) || this.props.navigation.getParam('podcastId')
-    const episodeCount = this.props.navigation.getParam('episodeCount') || 0
-    const viewType = this.props.navigation.getParam('viewType')
-      || episodeCount > 0 ? downloadedKey : allEpisodesKey
+    const viewType = this.props.navigation.getParam('viewType') || allEpisodesKey
 
     if (podcast && podcast.id) {
       this.props.navigation.setParams({ podcastId: podcast.id })
