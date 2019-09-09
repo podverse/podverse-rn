@@ -6,7 +6,7 @@ import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from
 import { checkIfIdMatchesClipIdOrEpisodeId, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { addOrUpdateHistoryItem, getHistoryItems, getHistoryItemsLocally } from './history'
+import { addOrUpdateHistoryItem, getHistoryItems, getHistoryItemsLocally, getHistoryItem } from './history'
 import { filterItemFromQueueItems, getQueueItems, getQueueItemsLocally, removeQueueItem } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
@@ -150,11 +150,7 @@ export const initializePlayerQueue = async () => {
   if (nowPlayingItemString) {
     nowPlayingItem = JSON.parse(nowPlayingItemString)
     filteredItems = filterItemFromQueueItems(queueItems, nowPlayingItem)
-    const historyItems = await getHistoryItems()
-    const historyItem = historyItems.find((x: NowPlayingItem) => {
-      const id = x.clipId || x.episodeId
-      return checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId)
-    })
+    const historyItem = getHistoryItem(nowPlayingItem.clipId || nowPlayingItem.episodeId)
     if (historyItem) nowPlayingItem.userPlaybackPosition = historyItem.userPlaybackPosition
     filteredItems.unshift(nowPlayingItem)
   }

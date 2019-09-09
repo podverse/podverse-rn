@@ -220,8 +220,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, flatListDataTotalCount, queryFrom, isLoading, isLoadingMore, querySort, selectedItem,
-      showActionSheet } = this.state
+    const { flatListData, flatListDataTotalCount, queryFrom, isLoading, isLoadingMore, querySort,
+      searchBarText, selectedItem, showActionSheet } = this.state
     const { navigation } = this.props
 
     return (
@@ -248,7 +248,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               ListHeaderComponent={queryFrom !== _downloadedKey ? this._ListHeaderComponent : null}
-              noSubscribedPodcasts={queryFrom === _subscribedKey && (!flatListData || flatListData.length === 0)}
+              noSubscribedPodcasts={queryFrom === _subscribedKey && (!flatListData || flatListData.length === 0) && !searchBarText}
               onEndReached={this._onEndReached}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderEpisodeItem}

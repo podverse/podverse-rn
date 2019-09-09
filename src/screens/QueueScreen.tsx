@@ -292,14 +292,16 @@ export class QueueScreen extends React.Component<Props, State> {
       const item = queueItems[key]
       const id = item.clipId || item.episodeId
       const sortedItems = currentOrder.map((index: string) => queueItems[index])
-      await updateQueueItems(sortedItems)
+
+      const newItems = await updateQueueItems(sortedItems)
       const newQueueItemIndex = newItems.findIndex((x: any) => checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId))
+
       if (queueItems.length >= newQueueItemIndex) {
         const nextItem = queueItems[newQueueItemIndex]
         await movePlayerItemToNewPosition(item.clipId || item.episodeId, nextItem.clipId || nextItem.episodeId)
       }
     } catch (error) {
-      //
+      console.log('QueueScreen - _onReleaseRow - ', error)
     }
   }
 
