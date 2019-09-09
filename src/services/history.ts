@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
+import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
@@ -13,6 +14,16 @@ export const addOrUpdateHistoryItem = async (item: NowPlayingItem) => {
 export const clearHistoryItems = async () => {
   const useServerData = await checkIfShouldUseServerData()
   return useServerData ? clearHistoryItemsOnServer() : clearHistoryItemsLocally()
+}
+
+export const getHistoryItem = async (id: string) => {
+  const historyItems = await getHistoryItems()
+  const historyItem = historyItems.find((x: NowPlayingItem) => {
+    const id = x.clipId || x.episodeId
+    return checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId)
+  })
+
+  return historyItem
 }
 
 export const getHistoryItems = async () => {
