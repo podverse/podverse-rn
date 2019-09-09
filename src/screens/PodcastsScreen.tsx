@@ -345,6 +345,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
         if (queryFrom === _subscribedKey) {
           await toggleSubscribeToPodcast(selectedId)
+          await removeDownloadedPodcast(selectedId)
         } else if (queryFrom === _downloadedKey) {
           await removeDownloadedPodcast(selectedId)
         }

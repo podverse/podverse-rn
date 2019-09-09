@@ -85,13 +85,12 @@ module.exports = async () => {
     const { nextTrack, track } = x
 
     if (Platform.OS === 'ios') {
-      const currentId = await PVTrackPlayer.getCurrentTrack()
-      const id = currentId && currentId === track ? track : nextTrack
-      await PVTrackPlayer.seekTo(0)
-
-      if (!track) return
-
-      await syncNowPlayingItemWithTrack(id)
+      setTimeout(async () => {
+        const currentId = await PVTrackPlayer.getCurrentTrack()
+        const id = currentId && currentId === track ? track : nextTrack
+        if (!track) return
+        await syncNowPlayingItemWithTrack(id)
+      }, 2000)
     } else if (Platform.OS === 'android') {
       await syncNowPlayingItemWithTrack(nextTrack)
     }
