@@ -134,7 +134,7 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'create more discoverable clips',
+    text: 'create publicly discoverable clips',
     column1: false,
     column2: true
   },
