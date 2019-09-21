@@ -1,8 +1,9 @@
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
+import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfPlayingFromHistory, getHistoryItemsLocally } from '../services/history'
-import { playerJumpBackward, playerJumpForward, PVTrackPlayer } from '../services/player'
+import { getNowPlayingItem, playerJumpBackward, playerJumpForward, PVTrackPlayer  } from '../services/player'
 import { loadAdjacentItemFromHistory, loadNextFromQueue, loadTrackFromQueue, setPlaybackSpeed,
   togglePlay } from '../state/actions/player'
 import { playerStyles } from '../styles'
@@ -77,10 +78,17 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 loadAdjacentItemFromHistory(shouldStartPlayback)
               } else {
                 const historyItems = await getHistoryItemsLocally()
+                const mostRecentHistoryItem = historyItems[0]
+                const nowPlayingItem = await getNowPlayingItem()
+                const id = nowPlayingItem.clipId || nowPlayingItem.episodeId
                 if (historyItems[0]) {
-                  const skipUpdatePlaybackPosition = true
-                  const shouldStartClip = true
-                  loadTrackFromQueue(historyItems[0], shouldStartPlayback, skipUpdatePlaybackPosition, shouldStartClip)
+                  if (checkIfIdMatchesClipIdOrEpisodeId(id, mostRecentHistoryItem.clipId, mostRecentHistoryItem.episodeId)) {
+                    loadAdjacentItemFromHistory(shouldStartPlayback)
+                  } else {
+                    const skipUpdatePlaybackPosition = true
+                    const shouldStartClip = true
+                    loadTrackFromQueue(historyItems[0], shouldStartPlayback, skipUpdatePlaybackPosition, shouldStartClip)
+                  }
                 }
               }
             }}
