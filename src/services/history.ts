@@ -208,15 +208,14 @@ const setAllHistoryItemsLocally = async (items: NowPlayingItem[]) => {
 export const checkIfPlayingFromHistory = async () => {
   const nowPlayingItem = await getNowPlayingItem()
   const historyItems = await getHistoryItemsLocally()
+  const id = nowPlayingItem.clipId || nowPlayingItem.episodeId
 
-  if (!historyItems.some((x: any) => checkIfIdMatchesClipIdOrEpisodeId(
-    nowPlayingItem.clipId || nowPlayingItem.episodeId, x.clipId, x.episodeId
-  ))) {
+  if (!historyItems.some((x: any) => checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId))) {
     return false
   }
 
   const mostRecentHistoryItem = historyItems[0]
   return mostRecentHistoryItem && !checkIfIdMatchesClipIdOrEpisodeId(
-    nowPlayingItem.clipId || nowPlayingItem.episodeId, mostRecentHistoryItem.clipId, mostRecentHistoryItem.episodeId
+    id, mostRecentHistoryItem.clipId, mostRecentHistoryItem.episodeId
   )
 }
