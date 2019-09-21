@@ -13,22 +13,26 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
 }
 
 export const toggleSubscribeToPodcast = async (id: string) => {
-  const globalState = getGlobal()
-  const subscribedPodcastIds = await toggleSubscribeToPodcastService(id)
-  const subscribedPodcast = await getPodcastService(id)
-  let { subscribedPodcasts } = globalState
-  subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast)
+  try {
+    const globalState = getGlobal()
+    const subscribedPodcastIds = await toggleSubscribeToPodcastService(id)
+    const subscribedPodcast = await getPodcastService(id)
+    let { subscribedPodcasts } = globalState
+    subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast)
 
-  setGlobal({
-    session: {
-      ...globalState.session,
-      userInfo: {
-        ...globalState.session.userInfo,
-        subscribedPodcastIds
-      }
-    },
-    subscribedPodcasts
-  }, async () => {
-    await updateDownloadedPodcasts()
-  })
+    setGlobal({
+      session: {
+        ...globalState.session,
+        userInfo: {
+          ...globalState.session.userInfo,
+          subscribedPodcastIds
+        }
+      },
+      subscribedPodcasts
+    }, async () => {
+      await updateDownloadedPodcasts()
+    })
+  } catch (error) {
+    console.log('toggleSubscribeToPodcast action', error)
+  }
 }

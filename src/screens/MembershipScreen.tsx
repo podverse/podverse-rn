@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
   },
   subTextCentered: {
     fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.semibold,
     textAlign: 'center'
   },
   tableWrapper: {
