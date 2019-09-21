@@ -212,7 +212,7 @@ export const checkIfPlayingFromHistory = async () => {
   if (!historyItems.some((x: any) => checkIfIdMatchesClipIdOrEpisodeId(
     nowPlayingItem.clipId || nowPlayingItem.episodeId, x.clipId, x.episodeId
   ))) {
-    throw new Error('Item not found in history')
+    return false
   }
 
   const mostRecentHistoryItem = historyItems[0]
