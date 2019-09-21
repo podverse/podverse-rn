@@ -40,6 +40,6 @@ const s = StyleSheet.create({
   },
   textWrapper: {
     textAlign: 'center',
-    width: 52
+    width: 82
   }
 })

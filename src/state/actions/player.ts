@@ -1,12 +1,12 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
-import { addOrUpdateHistoryItem, getHistoryItemsLocally, popLastFromHistoryItems } from '../../services/history'
+import { getAdjacentItemFromHistoryLocally, getHistoryItemsLocally, addOrUpdateHistoryItem } from '../../services/history'
 import { addItemsToPlayerQueueNext as addItemsToPlayerQueueNextService, clearNowPlayingItem as clearNowPlayingItemService,
-  getContinuousPlaybackMode, getNowPlayingItem, initializePlayerQueue as initializePlayerQueueService,
+  getContinuousPlaybackMode, initializePlayerQueue as initializePlayerQueueService,
   loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer, setNowPlayingItem as setNowPlayingItemService,
   setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService, updateUserPlaybackPosition} from '../../services/player'
-import { addQueueItemNext, getNextFromQueue } from '../../services/queue'
+import { getNextFromQueue } from '../../services/queue'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
   const globalState = getGlobal()
@@ -142,23 +142,14 @@ export const initPlayerState = async (globalState: any) => {
   })
 }
 
-export const loadLastFromHistory = async (shouldPlay: boolean) => {
-  const playingItem = await getNowPlayingItem()
-  await addOrUpdateHistoryItem(playingItem)
-  const newItemFromHistory = await popLastFromHistoryItems()
+export const loadAdjacentItemFromHistory = async (shouldStartPlayback: boolean, playNext?: boolean) => {
+  const newItemFromHistory = await getAdjacentItemFromHistoryLocally(playNext)
+
   if (newItemFromHistory) {
-    const playbackPosition = await PVTrackPlayer.getPosition()
-    const duration = await PVTrackPlayer.getDuration()
-    if (duration > 0 && playbackPosition >= duration - 10) {
-      playingItem.userPlaybackPosition = 0
-    } else if (playbackPosition > 0) {
-      playingItem.userPlaybackPosition = playbackPosition
-    }
-    await addQueueItemNext(playingItem)
     await updatePlayerState(newItemFromHistory)
     const skipUpdatePlaybackPosition = true
     const shouldStartClip = true
-    await loadTrackFromQueueService(newItemFromHistory, shouldPlay, skipUpdatePlaybackPosition, shouldStartClip)
+    await loadTrackFromQueueService(newItemFromHistory, shouldStartPlayback, skipUpdatePlaybackPosition, shouldStartClip)
   }
 
   const globalState = getGlobal()
@@ -171,10 +162,13 @@ export const loadLastFromHistory = async (shouldPlay: boolean) => {
 }
 
 export const loadNextFromQueue = async (shouldPlay: boolean) => {
-  const item = await getNextFromQueue(true)
+  const item = await getNextFromQueue()
   const skipUpdatePlaybackPosition = false
   const shouldStartClip = true
-  if (item) await loadTrackFromQueue(item, shouldPlay, skipUpdatePlaybackPosition, shouldStartClip)
+  if (item) {
+    await loadTrackFromQueue(item, shouldPlay, skipUpdatePlaybackPosition, shouldStartClip)
+    await addOrUpdateHistoryItem(item)
+  }
 }
 
 export const loadTrackFromQueue = async (

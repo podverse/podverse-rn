@@ -6,7 +6,7 @@ import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from
 import { checkIfIdMatchesClipIdOrEpisodeId, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { addOrUpdateHistoryItem, getHistoryItems, getHistoryItemsLocally, getHistoryItem } from './history'
+import { getHistoryItem, getHistoryItems, getHistoryItemsLocally, updateHistoryItemPlaybackPosition } from './history'
 import { filterItemFromQueueItems, getQueueItems, getQueueItemsLocally, removeQueueItem } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
@@ -145,19 +145,35 @@ const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
 export const initializePlayerQueue = async () => {
   const queueItems = await getQueueItems()
   let filteredItems = [] as any
-  const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
-  let nowPlayingItem = null
-  if (nowPlayingItemString) {
-    nowPlayingItem = JSON.parse(nowPlayingItemString)
-    filteredItems = filterItemFromQueueItems(queueItems, nowPlayingItem)
-    const historyItem = getHistoryItem(nowPlayingItem.clipId || nowPlayingItem.episodeId)
-    if (historyItem) nowPlayingItem.userPlaybackPosition = historyItem.userPlaybackPosition
-    filteredItems.unshift(nowPlayingItem)
+
+  // Use whatever the most recent item in the history is if one exists, else
+  // fallback to the last NowPlayingItem.
+  const historyItems = await getHistoryItems()
+  let item = null
+  let isNowPlayingItem = false
+  if (historyItems[0]) {
+    item = historyItems[0]
+  } else {
+    const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
+    if (nowPlayingItemString) {
+      item = JSON.parse(nowPlayingItemString)
+    }
+    isNowPlayingItem = true
+  }
+
+  if (item) {
+    filteredItems = filterItemFromQueueItems(queueItems, item)
+    const id = item.clipId ? item.clipId : item.episodeId
+    if (isNowPlayingItem) {
+      const historyItem = await getHistoryItem(id)
+      if (historyItem) item.userPlaybackPosition = historyItem.userPlaybackPosition
+    }
+    filteredItems.unshift(item)
   }
 
   await addItemsToPlayerQueueNext(filteredItems)
 
-  return nowPlayingItem
+  return item
 }
 
 const getValidQueueItemInsertBeforeId = (items: NowPlayingItem[], queuedTracks: any, currentTrackId?: string) => {
@@ -184,10 +200,10 @@ export const updateUserPlaybackPosition = async () => {
     const duration = await TrackPlayer.getDuration()
     if (duration > 0 && lastPosition >= duration - 10) {
       item.userPlaybackPosition = 0
-      await addOrUpdateHistoryItem(item)
+      await updateHistoryItemPlaybackPosition(item)
     } else if (lastPosition > 0) {
       item.userPlaybackPosition = lastPosition
-      await addOrUpdateHistoryItem(item)
+      await updateHistoryItemPlaybackPosition(item)
     }
   }
 }
@@ -218,8 +234,6 @@ export const loadTrackFromQueue = async (
     const shouldRemoveFromPVQueue = true
     await addItemsToPlayerQueueNext([item, ...pvQueueItems], shouldPlay, shouldRemoveFromPVQueue)
   }
-  // MAYBE
-  await addOrUpdateHistoryItem(item)
 }
 
 export const addItemsToPlayerQueue = async (items: NowPlayingItem[], insertBeforeId: any = null) => {
@@ -270,6 +284,9 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
   const queuedTracks = await TrackPlayer.getQueue()
   const currentTrackId = await TrackPlayer.getCurrentTrack()
   const insertBeforeId = getValidQueueItemInsertBeforeId(items, queuedTracks, currentTrackId)
+
+  if (Platform.OS === 'ios' && shouldPlay) await TrackPlayer.reset()
+
   await addItemsToPlayerQueue(items, insertBeforeId)
   const newQueuedTracks = await TrackPlayer.getQueue()
 
@@ -307,7 +324,6 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
     if (shouldRemoveFromPVQueue) await removeQueueItem(nextItem, false)
     // NOTE: the PLAYER_CLIP_LOADED event listener uses the NOW_PLAYING_ITEM to get clip info
     // if (Platform.OS === 'ios' && nextItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
-    await addOrUpdateHistoryItem(nextItem)
   }
 }
 
