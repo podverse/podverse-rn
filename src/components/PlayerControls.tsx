@@ -1,8 +1,10 @@
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources'
+import { checkIfPlayingFromHistory, getHistoryItemsLocally } from '../services/history'
 import { playerJumpBackward, playerJumpForward, PVTrackPlayer } from '../services/player'
-import { loadLastFromHistory, loadNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
+import { loadAdjacentItemFromHistory, loadNextFromQueue, loadTrackFromQueue, setPlaybackSpeed,
+  togglePlay } from '../state/actions/player'
 import { playerStyles } from '../styles'
 import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 
@@ -51,12 +53,9 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
   render() {
     const { progressValue } = this.state
-    const { globalTheme, player, screenPlayer, session } = this.global
+    const { globalTheme, player, screenPlayer } = this.global
     const { nowPlayingItem, playbackRate, playbackState } = player
     const { isLoading } = screenPlayer
-    const { historyItems = [], queueItems = [] } = session.userInfo
-    const hasHistoryItem = historyItems.length > 0
-    const hasQueueItem = queueItems.length > 0
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
@@ -70,9 +69,22 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         </View>
         <View style={styles.middleRow}>
           <TouchableOpacity
-            disabled={!hasHistoryItem}
-            onPress={() => loadLastFromHistory()}
-            style={hasHistoryItem ? playerStyles.icon : playerStyles.iconDisabled}>
+            onPress={async () => {
+              const playbackState = await PVTrackPlayer.getState()
+              const shouldStartPlayback = playbackState === PVTrackPlayer.STATE_PLAYING
+              const isPlayingFromHistory = await checkIfPlayingFromHistory()
+              if (isPlayingFromHistory) {
+                loadAdjacentItemFromHistory(shouldStartPlayback)
+              } else {
+                const historyItems = await getHistoryItemsLocally()
+                if (historyItems[0]) {
+                  const skipUpdatePlaybackPosition = true
+                  const shouldStartClip = true
+                  loadTrackFromQueue(historyItems[0], shouldStartPlayback, skipUpdatePlaybackPosition, shouldStartClip)
+                }
+              }
+            }}
+            style={playerStyles.icon}>
             <Icon
               name='step-backward'
               size={32} />
@@ -106,13 +118,18 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               size={32} />
           </TouchableOpacity>
           <TouchableOpacity
-            disabled={!hasQueueItem}
             onPress={async () => {
               const playbackState = await PVTrackPlayer.getState()
-              const shouldPlay = playbackState === PVTrackPlayer.STATE_PLAYING
-              loadNextFromQueue(shouldPlay)
+              const shouldStartPlayback = playbackState === PVTrackPlayer.STATE_PLAYING
+              const isPlayingFromHistory = await checkIfPlayingFromHistory()
+              if (isPlayingFromHistory) {
+                const playNext = true
+                loadAdjacentItemFromHistory(shouldStartPlayback, playNext)
+              } else {
+                loadNextFromQueue(shouldStartPlayback)
+              }
             }}
-            style={hasQueueItem ? playerStyles.icon : playerStyles.iconDisabled}>
+            style={playerStyles.icon}>
             <Icon
               name='step-forward'
               size={32} />

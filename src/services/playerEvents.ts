@@ -1,7 +1,8 @@
 import debounce from 'lodash/debounce'
 import { Platform } from 'react-native'
+import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { addOrUpdateHistoryItem } from './history'
+import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'
 import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, handleResumeAfterClipHasEnded,
   playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded, setNowPlayingItem,
   setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition } from './player'
@@ -9,13 +10,14 @@ import PlayerEventEmitter from './playerEventEmitter'
 
 const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1250)
 
-const handleSyncNowPlayingItem = async (trackId: string) => {
-  const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
-  if (!currentNowPlayingItem) return
+const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem) => {
   await setNowPlayingItem(currentNowPlayingItem)
+  const isPlayingFromHistory = await checkIfPlayingFromHistory()
+  if (!currentNowPlayingItem) currentNowPlayingItem = await getNowPlayingItem()
+  if (!currentNowPlayingItem) return
+  if (!isPlayingFromHistory && currentNowPlayingItem) addOrUpdateHistoryItem(currentNowPlayingItem)
   if (currentNowPlayingItem && currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
-
   if (Platform.OS === 'android' && !currentNowPlayingItem.clipId) {
     debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
   }
@@ -25,13 +27,14 @@ const syncNowPlayingItemWithTrack = async (trackId: string) => {
   const previousNowPlayingItem = await getNowPlayingItem()
   const previousTrackId = previousNowPlayingItem && (previousNowPlayingItem.clipId || previousNowPlayingItem.episodeId)
   const newTrackShouldPlay = trackId && previousTrackId !== trackId
+  const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
 
   if (newTrackShouldPlay) {
-    await handleSyncNowPlayingItem(trackId)
+    await handleSyncNowPlayingItem(trackId, currentNowPlayingItem)
   } else {
     setTimeout(async () => {
       const trackId = await PVTrackPlayer.getCurrentTrack()
-      await handleSyncNowPlayingItem(trackId)
+      await handleSyncNowPlayingItem(trackId, currentNowPlayingItem)
     }, 1500)
   }
 }
@@ -44,7 +47,11 @@ module.exports = async () => {
     console.log('playback-queue-ended', x)
     const { track: trackId } = x
 
-    await syncNowPlayingItemWithTrack(trackId)
+    if (Platform.OS === 'ios') {
+      await syncNowPlayingItemWithTrack(trackId)
+    } else if (Platform.OS === 'android') {
+      await syncNowPlayingItemWithTrack(trackId)
+    }
   })
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
@@ -70,9 +77,6 @@ module.exports = async () => {
           updateUserPlaybackPosition()
         } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition && !nowPlayingItem.clipId) {
           await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
-          await addOrUpdateHistoryItem(nowPlayingItem)
-        } else if (x.state === 'ready') {
-          await addOrUpdateHistoryItem(nowPlayingItem)
         }
       } else if (Platform.OS === 'android') {
         // TODO add android playback-state logic
@@ -85,31 +89,12 @@ module.exports = async () => {
     const { nextTrack, track } = x
 
     if (Platform.OS === 'ios') {
-      setTimeout(async () => {
-        const currentId = await PVTrackPlayer.getCurrentTrack()
-        const id = currentId && currentId === track ? track : nextTrack
-        if (!track) return
-        await syncNowPlayingItemWithTrack(id)
-      }, 2000)
+      const id = track ? track : nextTrack
+      await syncNowPlayingItemWithTrack(id)
     } else if (Platform.OS === 'android') {
-      await syncNowPlayingItemWithTrack(nextTrack)
+      const id = track ? track : nextTrack
+      await syncNowPlayingItemWithTrack(id)
     }
-
-    // const previousTrackDuration = await PVTrackPlayer.getDuration()
-    //
-    // If previous track was close to the end, reset playback position to 0 in history
-    // console.log('yoooo', previousTrackDuration, track, position, previousNowPlayingItem)
-    // if (previousTrackDuration && track && position + 20 > previousTrackDuration) {
-    //   console.log('inside!')
-    //   previousNowPlayingItem.userPlaybackPosition = 0
-    //   await addOrUpdateHistoryItem(previousNowPlayingItem)
-
-    //   const shouldDeleteEpisode = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
-    //   if (shouldDeleteEpisode === 'TRUE') {
-    //     const episode = convertNowPlayingItemToEpisode(previousNowPlayingItem)
-    //     await deleteDownloadedEpisode(episode)
-    //   }
-    // }
   })
 
   PVTrackPlayer.addEventListener('remote-jump-backward', () => playerJumpBackward(PV.Player.jumpSeconds))
@@ -157,7 +142,7 @@ const handlePlayerClipLoaded = async () => {
           PVTrackPlayer.pause()
           await setClipHasEnded(true)
         }
-      }, 500)
+      }, 250)
     }
     const resolveImmediately = false
     await debouncedSetPlaybackPosition(
@@ -165,6 +150,6 @@ const handlePlayerClipLoaded = async () => {
   }
 }
 
-const debouncedHandlePlayerClipLoaded = debounce(handlePlayerClipLoaded, 1250)
+const debouncedHandlePlayerClipLoaded = debounce(handlePlayerClipLoaded, 1000)
 
 PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, debouncedHandlePlayerClipLoaded)

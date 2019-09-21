@@ -10,7 +10,7 @@ import { generateAuthorsText, generateCategoriesText, generateCategoryItems } fr
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getEpisode } from '../services/episode'
-import { getNowPlayingItemFromQueueOrHistoryByTrackId, PVTrackPlayer } from '../services/player'
+import { getNowPlayingItemFromQueueOrHistoryByTrackId, PVTrackPlayer, updateUserPlaybackPosition } from '../services/player'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
@@ -130,6 +130,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     } else {
       isInitialLoad = false
     }
+
+    updateUserPlaybackPosition()
   }
 
   _handleOpenURLEvent = (event: any) => {
@@ -324,11 +326,17 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack
-      isLoading={this.state.isUnsubscribing}
-      onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
-  )
+  _renderHiddenItem = ({ item }, rowMap) => {
+    const { queryFrom } = this.state
+    const buttonText = queryFrom === _downloadedKey ? 'Delete' : 'Unsubscribe'
+
+    return (
+      <SwipeRowBack
+        isLoading={this.state.isUnsubscribing}
+        onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
+        text={buttonText} />
+    )
+  }
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
     const { queryFrom } = this.state

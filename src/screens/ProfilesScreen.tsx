@@ -87,7 +87,8 @@ export class ProfilesScreen extends React.Component<Props, State> {
   _renderHiddenItem = ({ item }, rowMap) => (
     <SwipeRowBack
       isLoading={this.state.isUnsubscribing}
-      onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
+      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
+      text='Remove' />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {

@@ -120,7 +120,7 @@ export const PVFlatList = (props: Props) => {
             {...(onRefresh ? { refreshControl: <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} /> } : {})}
             renderHiddenItem={renderHiddenItem || _renderHiddenItem}
             renderItem={renderItem}
-            rightOpenValue={-72}
+            rightOpenValue={-100}
             style={[globalTheme.flatList]} />
       }
     </View>
