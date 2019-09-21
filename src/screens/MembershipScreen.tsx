@@ -154,7 +154,12 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'sync your queue across all devices',
+    text: 'sync subscriptions on all devices',
+    column1: false,
+    column2: true
+  },
+  {
+    text: 'sync your queue on all devices',
     column1: false,
     column2: true
   },

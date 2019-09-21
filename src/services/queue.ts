@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getAuthenticatedUserInfo } from './auth'
-import { addOrUpdateHistoryItem } from './history'
 import { createTrack, PVTrackPlayer } from './player'
 import { updateUserQueueItems } from './user'
 
@@ -73,14 +72,13 @@ export const popNextFromQueue = async () => {
   return item
 }
 
-export const getNextFromQueue = async (moveToHistory?: boolean) => {
+export const getNextFromQueue = async () => {
   const useServerData = await checkIfShouldUseServerData()
   const item = await getNextFromQueueLocally()
   if (useServerData) getNextFromQueueFromServer()
 
-  if (item && moveToHistory) {
+  if (item) {
     removeQueueItem(item, false)
-    addOrUpdateHistoryItem(item)
   }
 
   return item

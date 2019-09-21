@@ -1,23 +1,7 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { NowPlayingItem } from '../../lib/NowPlayingItem'
-import { addOrUpdateHistoryItem as addOrUpdateHistoryItemService, clearHistoryItems as clearHistoryItemsService,
-  filterItemFromHistoryItems, getHistoryItems as getHistoryItemsService, removeHistoryItem as removeHistoryItemService
-  } from '../../services/history'
-
-export const addOrUpdateHistoryItem = async (item: NowPlayingItem) => {
-  const globalState = getGlobal()
-  const results = await addOrUpdateHistoryItemService(item)
-  setGlobal({
-    session: {
-      ...globalState.session,
-      userInfo: {
-        ...globalState.session.userInfo,
-        historyItems: results
-      }
-    }
-  })
-  return results
-}
+import { clearHistoryItems as clearHistoryItemsService, filterItemFromHistoryItems,
+  getHistoryItems as getHistoryItemsService, removeHistoryItem as removeHistoryItemService } from '../../services/history'
 
 export const clearHistoryItems = async () => {
   const globalState = getGlobal()

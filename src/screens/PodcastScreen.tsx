@@ -286,7 +286,9 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} />
+    <SwipeRowBack
+      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
+      text='Delete' />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {

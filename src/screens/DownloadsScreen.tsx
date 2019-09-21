@@ -46,7 +46,9 @@ export class DownloadsScreen extends React.Component<Props, State> {
   }
 
   _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.episodeId, rowMap)} />
+    <SwipeRowBack
+      onPress={() => this._handleHiddenItemPress(item.episodeId, rowMap)}
+      text='Remove' />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
