@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
   },
   columnText: {
     fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold,
     marginLeft: 8
   },
   columnTextWrapper: {
@@ -78,13 +77,13 @@ const styles = StyleSheet.create({
   tableHeaderTextLeft: {
     flex: 1,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
+    fontWeight: PV.Fonts.weights.semibold,
     lineHeight: 40,
     marginHorizontal: 8
   },
   tableHeaderTextRight: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
+    fontWeight: PV.Fonts.weights.semibold,
     lineHeight: 40,
     textAlign: 'center',
     width: 90

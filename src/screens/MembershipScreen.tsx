@@ -104,7 +104,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                 column1Title='Free'
                 column2Title='Premium'
                 data={comparisonData}
-                mainTitle='Podverse Features' />
+                mainTitle='Features' />
             </View>
           }
       </View>
@@ -177,7 +177,8 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold
   },
   subText: {
-    fontSize: PV.Fonts.sizes.lg
+    fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.semibold
   },
   subTextCentered: {
     fontSize: PV.Fonts.sizes.lg,
