@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.bold,
+    fontWeight: PV.Fonts.weights.semibold,
     marginHorizontal: 8
   },
   wrapper: {

@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 0,
     fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.bold
+    fontWeight: PV.Fonts.weights.semibold
   },
   wrapper: {
     flexDirection: 'row',

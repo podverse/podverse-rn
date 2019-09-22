@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   podcastTitle: {
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.bold
+    fontWeight: PV.Fonts.weights.semibold
   },
   textWrapper: {
     flex: 1,

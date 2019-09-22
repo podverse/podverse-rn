@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   clipTitle: {
     flex: 1,
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.bold
+    fontWeight: PV.Fonts.weights.semibold
   },
   episodePubDate: {
     flex: 1,

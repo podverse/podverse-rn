@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.bold,
+    fontWeight: PV.Fonts.weights.semibold,
     marginTop: 2
   },
   wrapper: {
