@@ -155,6 +155,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: PV.Colors.brandColor,
-    paddingTop: 100
+    paddingTop: 80
   }
 })

@@ -36,11 +36,18 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
   static navigationOptions = ({ navigation }) => {
     const episodeId = navigation.getParam('episodeId')
+    const episodeTitle = navigation.getParam('episodeTitle')
+    const podcastTitle = navigation.getParam('podcastTitle')
+
     return {
       title: 'Episode',
       headerRight: (
         <RNView style={core.row}>
-          <NavShareIcon url={PV.URLs.episode + episodeId} />
+          <NavShareIcon
+            endingText=' – shared using Podverse'
+            episodeTitle={episodeTitle}
+            podcastTitle={podcastTitle}
+            url={PV.URLs.episode + episodeId} />
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
@@ -55,7 +62,11 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const episodeId = (episode && episode.id) || this.props.navigation.getParam('episodeId')
 
     if (episode && episode.id) {
-      this.props.navigation.setParams({ episodeId: episode.id })
+      this.props.navigation.setParams({
+        episodeId: episode.id,
+        episodeTitle: episode.title,
+        podcastTitle: episode.podcast.title
+      })
     }
 
     this.state = {
