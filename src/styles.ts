@@ -338,21 +338,21 @@ export const button = StyleSheet.create({
     height: 76,
     lineHeight: 76,
     textAlign: 'center',
-    width: 40
+    width: 56
   },
   iconOnlyMedium: {
     flex: 0,
     height: 60,
     lineHeight: 60,
     textAlign: 'center',
-    width: 48
+    width: 56
   },
   iconOnlySmall: {
     flex: 0,
     height: 38,
     lineHeight: 38,
     textAlign: 'center',
-    width: 48
+    width: 56
   },
   iconOnlyAlignToTop: {
     flex: 0,

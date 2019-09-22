@@ -90,7 +90,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <Icon
         name='ellipsis-h'
         onPress={handleMorePress}
-        size={26}
+        size={32}
         style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
     )
 
