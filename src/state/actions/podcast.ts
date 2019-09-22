@@ -17,7 +17,7 @@ export const toggleSubscribeToPodcast = async (id: string) => {
     const globalState = getGlobal()
     const subscribedPodcastIds = await toggleSubscribeToPodcastService(id)
     const subscribedPodcast = await getPodcastService(id)
-    let { subscribedPodcasts } = globalState
+    let { subscribedPodcasts = [] } = globalState
     subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast)
 
     setGlobal({

@@ -42,7 +42,6 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    const { isLoggedIn } = this.global.session
 
     this.state = {
       endOfResultsReached: false,
@@ -50,7 +49,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       flatListDataTotalCount: null,
       isLoading: true,
       isLoadingMore: false,
-      queryFrom: isLoggedIn ? _subscribedKey : _allPodcastsKey,
+      queryFrom: _subscribedKey,
       queryPage: 1,
       querySort: _topPastWeek,
       searchBarText: '',

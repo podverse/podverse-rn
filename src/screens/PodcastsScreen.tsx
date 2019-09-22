@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { AppState, Linking, Platform, StyleSheet } from 'react-native'
+import { initialMode as initialDarkModeSetting } from 'react-native-dark-mode'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
@@ -93,6 +94,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
         await AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5')
+
+        if (initialDarkModeSetting === 'dark') {
+          await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'TRUE')
+        }
 
         this.setState({ showDataSettingsConfirmDialog: true })
 
