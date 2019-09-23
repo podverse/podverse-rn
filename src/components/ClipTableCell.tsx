@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.sm,
     justifyContent: 'flex-end',
     lineHeight: PV.Fonts.sizes.sm + 2,
-    marginTop: 2
+    marginTop: 3
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.md,

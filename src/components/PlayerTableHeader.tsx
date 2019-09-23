@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   episodePubDate: {
     fontSize: PV.Fonts.sizes.sm,
     lineHeight: PV.Fonts.sizes.sm + 2,
-    marginTop: 2,
+    marginTop: 3
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.md,

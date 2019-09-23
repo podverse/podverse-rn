@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
     lineHeight: PV.Fonts.sizes.sm + 2,
-    marginTop: 2
+    marginTop: 3
   },
   textWrapper: {
     flex: 1
