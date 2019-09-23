@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
   pubDate: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
+    lineHeight: PV.Fonts.sizes.sm,
     marginTop: 2
   },
   textWrapper: {
@@ -147,7 +148,8 @@ const styles = StyleSheet.create({
   title: {
     flex: 0,
     fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold
+    fontWeight: PV.Fonts.weights.semibold,
+    lineHeight: PV.Fonts.sizes.lg + 2
   },
   wrapper: {
     flexDirection: 'row',

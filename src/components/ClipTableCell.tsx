@@ -147,7 +147,8 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-end',
-    marginTop: 2
+    lineHeight: PV.Fonts.sizes.md + 2,
+    marginTop: 4
   },
   downloadedIcon: {
     flex: 0,
@@ -158,10 +159,12 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
     justifyContent: 'flex-end',
+    lineHeight: PV.Fonts.sizes.sm + 2,
     marginTop: 2
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.md,
+    lineHeight: PV.Fonts.sizes.md + 2,
     marginTop: 2
   },
   image: {
@@ -178,7 +181,9 @@ const styles = StyleSheet.create({
   podcastTitle: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    lineHeight: PV.Fonts.sizes.md + 2,
+    marginTop: 1
   },
   textWrapper: {
     flex: 1
@@ -190,7 +195,8 @@ const styles = StyleSheet.create({
   title: {
     flex: 0,
     fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold
+    fontWeight: PV.Fonts.weights.semibold,
+    lineHeight: PV.Fonts.sizes.lg + 2
   },
   wrapper: {
     paddingBottom: 12,
@@ -205,6 +211,6 @@ const styles = StyleSheet.create({
   },
   wrapperTop: {
     flexDirection: 'row',
-    marginBottom: 8
+    marginBottom: 10
   }
 })
