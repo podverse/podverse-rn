@@ -63,7 +63,21 @@ module.exports = async () => {
           await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
         }
       } else if (Platform.OS === 'android') {
-        // TODO add android playback-state logic
+        /*
+          state key for android
+          NOTE: ready and pause use the same number, so there is no ready state for Android :[
+          none      0
+          stopped   1
+          paused    2
+          playing   3
+          ready     2
+          buffering 6
+          ???       8
+        */
+        if ((x.state === 2 && currentPosition > 0) || x.state === 3) {
+          updateUserPlaybackPosition()
+        }
+        // Android's setPlaybackPositionWhenDurationIsAvailable happens in handleSyncNowPlayingItem
       }
     }
   })
