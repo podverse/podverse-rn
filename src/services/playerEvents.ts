@@ -23,24 +23,10 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   }
 }
 
-const syncNowPlayingItemWithTrack = async (trackId: string) => {
-  if (!trackId) {
-    console.log('syncNowPlayingItemWithTrack: no trackId provided')
-    return
-  }
-  const previousNowPlayingItem = await getNowPlayingItem()
-  const previousTrackId = previousNowPlayingItem && (previousNowPlayingItem.clipId || previousNowPlayingItem.episodeId)
-  const newTrackShouldPlay = trackId && previousTrackId !== trackId
-  const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
-  if (newTrackShouldPlay) {
-    await handleSyncNowPlayingItem(trackId, currentNowPlayingItem)
-  } else {
-    setTimeout(async () => {
-      const trackId = await PVTrackPlayer.getCurrentTrack()
-      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
-      await handleSyncNowPlayingItem(trackId, currentNowPlayingItem)
-    }, 1500)
-  }
+const syncNowPlayingItemWithTrack = async () => {
+  const currentTrackId = await PVTrackPlayer.getCurrentTrack()
+  const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentTrackId)
+  if (currentNowPlayingItem) await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
 }
 
 module.exports = async () => {
@@ -49,9 +35,7 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-queue-ended', async (x) => {
     console.log('playback-queue-ended', x)
-    const { track: trackId } = x
-    if (!trackId) return
-    await syncNowPlayingItemWithTrack(trackId)
+    await syncNowPlayingItemWithTrack()
   })
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
@@ -86,10 +70,7 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
     console.log('playback-track-changed', x)
-    const { nextTrack, track } = x
-    const id = track ? track : nextTrack
-    if (!id) return
-    await syncNowPlayingItemWithTrack(id)
+    await syncNowPlayingItemWithTrack()
   })
 
   PVTrackPlayer.addEventListener('remote-jump-backward', () => playerJumpBackward(PV.Player.jumpSeconds))
