@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, View, TouchableWithoutFeedback } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Icon } from './'
@@ -15,33 +15,33 @@ export const SubscribeButton = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
-    <View style={styles.buttonView}>
-      {
-        isSubscribing &&
-          <View style={styles.activityIndicator}>
-            <ActivityIndicator
-              color={globalTheme.activityIndicator.color}
-              size='small' />
-          </View>
-      }
-      {
-        !isSubscribing &&
-          <View>
-            {
-              isSubscribed ?
-                <Icon
-                  name='star'
-                  onPress={handleToggleSubscribe}
-                  size={PV.Icons.NAV}
-                  solid={true} /> :
-                <Icon
-                  name='star'
-                  onPress={handleToggleSubscribe}
-                  size={PV.Icons.NAV} />
-            }
-          </View>
-      }
-    </View>
+    <TouchableWithoutFeedback onPress={handleToggleSubscribe}>
+      <View style={styles.buttonView}>
+        {
+          isSubscribing &&
+            <View style={styles.activityIndicator}>
+              <ActivityIndicator
+                color={globalTheme.activityIndicator.color}
+                size='small' />
+            </View>
+        }
+        {
+          !isSubscribing &&
+            <View>
+              {
+                isSubscribed ?
+                  <Icon
+                    name='star'
+                    size={PV.Icons.NAV}
+                    solid={true} /> :
+                  <Icon
+                    name='star'
+                    size={PV.Icons.NAV} />
+              }
+            </View>
+        }
+      </View>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -57,7 +57,9 @@ const styles = StyleSheet.create({
   buttonView: {
     alignItems: 'center',
     flex: 0,
+    height: 36,
     justifyContent: 'center',
-    marginLeft: 8
+    marginLeft: 8,
+    width: 36
   }
 })
