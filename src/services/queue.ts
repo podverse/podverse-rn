@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
+import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getAuthenticatedUserInfo } from './auth'
 import { createTrack, PVTrackPlayer } from './player'
@@ -30,6 +31,11 @@ export const addQueueItemLast = async (item: NowPlayingItem) => {
 export const addQueueItemNext = async (item: NowPlayingItem) => {
   let results = []
 
+  const currentTrackId = await PVTrackPlayer.getCurrentTrack()
+
+  // Don't add track to queue if it's currently playing
+  if (checkIfIdMatchesClipIdOrEpisodeId(currentTrackId, item.clipId, item.episodeId)) return
+
   const useServerData = await checkIfShouldUseServerData()
 
   if (useServerData) {
@@ -44,11 +50,10 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
     console.log('addQueueItemNext service', error)
     //
   }
+
   const playerQueueItems = await PVTrackPlayer.getQueue()
-  const currentTrackId = await PVTrackPlayer.getCurrentTrack()
   const currentTrackIndex = playerQueueItems.findIndex((x: any) => currentTrackId === x.id)
   let insertBeforeId = null
-
   if (playerQueueItems.length >= currentTrackIndex + 1 && playerQueueItems[currentTrackIndex + 1]) {
     insertBeforeId = playerQueueItems[currentTrackIndex + 1].id
   }

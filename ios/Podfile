@@ -13,6 +13,10 @@ target 'podverse' do
   
 
   platform :ios, '9.0'
+  pod 'ReactNativeDarkMode', :path => '../node_modules/react-native-dark-mode'
+
+  pod 'RNShare', :path => '../node_modules/react-native-share'
+
   target 'podverseTests' do
     inherit! :search_paths
     # Pods for testing

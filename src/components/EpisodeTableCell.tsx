@@ -90,7 +90,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <Icon
         name='ellipsis-h'
         onPress={handleMorePress}
-        size={26}
+        size={32}
         style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
     )
 
@@ -131,7 +131,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   description: {
-    fontSize: PV.Fonts.sizes.md
+    fontSize: PV.Fonts.sizes.md,
+    lineHeight: PV.Fonts.sizes.md + 2
   },
   downloadedIcon: {
     flex: 0,
@@ -152,12 +153,15 @@ const styles = StyleSheet.create({
   podcastTitle: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    lineHeight: PV.Fonts.sizes.md + 2,
+    marginTop: 1
   },
   pubDate: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
-    marginTop: 2
+    lineHeight: PV.Fonts.sizes.sm + 2,
+    marginTop: 3
   },
   textWrapper: {
     flex: 1
@@ -168,7 +172,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.bold,
+    fontWeight: PV.Fonts.weights.semibold,
+    lineHeight: PV.Fonts.sizes.md + 2,
     marginTop: 2
   },
   wrapper: {
@@ -178,6 +183,6 @@ const styles = StyleSheet.create({
   },
   wrapperTop: {
     flexDirection: 'row',
-    marginBottom: 8
+    marginBottom: 10
   }
 })

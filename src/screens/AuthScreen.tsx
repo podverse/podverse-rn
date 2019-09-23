@@ -142,16 +142,19 @@ const styles = StyleSheet.create({
     backgroundColor: PV.Colors.brandColor
   },
   switchOptionText: {
-    fontSize: PV.Fonts.sizes.lg,
     color: PV.Colors.white,
-    marginTop: 30,
-    textDecorationLine: 'underline'
+    fontSize: PV.Fonts.sizes.lg,
+    marginTop: 16,
+    padding: 16,
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+    width: '65%'
   },
   view: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: PV.Colors.brandColor,
-    paddingTop: 100
+    paddingTop: 80
   }
 })

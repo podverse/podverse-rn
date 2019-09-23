@@ -8,35 +8,25 @@ import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistory
   setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 
-const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1250)
+const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1000)
 
 const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem) => {
+  if (!currentNowPlayingItem) return
   await setNowPlayingItem(currentNowPlayingItem)
   const isPlayingFromHistory = await checkIfPlayingFromHistory()
-  if (!currentNowPlayingItem) currentNowPlayingItem = await getNowPlayingItem()
   if (!currentNowPlayingItem) return
   if (!isPlayingFromHistory && currentNowPlayingItem) addOrUpdateHistoryItem(currentNowPlayingItem)
   if (currentNowPlayingItem && currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
-  if (Platform.OS === 'android' && !currentNowPlayingItem.clipId) {
+  if (Platform.OS === 'android' && !currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
     debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
   }
 }
 
-const syncNowPlayingItemWithTrack = async (trackId: string) => {
-  const previousNowPlayingItem = await getNowPlayingItem()
-  const previousTrackId = previousNowPlayingItem && (previousNowPlayingItem.clipId || previousNowPlayingItem.episodeId)
-  const newTrackShouldPlay = trackId && previousTrackId !== trackId
-  const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
-
-  if (newTrackShouldPlay) {
-    await handleSyncNowPlayingItem(trackId, currentNowPlayingItem)
-  } else {
-    setTimeout(async () => {
-      const trackId = await PVTrackPlayer.getCurrentTrack()
-      await handleSyncNowPlayingItem(trackId, currentNowPlayingItem)
-    }, 1500)
-  }
+const syncNowPlayingItemWithTrack = async () => {
+  const currentTrackId = await PVTrackPlayer.getCurrentTrack()
+  const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentTrackId)
+  if (currentNowPlayingItem) await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
 }
 
 module.exports = async () => {
@@ -45,13 +35,7 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-queue-ended', async (x) => {
     console.log('playback-queue-ended', x)
-    const { track: trackId } = x
-
-    if (Platform.OS === 'ios') {
-      await syncNowPlayingItemWithTrack(trackId)
-    } else if (Platform.OS === 'android') {
-      await syncNowPlayingItemWithTrack(trackId)
-    }
+    await syncNowPlayingItemWithTrack()
   })
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
@@ -79,22 +63,28 @@ module.exports = async () => {
           await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
         }
       } else if (Platform.OS === 'android') {
-        // TODO add android playback-state logic
+        /*
+          state key for android
+          NOTE: ready and pause use the same number, so there is no ready state for Android :[
+          none      0
+          stopped   1
+          paused    2
+          playing   3
+          ready     2
+          buffering 6
+          ???       8
+        */
+        if ((x.state === 2 && currentPosition > 0) || x.state === 3) {
+          updateUserPlaybackPosition()
+        }
+        // Android's setPlaybackPositionWhenDurationIsAvailable happens in handleSyncNowPlayingItem
       }
     }
   })
 
   PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
     console.log('playback-track-changed', x)
-    const { nextTrack, track } = x
-
-    if (Platform.OS === 'ios') {
-      const id = track ? track : nextTrack
-      await syncNowPlayingItemWithTrack(id)
-    } else if (Platform.OS === 'android') {
-      const id = track ? track : nextTrack
-      await syncNowPlayingItemWithTrack(id)
-    }
+    await syncNowPlayingItemWithTrack()
   })
 
   PVTrackPlayer.addEventListener('remote-jump-backward', () => playerJumpBackward(PV.Player.jumpSeconds))

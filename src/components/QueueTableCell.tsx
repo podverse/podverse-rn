@@ -96,20 +96,25 @@ const styles = StyleSheet.create({
   clipTime: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
+    lineHeight: PV.Fonts.sizes.md + 2,
     marginLeft: 4
   },
   clipTitle: {
     flex: 1,
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.bold
+    fontWeight: PV.Fonts.weights.semibold,
+    lineHeight: PV.Fonts.sizes.md + 2
   },
   episodePubDate: {
     flex: 1,
-    fontSize: PV.Fonts.sizes.sm
+    fontSize: PV.Fonts.sizes.sm,
+    lineHeight: PV.Fonts.sizes.sm + 2,
+    marginTop: 1
   },
   episodeTitle: {
     flex: 1,
-    fontSize: PV.Fonts.sizes.md
+    fontSize: PV.Fonts.sizes.md,
+    lineHeight: PV.Fonts.sizes.md + 2
   },
   image: {
     flex: 0,
@@ -119,7 +124,9 @@ const styles = StyleSheet.create({
   },
   podcastTitle: {
     flex: 1,
-    fontSize: PV.Fonts.sizes.md
+    fontSize: PV.Fonts.sizes.md,
+    lineHeight: PV.Fonts.sizes.md + 2,
+    marginTop: 1
   },
   textWrapper: {
     flex: 1,

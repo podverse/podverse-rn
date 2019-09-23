@@ -6,7 +6,8 @@ import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from
 import { checkIfIdMatchesClipIdOrEpisodeId, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { getHistoryItem, getHistoryItems, getHistoryItemsLocally, updateHistoryItemPlaybackPosition } from './history'
+import { addOrUpdateHistoryItemLocally, getHistoryItem, getHistoryItems, getHistoryItemsLocally,
+  updateHistoryItemPlaybackPosition } from './history'
 import { filterItemFromQueueItems, getQueueItems, getQueueItemsLocally, removeQueueItem } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
@@ -218,12 +219,12 @@ export const loadTrackFromQueue = async (
     pvQueueItems = pvQueueItems.filter((x: any) => (checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId)))
   }
 
-  if (!skipUpdatePlaybackPosition) await updateUserPlaybackPosition()
+  if (!skipUpdatePlaybackPosition) updateUserPlaybackPosition()
 
   try {
     if (id) {
       // await TrackPlayer.stop() // bug on iOS makes .stop() the same as .reset()
-      await TrackPlayer.reset()
+      if (Platform.OS === 'ios') await TrackPlayer.reset()
       await TrackPlayer.skip(id)
       if (shouldPlay) setTimeout(() => TrackPlayer.play(), 1500)
     }
@@ -253,8 +254,12 @@ export const addItemsToPlayerQueue = async (items: NowPlayingItem[], insertBefor
         tracks.push(track)
       }
     }
-
-    await TrackPlayer.add(tracks, insertBeforeId)
+    const queueItems = await PVTrackPlayer.getQueue()
+    if (queueItems.some((x: any) => x.id === insertBeforeId)) {
+      await TrackPlayer.add(tracks, insertBeforeId)
+    } else {
+      await TrackPlayer.add(tracks)
+    }
   } catch (error) {
     console.log('addItemsToPlayerQueue service', error)
   }
@@ -279,13 +284,15 @@ const createNowPlayingItemFromPlayerTrack = (track: any) => {
   }
 }
 
+// This is named poorly, but it is basically called whenever you want to play something immediately,
+// instead of adding it to the queue to be played later.
 export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldPlay?: boolean, shouldRemoveFromPVQueue?: boolean) => {
   if (items.length < 1) return
   const queuedTracks = await TrackPlayer.getQueue()
   const currentTrackId = await TrackPlayer.getCurrentTrack()
   const insertBeforeId = getValidQueueItemInsertBeforeId(items, queuedTracks, currentTrackId)
 
-  if (Platform.OS === 'ios' && shouldPlay) await TrackPlayer.reset()
+  await TrackPlayer.reset()
 
   await addItemsToPlayerQueue(items, insertBeforeId)
   const newQueuedTracks = await TrackPlayer.getQueue()
@@ -295,14 +302,10 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
     if (nextItemToPlayId) {
       try {
         // await TrackPlayer.stop() // bug on iOS makes .stop() the same as .reset()
-        await TrackPlayer.reset()
+        if (Platform.OS === 'ios') await TrackPlayer.reset()
         await TrackPlayer.skip(nextItemToPlayId)
       } catch (error) {
         console.log('addItemsToPlayerQueueNext', error)
-        // NOTE: iOS seems to have a delay after .stop() is called where the whole player queue
-        // gets reset/cleared :(
-        // To work around this, when the queue is cleared, all items are added back to the queue.
-        // NOTE: force Android to .reset() to duplicate the behavior and handling on iOS.
         const newQueuedTracksAsNowPlayingItems = createNowPlayingItemsFromPlayerTracks(newQueuedTracks)
         await addItemsToPlayerQueue(newQueuedTracksAsNowPlayingItems)
         await TrackPlayer.skip(nextItemToPlayId)
@@ -322,8 +325,6 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
   if (nextItem) {
     await setNowPlayingItem(nextItem)
     if (shouldRemoveFromPVQueue) await removeQueueItem(nextItem, false)
-    // NOTE: the PLAYER_CLIP_LOADED event listener uses the NOW_PLAYING_ITEM to get clip info
-    // if (Platform.OS === 'ios' && nextItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   }
 }
 
