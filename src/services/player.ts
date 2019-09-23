@@ -6,7 +6,8 @@ import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from
 import { checkIfIdMatchesClipIdOrEpisodeId, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { getHistoryItem, getHistoryItems, getHistoryItemsLocally, updateHistoryItemPlaybackPosition } from './history'
+import { addOrUpdateHistoryItemLocally, getHistoryItem, getHistoryItems, getHistoryItemsLocally,
+  updateHistoryItemPlaybackPosition } from './history'
 import { filterItemFromQueueItems, getQueueItems, getQueueItemsLocally, removeQueueItem } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
@@ -218,7 +219,7 @@ export const loadTrackFromQueue = async (
     pvQueueItems = pvQueueItems.filter((x: any) => (checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId)))
   }
 
-  if (!skipUpdatePlaybackPosition) await updateUserPlaybackPosition()
+  if (!skipUpdatePlaybackPosition) updateUserPlaybackPosition()
 
   try {
     if (id) {
@@ -253,8 +254,12 @@ export const addItemsToPlayerQueue = async (items: NowPlayingItem[], insertBefor
         tracks.push(track)
       }
     }
-
-    await TrackPlayer.add(tracks, insertBeforeId)
+    const queueItems = await PVTrackPlayer.getQueue()
+    if (queueItems.some((x: any) => x.id === insertBeforeId)) {
+      await TrackPlayer.add(tracks, insertBeforeId)
+    } else {
+      await TrackPlayer.add(tracks)
+    }
   } catch (error) {
     console.log('addItemsToPlayerQueue service', error)
   }
@@ -279,6 +284,8 @@ const createNowPlayingItemFromPlayerTrack = (track: any) => {
   }
 }
 
+// This is named poorly, but it is basically called whenever you want to play something immediately,
+// instead of adding it to the queue to be played later.
 export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldPlay?: boolean, shouldRemoveFromPVQueue?: boolean) => {
   if (items.length < 1) return
   const queuedTracks = await TrackPlayer.getQueue()

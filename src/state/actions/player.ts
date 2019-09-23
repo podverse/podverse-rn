@@ -1,7 +1,7 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
-import { getAdjacentItemFromHistoryLocally, getHistoryItemsLocally, addOrUpdateHistoryItem } from '../../services/history'
+import { addOrUpdateHistoryItem, getAdjacentItemFromHistoryLocally, getHistoryItemsLocally, addOrUpdateHistoryItemLocally } from '../../services/history'
 import { addItemsToPlayerQueueNext as addItemsToPlayerQueueNextService, clearNowPlayingItem as clearNowPlayingItemService,
   getContinuousPlaybackMode, initializePlayerQueue as initializePlayerQueueService,
   loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer, setNowPlayingItem as setNowPlayingItemService,
@@ -59,12 +59,17 @@ export const safelyHandleLoadTrack = async (item: NowPlayingItem, shouldPlay: bo
     item.userPlaybackPosition = oldItem.userPlaybackPosition
   }
 
+  // In playerEvents, handleSyncNowPlayingItem uses checkIfPlayingFromHistory to determine
+  // if it should addOrUpdate an item to the history or not. Therefore, we need to make sure
+  // the track to be played is already in the local history before checkIfPlayingFromHistory is called.
+  await addOrUpdateHistoryItemLocally(item)
+  updateUserPlaybackPosition()
+
   if (queueItems.some((x: any) => (x.id === item.clipId) || (!item.clipId && x.id === item.episodeId))) {
     const shouldRemoveFromPVQueue = false
     const shouldStartClip = true
     await loadTrackFromQueue(item, shouldPlay, shouldRemoveFromPVQueue, shouldStartClip)
   } else {
-    await updateUserPlaybackPosition()
     await addItemsToPlayerQueueNext([item], shouldPlay, shouldRemoveFromPVQueue)
   }
 }
