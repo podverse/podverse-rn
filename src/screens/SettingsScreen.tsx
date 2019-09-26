@@ -47,7 +47,7 @@ export class SettingsScreen extends React.Component<Props, State> {
   _toggleTheme = (value: boolean) => {
     this.setGlobal({ globalTheme: value ? darkTheme : lightTheme }, async () => {
       value ? await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'TRUE')
-        : await AsyncStorage.removeItem(PV.Keys.DARK_MODE_ENABLED)
+        : await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'FALSE')
     })
   }
 
