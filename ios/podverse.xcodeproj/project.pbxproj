@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -41,6 +42,9 @@
 		3048199222A3E4C700A42CD6 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 70D5A083AF52489D947BEA06 /* MaterialIcons.ttf */; };
 		304819C322A3E4CC00A42CD6 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 135E63CF38CB4C2F932BC917 /* FontAwesome.ttf */; };
 		304819C422A3E4D000A42CD6 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 561A50109F0A4186B62063BE /* AntDesign.ttf */; };
+		3048A129233C3DB300C9083A /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3048A125233C3D9500C9083A /* libRNShare.a */; };
+		3048A12B233C3E1B00C9083A /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3048A12A233C3E1B00C9083A /* Social.framework */; };
+		3048A12D233C3E2400C9083A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3048A12C233C3E2400C9083A /* MessageUI.framework */; };
 		30490952229F993400CA1B95 /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6691576913D848DB82D699AD /* RNPlaceholder.swift */; };
 		30490953229F993400CA1B95 /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6691576913D848DB82D699AD /* RNPlaceholder.swift */; };
 		30490954229F993400CA1B95 /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6691576913D848DB82D699AD /* RNPlaceholder.swift */; };
@@ -71,11 +75,11 @@
 		D1456E00F66B4CB2A0843217 /* libRNCWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B3C3454228C4195982A893E /* libRNCWebView.a */; };
 		DB5E480FC895148332B5A170 /* libPods-podverseTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF42F887AE977007A8EDBFEC /* libPods-podverseTests.a */; };
 		E58770308C43465B815B53A7 /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 817D31662D5647DEACDF2C26 /* AppCenter-Config.plist */; };
+		E6249B271D064801BB8ACAEC /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7099E33ED216484EA9903CB8 /* Fontisto.ttf */; };
 		E6572006763ACED3BC44A81C /* libPods-podverse-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C84671383A75D29DB67E079 /* libPods-podverse-tvOSTests.a */; };
 		EF059A5F931AD1AFE7E5C96E /* libPods-podverse-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C14FA68353E936AD5344BB /* libPods-podverse-tvOS.a */; };
 		F34CCE474A034110AA4D18CC /* libRNTrackPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D34680EAC494BCE8D7497E1 /* libRNTrackPlayer.a */; };
 		FC464EDC7B06410BA1767386 /* libAppCenterReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C67D26D3D98A4A42A672C042 /* libAppCenterReactNative.a */; };
-		E6249B271D064801BB8ACAEC /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7099E33ED216484EA9903CB8 /* Fontisto.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -218,6 +222,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = B5C32A36220C603B000FFB8D;
 			remoteInfo = "RNGestureHandler-tvOS";
+		};
+		3048A124233C3D9500C9083A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3048A0ED233C3D9500C9083A /* RNShare.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNShare;
 		};
 		30490987229F993700CA1B95 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -524,6 +535,9 @@
 		2D02E4901E0B4A5D006451C7 /* podverse-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "podverse-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3048197B22A3CD7200A42CD6 /* podverse.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = podverse.entitlements; path = podverse/podverse.entitlements; sourceTree = "<group>"; };
+		3048A0ED233C3D9500C9083A /* RNShare.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNShare.xcodeproj; path = "../node_modules/react-native-share/ios/RNShare.xcodeproj"; sourceTree = "<group>"; };
+		3048A12A233C3E1B00C9083A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		3048A12C233C3E2400C9083A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		3B265A927A194712A40D62BC /* libRNSecureKeyStore.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSecureKeyStore.a; sourceTree = "<group>"; };
 		4D23012B85334BF8B8736BF6 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		561A50109F0A4186B62063BE /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
@@ -535,6 +549,7 @@
 		6691576913D848DB82D699AD /* RNPlaceholder.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = RNPlaceholder.swift; sourceTree = "<group>"; };
 		6693A927B96A4778B51DAC45 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		6E1BDC82053B4FBD8A073E34 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
+		7099E33ED216484EA9903CB8 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		70D5A083AF52489D947BEA06 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		74941DD6441B48A580E78304 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -566,7 +581,6 @@
 		ECC325FF2C5D416A9519146C /* AppCenterReactNativeCrashes.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AppCenterReactNativeCrashes.xcodeproj; path = "../node_modules/appcenter-crashes/ios/AppCenterReactNativeCrashes.xcodeproj"; sourceTree = "<group>"; };
 		ECFB5AD1B471F586B67DCED4 /* Pods-podverse-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-podverse-tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-podverse-tvOS/Pods-podverse-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		FD5C7B2E37CB49F586255917 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
-		7099E33ED216484EA9903CB8 /* Fontisto.ttf */ = {isa = PBXFileReference; name = "Fontisto.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -583,6 +597,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3048A129233C3DB300C9083A /* libRNShare.a in Frameworks */,
 				30C62BE622A3789F006C8D44 /* JavaScriptCore.framework in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */,
@@ -599,12 +614,14 @@
 				A8DF87F5ADDB485DADEB4DE4 /* libRNGestureHandler.a in Frameworks */,
 				33A62364F0D34380BC5753D0 /* libRNSecureKeyStore.a in Frameworks */,
 				8B553234C61B464D93F48555 /* libRNVectorIcons.a in Frameworks */,
+				3048A12D233C3E2400C9083A /* MessageUI.framework in Frameworks */,
 				D1456E00F66B4CB2A0843217 /* libRNCWebView.a in Frameworks */,
 				F34CCE474A034110AA4D18CC /* libRNTrackPlayer.a in Frameworks */,
 				68C8FDCC95B445C793852515 /* libRNCNetInfo.a in Frameworks */,
 				69FD12C0A5F145179C3626DF /* libRNCAsyncStorage.a in Frameworks */,
 				1F7B23A87587493B92781063 /* libRNBackgroundDownloader.a in Frameworks */,
 				45D0820D2B0A423DB423F978 /* libRNFS.a in Frameworks */,
+				3048A12B233C3E1B00C9083A /* Social.framework in Frameworks */,
 				FC464EDC7B06410BA1767386 /* libAppCenterReactNative.a in Frameworks */,
 				31F1F4B1ED5187A2ECE8FC16 /* libPods-podverse.a in Frameworks */,
 				309EF0D812F6477D8C4911FE /* libAppCenterReactNativeCrashes.a in Frameworks */,
@@ -761,6 +778,8 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3048A12C233C3E2400C9083A /* MessageUI.framework */,
+				3048A12A233C3E1B00C9083A /* Social.framework */,
 				E7F32503223C8F16003E6611 /* JavaScriptCore.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				22FFE1D24D61988CEEE5EA85 /* libPods-podverse.a */,
@@ -769,6 +788,14 @@
 				CF42F887AE977007A8EDBFEC /* libPods-podverseTests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3048A0EE233C3D9500C9083A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3048A125233C3D9500C9083A /* libRNShare.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		3049097E229F993700CA1B95 /* Products */ = {
@@ -842,6 +869,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				3048A0ED233C3D9500C9083A /* RNShare.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -1260,6 +1288,10 @@
 					ProjectRef = 0B260F9F732F4DE6AC2E9365 /* RNSecureKeyStore.xcodeproj */;
 				},
 				{
+					ProductGroup = 3048A0EE233C3D9500C9083A /* Products */;
+					ProjectRef = 3048A0ED233C3D9500C9083A /* RNShare.xcodeproj */;
+				},
+				{
 					ProductGroup = 3049097E229F993700CA1B95 /* Products */;
 					ProjectRef = 1CDADA242C0F4915ADB560A9 /* RNTrackPlayer.xcodeproj */;
 				},
@@ -1403,6 +1435,13 @@
 			fileType = archive.ar;
 			path = "libRNGestureHandler-tvOS.a";
 			remoteRef = 3000EC2F22557844009D9DEB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3048A125233C3D9500C9083A /* libRNShare.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNShare.a;
+			remoteRef = 3048A124233C3D9500C9083A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		30490988229F993700CA1B95 /* libRNCSlider.a */ = {
@@ -1931,9 +1970,7 @@
 				INFOPLIST_FILE = podverseTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1970,9 +2007,7 @@
 				INFOPLIST_FILE = podverseTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2098,9 +2133,7 @@
 				);
 				INFOPLIST_FILE = "podverse-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2145,9 +2178,7 @@
 				);
 				INFOPLIST_FILE = "podverse-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2190,9 +2221,7 @@
 				);
 				INFOPLIST_FILE = "podverse-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2235,9 +2264,7 @@
 				);
 				INFOPLIST_FILE = "podverse-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
