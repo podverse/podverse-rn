@@ -81,17 +81,21 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
       return [subscribedPodcasts, subscribedPodcastsTotalCount]
     } catch (error) {
       console.log(error)
-      return []
+      return getSubscribedPodcastsLocally()
     }
   } else {
-    const subscribedPodcastsJSON = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS)
-    if (subscribedPodcastsJSON) {
-      const subscribedPodcasts = JSON.parse(subscribedPodcastsJSON)
-      if (Array.isArray(subscribedPodcasts)) return [subscribedPodcasts, subscribedPodcasts.length]
-      return [[], 0]
-    } else {
-      return [[], 0]
-    }
+    return getSubscribedPodcastsLocally()
+  }
+}
+
+const getSubscribedPodcastsLocally = async () => {
+  const subscribedPodcastsJSON = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS)
+  if (subscribedPodcastsJSON) {
+    const subscribedPodcasts = JSON.parse(subscribedPodcastsJSON)
+    if (Array.isArray(subscribedPodcasts)) return [subscribedPodcasts, subscribedPodcasts.length]
+    return [[], 0]
+  } else {
+    return [[], 0]
   }
 }
 
@@ -118,7 +122,12 @@ export const toggleSubscribeToPodcast = async (id: string) => {
     isUnsubscribing = podcastIds.some((x: string) => id === x)
   }
 
-  const items = isLoggedIn ? toggleSubscribeToPodcastOnServer(id) : toggleSubscribeToPodcastLocally(id)
+  let items
+  if (isLoggedIn) {
+    items = await toggleSubscribeToPodcastOnServer(id)
+  } else {
+    items = await toggleSubscribeToPodcastLocally(id)
+  }
 
   if (isUnsubscribing) {
     await removeDownloadedPodcast(id)

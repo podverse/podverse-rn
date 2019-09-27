@@ -117,18 +117,11 @@ export class ProfilesScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         <View style={styles.view}>
           {
-            !isLoading && !isLoggedIn &&
-              <MessageWithAction
-                actionHandler={this._onPressLogin}
-                actionText='Login'
-                message='Login to view your profiles' />
-          }
-          {
             isLoading &&
               <ActivityIndicator />
           }
           {
-            isLoggedIn && !isLoading && flatListData && flatListData.length > 0 &&
+            !isLoading && flatListData && flatListData.length > 0 &&
               <FlatList
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
@@ -141,10 +134,10 @@ export class ProfilesScreen extends React.Component<Props, State> {
                 renderItem={this._renderProfileItem} />
           }
           {
-            isLoggedIn && !isLoading && flatListData && flatListData.length === 0 &&
+            !isLoading && flatListData && flatListData.length === 0 &&
               <MessageWithAction
                 message='You have no subscribed profiles'
-                subMessage='Ask a friend to send a link to their profile, then subscribe to it' />
+                subMessage='(Ask a friend to send you a link to their profile, then subscribe to it)' />
           }
         </View>
       </View>

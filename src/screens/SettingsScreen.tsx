@@ -14,7 +14,6 @@ type State = {
   autoDeleteEpisodeOnEnd?: boolean
   downloadingWifiOnly?: boolean
   maximumSpeedOptionSelected?: any
-  streamingWifiOnly?: boolean
 }
 
 export class SettingsScreen extends React.Component<Props, State> {
@@ -33,7 +32,6 @@ export class SettingsScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-    const streamingWifiOnly = await AsyncStorage.getItem(PV.Keys.STREAMING_WIFI_ONLY)
     const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
     const maximumSpeed = await AsyncStorage.getItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
@@ -42,7 +40,6 @@ export class SettingsScreen extends React.Component<Props, State> {
     this.setState({
       autoDeleteEpisodeOnEnd: !!autoDeleteEpisodeOnEnd,
       downloadingWifiOnly: !!downloadingWifiOnly,
-      streamingWifiOnly: !!streamingWifiOnly,
       maximumSpeedOptionSelected: maximumSpeedOptionSelected || maximumSpeedSelectOptions[1]
     })
   }
@@ -50,7 +47,7 @@ export class SettingsScreen extends React.Component<Props, State> {
   _toggleTheme = (value: boolean) => {
     this.setGlobal({ globalTheme: value ? darkTheme : lightTheme }, async () => {
       value ? await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'TRUE')
-        : await AsyncStorage.removeItem(PV.Keys.DARK_MODE_ENABLED)
+        : await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'FALSE')
     })
   }
 
@@ -58,13 +55,6 @@ export class SettingsScreen extends React.Component<Props, State> {
     this.setState({ downloadingWifiOnly: value }, async () => {
       value ? await AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
         : await AsyncStorage.removeItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-    })
-  }
-
-  _toggleStreamingWifiOnly = (value: boolean) => {
-    this.setState({ streamingWifiOnly: value }, async () => {
-      value ? await AsyncStorage.setItem(PV.Keys.STREAMING_WIFI_ONLY, 'TRUE')
-        : await AsyncStorage.removeItem(PV.Keys.STREAMING_WIFI_ONLY)
     })
   }
 

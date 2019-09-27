@@ -13,6 +13,9 @@ target 'podverse' do
   
 
   platform :ios, '9.0'
+  pod 'ReactNativeDarkMode', :path => '../node_modules/react-native-dark-mode'
+
+
   target 'podverseTests' do
     inherit! :search_paths
     # Pods for testing

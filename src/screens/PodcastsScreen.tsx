@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { AppState, Linking, Platform, StyleSheet } from 'react-native'
+// import { initialMode as initialDarkModeSetting } from 'react-native-dark-mode'
+import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
   TableSectionSelectors, View } from '../components'
@@ -37,6 +39,7 @@ type State = {
   searchBarText: string
   selectedCategory: string | null
   selectedSubCategory: string | null
+  showDataSettingsConfirmDialog: boolean
   subCategoryItems: any[]
 }
 
@@ -65,6 +68,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       searchBarText: '',
       selectedCategory: null,
       selectedSubCategory: null,
+      showDataSettingsConfirmDialog: false,
       subCategoryItems: []
     }
 
@@ -88,10 +92,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
       if (!appHasLaunched) {
         await AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
-        await AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
-        await AsyncStorage.setItem(PV.Keys.STREAMING_WIFI_ONLY, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5')
+
+        // if (initialDarkModeSetting === 'dark') {
+        //   await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'TRUE')
+        // }
+
+        this.setState({ showDataSettingsConfirmDialog: true })
+
         // navigation.navigate(PV.RouteNames.Onboarding)
       } else {
         await this._initializeScreenData()
@@ -201,13 +210,16 @@ export class PodcastsScreen extends React.Component<Props, State> {
       return
     }
 
+    const { querySort } = this.state
+
     this.setState({
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
       isLoading: true,
       queryFrom: selectedKey,
-      queryPage: 1
+      queryPage: 1,
+      querySort: querySort === _alphabeticalKey || querySort === _mostRecentKey ? _topPastWeek : querySort
     }, async () => {
       const newState = await this._queryData(selectedKey, this.state)
       this.setState(newState)
@@ -406,9 +418,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.props.navigation.navigate(PV.RouteNames.SearchScreen)
   }
 
+  _handleDataSettingsWifiOnly = () => {
+    AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
+    this.setState({ showDataSettingsConfirmDialog: false })
+  }
+
+  _handleDataSettingsAllowData = () => {
+    this.setState({ showDataSettingsConfirmDialog: false })
+  }
+
   render() {
     const { categoryItems, queryFrom, isLoading, isLoadingMore, isRefreshing, querySort,
-      selectedCategory, selectedSubCategory, subCategoryItems } = this.state
+      selectedCategory, selectedSubCategory, showDataSettingsConfirmDialog, subCategoryItems } = this.state
 
     let flatListData = []
     let flatListDataTotalCount = null
@@ -423,6 +444,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       flatListDataTotalCount = this.state.flatListDataTotalCount
     }
 
+    const rItems = rightItems(queryFrom === _allPodcastsKey)
+
     return (
       <View style={styles.view}>
         <PlayerEvents />
@@ -430,7 +453,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={!queryFrom || queryFrom === _subscribedKey || queryFrom === _downloadedKey ? [] : rightItems}
+          rightItems={!queryFrom || queryFrom === _subscribedKey || queryFrom === _downloadedKey ? [] : rItems}
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort} />
         {
@@ -468,6 +491,16 @@ export class PodcastsScreen extends React.Component<Props, State> {
               renderItem={this._renderPodcastItem}
               resultsText='podcasts' />
         }
+        <Dialog.Container visible={showDataSettingsConfirmDialog}>
+          <Dialog.Title>Data Settings</Dialog.Title>
+          <Dialog.Description>Do you want to allow downloading episodes with your data plan?</Dialog.Description>
+          <Dialog.Button
+            label='No, Wifi Only'
+            onPress={this._handleDataSettingsWifiOnly} />
+          <Dialog.Button
+            label='Yes, Allow Data'
+            onPress={this._handleDataSettingsAllowData} />
+        </Dialog.Container>
       </View>
     )
   }
@@ -512,6 +545,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('load podcasts')
     if (wasAlerted) return newState
 
+    const rItems = rightItems(filterKey === _allPodcastsKey || this.state.queryFrom === _allPodcastsKey)
+
     try {
       const { searchBarText: searchTitle, flatListData = [], querySort, selectedCategory,
         selectedSubCategory } = prevState
@@ -550,7 +585,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
           newState.flatListDataTotalCount = podcastResults[1]
         }
-      } else if (rightItems.some((option) => option.value === filterKey)) {
+      } else if (rItems.some((option) => option.value === filterKey)) {
         const results = await getPodcasts({
           ...((selectedSubCategory && selectedSubCategory !== _allCategoriesKey)
             || selectedCategory ? { categories: (selectedSubCategory && selectedSubCategory !== _allCategoriesKey) || selectedCategory }
@@ -623,32 +658,39 @@ const leftItems = [
   }
 ]
 
-const rightItems = [
-  {
-    label: 'alphabetical',
-    value: _alphabeticalKey
-  },
-  {
-    label: 'most recent',
-    value: _mostRecentKey
-  },
-  {
-    label: 'top - past day',
-    value: _topPastDay
-  },
-  {
-    label: 'top - past week',
-    value: _topPastWeek
-  },
-  {
-    label: 'top - past month',
-    value: _topPastMonth
-  },
-  {
-    label: 'top - past year',
-    value: _topPastYear
+const rightItems = (isAllPodcasts?: boolean) => {
+  const items = [
+    {
+      label: 'top - past day',
+      value: _topPastDay
+    },
+    {
+      label: 'top - past week',
+      value: _topPastWeek
+    },
+    {
+      label: 'top - past month',
+      value: _topPastMonth
+    },
+    {
+      label: 'top - past year',
+      value: _topPastYear
+    }
+  ]
+
+  if (!isAllPodcasts) {
+    items.unshift({
+      label: 'most recent',
+      value: _mostRecentKey
+    })
+    items.unshift({
+      label: 'alphabetical',
+      value: _alphabeticalKey
+    })
   }
-]
+
+  return items
+}
 
 const styles = StyleSheet.create({
   ListHeaderComponent: {

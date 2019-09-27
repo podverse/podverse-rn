@@ -29,7 +29,7 @@ class App extends Component<Props, State> {
   async componentDidMount() {
     TrackPlayer.registerPlaybackService(() => require('./src/services/playerEvents'))
     const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
-    this.setupGlobalState(darkModeEnabled ? darkTheme : lightTheme)
+    this.setupGlobalState(darkModeEnabled === 'TRUE' || darkModeEnabled === null ? darkTheme : lightTheme)
   }
 
   setupGlobalState(theme: GlobalTheme) {

@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   },
   signInButton: {
 
-    padding: 10,
+    padding: 16,
     width: '65%',
     alignItems: 'center',
     backgroundColor: PV.Colors.white

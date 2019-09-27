@@ -1,4 +1,5 @@
-import { Alert, AppState, Linking, Share, StyleSheet, View as RNView } from 'react-native'
+import { Alert, AppState, Linking, StyleSheet, View as RNView } from 'react-native'
+import Share from 'react-native-share'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipInfoView, ClipTableCell, Divider, EpisodeTableCell, FlatList,
@@ -372,17 +373,27 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _handleShare = async (podcastId?: string, episodeId?: string, mediaRefId?: string) => {
+    const { nowPlayingItem } = this.global.player
     let url = ''
+    let title = ''
     if (podcastId) {
       url = PV.URLs.podcast + podcastId
+      title = `${nowPlayingItem.podcastTitle} – shared using Podverse`
     } else if (episodeId) {
       url = PV.URLs.episode + episodeId
+      title = `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} – shared using Podverse`
     } else {
       url = PV.URLs.clip + mediaRefId
+      title = `${nowPlayingItem.clipTitle ? nowPlayingItem.clipTitle + ' – ' : 'Untitled clip – '}`
+      title += `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} – clip shared using Podverse`
     }
 
     try {
-      await Share.share({ url })
+      await Share.open({
+        title,
+        subject: title,
+        url
+      })
     } catch (error) {
       alert(error.message)
     }

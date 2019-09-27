@@ -77,7 +77,7 @@ export const removeHistoryItem = async (item: NowPlayingItem) => {
   return useServerData ? removeHistoryItemOnServer(item.episodeId, item.clipId) : removeHistoryItemLocally(item)
 }
 
-const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem) => {
+export const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem) => {
   const items = await getHistoryItemsLocally()
   const filteredItems = filterItemFromHistoryItems(items, item)
   filteredItems.unshift(item)

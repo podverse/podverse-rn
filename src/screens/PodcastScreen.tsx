@@ -48,11 +48,15 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   static navigationOptions = ({ navigation }) => {
     const podcastId = navigation.getParam('podcastId')
+    const podcastTitle = navigation.getParam('podcastTitle')
     return {
       title: 'Podcast',
       headerRight: (
         <RNView style={core.row}>
-          <NavShareIcon url={PV.URLs.podcast + podcastId} />
+          <NavShareIcon
+            endingText=' – shared using Podverse'
+            podcastTitle={podcastTitle}
+            url={PV.URLs.podcast + podcastId} />
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
@@ -67,7 +71,10 @@ export class PodcastScreen extends React.Component<Props, State> {
     const viewType = this.props.navigation.getParam('viewType') || allEpisodesKey
 
     if (podcast && podcast.id) {
-      this.props.navigation.setParams({ podcastId: podcast.id })
+      this.props.navigation.setParams({
+        podcastId: podcast.id,
+        podcastTitle: podcast.title
+      })
     }
 
     this.state = {

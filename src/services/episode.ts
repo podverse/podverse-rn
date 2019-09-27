@@ -11,7 +11,7 @@ export const getEpisodes = async (query: any = {}, nsfwMode: boolean) => {
   }
 
   if (query.subscribedOnly && query.podcastId && query.podcastId.length === 0) {
-    return [0, 0]
+    return [[], 0]
   }
 
   const response = await request({

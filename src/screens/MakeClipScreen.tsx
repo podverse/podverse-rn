@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Alert, AppState, Image, Modal, Share, StyleSheet, TouchableOpacity, TouchableWithoutFeedback,
+import { Alert, AppState, Image, Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback,
   View as RNView } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
+import Share from 'react-native-share'
 import React from 'reactn'
 import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInput, TimeInput, View
   } from '../components'
@@ -228,9 +229,16 @@ export class MakeClipScreen extends React.Component<Props, State> {
               {
                 text: 'Share',
                 onPress: async () => {
+                  const { nowPlayingItem = {} } = this.global.player
+                  const title = `${data.title || 'Untitled clip'} – ${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} – clip created using Podverse`
+
                   if (!isEditing) {
                     try {
-                      await Share.share({ url })
+                      await Share.open({
+                        title,
+                        subject: title,
+                        url
+                      })
                     } catch (error) {
                       alert(error.message)
                     }

@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
-import { Alert, Share } from 'react-native'
+import { Alert } from 'react-native'
+import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
 import { IActionSheet } from '../resources/Interfaces'
 import { safelyHandleLoadTrack } from '../state/actions/player'
@@ -92,12 +93,20 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
     onPress: async () => {
       try {
         let url = ''
+        let title = ''
         if (item.clipId) {
           url = PV.URLs.clip + item.clipId
+          title = item.clipTitle ? item.clipTitle : 'Untitled clip –'
+          title += ` ${item.podcastTitle} – ${item.episodeTitle} – clip shared using Podverse`
         } else if (item.episodeId) {
           url = PV.URLs.episode + item.episodeId
+          title += `${item.podcastTitle} – ${item.episodeTitle} – shared using Podverse`
         }
-        await Share.share({ url })
+        await Share.open({
+          title,
+          subject: title,
+          url
+        })
       } catch (error) {
         alert(error.message)
       }

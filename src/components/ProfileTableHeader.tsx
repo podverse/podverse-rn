@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   name: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
+    fontWeight: PV.Fonts.weights.semibold,
     lineHeight: 44
   },
   notFoundText: {

@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
     justifyContent: 'flex-end',
+    lineHeight: PV.Fonts.sizes.sm + 2,
     marginTop: 2
   },
   textWrapperRow: {
@@ -151,7 +152,8 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold
+    fontWeight: PV.Fonts.weights.semibold,
+    lineHeight: PV.Fonts.sizes.lg + 2
   },
   wrapper: {
     flexDirection: 'row'

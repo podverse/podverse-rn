@@ -40,6 +40,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const userId = navigation.getParam('userId')
     const userIsPublic = navigation.getParam('userIsPublic')
+    const userName = navigation.getParam('userName')
 
     return {
       title: 'Profile',
@@ -47,7 +48,9 @@ export class ProfileScreen extends React.Component<Props, State> {
         <RNView style={core.row}>
           {
             userIsPublic && userId &&
-              <NavShareIcon url={PV.URLs.profile + userId} />
+              <NavShareIcon
+                profileName={userName}
+                url={PV.URLs.profile + userId} />
           }
           <NavQueueIcon navigation={navigation} />
         </RNView>
@@ -66,7 +69,8 @@ export class ProfileScreen extends React.Component<Props, State> {
     if (user && user.id) {
       this.props.navigation.setParams({
         userId: user.id,
-        userIsPublic: user.isPublic
+        userIsPublic: user.isPublic,
+        userName: user.name
       })
     }
 

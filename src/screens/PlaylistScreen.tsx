@@ -31,11 +31,16 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
   static navigationOptions = ({ navigation }) => {
     const playlistId = navigation.getParam('playlistId')
+    const playlistTitle = navigation.getParam('playlistTitle')
+
     return {
       title: 'Playlist',
       headerRight: (
         <RNView style={core.row}>
-          <NavShareIcon url={PV.URLs.playlist + playlistId} />
+          <NavShareIcon
+            endingText=' – playlist shared using Podverse'
+            playlistTitle={playlistTitle}
+            url={PV.URLs.playlist + playlistId} />
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
