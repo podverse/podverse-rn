@@ -10,6 +10,7 @@ import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
 import { navHeader } from '../styles'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 type Props = {
   navigation?: any
@@ -205,7 +206,7 @@ export class QueueScreen extends React.Component<Props, State> {
         const shouldStartClip = !!item.clipId
         await loadItemAndPlayTrack(item, shouldPlay, shouldStartClip)
         const nowPlayingItem = await getNowPlayingItem()
-        await getQueueItems()
+        getQueueItems()
         this.setState({
           isLoading: false,
           nowPlayingItem
@@ -226,16 +227,18 @@ export class QueueScreen extends React.Component<Props, State> {
     const { isEditing } = this.state
 
     return (
-      <QueueTableCell
-        clipEndTime={item.clipEndTime}
-        clipStartTime={item.clipStartTime}
-        clipTitle={item.clipTitle}
-        episodePubDate={item.episodePubDate}
-        episodeTitle={item.episodeTitle}
-        handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
-        podcastImageUrl={item.podcastImageUrl}
-        podcastTitle={item.podcastTitle}
-        showRemoveButton={isEditing} />
+      <TouchableWithoutFeedback onPress={() => this._handlePlayItem(item)}>
+        <QueueTableCell
+          clipEndTime={item.clipEndTime}
+          clipStartTime={item.clipStartTime}
+          clipTitle={item.clipTitle}
+          episodePubDate={item.episodePubDate}
+          episodeTitle={item.episodeTitle}
+          handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
+          podcastImageUrl={item.podcastImageUrl}
+          podcastTitle={item.podcastTitle}
+          showRemoveButton={isEditing} />
+      </TouchableWithoutFeedback>
     )
   }
 
