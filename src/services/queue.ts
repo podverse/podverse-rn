@@ -16,15 +16,6 @@ export const addQueueItemLast = async (item: NowPlayingItem) => {
     results = await addQueueItemLastLocally(item)
   }
 
-  try {
-    PVTrackPlayer.remove(item.clipId || item.episodeId)
-  } catch (error) {
-    //
-  }
-
-  const track = await createTrack(item)
-  await PVTrackPlayer.add([track])
-
   return results
 }
 
@@ -43,23 +34,6 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
   } else {
     results = await addQueueItemNextLocally(item)
   }
-
-  try {
-    PVTrackPlayer.remove(item.clipId || item.episodeId)
-  } catch (error) {
-    console.log('addQueueItemNext service', error)
-    //
-  }
-
-  const playerQueueItems = await PVTrackPlayer.getQueue()
-  const currentTrackIndex = playerQueueItems.findIndex((x: any) => currentTrackId === x.id)
-  let insertBeforeId = null
-  if (playerQueueItems.length >= currentTrackIndex + 1 && playerQueueItems[currentTrackIndex + 1]) {
-    insertBeforeId = playerQueueItems[currentTrackIndex + 1].id
-  }
-
-  const track = await createTrack(item)
-  await PVTrackPlayer.add([track], insertBeforeId)
 
   return results
 }

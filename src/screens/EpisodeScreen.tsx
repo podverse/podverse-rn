@@ -61,6 +61,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const episode = this.props.navigation.getParam('episode')
     const episodeId = (episode && episode.id) || this.props.navigation.getParam('episodeId')
 
+    if (!episode.podcast) {
+      episode.podcast = {
+        title: episode.podcast_title
+      }
+    }
+
     if (episode && episode.id) {
       this.props.navigation.setParams({
         episodeId: episode.id,

@@ -5,9 +5,9 @@ import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, Icon, Messag
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
-import { getNowPlayingItem, movePlayerItemToNewPosition } from '../services/player'
+import { getNowPlayingItem } from '../services/player'
 import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
-import { safelyHandleLoadTrack } from '../state/actions/player'
+import { loadItemAndPlayTrack } from '../state/actions/player'
 import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
 import { navHeader } from '../styles'
 
@@ -201,7 +201,9 @@ export class QueueScreen extends React.Component<Props, State> {
       this.setState({ isLoading: true }, async () => {
         navigation.goBack(null)
         navigation.navigate(PV.RouteNames.PlayerScreen)
-        await safelyHandleLoadTrack(item, true, false)
+        const shouldPlay = true
+        const shouldStartClip = !!item.clipId
+        await loadItemAndPlayTrack(item, shouldPlay, shouldStartClip)
         const nowPlayingItem = await getNowPlayingItem()
         await getQueueItems()
         this.setState({

@@ -3,9 +3,8 @@ import React from 'reactn'
 import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfPlayingFromHistory, getHistoryItemsLocally } from '../services/history'
-import { getNowPlayingItem, playerJumpBackward, playerJumpForward, PVTrackPlayer  } from '../services/player'
-import { loadAdjacentItemFromHistory, loadNextFromQueue, loadTrackFromQueue, setPlaybackSpeed,
-  togglePlay } from '../state/actions/player'
+import { getNowPlayingItem, loadItemAndPlayTrack, playerJumpBackward, playerJumpForward, PVTrackPlayer  } from '../services/player'
+import { loadAdjacentItemFromHistory, playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { playerStyles } from '../styles'
 import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 
@@ -85,9 +84,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                   if (checkIfIdMatchesClipIdOrEpisodeId(id, mostRecentHistoryItem.clipId, mostRecentHistoryItem.episodeId)) {
                     loadAdjacentItemFromHistory(shouldStartPlayback)
                   } else {
-                    const skipUpdatePlaybackPosition = true
                     const shouldStartClip = true
-                    loadTrackFromQueue(historyItems[0], shouldStartPlayback, skipUpdatePlaybackPosition, shouldStartClip)
+                    loadItemAndPlayTrack(historyItems[0], shouldStartPlayback, shouldStartClip)
                   }
                 }
               }
@@ -134,7 +132,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 const playNext = true
                 loadAdjacentItemFromHistory(shouldStartPlayback, playNext)
               } else {
-                loadNextFromQueue(shouldStartPlayback)
+                playNextFromQueue()
               }
             }}
             style={playerStyles.icon}>

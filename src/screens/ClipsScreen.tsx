@@ -11,7 +11,7 @@ import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/
 import { PV } from '../resources'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getLoggedInUserMediaRefs } from '../services/user'
-import { safelyHandleLoadTrack } from '../state/actions/player'
+import { loadItemAndPlayTrack } from '../state/actions/player'
 import { core } from '../styles'
 
 type Props = {
@@ -256,7 +256,9 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _handleNavigationPress = (selectedItem: any) => {
-    safelyHandleLoadTrack(selectedItem, true, false)
+    const shouldPlay = true
+    const shouldStartClip = !!selectedItem.clipId
+    loadItemAndPlayTrack(selectedItem, shouldPlay, shouldStartClip)
   }
 
   render() {

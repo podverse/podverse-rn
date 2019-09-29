@@ -54,7 +54,10 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
 
   const shouldDownload = await hasValidDownloadingConnection()
 
-  if (!shouldDownload) return
+  if (!shouldDownload) {
+    console.log('downloadEpisode: Does not have a valid downloading connection')
+    return
+  }
   const ext = getExtensionFromUrl(episode.mediaUrl)
 
   if (!restart) {
