@@ -74,7 +74,7 @@ module.exports = async () => {
           buffering 6
           ???       8
         */
-        if ((x.state === 2 && currentPosition > 0) || x.state === 3) {
+        if ((x.state === 2 && currentPosition > 3) || x.state === 3) {
           updateUserPlaybackPosition()
         }
         // Android's setPlaybackPositionWhenDurationIsAvailable happens in handleSyncNowPlayingItem
@@ -83,7 +83,13 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
+    const currentId = await PVTrackPlayer.getCurrentTrack()
+    const queueItems = await PVTrackPlayer.getQueue()
     console.log('playback-track-changed', x)
+    console.log('currentId: ' + currentId)
+    for (const item of queueItems) {
+      console.log('item:', item)
+    }
     await syncNowPlayingItemWithTrack()
   })
 

@@ -1,11 +1,11 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
-import { addOrUpdateHistoryItem, getAdjacentItemFromHistoryLocally, getHistoryItemsLocally, addOrUpdateHistoryItemLocally } from '../../services/history'
-import { addItemsToPlayerQueueNext as addItemsToPlayerQueueNextService, clearNowPlayingItem as clearNowPlayingItemService,
-  getContinuousPlaybackMode, initializePlayerQueue as initializePlayerQueueService,
-  loadTrackFromQueue as loadTrackFromQueueService, PVTrackPlayer, setNowPlayingItem as setNowPlayingItemService,
-  setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService, updateUserPlaybackPosition} from '../../services/player'
+import { addOrUpdateHistoryItem, addOrUpdateHistoryItemLocally, getAdjacentItemFromHistoryLocally, getHistoryItemsLocally } from '../../services/history'
+import { clearNowPlayingItem as clearNowPlayingItemService, getContinuousPlaybackMode, initializePlayerQueue as initializePlayerQueueService,
+  loadItemAndPlayTrack as loadItemAndPlayTrackService, playNextFromQueue as playNextFromQueueService, PVTrackPlayer,
+  setNowPlayingItem as setNowPlayingItemService, setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService,
+  updateUserPlaybackPosition} from '../../services/player'
 import { getNextFromQueue } from '../../services/queue'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
@@ -47,31 +47,6 @@ export const initializePlayerQueue = async () => {
       isLoading: false
     }
   })
-}
-
-export const safelyHandleLoadTrack = async (item: NowPlayingItem, shouldPlay: boolean, shouldRemoveFromPVQueue?: boolean) => {
-  const id = item.clipId || item.episodeId
-  const queueItems = await PVTrackPlayer.getQueue()
-  const historyItems = await getHistoryItemsLocally()
-  const oldItem = historyItems.find((x: any) => x.clipId === id || (!item.clipId && x.episodeId === id))
-
-  if (oldItem) {
-    item.userPlaybackPosition = oldItem.userPlaybackPosition
-  }
-
-  // In playerEvents, handleSyncNowPlayingItem uses checkIfPlayingFromHistory to determine
-  // if it should addOrUpdate an item to the history or not. Therefore, we need to make sure
-  // the track to be played is already in the local history before checkIfPlayingFromHistory is called.
-  await addOrUpdateHistoryItemLocally(item)
-  updateUserPlaybackPosition()
-
-  if (queueItems.some((x: any) => (x.id === item.clipId) || (!item.clipId && x.id === item.episodeId))) {
-    const shouldRemoveFromPVQueue = false
-    const shouldStartClip = true
-    await loadTrackFromQueue(item, shouldPlay, shouldRemoveFromPVQueue, shouldStartClip)
-  } else {
-    await addItemsToPlayerQueueNext([item], shouldPlay, shouldRemoveFromPVQueue)
-  }
 }
 
 export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldPlay?: boolean, shouldRemoveFromPVQueue?: boolean) => {
@@ -152,9 +127,10 @@ export const loadAdjacentItemFromHistory = async (shouldStartPlayback: boolean, 
 
   if (newItemFromHistory) {
     await updatePlayerState(newItemFromHistory)
-    const skipUpdatePlaybackPosition = true
-    const shouldStartClip = true
-    await loadTrackFromQueueService(newItemFromHistory, shouldStartPlayback, skipUpdatePlaybackPosition, shouldStartClip)
+    const shouldStartClip = !!newItemFromHistory.clipId
+    const shouldUpdateHistoryItem = false
+    await loadItemAndPlayTrackService(newItemFromHistory, shouldStartPlayback,
+      shouldStartClip, shouldUpdateHistoryItem)
   }
 
   const globalState = getGlobal()
@@ -166,22 +142,16 @@ export const loadAdjacentItemFromHistory = async (shouldStartPlayback: boolean, 
   })
 }
 
-export const loadNextFromQueue = async (shouldPlay: boolean) => {
-  const item = await getNextFromQueue()
-  const skipUpdatePlaybackPosition = false
-  const shouldStartClip = true
-  if (item) {
-    await loadTrackFromQueue(item, shouldPlay, skipUpdatePlaybackPosition, shouldStartClip)
-    await addOrUpdateHistoryItem(item)
-  }
+export const playNextFromQueue = async () => {
+  await playNextFromQueueService()
 }
 
-export const loadTrackFromQueue = async (
-  item: NowPlayingItem, shouldPlay: boolean, skipUpdatePlaybackPosition: boolean, shouldStartClip: boolean) => {
+export const loadItemAndPlayTrack = async (
+  item: NowPlayingItem, shouldPlay: boolean, shouldStartClip: boolean) => {
 
   if (item) {
     await updatePlayerState(item)
-    await loadTrackFromQueueService(item, shouldPlay, skipUpdatePlaybackPosition, shouldStartClip)
+    await loadItemAndPlayTrackService(item, shouldPlay, shouldStartClip)
   }
 
   const globalState = getGlobal()
