@@ -4,8 +4,8 @@ import { Alert } from 'react-native'
 import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
 import { IActionSheet } from '../resources/Interfaces'
-import { safelyHandleLoadTrack } from '../state/actions/player'
-import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
+import { addItemToPlayerQueueLast, addItemToPlayerQueueNext } from '../services/player'
+import { loadItemAndPlayTrack } from '../state/actions/player'
 import { PV } from './PV'
 
 const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, handleDownload: any) => {
@@ -21,7 +21,9 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
       text: 'Play',
       onPress: async () => {
         await handleDismiss()
-        await safelyHandleLoadTrack(item, true, false)
+        const shouldPlay = true
+        const shouldStartClip = !!item.clipId
+        await loadItemAndPlayTrack(item, shouldPlay, shouldStartClip)
       }
     })
   } else {
@@ -34,7 +36,9 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
           if (showAlert) return
 
           await handleDismiss()
-          await safelyHandleLoadTrack(item, true, false)
+          const shouldPlay = true
+          const shouldStartClip = !!item.clipId
+          await loadItemAndPlayTrack(item, shouldPlay, shouldStartClip)
         }
       },
       {
@@ -63,7 +67,7 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
       text: 'Queue: Next',
       onPress: async () => {
         await handleDismiss()
-        await addQueueItemNext(item)
+        await addItemToPlayerQueueNext(item)
       }
     },
     {
@@ -71,7 +75,7 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
       text: 'Queue: Last',
       onPress: async () => {
         await handleDismiss()
-        await addQueueItemLast(item)
+        await addItemToPlayerQueueLast(item)
       }
     },
     {
