@@ -204,7 +204,6 @@ export const loadItemAndPlayTrack = async (
   await syncPlayerWithQueue()
 
   if (shouldPlay) setTimeout(() => TrackPlayer.play(), 1500)
-  if (item.clipId && shouldStartClip) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   if (shouldUpdateHistoryItem) await addOrUpdateHistoryItem(item)
 }
 
