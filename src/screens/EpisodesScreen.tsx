@@ -148,25 +148,20 @@ export class EpisodesScreen extends React.Component<Props, State> {
     })
   }
 
-  _renderEpisodeItem = (hey) => {
-    const { item } = hey
-    console.log(hey)
-
-    return (
-      <EpisodeTableCell
-        description={item.description}
-        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
-        handleNavigationPress={() => this.props.navigation.navigate(
-          PV.RouteNames.EpisodeScreen, { episode: item, includeGoToPodcast: true }
-        )}
-        id={item.id}
-        moreButtonAlignToTop={true}
-        podcastImageUrl={item.podcast_imageUrl || (item.podcast && item.podcast.imageUrl)}
-        podcastTitle={item.podcast_title || (item.podcast && item.podcast.title)}
-        pubDate={item.pubDate}
-        title={item.title} />
-    )
-  }
+  _renderEpisodeItem = ({ item }) => (
+    <EpisodeTableCell
+      description={item.description}
+      handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+      handleNavigationPress={() => this.props.navigation.navigate(
+        PV.RouteNames.EpisodeScreen, { episode: item, includeGoToPodcast: true }
+      )}
+      id={item.id}
+      moreButtonAlignToTop={true}
+      podcastImageUrl={item.podcast_imageUrl || (item.podcast && item.podcast.imageUrl)}
+      podcastTitle={item.podcast_title || (item.podcast && item.podcast.title)}
+      pubDate={item.pubDate}
+      title={item.title} />
+  )
 
   _renderHiddenItem = ({ item }, rowMap) => (
     <SwipeRowBack
