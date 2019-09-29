@@ -83,13 +83,7 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
-    const currentId = await PVTrackPlayer.getCurrentTrack()
-    const queueItems = await PVTrackPlayer.getQueue()
     console.log('playback-track-changed', x)
-    console.log('currentId: ' + currentId)
-    for (const item of queueItems) {
-      console.log('item:', item)
-    }
     await syncNowPlayingItemWithTrack()
   })
 
