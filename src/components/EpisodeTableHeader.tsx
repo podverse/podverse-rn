@@ -74,9 +74,11 @@ export const EpisodeTableHeader = (props: Props) => {
             }
           {
             isDownloading &&
-              <ActivityIndicator
-                onPress={handleMorePress}
-                styles={button.iconOnlyMedium} />
+              <View style={styles.moreButton}>
+                <ActivityIndicator
+                  onPress={handleMorePress}
+                  styles={button.iconOnlyMedium} />
+              </View>
           }
           </View>
       }
