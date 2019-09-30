@@ -203,6 +203,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     await initializePlayerQueue()
   }
 
+  // querySortOverride is only used in _initializeScreenData, and it determines
+  // what sort filter to use for the first query after launch.
   selectLeftItem = async (selectedKey: string, querySortOverride?: string) => {
     if (!selectedKey) {
       this.setState({ queryFrom: null })
