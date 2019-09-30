@@ -313,7 +313,21 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
 }
 
 export const setPlaybackSpeed = async (rate: number) => {
+  await AsyncStorage.setItem(PV.Keys.PLAYER_PLAYBACK_SPEED, JSON.stringify(rate))
   await TrackPlayer.setRate(rate)
+}
+
+export const getPlaybackSpeed = async () => {
+  try {
+    const rate = await AsyncStorage.getItem(PV.Keys.PLAYER_PLAYBACK_SPEED)
+    if (rate) {
+      return parseFloat(rate)
+    } else {
+      return 1.0
+    }
+  } catch (error) {
+    return 1.0
+  }
 }
 
 export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: string) => {
