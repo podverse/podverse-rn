@@ -88,7 +88,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   }
 }
 
-const getSubscribedPodcastsLocally = async () => {
+export const getSubscribedPodcastsLocally = async () => {
   const subscribedPodcastsJSON = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS)
   if (subscribedPodcastsJSON) {
     const subscribedPodcasts = JSON.parse(subscribedPodcastsJSON)

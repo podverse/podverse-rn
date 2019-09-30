@@ -39,15 +39,17 @@ export class EpisodesScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
+    const { subscribedPodcastIds } = this.global.session.userInfo
+
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
       isLoading: true,
       isLoadingMore: false,
-      queryFrom: _subscribedKey,
+      queryFrom: subscribedPodcastIds && subscribedPodcastIds.length > 0 ? _subscribedKey : _allPodcastsKey,
       queryPage: 1,
-      querySort: _mostRecentKey,
+      querySort: subscribedPodcastIds && subscribedPodcastIds.length > 0 ? _mostRecentKey : _topPastWeek,
       searchBarText: '',
       showActionSheet: false
     }
