@@ -9,6 +9,7 @@ import { Divider, Icon, Text } from './'
 type Props = {
   handleSelectLeftItem?: any
   handleSelectRightItem?: any
+  hidePickers?: boolean
   leftItems: any[]
   placeholderLeft?: any
   placeholderRight?: any
@@ -20,7 +21,7 @@ type Props = {
 export const TableSectionSelectors = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
   const isDarkMode = globalTheme === darkTheme
-  const { handleSelectLeftItem, handleSelectRightItem, leftItems = [], placeholderLeft, placeholderRight,
+  const { handleSelectLeftItem, handleSelectRightItem, hidePickers, leftItems = [], placeholderLeft, placeholderRight,
     rightItems = [], selectedLeftItemKey, selectedRightItemKey } = props
 
   const selectedLeftItem = leftItems.find((x) => x.value === selectedLeftItemKey) || {}
@@ -31,50 +32,55 @@ export const TableSectionSelectors = (props: Props) => {
       <Divider />
       <View
         style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
-        <RNPickerSelect
-          items={leftItems}
-          onValueChange={handleSelectLeftItem}
-          placeholder={placeholderLeft || _placeholderDefault}
-          style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
-          useNativeAndroidPickerStyle={false}
-          value={selectedLeftItemKey}>
-          <View style={styles.tableSectionHeaderButton}>
-            <Text style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
-              {selectedLeftItem.label || (placeholderLeft && placeholderLeft.label) || _placeholderDefault.label}
-            </Text>
-            <Icon
-              name='angle-down'
-              size={14}
-              style={[styles.tableSectionHeaderIconLeft, globalTheme.tableSectionHeaderIcon]} />
-          </View>
-        </RNPickerSelect>
         {
-          rightItems.length > 1 &&
-            <RNPickerSelect
-              items={rightItems}
-              onValueChange={handleSelectRightItem}
-              placeholder={placeholderRight || _placeholderDefault}
-              style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
-              useNativeAndroidPickerStyle={false}
-              value={selectedRightItemKey}>
-              <View style={styles.tableSectionHeaderButton}>
-                <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                  {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label}
-                </Text>
-                <Icon
-                  name='angle-down'
-                  size={14}
-                  style={[styles.tableSectionHeaderIconRight, globalTheme.tableSectionHeaderIcon]} />
-              </View>
-            </RNPickerSelect>
+          !hidePickers &&
+            <View style={styles.tableSectionHeaderInner}>
+              <RNPickerSelect
+                items={leftItems}
+                onValueChange={handleSelectLeftItem}
+                placeholder={placeholderLeft || _placeholderDefault}
+                style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
+                useNativeAndroidPickerStyle={false}
+                value={selectedLeftItemKey}>
+                <View style={styles.tableSectionHeaderButton}>
+                  <Text style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
+                    {selectedLeftItem.label || (placeholderLeft && placeholderLeft.label) || _placeholderDefault.label}
+                  </Text>
+                  <Icon
+                    name='angle-down'
+                    size={14}
+                    style={[styles.tableSectionHeaderIconLeft, globalTheme.tableSectionHeaderIcon]} />
+                </View>
+              </RNPickerSelect>
+              {
+                rightItems.length > 1 &&
+                <RNPickerSelect
+                  items={rightItems}
+                  onValueChange={handleSelectRightItem}
+                  placeholder={placeholderRight || _placeholderDefault}
+                  style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
+                  useNativeAndroidPickerStyle={false}
+                  value={selectedRightItemKey}>
+                  <View style={styles.tableSectionHeaderButton}>
+                    <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
+                      {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label}
+                    </Text>
+                    <Icon
+                      name='angle-down'
+                      size={14}
+                      style={[styles.tableSectionHeaderIconRight, globalTheme.tableSectionHeaderIcon]} />
+                  </View>
+                </RNPickerSelect>
 
-        }
-        {
-          rightItems.length === 1 &&
-            <View style={styles.tableSectionHeaderButton}>
-              <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label}
-              </Text>
+              }
+              {
+                rightItems.length === 1 &&
+                <View style={styles.tableSectionHeaderButton}>
+                  <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
+                    {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label}
+                  </Text>
+                </View>
+              }
             </View>
         }
       </View>
@@ -90,10 +96,7 @@ const _placeholderDefault = {
 
 const styles = {
   tableSectionHeader: {
-    alignItems: 'stretch',
-    flexDirection: 'row',
     height: PV.Table.sectionHeader.height,
-    justifyContent: 'space-between',
     paddingLeft: 8,
     paddingRight: 8
   },
@@ -112,6 +115,11 @@ const styles = {
     fontSize: PV.Fonts.sizes.xl,
     lineHeight: PV.Table.sectionHeader.height,
     paddingLeft: 8
+  },
+  tableSectionHeaderInner: {
+    alignItems: 'stretch',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   tableSectionHeaderTextLeft: {
     flex: 0,

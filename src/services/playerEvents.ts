@@ -3,9 +3,9 @@ import { Platform } from 'react-native'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'
-import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, handleResumeAfterClipHasEnded,
-  playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded, setNowPlayingItem,
-  setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition } from './player'
+import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, getPlaybackSpeed,
+  handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded,
+  setNowPlayingItem, setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 
 const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1000)
@@ -57,8 +57,12 @@ module.exports = async () => {
       }
 
       if (Platform.OS === 'ios') {
-        if (x.state === 'paused' || x.state === 'playing') {
+        if (x.state === 'paused') {
           updateUserPlaybackPosition()
+        } else if (x.state === 'playing') {
+          updateUserPlaybackPosition()
+          const rate = await getPlaybackSpeed()
+          PVTrackPlayer.setRate(rate)
         } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition && !nowPlayingItem.clipId) {
           await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
         }
@@ -76,6 +80,11 @@ module.exports = async () => {
         */
         if ((x.state === 2 && currentPosition > 3) || x.state === 3) {
           updateUserPlaybackPosition()
+        }
+
+        if (x.state === 3) {
+          const rate = await getPlaybackSpeed()
+          PVTrackPlayer.setRate(rate)
         }
         // Android's setPlaybackPositionWhenDurationIsAvailable happens in handleSyncNowPlayingItem
       }

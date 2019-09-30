@@ -43,6 +43,8 @@ type State = {
   subCategoryItems: any[]
 }
 
+// isInitialLoad is used to prevent rendering the PodcastsScreen components until
+// it knows which table header dropdown selectors to render (after the first query completes).
 let isInitialLoad = true
 
 export class PodcastsScreen extends React.Component<Props, State> {
@@ -53,6 +55,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
+
     this.state = {
       categoryItems: [],
       endOfResultsReached: false,
@@ -62,9 +65,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
       isLoadingMore: false,
       isRefreshing: false,
       isUnsubscribing: false,
-      queryFrom: _subscribedKey,
+      queryFrom: null,
       queryPage: 1,
-      querySort: _alphabeticalKey,
+      querySort: null,
       searchBarText: '',
       selectedCategory: null,
       selectedSubCategory: null,
@@ -76,8 +79,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { flatListData } = this.state
-
     if (Platform.OS === 'android') {
       Linking.getInitialURL().then((url) => {
         if (url) this._handleOpenURL(url)
@@ -113,12 +114,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       }
       console.log(error)
     }
-
-    this.setState({
-      flatListData,
-      flatListDataTotalCount: null,
-      isLoading: false
-    })
   }
 
   componentWillUnmount() {
@@ -136,8 +131,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await updatePlayerState(currentItem)
       }
       await updatePlaybackState()
-    } else {
-      isInitialLoad = false
     }
 
     updateUserPlaybackPosition()
@@ -198,19 +191,30 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _initializeScreenData = async () => {
     await initPlayerState(this.global)
     await getAuthUserInfo()
-    const { userInfo } = this.global.session
-    await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
+
+    const { subscribedPodcastIds } = this.global.session.userInfo
+    if (subscribedPodcastIds && subscribedPodcastIds.length > 0) {
+      this.selectLeftItem(_subscribedKey, _alphabeticalKey)
+    } else {
+      this.selectLeftItem(_allPodcastsKey, _topPastWeek)
+    }
+
     await initDownloads()
     await initializePlayerQueue()
   }
 
-  selectLeftItem = async (selectedKey: string) => {
+  // querySortOverride is only used in _initializeScreenData, and it determines
+  // what sort filter to use for the first query after launch.
+  selectLeftItem = async (selectedKey: string, querySortOverride?: string) => {
     if (!selectedKey) {
       this.setState({ queryFrom: null })
       return
     }
 
     const { querySort } = this.state
+    let sort = querySort === _alphabeticalKey || querySort === _mostRecentKey ? _topPastWeek : querySort
+    if (querySortOverride) sort = querySortOverride
+    isInitialLoad = false
 
     this.setState({
       endOfResultsReached: false,
@@ -219,7 +223,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       isLoading: true,
       queryFrom: selectedKey,
       queryPage: 1,
-      querySort: querySort === _alphabeticalKey || querySort === _mostRecentKey ? _topPastWeek : querySort
+      querySort: sort
     }, async () => {
       const newState = await this._queryData(selectedKey, this.state)
       this.setState(newState)
@@ -452,6 +456,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
+          hidePickers={isInitialLoad}
           leftItems={leftItems}
           rightItems={!queryFrom || queryFrom === _subscribedKey || queryFrom === _downloadedKey ? [] : rItems}
           selectedLeftItemKey={queryFrom}
