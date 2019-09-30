@@ -3,9 +3,9 @@ import { Platform } from 'react-native'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'
-import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, handleResumeAfterClipHasEnded,
-  playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded, setNowPlayingItem,
-  setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition, getPlaybackSpeed } from './player'
+import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, getPlaybackSpeed,
+  handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded,
+  setNowPlayingItem, setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 
 const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1000)
