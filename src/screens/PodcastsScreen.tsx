@@ -425,10 +425,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _handleDataSettingsWifiOnly = () => {
     AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
     this.setState({ showDataSettingsConfirmDialog: false })
+    this._initializeScreenData()
   }
 
   _handleDataSettingsAllowData = () => {
     this.setState({ showDataSettingsConfirmDialog: false })
+    this._initializeScreenData()
   }
 
   render() {
