@@ -1,10 +1,10 @@
 import debounce from 'lodash/debounce'
-import { Alert, StyleSheet, Linking } from 'react-native'
+import { Alert, Linking, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ButtonGroup, Divider, FlatList, PodcastTableCell, SearchBar, View
   } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { generateAuthorsText, generateCategoriesText } from '../lib/utility'
+import { generateAuthorsText, generateCategoriesText, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
@@ -147,9 +147,8 @@ export class SearchScreen extends React.Component<Props, State> {
 
   _moreButtons = (): any[] => {
     const { selectedPodcast } = this.state
-    const { subscribedPodcastIds } = this.global.session.userInfo
-    const isSubscribed = selectedPodcast && subscribedPodcastIds
-      && subscribedPodcastIds.some((id: any) => id === selectedPodcast.id)
+    const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
+    const isSubscribed = selectedPodcast && subscribedPodcastIds.some((id: any) => id === selectedPodcast.id)
 
     return [
       {

@@ -5,7 +5,7 @@ import * as DownloadState from '../state/actions/downloads'
 import { addDownloadedPodcastEpisode, getDownloadedPodcasts } from './downloadedPodcast'
 import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode } from './downloadingEpisode'
 import { hasValidDownloadingConnection } from './network'
-import { convertBytesToHumanReadableString, getExtensionFromUrl } from './utility'
+import { convertBytesToHumanReadableString, getExtensionFromUrl, safelyUnwrapNestedVariable } from './utility'
 
 export enum DownloadStatus {
   DOWNLOADING = 'DOWNLOADING',
@@ -66,8 +66,8 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
 
     const downloadedPodcasts = await getDownloadedPodcasts()
     for (const downloadedPodcast of downloadedPodcasts) {
-      if (downloadedPodcast.episodes &&
-        downloadedPodcast.episodes.some((x: any) => x.id === episode.id)) return
+      const episodes = safelyUnwrapNestedVariable(() => downloadedPodcast.episodes, [])
+      if (episodes.some((x: any) => x.id === episode.id)) return
     }
   }
 

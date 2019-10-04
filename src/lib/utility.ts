@@ -2,6 +2,15 @@ import he from 'he'
 import { PV } from '../resources'
 import { NowPlayingItem } from './NowPlayingItem'
 
+export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
+  try {
+    const value = func()
+    return (value === null || value === undefined) ? fallbackValue : value
+  } catch (e) {
+    return fallbackValue
+  }
+}
+
 export const readableDate = (date: string) => {
   const dateObj = new Date(date)
   const year = dateObj.getFullYear()
@@ -123,7 +132,7 @@ export const combineAndSortPlaylistItems = (episodes: [any], mediaRefs: [any], i
   const remainingPlaylistItems = [] as any[]
 
   const unsortedItems = allPlaylistItems.filter((x: any) => {
-    const isSortedItem = itemsOrder.some((id) => x.id === id)
+    const isSortedItem = Array.isArray(itemsOrder) && itemsOrder.some((id) => x.id === id)
     if (!isSortedItem) {
       return x
     } else {

@@ -10,7 +10,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, convertToNowPlayingItem, NowPlayingItem
   } from '../lib/NowPlayingItem'
-import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
+import { decodeHTMLString, readableDate, removeHTMLFromString, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
@@ -616,8 +616,8 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { player, session } = this.global
     const { episode, nowPlayingItem } = player
     const podcast = (episode && episode.podcast) || {}
-    const { userInfo } = session
-    const isSubscribed = userInfo.subscribedPodcastIds.some((x: string) => nowPlayingItem && nowPlayingItem.podcastId === x)
+    const subscribedPodcastIds = safelyUnwrapNestedVariable(() => session.userInfo.subscribedPodcastIds, [])
+    const isSubscribed = subscribedPodcastIds.some((x: string) => nowPlayingItem && nowPlayingItem.podcastId === x)
 
     const items = [
       {

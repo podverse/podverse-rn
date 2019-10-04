@@ -119,7 +119,7 @@ export const toggleSubscribeToPodcast = async (id: string) => {
   let isUnsubscribing = false
   if (itemsString) {
     const podcastIds = JSON.parse(itemsString)
-    isUnsubscribing = podcastIds.some((x: string) => id === x)
+    isUnsubscribing = Array.isArray(podcastIds) && podcastIds.some((x: string) => id === x)
   }
 
   let items
@@ -188,6 +188,7 @@ export const sortPodcastArrayAlphabetically = (podcasts: any[]) => {
 }
 
 export const insertOrRemovePodcastFromAlphabetizedArray = (podcasts: any[], podcast: any) => {
+  if (!Array.isArray(podcasts)) return []
   if (podcasts.some((x) => x.id === podcast.id)) {
     return podcasts.filter((x) => x.id !== podcast.id)
   } else {
@@ -198,6 +199,7 @@ export const insertOrRemovePodcastFromAlphabetizedArray = (podcasts: any[], podc
 }
 
 const addOrRemovePodcastIdFromArray = (podcastIds: any[], podcastId: string) => {
+  if (!Array.isArray(podcastIds)) return []
   if (podcastIds.some((x) => x === podcastId)) {
     return podcastIds.filter((x) => x !== podcastId)
   } else {

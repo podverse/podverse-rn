@@ -6,7 +6,7 @@ import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCel
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { decodeHTMLString, removeHTMLFromString } from '../lib/utility'
+import { decodeHTMLString, removeHTMLFromString, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { core } from '../styles'
@@ -49,7 +49,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    const { subscribedPlaylistIds } = this.global.session.userInfo
+    const subscribedPlaylistIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPlaylistIds, [])
     const playlist = this.props.navigation.getParam('playlist')
     const playlistId = (playlist && playlist.id) || this.props.navigation.getParam('playlistId')
     const isSubscribed = subscribedPlaylistIds.some((x: string) => playlistId)
@@ -157,7 +157,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
     this.setState({ isSubscribing: true }, async () => {
       try {
         await toggleSubscribeToPlaylist(id, this.global)
-        const { subscribedPlaylistIds } = this.global.session.userInfo
+        const subscribedPlaylistIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPlaylistIds, [])
         const isSubscribed = subscribedPlaylistIds.some((x: string) => id)
         this.setState({
           isSubscribed,

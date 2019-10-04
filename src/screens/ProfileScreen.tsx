@@ -6,7 +6,7 @@ import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, Messa
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { generateAuthorsText, generateCategoriesText, readableDate } from '../lib/utility'
+import { generateAuthorsText, generateCategoriesText, readableDate, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
 import { getLoggedInUserMediaRefs, getLoggedInUserPlaylists, getUserMediaRefs, getUserPlaylists } from '../services/user'
@@ -60,7 +60,8 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    const { id, subscribedUserIds } = this.global.session.userInfo
+    const id = safelyUnwrapNestedVariable(() => this.global.session.userInfo.id, '')
+    const subscribedUserIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedUserIds, [])
     const user = this.props.navigation.getParam('user')
     const userId = (user && user.id) || this.props.navigation.getParam('userId')
     const isLoggedInUserProfile = userId === id
@@ -281,7 +282,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     this.setState({ isSubscribing: true }, async () => {
       try {
         await toggleSubscribeToUser(id)
-        const { subscribedUserIds } = this.global.session.userInfo
+        const subscribedUserIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedUserIds, [])
         const isSubscribed = subscribedUserIds.some((x: string) => userId)
         this.setState({
           isSubscribed,
