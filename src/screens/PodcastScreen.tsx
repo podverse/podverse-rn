@@ -9,7 +9,7 @@ import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
+import { decodeHTMLString, readableDate, removeHTMLFromString, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
@@ -367,7 +367,8 @@ export class PodcastScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { isLoading, isLoadingMore, isRefreshing, isSubscribing, podcast, podcastId, querySort,
       selectedItem, showActionSheet, viewType } = this.state
-    const isSubscribed = this.global.session.userInfo.subscribedPodcastIds.some((x: string) => x === podcastId)
+    const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
+    const isSubscribed = subscribedPodcastIds.some((x: string) => x === podcastId)
     let { flatListData, flatListDataTotalCount } = this.state
     const { autoDownloadSettings } = this.global
     const autoDownloadOn = (podcast && autoDownloadSettings[podcast.id])

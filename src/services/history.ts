@@ -210,7 +210,7 @@ export const checkIfPlayingFromHistory = async () => {
   const historyItems = await getHistoryItemsLocally()
   const id = nowPlayingItem.clipId || nowPlayingItem.episodeId
 
-  if (!historyItems.some((x: any) => checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId))) {
+  if (!Array.isArray(historyItems) || !historyItems.some((x: any) => checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId))) {
     return false
   }
 

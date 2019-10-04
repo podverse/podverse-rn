@@ -129,8 +129,8 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           <QueueTableCell
             episodePubDate={data.pubDate}
             episodeTitle={data.title}
-            podcastImageUrl={data.podcast.imageUrl}
-            podcastTitle={data.podcast.title}
+            podcastImageUrl={(data.podcast && data.podcast.imageUrl) || ''}
+            podcastTitle={(data.podcast && data.podcast.title) || ''}
             showMoveButton={true} />
           <Divider style={styles.tableCellDivider} />
         </View>
