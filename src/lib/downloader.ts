@@ -170,7 +170,7 @@ export const initDownloads = async () => {
         episodeTitle: episode.title,
         percent: 0,
         podcastImageUrl: episode.podcast.imageUrl,
-        podcastTitle: episode.podcast.title,
+        podcastTitle: (episode.podcast && episode.podcast.title) || '',
         status: downloadTask.state
       } as DownloadState.DownloadTaskState)
     }

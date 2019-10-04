@@ -135,8 +135,8 @@ export class PlaylistScreen extends React.Component<Props, State> {
             { episode: item })
           }
           id={item.id}
-          podcastImageUrl={item.podcast.imageUrl}
-          podcastTitle={item.podcast.title}
+          podcastImageUrl={(item.podcast && item.podcast.imageUrl) || ''}
+          podcastTitle={(item.podcast && item.podcast.title) || ''}
           pubDate={item.pubDate}
           title={item.title} />
       )

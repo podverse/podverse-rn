@@ -71,7 +71,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       this.props.navigation.setParams({
         episodeId: episode.id,
         episodeTitle: episode.title,
-        podcastTitle: episode.podcast.title
+        podcastTitle: (episode.podcast && episode.podcast.title) || ''
       })
     }
 
