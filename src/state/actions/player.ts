@@ -1,12 +1,11 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
-import { addOrUpdateHistoryItem, addOrUpdateHistoryItemLocally, getAdjacentItemFromHistoryLocally, getHistoryItemsLocally } from '../../services/history'
-import { clearNowPlayingItem as clearNowPlayingItemService, getContinuousPlaybackMode, initializePlayerQueue as initializePlayerQueueService,
-  loadItemAndPlayTrack as loadItemAndPlayTrackService, playNextFromQueue as playNextFromQueueService, PVTrackPlayer,
-  setNowPlayingItem as setNowPlayingItemService, setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService,
-  updateUserPlaybackPosition} from '../../services/player'
-import { getNextFromQueue } from '../../services/queue'
+import { getAdjacentItemFromHistoryLocally } from '../../services/history'
+import { clearNowPlayingItem as clearNowPlayingItemService, getContinuousPlaybackMode,
+  initializePlayerQueue as initializePlayerQueueService, loadItemAndPlayTrack as loadItemAndPlayTrackService,
+  playNextFromQueue as playNextFromQueueService, PVTrackPlayer, setNowPlayingItem as setNowPlayingItemService,
+  setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService } from '../../services/player'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
   const globalState = getGlobal()

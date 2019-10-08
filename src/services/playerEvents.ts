@@ -14,7 +14,6 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   if (!currentNowPlayingItem) return
   await setNowPlayingItem(currentNowPlayingItem)
   const isPlayingFromHistory = await checkIfPlayingFromHistory()
-  if (!currentNowPlayingItem) return
   if (!isPlayingFromHistory && currentNowPlayingItem) addOrUpdateHistoryItem(currentNowPlayingItem)
   if (currentNowPlayingItem && currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)

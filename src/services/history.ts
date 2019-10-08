@@ -87,7 +87,7 @@ export const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem) => {
 const addOrUpdateHistoryItemOnServer = async (nowPlayingItem: NowPlayingItem) => {
   await addOrUpdateHistoryItemLocally(nowPlayingItem)
   const bearerToken = await getBearerToken()
-  const response = await request({
+  request({
     endpoint: '/user/add-or-update-history-item',
     method: 'PATCH',
     headers: {
@@ -97,8 +97,6 @@ const addOrUpdateHistoryItemOnServer = async (nowPlayingItem: NowPlayingItem) =>
     body: { historyItem: nowPlayingItem },
     opts: { credentials: 'include' }
   })
-
-  return response && response.data
 }
 
 const updateHistoryItemPlaybackPositionLocally = async (item: NowPlayingItem) => {
