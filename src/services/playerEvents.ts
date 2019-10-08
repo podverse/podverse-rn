@@ -17,7 +17,7 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   if (!isPlayingFromHistory && currentNowPlayingItem) addOrUpdateHistoryItem(currentNowPlayingItem)
   if (currentNowPlayingItem && currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
-  if (Platform.OS === 'android' && !currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
+  if (!currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
     debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
   }
 }
@@ -62,13 +62,11 @@ module.exports = async () => {
           updateUserPlaybackPosition()
           const rate = await getPlaybackSpeed()
           PVTrackPlayer.setRate(rate)
-        } else if (x.state === 'ready' && nowPlayingItem.userPlaybackPosition && !nowPlayingItem.clipId) {
-          await setPlaybackPositionWhenDurationIsAvailable(nowPlayingItem.userPlaybackPosition)
         }
       } else if (Platform.OS === 'android') {
         /*
           state key for android
-          NOTE: ready and pause use the same number, so there is no ready state for Android :[
+          NOTE: ready and pause use the same number, so there is no true ready state for Android :[
           none      0
           stopped   1
           paused    2
@@ -85,7 +83,6 @@ module.exports = async () => {
           const rate = await getPlaybackSpeed()
           PVTrackPlayer.setRate(rate)
         }
-        // Android's setPlaybackPositionWhenDurationIsAvailable happens in handleSyncNowPlayingItem
       }
     }
   })

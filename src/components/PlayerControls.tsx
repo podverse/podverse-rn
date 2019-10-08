@@ -84,8 +84,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                   if (checkIfIdMatchesClipIdOrEpisodeId(id, mostRecentHistoryItem.clipId, mostRecentHistoryItem.episodeId)) {
                     loadAdjacentItemFromHistory(shouldStartPlayback)
                   } else {
-                    const shouldStartClip = true
-                    loadItemAndPlayTrack(historyItems[0], shouldStartPlayback, shouldStartClip)
+                    const skipUpdateHistory = true
+                    loadItemAndPlayTrack(historyItems[0], shouldStartPlayback, skipUpdateHistory)
                   }
                 }
               }

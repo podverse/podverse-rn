@@ -259,8 +259,7 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   _handleNavigationPress = (selectedItem: any) => {
     const shouldPlay = true
-    const shouldStartClip = !!selectedItem.clipId
-    loadItemAndPlayTrack(selectedItem, shouldPlay, shouldStartClip)
+    loadItemAndPlayTrack(selectedItem, shouldPlay)
   }
 
   render() {

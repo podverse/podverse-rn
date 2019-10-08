@@ -126,10 +126,8 @@ export const loadAdjacentItemFromHistory = async (shouldStartPlayback: boolean, 
 
   if (newItemFromHistory) {
     await updatePlayerState(newItemFromHistory)
-    const shouldStartClip = !!newItemFromHistory.clipId
-    const shouldUpdateHistoryItem = false
-    await loadItemAndPlayTrackService(newItemFromHistory, shouldStartPlayback,
-      shouldStartClip, shouldUpdateHistoryItem)
+    const skipUpdateHistory = true
+    await loadItemAndPlayTrackService(newItemFromHistory, shouldStartPlayback, skipUpdateHistory)
   }
 
   const globalState = getGlobal()
@@ -146,11 +144,11 @@ export const playNextFromQueue = async () => {
 }
 
 export const loadItemAndPlayTrack = async (
-  item: NowPlayingItem, shouldPlay: boolean, shouldStartClip: boolean) => {
+  item: NowPlayingItem, shouldPlay: boolean) => {
 
   if (item) {
     await updatePlayerState(item)
-    await loadItemAndPlayTrackService(item, shouldPlay, shouldStartClip)
+    await loadItemAndPlayTrackService(item, shouldPlay)
   }
 
   const globalState = getGlobal()

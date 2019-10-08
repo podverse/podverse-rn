@@ -77,9 +77,15 @@ export const removeHistoryItem = async (item: NowPlayingItem) => {
   return useServerData ? removeHistoryItemOnServer(item.episodeId, item.clipId) : removeHistoryItemLocally(item)
 }
 
+// NOTE: userPlaybackPosition should only ever be updated in the updateUserPlaybackPosition function!
+// Keep the userPlaybackPosition before adding to the filteredItems array.
 export const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem) => {
   const items = await getHistoryItemsLocally()
+  const savedItem = items.find((x: NowPlayingItem) =>
+    checkIfIdMatchesClipIdOrEpisodeId(x.clipId || x.episodeId, item.clipId, item.episodeId))
+  const userPlaybackPosition = savedItem && savedItem.userPlaybackPosition || 0
   const filteredItems = filterItemFromHistoryItems(items, item)
+  item.userPlaybackPosition = userPlaybackPosition
   filteredItems.unshift(item)
   return setAllHistoryItemsLocally(filteredItems)
 }

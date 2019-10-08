@@ -193,10 +193,12 @@ export const initializePlayerQueue = async () => {
   return item
 }
 
-export const loadItemAndPlayTrack = async (
-  item: NowPlayingItem, shouldPlay: boolean, shouldStartClip: boolean, shouldUpdateHistoryItem: boolean = true) => {
-  if (shouldUpdateHistoryItem) await addOrUpdateHistoryItem(item)
+export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boolean, skipUpdateHistory?: boolean) => {
   updateUserPlaybackPosition()
+
+  // Episodes and clips must be already loaded in history
+  // in order to be handled in playerEvents > handleSyncNowPlayingItem.
+  if (!skipUpdateHistory) await addOrUpdateHistoryItem(item)
 
   await TrackPlayer.reset()
   const track = await createTrack(item) as Track
