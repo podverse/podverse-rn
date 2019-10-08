@@ -203,8 +203,7 @@ export class QueueScreen extends React.Component<Props, State> {
         navigation.goBack(null)
         navigation.navigate(PV.RouteNames.PlayerScreen)
         const shouldPlay = true
-        const shouldStartClip = !!item.clipId
-        await loadItemAndPlayTrack(item, shouldPlay, shouldStartClip)
+        await loadItemAndPlayTrack(item, shouldPlay)
         const nowPlayingItem = await getNowPlayingItem()
         getQueueItems()
         this.setState({

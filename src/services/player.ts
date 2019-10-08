@@ -1,15 +1,14 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 import TrackPlayer, { Track } from 'react-native-track-player'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
 import { checkIfIdMatchesClipIdOrEpisodeId, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { addOrUpdateHistoryItemLocally, getHistoryItem, getHistoryItems, getHistoryItemsLocally,
-  updateHistoryItemPlaybackPosition, 
-  addOrUpdateHistoryItem} from './history'
-import { filterItemFromQueueItems, getQueueItems, getQueueItemsLocally, removeQueueItem, addQueueItemNext, addQueueItemLast } from './queue'
+import { addOrUpdateHistoryItem, getHistoryItem, getHistoryItems, getHistoryItemsLocally,
+  updateHistoryItemPlaybackPosition } from './history'
+import { addQueueItemLast, addQueueItemNext, filterItemFromQueueItems, getQueueItems, getQueueItemsLocally,
+  removeQueueItem } from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
 TrackPlayer.setupPlayer({
@@ -194,9 +193,12 @@ export const initializePlayerQueue = async () => {
   return item
 }
 
-export const loadItemAndPlayTrack = async (
-  item: NowPlayingItem, shouldPlay: boolean, shouldStartClip: boolean, shouldUpdateHistoryItem: boolean = true) => {
+export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boolean, skipUpdateHistory?: boolean) => {
   updateUserPlaybackPosition()
+
+  // Episodes and clips must be already loaded in history
+  // in order to be handled in playerEvents > handleSyncNowPlayingItem.
+  if (!skipUpdateHistory) await addOrUpdateHistoryItem(item)
 
   await TrackPlayer.reset()
   const track = await createTrack(item) as Track
@@ -204,7 +206,6 @@ export const loadItemAndPlayTrack = async (
   await syncPlayerWithQueue()
 
   if (shouldPlay) setTimeout(() => TrackPlayer.play(), 1500)
-  if (shouldUpdateHistoryItem) await addOrUpdateHistoryItem(item)
 }
 
 export const playNextFromQueue = async () => {

@@ -22,8 +22,7 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
       onPress: async () => {
         await handleDismiss()
         const shouldPlay = true
-        const shouldStartClip = !!item.clipId
-        await loadItemAndPlayTrack(item, shouldPlay, shouldStartClip)
+        await loadItemAndPlayTrack(item, shouldPlay)
       }
     })
   } else {
@@ -37,8 +36,7 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
 
           await handleDismiss()
           const shouldPlay = true
-          const shouldStartClip = !!item.clipId
-          await loadItemAndPlayTrack(item, shouldPlay, shouldStartClip)
+          await loadItemAndPlayTrack(item, shouldPlay)
         }
       },
       {
