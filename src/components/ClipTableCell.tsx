@@ -87,9 +87,9 @@ export class ClipTableCell extends React.PureComponent<Props> {
         }
         {
           isDownloading &&
-          <ActivityIndicator
-            onPress={handleMorePress}
-            styles={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
+            <ActivityIndicator
+              onPress={handleMorePress}
+              styles={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
         }
       </View>
     )

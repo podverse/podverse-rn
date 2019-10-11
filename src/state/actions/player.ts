@@ -67,6 +67,10 @@ export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldP
           nowPlayingItem: null,
           playbackState: PVTrackPlayer.getState(),
           showMiniPlayer: false
+        },
+        screenPlayer: {
+          ...globalState.screenPlayer,
+          isLoading: false
         }
       })
     }

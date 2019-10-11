@@ -47,20 +47,20 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
                 </View>
                 {
                   playbackState !== PVTrackPlayer.STATE_BUFFERING &&
-                  <TouchableOpacity onPress={() => togglePlay(this.global)}>
-                    <Icon
-                      color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
-                      name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
-                      size={30}
-                      style={styles.button} />
-                  </TouchableOpacity>
+                    <TouchableOpacity onPress={() => togglePlay(this.global)}>
+                      <Icon
+                        color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
+                        name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
+                        size={30}
+                        style={styles.button} />
+                    </TouchableOpacity>
                 }
                 {
                   playbackState === PVTrackPlayer.STATE_BUFFERING &&
-                  <ActivityIndicator
-                    color={globalTheme.activityIndicator.color}
-                    size='large'
-                    style={styles.button} />
+                    <ActivityIndicator
+                      color={globalTheme.activityIndicator.color}
+                      size='large'
+                      style={styles.button} />
                 }
               </View>
             </TouchableWithoutFeedback>

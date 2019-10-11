@@ -44,10 +44,12 @@ export const request = async (req: PVRequest, nsfwMode?: boolean) => {
     console.log('error message:', error.message)
     console.log('error response:', error.response)
 
+    // NOTE: Maybe we don't want these alerts handled in this global file, and instead handle them in the
+    // components that use the requests.
     if (error.response && error.response.code === PV.ResponseErrorCodes.PREMIUM_MEMBERSHIP_REQUIRED) {
       Alert.alert(PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.title, PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.message, [])
     } else if (!error.response) {
-      Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+      // Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
     }
 
     throw error

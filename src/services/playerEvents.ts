@@ -13,19 +13,28 @@ const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsA
 const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem) => {
   if (!currentNowPlayingItem) return
   await setNowPlayingItem(currentNowPlayingItem)
-  const isPlayingFromHistory = await checkIfPlayingFromHistory()
-  if (!isPlayingFromHistory && currentNowPlayingItem) addOrUpdateHistoryItem(currentNowPlayingItem)
   if (currentNowPlayingItem && currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
-  PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
+  const isPlayingFromHistory = await checkIfPlayingFromHistory()
   if (!currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
     debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
   }
+  if (!isPlayingFromHistory && currentNowPlayingItem) addOrUpdateHistoryItem(currentNowPlayingItem)
+  PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
 }
 
 const syncNowPlayingItemWithTrack = async () => {
-  const currentTrackId = await PVTrackPlayer.getCurrentTrack()
-  const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentTrackId)
-  if (currentNowPlayingItem) await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
+  // This setTimeout is an attempt to prevent the following:
+  // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
+  // - Sometimes the debouncedSetPlaybackPosition seems to load with the previous track's playback position,
+  // instead of the new track's playback position.
+  // NOTE: This timeout will lead to a delay before every clip starts, where it starts playing from the episode start
+  // before playing from the clip start. Hopefully we can iron this out sometime...
+
+  setTimeout(async () => {
+    const currentTrackId = await PVTrackPlayer.getCurrentTrack()
+    const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentTrackId)
+    if (currentNowPlayingItem) await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
+  }, 250)
 }
 
 module.exports = async () => {
