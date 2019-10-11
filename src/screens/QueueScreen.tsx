@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
   navHeaderTextButton: {
     marginLeft: 2,
     textAlign: 'right',
-    width: 66
+    width: 72
   },
   tableCellDivider: {
     marginBottom: 2

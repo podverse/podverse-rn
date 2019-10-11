@@ -23,7 +23,8 @@ TrackPlayer.setupPlayer({
       TrackPlayer.CAPABILITY_SEEK_TO
     ],
     stopWithApp: true,
-    alwaysPauseOnInterruption: true
+    alwaysPauseOnInterruption: true,
+    jumpInterval: PV.Player.jumpSeconds
   })
 })
 
