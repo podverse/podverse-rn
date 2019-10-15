@@ -10,11 +10,18 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.grayDarker,
     borderColor: PV.Colors.grayDark
   },
+  actionSheetButtonDelete: {
+    backgroundColor: PV.Colors.grayDarkest,
+    borderColor: PV.Colors.grayDark
+  },
   actionSheetButtonDisabled: {
     backgroundColor: PV.Colors.grayDarkest
   },
   actionSheetButtonText: {
     color: PV.Colors.white
+  },
+  actionSheetButtonTextDelete: {
+    color: PV.Colors.redLighter
   },
   actionSheetButtonTextCancel: {
     color: PV.Colors.white
@@ -177,6 +184,11 @@ export const lightTheme = StyleSheet.create({
     backgroundColor: PV.Colors.grayLightest,
     borderColor: PV.Colors.grayLighter
   },
+  actionSheetButtonDelete: {
+    backgroundColor: PV.Colors.white,
+    borderColor: PV.Colors.grayLighter,
+    color: PV.Colors.redDarker
+  },
   actionSheetButtonDisabled: {
     backgroundColor: PV.Colors.white
   },
@@ -185,6 +197,9 @@ export const lightTheme = StyleSheet.create({
   },
   actionSheetButtonTextCancel: {
     color: PV.Colors.black
+  },
+  actionSheetButtonTextDelete: {
+    color: PV.Colors.red
   },
   actionSheetButtonTextDisabled: {
     color: PV.Colors.grayDarkest
