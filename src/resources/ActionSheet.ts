@@ -5,6 +5,7 @@ import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
 import { IActionSheet } from '../resources/Interfaces'
 import { addItemToPlayerQueueLast, addItemToPlayerQueueNext } from '../services/player'
+import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { PV } from './PV'
 
@@ -115,6 +116,17 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
       await handleDismiss()
     }
   })
+
+  if (isDownloaded) {
+    buttons.push({
+      key: 'delete',
+      text: 'Delete',
+      onPress: async () => {
+        removeDownloadedPodcastEpisode(item.episodeId)
+        await handleDismiss()
+      }
+    })
+  }
 
   if (navigation.getParam('includeGoToPodcast')) {
     buttons.push({
