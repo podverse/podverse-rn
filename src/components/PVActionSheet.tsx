@@ -33,20 +33,32 @@ export class PVActionSheet extends React.Component<Props, State> {
 
     items.forEach((item, index) => {
       const buttonStyle = [styles.button]
+
       if (index === 0 && !message && !title) {
         buttonStyle.push(styles.buttonTop)
       } else if (index === items.length - 1) {
         buttonStyle.push(styles.buttonBottom)
       }
 
+      if (item.key === 'delete') {
+        buttonStyle.push(globalTheme.actionSheetButtonDelete)
+      } else {
+        buttonStyle.push(globalTheme.actionSheetButton)
+      }
+
+      let buttonTextStyle = globalTheme.actionSheetButtonText
+      if (item.key === 'delete') {
+        buttonTextStyle = globalTheme.actionSheetButtonTextDelete
+      }
+
       buttons.push(
         <TouchableHighlight
           key={item.key}
           onPress={item.onPress}
-          style={[...buttonStyle, globalTheme.actionSheetButton]}
+          style={buttonStyle}
           underlayColor={globalTheme.actionSheetButtonUnderlay.backgroundColor}>
           <View style={styles.buttonRow}>
-            <Text style={[styles.buttonText, globalTheme.actionSheetButtonText]}>
+            <Text style={[styles.buttonText, buttonTextStyle]}>
               {item.text}
             </Text>
             {

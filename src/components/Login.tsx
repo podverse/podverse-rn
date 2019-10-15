@@ -3,6 +3,7 @@ import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View 
 import { PV } from '../resources'
 
 type Props = {
+  bottomButtons: any
   isLoading: boolean
   onLoginPressed?: any
   style?: any
@@ -40,7 +41,7 @@ export class Login extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, style } = this.props
+    const { bottomButtons, isLoading, style } = this.props
     const { password } = this.state
     const disabled = !this.inputsValid()
     const disabledStyle = disabled ? { backgroundColor: PV.Colors.gray } : null
@@ -73,6 +74,7 @@ export class Login extends React.Component<Props, State> {
               : <Text style={[styles.signInButtonText, disabledTextStyle]}>Login</Text>
           }
         </TouchableOpacity>
+        {bottomButtons}
       </View>
     )
   }

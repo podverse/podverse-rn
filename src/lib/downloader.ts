@@ -216,6 +216,15 @@ export const resumeDownloadTask = async (episodeId: string) => {
   }
 }
 
+export const refreshDownloads = async () => {
+  const downloadingEpisodes = await getDownloadingEpisodes()
+  downloadTasks.forEach((dTask: any) => {
+    if (downloadingEpisodes.some((episode: any) => episode.id === dTask.id)) {
+      dTask.resume()
+    }
+  })
+}
+
 export const pauseDownloadTask = (episodeId: string) => {
   const task = downloadTasks.find((task) => task.id === episodeId)
   if (task) task.pause()
