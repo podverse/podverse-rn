@@ -22,6 +22,7 @@ type State = {
   flatListDataTotalCount: number | null
   isLoading: boolean
   isLoadingMore: boolean
+  isRefreshing: boolean
   queryFrom: string | null
   queryPage: number
   querySort: string | null
@@ -47,6 +48,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       flatListDataTotalCount: null,
       isLoading: true,
       isLoadingMore: false,
+      isRefreshing: false,
       queryFrom: subscribedPodcastIds && subscribedPodcastIds.length > 0 ? _subscribedKey : _allPodcastsKey,
       queryPage: 1,
       querySort: subscribedPodcastIds && subscribedPodcastIds.length > 0 ? _mostRecentKey : _topPastWeek,
@@ -117,6 +119,20 @@ export class EpisodesScreen extends React.Component<Props, State> {
         })
       }
     }
+  }
+
+  _onRefresh = () => {
+    const { queryFrom } = this.state
+
+    this.setState({
+      isRefreshing: true
+    }, async () => {
+      const newState = await this._queryData(queryFrom, {
+        queryPage: 1,
+        searchAllFieldsText: this.state.searchBarText
+      })
+      this.setState(newState)
+    })
   }
 
   _ListHeaderComponent = () => {
@@ -223,8 +239,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, flatListDataTotalCount, queryFrom, isLoading, isLoadingMore, querySort,
-      searchBarText, selectedItem, showActionSheet } = this.state
+    const { flatListData, flatListDataTotalCount, queryFrom, isLoading, isLoadingMore, isRefreshing,
+      querySort, searchBarText, selectedItem, showActionSheet } = this.state
     const { navigation } = this.props
 
     return (
@@ -249,10 +265,12 @@ export class EpisodesScreen extends React.Component<Props, State> {
               extraData={flatListData}
               handleSearchNavigation={this._handleSearchNavigation}
               isLoadingMore={isLoadingMore}
+              isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               ListHeaderComponent={queryFrom !== _downloadedKey ? this._ListHeaderComponent : null}
               noSubscribedPodcasts={queryFrom === _subscribedKey && (!flatListData || flatListData.length === 0) && !searchBarText}
               onEndReached={this._onEndReached}
+              onRefresh={queryFrom !== _downloadedKey ? this._onRefresh : null}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderEpisodeItem}
               resultsText='episodes' />
@@ -272,17 +290,21 @@ export class EpisodesScreen extends React.Component<Props, State> {
   } = {}) => {
     const newState = {
       isLoading: false,
-      isLoadingMore: false
+      isLoadingMore: false,
+      isRefreshing: false
     } as State
 
     const wasAlerted = await alertIfNoNetworkConnection('load episodes')
     if (wasAlerted) return newState
 
     try {
-      const { flatListData, queryFrom, querySort } = this.state
+      let { flatListData } = this.state
+      const { queryFrom, querySort } = this.state
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
       const nsfwMode = this.global.settings.nsfwMode
       const { queryPage, searchAllFieldsText } = queryOptions
+
+      flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
       const sortingItems = queryFrom === _downloadedKey ? rightItems(true) : rightItems(false)
 

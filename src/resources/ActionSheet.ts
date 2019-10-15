@@ -5,6 +5,7 @@ import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
 import { IActionSheet } from '../resources/Interfaces'
 import { addItemToPlayerQueueLast, addItemToPlayerQueueNext } from '../services/player'
+import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { PV } from './PV'
 
@@ -116,6 +117,17 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
     }
   })
 
+  if (isDownloaded) {
+    buttons.push({
+      key: 'delete',
+      text: 'Delete',
+      onPress: async () => {
+        removeDownloadedPodcastEpisode(item.episodeId)
+        await handleDismiss()
+      }
+    })
+  }
+
   if (navigation.getParam('includeGoToPodcast')) {
     buttons.push({
       key: 'goToPodcast',
@@ -131,7 +143,7 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
 }
 
 const hasTriedAlert = async (handleDismiss: any, navigation: any, download: boolean) => {
-  const netInfoState = await NetInfo.getConnectionInfo()
+  const netInfoState = await NetInfo.fetch()
   let hasTried = AsyncStorage.getItem(PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI)
   if (!download) {
     hasTried = AsyncStorage.getItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI)

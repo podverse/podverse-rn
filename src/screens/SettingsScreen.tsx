@@ -1,8 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import NetInfo from '@react-native-community/netinfo'
 import { StyleSheet } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { Icon, SwitchWithText, Text, View } from '../components'
+import { refreshDownloads } from '../lib/downloader'
 import { PV } from '../resources'
 import { darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
@@ -52,6 +54,13 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   _toggleDownloadingWifiOnly = (value: boolean) => {
+
+    NetInfo.fetch().then((state) => {
+      if (!value && state.type === 'cellular') {
+        refreshDownloads()
+      }
+    })
+
     this.setState({ downloadingWifiOnly: value }, async () => {
       value ? await AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
         : await AsyncStorage.removeItem(PV.Keys.DOWNLOADING_WIFI_ONLY)

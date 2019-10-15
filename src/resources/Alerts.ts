@@ -31,6 +31,10 @@ export const Alerts = {
     message: 'Sign up for a premium account to use this feature.',
     title: 'Premium Membership Required'
   },
+  RESET_PASSWORD_SUCCESS: {
+    message: 'Please check your inbox. If this email address exists in our system, you should receive a reset password email shortly.',
+    title: 'Reset Password Sent'
+  },
   SIGN_UP_ERROR: {
     title: 'Sign Up Error'
   },
