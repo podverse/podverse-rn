@@ -69,7 +69,7 @@ const maximumSpeedSelectOptions = [
 ]
 
 export const Player = {
-  jumpSeconds: 20,
+  jumpSeconds: 30,
   miniJumpSeconds: 1,
   speeds,
   maximumSpeedSelectOptions
