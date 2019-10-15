@@ -131,7 +131,7 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
 }
 
 const hasTriedAlert = async (handleDismiss: any, navigation: any, download: boolean) => {
-  const netInfoState = await NetInfo.getConnectionInfo()
+  const netInfoState = await NetInfo.fetch()
   let hasTried = AsyncStorage.getItem(PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI)
   if (!download) {
     hasTried = AsyncStorage.getItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI)
