@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, StyleSheet, View, TouchableWithoutFeedback } from 'react-native'
+import { ActivityIndicator, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Icon } from './'

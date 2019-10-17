@@ -2,11 +2,12 @@ import { Image, StyleSheet, Switch } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources'
 import { core } from '../styles'
-import { ActivityIndicator, Icon, SubscribeButton, Text, View } from './'
+import { ActivityIndicator, Icon, SettingsButton, SubscribeButton, Text, View } from './'
 
 type Props = {
   autoDownloadOn?: boolean
   handleToggleAutoDownload?: any
+  handleToggleSettings: any
   handleToggleSubscribe: any
   isLoading?: boolean
   isNotFound?: boolean
@@ -17,8 +18,8 @@ type Props = {
 }
 
 export const PodcastTableHeader = (props: Props) => {
-  const { autoDownloadOn, handleToggleAutoDownload, handleToggleSubscribe, isLoading, isNotFound, isSubscribed,
-    isSubscribing, podcastImageUrl, podcastTitle = 'Untitled podcast' } = props
+  const { autoDownloadOn, handleToggleAutoDownload, handleToggleSettings, handleToggleSubscribe, isLoading,
+    isNotFound, isSubscribed, isSubscribing, podcastImageUrl, podcastTitle = 'Untitled podcast' } = props
 
   return (
     <View style={core.row}>
@@ -45,19 +46,24 @@ export const PodcastTableHeader = (props: Props) => {
                   isSubscribing={isSubscribing} />
               </View>
               <View style={styles.textWrapperBottom}>
-                <Text
-                  isSecondary={true}
-                  style={styles.autoDownloadText}>
-                  Auto
-                </Text>
-                <Icon
-                  isSecondary={true}
-                  name='download'
-                  size={13}
-                  style={styles.autoDownloadIcon} />
-                <Switch
-                  onValueChange={handleToggleAutoDownload}
-                  value={autoDownloadOn} />
+                <View style={styles.textWrapperBottomLeft}>
+                  <SettingsButton handleToggleSettings={handleToggleSettings} />
+                </View>
+                <View style={styles.textWrapperBottomRight}>
+                  <Text
+                    isSecondary={true}
+                    style={styles.autoDownloadText}>
+                    Auto
+                  </Text>
+                  <Icon
+                    isSecondary={true}
+                    name='download'
+                    size={13}
+                    style={styles.autoDownloadIcon} />
+                  <Switch
+                    onValueChange={handleToggleAutoDownload}
+                    value={autoDownloadOn} />
+                </View>
               </View>
             </View>
           </View>
@@ -108,7 +114,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'space-between'
+  },
+  textWrapperBottomLeft: {
+    flexDirection: 'row'
+  },
+  textWrapperBottomRight: {
+    alignItems: 'center',
+    flexDirection: 'row'
   },
   textWrapperTop: {
     alignItems: 'flex-start',
