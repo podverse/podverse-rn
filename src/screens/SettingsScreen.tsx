@@ -1,9 +1,12 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
 import { StyleSheet } from 'react-native'
+import Dialog from 'react-native-dialog'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { Icon, SwitchWithText, Text, View } from '../components'
+import { Icon, NumberSelectorWithText, SwitchWithText, Text, View } from '../components'
+import { setDownloadedEpisodeLimitGlobalCount, setDownloadedEpisodeLimitGlobalDefault, updateAllDownloadedEpisodeLimitCounts,
+  updateAllDownloadedEpisodeLimitDefaults } from '../lib/downloadedEpisodeLimiter'
 import { refreshDownloads } from '../lib/downloader'
 import { PV } from '../resources'
 import { darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
@@ -14,8 +17,13 @@ type Props = {
 
 type State = {
   autoDeleteEpisodeOnEnd?: boolean
+  downloadedEpisodeLimitCount: any
+  downloadedEpisodeLimitDefault: any
   downloadingWifiOnly?: boolean
+  hasLoaded?: boolean
   maximumSpeedOptionSelected?: any
+  showSetAllDownloadDialog?: boolean
+  showSetAllDownloadDialogIsCount?: boolean
 }
 
 export class SettingsScreen extends React.Component<Props, State> {
@@ -26,8 +34,11 @@ export class SettingsScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
+    const { downloadedEpisodeLimitCount, downloadedEpisodeLimitDefault } = this.global
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
     this.state = {
+      downloadedEpisodeLimitCount,
+      downloadedEpisodeLimitDefault,
       maximumSpeedOptionSelected: maximumSpeedSelectOptions[1]
     }
   }
@@ -35,15 +46,19 @@ export class SettingsScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
     const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+    const downloadedEpisodeLimitCount = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
+    const downloadedEpisodeLimitDefault = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
     const maximumSpeed = await AsyncStorage.getItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
     const maximumSpeedOptionSelected = maximumSpeedSelectOptions.find((x: any) => x.value === Number(maximumSpeed))
 
     this.setState({
       autoDeleteEpisodeOnEnd: !!autoDeleteEpisodeOnEnd,
+      downloadedEpisodeLimitCount,
+      downloadedEpisodeLimitDefault,
       downloadingWifiOnly: !!downloadingWifiOnly,
       maximumSpeedOptionSelected: maximumSpeedOptionSelected || maximumSpeedSelectOptions[1]
-    })
+    }, () => this.setState({ hasLoaded: true }))
   }
 
   _toggleTheme = (value: boolean) => {
@@ -83,8 +98,45 @@ export class SettingsScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleChangeDownloadedEpisodeLimitCountText = (value: number) => {
+    this.setState({ downloadedEpisodeLimitCount: value })
+  }
+
+  _handleSetGlobalDownloadedEpisodeLimitCount = async () => {
+    const { downloadedEpisodeLimitCount } = this.state
+    await setDownloadedEpisodeLimitGlobalCount(downloadedEpisodeLimitCount)
+    this._handleToggleSetAllDownloadDialog(true)
+    this.setGlobal({ downloadedEpisodeLimitCount })
+  }
+
+  _handleSelectDownloadedEpisodeLimitDefault = (value: boolean) => {
+    this.setState({ downloadedEpisodeLimitDefault: value }, async () => {
+      await setDownloadedEpisodeLimitGlobalDefault(value)
+      this._handleToggleSetAllDownloadDialog()
+      this.setGlobal({ downloadedEpisodeLimitDefault: value })
+    })
+  }
+
+  _handleToggleSetAllDownloadDialog = (isCount?: boolean) => {
+    this.setState({
+      showSetAllDownloadDialog: !this.state.showSetAllDownloadDialog,
+      showSetAllDownloadDialogIsCount: isCount
+    })
+  }
+
+  _handleUpdateAllDownloadedEpiosdeLimitCount = async () => {
+    await updateAllDownloadedEpisodeLimitCounts(this.state.downloadedEpisodeLimitCount)
+    this.setState({ showSetAllDownloadDialog: false })
+  }
+
+  _handleUpdateAllDownloadedEpiosdeLimitDefault = async () => {
+    updateAllDownloadedEpisodeLimitDefaults(this.state.downloadedEpisodeLimitDefault)
+    this.setState({ showSetAllDownloadDialog: false })
+  }
+
   render() {
-    const { downloadingWifiOnly, maximumSpeedOptionSelected } = this.state
+    const { downloadedEpisodeLimitCount, downloadedEpisodeLimitDefault, downloadingWifiOnly,
+      maximumSpeedOptionSelected, showSetAllDownloadDialog, showSetAllDownloadDialogIsCount } = this.state
     const { globalTheme } = this.global
     const isDarkMode = globalTheme === darkTheme
 
@@ -102,6 +154,15 @@ export class SettingsScreen extends React.Component<Props, State> {
           onValueChange={this._toggleAutoDeleteEpisodeOnEnd}
           text='Delete downloaded episodes after end is reached'
           value={!!autoDeleteEpisodeOnEnd} /> */}
+        <SwitchWithText
+          onValueChange={this._handleSelectDownloadedEpisodeLimitDefault}
+          text='Limit downloads by default for all podcasts'
+          value={!!downloadedEpisodeLimitDefault} />
+        <NumberSelectorWithText
+          handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
+          handleSubmitEditing={this._handleSetGlobalDownloadedEpisodeLimitCount}
+          selectedNumber={downloadedEpisodeLimitCount}
+          text='Default download limit for all podcasts' />
         <RNPickerSelect
           items={PV.Player.maximumSpeedSelectOptions}
           onValueChange={this._setMaximumSpeed}
@@ -126,6 +187,17 @@ export class SettingsScreen extends React.Component<Props, State> {
             </View>
           </View>
         </RNPickerSelect>
+        <Dialog.Container visible={showSetAllDownloadDialog}>
+          <Dialog.Title>Global Update</Dialog.Title>
+          <Dialog.Description>Do you want to update the download limit for all of your currently subscribed podcasts?</Dialog.Description>
+          <Dialog.Button
+            label='No'
+            onPress={this._handleToggleSetAllDownloadDialog} />
+          <Dialog.Button
+            label='Yes'
+            onPress={showSetAllDownloadDialogIsCount ? this._handleUpdateAllDownloadedEpiosdeLimitCount
+              : this._handleUpdateAllDownloadedEpiosdeLimitDefault} />
+        </Dialog.Container>
       </View>
     )
   }

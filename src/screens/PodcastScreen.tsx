@@ -1,10 +1,12 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
-  NavQueueIcon, NavShareIcon, PodcastTableHeader, SearchBar, SwipeRowBack, TableSectionSelectors,
-  View } from '../components'
+  NavQueueIcon, NavShareIcon, NumberSelectorWithText, PodcastTableHeader, SearchBar, SwipeRowBack, SwitchWithText,
+  TableSectionHeader, TableSectionSelectors, Text, View } from '../components'
+import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
@@ -16,7 +18,7 @@ import { getMediaRefs } from '../services/mediaRef'
 import { getPodcast } from '../services/podcast'
 import { removeDownloadedPodcastEpisode, updateAutoDownloadSettings } from '../state/actions/downloads'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
-import { core } from '../styles'
+import { core, darkTheme } from '../styles'
 
 const { aboutKey, allEpisodesKey, clipsKey, downloadedKey, mostRecentKey, mostRecentAllKey, oldestKey, topPastDay,
   topPastMonth, topPastWeek, topPastYear } = PV.Filters
@@ -26,6 +28,7 @@ type Props = {
 }
 
 type State = {
+  downloadedEpisodeLimit: string
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
@@ -34,6 +37,7 @@ type State = {
   isRefreshing: boolean
   isSearchScreen?: boolean
   isSubscribing: boolean
+  limitDownloadedEpisodes: boolean
   podcast?: any
   podcastId?: string
   queryPage: number
@@ -41,6 +45,7 @@ type State = {
   searchBarText: string
   selectedItem?: any
   showActionSheet: boolean
+  showSettings: boolean
   viewType: string | null
 }
 
@@ -78,6 +83,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     }
 
     this.state = {
+      downloadedEpisodeLimit: null,
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
@@ -85,12 +91,14 @@ export class PodcastScreen extends React.Component<Props, State> {
       isLoadingMore: false,
       isRefreshing: false,
       isSubscribing: false,
+      limitDownloadedEpisodes: false,
       podcast,
       podcastId,
       queryPage: 1,
       querySort: mostRecentKey,
       searchBarText: '',
       showActionSheet: false,
+      showSettings: false,
       viewType
     }
 
@@ -110,12 +118,16 @@ export class PodcastScreen extends React.Component<Props, State> {
   async _initializePageData() {
     const { podcast, viewType } = this.state
     const podcastId = this.props.navigation.getParam('podcastId') || this.state.podcastId
+    const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
+    const globalDownloadedEpisodeLimit = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
 
     this.setState({
+      downloadedEpisodeLimit: downloadedEpisodeLimit || globalDownloadedEpisodeLimit,
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
       isLoading: true,
+      limitDownloadedEpisodes: downloadedEpisodeLimit && downloadedEpisodeLimit > 0,
       podcastId,
       queryPage: 1
     }, async () => {
@@ -347,6 +359,14 @@ export class PodcastScreen extends React.Component<Props, State> {
       } catch (error) {
         this.setState({ isSubscribing: false })
       }
+
+      const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
+      const globalDownloadedEpisodeLimit = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
+
+      this.setState({
+        downloadedEpisodeLimit: downloadedEpisodeLimit || globalDownloadedEpisodeLimit,
+        limitDownloadedEpisodes: downloadedEpisodeLimit && downloadedEpisodeLimit > 0
+      })
     })
   }
 
@@ -363,10 +383,27 @@ export class PodcastScreen extends React.Component<Props, State> {
     if (id) updateAutoDownloadSettings(id, autoDownloadOn)
   }
 
+  _handleToggleSettings = () => {
+    this.setState({ showSettings: !this.state.showSettings })
+  }
+
+  _handleToggleLimitDownloads = () => {
+    this.setState({ limitDownloadedEpisodes: !this.state.limitDownloadedEpisodes })
+  }
+
+  _handleChangeDownloadLimitText = (value: string) => {
+    const { podcast } = this.state
+    this.setState({ downloadedEpisodeLimit: value })
+    const int = parseInt(value, 10)
+    if (int) setDownloadedEpisodeLimit(podcast.id, int)
+  }
+
   render() {
     const { navigation } = this.props
-    const { isLoading, isLoadingMore, isRefreshing, isSubscribing, podcast, podcastId, querySort,
-      selectedItem, showActionSheet, viewType } = this.state
+    const { globalTheme } = this.global
+    const isDarkMode = globalTheme === darkTheme
+    const { downloadedEpisodeLimit, isLoading, isLoadingMore, isRefreshing, isSubscribing, limitDownloadedEpisodes,
+      podcast, podcastId, querySort, selectedItem, showActionSheet, showSettings, viewType } = this.state
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
     const isSubscribed = subscribedPodcastIds.some((x: string) => x === podcastId)
     let { flatListData, flatListDataTotalCount } = this.state
@@ -394,53 +431,82 @@ export class PodcastScreen extends React.Component<Props, State> {
         <PodcastTableHeader
           autoDownloadOn={autoDownloadOn}
           handleToggleAutoDownload={this._handleToggleAutoDownload}
+          handleToggleSettings={this._handleToggleSettings}
           handleToggleSubscribe={this._toggleSubscribeToPodcast}
           isLoading={isLoading && !podcast}
           isNotFound={!isLoading && !podcast}
           isSubscribed={isSubscribed}
           isSubscribing={isSubscribing}
           podcastImageUrl={podcast && podcast.imageUrl}
-          podcastTitle={podcast && podcast.title} />
-        <TableSectionSelectors
-          handleSelectLeftItem={this.selectLeftItem}
-          handleSelectRightItem={this.selectRightItem}
-          leftItems={leftItems}
-          rightItems={items}
-          selectedLeftItemKey={viewType}
-          selectedRightItemKey={querySort} />
+          podcastTitle={podcast && podcast.title}
+          showSettings={showSettings} />
         {
-          isLoading && <ActivityIndicator />
+          !showSettings &&
+            <TableSectionSelectors
+              handleSelectLeftItem={this.selectLeftItem}
+              handleSelectRightItem={this.selectRightItem}
+              leftItems={leftItems}
+              rightItems={items}
+              selectedLeftItemKey={viewType}
+              selectedRightItemKey={querySort} />
         }
         {
-          !isLoading && viewType !== aboutKey && flatListData && podcast &&
-            <FlatList
-              data={flatListData}
-              dataTotalCount={flatListDataTotalCount}
-              disableLeftSwipe={viewType !== downloadedKey}
-              extraData={flatListData}
-              {...(viewType === downloadedKey ? { handleHiddenItemPress: this._handleHiddenItemPress } : {})}
-              hideEndOfResults={querySort === mostRecentAllKey}
-              isLoadingMore={isLoadingMore}
-              isRefreshing={isRefreshing}
-              ItemSeparatorComponent={this._ItemSeparatorComponent}
-              {...(viewType === allEpisodesKey || viewType === clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
-              onEndReached={this._onEndReached}
-              renderHiddenItem={this._renderHiddenItem}
-              renderItem={this._renderItem}
-              resultsText={resultsText} />
+          showSettings && <TableSectionHeader title='Settings' />
         }
         {
-          !isLoading && viewType === aboutKey && podcast &&
-            <HTMLScrollView
-              html={podcast.description}
-              navigation={navigation} />
+          showSettings &&
+            <View style={styles.settingsView}>
+              <SwitchWithText
+                onValueChange={this._handleToggleLimitDownloads}
+                text={limitDownloadedEpisodes ? 'Download limit on' : 'Download limit off'}
+                value={limitDownloadedEpisodes} />
+              <NumberSelectorWithText
+                handleChangeText={this._handleChangeDownloadLimitText}
+                selectedNumber={downloadedEpisodeLimit}
+                text='Download limit max' />
+              <Text style={styles.settingsHelpText}>
+                Once the download limit is exceeded, the oldest episode will be auto deleted.
+              </Text>
+            </View>
         }
-        <ActionSheet
-          handleCancelPress={this._handleCancelPress}
-          items={() => PV.ActionSheet.media.moreButtons(
-            selectedItem, navigation, this._handleCancelPress, this._handleDownloadPressed
-          )}
-          showModal={showActionSheet} />
+        {
+          !showSettings &&
+            <View style={styles.view}>
+              {
+                isLoading && <ActivityIndicator />
+              }
+              {
+                !isLoading && viewType !== aboutKey && flatListData && podcast &&
+                  <FlatList
+                    data={flatListData}
+                    dataTotalCount={flatListDataTotalCount}
+                    disableLeftSwipe={viewType !== downloadedKey}
+                    extraData={flatListData}
+                    {...(viewType === downloadedKey ? { handleHiddenItemPress: this._handleHiddenItemPress } : {})}
+                    hideEndOfResults={querySort === mostRecentAllKey}
+                    isLoadingMore={isLoadingMore}
+                    isRefreshing={isRefreshing}
+                    ItemSeparatorComponent={this._ItemSeparatorComponent}
+                    {...(viewType === allEpisodesKey || viewType === clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
+                    onEndReached={this._onEndReached}
+                    renderHiddenItem={this._renderHiddenItem}
+                    renderItem={this._renderItem}
+                    resultsText={resultsText} />
+              }
+              {
+                !isLoading && viewType === aboutKey && podcast &&
+                  <HTMLScrollView
+                    html={podcast.description}
+                    navigation={navigation} />
+              }
+              <ActionSheet
+                handleCancelPress={this._handleCancelPress}
+                items={() => PV.ActionSheet.media.moreButtons(
+                  selectedItem, navigation, this._handleCancelPress, this._handleDownloadPressed
+                )}
+                showModal={showActionSheet} />
+            </View>
+        }
       </View>
     )
   }
@@ -597,6 +663,13 @@ const styles = {
     height: PV.FlatList.searchBar.height,
     justifyContent: 'center',
     marginVertical: 8
+  },
+  settingsHelpText: {
+    fontSize: PV.Fonts.sizes.md
+  },
+  settingsView: {
+    flex: 1,
+    padding: 8
   },
   swipeRowBack: {
     marginBottom: 8,

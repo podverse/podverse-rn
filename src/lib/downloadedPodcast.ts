@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
 import { clearNowPlayingItem, getNowPlayingItem } from '../services/player'
 import { sortPodcastArrayAlphabetically } from '../services/podcast'
+import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
 import { deleteDownloadedEpisode } from './downloader'
 
 export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) => {
@@ -20,6 +21,19 @@ export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) =>
     const downloadedEpisodes = downloadedPodcast.episodes || []
     const episodeIndex = downloadedEpisodes.findIndex((x: any) => x.id === episode.id)
     downloadedPodcast = Object.assign(podcast, downloadedPodcast)
+
+    const downloadedEpisodeLimits = await getDownloadedEpisodeLimits()
+    const downloadedEpisodeLimit = await downloadedEpisodeLimits[podcast.id]
+
+    if (downloadedEpisodes.length && downloadedEpisodeLimit) {
+      downloadedEpisodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
+      if (downloadedEpisodes.length >= downloadedEpisodeLimit) {
+        const oldestEpisode = downloadedEpisodes[downloadedEpisodes.length - 1]
+        await removeDownloadedPodcastEpisode(oldestEpisode.id)
+        downloadedEpisodes.pop(downloadedEpisodes.length - 1)
+      }
+    }
+
     if (episodeIndex === -1) {
       downloadedEpisodes.push(episode)
       downloadedEpisodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))

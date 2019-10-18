@@ -506,6 +506,10 @@ export const iconStyles = {
     color: PV.Colors.grayLighter,
     underlayColor: PV.Colors.black
   },
+  darkTertiary: {
+    color: PV.Colors.gray,
+    underlayColor: PV.Colors.gray
+  },
   light: {
     color: PV.Colors.black,
     underlayColor: PV.Colors.white
@@ -513,6 +517,10 @@ export const iconStyles = {
   lightSecondary: {
     color: PV.Colors.grayDarker,
     underlayColor: PV.Colors.white
+  },
+  lightTertiary: {
+    color: PV.Colors.gray,
+    underlayColor: PV.Colors.gray
   }
 }
 
