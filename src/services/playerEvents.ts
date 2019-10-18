@@ -141,6 +141,17 @@ module.exports = async () => {
     PVTrackPlayer.pause()
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_STOP)
   })
+
+  PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
+    const { paused, permanent } = x
+    if (permanent) {
+      PVTrackPlayer.stop()
+    } else if (paused) {
+      PVTrackPlayer.pause()
+    } else {
+      PVTrackPlayer.play()
+    }
+  })
 }
 
 let clipEndTimeInterval: any = null
