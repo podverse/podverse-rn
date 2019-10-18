@@ -8,6 +8,8 @@ const initialTheme: InitialState = {
   downloadsActive: {},
   downloadedEpisodeIds: {},
   downloadedPodcastEpisodeCounts: {},
+  downloadedEpisodeLimitCount: 5,
+  downloadedEpisodeLimitDefault: null,
   player: {
     isPlaying: false,
     nowPlayingItem: null,

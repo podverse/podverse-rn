@@ -35,7 +35,7 @@ export const getAuthenticatedUserInfo = async () => {
   }
 }
 
-const getAuthenticatedUserInfoLocally = async () => {
+export const getAuthenticatedUserInfoLocally = async () => {
   let subscribedPlaylistIds = []
   let subscribedPodcastIds = []
   let subscribedUserIds = []

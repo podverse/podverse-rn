@@ -2,39 +2,54 @@ import debounce from 'lodash/debounce'
 import { Platform } from 'react-native'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
+import { setNowPlayingItem } from '../state/actions/player'
 import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'
 import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, getPlaybackSpeed,
   handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded,
-  setNowPlayingItem, setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition } from './player'
+  setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 
 const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1000)
 
-const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem) => {
+const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem, isSecondTime?: boolean) => {
   if (!currentNowPlayingItem) return
   await setNowPlayingItem(currentNowPlayingItem)
-  if (currentNowPlayingItem && currentNowPlayingItem.clipId) PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
-  const isPlayingFromHistory = await checkIfPlayingFromHistory()
-  if (!currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
-    debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
+
+  if (!isSecondTime) {
+    if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
+      PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+    }
+    if (!currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
+      debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
+    }
+
+    const isPlayingFromHistory = await checkIfPlayingFromHistory()
+    if (!isPlayingFromHistory && currentNowPlayingItem) {
+      addOrUpdateHistoryItem(currentNowPlayingItem)
+    }
   }
-  if (!isPlayingFromHistory && currentNowPlayingItem) addOrUpdateHistoryItem(currentNowPlayingItem)
+
   PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
 }
 
 const syncNowPlayingItemWithTrack = async () => {
-  // This setTimeout is an attempt to prevent the following:
+  // The first setTimeout is an attempt to prevent the following:
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
   // - Sometimes the debouncedSetPlaybackPosition seems to load with the previous track's playback position,
   // instead of the new track's playback position.
   // NOTE: This timeout will lead to a delay before every clip starts, where it starts playing from the episode start
   // before playing from the clip start. Hopefully we can iron this out sometime...
-
-  setTimeout(async () => {
+  // - The second timeout is called in case something was out of sync previously from getCurrentTrack
+  // or getNowPlayingItemFromQueueOrHistoryByTrackId... 
+  async function sync (isSecondTime?: boolean) {
     const currentTrackId = await PVTrackPlayer.getCurrentTrack()
     const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentTrackId)
-    if (currentNowPlayingItem) await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
-  }, 250)
+    if (currentNowPlayingItem) await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem, isSecondTime)
+  }
+
+  setTimeout(sync, 250)
+  const isSecondTime = true
+  setTimeout(() => sync(isSecondTime), 3000)
 }
 
 module.exports = async () => {

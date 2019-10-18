@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
@@ -131,6 +132,10 @@ export const toggleSubscribeToPodcast = async (id: string) => {
 
   if (isUnsubscribing) {
     await removeDownloadedPodcast(id)
+    await setDownloadedEpisodeLimit(id)
+  } else {
+    const count: any = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
+    await setDownloadedEpisodeLimit(id, count)
   }
 
   return items
