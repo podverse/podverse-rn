@@ -15,11 +15,12 @@ type Props = {
   isSubscribing?: boolean
   podcastImageUrl?: string
   podcastTitle: string
+  showSettings?: boolean
 }
 
 export const PodcastTableHeader = (props: Props) => {
   const { autoDownloadOn, handleToggleAutoDownload, handleToggleSettings, handleToggleSubscribe, isLoading,
-    isNotFound, isSubscribed, isSubscribing, podcastImageUrl, podcastTitle = 'Untitled podcast' } = props
+    isNotFound, isSubscribed, isSubscribing, podcastImageUrl, podcastTitle = 'Untitled podcast', showSettings } = props
 
   return (
     <View style={core.row}>
@@ -47,7 +48,16 @@ export const PodcastTableHeader = (props: Props) => {
               </View>
               <View style={styles.textWrapperBottom}>
                 <View style={styles.textWrapperBottomLeft}>
-                  <SettingsButton handleToggleSettings={handleToggleSettings} />
+                  {
+                    isSubscribed && !showSettings &&
+                      <SettingsButton handleToggleSettings={handleToggleSettings} />
+                  }
+                  {
+                    isSubscribed && showSettings &&
+                      <SettingsButton
+                        handleToggleSettings={handleToggleSettings}
+                        showCheckmark={true} />
+                  }
                 </View>
                 <View style={styles.textWrapperBottomRight}>
                   <Text

@@ -27,8 +27,9 @@ export const addDownloadedPodcastEpisode = async (episode: any, podcast: any) =>
 
     if (downloadedEpisodes.length && downloadedEpisodeLimit) {
       downloadedEpisodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
-      if (downloadedEpisodes.length >= downloadedEpisodeLimits) {
-        await removeDownloadedPodcastEpisode(downloadedEpisodes[downloadedEpisodes.length - 1])
+      if (downloadedEpisodes.length >= downloadedEpisodeLimit) {
+        const oldestEpisode = downloadedEpisodes[downloadedEpisodes.length - 1]
+        await removeDownloadedPodcastEpisode(oldestEpisode.id)
         downloadedEpisodes.pop(downloadedEpisodes.length - 1)
       }
     }

@@ -4,10 +4,11 @@ import { Icon } from './'
 
 type Props = {
   handleToggleSettings: any
+  showCheckmark: boolean
 }
 
 export const SettingsButton = (props: Props) => {
-  const { handleToggleSettings } = props
+  const { handleToggleSettings, showCheckmark } = props
 
   return (
     <TouchableWithoutFeedback onPress={handleToggleSettings}>
@@ -15,7 +16,7 @@ export const SettingsButton = (props: Props) => {
         <View>
           <Icon
             isSecondary={true}
-            name='cog'
+            name={showCheckmark ? 'check' : 'cog'}
             size={20}
             solid={true} />
         </View>

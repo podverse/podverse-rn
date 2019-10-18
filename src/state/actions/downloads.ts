@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { getGlobal, setGlobal } from 'reactn'
 import { getDownloadedEpisodeIds as getDownloadedEpisodeIdsService, getDownloadedPodcastEpisodeCounts as
   getDownloadedPodcastEpisodeCountsService, getDownloadedPodcasts as getDownloadedPodcastsService,
@@ -5,6 +6,7 @@ import { getDownloadedEpisodeIds as getDownloadedEpisodeIdsService, getDownloade
   } from '../../lib/downloadedPodcast'
 import { DownloadStatus, initDownloads as initDownloadsService, pauseDownloadTask, resumeDownloadTask } from '../../lib/downloader'
 import { removeDownloadingEpisode as removeDownloadingEpisodeService } from '../../lib/downloadingEpisode'
+import { PV } from '../../resources'
 import { getAutoDownloadSettings as getAutoDownloadSettingsService, updateAutoDownloadSettings
   as updateAutoDownloadSettingsService } from '../../services/autoDownloads'
 import { clearNowPlayingItem } from './player'
@@ -45,12 +47,16 @@ export const initDownloads = async () => {
   const downloadedPodcastEpisodeCounts = await getDownloadedPodcastEpisodeCountsService()
   const downloadedPodcasts = await getDownloadedPodcastsService()
   const autoDownloadSettings = await getAutoDownloadSettingsService()
+  const downloadedEpisodeLimitCount = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
+  const downloadedEpisodeLimitDefault = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
 
   setGlobal({
     autoDownloadSettings,
     downloadsActive,
     downloadsArray,
     downloadedEpisodeIds,
+    downloadedEpisodeLimitCount,
+    downloadedEpisodeLimitDefault,
     downloadedPodcastEpisodeCounts,
     downloadedPodcasts
   })

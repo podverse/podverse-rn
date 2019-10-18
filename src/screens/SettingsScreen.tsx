@@ -34,8 +34,11 @@ export class SettingsScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
+    const { downloadedEpisodeLimitCount, downloadedEpisodeLimitDefault } = this.global
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
     this.state = {
+      downloadedEpisodeLimitCount,
+      downloadedEpisodeLimitDefault,
       maximumSpeedOptionSelected: maximumSpeedSelectOptions[1]
     }
   }
@@ -55,7 +58,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       downloadedEpisodeLimitDefault,
       downloadingWifiOnly: !!downloadingWifiOnly,
       maximumSpeedOptionSelected: maximumSpeedOptionSelected || maximumSpeedSelectOptions[1]
-    }, () => ({ hasLoaded: true }))
+    }, () => this.setState({ hasLoaded: true }))
   }
 
   _toggleTheme = (value: boolean) => {
@@ -95,19 +98,22 @@ export class SettingsScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleSelectDownloadedEpisodeLimitCount = (value: number) => {
-    if (this.state.hasLoaded) {
-      this.setState({ downloadedEpisodeLimitCount: value }, async () => {
-        await setDownloadedEpisodeLimitGlobalCount(value)
-        this._handleToggleSetAllDownloadDialog(true)
-      })
-    }
+  _handleChangeDownloadedEpisodeLimitCountText = (value: number) => {
+    this.setState({ downloadedEpisodeLimitCount: value })
+  }
+
+  _handleSetGlobalDownloadedEpisodeLimitCount = async () => {
+    const { downloadedEpisodeLimitCount } = this.state
+    await setDownloadedEpisodeLimitGlobalCount(downloadedEpisodeLimitCount)
+    this._handleToggleSetAllDownloadDialog(true)
+    this.setGlobal({ downloadedEpisodeLimitCount })
   }
 
   _handleSelectDownloadedEpisodeLimitDefault = (value: boolean) => {
     this.setState({ downloadedEpisodeLimitDefault: value }, async () => {
       await setDownloadedEpisodeLimitGlobalDefault(value)
       this._handleToggleSetAllDownloadDialog()
+      this.setGlobal({ downloadedEpisodeLimitDefault: value })
     })
   }
 
@@ -118,12 +124,12 @@ export class SettingsScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleUpdateAllDownloadedEpiosdeLimitCount = () => {
-    updateAllDownloadedEpisodeLimitCounts(this.state.downloadedEpisodeLimitCount)
+  _handleUpdateAllDownloadedEpiosdeLimitCount = async () => {
+    await updateAllDownloadedEpisodeLimitCounts(this.state.downloadedEpisodeLimitCount)
     this.setState({ showSetAllDownloadDialog: false })
   }
 
-  _handleUpdateAllDownloadedEpiosdeLimitDefault = () => {
+  _handleUpdateAllDownloadedEpiosdeLimitDefault = async () => {
     updateAllDownloadedEpisodeLimitDefaults(this.state.downloadedEpisodeLimitDefault)
     this.setState({ showSetAllDownloadDialog: false })
   }
@@ -153,8 +159,8 @@ export class SettingsScreen extends React.Component<Props, State> {
           text='Limit downloads by default for all podcasts'
           value={!!downloadedEpisodeLimitDefault} />
         <NumberSelectorWithText
-          handleSelectNumber={this._handleSelectDownloadedEpisodeLimitCount}
-          items={downloadLimitItems}
+          handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
+          handleSubmitEditing={this._handleSetGlobalDownloadedEpisodeLimitCount}
           selectedNumber={downloadedEpisodeLimitCount}
           text='Default download limit for all podcasts' />
         <RNPickerSelect
@@ -183,7 +189,7 @@ export class SettingsScreen extends React.Component<Props, State> {
         </RNPickerSelect>
         <Dialog.Container visible={showSetAllDownloadDialog}>
           <Dialog.Title>Global Update</Dialog.Title>
-          <Dialog.Description>Do you want to update the download limit for all of your subscribed podcasts?</Dialog.Description>
+          <Dialog.Description>Do you want to update the download limit for all of your currently subscribed podcasts?</Dialog.Description>
           <Dialog.Button
             label='No'
             onPress={this._handleToggleSetAllDownloadDialog} />
@@ -196,11 +202,6 @@ export class SettingsScreen extends React.Component<Props, State> {
     )
   }
 }
-
-const downloadLimitItems = [...Array(100)].map((_, i) => ({
-  label: (i + 1).toString(),
-  value: (i + 1).toString()
-}))
 
 const styles = StyleSheet.create({
   pickerSelect: {

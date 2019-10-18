@@ -1,11 +1,12 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { Text, View as RNView } from 'react-native'
+import { View as RNView } from 'react-native'
 import { NavigationScreenOptions } from 'react-navigation'
 import React from 'reactn'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, EpisodeTableCell, FlatList, HTMLScrollView,
-  NavQueueIcon, NavShareIcon, PodcastTableHeader, SearchBar, SwipeRowBack, SwitchWithText, TableSectionHeader,
-  TableSectionSelectors, View, NumberSelectorWithText } from '../components'
-import { getDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
+  NavQueueIcon, NavShareIcon, NumberSelectorWithText, PodcastTableHeader, SearchBar, SwipeRowBack, SwitchWithText,
+  TableSectionHeader, TableSectionSelectors, Text, View } from '../components'
+import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
@@ -27,7 +28,7 @@ type Props = {
 }
 
 type State = {
-  downloadedEpisodeLimit: number | null
+  downloadedEpisodeLimit: string
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
@@ -118,9 +119,10 @@ export class PodcastScreen extends React.Component<Props, State> {
     const { podcast, viewType } = this.state
     const podcastId = this.props.navigation.getParam('podcastId') || this.state.podcastId
     const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
+    const globalDownloadedEpisodeLimit = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
 
     this.setState({
-      downloadedEpisodeLimit,
+      downloadedEpisodeLimit: downloadedEpisodeLimit || globalDownloadedEpisodeLimit,
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
@@ -357,6 +359,14 @@ export class PodcastScreen extends React.Component<Props, State> {
       } catch (error) {
         this.setState({ isSubscribing: false })
       }
+
+      const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
+      const globalDownloadedEpisodeLimit = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
+
+      this.setState({
+        downloadedEpisodeLimit: downloadedEpisodeLimit || globalDownloadedEpisodeLimit,
+        limitDownloadedEpisodes: downloadedEpisodeLimit && downloadedEpisodeLimit > 0
+      })
     })
   }
 
@@ -381,8 +391,11 @@ export class PodcastScreen extends React.Component<Props, State> {
     this.setState({ limitDownloadedEpisodes: !this.state.limitDownloadedEpisodes })
   }
 
-  _handleSelectDownloadLimit = (value: number) => {
+  _handleChangeDownloadLimitText = (value: string) => {
+    const { podcast } = this.state
     this.setState({ downloadedEpisodeLimit: value })
+    const int = parseInt(value, 10)
+    if (int) setDownloadedEpisodeLimit(podcast.id, int)
   }
 
   render() {
@@ -425,7 +438,8 @@ export class PodcastScreen extends React.Component<Props, State> {
           isSubscribed={isSubscribed}
           isSubscribing={isSubscribing}
           podcastImageUrl={podcast && podcast.imageUrl}
-          podcastTitle={podcast && podcast.title} />
+          podcastTitle={podcast && podcast.title}
+          showSettings={showSettings} />
         {
           !showSettings &&
             <TableSectionSelectors
@@ -447,10 +461,12 @@ export class PodcastScreen extends React.Component<Props, State> {
                 text={limitDownloadedEpisodes ? 'Download limit on' : 'Download limit off'}
                 value={limitDownloadedEpisodes} />
               <NumberSelectorWithText
-                handleSelectNumber={this._handleSelectDownloadLimit}
-                items={downloadLimitItems}
+                handleChangeText={this._handleChangeDownloadLimitText}
                 selectedNumber={downloadedEpisodeLimit}
-                text='Download limit maximum' />
+                text='Download limit max' />
+              <Text style={styles.settingsHelpText}>
+                Once the download limit is exceeded, the oldest episode will be auto deleted.
+              </Text>
             </View>
         }
         {
@@ -564,11 +580,6 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 }
 
-const downloadLimitItems = [...Array(100)].map((_, i) => ({
-  label: (i + 1).toString(),
-  value: (i + 1).toString()
-}))
-
 const leftItems = [
   {
     label: 'Downloaded',
@@ -652,6 +663,9 @@ const styles = {
     height: PV.FlatList.searchBar.height,
     justifyContent: 'center',
     marginVertical: 8
+  },
+  settingsHelpText: {
+    fontSize: PV.Fonts.sizes.md
   },
   settingsView: {
     flex: 1,
