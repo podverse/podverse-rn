@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Alert, AppState, Image, Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback,
+import { Alert, AppState, Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback,
   View as RNView } from 'react-native'
+import FastImage from 'react-native-fast-image'
 import RNPickerSelect from 'react-native-picker-select'
 import Share from 'react-native-share'
 import React from 'reactn'
@@ -355,7 +356,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               value={title} />
           </View>
           <View style={styles.wrapperMiddle}>
-            <Image
+            <FastImage
               resizeMode='contain'
               source={{ uri: nowPlayingItem && nowPlayingItem.podcastImageUrl }}
               style={styles.image} />

@@ -1,5 +1,5 @@
-import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback,
-  View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import FastImage from 'react-native-fast-image'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import React from 'reactn'
 import { PV } from '../resources'
@@ -29,7 +29,7 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
             <TouchableWithoutFeedback
               onPress={() => navigation.navigate(PV.RouteNames.PlayerScreen, { nowPlayingItem })}>
               <View style={[styles.player, globalTheme.player]}>
-                <Image
+                <FastImage
                   key={nowPlayingItem.podcastImageUrl}
                   resizeMode='contain'
                   source={{ uri: nowPlayingItem.podcastImageUrl }}

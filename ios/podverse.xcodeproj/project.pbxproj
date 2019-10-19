@@ -50,6 +50,7 @@
 		30490954229F993400CA1B95 /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6691576913D848DB82D699AD /* RNPlaceholder.swift */; };
 		309EF0D812F6477D8C4911FE /* libAppCenterReactNativeCrashes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 660B317F164F4470A4042258 /* libAppCenterReactNativeCrashes.a */; };
 		30C62BE622A3789F006C8D44 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7F32503223C8F16003E6611 /* JavaScriptCore.framework */; };
+		30D644C9235BA81E00CF355D /* libFastImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30D64494235BA80200CF355D /* libFastImage.a */; };
 		31F1F4B1ED5187A2ECE8FC16 /* libPods-podverse.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22FFE1D24D61988CEEE5EA85 /* libPods-podverse.a */; };
 		33A62364F0D34380BC5753D0 /* libRNSecureKeyStore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B265A927A194712A40D62BC /* libRNSecureKeyStore.a */; };
 		35EB716054CC48DE83AFC7AB /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C5AC4999E4F14BB0A47CF143 /* SimpleLineIcons.ttf */; };
@@ -285,6 +286,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 465057B52107394900FD399B;
 			remoteInfo = "RNSecureKeyStore-tvOS";
+		};
+		30D64493235BA80200CF355D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 30D6448B235BA80100CF355D /* FastImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A287971D1DE0C0A60081BDFA;
+			remoteInfo = FastImage;
 		};
 		30FC133C22A380BE00C36D3C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -538,6 +546,7 @@
 		3048A0ED233C3D9500C9083A /* RNShare.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNShare.xcodeproj; path = "../node_modules/react-native-share/ios/RNShare.xcodeproj"; sourceTree = "<group>"; };
 		3048A12A233C3E1B00C9083A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		3048A12C233C3E2400C9083A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		30D6448B235BA80100CF355D /* FastImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FastImage.xcodeproj; path = "../node_modules/react-native-fast-image/ios/FastImage.xcodeproj"; sourceTree = "<group>"; };
 		3B265A927A194712A40D62BC /* libRNSecureKeyStore.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSecureKeyStore.a; sourceTree = "<group>"; };
 		4D23012B85334BF8B8736BF6 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		561A50109F0A4186B62063BE /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
@@ -597,6 +606,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30D644C9235BA81E00CF355D /* libFastImage.a in Frameworks */,
 				3048A129233C3DB300C9083A /* libRNShare.a in Frameworks */,
 				30C62BE622A3789F006C8D44 /* JavaScriptCore.framework in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
@@ -840,6 +850,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		30D6448C235BA80100CF355D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				30D64494235BA80200CF355D /* libFastImage.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		30FC133922A380BE00C36D3C /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -894,6 +912,7 @@
 				C0659539A17643F6A712B66D /* AppCenterReactNative.xcodeproj */,
 				ECC325FF2C5D416A9519146C /* AppCenterReactNativeCrashes.xcodeproj */,
 				BD6B832304D845BDACAE9D4E /* AppCenterReactNativeAnalytics.xcodeproj */,
+				30D6448B235BA80100CF355D /* FastImage.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1208,6 +1227,10 @@
 					ProjectRef = ECC325FF2C5D416A9519146C /* AppCenterReactNativeCrashes.xcodeproj */;
 				},
 				{
+					ProductGroup = 30D6448C235BA80100CF355D /* Products */;
+					ProjectRef = 30D6448B235BA80100CF355D /* FastImage.xcodeproj */;
+				},
+				{
 					ProductGroup = 00C302A81ABCB8CE00DB3ED1 /* Products */;
 					ProjectRef = 00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */;
 				},
@@ -1498,6 +1521,13 @@
 			fileType = archive.ar;
 			path = "libRNSecureKeyStore-tvOS.a";
 			remoteRef = 30C62C1422A3789F006C8D44 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		30D64494235BA80200CF355D /* libFastImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libFastImage.a;
+			remoteRef = 30D64493235BA80200CF355D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		30FC133D22A380BE00C36D3C /* libRNCAsyncStorage.a */ = {

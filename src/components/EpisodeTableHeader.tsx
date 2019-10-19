@@ -1,5 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
+import FastImage from 'react-native-fast-image'
 import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -34,7 +35,7 @@ export const EpisodeTableHeader = (props: Props) => {
       {
         !isLoading && !isNotFound &&
           <View style={styles.innerWrapper}>
-            <Image
+            <FastImage
               source={{ uri: podcastImageUrl }}
               style={styles.image} />
             <View style={styles.textWrapper}>
