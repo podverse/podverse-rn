@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
