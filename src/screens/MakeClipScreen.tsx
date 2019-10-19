@@ -23,7 +23,7 @@ type State = {
   endTime: number | null
   isPublicItemSelected: any
   isSaving: boolean
-  progressValue: number
+  progressValue: number | null
   showHowToModal?: boolean
   startTime?: number
   title?: string
@@ -265,22 +265,22 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   _playerJumpBackward = async () => {
     const progressValue = await playerJumpBackward(PV.Player.jumpSeconds)
-    this.setState({ progressValue })
+    this.setState({ progressValue }, () => this.setState({ progressValue: null }))
   }
 
   _playerJumpForward = async () => {
     const progressValue = await playerJumpForward(PV.Player.jumpSeconds)
-    this.setState({ progressValue })
+    this.setState({ progressValue }, () => this.setState({ progressValue: null }))
   }
 
   _playerMiniJumpBackward = async () => {
     const progressValue = await playerJumpBackward(PV.Player.miniJumpSeconds)
-    this.setState({ progressValue })
+    this.setState({ progressValue }, () => this.setState({ progressValue: null }))
   }
 
   _playerMiniJumpForward = async () => {
     const progressValue = await playerJumpForward(PV.Player.miniJumpSeconds)
-    this.setState({ progressValue })
+    this.setState({ progressValue }, () => this.setState({ progressValue: null }))
   }
 
   _showClipPrivacyNote = async () => {
@@ -391,7 +391,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 clipEndTime={endTime}
                 clipStartTime={startTime}
                 globalTheme={globalTheme}
-                value={progressValue} />
+                {...(progressValue || progressValue === 0 ? { value: progressValue } : {})} />
             </View>
             <RNView style={[styles.makeClipPlayerControls, globalTheme.makeClipPlayerControlsWrapper]}>
               <TouchableOpacity
