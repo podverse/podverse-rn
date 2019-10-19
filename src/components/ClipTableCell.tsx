@@ -1,4 +1,5 @@
-import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import FastImage from 'react-native-fast-image'
 import React from 'reactn'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -44,7 +45,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       <View style={styles.innerTopView}>
         {
           !!podcastImageUrl &&
-          <Image
+          <FastImage
             source={{ uri: podcastImageUrl }}
             style={styles.image} />
         }

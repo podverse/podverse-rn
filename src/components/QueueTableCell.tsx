@@ -1,5 +1,6 @@
 import React from 'react'
-import { Image, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
+import FastImage from 'react-native-fast-image'
 import { Icon, Text, View } from '.'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -28,7 +29,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
     return (
       <View style={styles.wrapper}>
         <View style={styles.wrapperTop}>
-          <Image
+          <FastImage
             key={podcastImageUrl}
             source={{ uri: podcastImageUrl }}
             style={styles.image} />
