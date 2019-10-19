@@ -15,7 +15,7 @@ type Props = {
 }
 
 export const PVIcon = (props: Props) => {
-  const { brand, isSecondary, name, onPress, size, solid, style } = props
+  const { brand, color: colorOverride, isSecondary, name, onPress, size, solid, style } = props
   const [globalTheme] = useGlobal('globalTheme')
   const isDarkMode = globalTheme === darkTheme
   const color = isDarkMode ?
@@ -25,7 +25,7 @@ export const PVIcon = (props: Props) => {
   return (
     <Icon
       {...(brand ? { brand } : {})}
-      color={color}
+      color={colorOverride || color}
       name={name}
       onPress={onPress}
       size={size}

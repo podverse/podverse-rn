@@ -5,7 +5,7 @@ import React from 'reactn'
 import { PV } from '../resources'
 import { PVTrackPlayer } from '../services/player'
 import { togglePlay } from '../state/actions/player'
-import { darkTheme, iconStyles } from '../styles'
+import { darkTheme, iconStyles, playerStyles } from '../styles'
 
 type Props = {
   navigation: any
@@ -17,8 +17,9 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
 
   render () {
     const { navigation } = this.props
-    const { globalTheme, player } = this.global
+    const { globalTheme, player, screenPlayer } = this.global
     const { nowPlayingItem, playbackState } = player
+    const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
 
     return (
@@ -45,23 +46,24 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
                     {nowPlayingItem.episodeTitle}
                   </Text>
                 </View>
-                {
-                  playbackState !== PVTrackPlayer.STATE_BUFFERING &&
-                    <TouchableOpacity onPress={() => togglePlay(this.global)}>
+                <TouchableOpacity
+                  onPress={() => togglePlay(this.global)}
+                  style={playerStyles.icon}>
+                  {
+                    !hasErrored &&
                       <Icon
                         color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
                         name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
-                        size={30}
-                        style={styles.button} />
-                    </TouchableOpacity>
-                }
-                {
-                  playbackState === PVTrackPlayer.STATE_BUFFERING &&
-                    <ActivityIndicator
-                      color={globalTheme.activityIndicator.color}
-                      size='large'
-                      style={styles.button} />
-                }
+                        size={30} />
+                  }
+                  {
+                    hasErrored &&
+                      <Icon
+                        color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
+                        name={'exclamation-triangle'}
+                        size={26} />
+                  }
+                </TouchableOpacity>
               </View>
             </TouchableWithoutFeedback>
         }
@@ -72,13 +74,6 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    height: 60,
-    lineHeight: 60,
-    paddingLeft: 3,
-    textAlign: 'center',
-    width: 52
-  },
   episodeTitle: {
     flex: 1,
     fontSize: PV.Fonts.sizes.lg,

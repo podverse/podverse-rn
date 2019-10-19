@@ -11,6 +11,7 @@ const initialTheme: InitialState = {
   downloadedEpisodeLimitCount: 5,
   downloadedEpisodeLimitDefault: null,
   player: {
+    hasErrored: false,
     isPlaying: false,
     nowPlayingItem: null,
     playbackRate: 1,
@@ -34,7 +35,7 @@ const initialTheme: InitialState = {
     endOfResultsReached: false,
     flatListData: [],
     flatListDataTotalCount: null,
-    isLoading: true,
+    isLoading: false,
     isLoadingMore: false,
     queryFrom: PV.Keys.QUERY_FROM_THIS_PODCAST,
     queryPage: 1,

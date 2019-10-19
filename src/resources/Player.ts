@@ -68,9 +68,12 @@ const maximumSpeedSelectOptions = [
   }
 ]
 
+const errorState = 'error'
+
 export const Player = {
+  errorState,
   jumpSeconds: 30,
+  maximumSpeedSelectOptions,
   miniJumpSeconds: 1,
-  speeds,
-  maximumSpeedSelectOptions
+  speeds
 }

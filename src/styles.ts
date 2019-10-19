@@ -475,11 +475,15 @@ export const playerStyles = StyleSheet.create({
     width: 60
   },
   iconDisabled: {
+    alignItems: 'center',
+    justifyContent: 'center',
     opacity: 0.5,
     paddingHorizontal: 12,
     paddingVertical: 4
   },
   iconLarge: {
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 12,
     paddingVertical: 4,
     width: 74
@@ -510,6 +514,10 @@ export const iconStyles = {
     color: PV.Colors.gray,
     underlayColor: PV.Colors.gray
   },
+  darkRed: {
+    color: PV.Colors.redDarker,
+    underlayColor: PV.Colors.black
+  },
   light: {
     color: PV.Colors.black,
     underlayColor: PV.Colors.white
@@ -521,6 +529,10 @@ export const iconStyles = {
   lightTertiary: {
     color: PV.Colors.gray,
     underlayColor: PV.Colors.gray
+  },
+  lightRed: {
+    color: PV.Colors.redLighter,
+    underlayColor: PV.Colors.white
   }
 }
 
