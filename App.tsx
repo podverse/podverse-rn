@@ -45,20 +45,11 @@ class App extends Component<Props, State> {
   }
 
   handleNetworkChange = async (state: NetInfoState) => {
-
     if (state.type === 'wifi') {
       refreshDownloads()
     } else if (state.type === 'cellular') {
       const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-      if (!downloadingWifiOnly) {
-        refreshDownloads()
-      }
-    }
-
-    const trackState = await PVTrackPlayer.getState()
-    if (trackState === PVTrackPlayer.STATE_BUFFERING || trackState === 6) {
-      PVTrackPlayer.pause()
-      PVTrackPlayer.play()
+      if (!downloadingWifiOnly) refreshDownloads()
     }
   }
 

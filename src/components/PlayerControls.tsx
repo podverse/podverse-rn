@@ -5,7 +5,7 @@ import { PV } from '../resources'
 import { checkIfPlayingFromHistory, getHistoryItemsLocally } from '../services/history'
 import { getNowPlayingItem, loadItemAndPlayTrack, playerJumpBackward, playerJumpForward, PVTrackPlayer  } from '../services/player'
 import { loadAdjacentItemFromHistory, playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
-import { playerStyles } from '../styles'
+import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 
 type Props = {
@@ -56,6 +56,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     const { globalTheme, player, screenPlayer } = this.global
     const { nowPlayingItem, playbackRate, playbackState } = player
     const { isLoading } = screenPlayer
+    const hasErrored = playbackState === PV.Player.errorState
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
@@ -106,14 +107,17 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             onPress={() => togglePlay(this.global)}
             style={playerStyles.iconLarge}>
             {
-              (!isLoading && playbackState !== PVTrackPlayer.STATE_BUFFERING) &&
+              hasErrored &&
+                <Icon
+                  color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
+                  name={'exclamation-triangle'}
+                  size={34} />
+            }
+            {
+              !hasErrored &&
                 <Icon
                   name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause-circle' : 'play-circle'}
                   size={48} />
-            }
-            {
-              (isLoading || playbackState === PVTrackPlayer.STATE_BUFFERING) &&
-                <ActivityIndicator />
             }
           </TouchableOpacity>
           <TouchableOpacity
