@@ -1,4 +1,5 @@
-import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import FastImage from 'react-native-fast-image'
 import React from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -39,7 +40,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
     return (
       <TouchableWithoutFeedback onPress={onPress}>
         <View style={styles.wrapper}>
-          <Image
+          <FastImage
             source={{ uri: podcastImageUrl }}
             style={styles.image} />
           <View style={styles.textWrapper}>

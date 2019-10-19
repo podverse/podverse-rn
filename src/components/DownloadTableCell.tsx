@@ -1,6 +1,7 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { Slider } from 'react-native-elements'
+import FastImage from 'react-native-fast-image'
 import { PV } from '../resources'
 import { getDownloadStatusText } from '../state/actions/downloads'
 import { Text, View } from './'
@@ -28,7 +29,7 @@ export class DownloadTableCell extends React.PureComponent<Props> {
     return (
       <TouchableWithoutFeedback onPress={onPress}>
         <View style={styles.wrapper}>
-          <Image
+          <FastImage
             source={{ uri: podcastImageUrl }}
             style={styles.image} />
           <View style={styles.textWrapper}>

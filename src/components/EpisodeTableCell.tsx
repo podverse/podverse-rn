@@ -1,4 +1,5 @@
 import { Image, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import FastImage from 'react-native-fast-image'
 import React from 'reactn'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
@@ -40,7 +41,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <View style={styles.innerTopView}>
         {
           !!podcastImageUrl &&
-            <Image
+            <FastImage
               source={{ uri: podcastImageUrl }}
               style={styles.image} />
         }

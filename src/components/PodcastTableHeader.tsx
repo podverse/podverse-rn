@@ -1,4 +1,5 @@
-import { Image, StyleSheet, Switch } from 'react-native'
+import { StyleSheet, Switch } from 'react-native'
+import FastImage from 'react-native-fast-image'
 import React from 'reactn'
 import { PV } from '../resources'
 import { core } from '../styles'
@@ -33,7 +34,7 @@ export const PodcastTableHeader = (props: Props) => {
       {
         !isLoading && !isNotFound &&
           <View style={styles.wrapper}>
-            <Image
+            <FastImage
               source={{ uri: podcastImageUrl }}
               style={styles.image} />
             <View style={styles.textWrapper}>
