@@ -2,7 +2,7 @@ import debounce from 'lodash/debounce'
 import { Platform } from 'react-native'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { setNowPlayingItem } from '../state/actions/player'
+import { initializePlayerQueue, setNowPlayingItem } from '../state/actions/player'
 import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'
 import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, getPlaybackSpeed,
   handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded,
@@ -64,6 +64,14 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
     console.log('playback-state', x)
 
+    // Sometimes when the app is paused, and the app switches between wifi, data, or airplane mode,
+    // the TrackPlayer will be in an "idle" or "none" state when you return to the app.
+    // I don't know how to fix this, other than to restore the player by re-initializing it.
+    if (x.state === 'idle' || x.state === 0 || x.state === PVTrackPlayer.STATE_NONE) {
+      setTimeout(initializePlayerQueue, 1000)
+      return
+    }
+
     PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
     const clipHasEnded = await getClipHasEnded()
@@ -116,6 +124,12 @@ module.exports = async () => {
     await syncNowPlayingItemWithTrack()
   })
 
+  PVTrackPlayer.addEventListener('playback-error', (x: any) => {
+    console.log('playback-error', x)
+    // TODO: post error to our logs!
+    PlayerEventEmitter.emit(PV.Events.PLAYER_PLAYBACK_ERROR)
+  })
+
   PVTrackPlayer.addEventListener('remote-jump-backward', () => playerJumpBackward(PV.Player.jumpSeconds))
 
   PVTrackPlayer.addEventListener('remote-jump-forward', () => playerJumpForward(PV.Player.jumpSeconds))
@@ -140,6 +154,17 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('remote-stop', () => {
     PVTrackPlayer.pause()
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_STOP)
+  })
+
+  PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
+    const { paused, permanent } = x
+    if (permanent) {
+      PVTrackPlayer.stop()
+    } else if (paused) {
+      PVTrackPlayer.pause()
+    } else {
+      PVTrackPlayer.play()
+    }
   })
 }
 

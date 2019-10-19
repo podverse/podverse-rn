@@ -24,6 +24,8 @@ import com.facebook.soloader.SoLoader;
 import java.util.Arrays;
 import java.util.List;
 
+import com.dylanvann.fastimage.FastImageViewPackage;
+
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -49,7 +51,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNCWebViewPackage(),
             new VectorIconsPackage(),
             new RNSecureKeyStorePackage(),
-            new RNGestureHandlerPackage()
+            new RNGestureHandlerPackage(),
+            new FastImageViewPackage()
       );
     }
 

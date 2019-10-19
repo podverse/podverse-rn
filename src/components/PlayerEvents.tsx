@@ -21,24 +21,18 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     PlayerEventEmitter.on(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI, this._playerCannotStreamWithoutWifi)
-    // PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_ENDED, this._refreshNowPlayingItem)
-    // PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PAUSE, this._playerStateUpdated)
-    // PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_PLAY, this._playerStateUpdated)
-    // PlayerEventEmitter.on(PV.Events.PLAYER_REMOTE_STOP, this._playerStateUpdated)
     PlayerEventEmitter.on(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED, this._refreshNowPlayingItem)
     PlayerEventEmitter.on(PV.Events.PLAYER_STATE_CHANGED, this._playerStateUpdated)
     PlayerEventEmitter.on(PV.Events.PLAYER_TRACK_CHANGED, this._handlePlayerTrackChanged)
+    PlayerEventEmitter.on(PV.Events.PLAYER_PLAYBACK_ERROR, this._handlePlayerPlaybackError)
   }
 
   componentWillUnmount() {
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
-    // PlayerEventEmitter.removeListener(PV.Events.PLAYER_CLIP_ENDED)
-    // PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_PAUSE)
-    // PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_PLAY)
-    // PlayerEventEmitter.removeListener(PV.Events.PLAYER_REMOTE_STOP)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_STATE_CHANGED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_TRACK_CHANGED)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_PLAYBACK_ERROR)
   }
 
   _handlePlayerTrackChanged = async () => {
@@ -50,6 +44,10 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     Alert.alert(
       PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.title, PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.message, []
     )
+  }
+
+  _handlePlayerPlaybackError = async () => {
+    await updatePlaybackState(PV.Player.errorState)
   }
 
   _playerStateUpdated = () => updatePlaybackState()

@@ -40,6 +40,7 @@ export const initializePlayerQueue = async () => {
   if (nowPlayingItem) {
     await updatePlayerState(nowPlayingItem)
   }
+
   setGlobal({
     screenPlayer: {
       ...globalState.screenPlayer,
@@ -176,6 +177,14 @@ export const setPlaybackSpeed = async (rate: number, globalState: any) => {
 }
 
 export const togglePlay = async () => {
+  // If somewhere a play button is pressed, but nothing is currently loaded in the player,
+  // then load the last time from memory by re-initializing the player.
+  const trackId = await PVTrackPlayer.getCurrentTrack()
+  if (!trackId) {
+    await initializePlayerQueue()
+    return
+  }
+
   await togglePlayService()
 }
 
