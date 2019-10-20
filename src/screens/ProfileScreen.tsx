@@ -65,7 +65,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     const user = this.props.navigation.getParam('user')
     const userId = (user && user.id) || this.props.navigation.getParam('userId')
     const isLoggedInUserProfile = userId === id
-    const isSubscribed = subscribedUserIds.some((x: string) => userId)
+    const isSubscribed = subscribedUserIds.some((x: string) => x === userId)
 
     if (user && user.id) {
       this.props.navigation.setParams({
@@ -275,7 +275,6 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _handleToggleSubscribe = async (id: string) => {
-    const { userId } = this.state
     const wasAlerted = await alertIfNoNetworkConnection('subscribe to profile')
     if (wasAlerted) return
 
@@ -283,7 +282,8 @@ export class ProfileScreen extends React.Component<Props, State> {
       try {
         await toggleSubscribeToUser(id)
         const subscribedUserIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedUserIds, [])
-        const isSubscribed = subscribedUserIds.some((x: string) => userId)
+        const isSubscribed = subscribedUserIds.some((x: string) => x === id)
+
         this.setState({
           isSubscribed,
           isSubscribing: false
