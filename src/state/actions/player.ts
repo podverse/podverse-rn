@@ -8,6 +8,8 @@ import { clearNowPlayingItem as clearNowPlayingItemService, getContinuousPlaybac
   setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService } from '../../services/player'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
+  if (!item) return
+
   const globalState = getGlobal()
   const episode = convertNowPlayingItemToEpisode(item)
   episode.description = episode.description || 'No show notes available'
