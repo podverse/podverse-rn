@@ -8,7 +8,6 @@ import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
 import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
-import { PVTrackPlayer } from './src/services/player'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 
