@@ -2,4 +2,4 @@
 
 npx jetify
 
-cd ./ios && rm -rf Pods && pod cache clean --all && pod repo update && pod install
+cd ./ios && rm -rf Pods && pod cache clean --all && pod install && cd ..
