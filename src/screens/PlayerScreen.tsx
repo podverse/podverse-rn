@@ -71,7 +71,6 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { navigation } = this.props
 
     const mediaRefId = navigation.getParam('mediaRefId')
-    console.log('hey!', mediaRefId)
     if (mediaRefId) this._initializeScreenData()
 
     this.props.navigation.setParams({
