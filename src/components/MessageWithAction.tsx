@@ -1,5 +1,4 @@
-import { StyleSheet } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Text, View } from './'

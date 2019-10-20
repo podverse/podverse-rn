@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, HeaderTitleSelector, Icon, MessageWithAction, QueueTableCell,
   SortableList, SortableListRow, TableSectionHeader, View as PVView } from '../components'
@@ -9,7 +9,6 @@ import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
 import { navHeader } from '../styles'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 type Props = {
   navigation?: any

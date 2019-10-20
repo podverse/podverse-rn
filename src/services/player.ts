@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import RNFS from 'react-native-fs'
-import TrackPlayer, { Capability, State, Track } from 'react-native-track-player'
+import TrackPlayer, { Track } from 'react-native-track-player'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
 import { checkIfIdMatchesClipIdOrEpisodeId, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
@@ -16,11 +16,11 @@ TrackPlayer.setupPlayer({
 }).then(() => {
   TrackPlayer.updateOptions({
     capabilities: [
-      Capability.JumpBackward,
-      Capability.JumpForward,
-      Capability.Pause,
-      Capability.Play,
-      Capability.SeekTo
+      TrackPlayer.CAPABILITY_JUMP_BACKWARD,
+      TrackPlayer.CAPABILITY_JUMP_FORWARD,
+      TrackPlayer.CAPABILITY_PAUSE,
+      TrackPlayer.CAPABILITY_PLAY,
+      TrackPlayer.CAPABILITY_SEEK_TO
     ],
     stopWithApp: true,
     jumpInterval: PV.Player.jumpSeconds
@@ -350,12 +350,12 @@ export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: stri
 export const togglePlay = async () => {
   const state = await TrackPlayer.getState()
 
-  if (state === State.None) {
+  if (state === TrackPlayer.STATE_NONE) {
     TrackPlayer.play()
     return
   }
 
-  if (state === State.Playing) {
+  if (state === TrackPlayer.STATE_PLAYING) {
     TrackPlayer.pause()
   } else {
     TrackPlayer.play()
