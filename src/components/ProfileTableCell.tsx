@@ -30,8 +30,8 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
-    height: 50,
-    lineHeight: 50
+    height: 60,
+    lineHeight: 60
   },
   wrapper: {
     alignItems: 'center',
