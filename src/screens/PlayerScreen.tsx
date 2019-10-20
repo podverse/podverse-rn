@@ -17,7 +17,7 @@ import { getMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
-import { updatePlayerState } from '../state/actions/player'
+import { loadItemAndPlayTrack, updatePlayerState } from '../state/actions/player'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core, navHeader } from '../styles'
 
@@ -71,6 +71,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { navigation } = this.props
 
     const mediaRefId = navigation.getParam('mediaRefId')
+    console.log('hey!', mediaRefId)
     if (mediaRefId) this._initializeScreenData()
 
     this.props.navigation.setParams({
@@ -117,17 +118,17 @@ export class PlayerScreen extends React.Component<Props, State> {
 
       try {
         const currentItem = await getNowPlayingItem()
-
         if ((mediaRefId && mediaRefId !== currentItem.mediaRefId)) {
           const mediaRef = await getMediaRef(mediaRefId)
           if (mediaRef) {
             await addQueueItemNext(currentItem)
             const newItem = convertToNowPlayingItem(mediaRef, null, null)
-            // TODO: LOAD NEW CLIP
+            const shouldPlay = true
+            await loadItemAndPlayTrack(newItem, shouldPlay)
           }
         }
       } catch (error) {
-        //
+        console.log(error)
       }
 
       setGlobal({
