@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     marginVertical: 8
   },
   wrapper: {
+    alignItems: 'center',
     flexDirection: 'row',
     height: 60,
     marginHorizontal: 8
