@@ -6,9 +6,9 @@
  */
 
 #import "AppDelegate.h"
-#import <AppCenterReactNativeAnalytics/AppCenterReactNativeAnalytics.h>
-#import <AppCenterReactNativeCrashes/AppCenterReactNativeCrashes.h>
-#import <AppCenterReactNative/AppCenterReactNative.h>
+#import "AppCenterReactNativeAnalytics.h"
+#import "AppCenterReactNativeCrashes.h"
+#import "AppCenterReactNative.h"
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>

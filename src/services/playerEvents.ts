@@ -47,9 +47,9 @@ const syncNowPlayingItemWithTrack = async () => {
     if (currentNowPlayingItem) await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem, isSecondTime)
   }
 
-  setTimeout(sync, 250)
+  setTimeout(sync, 1000)
   const isSecondTime = true
-  setTimeout(() => sync(isSecondTime), 3000)
+  setTimeout(() => sync(isSecondTime), 5000)
 }
 
 module.exports = async () => {
@@ -58,7 +58,7 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-queue-ended', async (x) => {
     console.log('playback-queue-ended', x)
-    await syncNowPlayingItemWithTrack()
+    syncNowPlayingItemWithTrack()
   })
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
@@ -121,7 +121,7 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
     console.log('playback-track-changed', x)
-    await syncNowPlayingItemWithTrack()
+    syncNowPlayingItemWithTrack()
   })
 
   PVTrackPlayer.addEventListener('playback-error', (x: any) => {

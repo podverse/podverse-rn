@@ -74,25 +74,6 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
       //
     }
     this.setState({ isLoading: false })
-
-    AppState.addEventListener('change', this._handleAppStateChange)
-    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handleAppStateChange)
-  }
-
-  componentWillUnmount() {
-    AppState.removeEventListener('change', this._handleAppStateChange)
-    PlayerEventEmitter.removeListener(PV.Events.PLAYER_QUEUE_ENDED)
-  }
-
-  _handleAppStateChange = async () => {
-    const { dismiss } = this.props.navigation
-    const { nowPlayingItem: lastItem } = this.global
-    const trackId = await PVTrackPlayer.getCurrentTrack()
-    const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
-
-    if (!currentItem || (!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
-      dismiss()
-    }
   }
 
   _saveNewPlaylist = async () => {
