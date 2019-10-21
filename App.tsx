@@ -1,16 +1,17 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo, { NetInfoState, NetInfoSubscription } from '@react-native-community/netinfo'
 import React, { Component } from 'react'
-import { Image, Platform, StatusBar, View } from 'react-native'
+import { Image, Platform, StatusBar, View, YellowBox } from 'react-native'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
 import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
 import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
-import { PVTrackPlayer } from './src/services/player'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
+
+YellowBox.ignoreWarnings(['Warning: componentWillUpdate'])
 
 type Props = {}
 
