@@ -115,18 +115,17 @@ export class AuthScreen extends React.Component<Props, State> {
       bottomButtons = [
         (
           <Text
-            key='signup'
-            onPress={this._showMembership}
-            style={styles.switchOptionText}>
-            Sign Up
-          </Text>
-        ),
-        (
-          <Text
             key='reset'
             onPress={this._showResetPassword}
             style={styles.switchOptionText}>
             Reset Password
+          </Text>
+        ),(
+          <Text
+            key='signup'
+            onPress={this._showMembership}
+            style={[styles.switchOptionText, {marginTop: 0, width: "100%" }]}>
+            See Premium Membership Benefits
           </Text>
         )
       ]
