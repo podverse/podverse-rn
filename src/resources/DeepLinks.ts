@@ -27,7 +27,7 @@ export const DeepLinks = {
     path: 'podcasts'
   },
   Profile: {
-    path: 'profile/:profileId',
+    path: 'profile/:userId',
     pathPrefix: 'profile',
     pathWithId: (id: string) => `profile/${id}`
   },
