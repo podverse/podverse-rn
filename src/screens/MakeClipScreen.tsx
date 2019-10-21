@@ -65,6 +65,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const currentPosition = await PVTrackPlayer.getPosition()
     const isEditing = this.props.navigation.getParam('isEditing')
 
+    // Prevent the temporary progressValue from sticking in the progress bar
+    setTimeout(() => this.setState({ progressValue: null }), 250)
+
     const hideHowToModal = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED)
 
     if (!hideHowToModal) {
