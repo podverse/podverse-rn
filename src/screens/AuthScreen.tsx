@@ -1,10 +1,10 @@
 import React from 'react'
 import { Alert, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
-import { Icon, Login, ResetPassword, SafeAreaView, SignUp } from '../components'
+import { Icon, Login, ResetPassword, SafeAreaView } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { sendResetPassword } from '../services/auth'
-import { Credentials, loginUser, signUpUser } from '../state/actions/auth'
+import { Credentials, loginUser } from '../state/actions/auth'
 import { button } from '../styles'
 
 type Props = {
@@ -15,13 +15,13 @@ type Props = {
 type State = {
   isLoadingLogin: boolean
   isLoadingResetPassword: boolean
-  isLoadingSignUp: boolean
+  // isLoadingSignUp: boolean
   screenType?: string
 }
 
 const _login = 'login'
 const _resetPassword = 'resetPassword'
-const _signup = 'signup'
+// const _signup = 'signup'
 
 export class AuthScreen extends React.Component<Props, State> {
 
@@ -30,7 +30,7 @@ export class AuthScreen extends React.Component<Props, State> {
     this.state = {
       isLoadingLogin: false,
       isLoadingResetPassword: false,
-      isLoadingSignUp: false,
+      // isLoadingSignUp: false,
       screenType: props.screenType || _login
     }
   }
@@ -74,28 +74,28 @@ export class AuthScreen extends React.Component<Props, State> {
     })
   }
 
-  attemptSignUp = async (credentials: Credentials) => {
-    const { navigation } = this.props
+  // attemptSignUp = async (credentials: Credentials) => {
+  //   const { navigation } = this.props
 
-    const wasAlerted = await alertIfNoNetworkConnection('sign up')
-    if (wasAlerted) return
+  //   const wasAlerted = await alertIfNoNetworkConnection('sign up')
+  //   if (wasAlerted) return
 
-    this.setState({ isLoadingSignUp: true }, async () => {
-      try {
-        await signUpUser(credentials, navigation)
-        if (navigation.getParam('isOnboarding', false)) {
-          navigation.navigate(PV.RouteNames.MainApp)
-        } else {
-          navigation.goBack(null)
-        }
-      } catch (error) {
-        if (error.response && error.response.data && error.response.data.message) {
-          Alert.alert(PV.Alerts.SIGN_UP_ERROR.title, error.response.data.message, [])
-        }
-      }
-      this.setState({ isLoadingSignUp: false })
-    })
-  }
+  //   this.setState({ isLoadingSignUp: true }, async () => {
+  //     try {
+  //       await signUpUser(credentials, navigation)
+  //       if (navigation.getParam('isOnboarding', false)) {
+  //         navigation.navigate(PV.RouteNames.MainApp)
+  //       } else {
+  //         navigation.goBack(null)
+  //       }
+  //     } catch (error) {
+  //       if (error.response && error.response.data && error.response.data.message) {
+  //         Alert.alert(PV.Alerts.SIGN_UP_ERROR.title, error.response.data.message, [])
+  //       }
+  //     }
+  //     this.setState({ isLoadingSignUp: false })
+  //   })
+  // }
 
   _showMembership = () => {
     const { navigation } = this.props
@@ -108,7 +108,7 @@ export class AuthScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { isLoadingLogin, isLoadingResetPassword, isLoadingSignUp, screenType } = this.state
+    const { isLoadingLogin, isLoadingResetPassword, screenType } = this.state
     let bottomButtons
 
     if (screenType === _login) {
@@ -122,10 +122,10 @@ export class AuthScreen extends React.Component<Props, State> {
           </Text>
         ),(
           <Text
-            key='signup'
+            key='moreInfo'
             onPress={this._showMembership}
             style={[styles.switchOptionText, {marginTop: 0, width: "100%" }]}>
-            See Premium Membership Benefits
+            More Info
           </Text>
         )
       ]
@@ -165,7 +165,7 @@ export class AuthScreen extends React.Component<Props, State> {
                     isLoading={isLoadingResetPassword}
                     onResetPasswordPressed={this.attemptResetPassword} />
               }
-              {
+              {/* {
                 screenType === _signup &&
                   <View>
                     <SignUp
@@ -173,7 +173,7 @@ export class AuthScreen extends React.Component<Props, State> {
                       isLoading={isLoadingSignUp}
                       onSignUpPressed={this.attemptSignUp} />
                   </View>
-              }
+              } */}
             </View>
           </View>
         </TouchableWithoutFeedback>
