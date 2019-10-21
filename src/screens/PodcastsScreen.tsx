@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { AppState, Linking, Platform, StyleSheet } from 'react-native'
-// import { initialMode as initialDarkModeSetting } from 'react-native-dark-mode'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, PlayerEvents, PodcastTableCell, SearchBar, SwipeRowBack,
