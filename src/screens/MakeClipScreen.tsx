@@ -10,9 +10,8 @@ import { ActivityIndicator, Icon, PlayerProgressBar, SafeAreaView, Text, TextInp
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { createMediaRef, updateMediaRef } from '../services/mediaRef'
-import { getNowPlayingItemFromQueueOrHistoryByTrackId, playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime,
+import { playerJumpBackward, playerJumpForward, playerPreviewEndTime, playerPreviewStartTime,
   PVTrackPlayer } from '../services/player'
-import PlayerEventEmitter from '../services/playerEventEmitter'
 import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, navHeader, playerStyles } from '../styles'
 
@@ -91,9 +90,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
           : { isPublicItemSelected: privacyItems[1] }),
         title: isEditing ? nowPlayingItem.clipTitle : ''
       })
-
-      AppState.addEventListener('change', this._handleAppStateChange)
-      PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handleAppStateChange)
     })
   }
 
@@ -104,20 +100,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
         showMakeClip: false
       }
     })
-
-    AppState.removeEventListener('change', this._handleAppStateChange)
-    PlayerEventEmitter.removeListener(PV.Events.PLAYER_QUEUE_ENDED)
-  }
-
-  _handleAppStateChange = async () => {
-    const { dismiss } = this.props.navigation
-    const { nowPlayingItem: lastItem } = this.global
-    const trackId = await PVTrackPlayer.getCurrentTrack()
-    const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
-
-    if (!currentItem || (!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
-      dismiss()
-    }
   }
 
   _onChangeTitle = (text: string) => {
@@ -266,22 +248,26 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   _playerJumpBackward = async () => {
     const progressValue = await playerJumpBackward(PV.Player.jumpSeconds)
-    this.setState({ progressValue }, () => this.setState({ progressValue: null }))
+    this.setState({ progressValue })
+    setTimeout(() => this.setState({ progressValue: null }), 250)
   }
 
   _playerJumpForward = async () => {
     const progressValue = await playerJumpForward(PV.Player.jumpSeconds)
-    this.setState({ progressValue }, () => this.setState({ progressValue: null }))
+    this.setState({ progressValue })
+    setTimeout(() => this.setState({ progressValue: null }), 250)
   }
 
   _playerMiniJumpBackward = async () => {
     const progressValue = await playerJumpBackward(PV.Player.miniJumpSeconds)
-    this.setState({ progressValue }, () => this.setState({ progressValue: null }))
+    this.setState({ progressValue })
+    setTimeout(() => this.setState({ progressValue: null }), 250)
   }
 
   _playerMiniJumpForward = async () => {
     const progressValue = await playerJumpForward(PV.Player.miniJumpSeconds)
-    this.setState({ progressValue }, () => this.setState({ progressValue: null }))
+    this.setState({ progressValue })
+    setTimeout(() => this.setState({ progressValue: null }), 250)
   }
 
   _showClipPrivacyNote = async () => {
