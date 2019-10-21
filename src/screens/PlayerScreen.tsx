@@ -79,26 +79,6 @@ export class PlayerScreen extends React.Component<Props, State> {
       _getMediaRefId: this._getMediaRefId,
       _showShareActionSheet: this._showShareActionSheet
     })
-
-    AppState.addEventListener('change', this._handleAppStateChange)
-    PlayerEventEmitter.on(PV.Events.PLAYER_QUEUE_ENDED, this._handleAppStateChange)
-  }
-
-  async componentWillUnmount() {
-    AppState.removeEventListener('change', this._handleAppStateChange)
-    PlayerEventEmitter.removeListener(PV.Events.PLAYER_QUEUE_ENDED)
-  }
-
-  _handleAppStateChange = async (nextAppState: any) => {
-    if (nextAppState === 'active') {
-      const { nowPlayingItem: lastItem } = this.global.player
-      const trackId = await PVTrackPlayer.getCurrentTrack()
-      const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
-
-      if ((!lastItem) || (lastItem && currentItem.episodeId !== lastItem.episodeId)) {
-        await updatePlayerState(currentItem)
-      }
-    }
   }
 
   _initializeScreenData = () => {
