@@ -92,7 +92,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                     'https://docs.google.com/forms/d/e/1FAIpQLSd0LJcAQ4zViL7lrl-yg192kHOQN49rvcLcf_RPTcPn-wjmgg/viewform?usp=sf_link'
                   )}
                   style={[styles.subText]}>
-                  Join Waiting List
+                  Request Invite
                 </TextLink>
               </View>
             </View>
