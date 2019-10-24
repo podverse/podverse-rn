@@ -278,6 +278,24 @@ export const createTracks = async (items: NowPlayingItem[]) => {
   return tracks
 }
 
+export const movePlayerItemToNewPosition = async (id: string, insertBeforeId: string) => {
+  const playerQueueItems = await TrackPlayer.getQueue()
+  if (playerQueueItems.some((x: any) => x.id === id)) {
+    try {
+      await TrackPlayer.getTrack(id)
+      await TrackPlayer.remove(id)
+      const pvQueueItems = await getQueueItemsLocally()
+      const itemToMove = pvQueueItems.find((x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id))
+      if (itemToMove) {
+        const track = await createTrack(itemToMove)
+        await TrackPlayer.add([track], insertBeforeId)
+      }
+    } catch (error) {
+      console.log('movePlayerItemToNewPosition error:', error)
+    }
+  }
+}
+
 export const setPlaybackPosition = async (position?: number) => {
   if (position || position === 0 || (position && position > 0)) await TrackPlayer.seekTo(position)
 }
