@@ -9,7 +9,10 @@ import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistory
   setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 
-const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1000)
+const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 5000, {
+  leading: true,
+  trailing: false
+})
 
 const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem, isSecondTime?: boolean) => {
   if (!currentNowPlayingItem) return
@@ -189,9 +192,8 @@ const handlePlayerClipLoaded = async () => {
         }
       }, 250)
     }
-    const resolveImmediately = false
-    await debouncedSetPlaybackPosition(
-      nowPlayingItem.clipStartTime, nowPlayingItem.clipId, resolveImmediately)
+    const resolveImmediately = true
+    await debouncedSetPlaybackPosition(nowPlayingItem.clipStartTime, nowPlayingItem.clipId, resolveImmediately)
   }
 }
 

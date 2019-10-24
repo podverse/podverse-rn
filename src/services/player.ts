@@ -306,11 +306,11 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
           } else {
             await TrackPlayer.seekTo(position)
           }
-        }, 250)
+        }, 500)
         resolve()
       }
       if (resolveImmediately) resolve()
-    }, 250)
+    }, 500)
   })
 }
 
@@ -338,7 +338,7 @@ export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: stri
     checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId))
   let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
 
-  if (currentNowPlayingItem) await removeQueueItem(currentNowPlayingItem, false)
+  if (currentNowPlayingItem) removeQueueItem(currentNowPlayingItem, false)
 
   if (!currentNowPlayingItem) {
     const historyItems = await getHistoryItemsLocally()
