@@ -29,6 +29,7 @@ export class OverlayAlert extends React.PureComponent<Props, State> {
     }
 
     const handleRenewMembership = () => {
+      // TODO!
       console.log('dismiss alert')
       console.log('navigate to renew membership')
     }
