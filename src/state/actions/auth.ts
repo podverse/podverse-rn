@@ -37,6 +37,13 @@ export const getAuthUserInfo = async () => {
       ...globalState,
       session: {
         userInfo: {
+          email: '',
+          freeTrialExpiration: '',
+          historyItems: [],
+          id: '',
+          membershipExpiration: '',
+          name: '',
+          playlists: [],
           subscribedPlaylistIds: [],
           subscribedPodcastIds: [],
           subscribedUserIds: []
