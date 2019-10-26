@@ -37,6 +37,10 @@ export class MembershipScreen extends React.Component<Props, State> {
     this.setState({ isLoading: false })
   }
 
+  handleSignUpPress = () => {
+    this.props.navigation.navigate(PV.RouteNames.AuthScreen, { showSignUp: true })
+  }
+
   render() {
     const { isLoading } = this.state
     const { globalTheme, session } = this.global
@@ -83,16 +87,19 @@ export class MembershipScreen extends React.Component<Props, State> {
             <View>
               <View style={styles.textRowCentered}>
                 <Text style={styles.subTextCentered}>
-                  Podverse premium accounts are currently available by invite only.
+                  Get 1 year of Podverse Premium for free
+                </Text>
+              </View>
+              <View style={styles.textRowCentered}>
+                <Text style={styles.subTextCentered}>
+                  $10 per year after that
                 </Text>
               </View>
               <View style={styles.textRowCentered}>
                 <TextLink
-                  onPress={() => Linking.openURL(
-                    'https://docs.google.com/forms/d/e/1FAIpQLSd0LJcAQ4zViL7lrl-yg192kHOQN49rvcLcf_RPTcPn-wjmgg/viewform?usp=sf_link'
-                  )}
+                  onPress={this.handleSignUpPress}
                   style={[styles.subText]}>
-                  Request Invite
+                  Sign Up
                 </TextLink>
               </View>
             </View>
@@ -134,7 +141,7 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'create publicly discoverable clips',
+    text: 'automatically save your clips to a playlist',
     column1: false,
     column2: true
   },
@@ -154,7 +161,7 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'sync subscriptions on all devices',
+    text: 'sync your subscriptions on all devices',
     column1: false,
     column2: true
   },

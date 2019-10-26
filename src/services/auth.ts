@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
+import { Credentials } from '../state/actions/auth'
 import { request } from './request'
 
 export const getBearerToken = async () => {
@@ -159,16 +160,13 @@ export const sendResetPassword = async (email: string) => {
   return response && response.data
 }
 
-export const signUp = async (email: string, password: string, name: string) => {
+export const signUp = async (credentials: Credentials) => {
+  console.log('sign!')
   const response = await request({
     endpoint: '/auth/sign-up',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: {
-      email,
-      password,
-      name
-    },
+    body: credentials,
     query: { includeBodyToken: true },
     opts: { credentials: 'include' }
   })

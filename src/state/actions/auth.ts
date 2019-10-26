@@ -80,11 +80,17 @@ export const logoutUser = async () => {
     RNSecureKeyStore.remove(PV.Keys.BEARER_TOKEN)
     await getAuthUserInfo()
   } catch (error) {
+    console.log(error)
     Alert.alert('Error', error.message, [])
   }
 }
 
 export const signUpUser = async (credentials: Credentials) => {
-  await signUp(credentials.email, credentials.password, credentials.name)
-  return getAuthUserInfo()
+  try {
+    await signUp(credentials)
+    return getAuthUserInfo()
+  } catch (error) {
+    console.log(error)
+    Alert.alert('Error', error.message, [])
+  }
 }
