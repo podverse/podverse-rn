@@ -34,6 +34,7 @@ export const getAuthUserInfo = async () => {
     return userInfo
   } catch (error) {
     setGlobal({
+      ...globalState,
       session: {
         userInfo: {
           subscribedPlaylistIds: [],
@@ -41,6 +42,13 @@ export const getAuthUserInfo = async () => {
           subscribedUserIds: []
         },
         isLoggedIn: false
+      },
+      overlayAlert: {
+        hideFreeTrialExpired: false,
+        hideFreeTrialExpiring: false,
+        hideMembershipExpired: false,
+        hideMembershipExpiring: false,
+        showAlert: false
       }
     })
 
