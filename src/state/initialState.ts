@@ -76,7 +76,7 @@ const initialTheme: InitialState = {
     hideFreeTrialExpiring: false,
     hideMembershipExpired: false,
     hideMembershipExpiring: false,
-    showAlert: true
+    showAlert: false
   }
 }
 

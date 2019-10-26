@@ -107,11 +107,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await this._initializeScreenData()
       }
     } catch (error) {
-      if (error.name === PV.Errors.FREE_TRIAL_EXPIRED.name || error.name === PV.Errors.PREMIUM_MEMBERSHIP_EXPIRED.name) {
-        // Since the expired user was logged out after the alert in getAuthUserInfo,
-        // we initialiize the screen data again, this time as a local/logged-out user.
-        await this._initializeScreenData()
-      }
       console.log(error)
     }
   }

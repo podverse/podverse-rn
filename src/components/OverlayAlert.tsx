@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import React, { getGlobal, setGlobal } from 'reactn'
 import { Icon } from '../components'
-import { getMembershipStatus, safelyUnwrapNestedVariable } from '../lib/utility'
+import { getMembershipStatus, readableDate, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 
 type Props = {}
@@ -10,8 +10,6 @@ type State = {}
 export class OverlayAlert extends React.PureComponent<Props, State> {
   render () {
     const { global: globalState } = this
-    const freeTrialExpiration = safelyUnwrapNestedVariable(() => globalState.session.userInfo.freeTrialExpiration, '')
-    const membershipExpiration = safelyUnwrapNestedVariable(() => globalState.session.userInfo.membershipExpiration, '')
     const user = safelyUnwrapNestedVariable(() => globalState.session.userInfo, {})
     const { globalTheme, overlayAlert } = globalState
     const { overlayAlertLink: overlayAlertLinkStyles } = globalTheme
@@ -35,10 +33,13 @@ export class OverlayAlert extends React.PureComponent<Props, State> {
       console.log('navigate to renew membership')
     }
 
+    const freeTrialExpiration = readableDate(safelyUnwrapNestedVariable(() => globalState.session.userInfo.freeTrialExpiration, ''))
+    const membershipExpiration = readableDate(safelyUnwrapNestedVariable(() => globalState.session.userInfo.membershipExpiration, ''))
+
     const freeTrialExpired = (
       <View style={styles.textWrapper}>
         <Text style={[styles.text, globalTheme.overlayAlertDanger]}>
-          Your free trial expired on {freeTrialExpiration}. Please renew your membership to continue using premium features.
+          Your free trial expired {freeTrialExpiration}. Please renew your membership to continue using premium features.
       </Text>
         <Text
           onPress={handleRenewMembership}
@@ -51,7 +52,7 @@ export class OverlayAlert extends React.PureComponent<Props, State> {
     const freeTrialExpiring = (
       <View style={styles.textWrapper}>
         <Text style={[styles.text, globalTheme.overlayAlertWarning]}>
-          Your free trial membership is expiring on {freeTrialExpiration}.
+          Your free trial expires {freeTrialExpiration}.
       </Text>
         <Text
           onPress={handleRenewMembership}
@@ -63,7 +64,7 @@ export class OverlayAlert extends React.PureComponent<Props, State> {
 
     const membershipExpired = (
       <View style={styles.textWrapper}>
-        <Text style={[styles.text, globalTheme.overlayAlertDanger]}>Your membership expired on {membershipExpiration}.
+        <Text style={[styles.text, globalTheme.overlayAlertDanger]}>Your membership expired {membershipExpiration}.
           Please renew your membership to continue using premium features.
       </Text>
         <Text
@@ -77,7 +78,7 @@ export class OverlayAlert extends React.PureComponent<Props, State> {
     const membershipExpiring = (
       <View style={styles.textWrapper}>
         <Text style={[styles.text, globalTheme.overlayAlertWarning]}>
-          Your free trial membership is expiring on {membershipExpiration}.
+          Your premium membership expires {membershipExpiration}.
       </Text>
         <Text
           onPress={handleRenewMembership}
@@ -117,6 +118,7 @@ export class OverlayAlert extends React.PureComponent<Props, State> {
         <TouchableWithoutFeedback onPress={() => handleCloseButton(hideKey)}>
           <View style={styles.iconWrapper}>
             <Icon
+              color={PV.Colors.white}
               name='times'
               size={28} />
           </View>
@@ -150,9 +152,8 @@ const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
     left: 0,
-    paddingBottom: 20,
     paddingLeft: 12,
-    paddingTop: 16,
+    paddingVertical: 20,
     position: 'absolute',
     right: 0,
     top: 88
