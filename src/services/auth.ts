@@ -134,7 +134,6 @@ export const login = async (email: string, password: string) => {
       email,
       password
     },
-    query: { includeBodyToken: true },
     opts: { credentials: 'include' }
   })
 
@@ -161,13 +160,11 @@ export const sendResetPassword = async (email: string) => {
 }
 
 export const signUp = async (credentials: Credentials) => {
-  console.log('sign!')
   const response = await request({
     endpoint: '/auth/sign-up',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: credentials,
-    query: { includeBodyToken: true },
     opts: { credentials: 'include' }
   })
 
