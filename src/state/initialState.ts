@@ -57,7 +57,7 @@ const initialTheme: InitialState = {
       freeTrialExpiration: '',
       historyItems: [],
       id: '',
-      membershipExpiration: null,
+      membershipExpiration: '',
       name: '',
       playlists: [],
       subscribedPlaylistIds: [],
@@ -70,7 +70,14 @@ const initialTheme: InitialState = {
     nsfwMode: true
   },
   subscribedPodcasts: [],
-  subscribedPodcastsTotalCount: 0
+  subscribedPodcastsTotalCount: 0,
+  overlayAlert: {
+    hideFreeTrialExpired: false,
+    hideFreeTrialExpiring: false,
+    hideMembershipExpired: false,
+    hideMembershipExpiring: false,
+    showAlert: true
+  }
 }
 
 export default initialTheme
