@@ -1,17 +1,18 @@
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { ActivityIndicator, Text, View } from './'
 
 type Props = {
   actionHandler?: any
   actionText?: string
+  isLoading?: boolean
   message?: string
   subMessage?: string
 }
 
 export const MessageWithAction = (props: Props) => {
-  const { actionHandler, actionText, message, subMessage } = props
+  const { actionHandler, actionText, isLoading, message, subMessage } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
@@ -25,11 +26,15 @@ export const MessageWithAction = (props: Props) => {
           <Text style={[globalTheme.text, styles.subMessage]}>{subMessage}</Text>
       }
       {
-        !!actionText && actionHandler &&
+        !isLoading && !!actionText && actionHandler &&
           <TouchableOpacity onPress={actionHandler}>
             <Text style={[globalTheme.text, styles.button]}>{actionText}</Text>
           </TouchableOpacity>
 
+      }
+      {
+        isLoading &&
+          <ActivityIndicator />
       }
     </View>
   )

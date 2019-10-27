@@ -7,9 +7,10 @@ import React, { getGlobal } from 'reactn'
 import { NavQueueIcon, PVTabBar } from './components'
 import { PV } from './resources'
 import { AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
-  EpisodeScreen, EpisodesScreen, MakeClipScreen, MembershipScreen, MoreScreen, OnboardingScreen,
-  PlayerScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen, PodcastsScreen,
-  ProfileScreen, ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen, WebPageScreen } from './screens'
+  EmailVerificationScreen, EpisodeScreen, EpisodesScreen, MakeClipScreen, MembershipScreen, MoreScreen,
+  OnboardingScreen, PlayerScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen,
+  PodcastsScreen, ProfileScreen, ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen,
+  WebPageScreen } from './screens'
 
 const defaultNavigationOptions = ({ navigation }) => ({
   title: PV.Tabs.Podcasts.title,
@@ -210,13 +211,20 @@ const WebPageNavigator = createStackNavigator({
   defaultNavigationOptions
 })
 
+const EmailVerificationNavigator = createStackNavigator({
+  [PV.RouteNames.EmailVerificationScreen]: EmailVerificationScreen
+}, {
+  defaultNavigationOptions
+})
+
 const MainApp = createStackNavigator({
   [PV.RouteNames.TabNavigator]: { screen: TabNavigator, path: '' },
   [PV.RouteNames.AuthNavigator]: AuthNavigator,
   [PV.RouteNames.PlayerNavigator]: { screen: PlayerNavigator, path: '' },
   PlaylistsAddToNavigator,
   QueueNavigator,
-  WebPageNavigator
+  WebPageNavigator,
+  EmailVerificationNavigator
 }, {
   mode: 'modal',
   headerMode: 'none'

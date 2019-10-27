@@ -128,7 +128,7 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
 export const login = async (email: string, password: string) => {
   const response = await request({
     method: 'POST',
-    endpoint: '/auth/login',
+    endpoint: '/auth/login?includeBodyToken=true',
     headers: { 'Content-Type': 'application/json' },
     body: {
       email,
@@ -152,8 +152,20 @@ export const sendResetPassword = async (email: string) => {
     headers: { 'Content-Type': 'application/json' },
     body: {
       email
-    },
-    opts: { credentials: 'include' }
+    }
+  })
+
+  return response && response.data
+}
+
+export const sendVerificationEmail = async (email: string) => {
+  const response = await request({
+    endpoint: '/auth/send-verification',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: {
+      email
+    }
   })
 
   return response && response.data
@@ -164,14 +176,8 @@ export const signUp = async (credentials: Credentials) => {
     endpoint: '/auth/sign-up',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: credentials,
-    opts: { credentials: 'include' }
+    body: credentials
   })
 
-  const data = response && response.data || []
-  if (data.token) {
-    RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY })
-  }
-
-  return data
+  return response.data
 }

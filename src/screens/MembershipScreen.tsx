@@ -1,4 +1,4 @@
-import { Linking, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
 import { getMembershipExpiration, getMembershipStatus, readableDate } from '../lib/utility'

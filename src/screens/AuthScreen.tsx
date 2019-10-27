@@ -53,7 +53,10 @@ export class AuthScreen extends React.Component<Props, State> {
           navigation.goBack(null)
         }
       } catch (error) {
-        if (error.response && error.response.status === PV.ResponseStatusCodes.UNAUTHORIZED) {
+        const EMAIL_NOT_VERIFIED = PV.Alerts.EMAIL_NOT_VERIFIED(credentials.email)
+        if (error.response && error.response.status === PV.ResponseStatusCodes.EMAIL_NOT_VERIFIED) {
+          Alert.alert(EMAIL_NOT_VERIFIED.title, EMAIL_NOT_VERIFIED.message, EMAIL_NOT_VERIFIED.buttons)
+        } else if (error.response && error.response.status === PV.ResponseStatusCodes.UNAUTHORIZED) {
           Alert.alert(PV.Alerts.LOGIN_INVALID.title, PV.Alerts.LOGIN_INVALID.message, [])
         } else {
           Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
@@ -86,12 +89,9 @@ export class AuthScreen extends React.Component<Props, State> {
     this.setState({ isLoadingSignUp: true }, async () => {
       try {
         await signUpUser(credentials)
-        if (navigation.getParam('isOnboarding', false)) {
-          navigation.navigate(PV.RouteNames.MainApp)
-        } else {
-          navigation.goBack(null)
-        }
+        navigation.navigate(PV.RouteNames.EmailVerificationScreen, { email: credentials.email })
       } catch (error) {
+        console.log('attemptSignUp', error)
         if (error.response && error.response.data && error.response.data.message) {
           Alert.alert(PV.Alerts.SIGN_UP_ERROR.title, error.response.data.message, [])
         }

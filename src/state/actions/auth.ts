@@ -33,6 +33,7 @@ export const getAuthUserInfo = async () => {
     })
     return userInfo
   } catch (error) {
+    console.log('getAuthUserInfo action', error)
     setGlobal({
       ...globalState,
       session: {
@@ -86,11 +87,6 @@ export const logoutUser = async () => {
 }
 
 export const signUpUser = async (credentials: Credentials) => {
-  try {
-    await signUp(credentials)
-    return getAuthUserInfo()
-  } catch (error) {
-    console.log(error)
-    Alert.alert('Error', error.message, [])
-  }
+  await signUp(credentials)
+  getAuthUserInfo()
 }

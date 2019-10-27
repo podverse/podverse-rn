@@ -1,10 +1,22 @@
+import { sendVerificationEmail } from '../services/auth'
 import { logoutUser } from '../state/actions/auth'
 
 const _expiredMessage = 'To renew your membership, please visit podverse.fm, login, then go to your Settings page.'
 const _logoutButtonText = 'Log Out'
 const _networkErrorTitle = 'Network Error'
+const _sendEmailText = 'Send Email'
+const _sendVerificationEmailMessage = 'You must verify your email address to login. Press Send Email then check your inbox of a verification email.'
+const _cancelText = 'Cancel'
 
 export const Alerts = {
+  EMAIL_NOT_VERIFIED: (email: string) => ({
+    message: _sendVerificationEmailMessage,
+    title: 'Verify Your Email',
+    buttons: [
+      { text: _cancelText },
+      { text: _sendEmailText, onPress: () => sendVerificationEmail(email) }
+    ]
+  }),
   FREE_TRIAL_EXPIRED: {
     message: _expiredMessage,
     title: 'Free Trial Expired',
