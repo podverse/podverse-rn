@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     width: 60
   },
   player: {
-    borderBottomWidth: 1,
+    borderBottomWidth: 0,
     borderTopWidth: 1,
     flexDirection: 'row',
     height: 62
