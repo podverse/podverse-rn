@@ -2,14 +2,17 @@ import debounce from 'lodash/debounce'
 import { Platform } from 'react-native'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { initializePlayerQueue, setNowPlayingItem } from '../state/actions/player'
+import { setNowPlayingItem } from '../state/actions/player'
 import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'
 import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, getPlaybackSpeed,
   handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded,
   setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 
-const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1000)
+const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 5000, {
+  leading: true,
+  trailing: false
+})
 
 const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem, isSecondTime?: boolean) => {
   if (!currentNowPlayingItem) return
@@ -66,9 +69,10 @@ module.exports = async () => {
 
     // Sometimes when the app is paused, and the app switches between wifi, data, or airplane mode,
     // the TrackPlayer will be in an "idle" or "none" state when you return to the app.
-    // I don't know how to fix this, other than to restore the player by re-initializing it.
+    // This line is an attempt to prevent the UI from getting frozen in a buffering state.
+    // NOTE: As of 10/23/19 I can't reproduce the problem...hopefully it was fixed in iOS or the TrackPlayer.
     if (x.state === 'idle' || x.state === 0 || x.state === PVTrackPlayer.STATE_NONE) {
-      setTimeout(initializePlayerQueue, 1000)
+      // setTimeout(syncNowPlayingItemWithTrack, 1000)
       return
     }
 
@@ -188,9 +192,8 @@ const handlePlayerClipLoaded = async () => {
         }
       }, 250)
     }
-    const resolveImmediately = false
-    await debouncedSetPlaybackPosition(
-      nowPlayingItem.clipStartTime, nowPlayingItem.clipId, resolveImmediately)
+    const resolveImmediately = true
+    await debouncedSetPlaybackPosition(nowPlayingItem.clipStartTime, nowPlayingItem.clipId, resolveImmediately)
   }
 }
 
