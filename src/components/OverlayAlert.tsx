@@ -1,132 +1,139 @@
 import { StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
-import React, { getGlobal, setGlobal } from 'reactn'
+import React, { useEffect, useGlobal, useState } from 'reactn'
 import { Icon } from '../components'
-import { getMembershipStatus, readableDate, safelyUnwrapNestedVariable } from '../lib/utility'
+import {
+  getMembershipStatus,
+  readableDate,
+  safelyUnwrapNestedVariable
+} from '../lib/utility'
 import { PV } from '../resources'
 
 type Props = {}
-type State = {}
+type State = {
+  hideKey: string | null;
+  wrapperStyles: [any?, any?];
+  alertTitle: string;
+  alertTitleStyle: {};
+  linkAction: any;
+  showAlert: boolean;
+}
 
-export class OverlayAlert extends React.PureComponent<Props, State> {
-  render () {
-    const { global: globalState } = this
-    const user = safelyUnwrapNestedVariable(() => globalState.session.userInfo, {})
-    const { globalTheme, overlayAlert } = globalState
-    const { overlayAlertLink: overlayAlertLinkStyles } = globalTheme
-    const { hideFreeTrialExpired, hideFreeTrialExpiring, hideMembershipExpired, hideMembershipExpiring } = overlayAlert
-    const wrapperStyles = [styles.wrapper] as any[]
-    let overlayNode = null
-    let hideKey = null
+export const OverlayAlert = (props: Props) => {
+  const [globalTheme] = useGlobal('globalTheme')
+  const { overlayAlertLink: overlayAlertLinkStyles } = globalTheme
+  const [state, setState] = useState<State>({
+    hideKey: null,
+    wrapperStyles: [],
+    alertTitle: '',
+    alertTitleStyle: {},
+    linkAction: () => null,
+    showAlert: false
+  })
+  const [hideForSession, setHideForSession] = useState(false)
+  const [session] = useGlobal('session')
 
-    const handleCloseButton = (hideKey: string | null) => {
-      const globalState = getGlobal()
-      setGlobal({
-        overlayAlert: {
-          ...globalState.overlayAlert,
-          ...(hideKey ? { [hideKey]: true } : {})
-        }
+  useEffect(() => {
+    const { userInfo } = session
+    const membershipStatus = getMembershipStatus(userInfo)
+
+    if (membershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRED) {
+      const freeTrialExpiration = readableDate(
+        safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, '')
+      )
+      setState({
+        hideKey: 'hideFreeTrialExpired',
+        alertTitle: `Your free trial expired ${freeTrialExpiration}. Please renew your membership to continue using premium features.`,
+        wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
+        alertTitleStyle: globalTheme.overlayAlertDanger,
+        linkAction: handleRenewMembership,
+        showAlert: true
+      })
+    } else if (
+      membershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON
+    ) {
+      const freeTrialExpiration = readableDate(
+        safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, '')
+      )
+      setState({
+        hideKey: 'hideFreeTrialExpiring',
+        alertTitle: `Your free trial expires ${freeTrialExpiration}`,
+        wrapperStyles: [styles.wrapper, globalTheme.overlayAlertWarning],
+        alertTitleStyle: globalTheme.overlayAlertWarning,
+        linkAction: handleRenewMembership,
+        showAlert: true
+      })
+    } else if (membershipStatus === PV.MembershipStatus.PREMIUM_EXPIRED) {
+      const membershipExpiration = readableDate(
+        safelyUnwrapNestedVariable(
+          () => userInfo.membershipExpiration,
+          ''
+        )
+      )
+
+      setState({
+        hideKey: 'hideMembershipExpired',
+        alertTitle: `Your membership expired ${membershipExpiration}. Please renew your membership to continue using premium features.`,
+        wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
+        alertTitleStyle: globalTheme.overlayAlertDanger,
+        linkAction: handleRenewMembership,
+        showAlert: true
+      })
+    } else if (membershipStatus === PV.MembershipStatus.PREMIUM_EXPIRING_SOON) {
+      const membershipExpiration = readableDate(
+        safelyUnwrapNestedVariable(
+          () => userInfo.membershipExpiration,
+          ''
+        )
+      )
+      setState({
+        hideKey: 'hideMembershipExpiring',
+        alertTitle: `Your premium membership expires ${membershipExpiration}.`,
+        wrapperStyles: [styles.wrapper, globalTheme.overlayAlertWarning],
+        alertTitleStyle: globalTheme.overlayAlertWarning,
+        linkAction: handleRenewMembership,
+        showAlert: true
+      })
+    } else {
+      setState({
+        ...state,
+        showAlert: false
       })
     }
+  }, [session])
 
-    const handleRenewMembership = () => {
-      // TODO!
-      console.log('dismiss alert')
-      console.log('navigate to renew membership')
-    }
-
-    const freeTrialExpiration = readableDate(safelyUnwrapNestedVariable(() => globalState.session.userInfo.freeTrialExpiration, ''))
-    const membershipExpiration = readableDate(safelyUnwrapNestedVariable(() => globalState.session.userInfo.membershipExpiration, ''))
-
-    const freeTrialExpired = (
-      <View style={styles.textWrapper}>
-        <Text style={[styles.text, globalTheme.overlayAlertDanger]}>
-          Your free trial expired {freeTrialExpiration}. Please renew your membership to continue using premium features.
-      </Text>
-        <Text
-          onPress={handleRenewMembership}
-          style={[styles.textLink, overlayAlertLinkStyles]}>
-          Renew Membership
-      </Text>
-      </View>
-    )
-
-    const freeTrialExpiring = (
-      <View style={styles.textWrapper}>
-        <Text style={[styles.text, globalTheme.overlayAlertWarning]}>
-          Your free trial expires {freeTrialExpiration}.
-      </Text>
-        <Text
-          onPress={handleRenewMembership}
-          style={[styles.textLink, overlayAlertLinkStyles]}>
-          Renew Membership
-      </Text>
-      </View>
-    )
-
-    const membershipExpired = (
-      <View style={styles.textWrapper}>
-        <Text style={[styles.text, globalTheme.overlayAlertDanger]}>Your membership expired {membershipExpiration}.
-          Please renew your membership to continue using premium features.
-      </Text>
-        <Text
-          onPress={handleRenewMembership}
-          style={[styles.textLink, overlayAlertLinkStyles]}>
-          Renew Membership
-      </Text>
-      </View>
-    )
-
-    const membershipExpiring = (
-      <View style={styles.textWrapper}>
-        <Text style={[styles.text, globalTheme.overlayAlertWarning]}>
-          Your premium membership expires {membershipExpiration}.
-      </Text>
-        <Text
-          onPress={handleRenewMembership}
-          style={[styles.textLink, overlayAlertLinkStyles]}>
-          Renew Membership
-      </Text>
-      </View>
-    )
-
-    const membershipStatus = getMembershipStatus(user)
-
-    if (!hideFreeTrialExpired && membershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRED) {
-      wrapperStyles.push(globalTheme.overlayAlertDanger)
-      overlayNode = freeTrialExpired
-      hideKey = 'hideFreeTrialExpired'
-    } else if (!hideFreeTrialExpiring && membershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON) {
-      wrapperStyles.push(globalTheme.overlayAlertWarning)
-      overlayNode = freeTrialExpiring
-      hideKey = 'hideFreeTrialExpiring'
-    } else if (!hideMembershipExpired && membershipStatus === PV.MembershipStatus.PREMIUM_EXPIRED) {
-      wrapperStyles.push(globalTheme.overlayAlertDanger)
-      overlayNode = membershipExpired
-      hideKey = 'hideMembershipExpired'
-    } else if (!hideMembershipExpiring && membershipStatus === PV.MembershipStatus.PREMIUM_EXPIRING_SOON) {
-      wrapperStyles.push(globalTheme.overlayAlertWarning)
-      overlayNode = membershipExpiring
-      hideKey = 'hideMembershipExpiring'
-    }
-
-    if (!overlayNode) {
-      return null
-    }
-
-    return (
-      <View style={wrapperStyles}>
-        {overlayNode}
-        <TouchableWithoutFeedback onPress={() => handleCloseButton(hideKey)}>
-          <View style={styles.iconWrapper}>
-            <Icon
-              color={PV.Colors.white}
-              name='times'
-              size={28} />
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    )
+  const handleCloseButton = () => {
+    setHideForSession(true) // Until they run the app again
   }
+
+  const handleRenewMembership = () => {
+    setHideForSession(true) // Until they run the app again
+    // TODO!
+    console.log('navigate to renew membership')
+  }
+
+  if (!state.showAlert || hideForSession) {
+    return null
+  }
+
+  return (
+    <View style={state.wrapperStyles}>
+      <View style={styles.textWrapper}>
+        <Text style={[styles.text, state.alertTitleStyle]}>
+          {state.alertTitle}
+        </Text>
+        <Text
+          onPress={state.linkAction}
+          style={[styles.textLink, overlayAlertLinkStyles]}>
+          Renew Membership
+        </Text>
+      </View>
+      <TouchableWithoutFeedback onPress={handleCloseButton}>
+        <View style={styles.iconWrapper}>
+          <Icon color={PV.Colors.white} name='times' size={28} />
+        </View>
+      </TouchableWithoutFeedback>
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
