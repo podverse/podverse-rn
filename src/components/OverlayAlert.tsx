@@ -29,89 +29,96 @@ export const OverlayAlert = (props: Props) => {
     linkAction: () => null,
     showAlert: false
   })
-  const [hideForSession, setHideForSession] = useState(false)
   const [session] = useGlobal('session')
+  const [membershipStatus, setMembershipStatus] = useState('')
 
   useEffect(() => {
     const { userInfo } = session
-    const membershipStatus = getMembershipStatus(userInfo)
+    const currentMembershipStatus = getMembershipStatus(userInfo)
 
-    if (membershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRED) {
-      const freeTrialExpiration = readableDate(
-        safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, '')
-      )
-      setState({
-        hideKey: 'hideFreeTrialExpired',
-        alertTitle: `Your free trial expired ${freeTrialExpiration}. Please renew your membership to continue using premium features.`,
-        wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
-        alertTitleStyle: globalTheme.overlayAlertDanger,
-        linkAction: handleRenewMembership,
-        showAlert: true
-      })
-    } else if (
-      membershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON
-    ) {
-      const freeTrialExpiration = readableDate(
-        safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, '')
-      )
-      setState({
-        hideKey: 'hideFreeTrialExpiring',
-        alertTitle: `Your free trial expires ${freeTrialExpiration}`,
-        wrapperStyles: [styles.wrapper, globalTheme.overlayAlertWarning],
-        alertTitleStyle: globalTheme.overlayAlertWarning,
-        linkAction: handleRenewMembership,
-        showAlert: true
-      })
-    } else if (membershipStatus === PV.MembershipStatus.PREMIUM_EXPIRED) {
-      const membershipExpiration = readableDate(
-        safelyUnwrapNestedVariable(
-          () => userInfo.membershipExpiration,
-          ''
+    if (currentMembershipStatus !== membershipStatus) {
+      setMembershipStatus(currentMembershipStatus)
+      if (currentMembershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRED) {
+        const freeTrialExpiration = readableDate(
+          safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, '')
         )
-      )
+        setState({
+          hideKey: 'hideFreeTrialExpired',
+          alertTitle: `Your free trial expired ${freeTrialExpiration}. Please renew your membership to continue using premium features.`,
+          wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
+          alertTitleStyle: globalTheme.overlayAlertDanger,
+          linkAction: handleRenewMembership,
+          showAlert: true
+        })
+      } else if (currentMembershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON) {
+        const freeTrialExpiration = readableDate(
+          safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, '')
+        )
+        setState({
+          hideKey: 'hideFreeTrialExpiring',
+          alertTitle: `Your free trial expires ${freeTrialExpiration}`,
+          wrapperStyles: [styles.wrapper, globalTheme.overlayAlertWarning],
+          alertTitleStyle: globalTheme.overlayAlertWarning,
+          linkAction: handleRenewMembership,
+          showAlert: true
+        })
+      } else if (currentMembershipStatus === PV.MembershipStatus.PREMIUM_EXPIRED) {
+        const membershipExpiration = readableDate(
+          safelyUnwrapNestedVariable(
+            () => userInfo.membershipExpiration,
+            ''
+          )
+        )
 
-      setState({
-        hideKey: 'hideMembershipExpired',
-        alertTitle: `Your membership expired ${membershipExpiration}. Please renew your membership to continue using premium features.`,
-        wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
-        alertTitleStyle: globalTheme.overlayAlertDanger,
-        linkAction: handleRenewMembership,
-        showAlert: true
-      })
-    } else if (membershipStatus === PV.MembershipStatus.PREMIUM_EXPIRING_SOON) {
-      const membershipExpiration = readableDate(
-        safelyUnwrapNestedVariable(
-          () => userInfo.membershipExpiration,
-          ''
+        setState({
+          hideKey: 'hideMembershipExpired',
+          alertTitle: `Your membership expired ${membershipExpiration}. Please renew your membership to continue using premium features.`,
+          wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
+          alertTitleStyle: globalTheme.overlayAlertDanger,
+          linkAction: handleRenewMembership,
+          showAlert: true
+        })
+      } else if (currentMembershipStatus === PV.MembershipStatus.PREMIUM_EXPIRING_SOON) {
+        const membershipExpiration = readableDate(
+          safelyUnwrapNestedVariable(
+            () => userInfo.membershipExpiration,
+            ''
+          )
         )
-      )
-      setState({
-        hideKey: 'hideMembershipExpiring',
-        alertTitle: `Your premium membership expires ${membershipExpiration}.`,
-        wrapperStyles: [styles.wrapper, globalTheme.overlayAlertWarning],
-        alertTitleStyle: globalTheme.overlayAlertWarning,
-        linkAction: handleRenewMembership,
-        showAlert: true
-      })
-    } else {
-      setState({
-        ...state,
-        showAlert: false
-      })
+        setState({
+          hideKey: 'hideMembershipExpiring',
+          alertTitle: `Your premium membership expires ${membershipExpiration}.`,
+          wrapperStyles: [styles.wrapper, globalTheme.overlayAlertWarning],
+          alertTitleStyle: globalTheme.overlayAlertWarning,
+          linkAction: handleRenewMembership,
+          showAlert: true
+        })
+      } else {
+        setState({
+          ...state,
+          showAlert: false
+        })
+      }
     }
   }, [session])
 
   const handleCloseButton = () => {
-    setHideForSession(true) // Until they run the app again
+    setState({
+      ...state,
+      showAlert: false
+    })
   }
 
   const handleRenewMembership = () => {
-    setHideForSession(true) // Until they run the app again
+    setState({
+      ...state,
+      showAlert: false
+    })
     // TODO!
     console.log('navigate to renew membership')
   }
 
-  if (!state.showAlert || hideForSession) {
+  if (!state.showAlert) {
     return null
   }
 

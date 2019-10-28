@@ -186,7 +186,7 @@ export const getMembershipStatus = (user: any) => {
     return PV.MembershipStatus.PREMIUM
   }
 
-  return
+  return ''
 }
 
 export const shouldShowMembershipAlert = (user: any) => {
