@@ -109,7 +109,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     if (Platform.OS === 'android') {
-      Linking.getInitialURL().then(url => {
+      Linking.getInitialURL().then((url) => {
         if (url) this._handleOpenURL(url)
       })
     } else {
@@ -470,7 +470,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         } else if (queryFrom === _downloadedKey) {
           await removeDownloadedPodcast(selectedId)
         }
-        const newFlatListData = flatListData.filter(x => x.id !== selectedId)
+        const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
         rowMap[selectedId].closeRow()
         this.setState({
           flatListData: newFlatListData,
@@ -775,7 +775,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             newState.flatListData.length >= podcastResults[1]
           newState.flatListDataTotalCount = podcastResults[1]
         }
-      } else if (rItems.some(option => option.value === filterKey)) {
+      } else if (rItems.some((option) => option.value === filterKey)) {
         const results = await getPodcasts(
           {
             ...(((selectedSubCategory &&

@@ -425,7 +425,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     if (wasAlerted) return newState
 
     try {
-      if (rightItems.some(option => option.value === filterKey)) {
+      if (rightItems.some((option) => option.value === filterKey)) {
         const results = await getMediaRefs(
           {
             sort: filterKey,

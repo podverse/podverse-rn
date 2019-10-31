@@ -1,4 +1,7 @@
-import { hasValidDownloadingConnection, hasValidNetworkConnection } from '../lib/network'
+import {
+  hasValidDownloadingConnection,
+  hasValidNetworkConnection
+} from '../lib/network'
 import { getBearerToken } from './auth'
 import { request } from './request'
 
@@ -47,7 +50,9 @@ export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
     ...(query.podcastId ? { podcastId: query.podcastId } : {}),
     ...(query.episodeId ? { episodeId: query.episodeId } : {}),
-    ...(query.searchAllFieldsText ? { searchAllFieldsText: query.searchAllFieldsText } : {}),
+    ...(query.searchAllFieldsText
+      ? { searchAllFieldsText: query.searchAllFieldsText }
+      : {}),
     ...(query.includeEpisode ? { includeEpisode: true } : {}),
     ...(query.includePodcast ? { includePodcast: true } : {})
   }
@@ -55,10 +60,13 @@ export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
   if (query.subscribedOnly && query.podcastId && query.podcastId.length === 0) {
     return [0, 0]
   }
-  const response = await request({
-    endpoint: '/mediaRef',
-    query: filteredQuery
-  }, nsfwMode)
+  const response = await request(
+    {
+      endpoint: '/mediaRef',
+      query: filteredQuery
+    },
+    nsfwMode
+  )
 
   return response && response.data
 }
@@ -69,7 +77,7 @@ export const updateMediaRef = async (data: any) => {
     endpoint: '/mediaRef',
     method: 'PATCH',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
     body: data,

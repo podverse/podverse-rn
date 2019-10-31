@@ -1,5 +1,6 @@
 import { Alert, Linking, StyleSheet } from 'react-native'
 import React from 'reactn'
+import packageJson from '../../package.json'
 import { ScrollView, Text, View } from '../components'
 import { PV } from '../resources'
 
@@ -45,6 +46,13 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
           </Text>
           <View style={styles.separator} />
           <Text style={styles.sectionTitle}>Third Party Libraries</Text>
+          {Object.keys(packageJson.dependencies).map((license) => {
+            return (
+              <Text key={license} style={styles.text}>
+                {license}
+              </Text>
+            )
+          })}
           <View style={styles.separator} />
           <Text
             style={styles.copyRight}

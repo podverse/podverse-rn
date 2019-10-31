@@ -134,7 +134,7 @@ export class SearchScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleSearchTypePress = index => this.setState({ searchType: index })
+  _handleSearchTypePress = (index) => this.setState({ searchType: index })
 
   _handleCancelPress = () => this.setState({ showActionSheet: false })
 

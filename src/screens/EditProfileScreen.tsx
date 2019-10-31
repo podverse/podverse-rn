@@ -110,7 +110,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
     const { globalTheme } = this.global
     const { isLoading, name, selectedIsPublicKey } = this.state
     const selectedIsPublicOption =
-      isPublicOptions.find(x => x.value === selectedIsPublicKey) ||
+      isPublicOptions.find((x) => x.value === selectedIsPublicKey) ||
       selectPlaceholder
     let privacySubtitleVerbTenseText = 'will be'
 

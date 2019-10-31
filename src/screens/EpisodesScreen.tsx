@@ -432,7 +432,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.endOfResultsReached =
           newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (sortingItems.some(option => option.value === filterKey)) {
+      } else if (sortingItems.some((option) => option.value === filterKey)) {
         const results = await getEpisodes(
           {
             ...(queryFrom === _subscribedKey ? { podcastId } : {}),

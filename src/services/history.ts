@@ -119,7 +119,7 @@ const addOrUpdateHistoryItemOnServer = async (
     endpoint: '/user/add-or-update-history-item',
     method: 'PATCH',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
     body: { historyItem: nowPlayingItem },
@@ -152,7 +152,7 @@ const updateHistoryItemPlaybackPositionOnServer = async (
     endpoint: '/user/update-history-item-playback-position',
     method: 'PATCH',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
     body: { historyItem: nowPlayingItem },
@@ -173,7 +173,7 @@ const clearHistoryItemsOnServer = async () => {
     endpoint: '/user/history-item/clear-all',
     method: 'DELETE',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
     opts: { credentials: 'include' }
@@ -228,7 +228,7 @@ const removeHistoryItemOnServer = async (
     query,
     method: 'DELETE',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     opts: { credentials: 'include' }

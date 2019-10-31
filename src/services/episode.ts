@@ -5,7 +5,9 @@ export const getEpisodes = async (query: any = {}, nsfwMode: boolean) => {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
     ...(query.podcastId ? { podcastId: query.podcastId } : {}),
-    ...(query.searchAllFieldsText ? { searchAllFieldsText: query.searchAllFieldsText } : {}),
+    ...(query.searchAllFieldsText
+      ? { searchAllFieldsText: query.searchAllFieldsText }
+      : {}),
     ...(query.includePodcast ? { includePodcast: query.includePodcast } : {}),
     ...(query.sincePubDate ? { sincePubDate: query.sincePubDate } : {})
   }
@@ -14,10 +16,13 @@ export const getEpisodes = async (query: any = {}, nsfwMode: boolean) => {
     return [[], 0]
   }
 
-  const response = await request({
-    endpoint: '/episode',
-    query: filteredQuery
-  }, nsfwMode)
+  const response = await request(
+    {
+      endpoint: '/episode',
+      query: filteredQuery
+    },
+    nsfwMode
+  )
 
   return response && response.data
 }

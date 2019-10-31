@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "tslint 'src/**/*.{ts,tsx}'",
-    "format": "prettier --write src/**/*.tsx"
+    "format": "prettier --write src/**/*.ts*"
   },
   "dependencies": {
     "@react-native-community/async-storage": "1.6.2",
