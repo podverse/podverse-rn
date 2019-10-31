@@ -69,14 +69,14 @@ export interface InitialState {
   downloadsArray: any[]
   downloadedEpisodeIds: any
   downloadedPodcastEpisodeCounts: any
-  downloadedEpisodeLimitCount: number,
+  downloadedEpisodeLimitCount: number
   player: {
-    hasErrored: boolean,
+    hasErrored: boolean
     isPlaying: boolean
     nowPlayingItem: any
     playbackRate: number
     showMakeClip: boolean
-    showMiniPlayer: boolean,
+    showMiniPlayer: boolean
     shouldContinuouslyPlay: boolean
   }
   playlists: {

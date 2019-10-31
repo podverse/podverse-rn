@@ -47,7 +47,9 @@ export class MembershipScreen extends React.Component<Props, State> {
   }
 
   handleSignUpPress = () => {
-    this.props.navigation.navigate(PV.RouteNames.AuthScreen, { showSignUp: true })
+    this.props.navigation.navigate(PV.RouteNames.AuthScreen, {
+      showSignUp: true
+    })
   }
 
   render() {
@@ -93,45 +95,41 @@ export class MembershipScreen extends React.Component<Props, State> {
           </View>
         )}
         {!isLoading && !isLoggedIn && (
+          <View style={styles.textRowCentered}>
+            <Text style={styles.subTextCentered}>
+              Podverse premium accounts are currently available by invite only.
+            </Text>
+          </View>
+        )}
+        {!isLoading && !isLoggedIn && (
           <View>
             <View style={styles.textRowCentered}>
               <Text style={styles.subTextCentered}>
-                Podverse premium accounts are currently available by invite
-                only.
+                Get 1 year of Podverse Premium for free
               </Text>
             </View>
-        }
-        {
-          (!isLoading && !isLoggedIn) &&
-            <View>
-              <View style={styles.textRowCentered}>
-                <Text style={styles.subTextCentered}>
-                  Get 1 year of Podverse Premium for free
-                </Text>
-              </View>
-              <View style={styles.textRowCentered}>
-                <Text style={styles.subTextCentered}>
-                  $10 per year after that
-                </Text>
-              </View>
-              <View style={styles.textRowCentered}>
-                <TextLink
-                  onPress={this.handleSignUpPress}
-                  style={[styles.subText]}>
-                  Sign Up
-                </TextLink>
-              </View>
+            <View style={styles.textRowCentered}>
+              <Text style={styles.subTextCentered}>
+                $10 per year after that
+              </Text>
             </View>
-        }
-        {
-          !isLoading &&
-            <View style={styles.tableWrapper}>
-              <ComparisonTable
-                column1Title='Free'
-                column2Title='Premium'
-                data={comparisonData}
-                mainTitle='Features' />
+            <View style={styles.textRowCentered}>
+              <TextLink
+                onPress={this.handleSignUpPress}
+                style={[styles.subText]}>
+                Sign Up
+              </TextLink>
             </View>
+          </View>
+        )}
+        {!isLoading && (
+          <View style={styles.tableWrapper}>
+            <ComparisonTable
+              column1Title="Free"
+              column2Title="Premium"
+              data={comparisonData}
+              mainTitle="Features"
+            />
           </View>
         )}
         {!isLoading && (

@@ -1,4 +1,9 @@
-import { Linking, SectionList, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import {
+  Linking,
+  SectionList,
+  TouchableWithoutFeedback,
+  View as RNView
+} from 'react-native'
 import { Badge } from 'react-native-elements'
 import React from 'reactn'
 import { Divider, TableSectionHeader, Text, View } from '../components'
@@ -29,7 +34,7 @@ export class MoreScreen extends React.Component<Props, State> {
     if (item.key === _membershipKey) {
       navigation.navigate(PV.RouteNames.MembershipScreen)
     } else if (item.key === _aboutKey) {
-      Linking.openURL(PV.URLs.about)
+      navigation.navigate(PV.RouteNames.AboutScreen)
     } else if (item.key === _contactKey) {
       Linking.openURL(PV.URLs.contact)
     } else if (item.key === _termsKey) {

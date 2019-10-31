@@ -10,12 +10,12 @@ import { PV } from '../resources'
 
 type Props = {}
 type State = {
-  hideKey: string | null;
-  wrapperStyles: [any?, any?];
-  alertTitle: string;
-  alertTitleStyle: {};
-  linkAction: any;
-  showAlert: boolean;
+  hideKey: string | null
+  wrapperStyles: [any?, any?]
+  alertTitle: string
+  alertTitleStyle: {}
+  linkAction: any
+  showAlert: boolean
 }
 
 export const OverlayAlert = (props: Props) => {
@@ -50,7 +50,9 @@ export const OverlayAlert = (props: Props) => {
           linkAction: handleRenewMembership,
           showAlert: true
         })
-      } else if (currentMembershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON) {
+      } else if (
+        currentMembershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON
+      ) {
         const freeTrialExpiration = readableDate(
           safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, '')
         )
@@ -62,12 +64,11 @@ export const OverlayAlert = (props: Props) => {
           linkAction: handleRenewMembership,
           showAlert: true
         })
-      } else if (currentMembershipStatus === PV.MembershipStatus.PREMIUM_EXPIRED) {
+      } else if (
+        currentMembershipStatus === PV.MembershipStatus.PREMIUM_EXPIRED
+      ) {
         const membershipExpiration = readableDate(
-          safelyUnwrapNestedVariable(
-            () => userInfo.membershipExpiration,
-            ''
-          )
+          safelyUnwrapNestedVariable(() => userInfo.membershipExpiration, '')
         )
 
         setState({
@@ -78,12 +79,11 @@ export const OverlayAlert = (props: Props) => {
           linkAction: handleRenewMembership,
           showAlert: true
         })
-      } else if (currentMembershipStatus === PV.MembershipStatus.PREMIUM_EXPIRING_SOON) {
+      } else if (
+        currentMembershipStatus === PV.MembershipStatus.PREMIUM_EXPIRING_SOON
+      ) {
         const membershipExpiration = readableDate(
-          safelyUnwrapNestedVariable(
-            () => userInfo.membershipExpiration,
-            ''
-          )
+          safelyUnwrapNestedVariable(() => userInfo.membershipExpiration, '')
         )
         setState({
           hideKey: 'hideMembershipExpiring',
@@ -136,7 +136,7 @@ export const OverlayAlert = (props: Props) => {
       </View>
       <TouchableWithoutFeedback onPress={handleCloseButton}>
         <View style={styles.iconWrapper}>
-          <Icon color={PV.Colors.white} name='times' size={28} />
+          <Icon color={PV.Colors.white} name="times" size={28} />
         </View>
       </TouchableWithoutFeedback>
     </View>

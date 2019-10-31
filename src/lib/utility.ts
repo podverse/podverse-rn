@@ -181,13 +181,28 @@ export const getMembershipStatus = (user: any) => {
   const weekBeforeCurrentDate = new Date()
   weekBeforeCurrentDate.setDate(weekBeforeCurrentDate.getDate() + 7)
 
-  if (!membershipExpirationDate && freeTrialExpirationDate && freeTrialExpirationDate <= currentDate) {
+  if (
+    !membershipExpirationDate &&
+    freeTrialExpirationDate &&
+    freeTrialExpirationDate <= currentDate
+  ) {
     return PV.MembershipStatus.FREE_TRIAL_EXPIRED
-  } else if (!membershipExpirationDate && freeTrialExpirationDate && freeTrialExpirationDate <= weekBeforeCurrentDate) {
+  } else if (
+    !membershipExpirationDate &&
+    freeTrialExpirationDate &&
+    freeTrialExpirationDate <= weekBeforeCurrentDate
+  ) {
     return PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON
-  } else if (!membershipExpirationDate && freeTrialExpirationDate && freeTrialExpirationDate > currentDate) {
+  } else if (
+    !membershipExpirationDate &&
+    freeTrialExpirationDate &&
+    freeTrialExpirationDate > currentDate
+  ) {
     return PV.MembershipStatus.FREE_TRIAL
-  } else if (membershipExpirationDate && membershipExpirationDate <= currentDate) {
+  } else if (
+    membershipExpirationDate &&
+    membershipExpirationDate <= currentDate
+  ) {
     return PV.MembershipStatus.PREMIUM_EXPIRED
   } else if (
     membershipExpirationDate &&

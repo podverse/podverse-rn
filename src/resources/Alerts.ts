@@ -6,7 +6,8 @@ const _expiredMessage =
 const _logoutButtonText = 'Log Out'
 const _networkErrorTitle = 'Network Error'
 const _sendEmailText = 'Send Email'
-const _sendVerificationEmailMessage = 'You must verify your email address to login. Press Send Email then check your inbox of a verification email.'
+const _sendVerificationEmailMessage =
+  'You must verify your email address to login. Press Send Email then check your inbox of a verification email.'
 const _cancelText = 'Cancel'
 
 export const Alerts = {

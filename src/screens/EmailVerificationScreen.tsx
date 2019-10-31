@@ -12,7 +12,6 @@ type State = {
 }
 
 export class EmailVerificationScreen extends React.Component<Props, State> {
-
   static navigationOptions = {
     title: 'Verify Your Email'
   }
@@ -38,9 +37,10 @@ export class EmailVerificationScreen extends React.Component<Props, State> {
     return (
       <MessageWithAction
         actionHandler={this._sendVerificationEmail}
-        actionText='Resend Verification Email'
+        actionText="Resend Verification Email"
         isLoading={isResendingEmail}
-        message='Please verify your email address to login. You should receive an email shortly.' />
+        message="Please verify your email address to login. You should receive an email shortly."
+      />
     )
   }
 }
