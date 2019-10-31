@@ -22,10 +22,19 @@ type Props = {
 }
 
 export class ClipTableCell extends React.PureComponent<Props> {
-
-  render () {
-    const { endTime, episodeId, episodePubDate = '', episodeTitle, handleMorePress,
-      handleNavigationPress, podcastImageUrl, podcastTitle, startTime, title = 'Untitled clip' } = this.props
+  render() {
+    const {
+      endTime,
+      episodeId,
+      episodePubDate = '',
+      episodeTitle,
+      handleMorePress,
+      handleNavigationPress,
+      podcastImageUrl,
+      podcastTitle,
+      startTime,
+      title = 'Untitled clip'
+    } = this.props
     const clipTime = readableClipTime(startTime, endTime)
     const { downloadedEpisodeIds, downloadsActive } = this.global
     const isDownloading = downloadsActive[episodeId]
@@ -35,106 +44,92 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
     const moreButton = (
       <Icon
-        name='ellipsis-h'
+        name="ellipsis-h"
         onPress={handleMorePress}
         size={32}
-        style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
+        style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall}
+      />
     )
 
     const innerTopView = (
       <View style={styles.innerTopView}>
-        {
-          !!podcastImageUrl &&
-          <FastImage
-            source={{ uri: podcastImageUrl }}
-            style={styles.image} />
-        }
+        {!!podcastImageUrl && (
+          <FastImage source={{ uri: podcastImageUrl }} style={styles.image} />
+        )}
         <View style={styles.textWrapper}>
-          {
-            !!podcastTitle &&
+          {!!podcastTitle && (
             <Text
               isSecondary={true}
               numberOfLines={1}
               style={styles.podcastTitle}>
               {podcastTitle}
             </Text>
-          }
-          {
-            !!episodeTitle &&
-            <Text
-              numberOfLines={1}
-              style={styles.episodeTitle}>
+          )}
+          {!!episodeTitle && (
+            <Text numberOfLines={1} style={styles.episodeTitle}>
               {episodeTitle}
             </Text>
-          }
+          )}
           <View style={styles.textWrapperBottomRow}>
-            <Text
-              isSecondary={true}
-              style={styles.episodePubDate}>
+            <Text isSecondary={true} style={styles.episodePubDate}>
               {readableDate(episodePubDate)}
             </Text>
-            {
-              isDownloaded &&
+            {isDownloaded && (
               <Icon
                 isSecondary={true}
-                name='download'
+                name="download"
                 size={13}
-                style={styles.downloadedIcon} />
-            }
+                style={styles.downloadedIcon}
+              />
+            )}
           </View>
         </View>
-        {
-          !isDownloading && handleMorePress && moreButton
-        }
-        {
-          isDownloading &&
-            <ActivityIndicator
-              onPress={handleMorePress}
-              styles={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
-        }
+        {!isDownloading && handleMorePress && moreButton}
+        {isDownloading && (
+          <ActivityIndicator
+            onPress={handleMorePress}
+            styles={
+              showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall
+            }
+          />
+        )}
       </View>
     )
 
     const bottomText = (
       <View style={styles.wrapperBottom}>
         <View style={styles.wrapperBottomTextWrapper}>
-          <Text
-            numberOfLines={4}
-            style={styles.title}>
+          <Text numberOfLines={4} style={styles.title}>
             {title}
           </Text>
-          <Text
-            isSecondary={true}
-            style={styles.clipTime}>
+          <Text isSecondary={true} style={styles.clipTime}>
             {clipTime}
           </Text>
         </View>
-        {
-          !showEpisodeInfo && handleMorePress && moreButton
-        }
+        {!showEpisodeInfo && handleMorePress && moreButton}
       </View>
     )
 
     return (
       <View style={styles.wrapper}>
-        {
-          !!showEpisodeInfo &&
-            <View style={styles.wrapperTop}>
-              {
-                handleNavigationPress ?
-                  <TouchableWithoutFeedback onPress={handleNavigationPress}>
-                    {innerTopView}
-                  </TouchableWithoutFeedback> :
-                  innerTopView
-              }
-            </View>
-        }
-        {
-          handleNavigationPress ?
-            <TouchableWithoutFeedback onPress={handleNavigationPress}>
-              {bottomText}
-            </TouchableWithoutFeedback> : bottomText
-        }
+        {!!showEpisodeInfo && (
+          <View style={styles.wrapperTop}>
+            {handleNavigationPress ? (
+              <TouchableWithoutFeedback onPress={handleNavigationPress}>
+                {innerTopView}
+              </TouchableWithoutFeedback>
+            ) : (
+              innerTopView
+            )}
+          </View>
+        )}
+        {handleNavigationPress ? (
+          <TouchableWithoutFeedback onPress={handleNavigationPress}>
+            {bottomText}
+          </TouchableWithoutFeedback>
+        ) : (
+          bottomText
+        )}
       </View>
     )
   }

@@ -1,7 +1,11 @@
 import { Image, View } from 'react-native'
 import { Badge } from 'react-native-elements'
-import { createAppContainer, createStackNavigator, createSwitchNavigator,
-  NavigationScreenOptions } from 'react-navigation'
+import {
+  createAppContainer,
+  createStackNavigator,
+  createSwitchNavigator,
+  NavigationScreenOptions
+} from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { getGlobal } from 'reactn'
 import { NavQueueIcon, PVTabBar } from './components'
@@ -27,16 +31,26 @@ const defaultNavigationOptions = ({ navigation }) => ({
 const AuthNavigator = createStackNavigator(
   {
     [PV.RouteNames.AuthScreen]: AuthScreen
-  }, {
+  },
+  {
     headerMode: 'none'
   }
 )
 
 const PodcastsNavigator = createStackNavigator(
   {
-    [PV.RouteNames.PodcastsScreen]: { screen: PodcastsScreen, path: PV.DeepLinks.Podcasts.path },
-    [PV.RouteNames.PodcastScreen]: { screen: PodcastScreen, path: PV.DeepLinks.Podcast.path },
-    [PV.RouteNames.EpisodeScreen]: { screen: EpisodeScreen, path: PV.DeepLinks.Episode.path }
+    [PV.RouteNames.PodcastsScreen]: {
+      screen: PodcastsScreen,
+      path: PV.DeepLinks.Podcasts.path
+    },
+    [PV.RouteNames.PodcastScreen]: {
+      screen: PodcastScreen,
+      path: PV.DeepLinks.Podcast.path
+    },
+    [PV.RouteNames.EpisodeScreen]: {
+      screen: EpisodeScreen,
+      path: PV.DeepLinks.Episode.path
+    }
   },
   {
     defaultNavigationOptions,
@@ -46,7 +60,8 @@ const PodcastsNavigator = createStackNavigator(
         <Image
           source={PV.Tabs.Podcasts.icon}
           style={{ tintColor }}
-          resizeMode='contain' />
+          resizeMode={'contain'}
+        />
       )
     }
   }
@@ -65,7 +80,8 @@ const EpisodesNavigator = createStackNavigator(
         <Image
           source={PV.Tabs.Episodes.icon}
           style={{ tintColor }}
-          resizeMode='contain' />
+          resizeMode={'contain'}
+        />
       )
     }
   }
@@ -82,7 +98,8 @@ const ClipsNavigator = createStackNavigator(
         <Image
           source={PV.Tabs.Clips.icon}
           style={{ tintColor }}
-          resizeMode='contain' />
+          resizeMode={'contain'}
+        />
       )
     }
   }
@@ -101,7 +118,8 @@ const SearchNavigator = createStackNavigator(
         <Image
           source={PV.Tabs.Search.icon}
           style={{ tintColor }}
-          resizeMode='contain' />
+          resizeMode={'contain'}
+        />
       )
     }
   }
@@ -112,17 +130,31 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.MoreScreen]: MoreScreen,
     [PV.RouteNames.DownloadsScreen]: DownloadsScreen,
     [PV.RouteNames.MyProfileScreen]: ProfileScreen,
-    [PV.RouteNames.PlaylistScreen]: { screen: PlaylistScreen, path: PV.DeepLinks.Playlist.path },
-    [PV.RouteNames.PlaylistsScreen]: { screen: PlaylistsScreen, path: PV.DeepLinks.Playlists.path },
+    [PV.RouteNames.PlaylistScreen]: {
+      screen: PlaylistScreen,
+      path: PV.DeepLinks.Playlist.path
+    },
+    [PV.RouteNames.PlaylistsScreen]: {
+      screen: PlaylistsScreen,
+      path: PV.DeepLinks.Playlists.path
+    },
     [PV.RouteNames.EditPlaylistScreen]: EditPlaylistScreen,
     [PV.RouteNames.EditProfileScreen]: EditProfileScreen,
-    [PV.RouteNames.ProfileScreen]: { screen: ProfileScreen, path: PV.DeepLinks.Profile.path },
-    [PV.RouteNames.ProfilesScreen]: { screen: ProfilesScreen, path: PV.DeepLinks.Profiles.path },
+    [PV.RouteNames.ProfileScreen]: {
+      screen: ProfileScreen,
+      path: PV.DeepLinks.Profile.path
+    },
+    [PV.RouteNames.ProfilesScreen]: {
+      screen: ProfilesScreen,
+      path: PV.DeepLinks.Profiles.path
+    },
     [PV.RouteNames.SettingsScreen]: SettingsScreen,
     [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen,
     [PV.RouteNames.MorePlaylistScreen]: PlaylistScreen,
     [PV.RouteNames.MorePodcastScreen]: PodcastScreen,
-    [PV.RouteNames.MembershipScreen]: MembershipScreen
+    [PV.RouteNames.MembershipScreen]: MembershipScreen,
+    [PV.RouteNames.AboutScreen]: AboutScreen,
+    [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen
   },
   {
     defaultNavigationOptions,
@@ -133,7 +165,8 @@ const MoreNavigator = createStackNavigator(
             <Image
               source={PV.Tabs.More.icon}
               style={{ tintColor }}
-              resizeMode='contain' />
+              resizeMode={'contain'}
+            />
             <DownloadsActiveTabBadge />
           </View>
         )
@@ -150,19 +183,21 @@ const DownloadsActiveTabBadge = () => {
   }
 
   return (
-    <View style={{
-      position: 'absolute',
-      top: 3,
-      right: -5,
-      zIndex: 1000000 }}>
-      {
-        downloadsActiveCount > 0 &&
-          <Badge
-            badgeStyle={{ borderWidth: 0 }}
-            textStyle={{ fontSize: PV.Fonts.sizes.sm }}
-            status='error'
-            value={downloadsActiveCount} />
-      }
+    <View
+      style={{
+        position: 'absolute',
+        top: 3,
+        right: -5,
+        zIndex: 1000000
+      }}>
+      {downloadsActiveCount > 0 && (
+        <Badge
+          badgeStyle={{ borderWidth: 0 }}
+          textStyle={{ fontSize: PV.Fonts.sizes.sm }}
+          status={'error'}
+          value={downloadsActiveCount}
+        />
+      )}
     </View>
   )
 }

@@ -1,5 +1,11 @@
 import React from 'react'
-import { StyleSheet, Text as RNText, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import {
+  StyleSheet,
+  Text as RNText,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View
+} from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
 import { convertSecToHHMMSS } from '../lib/utility'
@@ -18,7 +24,15 @@ type Props = {
 }
 
 export const TimeInput = (props: Props) => {
-  const { handleClearTime, handlePreview, handleSetTime, labelText, placeholder, time, wrapperStyle } = props
+  const {
+    handleClearTime,
+    handlePreview,
+    handleSetTime,
+    labelText,
+    placeholder,
+    time,
+    wrapperStyle
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
   const isDarkMode = globalTheme === darkTheme
 
@@ -26,48 +40,46 @@ export const TimeInput = (props: Props) => {
     <View style={wrapperStyle}>
       <View style={core.row}>
         <Text style={core.textInputLabel}>{labelText}</Text>
-        {
-          (time || time === 0) &&
-            <TouchableOpacity onPress={handlePreview}>
-              <Icon
-                color={globalTheme.link.color}
-                name='play'
-                size={16}
-                style={styles.previewIcon} />
-            </TouchableOpacity>
-        }
+        {(time || time === 0) && (
+          <TouchableOpacity onPress={handlePreview}>
+            <Icon
+              color={globalTheme.link.color}
+              name="play"
+              size={16}
+              style={styles.previewIcon}
+            />
+          </TouchableOpacity>
+        )}
       </View>
       <View style={core.row}>
         <View style={styles.timeInputWrapper}>
           <TouchableWithoutFeedback onPress={handleSetTime}>
-            <View style={[
-              styles.timeInputTouchable,
-              globalTheme.textInput
-            ]}>
-              <RNText style={[
-                styles.timeInputText,
-                globalTheme.textInput,
-                time || time === 0 ? {} : globalTheme.placeholderText
-              ]}>
+            <View style={[styles.timeInputTouchable, globalTheme.textInput]}>
+              <RNText
+                style={[
+                  styles.timeInputText,
+                  globalTheme.textInput,
+                  time || time === 0 ? {} : globalTheme.placeholderText
+                ]}>
                 {time || time === 0 ? convertSecToHHMMSS(time) : placeholder}
               </RNText>
             </View>
           </TouchableWithoutFeedback>
         </View>
-        {
-          handleClearTime &&
-            <TouchableWithoutFeedback onPress={handleClearTime}>
-              <View style={[
-                styles.timeInputTouchableDelete,
-                globalTheme.textInput
-              ]}>
-                <Icon
-                  color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
-                  name='times'
-                  size={24} />
-              </View>
-            </TouchableWithoutFeedback>
-        }
+        {handleClearTime && (
+          <TouchableWithoutFeedback onPress={handleClearTime}>
+            <View
+              style={[styles.timeInputTouchableDelete, globalTheme.textInput]}>
+              <Icon
+                color={
+                  isDarkMode ? iconStyles.dark.color : iconStyles.light.color
+                }
+                name="times"
+                size={24}
+              />
+            </View>
+          </TouchableWithoutFeedback>
+        )}
       </View>
     </View>
   )

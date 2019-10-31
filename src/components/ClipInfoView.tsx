@@ -4,7 +4,15 @@ import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer } from '../services/player'
 import { button, core } from '../styles'
-import { ActivityIndicator, Divider, Icon, ScrollView, TableSectionHeader, Text, TextLink } from './'
+import {
+  ActivityIndicator,
+  Divider,
+  Icon,
+  ScrollView,
+  TableSectionHeader,
+  Text,
+  TextLink
+} from './'
 
 type Props = {
   createdAt: string
@@ -22,7 +30,6 @@ type Props = {
 type State = {}
 
 export class ClipInfoView extends React.PureComponent<Props, State> {
-
   _navToProfileScreen = () => {
     const { navigation, ownerId, ownerName } = this.props
     const user = {
@@ -30,12 +37,10 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
       name: ownerName
     }
 
-    navigation.navigate(
-      PV.RouteNames.ProfileScreen, {
-        user,
-        navigationTitle: 'Profile'
-      }
-    )
+    navigation.navigate(PV.RouteNames.ProfileScreen, {
+      user,
+      navigationTitle: 'Profile'
+    })
   }
 
   _handleEditPress = async () => {
@@ -48,56 +53,65 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { createdAt, endTime, handleClosePress, isLoading, ownerIsPublic, ownerId, ownerName = 'anonymous',
-      startTime, title } = this.props
+    const {
+      createdAt,
+      endTime,
+      handleClosePress,
+      isLoading,
+      ownerIsPublic,
+      ownerId,
+      ownerName = 'anonymous',
+      startTime,
+      title
+    } = this.props
     const { globalTheme, session } = this.global
     const userId = session.userInfo.id
 
     return (
       <View style={[styles.wrapper, globalTheme.view]}>
-        {
-          isLoading && <ActivityIndicator />
-        }
-        {
-          !isLoading &&
-            <View style={styles.wrapper}>
-                <TableSectionHeader
-                  handleClosePress={handleClosePress}
-                  title='Clip Info' />
-                <ScrollView style={styles.scrollView}>
-                  <View style={core.row}>
-                    <View style={styles.topText}>
-                      <Text style={styles.title}>{title}</Text>
-                      <Text style={styles.time}>{readableClipTime(startTime, endTime)}</Text>
-                    </View>
-                    {
-                      userId === ownerId &&
-                        <View style={styles.topEditButtonWrapper}>
-                          <Icon
-                            name='pencil-alt'
-                            onPress={() => this._handleEditPress()}
-                            size={26}
-                            style={button.iconOnlySmall} />
-                        </View>
-                    }
+        {isLoading && <ActivityIndicator />}
+        {!isLoading && (
+          <View style={styles.wrapper}>
+            <TableSectionHeader
+              handleClosePress={handleClosePress}
+              title="Clip Info"
+            />
+            <ScrollView style={styles.scrollView}>
+              <View style={core.row}>
+                <View style={styles.topText}>
+                  <Text style={styles.title}>{title}</Text>
+                  <Text style={styles.time}>
+                    {readableClipTime(startTime, endTime)}
+                  </Text>
+                </View>
+                {userId === ownerId && (
+                  <View style={styles.topEditButtonWrapper}>
+                    <Icon
+                      name="pencil-alt"
+                      onPress={() => this._handleEditPress()}
+                      size={26}
+                      style={button.iconOnlySmall}
+                    />
                   </View>
-                  <View style={styles.bottomTextWrapper}>
-                    <View style={core.row}>
-                      <Text style={styles.inlineText}>By: </Text>
-                      {
-                        ownerIsPublic ?
-                          <TextLink
-                            onPress={this._navToProfileScreen}
-                            style={styles.link}>
-                            {ownerName}
-                          </TextLink> :
-                          <Text style={styles.inlineText}>anonymous</Text>
-                      }
-                    </View>
-                  </View>
-                </ScrollView>
+                )}
               </View>
-        }
+              <View style={styles.bottomTextWrapper}>
+                <View style={core.row}>
+                  <Text style={styles.inlineText}>By: </Text>
+                  {ownerIsPublic ? (
+                    <TextLink
+                      onPress={this._navToProfileScreen}
+                      style={styles.link}>
+                      {ownerName}
+                    </TextLink>
+                  ) : (
+                    <Text style={styles.inlineText}>anonymous</Text>
+                  )}
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+        )}
       </View>
     )
   }

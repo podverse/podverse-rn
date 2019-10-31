@@ -21,10 +21,20 @@ type Props = {
 }
 
 export class QueueTableCell extends React.PureComponent<Props> {
-  render () {
-    const { clipEndTime, clipStartTime, clipTitle = 'Untitled clip', episodePubDate,
-      episodeTitle = 'Untilted episode', handleRemovePress, hideBottomRow, podcastImageUrl,
-      podcastTitle = 'Untitled podcast', showMoveButton, showRemoveButton } = this.props
+  render() {
+    const {
+      clipEndTime,
+      clipStartTime,
+      clipTitle = 'Untitled clip',
+      episodePubDate,
+      episodeTitle = 'Untilted episode',
+      handleRemovePress,
+      hideBottomRow,
+      podcastImageUrl,
+      podcastTitle = 'Untitled podcast',
+      showMoveButton,
+      showRemoveButton
+    } = this.props
 
     return (
       <View style={styles.wrapper}>
@@ -32,7 +42,8 @@ export class QueueTableCell extends React.PureComponent<Props> {
           <FastImage
             key={podcastImageUrl}
             source={{ uri: podcastImageUrl }}
-            style={styles.image} />
+            style={styles.image}
+          />
           <View style={styles.textWrapper}>
             <Text
               isSecondary={true}
@@ -40,54 +51,42 @@ export class QueueTableCell extends React.PureComponent<Props> {
               style={styles.podcastTitle}>
               {podcastTitle}
             </Text>
-            <Text
-              numberOfLines={1}
-              style={styles.episodeTitle}>
+            <Text numberOfLines={1} style={styles.episodeTitle}>
               {episodeTitle}
             </Text>
-            {
-              !!episodePubDate &&
-                <Text
-                  isSecondary={true}
-                  numberOfLines={1}
-                  style={styles.episodePubDate}>
-                  {readableDate(episodePubDate)}
-                </Text>
-            }
-          </View>
-          {
-            showMoveButton &&
-              <Icon
-                name='bars'
-                size={28}
-                style={button.iconOnlyMedium} />
-          }
-          {
-            showRemoveButton && handleRemovePress &&
-              <Icon
-                name='times'
-                onPress={handleRemovePress}
-                size={28}
-                style={button.iconOnlyMedium} />
-          }
-        </View>
-        {
-          !hideBottomRow &&
-            <View style={styles.wrapperBottom}>
+            {!!episodePubDate && (
               <Text
+                isSecondary={true}
                 numberOfLines={1}
-                style={styles.clipTitle}>
-                {clipStartTime ? clipTitle : 'Full Episode'}
+                style={styles.episodePubDate}>
+                {readableDate(episodePubDate)}
               </Text>
-              {
-                !!clipStartTime &&
-                  <Text
-                    style={styles.clipTime}>
-                    {readableClipTime(clipStartTime, clipEndTime)}
-                  </Text>
-              }
-            </View>
-        }
+            )}
+          </View>
+          {showMoveButton && (
+            <Icon name="bars" size={28} style={button.iconOnlyMedium} />
+          )}
+          {showRemoveButton && handleRemovePress && (
+            <Icon
+              name="times"
+              onPress={handleRemovePress}
+              size={28}
+              style={button.iconOnlyMedium}
+            />
+          )}
+        </View>
+        {!hideBottomRow && (
+          <View style={styles.wrapperBottom}>
+            <Text numberOfLines={1} style={styles.clipTitle}>
+              {clipStartTime ? clipTitle : 'Full Episode'}
+            </Text>
+            {!!clipStartTime && (
+              <Text style={styles.clipTime}>
+                {readableClipTime(clipStartTime, clipEndTime)}
+              </Text>
+            )}
+          </View>
+        )}
       </View>
     )
   }

@@ -21,68 +21,100 @@ type Props = {
 export const TableSectionSelectors = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
   const isDarkMode = globalTheme === darkTheme
-  const { handleSelectLeftItem, handleSelectRightItem, hidePickers, leftItems = [], placeholderLeft, placeholderRight,
-    rightItems = [], selectedLeftItemKey, selectedRightItemKey } = props
+  const {
+    handleSelectLeftItem,
+    handleSelectRightItem,
+    hidePickers,
+    leftItems = [],
+    placeholderLeft,
+    placeholderRight,
+    rightItems = [],
+    selectedLeftItemKey,
+    selectedRightItemKey
+  } = props
 
-  const selectedLeftItem = leftItems.find((x) => x.value === selectedLeftItemKey) || {}
-  const selectedRightItem = rightItems.find((x) => x.value === selectedRightItemKey) || {}
+  const selectedLeftItem =
+    leftItems.find((x) => x.value === selectedLeftItemKey) || {}
+  const selectedRightItem =
+    rightItems.find((x) => x.value === selectedRightItemKey) || {}
 
   return (
     <View>
       <Divider />
-      <View
-        style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
-        {
-          !hidePickers &&
-            <View style={styles.tableSectionHeaderInner}>
+      <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
+        {!hidePickers && (
+          <View style={styles.tableSectionHeaderInner}>
+            <RNPickerSelect
+              items={leftItems}
+              onValueChange={handleSelectLeftItem}
+              placeholder={placeholderLeft || _placeholderDefault}
+              style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
+              useNativeAndroidPickerStyle={false}
+              value={selectedLeftItemKey}>
+              <View style={styles.tableSectionHeaderButton}>
+                <Text
+                  style={[
+                    styles.tableSectionHeaderTextLeft,
+                    globalTheme.tableSectionHeaderText
+                  ]}>
+                  {selectedLeftItem.label ||
+                    (placeholderLeft && placeholderLeft.label) ||
+                    _placeholderDefault.label}
+                </Text>
+                <Icon
+                  name="angle-down"
+                  size={14}
+                  style={[
+                    styles.tableSectionHeaderIconLeft,
+                    globalTheme.tableSectionHeaderIcon
+                  ]}
+                />
+              </View>
+            </RNPickerSelect>
+            {rightItems.length > 1 && (
               <RNPickerSelect
-                items={leftItems}
-                onValueChange={handleSelectLeftItem}
-                placeholder={placeholderLeft || _placeholderDefault}
+                items={rightItems}
+                onValueChange={handleSelectRightItem}
+                placeholder={placeholderRight || _placeholderDefault}
                 style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
                 useNativeAndroidPickerStyle={false}
-                value={selectedLeftItemKey}>
+                value={selectedRightItemKey}>
                 <View style={styles.tableSectionHeaderButton}>
-                  <Text style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
-                    {selectedLeftItem.label || (placeholderLeft && placeholderLeft.label) || _placeholderDefault.label}
+                  <Text
+                    style={[
+                      styles.tableSectionHeaderTextRight,
+                      globalTheme.tableSectionHeaderText
+                    ]}>
+                    {selectedRightItem.label ||
+                      (placeholderRight && placeholderRight.label) ||
+                      _placeholderDefault.label}
                   </Text>
                   <Icon
-                    name='angle-down'
+                    name="angle-down"
                     size={14}
-                    style={[styles.tableSectionHeaderIconLeft, globalTheme.tableSectionHeaderIcon]} />
+                    style={[
+                      styles.tableSectionHeaderIconRight,
+                      globalTheme.tableSectionHeaderIcon
+                    ]}
+                  />
                 </View>
               </RNPickerSelect>
-              {
-                rightItems.length > 1 &&
-                <RNPickerSelect
-                  items={rightItems}
-                  onValueChange={handleSelectRightItem}
-                  placeholder={placeholderRight || _placeholderDefault}
-                  style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
-                  useNativeAndroidPickerStyle={false}
-                  value={selectedRightItemKey}>
-                  <View style={styles.tableSectionHeaderButton}>
-                    <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                      {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label}
-                    </Text>
-                    <Icon
-                      name='angle-down'
-                      size={14}
-                      style={[styles.tableSectionHeaderIconRight, globalTheme.tableSectionHeaderIcon]} />
-                  </View>
-                </RNPickerSelect>
-
-              }
-              {
-                rightItems.length === 1 &&
-                <View style={styles.tableSectionHeaderButton}>
-                  <Text style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                    {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label}
-                  </Text>
-                </View>
-              }
-            </View>
-        }
+            )}
+            {rightItems.length === 1 && (
+              <View style={styles.tableSectionHeaderButton}>
+                <Text
+                  style={[
+                    styles.tableSectionHeaderTextRight,
+                    globalTheme.tableSectionHeaderText
+                  ]}>
+                  {selectedRightItem.label ||
+                    (placeholderRight && placeholderRight.label) ||
+                    _placeholderDefault.label}
+                </Text>
+              </View>
+            )}
+          </View>
+        )}
       </View>
       <Divider />
     </View>

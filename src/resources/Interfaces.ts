@@ -49,16 +49,16 @@ export interface GlobalTheme {
 }
 
 export interface UserInfo {
-  email?: string,
-  freeTrialExpiration?: string,
-  historyItems?: [],
-  id?: string,
-  membershipExpiration?: string | null,
-  name?: string,
-  playlists?: [],
-  queueItems?: [],
-  subscribedPlaylistIds?: [],
-  subscribedPodcastIds?: [],
+  email?: string
+  freeTrialExpiration?: string
+  historyItems?: []
+  id?: string
+  membershipExpiration?: string | null
+  name?: string
+  playlists?: []
+  queueItems?: []
+  subscribedPlaylistIds?: []
+  subscribedPodcastIds?: []
   subscribedUserIds?: []
 }
 
@@ -149,6 +149,6 @@ interface IFontWeights {
 }
 
 export interface IFonts {
-  sizes: IFontSizes,
+  sizes: IFontSizes
   weights: IFontWeights
 }

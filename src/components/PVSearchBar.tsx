@@ -12,19 +12,30 @@ type Props = {
 }
 
 export const PVSearchBar = (props: Props) => {
-  const { containerStyle, inputContainerStyle, onChangeText, onClear, placeholder, value } = props
+  const {
+    containerStyle,
+    inputContainerStyle,
+    onChangeText,
+    onClear,
+    placeholder,
+    value
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <SearchBar
       clearIcon={true}
       containerStyle={[globalTheme.textInputWrapper, containerStyle]}
-      inputContainerStyle={[globalTheme.inputContainerText, inputContainerStyle]}
+      inputContainerStyle={[
+        globalTheme.inputContainerText,
+        inputContainerStyle
+      ]}
       onChangeText={onChangeText}
       onClear={onClear}
       placeholder={placeholder}
       searchIcon={true}
       style={globalTheme.textInput}
-      value={value} />
+      value={value}
+    />
   )
 }

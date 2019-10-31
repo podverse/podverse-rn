@@ -45,30 +45,48 @@ export const getAuthenticatedUserInfoLocally = async () => {
   let isLoggedIn = false
 
   try {
-    const subscribedPlaylistIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS)
+    const subscribedPlaylistIdsString = await AsyncStorage.getItem(
+      PV.Keys.SUBSCRIBED_PLAYLIST_IDS
+    )
     if (subscribedPlaylistIdsString) {
       subscribedPlaylistIds = JSON.parse(subscribedPlaylistIdsString)
     }
   } catch (error) {
-    if (Array.isArray(subscribedPlaylistIds)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS, JSON.stringify(subscribedPlaylistIds))
+    if (Array.isArray(subscribedPlaylistIds))
+      await AsyncStorage.setItem(
+        PV.Keys.SUBSCRIBED_PLAYLIST_IDS,
+        JSON.stringify(subscribedPlaylistIds)
+      )
   }
 
   try {
-    const subscribedPodcastIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
+    const subscribedPodcastIdsString = await AsyncStorage.getItem(
+      PV.Keys.SUBSCRIBED_PODCAST_IDS
+    )
     if (subscribedPodcastIdsString) {
       subscribedPodcastIds = JSON.parse(subscribedPodcastIdsString)
     }
   } catch (error) {
-    if (Array.isArray(subscribedPodcastIds)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
+    if (Array.isArray(subscribedPodcastIds))
+      await AsyncStorage.setItem(
+        PV.Keys.SUBSCRIBED_PODCAST_IDS,
+        JSON.stringify(subscribedPodcastIds)
+      )
   }
 
   try {
-    const subscribedUserIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_USER_IDS)
+    const subscribedUserIdsString = await AsyncStorage.getItem(
+      PV.Keys.SUBSCRIBED_USER_IDS
+    )
     if (subscribedUserIdsString) {
       subscribedUserIds = JSON.parse(subscribedUserIdsString)
     }
   } catch (error) {
-    if (Array.isArray(subscribedUserIds)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_USER_IDS, JSON.stringify(subscribedUserIds))
+    if (Array.isArray(subscribedUserIds))
+      await AsyncStorage.setItem(
+        PV.Keys.SUBSCRIBED_USER_IDS,
+        JSON.stringify(subscribedUserIds)
+      )
   }
 
   try {
@@ -77,7 +95,11 @@ export const getAuthenticatedUserInfoLocally = async () => {
       queueItems = JSON.parse(queueItemsJSON)
     }
   } catch (error) {
-    if (Array.isArray(queueItems)) await AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(queueItems))
+    if (Array.isArray(queueItems))
+      await AsyncStorage.setItem(
+        PV.Keys.QUEUE_ITEMS,
+        JSON.stringify(queueItems)
+      )
   }
 
   try {
@@ -86,7 +108,11 @@ export const getAuthenticatedUserInfoLocally = async () => {
       historyItems = JSON.parse(historyItemsJSON)
     }
   } catch (error) {
-    if (Array.isArray(historyItems)) await AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(historyItems))
+    if (Array.isArray(historyItems))
+      await AsyncStorage.setItem(
+        PV.Keys.HISTORY_ITEMS,
+        JSON.stringify(historyItems)
+      )
   }
 
   const bearerToken = await getBearerToken()
@@ -104,25 +130,28 @@ export const getAuthenticatedUserInfoLocally = async () => {
   ]
 }
 
-export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) => {
+export const getAuthenticatedUserInfoFromServer = async (
+  bearerToken: string
+) => {
   const response = await request({
     endpoint: '/auth/get-authenticated-user-info',
     method: 'POST',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     }
   })
 
-  const data = response && response.data || []
+  const data = (response && response.data) || []
   const { subscribedPodcastIds = [] } = data
 
-  if (Array.isArray(subscribedPodcastIds)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
+  if (Array.isArray(subscribedPodcastIds))
+    await AsyncStorage.setItem(
+      PV.Keys.SUBSCRIBED_PODCAST_IDS,
+      JSON.stringify(subscribedPodcastIds)
+    )
 
-  return [
-    data,
-    true
-  ]
+  return [data, true]
 }
 
 export const login = async (email: string, password: string) => {
@@ -137,9 +166,11 @@ export const login = async (email: string, password: string) => {
     opts: { credentials: 'include' }
   })
 
-  const data = response && response.data || []
+  const data = (response && response.data) || []
   if (data.token) {
-    RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, { accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY })
+    RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, {
+      accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY
+    })
   }
 
   return data

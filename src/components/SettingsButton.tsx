@@ -18,7 +18,8 @@ export const SettingsButton = (props: Props) => {
             isSecondary={true}
             name={showCheckmark ? 'check' : 'cog'}
             size={20}
-            solid={true} />
+            solid={true}
+          />
         </View>
       </View>
     </TouchableWithoutFeedback>

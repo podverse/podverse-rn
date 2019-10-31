@@ -24,7 +24,6 @@ const _resetPassword = 'resetPassword'
 const _signup = 'signup'
 
 export class AuthScreen extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
 
@@ -59,7 +58,11 @@ export class AuthScreen extends React.Component<Props, State> {
         } else if (error.response && error.response.status === PV.ResponseStatusCodes.UNAUTHORIZED) {
           Alert.alert(PV.Alerts.LOGIN_INVALID.title, PV.Alerts.LOGIN_INVALID.message, [])
         } else {
-          Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+          Alert.alert(
+            PV.Alerts.SOMETHING_WENT_WRONG.title,
+            PV.Alerts.SOMETHING_WENT_WRONG.message,
+            []
+          )
         }
       }
       this.setState({ isLoadingLogin: false })
@@ -71,9 +74,17 @@ export class AuthScreen extends React.Component<Props, State> {
     this.setState({ isLoadingResetPassword: true }, async () => {
       try {
         await sendResetPassword(email)
-        Alert.alert(PV.Alerts.RESET_PASSWORD_SUCCESS.title, PV.Alerts.RESET_PASSWORD_SUCCESS.message, [])
+        Alert.alert(
+          PV.Alerts.RESET_PASSWORD_SUCCESS.title,
+          PV.Alerts.RESET_PASSWORD_SUCCESS.message,
+          []
+        )
       } catch (error) {
-        Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+        Alert.alert(
+          PV.Alerts.SOMETHING_WENT_WRONG.title,
+          PV.Alerts.SOMETHING_WENT_WRONG.message,
+          []
+        )
       }
       this.setState({ isLoadingResetPassword: false })
       navigation.goBack(null)
@@ -134,13 +145,9 @@ export class AuthScreen extends React.Component<Props, State> {
       ]
     } else if (screenType === _resetPassword) {
       bottomButtons = [
-        (
-          <Text
-            onPress={this._showMembership}
-            style={styles.switchOptionText}>
-            Login
-          </Text>
-        )
+        <Text onPress={this._showMembership} style={styles.switchOptionText}>
+          Login
+        </Text>
       ]
     }
 
@@ -149,11 +156,16 @@ export class AuthScreen extends React.Component<Props, State> {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.view}>
             <Icon
-              name='times'
+              name="times"
               onPress={navigation.dismiss}
               size={26}
-              style={[button.iconOnlyMedium, styles.closeButton]} />
-            <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />
+              style={[button.iconOnlyMedium, styles.closeButton]}
+            />
+            <Image
+              source={PV.Images.BANNER}
+              style={styles.banner}
+              resizeMode="contain"
+            />
             <View style={styles.contentView}>
               {
                 screenType === _login &&

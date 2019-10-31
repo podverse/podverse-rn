@@ -15,9 +15,7 @@ export const TextLink = (props: Props) => {
 
   return (
     <TouchableOpacity onPress={onPress}>
-      <Text
-        numberOfLines={numberOfLines}
-        style={[style, globalTheme.link]}>
+      <Text numberOfLines={numberOfLines} style={[style, globalTheme.link]}>
         {children}
       </Text>
     </TouchableOpacity>
