@@ -19,24 +19,28 @@ type Props = {
 }
 
 export class DownloadTableCell extends React.PureComponent<Props> {
-
   render() {
-    const { bytesTotal = '---', bytesWritten = '---', completed, episodeTitle = 'Untitled episode', onPress, percent,
-      podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER, podcastTitle = 'Untitled podcast', status } = this.props
+    const {
+      bytesTotal = '---',
+      bytesWritten = '---',
+      completed,
+      episodeTitle = 'Untitled episode',
+      onPress,
+      percent,
+      podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
+      podcastTitle = 'Untitled podcast',
+      status
+    } = this.props
     const per = completed ? 1 : percent
     const statusText = getDownloadStatusText(status)
 
     return (
       <TouchableWithoutFeedback onPress={onPress}>
         <View style={styles.wrapper}>
-          <FastImage
-            source={{ uri: podcastImageUrl }}
-            style={styles.image} />
+          <FastImage source={{ uri: podcastImageUrl }} style={styles.image} />
           <View style={styles.textWrapper}>
             <View style={styles.textWrapperTop}>
-              <Text
-                numberOfLines={1}
-                style={styles.episodeTitle}>
+              <Text numberOfLines={1} style={styles.episodeTitle}>
                 {episodeTitle}
               </Text>
               <Text
@@ -53,14 +57,15 @@ export class DownloadTableCell extends React.PureComponent<Props> {
                 style={styles.slider}
                 thumbStyle={{ height: 0, width: 0 }}
                 thumbTouchSize={{ height: 0, width: 0 }}
-                value={per} />
+                value={per}
+              />
               <View style={styles.textWrapperBottomText}>
                 <Text>{statusText}</Text>
-                {
-                  completed ?
-                    <Text>{bytesTotal}</Text> :
-                    <Text>{`${bytesWritten} / ${bytesTotal}`}</Text>
-                }
+                {completed ? (
+                  <Text>{bytesTotal}</Text>
+                ) : (
+                  <Text>{`${bytesWritten} / ${bytesTotal}`}</Text>
+                )}
               </View>
             </View>
           </View>

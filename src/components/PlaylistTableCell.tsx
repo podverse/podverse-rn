@@ -12,8 +12,14 @@ type Props = {
 }
 
 export class PlaylistTableCell extends React.PureComponent<Props> {
-  render () {
-    const { createdBy, isSaving, itemCount = 0, onPress, title = 'Untitled playlist' } = this.props
+  render() {
+    const {
+      createdBy,
+      isSaving,
+      itemCount = 0,
+      onPress,
+      title = 'Untitled playlist'
+    } = this.props
 
     const wrapperTopStyles = [styles.wrapperTop]
     if (createdBy) wrapperTopStyles.push(styles.wrapperTopWithCreatedBy)
@@ -22,29 +28,24 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
       <TouchableWithoutFeedback onPress={onPress}>
         <View style={styles.wrapper}>
           <View style={wrapperTopStyles}>
-            <Text
-              numberOfLines={1}
-              style={styles.title}>{title}</Text>
-            {
-              isSaving ?
-                <ActivityIndicator styles={styles.activityIndicator} /> :
-                <Text
-                  isSecondary={true}
-                  style={styles.itemCount}>
-                  items: {itemCount}
-                </Text>
-            }
+            <Text numberOfLines={1} style={styles.title}>
+              {title}
+            </Text>
+            {isSaving ? (
+              <ActivityIndicator styles={styles.activityIndicator} />
+            ) : (
+              <Text isSecondary={true} style={styles.itemCount}>
+                items: {itemCount}
+              </Text>
+            )}
           </View>
-          {
-            !!createdBy &&
-              <View style={styles.wrapperBottom}>
-                <Text
-                  isSecondary={true}
-                  style={styles.createdBy}>
-                  by: {createdBy}
-                </Text>
-              </View>
-          }
+          {!!createdBy && (
+            <View style={styles.wrapperBottom}>
+              <Text isSecondary={true} style={styles.createdBy}>
+                by: {createdBy}
+              </Text>
+            </View>
+          )}
         </View>
       </TouchableWithoutFeedback>
     )

@@ -13,30 +13,27 @@ type Props = {
 type State = {}
 
 export class PlayerClipInfoBar extends React.PureComponent<Props, State> {
-
   render() {
     const { handleOnPress, nowPlayingItem } = this.props
     const { clipEndTime, clipStartTime } = nowPlayingItem
     const { globalTheme } = this.global
 
     return (
-      <TouchableWithoutFeedback
-        onPress={handleOnPress}>
+      <TouchableWithoutFeedback onPress={handleOnPress}>
         <View style={[styles.wrapper, globalTheme.player]}>
           <Text
             numberOfLines={1}
             style={[styles.title, globalTheme.playerText]}>
             {nowPlayingItem.clipTitle || 'Untitled clip'}
           </Text>
-          {
-            !!clipStartTime &&
-              <Text
-                isSecondary={true}
-                numberOfLines={1}
-                style={[styles.time, globalTheme.playerText]}>
-                {readableClipTime(clipStartTime, clipEndTime)}
-              </Text>
-          }
+          {!!clipStartTime && (
+            <Text
+              isSecondary={true}
+              numberOfLines={1}
+              style={[styles.time, globalTheme.playerText]}>
+              {readableClipTime(clipStartTime, clipEndTime)}
+            </Text>
+          )}
         </View>
       </TouchableWithoutFeedback>
     )

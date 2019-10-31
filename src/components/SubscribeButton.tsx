@@ -1,5 +1,10 @@
 import React from 'react'
-import { ActivityIndicator, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
+import {
+  ActivityIndicator,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View
+} from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Icon } from './'
@@ -17,29 +22,23 @@ export const SubscribeButton = (props: Props) => {
   return (
     <TouchableWithoutFeedback onPress={handleToggleSubscribe}>
       <View style={styles.buttonView}>
-        {
-          isSubscribing &&
-            <View style={styles.activityIndicator}>
-              <ActivityIndicator
-                color={globalTheme.activityIndicator.color}
-                size='small' />
-            </View>
-        }
-        {
-          !isSubscribing &&
-            <View>
-              {
-                isSubscribed ?
-                  <Icon
-                    name='star'
-                    size={PV.Icons.NAV}
-                    solid={true} /> :
-                  <Icon
-                    name='star'
-                    size={PV.Icons.NAV} />
-              }
-            </View>
-        }
+        {isSubscribing && (
+          <View style={styles.activityIndicator}>
+            <ActivityIndicator
+              color={globalTheme.activityIndicator.color}
+              size="small"
+            />
+          </View>
+        )}
+        {!isSubscribing && (
+          <View>
+            {isSubscribed ? (
+              <Icon name="star" size={PV.Icons.NAV} solid={true} />
+            ) : (
+              <Icon name="star" size={PV.Icons.NAV} />
+            )}
+          </View>
+        )}
       </View>
     </TouchableWithoutFeedback>
   )

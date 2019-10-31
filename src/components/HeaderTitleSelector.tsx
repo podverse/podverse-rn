@@ -14,7 +14,7 @@ type Props = {
 
 export const HeaderTitleSelector = (props: Props) => {
   const { items, onValueChange, placeholder, selectedItemKey } = props
-  const selectedItem = items.find((x) => x.value === selectedItemKey) || {}
+  const selectedItem = items.find(x => x.value === selectedItemKey) || {}
 
   const textNode = (
     <View style={styles.wrapper}>
@@ -22,27 +22,29 @@ export const HeaderTitleSelector = (props: Props) => {
         {selectedItem.label || (placeholder && placeholder.label)}
       </Text>
       <Icon
-        color='#fff'
-        name='angle-down'
+        color="#fff"
+        name="angle-down"
         size={16}
-        style={styles.closeButton} />
+        style={styles.closeButton}
+      />
     </View>
   )
 
   return (
     <View>
-      {
-        onValueChange ?
-          <RNPickerSelect
-            items={items}
-            onValueChange={onValueChange}
-            placeholder={placeholder}
-            style={hidePickerIconOnAndroid}
-            useNativeAndroidPickerStyle={false}
-            value={selectedItemKey}>
-            {textNode}
-          </RNPickerSelect> : textNode
-      }
+      {onValueChange ? (
+        <RNPickerSelect
+          items={items}
+          onValueChange={onValueChange}
+          placeholder={placeholder}
+          style={hidePickerIconOnAndroid}
+          useNativeAndroidPickerStyle={false}
+          value={selectedItemKey}>
+          {textNode}
+        </RNPickerSelect>
+      ) : (
+        textNode
+      )}
     </View>
   )
 }

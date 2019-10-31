@@ -16,21 +16,17 @@ export const MessageWithAction = (props: Props) => {
 
   return (
     <View style={styles.view}>
-      {
-        !!message &&
-          <Text style={[globalTheme.text, styles.message]}>{message}</Text>
-      }
-      {
-        !!subMessage &&
-          <Text style={[globalTheme.text, styles.subMessage]}>{subMessage}</Text>
-      }
-      {
-        !!actionText && actionHandler &&
-          <TouchableOpacity onPress={actionHandler}>
-            <Text style={[globalTheme.text, styles.button]}>{actionText}</Text>
-          </TouchableOpacity>
-
-      }
+      {!!message && (
+        <Text style={[globalTheme.text, styles.message]}>{message}</Text>
+      )}
+      {!!subMessage && (
+        <Text style={[globalTheme.text, styles.subMessage]}>{subMessage}</Text>
+      )}
+      {!!actionText && actionHandler && (
+        <TouchableOpacity onPress={actionHandler}>
+          <Text style={[globalTheme.text, styles.button]}>{actionText}</Text>
+        </TouchableOpacity>
+      )}
     </View>
   )
 }

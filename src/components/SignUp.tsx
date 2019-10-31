@@ -1,5 +1,12 @@
 import React from 'react'
-import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native'
 import { PV } from '../resources'
 
 type Props = {
@@ -10,14 +17,14 @@ type Props = {
 }
 
 type State = {
-  email: string,
-  name: string,
-  password: string,
+  email: string
+  name: string
+  password: string
   passwordVerification: string
 }
 
 export class SignUp extends React.Component<Props, State> {
-  constructor (props: Props) {
+  constructor(props: Props) {
     super(props)
     this.state = {
       email: '',
@@ -29,9 +36,15 @@ export class SignUp extends React.Component<Props, State> {
 
   inputsValid = () => {
     const { email, name, password, passwordVerification } = this.state
-    return !!email && !!name && !!password &&
-      password.match('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})') &&
+    return (
+      !!email &&
+      !!name &&
+      !!password &&
+      password.match(
+        '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
+      ) &&
       passwordVerification === password
+    )
   }
 
   signUp = () => {
@@ -56,14 +69,17 @@ export class SignUp extends React.Component<Props, State> {
     this.setState({ name })
   }
 
-  render () {
+  render() {
     const { bottomButtons, isLoading, style } = this.props
     const { password, passwordVerification } = this.state
     const disabled = !this.inputsValid()
-    const disabledStyle = disabled ? { backgroundColor: PV.Colors.grayDark } : null
+    const disabledStyle = disabled
+      ? { backgroundColor: PV.Colors.grayDark }
+      : null
     const disabledTextStyle = disabled ? { color: PV.Colors.white } : null
 
-    const passwordMismatch = passwordVerification.length > 0 && passwordVerification !== password
+    const passwordMismatch =
+      passwordVerification.length > 0 && passwordVerification !== password
     const errorStyle = {
       borderColor: PV.Colors.red,
       borderWidth: 2
@@ -71,42 +87,48 @@ export class SignUp extends React.Component<Props, State> {
     return (
       <View style={[styles.view, style]}>
         <TextInput
-          keyboardType='email-address'
+          keyboardType="email-address"
           onChangeText={this.emailChanged}
           style={styles.textField}
           value={this.state.email}
-          autoCapitalize='none'
-          placeholder='Email'/>
+          autoCapitalize="none"
+          placeholder="Email"
+        />
         <TextInput
           secureTextEntry={true}
           onChangeText={this.passwordChanged}
           style={styles.textField}
           value={this.state.password}
-          underlineColorAndroid='transparent'
-          autoCapitalize='none'
-          placeholder='Password'/>
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+          placeholder="Password"
+        />
         <TextInput
           secureTextEntry={true}
           onChangeText={this.passwordVerificationChanged}
           style={[styles.textField, passwordMismatch ? errorStyle : null]}
-          autoCapitalize='none'
+          autoCapitalize="none"
           value={this.state.passwordVerification}
-          underlineColorAndroid='transparent'
-          placeholder='Verify Password' />
+          underlineColorAndroid="transparent"
+          placeholder="Verify Password"
+        />
         <TextInput
           onChangeText={this.nameChanged}
           style={styles.textField}
           value={this.state.name}
-          placeholder='Name'/>
+          placeholder="Name"
+        />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
           disabled={disabled || isLoading}
           onPress={this.signUp}>
-          {
-            isLoading ?
-              <ActivityIndicator color={PV.Colors.white} size='small' />
-              : <Text style={[styles.signInButtonText, disabledTextStyle]}>Sign Up</Text>
-          }
+          {isLoading ? (
+            <ActivityIndicator color={PV.Colors.white} size="small" />
+          ) : (
+            <Text style={[styles.signInButtonText, disabledTextStyle]}>
+              Sign Up
+            </Text>
+          )}
         </TouchableOpacity>
         {bottomButtons}
       </View>

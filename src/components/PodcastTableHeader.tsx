@@ -3,7 +3,14 @@ import FastImage from 'react-native-fast-image'
 import React from 'reactn'
 import { PV } from '../resources'
 import { core } from '../styles'
-import { ActivityIndicator, Icon, SettingsButton, SubscribeButton, Text, View } from './'
+import {
+  ActivityIndicator,
+  Icon,
+  SettingsButton,
+  SubscribeButton,
+  Text,
+  View
+} from './'
 
 type Props = {
   autoDownloadOn?: boolean
@@ -20,71 +27,77 @@ type Props = {
 }
 
 export const PodcastTableHeader = (props: Props) => {
-  const { autoDownloadOn, handleToggleAutoDownload, handleToggleSettings, handleToggleSubscribe, isLoading,
-    isNotFound, isSubscribed, isSubscribing, podcastImageUrl, podcastTitle = 'Untitled podcast', showSettings } = props
+  const {
+    autoDownloadOn,
+    handleToggleAutoDownload,
+    handleToggleSettings,
+    handleToggleSubscribe,
+    isLoading,
+    isNotFound,
+    isSubscribed,
+    isSubscribing,
+    podcastImageUrl,
+    podcastTitle = 'Untitled podcast',
+    showSettings
+  } = props
 
   return (
     <View style={core.row}>
-      {
-        isLoading &&
-          <View style={[styles.wrapper, core.view]}>
-            <ActivityIndicator />
-          </View>
-      }
-      {
-        !isLoading && !isNotFound &&
-          <View style={styles.wrapper}>
-            <FastImage
-              source={{ uri: podcastImageUrl }}
-              style={styles.image} />
-            <View style={styles.textWrapper}>
-              <View style={styles.textWrapperTop}>
-                <Text
-                  numberOfLines={2}
-                  style={styles.title}>{podcastTitle}</Text>
-                <SubscribeButton
-                  handleToggleSubscribe={handleToggleSubscribe}
-                  isSubscribed={isSubscribed}
-                  isSubscribing={isSubscribing} />
+      {isLoading && (
+        <View style={[styles.wrapper, core.view]}>
+          <ActivityIndicator />
+        </View>
+      )}
+      {!isLoading && !isNotFound && (
+        <View style={styles.wrapper}>
+          <FastImage source={{ uri: podcastImageUrl }} style={styles.image} />
+          <View style={styles.textWrapper}>
+            <View style={styles.textWrapperTop}>
+              <Text numberOfLines={2} style={styles.title}>
+                {podcastTitle}
+              </Text>
+              <SubscribeButton
+                handleToggleSubscribe={handleToggleSubscribe}
+                isSubscribed={isSubscribed}
+                isSubscribing={isSubscribing}
+              />
+            </View>
+            <View style={styles.textWrapperBottom}>
+              <View style={styles.textWrapperBottomLeft}>
+                {isSubscribed && !showSettings && (
+                  <SettingsButton handleToggleSettings={handleToggleSettings} />
+                )}
+                {isSubscribed && showSettings && (
+                  <SettingsButton
+                    handleToggleSettings={handleToggleSettings}
+                    showCheckmark={true}
+                  />
+                )}
               </View>
-              <View style={styles.textWrapperBottom}>
-                <View style={styles.textWrapperBottomLeft}>
-                  {
-                    isSubscribed && !showSettings &&
-                      <SettingsButton handleToggleSettings={handleToggleSettings} />
-                  }
-                  {
-                    isSubscribed && showSettings &&
-                      <SettingsButton
-                        handleToggleSettings={handleToggleSettings}
-                        showCheckmark={true} />
-                  }
-                </View>
-                <View style={styles.textWrapperBottomRight}>
-                  <Text
-                    isSecondary={true}
-                    style={styles.autoDownloadText}>
-                    Auto
-                  </Text>
-                  <Icon
-                    isSecondary={true}
-                    name='download'
-                    size={13}
-                    style={styles.autoDownloadIcon} />
-                  <Switch
-                    onValueChange={handleToggleAutoDownload}
-                    value={autoDownloadOn} />
-                </View>
+              <View style={styles.textWrapperBottomRight}>
+                <Text isSecondary={true} style={styles.autoDownloadText}>
+                  Auto
+                </Text>
+                <Icon
+                  isSecondary={true}
+                  name="download"
+                  size={13}
+                  style={styles.autoDownloadIcon}
+                />
+                <Switch
+                  onValueChange={handleToggleAutoDownload}
+                  value={autoDownloadOn}
+                />
               </View>
             </View>
           </View>
-      }
-      {
-        !isLoading && isNotFound &&
-          <View style={[styles.wrapper, core.view]}>
-            <Text style={styles.notFoundText}>Podcast Not Found</Text>
-          </View>
-      }
+        </View>
+      )}
+      {!isLoading && isNotFound && (
+        <View style={[styles.wrapper, core.view]}>
+          <Text style={styles.notFoundText}>Podcast Not Found</Text>
+        </View>
+      )}
     </View>
   )
 }

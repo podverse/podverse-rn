@@ -13,6 +13,12 @@ type Props = {
 export const PVText = (props: Props) => {
   const { isSecondary } = props
   const [globalTheme] = useGlobal('globalTheme')
-  const globalThemeText = isSecondary ? globalTheme.textSecondary : globalTheme.text
-  return <Text {...props} style={[globalThemeText, props.style]}>{props.children}</Text>
+  const globalThemeText = isSecondary
+    ? globalTheme.textSecondary
+    : globalTheme.text
+  return (
+    <Text {...props} style={[globalThemeText, props.style]}>
+      {props.children}
+    </Text>
+  )
 }

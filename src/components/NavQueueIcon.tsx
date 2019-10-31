@@ -12,10 +12,11 @@ export const NavQueueIcon = (props: Props) => {
 
   return (
     <Icon
-      color='#fff'
-      name='list'
+      color="#fff"
+      name="list"
       onPress={() => navigation.navigate(PV.RouteNames.QueueScreen)}
       size={PV.Icons.NAV}
-      style={navHeader.buttonIcon} />
+      style={navHeader.buttonIcon}
+    />
   )
 }

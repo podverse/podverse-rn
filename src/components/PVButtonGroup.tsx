@@ -21,10 +21,14 @@ export const PVButtonGroup = (props: Props) => {
       buttonStyle={[styles.button, globalTheme.buttonGroup]}
       containerStyle={styles.container}
       onPress={onPress}
-      selectedButtonStyle={[styles.selectedButton, globalTheme.buttonGroupSelected]}
+      selectedButtonStyle={[
+        styles.selectedButton,
+        globalTheme.buttonGroupSelected
+      ]}
       selectedIndex={selectedIndex}
       selectedTextStyle={globalTheme.buttonGroupTextSelected}
-      textStyle={[styles.text, globalTheme.buttonGroupText]} />
+      textStyle={[styles.text, globalTheme.buttonGroupText]}
+    />
   )
 }
 

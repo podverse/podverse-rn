@@ -1,41 +1,79 @@
 import { Image, View } from 'react-native'
 import { Badge } from 'react-native-elements'
-import { createAppContainer, createStackNavigator, createSwitchNavigator,
-  NavigationScreenOptions } from 'react-navigation'
+import {
+  createAppContainer,
+  createStackNavigator,
+  createSwitchNavigator,
+  NavigationScreenOptions
+} from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { getGlobal } from 'reactn'
 import { NavQueueIcon, PVTabBar } from './components'
 import { PV } from './resources'
-import { AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
-  EpisodeScreen, EpisodesScreen, MakeClipScreen, MembershipScreen, MoreScreen, OnboardingScreen,
-  PlayerScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen, PodcastsScreen,
-  ProfileScreen, ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen, WebPageScreen } from './screens'
+import {
+  AboutScreen,
+  AuthScreen,
+  ClipsScreen,
+  DownloadsScreen,
+  EditPlaylistScreen,
+  EditProfileScreen,
+  EpisodeScreen,
+  EpisodesScreen,
+  MakeClipScreen,
+  MembershipScreen,
+  MoreScreen,
+  OnboardingScreen,
+  PlayerScreen,
+  PlaylistsAddToScreen,
+  PlaylistScreen,
+  PlaylistsScreen,
+  PodcastScreen,
+  PodcastsScreen,
+  ProfileScreen,
+  ProfilesScreen,
+  QueueScreen,
+  SearchScreen,
+  SettingsScreen,
+  WebPageScreen,
+  TermsOfServiceScreen
+} from './screens'
 
-const defaultNavigationOptions = ({ navigation }) => ({
-  title: PV.Tabs.Podcasts.title,
-  headerStyle: {
-    backgroundColor: PV.Colors.brandColor
-  },
-  headerTintColor: PV.Colors.white,
-  headerTitleStyle: {
-    fontWeight: 'bold'
-  },
-  headerRight: <NavQueueIcon navigation={navigation} />
-}) as NavigationScreenOptions
+const defaultNavigationOptions = ({ navigation }) =>
+  ({
+    title: PV.Tabs.Podcasts.title,
+    headerStyle: {
+      backgroundColor: PV.Colors.brandColor
+    },
+    headerTintColor: PV.Colors.white,
+    headerTitleStyle: {
+      fontWeight: 'bold'
+    },
+    headerRight: <NavQueueIcon navigation={navigation} />
+  } as NavigationScreenOptions)
 
 const AuthNavigator = createStackNavigator(
   {
     [PV.RouteNames.AuthScreen]: AuthScreen
-  }, {
+  },
+  {
     headerMode: 'none'
   }
 )
 
 const PodcastsNavigator = createStackNavigator(
   {
-    [PV.RouteNames.PodcastsScreen]: { screen: PodcastsScreen, path: PV.DeepLinks.Podcasts.path },
-    [PV.RouteNames.PodcastScreen]: { screen: PodcastScreen, path: PV.DeepLinks.Podcast.path },
-    [PV.RouteNames.EpisodeScreen]: { screen: EpisodeScreen, path: PV.DeepLinks.Episode.path }
+    [PV.RouteNames.PodcastsScreen]: {
+      screen: PodcastsScreen,
+      path: PV.DeepLinks.Podcasts.path
+    },
+    [PV.RouteNames.PodcastScreen]: {
+      screen: PodcastScreen,
+      path: PV.DeepLinks.Podcast.path
+    },
+    [PV.RouteNames.EpisodeScreen]: {
+      screen: EpisodeScreen,
+      path: PV.DeepLinks.Episode.path
+    }
   },
   {
     defaultNavigationOptions,
@@ -45,7 +83,8 @@ const PodcastsNavigator = createStackNavigator(
         <Image
           source={PV.Tabs.Podcasts.icon}
           style={{ tintColor }}
-          resizeMode='contain' />
+          resizeMode={'contain'}
+        />
       )
     }
   }
@@ -64,7 +103,8 @@ const EpisodesNavigator = createStackNavigator(
         <Image
           source={PV.Tabs.Episodes.icon}
           style={{ tintColor }}
-          resizeMode='contain' />
+          resizeMode={'contain'}
+        />
       )
     }
   }
@@ -81,7 +121,8 @@ const ClipsNavigator = createStackNavigator(
         <Image
           source={PV.Tabs.Clips.icon}
           style={{ tintColor }}
-          resizeMode='contain' />
+          resizeMode={'contain'}
+        />
       )
     }
   }
@@ -100,7 +141,8 @@ const SearchNavigator = createStackNavigator(
         <Image
           source={PV.Tabs.Search.icon}
           style={{ tintColor }}
-          resizeMode='contain' />
+          resizeMode={'contain'}
+        />
       )
     }
   }
@@ -111,17 +153,31 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.MoreScreen]: MoreScreen,
     [PV.RouteNames.DownloadsScreen]: DownloadsScreen,
     [PV.RouteNames.MyProfileScreen]: ProfileScreen,
-    [PV.RouteNames.PlaylistScreen]: { screen: PlaylistScreen, path: PV.DeepLinks.Playlist.path },
-    [PV.RouteNames.PlaylistsScreen]: { screen: PlaylistsScreen, path: PV.DeepLinks.Playlists.path },
+    [PV.RouteNames.PlaylistScreen]: {
+      screen: PlaylistScreen,
+      path: PV.DeepLinks.Playlist.path
+    },
+    [PV.RouteNames.PlaylistsScreen]: {
+      screen: PlaylistsScreen,
+      path: PV.DeepLinks.Playlists.path
+    },
     [PV.RouteNames.EditPlaylistScreen]: EditPlaylistScreen,
     [PV.RouteNames.EditProfileScreen]: EditProfileScreen,
-    [PV.RouteNames.ProfileScreen]: { screen: ProfileScreen, path: PV.DeepLinks.Profile.path },
-    [PV.RouteNames.ProfilesScreen]: { screen: ProfilesScreen, path: PV.DeepLinks.Profiles.path },
+    [PV.RouteNames.ProfileScreen]: {
+      screen: ProfileScreen,
+      path: PV.DeepLinks.Profile.path
+    },
+    [PV.RouteNames.ProfilesScreen]: {
+      screen: ProfilesScreen,
+      path: PV.DeepLinks.Profiles.path
+    },
     [PV.RouteNames.SettingsScreen]: SettingsScreen,
     [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen,
     [PV.RouteNames.MorePlaylistScreen]: PlaylistScreen,
     [PV.RouteNames.MorePodcastScreen]: PodcastScreen,
-    [PV.RouteNames.MembershipScreen]: MembershipScreen
+    [PV.RouteNames.MembershipScreen]: MembershipScreen,
+    [PV.RouteNames.AboutScreen]: AboutScreen,
+    [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen
   },
   {
     defaultNavigationOptions,
@@ -132,7 +188,8 @@ const MoreNavigator = createStackNavigator(
             <Image
               source={PV.Tabs.More.icon}
               style={{ tintColor }}
-              resizeMode='contain' />
+              resizeMode={'contain'}
+            />
             <DownloadsActiveTabBadge />
           </View>
         )
@@ -149,85 +206,114 @@ const DownloadsActiveTabBadge = () => {
   }
 
   return (
-    <View style={{
-      position: 'absolute',
-      top: 3,
-      right: -5,
-      zIndex: 1000000 }}>
-      {
-        downloadsActiveCount > 0 &&
-          <Badge
-            badgeStyle={{ borderWidth: 0 }}
-            textStyle={{ fontSize: PV.Fonts.sizes.sm }}
-            status='error'
-            value={downloadsActiveCount} />
-      }
+    <View
+      style={{
+        position: 'absolute',
+        top: 3,
+        right: -5,
+        zIndex: 1000000
+      }}>
+      {downloadsActiveCount > 0 && (
+        <Badge
+          badgeStyle={{ borderWidth: 0 }}
+          textStyle={{ fontSize: PV.Fonts.sizes.sm }}
+          status={'error'}
+          value={downloadsActiveCount}
+        />
+      )}
     </View>
   )
 }
 
-const OnboardingNavigator = createStackNavigator({
-  [PV.RouteNames.OnboardingScreen]: OnboardingScreen,
-  [PV.RouteNames.AuthNavigator]: AuthNavigator
-}, {
-  initialRouteName: PV.RouteNames.OnboardingScreen,
-  mode: 'modal',
-  headerMode: 'none'
-})
+const OnboardingNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.OnboardingScreen]: OnboardingScreen,
+    [PV.RouteNames.AuthNavigator]: AuthNavigator
+  },
+  {
+    initialRouteName: PV.RouteNames.OnboardingScreen,
+    mode: 'modal',
+    headerMode: 'none'
+  }
+)
 
-const TabNavigator = createBottomTabNavigator({
-  Podcasts: { screen: PodcastsNavigator, path: '' },
-  Episodes: EpisodesNavigator,
-  Clips: ClipsNavigator,
-  Search: { screen: SearchNavigator, path: PV.DeepLinks.Search.path },
-  More: { screen: MoreNavigator, path: '' }
-}, {
-  tabBarComponent: (props: any) => <PVTabBar {...props} />
-})
+const TabNavigator = createBottomTabNavigator(
+  {
+    Podcasts: { screen: PodcastsNavigator, path: '' },
+    Episodes: EpisodesNavigator,
+    Clips: ClipsNavigator,
+    Search: { screen: SearchNavigator, path: PV.DeepLinks.Search.path },
+    More: { screen: MoreNavigator, path: '' }
+  },
+  {
+    tabBarComponent: (props: any) => <PVTabBar {...props} />
+  }
+)
 
-const PlayerNavigator = createStackNavigator({
-  [PV.RouteNames.PlayerScreen]: { screen: PlayerScreen, path: PV.DeepLinks.Clip.path },
-  [PV.RouteNames.MakeClipScreen]: MakeClipScreen
-}, {
-  defaultNavigationOptions
-})
+const PlayerNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.PlayerScreen]: {
+      screen: PlayerScreen,
+      path: PV.DeepLinks.Clip.path
+    },
+    [PV.RouteNames.MakeClipScreen]: MakeClipScreen
+  },
+  {
+    defaultNavigationOptions
+  }
+)
 
-const PlaylistsAddToNavigator = createStackNavigator({
-  [PV.RouteNames.PlaylistsAddToScreen]: PlaylistsAddToScreen
-}, {
-  defaultNavigationOptions
-})
+const PlaylistsAddToNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.PlaylistsAddToScreen]: PlaylistsAddToScreen
+  },
+  {
+    defaultNavigationOptions
+  }
+)
 
-const QueueNavigator = createStackNavigator({
-  [PV.RouteNames.QueueScreen]: QueueScreen
-}, {
-  defaultNavigationOptions
-})
+const QueueNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.QueueScreen]: QueueScreen
+  },
+  {
+    defaultNavigationOptions
+  }
+)
 
-const WebPageNavigator = createStackNavigator({
-  [PV.RouteNames.WebPageScreen]: WebPageScreen
-}, {
-  defaultNavigationOptions
-})
+const WebPageNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.WebPageScreen]: WebPageScreen
+  },
+  {
+    defaultNavigationOptions
+  }
+)
 
-const MainApp = createStackNavigator({
-  [PV.RouteNames.TabNavigator]: { screen: TabNavigator, path: '' },
-  [PV.RouteNames.AuthNavigator]: AuthNavigator,
-  [PV.RouteNames.PlayerNavigator]: { screen: PlayerNavigator, path: '' },
-  PlaylistsAddToNavigator,
-  QueueNavigator,
-  WebPageNavigator
-}, {
-  mode: 'modal',
-  headerMode: 'none'
-})
+const MainApp = createStackNavigator(
+  {
+    [PV.RouteNames.TabNavigator]: { screen: TabNavigator, path: '' },
+    [PV.RouteNames.AuthNavigator]: AuthNavigator,
+    [PV.RouteNames.PlayerNavigator]: { screen: PlayerNavigator, path: '' },
+    PlaylistsAddToNavigator,
+    QueueNavigator,
+    WebPageNavigator
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none'
+  }
+)
 
-const SwitchNavigator = createSwitchNavigator({
-  MainApp: { screen: MainApp, path: '' },
-  Onboarding: OnboardingNavigator
-}, {
-  initialRouteName: PV.RouteNames.MainApp
-})
+const SwitchNavigator = createSwitchNavigator(
+  {
+    MainApp: { screen: MainApp, path: '' },
+    Onboarding: OnboardingNavigator
+  },
+  {
+    initialRouteName: PV.RouteNames.MainApp
+  }
+)
 
 const App = createAppContainer(SwitchNavigator)
 const prefix = PV.DeepLinks.prefix

@@ -1,7 +1,14 @@
 import { StyleSheet } from 'react-native'
 import React, { setGlobal } from 'reactn'
-import { ActivityIndicator, Divider, FlatList, MessageWithAction, PlaylistTableCell, TableSectionSelectors,
-  View } from '../components'
+import {
+  ActivityIndicator,
+  Divider,
+  FlatList,
+  MessageWithAction,
+  PlaylistTableCell,
+  TableSectionSelectors,
+  View
+} from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getPlaylists } from '../state/actions/playlist'
@@ -18,7 +25,6 @@ type State = {
 }
 
 export class PlaylistsScreen extends React.Component<Props, State> {
-
   static navigationOptions = {
     title: 'Playlists'
   }
@@ -56,20 +62,26 @@ export class PlaylistsScreen extends React.Component<Props, State> {
       return
     }
 
-    setGlobal({
-      playlists: {
-        myPlaylists: [],
-        subscribedPlaylists: []
+    setGlobal(
+      {
+        playlists: {
+          myPlaylists: [],
+          subscribedPlaylists: []
+        }
+      },
+      () => {
+        this.setState(
+          {
+            isLoading: true,
+            queryFrom: selectedKey
+          },
+          async () => {
+            const newState = await this._queryData(selectedKey)
+            this.setState(newState)
+          }
+        )
       }
-    }, () => {
-      this.setState({
-        isLoading: true,
-        queryFrom: selectedKey
-      }, async () => {
-        const newState = await this._queryData(selectedKey)
-        this.setState(newState)
-      })
-    })
+    )
   }
 
   _ItemSeparatorComponent = () => {
@@ -82,15 +94,19 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
     return (
       <PlaylistTableCell
-        {...(queryFrom === _subscribedPlaylistsKey ? { createdBy: ownerName } : {})}
+        {...(queryFrom === _subscribedPlaylistsKey
+          ? { createdBy: ownerName }
+          : {})}
         itemCount={item.itemCount}
-        onPress={() => this.props.navigation.navigate(
-          PV.RouteNames.PlaylistScreen, {
+        onPress={() =>
+          this.props.navigation.navigate(PV.RouteNames.PlaylistScreen, {
             playlist: item,
-            navigationTitle: queryFrom === _myPlaylistsKey ? 'My Playlist' : 'Playlist'
-          }
-        )}
-        title={item.title} />
+            navigationTitle:
+              queryFrom === _myPlaylistsKey ? 'My Playlist' : 'Playlist'
+          })
+        }
+        title={item.title}
+      />
     )
   }
 
@@ -99,7 +115,8 @@ export class PlaylistsScreen extends React.Component<Props, State> {
   render() {
     const { isLoading, isLoadingMore, queryFrom } = this.state
     const { myPlaylists, subscribedPlaylists } = this.global.playlists
-    const flatListData = queryFrom === _myPlaylistsKey ? myPlaylists : subscribedPlaylists
+    const flatListData =
+      queryFrom === _myPlaylistsKey ? myPlaylists : subscribedPlaylists
 
     return (
       <View style={styles.view}>
@@ -107,46 +124,54 @@ export class PlaylistsScreen extends React.Component<Props, State> {
           <TableSectionSelectors
             handleSelectLeftItem={this.selectLeftItem}
             leftItems={leftItems}
-            selectedLeftItemKey={queryFrom} />
-          {
-            isLoading &&
-              <ActivityIndicator />
-          }
-          {
-            !isLoading && flatListData && flatListData.length > 0 &&
-              <FlatList
-                data={flatListData}
-                disableLeftSwipe={true}
-                extraData={flatListData}
-                isLoadingMore={isLoadingMore}
-                ItemSeparatorComponent={this._ItemSeparatorComponent}
-                renderItem={this._renderPlaylistItem} />
-          }
-          {
-            !isLoading && queryFrom === _myPlaylistsKey && !this.global.session.isLoggedIn &&
+            selectedLeftItemKey={queryFrom}
+          />
+          {isLoading && <ActivityIndicator />}
+          {!isLoading && flatListData && flatListData.length > 0 && (
+            <FlatList
+              data={flatListData}
+              disableLeftSwipe={true}
+              extraData={flatListData}
+              isLoadingMore={isLoadingMore}
+              ItemSeparatorComponent={this._ItemSeparatorComponent}
+              renderItem={this._renderPlaylistItem}
+            />
+          )}
+          {!isLoading &&
+            queryFrom === _myPlaylistsKey &&
+            !this.global.session.isLoggedIn && (
               <MessageWithAction
                 actionHandler={this._onPressLogin}
-                actionText='Login'
-                message='Login to view your playlists' />
-          }
-          {
-            !isLoading && queryFrom === _myPlaylistsKey && this.global.session.isLoggedIn && flatListData.length < 1 &&
-              <MessageWithAction message='You have no subscribed playlists' />
-          }
-          {
-            !isLoading && queryFrom === _subscribedPlaylistsKey && flatListData.length < 1 &&
+                actionText="Login"
+                message="Login to view your playlists"
+              />
+            )}
+          {!isLoading &&
+            queryFrom === _myPlaylistsKey &&
+            this.global.session.isLoggedIn &&
+            flatListData.length < 1 && (
+              <MessageWithAction message="You have no subscribed playlists" />
+            )}
+          {!isLoading &&
+            queryFrom === _subscribedPlaylistsKey &&
+            flatListData.length < 1 && (
               <MessageWithAction
-                message='You have no subscribed playlists'
-                subMessage='(Ask a friend to send you a link to one of their playlists, then subscribe to it)' />
-          }
+                message="You have no subscribed playlists"
+                subMessage="(Ask a friend to send you a link to one of their playlists, then subscribe to it)"
+              />
+            )}
         </View>
       </View>
     )
   }
 
-  _queryData = async (filterKey: string | null, queryOptions: {
-    queryPage?: number, searchAllFieldsText?: string
-  } = {}) => {
+  _queryData = async (
+    filterKey: string | null,
+    queryOptions: {
+      queryPage?: number
+      searchAllFieldsText?: string
+    } = {}
+  ) => {
     const newState = {
       isLoading: false,
       isLoadingMore: false

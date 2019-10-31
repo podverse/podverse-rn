@@ -1,8 +1,14 @@
 import React from 'react'
-import { Animated, Dimensions, Easing, Platform, StyleSheet } from 'react-native'
+import {
+  Animated,
+  Dimensions,
+  Easing,
+  Platform,
+  StyleSheet
+} from 'react-native'
 
 type Props = {
-  active: any,
+  active: any
   cell: any
 }
 
@@ -11,7 +17,6 @@ type State = {}
 const window = Dimensions.get('window')
 
 export class PVSortableListRow extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
 
@@ -20,12 +25,14 @@ export class PVSortableListRow extends React.Component<Props, State> {
     this._style = {
       ...Platform.select({
         ios: {
-          transform: [{
-            scale: this._active.interpolate({
-              inputRange: [0, 1],
-              outputRange: [1, 1.1]
-            })
-          }],
+          transform: [
+            {
+              scale: this._active.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 1.1]
+              })
+            }
+          ],
           shadowRadius: this._active.interpolate({
             inputRange: [0, 1],
             outputRange: [2, 10]
@@ -33,12 +40,14 @@ export class PVSortableListRow extends React.Component<Props, State> {
         },
 
         android: {
-          transform: [{
-            scale: this._active.interpolate({
-              inputRange: [0, 1],
-              outputRange: [1, 1.07]
-            })
-          }],
+          transform: [
+            {
+              scale: this._active.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 1.07]
+              })
+            }
+          ],
           elevation: this._active.interpolate({
             inputRange: [0, 1],
             outputRange: [2, 6]
@@ -61,9 +70,7 @@ export class PVSortableListRow extends React.Component<Props, State> {
   render() {
     const { cell } = this.props
     return (
-      <Animated.View style={[styles.row, this._style]}>
-        {cell}
-      </Animated.View>
+      <Animated.View style={[styles.row, this._style]}>{cell}</Animated.View>
     )
   }
 }
