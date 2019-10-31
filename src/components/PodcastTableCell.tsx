@@ -21,10 +21,18 @@ type Props = {
 }
 
 export class PodcastTableCell extends React.PureComponent<Props> {
-
-  render () {
-    const { id, lastEpisodePubDate, onPress, podcastAuthors, podcastCategories, podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
-      podcastTitle = 'Untitled podcast', showAutoDownload, showDownloadCount } = this.props
+  render() {
+    const {
+      id,
+      lastEpisodePubDate,
+      onPress,
+      podcastAuthors,
+      podcastCategories,
+      podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
+      podcastTitle = 'Untitled podcast',
+      showAutoDownload,
+      showDownloadCount
+    } = this.props
     const { autoDownloadSettings, downloadedPodcastEpisodeCounts } = this.global
 
     let downloadCount = 0
@@ -40,70 +48,58 @@ export class PodcastTableCell extends React.PureComponent<Props> {
     return (
       <TouchableWithoutFeedback onPress={onPress}>
         <View style={styles.wrapper}>
-          <FastImage
-            source={{ uri: podcastImageUrl }}
-            style={styles.image} />
+          <FastImage source={{ uri: podcastImageUrl }} style={styles.image} />
           <View style={styles.textWrapper}>
-            <Text
-              numberOfLines={3}
-              style={styles.title}>
+            <Text numberOfLines={3} style={styles.title}>
               {podcastTitle}
             </Text>
             <View style={styles.textWrapperRow}>
               <View style={styles.textWrapperRowLeft}>
-                {
-                  !!podcastCategories &&
-                      <Text
-                        isSecondary={true}
-                        numberOfLines={1}
-                        style={styles.bottomText}>
-                        {podcastCategories}
-                      </Text>
-                }
+                {!!podcastCategories && (
+                  <Text
+                    isSecondary={true}
+                    numberOfLines={1}
+                    style={styles.bottomText}>
+                    {podcastCategories}
+                  </Text>
+                )}
               </View>
-              {
-                showAutoDownload && shouldAutoDownload &&
-                  <View style={styles.textWrapperRowRight}>
-                    <Icon
-                      isSecondary={true}
-                      name='download'
-                      size={13}
-                      style={styles.autoDownloadIcon} />
-                  </View>
-              }
+              {showAutoDownload && shouldAutoDownload && (
+                <View style={styles.textWrapperRowRight}>
+                  <Icon
+                    isSecondary={true}
+                    name="download"
+                    size={13}
+                    style={styles.autoDownloadIcon}
+                  />
+                </View>
+              )}
             </View>
             <View style={styles.textWrapperRow}>
-              {
-                !!podcastAuthors &&
-                  <View style={styles.textWrapperRowLeft}>
-                    <Text
-                      isSecondary={true}
-                      numberOfLines={1}
-                      style={styles.bottomText}>
-                      {podcastAuthors}
-                    </Text>
-                  </View>
-              }
-              {
-                showDownloadCount &&
-                  <View style={styles.textWrapperRowLeft}>
-                    <Text
-                      isSecondary={true}
-                      style={styles.bottomText}>
-                      {`${downloadCount} downloaded`}
-                    </Text>
-                  </View>
-              }
-              {
-                !!lastEpisodePubDate &&
-                  <View style={styles.textWrapperRowRight}>
-                    <Text
-                      isSecondary={true}
-                      style={styles.bottomText}>
-                      {readableDate(lastEpisodePubDate)}
-                    </Text>
-                  </View>
-              }
+              {!!podcastAuthors && (
+                <View style={styles.textWrapperRowLeft}>
+                  <Text
+                    isSecondary={true}
+                    numberOfLines={1}
+                    style={styles.bottomText}>
+                    {podcastAuthors}
+                  </Text>
+                </View>
+              )}
+              {showDownloadCount && (
+                <View style={styles.textWrapperRowLeft}>
+                  <Text isSecondary={true} style={styles.bottomText}>
+                    {`${downloadCount} downloaded`}
+                  </Text>
+                </View>
+              )}
+              {!!lastEpisodePubDate && (
+                <View style={styles.textWrapperRowRight}>
+                  <Text isSecondary={true} style={styles.bottomText}>
+                    {readableDate(lastEpisodePubDate)}
+                  </Text>
+                </View>
+              )}
             </View>
           </View>
         </View>
@@ -114,7 +110,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   autoDownloadIcon: {
-    flex: 0,
+    flex: 0
   },
   bottomText: {
     flex: 0,

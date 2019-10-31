@@ -13,13 +13,16 @@ export const NavMakeClipIcon = (props: Props) => {
 
   return (
     <Icon
-      color='#fff'
-      name='cut'
+      color="#fff"
+      name="cut"
       onPress={async () => {
         const initialProgressValue = await getInitialProgressValue()
-        navigation.navigate(PV.RouteNames.MakeClipScreen, { initialProgressValue })
+        navigation.navigate(PV.RouteNames.MakeClipScreen, {
+          initialProgressValue
+        })
       }}
       size={PV.Icons.NAV}
-      style={navHeader.buttonIcon} />
+      style={navHeader.buttonIcon}
+    />
   )
 }

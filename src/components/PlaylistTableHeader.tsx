@@ -3,7 +3,14 @@ import { StyleSheet } from 'react-native'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button, core } from '../styles'
-import { ActivityIndicator, Divider, Icon, SubscribeButton, Text, View } from './'
+import {
+  ActivityIndicator,
+  Divider,
+  Icon,
+  SubscribeButton,
+  Text,
+  View
+} from './'
 
 type Props = {
   createdBy?: string
@@ -20,69 +27,76 @@ type Props = {
 }
 
 export const PlaylistTableHeader = (props: Props) => {
-  const { createdBy, handleEditPress, handleToggleSubscribe, id, isLoading, isNotFound, isSubscribed,
-    isSubscribing, itemCount, lastUpdated, title } = props
+  const {
+    createdBy,
+    handleEditPress,
+    handleToggleSubscribe,
+    id,
+    isLoading,
+    isNotFound,
+    isSubscribed,
+    isSubscribing,
+    itemCount,
+    lastUpdated,
+    title
+  } = props
 
   return (
     <View>
       <View style={core.row}>
-        {
-          isLoading &&
-            <View style={[styles.wrapper, core.view]}>
-              <ActivityIndicator />
-            </View>
-        }
-        {
-          !isLoading && !isNotFound &&
-            <View style={[styles.wrapper, core.view]}>
-              <View style={styles.textWrapper}>
+        {isLoading && (
+          <View style={[styles.wrapper, core.view]}>
+            <ActivityIndicator />
+          </View>
+        )}
+        {!isLoading && !isNotFound && (
+          <View style={[styles.wrapper, core.view]}>
+            <View style={styles.textWrapper}>
+              <Text numberOfLines={1} style={styles.title}>
+                {title}
+              </Text>
+              {!!createdBy && (
                 <Text
+                  isSecondary={true}
                   numberOfLines={1}
-                  style={styles.title}>{title}</Text>
-                {
-                  !!createdBy &&
-                    <Text
-                      isSecondary={true}
-                      numberOfLines={1}
-                      style={styles.createdBy}>by: {createdBy}</Text>
-                }
-                <View style={styles.row}>
-                  <Text
-                    isSecondary={true}
-                    numberOfLines={1}
-                    style={styles.itemCount}>
-                    items: {itemCount}
-                  </Text>
-                  <Text
-                    isSecondary={true}
-                    style={styles.lastUpdated}>
-                    {readableDate(lastUpdated)}
-                  </Text>
-                </View>
+                  style={styles.createdBy}>
+                  by: {createdBy}
+                </Text>
+              )}
+              <View style={styles.row}>
+                <Text
+                  isSecondary={true}
+                  numberOfLines={1}
+                  style={styles.itemCount}>
+                  items: {itemCount}
+                </Text>
+                <Text isSecondary={true} style={styles.lastUpdated}>
+                  {readableDate(lastUpdated)}
+                </Text>
               </View>
-              {
-                handleEditPress &&
-                  <Icon
-                    name='pencil-alt'
-                    onPress={() => handleEditPress(id)}
-                    size={26}
-                    style={button.iconOnlyMedium} />
-              }
-              {
-                handleToggleSubscribe &&
-                  <SubscribeButton
-                    handleToggleSubscribe={handleToggleSubscribe}
-                    isSubscribed={isSubscribed}
-                    isSubscribing={isSubscribing} />
-              }
             </View>
-        }
-        {
-          !isLoading && isNotFound &&
-            <View style={[styles.wrapper, core.view]}>
-              <Text style={styles.notFoundText}>Playlist Not Found</Text>
-            </View>
-        }
+            {handleEditPress && (
+              <Icon
+                name="pencil-alt"
+                onPress={() => handleEditPress(id)}
+                size={26}
+                style={button.iconOnlyMedium}
+              />
+            )}
+            {handleToggleSubscribe && (
+              <SubscribeButton
+                handleToggleSubscribe={handleToggleSubscribe}
+                isSubscribed={isSubscribed}
+                isSubscribing={isSubscribing}
+              />
+            )}
+          </View>
+        )}
+        {!isLoading && isNotFound && (
+          <View style={[styles.wrapper, core.view]}>
+            <Text style={styles.notFoundText}>Playlist Not Found</Text>
+          </View>
+        )}
       </View>
       <Divider />
     </View>

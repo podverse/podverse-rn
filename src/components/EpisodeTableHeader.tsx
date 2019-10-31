@@ -20,8 +20,17 @@ type Props = {
 }
 
 export const EpisodeTableHeader = (props: Props) => {
-  const { downloadedEpisodeIds = {}, downloadsActive = {}, handleMorePress, id, isLoading, isNotFound, podcastImageUrl,
-    pubDate = '', title } = props
+  const {
+    downloadedEpisodeIds = {},
+    downloadsActive = {},
+    handleMorePress,
+    id,
+    isLoading,
+    isNotFound,
+    podcastImageUrl,
+    pubDate = '',
+    title
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   const isDownloading = downloadsActive[id]
@@ -29,66 +38,56 @@ export const EpisodeTableHeader = (props: Props) => {
 
   return (
     <View style={styles.wrapper}>
-      {
-        isLoading && <ActivityIndicator />
-      }
-      {
-        !isLoading && !isNotFound &&
-          <View style={styles.innerWrapper}>
-            <FastImage
-              source={{ uri: podcastImageUrl }}
-              style={styles.image} />
-            <View style={styles.textWrapper}>
-              <Text
-                numberOfLines={3}
-                style={styles.title}>
-                {title}
+      {isLoading && <ActivityIndicator />}
+      {!isLoading && !isNotFound && (
+        <View style={styles.innerWrapper}>
+          <FastImage source={{ uri: podcastImageUrl }} style={styles.image} />
+          <View style={styles.textWrapper}>
+            <Text numberOfLines={3} style={styles.title}>
+              {title}
+            </Text>
+            <View style={styles.textWrapperBottomRow}>
+              <Text isSecondary={true} style={styles.pubDate}>
+                {readableDate(pubDate)}
               </Text>
-              <View style={styles.textWrapperBottomRow}>
-                <Text
+              {isDownloaded && (
+                <Icon
                   isSecondary={true}
-                  style={styles.pubDate}>
-                  {readableDate(pubDate)}
-                </Text>
-                {
-                  isDownloaded &&
-                    <Icon
-                      isSecondary={true}
-                      name='download'
-                      size={13}
-                      style={styles.downloadedIcon} />
-                }
-              </View>
+                  name="download"
+                  size={13}
+                  style={styles.downloadedIcon}
+                />
+              )}
             </View>
-            {
-              !isDownloading && handleMorePress &&
-                <View style={styles.buttonView}>
-                  <TouchableOpacity
-                    onPress={handleMorePress}
-                    style={styles.moreButton}>
-                    <Image
-                      resizeMode='contain'
-                      source={PV.Images.MORE}
-                      style={[styles.moreButtonImage, globalTheme.buttonImage]} />
-                  </TouchableOpacity>
-                </View>
-            }
-          {
-            isDownloading &&
-              <View style={styles.moreButton}>
-                <ActivityIndicator
-                  onPress={handleMorePress}
-                  styles={button.iconOnlyMedium} />
-              </View>
-          }
           </View>
-      }
-      {
-        !isLoading && isNotFound &&
-          <View style={core.view}>
-            <Text style={styles.notFoundText}>Episode Not Found</Text>
-          </View>
-      }
+          {!isDownloading && handleMorePress && (
+            <View style={styles.buttonView}>
+              <TouchableOpacity
+                onPress={handleMorePress}
+                style={styles.moreButton}>
+                <Image
+                  resizeMode="contain"
+                  source={PV.Images.MORE}
+                  style={[styles.moreButtonImage, globalTheme.buttonImage]}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+          {isDownloading && (
+            <View style={styles.moreButton}>
+              <ActivityIndicator
+                onPress={handleMorePress}
+                styles={button.iconOnlyMedium}
+              />
+            </View>
+          )}
+        </View>
+      )}
+      {!isLoading && isNotFound && (
+        <View style={core.view}>
+          <Text style={styles.notFoundText}>Episode Not Found</Text>
+        </View>
+      )}
     </View>
   )
 }

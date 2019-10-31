@@ -1,6 +1,7 @@
 import { logoutUser } from '../state/actions/auth'
 
-const _expiredMessage = 'To renew your membership, please visit podverse.fm, login, then go to your Settings page.'
+const _expiredMessage =
+  'To renew your membership, please visit podverse.fm, login, then go to your Settings page.'
 const _logoutButtonText = 'Log Out'
 const _networkErrorTitle = 'Network Error'
 
@@ -15,7 +16,10 @@ export const Alerts = {
     title: 'Login Error'
   },
   NETWORK_ERROR: {
-    message: (str?: string) => !str ? 'Internet connection required' : `You must be connected to the internet to ${str}.`,
+    message: (str?: string) =>
+      !str
+        ? 'Internet connection required'
+        : `You must be connected to the internet to ${str}.`,
     title: _networkErrorTitle
   },
   PLAYER_CANNOT_STREAM_WITHOUT_WIFI: {
@@ -32,7 +36,8 @@ export const Alerts = {
     title: 'Premium Membership Required'
   },
   RESET_PASSWORD_SUCCESS: {
-    message: 'Please check your inbox. If this email address exists in our system, you should receive a reset password email shortly.',
+    message:
+      'Please check your inbox. If this email address exists in our system, you should receive a reset password email shortly.',
     title: 'Reset Password Sent'
   },
   SIGN_UP_ERROR: {
@@ -41,5 +46,10 @@ export const Alerts = {
   SOMETHING_WENT_WRONG: {
     message: 'Please check your internet connection and try again later.',
     title: _networkErrorTitle
+  },
+  LEAVING_APP: {
+    title: 'Leaving App',
+    message:
+      'You are about to be navigated to a website outside the app. Are you sure you want to leave Podverse?'
   }
 }

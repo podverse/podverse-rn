@@ -17,7 +17,6 @@ type State = {
 }
 
 export class PVActionSheet extends React.Component<Props, State> {
-
   componentDidMount() {
     // Animated.timing(_yValueHide, { toValue: _yValueShow }).start()
   }
@@ -61,12 +60,12 @@ export class PVActionSheet extends React.Component<Props, State> {
             <Text style={[styles.buttonText, buttonTextStyle]}>
               {item.text}
             </Text>
-            {
-              item.isDownloading &&
-                <ActivityIndicator
-                  size='small'
-                  styles={styles.activityIndicator} />
-            }
+            {item.isDownloading && (
+              <ActivityIndicator
+                size="small"
+                styles={styles.activityIndicator}
+              />
+            )}
           </View>
         </TouchableHighlight>
       )
@@ -75,11 +74,17 @@ export class PVActionSheet extends React.Component<Props, State> {
     if (handleCancelPress) {
       buttons.push(
         <TouchableHighlight
-          key='cancel'
+          key="cancel"
           onPress={handleCancelPress}
           style={[styles.buttonCancel, globalTheme.actionSheetButtonCancel]}
-          underlayColor={globalTheme.actionSheetButtonCancelUnderlay.backgroundColor}>
-          <Text style={[styles.buttonText, globalTheme.actionSheetButtonTextCancel]}>
+          underlayColor={
+            globalTheme.actionSheetButtonCancelUnderlay.backgroundColor
+          }>
+          <Text
+            style={[
+              styles.buttonText,
+              globalTheme.actionSheetButtonTextCancel
+            ]}>
             Cancel
           </Text>
         </TouchableHighlight>
@@ -96,34 +101,39 @@ export class PVActionSheet extends React.Component<Props, State> {
     const buttons = this.generateButtons(finalItems)
 
     return (
-      <Modal
-        transparent={true}
-        visible={showModal}>
+      <Modal transparent={true} visible={showModal}>
         <View style={[styles.backdrop, globalTheme.modalBackdrop]}>
           <Animated.View
             style={[
               styles.animatedView,
               {
-                transform: [{ translateY: showModal ? _yValueShow : _yValueHide }]
+                transform: [
+                  { translateY: showModal ? _yValueShow : _yValueHide }
+                ]
               }
             ]}>
-            {
-              (!!title || !!message) &&
-                <View style={[styles.header, globalTheme.actionSheetButton]}>
-                  {
-                    !!title &&
-                      <Text style={[styles.headerTitle, globalTheme.actionSheetHeaderText]}>
-                        {title}
-                      </Text>
-                  }
-                  {
-                    !!message &&
-                      <Text style={[styles.headerMessage, globalTheme.actionSheetHeaderText]}>
-                        {message}
-                      </Text>
-                  }
-                </View>
-            }
+            {(!!title || !!message) && (
+              <View style={[styles.header, globalTheme.actionSheetButton]}>
+                {!!title && (
+                  <Text
+                    style={[
+                      styles.headerTitle,
+                      globalTheme.actionSheetHeaderText
+                    ]}>
+                    {title}
+                  </Text>
+                )}
+                {!!message && (
+                  <Text
+                    style={[
+                      styles.headerMessage,
+                      globalTheme.actionSheetHeaderText
+                    ]}>
+                    {message}
+                  </Text>
+                )}
+              </View>
+            )}
             {buttons}
           </Animated.View>
         </View>

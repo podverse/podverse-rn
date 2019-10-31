@@ -1,5 +1,13 @@
 import React from 'react'
-import { Alert, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import {
+  Alert,
+  Image,
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View
+} from 'react-native'
 import { Icon, Login, ResetPassword, SafeAreaView } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
@@ -24,7 +32,6 @@ const _resetPassword = 'resetPassword'
 // const _signup = 'signup'
 
 export class AuthScreen extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -50,10 +57,21 @@ export class AuthScreen extends React.Component<Props, State> {
           navigation.goBack(null)
         }
       } catch (error) {
-        if (error.response && error.response.status === PV.ResponseStatusCodes.UNAUTHORIZED) {
-          Alert.alert(PV.Alerts.LOGIN_INVALID.title, PV.Alerts.LOGIN_INVALID.message, [])
+        if (
+          error.response &&
+          error.response.status === PV.ResponseStatusCodes.UNAUTHORIZED
+        ) {
+          Alert.alert(
+            PV.Alerts.LOGIN_INVALID.title,
+            PV.Alerts.LOGIN_INVALID.message,
+            []
+          )
         } else {
-          Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+          Alert.alert(
+            PV.Alerts.SOMETHING_WENT_WRONG.title,
+            PV.Alerts.SOMETHING_WENT_WRONG.message,
+            []
+          )
         }
       }
       this.setState({ isLoadingLogin: false })
@@ -65,9 +83,17 @@ export class AuthScreen extends React.Component<Props, State> {
     this.setState({ isLoadingResetPassword: true }, async () => {
       try {
         await sendResetPassword(email)
-        Alert.alert(PV.Alerts.RESET_PASSWORD_SUCCESS.title, PV.Alerts.RESET_PASSWORD_SUCCESS.message, [])
+        Alert.alert(
+          PV.Alerts.RESET_PASSWORD_SUCCESS.title,
+          PV.Alerts.RESET_PASSWORD_SUCCESS.message,
+          []
+        )
       } catch (error) {
-        Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+        Alert.alert(
+          PV.Alerts.SOMETHING_WENT_WRONG.title,
+          PV.Alerts.SOMETHING_WENT_WRONG.message,
+          []
+        )
       }
       this.setState({ isLoadingResetPassword: false })
       navigation.goBack(null)
@@ -113,31 +139,24 @@ export class AuthScreen extends React.Component<Props, State> {
 
     if (screenType === _login) {
       bottomButtons = [
-        (
-          <Text
-            key='reset'
-            onPress={this._showResetPassword}
-            style={styles.switchOptionText}>
-            Reset Password
-          </Text>
-        ),(
-          <Text
-            key='moreInfo'
-            onPress={this._showMembership}
-            style={[styles.switchOptionText, {marginTop: 0, width: "100%" }]}>
-            More Info
-          </Text>
-        )
+        <Text
+          key="reset"
+          onPress={this._showResetPassword}
+          style={styles.switchOptionText}>
+          Reset Password
+        </Text>,
+        <Text
+          key="moreInfo"
+          onPress={this._showMembership}
+          style={[styles.switchOptionText, { marginTop: 0, width: '100%' }]}>
+          More Info
+        </Text>
       ]
     } else if (screenType === _resetPassword) {
       bottomButtons = [
-        (
-          <Text
-            onPress={this._showMembership}
-            style={styles.switchOptionText}>
-            Login
-          </Text>
-        )
+        <Text onPress={this._showMembership} style={styles.switchOptionText}>
+          Login
+        </Text>
       ]
     }
 
@@ -146,25 +165,30 @@ export class AuthScreen extends React.Component<Props, State> {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.view}>
             <Icon
-              name='times'
+              name="times"
               onPress={navigation.dismiss}
               size={26}
-              style={[button.iconOnlyMedium, styles.closeButton]} />
-            <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />
+              style={[button.iconOnlyMedium, styles.closeButton]}
+            />
+            <Image
+              source={PV.Images.BANNER}
+              style={styles.banner}
+              resizeMode="contain"
+            />
             <View style={styles.contentView}>
-              {
-                screenType === _login &&
-                  <Login
-                    bottomButtons={bottomButtons}
-                    isLoading={isLoadingLogin}
-                    onLoginPressed={this.attemptLogin} />
-              }
-              {
-                screenType === _resetPassword &&
-                  <ResetPassword
-                    isLoading={isLoadingResetPassword}
-                    onResetPasswordPressed={this.attemptResetPassword} />
-              }
+              {screenType === _login && (
+                <Login
+                  bottomButtons={bottomButtons}
+                  isLoading={isLoadingLogin}
+                  onLoginPressed={this.attemptLogin}
+                />
+              )}
+              {screenType === _resetPassword && (
+                <ResetPassword
+                  isLoading={isLoadingResetPassword}
+                  onResetPasswordPressed={this.attemptResetPassword}
+                />
+              )}
               {/* {
                 screenType === _signup &&
                   <View>

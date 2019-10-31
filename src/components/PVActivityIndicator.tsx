@@ -1,5 +1,10 @@
 import React, { Fragment } from 'react'
-import { ActivityIndicator, Dimensions, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import {
+  ActivityIndicator,
+  Dimensions,
+  StyleSheet,
+  TouchableWithoutFeedback
+} from 'react-native'
 import { useGlobal } from 'reactn'
 import { View } from '../components'
 import { core } from '../styles'
@@ -18,24 +23,24 @@ export const PVActivityIndicator = (props: Props) => {
 
   return (
     <Fragment>
-      {
-        isOverlay &&
-          <View style={styles.activityOverlay}>
+      {isOverlay && (
+        <View style={styles.activityOverlay}>
+          <ActivityIndicator
+            color={globalTheme.activityIndicator.color}
+            size={size}
+          />
+        </View>
+      )}
+      {!isOverlay && (
+        <TouchableWithoutFeedback onPress={onPress}>
+          <View style={[core.view, props.styles]}>
             <ActivityIndicator
               color={globalTheme.activityIndicator.color}
-              size={size} />
+              size={size}
+            />
           </View>
-      }
-      {
-        !isOverlay &&
-          <TouchableWithoutFeedback onPress={onPress}>
-            <View style={[core.view, props.styles]}>
-              <ActivityIndicator
-                color={globalTheme.activityIndicator.color}
-                size={size} />
-            </View>
-          </TouchableWithoutFeedback>
-      }
+        </TouchableWithoutFeedback>
+      )}
     </Fragment>
   )
 }

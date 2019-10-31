@@ -1,4 +1,10 @@
-import { SectionList, TouchableWithoutFeedback, View as RNView, Linking } from 'react-native'
+import {
+  Alert,
+  Linking,
+  SectionList,
+  TouchableWithoutFeedback,
+  View as RNView
+} from 'react-native'
 import { Badge } from 'react-native-elements'
 import React from 'reactn'
 import { Divider, TableSectionHeader, Text, View } from '../components'
@@ -29,24 +35,25 @@ export class MoreScreen extends React.Component<Props, State> {
     if (item.key === _membershipKey) {
       navigation.navigate(PV.RouteNames.MembershipScreen)
     } else if (item.key === _aboutKey) {
-      Linking.openURL(PV.URLs.about)
+      navigation.navigate(PV.RouteNames.AboutScreen)
     } else if (item.key === _feedbackKey) {
-      Linking.openURL(PV.URLs.feedback)
+      Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
+        { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.feedback) },
+        { text: 'Cancel' }
+      ])
     } else if (item.key === _termsKey) {
-      Linking.openURL(PV.URLs.terms)
+      navigation.navigate(PV.RouteNames.TermsOfServiceScreen)
     } else if (item.key === _logoutKey) {
       logoutUser()
     } else if (item.key === _loginKey) {
       navigation.navigate(PV.RouteNames.AuthNavigator)
     } else if (item.key === PV.RouteNames.MyProfileScreen) {
       const user = this.global.session.userInfo
-      navigation.navigate(
-        PV.RouteNames.ProfileScreen, {
-          user,
-          navigationTitle: 'My Profile',
-          isMyProfile: true
-        }
-      )
+      navigation.navigate(PV.RouteNames.ProfileScreen, {
+        user,
+        navigationTitle: 'My Profile',
+        isMyProfile: true
+      })
     } else {
       navigation.navigate(item.key)
     }
@@ -71,7 +78,10 @@ export class MoreScreen extends React.Component<Props, State> {
     })
 
     const membershipStatus = getMembershipStatus(userInfo) || 'Membership'
-    const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
+    const membershipTextStyle = getMembershipTextStyle(
+      globalTheme,
+      membershipStatus
+    )
     const otherOptions = moreOtherOptions(membershipStatus)
 
     return (
@@ -81,37 +91,49 @@ export class MoreScreen extends React.Component<Props, State> {
           renderItem={({ item }) => (
             <TouchableWithoutFeedback onPress={() => this._onPress(item)}>
               <RNView style={core.row}>
-                {
-                  item.key === _membershipKey &&
-                    <RNView style={core.row}>
-                      {
-                        isLoggedIn ?
-                          <Text style={[table.cellText, membershipTextStyle]}>{membershipStatus}</Text> :
-                          <Text style={[table.cellText, globalTheme.tableCellTextPrimary]}>Membership</Text>
-                      }
-                    </RNView>
-                }
-                {
-                  item.key === PV.RouteNames.DownloadsScreen &&
-                    <RNView style={[core.row, { position: 'relative' }]}>
-                      <Text style={table.cellText}>Downloads</Text>
-                      {
-                        downloadsActiveCount > 0 &&
-                          <Badge
-                            containerStyle={{
-                              position: 'absolute',
-                              right: -22,
-                              top: 19
-                            }}
-                            status='error'
-                            value={downloadsActiveCount} />
-                      }
-                    </RNView>
-                }
-                {
-                  item.key !== _membershipKey && item.key !== PV.RouteNames.DownloadsScreen &&
-                    <Text style={[table.cellText, globalTheme.tableCellTextPrimary]}>{item.title}</Text>
-                }
+                {item.key === _membershipKey && (
+                  <RNView style={core.row}>
+                    {isLoggedIn ? (
+                      <Text style={[table.cellText, membershipTextStyle]}>
+                        {membershipStatus}
+                      </Text>
+                    ) : (
+                      <Text
+                        style={[
+                          table.cellText,
+                          globalTheme.tableCellTextPrimary
+                        ]}>
+                        Membership
+                      </Text>
+                    )}
+                  </RNView>
+                )}
+                {item.key === PV.RouteNames.DownloadsScreen && (
+                  <RNView style={[core.row, { position: 'relative' }]}>
+                    <Text style={table.cellText}>Downloads</Text>
+                    {downloadsActiveCount > 0 && (
+                      <Badge
+                        containerStyle={{
+                          position: 'absolute',
+                          right: -22,
+                          top: 19
+                        }}
+                        status="error"
+                        value={downloadsActiveCount}
+                      />
+                    )}
+                  </RNView>
+                )}
+                {item.key !== _membershipKey &&
+                  item.key !== PV.RouteNames.DownloadsScreen && (
+                    <Text
+                      style={[
+                        table.cellText,
+                        globalTheme.tableCellTextPrimary
+                      ]}>
+                      {item.title}
+                    </Text>
+                  )}
               </RNView>
             </TouchableWithoutFeedback>
           )}
@@ -121,7 +143,8 @@ export class MoreScreen extends React.Component<Props, State> {
           sections={[
             { title: 'Features', data: featureOptions },
             { title: 'Other', data: otherOptions }
-          ]} />
+          ]}
+        />
       </View>
     )
   }

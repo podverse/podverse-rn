@@ -21,14 +21,14 @@ export const TableSectionHeader = (props: Props) => {
         <Text style={[styles.text, globalTheme.tableSectionHeaderText]}>
           {title}
         </Text>
-        {
-          handleClosePress &&
-            <Icon
-              name='times'
-              onPress={handleClosePress}
-              size={24}
-              style={styles.icon} />
-        }
+        {handleClosePress && (
+          <Icon
+            name="times"
+            onPress={handleClosePress}
+            size={24}
+            style={styles.icon}
+          />
+        )}
       </View>
       <Divider />
     </View>

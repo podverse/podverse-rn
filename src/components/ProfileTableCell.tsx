@@ -9,18 +9,15 @@ type Props = {
 }
 
 export class ProfileTableCell extends React.PureComponent<Props> {
-
-  render () {
+  render() {
     const { name, onPress } = this.props
 
     return (
-        <View style={styles.wrapper}>
-          <Text
-            onPress={onPress}
-            style={styles.name}>
-            {name || 'anonymous'}
-          </Text>
-        </View>
+      <View style={styles.wrapper}>
+        <Text onPress={onPress} style={styles.name}>
+          {name || 'anonymous'}
+        </Text>
+      </View>
     )
   }
 }

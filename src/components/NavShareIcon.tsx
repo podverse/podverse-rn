@@ -17,8 +17,16 @@ type Props = {
 }
 
 export const NavShareIcon = (props: Props) => {
-  const { clipTitle, endingText, episodeTitle, getUrl, handlePress, playlistTitle, podcastTitle,
-    profileName } = props
+  const {
+    clipTitle,
+    endingText,
+    episodeTitle,
+    getUrl,
+    handlePress,
+    playlistTitle,
+    podcastTitle,
+    profileName
+  } = props
   let { url = '' } = props
 
   const onShare = async () => {
@@ -30,7 +38,8 @@ export const NavShareIcon = (props: Props) => {
     if (podcastTitle) title += `${podcastTitle}`
     if (episodeTitle) title += ` – ${episodeTitle}`
     if (endingText) title += `${endingText}`
-    if (profileName) title = `${profileName || 'anonymous'}'s favorite podcasts on Podverse`
+    if (profileName)
+      title = `${profileName || 'anonymous'}'s favorite podcasts on Podverse`
 
     try {
       await Share.open({
@@ -45,10 +54,11 @@ export const NavShareIcon = (props: Props) => {
 
   return (
     <Icon
-      color='#fff'
-      name='share'
+      color="#fff"
+      name="share"
       onPress={handlePress ? handlePress : onShare}
       size={PV.Icons.NAV}
-      style={navHeader.buttonIcon} />
+      style={navHeader.buttonIcon}
+    />
   )
 }

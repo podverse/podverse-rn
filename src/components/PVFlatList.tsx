@@ -37,10 +37,28 @@ const _renderHiddenItem = () => <View />
 
 export const PVFlatList = (props: Props) => {
   const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
-  const { data, dataTotalCount, disableLeftSwipe = true, extraData, handleSearchNavigation, handleRequestPodcast,
-    hideEndOfResults, isLoadingMore, isRefreshing = false, ItemSeparatorComponent, keyExtractor, ListHeaderComponent,
-    noSubscribedPodcasts, onEndReached, onEndReachedThreshold = 0.9, onRefresh, renderHiddenItem, renderItem, resultsText = 'results',
-    showRequestPodcast } = props
+  const {
+    data,
+    dataTotalCount,
+    disableLeftSwipe = true,
+    extraData,
+    handleSearchNavigation,
+    handleRequestPodcast,
+    hideEndOfResults,
+    isLoadingMore,
+    isRefreshing = false,
+    ItemSeparatorComponent,
+    keyExtractor,
+    ListHeaderComponent,
+    noSubscribedPodcasts,
+    onEndReached,
+    onEndReachedThreshold = 0.9,
+    onRefresh,
+    renderHiddenItem,
+    renderItem,
+    resultsText = 'results',
+    showRequestPodcast
+  } = props
 
   let noResultsFound = false
   let endOfResults = false
@@ -49,80 +67,90 @@ export const PVFlatList = (props: Props) => {
     noResultsFound = true
   }
 
-  if (!isLoadingMore && data && dataTotalCount && dataTotalCount > 0 && data.length >= dataTotalCount) {
+  if (
+    !isLoadingMore &&
+    data &&
+    dataTotalCount &&
+    dataTotalCount > 0 &&
+    data.length >= dataTotalCount
+  ) {
     endOfResults = true
   }
 
   const requestPodcastTextLink = (
-    <TextLink
-      onPress={handleRequestPodcast}
-      style={[styles.textLink]}>
+    <TextLink onPress={handleRequestPodcast} style={[styles.textLink]}>
       Request a podcast
     </TextLink>
   )
 
   return (
     <View style={styles.view}>
-      {
-        !noSubscribedPodcasts && ListHeaderComponent &&
-          <ListHeaderComponent />
-      }
-      {
-        (noSubscribedPodcasts && !isLoadingMore) &&
-          <MessageWithAction
-            actionHandler={handleSearchNavigation}
-            actionText='Search'
-            message='You have no subscribed podcasts' />
-      }
-      {
-        (noResultsFound && !noSubscribedPodcasts && !isLoadingMore) &&
-          <View style={styles.msgView}>
-            <Text style={[styles.lastCellText]}>{`No ${resultsText} found`}</Text>
-            {
-              showRequestPodcast &&
-                requestPodcastTextLink
+      {!noSubscribedPodcasts && ListHeaderComponent && <ListHeaderComponent />}
+      {noSubscribedPodcasts && !isLoadingMore && (
+        <MessageWithAction
+          actionHandler={handleSearchNavigation}
+          actionText="Search"
+          message="You have no subscribed podcasts"
+        />
+      )}
+      {noResultsFound && !noSubscribedPodcasts && !isLoadingMore && (
+        <View style={styles.msgView}>
+          <Text style={[styles.lastCellText]}>{`No ${resultsText} found`}</Text>
+          {showRequestPodcast && requestPodcastTextLink}
+        </View>
+      )}
+      {((!noSubscribedPodcasts && !noResultsFound) || isLoadingMore) && (
+        <SwipeListView
+          useFlatList={true}
+          closeOnRowPress={true}
+          data={data}
+          disableLeftSwipe={disableLeftSwipe}
+          disableRightSwipe={true}
+          extraData={extraData}
+          ItemSeparatorComponent={ItemSeparatorComponent}
+          keyExtractor={keyExtractor ? keyExtractor : (item: any) => item.id}
+          ListFooterComponent={() => {
+            if (isLoadingMore) {
+              return (
+                <View
+                  style={[
+                    styles.isLoadingMoreCell,
+                    globalTheme.tableCellBorder
+                  ]}>
+                  <ActivityIndicator />
+                </View>
+              )
+            } else if (endOfResults && !hideEndOfResults) {
+              return (
+                <View style={[styles.lastCell, globalTheme.tableCellBorder]}>
+                  <Text
+                    style={[
+                      styles.lastCellText
+                    ]}>{`End of ${resultsText}`}</Text>
+                  {showRequestPodcast && requestPodcastTextLink}
+                </View>
+              )
             }
-          </View>
-      }
-      {
-        ((!noSubscribedPodcasts && !noResultsFound) || isLoadingMore) &&
-          <SwipeListView
-            useFlatList={true}
-            closeOnRowPress={true}
-            data={data}
-            disableLeftSwipe={disableLeftSwipe}
-            disableRightSwipe={true}
-            extraData={extraData}
-            ItemSeparatorComponent={ItemSeparatorComponent}
-            keyExtractor={keyExtractor ? keyExtractor : (item: any) => item.id}
-            ListFooterComponent={() => {
-              if (isLoadingMore) {
-                return (
-                  <View style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}>
-                    <ActivityIndicator />
-                  </View>
-                )
-              } else if (endOfResults && !hideEndOfResults) {
-                return (
-                  <View style={[styles.lastCell, globalTheme.tableCellBorder]}>
-                    <Text style={[styles.lastCellText]}>{`End of ${resultsText}`}</Text>
-                    {
-                      showRequestPodcast &&
-                        requestPodcastTextLink
-                    }
-                  </View>
+            return null
+          }}
+          onEndReached={onEndReached}
+          onEndReachedThreshold={onEndReachedThreshold}
+          {...(onRefresh
+            ? {
+                refreshControl: (
+                  <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={onRefresh}
+                  />
                 )
               }
-              return null
-            }}
-            onEndReached={onEndReached}
-            onEndReachedThreshold={onEndReachedThreshold}
-            {...(onRefresh ? { refreshControl: <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} /> } : {})}
-            renderHiddenItem={renderHiddenItem || _renderHiddenItem}
-            renderItem={renderItem}
-            rightOpenValue={-100}
-            style={[globalTheme.flatList]} />
-      }
+            : {})}
+          renderHiddenItem={renderHiddenItem || _renderHiddenItem}
+          renderItem={renderItem}
+          rightOpenValue={-100}
+          style={[globalTheme.flatList]}
+        />
+      )}
     </View>
   )
 }

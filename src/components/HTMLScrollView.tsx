@@ -25,7 +25,8 @@ export const HTMLScrollView = (props: Props) => {
         imagesMaxWidth={Dimensions.get('window').width}
         onLinkPress={(event: any, href: string) => Linking.openURL(href)}
         ptSize={PV.Fonts.sizes.lg}
-        tagsStyles={customHTMLTagStyles} />
+        tagsStyles={customHTMLTagStyles}
+      />
     </ScrollView>
   )
 }

@@ -5,7 +5,7 @@ import { NowPlayingItem } from './NowPlayingItem'
 export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
   try {
     const value = func()
-    return (value === null || value === undefined) ? fallbackValue : value
+    return value === null || value === undefined ? fallbackValue : value
   } catch (e) {
     return fallbackValue
   }
@@ -76,7 +76,7 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
 }
 
 export const removeHTMLFromString = (text: string) => {
-  const htmlEntitiesRegex = /(<([^>]+)>)|(\r?\n|\r)/ig
+  const htmlEntitiesRegex = /(<([^>]+)>)|(\r?\n|\r)/gi
   return text.replace(htmlEntitiesRegex, '')
 }
 
@@ -105,7 +105,9 @@ export const generateCategoriesText = (categories: any) => {
   if (categories) {
     for (let i = 0; i < categories.length; i++) {
       const category = categories[i]
-      categoryText += `${category.title}${i < categories.length - 1 ? ', ' : ''}`
+      categoryText += `${category.title}${
+        i < categories.length - 1 ? ', ' : ''
+      }`
     }
   }
 
@@ -127,12 +129,17 @@ export const generateCategoryItems = (categories: any[]) => {
   return items
 }
 
-export const combineAndSortPlaylistItems = (episodes: [any], mediaRefs: [any], itemsOrder: [string]) => {
+export const combineAndSortPlaylistItems = (
+  episodes: [any],
+  mediaRefs: [any],
+  itemsOrder: [string]
+) => {
   const allPlaylistItems = [...episodes, ...mediaRefs]
   const remainingPlaylistItems = [] as any[]
 
   const unsortedItems = allPlaylistItems.filter((x: any) => {
-    const isSortedItem = Array.isArray(itemsOrder) && itemsOrder.some((id) => x.id === id)
+    const isSortedItem =
+      Array.isArray(itemsOrder) && itemsOrder.some((id) => x.id === id)
     if (!isSortedItem) {
       return x
     } else {
@@ -150,10 +157,12 @@ export const combineAndSortPlaylistItems = (episodes: [any], mediaRefs: [any], i
   return [...sortedItems, ...unsortedItems]
 }
 
-export const haveNowPlayingItemsChanged = (lastItem: NowPlayingItem, nextItem: NowPlayingItem) => (
+export const haveNowPlayingItemsChanged = (
+  lastItem: NowPlayingItem,
+  nextItem: NowPlayingItem
+) =>
   (nextItem.clipId && nextItem.clipId !== lastItem.clipId) ||
   (nextItem.episodeId && nextItem.episodeId !== lastItem.episodeId)
-)
 
 export const getMembershipStatus = (user: any) => {
   const { freeTrialExpiration, membershipExpiration } = user
@@ -172,15 +181,32 @@ export const getMembershipStatus = (user: any) => {
   const weekBeforeCurrentDate = new Date()
   weekBeforeCurrentDate.setDate(weekBeforeCurrentDate.getDate() + 7)
 
-  if (!membershipExpirationDate && freeTrialExpirationDate && freeTrialExpirationDate > currentDate) {
+  if (
+    !membershipExpirationDate &&
+    freeTrialExpirationDate &&
+    freeTrialExpirationDate > currentDate
+  ) {
     return PV.MembershipStatus.FREE_TRIAL
-  } else if (!membershipExpirationDate && freeTrialExpirationDate && freeTrialExpirationDate <= currentDate) {
+  } else if (
+    !membershipExpirationDate &&
+    freeTrialExpirationDate &&
+    freeTrialExpirationDate <= currentDate
+  ) {
     return PV.MembershipStatus.FREE_TRIAL_EXPIRED
-  } else if (membershipExpirationDate && membershipExpirationDate <= currentDate) {
+  } else if (
+    membershipExpirationDate &&
+    membershipExpirationDate <= currentDate
+  ) {
     return PV.MembershipStatus.PREMIUM_EXPIRED
-  } else if (membershipExpirationDate && membershipExpirationDate <= weekBeforeCurrentDate) {
+  } else if (
+    membershipExpirationDate &&
+    membershipExpirationDate <= weekBeforeCurrentDate
+  ) {
     return PV.MembershipStatus.PREMIUM_EXPIRING_SOON
-  } else if (membershipExpirationDate && membershipExpirationDate > currentDate) {
+  } else if (
+    membershipExpirationDate &&
+    membershipExpirationDate > currentDate
+  ) {
     return PV.MembershipStatus.PREMIUM
   }
 
@@ -238,7 +264,11 @@ export const removeArticles = (str: string) => {
   return str
 }
 
-export const checkIfIdMatchesClipIdOrEpisodeId = (id?: string, clipId?: string, episodeId?: string) => {
+export const checkIfIdMatchesClipIdOrEpisodeId = (
+  id?: string,
+  clipId?: string,
+  episodeId?: string
+) => {
   return id === clipId || (!clipId && episodeId && id === episodeId)
 }
 

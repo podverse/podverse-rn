@@ -3,7 +3,11 @@ import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { request } from './request'
 
-export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: string, mediaRefId?: string) => {
+export const addOrRemovePlaylistItem = async (
+  playlistId: string,
+  episodeId?: string,
+  mediaRefId?: string
+) => {
   const bearerToken = await getBearerToken()
   const data = {
     playlistId,
@@ -14,7 +18,7 @@ export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: st
     endpoint: '/playlist/add-or-remove',
     method: 'PATCH',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
     body: data,
@@ -30,7 +34,7 @@ export const createPlaylist = async (data: any) => {
     endpoint: '/playlist',
     method: 'POST',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
     body: data,
@@ -76,13 +80,17 @@ export const getPlaylist = async (id: string) => {
 
 export const toggleSubscribeToPlaylist = async (playlistId: string) => {
   const isLoggedIn = await checkIfLoggedIn()
-  return isLoggedIn ? toggleSubscribeToPlaylistOnServer(playlistId) : toggleSubscribeToPlaylistLocally(playlistId)
+  return isLoggedIn
+    ? toggleSubscribeToPlaylistOnServer(playlistId)
+    : toggleSubscribeToPlaylistLocally(playlistId)
 }
 
 const toggleSubscribeToPlaylistLocally = async (id: string) => {
   let items = []
 
-  const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS)
+  const itemsString = await AsyncStorage.getItem(
+    PV.Keys.SUBSCRIBED_PLAYLIST_IDS
+  )
   if (itemsString) {
     items = JSON.parse(itemsString)
   }
@@ -94,7 +102,11 @@ const toggleSubscribeToPlaylistLocally = async (id: string) => {
     items.push(id)
   }
 
-  if (Array.isArray(items)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS, JSON.stringify(items))
+  if (Array.isArray(items))
+    await AsyncStorage.setItem(
+      PV.Keys.SUBSCRIBED_PLAYLIST_IDS,
+      JSON.stringify(items)
+    )
 
   return items
 }
@@ -115,7 +127,7 @@ export const updatePlaylist = async (data: any) => {
     endpoint: '/playlist',
     method: 'PATCH',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
     body: data,

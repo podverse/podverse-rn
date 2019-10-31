@@ -15,8 +15,16 @@ type Props = {
 }
 
 export const PVTextInput = (props: Props) => {
-  const { autoCapitalize, keyboardType, onChangeText, placeholder, secureTextEntry, style,
-    underlineColorAndroid, value } = props
+  const {
+    autoCapitalize,
+    keyboardType,
+    onChangeText,
+    placeholder,
+    secureTextEntry,
+    style,
+    underlineColorAndroid,
+    value
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
   return (
     <TextInput
@@ -28,6 +36,7 @@ export const PVTextInput = (props: Props) => {
       secureTextEntry={secureTextEntry}
       style={[globalTheme.textInput, core.textInput, style]}
       underlineColorAndroid={underlineColorAndroid}
-      value={value} />
+      value={value}
+    />
   )
 }

@@ -1,7 +1,17 @@
 import { Linking, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
-import { getMembershipExpiration, getMembershipStatus, readableDate } from '../lib/utility'
+import {
+  ActivityIndicator,
+  ComparisonTable,
+  Text,
+  TextLink,
+  View
+} from '../components'
+import {
+  getMembershipExpiration,
+  getMembershipStatus,
+  readableDate
+} from '../lib/utility'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { getMembershipTextStyle } from '../styles'
@@ -15,7 +25,6 @@ type State = {
 }
 
 export class MembershipScreen extends React.Component<Props, State> {
-
   static navigationOptions = {
     title: 'Membership'
   }
@@ -42,71 +51,74 @@ export class MembershipScreen extends React.Component<Props, State> {
     const { globalTheme, session } = this.global
     const { isLoggedIn, userInfo } = session
     const membershipStatus = getMembershipStatus(userInfo)
-    const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
+    const membershipTextStyle = getMembershipTextStyle(
+      globalTheme,
+      membershipStatus
+    )
     const expirationDate = getMembershipExpiration(userInfo)
 
     return (
       <View style={styles.wrapper}>
-        {
-          (isLoading && isLoggedIn) && <ActivityIndicator />
-        }
-        {
-          (!isLoading && isLoggedIn && !membershipStatus) &&
-            <View>
-              <View style={styles.textRow}>
-                <Text style={[styles.subText]}>
-                  Connect to the internet to view your membership status.
-                </Text>
-              </View>
+        {isLoading && isLoggedIn && <ActivityIndicator />}
+        {!isLoading && isLoggedIn && !membershipStatus && (
+          <View>
+            <View style={styles.textRow}>
+              <Text style={[styles.subText]}>
+                Connect to the internet to view your membership status.
+              </Text>
             </View>
-        }
-        {
-          (!isLoading && isLoggedIn && membershipStatus) &&
-            <View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Status: </Text>
-                <Text style={[styles.text, membershipTextStyle]}>{membershipStatus}</Text>
-              </View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Expires: </Text>
-                <Text style={[styles.text]}>{readableDate(expirationDate)}</Text>
-              </View>
-              {/* <View style={styles.textRow}>
+          </View>
+        )}
+        {!isLoading && isLoggedIn && membershipStatus && (
+          <View>
+            <View style={styles.textRow}>
+              <Text style={styles.label}>Status: </Text>
+              <Text style={[styles.text, membershipTextStyle]}>
+                {membershipStatus}
+              </Text>
+            </View>
+            <View style={styles.textRow}>
+              <Text style={styles.label}>Expires: </Text>
+              <Text style={[styles.text]}>{readableDate(expirationDate)}</Text>
+            </View>
+            {/* <View style={styles.textRow}>
                 <Text style={[styles.subText]}>
                   To renew your membership, go to podverse.fm, login, then visit your Settings page.
                 </Text>
               </View> */}
+          </View>
+        )}
+        {!isLoading && !isLoggedIn && (
+          <View>
+            <View style={styles.textRowCentered}>
+              <Text style={styles.subTextCentered}>
+                Podverse premium accounts are currently available by invite
+                only.
+              </Text>
             </View>
-        }
-        {
-          (!isLoading && !isLoggedIn) &&
-            <View>
-              <View style={styles.textRowCentered}>
-                <Text style={styles.subTextCentered}>
-                  Podverse premium accounts are currently available by invite only.
-                </Text>
-              </View>
-              <View style={styles.textRowCentered}>
-                <TextLink
-                  onPress={() => Linking.openURL(
+            <View style={styles.textRowCentered}>
+              <TextLink
+                onPress={() =>
+                  Linking.openURL(
                     'https://docs.google.com/forms/d/e/1FAIpQLSd0LJcAQ4zViL7lrl-yg192kHOQN49rvcLcf_RPTcPn-wjmgg/viewform?usp=sf_link'
-                  )}
-                  style={[styles.subText]}>
-                  Request Invite
-                </TextLink>
-              </View>
+                  )
+                }
+                style={[styles.subText]}>
+                Request Invite
+              </TextLink>
             </View>
-        }
-        {
-          !isLoading &&
-            <View style={styles.tableWrapper}>
-              <ComparisonTable
-                column1Title='Free'
-                column2Title='Premium'
-                data={comparisonData}
-                mainTitle='Features' />
-            </View>
-          }
+          </View>
+        )}
+        {!isLoading && (
+          <View style={styles.tableWrapper}>
+            <ComparisonTable
+              column1Title="Free"
+              column2Title="Premium"
+              data={comparisonData}
+              mainTitle="Features"
+            />
+          </View>
+        )}
       </View>
     )
   }

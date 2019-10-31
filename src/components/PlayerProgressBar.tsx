@@ -23,8 +23,10 @@ type State = {
 
 let lastPropsValue = ''
 
-export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, State> {
-
+export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<
+  Props,
+  State
+> {
   static getDerivedStateFromProps(nextProps: any, prevState: any) {
     const { value } = nextProps
     const { position } = prevState
@@ -65,20 +67,30 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
     }
 
     if (clipEndTime && duration > 0) {
-      const leftPosition = (screenWidth * (clipEndTime / duration))
+      const leftPosition = screenWidth * (clipEndTime / duration)
       clipEndTimePosition.left = leftPosition
     }
 
     return (
       <View style={styles.wrapper}>
-        {
-          (duration > 0 && (clipStartTime || clipStartTime === 0)) &&
-            <View style={[styles.clipStartTimeFlag, globalTheme.playerClipTimeFlag, clipStartTimePosition]} />
-        }
-        {
-          (duration > 0 && clipEndTime) &&
-            <View style={[styles.clipEndTimeFlag, globalTheme.playerClipTimeFlag, clipEndTimePosition]} />
-        }
+        {duration > 0 && (clipStartTime || clipStartTime === 0) && (
+          <View
+            style={[
+              styles.clipStartTimeFlag,
+              globalTheme.playerClipTimeFlag,
+              clipStartTimePosition
+            ]}
+          />
+        )}
+        {duration > 0 && clipEndTime && (
+          <View
+            style={[
+              styles.clipEndTimeFlag,
+              globalTheme.playerClipTimeFlag,
+              clipEndTimePosition
+            ]}
+          />
+        )}
         <Slider
           minimumValue={0}
           maximumValue={isLoading ? 0 : 1}
@@ -90,24 +102,29 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
               slidingPosition: null
             })
           }}
-          onValueChange={(value) => this.setState({ slidingPosition: value * duration })}
+          onValueChange={(value) =>
+            this.setState({ slidingPosition: value * duration })
+          }
           thumbStyle={styles.thumbStyle}
           thumbTintColor={PV.Colors.brandColor}
-          value={isLoading ? 0 : value} />
-        {
-          !isLoading &&
-            <View style={styles.timeRow}>
-              <Text style={styles.time}>{convertSecToHHMMSS(slidingPosition || position)}</Text>
-              <Text style={styles.time}>{duration > 0 ? convertSecToHHMMSS(duration) : '--:--'}</Text>
-            </View>
-        }
-        {
-          isLoading &&
-            <View style={styles.timeRow}>
-              <Text style={styles.time}>{'--:--'}</Text>
-              <Text style={styles.time}>{'--:--'}</Text>
-            </View>
-        }
+          value={isLoading ? 0 : value}
+        />
+        {!isLoading && (
+          <View style={styles.timeRow}>
+            <Text style={styles.time}>
+              {convertSecToHHMMSS(slidingPosition || position)}
+            </Text>
+            <Text style={styles.time}>
+              {duration > 0 ? convertSecToHHMMSS(duration) : '--:--'}
+            </Text>
+          </View>
+        )}
+        {isLoading && (
+          <View style={styles.timeRow}>
+            <Text style={styles.time}>{'--:--'}</Text>
+            <Text style={styles.time}>{'--:--'}</Text>
+          </View>
+        )}
       </View>
     )
   }

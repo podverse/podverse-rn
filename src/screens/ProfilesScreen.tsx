@@ -1,11 +1,21 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, Divider, FlatList, MessageWithAction, ProfileTableCell, SwipeRowBack,
-  View } from '../components'
+import {
+  ActivityIndicator,
+  Divider,
+  FlatList,
+  MessageWithAction,
+  ProfileTableCell,
+  SwipeRowBack,
+  View
+} from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
-import { getPublicUsersByQuery, toggleSubscribeToUser } from '../state/actions/user'
+import {
+  getPublicUsersByQuery,
+  toggleSubscribeToUser
+} from '../state/actions/user'
 
 type Props = {
   navigation?: any
@@ -20,7 +30,6 @@ type State = {
 }
 
 export class ProfilesScreen extends React.Component<Props, State> {
-
   static navigationOptions = {
     title: 'Profiles'
   }
@@ -56,13 +65,16 @@ export class ProfilesScreen extends React.Component<Props, State> {
     const { endOfResultsReached, isLoadingMore, queryPage = 1 } = this.state
     if (!endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
-        this.setState({
-          isLoadingMore: true
-        }, async () => {
-          const nextPage = queryPage + 1
-          const newState = await this._queryData(nextPage)
-          this.setState(newState)
-        })
+        this.setState(
+          {
+            isLoadingMore: true
+          },
+          async () => {
+            const nextPage = queryPage + 1
+            const newState = await this._queryData(nextPage)
+            this.setState(newState)
+          }
+        )
       }
     }
   }
@@ -75,12 +87,13 @@ export class ProfilesScreen extends React.Component<Props, State> {
     return (
       <ProfileTableCell
         name={item.name}
-        onPress={() => this.props.navigation.navigate(
-          PV.RouteNames.ProfileScreen, {
+        onPress={() =>
+          this.props.navigation.navigate(PV.RouteNames.ProfileScreen, {
             user: item,
             navigationTitle: 'Profile'
-          }
-        )} />
+          })
+        }
+      />
     )
   }
 
@@ -88,11 +101,14 @@ export class ProfilesScreen extends React.Component<Props, State> {
     <SwipeRowBack
       isLoading={this.state.isUnsubscribing}
       onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      text='Remove' />
+      text="Remove"
+    />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
-    const wasAlerted = await alertIfNoNetworkConnection('unsubscribe from this profile')
+    const wasAlerted = await alertIfNoNetworkConnection(
+      'unsubscribe from this profile'
+    )
     if (wasAlerted) return
 
     this.setState({ isUnsubscribing: true }, async () => {
@@ -116,29 +132,26 @@ export class ProfilesScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view}>
         <View style={styles.view}>
-          {
-            isLoading &&
-              <ActivityIndicator />
-          }
-          {
-            !isLoading && flatListData && flatListData.length > 0 &&
-              <FlatList
-                data={flatListData}
-                dataTotalCount={flatListDataTotalCount}
-                disableLeftSwipe={false}
-                extraData={flatListData}
-                isLoadingMore={isLoadingMore}
-                ItemSeparatorComponent={this._ItemSeparatorComponent}
-                onEndReached={this._onEndReached}
-                renderHiddenItem={this._renderHiddenItem}
-                renderItem={this._renderProfileItem} />
-          }
-          {
-            !isLoading && flatListData && flatListData.length === 0 &&
-              <MessageWithAction
-                message='You have no subscribed profiles'
-                subMessage='(Ask a friend to send you a link to their profile, then subscribe to it)' />
-          }
+          {isLoading && <ActivityIndicator />}
+          {!isLoading && flatListData && flatListData.length > 0 && (
+            <FlatList
+              data={flatListData}
+              dataTotalCount={flatListDataTotalCount}
+              disableLeftSwipe={false}
+              extraData={flatListData}
+              isLoadingMore={isLoadingMore}
+              ItemSeparatorComponent={this._ItemSeparatorComponent}
+              onEndReached={this._onEndReached}
+              renderHiddenItem={this._renderHiddenItem}
+              renderItem={this._renderProfileItem}
+            />
+          )}
+          {!isLoading && flatListData && flatListData.length === 0 && (
+            <MessageWithAction
+              message="You have no subscribed profiles"
+              subMessage="(Ask a friend to send you a link to their profile, then subscribe to it)"
+            />
+          )}
         </View>
       </View>
     )

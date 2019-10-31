@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from './PV'
 
 const _speedOneHalfKey = 0.5

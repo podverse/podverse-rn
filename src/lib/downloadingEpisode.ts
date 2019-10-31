@@ -7,14 +7,19 @@ type DownloadingEpisode = {
   title?: string
 }
 
-const filterDownloadingEpisodeById = (episodes: DownloadingEpisode[], episodeId: string) => episodes.filter((x) =>
-  x.id !== episodeId
-)
+const filterDownloadingEpisodeById = (
+  episodes: DownloadingEpisode[],
+  episodeId: string
+) => episodes.filter((x) => x.id !== episodeId)
 
 export const addDownloadingEpisode = async (episode: any) => {
   const episodes = await getDownloadingEpisodes()
 
-  if (episode && episode.id && !episodes.some((x: any) => x.id === episode.id)) {
+  if (
+    episode &&
+    episode.id &&
+    !episodes.some((x: any) => x.id === episode.id)
+  ) {
     episodes.push(episode)
     await setDownloadingEpisodes(episodes)
   }
@@ -35,6 +40,12 @@ export const removeDownloadingEpisode = async (episodeId: string) => {
   return setDownloadingEpisodes(filteredEpisodes)
 }
 
-const setDownloadingEpisodes = async (downloadingEpisodes: DownloadingEpisode[]) => {
-  if (Array.isArray(downloadingEpisodes)) await AsyncStorage.setItem(PV.Keys.DOWNLOADING_EPISODES, JSON.stringify(downloadingEpisodes))
+const setDownloadingEpisodes = async (
+  downloadingEpisodes: DownloadingEpisode[]
+) => {
+  if (Array.isArray(downloadingEpisodes))
+    await AsyncStorage.setItem(
+      PV.Keys.DOWNLOADING_EPISODES,
+      JSON.stringify(downloadingEpisodes)
+    )
 }
