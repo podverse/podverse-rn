@@ -29,6 +29,7 @@ type Props = {
   renderHiddenItem?: any
   renderItem: any
   resultsText?: string
+  setListViewRef?: any
   showRequestPodcast?: boolean
 }
 
@@ -57,6 +58,7 @@ export const PVFlatList = (props: Props) => {
     renderHiddenItem,
     renderItem,
     resultsText = 'results',
+    setListViewRef,
     showRequestPodcast
   } = props
 
@@ -89,8 +91,8 @@ export const PVFlatList = (props: Props) => {
       {noSubscribedPodcasts && !isLoadingMore && (
         <MessageWithAction
           actionHandler={handleSearchNavigation}
-          actionText="Search"
-          message="You have no subscribed podcasts"
+          actionText='Search'
+          message='You have no subscribed podcasts'
         />
       )}
       {noResultsFound && !noSubscribedPodcasts && !isLoadingMore && (
@@ -133,17 +135,18 @@ export const PVFlatList = (props: Props) => {
             }
             return null
           }}
+          {...(setListViewRef ? { listViewRef: (ref) => setListViewRef(ref) } : {})}
           onEndReached={onEndReached}
           onEndReachedThreshold={onEndReachedThreshold}
           {...(onRefresh
             ? {
-                refreshControl: (
-                  <RefreshControl
-                    refreshing={isRefreshing}
-                    onRefresh={onRefresh}
-                  />
-                )
-              }
+              refreshControl: (
+                <RefreshControl
+                  refreshing={isRefreshing}
+                  onRefresh={onRefresh}
+                />
+              )
+            }
             : {})}
           renderHiddenItem={renderHiddenItem || _renderHiddenItem}
           renderItem={renderItem}

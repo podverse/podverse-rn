@@ -65,8 +65,8 @@ export class QueueScreen extends React.Component<Props, State> {
     ),
     headerLeft: (
       <Icon
-        color="#fff"
-        name="chevron-down"
+        color='#fff'
+        name='chevron-down'
         onPress={navigation.dismiss}
         size={PV.Icons.NAV}
         style={navHeader.buttonIcon}

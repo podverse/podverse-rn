@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Divider,
   FlatList,
+  HeaderScrollToTop,
   PlayerEvents,
   PodcastTableCell,
   SearchBar,
@@ -75,9 +76,16 @@ type State = {
 let isInitialLoad = true
 
 export class PodcastsScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    title: 'Podcasts'
-  }
+
+  static navigationOptions = ({ navigation }) => ({
+    headerTitle: (
+      <HeaderScrollToTop
+        getScrollToTopRef={navigation.getParam('_getScrollToTopRef')}
+        title='Podcasts' />
+    )
+  })
+
+  _listViewRef: any
 
   constructor(props: Props) {
     super(props)
@@ -108,6 +116,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    const { navigation } = this.props
     if (Platform.OS === 'android') {
       Linking.getInitialURL().then((url) => {
         if (url) this._handleOpenURL(url)
@@ -117,6 +126,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
 
     AppState.addEventListener('change', this._handleAppStateChange)
+
+    navigation.setParams({ _getScrollToTopRef: this._getScrollToTopRef })
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(
@@ -540,6 +551,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this._initializeScreenData()
   }
 
+  _getScrollToTopRef = () => {
+    const scrollRef = this._scrollToTopRef && this._scrollToTopRef._listRef && this._scrollToTopRef._listRef._scrollRef
+    return scrollRef || null
+  }
+
+  _setScrollToTopRef = (ref: any) => {
+    this._scrollToTopRef = ref || null
+  }
+
   render() {
     const {
       categoryItems,
@@ -624,7 +644,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
             onRefresh={queryFrom === _subscribedKey ? this._onRefresh : null}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderPodcastItem}
-            resultsText="podcasts"
+            resultsText='podcasts'
+            setListViewRef={(ref: any) => this._setScrollToTopRef(ref)}
           />
         )}
         <Dialog.Container visible={showDataSettingsConfirmDialog}>
@@ -633,11 +654,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
             Do you want to allow downloading episodes with your data plan?
           </Dialog.Description>
           <Dialog.Button
-            label="No, Wifi Only"
+            label='No, Wifi Only'
             onPress={this._handleDataSettingsWifiOnly}
           />
           <Dialog.Button
-            label="Yes, Allow Data"
+            label='Yes, Allow Data'
             onPress={this._handleDataSettingsAllowData}
           />
         </Dialog.Container>

@@ -3,7 +3,6 @@ import { StyleSheet, Text, View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { PV } from '../resources'
-import { hidePickerIconOnAndroid } from '../styles'
 
 type Props = {
   items: any[]
@@ -22,8 +21,8 @@ export const HeaderTitleSelector = (props: Props) => {
         {selectedItem.label || (placeholder && placeholder.label)}
       </Text>
       <Icon
-        color="#fff"
-        name="angle-down"
+        color='#fff'
+        name='angle-down'
         size={16}
         style={styles.closeButton}
       />
@@ -37,7 +36,6 @@ export const HeaderTitleSelector = (props: Props) => {
           items={items}
           onValueChange={onValueChange}
           placeholder={placeholder}
-          style={hidePickerIconOnAndroid}
           useNativeAndroidPickerStyle={false}
           value={selectedItemKey}>
           {textNode}
