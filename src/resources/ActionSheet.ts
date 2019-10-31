@@ -52,25 +52,30 @@ const mediaMoreButtons = (
           const shouldPlay = true
           await loadItemAndPlayTrack(item, shouldPlay)
         }
-      },
-      {
-        key: 'download',
-        text: downloadingText,
-        isDownloading,
-        onPress: async () => {
-          const showAlert = await hasTriedAlert(handleDismiss, navigation, true)
-          if (showAlert) return
-
-          if (isDownloading) {
-            await handleDismiss()
-            navigation.navigate(PV.RouteNames.DownloadsScreen)
-          } else {
-            await handleDismiss()
-            handleDownload()
-          }
-        }
       }
     )
+
+    if (handleDownload) {
+      buttons.push(
+        {
+          key: 'download',
+          text: downloadingText,
+          isDownloading,
+          onPress: async () => {
+            const showAlert = await hasTriedAlert(handleDismiss, navigation, true)
+            if (showAlert) return
+
+            if (isDownloading) {
+              await handleDismiss()
+              navigation.navigate(PV.RouteNames.DownloadsScreen)
+            } else {
+              await handleDismiss()
+              handleDownload()
+            }
+          }
+        }
+      )
+    }
   }
 
   buttons.push(
