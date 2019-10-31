@@ -119,7 +119,7 @@ const addOrUpdateHistoryItemOnServer = async (
     endpoint: '/user/add-or-update-history-item',
     method: 'PATCH',
     headers: {
-      Authorization: bearerToken,
+      'Authorization': bearerToken,
       'Content-Type': 'application/json'
     },
     body: { historyItem: nowPlayingItem },
@@ -173,7 +173,7 @@ const clearHistoryItemsOnServer = async () => {
     endpoint: '/user/history-item/clear-all',
     method: 'DELETE',
     headers: {
-      Authorization: bearerToken,
+      'Authorization': bearerToken,
       'Content-Type': 'application/json'
     },
     opts: { credentials: 'include' }
@@ -183,7 +183,7 @@ const clearHistoryItemsOnServer = async () => {
 }
 
 export const filterItemFromHistoryItems = (
-  items: NowPlayingItem[],
+  items: NowPlayingItem[] = [],
   item: NowPlayingItem
 ) =>
   items.filter((x) => {

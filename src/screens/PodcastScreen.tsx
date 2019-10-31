@@ -513,7 +513,7 @@ export class PodcastScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const { globalTheme } = this.global
-    const isDarkMode = globalTheme === darkTheme
+
     const {
       downloadedEpisodeLimit,
       isLoading,
