@@ -725,7 +725,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         rightItems(
           viewType === downloadedKey,
           viewType === allEpisodesKey
-        ).some((option) => option.value === filterKey)
+        ).some(option => option.value === filterKey)
       ) {
         let results = []
 

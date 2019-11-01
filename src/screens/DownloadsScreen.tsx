@@ -59,10 +59,13 @@ export class DownloadsScreen extends React.Component<Props, State> {
 
   _handleCancelPress = () => {
     return new Promise((resolve, reject) => {
-      this.setState({
-        selectedItem: null,
-        showActionSheet: false
-      }, resolve)
+      this.setState(
+        {
+          selectedItem: null,
+          showActionSheet: false
+        },
+        resolve
+      )
     })
   }
 
@@ -85,7 +88,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
   _renderHiddenItem = ({ item }, rowMap) => (
     <SwipeRowBack
       onPress={() => this._handleHiddenItemPress(item.episodeId, rowMap)}
-      text='Remove'
+      text="Remove"
     />
   )
 
@@ -104,7 +107,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         {!downloadsArray ||
           (downloadsArray.length === 0 && (
-            <MessageWithAction message='No downloads in progress' />
+            <MessageWithAction message="No downloads in progress" />
           ))}
         {downloadsArray.length > 0 && (
           <FlatList
@@ -118,21 +121,20 @@ export class DownloadsScreen extends React.Component<Props, State> {
             renderItem={this._renderItem}
           />
         )}
-        {
-          selectedItem &&
-            <ActionSheet
-              handleCancelPress={this._handleCancelPress}
-              items={() =>
-                PV.ActionSheet.media.moreButtons(
-                  selectedItem,
-                  navigation,
-                  this._handleCancelPress,
-                  null
-                )
-              }
-              showModal={showActionSheet}
-            />
-        }
+        {selectedItem && (
+          <ActionSheet
+            handleCancelPress={this._handleCancelPress}
+            items={() =>
+              PV.ActionSheet.media.moreButtons(
+                selectedItem,
+                navigation,
+                this._handleCancelPress,
+                null
+              )
+            }
+            showModal={showActionSheet}
+          />
+        )}
       </View>
     )
   }

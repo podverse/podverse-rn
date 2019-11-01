@@ -34,9 +34,9 @@ export const TableSectionSelectors = (props: Props) => {
   } = props
 
   const selectedLeftItem =
-    leftItems.find((x) => x.value === selectedLeftItemKey) || {}
+    leftItems.find(x => x.value === selectedLeftItemKey) || {}
   const selectedRightItem =
-    rightItems.find((x) => x.value === selectedRightItemKey) || {}
+    rightItems.find(x => x.value === selectedRightItemKey) || {}
 
   return (
     <View>

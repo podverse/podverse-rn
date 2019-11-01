@@ -105,7 +105,7 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   _toggleDownloadingWifiOnly = (value: boolean) => {
-    NetInfo.fetch().then((state) => {
+    NetInfo.fetch().then(state => {
       if (!value && state.type === 'cellular') {
         refreshDownloads()
       }

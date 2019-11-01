@@ -46,7 +46,7 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
           </Text>
           <View style={styles.separator} />
           <Text style={styles.sectionTitle}>Third Party Libraries</Text>
-          {Object.keys(packageJson.dependencies).map((license) => {
+          {Object.keys(packageJson.dependencies).map(license => {
             return (
               <Text key={license} style={styles.text}>
                 {license}
