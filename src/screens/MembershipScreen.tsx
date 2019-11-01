@@ -60,7 +60,10 @@ export class MembershipScreen extends React.Component<Props, State> {
     return (
       <View style={styles.wrapper}>
         {isLoading && isLoggedIn && <ActivityIndicator />}
-        {!isLoading && isLoggedIn && !membershipStatus && (
+        {/*       // start: temporarily disable login
+                          also not sure how this condition even works
+         */}
+        {/* {!isLoading && isLoggedIn && !membershipStatus && (
           <View>
             <View style={styles.textRow}>
               <Text style={[styles.subText]}>
@@ -68,7 +71,7 @@ export class MembershipScreen extends React.Component<Props, State> {
               </Text>
             </View>
           </View>
-        )}
+        )} */}
         {!isLoading && isLoggedIn && membershipStatus && (
           <View>
             <View style={styles.textRow}>
@@ -222,6 +225,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    paddingTop: 8
+    // start: temporarily disable login
+    // paddingTop: 8
   }
 })
