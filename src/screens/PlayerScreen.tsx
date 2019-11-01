@@ -93,11 +93,12 @@ export class PlayerScreen extends React.Component<Props, State> {
             getInitialProgressValue={_getInitialProgressValue}
             navigation={navigation}
           />
-          <NavAddToPlaylistIcon
+          {/* start: disable login */}
+          {/* <NavAddToPlaylistIcon
             getEpisodeId={_getEpisodeId}
             getMediaRefId={_getMediaRefId}
             navigation={navigation}
-          />
+          /> */}
           <NavShareIcon handlePress={_showShareActionSheet} />
           <NavQueueIcon navigation={navigation} />
         </RNView>
