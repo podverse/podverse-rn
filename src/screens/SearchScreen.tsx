@@ -221,9 +221,10 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   _navToRequestPodcastForm = async () => {
-    Linking.openURL(
-      'https://docs.google.com/forms/d/e/1FAIpQLSdewKP-YrE8zGjDPrkmoJEwCxPl_gizEkmzAlTYsiWAuAk1Ng/viewform?usp=sf_link'
-    )
+    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
+      { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.requestPodcast) },
+      { text: 'Cancel' }
+    ])
   }
 
   render() {
