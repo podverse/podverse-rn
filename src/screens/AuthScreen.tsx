@@ -233,7 +233,7 @@ export class AuthScreen extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   banner: {
-    marginBottom: 60,
+    marginBottom: 40,
     width: '80%'
   },
   closeButton: {
