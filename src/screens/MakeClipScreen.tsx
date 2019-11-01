@@ -74,14 +74,17 @@ export class MakeClipScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     const { nowPlayingItem = {} } = this.global.player
+    const { isLoggedIn } = this.global.session
     const isEditing = this.props.navigation.getParam('isEditing')
     const initialProgressValue = this.props.navigation.getParam(
       'initialProgressValue'
     )
 
+    const pItems = privacyItems(isLoggedIn)
+    const selectedItem = nowPlayingItem.isPublic ? pItems[0] : pItems[1]
     this.state = {
       endTime: isEditing ? nowPlayingItem.clipEndTime : null,
-      isPublicItemSelected: placeholderItem,
+      isPublicItemSelected: selectedItem,
       isSaving: false,
       progressValue: initialProgressValue || 0,
       startTime: isEditing ? nowPlayingItem.clipStartTime : null
@@ -90,8 +93,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
-    const { player } = this.global
+    const { player, session } = this.global
     const { nowPlayingItem } = player
+    const { isLoggedIn } = session
     navigation.setParams({ _saveMediaRef: this._saveMediaRef })
     const currentPosition = await PVTrackPlayer.getPosition()
     const isEditing = this.props.navigation.getParam('isEditing')
@@ -118,6 +122,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
       isPublic = JSON.parse(isPublicString)
     }
 
+    const pItems = privacyItems(isLoggedIn)
+
     this.setGlobal(
       {
         player: {
@@ -131,9 +137,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
             ? { showHowToModal: true }
             : { showHowToModal: false }),
           ...(!isEditing ? { startTime: Math.floor(currentPosition) } : {}),
-          ...(isPublic || isPublic === null
-            ? { isPublicItemSelected: privacyItems[0] }
-            : { isPublicItemSelected: privacyItems[1] }),
+          ...(isPublic
+            ? { isPublicItemSelected: pItems[0] }
+            : { isPublicItemSelected: pItems[1] }),
           title: isEditing ? nowPlayingItem.clipTitle : ''
         })
       }
@@ -342,20 +348,22 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   _showClipPrivacyNote = async () => {
-    Alert.alert(
-      'Clip Settings',
-      "Only with Link means only people who have your clip's" +
-        'link can play it. These clips will not show up automatically in lists on Podverse.' +
-        'A premium account is required to create Public clips.',
-      [
-        {
-          text: 'Premium Info',
-          onPress: () =>
-            this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
-        },
-        { text: 'Ok' }
-      ]
-    )
+    // start: temporarily disable login
+    return
+    // Alert.alert(
+    //   'Clip Settings',
+    //   "Only with Link means only people who have your clip's" +
+    //     'link can play it. These clips will not show up automatically in lists on Podverse.' +
+    //     'A premium account is required to create Public clips.',
+    //   [
+    //     {
+    //       text: 'Premium Info',
+    //       onPress: () =>
+    //         this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
+    //     },
+    //     { text: 'Ok' }
+    //   ]
+    // )
   }
 
   render() {
@@ -567,16 +575,21 @@ const placeholderItem = {
   value: null
 }
 
-const privacyItems = [
-  {
-    label: 'Public',
-    value: _publicKey
-  },
-  {
+const privacyItems = (isLoggedIn?: boolean) => {
+  const items = [{
     label: 'Only with link',
     value: _onlyWithLinkKey
+  }]
+
+  if (isLoggedIn) {
+    items.unshift({
+      label: 'Public',
+      value: _publicKey
+    })
   }
-]
+
+  return items
+}
 
 const styles = StyleSheet.create({
   activityIndicator: {
