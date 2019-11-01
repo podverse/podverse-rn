@@ -66,18 +66,6 @@ export class MembershipScreen extends React.Component<Props, State> {
     return (
       <View style={styles.wrapper}>
         {isLoading && isLoggedIn && <ActivityIndicator />}
-        {/*       // start: temporarily disable login
-                          also not sure how this condition even works
-         */}
-        {/* {!isLoading && isLoggedIn && !membershipStatus && (
-          <View>
-            <View style={styles.textRow}>
-              <Text style={[styles.subText]}>
-                Connect to the internet to view your membership status.
-              </Text>
-            </View>
-          </View>
-        )} */}
         {!isLoading && isLoggedIn && membershipStatus && (
           <View>
             <View style={styles.textRow}>
@@ -128,20 +116,20 @@ export class MembershipScreen extends React.Component<Props, State> {
         {!isLoading && (
           <View style={styles.tableWrapper}>
             <ComparisonTable
-              column1Title="Free"
-              column2Title="Premium"
+              column1Title='Free'
+              column2Title='Premium'
               data={comparisonData}
-              mainTitle="Features"
+              mainTitle='Features'
             />
           </View>
         )}
         {!isLoading && (
           <View style={styles.tableWrapper}>
             <ComparisonTable
-              column1Title="Free"
-              column2Title="Premium"
+              column1Title='Free'
+              column2Title='Premium'
               data={comparisonData}
-              mainTitle="Features"
+              mainTitle='Features'
             />
           </View>
         )}
@@ -247,8 +235,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   wrapper: {
-    flex: 1
-    // start: temporarily disable login
-    // paddingTop: 8
+    flex: 1,
+    paddingTop: 8
   }
 })

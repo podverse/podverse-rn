@@ -33,8 +33,7 @@ export class MoreScreen extends React.Component<Props, State> {
   _onPress = (item: any) => {
     const { navigation } = this.props
     if (item.key === _membershipKey) {
-      // start: temporarily disable login
-      // navigation.navigate(PV.RouteNames.MembershipScreen)
+      navigation.navigate(PV.RouteNames.MembershipScreen)
     } else if (item.key === _aboutKey) {
       navigation.navigate(PV.RouteNames.AboutScreen)
     } else if (item.key === _contactKey) {
@@ -45,19 +44,16 @@ export class MoreScreen extends React.Component<Props, State> {
     } else if (item.key === _termsKey) {
       navigation.navigate(PV.RouteNames.TermsOfServiceScreen)
     } else if (item.key === _logoutKey) {
-      // start: temporarily disable login
-      // logoutUser()
+      logoutUser()
     } else if (item.key === _loginKey) {
-      // start: temporarily disable login
-      // navigation.navigate(PV.RouteNames.AuthNavigator)
+      navigation.navigate(PV.RouteNames.AuthNavigator)
     } else if (item.key === PV.RouteNames.MyProfileScreen) {
-      // start: temporarily disable login
-      // const user = this.global.session.userInfo
-      // navigation.navigate(PV.RouteNames.ProfileScreen, {
-      //   user,
-      //   navigationTitle: 'My Profile',
-      //   isMyProfile: true
-      // })
+      const user = this.global.session.userInfo
+      navigation.navigate(PV.RouteNames.ProfileScreen, {
+        user,
+        navigationTitle: 'My Profile',
+        isMyProfile: true
+      })
     } else {
       navigation.navigate(item.key)
     }
@@ -95,8 +91,7 @@ export class MoreScreen extends React.Component<Props, State> {
           renderItem={({ item }) => (
             <TouchableWithoutFeedback onPress={() => this._onPress(item)}>
               <RNView style={core.row}>
-                {/* // start: temporarily disable login */}
-                {/* {item.key === _membershipKey && (
+                {item.key === _membershipKey && (
                   <RNView style={core.row}>
                     {isLoggedIn ? (
                       <Text style={[table.cellText, membershipTextStyle]}>
@@ -112,7 +107,7 @@ export class MoreScreen extends React.Component<Props, State> {
                       </Text>
                     )}
                   </RNView>
-                )} */}
+                )}
                 {item.key === PV.RouteNames.DownloadsScreen && (
                   <RNView style={[core.row, { position: 'relative' }]}>
                     <Text style={table.cellText}>Downloads</Text>
@@ -123,7 +118,7 @@ export class MoreScreen extends React.Component<Props, State> {
                           right: -22,
                           top: 19
                         }}
-                        status="error"
+                        status='error'
                         value={downloadsActiveCount}
                       />
                     )}
@@ -168,32 +163,30 @@ const moreFeaturesOptions = () => {
       title: 'Downloads',
       key: PV.RouteNames.DownloadsScreen
     },
-    // start: temporarily disable login
-    // {
-    //   title: 'Playlists',
-    //   key: PV.RouteNames.PlaylistsScreen
-    // },
-    // {
-    //   title: 'Profiles',
-    //   key: PV.RouteNames.ProfilesScreen
-    // },
-    // {
-    //   title: 'My Profile',
-    //   key: PV.RouteNames.MyProfileScreen
-    // },
+    {
+      title: 'Playlists',
+      key: PV.RouteNames.PlaylistsScreen
+    },
+    {
+      title: 'Profiles',
+      key: PV.RouteNames.ProfilesScreen
+    },
+    {
+      title: 'My Profile',
+      key: PV.RouteNames.MyProfileScreen
+    },
     {
       title: 'Settings',
       key: PV.RouteNames.SettingsScreen
+    },
+    {
+      title: 'Log out',
+      key: _logoutKey
+    },
+    {
+      title: 'Log In',
+      key: _loginKey
     }
-    // start: temporarily disable login
-    // {
-    //   title: 'Log out',
-    //   key: _logoutKey
-    // },
-    // {
-    //   title: 'Log In',
-    //   key: _loginKey
-    // }
   ]
 
   return items

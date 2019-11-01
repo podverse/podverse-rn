@@ -10,8 +10,6 @@ import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
 import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
-// start: temporarily disable login
-import { logoutUser } from './src/state/actions/auth'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 
@@ -41,9 +39,6 @@ class App extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    // start: temporarily disable login
-    await logoutUser()
-
     TrackPlayer.registerPlaybackService(() => require('./src/services/playerEvents'))
     const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
     this.setupGlobalState(darkModeEnabled === 'TRUE' || darkModeEnabled === null ? darkTheme : lightTheme)

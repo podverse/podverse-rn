@@ -1,6 +1,5 @@
 import {
   Alert,
-  AppState,
   Linking,
   StyleSheet,
   View as RNView
@@ -47,17 +46,9 @@ import {
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
-import {
-  getNowPlayingItem,
-  getNowPlayingItemFromQueueOrHistoryByTrackId,
-  PVTrackPlayer
-} from '../services/player'
-import PlayerEventEmitter from '../services/playerEventEmitter'
+import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
 import { addQueueItemNext } from '../services/queue'
-import {
-  loadItemAndPlayTrack,
-  updatePlayerState
-} from '../state/actions/player'
+import { loadItemAndPlayTrack } from '../state/actions/player'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core, navHeader } from '../styles'
 
@@ -80,8 +71,8 @@ export class PlayerScreen extends React.Component<Props, State> {
       title: '',
       headerLeft: (
         <Icon
-          color="#fff"
-          name="chevron-down"
+          color='#fff'
+          name='chevron-down'
           onPress={navigation.dismiss}
           size={PV.Icons.NAV}
           style={navHeader.buttonIcon}
@@ -93,12 +84,11 @@ export class PlayerScreen extends React.Component<Props, State> {
             getInitialProgressValue={_getInitialProgressValue}
             navigation={navigation}
           />
-          {/* start: disable login */}
-          {/* <NavAddToPlaylistIcon
+          <NavAddToPlaylistIcon
             getEpisodeId={_getEpisodeId}
             getMediaRefId={_getMediaRefId}
             navigation={navigation}
-          /> */}
+          />
           <NavShareIcon handlePress={_showShareActionSheet} />
           <NavQueueIcon navigation={navigation} />
         </RNView>
@@ -596,7 +586,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                 />
               )}
               {viewType === PV.Keys.VIEW_TYPE_EPISODES && (
-                <TableSectionHeader title="From this podcast" />
+                <TableSectionHeader title='From this podcast' />
               )}
               {isLoading && <ActivityIndicator />}
               {!isLoading &&
@@ -651,9 +641,9 @@ export class PlayerScreen extends React.Component<Props, State> {
               mediaRefId,
               this._handleShare
             )}
-            message="What link do you want to share?"
+            message='What link do you want to share?'
             showModal={showShareActionSheet}
-            title="Share"
+            title='Share'
           />
           <ActionSheet
             handleCancelPress={this._dismissHeaderActionSheet}
