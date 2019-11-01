@@ -86,13 +86,6 @@ export class MembershipScreen extends React.Component<Props, State> {
           </View>
         )}
         {!isLoading && !isLoggedIn && (
-          <View style={styles.textRowCentered}>
-            <Text style={styles.subTextCentered}>
-              Podverse premium accounts are currently available by invite only.
-            </Text>
-          </View>
-        )}
-        {!isLoading && !isLoggedIn && (
           <View>
             <View style={styles.textRowCentered}>
               <Text style={styles.subTextCentered}>
@@ -101,7 +94,7 @@ export class MembershipScreen extends React.Component<Props, State> {
             </View>
             <View style={styles.textRowCentered}>
               <Text style={styles.subTextCentered}>
-                $10 per year after that
+                $10/year after that
               </Text>
             </View>
             <View style={styles.textRowCentered}>
@@ -111,16 +104,6 @@ export class MembershipScreen extends React.Component<Props, State> {
                 Sign Up
               </TextLink>
             </View>
-          </View>
-        )}
-        {!isLoading && (
-          <View style={styles.tableWrapper}>
-            <ComparisonTable
-              column1Title='Free'
-              column2Title='Premium'
-              data={comparisonData}
-              mainTitle='Features'
-            />
           </View>
         )}
         {!isLoading && (
@@ -230,7 +213,8 @@ const styles = StyleSheet.create({
   },
   textRowCentered: {
     flexDirection: 'row',
-    margin: 8,
+    marginHorizontal: 8,
+    marginVertical: 4,
     justifyContent: 'center',
     textAlign: 'center'
   },

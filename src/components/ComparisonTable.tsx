@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   wrapper: {
-    flex: 1,
-    paddingBottom: 8
+    flex: 1
   }
 })

@@ -39,7 +39,7 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
             <View style={[styles.player, globalTheme.player]}>
               <FastImage
                 key={nowPlayingItem.podcastImageUrl}
-                resizeMode="contain"
+                resizeMode='contain'
                 source={{ uri: nowPlayingItem.podcastImageUrl }}
                 style={styles.image}
               />
