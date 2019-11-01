@@ -146,7 +146,8 @@ export const darkTheme = StyleSheet.create({
   },
   tabbar: {
     backgroundColor: PV.Colors.black,
-    borderWidth: 0
+    borderTopWidth: 1,
+    borderTopColor: PV.Colors.grayDarker
   },
   tabbarItem: {
     tintColor: PV.Colors.blue
@@ -334,7 +335,8 @@ export const lightTheme = StyleSheet.create({
   },
   tabbar: {
     backgroundColor: PV.Colors.white,
-    borderWidth: 0
+    borderTopWidth: 1,
+    borderTopColor: PV.Colors.grayLighter
   },
   tabbarItem: {
     tintColor: PV.Colors.blue
