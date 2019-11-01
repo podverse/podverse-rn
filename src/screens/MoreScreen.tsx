@@ -1,4 +1,5 @@
 import {
+  Alert,
   Linking,
   SectionList,
   TouchableWithoutFeedback,
@@ -38,8 +39,8 @@ export class MoreScreen extends React.Component<Props, State> {
       navigation.navigate(PV.RouteNames.AboutScreen)
     } else if (item.key === _contactKey) {
       Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-        { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.contact) },
-        { text: 'Cancel' }
+        { text: 'Cancel' },
+        { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.contact) }
       ])
     } else if (item.key === _termsKey) {
       navigation.navigate(PV.RouteNames.TermsOfServiceScreen)
