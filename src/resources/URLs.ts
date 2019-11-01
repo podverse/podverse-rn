@@ -14,5 +14,6 @@ export const URLs = {
   playlist: `${root}/playlist/`,
   podcast: `${root}/podcast/`,
   profile: `${root}/profile/`,
+  requestPodcast: `https://docs.google.com/forms/d/e/1FAIpQLSdewKP-YrE8zGjDPrkmoJEwCxPl_gizEkmzAlTYsiWAuAk1Ng/viewform?usp=sf_link`,
   terms: `${root}/terms`
 }
