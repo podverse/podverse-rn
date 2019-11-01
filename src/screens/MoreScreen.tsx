@@ -168,15 +168,15 @@ const moreFeaturesOptions = () => {
       title: 'Downloads',
       key: PV.RouteNames.DownloadsScreen
     },
-    {
-      title: 'Playlists',
-      key: PV.RouteNames.PlaylistsScreen
-    },
-    {
-      title: 'Profiles',
-      key: PV.RouteNames.ProfilesScreen
-    },
     // start: temporarily disable login
+    // {
+    //   title: 'Playlists',
+    //   key: PV.RouteNames.PlaylistsScreen
+    // },
+    // {
+    //   title: 'Profiles',
+    //   key: PV.RouteNames.ProfilesScreen
+    // },
     // {
     //   title: 'My Profile',
     //   key: PV.RouteNames.MyProfileScreen
