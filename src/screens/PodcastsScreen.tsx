@@ -255,10 +255,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     const { querySort } = this.state
     let sort =
-      querySort === _alphabeticalKey || querySort === _mostRecentKey
+      (!querySort || querySort === _alphabeticalKey || querySort === _mostRecentKey)
         ? _topPastWeek
         : querySort
-    if (querySortOverride) sort = querySortOverride
+    if (querySortOverride) {
+      sort = querySortOverride
+    }
     isInitialLoad = false
 
     this.setState(
@@ -574,8 +576,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         <PlayerEvents />
         <TableSectionSelectors
-          handleSelectLeftItem={this.selectLeftItem}
-          handleSelectRightItem={this.selectRightItem}
+          handleSelectLeftItem={(selectedKey: string) => this.selectLeftItem(selectedKey)}
+          handleSelectRightItem={(selectedKey: string) => this.selectRightItem(selectedKey)}
           hidePickers={isInitialLoad}
           leftItems={leftItems}
           rightItems={
