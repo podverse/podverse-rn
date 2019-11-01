@@ -412,8 +412,9 @@ export class PlayerScreen extends React.Component<Props, State> {
     if (wasAlerted) return
     const { nowPlayingItem } = this.global.player
     try {
-      if (nowPlayingItem)
+      if (nowPlayingItem) {
         toggleSubscribeToPodcast(nowPlayingItem.podcastId, this.global)
+      }
       this._dismissHeaderActionSheet()
     } catch (error) {
       this._dismissHeaderActionSheet()
@@ -421,7 +422,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         Alert.alert(
           PV.Alerts.SOMETHING_WENT_WRONG.title,
           PV.Alerts.SOMETHING_WENT_WRONG.message,
-          []
+          PV.Alerts.BUTTONS.OK
         )
       }
     }

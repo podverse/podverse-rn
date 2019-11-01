@@ -84,7 +84,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
             Alert.alert(
               PV.Alerts.SOMETHING_WENT_WRONG.title,
               PV.Alerts.SOMETHING_WENT_WRONG.message,
-              []
+              PV.Alerts.BUTTONS.OK
             )
           }
         }

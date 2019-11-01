@@ -210,7 +210,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     if (wasAlerted) return
 
     if (endTime === 0) {
-      Alert.alert('Clip Error', 'End time cannot be equal to 0.', [])
+      Alert.alert('Clip Error', 'End time cannot be equal to 0.', PV.Alerts.BUTTONS.OK)
       return
     }
 
@@ -218,13 +218,13 @@ export class MakeClipScreen extends React.Component<Props, State> {
       Alert.alert(
         'Clip Error',
         'The start time must be greater than 0 if no end time is provided.',
-        []
+        PV.Alerts.BUTTONS.OK
       )
       return
     }
 
     if (!startTime) {
-      Alert.alert('Clip Error', 'A start time must be provided.', [])
+      Alert.alert('Clip Error', 'A start time must be provided.', PV.Alerts.BUTTONS.OK)
       return
     }
 
@@ -232,7 +232,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       Alert.alert(
         'Clip Error',
         'The start time must be before the end time.',
-        []
+        PV.Alerts.BUTTONS.OK
       )
       return
     }
@@ -310,7 +310,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
           Alert.alert(
             PV.Alerts.SOMETHING_WENT_WRONG.title,
             error.response.data.message,
-            []
+            PV.Alerts.BUTTONS.OK
           )
         }
         console.log(error)

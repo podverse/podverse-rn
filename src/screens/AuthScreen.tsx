@@ -79,13 +79,13 @@ export class AuthScreen extends React.Component<Props, State> {
           Alert.alert(
             PV.Alerts.LOGIN_INVALID.title,
             PV.Alerts.LOGIN_INVALID.message,
-            []
+            PV.Alerts.BUTTONS.OK
           )
         } else {
           Alert.alert(
             PV.Alerts.SOMETHING_WENT_WRONG.title,
             PV.Alerts.SOMETHING_WENT_WRONG.message,
-            []
+            PV.Alerts.BUTTONS.OK
           )
         }
       }
@@ -101,13 +101,13 @@ export class AuthScreen extends React.Component<Props, State> {
         Alert.alert(
           PV.Alerts.RESET_PASSWORD_SUCCESS.title,
           PV.Alerts.RESET_PASSWORD_SUCCESS.message,
-          []
+          PV.Alerts.BUTTONS.OK
         )
       } catch (error) {
         Alert.alert(
           PV.Alerts.SOMETHING_WENT_WRONG.title,
           PV.Alerts.SOMETHING_WENT_WRONG.message,
-          []
+          PV.Alerts.BUTTONS.OK
         )
       }
       this.setState({ isLoadingResetPassword: false })
@@ -137,7 +137,7 @@ export class AuthScreen extends React.Component<Props, State> {
           Alert.alert(
             PV.Alerts.SIGN_UP_ERROR.title,
             error.response.data.message,
-            []
+            PV.Alerts.BUTTONS.OK
           )
         }
       }

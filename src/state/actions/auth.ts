@@ -82,7 +82,7 @@ export const logoutUser = async () => {
     await getAuthUserInfo()
   } catch (error) {
     console.log(error)
-    Alert.alert('Error', error.message, [])
+    Alert.alert('Error', error.message, PV.Alerts.BUTTONS.OK)
   }
 }
 

@@ -11,6 +11,9 @@ const _sendVerificationEmailMessage =
 const _cancelText = 'Cancel'
 
 export const Alerts = {
+  BUTTONS: {
+    OK: [{ text: 'OK' }]
+  },
   EMAIL_NOT_VERIFIED: (email: string) => ({
     message: _sendVerificationEmailMessage,
     title: 'Verify Your Email',

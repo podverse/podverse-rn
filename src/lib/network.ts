@@ -10,7 +10,7 @@ export const alertIfNoNetworkConnection = async (str?: string) => {
     Alert.alert(
       PV.Alerts.NETWORK_ERROR.title,
       PV.Alerts.NETWORK_ERROR.message(str),
-      []
+      PV.Alerts.BUTTONS.OK
     )
     return true
   }
