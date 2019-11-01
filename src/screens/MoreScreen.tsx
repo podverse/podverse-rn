@@ -37,7 +37,10 @@ export class MoreScreen extends React.Component<Props, State> {
     } else if (item.key === _aboutKey) {
       navigation.navigate(PV.RouteNames.AboutScreen)
     } else if (item.key === _contactKey) {
-      Linking.openURL(PV.URLs.contact)
+      Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
+        { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.contact) },
+        { text: 'Cancel' }
+      ])
     } else if (item.key === _termsKey) {
       navigation.navigate(PV.RouteNames.TermsOfServiceScreen)
     } else if (item.key === _logoutKey) {
