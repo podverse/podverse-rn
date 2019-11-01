@@ -94,7 +94,7 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<
         <Slider
           minimumValue={0}
           maximumValue={isLoading ? 0 : 1}
-          onSlidingComplete={value => {
+          onSlidingComplete={(value) => {
             const position = value * duration
             setPlaybackPosition(position)
             this.setState({
@@ -102,7 +102,7 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<
               slidingPosition: null
             })
           }}
-          onValueChange={value =>
+          onValueChange={(value) =>
             this.setState({ slidingPosition: value * duration })
           }
           thumbStyle={styles.thumbStyle}

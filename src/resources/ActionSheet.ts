@@ -38,45 +38,37 @@ const mediaMoreButtons = (
       }
     })
   } else {
-    buttons.push(
-      {
-        key: 'stream',
-        text: 'Stream',
-        onPress: async () => {
-          const showAlert = await hasTriedAlert(
-            handleDismiss,
-            navigation,
-            false
-          )
-          if (showAlert) return
+    buttons.push({
+      key: 'stream',
+      text: 'Stream',
+      onPress: async () => {
+        const showAlert = await hasTriedAlert(handleDismiss, navigation, false)
+        if (showAlert) return
 
-          await handleDismiss()
-          const shouldPlay = true
-          await loadItemAndPlayTrack(item, shouldPlay)
-        }
+        await handleDismiss()
+        const shouldPlay = true
+        await loadItemAndPlayTrack(item, shouldPlay)
       }
-    )
+    })
 
     if (handleDownload) {
-      buttons.push(
-        {
-          key: 'download',
-          text: downloadingText,
-          isDownloading,
-          onPress: async () => {
-            const showAlert = await hasTriedAlert(handleDismiss, navigation, true)
-            if (showAlert) return
+      buttons.push({
+        key: 'download',
+        text: downloadingText,
+        isDownloading,
+        onPress: async () => {
+          const showAlert = await hasTriedAlert(handleDismiss, navigation, true)
+          if (showAlert) return
 
-            if (isDownloading) {
-              await handleDismiss()
-              navigation.navigate(PV.RouteNames.DownloadsScreen)
-            } else {
-              await handleDismiss()
-              handleDownload()
-            }
+          if (isDownloading) {
+            await handleDismiss()
+            navigation.navigate(PV.RouteNames.DownloadsScreen)
+          } else {
+            await handleDismiss()
+            handleDownload()
           }
         }
-      )
+      })
     }
   }
 

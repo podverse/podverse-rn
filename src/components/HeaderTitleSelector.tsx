@@ -14,7 +14,7 @@ type Props = {
 
 export const HeaderTitleSelector = (props: Props) => {
   const { items, onValueChange, placeholder, selectedItemKey } = props
-  const selectedItem = items.find(x => x.value === selectedItemKey) || {}
+  const selectedItem = items.find((x) => x.value === selectedItemKey) || {}
 
   const textNode = (
     <View style={styles.wrapper}>

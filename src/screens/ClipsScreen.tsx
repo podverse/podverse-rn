@@ -477,7 +477,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         newState.endOfResultsReached =
           newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (rightItems.some(option => option.value === filterKey)) {
+      } else if (rightItems.some((option) => option.value === filterKey)) {
         const results = await getMediaRefs(
           {
             ...(queryFrom === _subscribedKey ? { podcastId } : {}),

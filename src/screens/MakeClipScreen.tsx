@@ -161,7 +161,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   _handleSelectPrivacy = async (selectedKey: string) => {
     const items = [placeholderItem, ...privacyItems]
-    const selectedItem = items.find(x => x.value === selectedKey)
+    const selectedItem = items.find((x) => x.value === selectedKey)
     if (selectedItem)
       AsyncStorage.setItem(
         PV.Keys.MAKE_CLIP_IS_PUBLIC,
@@ -576,10 +576,12 @@ const placeholderItem = {
 }
 
 const privacyItems = (isLoggedIn?: boolean) => {
-  const items = [{
-    label: 'Only with link',
-    value: _onlyWithLinkKey
-  }]
+  const items = [
+    {
+      label: 'Only with link',
+      value: _onlyWithLinkKey
+    }
+  ]
 
   if (isLoggedIn) {
     items.unshift({

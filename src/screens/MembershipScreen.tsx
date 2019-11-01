@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   wrapper: {
-    flex: 1,
+    flex: 1
     // start: temporarily disable login
     // paddingTop: 8
   }

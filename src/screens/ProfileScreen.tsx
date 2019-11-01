@@ -630,7 +630,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         newState = await this._queryMediaRefs(newState, page, querySort)
       } else if (filterKey === _playlistsKey) {
         newState = await this._queryPlaylists(newState, page, querySort)
-      } else if (rightItems.some(option => option.value === filterKey)) {
+      } else if (rightItems.some((option) => option.value === filterKey)) {
         if (queryFrom === _podcastsKey) {
           newState = await this._queryPodcasts(newState, page, filterKey)
         } else if (queryFrom === _clipsKey) {
