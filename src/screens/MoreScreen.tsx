@@ -184,7 +184,7 @@ const moreFeaturesOptions = () => {
       key: _logoutKey
     },
     {
-      title: 'Log In',
+      title: 'Login',
       key: _loginKey
     }
   ]
