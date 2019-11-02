@@ -32,17 +32,8 @@ export class AboutScreen extends React.Component<Props, State> {
           <Text style={styles.sectionTitle}>Principles</Text>
           <Text style={styles.text}>
             {
-              'Never sell or share private user data.\n\nNever add advertisements without podcaster permission.\n\nAllow users to download their completedata, so they can leave the site at any time.\n\nBuild in accordance with '
+              'Never sell or share private user data.\n\nNever add advertisements without podcaster permission.\n\nAllow users to download their completedata, so they can leave the site at any time.'
             }
-            <Text
-              style={styles.link}
-              onPress={() => {
-                this.showLeavingAppAlert('https://humanetech.com/problem/')
-              }}>
-              humane technology
-            </Text>
-            {' principles.'}
-          </Text>
           <View style={styles.separator} />
           <Text style={styles.sectionTitle}>Team</Text>
           <Text style={styles.text}>
