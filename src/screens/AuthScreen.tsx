@@ -166,24 +166,30 @@ export class AuthScreen extends React.Component<Props, State> {
 
     if (screenType === _login) {
       bottomButtons = [
-        <Text
-          key="reset"
-          onPress={this._showResetPassword}
-          style={styles.switchOptionText}>
-          Reset Password
-        </Text>,
-        <Text
-          key="moreInfo"
-          onPress={this._showMembership}
-          style={[styles.switchOptionText, { marginTop: 0, width: ' 100%' }]}>
-          Sign Up
-        </Text>
+        (
+          <Text
+            key='reset'
+            onPress={this._showResetPassword}
+            style={styles.switchOptionText}>
+            Reset Password
+          </Text>
+        ),
+        (
+          <Text
+            key='moreInfo'
+            onPress={this._showMembership}
+            style={[styles.switchOptionText, { marginTop: 0, width: '100%' }]}>
+            Sign Up
+          </Text>
+        )
       ]
     } else if (screenType === _resetPassword) {
       bottomButtons = [
-        <Text onPress={this._showMembership} style={styles.switchOptionText}>
-          Login
-        </Text>
+        (
+          <Text onPress={this._showMembership} style={styles.switchOptionText}>
+            Login
+          </Text>
+        )
       ]
     }
 
@@ -192,7 +198,7 @@ export class AuthScreen extends React.Component<Props, State> {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.view}>
             <Icon
-              name="times"
+              name='times'
               onPress={navigation.dismiss}
               size={26}
               style={[button.iconOnlyMedium, styles.closeButton]}
@@ -200,7 +206,7 @@ export class AuthScreen extends React.Component<Props, State> {
             <Image
               source={PV.Images.BANNER}
               style={styles.banner}
-              resizeMode="contain"
+              resizeMode='contain'
             />
             <View style={styles.contentView}>
               {screenType === _login && (
