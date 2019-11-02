@@ -29,12 +29,6 @@ export class AboutScreen extends React.Component<Props, State> {
             }
           </Text>
           <View style={styles.separator} />
-          <Text style={styles.sectionTitle}>Principles</Text>
-          <Text style={styles.text}>
-            {
-              'Never sell or share private user data.\n\nNever add advertisements without podcaster permission.\n\nAllow users to download their completedata, so they can leave the site at any time.'
-            }
-          <View style={styles.separator} />
           <Text style={styles.sectionTitle}>Team</Text>
           <Text style={styles.text}>
             {
