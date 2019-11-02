@@ -143,12 +143,12 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'automatically save your clips to a playlist',
+    text: 'sync your subscriptions on all devices',
     column1: false,
     column2: true
   },
   {
-    text: 'edit your clips',
+    text: 'sync your queue on all devices',
     column1: false,
     column2: true
   },
@@ -158,17 +158,22 @@ const comparisonData = [
     column2: true
   },
   {
+    text: 'auto save your clips to a playlist',
+    column1: false,
+    column2: true
+  },
+  {
+    text: 'edit your clips',
+    column1: false,
+    column2: true
+  },
+  {
     text: 'share your profile',
     column1: false,
     column2: true
   },
   {
-    text: 'sync your subscriptions on all devices',
-    column1: false,
-    column2: true
-  },
-  {
-    text: 'sync your queue on all devices',
+    text: 'download a backup of your data',
     column1: false,
     column2: true
   },
