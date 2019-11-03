@@ -13,8 +13,8 @@ import { PV } from './resources'
 import { AboutScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
   EmailVerificationScreen, EpisodeScreen, EpisodesScreen, MakeClipScreen, MembershipScreen, MoreScreen,
   OnboardingScreen, PlayerScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen,
-  PodcastsScreen, ProfileScreen, ProfilesScreen, QueueScreen, SearchScreen, SettingsScreen, TermsOfServiceScreen,
-  WebPageScreen } from './screens'
+  PodcastsScreen, ProfileScreen, ProfilesScreen, PurchasingScreen, QueueScreen, SearchScreen, SettingsScreen,
+  TermsOfServiceScreen, WebPageScreen } from './screens'
 
 const defaultNavigationOptions = ({ navigation }) => ({
   title: PV.Tabs.Podcasts.title,
@@ -252,6 +252,12 @@ const EmailVerificationNavigator = createStackNavigator({
   defaultNavigationOptions
 })
 
+const PurchasingNavigator = createStackNavigator({
+  [PV.RouteNames.PurchasingScreen]: PurchasingScreen
+}, {
+  defaultNavigationOptions
+})
+
 const MainApp = createStackNavigator({
   [PV.RouteNames.TabNavigator]: { screen: TabNavigator, path: '' },
   [PV.RouteNames.AuthNavigator]: AuthNavigator,
@@ -259,7 +265,8 @@ const MainApp = createStackNavigator({
   PlaylistsAddToNavigator,
   QueueNavigator,
   WebPageNavigator,
-  EmailVerificationNavigator
+  EmailVerificationNavigator,
+  PurchasingNavigator
 }, {
   mode: 'modal',
   headerMode: 'none'

@@ -9,6 +9,7 @@ import {
   FlatList,
   PlayerEvents,
   PodcastTableCell,
+  PurchaseListener,
   SearchBar,
   SwipeRowBack,
   TableSectionSelectors,
@@ -543,6 +544,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   render() {
+    const { navigation } = this.props
     const {
       categoryItems,
       queryFrom,
@@ -626,7 +628,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             onRefresh={queryFrom === _subscribedKey ? this._onRefresh : null}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderPodcastItem}
-            resultsText="podcasts"
+            resultsText='podcasts'
           />
         )}
         <Dialog.Container visible={showDataSettingsConfirmDialog}>
@@ -635,14 +637,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
             Do you want to allow downloading episodes with your data plan?
           </Dialog.Description>
           <Dialog.Button
-            label="No, Wifi Only"
+            label='No, Wifi Only'
             onPress={this._handleDataSettingsWifiOnly}
           />
           <Dialog.Button
-            label="Yes, Allow Data"
+            label='Yes, Allow Data'
             onPress={this._handleDataSettingsAllowData}
           />
         </Dialog.Container>
+        <PurchaseListener navigation={navigation} />
       </View>
     )
   }

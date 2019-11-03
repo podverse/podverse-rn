@@ -31,6 +31,12 @@ const initialTheme: InitialState = {
     flatListData: [],
     flatListDataTotalCount: null
   },
+  purchase: {
+    isLoading: false,
+    message: '',
+    showContactSupportLink: false,
+    title: ''
+  },
   screenPlayer: {
     endOfResultsReached: false,
     flatListData: [],

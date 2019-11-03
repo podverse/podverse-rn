@@ -51,6 +51,10 @@ export const Alerts = {
     message: 'Sign up for a premium account to use this feature.',
     title: 'Premium Membership Required'
   },
+  PURCHASE_ERROR: {
+    message: 'Something went wrong with your purchase. Please email contact@podverse.fm for support.',
+    title: 'Purchase Error'
+  },
   RESET_PASSWORD_SUCCESS: {
     message:
       'Please check your inbox. If this email address exists in our system, you should receive a reset password email shortly.',

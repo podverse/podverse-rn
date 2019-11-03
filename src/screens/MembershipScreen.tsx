@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
 import React from 'reactn'
 import {
   ActivityIndicator,
@@ -7,6 +7,7 @@ import {
   TextLink,
   View
 } from '../components'
+import { buy1YearPremium } from '../lib/purchase'
 import {
   getMembershipExpiration,
   getMembershipStatus,
@@ -46,6 +47,19 @@ export class MembershipScreen extends React.Component<Props, State> {
     this.setState({ isLoading: false })
   }
 
+  handleRenewPress = async () => {
+    try {
+      const purchase = await buy1YearPremium()
+    } catch (error) {
+      console.log(error)
+      Alert.alert(
+        PV.Alerts.RESET_PASSWORD_SUCCESS.title,
+        PV.Alerts.RESET_PASSWORD_SUCCESS.message,
+        PV.Alerts.BUTTONS.OK
+      )
+    }
+  }
+
   handleSignUpPress = () => {
     this.props.navigation.navigate(PV.RouteNames.AuthScreen, {
       showSignUp: true
@@ -78,11 +92,13 @@ export class MembershipScreen extends React.Component<Props, State> {
               <Text style={styles.label}>Expires: </Text>
               <Text style={[styles.text]}>{readableDate(expirationDate)}</Text>
             </View>
-            {/* <View style={styles.textRow}>
-                <Text style={[styles.subText]}>
-                  To renew your membership, go to podverse.fm, login, then visit your Settings page.
-                </Text>
-              </View> */}
+            <View style={styles.textRowCentered}>
+              <TextLink
+                onPress={this.handleRenewPress}
+                style={[styles.subText]}>
+                Renew Membership
+              </TextLink>
+            </View>
           </View>
         )}
         {!isLoading && !isLoggedIn && (
