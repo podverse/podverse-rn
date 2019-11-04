@@ -32,11 +32,15 @@ const initialTheme: InitialState = {
     flatListDataTotalCount: null
   },
   purchase: {
-    code: null,
-    isLoading: false,
-    message: '',
+    isLoading: true,
+    message: 'Updating the Podverse servers...',
+    orderId: '',
+    productId: '',
+    purchaseToken: '',
     showContactSupportLink: false,
-    title: ''
+    showDismissLink: false,
+    showRetryLink: false,
+    title: 'Processing Transaction'
   },
   screenPlayer: {
     endOfResultsReached: false,

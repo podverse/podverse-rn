@@ -1,4 +1,4 @@
-import { Alert, StyleSheet } from 'react-native'
+import { Alert, StyleSheet, Platform } from 'react-native'
 import React from 'reactn'
 import {
   ActivityIndicator,
@@ -7,7 +7,7 @@ import {
   TextLink,
   View
 } from '../components'
-import { buy1YearPremium } from '../lib/purchase'
+import { buy1YearPremium, androidHandleStatusCheck, iosHandlePurchaseStatusCheck } from '../lib/purchase'
 import {
   getMembershipExpiration,
   getMembershipStatus,
@@ -49,14 +49,29 @@ export class MembershipScreen extends React.Component<Props, State> {
 
   handleRenewPress = async () => {
     try {
-      const purchase = await buy1YearPremium()
+      await buy1YearPremium()
     } catch (error) {
       console.log(error)
-      Alert.alert(
-        PV.Alerts.RESET_PASSWORD_SUCCESS.title,
-        PV.Alerts.RESET_PASSWORD_SUCCESS.message,
-        PV.Alerts.BUTTONS.OK
-      )
+
+      // If attempting to renew, but a recent previous purchase did not complete successfully,
+      // then do not buy a new product, and instead navigate to the PurchasingScreen
+      // and attempt to check and update the status of the cached purchase.
+      if (error.code === 'E_ALREADY_OWNED') {
+        if (Platform.OS === 'android') {
+          this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
+          const { orderId, productId, purchaseToken } = this.global.purchase
+          await androidHandleStatusCheck(productId, purchaseToken, orderId)
+        } else if (Platform.OS === 'ios') {
+          await iosHandlePurchaseStatusCheck()
+        }
+      } else {
+        Alert.alert(
+          PV.Alerts.PURCHASE_SOMETHING_WENT_WRONG.title,
+          PV.Alerts.PURCHASE_SOMETHING_WENT_WRONG.message,
+          PV.Alerts.BUTTONS.OK
+        )
+      }
+
     }
   }
 

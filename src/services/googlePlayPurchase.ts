@@ -2,7 +2,7 @@ import { hasValidDownloadingConnection, hasValidNetworkConnection } from '../lib
 import { getBearerToken } from './auth'
 import { request } from './request'
 
-export const updatePurchaseStatus = async (data: any) => {
+export const updateGooglePlayPurchaseStatus = async (data: any) => {
   await hasValidNetworkConnection()
   await hasValidDownloadingConnection()
   const bearerToken = await getBearerToken()

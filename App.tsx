@@ -5,9 +5,8 @@ import { Image, Platform, StatusBar, View, YellowBox } from 'react-native'
 import 'react-native-gesture-handler'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
-import { OverlayAlert, PurchaseListener } from './src/components'
+import { OverlayAlert } from './src/components'
 import { refreshDownloads } from './src/lib/downloader'
-import { initProducts } from './src/lib/purchase'
 import { PV } from './src/resources'
 import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
@@ -44,7 +43,6 @@ class App extends Component<Props, State> {
     const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
     this.setupGlobalState(darkModeEnabled === 'TRUE' || darkModeEnabled === null ? darkTheme : lightTheme)
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
-    initProducts()
   }
 
   componentWillUnmount() {

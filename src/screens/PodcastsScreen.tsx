@@ -140,7 +140,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
         // navigation.navigate(PV.RouteNames.Onboarding)
       } else {
-        await this._initializeScreenData()
+        this._initializeScreenData()
       }
     } catch (error) {
       isInitialLoad = false

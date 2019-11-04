@@ -1,6 +1,7 @@
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { Platform, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, SafeAreaView, Text, View } from '../components'
+import { androidHandleStatusCheck, iosHandlePurchaseStatusCheck } from '../lib/purchase'
 import { PV } from '../resources'
 
 type Props = {
@@ -24,6 +25,15 @@ export class PurchasingScreen extends React.Component<Props, State> {
   }
 
   _handleRetryProcessing = async () => {
+    const purchase = this.global.purchase || {}
+    const { orderId, productId, purchaseToken } = purchase
+    if (orderId && productId && purchaseToken) {
+      if (Platform.OS === 'android') {
+        await androidHandleStatusCheck(productId, purchaseToken, orderId)
+      } else if (Platform.OS === 'ios') {
+        await iosHandlePurchaseStatusCheck()
+      }
+    }
     console.log('handle retry processing')
   }
 
@@ -33,7 +43,7 @@ export class PurchasingScreen extends React.Component<Props, State> {
 
   render() {
     const { globalTheme, purchase } = this.global
-    const { isLoading, message, showContactSupportLink, showRetryLink, title } = purchase
+    const { isLoading, message, showContactSupportLink, showDismissLink, showRetryLink, title } = purchase
 
     return (
       <SafeAreaView style={styles.safeAreaView}>
@@ -48,19 +58,19 @@ export class PurchasingScreen extends React.Component<Props, State> {
               <Text style={[globalTheme.text, styles.message]}>{message}</Text>
           }
           {
-            !isLoading && showContactSupportLink &&
-              <TouchableOpacity onPress={this._handleContactSupportPress}>
-                <Text style={[globalTheme.text, styles.button]}>Contact Support</Text>
-              </TouchableOpacity>
-          }
-          {
             !isLoading && showRetryLink &&
               <TouchableOpacity onPress={this._handleRetryProcessing}>
                 <Text style={[globalTheme.text, styles.button]}>Retry</Text>
               </TouchableOpacity>
           }
           {
-            !isLoading &&
+            !isLoading && showContactSupportLink &&
+              <TouchableOpacity onPress={this._handleContactSupportPress}>
+                <Text style={[globalTheme.text, styles.button]}>Contact Support</Text>
+              </TouchableOpacity>
+          }
+          {
+            !isLoading && showDismissLink &&
               <TouchableOpacity onPress={this._handleDismiss}>
                 <Text style={[globalTheme.text, styles.button]}>Close</Text>
               </TouchableOpacity>
@@ -74,10 +84,12 @@ export class PurchasingScreen extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   activityIndicator: {
     backgroundColor: 'transparent',
-    flex: 0
+    flex: 0,
+    marginVertical: 16
   },
   button: {
     fontSize: PV.Fonts.sizes.xl,
+    textDecorationLine: 'underline',
     fontWeight: PV.Fonts.weights.bold,
     height: 44,
     lineHeight: 44,
@@ -92,7 +104,7 @@ const styles = StyleSheet.create({
   message: {
     fontSize: PV.Fonts.sizes.md,
     marginHorizontal: 16,
-    marginTop: 32,
+    marginVertical: 16,
     textAlign: 'center'
   },
   safeAreaView: {
@@ -101,7 +113,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    marginBottom: 32,
+    marginBottom: 16,
     marginHorizontal: 16,
     marginTop: -22,
     textAlign: 'center'
