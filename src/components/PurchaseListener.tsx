@@ -31,20 +31,11 @@ export class PurchaseListener extends React.Component<Props, State> {
         navigation.navigate(PV.RouteNames.PurchasingScreen)
 
         if (Platform.OS === 'android') {
-          // Call update-purchase-statsus endpoint with productId and purchaseToken
-          let statusCheckAttempts = 0
-
           try {
             await androidHandleStatusCheck(productId, purchaseToken, transactionId)
           } catch (error) {
             console.log('error', error)
-
-            statusCheckAttempts++
-            if (statusCheckAttempts < 4) {
-              setTimeout(() => androidHandleStatusCheck(productId, purchaseToken, transactionId), 5000)
-            } else {
-              showPurchaseSomethingWentWrongError()
-            }
+            showPurchaseSomethingWentWrongError()
           }
         } else if (Platform.OS === 'ios') {
           // TODO: handle iOS purchase flow
