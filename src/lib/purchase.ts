@@ -15,8 +15,6 @@ const _podversePremiumMembership1Year = itemSkus[0]
 
 export const initProducts = async () => {
   RNIap.getProducts(itemSkus)
-  const purchases = await RNIap.getAvailablePurchases()
-  console.log('available purchases', purchases)
 }
 
 // const get1YearPremiumProduct = async () => {
