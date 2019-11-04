@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import RNIap, {
   InAppPurchase,
   Purchase,
@@ -6,8 +7,8 @@ import RNIap, {
   purchaseUpdatedListener,
 } from 'react-native-iap'
 import React from 'reactn'
+import { androidHandleStatusCheck, handlePurchaseLoadingState, showPurchaseSomethingWentWrongError } from '../lib/purchase'
 import { PV } from '../resources'
-import { updatePurchaseStatus } from '../services/googlePlayPurchase'
 
 type Props = {
   navigation: any
@@ -20,65 +21,40 @@ export class PurchaseListener extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
+
     this.purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase: InAppPurchase | Purchase) => {
-      console.log('purchaseUpdatedListener', purchase)
-      const receipt = purchase.transactionReceipt
-      if (receipt) {
-        console.log('receipt!', receipt)
-        this.setGlobal({
-          purchase: {
-            isLoading: true,
-            message: 'Updating the Podverse servers...',
-            showContactSupportLink: false,
-            title: 'Processing Transaction'
+
+      const { productId, purchaseToken, transactionId } = purchase
+      if (productId && purchaseToken && transactionId) {
+        // Don't use await on navigate, or it can lead to race condition issues between
+        // different screens' render methods.
+        navigation.navigate(PV.RouteNames.PurchasingScreen)
+
+        if (Platform.OS === 'android') {
+          // Call update-purchase-statsus endpoint with productId and purchaseToken
+          let statusCheckAttempts = 0
+
+          try {
+            await androidHandleStatusCheck(productId, purchaseToken, transactionId)
+          } catch (error) {
+            console.log('error', error)
+
+            statusCheckAttempts++
+            if (statusCheckAttempts < 4) {
+              setTimeout(() => androidHandleStatusCheck(productId, purchaseToken, transactionId), 5000)
+            } else {
+              showPurchaseSomethingWentWrongError()
+            }
           }
-        })
-        await navigation.navigate(PV.RouteNames.PurchasingScreen)
-
-        // Call update-purchase-statsus endpoint with productId and purchaseToken
-        const response = await updatePurchaseStatus({
-          productId: purchase.productId,
-          purchaseToken: purchase.purchaseToken
-        })
-
-        // yourAPI.deliverOrDownloadFancyInAppPurchase(purchase.transactionReceipt)
-        //   .then((deliveryResult) => {
-        //     if (isSuccess(deliveryResult)) {
-        //       // Tell the store that you have delivered what has been paid for.
-        //       // Failure to do this will result in the purchase being refunded on Android and
-        //       // the purchase event will reappear on every relaunch of the app until you succeed
-        //       // in doing the below. It will also be impossible for the user to purchase consumables
-        //       // again untill you do this.
-        //       if (Platform.OS === 'ios') {
-        //         RNIap.finishTransactionIOS(purchase.transactionId);
-        //       } else if (Platform.OS === 'android') {
-        //         // If consumable (can be purchased again)
-        //         RNIap.consumePurchaseAndroid(purchase.purchaseToken);
-        //         // If not consumable
-        //         RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken);
-        //       }
-
-        //       // From react-native-iap@4.1.0 you can simplify above `method`. Try
-        //          to wrap the statement with `try` and `catch` to also grab the `error` message.
-        //       RNIap.finishTransaction(purchase);
-        //     } else {
-        //       // Retry / conclude the purchase is fraudulent, etc...
-        //     }
-        //   });
+        } else if (Platform.OS === 'ios') {
+          // TODO: handle iOS purchase flow
+          console.log('iOS flow')
+        }
       }
     })
 
     this.purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
-      console.error('purchaseErrorListener', error)
-      this.setGlobal({
-        purchase: {
-          isLoading: false,
-          message: 'An error occurred while processing your transaction. You may retry processing (you won\'t be charged again), or email contact@podverse.fm for support.',
-          showContactSupportLink: true,
-          showRetryLink: true,
-          title: 'Processing Error'
-        }
-      })
+      console.log('purchaseErrorListener', error)
     })
   }
 
