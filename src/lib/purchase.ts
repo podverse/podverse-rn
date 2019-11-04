@@ -28,4 +28,3 @@ export const initProducts = async () => {
 export const buy1YearPremium = async () => {
   RNIap.requestPurchase(_podversePremiumMembership1Year)
 }
-
