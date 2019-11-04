@@ -162,6 +162,15 @@ export const toggleSubscribeToPodcast = async (id: string) => {
       Array.isArray(podcastIds) && podcastIds.some((x: string) => id === x)
   }
 
+  const globalDownloadedEpisodeLimitDefault = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
+  if (globalDownloadedEpisodeLimitDefault) {
+    let globalDownloadedEpisodeLimitCount = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT) as any
+    if (globalDownloadedEpisodeLimitCount) {
+      globalDownloadedEpisodeLimitCount = parseInt(globalDownloadedEpisodeLimitCount, 10)
+      await setDownloadedEpisodeLimit(id, globalDownloadedEpisodeLimitCount)
+    }
+  }
+
   let items
   if (isLoggedIn) {
     items = await toggleSubscribeToPodcastOnServer(id)
@@ -172,11 +181,6 @@ export const toggleSubscribeToPodcast = async (id: string) => {
   if (isUnsubscribing) {
     await removeDownloadedPodcast(id)
     await setDownloadedEpisodeLimit(id)
-  } else {
-    const count: any = await AsyncStorage.getItem(
-      PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT
-    )
-    await setDownloadedEpisodeLimit(id, count)
   }
 
   return items

@@ -13,9 +13,9 @@ export type Credentials = {
 }
 
 export const getAuthUserInfo = async () => {
+  const globalState = getGlobal()
   try {
     const results = await getAuthenticatedUserInfo()
-    const globalState = getGlobal()
     const userInfo = results[0]
     const isLoggedIn = results[1]
     const shouldShowAlert = shouldShowMembershipAlert(userInfo)

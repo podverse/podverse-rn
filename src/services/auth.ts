@@ -137,7 +137,7 @@ export const getAuthenticatedUserInfoFromServer = async (
     endpoint: '/auth/get-authenticated-user-info',
     method: 'POST',
     headers: {
-      Authorization: bearerToken,
+      'Authorization': bearerToken,
       'Content-Type': 'application/json'
     }
   })
@@ -145,11 +145,12 @@ export const getAuthenticatedUserInfoFromServer = async (
   const data = (response && response.data) || []
   const { subscribedPodcastIds = [] } = data
 
-  if (Array.isArray(subscribedPodcastIds))
+  if (Array.isArray(subscribedPodcastIds)) {
     await AsyncStorage.setItem(
       PV.Keys.SUBSCRIBED_PODCAST_IDS,
       JSON.stringify(subscribedPodcastIds)
     )
+  }
 
   return [data, true]
 }

@@ -7,6 +7,7 @@ import RNIap, {
 } from 'react-native-iap'
 import React from 'reactn'
 import { PV } from '../resources'
+import { updatePurchaseStatus } from '../services/googlePlayPurchase'
 
 type Props = {
   navigation: any
@@ -17,9 +18,9 @@ export class PurchaseListener extends React.Component<Props, State> {
   purchaseUpdateSubscription = null as any
   purchaseErrorSubscription = null as any
 
-  componentDidMount() {
+  async componentDidMount() {
     const { navigation } = this.props
-    this.purchaseUpdateSubscription = purchaseUpdatedListener((purchase: InAppPurchase | Purchase) => {
+    this.purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase: InAppPurchase | Purchase) => {
       console.log('purchaseUpdatedListener', purchase)
       const receipt = purchase.transactionReceipt
       if (receipt) {
@@ -32,7 +33,14 @@ export class PurchaseListener extends React.Component<Props, State> {
             title: 'Processing Transaction'
           }
         })
-        navigation.navigate(PV.RouteNames.PurchasingScreen)
+        await navigation.navigate(PV.RouteNames.PurchasingScreen)
+
+        // Call update-purchase-statsus endpoint with productId and purchaseToken
+        const response = await updatePurchaseStatus({
+          productId: purchase.productId,
+          purchaseToken: purchase.purchaseToken
+        })
+
         // yourAPI.deliverOrDownloadFancyInAppPurchase(purchase.transactionReceipt)
         //   .then((deliveryResult) => {
         //     if (isSuccess(deliveryResult)) {

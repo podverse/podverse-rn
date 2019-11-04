@@ -69,22 +69,25 @@ export const updateAllDownloadedEpisodeLimitCounts = async (count: number) => {
   const info = userInfo[0]
   const { subscribedPodcastIds } = info ? info : {}
   const limits = {}
+
+  const downloadedEpisodeLimits = await getDownloadedEpisodeLimits()
+
   for (const id of subscribedPodcastIds) {
-    limits[id] = count
+    const shouldSetCount = downloadedEpisodeLimits[id]
+    limits[id] = shouldSetCount ? count : null
   }
   setAllDownloadedEpisodeLimits(limits)
 }
 
-export const updateAllDownloadedEpisodeLimitDefaults = async (
-  bool: boolean
-) => {
+export const updateAllDownloadedEpisodeLimitDefaults = async (bool: boolean) => {
   const userInfo = await getAuthenticatedUserInfoLocally()
   const subscribedPodcastIds = userInfo[0]
     ? userInfo[0].subscribedPodcastIds
     : []
   const limits = {}
+  const globalDownloadedEpisodeLimitCount = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT) as any
   for (const id of subscribedPodcastIds) {
-    limits[id] = bool
+    limits[id] = bool ? globalDownloadedEpisodeLimitCount : null
   }
   setAllDownloadedEpisodeLimits(limits)
 }

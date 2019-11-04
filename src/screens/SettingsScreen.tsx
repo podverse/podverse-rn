@@ -172,9 +172,7 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   _handleUpdateAllDownloadedEpiosdeLimitDefault = async () => {
-    updateAllDownloadedEpisodeLimitDefaults(
-      this.state.downloadedEpisodeLimitDefault
-    )
+    await updateAllDownloadedEpisodeLimitDefaults(this.state.downloadedEpisodeLimitDefault)
     this.setState({ showSetAllDownloadDialog: false })
   }
 

@@ -32,6 +32,7 @@ const initialTheme: InitialState = {
     flatListDataTotalCount: null
   },
   purchase: {
+    code: null,
     isLoading: false,
     message: '',
     showContactSupportLink: false,

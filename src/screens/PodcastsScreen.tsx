@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { AppState, Linking, Platform, StyleSheet } from 'react-native'
+import { Alert, AppState, Linking, Platform, StyleSheet } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
@@ -143,7 +143,17 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await this._initializeScreenData()
       }
     } catch (error) {
+      isInitialLoad = false
+      this.setState({
+        isLoading: false
+      })
       console.log(error)
+
+      Alert.alert(
+        PV.Alerts.SOMETHING_WENT_WRONG.title,
+        PV.Alerts.SOMETHING_WENT_WRONG.message,
+        PV.Alerts.BUTTONS.OK
+      )
     }
   }
 
