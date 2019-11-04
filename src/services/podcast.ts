@@ -156,6 +156,7 @@ export const toggleSubscribeToPodcast = async (id: string) => {
   const isLoggedIn = await checkIfLoggedIn()
   const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
   let isUnsubscribing = false
+
   if (itemsString) {
     const podcastIds = JSON.parse(itemsString)
     isUnsubscribing =
