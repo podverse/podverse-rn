@@ -1,7 +1,10 @@
 import { Platform, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, SafeAreaView, Text, View } from '../components'
-import { androidHandleStatusCheck, iosHandlePurchaseStatusCheck } from '../lib/purchase'
+import {
+  androidHandleStatusCheck,
+  iosHandlePurchaseStatusCheck
+} from '../lib/purchase'
 import { PV } from '../resources'
 
 type Props = {
@@ -43,38 +46,42 @@ export class PurchasingScreen extends React.Component<Props, State> {
 
   render() {
     const { globalTheme, purchase } = this.global
-    const { isLoading, message, showContactSupportLink, showDismissLink, showRetryLink, title } = purchase
+    const {
+      isLoading,
+      message,
+      showContactSupportLink,
+      showDismissLink,
+      showRetryLink,
+      title
+    } = purchase
 
     return (
       <SafeAreaView style={styles.safeAreaView}>
         <View style={styles.view}>
           <Text style={[globalTheme.text, styles.title]}>{title}</Text>
-          {
-            !!isLoading &&
-              <ActivityIndicator styles={styles.activityIndicator} />
-          }
-          {
-            !!message &&
-              <Text style={[globalTheme.text, styles.message]}>{message}</Text>
-          }
-          {
-            !isLoading && showRetryLink &&
-              <TouchableOpacity onPress={this._handleRetryProcessing}>
-                <Text style={[globalTheme.text, styles.button]}>Retry</Text>
-              </TouchableOpacity>
-          }
-          {
-            !isLoading && showContactSupportLink &&
-              <TouchableOpacity onPress={this._handleContactSupportPress}>
-                <Text style={[globalTheme.text, styles.button]}>Contact Support</Text>
-              </TouchableOpacity>
-          }
-          {
-            !isLoading && showDismissLink &&
-              <TouchableOpacity onPress={this._handleDismiss}>
-                <Text style={[globalTheme.text, styles.button]}>Close</Text>
-              </TouchableOpacity>
-          }
+          {!!isLoading && (
+            <ActivityIndicator styles={styles.activityIndicator} />
+          )}
+          {!!message && (
+            <Text style={[globalTheme.text, styles.message]}>{message}</Text>
+          )}
+          {!isLoading && showRetryLink && (
+            <TouchableOpacity onPress={this._handleRetryProcessing}>
+              <Text style={[globalTheme.text, styles.button]}>Retry</Text>
+            </TouchableOpacity>
+          )}
+          {!isLoading && showContactSupportLink && (
+            <TouchableOpacity onPress={this._handleContactSupportPress}>
+              <Text style={[globalTheme.text, styles.button]}>
+                Contact Support
+              </Text>
+            </TouchableOpacity>
+          )}
+          {!isLoading && showDismissLink && (
+            <TouchableOpacity onPress={this._handleDismiss}>
+              <Text style={[globalTheme.text, styles.button]}>Close</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </SafeAreaView>
     )

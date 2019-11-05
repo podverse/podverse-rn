@@ -1,9 +1,4 @@
-import {
-  Alert,
-  Linking,
-  StyleSheet,
-  View as RNView
-} from 'react-native'
+import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
@@ -71,8 +66,8 @@ export class PlayerScreen extends React.Component<Props, State> {
       title: '',
       headerLeft: (
         <Icon
-          color='#fff'
-          name='chevron-down'
+          color="#fff"
+          name="chevron-down"
           onPress={navigation.dismiss}
           size={PV.Icons.NAV}
           style={navHeader.buttonIcon}
@@ -586,7 +581,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                 />
               )}
               {viewType === PV.Keys.VIEW_TYPE_EPISODES && (
-                <TableSectionHeader title='From this podcast' />
+                <TableSectionHeader title="From this podcast" />
               )}
               {isLoading && <ActivityIndicator />}
               {!isLoading &&
@@ -641,9 +636,9 @@ export class PlayerScreen extends React.Component<Props, State> {
               mediaRefId,
               this._handleShare
             )}
-            message='What link do you want to share?'
+            message="What link do you want to share?"
             showModal={showShareActionSheet}
-            title='Share'
+            title="Share"
           />
           <ActionSheet
             handleCancelPress={this._dismissHeaderActionSheet}

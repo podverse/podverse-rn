@@ -52,11 +52,13 @@ export const Alerts = {
     title: 'Premium Membership Required'
   },
   PURCHASE_CANCELLED: {
-    message: 'Purchase has been cancelled. If you are seeing this in error, please contact support.',
+    message:
+      'Purchase has been cancelled. If you are seeing this in error, please contact support.',
     title: 'Purchase Cancelled'
   },
   PURCHASE_CONSUMED: {
-    message: 'An invalid receipt was provided. Please contact support if you need help completing a purchase.',
+    message:
+      'An invalid receipt was provided. Please contact support if you need help completing a purchase.',
     title: 'Invalid Purchase'
   },
   PURCHASE_PENDING: {
@@ -68,7 +70,8 @@ export const Alerts = {
     title: 'Purchase Success'
   },
   PURCHASE_SOMETHING_WENT_WRONG: {
-    message: 'Please retry processing (you won\'t be charged again) or contact support.',
+    message:
+      "Please retry processing (you won't be charged again) or contact support.",
     title: 'Purchase Incomplete'
   },
   RESET_PASSWORD_SUCCESS: {

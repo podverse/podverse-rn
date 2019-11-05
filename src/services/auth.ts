@@ -137,7 +137,7 @@ export const getAuthenticatedUserInfoFromServer = async (
     endpoint: '/auth/get-authenticated-user-info',
     method: 'POST',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     }
   })

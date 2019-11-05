@@ -163,11 +163,18 @@ export const toggleSubscribeToPodcast = async (id: string) => {
       Array.isArray(podcastIds) && podcastIds.some((x: string) => id === x)
   }
 
-  const globalDownloadedEpisodeLimitDefault = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
+  const globalDownloadedEpisodeLimitDefault = await AsyncStorage.getItem(
+    PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT
+  )
   if (globalDownloadedEpisodeLimitDefault) {
-    let globalDownloadedEpisodeLimitCount = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT) as any
+    let globalDownloadedEpisodeLimitCount = (await AsyncStorage.getItem(
+      PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT
+    )) as any
     if (globalDownloadedEpisodeLimitCount) {
-      globalDownloadedEpisodeLimitCount = parseInt(globalDownloadedEpisodeLimitCount, 10)
+      globalDownloadedEpisodeLimitCount = parseInt(
+        globalDownloadedEpisodeLimitCount,
+        10
+      )
       await setDownloadedEpisodeLimit(id, globalDownloadedEpisodeLimitCount)
     }
   }

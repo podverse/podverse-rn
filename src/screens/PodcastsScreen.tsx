@@ -266,7 +266,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     const { querySort } = this.state
     let sort =
-      (!querySort || querySort === _alphabeticalKey || querySort === _mostRecentKey)
+      !querySort ||
+      querySort === _alphabeticalKey ||
+      querySort === _mostRecentKey
         ? _topPastWeek
         : querySort
     if (querySortOverride) {
@@ -588,8 +590,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         <PlayerEvents />
         <TableSectionSelectors
-          handleSelectLeftItem={(selectedKey: string) => this.selectLeftItem(selectedKey)}
-          handleSelectRightItem={(selectedKey: string) => this.selectRightItem(selectedKey)}
+          handleSelectLeftItem={(selectedKey: string) =>
+            this.selectLeftItem(selectedKey)
+          }
+          handleSelectRightItem={(selectedKey: string) =>
+            this.selectRightItem(selectedKey)
+          }
           hidePickers={isInitialLoad}
           leftItems={leftItems}
           rightItems={
@@ -638,7 +644,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             onRefresh={queryFrom === _subscribedKey ? this._onRefresh : null}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderPodcastItem}
-            resultsText='podcasts'
+            resultsText="podcasts"
           />
         )}
         <Dialog.Container visible={showDataSettingsConfirmDialog}>
@@ -647,11 +653,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
             Do you want to allow downloading episodes with your data plan?
           </Dialog.Description>
           <Dialog.Button
-            label='No, Wifi Only'
+            label="No, Wifi Only"
             onPress={this._handleDataSettingsWifiOnly}
           />
           <Dialog.Button
-            label='Yes, Allow Data'
+            label="Yes, Allow Data"
             onPress={this._handleDataSettingsAllowData}
           />
         </Dialog.Container>

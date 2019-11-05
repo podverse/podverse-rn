@@ -7,7 +7,11 @@ import {
   TextLink,
   View
 } from '../components'
-import { buy1YearPremium, androidHandleStatusCheck, iosHandlePurchaseStatusCheck } from '../lib/purchase'
+import {
+  buy1YearPremium,
+  androidHandleStatusCheck,
+  iosHandlePurchaseStatusCheck
+} from '../lib/purchase'
 import {
   getMembershipExpiration,
   getMembershipStatus,
@@ -71,7 +75,6 @@ export class MembershipScreen extends React.Component<Props, State> {
           PV.Alerts.BUTTONS.OK
         )
       }
-
     }
   }
 
@@ -124,9 +127,7 @@ export class MembershipScreen extends React.Component<Props, State> {
               </Text>
             </View>
             <View style={styles.textRowCentered}>
-              <Text style={styles.subTextCentered}>
-                $10/year after that
-              </Text>
+              <Text style={styles.subTextCentered}>$10/year after that</Text>
             </View>
             <View style={styles.textRowCentered}>
               <TextLink
@@ -140,10 +141,10 @@ export class MembershipScreen extends React.Component<Props, State> {
         {!isLoading && (
           <View style={styles.tableWrapper}>
             <ComparisonTable
-              column1Title='Free'
-              column2Title='Premium'
+              column1Title="Free"
+              column2Title="Premium"
               data={comparisonData}
-              mainTitle='Features'
+              mainTitle="Features"
             />
           </View>
         )}

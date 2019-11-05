@@ -4,10 +4,14 @@ import RNIap, {
   Purchase,
   PurchaseError,
   purchaseErrorListener,
-  purchaseUpdatedListener,
+  purchaseUpdatedListener
 } from 'react-native-iap'
 import React from 'reactn'
-import { androidHandleStatusCheck, handlePurchaseLoadingState, showPurchaseSomethingWentWrongError } from '../lib/purchase'
+import {
+  androidHandleStatusCheck,
+  handlePurchaseLoadingState,
+  showPurchaseSomethingWentWrongError
+} from '../lib/purchase'
 import { PV } from '../resources'
 
 type Props = {
@@ -22,31 +26,38 @@ export class PurchaseListener extends React.Component<Props, State> {
   async componentDidMount() {
     const { navigation } = this.props
 
-    this.purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase: InAppPurchase | Purchase) => {
+    this.purchaseUpdateSubscription = purchaseUpdatedListener(
+      async (purchase: InAppPurchase | Purchase) => {
+        const { productId, purchaseToken, transactionId } = purchase
+        if (productId && purchaseToken && transactionId) {
+          // Don't use await on navigate, or it can lead to race condition issues between
+          // different screens' render methods.
+          navigation.navigate(PV.RouteNames.PurchasingScreen)
 
-      const { productId, purchaseToken, transactionId } = purchase
-      if (productId && purchaseToken && transactionId) {
-        // Don't use await on navigate, or it can lead to race condition issues between
-        // different screens' render methods.
-        navigation.navigate(PV.RouteNames.PurchasingScreen)
-
-        if (Platform.OS === 'android') {
-          try {
-            await androidHandleStatusCheck(productId, purchaseToken, transactionId)
-          } catch (error) {
-            console.log('error', error)
-            showPurchaseSomethingWentWrongError()
+          if (Platform.OS === 'android') {
+            try {
+              await androidHandleStatusCheck(
+                productId,
+                purchaseToken,
+                transactionId
+              )
+            } catch (error) {
+              console.log('error', error)
+              showPurchaseSomethingWentWrongError()
+            }
+          } else if (Platform.OS === 'ios') {
+            // TODO: handle iOS purchase flow
+            console.log('iOS flow')
           }
-        } else if (Platform.OS === 'ios') {
-          // TODO: handle iOS purchase flow
-          console.log('iOS flow')
         }
       }
-    })
+    )
 
-    this.purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
-      console.log('purchaseErrorListener', error)
-    })
+    this.purchaseErrorSubscription = purchaseErrorListener(
+      (error: PurchaseError) => {
+        console.log('purchaseErrorListener', error)
+      }
+    )
   }
 
   componentWillUnmount() {
@@ -60,7 +71,7 @@ export class PurchaseListener extends React.Component<Props, State> {
     }
   }
 
-  render () {
+  render() {
     return null
   }
 }

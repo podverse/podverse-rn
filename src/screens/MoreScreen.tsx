@@ -118,7 +118,7 @@ export class MoreScreen extends React.Component<Props, State> {
                           right: -22,
                           top: 19
                         }}
-                        status='error'
+                        status="error"
                         value={downloadsActiveCount}
                       />
                     )}

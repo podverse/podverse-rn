@@ -100,7 +100,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       headerRight: (
         <RNView style={core.row}>
           <NavShareIcon
-            endingText=' – shared using Podverse'
+            endingText=" – shared using Podverse"
             podcastTitle={podcastTitle}
             url={PV.URLs.podcast + podcastId}
           />
@@ -453,7 +453,9 @@ export class PodcastScreen extends React.Component<Props, State> {
   _toggleSubscribeToPodcast = async () => {
     const { podcastId } = this.state
     if (podcastId) {
-      const wasAlerted = await alertIfNoNetworkConnection('subscribe to podcast')
+      const wasAlerted = await alertIfNoNetworkConnection(
+        'subscribe to podcast'
+      )
       if (wasAlerted) return
 
       this.setState({ isSubscribing: true }, async () => {
@@ -464,7 +466,9 @@ export class PodcastScreen extends React.Component<Props, State> {
           this.setState({ isSubscribing: false })
         }
 
-        const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
+        const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(
+          podcastId
+        )
 
         this.setState({
           downloadedEpisodeLimit,
@@ -496,10 +500,17 @@ export class PodcastScreen extends React.Component<Props, State> {
     const { podcastId } = this.state
     if (podcastId) {
       const shouldLimitDownloads = !this.state.limitDownloadedEpisodes
-      const globalDownloadedEpisodeLimitCount = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT) as any
-      setDownloadedEpisodeLimit(podcastId, shouldLimitDownloads ? globalDownloadedEpisodeLimitCount : null)
+      const globalDownloadedEpisodeLimitCount = (await AsyncStorage.getItem(
+        PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT
+      )) as any
+      setDownloadedEpisodeLimit(
+        podcastId,
+        shouldLimitDownloads ? globalDownloadedEpisodeLimitCount : null
+      )
       this.setState({
-        downloadedEpisodeLimit: shouldLimitDownloads ? globalDownloadedEpisodeLimitCount : null,
+        downloadedEpisodeLimit: shouldLimitDownloads
+          ? globalDownloadedEpisodeLimitCount
+          : null,
         limitDownloadedEpisodes: shouldLimitDownloads
       })
     }

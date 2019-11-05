@@ -87,43 +87,43 @@ export class SignUp extends React.Component<Props, State> {
     return (
       <View style={[styles.view, style]}>
         <TextInput
-          keyboardType='email-address'
+          keyboardType="email-address"
           onChangeText={this.emailChanged}
           style={styles.textField}
           value={this.state.email}
-          autoCapitalize='none'
-          placeholder='Email'
+          autoCapitalize="none"
+          placeholder="Email"
         />
         <TextInput
           secureTextEntry={true}
           onChangeText={this.passwordChanged}
           style={styles.textField}
           value={this.state.password}
-          underlineColorAndroid='transparent'
-          autoCapitalize='none'
-          placeholder='Password'
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+          placeholder="Password"
         />
         <TextInput
           secureTextEntry={true}
           onChangeText={this.passwordVerificationChanged}
           style={[styles.textField, passwordMismatch ? errorStyle : null]}
-          autoCapitalize='none'
+          autoCapitalize="none"
           value={this.state.passwordVerification}
-          underlineColorAndroid='transparent'
-          placeholder='Verify Password'
+          underlineColorAndroid="transparent"
+          placeholder="Verify Password"
         />
         <TextInput
           onChangeText={this.nameChanged}
           style={styles.textField}
           value={this.state.name}
-          placeholder='Name (optional)'
+          placeholder="Name (optional)"
         />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
           disabled={disabled || isLoading}
           onPress={this.signUp}>
           {isLoading ? (
-            <ActivityIndicator color={PV.Colors.white} size='small' />
+            <ActivityIndicator color={PV.Colors.white} size="small" />
           ) : (
             <Text style={[styles.signInButtonText, disabledTextStyle]}>
               Sign Up

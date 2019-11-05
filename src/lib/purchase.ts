@@ -8,12 +8,8 @@ import { getAuthUserInfo } from '../state/actions/auth'
 
 // Purchase items
 const itemSkus = Platform.select({
-  ios: [
-    'podverse_premium_membership_1_year'
-  ],
-  android: [
-    'podverse_premium_membership_1_year'
-  ]
+  ios: ['podverse_premium_membership_1_year'],
+  android: ['podverse_premium_membership_1_year']
 })
 
 const _podversePremiumMembership1Year = itemSkus[0]
@@ -23,7 +19,11 @@ export const buy1YearPremium = async () => {
   await RNIap.requestPurchase(_podversePremiumMembership1Year)
 }
 
-export const androidHandleStatusCheck = async (productId: string, purchaseToken: string, orderId: string) => {
+export const androidHandleStatusCheck = async (
+  productId: string,
+  purchaseToken: string,
+  orderId: string
+) => {
   await handlePurchaseLoadingState(productId, purchaseToken, orderId)
 
   const response = await updateGooglePlayPurchaseStatus({
@@ -53,7 +53,11 @@ export const iosHandlePurchaseStatusCheck = async () => {
   console.log('iosHandlePurchaseStatusCheck')
 }
 
-export const handlePurchaseLoadingState = async(productId: string, purchaseToken: string, orderId: string) => {
+export const handlePurchaseLoadingState = async (
+  productId: string,
+  purchaseToken: string,
+  orderId: string
+) => {
   const globalState = getGlobal()
 
   setGlobal({
@@ -72,7 +76,10 @@ export const handlePurchaseLoadingState = async(productId: string, purchaseToken
   })
 }
 
-const handleStatusSuccessful = async (purchaseToken: string, orderId: string) => {
+const handleStatusSuccessful = async (
+  purchaseToken: string,
+  orderId: string
+) => {
   const globalState = getGlobal()
 
   setGlobal({

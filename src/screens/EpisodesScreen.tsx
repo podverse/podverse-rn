@@ -230,7 +230,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   _renderHiddenItem = ({ item }, rowMap) => (
     <SwipeRowBack
       onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      text='Delete'
+      text="Delete"
     />
   )
 
@@ -348,7 +348,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             onRefresh={queryFrom !== _downloadedKey ? this._onRefresh : null}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderEpisodeItem}
-            resultsText='episodes'
+            resultsText="episodes"
           />
         )}
         <ActionSheet
