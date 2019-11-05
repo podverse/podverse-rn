@@ -15,7 +15,7 @@ import { darkTheme, lightTheme } from './src/styles'
 
 YellowBox.ignoreWarnings(['Warning: componentWillUpdate'])
 
-console.disableYellowBox = true
+// console.disableYellowBox = true
 
 type Props = {}
 
