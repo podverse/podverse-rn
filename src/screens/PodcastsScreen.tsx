@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { AppState, Linking, Platform, StyleSheet } from 'react-native'
+import { Alert, AppState, Linking, Platform, StyleSheet } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
@@ -9,6 +9,7 @@ import {
   FlatList,
   PlayerEvents,
   PodcastTableCell,
+  PurchaseListener,
   SearchBar,
   SwipeRowBack,
   TableSectionSelectors,
@@ -139,18 +140,20 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
         // navigation.navigate(PV.RouteNames.Onboarding)
       } else {
-        await this._initializeScreenData()
+        this._initializeScreenData()
       }
     } catch (error) {
-      if (
-        error.name === PV.Errors.FREE_TRIAL_EXPIRED.name ||
-        error.name === PV.Errors.PREMIUM_MEMBERSHIP_EXPIRED.name
-      ) {
-        // Since the expired user was logged out after the alert in getAuthUserInfo,
-        // we initialiize the screen data again, this time as a local/logged-out user.
-        await this._initializeScreenData()
-      }
+      isInitialLoad = false
+      this.setState({
+        isLoading: false
+      })
       console.log(error)
+
+      Alert.alert(
+        PV.Alerts.SOMETHING_WENT_WRONG.title,
+        PV.Alerts.SOMETHING_WENT_WRONG.message,
+        PV.Alerts.BUTTONS.OK
+      )
     }
   }
 
@@ -263,10 +266,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     const { querySort } = this.state
     let sort =
-      querySort === _alphabeticalKey || querySort === _mostRecentKey
+      !querySort ||
+      querySort === _alphabeticalKey ||
+      querySort === _mostRecentKey
         ? _topPastWeek
         : querySort
-    if (querySortOverride) sort = querySortOverride
+    if (querySortOverride) {
+      sort = querySortOverride
+    }
     isInitialLoad = false
 
     this.setState(
@@ -549,6 +556,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   render() {
+    const { navigation } = this.props
     const {
       categoryItems,
       queryFrom,
@@ -582,8 +590,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         <PlayerEvents />
         <TableSectionSelectors
-          handleSelectLeftItem={this.selectLeftItem}
-          handleSelectRightItem={this.selectRightItem}
+          handleSelectLeftItem={(selectedKey: string) =>
+            this.selectLeftItem(selectedKey)
+          }
+          handleSelectRightItem={(selectedKey: string) =>
+            this.selectRightItem(selectedKey)
+          }
           hidePickers={isInitialLoad}
           leftItems={leftItems}
           rightItems={
@@ -649,6 +661,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             onPress={this._handleDataSettingsAllowData}
           />
         </Dialog.Container>
+        <PurchaseListener navigation={navigation} />
       </View>
     )
   }

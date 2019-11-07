@@ -70,7 +70,7 @@ type Props = {
 }
 
 type State = {
-  downloadedEpisodeLimit: string
+  downloadedEpisodeLimit?: string | null
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
@@ -167,14 +167,10 @@ export class PodcastScreen extends React.Component<Props, State> {
     const podcastId =
       this.props.navigation.getParam('podcastId') || this.state.podcastId
     const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
-    const globalDownloadedEpisodeLimit = await AsyncStorage.getItem(
-      PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT
-    )
 
     this.setState(
       {
-        downloadedEpisodeLimit:
-          downloadedEpisodeLimit || globalDownloadedEpisodeLimit,
+        downloadedEpisodeLimit,
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
@@ -205,6 +201,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             podcast: newPodcast
           })
         } catch (error) {
+          console.log('_initializePageData', error)
           this.setState({
             ...newState,
             isLoading: false,
@@ -455,29 +452,31 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _toggleSubscribeToPodcast = async () => {
     const { podcastId } = this.state
-    const wasAlerted = await alertIfNoNetworkConnection('subscribe to podcast')
-    if (wasAlerted) return
-
-    this.setState({ isSubscribing: true }, async () => {
-      try {
-        await toggleSubscribeToPodcast(podcastId, this.global)
-        this.setState({ isSubscribing: false })
-      } catch (error) {
-        this.setState({ isSubscribing: false })
-      }
-
-      const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
-      const globalDownloadedEpisodeLimit = await AsyncStorage.getItem(
-        PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT
+    if (podcastId) {
+      const wasAlerted = await alertIfNoNetworkConnection(
+        'subscribe to podcast'
       )
+      if (wasAlerted) return
 
-      this.setState({
-        downloadedEpisodeLimit:
-          downloadedEpisodeLimit || globalDownloadedEpisodeLimit,
-        limitDownloadedEpisodes:
-          downloadedEpisodeLimit && downloadedEpisodeLimit > 0
+      this.setState({ isSubscribing: true }, async () => {
+        try {
+          await toggleSubscribeToPodcast(podcastId, this.global)
+          this.setState({ isSubscribing: false })
+        } catch (error) {
+          this.setState({ isSubscribing: false })
+        }
+
+        const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(
+          podcastId
+        )
+
+        this.setState({
+          downloadedEpisodeLimit,
+          limitDownloadedEpisodes:
+            downloadedEpisodeLimit && downloadedEpisodeLimit > 0
+        })
       })
-    })
+    }
   }
 
   _handleDownloadPressed = () => {
@@ -497,10 +496,24 @@ export class PodcastScreen extends React.Component<Props, State> {
     this.setState({ showSettings: !this.state.showSettings })
   }
 
-  _handleToggleLimitDownloads = () => {
-    this.setState({
-      limitDownloadedEpisodes: !this.state.limitDownloadedEpisodes
-    })
+  _handleToggleLimitDownloads = async () => {
+    const { podcastId } = this.state
+    if (podcastId) {
+      const shouldLimitDownloads = !this.state.limitDownloadedEpisodes
+      const globalDownloadedEpisodeLimitCount = (await AsyncStorage.getItem(
+        PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT
+      )) as any
+      setDownloadedEpisodeLimit(
+        podcastId,
+        shouldLimitDownloads ? globalDownloadedEpisodeLimitCount : null
+      )
+      this.setState({
+        downloadedEpisodeLimit: shouldLimitDownloads
+          ? globalDownloadedEpisodeLimitCount
+          : null,
+        limitDownloadedEpisodes: shouldLimitDownloads
+      })
+    }
   }
 
   _handleChangeDownloadLimitText = (value: string) => {
@@ -512,8 +525,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { globalTheme } = this.global
-    const isDarkMode = globalTheme === darkTheme
+
     const {
       downloadedEpisodeLimit,
       isLoading,

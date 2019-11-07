@@ -15,8 +15,8 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
 
   showLeavingAppAlert = (url: string) => {
     Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Yes', onPress: () => Linking.openURL(url) },
-      { text: 'Cancel' }
+      { text: 'Cancel' },
+      { text: 'Yes', onPress: () => Linking.openURL(url) }
     ])
   }
 

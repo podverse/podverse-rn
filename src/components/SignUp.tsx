@@ -116,7 +116,7 @@ export class SignUp extends React.Component<Props, State> {
           onChangeText={this.nameChanged}
           style={styles.textField}
           value={this.state.name}
-          placeholder="Name"
+          placeholder="Name (optional)"
         />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
@@ -137,28 +137,29 @@ export class SignUp extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
-  view: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  textField: {
-    width: '80%',
-    height: 50,
-    marginBottom: 40,
-    backgroundColor: PV.Colors.white,
-    paddingLeft: 20
-  },
   signInButton: {
+    alignItems: 'center',
     borderColor: PV.Colors.white,
     borderWidth: 1,
+    marginTop: 12,
     padding: 10,
-    width: '65%',
-    alignItems: 'center'
+    width: '65%'
   },
   signInButtonText: {
-    fontSize: PV.Fonts.sizes.md,
     color: PV.Colors.white,
+    fontSize: PV.Fonts.sizes.md,
     fontWeight: 'bold'
+  },
+  textField: {
+    backgroundColor: PV.Colors.white,
+    height: 50,
+    marginBottom: 30,
+    paddingLeft: 20,
+    width: '80%'
+  },
+  view: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%'
   }
 })

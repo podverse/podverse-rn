@@ -69,7 +69,7 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     Alert.alert(
       PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.title,
       PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.message,
-      []
+      PV.Alerts.BUTTONS.OK
     )
   }
 

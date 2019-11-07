@@ -1,7 +1,7 @@
 import { Alert } from 'react-native'
 import RNSecureKeyStore from 'react-native-secure-key-store'
-import { setGlobal } from 'reactn'
-import { getMembershipStatus } from '../../lib/utility'
+import { getGlobal, setGlobal } from 'reactn'
+import { shouldShowMembershipAlert } from '../../lib/utility'
 import { PV } from '../../resources'
 import { getAuthenticatedUserInfo, login, signUp } from '../../services/auth'
 import { getSubscribedPodcasts } from './podcast'
@@ -13,26 +13,50 @@ export type Credentials = {
 }
 
 export const getAuthUserInfo = async () => {
+  const globalState = getGlobal()
   try {
     const results = await getAuthenticatedUserInfo()
     const userInfo = results[0]
     const isLoggedIn = results[1]
+    const shouldShowAlert = shouldShowMembershipAlert(userInfo)
+    setGlobal({
+      ...globalState,
+      session: {
+        userInfo,
+        isLoggedIn
+      },
+      overlayAlert: {
+        ...globalState.overlayAlert,
+        showAlert: shouldShowAlert
 
-    if (isLoggedIn) {
-      await alertIfMembershipExpired(userInfo)
-    }
-
-    setGlobal({ session: { userInfo, isLoggedIn } })
+      }
+    })
     return userInfo
   } catch (error) {
+    console.log('getAuthUserInfo action', error)
     setGlobal({
+      ...globalState,
       session: {
         userInfo: {
+          email: '',
+          freeTrialExpiration: '',
+          historyItems: [],
+          id: '',
+          membershipExpiration: '',
+          name: '',
+          playlists: [],
           subscribedPlaylistIds: [],
           subscribedPodcastIds: [],
           subscribedUserIds: []
         },
         isLoggedIn: false
+      },
+      overlayAlert: {
+        hideFreeTrialExpired: false,
+        hideFreeTrialExpiring: false,
+        hideMembershipExpired: false,
+        hideMembershipExpiring: false,
+        showAlert: false
       }
     })
 
@@ -43,7 +67,7 @@ export const getAuthUserInfo = async () => {
 export const loginUser = async (credentials: Credentials) => {
   try {
     const userInfo = await login(credentials.email, credentials.password)
-    await alertIfMembershipExpired(userInfo)
+
     await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
     setGlobal({ session: { userInfo, isLoggedIn: true } })
     return userInfo
@@ -57,31 +81,12 @@ export const logoutUser = async () => {
     RNSecureKeyStore.remove(PV.Keys.BEARER_TOKEN)
     await getAuthUserInfo()
   } catch (error) {
-    Alert.alert('Error', error.message, [])
+    console.log(error)
+    Alert.alert('Error', error.message, PV.Alerts.BUTTONS.OK)
   }
 }
 
 export const signUpUser = async (credentials: Credentials) => {
-  await signUp(credentials.email, credentials.password, credentials.name)
-  return getAuthUserInfo()
-}
-
-const alertIfMembershipExpired = async (userInfo: any) => {
-  const membershipStatus = getMembershipStatus(userInfo)
-
-  if (membershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRED) {
-    await Alert.alert(
-      PV.Alerts.FREE_TRIAL_EXPIRED.title,
-      PV.Alerts.FREE_TRIAL_EXPIRED.message,
-      PV.Alerts.FREE_TRIAL_EXPIRED.buttons
-    )
-    throw PV.Errors.FREE_TRIAL_EXPIRED.error()
-  } else if (membershipStatus === PV.MembershipStatus.PREMIUM_EXPIRED) {
-    await Alert.alert(
-      PV.Alerts.PREMIUM_MEMBERSHIP_EXPIRED.title,
-      PV.Alerts.PREMIUM_MEMBERSHIP_EXPIRED.message,
-      PV.Alerts.PREMIUM_MEMBERSHIP_EXPIRED.buttons
-    )
-    throw PV.Errors.PREMIUM_MEMBERSHIP_EXPIRED.error()
-  }
+  await signUp(credentials)
+  getAuthUserInfo()
 }

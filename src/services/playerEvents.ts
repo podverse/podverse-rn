@@ -21,7 +21,7 @@ import PlayerEventEmitter from './playerEventEmitter'
 
 const debouncedSetPlaybackPosition = debounce(
   setPlaybackPositionWhenDurationIsAvailable,
-  5000,
+  1000,
   {
     leading: true,
     trailing: false

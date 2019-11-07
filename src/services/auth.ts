@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
+import { Credentials } from '../state/actions/auth'
 import { request } from './request'
 
 export const getBearerToken = async () => {
@@ -144,11 +145,12 @@ export const getAuthenticatedUserInfoFromServer = async (
   const data = (response && response.data) || []
   const { subscribedPodcastIds = [] } = data
 
-  if (Array.isArray(subscribedPodcastIds))
+  if (Array.isArray(subscribedPodcastIds)) {
     await AsyncStorage.setItem(
       PV.Keys.SUBSCRIBED_PODCAST_IDS,
       JSON.stringify(subscribedPodcastIds)
     )
+  }
 
   return [data, true]
 }
@@ -156,13 +158,12 @@ export const getAuthenticatedUserInfoFromServer = async (
 export const login = async (email: string, password: string) => {
   const response = await request({
     method: 'POST',
-    endpoint: '/auth/login',
+    endpoint: '/auth/login?includeBodyToken=true',
     headers: { 'Content-Type': 'application/json' },
     body: {
       email,
       password
     },
-    query: { includeBodyToken: true },
     opts: { credentials: 'include' }
   })
 
@@ -183,33 +184,32 @@ export const sendResetPassword = async (email: string) => {
     headers: { 'Content-Type': 'application/json' },
     body: {
       email
-    },
-    opts: { credentials: 'include' }
+    }
   })
 
   return response && response.data
 }
 
-export const signUp = async (email: string, password: string, name: string) => {
+export const sendVerificationEmail = async (email: string) => {
+  const response = await request({
+    endpoint: '/auth/send-verification',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: {
+      email
+    }
+  })
+
+  return response && response.data
+}
+
+export const signUp = async (credentials: Credentials) => {
   const response = await request({
     endpoint: '/auth/sign-up',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: {
-      email,
-      password,
-      name
-    },
-    query: { includeBodyToken: true },
-    opts: { credentials: 'include' }
+    body: credentials
   })
 
-  const data = (response && response.data) || []
-  if (data.token) {
-    RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, {
-      accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY
-    })
-  }
-
-  return data
+  return response.data
 }

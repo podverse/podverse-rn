@@ -183,7 +183,7 @@ const clearHistoryItemsOnServer = async () => {
 }
 
 export const filterItemFromHistoryItems = (
-  items: NowPlayingItem[],
+  items: NowPlayingItem[] = [],
   item: NowPlayingItem
 ) =>
   items.filter((x) => {

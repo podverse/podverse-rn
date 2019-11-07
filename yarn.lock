@@ -2120,6 +2120,11 @@ domutils@^1.5.1:
     dom-serializer "0"
     domelementtype "1"
 
+dooboolab-welcome@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/dooboolab-welcome/-/dooboolab-welcome-1.1.1.tgz#ca2184f6e1f568865d707a6ce3bda7e003550f54"
+  integrity sha512-tQ/9NBCGnalHwKOBjDqTD4t4wQpDfSSbxQGctzkzaLHR3AhN0wCBkIs05JciVtvl/jfLZ+DgAndktAMk3Bu7Vw==
+
 ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
@@ -4803,6 +4808,13 @@ react-native-gesture-handler@1.4.1:
     hoist-non-react-statics "^2.3.1"
     invariant "^2.2.4"
     prop-types "^15.7.2"
+
+react-native-iap@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-4.2.0.tgz#91ebc10c98a749186eb0035ac8ca6c6db63c0aec"
+  integrity sha512-Wfy5/k5F0lG4pVAm9jC1zFNcz8d8IRfhJm9sR1t4mJWvgrb1BNUjeMxEV0Z9lWPj9XjwBl+1sJymIEC7jBCu5w==
+  dependencies:
+    dooboolab-welcome "^1.1.1"
 
 react-native-modal@^9.0.0:
   version "9.0.0"

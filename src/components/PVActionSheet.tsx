@@ -30,65 +30,69 @@ export class PVActionSheet extends React.Component<Props, State> {
     const { globalTheme } = this.global
     const buttons = []
 
-    items.forEach((item, index) => {
-      const buttonStyle = [styles.button]
+    if (items && items.length > 0) {
+      items.forEach((item, index) => {
+        const buttonStyle = [styles.button]
 
-      if (index === 0 && !message && !title) {
-        buttonStyle.push(styles.buttonTop)
-      } else if (index === items.length - 1) {
-        buttonStyle.push(styles.buttonBottom)
-      }
+        if (index === 0 && !message && !title) {
+          buttonStyle.push(styles.buttonTop)
+        } else if (index === items.length - 1) {
+          buttonStyle.push(styles.buttonBottom)
+        }
 
-      if (item.key === 'delete') {
-        buttonStyle.push(globalTheme.actionSheetButtonDelete)
-      } else {
-        buttonStyle.push(globalTheme.actionSheetButton)
-      }
+        if (item.key === 'delete') {
+          buttonStyle.push(globalTheme.actionSheetButtonDelete)
+        } else {
+          buttonStyle.push(globalTheme.actionSheetButton)
+        }
 
-      let buttonTextStyle = globalTheme.actionSheetButtonText
-      if (item.key === 'delete') {
-        buttonTextStyle = globalTheme.actionSheetButtonTextDelete
-      }
+        let buttonTextStyle = globalTheme.actionSheetButtonText
+        if (item.key === 'delete') {
+          buttonTextStyle = globalTheme.actionSheetButtonTextDelete
+        }
 
-      buttons.push(
-        <TouchableHighlight
-          key={item.key}
-          onPress={item.onPress}
-          style={buttonStyle}
-          underlayColor={globalTheme.actionSheetButtonUnderlay.backgroundColor}>
-          <View style={styles.buttonRow}>
-            <Text style={[styles.buttonText, buttonTextStyle]}>
-              {item.text}
+        buttons.push(
+          <TouchableHighlight
+            key={item.key}
+            onPress={item.onPress}
+            style={buttonStyle}
+            underlayColor={
+              globalTheme.actionSheetButtonUnderlay.backgroundColor
+            }>
+            <View style={styles.buttonRow}>
+              <Text style={[styles.buttonText, buttonTextStyle]}>
+                {item.text}
+              </Text>
+              {item.isDownloading && (
+                <ActivityIndicator
+                  size="small"
+                  styles={styles.activityIndicator}
+                />
+              )}
+            </View>
+          </TouchableHighlight>
+        )
+      })
+
+      if (handleCancelPress) {
+        buttons.push(
+          <TouchableHighlight
+            key="cancel"
+            onPress={handleCancelPress}
+            style={[styles.buttonCancel, globalTheme.actionSheetButtonCancel]}
+            underlayColor={
+              globalTheme.actionSheetButtonCancelUnderlay.backgroundColor
+            }>
+            <Text
+              style={[
+                styles.buttonText,
+                globalTheme.actionSheetButtonTextCancel
+              ]}>
+              Cancel
             </Text>
-            {item.isDownloading && (
-              <ActivityIndicator
-                size="small"
-                styles={styles.activityIndicator}
-              />
-            )}
-          </View>
-        </TouchableHighlight>
-      )
-    })
-
-    if (handleCancelPress) {
-      buttons.push(
-        <TouchableHighlight
-          key="cancel"
-          onPress={handleCancelPress}
-          style={[styles.buttonCancel, globalTheme.actionSheetButtonCancel]}
-          underlayColor={
-            globalTheme.actionSheetButtonCancelUnderlay.backgroundColor
-          }>
-          <Text
-            style={[
-              styles.buttonText,
-              globalTheme.actionSheetButtonTextCancel
-            ]}>
-            Cancel
-          </Text>
-        </TouchableHighlight>
-      )
+          </TouchableHighlight>
+        )
+      }
     }
 
     return buttons

@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   columnText: {
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.md,
     marginLeft: 8
   },
   columnTextWrapper: {
@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   wrapper: {
-    flex: 1,
-    paddingBottom: 8
+    flex: 1
   }
 })

@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import {
   Alert,
-  AppState,
   Modal,
   StyleSheet,
   TouchableOpacity,
@@ -210,7 +209,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
     if (wasAlerted) return
 
     if (endTime === 0) {
-      Alert.alert('Clip Error', 'End time cannot be equal to 0.', [])
+      Alert.alert(
+        'Clip Error',
+        'End time cannot be equal to 0.',
+        PV.Alerts.BUTTONS.OK
+      )
       return
     }
 
@@ -218,13 +221,17 @@ export class MakeClipScreen extends React.Component<Props, State> {
       Alert.alert(
         'Clip Error',
         'The start time must be greater than 0 if no end time is provided.',
-        []
+        PV.Alerts.BUTTONS.OK
       )
       return
     }
 
     if (!startTime) {
-      Alert.alert('Clip Error', 'A start time must be provided.', [])
+      Alert.alert(
+        'Clip Error',
+        'A start time must be provided.',
+        PV.Alerts.BUTTONS.OK
+      )
       return
     }
 
@@ -232,7 +239,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       Alert.alert(
         'Clip Error',
         'The start time must be before the end time.',
-        []
+        PV.Alerts.BUTTONS.OK
       )
       return
     }
@@ -310,7 +317,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
           Alert.alert(
             PV.Alerts.SOMETHING_WENT_WRONG.title,
             error.response.data.message,
-            []
+            PV.Alerts.BUTTONS.OK
           )
         }
         console.log(error)
@@ -348,22 +355,20 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   _showClipPrivacyNote = async () => {
-    // start: temporarily disable login
-    return
-    // Alert.alert(
-    //   'Clip Settings',
-    //   "Only with Link means only people who have your clip's" +
-    //     'link can play it. These clips will not show up automatically in lists on Podverse.' +
-    //     'A premium account is required to create Public clips.',
-    //   [
-    //     {
-    //       text: 'Premium Info',
-    //       onPress: () =>
-    //         this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
-    //     },
-    //     { text: 'Ok' }
-    //   ]
-    // )
+    Alert.alert(
+      'Clip Settings',
+      "Only with Link means only people who have your clip's" +
+        'link can play it. These clips will not show up automatically in lists on Podverse.' +
+        'A premium account is required to create Public clips.',
+      [
+        {
+          text: 'Premium Info',
+          onPress: () =>
+            this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
+        },
+        { text: 'Ok' }
+      ]
+    )
   }
 
   render() {
@@ -576,10 +581,12 @@ const placeholderItem = {
 }
 
 const privacyItems = (isLoggedIn?: boolean) => {
-  const items = [{
-    label: 'Only with link',
-    value: _onlyWithLinkKey
-  }]
+  const items = [
+    {
+      label: 'Only with link',
+      value: _onlyWithLinkKey
+    }
+  ]
 
   if (isLoggedIn) {
     items.unshift({

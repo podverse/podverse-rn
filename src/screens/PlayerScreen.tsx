@@ -1,10 +1,4 @@
-import {
-  Alert,
-  AppState,
-  Linking,
-  StyleSheet,
-  View as RNView
-} from 'react-native'
+import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
 import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
@@ -47,17 +41,9 @@ import {
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
-import {
-  getNowPlayingItem,
-  getNowPlayingItemFromQueueOrHistoryByTrackId,
-  PVTrackPlayer
-} from '../services/player'
-import PlayerEventEmitter from '../services/playerEventEmitter'
+import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
 import { addQueueItemNext } from '../services/queue'
-import {
-  loadItemAndPlayTrack,
-  updatePlayerState
-} from '../state/actions/player'
+import { loadItemAndPlayTrack } from '../state/actions/player'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core, navHeader } from '../styles'
 
@@ -93,12 +79,11 @@ export class PlayerScreen extends React.Component<Props, State> {
             getInitialProgressValue={_getInitialProgressValue}
             navigation={navigation}
           />
-          {/* start: disable login */}
-          {/* <NavAddToPlaylistIcon
+          <NavAddToPlaylistIcon
             getEpisodeId={_getEpisodeId}
             getMediaRefId={_getMediaRefId}
             navigation={navigation}
-          /> */}
+          />
           <NavShareIcon handlePress={_showShareActionSheet} />
           <NavQueueIcon navigation={navigation} />
         </RNView>
@@ -413,8 +398,9 @@ export class PlayerScreen extends React.Component<Props, State> {
     if (wasAlerted) return
     const { nowPlayingItem } = this.global.player
     try {
-      if (nowPlayingItem)
+      if (nowPlayingItem) {
         toggleSubscribeToPodcast(nowPlayingItem.podcastId, this.global)
+      }
       this._dismissHeaderActionSheet()
     } catch (error) {
       this._dismissHeaderActionSheet()
@@ -422,7 +408,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         Alert.alert(
           PV.Alerts.SOMETHING_WENT_WRONG.title,
           PV.Alerts.SOMETHING_WENT_WRONG.message,
-          []
+          PV.Alerts.BUTTONS.OK
         )
       }
     }

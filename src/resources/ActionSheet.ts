@@ -18,6 +18,8 @@ const mediaMoreButtons = (
   handleDismiss: any,
   handleDownload: any
 ) => {
+  if (!item || !item.episodeId) return
+
   const globalState = getGlobal()
   const isDownloading =
     globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
@@ -36,24 +38,21 @@ const mediaMoreButtons = (
       }
     })
   } else {
-    buttons.push(
-      {
-        key: 'stream',
-        text: 'Stream',
-        onPress: async () => {
-          const showAlert = await hasTriedAlert(
-            handleDismiss,
-            navigation,
-            false
-          )
-          if (showAlert) return
+    buttons.push({
+      key: 'stream',
+      text: 'Stream',
+      onPress: async () => {
+        const showAlert = await hasTriedAlert(handleDismiss, navigation, false)
+        if (showAlert) return
 
-          await handleDismiss()
-          const shouldPlay = true
-          await loadItemAndPlayTrack(item, shouldPlay)
-        }
-      },
-      {
+        await handleDismiss()
+        const shouldPlay = true
+        await loadItemAndPlayTrack(item, shouldPlay)
+      }
+    })
+
+    if (handleDownload) {
+      buttons.push({
         key: 'download',
         text: downloadingText,
         isDownloading,
@@ -69,8 +68,8 @@ const mediaMoreButtons = (
             handleDownload()
           }
         }
-      }
-    )
+      })
+    }
   }
 
   buttons.push(

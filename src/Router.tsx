@@ -10,46 +10,23 @@ import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { getGlobal } from 'reactn'
 import { NavQueueIcon, PVTabBar } from './components'
 import { PV } from './resources'
-import {
-  AboutScreen,
-  AuthScreen,
-  ClipsScreen,
-  DownloadsScreen,
-  EditPlaylistScreen,
-  EditProfileScreen,
-  EpisodeScreen,
-  EpisodesScreen,
-  MakeClipScreen,
-  MembershipScreen,
-  MoreScreen,
-  OnboardingScreen,
-  PlayerScreen,
-  PlaylistsAddToScreen,
-  PlaylistScreen,
-  PlaylistsScreen,
-  PodcastScreen,
-  PodcastsScreen,
-  ProfileScreen,
-  ProfilesScreen,
-  QueueScreen,
-  SearchScreen,
-  SettingsScreen,
-  WebPageScreen,
-  TermsOfServiceScreen
-} from './screens'
+import { AboutScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
+  EmailVerificationScreen, EpisodeScreen, EpisodesScreen, MakeClipScreen, MembershipScreen, MoreScreen,
+  OnboardingScreen, PlayerScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen,
+  PodcastsScreen, ProfileScreen, ProfilesScreen, PurchasingScreen, QueueScreen, SearchScreen, SettingsScreen,
+  TermsOfServiceScreen, WebPageScreen } from './screens'
 
-const defaultNavigationOptions = ({ navigation }) =>
-  ({
-    title: PV.Tabs.Podcasts.title,
-    headerStyle: {
-      backgroundColor: PV.Colors.brandColor
-    },
-    headerTintColor: PV.Colors.white,
-    headerTitleStyle: {
-      fontWeight: 'bold'
-    },
-    headerRight: <NavQueueIcon navigation={navigation} />
-  } as NavigationScreenOptions)
+const defaultNavigationOptions = ({ navigation }) => ({
+  title: PV.Tabs.Podcasts.title,
+  headerStyle: {
+    backgroundColor: PV.Colors.brandColor
+  },
+  headerTintColor: PV.Colors.white,
+  headerTitleStyle: {
+    fontWeight: 'bold'
+  },
+  headerRight: <NavQueueIcon navigation={navigation} />
+}) as NavigationScreenOptions
 
 const AuthNavigator = createStackNavigator(
   {
@@ -225,95 +202,82 @@ const DownloadsActiveTabBadge = () => {
   )
 }
 
-const OnboardingNavigator = createStackNavigator(
-  {
-    [PV.RouteNames.OnboardingScreen]: OnboardingScreen,
-    [PV.RouteNames.AuthNavigator]: AuthNavigator
-  },
-  {
-    initialRouteName: PV.RouteNames.OnboardingScreen,
-    mode: 'modal',
-    headerMode: 'none'
-  }
-)
+const OnboardingNavigator = createStackNavigator({
+  [PV.RouteNames.OnboardingScreen]: OnboardingScreen,
+  [PV.RouteNames.AuthNavigator]: AuthNavigator
+}, {
+  initialRouteName: PV.RouteNames.OnboardingScreen,
+  mode: 'modal',
+  headerMode: 'none'
+})
 
-const TabNavigator = createBottomTabNavigator(
-  {
-    Podcasts: { screen: PodcastsNavigator, path: '' },
-    Episodes: EpisodesNavigator,
-    Clips: ClipsNavigator,
-    Search: { screen: SearchNavigator, path: PV.DeepLinks.Search.path },
-    More: { screen: MoreNavigator, path: '' }
-  },
-  {
-    tabBarComponent: (props: any) => <PVTabBar {...props} />
-  }
-)
+const TabNavigator = createBottomTabNavigator({
+  Podcasts: { screen: PodcastsNavigator, path: '' },
+  Episodes: EpisodesNavigator,
+  Clips: ClipsNavigator,
+  Search: { screen: SearchNavigator, path: PV.DeepLinks.Search.path },
+  More: { screen: MoreNavigator, path: '' }
+}, {
+  tabBarComponent: (props: any) => <PVTabBar {...props} />
+})
 
-const PlayerNavigator = createStackNavigator(
-  {
-    [PV.RouteNames.PlayerScreen]: {
-      screen: PlayerScreen,
-      path: PV.DeepLinks.Clip.path
-    },
-    [PV.RouteNames.MakeClipScreen]: MakeClipScreen
-  },
-  {
-    defaultNavigationOptions
-  }
-)
+const PlayerNavigator = createStackNavigator({
+  [PV.RouteNames.PlayerScreen]: { screen: PlayerScreen, path: PV.DeepLinks.Clip.path },
+  [PV.RouteNames.MakeClipScreen]: MakeClipScreen
+}, {
+  defaultNavigationOptions
+})
 
-const PlaylistsAddToNavigator = createStackNavigator(
-  {
-    [PV.RouteNames.PlaylistsAddToScreen]: PlaylistsAddToScreen
-  },
-  {
-    defaultNavigationOptions
-  }
-)
+const PlaylistsAddToNavigator = createStackNavigator({
+  [PV.RouteNames.PlaylistsAddToScreen]: PlaylistsAddToScreen
+}, {
+  defaultNavigationOptions
+})
 
-const QueueNavigator = createStackNavigator(
-  {
-    [PV.RouteNames.QueueScreen]: QueueScreen
-  },
-  {
-    defaultNavigationOptions
-  }
-)
+const QueueNavigator = createStackNavigator({
+  [PV.RouteNames.QueueScreen]: QueueScreen
+}, {
+  defaultNavigationOptions
+})
 
-const WebPageNavigator = createStackNavigator(
-  {
-    [PV.RouteNames.WebPageScreen]: WebPageScreen
-  },
-  {
-    defaultNavigationOptions
-  }
-)
+const WebPageNavigator = createStackNavigator({
+  [PV.RouteNames.WebPageScreen]: WebPageScreen
+}, {
+  defaultNavigationOptions
+})
 
-const MainApp = createStackNavigator(
-  {
-    [PV.RouteNames.TabNavigator]: { screen: TabNavigator, path: '' },
-    [PV.RouteNames.AuthNavigator]: AuthNavigator,
-    [PV.RouteNames.PlayerNavigator]: { screen: PlayerNavigator, path: '' },
-    PlaylistsAddToNavigator,
-    QueueNavigator,
-    WebPageNavigator
-  },
-  {
-    mode: 'modal',
-    headerMode: 'none'
-  }
-)
+const EmailVerificationNavigator = createStackNavigator({
+  [PV.RouteNames.EmailVerificationScreen]: EmailVerificationScreen
+}, {
+  defaultNavigationOptions
+})
 
-const SwitchNavigator = createSwitchNavigator(
-  {
-    MainApp: { screen: MainApp, path: '' },
-    Onboarding: OnboardingNavigator
-  },
-  {
-    initialRouteName: PV.RouteNames.MainApp
-  }
-)
+const PurchasingNavigator = createStackNavigator({
+  [PV.RouteNames.PurchasingScreen]: PurchasingScreen
+}, {
+  defaultNavigationOptions
+})
+
+const MainApp = createStackNavigator({
+  [PV.RouteNames.TabNavigator]: { screen: TabNavigator, path: '' },
+  [PV.RouteNames.AuthNavigator]: AuthNavigator,
+  [PV.RouteNames.PlayerNavigator]: { screen: PlayerNavigator, path: '' },
+  PlaylistsAddToNavigator,
+  QueueNavigator,
+  WebPageNavigator,
+  EmailVerificationNavigator,
+  PurchasingNavigator
+}, {
+  mode: 'modal',
+  headerMode: 'none'
+})
+
+const SwitchNavigator = createSwitchNavigator({
+  MainApp: { screen: MainApp, path: '' },
+  Onboarding: OnboardingNavigator
+}, {
+  initialRouteName: PV.RouteNames.MainApp
+})
 
 const App = createAppContainer(SwitchNavigator)
 const prefix = PV.DeepLinks.prefix

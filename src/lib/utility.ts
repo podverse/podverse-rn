@@ -184,15 +184,21 @@ export const getMembershipStatus = (user: any) => {
   if (
     !membershipExpirationDate &&
     freeTrialExpirationDate &&
-    freeTrialExpirationDate > currentDate
-  ) {
-    return PV.MembershipStatus.FREE_TRIAL
-  } else if (
-    !membershipExpirationDate &&
-    freeTrialExpirationDate &&
     freeTrialExpirationDate <= currentDate
   ) {
     return PV.MembershipStatus.FREE_TRIAL_EXPIRED
+  } else if (
+    !membershipExpirationDate &&
+    freeTrialExpirationDate &&
+    freeTrialExpirationDate <= weekBeforeCurrentDate
+  ) {
+    return PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON
+  } else if (
+    !membershipExpirationDate &&
+    freeTrialExpirationDate &&
+    freeTrialExpirationDate > currentDate
+  ) {
+    return PV.MembershipStatus.FREE_TRIAL
   } else if (
     membershipExpirationDate &&
     membershipExpirationDate <= currentDate
@@ -210,7 +216,18 @@ export const getMembershipStatus = (user: any) => {
     return PV.MembershipStatus.PREMIUM
   }
 
-  return
+  return ''
+}
+
+export const shouldShowMembershipAlert = (user: any) => {
+  const status = getMembershipStatus(user)
+  const shouldAlert = [
+    PV.MembershipStatus.FREE_TRIAL_EXPIRED,
+    PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON,
+    PV.MembershipStatus.PREMIUM_EXPIRED,
+    PV.MembershipStatus.PREMIUM_EXPIRING_SOON
+  ]
+  return shouldAlert.includes(status)
 }
 
 export const getMembershipExpiration = (user: any) => {

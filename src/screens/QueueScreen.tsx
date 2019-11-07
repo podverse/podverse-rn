@@ -139,6 +139,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
+
     navigation.setParams({
       _clearAll: this._clearAll,
       _onViewTypeSelect: this._onViewTypeSelect,

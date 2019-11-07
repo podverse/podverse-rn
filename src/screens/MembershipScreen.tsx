@@ -1,4 +1,4 @@
-import { Linking, StyleSheet } from 'react-native'
+import { Alert, StyleSheet, Platform } from 'react-native'
 import React from 'reactn'
 import {
   ActivityIndicator,
@@ -7,6 +7,11 @@ import {
   TextLink,
   View
 } from '../components'
+import {
+  buy1YearPremium,
+  androidHandleStatusCheck,
+  iosHandlePurchaseStatusCheck
+} from '../lib/purchase'
 import {
   getMembershipExpiration,
   getMembershipStatus,
@@ -46,6 +51,39 @@ export class MembershipScreen extends React.Component<Props, State> {
     this.setState({ isLoading: false })
   }
 
+  handleRenewPress = async () => {
+    try {
+      await buy1YearPremium()
+    } catch (error) {
+      console.log(error)
+
+      // If attempting to renew, but a recent previous purchase did not complete successfully,
+      // then do not buy a new product, and instead navigate to the PurchasingScreen
+      // and attempt to check and update the status of the cached purchase.
+      if (error.code === 'E_ALREADY_OWNED') {
+        if (Platform.OS === 'android') {
+          this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
+          const { orderId, productId, purchaseToken } = this.global.purchase
+          await androidHandleStatusCheck(productId, purchaseToken, orderId)
+        } else if (Platform.OS === 'ios') {
+          await iosHandlePurchaseStatusCheck()
+        }
+      } else {
+        Alert.alert(
+          PV.Alerts.PURCHASE_SOMETHING_WENT_WRONG.title,
+          PV.Alerts.PURCHASE_SOMETHING_WENT_WRONG.message,
+          PV.Alerts.BUTTONS.OK
+        )
+      }
+    }
+  }
+
+  handleSignUpPress = () => {
+    this.props.navigation.navigate(PV.RouteNames.AuthScreen, {
+      showSignUp: true
+    })
+  }
+
   render() {
     const { isLoading } = this.state
     const { globalTheme, session } = this.global
@@ -60,18 +98,6 @@ export class MembershipScreen extends React.Component<Props, State> {
     return (
       <View style={styles.wrapper}>
         {isLoading && isLoggedIn && <ActivityIndicator />}
-        {/*       // start: temporarily disable login
-                          also not sure how this condition even works
-         */}
-        {/* {!isLoading && isLoggedIn && !membershipStatus && (
-          <View>
-            <View style={styles.textRow}>
-              <Text style={[styles.subText]}>
-                Connect to the internet to view your membership status.
-              </Text>
-            </View>
-          </View>
-        )} */}
         {!isLoading && isLoggedIn && membershipStatus && (
           <View>
             <View style={styles.textRow}>
@@ -84,30 +110,30 @@ export class MembershipScreen extends React.Component<Props, State> {
               <Text style={styles.label}>Expires: </Text>
               <Text style={[styles.text]}>{readableDate(expirationDate)}</Text>
             </View>
-            {/* <View style={styles.textRow}>
-                <Text style={[styles.subText]}>
-                  To renew your membership, go to podverse.fm, login, then visit your Settings page.
-                </Text>
-              </View> */}
+            <View style={styles.textRowCentered}>
+              <TextLink
+                onPress={this.handleRenewPress}
+                style={[styles.subText]}>
+                Renew Membership
+              </TextLink>
+            </View>
           </View>
         )}
         {!isLoading && !isLoggedIn && (
           <View>
             <View style={styles.textRowCentered}>
               <Text style={styles.subTextCentered}>
-                Podverse premium accounts are currently available by invite
-                only.
+                Get 1 year of Podverse Premium for free
               </Text>
             </View>
             <View style={styles.textRowCentered}>
+              <Text style={styles.subTextCentered}>$10/year after that</Text>
+            </View>
+            <View style={styles.textRowCentered}>
               <TextLink
-                onPress={() =>
-                  Linking.openURL(
-                    'https://docs.google.com/forms/d/e/1FAIpQLSd0LJcAQ4zViL7lrl-yg192kHOQN49rvcLcf_RPTcPn-wjmgg/viewform?usp=sf_link'
-                  )
-                }
+                onPress={this.handleSignUpPress}
                 style={[styles.subText]}>
-                Request Invite
+                Sign Up
               </TextLink>
             </View>
           </View>
@@ -149,12 +175,12 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'create publicly discoverable clips',
+    text: 'sync your subscriptions on all devices',
     column1: false,
     column2: true
   },
   {
-    text: 'edit your clips',
+    text: 'sync your queue on all devices',
     column1: false,
     column2: true
   },
@@ -164,17 +190,22 @@ const comparisonData = [
     column2: true
   },
   {
+    text: 'auto save your clips to a playlist',
+    column1: false,
+    column2: true
+  },
+  {
+    text: 'edit your clips',
+    column1: false,
+    column2: true
+  },
+  {
     text: 'share your profile',
     column1: false,
     column2: true
   },
   {
-    text: 'sync subscriptions on all devices',
-    column1: false,
-    column2: true
-  },
-  {
-    text: 'sync your queue on all devices',
+    text: 'download a backup of your data',
     column1: false,
     column2: true
   },
@@ -219,13 +250,13 @@ const styles = StyleSheet.create({
   },
   textRowCentered: {
     flexDirection: 'row',
-    margin: 8,
+    marginHorizontal: 8,
+    marginVertical: 4,
     justifyContent: 'center',
     textAlign: 'center'
   },
   wrapper: {
     flex: 1,
-    // start: temporarily disable login
-    // paddingTop: 8
+    paddingTop: 8
   }
 })

@@ -214,7 +214,7 @@ export class SearchScreen extends React.Component<Props, State> {
       Alert.alert(
         PV.Alerts.SOMETHING_WENT_WRONG.title,
         PV.Alerts.SOMETHING_WENT_WRONG.message,
-        []
+        PV.Alerts.BUTTONS.OK
       )
     }
     this.setState({ showActionSheet: false })
@@ -222,8 +222,8 @@ export class SearchScreen extends React.Component<Props, State> {
 
   _navToRequestPodcastForm = async () => {
     Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.requestPodcast) },
-      { text: 'Cancel' }
+      { text: 'Cancel' },
+      { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.requestPodcast) }
     ])
   }
 

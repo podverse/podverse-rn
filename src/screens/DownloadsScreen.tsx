@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import {
+  ActionSheet,
   Divider,
   DownloadTableCell,
   FlatList,
@@ -9,6 +10,7 @@ import {
   View
 } from '../components'
 import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
+import { PV } from '../resources'
 import {
   pauseDownloadingEpisode,
   removeDownloadingEpisode,
@@ -19,11 +21,22 @@ type Props = {
   navigation?: any
 }
 
-type State = {}
+type State = {
+  selectedItem: any
+  showActionSheet: boolean
+}
 
 export class DownloadsScreen extends React.Component<Props, State> {
   static navigationOptions = {
     title: 'Downloads'
+  }
+
+  constructor() {
+    super()
+    this.state = {
+      selectedItem: null,
+      showActionSheet: false
+    }
   }
 
   _ItemSeparatorComponent = () => {
@@ -32,12 +45,28 @@ export class DownloadsScreen extends React.Component<Props, State> {
 
   _handleItemPress = (downloadTask: any) => {
     if (downloadTask.status === DownloadStatus.FINISHED) {
+      this.setState({
+        selectedItem: downloadTask,
+        showActionSheet: true
+      })
       return
     } else if (downloadTask.status === DownloadStatus.PAUSED) {
       resumeDownloadingEpisode(downloadTask.episodeId)
     } else {
       pauseDownloadingEpisode(downloadTask.episodeId)
     }
+  }
+
+  _handleCancelPress = () => {
+    return new Promise((resolve, reject) => {
+      this.setState(
+        {
+          selectedItem: null,
+          showActionSheet: false
+        },
+        resolve
+      )
+    })
   }
 
   _renderItem = ({ item }) => {
@@ -66,11 +95,13 @@ export class DownloadsScreen extends React.Component<Props, State> {
   _handleHiddenItemPress = async (selectedId, rowMap) => {
     rowMap[selectedId].closeRow()
     await removeDownloadingEpisode(selectedId)
-    await cancelDownloadTask(selectedId)
+    cancelDownloadTask(selectedId)
   }
 
   render() {
+    const { navigation } = this.props
     const { downloadsArray } = this.global
+    const { selectedItem, showActionSheet } = this.state
 
     return (
       <View style={styles.view}>
@@ -81,12 +112,27 @@ export class DownloadsScreen extends React.Component<Props, State> {
         {downloadsArray.length > 0 && (
           <FlatList
             data={downloadsArray}
+            dataTotalCount={downloadsArray.length}
             disableLeftSwipe={false}
             extraData={downloadsArray}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.episodeId}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderItem}
+          />
+        )}
+        {selectedItem && (
+          <ActionSheet
+            handleCancelPress={this._handleCancelPress}
+            items={() =>
+              PV.ActionSheet.media.moreButtons(
+                selectedItem,
+                navigation,
+                this._handleCancelPress,
+                null
+              )
+            }
+            showModal={showActionSheet}
           />
         )}
       </View>

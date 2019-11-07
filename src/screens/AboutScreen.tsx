@@ -14,8 +14,8 @@ export class AboutScreen extends React.Component<Props, State> {
 
   showLeavingAppAlert = (url: string) => {
     Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Yes', onPress: () => Linking.openURL(url) },
-      { text: 'Cancel' }
+      { text: 'Cancel' },
+      { text: 'Yes', onPress: () => Linking.openURL(url) }
     ])
   }
 
@@ -27,21 +27,6 @@ export class AboutScreen extends React.Component<Props, State> {
             {
               'Podverse makes it easy to create, share, and discover full-length clips from your favorite podcasts. Other features include an intuitive design, sharable playlists, user profiles, and the ability to sync your subscriptions and queue across all of your devices. \n\nAll Podverse software is provided under an open source, copyleft license. You may download, modify, and use it for any purpose, as long as you share your changes to the code.'
             }
-          </Text>
-          <View style={styles.separator} />
-          <Text style={styles.sectionTitle}>Principles</Text>
-          <Text style={styles.text}>
-            {
-              'Never sell or share private user data.\n\nNever add advertisements without podcaster permission.\n\nAllow users to download their completedata, so they can leave the site at any time.\n\nBuild in accordance with '
-            }
-            <Text
-              style={styles.link}
-              onPress={() => {
-                this.showLeavingAppAlert('https://humanetech.com/problem/')
-              }}>
-              humane technology
-            </Text>
-            {' principles.'}
           </Text>
           <View style={styles.separator} />
           <Text style={styles.sectionTitle}>Team</Text>

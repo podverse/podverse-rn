@@ -134,7 +134,7 @@ const addQueueItemNextOnServer = async (item: NowPlayingItem) => {
 }
 
 export const filterItemFromQueueItems = (
-  items: NowPlayingItem[],
+  items: NowPlayingItem[] = [],
   item: NowPlayingItem
 ) =>
   items.filter((x) => {

@@ -30,7 +30,7 @@ export const addDownloadedPodcastEpisode = async (
     downloadedPodcast = Object.assign(podcast, downloadedPodcast)
 
     const downloadedEpisodeLimits = await getDownloadedEpisodeLimits()
-    const downloadedEpisodeLimit = await downloadedEpisodeLimits[podcast.id]
+    const downloadedEpisodeLimit = downloadedEpisodeLimits[podcast.id]
 
     if (downloadedEpisodes.length && downloadedEpisodeLimit) {
       downloadedEpisodes.sort(
