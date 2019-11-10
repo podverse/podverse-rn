@@ -243,7 +243,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _initializeScreenData = async () => {
     await initPlayerState(this.global)
-    await getAuthUserInfo()
+
+    try {
+      await getAuthUserInfo()
+    } catch (error) {
+      console.log('initializeScreenData getAuthUserInfo', error)
+      // If getAuthUserInfo fails, continue with the networkless version of the app
+    }
 
     const { subscribedPodcastIds } = this.global.session.userInfo
     if (subscribedPodcastIds && subscribedPodcastIds.length > 0) {
@@ -644,7 +650,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             onRefresh={queryFrom === _subscribedKey ? this._onRefresh : null}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderPodcastItem}
-            resultsText="podcasts"
+            resultsText='podcasts'
           />
         )}
         <Dialog.Container visible={showDataSettingsConfirmDialog}>
@@ -653,11 +659,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
             Do you want to allow downloading episodes with your data plan?
           </Dialog.Description>
           <Dialog.Button
-            label="No, Wifi Only"
+            label='No, Wifi Only'
             onPress={this._handleDataSettingsWifiOnly}
           />
           <Dialog.Button
-            label="Yes, Allow Data"
+            label='Yes, Allow Data'
             onPress={this._handleDataSettingsAllowData}
           />
         </Dialog.Container>

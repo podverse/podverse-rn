@@ -52,11 +52,12 @@ export const getAuthenticatedUserInfoLocally = async () => {
       subscribedPlaylistIds = JSON.parse(subscribedPlaylistIdsString)
     }
   } catch (error) {
-    if (Array.isArray(subscribedPlaylistIds))
+    if (Array.isArray(subscribedPlaylistIds)) {
       await AsyncStorage.setItem(
         PV.Keys.SUBSCRIBED_PLAYLIST_IDS,
         JSON.stringify(subscribedPlaylistIds)
       )
+    }
   }
 
   try {

@@ -3,7 +3,7 @@ import RNSecureKeyStore from 'react-native-secure-key-store'
 import { getGlobal, setGlobal } from 'reactn'
 import { shouldShowMembershipAlert } from '../../lib/utility'
 import { PV } from '../../resources'
-import { getAuthenticatedUserInfo, login, signUp } from '../../services/auth'
+import { getAuthenticatedUserInfo, getAuthenticatedUserInfoLocally, login, signUp } from '../../services/auth'
 import { getSubscribedPodcasts } from './podcast'
 
 export type Credentials = {
@@ -34,33 +34,56 @@ export const getAuthUserInfo = async () => {
     return userInfo
   } catch (error) {
     console.log('getAuthUserInfo action', error)
-    setGlobal({
-      ...globalState,
-      session: {
-        userInfo: {
-          email: '',
-          freeTrialExpiration: '',
-          historyItems: [],
-          id: '',
-          membershipExpiration: '',
-          name: '',
-          playlists: [],
-          subscribedPlaylistIds: [],
-          subscribedPodcastIds: [],
-          subscribedUserIds: []
-        },
-        isLoggedIn: false
-      },
-      overlayAlert: {
-        hideFreeTrialExpired: false,
-        hideFreeTrialExpiring: false,
-        hideMembershipExpired: false,
-        hideMembershipExpiring: false,
-        showAlert: false
-      }
-    })
 
-    throw error
+    try {
+      // If an error happens, try to get the same data from local storage.
+      const results = await getAuthenticatedUserInfoLocally()
+      const userInfo = results[0]
+      const isLoggedIn = results[1]
+      const shouldShowAlert = shouldShowMembershipAlert(userInfo)
+      setGlobal({
+        ...globalState,
+        session: {
+          userInfo,
+          isLoggedIn
+        },
+        overlayAlert: {
+          ...globalState.overlayAlert,
+          showAlert: shouldShowAlert
+        }
+      })
+    } catch (error) {
+      // If that fails too, handle the failure by clearing global state,
+      // and throwing an error.
+
+      setGlobal({
+        ...globalState,
+        session: {
+          userInfo: {
+            email: '',
+            freeTrialExpiration: '',
+            historyItems: [],
+            id: '',
+            membershipExpiration: '',
+            name: '',
+            playlists: [],
+            subscribedPlaylistIds: [],
+            subscribedPodcastIds: [],
+            subscribedUserIds: []
+          },
+          isLoggedIn: false
+        },
+        overlayAlert: {
+          hideFreeTrialExpired: false,
+          hideFreeTrialExpiring: false,
+          hideMembershipExpired: false,
+          hideMembershipExpiring: false,
+          showAlert: false
+        }
+      })
+
+      throw error
+    }
   }
 }
 
