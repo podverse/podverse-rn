@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, TouchableOpacity, Linking } from 'react-native'
+import { Linking, Platform, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, SafeAreaView, Text, View } from '../components'
 import {
