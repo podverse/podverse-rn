@@ -861,6 +861,7 @@ const _categoryKey = 'category'
 const _allCategoriesKey = 'allCategories'
 const _alphabeticalKey = 'alphabetical'
 const _mostRecentKey = 'most-recent'
+const _randomKey = 'random'
 const _topPastDay = 'top-past-day'
 const _topPastWeek = 'top-past-week'
 const _topPastMonth = 'top-past-month'
@@ -906,13 +907,19 @@ const rightItems = (isAllPodcasts?: boolean) => {
   ]
 
   if (!isAllPodcasts) {
-    items.unshift({
-      label: 'most recent',
-      value: _mostRecentKey
-    })
+    items.unshift(
+      {
+        label: 'most recent',
+        value: _mostRecentKey
+      }
+    )
     items.unshift({
       label: 'alphabetical',
       value: _alphabeticalKey
+    })
+    items.push({
+      label: 'random',
+      value: _randomKey
     })
   }
 

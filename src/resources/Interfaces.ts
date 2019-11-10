@@ -134,6 +134,7 @@ export interface IFilters {
   mostRecentKey: string
   mostRecentAllKey: string
   oldestKey: string
+  randomKey: string
   topPastDay: string
   topPastWeek: string
   topPastMonth: string

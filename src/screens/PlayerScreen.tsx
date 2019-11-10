@@ -824,6 +824,10 @@ const querySortOptions = (includeOldest?: boolean) => {
     {
       label: 'top - past year',
       value: PV.Keys.QUERY_SORT_TOP_PAST_YEAR
+    },
+    {
+      label: 'random',
+      value: PV.Keys.QUERY_SORT_RANDOM
     }
   )
 

@@ -59,6 +59,7 @@ const {
   mostRecentKey,
   mostRecentAllKey,
   oldestKey,
+  randomKey,
   topPastDay,
   topPastMonth,
   topPastWeek,
@@ -792,10 +793,12 @@ const rightItems = (onlyMostRecent?: boolean, includeOldest?: boolean) => {
       value: mostRecentKey
     })
   } else {
-    items.push({
-      label: 'most recent',
-      value: mostRecentKey
-    })
+    items.push(
+      {
+        label: 'most recent',
+        value: mostRecentKey
+      }
+    )
 
     if (includeOldest) {
       items.push({
@@ -820,6 +823,10 @@ const rightItems = (onlyMostRecent?: boolean, includeOldest?: boolean) => {
       {
         label: 'top - past year',
         value: topPastYear
+      },
+      {
+        label: 'random',
+        value: randomKey
       },
       {
         label: 'most recent (all)',

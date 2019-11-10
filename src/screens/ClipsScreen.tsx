@@ -506,6 +506,7 @@ const _downloadedKey = 'downloaded'
 const _allPodcastsKey = 'allPodcasts'
 const _myClipsKey = 'myClips'
 const _mostRecentKey = 'most-recent'
+const _randomKey = 'random'
 const _topPastDay = 'top-past-day'
 const _topPastWeek = 'top-past-week'
 const _topPastMonth = 'top-past-month'
@@ -557,6 +558,10 @@ const rightItems = [
   {
     label: 'top - past year',
     value: _topPastYear
+  },
+  {
+    label: 'random',
+    value: _randomKey
   }
 ]
 

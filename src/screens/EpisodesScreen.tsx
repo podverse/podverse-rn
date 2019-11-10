@@ -461,6 +461,7 @@ const _allPodcastsKey = 'allPodcasts'
 const _downloadedKey = 'downloaded'
 const _subscribedKey = 'subscribed'
 const _mostRecentKey = 'most-recent'
+const _randomKey = 'random'
 const _topPastDay = 'top-past-day'
 const _topPastWeek = 'top-past-week'
 const _topPastMonth = 'top-past-month'
@@ -509,6 +510,10 @@ const rightItems = (onlyMostRecent?: boolean) => [
         {
           label: 'top - past year',
           value: _topPastYear
+        },
+        {
+          label: 'random',
+          value: _randomKey
         }
       ])
 ]
