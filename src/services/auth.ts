@@ -29,6 +29,7 @@ export const checkIfShouldUseServerData = async () => {
 export const getAuthenticatedUserInfo = async () => {
   const bearerToken = await getBearerToken()
   const isConnected = await hasValidNetworkConnection()
+
   if (isConnected && bearerToken) {
     return getAuthenticatedUserInfoFromServer(bearerToken)
   } else {

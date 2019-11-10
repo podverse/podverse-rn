@@ -13,10 +13,17 @@ type Props = {
 }
 
 type State = {
+  isLoadingQueueLast?: boolean
+  isLoadingQueueNext?: boolean
   yValue: any
 }
 
 export class PVActionSheet extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super()
+
+    this.state = {}
+  }
   componentDidMount() {
     // Animated.timing(_yValueHide, { toValue: _yValueShow }).start()
   }
@@ -27,6 +34,7 @@ export class PVActionSheet extends React.Component<Props, State> {
 
   generateButtons = (items: any[]) => {
     const { handleCancelPress, message, title } = this.props
+    const { isLoadingQueueLast, isLoadingQueueNext } = this.state
     const { globalTheme } = this.global
     const buttons = []
 
@@ -51,10 +59,26 @@ export class PVActionSheet extends React.Component<Props, State> {
           buttonTextStyle = globalTheme.actionSheetButtonTextDelete
         }
 
+        const isQueueButton = item.key === 'queueNext' || item.key === 'queueLast'
+        const queueOnPress = () => {
+          this.setState({
+            ...(item.key === 'queueNext' ?
+              { isLoadingQueueNext: true } : { isLoadingQueueLast: true }),
+            ...(item.key === 'queueNext' ?
+              { isLoadingQueueLast: false } : { isLoadingQueueNext: false })
+          }, async () => {
+            await item.onPress()
+            this.setState({
+              isLoadingQueueLast: false,
+              isLoadingQueueNext: false
+            })
+          })
+        }
+
         buttons.push(
           <TouchableHighlight
             key={item.key}
-            onPress={item.onPress}
+            onPress={isQueueButton ? queueOnPress : item.onPress}
             style={buttonStyle}
             underlayColor={
               globalTheme.actionSheetButtonUnderlay.backgroundColor
@@ -65,9 +89,16 @@ export class PVActionSheet extends React.Component<Props, State> {
               </Text>
               {item.isDownloading && (
                 <ActivityIndicator
-                  size="small"
+                  size='small'
                   styles={styles.activityIndicator}
                 />
+              )}
+              {((item.key === 'queueNext' && isLoadingQueueNext)
+                || (item.key === 'queueLast' && isLoadingQueueLast)) && (
+                  <ActivityIndicator
+                    size='small'
+                    styles={styles.activityIndicator}
+                  />
               )}
             </View>
           </TouchableHighlight>
@@ -77,7 +108,7 @@ export class PVActionSheet extends React.Component<Props, State> {
       if (handleCancelPress) {
         buttons.push(
           <TouchableHighlight
-            key="cancel"
+            key='cancel'
             onPress={handleCancelPress}
             style={[styles.buttonCancel, globalTheme.actionSheetButtonCancel]}
             underlayColor={

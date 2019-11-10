@@ -77,16 +77,16 @@ const mediaMoreButtons = (
       key: 'queueNext',
       text: 'Queue: Next',
       onPress: async () => {
-        await handleDismiss()
         await addItemToPlayerQueueNext(item)
+        await handleDismiss()
       }
     },
     {
       key: 'queueLast',
       text: 'Queue: Last',
       onPress: async () => {
-        await handleDismiss()
         await addItemToPlayerQueueLast(item)
+        await handleDismiss()
       }
     },
     {

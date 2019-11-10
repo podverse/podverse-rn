@@ -19,6 +19,7 @@ export const getAuthUserInfo = async () => {
     const userInfo = results[0]
     const isLoggedIn = results[1]
     const shouldShowAlert = shouldShowMembershipAlert(userInfo)
+
     setGlobal({
       ...globalState,
       session: {
