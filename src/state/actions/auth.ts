@@ -54,35 +54,6 @@ export const getAuthUserInfo = async () => {
         }
       })
     } catch (error) {
-      // If that fails too, handle the failure by clearing global state,
-      // and throwing an error.
-
-      setGlobal({
-        ...globalState,
-        session: {
-          userInfo: {
-            email: '',
-            freeTrialExpiration: '',
-            historyItems: [],
-            id: '',
-            membershipExpiration: '',
-            name: '',
-            playlists: [],
-            subscribedPlaylistIds: [],
-            subscribedPodcastIds: [],
-            subscribedUserIds: []
-          },
-          isLoggedIn: false
-        },
-        overlayAlert: {
-          hideFreeTrialExpired: false,
-          hideFreeTrialExpiring: false,
-          hideMembershipExpired: false,
-          hideMembershipExpiring: false,
-          showAlert: false
-        }
-      })
-
       throw error
     }
   }

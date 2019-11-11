@@ -718,6 +718,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     nextState?: {},
     queryOptions: { isSubCategory?: boolean; searchTitle?: string } = {}
   ) => {
+
     const newState = {
       isLoading: false,
       isLoadingMore: false,
