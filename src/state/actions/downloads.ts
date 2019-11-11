@@ -47,19 +47,23 @@ export const initDownloads = async () => {
   const downloadedPodcastEpisodeCounts = await getDownloadedPodcastEpisodeCountsService()
   const downloadedPodcasts = await getDownloadedPodcastsService()
   const autoDownloadSettings = await getAutoDownloadSettingsService()
-  const downloadedEpisodeLimitCount = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
-  const downloadedEpisodeLimitDefault = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
+  const downloadedEpisodeLimitCount = AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
+  const downloadedEpisodeLimitDefault = AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
 
-  setGlobal({
-    autoDownloadSettings,
-    downloadsActive,
-    downloadsArray,
-    downloadedEpisodeIds,
-    downloadedEpisodeLimitCount,
-    downloadedEpisodeLimitDefault,
-    downloadedPodcastEpisodeCounts,
-    downloadedPodcasts
-  })
+  // TODO: There is a race condition preventing this state from being set properly on app launch :(
+  // I don't know where the problem is coming from...
+  setTimeout(() => {
+    setGlobal({
+      autoDownloadSettings,
+      downloadsActive,
+      downloadsArray,
+      downloadedEpisodeIds,
+      downloadedEpisodeLimitCount,
+      downloadedEpisodeLimitDefault,
+      downloadedPodcastEpisodeCounts,
+      downloadedPodcasts
+    })
+  }, 1000)
 }
 
 export const updateAutoDownloadSettings = async (podcastId: string, autoDownloadOn: boolean) => {

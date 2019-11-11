@@ -65,7 +65,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
       const date = await AsyncStorage.getItem(
         PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED
       )
-      const dateObj = date || new Date().toISOString()
+      const dateObj = (date && new Date(date).toISOString()) || new Date().toISOString()
 
       const autoDownloadSettingsString = await AsyncStorage.getItem(
         PV.Keys.AUTO_DOWNLOAD_SETTINGS
@@ -79,6 +79,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
       const podcastIds = Object.keys(autoDownloadSettings).filter(
         (key: string) => autoDownloadSettings[key] === true
       )
+
       const autoDownloadEpisodes = await getAutoDownloadEpisodes(
         dateObj,
         podcastIds
