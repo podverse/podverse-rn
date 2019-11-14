@@ -11,6 +11,7 @@ type Props = {
   dataTotalCount: number | null
   disableLeftSwipe: boolean
   extraData?: any
+  handleAddPodcastByRSSURLNavigation?: any
   handleFilterInputChangeText?: any
   handleFilterInputClear?: any
   handleRequestPodcast?: any
@@ -29,6 +30,7 @@ type Props = {
   renderHiddenItem?: any
   renderItem: any
   resultsText?: string
+  showAddPodcastByRSS?: boolean
   showRequestPodcast?: boolean
 }
 
@@ -42,6 +44,7 @@ export const PVFlatList = (props: Props) => {
     dataTotalCount,
     disableLeftSwipe = true,
     extraData,
+    handleAddPodcastByRSSURLNavigation,
     handleSearchNavigation,
     handleRequestPodcast,
     hideEndOfResults,
@@ -57,6 +60,7 @@ export const PVFlatList = (props: Props) => {
     renderHiddenItem,
     renderItem,
     resultsText = 'results',
+    showAddPodcastByRSS,
     showRequestPodcast
   } = props
 
@@ -79,7 +83,13 @@ export const PVFlatList = (props: Props) => {
 
   const requestPodcastTextLink = (
     <TextLink onPress={handleRequestPodcast} style={[styles.textLink]}>
-      Request a podcast
+      Request Podcast
+    </TextLink>
+  )
+
+  const addPodcastByRSSTextLink = (
+    <TextLink onPress={handleAddPodcastByRSSURLNavigation} style={[styles.textLink]}>
+      Add Podcast by RSS URL
     </TextLink>
   )
 
@@ -89,14 +99,15 @@ export const PVFlatList = (props: Props) => {
       {noSubscribedPodcasts && !isLoadingMore && (
         <MessageWithAction
           actionHandler={handleSearchNavigation}
-          actionText="Search"
-          message="You have no subscribed podcasts"
+          actionText='Search'
+          message='You have no subscribed podcasts'
         />
       )}
       {noResultsFound && !noSubscribedPodcasts && !isLoadingMore && (
         <View style={styles.msgView}>
-          <Text style={[styles.lastCellText]}>{`No ${resultsText} found`}</Text>
+          <Text style={[styles.noResultsFoundText]}>{`No ${resultsText} found`}</Text>
           {showRequestPodcast && requestPodcastTextLink}
+          {showAddPodcastByRSS && addPodcastByRSSTextLink}
         </View>
       )}
       {((!noSubscribedPodcasts && !noResultsFound) || isLoadingMore) && (
@@ -174,6 +185,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center'
+  },
+  noResultsFoundText: {
+    fontSize: PV.Fonts.sizes.lg,
+    marginVertical: 12,
+    paddingVertical: 12,
+    textAlign: 'center'
   },
   textLink: {
     fontSize: PV.Fonts.sizes.lg,

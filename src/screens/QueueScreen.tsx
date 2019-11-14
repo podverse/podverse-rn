@@ -65,8 +65,8 @@ export class QueueScreen extends React.Component<Props, State> {
     ),
     headerLeft: (
       <Icon
-        color="#fff"
-        name="chevron-down"
+        color='#fff'
+        name='chevron-down'
         onPress={navigation.dismiss}
         size={PV.Icons.NAV}
         style={navHeader.buttonIcon}
@@ -369,7 +369,7 @@ export class QueueScreen extends React.Component<Props, State> {
                 <View>
                   <TableSectionHeader
                     containerStyles={styles.headerNowPlayingItem}
-                    title="Now Playing"
+                    title='Now Playing'
                   />
                   <QueueTableCell
                     clipEndTime={nowPlayingItem.clipEndTime}
@@ -382,7 +382,7 @@ export class QueueScreen extends React.Component<Props, State> {
                   />
                 </View>
               )}
-              <TableSectionHeader title="Next Up" />
+              <TableSectionHeader title='Next Up' />
             </View>
           )}
         {!isLoading && viewType === _queueKey && queueItems.length > 0 && (
@@ -394,7 +394,7 @@ export class QueueScreen extends React.Component<Props, State> {
           />
         )}
         {!isLoading && viewType === _queueKey && queueItems.length < 1 && (
-          <MessageWithAction message="Your queue is empty" />
+          <MessageWithAction message='Your queue is empty' />
         )}
         {!isLoading && viewType === _historyKey && historyItems.length > 0 && (
           <FlatList
@@ -407,7 +407,7 @@ export class QueueScreen extends React.Component<Props, State> {
           />
         )}
         {!isLoading && viewType === _historyKey && historyItems.length < 1 && (
-          <MessageWithAction message="No history items found" />
+          <MessageWithAction message='No history items found' />
         )}
         {(isLoading || isRemoving) && (
           <ActivityIndicator
