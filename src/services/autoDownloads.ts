@@ -27,6 +27,7 @@ export const getAutoDownloadSettings = async () => {
     )
     return itemsString ? JSON.parse(itemsString) : {}
   } catch (error) {
+    console.log('getAutoDownloadSettings error', error)
     return {}
   }
 }
