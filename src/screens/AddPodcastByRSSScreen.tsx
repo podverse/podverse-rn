@@ -1,7 +1,8 @@
 import { Alert, Linking, StyleSheet, Text as RNText, TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { Divider, Icon, ScrollView, Text, TextInput, TextLink, View } from '../components'
+import { ActivityIndicator, Divider, Icon, ScrollView, Text, TextInput, TextLink, View } from '../components'
 import { PV } from '../resources'
+import { addAddByRSSPodcast } from '../state/actions/parser'
 import { core, navHeader } from '../styles'
 
 type Props = {
@@ -26,7 +27,9 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
       />
     ),
     headerRight: (
-      <TouchableOpacity onPress={navigation.getParam('_handleSavePodcastByRSSURL')}>
+      <TouchableOpacity
+        disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
+        onPress={navigation.getParam('_handleSavePodcastByRSSURL')}>
         <RNText style={navHeader.buttonText}>Save</RNText>
       </TouchableOpacity>
     )
@@ -53,7 +56,22 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   }
 
   _handleSavePodcastByRSSURL = async () => {
-    console.log('_handleSavePodcastByRSSURL', this.state.url)
+    const { isLoading, url } = this.state
+    if (isLoading) {
+      return
+    } else if (url) {
+      this.props.navigation.setParams({ _savePodcastByRSSUrlIsLoading: true })
+      this.setState({ isLoading: true }, async () => {
+        try {
+          await addAddByRSSPodcast(url)
+        } catch (error) {
+          console.log('_handleSavePodcastByRSSURL', error)
+          Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
+        }
+        this.props.navigation.setParams({ _savePodcastByRSSUrlIsLoading: false })
+        this.setState({ isLoading: false })
+      })
+    }
   }
 
   render() {
@@ -62,29 +80,35 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.content}>
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <Text style={core.textInputLabel}>RSS Feed URL</Text>
-          <TextInput
-            autoCapitalize='none'
-            onChangeText={this._handleChangeText}
-            placeholder='https://example.com/rssFeed'
-            style={[styles.textInput, globalTheme.textInput]}
-            underlineColorAndroid='transparent'
-            value={url}
-          />
-          <Divider style={styles.divider} />
-          <Text style={styles.text}>
-            NOTE: Podcasts added by RSS URL have limited functionality.
-            You cannot create clips or playlists with podcasts added by RSS URL.
-          </Text>
-          <Text style={styles.text}>
-            If you want to officially add a podcast to Podverse,
-            please use the Request Podcast link below.
-          </Text>
-          <TextLink onPress={this._navToRequestPodcastForm} style={[styles.textLink]}>
-            Request Podcast
-          </TextLink>
-        </ScrollView>
+        {
+          isLoading &&
+            <ActivityIndicator />
+        }
+        {
+          !isLoading &&
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+              <Text style={core.textInputLabel}>RSS Feed URL</Text>
+              <TextInput
+                autoCapitalize='none'
+                onChangeText={this._handleChangeText}
+                placeholder='https://example.com/rssFeed'
+                style={[styles.textInput, globalTheme.textInput]}
+                underlineColorAndroid='transparent'
+                value={url}
+              />
+              <Divider style={styles.divider} />
+              <Text style={styles.text}>
+                Clips and playlists aren't supported for podcasts added by RSS URL.
+              </Text>
+              <Text style={styles.text}>
+                If you want a podcast officially added to Podverse,
+                please use the Request Podcast link.
+              </Text>
+              <TextLink onPress={this._navToRequestPodcastForm} style={[styles.textLink]}>
+                Request Podcast
+              </TextLink>
+            </ScrollView>
+        }
       </View>
     )
   }
