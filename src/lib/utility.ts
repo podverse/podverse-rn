@@ -386,3 +386,8 @@ export function convertHHMMSSToSeconds(hhmmssString: string) {
   }
 
 }
+
+export const convertToSortableTitle = (title: string) => {
+  const sortableTitle = title ? title.toLowerCase().replace(/\b^the\b|\b^a\b|\b^an\b/i, '').trim() : ''
+  return sortableTitle ? sortableTitle.replace(/#/g, '') : ''
+}

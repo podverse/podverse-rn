@@ -43,7 +43,6 @@
     "react-navigation": "3.13.0",
     "reactn": "2.2.4",
     "rss-parser": "^3.7.3"
-    "request": "^2.88.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

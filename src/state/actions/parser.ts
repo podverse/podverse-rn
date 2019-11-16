@@ -9,7 +9,7 @@ export const addAddByRSSPodcast = async (feedUrl: string) => {
     await parseAddByRSSPodcast(feedUrl)
     const parsedPodcasts = await getAddByRSSPodcasts()
     const latestSubscribedPodcasts = await getSubscribedPodcastsLocally()
-    const combinedPodcasts = parsedPodcasts.concat(latestSubscribedPodcasts)
+    const combinedPodcasts = parsedPodcasts.concat(latestSubscribedPodcasts[0])
     const alphabetizedPodcasts = sortPodcastArrayAlphabetically(combinedPodcasts)
     setGlobal({
       subscribedPodcasts: alphabetizedPodcasts,
