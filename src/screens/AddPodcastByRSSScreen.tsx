@@ -2,6 +2,7 @@ import { Alert, Linking, StyleSheet, Text as RNText, TouchableOpacity } from 're
 import React from 'reactn'
 import { ActivityIndicator, Divider, Icon, ScrollView, Text, TextInput, TextLink, View } from '../components'
 import { PV } from '../resources'
+import { getAddByRSSPodcast } from '../services/parser'
 import { addAddByRSSPodcast } from '../state/actions/parser'
 import { core, navHeader } from '../styles'
 
@@ -64,12 +65,20 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
       this.setState({ isLoading: true }, async () => {
         try {
           await addAddByRSSPodcast(url)
+          this.props.navigation.setParams({ _savePodcastByRSSUrlIsLoading: false })
+          this.setState({ isLoading: false })
+          const podcast = await getAddByRSSPodcast(url)
+          this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
+            podcast,
+            addByFeedUrl: podcast.addByFeedUrl
+          })
         } catch (error) {
           console.log('_handleSavePodcastByRSSURL', error)
           Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
+          this.props.navigation.setParams({ _savePodcastByRSSUrlIsLoading: false })
+          this.setState({ isLoading: false })
         }
-        this.props.navigation.setParams({ _savePodcastByRSSUrlIsLoading: false })
-        this.setState({ isLoading: false })
+
       })
     }
   }
