@@ -44,6 +44,7 @@ import {
 } from '../state/actions/player'
 import {
   getSubscribedPodcasts,
+  removeAddByRSSPodcast,
   toggleSubscribeToPodcast
 } from '../state/actions/podcast'
 import { core } from '../styles'
@@ -458,13 +459,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
     return (
       <SwipeRowBack
         isLoading={this.state.isUnsubscribing}
-        onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
+        onPress={() => this._handleHiddenItemPress(item.id, item.addByFeedUrl, rowMap)}
         text={buttonText}
       />
     )
   }
 
-  _handleHiddenItemPress = async (selectedId, rowMap) => {
+  _handleHiddenItemPress = async (selectedId, addByFeedUrl, rowMap) => {
     const { queryFrom } = this.state
 
     let wasAlerted = false
@@ -478,10 +479,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const { flatListData } = this.state
 
         if (queryFrom === _subscribedKey) {
-          await toggleSubscribeToPodcast(selectedId)
-          await removeDownloadedPodcast(selectedId)
+          if (selectedId) {
+            await toggleSubscribeToPodcast(selectedId)
+          } else {
+            await removeAddByRSSPodcast(addByFeedUrl)
+          }
+          await removeDownloadedPodcast(selectedId || addByFeedUrl)
         } else if (queryFrom === _downloadedKey) {
-          await removeDownloadedPodcast(selectedId)
+          await removeDownloadedPodcast(selectedId || addByFeedUrl)
         }
         const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
         rowMap[selectedId].closeRow()

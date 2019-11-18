@@ -1,5 +1,5 @@
 import { setGlobal } from 'reactn'
-import { getAddByRSSPodcasts, parseAddByRSSPodcast } from '../../services/parser'
+import { getAddByRSSPodcasts, parseAddByRSSPodcast, removeAddByRSSPodcast } from '../../services/parser'
 import { getSubscribedPodcastsLocally, sortPodcastArrayAlphabetically } from '../../services/podcast'
 
 export const addAddByRSSPodcast = async (feedUrl: string) => {
@@ -18,5 +18,19 @@ export const addAddByRSSPodcast = async (feedUrl: string) => {
   } catch (error) {
     console.log('addAddByRSSPodcast action', error)
     throw error
+  }
+}
+
+export const toggleAddByRSSPodcast = async (feedUrl: string) => {
+  const podcasts = await getAddByRSSPodcasts()
+  const isSubscribed = podcasts.some((x: any) => x.addByFeedUrl === feedUrl)
+  if (isSubscribed) {
+    const podcasts = await removeAddByRSSPodcast(feedUrl)
+    setGlobal({
+      subscribedPodcasts: podcasts,
+      subscribedPodcastsTotalCount: podcasts.length
+    })
+  } else {
+    await addAddByRSSPodcast(feedUrl)
   }
 }

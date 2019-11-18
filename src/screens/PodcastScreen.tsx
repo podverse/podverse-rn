@@ -48,8 +48,9 @@ import {
   removeDownloadedPodcastEpisode,
   updateAutoDownloadSettings
 } from '../state/actions/downloads'
+import { toggleAddByRSSPodcast } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
-import { core, darkTheme } from '../styles'
+import { core } from '../styles'
 
 const {
   aboutKey,
@@ -100,11 +101,14 @@ export class PodcastScreen extends React.Component<Props, State> {
       title: 'Podcast',
       headerRight: (
         <RNView style={core.row}>
-          <NavShareIcon
-            endingText=" – shared using Podverse"
-            podcastTitle={podcastTitle}
-            url={PV.URLs.podcast + podcastId}
-          />
+          {
+            !addByFeedUrl &&
+              <NavShareIcon
+                endingText=' – shared using Podverse'
+                podcastTitle={podcastTitle}
+                url={PV.URLs.podcast + podcastId}
+              />
+          }
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
@@ -116,14 +120,15 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     const podcast = this.props.navigation.getParam('podcast')
     const podcastId =
-      (podcast && podcast.id) || this.props.navigation.getParam('podcastId')
+      (podcast && podcast.id) || (podcast && podcast.addByFeedUrl) || this.props.navigation.getParam('podcastId')
     const viewType =
       this.props.navigation.getParam('viewType') || allEpisodesKey
 
-    if (podcast && podcast.id) {
+    if (podcast && (podcast.id || podcast.addByFeedUrl)) {
       this.props.navigation.setParams({
-        podcastId: podcast.id,
-        podcastTitle: podcast.title
+        podcastId,
+        podcastTitle: podcast.title,
+        addByFeedUrl: podcast.addByFeedUrl
       })
     }
 
@@ -186,11 +191,17 @@ export class PodcastScreen extends React.Component<Props, State> {
         let newPodcast: any
 
         try {
-          newPodcast = await getPodcast(podcastId)
-          if (viewType === allEpisodesKey) {
-            newState = await this._queryData(allEpisodesKey)
-          } else if (viewType === clipsKey) {
-            newState = await this._queryData(clipsKey)
+          if (podcast.addByFeedUrl) {
+            newPodcast = podcast
+            newState.flatListData = podcast.episodes || []
+            newState.flatListDataTotalCount = newState.flatListData.length
+          } else {
+            newPodcast = await getPodcast(podcastId)
+            if (viewType === allEpisodesKey) {
+              newState = await this._queryData(allEpisodesKey)
+            } else if (viewType === clipsKey) {
+              newState = await this._queryData(clipsKey)
+            }
           }
 
           newPodcast.description =
@@ -261,10 +272,12 @@ export class PodcastScreen extends React.Component<Props, State> {
     const {
       endOfResultsReached,
       isLoadingMore,
+      podcast,
       queryPage = 1,
       viewType
     } = this.state
-    if (viewType !== downloadedKey && !endOfResultsReached && !isLoadingMore) {
+
+    if (!podcast.addByFeedUrl && viewType !== downloadedKey && !endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
         this.setState(
           {
@@ -330,11 +343,11 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _renderItem = ({ item }) => {
     const { podcast, viewType } = this.state
-
     const episode = {
       ...item,
       podcast
     }
+
     const isSearchScreen = this.props.navigation.getParam('isSearchScreen')
     const screen = isSearchScreen
       ? PV.RouteNames.SearchEpisodeScreen
@@ -394,7 +407,7 @@ export class PodcastScreen extends React.Component<Props, State> {
   _renderHiddenItem = ({ item }, rowMap) => (
     <SwipeRowBack
       onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      text="Delete"
+      text='Delete'
     />
   )
 
@@ -452,7 +465,9 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _toggleSubscribeToPodcast = async () => {
-    const { podcastId } = this.state
+    const { podcast, podcastId } = this.state
+    const { addByFeedUrl } = podcast
+
     if (podcastId) {
       const wasAlerted = await alertIfNoNetworkConnection(
         'subscribe to podcast'
@@ -461,7 +476,11 @@ export class PodcastScreen extends React.Component<Props, State> {
 
       this.setState({ isSubscribing: true }, async () => {
         try {
-          await toggleSubscribeToPodcast(podcastId, this.global)
+          if (addByFeedUrl) {
+            await toggleAddByRSSPodcast(podcastId)
+          } else {
+            await toggleSubscribeToPodcast(podcastId)
+          }
           this.setState({ isSubscribing: false })
         } catch (error) {
           this.setState({ isSubscribing: false })
@@ -546,9 +565,19 @@ export class PodcastScreen extends React.Component<Props, State> {
       () => this.global.session.userInfo.subscribedPodcastIds,
       []
     )
-    const isSubscribed = subscribedPodcastIds.some(
+
+    let isSubscribed = subscribedPodcastIds.some(
       (x: string) => x === podcastId
     )
+
+    if (!isSubscribed) {
+      const subscribedPodcasts = safelyUnwrapNestedVariable(
+        () => this.global.subscribedPodcasts,
+        []
+      )
+      isSubscribed = subscribedPodcasts.some((x: any) => x.addByFeedUrl && x.addByFeedUrl === podcastId)
+    }
+
     let { flatListData, flatListDataTotalCount } = this.state
     const { autoDownloadSettings } = this.global
     const autoDownloadOn =
@@ -599,7 +628,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             selectedRightItemKey={querySort}
           />
         )}
-        {showSettings && <TableSectionHeader title="Settings" />}
+        {showSettings && <TableSectionHeader title='Settings' />}
         {showSettings && (
           <View style={styles.settingsView}>
             <SwitchWithText
@@ -614,7 +643,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             <NumberSelectorWithText
               handleChangeText={this._handleChangeDownloadLimitText}
               selectedNumber={downloadedEpisodeLimit}
-              text="Download limit max"
+              text='Download limit max'
             />
             <Text style={styles.settingsHelpText}>
               Once the download limit is exceeded, the oldest episode will be

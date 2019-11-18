@@ -18,7 +18,7 @@ const mediaMoreButtons = (
   handleDismiss: any,
   handleDownload: any
 ) => {
-  if (!item || !item.episodeId) return
+  if (!item || (!item.episodeId && !item.addByFeedUrl)) return
 
   const globalState = getGlobal()
   const isDownloading =

@@ -1,6 +1,6 @@
 import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
-import { NavigationScreenOptions } from 'react-navigation'
+import { NavigationActions, NavigationScreenOptions, StackActions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import {
   ActionSheet,
@@ -41,8 +41,10 @@ import {
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
+import { getAddByRSSPodcast } from '../services/parser'
 import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
 import { addQueueItemNext } from '../services/queue'
+import { toggleAddByRSSPodcast } from '../state/actions/parser'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core, navHeader } from '../styles'
@@ -66,8 +68,8 @@ export class PlayerScreen extends React.Component<Props, State> {
       title: '',
       headerLeft: (
         <Icon
-          color="#fff"
-          name="chevron-down"
+          color='#fff'
+          name='chevron-down'
           onPress={navigation.dismiss}
           size={PV.Icons.NAV}
           style={navHeader.buttonIcon}
@@ -399,7 +401,11 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { nowPlayingItem } = this.global.player
     try {
       if (nowPlayingItem) {
-        toggleSubscribeToPodcast(nowPlayingItem.podcastId, this.global)
+        if (nowPlayingItem.addByFeedUrl) {
+          await toggleAddByRSSPodcast(nowPlayingItem.addByFeedUrl)
+        } else {
+          await toggleSubscribeToPodcast(nowPlayingItem.podcastId)
+        }
       }
       this._dismissHeaderActionSheet()
     } catch (error) {
@@ -581,7 +587,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                 />
               )}
               {viewType === PV.Keys.VIEW_TYPE_EPISODES && (
-                <TableSectionHeader title="From this podcast" />
+                <TableSectionHeader title='From this podcast' />
               )}
               {isLoading && <ActivityIndicator />}
               {!isLoading &&
@@ -636,9 +642,9 @@ export class PlayerScreen extends React.Component<Props, State> {
               mediaRefId,
               this._handleShare
             )}
-            message="What link do you want to share?"
+            message='What link do you want to share?'
             showModal={showShareActionSheet}
-            title="Share"
+            title='Share'
           />
           <ActionSheet
             handleCancelPress={this._dismissHeaderActionSheet}
@@ -730,9 +736,17 @@ export class PlayerScreen extends React.Component<Props, State> {
       () => session.userInfo.subscribedPodcastIds,
       []
     )
-    const isSubscribed = subscribedPodcastIds.some(
+    let isSubscribed = subscribedPodcastIds.some(
       (x: string) => nowPlayingItem && nowPlayingItem.podcastId === x
     )
+
+    if (!isSubscribed) {
+      const subscribedPodcasts = safelyUnwrapNestedVariable(
+        () => this.global.subscribedPodcasts,
+        []
+      )
+      isSubscribed = subscribedPodcasts.some((x: any) => x.addByFeedUrl && x.addByFeedUrl === nowPlayingItem.addByFeedUrl)
+    }
 
     const items = [
       {
@@ -743,9 +757,19 @@ export class PlayerScreen extends React.Component<Props, State> {
       {
         key: 'podcastPage',
         text: 'Podcast Page',
-        onPress: () => {
+        onPress: async () => {
           this._dismissHeaderActionSheet()
-          navigation.navigate(PV.RouteNames.PodcastScreen, { podcast })
+          const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: PV.RouteNames.TabNavigator })]
+          })
+          await navigation.dispatch(resetAction)
+          if (nowPlayingItem && nowPlayingItem.addByFeedUrl) {
+            const podcast = await getAddByRSSPodcast(nowPlayingItem.addByFeedUrl)
+            navigation.navigate(PV.RouteNames.PodcastScreen, { podcast })
+          } else {
+            navigation.navigate(PV.RouteNames.PodcastScreen, { podcast })
+          }
         }
       }
     ]

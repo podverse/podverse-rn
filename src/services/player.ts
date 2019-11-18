@@ -288,9 +288,10 @@ export const createTrack = async (item: NowPlayingItem) => {
     episodeMediaUrl = '',
     episodeTitle = 'Untitled episode',
     podcastImageUrl,
-    podcastTitle = 'Untitled podcast'
+    podcastTitle = 'Untitled podcast',
+    addByFeedUrl
   } = item
-  const id = clipId || episodeId
+  const id = clipId || episodeId || addByFeedUrl
   let track = null
   if (id) {
     const isDownloadedFile = await checkIfFileIsDownloaded(id, episodeMediaUrl)
@@ -425,7 +426,7 @@ export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (
 ) => {
   const queueItems = await getQueueItemsLocally()
   const queueItemIndex = queueItems.findIndex((x: any) =>
-    checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId)
+    checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId, x.addByFeedUrl)
   )
   let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
 
@@ -434,7 +435,7 @@ export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (
   if (!currentNowPlayingItem) {
     const historyItems = await getHistoryItemsLocally()
     currentNowPlayingItem = historyItems.find((x: any) =>
-      checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId)
+      checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId, x.addByFeedUrl)
     )
   }
 

@@ -284,9 +284,10 @@ export const removeArticles = (str: string) => {
 export const checkIfIdMatchesClipIdOrEpisodeId = (
   id?: string,
   clipId?: string,
-  episodeId?: string
+  episodeId?: string,
+  addByFeedUrl?: string
 ) => {
-  return id === clipId || (!clipId && episodeId && id === episodeId)
+  return id === clipId || (!clipId && episodeId && id === episodeId) || (!clipId && !episodeId && id === addByFeedUrl)
 }
 
 export const validateEmail = (email?: string) => {

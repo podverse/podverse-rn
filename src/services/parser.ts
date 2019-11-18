@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import * as rssParser from 'react-native-rss-parser'
 import { convertToSortableTitle } from '../lib/utility'
 import { PV } from '../resources'
+import { combineWithAddByRSSPodcasts } from './podcast'
 
 /*
 addByRSSPodcasts: [addByRSSPodcast]
@@ -11,6 +12,11 @@ addByRSSPodcast: object {
   ...other podcast properties
 }
 */
+
+export const getAddByRSSPodcast = async (feedUrl: string) => {
+  const addByFeedUrlPodcasts = await getAddByRSSPodcasts()
+  return addByFeedUrlPodcasts.find((x: any) => x.addByFeedUrl === feedUrl)
+}
 
 export const getAddByRSSPodcasts = async () => {
   try {
@@ -70,7 +76,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
       }
       const podcast = {} as any
       podcast.addByFeedUrl = feedUrl
-      podcast.description = rss.description
+      podcast.description = rss.description && rss.description.trim()
       podcast.feedLastUpdated = rss.lastUpdated || rss.lastPublished
       podcast.imageUrl = rss.image && rss.image.url
       podcast.isExplicit = rss.itunes && rss.itunes.explicit
@@ -78,12 +84,12 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
 
       if (rss.items && rss.items.length > 0) {
         podcast.lastEpisodePubDate = rss.items[0].published
-        podcast.lastEpisodeTitle = rss.items[0].title
+        podcast.lastEpisodeTitle = rss.items[0].title && rss.items[0].title.trim()
       }
 
       podcast.linkUrl = rss.links && rss.links[0] && rss.links[0].url
       podcast.sortableTitle = convertToSortableTitle(title)
-      podcast.title = rss.title
+      podcast.title = rss.title && rss.title.trim()
       podcast.type = rss.type
 
       const episodes = []
@@ -92,7 +98,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
           const episode = {} as any
           const enclosure = item.enclosures && item.enclosures[0]
           if (!enclosure) continue
-          episode.description = item.description
+          episode.description = item.description && item.description.trim()
           episode.duration = item.itunes && item.itunes.duration
           episode.imageUrl = item.imageUrl
           episode.isExplicit = item.itunes && item.itunes.explicit
@@ -101,7 +107,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
           episode.mediaType = enclosure.mimeType
           episode.mediaUrl = enclosure.url
           episode.pubDate = item.published
-          episode.title = item.title
+          episode.title = item.title && item.title.trim()
           episodes.push(episode)
         }
       }
@@ -121,4 +127,12 @@ const addParsedAddByRSSPodcast = async (parsedPodcast: any) => {
     rssPodcasts.push(parsedPodcast)
   }
   await setAddByRSSPodcasts(rssPodcasts)
+}
+
+export const removeAddByRSSPodcast = async (feedUrl: string) => {
+  let podcasts = await getAddByRSSPodcasts()
+  podcasts = podcasts.filter((x: any) => x.addByFeedUrl !== feedUrl)
+  await setAddByRSSPodcasts(podcasts)
+  const combinedPodcasts = await combineWithAddByRSSPodcasts()
+  return combinedPodcasts
 }
