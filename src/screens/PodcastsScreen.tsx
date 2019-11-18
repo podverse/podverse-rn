@@ -435,7 +435,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         onPress={() =>
           this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
             podcast: item,
-            episodeCount
+            episodeCount,
+            addByFeedUrl: item.addByFeedUrl
           })
         }
         podcastAuthors={

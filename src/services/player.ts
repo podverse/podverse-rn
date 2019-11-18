@@ -288,10 +288,9 @@ export const createTrack = async (item: NowPlayingItem) => {
     episodeMediaUrl = '',
     episodeTitle = 'Untitled episode',
     podcastImageUrl,
-    podcastTitle = 'Untitled podcast',
-    addByFeedUrl
+    podcastTitle = 'Untitled podcast'
   } = item
-  const id = clipId || episodeId || addByFeedUrl
+  const id = clipId || episodeId
   let track = null
   if (id) {
     const isDownloadedFile = await checkIfFileIsDownloaded(id, episodeMediaUrl)

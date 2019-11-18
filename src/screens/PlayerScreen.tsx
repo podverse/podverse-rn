@@ -63,6 +63,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const _getInitialProgressValue = navigation.getParam(
       '_getInitialProgressValue'
     )
+    const addByFeedUrl = navigation.getParam('addByFeedUrl')
 
     return {
       title: '',
@@ -77,16 +78,21 @@ export class PlayerScreen extends React.Component<Props, State> {
       ),
       headerRight: (
         <RNView style={core.row}>
-          <NavMakeClipIcon
-            getInitialProgressValue={_getInitialProgressValue}
-            navigation={navigation}
-          />
-          <NavAddToPlaylistIcon
-            getEpisodeId={_getEpisodeId}
-            getMediaRefId={_getMediaRefId}
-            navigation={navigation}
-          />
-          <NavShareIcon handlePress={_showShareActionSheet} />
+          {
+            !addByFeedUrl &&
+              <RNView style={core.row}>
+                <NavMakeClipIcon
+                  getInitialProgressValue={_getInitialProgressValue}
+                  navigation={navigation}
+                />
+                <NavAddToPlaylistIcon
+                  getEpisodeId={_getEpisodeId}
+                  getMediaRefId={_getMediaRefId}
+                  navigation={navigation}
+                />
+                <NavShareIcon handlePress={_showShareActionSheet} />
+              </RNView>
+          }
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
@@ -104,7 +110,6 @@ export class PlayerScreen extends React.Component<Props, State> {
 
     const mediaRefId = navigation.getParam('mediaRefId')
     if (mediaRefId) this._initializeScreenData()
-
     this.props.navigation.setParams({
       _getEpisodeId: this._getEpisodeId,
       _getInitialProgressValue: this._getInitialProgressValue,
@@ -740,7 +745,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       (x: string) => nowPlayingItem && nowPlayingItem.podcastId === x
     )
 
-    if (!isSubscribed) {
+    if (!isSubscribed && nowPlayingItem.addByFeedUrl) {
       const subscribedPodcasts = safelyUnwrapNestedVariable(
         () => this.global.subscribedPodcasts,
         []
@@ -766,9 +771,15 @@ export class PlayerScreen extends React.Component<Props, State> {
           await navigation.dispatch(resetAction)
           if (nowPlayingItem && nowPlayingItem.addByFeedUrl) {
             const podcast = await getAddByRSSPodcast(nowPlayingItem.addByFeedUrl)
-            navigation.navigate(PV.RouteNames.PodcastScreen, { podcast })
+            navigation.navigate(PV.RouteNames.PodcastScreen, {
+              podcast,
+              addByFeedUrl: nowPlayingItem.addByFeedUrl
+            })
           } else {
-            navigation.navigate(PV.RouteNames.PodcastScreen, { podcast })
+            navigation.navigate(PV.RouteNames.PodcastScreen, {
+              podcast,
+              addByFeedUrl: nowPlayingItem.addByFeedUrl
+            })
           }
         }
       }

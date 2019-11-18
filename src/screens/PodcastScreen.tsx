@@ -97,6 +97,8 @@ export class PodcastScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const podcastId = navigation.getParam('podcastId')
     const podcastTitle = navigation.getParam('podcastTitle')
+    const addByFeedUrl = navigation.getParam('addByFeedUrl')
+
     return {
       title: 'Podcast',
       headerRight: (
@@ -363,7 +365,10 @@ export class PodcastScreen extends React.Component<Props, State> {
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
           }
           handleNavigationPress={() =>
-            this.props.navigation.navigate(screen, { episode })
+            this.props.navigation.navigate(screen, {
+              episode,
+              addByFeedUrl: podcast.addByFeedUrl
+            })
           }
           id={item.id}
           pubDate={item.pubDate}
@@ -380,7 +385,10 @@ export class PodcastScreen extends React.Component<Props, State> {
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
           }
           handleNavigationPress={() =>
-            this.props.navigation.navigate(screen, { episode })
+            this.props.navigation.navigate(screen, {
+              episode,
+              addByFeedUrl: podcast.addByFeedUrl
+            })
           }
           id={item.id}
           pubDate={item.pubDate}

@@ -33,13 +33,14 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
           <TouchableWithoutFeedback
             onPress={() =>
               navigation.navigate(PV.RouteNames.PlayerScreen, {
-                nowPlayingItem
+                nowPlayingItem,
+                addByFeedUrl: nowPlayingItem.addByFeedUrl
               })
             }>
             <View style={[styles.player, globalTheme.player]}>
               <FastImage
                 key={nowPlayingItem.podcastImageUrl}
-                resizeMode="contain"
+                resizeMode='contain'
                 source={{ uri: nowPlayingItem.podcastImageUrl }}
                 style={styles.image}
               />

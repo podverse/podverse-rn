@@ -3,6 +3,7 @@ import * as rssParser from 'react-native-rss-parser'
 import { convertToSortableTitle } from '../lib/utility'
 import { PV } from '../resources'
 import { combineWithAddByRSSPodcasts } from './podcast'
+const uuidv4 = require('uuid/v4')
 
 /*
 addByRSSPodcasts: [addByRSSPodcast]
@@ -98,6 +99,8 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
           const episode = {} as any
           const enclosure = item.enclosures && item.enclosures[0]
           if (!enclosure) continue
+          // A unique episode.id is needed for downloading episodes.
+          episode.id = uuidv4()
           episode.description = item.description && item.description.trim()
           episode.duration = item.itunes && item.itunes.duration
           episode.imageUrl = item.imageUrl

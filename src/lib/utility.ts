@@ -287,7 +287,9 @@ export const checkIfIdMatchesClipIdOrEpisodeId = (
   episodeId?: string,
   addByFeedUrl?: string
 ) => {
-  return id === clipId || (!clipId && episodeId && id === episodeId) || (!clipId && !episodeId && id === addByFeedUrl)
+  return id === clipId ||
+    (!clipId && addByFeedUrl && id === addByFeedUrl) ||
+    (!clipId && episodeId && id === episodeId)
 }
 
 export const validateEmail = (email?: string) => {
