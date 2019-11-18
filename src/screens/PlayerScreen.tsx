@@ -578,6 +578,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                 leftItems={viewTypeOptions}
                 rightItems={
                   viewType && viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES
+                  && (nowPlayingItem && !nowPlayingItem.addByFeedUrl)
                     ? querySortOptions(viewType === PV.Keys.VIEW_TYPE_EPISODES)
                     : []
                 }
@@ -665,22 +666,25 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { player, screenPlayer } = this.global
     const { nowPlayingItem } = player
     const { queryFrom, queryPage, querySort } = screenPlayer
-
-    const results = await getMediaRefs(
-      {
-        sort: querySort,
-        page: queryPage,
-        ...(queryFrom === PV.Keys.QUERY_FROM_THIS_EPISODE && nowPlayingItem
-          ? { episodeId: nowPlayingItem.episodeId }
-          : {}),
-        ...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST && nowPlayingItem
-          ? { podcastId: nowPlayingItem.podcastId }
-          : {}),
-        includeEpisode: queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST
-      },
-      this.global.settings.nsfwMode
-    )
-    return results
+    if (nowPlayingItem && !nowPlayingItem.addByFeedUrl) {
+      const results = await getMediaRefs(
+        {
+          sort: querySort,
+          page: queryPage,
+          ...(queryFrom === PV.Keys.QUERY_FROM_THIS_EPISODE && nowPlayingItem
+            ? { episodeId: nowPlayingItem.episodeId }
+            : {}),
+          ...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST && nowPlayingItem
+            ? { podcastId: nowPlayingItem.podcastId }
+            : {}),
+          includeEpisode: queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST
+        },
+        this.global.settings.nsfwMode
+      )
+      return results
+    } else {
+      [[], 0]
+    }
   }
 
   _queryEpisodes = async (item?: NowPlayingItem, page?: number) => {
@@ -688,16 +692,25 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { nowPlayingItem } = player
     const { queryPage, querySort } = screenPlayer
 
-    const results = await getEpisodes(
-      {
-        sort: querySort,
-        page: page || queryPage,
-        podcastId: nowPlayingItem && nowPlayingItem.podcastId
-      },
-      this.global.settings.nsfwMode
-    )
-
-    return results
+    if (nowPlayingItem && nowPlayingItem.addByFeedUrl) {
+      const parsedPodcast = await getAddByRSSPodcast(nowPlayingItem.addByFeedUrl)
+      if (parsedPodcast) {
+        const { episodes = [] } = parsedPodcast
+        return [episodes, episodes.length]
+      } else {
+        return [[], 0]
+      }
+    } else {
+      const results = await getEpisodes(
+        {
+          sort: querySort,
+          page: page || queryPage,
+          podcastId: nowPlayingItem && nowPlayingItem.podcastId
+        },
+        this.global.settings.nsfwMode
+      )
+      return results
+    }
   }
 
   _queryData = async (item?: NowPlayingItem, page?: number) => {
