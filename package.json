@@ -41,8 +41,7 @@
     "react-native-vector-icons": "6.6.0",
     "react-native-webview": "7.4.2",
     "react-navigation": "3.13.0",
-    "reactn": "2.2.4",
-    "rss-parser": "^3.7.3"
+    "reactn": "2.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
