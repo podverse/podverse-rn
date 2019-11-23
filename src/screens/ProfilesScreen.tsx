@@ -84,6 +84,9 @@ export class ProfilesScreen extends React.Component<Props, State> {
   }
 
   _renderProfileItem = ({ item }) => {
+    // In order to be subscribed to a profile, that profile must be public,
+    // so add isPublic = true so ProfileScreen shows the share icon.
+    item.isPublic = true
     return (
       <ProfileTableCell
         name={item.name}
@@ -101,7 +104,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
     <SwipeRowBack
       isLoading={this.state.isUnsubscribing}
       onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      text="Remove"
+      text='Remove'
     />
   )
 
@@ -127,7 +130,6 @@ export class ProfilesScreen extends React.Component<Props, State> {
   render() {
     const { isLoading, isLoadingMore } = this.state
     const { flatListData, flatListDataTotalCount } = this.global.profiles
-    const { isLoggedIn } = this.global.session
 
     return (
       <View style={styles.view}>
@@ -148,8 +150,8 @@ export class ProfilesScreen extends React.Component<Props, State> {
           )}
           {!isLoading && flatListData && flatListData.length === 0 && (
             <MessageWithAction
-              message="You have no subscribed profiles"
-              subMessage="(Ask a friend to send you a link to their profile, then subscribe to it)"
+              message='You have no subscribed profiles'
+              subMessage='(Ask a friend to send you a link to their profile, then subscribe to it)'
             />
           )}
         </View>
