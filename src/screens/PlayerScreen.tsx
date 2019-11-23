@@ -63,7 +63,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const _getInitialProgressValue = navigation.getParam(
       '_getInitialProgressValue'
     )
-    const addByFeedUrl = navigation.getParam('addByFeedUrl')
+    const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
     return {
       title: '',
@@ -79,7 +79,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       headerRight: (
         <RNView style={core.row}>
           {
-            !addByFeedUrl &&
+            !addByRSSPodcastFeedUrl &&
               <RNView style={core.row}>
                 <NavMakeClipIcon
                   getInitialProgressValue={_getInitialProgressValue}
@@ -406,8 +406,8 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { nowPlayingItem } = this.global.player
     try {
       if (nowPlayingItem) {
-        if (nowPlayingItem.addByFeedUrl) {
-          await toggleAddByRSSPodcast(nowPlayingItem.addByFeedUrl)
+        if (nowPlayingItem.addByRSSPodcastFeedUrl) {
+          await toggleAddByRSSPodcast(nowPlayingItem.addByRSSPodcastFeedUrl)
         } else {
           await toggleSubscribeToPodcast(nowPlayingItem.podcastId)
         }
@@ -578,7 +578,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                 leftItems={viewTypeOptions}
                 rightItems={
                   viewType && viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES
-                  && (nowPlayingItem && !nowPlayingItem.addByFeedUrl)
+                  && (nowPlayingItem && !nowPlayingItem.addByRSSPodcastFeedUrl)
                     ? querySortOptions(viewType === PV.Keys.VIEW_TYPE_EPISODES)
                     : []
                 }
@@ -666,7 +666,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { player, screenPlayer } = this.global
     const { nowPlayingItem } = player
     const { queryFrom, queryPage, querySort } = screenPlayer
-    if (nowPlayingItem && !nowPlayingItem.addByFeedUrl) {
+    if (nowPlayingItem && !nowPlayingItem.addByRSSPodcastFeedUrl) {
       const results = await getMediaRefs(
         {
           sort: querySort,
@@ -692,8 +692,8 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { nowPlayingItem } = player
     const { queryPage, querySort } = screenPlayer
 
-    if (nowPlayingItem && nowPlayingItem.addByFeedUrl) {
-      const parsedPodcast = await getAddByRSSPodcast(nowPlayingItem.addByFeedUrl)
+    if (nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
+      const parsedPodcast = await getAddByRSSPodcast(nowPlayingItem.addByRSSPodcastFeedUrl)
       if (parsedPodcast) {
         const { episodes = [] } = parsedPodcast
         return [episodes, episodes.length]
@@ -758,12 +758,12 @@ export class PlayerScreen extends React.Component<Props, State> {
       (x: string) => nowPlayingItem && nowPlayingItem.podcastId === x
     )
 
-    if (!isSubscribed && nowPlayingItem.addByFeedUrl) {
+    if (!isSubscribed && nowPlayingItem.addByRSSPodcastFeedUrl) {
       const subscribedPodcasts = safelyUnwrapNestedVariable(
         () => this.global.subscribedPodcasts,
         []
       )
-      isSubscribed = subscribedPodcasts.some((x: any) => x.addByFeedUrl && x.addByFeedUrl === nowPlayingItem.addByFeedUrl)
+      isSubscribed = subscribedPodcasts.some((x: any) => x.addByRSSPodcastFeedUrl && x.addByRSSPodcastFeedUrl === nowPlayingItem.addByRSSPodcastFeedUrl)
     }
 
     const items = [
@@ -782,16 +782,16 @@ export class PlayerScreen extends React.Component<Props, State> {
             actions: [NavigationActions.navigate({ routeName: PV.RouteNames.TabNavigator })]
           })
           await navigation.dispatch(resetAction)
-          if (nowPlayingItem && nowPlayingItem.addByFeedUrl) {
-            const podcast = await getAddByRSSPodcast(nowPlayingItem.addByFeedUrl)
+          if (nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
+            const podcast = await getAddByRSSPodcast(nowPlayingItem.addByRSSPodcastFeedUrl)
             navigation.navigate(PV.RouteNames.PodcastScreen, {
               podcast,
-              addByFeedUrl: nowPlayingItem.addByFeedUrl
+              addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl
             })
           } else {
             navigation.navigate(PV.RouteNames.PodcastScreen, {
               podcast,
-              addByFeedUrl: nowPlayingItem.addByFeedUrl
+              addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl
             })
           }
         }

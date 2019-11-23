@@ -1,5 +1,5 @@
 export type NowPlayingItem = {
-  addByFeedUrl?: string
+  addByRSSPodcastFeedUrl?: string
   clipEndTime?: number
   clipId?: string
   clipStartTime?: number
@@ -73,7 +73,7 @@ export const convertNowPlayingItemClipToNowPlayingItemEpisode = (
     podcastSortableTitle: data.podcastSortableTitle,
     podcastTitle: data.podcastTitle,
     userPlaybackPosition: userPlaybackPosition || 0,
-    addByFeedUrl: data.addByFeedUrl
+    addByRSSPodcastFeedUrl: data.addByRSSPodcastFeedUrl
   }
 }
 
@@ -144,7 +144,7 @@ export const convertToNowPlayingItem = (
       userPlaybackPosition || data.clipStartTime || 0
   }
 
-  nowPlayingItem.addByFeedUrl = data.addByFeedUrl || (inheritedPodcast && inheritedPodcast.addByFeedUrl)
+  nowPlayingItem.addByRSSPodcastFeedUrl = data.addByRSSPodcastFeedUrl || (inheritedPodcast && inheritedPodcast.addByRSSPodcastFeedUrl)
 
   return nowPlayingItem
 }

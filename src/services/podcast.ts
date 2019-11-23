@@ -181,7 +181,7 @@ export const toggleSubscribeToPodcast = async (id: string) => {
   if (!isUnsubscribing && addByRSSPodcastsString) {
     const addByRSSPodcasts = JSON.parse(addByRSSPodcastsString)
     isUnsubscribingAddByRSS =
-      Array.isArray(addByRSSPodcasts) && addByRSSPodcasts.some((podcast: any) => podcast.addByFeedUrl === id)
+      Array.isArray(addByRSSPodcasts) && addByRSSPodcasts.some((podcast: any) => podcast.addByRSSPodcastFeedUrl === id)
   }
 
   const globalDownloadedEpisodeLimitDefault = await AsyncStorage.getItem(
