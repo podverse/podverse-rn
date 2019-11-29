@@ -1,5 +1,5 @@
 import { Platform } from 'react-native'
-import RNIap, {
+import {
   InAppPurchase,
   Purchase,
   PurchaseError,
@@ -9,7 +9,7 @@ import RNIap, {
 import React from 'reactn'
 import {
   androidHandleStatusCheck,
-  handlePurchaseLoadingState,
+  iosHandlePurchaseStatusCheck,
   showPurchaseSomethingWentWrongError
 } from '../lib/purchase'
 import { PV } from '../resources'
@@ -28,26 +28,42 @@ export class PurchaseListener extends React.Component<Props, State> {
 
     this.purchaseUpdateSubscription = purchaseUpdatedListener(
       async (purchase: InAppPurchase | Purchase) => {
-        const { productId, purchaseToken, transactionId } = purchase
-        if (productId && purchaseToken && transactionId) {
-          // Don't use await on navigate, or it can lead to race condition issues between
-          // different screens' render methods.
-          navigation.navigate(PV.RouteNames.PurchasingScreen)
+        console.log('purchased?', purchase)
+        const { productId, purchaseToken, transactionId, transactionReceipt } = purchase
 
-          if (Platform.OS === 'android') {
+        if (Platform.OS === 'android') {
+          if (productId && transactionId && purchaseToken) {
+            // Don't use await on navigate, or it can lead to race condition issues between
+            // different screens' render methods.
+            navigation.navigate(PV.RouteNames.PurchasingScreen)
+
             try {
               await androidHandleStatusCheck(
                 productId,
-                purchaseToken,
-                transactionId
+                transactionId,
+                purchaseToken
               )
             } catch (error) {
               console.log('error', error)
               showPurchaseSomethingWentWrongError()
             }
-          } else if (Platform.OS === 'ios') {
-            // TODO: handle iOS purchase flow
-            console.log('iOS flow')
+          }
+        } else if (Platform.OS === 'ios') {
+          if (productId && transactionId && transactionReceipt) {
+            // Don't use await on navigate, or it can lead to race condition issues between
+            // different screens' render methods.
+            navigation.navigate(PV.RouteNames.PurchasingScreen)
+
+            try {
+              await iosHandlePurchaseStatusCheck(
+                productId,
+                transactionId,
+                transactionReceipt
+              )
+            } catch (error) {
+              console.log('error', error)
+              showPurchaseSomethingWentWrongError()
+            }
           }
         }
       }

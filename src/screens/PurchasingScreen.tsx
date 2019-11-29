@@ -36,9 +36,9 @@ export class PurchasingScreen extends React.Component<Props, State> {
     const { orderId, productId, purchaseToken } = purchase
     if (orderId && productId && purchaseToken) {
       if (Platform.OS === 'android') {
-        await androidHandleStatusCheck(productId, purchaseToken, orderId)
+        await androidHandleStatusCheck(productId, orderId, purchaseToken)
       } else if (Platform.OS === 'ios') {
-        await iosHandlePurchaseStatusCheck()
+        await iosHandlePurchaseStatusCheck(productId, orderId, purchaseToken)
       }
     }
   }

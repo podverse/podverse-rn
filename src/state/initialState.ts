@@ -40,7 +40,8 @@ const initialTheme: InitialState = {
     showContactSupportLink: false,
     showDismissLink: false,
     showRetryLink: false,
-    title: 'Processing Transaction'
+    title: 'Processing Transaction',
+    transactionReceipt: ''
   },
   screenPlayer: {
     endOfResultsReached: false,

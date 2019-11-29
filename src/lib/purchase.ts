@@ -8,7 +8,7 @@ import { getAuthUserInfo } from '../state/actions/auth'
 
 // Purchase items
 const itemSkus = Platform.select({
-  ios: ['podverse_premium_membership_1_year'],
+  ios: ['podverse_premium_membership_1_year_consumable'],
   android: ['podverse_premium_membership_1_year']
 })
 
@@ -16,15 +16,15 @@ const _podversePremiumMembership1Year = itemSkus[0]
 
 export const buy1YearPremium = async () => {
   await RNIap.getProducts(itemSkus)
-  await RNIap.requestPurchase(_podversePremiumMembership1Year)
+  await RNIap.requestPurchase(_podversePremiumMembership1Year, false)
 }
 
 export const androidHandleStatusCheck = async (
   productId: string,
-  purchaseToken: string,
-  orderId: string
+  transactionId: string,
+  purchaseToken: string
 ) => {
-  await handlePurchaseLoadingState(productId, purchaseToken, orderId)
+  await androidHandlePurchaseLoadingState(productId, transactionId, purchaseToken)
 
   const response = await updateGooglePlayPurchaseStatus({
     productId,
@@ -34,7 +34,7 @@ export const androidHandleStatusCheck = async (
   if (response) {
     const { code } = response
     if (code === 0) {
-      await handleStatusSuccessful(purchaseToken, orderId)
+      await androidHandleStatusSuccessful(purchaseToken)
     } else if (code === 1) {
       await handleStatusCancel()
     } else if (code === 2) {
@@ -49,37 +49,57 @@ export const androidHandleStatusCheck = async (
   }
 }
 
-export const iosHandlePurchaseStatusCheck = async () => {
+export const iosHandlePurchaseStatusCheck = async (productId: string, transactionId: string, transactionReceipt: string) => {
   console.log('iosHandlePurchaseStatusCheck')
 }
 
-export const handlePurchaseLoadingState = async (
-  productId: string,
-  purchaseToken: string,
-  orderId: string
-) => {
+const purchaseLoadingState = () => {
   const globalState = getGlobal()
 
-  setGlobal({
+  return {
     purchase: {
       ...globalState.purchase,
       isLoading: true,
       message: 'Updating the Podverse servers...',
-      orderId,
-      productId,
-      purchaseToken,
       showContactSupportLink: false,
       showDismissLink: false,
       showRetryLink: false,
       title: 'Processing Transaction'
     }
-  })
+  } as any
 }
 
-const handleStatusSuccessful = async (
-  purchaseToken: string,
-  orderId: string
+export const androidHandlePurchaseLoadingState = async (
+  productId: string,
+  orderId: string,
+  purchaseToken: string
 ) => {
+  let loadingState = purchaseLoadingState()
+  loadingState = {
+    ...loadingState,
+    orderId,
+    productId,
+    purchaseToken
+  }
+  setGlobal(loadingState)
+}
+
+export const iosHandlePurchaseLoadingState = async (
+  productId: string,
+  orderId: string,
+  transactionReceipt: string
+) => {
+  let loadingState = purchaseLoadingState()
+  loadingState = {
+    ...loadingState,
+    orderId,
+    productId,
+    transactionReceipt
+  }
+  setGlobal(loadingState)
+}
+
+const handleStatusSuccessful = () => {
   const globalState = getGlobal()
 
   setGlobal({
@@ -93,13 +113,22 @@ const handleStatusSuccessful = async (
       title: PV.Alerts.PURCHASE_SUCCESS.title
     }
   })
+}
 
-  if (Platform.OS === 'android') {
-    await RNIap.consumePurchaseAndroid(purchaseToken)
-  } else if (Platform.OS === 'ios') {
-    await RNIap.consumePurchaseAndroid(orderId)
-  }
+const androidHandleStatusSuccessful = async (
+  purchaseToken: string
+) => {
+  handleStatusSuccessful()
+  await RNIap.consumePurchaseAndroid(purchaseToken)
+  // Reload auth user info to get latest membershipExpiration
+  await getAuthUserInfo()
+}
 
+const iosHandleStatusSuccessful = async (
+  transactionReceipt: string
+) => {
+  handleStatusSuccessful()
+  console.log('consume ios purchase!', transactionReceipt)
   // Reload auth user info to get latest membershipExpiration
   await getAuthUserInfo()
 }

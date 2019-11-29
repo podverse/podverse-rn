@@ -926,6 +926,11 @@
     "@types/react" "*"
     "@types/react-native" "*"
 
+"@types/react-native-rss-parser@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@types/react-native-rss-parser/-/react-native-rss-parser-1.4.0.tgz#a9150fe136fb0fd2304b6383c947f2e3a7fb3e66"
+  integrity sha512-5zs5MPBrMLZJ8tvtLaadVxVsO14jQuHnubQe2Dmf8Fa0wxsEBXRD43AbzLAGfXyuJQjhjtMTXxESWUDEgbqBcw==
+
 "@types/react-native-share@1.1.3":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@types/react-native-share/-/react-native-share-1.1.3.tgz#dedb8d42dfaf01c7e6b55515612d1c4fc748a4c2"
@@ -4878,6 +4883,13 @@ react-native-render-html@4.1.2:
     html-entities "^1.2.0"
     htmlparser2 "^3.10.1"
 
+react-native-rss-parser@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-rss-parser/-/react-native-rss-parser-1.4.0.tgz#5a96879b817e316fe95040868267e42c49c2cd26"
+  integrity sha512-WzzzGjKE1ZTShd6V6zuO/54SqAnA/dglWV5KnxFV1deDt4xL0WBN8pWu0K8d4UhV0wUHEC9DMw250V+4qwiyHw==
+  dependencies:
+    xmldom "^0.1.27"
+
 react-native-safe-area-view@^0.14.1:
   version "0.14.7"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-view/-/react-native-safe-area-view-0.14.7.tgz#e1dd1c4d25a90677df2c15347fdddb2306ba5971"
@@ -6269,7 +6281,7 @@ xmldoc@^1.1.2:
   dependencies:
     sax "^1.2.1"
 
-xmldom@0.1.x:
+xmldom@0.1.x, xmldom@^0.1.27:
   version "0.1.27"
   resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.27.tgz#d501f97b3bdb403af8ef9ecc20573187aadac0e9"
   integrity sha1-1QH5ezvbQDr4757MIFcxh6rawOk=

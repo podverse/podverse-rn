@@ -8,8 +8,8 @@ import {
   View
 } from '../components'
 import {
-  buy1YearPremium,
   androidHandleStatusCheck,
+  buy1YearPremium,
   iosHandlePurchaseStatusCheck
 } from '../lib/purchase'
 import {
@@ -64,9 +64,11 @@ export class MembershipScreen extends React.Component<Props, State> {
         if (Platform.OS === 'android') {
           this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
           const { orderId, productId, purchaseToken } = this.global.purchase
-          await androidHandleStatusCheck(productId, purchaseToken, orderId)
+          await androidHandleStatusCheck(productId, orderId, purchaseToken)
         } else if (Platform.OS === 'ios') {
-          await iosHandlePurchaseStatusCheck()
+          this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
+          const { orderId, productId, transactionReceipt } = this.global.purchase
+          await iosHandlePurchaseStatusCheck(productId, orderId, transactionReceipt)
         }
       } else {
         Alert.alert(
