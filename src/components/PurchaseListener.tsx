@@ -33,7 +33,7 @@ export class PurchaseListener extends React.Component<Props, State> {
 
         if (Platform.OS === 'android') {
           if (productId && transactionId && purchaseToken) {
-            // Don't use await on navigate, or it can lead to race condition issues between
+            // Don't use await on navigate here, or it can lead to race condition issues between
             // different screens' render methods.
             navigation.navigate(PV.RouteNames.PurchasingScreen)
 
@@ -50,7 +50,7 @@ export class PurchaseListener extends React.Component<Props, State> {
           }
         } else if (Platform.OS === 'ios') {
           if (productId && transactionId && transactionReceipt) {
-            // Don't use await on navigate, or it can lead to race condition issues between
+            // Don't use await on navigate here, or it can lead to race condition issues between
             // different screens' render methods.
             navigation.navigate(PV.RouteNames.PurchasingScreen)
 
