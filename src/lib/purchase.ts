@@ -2,6 +2,7 @@ import { Platform } from 'react-native'
 import * as RNIap from 'react-native-iap'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../resources'
+import { updateAppStorePurchaseStatus } from '../services/appStorePurchase'
 import { updateGooglePlayPurchaseStatus } from '../services/googlePlayPurchase'
 import { getQueueItems } from '../services/queue'
 import { getAuthUserInfo } from '../state/actions/auth'
@@ -51,6 +52,13 @@ export const androidHandleStatusCheck = async (
 
 export const iosHandlePurchaseStatusCheck = async (productId: string, transactionId: string, transactionReceipt: string) => {
   console.log('iosHandlePurchaseStatusCheck')
+  if (transactionReceipt) {
+    const base64EncodedTransactionReceipt = btoa(transactionReceipt)
+    await iosHandlePurchaseLoadingState(productId, transactionId, base64EncodedTransactionReceipt)
+    const response = await updateAppStorePurchaseStatus(base64EncodedTransactionReceipt)
+  } else {
+    throw new Error('TransactionReceipt is missing.')
+  }
 }
 
 const purchaseLoadingState = () => {
@@ -71,13 +79,13 @@ const purchaseLoadingState = () => {
 
 export const androidHandlePurchaseLoadingState = async (
   productId: string,
-  orderId: string,
+  transactionId: string,
   purchaseToken: string
 ) => {
   let loadingState = purchaseLoadingState()
   loadingState = {
     ...loadingState,
-    orderId,
+    transactionId,
     productId,
     purchaseToken
   }
@@ -86,13 +94,13 @@ export const androidHandlePurchaseLoadingState = async (
 
 export const iosHandlePurchaseLoadingState = async (
   productId: string,
-  orderId: string,
+  transactionId: string,
   transactionReceipt: string
 ) => {
   let loadingState = purchaseLoadingState()
   loadingState = {
     ...loadingState,
-    orderId,
+    transactionId,
     productId,
     transactionReceipt
   }

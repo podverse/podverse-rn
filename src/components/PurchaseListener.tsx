@@ -61,7 +61,7 @@ export class PurchaseListener extends React.Component<Props, State> {
                 transactionReceipt
               )
             } catch (error) {
-              console.log('error', error)
+              console.log('purchaseUpdateSubscription iosHandlePurchaseStatusCheck error', error)
               showPurchaseSomethingWentWrongError()
             }
           }

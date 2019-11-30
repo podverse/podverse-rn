@@ -34,13 +34,13 @@ const initialTheme: InitialState = {
   purchase: {
     isLoading: true,
     message: 'Updating the Podverse servers...',
-    orderId: '',
     productId: '',
     purchaseToken: '',
     showContactSupportLink: false,
     showDismissLink: false,
     showRetryLink: false,
     title: 'Processing Transaction',
+    transactionId: '',
     transactionReceipt: ''
   },
   screenPlayer: {

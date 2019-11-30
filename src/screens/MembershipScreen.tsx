@@ -63,12 +63,12 @@ export class MembershipScreen extends React.Component<Props, State> {
       if (error.code === 'E_ALREADY_OWNED') {
         if (Platform.OS === 'android') {
           this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
-          const { orderId, productId, purchaseToken } = this.global.purchase
-          await androidHandleStatusCheck(productId, orderId, purchaseToken)
+          const { productId, purchaseToken, transactionId } = this.global.purchase
+          await androidHandleStatusCheck(productId, transactionId, purchaseToken)
         } else if (Platform.OS === 'ios') {
           this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
-          const { orderId, productId, transactionReceipt } = this.global.purchase
-          await iosHandlePurchaseStatusCheck(productId, orderId, transactionReceipt)
+          const { productId, transactionId, transactionReceipt } = this.global.purchase
+          await iosHandlePurchaseStatusCheck(productId, transactionId, transactionReceipt)
         }
       } else {
         Alert.alert(
