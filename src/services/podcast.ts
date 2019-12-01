@@ -9,6 +9,7 @@ import {
   getAutoDownloadEpisodes,
   removeAutoDownloadSetting
 } from './autoDownloads'
+import { getAddByRSSPodcasts, removeAddByRSSPodcast } from './parser'
 import { request } from './request'
 
 export const getPodcast = async (id: string) => {
@@ -65,7 +66,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
       const date = await AsyncStorage.getItem(
         PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED
       )
-      const dateObj = date || new Date().toISOString()
+      const dateObj = (date && new Date(date).toISOString()) || new Date().toISOString()
 
       const autoDownloadSettingsString = await AsyncStorage.getItem(
         PV.Keys.AUTO_DOWNLOAD_SETTINGS
@@ -79,6 +80,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
       const podcastIds = Object.keys(autoDownloadSettings).filter(
         (key: string) => autoDownloadSettings[key] === true
       )
+
       const autoDownloadEpisodes = await getAutoDownloadEpisodes(
         dateObj,
         podcastIds
@@ -101,20 +103,31 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
         PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED,
         new Date().toISOString()
       )
-      if (Array.isArray(subscribedPodcasts))
+      if (Array.isArray(subscribedPodcasts)) {
         await AsyncStorage.setItem(
           PV.Keys.SUBSCRIBED_PODCASTS,
           JSON.stringify(subscribedPodcasts)
         )
+      }
 
-      return [subscribedPodcasts, subscribedPodcastsTotalCount]
+      const combinedPodcasts = await combineWithAddByRSSPodcasts()
+      return [combinedPodcasts, combinedPodcasts.length]
     } catch (error) {
       console.log(error)
-      return getSubscribedPodcastsLocally()
+      const combinedPodcasts = await combineWithAddByRSSPodcasts()
+      return [combinedPodcasts, combinedPodcasts.length]
     }
   } else {
-    return getSubscribedPodcastsLocally()
+    const combinedPodcasts = await combineWithAddByRSSPodcasts()
+    return [combinedPodcasts, combinedPodcasts.length]
   }
+}
+export const combineWithAddByRSSPodcasts = async () => {
+  // Combine the AddByRSSPodcast in with the subscribed podcast data, then alphabetize array
+  const subscribedPodcasts = await getSubscribedPodcastsLocally()
+  const addByRSSPodcasts = await getAddByRSSPodcasts()
+  const combinedPodcasts = [...subscribedPodcasts[0], ...addByRSSPodcasts]
+  return sortPodcastArrayAlphabetically(combinedPodcasts)
 }
 
 export const getSubscribedPodcastsLocally = async () => {
@@ -156,11 +169,19 @@ export const toggleSubscribeToPodcast = async (id: string) => {
   const isLoggedIn = await checkIfLoggedIn()
   const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
   let isUnsubscribing = false
+  let isUnsubscribingAddByRSS = false
 
   if (itemsString) {
     const podcastIds = JSON.parse(itemsString)
     isUnsubscribing =
       Array.isArray(podcastIds) && podcastIds.some((x: string) => id === x)
+  }
+
+  const addByRSSPodcastsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCASTS)
+  if (!isUnsubscribing && addByRSSPodcastsString) {
+    const addByRSSPodcasts = JSON.parse(addByRSSPodcastsString)
+    isUnsubscribingAddByRSS =
+      Array.isArray(addByRSSPodcasts) && addByRSSPodcasts.some((podcast: any) => podcast.addByFeedUrl === id)
   }
 
   const globalDownloadedEpisodeLimitDefault = await AsyncStorage.getItem(
@@ -180,7 +201,11 @@ export const toggleSubscribeToPodcast = async (id: string) => {
   }
 
   let items
-  if (isLoggedIn) {
+  if (isUnsubscribingAddByRSS) {
+    await removeAddByRSSPodcast(id)
+    await removeDownloadedPodcast(id)
+    await setDownloadedEpisodeLimit(id)
+  } else if (isLoggedIn) {
     items = await toggleSubscribeToPodcastOnServer(id)
   } else {
     items = await toggleSubscribeToPodcastLocally(id)

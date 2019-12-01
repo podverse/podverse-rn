@@ -8,6 +8,7 @@ export const Filters: IFilters = {
   mostRecentKey: 'most-recent',
   mostRecentAllKey: 'most-recent-all',
   oldestKey: 'oldest',
+  randomKey: 'random',
   topPastDay: 'top-past-day',
   topPastWeek: 'top-past-week',
   topPastMonth: 'top-past-month',

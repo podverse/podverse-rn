@@ -425,7 +425,7 @@ export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (
 ) => {
   const queueItems = await getQueueItemsLocally()
   const queueItemIndex = queueItems.findIndex((x: any) =>
-    checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId)
+    checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId, x.addByFeedUrl)
   )
   let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
 
@@ -434,7 +434,7 @@ export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (
   if (!currentNowPlayingItem) {
     const historyItems = await getHistoryItemsLocally()
     currentNowPlayingItem = historyItems.find((x: any) =>
-      checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId)
+      checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId, x.addByFeedUrl)
     )
   }
 

@@ -73,6 +73,7 @@ const syncNowPlayingItemWithTrack = async () => {
     const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(
       currentTrackId
     )
+
     if (currentNowPlayingItem)
       await handleSyncNowPlayingItem(
         currentTrackId,

@@ -77,19 +77,22 @@ const mediaMoreButtons = (
       key: 'queueNext',
       text: 'Queue: Next',
       onPress: async () => {
-        await handleDismiss()
         await addItemToPlayerQueueNext(item)
+        await handleDismiss()
       }
     },
     {
       key: 'queueLast',
       text: 'Queue: Last',
       onPress: async () => {
-        await handleDismiss()
         await addItemToPlayerQueueLast(item)
+        await handleDismiss()
       }
-    },
-    {
+    }
+  )
+
+  if (!item.addByFeedUrl) {
+    buttons.push({
       key: 'addToPlaylist',
       text: 'Add to Playlist',
       onPress: async () => {
@@ -100,35 +103,35 @@ const mediaMoreButtons = (
             : { episodeId: item.episodeId })
         })
       }
-    }
-  )
+    })
 
-  buttons.push({
-    key: 'share',
-    text: 'Share',
-    onPress: async () => {
-      try {
-        let url = ''
-        let title = ''
-        if (item.clipId) {
-          url = PV.URLs.clip + item.clipId
-          title = item.clipTitle ? item.clipTitle : 'Untitled clip –'
-          title += ` ${item.podcastTitle} – ${item.episodeTitle} – clip shared using Podverse`
-        } else if (item.episodeId) {
-          url = PV.URLs.episode + item.episodeId
-          title += `${item.podcastTitle} – ${item.episodeTitle} – shared using Podverse`
+    buttons.push({
+      key: 'share',
+      text: 'Share',
+      onPress: async () => {
+        try {
+          let url = ''
+          let title = ''
+          if (item.clipId) {
+            url = PV.URLs.clip + item.clipId
+            title = item.clipTitle ? item.clipTitle : 'Untitled clip –'
+            title += ` ${item.podcastTitle} – ${item.episodeTitle} – clip shared using Podverse`
+          } else if (item.episodeId) {
+            url = PV.URLs.episode + item.episodeId
+            title += `${item.podcastTitle} – ${item.episodeTitle} – shared using Podverse`
+          }
+          await Share.open({
+            title,
+            subject: title,
+            url
+          })
+        } catch (error) {
+          alert(error.message)
         }
-        await Share.open({
-          title,
-          subject: title,
-          url
-        })
-      } catch (error) {
-        alert(error.message)
+        await handleDismiss()
       }
-      await handleDismiss()
-    }
-  })
+    })
+  }
 
   if (isDownloaded) {
     buttons.push({

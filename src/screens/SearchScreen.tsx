@@ -154,6 +154,10 @@ export class SearchScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleAddPodcastByRSSURLNavigation = () => {
+    this.props.navigation.navigate(PV.RouteNames.AddPodcastByRSSScreen)
+  }
+
   _renderPodcastItem = ({ item }) => (
     <PodcastTableCell
       id={item.id}
@@ -250,7 +254,7 @@ export class SearchScreen extends React.Component<Props, State> {
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
           onClear={this._handleSearchBarClear}
-          placeholder="search"
+          placeholder='search'
           value={searchBarText}
         />
         <Divider />
@@ -260,12 +264,14 @@ export class SearchScreen extends React.Component<Props, State> {
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe={true}
             extraData={flatListData}
+            handleAddPodcastByRSSURLNavigation={this._handleAddPodcastByRSSURLNavigation}
             handleRequestPodcast={this._navToRequestPodcastForm}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             onEndReached={this._onEndReached}
             renderItem={this._renderPodcastItem}
-            resultsText="podcasts"
+            resultsText='podcasts'
+            showAddPodcastByRSS={flatListData && flatListData.length === 0}
             showRequestPodcast={true}
           />
         )}
@@ -332,7 +338,8 @@ const styles = StyleSheet.create({
     flex: 0,
     height: PV.FlatList.searchBar.height,
     justifyContent: 'center',
-    marginVertical: 8
+    marginBottom: 16,
+    marginTop: 12
   },
   view: {
     flex: 1,

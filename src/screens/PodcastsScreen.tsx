@@ -44,6 +44,7 @@ import {
 } from '../state/actions/player'
 import {
   getSubscribedPodcasts,
+  removeAddByRSSPodcast,
   toggleSubscribeToPodcast
 } from '../state/actions/podcast'
 import { core } from '../styles'
@@ -243,7 +244,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _initializeScreenData = async () => {
     await initPlayerState(this.global)
-    await getAuthUserInfo()
+
+    try {
+      await getAuthUserInfo()
+    } catch (error) {
+      console.log('initializeScreenData getAuthUserInfo', error)
+      // If getAuthUserInfo fails, continue with the networkless version of the app
+    }
 
     const { subscribedPodcastIds } = this.global.session.userInfo
     if (subscribedPodcastIds && subscribedPodcastIds.length > 0) {
@@ -428,7 +435,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         onPress={() =>
           this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
             podcast: item,
-            episodeCount
+            episodeCount,
+            addByFeedUrl: item.addByFeedUrl
           })
         }
         podcastAuthors={
@@ -452,13 +460,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
     return (
       <SwipeRowBack
         isLoading={this.state.isUnsubscribing}
-        onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
+        onPress={() => this._handleHiddenItemPress(item.id, item.addByFeedUrl, rowMap)}
         text={buttonText}
       />
     )
   }
 
-  _handleHiddenItemPress = async (selectedId, rowMap) => {
+  _handleHiddenItemPress = async (selectedId, addByFeedUrl, rowMap) => {
     const { queryFrom } = this.state
 
     let wasAlerted = false
@@ -472,10 +480,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const { flatListData } = this.state
 
         if (queryFrom === _subscribedKey) {
-          await toggleSubscribeToPodcast(selectedId)
-          await removeDownloadedPodcast(selectedId)
+          if (selectedId) {
+            await toggleSubscribeToPodcast(selectedId)
+          } else {
+            await removeAddByRSSPodcast(addByFeedUrl)
+          }
+          await removeDownloadedPodcast(selectedId || addByFeedUrl)
         } else if (queryFrom === _downloadedKey) {
-          await removeDownloadedPodcast(selectedId)
+          await removeDownloadedPodcast(selectedId || addByFeedUrl)
         }
         const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
         rowMap[selectedId].closeRow()
@@ -644,7 +656,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             onRefresh={queryFrom === _subscribedKey ? this._onRefresh : null}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderPodcastItem}
-            resultsText="podcasts"
+            resultsText='podcasts'
           />
         )}
         <Dialog.Container visible={showDataSettingsConfirmDialog}>
@@ -653,11 +665,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
             Do you want to allow downloading episodes with your data plan?
           </Dialog.Description>
           <Dialog.Button
-            label="No, Wifi Only"
+            label='No, Wifi Only'
             onPress={this._handleDataSettingsWifiOnly}
           />
           <Dialog.Button
-            label="Yes, Allow Data"
+            label='Yes, Allow Data'
             onPress={this._handleDataSettingsAllowData}
           />
         </Dialog.Container>
@@ -712,6 +724,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     nextState?: {},
     queryOptions: { isSubCategory?: boolean; searchTitle?: string } = {}
   ) => {
+
     const newState = {
       isLoading: false,
       isLoadingMore: false,
@@ -855,6 +868,7 @@ const _categoryKey = 'category'
 const _allCategoriesKey = 'allCategories'
 const _alphabeticalKey = 'alphabetical'
 const _mostRecentKey = 'most-recent'
+const _randomKey = 'random'
 const _topPastDay = 'top-past-day'
 const _topPastWeek = 'top-past-week'
 const _topPastMonth = 'top-past-month'
@@ -900,13 +914,19 @@ const rightItems = (isAllPodcasts?: boolean) => {
   ]
 
   if (!isAllPodcasts) {
-    items.unshift({
-      label: 'most recent',
-      value: _mostRecentKey
-    })
+    items.unshift(
+      {
+        label: 'most recent',
+        value: _mostRecentKey
+      }
+    )
     items.unshift({
       label: 'alphabetical',
       value: _alphabeticalKey
+    })
+    items.push({
+      label: 'random',
+      value: _randomKey
     })
   }
 

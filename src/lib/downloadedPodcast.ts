@@ -162,9 +162,10 @@ export const removeDownloadedPodcast = async (podcastId: string) => {
 
 const setDownloadedPodcasts = async (podcasts: any[]) => {
   podcasts = sortPodcastArrayAlphabetically(podcasts)
-  if (Array.isArray(podcasts))
+  if (Array.isArray(podcasts)) {
     await AsyncStorage.setItem(
       PV.Keys.DOWNLOADED_PODCASTS,
       JSON.stringify(podcasts)
     )
+  }
 }

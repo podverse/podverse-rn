@@ -3,7 +3,7 @@ import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getAuthenticatedUserInfo } from './auth'
-import { createTrack, PVTrackPlayer } from './player'
+import { PVTrackPlayer } from './player'
 import { updateUserQueueItems } from './user'
 
 export const addQueueItemLast = async (item: NowPlayingItem) => {
@@ -203,8 +203,9 @@ const removeQueueItemOnServer = async (item: NowPlayingItem) => {
 }
 
 const setAllQueueItemsLocally = async (items: NowPlayingItem[]) => {
-  if (Array.isArray(items))
+  if (Array.isArray(items)) {
     await AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(items))
+  }
   return items
 }
 

@@ -10,11 +10,11 @@ import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { getGlobal } from 'reactn'
 import { NavQueueIcon, PVTabBar } from './components'
 import { PV } from './resources'
-import { AboutScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen, EditProfileScreen,
-  EmailVerificationScreen, EpisodeScreen, EpisodesScreen, MakeClipScreen, MembershipScreen, MoreScreen,
-  OnboardingScreen, PlayerScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen, PodcastScreen,
-  PodcastsScreen, ProfileScreen, ProfilesScreen, PurchasingScreen, QueueScreen, SearchScreen, SettingsScreen,
-  TermsOfServiceScreen, WebPageScreen } from './screens'
+import { AboutScreen, AddPodcastByRSSScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen,
+  EditProfileScreen, EmailVerificationScreen, EpisodeScreen, EpisodesScreen, MakeClipScreen, MembershipScreen,
+  MoreScreen, OnboardingScreen, PlayerScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen,
+  PodcastScreen, PodcastsScreen, ProfileScreen, ProfilesScreen, PurchasingScreen, QueueScreen, SearchScreen,
+  SettingsScreen, TermsOfServiceScreen, WebPageScreen } from './screens'
 
 const defaultNavigationOptions = ({ navigation }) => ({
   title: PV.Tabs.Podcasts.title,
@@ -258,6 +258,12 @@ const PurchasingNavigator = createStackNavigator({
   defaultNavigationOptions
 })
 
+const AddPodcastByRSSURLNavigator = createStackNavigator({
+  [PV.RouteNames.AddPodcastByRSSScreen]: AddPodcastByRSSScreen
+}, {
+  defaultNavigationOptions
+})
+
 const MainApp = createStackNavigator({
   [PV.RouteNames.TabNavigator]: { screen: TabNavigator, path: '' },
   [PV.RouteNames.AuthNavigator]: AuthNavigator,
@@ -266,7 +272,8 @@ const MainApp = createStackNavigator({
   QueueNavigator,
   WebPageNavigator,
   EmailVerificationNavigator,
-  PurchasingNavigator
+  PurchasingNavigator,
+  AddPodcastByRSSURLNavigator
 }, {
   mode: 'modal',
   headerMode: 'none'

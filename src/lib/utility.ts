@@ -284,12 +284,113 @@ export const removeArticles = (str: string) => {
 export const checkIfIdMatchesClipIdOrEpisodeId = (
   id?: string,
   clipId?: string,
-  episodeId?: string
+  episodeId?: string,
+  addByFeedUrl?: string
 ) => {
-  return id === clipId || (!clipId && episodeId && id === episodeId)
+  return id === clipId ||
+    (!clipId && addByFeedUrl && id === addByFeedUrl) ||
+    (!clipId && episodeId && id === episodeId)
 }
 
 export const validateEmail = (email?: string) => {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return re.test(String(email).toLowerCase())
+}
+
+export const createEmailLinkUrl = (email: string, subject?: string, body?: string) => {
+  let str = 'mailto:' + email + '?'
+  str += encodeURI(subject ? 'subject=' + subject + '&' : '')
+  str += encodeURI(body ? 'body=' + body : '')
+  return str
+}
+
+export const getHHMMSSMatchesInString = (str: string) => {
+  const regex = /(?:2[0-3]|[01]?[0-9]):[0-5][0-9]:[0-5][0-9]/g
+  return str.match(regex)
+}
+
+const createHHMMSSAnchorTag = (hhmmss: string) => {
+  const sec = convertHHMMSSToSeconds(hhmmss)
+  return `<a data-start-time='${sec}' href='#'>${hhmmss}</a>`
+}
+
+export const convertHHMMSSToAnchorTags = (html: string) => {
+  const matches = getHHMMSSMatchesInString(html) || []
+  let formattedHtml = html
+  for (const match of matches) {
+    const replace = match
+    const regex = new RegExp(replace, 'g')
+    const anchorTag = createHHMMSSAnchorTag(match)
+    formattedHtml = formattedHtml.replace(regex, anchorTag)
+  }
+
+  return formattedHtml
+}
+
+export function validateHHMMSSString(hhmmss: string) {
+  const regex = new RegExp('^(([0-9][0-9]):([0-5][0-9]):([0-5][0-9]))$|(([0-9]):([0-5][0-9]):([0-5][0-9]))$|^(([0-5][0-9]):([0-5][0-9]))$|^(([0-9]):([0-5][0-9]))$|^([0-5][0-9])$|^([0-9])')
+  return regex.test(hhmmss)
+}
+
+export function convertHHMMSSToSeconds(hhmmssString: string) {
+
+  if (hhmmssString) {
+
+    if (!validateHHMMSSString(hhmmssString)) {
+      return -1
+    }
+
+    var hhmmssArray = hhmmssString.split(':') || 0,
+      hours = 0,
+      minutes = 0,
+      seconds = 0;
+
+    if (hhmmssArray.length === 3) {
+      hours = parseInt(hhmmssArray[0])
+      minutes = parseInt(hhmmssArray[1])
+      seconds = parseInt(hhmmssArray[2])
+
+      if (hours < 0 || minutes > 59 || minutes < 0 || seconds > 59 || seconds < 0) {
+        console.log('Invalid time provided.')
+        return -1
+      }
+
+      hours = hours * 3600;
+      minutes = minutes * 60;
+
+    } else if (hhmmssArray.length === 2) {
+      minutes = parseInt(hhmmssArray[0]);
+      seconds = parseInt(hhmmssArray[1]);
+
+      if (minutes > 59 || minutes < 0 || seconds > 59 || seconds < 0) {
+        console.log('Invalid time provided.');
+        return -1;
+      }
+
+      minutes = minutes * 60;
+
+    } else if (hhmmssArray.length === 1) {
+      seconds = parseInt(hhmmssArray[0]) || 0
+
+      if (seconds > 59 || seconds < 0) {
+        console.log('Invalid time provided.')
+        return -1
+      }
+
+    } else {
+      console.log('Invalid time provided.')
+      return -1
+    }
+
+    return hours + minutes + seconds;
+
+  } else {
+    return null
+  }
+
+}
+
+export const convertToSortableTitle = (title: string) => {
+  const sortableTitle = title ? title.toLowerCase().replace(/\b^the\b|\b^a\b|\b^an\b/i, '').trim() : ''
+  return sortableTitle ? sortableTitle.replace(/#/g, '') : ''
 }

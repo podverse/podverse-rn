@@ -29,6 +29,7 @@ export const checkIfShouldUseServerData = async () => {
 export const getAuthenticatedUserInfo = async () => {
   const bearerToken = await getBearerToken()
   const isConnected = await hasValidNetworkConnection()
+
   if (isConnected && bearerToken) {
     return getAuthenticatedUserInfoFromServer(bearerToken)
   } else {
@@ -52,11 +53,12 @@ export const getAuthenticatedUserInfoLocally = async () => {
       subscribedPlaylistIds = JSON.parse(subscribedPlaylistIdsString)
     }
   } catch (error) {
-    if (Array.isArray(subscribedPlaylistIds))
+    if (Array.isArray(subscribedPlaylistIds)) {
       await AsyncStorage.setItem(
         PV.Keys.SUBSCRIBED_PLAYLIST_IDS,
         JSON.stringify(subscribedPlaylistIds)
       )
+    }
   }
 
   try {

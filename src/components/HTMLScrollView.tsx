@@ -1,29 +1,40 @@
 import { Dimensions, Linking, ScrollView, StyleSheet } from 'react-native'
 import HTML from 'react-native-render-html'
 import React, { useGlobal } from 'reactn'
+import { convertHHMMSSToAnchorTags } from '../lib/utility'
 import { PV } from '../resources'
+import { setPlaybackPosition } from '../services/player'
 
 type Props = {
   html: string
-  navigation: any
 }
 
 export const HTMLScrollView = (props: Props) => {
-  const { html, navigation } = props
+  const { html } = props
   const [globalTheme] = useGlobal('globalTheme')
   const baseFontStyle = {
     ...globalTheme.text,
     ...styles.baseFontStyle
   }
 
+  const formattedHtml = convertHHMMSSToAnchorTags(html)
+
   return (
     <ScrollView style={styles.scrollView}>
       <HTML
         baseFontStyle={baseFontStyle}
         containerStyle={styles.html}
-        html={html}
+        html={formattedHtml}
         imagesMaxWidth={Dimensions.get('window').width}
-        onLinkPress={(event: any, href: string) => Linking.openURL(href)}
+        onLinkPress={(event: any, href: string, attributes: any) => {
+          const isTimestamp = true
+          const startTime = parseInt(attributes && attributes['data-start-time'], 10)
+          if (isTimestamp && (startTime || startTime === 0)) {
+            setPlaybackPosition(startTime)
+          } else if (href) {
+            Linking.openURL(href)
+          }
+        }}
         ptSize={PV.Fonts.sizes.lg}
         tagsStyles={customHTMLTagStyles}
       />

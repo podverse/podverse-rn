@@ -1,10 +1,11 @@
-import { Platform, StyleSheet, TouchableOpacity } from 'react-native'
+import { Linking, Platform, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, SafeAreaView, Text, View } from '../components'
 import {
   androidHandleStatusCheck,
   iosHandlePurchaseStatusCheck
 } from '../lib/purchase'
+import { createEmailLinkUrl } from '../lib/utility'
 import { PV } from '../resources'
 
 type Props = {
@@ -24,7 +25,10 @@ export class PurchasingScreen extends React.Component<Props, State> {
   }
 
   _handleContactSupportPress = async () => {
-    console.log('contact support')
+    const subject = 'Podverse Checkout Issue'
+    const body = 'Please explain your issue below and we\'ll get back to you as soon as we can:'
+    const emailLinkUrl = createEmailLinkUrl(PV.Emails.SUPPORT, subject, body)
+    Linking.openURL(emailLinkUrl)
   }
 
   _handleRetryProcessing = async () => {
@@ -37,7 +41,6 @@ export class PurchasingScreen extends React.Component<Props, State> {
         await iosHandlePurchaseStatusCheck()
       }
     }
-    console.log('handle retry processing')
   }
 
   _handleDismiss = async () => {

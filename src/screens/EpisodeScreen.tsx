@@ -52,17 +52,21 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const episodeId = navigation.getParam('episodeId')
     const episodeTitle = navigation.getParam('episodeTitle')
     const podcastTitle = navigation.getParam('podcastTitle')
+    const addByFeedUrl = navigation.getParam('addByFeedUrl')
 
     return {
       title: 'Episode',
       headerRight: (
         <RNView style={core.row}>
-          <NavShareIcon
-            endingText=" – shared using Podverse"
-            episodeTitle={episodeTitle}
-            podcastTitle={podcastTitle}
-            url={PV.URLs.episode + episodeId}
-          />
+          {
+            !addByFeedUrl &&
+              <NavShareIcon
+                endingText=' – shared using Podverse'
+                episodeTitle={episodeTitle}
+                podcastTitle={podcastTitle}
+                url={PV.URLs.episode + episodeId}
+              />
+          }
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
@@ -135,9 +139,13 @@ export class EpisodeScreen extends React.Component<Props, State> {
         let newEpisode: any
 
         try {
-          newEpisode = await getEpisode(episodeId)
-          if (viewType === _clipsKey) {
-            newState = await this._queryData(_clipsKey)
+          if (episode.podcast && episode.podcast.addByFeedUrl) {
+            newEpisode = episode
+          } else {
+            newEpisode = await getEpisode(episodeId)
+            if (viewType === _clipsKey) {
+              newState = await this._queryData(_clipsKey)
+            }
           }
 
           newEpisode.description =
@@ -473,6 +481,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 const _clipsKey = 'clips'
 const _showNotesKey = 'showNotes'
 const _mostRecentKey = 'most-recent'
+const _randomKey = 'random'
 const _topPastDay = 'top-past-day'
 const _topPastWeek = 'top-past-week'
 const _topPastMonth = 'top-past-month'
@@ -509,6 +518,10 @@ const rightItems = [
   {
     label: 'top - past year',
     value: _topPastYear
+  },
+  {
+    label: 'random',
+    value: _randomKey
   }
 ]
 
