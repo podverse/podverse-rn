@@ -79,8 +79,8 @@ export const convertNowPlayingItemClipToNowPlayingItemEpisode = (
 
 export const convertToNowPlayingItem = (
   data,
-  inheritedEpisode,
-  inheritedPodcast,
+  inheritedEpisode = {} as any,
+  inheritedPodcast = {} as any,
   userPlaybackPosition = 0
 ) => {
   const nowPlayingItem: NowPlayingItem = {}
