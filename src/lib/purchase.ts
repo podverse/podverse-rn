@@ -25,39 +25,51 @@ export const androidHandleStatusCheck = async (
   transactionId: string,
   purchaseToken: string
 ) => {
-  await androidHandlePurchaseLoadingState(productId, transactionId, purchaseToken)
+  try {
+    await androidHandlePurchaseLoadingState(productId, transactionId, purchaseToken)
 
-  const response = await updateGooglePlayPurchaseStatus({
-    productId,
-    purchaseToken
-  })
+    const response = await updateGooglePlayPurchaseStatus({
+      productId,
+      purchaseToken
+    })
 
-  if (response) {
-    const { code } = response
-    if (code === 0) {
-      await androidHandleStatusSuccessful(purchaseToken)
-    } else if (code === 1) {
-      await handleStatusCancel()
-    } else if (code === 2) {
-      await handleStatusPending()
-    } else if (code === 3) {
-      await showPurchaseSomethingWentWrongError()
-    } else if (code === 4) {
-      await handleStatusConsumed()
-    } else {
-      await showPurchaseSomethingWentWrongError()
+    if (response) {
+      const { code } = response
+      if (code === 0) {
+        await RNIap.consumePurchaseAndroid(purchaseToken)
+        await androidHandleStatusSuccessful()
+      } else if (code === 1) {
+        await handleStatusCancel()
+      } else if (code === 2) {
+        await handleStatusPending()
+      } else if (code === 3) {
+        await showPurchaseSomethingWentWrongError()
+      } else if (code === 4) {
+        await handleStatusConsumed()
+      } else {
+        await showPurchaseSomethingWentWrongError()
+      }
     }
+  } catch (error) {
+    console.log('androidHandleStatusCheck error', error)
+    showPurchaseSomethingWentWrongError()
   }
 }
 
 export const iosHandlePurchaseStatusCheck = async (productId: string, transactionId: string, transactionReceipt: string) => {
-  console.log('iosHandlePurchaseStatusCheck')
-  if (transactionReceipt) {
-    const base64EncodedTransactionReceipt = btoa(transactionReceipt)
-    await iosHandlePurchaseLoadingState(productId, transactionId, base64EncodedTransactionReceipt)
-    const response = await updateAppStorePurchaseStatus(base64EncodedTransactionReceipt)
-  } else {
-    throw new Error('TransactionReceipt is missing.')
+  try {
+    await iosHandlePurchaseLoadingState(productId, transactionId, transactionReceipt)
+    const response = await updateAppStorePurchaseStatus(transactionReceipt)
+    const { finishedTransactionIds } = response.data
+    if (finishedTransactionIds && Array.isArray(finishedTransactionIds)) {
+      for (const id of finishedTransactionIds) {
+        await RNIap.finishTransactionIOS(id)
+      }
+    }
+    await iosHandleStatusSuccessful()
+  } catch (error) {
+    console.log('iosHandlePurchaseStatusCheck error', error)
+    showPurchaseSomethingWentWrongError()
   }
 }
 
@@ -82,13 +94,10 @@ export const androidHandlePurchaseLoadingState = async (
   transactionId: string,
   purchaseToken: string
 ) => {
-  let loadingState = purchaseLoadingState()
-  loadingState = {
-    ...loadingState,
-    transactionId,
-    productId,
-    purchaseToken
-  }
+  const loadingState = purchaseLoadingState()
+  loadingState.purchase.transactionId = transactionId
+  loadingState.purchase.productId = productId
+  loadingState.purchase.purchaseToken = purchaseToken
   setGlobal(loadingState)
 }
 
@@ -97,13 +106,10 @@ export const iosHandlePurchaseLoadingState = async (
   transactionId: string,
   transactionReceipt: string
 ) => {
-  let loadingState = purchaseLoadingState()
-  loadingState = {
-    ...loadingState,
-    transactionId,
-    productId,
-    transactionReceipt
-  }
+  const loadingState = purchaseLoadingState()
+  loadingState.purchase.transactionId = transactionId
+  loadingState.purchase.productId = productId
+  loadingState.purchase.transactionReceipt = transactionReceipt
   setGlobal(loadingState)
 }
 
@@ -123,38 +129,21 @@ const handleStatusSuccessful = () => {
   })
 }
 
-const androidHandleStatusSuccessful = async (
-  purchaseToken: string
-) => {
+const androidHandleStatusSuccessful = async () => {
   handleStatusSuccessful()
-  await RNIap.consumePurchaseAndroid(purchaseToken)
   // Reload auth user info to get latest membershipExpiration
   await getAuthUserInfo()
 }
 
-const iosHandleStatusSuccessful = async (
-  transactionReceipt: string
-) => {
+const iosHandleStatusSuccessful = async () => {
   handleStatusSuccessful()
-  console.log('consume ios purchase!', transactionReceipt)
   // Reload auth user info to get latest membershipExpiration
   await getAuthUserInfo()
 }
 
 const handleStatusConsumed = async () => {
-  const globalState = getGlobal()
-
-  setGlobal({
-    purchase: {
-      ...globalState.purchase,
-      isLoading: false,
-      message: PV.Alerts.PURCHASE_CONSUMED.message,
-      showContactSupportLink: true,
-      showDismissLink: true,
-      showRetryLink: false,
-      title: PV.Alerts.PURCHASE_CONSUMED.title
-    }
-  })
+  handleStatusSuccessful()
+  await getAuthUserInfo()
 }
 
 const handleStatusCancel = async () => {
@@ -191,7 +180,6 @@ const handleStatusPending = async () => {
 
 export const showPurchaseSomethingWentWrongError = async () => {
   const globalState = getGlobal()
-  const results = await getQueueItems()
 
   setGlobal({
     purchase: {
@@ -204,6 +192,4 @@ export const showPurchaseSomethingWentWrongError = async () => {
       title: PV.Alerts.PURCHASE_SOMETHING_WENT_WRONG.title
     }
   })
-
-  return results
 }

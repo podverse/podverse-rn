@@ -9,8 +9,7 @@ import {
 import React from 'reactn'
 import {
   androidHandleStatusCheck,
-  iosHandlePurchaseStatusCheck,
-  showPurchaseSomethingWentWrongError
+  iosHandlePurchaseStatusCheck
 } from '../lib/purchase'
 import { PV } from '../resources'
 
@@ -28,7 +27,6 @@ export class PurchaseListener extends React.Component<Props, State> {
 
     this.purchaseUpdateSubscription = purchaseUpdatedListener(
       async (purchase: InAppPurchase | Purchase) => {
-        console.log('purchased?', purchase)
         const { productId, purchaseToken, transactionId, transactionReceipt } = purchase
 
         if (Platform.OS === 'android') {
@@ -36,34 +34,22 @@ export class PurchaseListener extends React.Component<Props, State> {
             // Don't use await on navigate here, or it can lead to race condition issues between
             // different screens' render methods.
             navigation.navigate(PV.RouteNames.PurchasingScreen)
-
-            try {
-              await androidHandleStatusCheck(
-                productId,
-                transactionId,
-                purchaseToken
-              )
-            } catch (error) {
-              console.log('error', error)
-              showPurchaseSomethingWentWrongError()
-            }
+            await androidHandleStatusCheck(
+              productId,
+              transactionId,
+              purchaseToken
+            )
           }
         } else if (Platform.OS === 'ios') {
           if (productId && transactionId && transactionReceipt) {
             // Don't use await on navigate here, or it can lead to race condition issues between
             // different screens' render methods.
             navigation.navigate(PV.RouteNames.PurchasingScreen)
-
-            try {
-              await iosHandlePurchaseStatusCheck(
-                productId,
-                transactionId,
-                transactionReceipt
-              )
-            } catch (error) {
-              console.log('purchaseUpdateSubscription iosHandlePurchaseStatusCheck error', error)
-              showPurchaseSomethingWentWrongError()
-            }
+            await iosHandlePurchaseStatusCheck(
+              productId,
+              transactionId,
+              transactionReceipt
+            )
           }
         }
       }

@@ -5,7 +5,7 @@ import {
 import { getBearerToken } from './auth'
 import { request } from './request'
 
-export const updateAppStorePurchaseStatus = async (base64EncodedTransactionReceipt: any) => {
+export const updateAppStorePurchaseStatus = async (transactionReceipt: any) => {
   await hasValidNetworkConnection()
   await hasValidDownloadingConnection()
   const bearerToken = await getBearerToken()
@@ -18,10 +18,10 @@ export const updateAppStorePurchaseStatus = async (base64EncodedTransactionRecei
       'Content-Type': 'application/json'
     },
     body: {
-      transactionReceipt: base64EncodedTransactionReceipt
+      transactionReceipt
     },
     ...(bearerToken ? { opts: { credentials: 'include' } } : {})
   })
 
-  return response && response.data
+  return response
 }

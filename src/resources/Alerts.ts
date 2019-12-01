@@ -56,11 +56,6 @@ export const Alerts = {
       'Purchase has been cancelled. If you are seeing this in error, please contact support.',
     title: 'Purchase Cancelled'
   },
-  PURCHASE_CONSUMED: {
-    message:
-      'An invalid receipt was provided. Please contact support if you need help completing a purchase.',
-    title: 'Invalid Purchase'
-  },
   PURCHASE_PENDING: {
     message: 'Purchase is still pending...',
     title: 'Purchase Pending'

@@ -4,17 +4,18 @@ import { useGlobal } from 'reactn'
 
 type Props = {
   children?: any
+  disabled?: boolean
   numberOfLines?: number
   onPress?: any
   style?: any
 }
 
 export const TextLink = (props: Props) => {
-  const { children, numberOfLines, onPress, style } = props
+  const { children, disabled, numberOfLines, onPress, style } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity disabled={disabled} onPress={onPress}>
       <Text numberOfLines={numberOfLines} style={[style, globalTheme.link]}>
         {children}
       </Text>
