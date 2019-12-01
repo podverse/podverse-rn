@@ -70,7 +70,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
           const podcast = await getAddByRSSPodcast(url)
           this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
             podcast,
-            addByFeedUrl: podcast.addByFeedUrl
+            addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
           })
         } catch (error) {
           console.log('_handleSavePodcastByRSSURL', error)

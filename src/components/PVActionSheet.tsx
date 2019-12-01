@@ -63,9 +63,13 @@ export class PVActionSheet extends React.Component<Props, State> {
         const queueOnPress = () => {
           this.setState({
             ...(item.key === 'queueNext' ?
-              { isLoadingQueueNext: true } : { isLoadingQueueLast: true }),
-            ...(item.key === 'queueNext' ?
-              { isLoadingQueueLast: false } : { isLoadingQueueNext: false })
+            {
+              isLoadingQueueNext: true,
+              isLoadingQueueLast: false
+            } : {
+              isLoadingQueueNext: false,
+              isLoadingQueueLast: true
+            })
           }, async () => {
             await item.onPress()
             this.setState({

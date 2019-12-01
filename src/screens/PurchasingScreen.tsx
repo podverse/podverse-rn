@@ -33,13 +33,11 @@ export class PurchasingScreen extends React.Component<Props, State> {
 
   _handleRetryProcessing = async () => {
     const purchase = this.global.purchase || {}
-    const { orderId, productId, purchaseToken } = purchase
-    if (orderId && productId && purchaseToken) {
-      if (Platform.OS === 'android') {
-        await androidHandleStatusCheck(productId, purchaseToken, orderId)
-      } else if (Platform.OS === 'ios') {
-        await iosHandlePurchaseStatusCheck()
-      }
+    const { productId, purchaseToken, transactionId, transactionReceipt } = purchase
+    if (Platform.OS === 'android') {
+      await androidHandleStatusCheck(productId, transactionId, purchaseToken)
+    } else if (Platform.OS === 'ios') {
+      await iosHandlePurchaseStatusCheck(productId, transactionId, transactionReceipt)
     }
   }
 
@@ -112,7 +110,7 @@ const styles = StyleSheet.create({
     top: 8
   },
   message: {
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.lg,
     marginHorizontal: 16,
     marginVertical: 16,
     textAlign: 'center'

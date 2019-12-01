@@ -1,5 +1,5 @@
 import { Platform } from 'react-native'
-import RNIap, {
+import {
   InAppPurchase,
   Purchase,
   PurchaseError,
@@ -9,8 +9,7 @@ import RNIap, {
 import React from 'reactn'
 import {
   androidHandleStatusCheck,
-  handlePurchaseLoadingState,
-  showPurchaseSomethingWentWrongError
+  iosHandlePurchaseStatusCheck
 } from '../lib/purchase'
 import { PV } from '../resources'
 
@@ -28,26 +27,29 @@ export class PurchaseListener extends React.Component<Props, State> {
 
     this.purchaseUpdateSubscription = purchaseUpdatedListener(
       async (purchase: InAppPurchase | Purchase) => {
-        const { productId, purchaseToken, transactionId } = purchase
-        if (productId && purchaseToken && transactionId) {
-          // Don't use await on navigate, or it can lead to race condition issues between
-          // different screens' render methods.
-          navigation.navigate(PV.RouteNames.PurchasingScreen)
+        const { productId, purchaseToken, transactionId, transactionReceipt } = purchase
 
-          if (Platform.OS === 'android') {
-            try {
-              await androidHandleStatusCheck(
-                productId,
-                purchaseToken,
-                transactionId
-              )
-            } catch (error) {
-              console.log('error', error)
-              showPurchaseSomethingWentWrongError()
-            }
-          } else if (Platform.OS === 'ios') {
-            // TODO: handle iOS purchase flow
-            console.log('iOS flow')
+        if (Platform.OS === 'android') {
+          if (productId && transactionId && purchaseToken) {
+            // Don't use await on navigate here, or it can lead to race condition issues between
+            // different screens' render methods.
+            navigation.navigate(PV.RouteNames.PurchasingScreen)
+            await androidHandleStatusCheck(
+              productId,
+              transactionId,
+              purchaseToken
+            )
+          }
+        } else if (Platform.OS === 'ios') {
+          if (productId && transactionId && transactionReceipt) {
+            // Don't use await on navigate here, or it can lead to race condition issues between
+            // different screens' render methods.
+            navigation.navigate(PV.RouteNames.PurchasingScreen)
+            await iosHandlePurchaseStatusCheck(
+              productId,
+              transactionId,
+              transactionReceipt
+            )
           }
         }
       }

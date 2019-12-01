@@ -97,14 +97,14 @@ export class PodcastScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const podcastId = navigation.getParam('podcastId')
     const podcastTitle = navigation.getParam('podcastTitle')
-    const addByFeedUrl = navigation.getParam('addByFeedUrl')
+    const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
     return {
       title: 'Podcast',
       headerRight: (
         <RNView style={core.row}>
           {
-            !addByFeedUrl &&
+            !addByRSSPodcastFeedUrl &&
               <NavShareIcon
                 endingText=' – shared using Podverse'
                 podcastTitle={podcastTitle}
@@ -122,15 +122,15 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     const podcast = this.props.navigation.getParam('podcast')
     const podcastId =
-      (podcast && podcast.id) || (podcast && podcast.addByFeedUrl) || this.props.navigation.getParam('podcastId')
+      (podcast && podcast.id) || (podcast && podcast.addByRSSPodcastFeedUrl) || this.props.navigation.getParam('podcastId')
     const viewType =
       this.props.navigation.getParam('viewType') || allEpisodesKey
 
-    if (podcast && (podcast.id || podcast.addByFeedUrl)) {
+    if (podcast && (podcast.id || podcast.addByRSSPodcastFeedUrl)) {
       this.props.navigation.setParams({
         podcastId,
         podcastTitle: podcast.title,
-        addByFeedUrl: podcast.addByFeedUrl
+        addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
       })
     }
 
@@ -193,7 +193,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         let newPodcast: any
 
         try {
-          if (podcast.addByFeedUrl) {
+          if (podcast.addByRSSPodcastFeedUrl) {
             newPodcast = podcast
             newState.flatListData = podcast.episodes || []
             newState.flatListDataTotalCount = newState.flatListData.length
@@ -279,7 +279,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       viewType
     } = this.state
 
-    if (!podcast.addByFeedUrl && viewType !== downloadedKey && !endOfResultsReached && !isLoadingMore) {
+    if (!podcast.addByRSSPodcastFeedUrl && viewType !== downloadedKey && !endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
         this.setState(
           {
@@ -367,7 +367,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           handleNavigationPress={() =>
             this.props.navigation.navigate(screen, {
               episode,
-              addByFeedUrl: podcast.addByFeedUrl
+              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
             })
           }
           id={item.id}
@@ -387,7 +387,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           handleNavigationPress={() =>
             this.props.navigation.navigate(screen, {
               episode,
-              addByFeedUrl: podcast.addByFeedUrl
+              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
             })
           }
           id={item.id}
@@ -474,7 +474,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _toggleSubscribeToPodcast = async () => {
     const { podcast, podcastId } = this.state
-    const { addByFeedUrl } = podcast
+    const { addByRSSPodcastFeedUrl } = podcast
 
     if (podcastId) {
       const wasAlerted = await alertIfNoNetworkConnection(
@@ -484,7 +484,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
       this.setState({ isSubscribing: true }, async () => {
         try {
-          if (addByFeedUrl) {
+          if (addByRSSPodcastFeedUrl) {
             await toggleAddByRSSPodcast(podcastId)
           } else {
             await toggleSubscribeToPodcast(podcastId)
@@ -583,7 +583,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         () => this.global.subscribedPodcasts,
         []
       )
-      isSubscribed = subscribedPodcasts.some((x: any) => x.addByFeedUrl && x.addByFeedUrl === podcastId)
+      isSubscribed = subscribedPodcasts.some((x: any) => x.addByRSSPodcastFeedUrl && x.addByRSSPodcastFeedUrl === podcastId)
     }
 
     let { flatListData, flatListDataTotalCount } = this.state

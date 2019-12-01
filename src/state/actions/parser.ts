@@ -23,7 +23,7 @@ export const addAddByRSSPodcast = async (feedUrl: string) => {
 
 export const toggleAddByRSSPodcast = async (feedUrl: string) => {
   const podcasts = await getAddByRSSPodcasts()
-  const isSubscribed = podcasts.some((x: any) => x.addByFeedUrl === feedUrl)
+  const isSubscribed = podcasts.some((x: any) => x.addByRSSPodcastFeedUrl === feedUrl)
   if (isSubscribed) {
     const podcasts = await removeAddByRSSPodcast(feedUrl)
     setGlobal({

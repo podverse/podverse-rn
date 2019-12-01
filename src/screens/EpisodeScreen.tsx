@@ -52,14 +52,14 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const episodeId = navigation.getParam('episodeId')
     const episodeTitle = navigation.getParam('episodeTitle')
     const podcastTitle = navigation.getParam('podcastTitle')
-    const addByFeedUrl = navigation.getParam('addByFeedUrl')
+    const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
     return {
       title: 'Episode',
       headerRight: (
         <RNView style={core.row}>
           {
-            !addByFeedUrl &&
+            !addByRSSPodcastFeedUrl &&
               <NavShareIcon
                 endingText=' – shared using Podverse'
                 episodeTitle={episodeTitle}
@@ -139,7 +139,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         let newEpisode: any
 
         try {
-          if (episode.podcast && episode.podcast.addByFeedUrl) {
+          if (episode.podcast && episode.podcast.addByRSSPodcastFeedUrl) {
             newEpisode = episode
           } else {
             newEpisode = await getEpisode(episodeId)

@@ -91,7 +91,7 @@ const mediaMoreButtons = (
     }
   )
 
-  if (!item.addByFeedUrl) {
+  if (!item.addByRSSPodcastFeedUrl) {
     buttons.push({
       key: 'addToPlaylist',
       text: 'Add to Playlist',
@@ -166,11 +166,11 @@ const hasTriedAlert = async (
   download: boolean
 ) => {
   const netInfoState = await NetInfo.fetch()
-  let hasTried = AsyncStorage.getItem(
+  let hasTried = await AsyncStorage.getItem(
     PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI
   )
   if (!download) {
-    hasTried = AsyncStorage.getItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI)
+    hasTried = await AsyncStorage.getItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI)
   }
   const showAlert = netInfoState.type === 'wifi' && !hasTried
 

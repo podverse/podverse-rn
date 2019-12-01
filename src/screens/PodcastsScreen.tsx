@@ -436,7 +436,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
             podcast: item,
             episodeCount,
-            addByFeedUrl: item.addByFeedUrl
+            addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
           })
         }
         podcastAuthors={
@@ -460,13 +460,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
     return (
       <SwipeRowBack
         isLoading={this.state.isUnsubscribing}
-        onPress={() => this._handleHiddenItemPress(item.id, item.addByFeedUrl, rowMap)}
+        onPress={() => this._handleHiddenItemPress(item.id, item.addByRSSPodcastFeedUrl, rowMap)}
         text={buttonText}
       />
     )
   }
 
-  _handleHiddenItemPress = async (selectedId, addByFeedUrl, rowMap) => {
+  _handleHiddenItemPress = async (selectedId, addByRSSPodcastFeedUrl, rowMap) => {
     const { queryFrom } = this.state
 
     let wasAlerted = false
@@ -483,11 +483,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
           if (selectedId) {
             await toggleSubscribeToPodcast(selectedId)
           } else {
-            await removeAddByRSSPodcast(addByFeedUrl)
+            await removeAddByRSSPodcast(addByRSSPodcastFeedUrl)
           }
-          await removeDownloadedPodcast(selectedId || addByFeedUrl)
+          await removeDownloadedPodcast(selectedId || addByRSSPodcastFeedUrl)
         } else if (queryFrom === _downloadedKey) {
-          await removeDownloadedPodcast(selectedId || addByFeedUrl)
+          await removeDownloadedPodcast(selectedId || addByRSSPodcastFeedUrl)
         }
         const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
         rowMap[selectedId].closeRow()

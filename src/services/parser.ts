@@ -8,15 +8,15 @@ const uuidv4 = require('uuid/v4')
 /*
 addByRSSPodcasts: [addByRSSPodcast]
 addByRSSPodcast: object {
-  addByFeedUrl: string,
+  addByRSSPodcastFeedUrl: string,
   episodes: [episode],
   ...other podcast properties
 }
 */
 
 export const getAddByRSSPodcast = async (feedUrl: string) => {
-  const addByFeedUrlPodcasts = await getAddByRSSPodcasts()
-  return addByFeedUrlPodcasts.find((x: any) => x.addByFeedUrl === feedUrl)
+  const addByRSSPodcastFeedUrlPodcasts = await getAddByRSSPodcasts()
+  return addByRSSPodcastFeedUrlPodcasts.find((x: any) => x.addByRSSPodcastFeedUrl === feedUrl)
 }
 
 export const getAddByRSSPodcasts = async () => {
@@ -43,7 +43,7 @@ export const parseAllAddByRSSPodcasts = async () => {
   const parsedPodcasts = []
   for (const rssPodcast of rssPodcasts) {
     try {
-      const parsedPodcast = await parseAddByRSSPodcast(rssPodcast.addByFeedUrl) as any
+      const parsedPodcast = await parseAddByRSSPodcast(rssPodcast.addByRSSPodcastFeedUrl) as any
       if (parsedPodcast) {
         parsedPodcasts.push(parsedPodcast)
       }
@@ -53,7 +53,7 @@ export const parseAllAddByRSSPodcasts = async () => {
   }
 
   for (const parsedPodcast of parsedPodcasts) {
-    const index = rssPodcasts.findIndex((rssPodcast: any) => rssPodcast.addByFeedUrl === parsedPodcast.addByFeedUrl)
+    const index = rssPodcasts.findIndex((rssPodcast: any) => rssPodcast.addByRSSPodcastFeedUrl === parsedPodcast.addByRSSPodcastFeedUrl)
     if (index || index === 0) {
       rssPodcasts[index] = parsedPodcast
     } else {
@@ -76,7 +76,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
         throw new Error('parseAddByRSSPodcast: Title not defined')
       }
       const podcast = {} as any
-      podcast.addByFeedUrl = feedUrl
+      podcast.addByRSSPodcastFeedUrl = feedUrl
       podcast.description = rss.description && rss.description.trim()
       podcast.feedLastUpdated = rss.lastUpdated || rss.lastPublished
       podcast.imageUrl = rss.image && rss.image.url
@@ -123,7 +123,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
 
 const addParsedAddByRSSPodcast = async (parsedPodcast: any) => {
   const rssPodcasts = await getAddByRSSPodcasts()
-  const index = rssPodcasts.findIndex((rssPodcast: any) => rssPodcast.addByFeedUrl === parsedPodcast.addByFeedUrl)
+  const index = rssPodcasts.findIndex((rssPodcast: any) => rssPodcast.addByRSSPodcastFeedUrl === parsedPodcast.addByRSSPodcastFeedUrl)
   if ((index && index >= 0) || index === 0) {
     rssPodcasts[index] = parsedPodcast
   } else {
@@ -134,7 +134,7 @@ const addParsedAddByRSSPodcast = async (parsedPodcast: any) => {
 
 export const removeAddByRSSPodcast = async (feedUrl: string) => {
   let podcasts = await getAddByRSSPodcasts()
-  podcasts = podcasts.filter((x: any) => x.addByFeedUrl !== feedUrl)
+  podcasts = podcasts.filter((x: any) => x.addByRSSPodcastFeedUrl !== feedUrl)
   await setAddByRSSPodcasts(podcasts)
   const combinedPodcasts = await combineWithAddByRSSPodcasts()
   return combinedPodcasts
