@@ -11,16 +11,23 @@ export const getPublicUser = async (id: string) => {
   return response && response.data
 }
 
-export const getUserMediaRefs = async (userId: string, query: any = {}, nsfwMode: boolean) => {
+export const getUserMediaRefs = async (
+  userId: string,
+  query: any = {},
+  nsfwMode: boolean
+) => {
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'most-recent' })
   }
 
-  const response = await request({
-    endpoint: `/user/${userId}/mediaRefs`,
-    query: filteredQuery
-  }, nsfwMode)
+  const response = await request(
+    {
+      endpoint: `/user/${userId}/mediaRefs`,
+      query: filteredQuery
+    },
+    nsfwMode
+  )
 
   return response && response.data
 }
@@ -54,7 +61,9 @@ export const getPublicUsersByQuery = async (query: any = {}) => {
 
 export const toggleSubscribeToUser = async (id: string) => {
   const isLoggedIn = await checkIfLoggedIn()
-  return isLoggedIn ? toggleSubscribeToUserOnServer(id) : toggleSubscribeToUserLocally(id)
+  return isLoggedIn
+    ? toggleSubscribeToUserOnServer(id)
+    : toggleSubscribeToUserLocally(id)
 }
 
 const toggleSubscribeToUserLocally = async (id: string) => {
@@ -72,7 +81,11 @@ const toggleSubscribeToUserLocally = async (id: string) => {
     items.push(id)
   }
 
-  if (Array.isArray(items)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_USER_IDS, JSON.stringify(items))
+  if (Array.isArray(items))
+    await AsyncStorage.setItem(
+      PV.Keys.SUBSCRIBED_USER_IDS,
+      JSON.stringify(items)
+    )
   return items
 }
 
@@ -86,28 +99,37 @@ const toggleSubscribeToUserOnServer = async (id: string) => {
   return response && response.data
 }
 
-export const getLoggedInUserMediaRefs = async (query: any = {}, nsfwMode?: boolean) => {
+export const getLoggedInUserMediaRefs = async (
+  query: any = {},
+  nsfwMode?: boolean
+) => {
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' })
   } as any
 
   const bearerToken = await getBearerToken()
-  const response = await request({
-    endpoint: '/user/mediaRefs',
-    query: filteredQuery,
-    headers: { Authorization: bearerToken }
-  }, nsfwMode)
+  const response = await request(
+    {
+      endpoint: '/user/mediaRefs',
+      query: filteredQuery,
+      headers: { Authorization: bearerToken }
+    },
+    nsfwMode
+  )
 
   return response && response.data
 }
 
 export const getLoggedInUserPlaylists = async (nsfwMode?: boolean) => {
   const bearerToken = await getBearerToken()
-  const response = await request({
-    endpoint: '/user/playlists',
-    headers: { Authorization: bearerToken }
-  }, nsfwMode)
+  const response = await request(
+    {
+      endpoint: '/user/playlists',
+      headers: { Authorization: bearerToken }
+    },
+    nsfwMode
+  )
 
   return response && response.data
 }
@@ -130,7 +152,7 @@ export const updateLoggedInUser = async (data: any) => {
     endpoint: '/user',
     method: 'PATCH',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
     body: data,
@@ -158,7 +180,7 @@ export const updateUserQueueItems = async (queueItems: any) => {
     endpoint: '/user/update-queue',
     method: 'PATCH',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
     body: { queueItems },

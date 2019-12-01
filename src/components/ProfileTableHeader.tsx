@@ -16,48 +16,53 @@ type Props = {
 }
 
 export const ProfileTableHeader = (props: Props) => {
-  const { handleEditPress, handleToggleSubscribe, id, isLoading, isNotFound, isSubscribed, isSubscribing,
-    name = 'anonymous' } = props
+  const {
+    handleEditPress,
+    handleToggleSubscribe,
+    id,
+    isLoading,
+    isNotFound,
+    isSubscribed,
+    isSubscribing,
+    name = 'anonymous'
+  } = props
 
   return (
     <View>
-      {
-        isLoading &&
-          <View style={styles.wrapper}>
-            <ActivityIndicator />
+      {isLoading && (
+        <View style={styles.wrapper}>
+          <ActivityIndicator />
+        </View>
+      )}
+      {!isLoading && !isNotFound && (
+        <View style={styles.wrapper}>
+          <View style={styles.textWrapper}>
+            <Text numberOfLines={1} style={styles.name}>
+              {name}
+            </Text>
           </View>
-      }
-      {
-        !isLoading && !isNotFound &&
-          <View style={styles.wrapper}>
-            <View style={styles.textWrapper}>
-              <Text
-                numberOfLines={1}
-                style={styles.name}>{name}</Text>
-            </View>
-            {
-              handleEditPress &&
-              <Icon
-                name='pencil-alt'
-                onPress={() => handleEditPress(id)}
-                size={26}
-                style={button.iconOnlyMedium} />
-            }
-            {
-              handleToggleSubscribe &&
-              <SubscribeButton
-                handleToggleSubscribe={handleToggleSubscribe}
-                isSubscribed={isSubscribed}
-                isSubscribing={isSubscribing} />
-            }
-          </View>
-      }
-      {
-        !isLoading && isNotFound &&
-          <View style={[styles.wrapper, core.view]}>
-            <Text style={styles.notFoundText}>Playlist Not Found</Text>
-          </View>
-      }
+          {handleEditPress && (
+            <Icon
+              name="pencil-alt"
+              onPress={() => handleEditPress(id)}
+              size={26}
+              style={button.iconOnlyMedium}
+            />
+          )}
+          {handleToggleSubscribe && (
+            <SubscribeButton
+              handleToggleSubscribe={handleToggleSubscribe}
+              isSubscribed={isSubscribed}
+              isSubscribing={isSubscribing}
+            />
+          )}
+        </View>
+      )}
+      {!isLoading && isNotFound && (
+        <View style={[styles.wrapper, core.view]}>
+          <Text style={styles.notFoundText}>Playlist Not Found</Text>
+        </View>
+      )}
     </View>
   )
 }

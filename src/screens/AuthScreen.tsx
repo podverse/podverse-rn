@@ -1,10 +1,18 @@
 import React from 'react'
-import { Alert, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
-import { Icon, Login, ResetPassword, SafeAreaView } from '../components'
+import {
+  Alert,
+  Image,
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View
+} from 'react-native'
+import { Icon, Login, ResetPassword, SafeAreaView, SignUp } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { sendResetPassword } from '../services/auth'
-import { Credentials, loginUser } from '../state/actions/auth'
+import { Credentials, loginUser, signUpUser } from '../state/actions/auth'
 import { button } from '../styles'
 
 type Props = {
@@ -15,23 +23,25 @@ type Props = {
 type State = {
   isLoadingLogin: boolean
   isLoadingResetPassword: boolean
-  // isLoadingSignUp: boolean
+  isLoadingSignUp: boolean
   screenType?: string
 }
 
 const _login = 'login'
 const _resetPassword = 'resetPassword'
-// const _signup = 'signup'
+const _signup = 'signup'
 
 export class AuthScreen extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
+
+    const showSignUp = props.navigation.getParam('showSignUp')
+
     this.state = {
       isLoadingLogin: false,
       isLoadingResetPassword: false,
-      // isLoadingSignUp: false,
-      screenType: props.screenType || _login
+      isLoadingSignUp: false,
+      screenType: (showSignUp && _signup) || props.screenType || _login
     }
   }
 
@@ -50,10 +60,33 @@ export class AuthScreen extends React.Component<Props, State> {
           navigation.goBack(null)
         }
       } catch (error) {
-        if (error.response && error.response.status === PV.ResponseStatusCodes.UNAUTHORIZED) {
-          Alert.alert(PV.Alerts.LOGIN_INVALID.title, PV.Alerts.LOGIN_INVALID.message, [])
+        const EMAIL_NOT_VERIFIED = PV.Alerts.EMAIL_NOT_VERIFIED(
+          credentials.email
+        )
+        if (
+          error.response &&
+          error.response.status === PV.ResponseStatusCodes.EMAIL_NOT_VERIFIED
+        ) {
+          Alert.alert(
+            EMAIL_NOT_VERIFIED.title,
+            EMAIL_NOT_VERIFIED.message,
+            EMAIL_NOT_VERIFIED.buttons
+          )
+        } else if (
+          error.response &&
+          error.response.status === PV.ResponseStatusCodes.UNAUTHORIZED
+        ) {
+          Alert.alert(
+            PV.Alerts.LOGIN_INVALID.title,
+            PV.Alerts.LOGIN_INVALID.message,
+            PV.Alerts.BUTTONS.OK
+          )
         } else {
-          Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+          Alert.alert(
+            PV.Alerts.SOMETHING_WENT_WRONG.title,
+            PV.Alerts.SOMETHING_WENT_WRONG.message,
+            PV.Alerts.BUTTONS.OK
+          )
         }
       }
       this.setState({ isLoadingLogin: false })
@@ -65,37 +98,52 @@ export class AuthScreen extends React.Component<Props, State> {
     this.setState({ isLoadingResetPassword: true }, async () => {
       try {
         await sendResetPassword(email)
-        Alert.alert(PV.Alerts.RESET_PASSWORD_SUCCESS.title, PV.Alerts.RESET_PASSWORD_SUCCESS.message, [])
+        Alert.alert(
+          PV.Alerts.RESET_PASSWORD_SUCCESS.title,
+          PV.Alerts.RESET_PASSWORD_SUCCESS.message,
+          PV.Alerts.BUTTONS.OK
+        )
       } catch (error) {
-        Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, [])
+        Alert.alert(
+          PV.Alerts.SOMETHING_WENT_WRONG.title,
+          PV.Alerts.SOMETHING_WENT_WRONG.message,
+          PV.Alerts.BUTTONS.OK
+        )
       }
       this.setState({ isLoadingResetPassword: false })
       navigation.goBack(null)
     })
   }
 
-  // attemptSignUp = async (credentials: Credentials) => {
-  //   const { navigation } = this.props
+  attemptSignUp = async (credentials: Credentials) => {
+    const { navigation } = this.props
 
-  //   const wasAlerted = await alertIfNoNetworkConnection('sign up')
-  //   if (wasAlerted) return
+    const wasAlerted = await alertIfNoNetworkConnection('sign up')
+    if (wasAlerted) return
 
-  //   this.setState({ isLoadingSignUp: true }, async () => {
-  //     try {
-  //       await signUpUser(credentials, navigation)
-  //       if (navigation.getParam('isOnboarding', false)) {
-  //         navigation.navigate(PV.RouteNames.MainApp)
-  //       } else {
-  //         navigation.goBack(null)
-  //       }
-  //     } catch (error) {
-  //       if (error.response && error.response.data && error.response.data.message) {
-  //         Alert.alert(PV.Alerts.SIGN_UP_ERROR.title, error.response.data.message, [])
-  //       }
-  //     }
-  //     this.setState({ isLoadingSignUp: false })
-  //   })
-  // }
+    this.setState({ isLoadingSignUp: true }, async () => {
+      try {
+        await signUpUser(credentials)
+        navigation.navigate(PV.RouteNames.EmailVerificationScreen, {
+          email: credentials.email
+        })
+      } catch (error) {
+        console.log('attemptSignUp', error)
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          Alert.alert(
+            PV.Alerts.SIGN_UP_ERROR.title,
+            error.response.data.message,
+            PV.Alerts.BUTTONS.OK
+          )
+        }
+      }
+      this.setState({ isLoadingSignUp: false })
+    })
+  }
 
   _showMembership = () => {
     const { navigation } = this.props
@@ -108,36 +156,34 @@ export class AuthScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { isLoadingLogin, isLoadingResetPassword, screenType } = this.state
+    const {
+      isLoadingLogin,
+      isLoadingResetPassword,
+      isLoadingSignUp,
+      screenType
+    } = this.state
     let bottomButtons
 
     if (screenType === _login) {
       bottomButtons = [
-        (
-          <Text
-            key='reset'
-            onPress={this._showResetPassword}
-            style={styles.switchOptionText}>
-            Reset Password
-          </Text>
-        ),(
-          <Text
-            key='moreInfo'
-            onPress={this._showMembership}
-            style={[styles.switchOptionText, {marginTop: 0, width: "100%" }]}>
-            More Info
-          </Text>
-        )
+        <Text
+          key="reset"
+          onPress={this._showResetPassword}
+          style={styles.switchOptionText}>
+          Reset Password
+        </Text>,
+        <Text
+          key="moreInfo"
+          onPress={this._showMembership}
+          style={[styles.switchOptionText, { marginTop: 0, width: '100%' }]}>
+          Sign Up
+        </Text>
       ]
     } else if (screenType === _resetPassword) {
       bottomButtons = [
-        (
-          <Text
-            onPress={this._showMembership}
-            style={styles.switchOptionText}>
-            Login
-          </Text>
-        )
+        <Text onPress={this._showMembership} style={styles.switchOptionText}>
+          Login
+        </Text>
       ]
     }
 
@@ -146,34 +192,37 @@ export class AuthScreen extends React.Component<Props, State> {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.view}>
             <Icon
-              name='times'
+              name="times"
               onPress={navigation.dismiss}
               size={26}
-              style={[button.iconOnlyMedium, styles.closeButton]} />
-            <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />
+              style={[button.iconOnlyMedium, styles.closeButton]}
+            />
+            <Image
+              source={PV.Images.BANNER}
+              style={styles.banner}
+              resizeMode="contain"
+            />
             <View style={styles.contentView}>
-              {
-                screenType === _login &&
-                  <Login
-                    bottomButtons={bottomButtons}
-                    isLoading={isLoadingLogin}
-                    onLoginPressed={this.attemptLogin} />
-              }
-              {
-                screenType === _resetPassword &&
-                  <ResetPassword
-                    isLoading={isLoadingResetPassword}
-                    onResetPasswordPressed={this.attemptResetPassword} />
-              }
-              {/* {
-                screenType === _signup &&
-                  <View>
-                    <SignUp
-                      bottomButtons={bottomButtons}
-                      isLoading={isLoadingSignUp}
-                      onSignUpPressed={this.attemptSignUp} />
-                  </View>
-              } */}
+              {screenType === _login && (
+                <Login
+                  bottomButtons={bottomButtons}
+                  isLoading={isLoadingLogin}
+                  onLoginPressed={this.attemptLogin}
+                />
+              )}
+              {screenType === _resetPassword && (
+                <ResetPassword
+                  isLoading={isLoadingResetPassword}
+                  onResetPasswordPressed={this.attemptResetPassword}
+                />
+              )}
+              {screenType === _signup && (
+                <SignUp
+                  bottomButtons={bottomButtons}
+                  isLoading={isLoadingSignUp}
+                  onSignUpPressed={this.attemptSignUp}
+                />
+              )}
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -184,7 +233,7 @@ export class AuthScreen extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   banner: {
-    marginBottom: 60,
+    marginBottom: 40,
     width: '80%'
   },
   closeButton: {

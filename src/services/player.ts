@@ -1,14 +1,31 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import RNFS from 'react-native-fs'
 import TrackPlayer, { Track } from 'react-native-track-player'
-import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
-import { checkIfIdMatchesClipIdOrEpisodeId, getExtensionFromUrl } from '../lib/utility'
+import {
+  convertNowPlayingItemClipToNowPlayingItemEpisode,
+  NowPlayingItem
+} from '../lib/NowPlayingItem'
+import {
+  checkIfIdMatchesClipIdOrEpisodeId,
+  getExtensionFromUrl
+} from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { addOrUpdateHistoryItem, getHistoryItem, getHistoryItems, getHistoryItemsLocally,
-  updateHistoryItemPlaybackPosition } from './history'
-import { addQueueItemLast, addQueueItemNext, filterItemFromQueueItems, getQueueItems, getQueueItemsLocally,
-  removeQueueItem } from './queue'
+import {
+  addOrUpdateHistoryItem,
+  getHistoryItem,
+  getHistoryItems,
+  getHistoryItemsLocally,
+  updateHistoryItemPlaybackPosition
+} from './history'
+import {
+  addQueueItemLast,
+  addQueueItemNext,
+  filterItemFromQueueItems,
+  getQueueItems,
+  getQueueItemsLocally,
+  removeQueueItem
+} from './queue'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
 TrackPlayer.setupPlayer({
@@ -44,7 +61,9 @@ export const getClipHasEnded = async () => {
 }
 
 export const getContinuousPlaybackMode = async () => {
-  const itemString = await AsyncStorage.getItem(PV.Keys.SHOULD_CONTINUOUSLY_PLAY)
+  const itemString = await AsyncStorage.getItem(
+    PV.Keys.SHOULD_CONTINUOUSLY_PLAY
+  )
   if (itemString) {
     return JSON.parse(itemString)
   }
@@ -61,7 +80,9 @@ export const getNowPlayingItem = async () => {
 
 export const handleResumeAfterClipHasEnded = async () => {
   const nowPlayingItem = await getNowPlayingItem()
-  const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(nowPlayingItem)
+  const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(
+    nowPlayingItem
+  )
   await setNowPlayingItem(nowPlayingItemEpisode)
   PlayerEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
@@ -100,7 +121,10 @@ export const playerPreviewEndTime = async (endTime: number) => {
   }, 500)
 }
 
-export const playerPreviewStartTime = async (startTime: number, endTime?: number | null) => {
+export const playerPreviewStartTime = async (
+  startTime: number,
+  endTime?: number | null
+) => {
   if (playerPreviewEndTimeInterval) {
     clearInterval(playerPreviewEndTimeInterval)
   }
@@ -120,11 +144,18 @@ export const playerPreviewStartTime = async (startTime: number, endTime?: number
 }
 
 export const setClipHasEnded = async (clipHasEnded: boolean) => {
-  if (typeof clipHasEnded === 'boolean') await AsyncStorage.setItem(PV.Keys.CLIP_HAS_ENDED, JSON.stringify(clipHasEnded))
+  if (typeof clipHasEnded === 'boolean') {
+    await AsyncStorage.setItem(
+      PV.Keys.CLIP_HAS_ENDED,
+      JSON.stringify(clipHasEnded)
+    )
+  }
 }
 
 export const setNowPlayingItem = async (item: NowPlayingItem | null) => {
-  if (typeof item === 'object') await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
+  if (typeof item === 'object') {
+    await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
+  }
 }
 
 const getDownloadedFilePath = (id: string, episodeMediaUrl: string) => {
@@ -160,41 +191,53 @@ export const updateUserPlaybackPosition = async () => {
 }
 
 export const initializePlayerQueue = async () => {
-  const queueItems = await getQueueItems()
-  let filteredItems = [] as any
+  try {
+    const queueItems = await getQueueItems()
+    let filteredItems = [] as any
 
-  // Use whatever the most recent item in the history is if one exists, else
-  // fallback to the last NowPlayingItem.
-  const historyItems = await getHistoryItems()
-  let item = null
-  let isNowPlayingItem = false
-  if (historyItems[0]) {
-    item = historyItems[0]
-  } else {
-    const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
-    if (nowPlayingItemString) {
-      item = JSON.parse(nowPlayingItemString)
+    // Use whatever the most recent item in the history is if one exists, else
+    // fallback to the last NowPlayingItem.
+    const historyItems = await getHistoryItems()
+    let item = null
+    let isNowPlayingItem = false
+    if (historyItems[0]) {
+      item = historyItems[0]
+    } else {
+      const nowPlayingItemString = await AsyncStorage.getItem(
+        PV.Keys.NOW_PLAYING_ITEM
+      )
+      if (nowPlayingItemString) {
+        item = JSON.parse(nowPlayingItemString)
+      }
+      isNowPlayingItem = true
     }
-    isNowPlayingItem = true
-  }
 
-  if (item) {
-    filteredItems = filterItemFromQueueItems(queueItems, item)
-    const id = item.clipId ? item.clipId : item.episodeId
-    if (isNowPlayingItem) {
-      const historyItem = await getHistoryItem(id)
-      if (historyItem) item.userPlaybackPosition = historyItem.userPlaybackPosition
+    if (item) {
+      filteredItems = filterItemFromQueueItems(queueItems, item)
+      const id = item.clipId ? item.clipId : item.episodeId
+      if (isNowPlayingItem) {
+        const historyItem = await getHistoryItem(id)
+        if (historyItem) {
+          item.userPlaybackPosition = historyItem.userPlaybackPosition
+        }
+      }
+      filteredItems.unshift(item)
     }
-    filteredItems.unshift(item)
+
+    const tracks = await createTracks(filteredItems)
+    PVTrackPlayer.add(tracks)
+
+    return item
+  } catch (error) {
+    console.log('Initializing player error: ', error)
   }
-
-  const tracks = await createTracks(filteredItems)
-  PVTrackPlayer.add(tracks)
-
-  return item
 }
 
-export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boolean, skipUpdateHistory?: boolean) => {
+export const loadItemAndPlayTrack = async (
+  item: NowPlayingItem,
+  shouldPlay: boolean,
+  skipUpdateHistory?: boolean
+) => {
   updateUserPlaybackPosition()
 
   // Episodes and clips must be already loaded in history
@@ -202,7 +245,7 @@ export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boo
   if (!skipUpdateHistory) await addOrUpdateHistoryItem(item)
 
   await TrackPlayer.reset()
-  const track = await createTrack(item) as Track
+  const track = (await createTrack(item)) as Track
   await TrackPlayer.add(track)
   await syncPlayerWithQueue()
 
@@ -239,8 +282,14 @@ export const syncPlayerWithQueue = async () => {
 }
 
 export const createTrack = async (item: NowPlayingItem) => {
-  const { clipId, episodeId, episodeMediaUrl = '', episodeTitle = 'Untitled episode', podcastImageUrl,
-    podcastTitle = 'Untitled podcast' } = item
+  const {
+    clipId,
+    episodeId,
+    episodeMediaUrl = '',
+    episodeTitle = 'Untitled episode',
+    podcastImageUrl,
+    podcastTitle = 'Untitled podcast'
+  } = item
   const id = clipId || episodeId
   let track = null
   if (id) {
@@ -271,21 +320,27 @@ export const createTrack = async (item: NowPlayingItem) => {
 export const createTracks = async (items: NowPlayingItem[]) => {
   const tracks = [] as Track[]
   for (const item of items) {
-    const track = await createTrack(item) as Track
+    const track = (await createTrack(item)) as Track
     tracks.push(track)
   }
 
   return tracks
 }
 
-export const movePlayerItemToNewPosition = async (id: string, insertBeforeId: string) => {
+export const movePlayerItemToNewPosition = async (
+  id: string,
+  insertBeforeId: string
+) => {
   const playerQueueItems = await TrackPlayer.getQueue()
   if (playerQueueItems.some((x: any) => x.id === id)) {
     try {
       await TrackPlayer.getTrack(id)
       await TrackPlayer.remove(id)
       const pvQueueItems = await getQueueItemsLocally()
-      const itemToMove = pvQueueItems.find((x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id))
+      const itemToMove = pvQueueItems.find(
+        (x: any) =>
+          (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id)
+      )
       if (itemToMove) {
         const track = await createTrack(itemToMove)
         await TrackPlayer.add([track], insertBeforeId)
@@ -297,21 +352,33 @@ export const movePlayerItemToNewPosition = async (id: string, insertBeforeId: st
 }
 
 export const setPlaybackPosition = async (position?: number) => {
-  if (position || position === 0 || (position && position > 0)) await TrackPlayer.seekTo(position)
+  if (position || position === 0 || (position && position > 0)) {
+    await TrackPlayer.seekTo(position)
+  }
 }
 
 // Sometimes the duration is not immediately available for certain episodes.
 // For those cases, use a setInterval before adjusting playback position.
 export const setPlaybackPositionWhenDurationIsAvailable = async (
-  position: number, trackId?: string, resolveImmediately?: boolean) => {
+  position: number,
+  trackId?: string,
+  resolveImmediately?: boolean
+) => {
   return new Promise((resolve, reject) => {
     const interval = setInterval(async () => {
       const duration = await TrackPlayer.getDuration()
       const currentTrackId = await TrackPlayer.getCurrentTrack()
 
-      setTimeout(() => { if (interval) clearInterval(interval) }, 20000)
+      setTimeout(() => {
+        if (interval) clearInterval(interval)
+      }, 20000)
 
-      if (duration && duration > 0 && (!trackId || trackId === currentTrackId) && position >= 0) {
+      if (
+        duration &&
+        duration > 0 &&
+        (!trackId || trackId === currentTrackId) &&
+        position >= 0
+      ) {
         clearInterval(interval)
         await TrackPlayer.seekTo(position)
         // Sometimes seekTo does not work right away for all episodes...
@@ -333,7 +400,10 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
 }
 
 export const setPlaybackSpeed = async (rate: number) => {
-  await AsyncStorage.setItem(PV.Keys.PLAYER_PLAYBACK_SPEED, JSON.stringify(rate))
+  await AsyncStorage.setItem(
+    PV.Keys.PLAYER_PLAYBACK_SPEED,
+    JSON.stringify(rate)
+  )
   await TrackPlayer.setRate(rate)
 }
 
@@ -350,17 +420,22 @@ export const getPlaybackSpeed = async () => {
   }
 }
 
-export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: string) => {
+export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (
+  trackId: string
+) => {
   const queueItems = await getQueueItemsLocally()
   const queueItemIndex = queueItems.findIndex((x: any) =>
-    checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId))
+    checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId, x.addByRSSPodcastFeedUrl)
+  )
   let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
 
   if (currentNowPlayingItem) removeQueueItem(currentNowPlayingItem, false)
 
   if (!currentNowPlayingItem) {
     const historyItems = await getHistoryItemsLocally()
-    currentNowPlayingItem = historyItems.find((x: any) => checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId))
+    currentNowPlayingItem = historyItems.find((x: any) =>
+      checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId, x.addByRSSPodcastFeedUrl)
+    )
   }
 
   return currentNowPlayingItem

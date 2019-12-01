@@ -4,17 +4,35 @@ import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { setNowPlayingItem } from '../state/actions/player'
 import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'
-import { getClipHasEnded, getNowPlayingItem, getNowPlayingItemFromQueueOrHistoryByTrackId, getPlaybackSpeed,
-  handleResumeAfterClipHasEnded, playerJumpBackward, playerJumpForward, PVTrackPlayer, setClipHasEnded,
-  setPlaybackPositionWhenDurationIsAvailable, updateUserPlaybackPosition } from './player'
+import {
+  getClipHasEnded,
+  getNowPlayingItem,
+  getNowPlayingItemFromQueueOrHistoryByTrackId,
+  getPlaybackSpeed,
+  handleResumeAfterClipHasEnded,
+  playerJumpBackward,
+  playerJumpForward,
+  PVTrackPlayer,
+  setClipHasEnded,
+  setPlaybackPositionWhenDurationIsAvailable,
+  updateUserPlaybackPosition
+} from './player'
 import PlayerEventEmitter from './playerEventEmitter'
 
-const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 5000, {
-  leading: true,
-  trailing: false
-})
+const debouncedSetPlaybackPosition = debounce(
+  setPlaybackPositionWhenDurationIsAvailable,
+  1000,
+  {
+    leading: true,
+    trailing: false
+  }
+)
 
-const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem, isSecondTime?: boolean) => {
+const handleSyncNowPlayingItem = async (
+  trackId: string,
+  currentNowPlayingItem: NowPlayingItem,
+  isSecondTime?: boolean
+) => {
   if (!currentNowPlayingItem) return
   await setNowPlayingItem(currentNowPlayingItem)
 
@@ -22,8 +40,14 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
     if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
       PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
     }
-    if (!currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
-      debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
+    if (
+      !currentNowPlayingItem.clipId &&
+      currentNowPlayingItem.userPlaybackPosition
+    ) {
+      debouncedSetPlaybackPosition(
+        currentNowPlayingItem.userPlaybackPosition,
+        trackId
+      )
     }
 
     const isPlayingFromHistory = await checkIfPlayingFromHistory()
@@ -43,11 +67,19 @@ const syncNowPlayingItemWithTrack = async () => {
   // NOTE: This timeout will lead to a delay before every clip starts, where it starts playing from the episode start
   // before playing from the clip start. Hopefully we can iron this out sometime...
   // - The second timeout is called in case something was out of sync previously from getCurrentTrack
-  // or getNowPlayingItemFromQueueOrHistoryByTrackId... 
-  async function sync (isSecondTime?: boolean) {
+  // or getNowPlayingItemFromQueueOrHistoryByTrackId...
+  async function sync(isSecondTime?: boolean) {
     const currentTrackId = await PVTrackPlayer.getCurrentTrack()
-    const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentTrackId)
-    if (currentNowPlayingItem) await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem, isSecondTime)
+    const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(
+      currentTrackId
+    )
+
+    if (currentNowPlayingItem)
+      await handleSyncNowPlayingItem(
+        currentTrackId,
+        currentNowPlayingItem,
+        isSecondTime
+      )
   }
 
   setTimeout(sync, 1000)
@@ -56,8 +88,9 @@ const syncNowPlayingItemWithTrack = async () => {
 }
 
 module.exports = async () => {
-
-  PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
+  PVTrackPlayer.addEventListener('playback-error', (x) =>
+    console.log('playback error', x)
+  )
 
   PVTrackPlayer.addEventListener('playback-queue-ended', async (x) => {
     console.log('playback-queue-ended', x)
@@ -71,7 +104,11 @@ module.exports = async () => {
     // the TrackPlayer will be in an "idle" or "none" state when you return to the app.
     // This line is an attempt to prevent the UI from getting frozen in a buffering state.
     // NOTE: As of 10/23/19 I can't reproduce the problem...hopefully it was fixed in iOS or the TrackPlayer.
-    if (x.state === 'idle' || x.state === 0 || x.state === PVTrackPlayer.STATE_NONE) {
+    if (
+      x.state === 'idle' ||
+      x.state === 0 ||
+      x.state === PVTrackPlayer.STATE_NONE
+    ) {
       // setTimeout(syncNowPlayingItemWithTrack, 1000)
       return
     }
@@ -87,7 +124,12 @@ module.exports = async () => {
       const currentState = await PVTrackPlayer.getState()
       const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
 
-      if (clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying) {
+      if (
+        clipHasEnded &&
+        clipEndTime &&
+        currentPosition >= clipEndTime &&
+        isPlaying
+      ) {
         await handleResumeAfterClipHasEnded()
       }
 
@@ -134,9 +176,13 @@ module.exports = async () => {
     PlayerEventEmitter.emit(PV.Events.PLAYER_PLAYBACK_ERROR)
   })
 
-  PVTrackPlayer.addEventListener('remote-jump-backward', () => playerJumpBackward(PV.Player.jumpSeconds))
+  PVTrackPlayer.addEventListener('remote-jump-backward', () =>
+    playerJumpBackward(PV.Player.jumpSeconds)
+  )
 
-  PVTrackPlayer.addEventListener('remote-jump-forward', () => playerJumpForward(PV.Player.jumpSeconds))
+  PVTrackPlayer.addEventListener('remote-jump-forward', () =>
+    playerJumpForward(PV.Player.jumpSeconds)
+  )
 
   PVTrackPlayer.addEventListener('remote-pause', async () => {
     PVTrackPlayer.pause()
@@ -151,7 +197,8 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('remote-seek', async (data) => {
-    if (data.position || data.position >= 0) PVTrackPlayer.seekTo(Math.floor(data.position))
+    if (data.position || data.position >= 0)
+      PVTrackPlayer.seekTo(Math.floor(data.position))
     updateUserPlaybackPosition()
   })
 
@@ -193,10 +240,17 @@ const handlePlayerClipLoaded = async () => {
       }, 250)
     }
     const resolveImmediately = true
-    await debouncedSetPlaybackPosition(nowPlayingItem.clipStartTime, nowPlayingItem.clipId, resolveImmediately)
+    await debouncedSetPlaybackPosition(
+      nowPlayingItem.clipStartTime,
+      nowPlayingItem.clipId,
+      resolveImmediately
+    )
   }
 }
 
 const debouncedHandlePlayerClipLoaded = debounce(handlePlayerClipLoaded, 1000)
 
-PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, debouncedHandlePlayerClipLoaded)
+PlayerEventEmitter.on(
+  PV.Events.PLAYER_CLIP_LOADED,
+  debouncedHandlePlayerClipLoaded
+)

@@ -4,14 +4,25 @@ import { Alert } from 'react-native'
 import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
 import { IActionSheet } from '../resources/Interfaces'
-import { addItemToPlayerQueueLast, addItemToPlayerQueueNext } from '../services/player'
+import {
+  addItemToPlayerQueueLast,
+  addItemToPlayerQueueNext
+} from '../services/player'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { PV } from './PV'
 
-const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, handleDownload: any) => {
+const mediaMoreButtons = (
+  item: any = {},
+  navigation: any,
+  handleDismiss: any,
+  handleDownload: any
+) => {
+  if (!item || !item.episodeId) return
+
   const globalState = getGlobal()
-  const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
+  const isDownloading =
+    globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
   const downloadingText = isDownloading ? 'Downloading' : 'Download'
   const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
   const buttons = []
@@ -27,20 +38,21 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
       }
     })
   } else {
-    buttons.push(
-      {
-        key: 'stream',
-        text: 'Stream',
-        onPress: async () => {
-          const showAlert = await hasTriedAlert(handleDismiss, navigation, false)
-          if (showAlert) return
+    buttons.push({
+      key: 'stream',
+      text: 'Stream',
+      onPress: async () => {
+        const showAlert = await hasTriedAlert(handleDismiss, navigation, false)
+        if (showAlert) return
 
-          await handleDismiss()
-          const shouldPlay = true
-          await loadItemAndPlayTrack(item, shouldPlay)
-        }
-      },
-      {
+        await handleDismiss()
+        const shouldPlay = true
+        await loadItemAndPlayTrack(item, shouldPlay)
+      }
+    })
+
+    if (handleDownload) {
+      buttons.push({
         key: 'download',
         text: downloadingText,
         isDownloading,
@@ -56,8 +68,8 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
             handleDownload()
           }
         }
-      }
-    )
+      })
+    }
   }
 
   buttons.push(
@@ -65,57 +77,61 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
       key: 'queueNext',
       text: 'Queue: Next',
       onPress: async () => {
-        await handleDismiss()
         await addItemToPlayerQueueNext(item)
+        await handleDismiss()
       }
     },
     {
       key: 'queueLast',
       text: 'Queue: Last',
       onPress: async () => {
-        await handleDismiss()
         await addItemToPlayerQueueLast(item)
-      }
-    },
-    {
-      key: 'addToPlaylist',
-      text: 'Add to Playlist',
-      onPress: async () => {
         await handleDismiss()
-        navigation.navigate(
-          PV.RouteNames.PlaylistsAddToScreen,
-          { ...(item.clipId ? { mediaRefId: item.clipId } : { episodeId: item.episodeId }) }
-        )
       }
     }
   )
 
-  buttons.push({
-    key: 'share',
-    text: 'Share',
-    onPress: async () => {
-      try {
-        let url = ''
-        let title = ''
-        if (item.clipId) {
-          url = PV.URLs.clip + item.clipId
-          title = item.clipTitle ? item.clipTitle : 'Untitled clip –'
-          title += ` ${item.podcastTitle} – ${item.episodeTitle} – clip shared using Podverse`
-        } else if (item.episodeId) {
-          url = PV.URLs.episode + item.episodeId
-          title += `${item.podcastTitle} – ${item.episodeTitle} – shared using Podverse`
-        }
-        await Share.open({
-          title,
-          subject: title,
-          url
+  if (!item.addByRSSPodcastFeedUrl) {
+    buttons.push({
+      key: 'addToPlaylist',
+      text: 'Add to Playlist',
+      onPress: async () => {
+        await handleDismiss()
+        navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, {
+          ...(item.clipId
+            ? { mediaRefId: item.clipId }
+            : { episodeId: item.episodeId })
         })
-      } catch (error) {
-        alert(error.message)
       }
-      await handleDismiss()
-    }
-  })
+    })
+
+    buttons.push({
+      key: 'share',
+      text: 'Share',
+      onPress: async () => {
+        try {
+          let url = ''
+          let title = ''
+          if (item.clipId) {
+            url = PV.URLs.clip + item.clipId
+            title = item.clipTitle ? item.clipTitle : 'Untitled clip –'
+            title += ` ${item.podcastTitle} – ${item.episodeTitle} – clip shared using Podverse`
+          } else if (item.episodeId) {
+            url = PV.URLs.episode + item.episodeId
+            title += `${item.podcastTitle} – ${item.episodeTitle} – shared using Podverse`
+          }
+          await Share.open({
+            title,
+            subject: title,
+            url
+          })
+        } catch (error) {
+          alert(error.message)
+        }
+        await handleDismiss()
+      }
+    })
+  }
 
   if (isDownloaded) {
     buttons.push({
@@ -134,7 +150,9 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
       text: 'Go to Podcast',
       onPress: async () => {
         await handleDismiss()
-        navigation.navigate(PV.RouteNames.EpisodePodcastScreen,{ podcastId: item.podcastId })
+        navigation.navigate(PV.RouteNames.EpisodePodcastScreen, {
+          podcastId: item.podcastId
+        })
       }
     })
   }
@@ -142,24 +160,38 @@ const mediaMoreButtons = (item: any = {}, navigation: any, handleDismiss: any, h
   return buttons
 }
 
-const hasTriedAlert = async (handleDismiss: any, navigation: any, download: boolean) => {
+const hasTriedAlert = async (
+  handleDismiss: any,
+  navigation: any,
+  download: boolean
+) => {
   const netInfoState = await NetInfo.fetch()
-  let hasTried = AsyncStorage.getItem(PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI)
+  let hasTried = await AsyncStorage.getItem(
+    PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI
+  )
   if (!download) {
-    hasTried = AsyncStorage.getItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI)
+    hasTried = await AsyncStorage.getItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI)
   }
   const showAlert = netInfoState.type === 'wifi' && !hasTried
 
   if (showAlert) {
     if (download) {
-      await AsyncStorage.setItem(PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI, 'TRUE')
+      await AsyncStorage.setItem(
+        PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI,
+        'TRUE'
+      )
     } else {
-      await AsyncStorage.setItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI, 'TRUE')
+      await AsyncStorage.setItem(
+        PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI,
+        'TRUE'
+      )
     }
     Alert.alert(
       'No Wifi Connection',
       `You cannot ${download ? 'download' : 'stream'} without a Wifi connection.
-      To allow ${download ? 'downloading' : 'streaming'} with your data plan, go to your Settings page.`,
+      To allow ${
+        download ? 'downloading' : 'streaming'
+      } with your data plan, go to your Settings page.`,
       [
         {
           text: 'Cancel',

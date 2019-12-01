@@ -1,16 +1,22 @@
 import React from 'react'
-import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native'
 import { PV } from '../resources'
 
 type Props = {
-  loginUser: ({ }) => Promise<any>,
+  loginUser: ({}) => Promise<any>
   navigation: any
 }
 
 type State = {}
 
 export class OnboardingScreen extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -23,7 +29,9 @@ export class OnboardingScreen extends React.Component<Props, State> {
   }
 
   goToLogin = async () => {
-    this.props.navigation.navigate(PV.RouteNames.AuthScreen, { isOnboarding: true })
+    this.props.navigation.navigate(PV.RouteNames.AuthScreen, {
+      isOnboarding: true
+    })
   }
 
   render() {
@@ -31,7 +39,11 @@ export class OnboardingScreen extends React.Component<Props, State> {
 
     return (
       <SafeAreaView style={styles.view}>
-        <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />
+        <Image
+          source={PV.Images.BANNER}
+          style={styles.banner}
+          resizeMode="contain"
+        />
         <View style={styles.content}>
           <Text style={styles.title}>No login needed to:</Text>
           <Text style={styles.text}>- Create and share clips</Text>
@@ -45,7 +57,9 @@ export class OnboardingScreen extends React.Component<Props, State> {
         <TouchableOpacity style={styles.signInButton} onPress={this.goToLogin}>
           <Text style={styles.signInButtonText}>Login / Register</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.skipSignInButton} onPress={this.dismissOnboarding}>
+        <TouchableOpacity
+          style={styles.skipSignInButton}
+          onPress={this.dismissOnboarding}>
           <Text style={styles.skipSignInText}>No Thanks</Text>
         </TouchableOpacity>
       </SafeAreaView>

@@ -1,7 +1,22 @@
-import { Linking, StyleSheet } from 'react-native'
+import { Alert, StyleSheet, Platform } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
-import { getMembershipExpiration, getMembershipStatus, readableDate } from '../lib/utility'
+import {
+  ActivityIndicator,
+  ComparisonTable,
+  Text,
+  TextLink,
+  View
+} from '../components'
+import {
+  androidHandleStatusCheck,
+  buy1YearPremium,
+  iosHandlePurchaseStatusCheck
+} from '../lib/purchase'
+import {
+  getMembershipExpiration,
+  getMembershipStatus,
+  readableDate
+} from '../lib/utility'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { getMembershipTextStyle } from '../styles'
@@ -11,11 +26,11 @@ type Props = {
 }
 
 type State = {
+  disableButton: boolean
   isLoading: boolean
 }
 
 export class MembershipScreen extends React.Component<Props, State> {
-
   static navigationOptions = {
     title: 'Membership'
   }
@@ -24,6 +39,7 @@ export class MembershipScreen extends React.Component<Props, State> {
     super(props)
 
     this.state = {
+      disableButton: false,
       isLoading: true
     }
   }
@@ -37,76 +53,114 @@ export class MembershipScreen extends React.Component<Props, State> {
     this.setState({ isLoading: false })
   }
 
+  handleRenewPress = async () => {
+    this.setState({ disableButton: true }, async () => {
+      try {
+        await buy1YearPremium()
+      } catch (error) {
+        console.log(error)
+        // If attempting to renew, but a recent previous purchase did not complete successfully,
+        // then do not buy a new product, and instead navigate to the PurchasingScreen
+        // and attempt to check and update the status of the cached purchase.
+        if (error.code === 'E_ALREADY_OWNED') {
+          if (Platform.OS === 'android') {
+            this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
+            const { productId, purchaseToken, transactionId } = this.global.purchase
+            await androidHandleStatusCheck(productId, transactionId, purchaseToken)
+          } else if (Platform.OS === 'ios') {
+            this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
+            const { productId, transactionId, transactionReceipt } = this.global.purchase
+            await iosHandlePurchaseStatusCheck(productId, transactionId, transactionReceipt)
+          }
+        } else if (error.code === 'E_USER_CANCELLED') {
+          // do nothing
+        } else {
+          Alert.alert(
+            PV.Alerts.PURCHASE_SOMETHING_WENT_WRONG.title,
+            PV.Alerts.PURCHASE_SOMETHING_WENT_WRONG.message,
+            PV.Alerts.BUTTONS.OK
+          )
+        }
+      }
+      this.setState({ disableButton: false })
+    })
+  }
+
+  handleSignUpPress = () => {
+    this.setState({ disableButton: true }, async () => {
+      await this.props.navigation.navigate(PV.RouteNames.AuthScreen, {
+        showSignUp: true
+      })
+      this.setState({ disableButton: false })
+    })
+  }
+
   render() {
-    const { isLoading } = this.state
+    const { disableButton, isLoading } = this.state
     const { globalTheme, session } = this.global
     const { isLoggedIn, userInfo } = session
     const membershipStatus = getMembershipStatus(userInfo)
-    const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
+    const membershipTextStyle = getMembershipTextStyle(
+      globalTheme,
+      membershipStatus
+    )
     const expirationDate = getMembershipExpiration(userInfo)
 
     return (
       <View style={styles.wrapper}>
-        {
-          (isLoading && isLoggedIn) && <ActivityIndicator />
-        }
-        {
-          (!isLoading && isLoggedIn && !membershipStatus) &&
-            <View>
-              <View style={styles.textRow}>
-                <Text style={[styles.subText]}>
-                  Connect to the internet to view your membership status.
-                </Text>
-              </View>
+        {isLoading && isLoggedIn && <ActivityIndicator />}
+        {!isLoading && isLoggedIn && membershipStatus && (
+          <View>
+            <View style={styles.textRow}>
+              <Text style={styles.label}>Status: </Text>
+              <Text style={[styles.text, membershipTextStyle]}>
+                {membershipStatus}
+              </Text>
             </View>
-        }
-        {
-          (!isLoading && isLoggedIn && membershipStatus) &&
-            <View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Status: </Text>
-                <Text style={[styles.text, membershipTextStyle]}>{membershipStatus}</Text>
-              </View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Expires: </Text>
-                <Text style={[styles.text]}>{readableDate(expirationDate)}</Text>
-              </View>
-              {/* <View style={styles.textRow}>
-                <Text style={[styles.subText]}>
-                  To renew your membership, go to podverse.fm, login, then visit your Settings page.
-                </Text>
-              </View> */}
+            <View style={styles.textRow}>
+              <Text style={styles.label}>Expires: </Text>
+              <Text style={[styles.text]}>{readableDate(expirationDate)}</Text>
             </View>
-        }
-        {
-          (!isLoading && !isLoggedIn) &&
-            <View>
-              <View style={styles.textRowCentered}>
-                <Text style={styles.subTextCentered}>
-                  Podverse premium accounts are currently available by invite only.
-                </Text>
-              </View>
-              <View style={styles.textRowCentered}>
-                <TextLink
-                  onPress={() => Linking.openURL(
-                    'https://docs.google.com/forms/d/e/1FAIpQLSd0LJcAQ4zViL7lrl-yg192kHOQN49rvcLcf_RPTcPn-wjmgg/viewform?usp=sf_link'
-                  )}
-                  style={[styles.subText]}>
-                  Request Invite
-                </TextLink>
-              </View>
+            <View style={styles.textRowCentered}>
+              <TextLink
+                disabled={disableButton}
+                onPress={this.handleRenewPress}
+                style={[styles.subText]}>
+                Renew Membership
+              </TextLink>
             </View>
-        }
-        {
-          !isLoading &&
-            <View style={styles.tableWrapper}>
-              <ComparisonTable
-                column1Title='Free'
-                column2Title='Premium'
-                data={comparisonData}
-                mainTitle='Features' />
+          </View>
+        )}
+        {!isLoading && !isLoggedIn && (
+          <View>
+            <View style={styles.textRowCentered}>
+              <Text style={styles.subTextCentered}>
+                Get 1 year of Podverse Premium for free
+              </Text>
             </View>
-          }
+            <View style={styles.textRowCentered}>
+              <Text style={styles.subTextCentered}>$10/year after that</Text>
+            </View>
+            <View style={styles.textRowCentered}>
+              <TextLink
+                disabled={disableButton}
+                onPress={this.handleSignUpPress}
+                style={[styles.subText]}>
+                Sign Up
+              </TextLink>
+            </View>
+          </View>
+        )}
+        {!isLoading && (
+          <View style={styles.tableWrapper}>
+            <ComparisonTable
+              column1Title="Free"
+              column2Title="Premium"
+              data={comparisonData}
+              mainTitle="Features"
+            />
+          </View>
+        )}
       </View>
     )
   }
@@ -134,12 +188,12 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'create publicly discoverable clips',
+    text: 'sync your subscriptions on all devices',
     column1: false,
     column2: true
   },
   {
-    text: 'edit your clips',
+    text: 'sync your queue on all devices',
     column1: false,
     column2: true
   },
@@ -149,17 +203,22 @@ const comparisonData = [
     column2: true
   },
   {
+    text: 'auto save your clips to a playlist',
+    column1: false,
+    column2: true
+  },
+  {
+    text: 'edit your clips',
+    column1: false,
+    column2: true
+  },
+  {
     text: 'share your profile',
     column1: false,
     column2: true
   },
   {
-    text: 'sync subscriptions on all devices',
-    column1: false,
-    column2: true
-  },
-  {
-    text: 'sync your queue on all devices',
+    text: 'download a backup of your data',
     column1: false,
     column2: true
   },
@@ -177,11 +236,12 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold
   },
   subText: {
-    fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.semibold,
+    paddingVertical: 4
   },
   subTextCentered: {
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
     textAlign: 'center'
   },
@@ -204,7 +264,8 @@ const styles = StyleSheet.create({
   },
   textRowCentered: {
     flexDirection: 'row',
-    margin: 8,
+    marginHorizontal: 8,
+    marginVertical: 4,
     justifyContent: 'center',
     textAlign: 'center'
   },

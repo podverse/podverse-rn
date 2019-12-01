@@ -5,7 +5,7 @@ import { NowPlayingItem } from './NowPlayingItem'
 export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
   try {
     const value = func()
-    return (value === null || value === undefined) ? fallbackValue : value
+    return value === null || value === undefined ? fallbackValue : value
   } catch (e) {
     return fallbackValue
   }
@@ -76,7 +76,7 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
 }
 
 export const removeHTMLFromString = (text: string) => {
-  const htmlEntitiesRegex = /(<([^>]+)>)|(\r?\n|\r)/ig
+  const htmlEntitiesRegex = /(<([^>]+)>)|(\r?\n|\r)/gi
   return text.replace(htmlEntitiesRegex, '')
 }
 
@@ -105,7 +105,9 @@ export const generateCategoriesText = (categories: any) => {
   if (categories) {
     for (let i = 0; i < categories.length; i++) {
       const category = categories[i]
-      categoryText += `${category.title}${i < categories.length - 1 ? ', ' : ''}`
+      categoryText += `${category.title}${
+        i < categories.length - 1 ? ', ' : ''
+      }`
     }
   }
 
@@ -127,12 +129,17 @@ export const generateCategoryItems = (categories: any[]) => {
   return items
 }
 
-export const combineAndSortPlaylistItems = (episodes: [any], mediaRefs: [any], itemsOrder: [string]) => {
+export const combineAndSortPlaylistItems = (
+  episodes: [any],
+  mediaRefs: [any],
+  itemsOrder: [string]
+) => {
   const allPlaylistItems = [...episodes, ...mediaRefs]
   const remainingPlaylistItems = [] as any[]
 
   const unsortedItems = allPlaylistItems.filter((x: any) => {
-    const isSortedItem = Array.isArray(itemsOrder) && itemsOrder.some((id) => x.id === id)
+    const isSortedItem =
+      Array.isArray(itemsOrder) && itemsOrder.some((id) => x.id === id)
     if (!isSortedItem) {
       return x
     } else {
@@ -150,10 +157,12 @@ export const combineAndSortPlaylistItems = (episodes: [any], mediaRefs: [any], i
   return [...sortedItems, ...unsortedItems]
 }
 
-export const haveNowPlayingItemsChanged = (lastItem: NowPlayingItem, nextItem: NowPlayingItem) => (
+export const haveNowPlayingItemsChanged = (
+  lastItem: NowPlayingItem,
+  nextItem: NowPlayingItem
+) =>
   (nextItem.clipId && nextItem.clipId !== lastItem.clipId) ||
   (nextItem.episodeId && nextItem.episodeId !== lastItem.episodeId)
-)
 
 export const getMembershipStatus = (user: any) => {
   const { freeTrialExpiration, membershipExpiration } = user
@@ -172,19 +181,53 @@ export const getMembershipStatus = (user: any) => {
   const weekBeforeCurrentDate = new Date()
   weekBeforeCurrentDate.setDate(weekBeforeCurrentDate.getDate() + 7)
 
-  if (!membershipExpirationDate && freeTrialExpirationDate && freeTrialExpirationDate > currentDate) {
-    return PV.MembershipStatus.FREE_TRIAL
-  } else if (!membershipExpirationDate && freeTrialExpirationDate && freeTrialExpirationDate <= currentDate) {
+  if (
+    !membershipExpirationDate &&
+    freeTrialExpirationDate &&
+    freeTrialExpirationDate <= currentDate
+  ) {
     return PV.MembershipStatus.FREE_TRIAL_EXPIRED
-  } else if (membershipExpirationDate && membershipExpirationDate <= currentDate) {
+  } else if (
+    !membershipExpirationDate &&
+    freeTrialExpirationDate &&
+    freeTrialExpirationDate <= weekBeforeCurrentDate
+  ) {
+    return PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON
+  } else if (
+    !membershipExpirationDate &&
+    freeTrialExpirationDate &&
+    freeTrialExpirationDate > currentDate
+  ) {
+    return PV.MembershipStatus.FREE_TRIAL
+  } else if (
+    membershipExpirationDate &&
+    membershipExpirationDate <= currentDate
+  ) {
     return PV.MembershipStatus.PREMIUM_EXPIRED
-  } else if (membershipExpirationDate && membershipExpirationDate <= weekBeforeCurrentDate) {
+  } else if (
+    membershipExpirationDate &&
+    membershipExpirationDate <= weekBeforeCurrentDate
+  ) {
     return PV.MembershipStatus.PREMIUM_EXPIRING_SOON
-  } else if (membershipExpirationDate && membershipExpirationDate > currentDate) {
+  } else if (
+    membershipExpirationDate &&
+    membershipExpirationDate > currentDate
+  ) {
     return PV.MembershipStatus.PREMIUM
   }
 
-  return
+  return ''
+}
+
+export const shouldShowMembershipAlert = (user: any) => {
+  const status = getMembershipStatus(user)
+  const shouldAlert = [
+    PV.MembershipStatus.FREE_TRIAL_EXPIRED,
+    PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON,
+    PV.MembershipStatus.PREMIUM_EXPIRED,
+    PV.MembershipStatus.PREMIUM_EXPIRING_SOON
+  ]
+  return shouldAlert.includes(status)
 }
 
 export const getMembershipExpiration = (user: any) => {
@@ -238,11 +281,116 @@ export const removeArticles = (str: string) => {
   return str
 }
 
-export const checkIfIdMatchesClipIdOrEpisodeId = (id?: string, clipId?: string, episodeId?: string) => {
-  return id === clipId || (!clipId && episodeId && id === episodeId)
+export const checkIfIdMatchesClipIdOrEpisodeId = (
+  id?: string,
+  clipId?: string,
+  episodeId?: string,
+  addByRSSPodcastFeedUrl?: string
+) => {
+  return id === clipId ||
+    (!clipId && addByRSSPodcastFeedUrl && id === addByRSSPodcastFeedUrl) ||
+    (!clipId && episodeId && id === episodeId)
 }
 
 export const validateEmail = (email?: string) => {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return re.test(String(email).toLowerCase())
+}
+
+export const createEmailLinkUrl = (email: string, subject?: string, body?: string) => {
+  let str = 'mailto:' + email + '?'
+  str += encodeURI(subject ? 'subject=' + subject + '&' : '')
+  str += encodeURI(body ? 'body=' + body : '')
+  return str
+}
+
+export const getHHMMSSMatchesInString = (str: string) => {
+  const regex = /(?:2[0-3]|[01]?[0-9]):[0-5][0-9]:[0-5][0-9]/g
+  return str.match(regex)
+}
+
+const createHHMMSSAnchorTag = (hhmmss: string) => {
+  const sec = convertHHMMSSToSeconds(hhmmss)
+  return `<a data-start-time='${sec}' href='#'>${hhmmss}</a>`
+}
+
+export const convertHHMMSSToAnchorTags = (html: string) => {
+  const matches = getHHMMSSMatchesInString(html) || []
+  let formattedHtml = html
+  for (const match of matches) {
+    const replace = match
+    const regex = new RegExp(replace, 'g')
+    const anchorTag = createHHMMSSAnchorTag(match)
+    formattedHtml = formattedHtml.replace(regex, anchorTag)
+  }
+
+  return formattedHtml
+}
+
+export function validateHHMMSSString(hhmmss: string) {
+  const regex = new RegExp('^(([0-9][0-9]):([0-5][0-9]):([0-5][0-9]))$|(([0-9]):([0-5][0-9]):([0-5][0-9]))$|^(([0-5][0-9]):([0-5][0-9]))$|^(([0-9]):([0-5][0-9]))$|^([0-5][0-9])$|^([0-9])')
+  return regex.test(hhmmss)
+}
+
+export function convertHHMMSSToSeconds(hhmmssString: string) {
+
+  if (hhmmssString) {
+
+    if (!validateHHMMSSString(hhmmssString)) {
+      return -1
+    }
+
+    var hhmmssArray = hhmmssString.split(':') || 0,
+      hours = 0,
+      minutes = 0,
+      seconds = 0;
+
+    if (hhmmssArray.length === 3) {
+      hours = parseInt(hhmmssArray[0])
+      minutes = parseInt(hhmmssArray[1])
+      seconds = parseInt(hhmmssArray[2])
+
+      if (hours < 0 || minutes > 59 || minutes < 0 || seconds > 59 || seconds < 0) {
+        console.log('Invalid time provided.')
+        return -1
+      }
+
+      hours = hours * 3600;
+      minutes = minutes * 60;
+
+    } else if (hhmmssArray.length === 2) {
+      minutes = parseInt(hhmmssArray[0]);
+      seconds = parseInt(hhmmssArray[1]);
+
+      if (minutes > 59 || minutes < 0 || seconds > 59 || seconds < 0) {
+        console.log('Invalid time provided.');
+        return -1;
+      }
+
+      minutes = minutes * 60;
+
+    } else if (hhmmssArray.length === 1) {
+      seconds = parseInt(hhmmssArray[0]) || 0
+
+      if (seconds > 59 || seconds < 0) {
+        console.log('Invalid time provided.')
+        return -1
+      }
+
+    } else {
+      console.log('Invalid time provided.')
+      return -1
+    }
+
+    return hours + minutes + seconds;
+
+  } else {
+    return null
+  }
+
+}
+
+export const convertToSortableTitle = (title: string) => {
+  const sortableTitle = title ? title.toLowerCase().replace(/\b^the\b|\b^a\b|\b^an\b/i, '').trim() : ''
+  return sortableTitle ? sortableTitle.replace(/#/g, '') : ''
 }

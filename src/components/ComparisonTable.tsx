@@ -11,41 +11,58 @@ export const ComparisonTable = (props: any) => {
   return (
     <View style={styles.wrapper}>
       <View style={[styles.tableHeaderRow, globalTheme.tableSectionHeader]}>
-        <Text style={[styles.tableHeaderTextLeft, globalTheme.tableSectionHeaderText]}>{mainTitle}</Text>
-        <Text style={[styles.tableHeaderTextRight, globalTheme.tableSectionHeaderText]}>{column1Title}</Text>
-        <Text style={[styles.tableHeaderTextRight, globalTheme.tableSectionHeaderText]}>{column2Title}</Text>
+        <Text
+          style={[
+            styles.tableHeaderTextLeft,
+            globalTheme.tableSectionHeaderText
+          ]}>
+          {mainTitle}
+        </Text>
+        <Text
+          style={[
+            styles.tableHeaderTextRight,
+            globalTheme.tableSectionHeaderText
+          ]}>
+          {column1Title}
+        </Text>
+        <Text
+          style={[
+            styles.tableHeaderTextRight,
+            globalTheme.tableSectionHeaderText
+          ]}>
+          {column2Title}
+        </Text>
       </View>
       <FlatList
         data={data}
         keyExtractor={(item, index) => item.text + index}
         renderItem={({ item }) => (
-          <View
-            key={item.text}
-            style={styles.tableRow}>
+          <View key={item.text} style={styles.tableRow}>
             <View style={styles.columnTextWrapper}>
               <Text style={styles.columnText}>{item.text}</Text>
             </View>
             <View style={styles.columnIcon}>
-              {
-                item.column1 &&
-                  <Icon
-                    name={item.isSmile ? 'smile' : 'check'}
-                    size={26}
-                    style={styles.icon} />
-              }
+              {item.column1 && (
+                <Icon
+                  name={item.isSmile ? 'smile' : 'check'}
+                  size={26}
+                  style={styles.icon}
+                />
+              )}
             </View>
             <View style={styles.columnIcon}>
-              {
-                item.column2 &&
-                  <Icon
-                    name={item.isSmile ? 'smile' : 'check'}
-                    size={26}
-                    style={styles.icon} />
-              }
+              {item.column2 && (
+                <Icon
+                  name={item.isSmile ? 'smile' : 'check'}
+                  size={26}
+                  style={styles.icon}
+                />
+              )}
             </View>
             <Divider />
           </View>
-        )} />
+        )}
+      />
     </View>
   )
 }
@@ -59,7 +76,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   columnText: {
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.md,
     marginLeft: 8
   },
   columnTextWrapper: {
@@ -94,7 +111,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   wrapper: {
-    flex: 1,
-    paddingBottom: 8
+    flex: 1
   }
 })

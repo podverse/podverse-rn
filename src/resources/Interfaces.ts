@@ -49,16 +49,16 @@ export interface GlobalTheme {
 }
 
 export interface UserInfo {
-  email?: string,
-  freeTrialExpiration?: string,
-  historyItems?: [],
-  id?: string,
-  membershipExpiration?: string | null,
-  name?: string,
-  playlists?: [],
-  queueItems?: [],
-  subscribedPlaylistIds?: [],
-  subscribedPodcastIds?: [],
+  email?: string
+  freeTrialExpiration?: string
+  historyItems?: []
+  id?: string
+  membershipExpiration?: string | null
+  name?: string
+  playlists?: []
+  queueItems?: []
+  subscribedPlaylistIds?: []
+  subscribedPodcastIds?: []
   subscribedUserIds?: []
 }
 
@@ -69,12 +69,15 @@ export interface InitialState {
   downloadsArray: any[]
   downloadedEpisodeIds: any
   downloadedPodcastEpisodeCounts: any
+  downloadedEpisodeLimitCount: number
   player: {
+    hasErrored: boolean
     isPlaying: boolean
     nowPlayingItem: any
     playbackRate: number
     showMakeClip: boolean
     showMiniPlayer: boolean
+    shouldContinuouslyPlay: boolean
   }
   playlists: {
     myPlaylists: []
@@ -131,6 +134,7 @@ export interface IFilters {
   mostRecentKey: string
   mostRecentAllKey: string
   oldestKey: string
+  randomKey: string
   topPastDay: string
   topPastWeek: string
   topPastMonth: string
@@ -146,6 +150,6 @@ interface IFontWeights {
 }
 
 export interface IFonts {
-  sizes: IFontSizes,
+  sizes: IFontSizes
   weights: IFontWeights
 }

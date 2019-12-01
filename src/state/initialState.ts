@@ -31,6 +31,18 @@ const initialTheme: InitialState = {
     flatListData: [],
     flatListDataTotalCount: null
   },
+  purchase: {
+    isLoading: true,
+    message: 'Updating the Podverse servers...',
+    productId: '',
+    purchaseToken: '',
+    showContactSupportLink: false,
+    showDismissLink: false,
+    showRetryLink: false,
+    title: 'Processing Transaction',
+    transactionId: '',
+    transactionReceipt: ''
+  },
   screenPlayer: {
     endOfResultsReached: false,
     flatListData: [],
@@ -57,7 +69,7 @@ const initialTheme: InitialState = {
       freeTrialExpiration: '',
       historyItems: [],
       id: '',
-      membershipExpiration: null,
+      membershipExpiration: '',
       name: '',
       playlists: [],
       subscribedPlaylistIds: [],

@@ -1,5 +1,12 @@
 import React from 'react'
-import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native'
 import { validateEmail } from '../lib/utility'
 import { PV } from '../resources'
 
@@ -14,7 +21,6 @@ type State = {
 }
 
 export class ResetPassword extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -43,21 +49,24 @@ export class ResetPassword extends React.Component<Props, State> {
     return (
       <View style={[styles.view, style]}>
         <TextInput
-          keyboardType='email-address'
+          keyboardType="email-address"
           onChangeText={this._emailChanged}
           style={styles.textField}
           value={this.state.email}
-          autoCapitalize='none'
-          placeholder='Email' />
+          autoCapitalize="none"
+          placeholder="Email"
+        />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
           disabled={disabled || isLoading}
           onPress={this._resetPassword}>
-          {
-            isLoading ?
-              <ActivityIndicator color={PV.Colors.gray} size='small' />
-              : <Text style={[styles.signInButtonText, disabledTextStyle]}>Send Reset</Text>
-          }
+          {isLoading ? (
+            <ActivityIndicator color={PV.Colors.gray} size="small" />
+          ) : (
+            <Text style={[styles.signInButtonText, disabledTextStyle]}>
+              Send Reset
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
     )

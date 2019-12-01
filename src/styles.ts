@@ -112,6 +112,22 @@ export const darkTheme = StyleSheet.create({
   modalInnerWrapper: {
     backgroundColor: PV.Colors.grayDarkest
   },
+  overlayAlertDanger: {
+    backgroundColor: PV.Colors.redLighter,
+    color: PV.Colors.white
+  },
+  overlayAlertInfo: {
+    backgroundColor: PV.Colors.blueLighter,
+    color: PV.Colors.grayDarkest
+  },
+  overlayAlertLink: {
+    color: PV.Colors.white,
+    textDecorationLine: 'underline'
+  },
+  overlayAlertWarning: {
+    backgroundColor: PV.Colors.yellow,
+    color: PV.Colors.white
+  },
   placeholderText: {
     color: PV.Colors.grayLighter
   },
@@ -130,7 +146,8 @@ export const darkTheme = StyleSheet.create({
   },
   tabbar: {
     backgroundColor: PV.Colors.black,
-    borderWidth: 0
+    borderTopWidth: 1,
+    borderTopColor: PV.Colors.grayDarker
   },
   tabbarItem: {
     tintColor: PV.Colors.blue
@@ -285,6 +302,21 @@ export const lightTheme = StyleSheet.create({
   modalInnerWrapper: {
     backgroundColor: PV.Colors.grayLightest
   },
+  overlayAlertDanger: {
+    backgroundColor: PV.Colors.redLighter,
+    color: PV.Colors.grayDarkest
+  },
+  overlayAlertInfo: {
+    backgroundColor: PV.Colors.blueLighter,
+    color: PV.Colors.grayDarkest
+  },
+  overlayAlertLink: {
+    color: PV.Colors.blueDarker
+  },
+  overlayAlertWarning: {
+    backgroundColor: PV.Colors.yellow,
+    color: PV.Colors.grayDarkest
+  },
   placeholderText: {
     color: PV.Colors.grayDarker
   },
@@ -303,7 +335,8 @@ export const lightTheme = StyleSheet.create({
   },
   tabbar: {
     backgroundColor: PV.Colors.white,
-    borderWidth: 0
+    borderTopWidth: 1,
+    borderTopColor: PV.Colors.grayLighter
   },
   tabbarItem: {
     tintColor: PV.Colors.blue

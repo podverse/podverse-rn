@@ -1,12 +1,24 @@
 import debounce from 'lodash/debounce'
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActionSheet, ActivityIndicator, Divider, EpisodeTableCell, FlatList, SearchBar, SwipeRowBack,
-  TableSectionSelectors, View } from '../components'
+import {
+  ActionSheet,
+  ActivityIndicator,
+  Divider,
+  EpisodeTableCell,
+  FlatList,
+  SearchBar,
+  SwipeRowBack,
+  TableSectionSelectors,
+  View
+} from '../components'
 import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import {
+  convertNowPlayingItemToEpisode,
+  convertToNowPlayingItem
+} from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
@@ -32,7 +44,6 @@ type State = {
 }
 
 export class EpisodesScreen extends React.Component<Props, State> {
-
   static navigationOptions = {
     title: 'Episodes'
   }
@@ -49,14 +60,23 @@ export class EpisodesScreen extends React.Component<Props, State> {
       isLoading: true,
       isLoadingMore: false,
       isRefreshing: false,
-      queryFrom: subscribedPodcastIds && subscribedPodcastIds.length > 0 ? _subscribedKey : _allPodcastsKey,
+      queryFrom:
+        subscribedPodcastIds && subscribedPodcastIds.length > 0
+          ? _subscribedKey
+          : _allPodcastsKey,
       queryPage: 1,
-      querySort: subscribedPodcastIds && subscribedPodcastIds.length > 0 ? _mostRecentKey : _topPastWeek,
+      querySort:
+        subscribedPodcastIds && subscribedPodcastIds.length > 0
+          ? _mostRecentKey
+          : _topPastWeek,
       searchBarText: '',
       showActionSheet: false
     }
 
-    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
+    this._handleSearchBarTextQuery = debounce(
+      this._handleSearchBarTextQuery,
+      PV.SearchBar.textInputDebounceTime
+    )
   }
 
   async componentDidMount() {
@@ -71,17 +91,20 @@ export class EpisodesScreen extends React.Component<Props, State> {
       return
     }
 
-    this.setState({
-      endOfResultsReached: false,
-      flatListData: [],
-      flatListDataTotalCount: null,
-      isLoading: true,
-      queryFrom: selectedKey,
-      queryPage: 1
-    }, async () => {
-      const newState = await this._queryData(selectedKey)
-      this.setState(newState)
-    })
+    this.setState(
+      {
+        endOfResultsReached: false,
+        flatListData: [],
+        flatListDataTotalCount: null,
+        isLoading: true,
+        queryFrom: selectedKey,
+        queryPage: 1
+      },
+      async () => {
+        const newState = await this._queryData(selectedKey)
+        this.setState(newState)
+      }
+    )
   }
 
   selectRightItem = async (selectedKey: string) => {
@@ -90,33 +113,44 @@ export class EpisodesScreen extends React.Component<Props, State> {
       return
     }
 
-    this.setState({
-      endOfResultsReached: false,
-      flatListData: [],
-      flatListDataTotalCount: null,
-      isLoading: true,
-      queryPage: 1,
-      querySort: selectedKey
-    }, async () => {
-      const newState = await this._queryData(selectedKey)
-      this.setState(newState)
-    })
+    this.setState(
+      {
+        endOfResultsReached: false,
+        flatListData: [],
+        flatListDataTotalCount: null,
+        isLoading: true,
+        queryPage: 1,
+        querySort: selectedKey
+      },
+      async () => {
+        const newState = await this._queryData(selectedKey)
+        this.setState(newState)
+      }
+    )
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
-    const { endOfResultsReached, isLoadingMore, queryFrom, queryPage = 1 } = this.state
+    const {
+      endOfResultsReached,
+      isLoadingMore,
+      queryFrom,
+      queryPage = 1
+    } = this.state
     if (!endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
-        this.setState({
-          isLoadingMore: true,
-          queryPage: queryPage + 1
-        }, async () => {
-          const newState = await this._queryData(queryFrom, {
-            queryPage: this.state.queryPage,
-            searchAllFieldsText: this.state.searchBarText
-          })
-          this.setState(newState)
-        })
+        this.setState(
+          {
+            isLoadingMore: true,
+            queryPage: queryPage + 1
+          },
+          async () => {
+            const newState = await this._queryData(queryFrom, {
+              queryPage: this.state.queryPage,
+              searchAllFieldsText: this.state.searchBarText
+            })
+            this.setState(newState)
+          }
+        )
       }
     }
   }
@@ -124,15 +158,18 @@ export class EpisodesScreen extends React.Component<Props, State> {
   _onRefresh = () => {
     const { queryFrom } = this.state
 
-    this.setState({
-      isRefreshing: true
-    }, async () => {
-      const newState = await this._queryData(queryFrom, {
-        queryPage: 1,
-        searchAllFieldsText: this.state.searchBarText
-      })
-      this.setState(newState)
-    })
+    this.setState(
+      {
+        isRefreshing: true
+      },
+      async () => {
+        const newState = await this._queryData(queryFrom, {
+          queryPage: 1,
+          searchAllFieldsText: this.state.searchBarText
+        })
+        this.setState(newState)
+      }
+    )
   }
 
   _ListHeaderComponent = () => {
@@ -144,7 +181,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
           onClear={this._handleSearchBarClear}
-          value={searchBarText} />
+          value={searchBarText}
+        />
       </View>
     )
   }
@@ -169,33 +207,47 @@ export class EpisodesScreen extends React.Component<Props, State> {
   _renderEpisodeItem = ({ item }) => (
     <EpisodeTableCell
       description={item.description}
-      handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
-      handleNavigationPress={() => this.props.navigation.navigate(
-        PV.RouteNames.EpisodeScreen, { episode: item, includeGoToPodcast: true }
-      )}
+      handleMorePress={() =>
+        this._handleMorePress(convertToNowPlayingItem(item, null, null))
+      }
+      handleNavigationPress={() =>
+        this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
+          episode: item,
+          includeGoToPodcast: true
+        })
+      }
       id={item.id}
       moreButtonAlignToTop={true}
-      podcastImageUrl={item.podcast_imageUrl || (item.podcast && item.podcast.imageUrl)}
+      podcastImageUrl={
+        item.podcast_imageUrl || (item.podcast && item.podcast.imageUrl)
+      }
       podcastTitle={item.podcast_title || (item.podcast && item.podcast.title)}
       pubDate={item.pubDate}
-      title={item.title} />
+      title={item.title}
+    />
   )
 
   _renderHiddenItem = ({ item }, rowMap) => (
     <SwipeRowBack
       onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      text='Delete' />
+      text="Delete"
+    />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
-    const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
-    this.setState({
-      flatListData: filteredEpisodes
-    }, async () => {
-      await removeDownloadedPodcastEpisode(selectedId)
-      const finalDownloadedEpisodes = await getDownloadedEpisodes()
-      this.setState({ flatListData: finalDownloadedEpisodes })
-    })
+    const filteredEpisodes = this.state.flatListData.filter(
+      (x: any) => x.id !== selectedId
+    )
+    this.setState(
+      {
+        flatListData: filteredEpisodes
+      },
+      async () => {
+        await removeDownloadedPodcastEpisode(selectedId)
+        const finalDownloadedEpisodes = await getDownloadedEpisodes()
+        this.setState({ flatListData: finalDownloadedEpisodes })
+      }
+    )
   }
 
   _handleSearchBarClear = (text: string) => {
@@ -216,15 +268,23 @@ export class EpisodesScreen extends React.Component<Props, State> {
     this._handleSearchBarTextQuery(queryFrom, { searchAllFieldsText: text })
   }
 
-  _handleSearchBarTextQuery = async (queryFrom: string | null, queryOptions: any) => {
-    this.setState({
-      flatListData: [],
-      flatListDataTotalCount: null,
-      queryPage: 1
-    }, async () => {
-      const state = await this._queryData(queryFrom, { searchAllFieldsText: queryOptions.searchAllFieldsText })
-      this.setState(state)
-    })
+  _handleSearchBarTextQuery = async (
+    queryFrom: string | null,
+    queryOptions: any
+  ) => {
+    this.setState(
+      {
+        flatListData: [],
+        flatListDataTotalCount: null,
+        queryPage: 1
+      },
+      async () => {
+        const state = await this._queryData(queryFrom, {
+          searchAllFieldsText: queryOptions.searchAllFieldsText
+        })
+        this.setState(state)
+      }
+    )
   }
 
   _handleSearchNavigation = () => {
@@ -239,8 +299,18 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, flatListDataTotalCount, queryFrom, isLoading, isLoadingMore, isRefreshing,
-      querySort, searchBarText, selectedItem, showActionSheet } = this.state
+    const {
+      flatListData,
+      flatListDataTotalCount,
+      queryFrom,
+      isLoading,
+      isLoadingMore,
+      isRefreshing,
+      querySort,
+      searchBarText,
+      selectedItem,
+      showActionSheet
+    } = this.state
     const { navigation } = this.props
 
     return (
@@ -249,45 +319,61 @@ export class EpisodesScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={queryFrom === _downloadedKey ? rightItems(true) : rightItems(false)}
+          rightItems={
+            queryFrom === _downloadedKey ? rightItems(true) : rightItems(false)
+          }
           selectedLeftItemKey={queryFrom}
-          selectedRightItemKey={querySort} />
-        {
-          isLoading &&
-          <ActivityIndicator />
-        }
-        {
-          !isLoading && queryFrom &&
-            <FlatList
-              data={flatListData}
-              dataTotalCount={flatListDataTotalCount}
-              disableLeftSwipe={queryFrom !== _downloadedKey}
-              extraData={flatListData}
-              handleSearchNavigation={this._handleSearchNavigation}
-              isLoadingMore={isLoadingMore}
-              isRefreshing={isRefreshing}
-              ItemSeparatorComponent={this._ItemSeparatorComponent}
-              ListHeaderComponent={queryFrom !== _downloadedKey ? this._ListHeaderComponent : null}
-              noSubscribedPodcasts={queryFrom === _subscribedKey && (!flatListData || flatListData.length === 0) && !searchBarText}
-              onEndReached={this._onEndReached}
-              onRefresh={queryFrom !== _downloadedKey ? this._onRefresh : null}
-              renderHiddenItem={this._renderHiddenItem}
-              renderItem={this._renderEpisodeItem}
-              resultsText='episodes' />
-        }
+          selectedRightItemKey={querySort}
+        />
+        {isLoading && <ActivityIndicator />}
+        {!isLoading && queryFrom && (
+          <FlatList
+            data={flatListData}
+            dataTotalCount={flatListDataTotalCount}
+            disableLeftSwipe={queryFrom !== _downloadedKey}
+            extraData={flatListData}
+            handleSearchNavigation={this._handleSearchNavigation}
+            isLoadingMore={isLoadingMore}
+            isRefreshing={isRefreshing}
+            ItemSeparatorComponent={this._ItemSeparatorComponent}
+            ListHeaderComponent={
+              queryFrom !== _downloadedKey ? this._ListHeaderComponent : null
+            }
+            noSubscribedPodcasts={
+              queryFrom === _subscribedKey &&
+              (!flatListData || flatListData.length === 0) &&
+              !searchBarText
+            }
+            onEndReached={this._onEndReached}
+            onRefresh={queryFrom !== _downloadedKey ? this._onRefresh : null}
+            renderHiddenItem={this._renderHiddenItem}
+            renderItem={this._renderEpisodeItem}
+            resultsText="episodes"
+          />
+        )}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
-          items={() => PV.ActionSheet.media.moreButtons(
-            selectedItem, navigation, this._handleCancelPress, this._handleDownloadPressed
-          )}
-          showModal={showActionSheet} />
+          items={() =>
+            PV.ActionSheet.media.moreButtons(
+              selectedItem,
+              navigation,
+              this._handleCancelPress,
+              this._handleDownloadPressed
+            )
+          }
+          showModal={showActionSheet}
+        />
       </View>
     )
   }
 
-  _queryData = async (filterKey: string | null, queryOptions: {
-    queryPage?: number, searchAllFieldsText?: string
-  } = {}) => {
+  _queryData = async (
+    filterKey: string | null,
+    queryOptions: {
+      queryPage?: number
+      searchAllFieldsText?: string
+    } = {}
+  ) => {
     const newState = {
       isLoading: false,
       isLoadingMore: false,
@@ -304,21 +390,27 @@ export class EpisodesScreen extends React.Component<Props, State> {
       const nsfwMode = this.global.settings.nsfwMode
       const { queryPage, searchAllFieldsText } = queryOptions
 
-      flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
+      flatListData =
+        queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
-      const sortingItems = queryFrom === _downloadedKey ? rightItems(true) : rightItems(false)
+      const sortingItems =
+        queryFrom === _downloadedKey ? rightItems(true) : rightItems(false)
 
       if (filterKey === _subscribedKey) {
-        const results = await getEpisodes({
-          sort: querySort,
-          page: queryPage,
-          podcastId,
-          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-          subscribedOnly: true,
-          includePodcast: true
-        }, this.global.settings.nsfwMode)
+        const results = await getEpisodes(
+          {
+            sort: querySort,
+            page: queryPage,
+            podcastId,
+            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+            subscribedOnly: true,
+            includePodcast: true
+          },
+          this.global.settings.nsfwMode
+        )
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached =
+          newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === _downloadedKey) {
         const downloadedEpisodes = await getDownloadedEpisodes()
@@ -327,25 +419,33 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.flatListDataTotalCount = downloadedEpisodes.length
       } else if (filterKey === _allPodcastsKey) {
         const { searchBarText: searchAllFieldsText } = this.state
-        const results = await getEpisodes({
-          sort: querySort,
-          page: queryPage,
-          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-          includePodcast: true
-        }, this.global.settings.nsfwMode)
+        const results = await getEpisodes(
+          {
+            sort: querySort,
+            page: queryPage,
+            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+            includePodcast: true
+          },
+          this.global.settings.nsfwMode
+        )
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached =
+          newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (sortingItems.some((option) => option.value === filterKey)) {
-        const results = await getEpisodes({
-          ...(queryFrom === _subscribedKey ? { podcastId } : {}),
-          sort: filterKey,
-          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-          subscribedOnly: queryFrom === _subscribedKey,
-          includePodcast: true
-        }, nsfwMode)
+        const results = await getEpisodes(
+          {
+            ...(queryFrom === _subscribedKey ? { podcastId } : {}),
+            sort: filterKey,
+            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+            subscribedOnly: queryFrom === _subscribedKey,
+            includePodcast: true
+          },
+          nsfwMode
+        )
         newState.flatListData = results[0]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.endOfResultsReached =
+          newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
 
@@ -361,6 +461,7 @@ const _allPodcastsKey = 'allPodcasts'
 const _downloadedKey = 'downloaded'
 const _subscribedKey = 'subscribed'
 const _mostRecentKey = 'most-recent'
+const _randomKey = 'random'
 const _topPastDay = 'top-past-day'
 const _topPastWeek = 'top-past-week'
 const _topPastMonth = 'top-past-month'
@@ -382,36 +483,40 @@ const leftItems = [
 ]
 
 const rightItems = (onlyMostRecent?: boolean) => [
-  ...(onlyMostRecent ?
-  [
-    {
-      label: 'most recent',
-      value: _mostRecentKey
-    }
-  ] :
-  [
-    {
-      label: 'most recent',
-      value: _mostRecentKey
-    },
-    {
-      label: 'top - past day',
-      value: _topPastDay
-    },
-    {
-      label: 'top - past week',
-      value: _topPastWeek
-    },
-    {
-      label: 'top - past month',
-      value: _topPastMonth
-    },
-    {
-      label: 'top - past year',
-      value: _topPastYear
-    }
-  ]
-)]
+  ...(onlyMostRecent
+    ? [
+        {
+          label: 'most recent',
+          value: _mostRecentKey
+        }
+      ]
+    : [
+        {
+          label: 'most recent',
+          value: _mostRecentKey
+        },
+        {
+          label: 'top - past day',
+          value: _topPastDay
+        },
+        {
+          label: 'top - past week',
+          value: _topPastWeek
+        },
+        {
+          label: 'top - past month',
+          value: _topPastMonth
+        },
+        {
+          label: 'top - past year',
+          value: _topPastYear
+        },
+        {
+          label: 'random',
+          value: _randomKey
+        }
+      ])
+]
 
 const styles = StyleSheet.create({
   ListHeaderComponent: {

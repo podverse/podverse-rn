@@ -13,11 +13,17 @@ type Props = {
 }
 
 type State = {
+  isLoadingQueueLast?: boolean
+  isLoadingQueueNext?: boolean
   yValue: any
 }
 
 export class PVActionSheet extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super()
 
+    this.state = {}
+  }
   componentDidMount() {
     // Animated.timing(_yValueHide, { toValue: _yValueShow }).start()
   }
@@ -28,62 +34,100 @@ export class PVActionSheet extends React.Component<Props, State> {
 
   generateButtons = (items: any[]) => {
     const { handleCancelPress, message, title } = this.props
+    const { isLoadingQueueLast, isLoadingQueueNext } = this.state
     const { globalTheme } = this.global
     const buttons = []
 
-    items.forEach((item, index) => {
-      const buttonStyle = [styles.button]
+    if (items && items.length > 0) {
+      items.forEach((item, index) => {
+        const buttonStyle = [styles.button]
 
-      if (index === 0 && !message && !title) {
-        buttonStyle.push(styles.buttonTop)
-      } else if (index === items.length - 1) {
-        buttonStyle.push(styles.buttonBottom)
-      }
+        if (index === 0 && !message && !title) {
+          buttonStyle.push(styles.buttonTop)
+        } else if (index === items.length - 1) {
+          buttonStyle.push(styles.buttonBottom)
+        }
 
-      if (item.key === 'delete') {
-        buttonStyle.push(globalTheme.actionSheetButtonDelete)
-      } else {
-        buttonStyle.push(globalTheme.actionSheetButton)
-      }
+        if (item.key === 'delete') {
+          buttonStyle.push(globalTheme.actionSheetButtonDelete)
+        } else {
+          buttonStyle.push(globalTheme.actionSheetButton)
+        }
 
-      let buttonTextStyle = globalTheme.actionSheetButtonText
-      if (item.key === 'delete') {
-        buttonTextStyle = globalTheme.actionSheetButtonTextDelete
-      }
+        let buttonTextStyle = globalTheme.actionSheetButtonText
+        if (item.key === 'delete') {
+          buttonTextStyle = globalTheme.actionSheetButtonTextDelete
+        }
 
-      buttons.push(
-        <TouchableHighlight
-          key={item.key}
-          onPress={item.onPress}
-          style={buttonStyle}
-          underlayColor={globalTheme.actionSheetButtonUnderlay.backgroundColor}>
-          <View style={styles.buttonRow}>
-            <Text style={[styles.buttonText, buttonTextStyle]}>
-              {item.text}
-            </Text>
+        const isQueueButton = item.key === 'queueNext' || item.key === 'queueLast'
+        const queueOnPress = () => {
+          this.setState({
+            ...(item.key === 'queueNext' ?
             {
-              item.isDownloading &&
+              isLoadingQueueNext: true,
+              isLoadingQueueLast: false
+            } : {
+              isLoadingQueueNext: false,
+              isLoadingQueueLast: true
+            })
+          }, async () => {
+            await item.onPress()
+            this.setState({
+              isLoadingQueueLast: false,
+              isLoadingQueueNext: false
+            })
+          })
+        }
+
+        buttons.push(
+          <TouchableHighlight
+            key={item.key}
+            onPress={isQueueButton ? queueOnPress : item.onPress}
+            style={buttonStyle}
+            underlayColor={
+              globalTheme.actionSheetButtonUnderlay.backgroundColor
+            }>
+            <View style={styles.buttonRow}>
+              <Text style={[styles.buttonText, buttonTextStyle]}>
+                {item.text}
+              </Text>
+              {item.isDownloading && (
                 <ActivityIndicator
                   size='small'
-                  styles={styles.activityIndicator} />
-            }
-          </View>
-        </TouchableHighlight>
-      )
-    })
+                  styles={styles.activityIndicator}
+                />
+              )}
+              {((item.key === 'queueNext' && isLoadingQueueNext)
+                || (item.key === 'queueLast' && isLoadingQueueLast)) && (
+                  <ActivityIndicator
+                    size='small'
+                    styles={styles.activityIndicator}
+                  />
+              )}
+            </View>
+          </TouchableHighlight>
+        )
+      })
 
-    if (handleCancelPress) {
-      buttons.push(
-        <TouchableHighlight
-          key='cancel'
-          onPress={handleCancelPress}
-          style={[styles.buttonCancel, globalTheme.actionSheetButtonCancel]}
-          underlayColor={globalTheme.actionSheetButtonCancelUnderlay.backgroundColor}>
-          <Text style={[styles.buttonText, globalTheme.actionSheetButtonTextCancel]}>
-            Cancel
-          </Text>
-        </TouchableHighlight>
-      )
+      if (handleCancelPress) {
+        buttons.push(
+          <TouchableHighlight
+            key='cancel'
+            onPress={handleCancelPress}
+            style={[styles.buttonCancel, globalTheme.actionSheetButtonCancel]}
+            underlayColor={
+              globalTheme.actionSheetButtonCancelUnderlay.backgroundColor
+            }>
+            <Text
+              style={[
+                styles.buttonText,
+                globalTheme.actionSheetButtonTextCancel
+              ]}>
+              Cancel
+            </Text>
+          </TouchableHighlight>
+        )
+      }
     }
 
     return buttons
@@ -96,34 +140,39 @@ export class PVActionSheet extends React.Component<Props, State> {
     const buttons = this.generateButtons(finalItems)
 
     return (
-      <Modal
-        transparent={true}
-        visible={showModal}>
+      <Modal transparent={true} visible={showModal}>
         <View style={[styles.backdrop, globalTheme.modalBackdrop]}>
           <Animated.View
             style={[
               styles.animatedView,
               {
-                transform: [{ translateY: showModal ? _yValueShow : _yValueHide }]
+                transform: [
+                  { translateY: showModal ? _yValueShow : _yValueHide }
+                ]
               }
             ]}>
-            {
-              (!!title || !!message) &&
-                <View style={[styles.header, globalTheme.actionSheetButton]}>
-                  {
-                    !!title &&
-                      <Text style={[styles.headerTitle, globalTheme.actionSheetHeaderText]}>
-                        {title}
-                      </Text>
-                  }
-                  {
-                    !!message &&
-                      <Text style={[styles.headerMessage, globalTheme.actionSheetHeaderText]}>
-                        {message}
-                      </Text>
-                  }
-                </View>
-            }
+            {(!!title || !!message) && (
+              <View style={[styles.header, globalTheme.actionSheetButton]}>
+                {!!title && (
+                  <Text
+                    style={[
+                      styles.headerTitle,
+                      globalTheme.actionSheetHeaderText
+                    ]}>
+                    {title}
+                  </Text>
+                )}
+                {!!message && (
+                  <Text
+                    style={[
+                      styles.headerMessage,
+                      globalTheme.actionSheetHeaderText
+                    ]}>
+                    {message}
+                  </Text>
+                )}
+              </View>
+            )}
             {buttons}
           </Animated.View>
         </View>

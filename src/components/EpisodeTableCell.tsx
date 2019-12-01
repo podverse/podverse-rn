@@ -1,7 +1,11 @@
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import React from 'reactn'
-import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
+import {
+  decodeHTMLString,
+  readableDate,
+  removeHTMLFromString
+} from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
 import { ActivityIndicator, Icon, Text, View } from './'
@@ -19,10 +23,15 @@ type Props = {
 }
 
 export class EpisodeTableCell extends React.PureComponent<Props> {
-
-  render () {
-    const { id, pubDate = '', handleMorePress, handleNavigationPress, podcastImageUrl, podcastTitle
-      } = this.props
+  render() {
+    const {
+      id,
+      pubDate = '',
+      handleMorePress,
+      handleNavigationPress,
+      podcastImageUrl,
+      podcastTitle
+    } = this.props
     let { description = '', title } = this.props
     description = removeHTMLFromString(description)
     description = decodeHTMLString(description)
@@ -39,95 +48,82 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const innerTopView = (
       <View style={styles.innerTopView}>
-        {
-          !!podcastImageUrl &&
-            <FastImage
-              source={{ uri: podcastImageUrl }}
-              style={styles.image} />
-        }
+        {!!podcastImageUrl && (
+          <FastImage source={{ uri: podcastImageUrl }} style={styles.image} />
+        )}
         <View style={styles.textWrapper}>
-          {
-            !!podcastTitle &&
-              <Text
-                isSecondary={true}
-                numberOfLines={1}
-                style={styles.podcastTitle}>
-                {podcastTitle}
-              </Text>
-          }
-          <Text
-            numberOfLines={2}
-            style={styles.title}>
+          {!!podcastTitle && (
+            <Text
+              isSecondary={true}
+              numberOfLines={1}
+              style={styles.podcastTitle}>
+              {podcastTitle}
+            </Text>
+          )}
+          <Text numberOfLines={2} style={styles.title}>
             {title}
           </Text>
           <View style={styles.textWrapperBottomRow}>
-            <Text
-              isSecondary={true}
-              style={styles.pubDate}>
+            <Text isSecondary={true} style={styles.pubDate}>
               {readableDate(pubDate)}
             </Text>
-            {
-              isDownloaded &&
-                <Icon
-                  isSecondary={true}
-                  name='download'
-                  size={13}
-                  style={styles.downloadedIcon} />
-            }
+            {isDownloaded && (
+              <Icon
+                isSecondary={true}
+                name="download"
+                size={13}
+                style={styles.downloadedIcon}
+              />
+            )}
           </View>
         </View>
       </View>
     )
 
     const bottomText = (
-      <Text
-        numberOfLines={4}
-        style={styles.description}>
+      <Text numberOfLines={4} style={styles.description}>
         {description}
       </Text>
     )
 
     const moreButton = (
       <Icon
-        name='ellipsis-h'
+        name="ellipsis-h"
         onPress={handleMorePress}
         size={32}
-        style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
+        style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall}
+      />
     )
 
     return (
       <View style={styles.wrapper}>
         <View style={styles.wrapperTop}>
-          {
-            handleNavigationPress ?
-              <TouchableWithoutFeedback onPress={handleNavigationPress}>
-                {innerTopView}
-              </TouchableWithoutFeedback> :
-              innerTopView
-          }
-          {
-            !isDownloading && handleMorePress && moreButton
-          }
-          {
-            isDownloading &&
-              <ActivityIndicator
-                onPress={handleMorePress}
-                styles={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall} />
-          }
-        </View>
-        {
-          !!description && handleNavigationPress &&
+          {handleNavigationPress ? (
             <TouchableWithoutFeedback onPress={handleNavigationPress}>
-              {bottomText}
+              {innerTopView}
             </TouchableWithoutFeedback>
-        }
-        {
-          !!description && !handleNavigationPress && bottomText
-        }
+          ) : (
+            innerTopView
+          )}
+          {!isDownloading && handleMorePress && moreButton}
+          {isDownloading && (
+            <ActivityIndicator
+              onPress={handleMorePress}
+              styles={
+                showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall
+              }
+            />
+          )}
+        </View>
+        {!!description && handleNavigationPress && (
+          <TouchableWithoutFeedback onPress={handleNavigationPress}>
+            {bottomText}
+          </TouchableWithoutFeedback>
+        )}
+        {!!description && !handleNavigationPress && bottomText}
       </View>
     )
   }
-
 }
 
 const styles = StyleSheet.create({

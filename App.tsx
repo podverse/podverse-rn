@@ -5,6 +5,7 @@ import { Image, Platform, StatusBar, View, YellowBox } from 'react-native'
 import 'react-native-gesture-handler'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
+import { OverlayAlert } from './src/components'
 import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
 import { GlobalTheme } from './src/resources/Interfaces'
@@ -13,6 +14,8 @@ import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 
 YellowBox.ignoreWarnings(['Warning: componentWillUpdate'])
+
+// console.disableYellowBox = true
 
 type Props = {}
 
@@ -72,7 +75,12 @@ class App extends Component<Props, State> {
   }
 
   render() {
-    return this.state.appReady ? <Router /> : this._renderIntersitial()
+    return this.state.appReady ? (
+      <View style={{ flex: 1 }}>
+        <Router />
+        <OverlayAlert />
+      </View>
+    ) : this._renderIntersitial()
   }
 }
 

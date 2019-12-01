@@ -1,10 +1,13 @@
 export const RouteNames = {
+  AboutScreen: 'AboutScreen',
+  AddPodcastByRSSScreen: 'AddPodcastByRSSScreen',
   AuthNavigator: 'AuthNavigator',
   AuthScreen: 'AuthScreen',
   ClipsScreen: 'ClipsScreen',
   DownloadsScreen: 'DownloadsListScreen',
   EditPlaylistScreen: 'EditPlaylistScreen',
   EditProfileScreen: 'EditProfileScreen',
+  EmailVerificationScreen: 'EmailVerificationScreen',
   EpisodePodcastScreen: 'EpisodePodcastScreen',
   EpisodeScreen: 'EpisodeScreen',
   EpisodesScreen: 'EpisodesScreen',
@@ -27,6 +30,7 @@ export const RouteNames = {
   PodcastsScreen: 'PodcastsScreen',
   ProfilesScreen: 'ProfilesScreen',
   ProfileScreen: 'ProfileScreen',
+  PurchasingScreen: 'PurchasingScreen',
   QueueScreen: 'QueueScreen',
   SearchEpisodeScreen: 'SearchEpisodeScreen',
   SearchPodcastScreen: 'SearchPodcastScreen',
@@ -34,5 +38,6 @@ export const RouteNames = {
   SearchSearchScreen: 'SearchSearchScreen',
   SettingsScreen: 'SettingsScreen',
   TabNavigator: 'TabNavigator',
+  TermsOfServiceScreen: 'TermsOfServiceScreen',
   WebPageScreen: 'WebPageScreen'
 }

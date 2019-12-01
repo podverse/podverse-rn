@@ -1,4 +1,6 @@
 import { getGlobal, setGlobal } from 'reactn'
+import { safelyUnwrapNestedVariable } from '../../lib/utility'
+import { removeAddByRSSPodcast as removeAddByRSSPodcastService } from '../../services/parser'
 import { getPodcast as getPodcastService, getSubscribedPodcasts as getSubscribedPodcastsService,
   insertOrRemovePodcastFromAlphabetizedArray, toggleSubscribeToPodcast as toggleSubscribeToPodcastService
   } from '../../services/podcast'
@@ -35,4 +37,11 @@ export const toggleSubscribeToPodcast = async (id: string) => {
   } catch (error) {
     console.log('toggleSubscribeToPodcast action', error)
   }
+}
+
+export const removeAddByRSSPodcast = async (feedUrl: string) => {
+  await removeAddByRSSPodcastService(feedUrl)
+  const globalState = getGlobal()
+  const subscribedPodcastIds = safelyUnwrapNestedVariable(() => globalState.session.userInfo.subscribedPodcastIds, [])
+  await getSubscribedPodcasts(subscribedPodcastIds)
 }
