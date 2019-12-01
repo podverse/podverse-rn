@@ -2,6 +2,11 @@
   "name": "podverse",
   "version": "2.2.0",
   "private": true,
+  "contributors": [
+    "Creon Creonopoulos",
+    "Mitch Downey",
+    "Gary Johnson"
+  ],
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "tslint 'src/**/*.{ts,tsx}'",
