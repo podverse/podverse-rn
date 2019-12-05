@@ -1,12 +1,10 @@
 import { Linking, Platform, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, SafeAreaView, Text, View } from '../components'
-import {
-  androidHandleStatusCheck,
-  iosHandlePurchaseStatusCheck
-} from '../lib/purchase'
 import { createEmailLinkUrl } from '../lib/utility'
 import { PV } from '../resources'
+import { androidHandleStatusCheck } from '../state/actions/purchase.android'
+import { iosHandlePurchaseStatusCheck } from '../state/actions/purchase.ios'
 
 type Props = {
   navigation?: any
