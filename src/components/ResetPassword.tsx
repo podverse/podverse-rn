@@ -49,19 +49,19 @@ export class ResetPassword extends React.Component<Props, State> {
     return (
       <View style={[styles.view, style]}>
         <TextInput
-          keyboardType="email-address"
+          keyboardType='email-address'
           onChangeText={this._emailChanged}
           style={styles.textField}
           value={this.state.email}
-          autoCapitalize="none"
-          placeholder="Email"
+          autoCapitalize='none'
+          placeholder='Email'
         />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
           disabled={disabled || isLoading}
           onPress={this._resetPassword}>
           {isLoading ? (
-            <ActivityIndicator color={PV.Colors.gray} size="small" />
+            <ActivityIndicator color={PV.Colors.gray} size='small' />
           ) : (
             <Text style={[styles.signInButtonText, disabledTextStyle]}>
               Send Reset
@@ -87,6 +87,8 @@ const styles = StyleSheet.create({
   },
   textField: {
     backgroundColor: PV.Colors.white,
+    color: PV.Colors.black,
+    fontSize: PV.Fonts.sizes.lg,
     height: 50,
     marginBottom: 40,
     paddingLeft: 20,
