@@ -38,7 +38,6 @@ export class SignUp extends React.Component<Props, State> {
     const { email, name, password, passwordVerification } = this.state
     return (
       !!email &&
-      !!name &&
       !!password &&
       password.match(
         '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
