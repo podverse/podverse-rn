@@ -3,7 +3,7 @@ import { setGlobal } from 'reactn'
 import { androidHandleStatusCheck as androidHandleStatusCheckService } from '../../services/purchase.android'
 import { getAuthUserInfo } from './auth'
 import { handleStatusCancel, handleStatusPending, handleStatusSuccessful, purchaseLoading,
-  showPurchaseSomethingWentWrongError } from './purchase'
+  showPurchaseSomethingWentWrongError } from './purchaseShared'
 
 export const androidHandlePurchaseLoading = async (
   productId: string,

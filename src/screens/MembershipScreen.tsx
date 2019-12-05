@@ -13,7 +13,7 @@ import {
   readableDate
 } from '../lib/utility'
 import { PV } from '../resources'
-import { buy1YearPremium } from '../services/purchase'
+import { buy1YearPremium } from '../services/purchaseShared'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { androidHandleStatusCheck } from '../state/actions/purchase.android'
 import { iosHandlePurchaseStatusCheck } from '../state/actions/purchase.ios'
