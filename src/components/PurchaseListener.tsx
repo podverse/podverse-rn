@@ -7,11 +7,9 @@ import {
   purchaseUpdatedListener
 } from 'react-native-iap'
 import React from 'reactn'
-import {
-  androidHandleStatusCheck,
-  iosHandlePurchaseStatusCheck
-} from '../lib/purchase'
 import { PV } from '../resources'
+import { androidHandleStatusCheck } from '../state/actions/purchase.android'
+import { iosHandlePurchaseStatusCheck } from '../state/actions/purchase.ios'
 
 type Props = {
   navigation: any
