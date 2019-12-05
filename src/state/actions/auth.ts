@@ -9,7 +9,7 @@ import { getSubscribedPodcasts } from './podcast'
 export type Credentials = {
   email: string,
   password: string,
-  name: string
+  name?: string
 }
 
 export const getAuthUserInfo = async () => {
