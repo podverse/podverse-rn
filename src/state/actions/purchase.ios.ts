@@ -1,7 +1,7 @@
 import { setGlobal } from 'reactn'
 import { iosHandlePurchaseStatusCheck as iosHandlePurchaseStatusCheckService } from '../../services/purchase.ios'
 import { getAuthUserInfo } from './auth'
-import { handleStatusSuccessful, purchaseLoading, showPurchaseSomethingWentWrongError } from './purchase'
+import { handleStatusSuccessful, purchaseLoading, showPurchaseSomethingWentWrongError } from './purchaseShared'
 
 export const iosHandlePurchaseLoading = async (
   productId: string,
