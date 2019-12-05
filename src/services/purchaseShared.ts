@@ -3,7 +3,7 @@ import * as RNIap from 'react-native-iap'
 
 // Purchase items
 const itemSkus = Platform.select({
-  ios: ['podverse_premium_membership_1_year_consumable'],
+  ios: ['podverse_premium_membership_1_year_non_renewing_subscription'],
   android: ['podverse_premium_membership_1_year']
 })
 
