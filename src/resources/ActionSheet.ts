@@ -42,7 +42,7 @@ const mediaMoreButtons = (
       key: 'stream',
       text: 'Stream',
       onPress: async () => {
-        const showAlert = await hasTriedAlert(handleDismiss, navigation, false)
+        const showAlert = await hasTriedStreamingWithoutWifiAlert(handleDismiss, navigation, false)
         if (showAlert) return
 
         await handleDismiss()
@@ -57,7 +57,7 @@ const mediaMoreButtons = (
         text: downloadingText,
         isDownloading,
         onPress: async () => {
-          const showAlert = await hasTriedAlert(handleDismiss, navigation, true)
+          const showAlert = await hasTriedDownloadingWithoutWifiAlert(handleDismiss, navigation, true)
           if (showAlert) return
 
           if (isDownloading) {
@@ -160,58 +160,62 @@ const mediaMoreButtons = (
   return buttons
 }
 
-const hasTriedAlert = async (
+const hasTriedStreamingWithoutWifiAlert = async (
   handleDismiss: any,
   navigation: any,
   download: boolean
 ) => {
   const netInfoState = await NetInfo.fetch()
-  let hasTried = await AsyncStorage.getItem(
-    PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI
-  )
-  if (!download) {
-    hasTried = await AsyncStorage.getItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI)
-  }
-  const showAlert = netInfoState.type === 'wifi' && !hasTried
-
+  const hasTried = await AsyncStorage.getItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI)
+  const showAlert = netInfoState.type !== 'wifi' && !hasTried
   if (showAlert) {
-    if (download) {
-      await AsyncStorage.setItem(
-        PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI,
-        'TRUE'
-      )
-    } else {
-      await AsyncStorage.setItem(
-        PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI,
-        'TRUE'
-      )
-    }
-    Alert.alert(
-      'No Wifi Connection',
-      `You cannot ${download ? 'download' : 'stream'} without a Wifi connection.
-      To allow ${
-        download ? 'downloading' : 'streaming'
-      } with your data plan, go to your Settings page.`,
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-          onPress: handleDismiss
-        },
-        {
-          text: 'Go to Settings',
-          onPress: async () => {
-            await handleDismiss()
-            navigation.navigate(PV.RouteNames.SettingsScreen)
-          }
-        }
-      ]
-    )
-
-    return showAlert
+    await AsyncStorage.setItem(PV.Keys.HAS_TRIED_STREAMING_WITHOUT_WIFI, 'TRUE')
+    hasTriedWithoutWifiAlert(handleDismiss, navigation, download)
   }
+  return showAlert
+}
 
-  return
+const hasTriedDownloadingWithoutWifiAlert = async (
+  handleDismiss: any,
+  navigation: any,
+  download: boolean
+) => {
+  const netInfoState = await NetInfo.fetch()
+  const hasTried = await AsyncStorage.getItem(PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI)
+  const showAlert = netInfoState.type !== 'wifi' && !hasTried
+  if (showAlert) {
+    await AsyncStorage.setItem(PV.Keys.HAS_TRIED_DOWNLOADING_WITHOUT_WIFI, 'TRUE')
+    hasTriedWithoutWifiAlert(handleDismiss, navigation, download)
+  }
+  return showAlert
+}
+
+const hasTriedWithoutWifiAlert = (
+  handleDismiss: any,
+  navigation: any,
+  download: boolean
+) => {
+  Alert.alert(
+    'No Wifi Connection',
+    `You cannot ${download ? 'download' : 'stream'} without a Wifi connection.
+    To allow ${
+      download ? 'downloading' : 'streaming'
+    } with your data plan, go to your Settings page.`,
+    [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+        onPress: handleDismiss
+      },
+      {
+        text: 'Go to Settings',
+        onPress: async () => {
+          await handleDismiss()
+          navigation.navigate(PV.RouteNames.SettingsScreen)
+        }
+      }
+    ]
+  )
 }
 
 export const ActionSheet: IActionSheet = {
