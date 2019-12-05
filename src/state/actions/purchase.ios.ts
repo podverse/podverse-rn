@@ -18,7 +18,7 @@ export const iosHandlePurchaseLoading = async (
 export const iosHandlePurchaseStatusCheck = async (productId: string, transactionId: string, transactionReceipt: string) => {
   try {
     await iosHandlePurchaseLoading(productId, transactionId, transactionReceipt)
-    await iosHandlePurchaseStatusCheckService(productId, transactionId, transactionReceipt)
+    await iosHandlePurchaseStatusCheckService(transactionReceipt)
     await iosHandleStatusSuccessful()
   } catch (error) {
     console.log('iosHandlePurchaseStatusCheck error', error)
