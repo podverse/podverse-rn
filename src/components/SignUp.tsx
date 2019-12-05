@@ -87,43 +87,47 @@ export class SignUp extends React.Component<Props, State> {
     return (
       <View style={[styles.view, style]}>
         <TextInput
-          keyboardType="email-address"
+          keyboardType='email-address'
           onChangeText={this.emailChanged}
           style={styles.textField}
           value={this.state.email}
-          autoCapitalize="none"
-          placeholder="Email"
+          autoCapitalize='none'
+          placeholder='Email'
+          placeholderTextColor={PV.Colors.gray}
         />
         <TextInput
           secureTextEntry={true}
           onChangeText={this.passwordChanged}
           style={styles.textField}
           value={this.state.password}
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-          placeholder="Password"
+          underlineColorAndroid='transparent'
+          autoCapitalize='none'
+          placeholder='Password'
+          placeholderTextColor={PV.Colors.gray}
         />
         <TextInput
           secureTextEntry={true}
           onChangeText={this.passwordVerificationChanged}
           style={[styles.textField, passwordMismatch ? errorStyle : null]}
-          autoCapitalize="none"
+          autoCapitalize='none'
           value={this.state.passwordVerification}
-          underlineColorAndroid="transparent"
-          placeholder="Verify Password"
+          underlineColorAndroid='transparent'
+          placeholder='Verify Password'
+          placeholderTextColor={PV.Colors.gray}
         />
         <TextInput
           onChangeText={this.nameChanged}
           style={styles.textField}
           value={this.state.name}
-          placeholder="Name (optional)"
+          placeholder='Name (optional)'
+          placeholderTextColor={PV.Colors.gray}
         />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
           disabled={disabled || isLoading}
           onPress={this.signUp}>
           {isLoading ? (
-            <ActivityIndicator color={PV.Colors.white} size="small" />
+            <ActivityIndicator color={PV.Colors.white} size='small' />
           ) : (
             <Text style={[styles.signInButtonText, disabledTextStyle]}>
               Sign Up
@@ -142,7 +146,7 @@ const styles = StyleSheet.create({
     borderColor: PV.Colors.white,
     borderWidth: 1,
     marginTop: 12,
-    padding: 10,
+    padding: 16,
     width: '65%'
   },
   signInButtonText: {
@@ -152,6 +156,8 @@ const styles = StyleSheet.create({
   },
   textField: {
     backgroundColor: PV.Colors.white,
+    color: PV.Colors.black,
+    fontSize: PV.Fonts.sizes.lg,
     height: 50,
     marginBottom: 30,
     paddingLeft: 20,
