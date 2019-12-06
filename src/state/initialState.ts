@@ -7,9 +7,9 @@ const initialTheme: InitialState = {
   downloadsArray: [],
   downloadsActive: {},
   downloadedEpisodeIds: {},
-  downloadedPodcastEpisodeCounts: {},
   downloadedEpisodeLimitCount: 5,
   downloadedEpisodeLimitDefault: null,
+  downloadedPodcastEpisodeCounts: {},
   player: {
     hasErrored: false,
     isPlaying: false,
