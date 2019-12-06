@@ -230,7 +230,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   _renderHiddenItem = ({ item }, rowMap) => (
     <SwipeRowBack
       onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      text="Delete"
+      text='Delete'
     />
   )
 
@@ -311,6 +311,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       selectedItem,
       showActionSheet
     } = this.state
+
     const { navigation } = this.props
 
     return (
@@ -345,10 +346,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
               !searchBarText
             }
             onEndReached={this._onEndReached}
-            onRefresh={queryFrom !== _downloadedKey ? this._onRefresh : null}
+            onRefresh={this._onRefresh}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderEpisodeItem}
-            resultsText="episodes"
+            resultsText='episodes'
           />
         )}
         <ActionSheet

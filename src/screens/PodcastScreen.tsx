@@ -193,7 +193,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         let newPodcast: any
 
         try {
-          if (podcast.addByRSSPodcastFeedUrl) {
+          if (podcast && podcast.addByRSSPodcastFeedUrl) {
             newPodcast = podcast
             newState.flatListData = podcast.episodes || []
             newState.flatListDataTotalCount = newState.flatListData.length
