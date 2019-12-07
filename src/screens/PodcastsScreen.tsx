@@ -406,7 +406,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { searchBarText } = this.state
 
     return (
-      <View style={styles.ListHeaderComponent}>
+      <View style={core.ListHeaderComponent}>
         <SearchBar
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
@@ -934,14 +934,6 @@ const rightItems = (isAllPodcasts?: boolean) => {
 }
 
 const styles = StyleSheet.create({
-  ListHeaderComponent: {
-    borderBottomWidth: 0,
-    borderTopWidth: 0,
-    flex: 0,
-    height: PV.FlatList.searchBar.height,
-    justifyContent: 'center',
-    marginVertical: 8
-  },
   view: {
     flex: 1
   }
