@@ -148,9 +148,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
             }
           }
 
-          newEpisode.description =
-            (newEpisode.description && newEpisode.description.linkifyHtml()) ||
-            'No summary available.'
+          newEpisode.description = newEpisode.description || 'No summary available.'
 
           this.setState({
             ...newState,
@@ -393,7 +391,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           />
         )}
         {viewType === _showNotesKey && episode && (
-          <HTMLScrollView html={episode.description} navigation={navigation} />
+          <HTMLScrollView html={episode.description} />
         )}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}

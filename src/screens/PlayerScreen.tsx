@@ -548,8 +548,9 @@ export class PlayerScreen extends React.Component<Props, State> {
     const mediaRefId = mediaRef ? mediaRef.id : null
     let { mediaRef } = player
 
-    if (nowPlayingItem.clipId)
+    if (nowPlayingItem.clipId) {
       mediaRef = convertNowPlayingItemToMediaRef(nowPlayingItem)
+    }
 
     return (
       <SafeAreaView>
@@ -618,10 +619,7 @@ export class PlayerScreen extends React.Component<Props, State> {
               {!isLoading &&
                 viewType === PV.Keys.VIEW_TYPE_SHOW_NOTES &&
                 episode && (
-                  <HTMLScrollView
-                    html={episode.description}
-                    navigation={navigation}
-                  />
+                  <HTMLScrollView html={episode.description} />
                 )}
             </View>
           )}
@@ -687,7 +685,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       )
       return results
     } else {
-      [[], 0]
+      return [[], 0]
     }
   }
 
@@ -767,7 +765,9 @@ export class PlayerScreen extends React.Component<Props, State> {
         () => this.global.subscribedPodcasts,
         []
       )
-      isSubscribed = subscribedPodcasts.some((x: any) => x.addByRSSPodcastFeedUrl && x.addByRSSPodcastFeedUrl === nowPlayingItem.addByRSSPodcastFeedUrl)
+      isSubscribed = subscribedPodcasts.some((x: any) =>
+        x.addByRSSPodcastFeedUrl && x.addByRSSPodcastFeedUrl === nowPlayingItem.addByRSSPodcastFeedUrl
+      )
     }
 
     const items = [
