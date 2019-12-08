@@ -8,6 +8,7 @@
     "Gary Johnson"
   ],
   "scripts": {
+    "dev": "react-native start",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "tslint 'src/**/*.{ts,tsx}'",
     "format": "prettier --write src/**/*.ts*"
