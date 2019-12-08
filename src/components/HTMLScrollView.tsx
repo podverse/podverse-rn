@@ -17,7 +17,8 @@ export const HTMLScrollView = (props: Props) => {
     ...styles.baseFontStyle
   }
 
-  const formattedHtml = convertHHMMSSToAnchorTags(html)
+  let formattedHtml = convertHHMMSSToAnchorTags(html)
+  formattedHtml = formattedHtml.linkifyHtml()
 
   return (
     <ScrollView style={styles.scrollView}>
