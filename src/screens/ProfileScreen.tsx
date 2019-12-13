@@ -438,9 +438,9 @@ export class ProfileScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         {isMyProfile && !isLoggedIn && (
           <MessageWithAction
-            actionHandler={this._onPressLogin}
-            actionText="Login"
-            message="Login to view your profile"
+            topActionHandler={this._onPressLogin}
+            topActionText='Login'
+            message='Login to view your profile'
           />
         )}
         {!(isMyProfile && !isLoggedIn) && (

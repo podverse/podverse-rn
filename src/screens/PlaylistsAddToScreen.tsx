@@ -50,11 +50,11 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
     headerLeft: (
       <TouchableOpacity onPress={navigation.dismiss}>
         <Icon
-          color="#fff"
+          color='#fff'
           iconStyle={styles.closeButton}
-          name="angle-down"
+          name='angle-down'
           size={32}
-          type="font-awesome"
+          type='font-awesome'
           underlayColor={PV.Colors.brandColor}
         />
       </TouchableOpacity>
@@ -182,9 +182,9 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         {!isLoggedIn && (
           <MessageWithAction
-            actionHandler={this._onPressLogin}
-            actionText="Login"
-            message="Login to add to playlists"
+            topActionHandler={this._onPressLogin}
+            topActionText='Login'
+            message='Login to add to playlists'
           />
         )}
         {isLoggedIn && (
@@ -214,14 +214,14 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
               <Dialog.Title>New Playlist</Dialog.Title>
               <Dialog.Input
                 onChangeText={this._handleNewPlaylistTextChange}
-                placeholder="title of playlist"
+                placeholder='title of playlist'
                 value={newPlaylistTitle}
               />
               <Dialog.Button
-                label="Cancel"
+                label='Cancel'
                 onPress={this._handleNewPlaylistDismiss}
               />
-              <Dialog.Button label="Save" onPress={this._saveNewPlaylist} />
+              <Dialog.Button label='Save' onPress={this._saveNewPlaylist} />
             </Dialog.Container>
           </View>
         )}

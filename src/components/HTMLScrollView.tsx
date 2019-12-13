@@ -1,7 +1,7 @@
 import { Dimensions, Linking, ScrollView, StyleSheet } from 'react-native'
 import HTML from 'react-native-render-html'
 import React, { useGlobal } from 'reactn'
-import { convertHHMMSSToAnchorTags } from '../lib/utility'
+import { convertHHMMSSToAnchorTags, removeHTMLAttributesFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { setPlaybackPosition } from '../services/player'
 
@@ -17,7 +17,9 @@ export const HTMLScrollView = (props: Props) => {
     ...styles.baseFontStyle
   }
 
-  const formattedHtml = convertHHMMSSToAnchorTags(html)
+  let formattedHtml = removeHTMLAttributesFromString(html)
+  formattedHtml = convertHHMMSSToAnchorTags(formattedHtml)
+  formattedHtml = formattedHtml.linkifyHtml()
 
   return (
     <ScrollView style={styles.scrollView}>

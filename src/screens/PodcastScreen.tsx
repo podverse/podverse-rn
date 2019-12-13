@@ -882,14 +882,6 @@ const styles = {
   aboutViewText: {
     fontSize: PV.Fonts.sizes.lg
   },
-  ListHeaderComponent: {
-    borderBottomWidth: 0,
-    borderTopWidth: 0,
-    flex: 0,
-    height: PV.FlatList.searchBar.height,
-    justifyContent: 'center',
-    marginVertical: 8
-  },
   settingsHelpText: {
     fontSize: PV.Fonts.sizes.md
   },

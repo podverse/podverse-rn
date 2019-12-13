@@ -426,6 +426,19 @@ export const core = StyleSheet.create({
   backgroundView: {
     flex: 1
   },
+  ListHeaderComponent: {
+    borderBottomWidth: 0,
+    borderTopWidth: 0,
+    flex: 0,
+    height: PV.FlatList.searchBar.height,
+    justifyContent: 'center',
+    marginVertical: 8,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    zIndex: 100
+  },
   row: {
     backgroundColor: 'transparent',
     flexDirection: 'row'

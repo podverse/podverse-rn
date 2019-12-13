@@ -107,10 +107,11 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
               />
               <Divider style={styles.divider} />
               <Text style={styles.text}>
-                NOTE: Clips and playlists aren't supported for podcasts added by RSS URL.
+                Clips and playlists are not supported for podcasts added by RSS URL.
               </Text>
               <Text style={styles.text}>
-                If you want a podcast officially added to Podverse, please use the Request Podcast link.
+                If you want a podcast officially added to Podverse, with clip and playlist support,
+                please use the Request Podcast link below.
               </Text>
               <TextLink onPress={this._navToRequestPodcastForm} style={[styles.textLink]}>
                 Request Podcast
