@@ -1,13 +1,20 @@
 import React from 'react'
 import {
   ActivityIndicator,
+  Dimensions,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View
 } from 'react-native'
+import isEmail from 'validator/lib/isEmail'
+import { hasAtLeastXCharacters as hasAtLeastXCharactersLib, hasLowercase as hasLowercaseLib,
+  hasMatchingStrings, hasNoSpaces as hasNoSpacesLib, hasNumber as hasNumberLib,
+  hasUppercase as hasUppercaseLib } from '../lib/utility'
 import { PV } from '../resources'
+import { PasswordValidationInfo } from './PasswordValidationInfo'
 
 type Props = {
   bottomButtons: any
@@ -18,6 +25,13 @@ type Props = {
 
 type State = {
   email: string
+  hasAtLeastXCharacters: boolean
+  hasLowercase: boolean
+  hasMatching: boolean
+  hasNoSpaces: boolean
+  hasNumber: boolean
+  hasUppercase: boolean
+  hasValidEmail: boolean
   name: string
   password: string
   passwordVerification: string
@@ -28,22 +42,70 @@ export class SignUp extends React.Component<Props, State> {
     super(props)
     this.state = {
       email: '',
+      hasAtLeastXCharacters: false,
+      hasLowercase: false,
+      hasMatching: false,
+      hasNoSpaces: false,
+      hasNumber: false,
+      hasUppercase: false,
+      hasValidEmail: false,
       name: '',
       password: '',
       passwordVerification: ''
     }
   }
 
-  inputsValid = () => {
-    const { email, name, password, passwordVerification } = this.state
-    return (
-      !!email &&
-      !!password &&
-      password.match(
-        '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
-      ) &&
-      passwordVerification === password
-    )
+  emailChanged = (email: string) => {
+    this.setState({ email })
+  }
+
+  passwordChanged = (password: string) => {
+    this.setState({ password }, () => {
+      this.passwordsValid()
+    })
+  }
+
+  passwordVerificationChanged = (password2: string) => {
+    this.setState({ passwordVerification: password2 }, () => {
+      this.passwordsValid()
+    })
+  }
+
+  nameChanged = (name: string) => {
+    this.setState({ name })
+  }
+
+  emailValid = () => {
+    const { email } = this.state
+    this.setState({
+      hasValidEmail: isEmail(email)
+    })
+  }
+
+  passwordsValid = () => {
+    const { password, passwordVerification } = this.state
+    const hasAtLeastXCharacters = hasAtLeastXCharactersLib(password)
+    const hasLowercase = hasLowercaseLib(password)
+    const hasMatching = hasMatchingStrings(password, passwordVerification)
+    const hasNoSpaces = hasNoSpacesLib(password)
+    const hasNumber = hasNumberLib(password)
+    const hasUppercase = hasUppercaseLib(password)
+
+    this.setState({
+      hasAtLeastXCharacters,
+      hasLowercase,
+      hasMatching,
+      hasNoSpaces,
+      hasNumber,
+      hasUppercase
+    })
+  }
+
+  submitDisabled = () => {
+    const { hasAtLeastXCharacters, hasLowercase, hasMatching, hasNoSpaces, hasNumber, hasUppercase,
+      hasValidEmail } = this.state
+    return !(hasAtLeastXCharacters && hasLowercase && hasMatching && hasNoSpaces && hasNumber &&
+      hasUppercase && hasValidEmail)
   }
 
   signUp = () => {
@@ -52,30 +114,15 @@ export class SignUp extends React.Component<Props, State> {
     onSignUpPressed({ email, password, name })
   }
 
-  emailChanged = (email: string) => {
-    this.setState({ email })
-  }
-
-  passwordChanged = (password: string) => {
-    this.setState({ password })
-  }
-
-  passwordVerificationChanged = (password2: string) => {
-    this.setState({ passwordVerification: password2 })
-  }
-
-  nameChanged = (name: string) => {
-    this.setState({ name })
-  }
-
   render() {
-    const { bottomButtons, isLoading, style } = this.props
-    const { password, passwordVerification } = this.state
-    const disabled = !this.inputsValid()
-    const disabledStyle = disabled
+    const { bottomButtons, isLoading } = this.props
+    const { hasAtLeastXCharacters, hasLowercase, hasNumber, hasUppercase, password,
+      passwordVerification } = this.state
+    const submitDisabled = this.submitDisabled()
+    const submitDisabledStyle = submitDisabled
       ? { backgroundColor: PV.Colors.grayDark }
       : null
-    const disabledTextStyle = disabled ? { color: PV.Colors.white } : null
+    const submitDisabledTextStyle = submitDisabled ? { color: PV.Colors.white } : null
 
     const passwordMismatch =
       passwordVerification.length > 0 && passwordVerification !== password
@@ -83,10 +130,12 @@ export class SignUp extends React.Component<Props, State> {
       borderColor: PV.Colors.red,
       borderWidth: 2
     }
+
     return (
-      <View style={[styles.view, style]}>
+      <ScrollView contentContainerStyle={styles.scrollView}>
         <TextInput
           keyboardType='email-address'
+          onBlur={this.emailValid}
           onChangeText={this.emailChanged}
           style={styles.textField}
           value={this.state.email}
@@ -121,32 +170,50 @@ export class SignUp extends React.Component<Props, State> {
           placeholder='Name (optional)'
           placeholderTextColor={PV.Colors.gray}
         />
+        <PasswordValidationInfo
+          hasAtLeastXCharacters={hasAtLeastXCharacters}
+          hasLowercase={hasLowercase}
+          hasNumber={hasNumber}
+          hasUppercase={hasUppercase}
+          style={styles.passwordValidationInfo} />
         <TouchableOpacity
-          style={[styles.signInButton, disabledStyle]}
-          disabled={disabled || isLoading}
+          style={[styles.signInButton, submitDisabledStyle]}
+          disabled={submitDisabled || isLoading}
           onPress={this.signUp}>
           {isLoading ? (
             <ActivityIndicator color={PV.Colors.white} size='small' />
           ) : (
-            <Text style={[styles.signInButtonText, disabledTextStyle]}>
+            <Text style={[styles.signInButtonText, submitDisabledTextStyle]}>
               Sign Up
             </Text>
           )}
         </TouchableOpacity>
         {bottomButtons}
-      </View>
+      </ScrollView>
     )
   }
 }
 
+const deviceWidth = Dimensions.get('window').width
+
 const styles = StyleSheet.create({
+  passwordValidationInfo: {
+    marginBottom: 30,
+    marginHorizontal: 48,
+    paddingHorizontal: 8
+  },
+  scrollView: {
+    flexGrow: 1,
+    flexShrink: 0,
+    width: deviceWidth
+  },
   signInButton: {
     alignItems: 'center',
     borderColor: PV.Colors.white,
     borderWidth: 1,
-    marginTop: 12,
-    padding: 16,
-    width: '65%'
+    marginHorizontal: 56,
+    marginTop: 6,
+    padding: 16
   },
   signInButtonText: {
     color: PV.Colors.white,
@@ -159,12 +226,7 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.lg,
     height: 50,
     marginBottom: 30,
-    paddingLeft: 20,
-    width: '80%'
-  },
-  view: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%'
+    marginHorizontal: 48,
+    paddingHorizontal: 8
   }
 })

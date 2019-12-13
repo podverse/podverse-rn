@@ -407,3 +407,27 @@ export const convertToSortableTitle = (title: string) => {
   const sortableTitle = title ? title.toLowerCase().replace(/\b^the\b|\b^a\b|\b^an\b/i, '').trim() : ''
   return sortableTitle ? sortableTitle.replace(/#/g, '') : ''
 }
+
+export const hasAtLeastXCharacters = (str?: string, x: number = 8) => {
+  return str && str.match(`^(?=.{${x},})`) ? true : false
+}
+
+export const hasLowercase = (str?: string) => {
+  return str && str.match('^(?=.*[a-z])') ? true : false
+}
+
+export const hasMatchingStrings = (str1?: string, str2?: string) => {
+  return str1 && str1 === str2 ? true : false
+}
+
+export const hasNoSpaces = (str?: string) => {
+  return str && str.match('\s') ? true : false
+}
+
+export const hasNumber = (str?: string) => {
+  return str && str.match('^(?=.*[0-9])') ? true : false
+}
+
+export const hasUppercase = (str?: string) => {
+  return str && str.match('^(?=.*[A-Z])') ? true : false
+}

@@ -4,15 +4,18 @@ import { PV } from '../resources'
 import { ActivityIndicator, Text, View } from './'
 
 type Props = {
-  actionHandler?: any
-  actionText?: string
+  bottomActionHandler?: any
+  bottomActionText?: string
   isLoading?: boolean
   message?: string
   subMessage?: string
+  topActionHandler?: any
+  topActionText?: string
 }
 
 export const MessageWithAction = (props: Props) => {
-  const { actionHandler, actionText, isLoading, message, subMessage } = props
+  const { bottomActionHandler, bottomActionText, isLoading, message, subMessage, topActionHandler,
+    topActionText } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
@@ -23,9 +26,14 @@ export const MessageWithAction = (props: Props) => {
       {!!subMessage && (
         <Text style={[globalTheme.text, styles.subMessage]}>{subMessage}</Text>
       )}
-      {!isLoading && !!actionText && actionHandler && (
-        <TouchableOpacity onPress={actionHandler}>
-          <Text style={[globalTheme.text, styles.button]}>{actionText}</Text>
+      {!isLoading && !!topActionText && topActionHandler && (
+        <TouchableOpacity onPress={topActionHandler}>
+          <Text style={[globalTheme.text, styles.button]}>{topActionText}</Text>
+        </TouchableOpacity>
+      )}
+      {!isLoading && !!bottomActionText && bottomActionHandler && (
+        <TouchableOpacity onPress={bottomActionHandler}>
+          <Text style={[globalTheme.text, styles.button]}>{bottomActionText}</Text>
         </TouchableOpacity>
       )}
       {isLoading && <ActivityIndicator />}

@@ -1,5 +1,6 @@
 import React from 'reactn'
 import { MessageWithAction } from '../components'
+import { PV } from '../resources'
 import { sendVerificationEmail } from '../services/auth'
 
 type Props = {
@@ -26,9 +27,19 @@ export class EmailVerificationScreen extends React.Component<Props, State> {
     }
   }
 
+  _navToLogin = async () => {
+    const { navigation } = this.props
+    await navigation.goBack(null)
+    await navigation.goBack(null)
+    await navigation.goBack(null)
+    await navigation.navigate(PV.RouteNames.AuthNavigator)
+  }
+
   _sendVerificationEmail = async () => {
     const { email } = this.state
-    sendVerificationEmail(email)
+    if (email) {
+      sendVerificationEmail(email)
+    }
   }
 
   render() {
@@ -36,10 +47,12 @@ export class EmailVerificationScreen extends React.Component<Props, State> {
 
     return (
       <MessageWithAction
-        actionHandler={this._sendVerificationEmail}
-        actionText="Resend Verification Email"
+        bottomActionHandler={this._navToLogin}
+        bottomActionText='Login'
         isLoading={isResendingEmail}
-        message="Please verify your email address to login. You should receive an email shortly."
+        message='Please verify your email address to login. You should receive an email shortly.'
+        topActionHandler={this._sendVerificationEmail}
+        topActionText='Resend Verification Email'
       />
     )
   }

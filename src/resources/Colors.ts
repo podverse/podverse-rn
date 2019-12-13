@@ -15,6 +15,9 @@ export const Colors = {
   redLighter: '#c43745',
   red: '#bd2130',
   redDarker: '#aa1e2b',
+  greenLighter: '#69c890',
+  green: '#29b160',
+  greenDarker: '#1d7c43',
   yellow: '#ffc107',
   opacity: 0.1
 }
