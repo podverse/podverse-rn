@@ -59,8 +59,6 @@ export class Login extends React.Component<Props, State> {
     return (
       <View style={[styles.view, style]}>
         <TextInput
-          autoCompleteType='username'
-          textContentType='username'
           keyboardType='email-address'
           onChangeText={this.emailChanged}
           style={styles.textField}
@@ -70,8 +68,6 @@ export class Login extends React.Component<Props, State> {
           placeholderTextColor={PV.Colors.gray}
         />
         <TextInput
-          autoCompleteType='password'
-          textContentType='password'
           secureTextEntry={true}
           onChangeText={this.passwordChanged}
           style={styles.textField}
