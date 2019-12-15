@@ -82,5 +82,4 @@ export const logoutUser = async () => {
 
 export const signUpUser = async (credentials: Credentials) => {
   await signUp(credentials)
-  getAuthUserInfo()
 }
