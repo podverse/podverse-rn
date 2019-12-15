@@ -72,7 +72,7 @@ export const loginUser = async (credentials: Credentials) => {
 
 export const logoutUser = async () => {
   try {
-    RNSecureKeyStore.remove(PV.Keys.BEARER_TOKEN)
+    await RNSecureKeyStore.remove(PV.Keys.BEARER_TOKEN)
     await getAuthUserInfo()
   } catch (error) {
     console.log(error)
