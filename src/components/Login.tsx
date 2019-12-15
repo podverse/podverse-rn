@@ -11,7 +11,6 @@ import { PV } from '../resources'
 
 type Props = {
   bottomButtons: any
-  isFocused: boolean
   isLoading: boolean
   onLoginPressed?: any
   style?: any
