@@ -51,7 +51,7 @@ export class Login extends React.Component<Props, State> {
 
   render() {
     const { bottomButtons, isLoading, style } = this.props
-    const { password } = this.state
+    const { email, password } = this.state
     const disabled = !this.inputsValid()
     const disabledStyle = disabled ? { backgroundColor: PV.Colors.gray } : null
     const disabledTextStyle = disabled ? { color: PV.Colors.white } : null
@@ -59,21 +59,25 @@ export class Login extends React.Component<Props, State> {
     return (
       <View style={[styles.view, style]}>
         <TextInput
+          autoCompleteType='username'
+          textContentType='username'
           keyboardType='email-address'
           onChangeText={this.emailChanged}
           style={styles.textField}
-          value={this.state.email}
+          value={email}
           autoCapitalize='none'
           placeholder='Email'
           placeholderTextColor={PV.Colors.gray}
         />
         <TextInput
+          autoCompleteType='password'
+          textContentType='password'
           secureTextEntry={true}
           onChangeText={this.passwordChanged}
           style={styles.textField}
           value={password}
-          autoCapitalize='none'
           underlineColorAndroid='transparent'
+          autoCapitalize='none'
           placeholder='Password'
           placeholderTextColor={PV.Colors.gray}
         />
