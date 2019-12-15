@@ -69,11 +69,12 @@ export const getAuthenticatedUserInfoLocally = async () => {
       subscribedPodcastIds = JSON.parse(subscribedPodcastIdsString)
     }
   } catch (error) {
-    if (Array.isArray(subscribedPodcastIds))
+    if (Array.isArray(subscribedPodcastIds)) {
       await AsyncStorage.setItem(
         PV.Keys.SUBSCRIBED_PODCAST_IDS,
         JSON.stringify(subscribedPodcastIds)
       )
+    }
   }
 
   try {
@@ -84,11 +85,12 @@ export const getAuthenticatedUserInfoLocally = async () => {
       subscribedUserIds = JSON.parse(subscribedUserIdsString)
     }
   } catch (error) {
-    if (Array.isArray(subscribedUserIds))
+    if (Array.isArray(subscribedUserIds)) {
       await AsyncStorage.setItem(
         PV.Keys.SUBSCRIBED_USER_IDS,
         JSON.stringify(subscribedUserIds)
       )
+    }
   }
 
   try {
@@ -97,11 +99,12 @@ export const getAuthenticatedUserInfoLocally = async () => {
       queueItems = JSON.parse(queueItemsJSON)
     }
   } catch (error) {
-    if (Array.isArray(queueItems))
+    if (Array.isArray(queueItems)) {
       await AsyncStorage.setItem(
         PV.Keys.QUEUE_ITEMS,
         JSON.stringify(queueItems)
       )
+    }
   }
 
   try {
@@ -110,11 +113,12 @@ export const getAuthenticatedUserInfoLocally = async () => {
       historyItems = JSON.parse(historyItemsJSON)
     }
   } catch (error) {
-    if (Array.isArray(historyItems))
+    if (Array.isArray(historyItems)) {
       await AsyncStorage.setItem(
         PV.Keys.HISTORY_ITEMS,
         JSON.stringify(historyItems)
       )
+    }
   }
 
   const bearerToken = await getBearerToken()
@@ -139,7 +143,7 @@ export const getAuthenticatedUserInfoFromServer = async (
     endpoint: '/auth/get-authenticated-user-info',
     method: 'POST',
     headers: {
-      Authorization: bearerToken,
+      'Authorization': bearerToken,
       'Content-Type': 'application/json'
     }
   })
@@ -171,7 +175,7 @@ export const login = async (email: string, password: string) => {
 
   const data = (response && response.data) || []
   if (data.token) {
-    RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, {
+    await RNSecureKeyStore.set(PV.Keys.BEARER_TOKEN, data.token, {
       accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY
     })
   }

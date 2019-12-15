@@ -10,6 +10,9 @@ const initialTheme: InitialState = {
   downloadedEpisodeLimitCount: 5,
   downloadedEpisodeLimitDefault: null,
   downloadedPodcastEpisodeCounts: {},
+  overlayAlert: {
+    shouldShowAlert: false
+  },
   player: {
     hasErrored: false,
     isPlaying: false,
