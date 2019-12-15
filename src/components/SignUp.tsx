@@ -2,17 +2,17 @@ import React from 'react'
 import {
   ActivityIndicator,
   Dimensions,
+  NativeSyntheticEvent,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
-  View
+  TouchableOpacity
 } from 'react-native'
 import isEmail from 'validator/lib/isEmail'
 import { hasAtLeastXCharacters as hasAtLeastXCharactersLib, hasLowercase as hasLowercaseLib,
   hasMatchingStrings, hasNoSpaces as hasNoSpacesLib, hasNumber as hasNumberLib,
-  hasUppercase as hasUppercaseLib } from '../lib/utility'
+  hasUppercase as hasUppercaseLib, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { PasswordValidationInfo } from './PasswordValidationInfo'
 
@@ -55,31 +55,33 @@ export class SignUp extends React.Component<Props, State> {
     }
   }
 
-  emailChanged = (email: string) => {
-    this.setState({ email })
+  emailChanged = (evt: NativeSyntheticEvent<any>) => {
+    const text = safelyUnwrapNestedVariable(() => evt.nativeEvent.text, '')
+    this.setState({ email: text })
   }
 
-  passwordChanged = (password: string) => {
-    this.setState({ password }, () => {
+  passwordChanged = (evt: NativeSyntheticEvent<any>) => {
+    const text = safelyUnwrapNestedVariable(() => evt.nativeEvent.text, '')
+    this.setState({ password: text }, () => {
       this.passwordsValid()
     })
   }
 
-  passwordVerificationChanged = (password2: string) => {
-    this.setState({ passwordVerification: password2 }, () => {
+  passwordVerificationChanged = (evt: NativeSyntheticEvent<any>) => {
+    const text = safelyUnwrapNestedVariable(() => evt.nativeEvent.text, '')
+    this.setState({ passwordVerification: text }, () => {
       this.passwordsValid()
     })
   }
 
-  nameChanged = (name: string) => {
-    this.setState({ name })
+  nameChanged = (evt: NativeSyntheticEvent<any>) => {
+    const text = safelyUnwrapNestedVariable(() => evt.nativeEvent.text, '')
+    this.setState({ name: text })
   }
 
   emailValid = () => {
     const { email } = this.state
-    this.setState({
-      hasValidEmail: isEmail(email)
-    })
+    this.setState({ hasValidEmail: isEmail(email) })
   }
 
   passwordsValid = () => {
@@ -114,6 +116,12 @@ export class SignUp extends React.Component<Props, State> {
     onSignUpPressed({ email, password, name })
   }
 
+  uiRefreshed = () => {
+    this.setState({ ...this.state }, () => {
+      this.forceUpdate()
+    })
+  }
+
   render() {
     const { bottomButtons, isLoading } = this.props
     const { hasAtLeastXCharacters, hasLowercase, hasNumber, hasUppercase, password,
@@ -134,9 +142,10 @@ export class SignUp extends React.Component<Props, State> {
     return (
       <ScrollView contentContainerStyle={styles.scrollView}>
         <TextInput
+          textContentType='username'
           keyboardType='email-address'
           onBlur={this.emailValid}
-          onChangeText={this.emailChanged}
+          onChange={this.emailChanged}
           style={styles.textField}
           value={this.state.email}
           autoCapitalize='none'
@@ -144,8 +153,10 @@ export class SignUp extends React.Component<Props, State> {
           placeholderTextColor={PV.Colors.gray}
         />
         <TextInput
+          textContentType='newPassword'
           secureTextEntry={true}
-          onChangeText={this.passwordChanged}
+          onBlur={this.uiRefreshed}
+          onChange={this.passwordChanged}
           style={styles.textField}
           value={this.state.password}
           underlineColorAndroid='transparent'
@@ -154,8 +165,10 @@ export class SignUp extends React.Component<Props, State> {
           placeholderTextColor={PV.Colors.gray}
         />
         <TextInput
+          textContentType='newPassword'
           secureTextEntry={true}
-          onChangeText={this.passwordVerificationChanged}
+          onBlur={this.uiRefreshed}
+          onChange={this.passwordVerificationChanged}
           style={[styles.textField, passwordMismatch ? errorStyle : null]}
           autoCapitalize='none'
           value={this.state.passwordVerification}
@@ -164,7 +177,8 @@ export class SignUp extends React.Component<Props, State> {
           placeholderTextColor={PV.Colors.gray}
         />
         <TextInput
-          onChangeText={this.nameChanged}
+          onBlur={this.uiRefreshed}
+          onChange={this.nameChanged}
           style={styles.textField}
           value={this.state.name}
           placeholder='Name (optional)'
