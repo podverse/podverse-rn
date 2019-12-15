@@ -142,7 +142,6 @@ export class SignUp extends React.Component<Props, State> {
     return (
       <ScrollView contentContainerStyle={styles.scrollView}>
         <TextInput
-          textContentType='username'
           keyboardType='email-address'
           onBlur={this.emailValid}
           onChange={this.emailChanged}
@@ -153,7 +152,6 @@ export class SignUp extends React.Component<Props, State> {
           placeholderTextColor={PV.Colors.gray}
         />
         <TextInput
-          textContentType='newPassword'
           secureTextEntry={true}
           onBlur={this.uiRefreshed}
           onChange={this.passwordChanged}
@@ -165,7 +163,6 @@ export class SignUp extends React.Component<Props, State> {
           placeholderTextColor={PV.Colors.gray}
         />
         <TextInput
-          textContentType='newPassword'
           secureTextEntry={true}
           onBlur={this.uiRefreshed}
           onChange={this.passwordVerificationChanged}
