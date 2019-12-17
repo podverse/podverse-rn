@@ -432,12 +432,8 @@ export const core = StyleSheet.create({
     flex: 0,
     height: PV.FlatList.searchBar.height,
     justifyContent: 'center',
-    marginVertical: 8,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    zIndex: 100
+    marginBottom: 8,
+    marginTop: 12
   },
   row: {
     backgroundColor: 'transparent',
