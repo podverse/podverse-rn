@@ -93,10 +93,8 @@ export const PVFlatList = (props: Props) => {
     </TextLink>
   )
 
-  const viewStyle = !noSubscribedPodcasts && ListHeaderComponent ? [styles.viewWithListHeaderComponent] : [styles.view]
-
   return (
-    <View style={viewStyle}>
+    <View style={styles.view}>
       {!noSubscribedPodcasts && ListHeaderComponent && <ListHeaderComponent />}
       {noSubscribedPodcasts && !isLoadingMore && (
         <MessageWithAction

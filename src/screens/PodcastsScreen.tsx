@@ -356,7 +356,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _onEndReached = ({ distanceFromEnd }) => {
+  _onEndReached = (evt: any) => {
+    const { distanceFromEnd } = evt
     const {
       endOfResultsReached,
       isLoadingMore,
@@ -645,9 +646,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
             isLoadingMore={isLoadingMore}
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
-            {...(queryFrom !== _subscribedKey && queryFrom !== _downloadedKey
-              ? { ListHeaderComponent: this._ListHeaderComponent }
-              : {})}
+            ListHeaderComponent={
+              queryFrom !== _subscribedKey && queryFrom !== _downloadedKey ? this._ListHeaderComponent : null
+            }
             noSubscribedPodcasts={
               queryFrom === _subscribedKey &&
               (!flatListData || flatListData.length === 0)
@@ -808,12 +809,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
               selectedSubCategory !== _allCategoriesKey) ||
             selectedCategory
               ? {
-                  categories:
-                    (selectedSubCategory &&
-                      selectedSubCategory !== _allCategoriesKey) ||
-                    selectedCategory
-                }
-              : {}) as object),
+                categories:
+                  (selectedSubCategory &&
+                    selectedSubCategory !== _allCategoriesKey) ||
+                  selectedCategory
+              }
+            : {}) as object),
             sort: filterKey,
             ...(searchTitle ? { searchTitle } : {})
           },

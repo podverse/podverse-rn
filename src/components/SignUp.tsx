@@ -173,14 +173,14 @@ export class SignUp extends React.Component<Props, State> {
           placeholder='Verify Password'
           placeholderTextColor={PV.Colors.gray}
         />
-        <TextInput
+        {/* <TextInput
           onBlur={this.uiRefreshed}
           onChange={this.nameChanged}
           style={styles.textField}
           value={this.state.name}
           placeholder='Name (optional)'
           placeholderTextColor={PV.Colors.gray}
-        />
+        /> */}
         <PasswordValidationInfo
           hasAtLeastXCharacters={hasAtLeastXCharacters}
           hasLowercase={hasLowercase}
