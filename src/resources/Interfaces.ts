@@ -70,6 +70,10 @@ export interface InitialState {
   downloadedEpisodeIds: any
   downloadedPodcastEpisodeCounts: any
   downloadedEpisodeLimitCount: number
+  downloadedEpisodeLimitDefault: number | null
+  overlayAlert: {
+    shouldShowAlert: boolean
+  }
   player: {
     hasErrored: boolean
     isPlaying: boolean
@@ -90,7 +94,19 @@ export interface InitialState {
   profiles: {
     flatListData: []
     flatListDataTotalCount: null
-  }
+  },
+  purchase: {
+    isLoading: boolean
+    message: string
+    productId: string
+    purchaseToken: string
+    showContactSupportLink: boolean
+    showDismissLink: boolean
+    showRetryLink: boolean
+    title: string
+    transactionId: string
+    transactionReceipt: string
+  },
   screenPlayer: {
     endOfResultsReached: boolean
     flatListData: any[]
@@ -111,6 +127,9 @@ export interface InitialState {
     flatListData: []
     flatListDataTotalCount: number | null
     playlist?: any
+  }
+  settings: {
+    nsfwMode: boolean
   }
   session: {
     isLoggedIn: boolean

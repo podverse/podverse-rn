@@ -2,6 +2,8 @@ import he from 'he'
 import { PV } from '../resources'
 import { NowPlayingItem } from './NowPlayingItem'
 
+const cheerio = require('react-native-cheerio')
+
 export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
   try {
     const value = func()
@@ -84,6 +86,15 @@ export const decodeHTMLString = (text: string) => {
   const limitSingleSpaceRegex = /\s+/g
   const newString = text.replace(limitSingleSpaceRegex, ' ')
   return he.decode(newString)
+}
+
+export const removeHTMLAttributesFromString = (html: string) => {
+  const $ = cheerio.load(html)
+  $('*').each(function() {
+    this.attribs = {}
+  })
+
+  return $.html()
 }
 
 export const generateAuthorsText = (authors: any) => {
@@ -293,6 +304,7 @@ export const checkIfIdMatchesClipIdOrEpisodeId = (
 }
 
 export const validateEmail = (email?: string) => {
+  /* tslint:disable-next-line max-line-length */
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return re.test(String(email).toLowerCase())
 }
@@ -328,6 +340,7 @@ export const convertHHMMSSToAnchorTags = (html: string) => {
 }
 
 export function validateHHMMSSString(hhmmss: string) {
+  /* tslint:disable-next-line max-line-length */
   const regex = new RegExp('^(([0-9][0-9]):([0-5][0-9]):([0-5][0-9]))$|(([0-9]):([0-5][0-9]):([0-5][0-9]))$|^(([0-5][0-9]):([0-5][0-9]))$|^(([0-9]):([0-5][0-9]))$|^([0-5][0-9])$|^([0-9])')
   return regex.test(hhmmss)
 }
@@ -340,37 +353,37 @@ export function convertHHMMSSToSeconds(hhmmssString: string) {
       return -1
     }
 
-    var hhmmssArray = hhmmssString.split(':') || 0,
-      hours = 0,
-      minutes = 0,
-      seconds = 0;
+    const hhmmssArray = hhmmssString.split(':') || 0
+    let hours = 0
+    let minutes = 0
+    let seconds = 0
 
     if (hhmmssArray.length === 3) {
-      hours = parseInt(hhmmssArray[0])
-      minutes = parseInt(hhmmssArray[1])
-      seconds = parseInt(hhmmssArray[2])
+      hours = parseInt(hhmmssArray[0], 10)
+      minutes = parseInt(hhmmssArray[1], 10)
+      seconds = parseInt(hhmmssArray[2], 10)
 
       if (hours < 0 || minutes > 59 || minutes < 0 || seconds > 59 || seconds < 0) {
         console.log('Invalid time provided.')
         return -1
       }
 
-      hours = hours * 3600;
-      minutes = minutes * 60;
+      hours = hours * 3600
+      minutes = minutes * 60
 
     } else if (hhmmssArray.length === 2) {
-      minutes = parseInt(hhmmssArray[0]);
-      seconds = parseInt(hhmmssArray[1]);
+      minutes = parseInt(hhmmssArray[0], 10)
+      seconds = parseInt(hhmmssArray[1], 10)
 
       if (minutes > 59 || minutes < 0 || seconds > 59 || seconds < 0) {
-        console.log('Invalid time provided.');
-        return -1;
+        console.log('Invalid time provided.')
+        return -1
       }
 
-      minutes = minutes * 60;
+      minutes = minutes * 60
 
     } else if (hhmmssArray.length === 1) {
-      seconds = parseInt(hhmmssArray[0]) || 0
+      seconds = parseInt(hhmmssArray[0], 10) || 0
 
       if (seconds > 59 || seconds < 0) {
         console.log('Invalid time provided.')
@@ -382,7 +395,7 @@ export function convertHHMMSSToSeconds(hhmmssString: string) {
       return -1
     }
 
-    return hours + minutes + seconds;
+    return hours + minutes + seconds
 
   } else {
     return null
@@ -393,4 +406,28 @@ export function convertHHMMSSToSeconds(hhmmssString: string) {
 export const convertToSortableTitle = (title: string) => {
   const sortableTitle = title ? title.toLowerCase().replace(/\b^the\b|\b^a\b|\b^an\b/i, '').trim() : ''
   return sortableTitle ? sortableTitle.replace(/#/g, '') : ''
+}
+
+export const hasAtLeastXCharacters = (str?: string, x: number = 8) => {
+  return str && str.match(`^(?=.{${x},})`) ? true : false
+}
+
+export const hasLowercase = (str?: string) => {
+  return str && str.match('^(?=.*[a-z])') ? true : false
+}
+
+export const hasMatchingStrings = (str1?: string, str2?: string) => {
+  return str1 && str1 === str2 ? true : false
+}
+
+export const hasNoSpaces = (str?: string) => {
+  return str && str.match('\s') ? true : false
+}
+
+export const hasNumber = (str?: string) => {
+  return str && str.match('^(?=.*[0-9])') ? true : false
+}
+
+export const hasUppercase = (str?: string) => {
+  return str && str.match('^(?=.*[A-Z])') ? true : false
 }

@@ -176,7 +176,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
     const { searchBarText } = this.state
 
     return (
-      <View style={styles.ListHeaderComponent}>
+      <View style={core.ListHeaderComponent}>
         <SearchBar
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
@@ -230,7 +230,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   _renderHiddenItem = ({ item }, rowMap) => (
     <SwipeRowBack
       onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      text="Delete"
+      text='Delete'
     />
   )
 
@@ -311,6 +311,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       selectedItem,
       showActionSheet
     } = this.state
+
     const { navigation } = this.props
 
     return (
@@ -345,10 +346,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
               !searchBarText
             }
             onEndReached={this._onEndReached}
-            onRefresh={queryFrom !== _downloadedKey ? this._onRefresh : null}
+            onRefresh={this._onRefresh}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderEpisodeItem}
-            resultsText="episodes"
+            resultsText='episodes'
           />
         )}
         <ActionSheet
@@ -519,14 +520,6 @@ const rightItems = (onlyMostRecent?: boolean) => [
 ]
 
 const styles = StyleSheet.create({
-  ListHeaderComponent: {
-    borderBottomWidth: 0,
-    borderTopWidth: 0,
-    flex: 0,
-    height: PV.FlatList.searchBar.height,
-    justifyContent: 'center',
-    marginVertical: 8
-  },
   view: {
     flex: 1
   }

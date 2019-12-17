@@ -15,7 +15,9 @@ export type DownloadTaskState = {
   bytesTotal?: string
   bytesWritten?: string
   completed?: boolean
+  episodeDescription?: string
   episodeId: string
+  episodePubDate?: string
   episodeTitle?: string
   percent?: number
   podcastImageUrl?: string

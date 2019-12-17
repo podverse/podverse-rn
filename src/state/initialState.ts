@@ -7,9 +7,12 @@ const initialTheme: InitialState = {
   downloadsArray: [],
   downloadsActive: {},
   downloadedEpisodeIds: {},
-  downloadedPodcastEpisodeCounts: {},
   downloadedEpisodeLimitCount: 5,
   downloadedEpisodeLimitDefault: null,
+  downloadedPodcastEpisodeCounts: {},
+  overlayAlert: {
+    shouldShowAlert: false
+  },
   player: {
     hasErrored: false,
     isPlaying: false,

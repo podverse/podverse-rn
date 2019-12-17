@@ -9,7 +9,7 @@ import { getSubscribedPodcasts } from './podcast'
 export type Credentials = {
   email: string,
   password: string,
-  name: string
+  name?: string
 }
 
 export const getAuthUserInfo = async () => {
@@ -72,7 +72,7 @@ export const loginUser = async (credentials: Credentials) => {
 
 export const logoutUser = async () => {
   try {
-    RNSecureKeyStore.remove(PV.Keys.BEARER_TOKEN)
+    await RNSecureKeyStore.remove(PV.Keys.BEARER_TOKEN)
     await getAuthUserInfo()
   } catch (error) {
     console.log(error)
@@ -82,5 +82,4 @@ export const logoutUser = async () => {
 
 export const signUpUser = async (credentials: Credentials) => {
   await signUp(credentials)
-  getAuthUserInfo()
 }

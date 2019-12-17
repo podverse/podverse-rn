@@ -148,9 +148,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
             }
           }
 
-          newEpisode.description =
-            (newEpisode.description && newEpisode.description.linkifyHtml()) ||
-            'No summary available.'
+          newEpisode.description = newEpisode.description || 'No summary available.'
 
           this.setState({
             ...newState,
@@ -243,7 +241,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const { searchBarText } = this.state
 
     return (
-      <View style={styles.ListHeaderComponent}>
+      <View style={core.ListHeaderComponent}>
         <SearchBar
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
@@ -393,7 +391,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           />
         )}
         {viewType === _showNotesKey && episode && (
-          <HTMLScrollView html={episode.description} navigation={navigation} />
+          <HTMLScrollView html={episode.description} />
         )}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
@@ -531,14 +529,6 @@ const styles = StyleSheet.create({
   },
   showNotesViewText: {
     fontSize: PV.Fonts.sizes.lg
-  },
-  ListHeaderComponent: {
-    borderBottomWidth: 0,
-    borderTopWidth: 0,
-    flex: 0,
-    height: PV.FlatList.searchBar.height,
-    justifyContent: 'center',
-    marginVertical: 8
   },
   view: {
     flex: 1

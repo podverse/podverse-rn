@@ -93,13 +93,15 @@ export const PVFlatList = (props: Props) => {
     </TextLink>
   )
 
+  const viewStyle = !noSubscribedPodcasts && ListHeaderComponent ? [styles.viewWithListHeaderComponent] : [styles.view]
+
   return (
-    <View style={styles.view}>
+    <View style={viewStyle}>
       {!noSubscribedPodcasts && ListHeaderComponent && <ListHeaderComponent />}
       {noSubscribedPodcasts && !isLoadingMore && (
         <MessageWithAction
-          actionHandler={handleSearchNavigation}
-          actionText='Search'
+          topActionHandler={handleSearchNavigation}
+          topActionText='Search'
           message='You have no subscribed podcasts'
         />
       )}
@@ -146,16 +148,14 @@ export const PVFlatList = (props: Props) => {
           }}
           onEndReached={onEndReached}
           onEndReachedThreshold={onEndReachedThreshold}
-          {...(onRefresh
-            ? {
-                refreshControl: (
-                  <RefreshControl
-                    refreshing={isRefreshing}
-                    onRefresh={onRefresh}
-                  />
-                )
-              }
-            : {})}
+          {...(onRefresh ? {
+            refreshControl: (
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={onRefresh}
+              />
+            )
+          } : {})}
           renderHiddenItem={renderHiddenItem || _renderHiddenItem}
           renderItem={renderItem}
           rightOpenValue={-100}
@@ -200,5 +200,10 @@ const styles = StyleSheet.create({
   },
   view: {
     flex: 1
+  },
+  viewWithListHeaderComponent: {
+    flex: 1,
+    paddingTop: PV.FlatList.searchBar.height,
+    position: 'relative'
   }
 })
