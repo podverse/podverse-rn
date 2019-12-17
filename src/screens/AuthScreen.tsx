@@ -198,18 +198,21 @@ export class AuthScreen extends React.Component<Props, State> {
     return (
       <SafeAreaView style={styles.safeAreaView}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-          <View style={styles.view}>
+          <View style={screenType === _signup ? styles.viewWithoutBanner : styles.view}>
             <Icon
               name='times'
               onPress={navigation.dismiss}
               size={26}
               style={[button.iconOnlyMedium, styles.closeButton]}
             />
-            <Image
-              source={PV.Images.BANNER}
-              style={styles.banner}
-              resizeMode='contain'
-            />
+            {
+              screenType !== _signup &&
+                <Image
+                  source={PV.Images.BANNER}
+                  style={styles.banner}
+                  resizeMode='contain'
+                />
+            }
             <View style={styles.contentView}>
               {screenType === _login && (
                 <Login
@@ -267,6 +270,13 @@ const styles = StyleSheet.create({
     width: '65%'
   },
   view: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: PV.Colors.brandColor,
+    paddingTop: 80
+  },
+  viewWithoutBanner: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
