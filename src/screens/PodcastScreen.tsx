@@ -668,16 +668,13 @@ export class PodcastScreen extends React.Component<Props, State> {
                 dataTotalCount={flatListDataTotalCount}
                 disableLeftSwipe={viewType !== downloadedKey}
                 extraData={flatListData}
-                {...(viewType === downloadedKey
-                  ? { handleHiddenItemPress: this._handleHiddenItemPress }
-                  : {})}
                 hideEndOfResults={querySort === mostRecentAllKey}
                 isLoadingMore={isLoadingMore}
                 isRefreshing={isRefreshing}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
-                {...(viewType === allEpisodesKey || viewType === clipsKey
-                  ? { ListHeaderComponent: this._ListHeaderComponent }
-                  : {})}
+                ListHeaderComponent={
+                  viewType === allEpisodesKey || viewType === clipsKey ? this._ListHeaderComponent : null
+                }
                 onEndReached={this._onEndReached}
                 renderHiddenItem={this._renderHiddenItem}
                 renderItem={this._renderItem}
