@@ -4,7 +4,7 @@ import { useGlobal } from 'reactn'
 
 type Props = {
   children: any
-  style: any
+  style?: any
 }
 
 export const PVSafeAreaView = (props: Props) => {

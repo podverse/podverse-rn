@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import React from 'react'
 import { PV } from '../resources'
 import { navHeader } from '../styles'
@@ -17,8 +18,16 @@ export const NavMakeClipIcon = (props: Props) => {
       name='cut'
       onPress={async () => {
         const initialProgressValue = await getInitialProgressValue()
+        const isPublicString = await AsyncStorage.getItem(
+          PV.Keys.MAKE_CLIP_IS_PUBLIC
+        )
+        let isPublic = false
+        if (isPublicString) {
+          isPublic = JSON.parse(isPublicString)
+        }
         navigation.navigate(PV.RouteNames.MakeClipScreen, {
-          initialProgressValue
+          initialProgressValue,
+          initialPrivacy: isPublic
         })
       }}
       size={PV.Icons.NAV}
