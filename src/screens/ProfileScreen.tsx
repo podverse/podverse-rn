@@ -66,9 +66,10 @@ export class ProfileScreen extends React.Component<Props, State> {
     const userId = navigation.getParam('userId')
     const userIsPublic = navigation.getParam('userIsPublic')
     const userName = navigation.getParam('userName')
+    const isMyProfile = navigation.getParam('isMyProfile')
 
     return {
-      title: 'Profile',
+      title: isMyProfile ? 'My Profile' : 'Profile',
       headerRight: (
         <RNView style={core.row}>
           {userIsPublic && userId && (
@@ -97,6 +98,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     const userId = (user && user.id) || this.props.navigation.getParam('userId')
     const isLoggedInUserProfile = userId === id
     const isSubscribed = subscribedUserIds.some((x: string) => x === userId)
+    const initializeClips = this.props.navigation.getParam('initializeClips')
 
     if (user && user.id) {
       this.props.navigation.setParams({
@@ -114,9 +116,9 @@ export class ProfileScreen extends React.Component<Props, State> {
       isLoadingMore: false,
       isSubscribed,
       isSubscribing: false,
-      queryFrom: _podcastsKey,
+      queryFrom: initializeClips ? _clipsKey : _podcastsKey,
       queryPage: 1,
-      querySort: _alphabeticalKey,
+      querySort: initializeClips ? _mostRecentKey : _alphabeticalKey,
       showActionSheet: false,
       userId
     }
@@ -558,6 +560,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       const { id } = this.global.session.userInfo
       const isLoggedInUserProfile = userId === id
       let results = [] as any[]
+      query.sort = sort
 
       if (isLoggedInUserProfile) {
         results = await getLoggedInUserMediaRefs(query)
@@ -627,7 +630,8 @@ export class ProfileScreen extends React.Component<Props, State> {
       if (filterKey === _podcastsKey || filterKey === _alphabeticalKey) {
         newState = await this._queryPodcasts(newState, page, querySort)
       } else if (filterKey === _clipsKey) {
-        newState = await this._queryMediaRefs(newState, page, querySort)
+        newState.querySort = PV.Filters.mostRecentKey
+        newState = await this._queryMediaRefs(newState, page, PV.Filters.mostRecentKey)
       } else if (filterKey === _playlistsKey) {
         newState = await this._queryPlaylists(newState, page, querySort)
       } else if (rightItems.some((option) => option.value === filterKey)) {
