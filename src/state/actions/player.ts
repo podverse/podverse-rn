@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { getGlobal, setGlobal } from 'reactn'
 import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, NowPlayingItem } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
@@ -167,7 +168,8 @@ export const loadItemAndPlayTrack = async (
   })
 }
 
-export const setPlaybackSpeed = async (rate: number, globalState: any) => {
+export const setPlaybackSpeed = async (rate: number) => {
+  const globalState = getGlobal()
   await setPlaybackSpeedService(rate)
 
   setGlobal({
@@ -211,4 +213,22 @@ export const setNowPlayingItem = async (item: NowPlayingItem | null) => {
   } else {
     await clearNowPlayingItem()
   }
+}
+
+export const initializePlaybackSpeed = async () => {
+  const globalState = getGlobal()
+  const playbackSpeedString = await AsyncStorage.getItem(
+    PV.Keys.PLAYER_PLAYBACK_SPEED
+  )
+  let playbackSpeed = 1
+  if (playbackSpeedString) {
+    playbackSpeed = JSON.parse(playbackSpeedString)
+  }
+
+  setGlobal({
+    player: {
+      ...globalState.player,
+      playbackRate: playbackSpeed
+    }
+  })
 }

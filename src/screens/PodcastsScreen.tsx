@@ -37,6 +37,7 @@ import {
   removeDownloadedPodcast
 } from '../state/actions/downloads'
 import {
+  initializePlaybackSpeed,
   initializePlayerQueue,
   initPlayerState,
   updatePlaybackState,
@@ -261,6 +262,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     await initDownloads()
     await initializePlayerQueue()
+    await initializePlaybackSpeed()
   }
 
   // querySortOverride is only used in _initializeScreenData, and it determines

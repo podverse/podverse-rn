@@ -1,5 +1,5 @@
-import AsyncStorage from '@react-native-community/async-storage'
 import React from 'react'
+import { getMakeClipIsPublic } from '../lib/utility'
 import { PV } from '../resources'
 import { navHeader } from '../styles'
 import { Icon } from './'
@@ -18,13 +18,7 @@ export const NavMakeClipIcon = (props: Props) => {
       name='cut'
       onPress={async () => {
         const initialProgressValue = await getInitialProgressValue()
-        const isPublicString = await AsyncStorage.getItem(
-          PV.Keys.MAKE_CLIP_IS_PUBLIC
-        )
-        let isPublic = false
-        if (isPublicString) {
-          isPublic = JSON.parse(isPublicString)
-        }
+        const isPublic = await getMakeClipIsPublic()
         navigation.navigate(PV.RouteNames.MakeClipScreen, {
           initialProgressValue,
           initialPrivacy: isPublic

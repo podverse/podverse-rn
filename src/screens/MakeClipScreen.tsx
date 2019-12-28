@@ -96,7 +96,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { player, session } = this.global
     const { nowPlayingItem } = player
-    const { isLoggedIn } = session
     navigation.setParams({ _saveMediaRef: this._saveMediaRef })
     const currentPosition = await PVTrackPlayer.getPosition()
     const isEditing = this.props.navigation.getParam('isEditing')
@@ -115,7 +114,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
       )
     }
 
-    const pItems = privacyItems(isLoggedIn)
     this.setGlobal(
       {
         player: {
