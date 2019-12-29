@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   bottomRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    height: 48,
+    height: PV.Player.styles.bottomRow.height,
     justifyContent: 'space-around'
   },
   bottomRowText: {

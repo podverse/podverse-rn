@@ -423,8 +423,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
             <TextInput
               autoCapitalize='none'
               onChangeText={this._onChangeTitle}
+              numberOfLines={3}
               placeholder='optional'
-              style={[core.textInput, globalTheme.textInput]}
+              style={[styles.textInput, globalTheme.textInput]}
               underlineColorAndroid='transparent'
               value={title}
             />
@@ -602,7 +603,7 @@ const styles = StyleSheet.create({
   bottomRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    height: 48,
+    height: PV.Player.styles.bottomRow.height,
     justifyContent: 'space-around'
   },
   bottomRowText: {
@@ -668,6 +669,11 @@ const styles = StyleSheet.create({
   selectorWrapper: {
     flexDirection: 'row'
   },
+  textInput: {
+    height: PV.TextInputs.multiline.height,
+    paddingHorizontal: 8,
+    paddingVertical: 6
+  },
   textInputLabel: {
     flex: 1,
     lineHeight: PV.Table.sectionHeader.height
@@ -691,9 +697,8 @@ const styles = StyleSheet.create({
   },
   wrapperMiddle: {
     flex: 1,
-    marginBottom: 24,
     marginHorizontal: 8,
-    marginTop: 16
+    marginVertical: 12
   },
   wrapperTop: {
     flex: 0,
