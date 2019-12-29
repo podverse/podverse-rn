@@ -24,13 +24,12 @@ import {
 } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
-import { getEpisode } from '../services/episode'
 import {
   getNowPlayingItemFromQueueOrHistoryByTrackId,
   PVTrackPlayer,
   updateUserPlaybackPosition
 } from '../services/player'
-import { getPodcast, getPodcasts } from '../services/podcast'
+import { getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
 import {
   initDownloads,
@@ -127,7 +126,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         )
         await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5')
         this.setState({ showDataSettingsConfirmDialog: true })
-        navigation.navigate(PV.RouteNames.Onboarding)
+        // navigation.navigate(PV.RouteNames.Onboarding)
       } else {
         this._initializeScreenData()
       }
