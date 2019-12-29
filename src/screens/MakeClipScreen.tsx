@@ -349,8 +349,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
     Alert.alert(
       'Clip Settings',
       "Only with Link means only people who have your clip's" +
-        'link can play it. These clips will not show up automatically in lists on Podverse.' +
-        'A premium account is required to create Public clips.',
+        ' link can play it. These clips will not show up automatically in the Public list on Podverse.' +
+        ' A premium account is required to create Public clips.',
       [
         {
           text: 'Premium Info',
