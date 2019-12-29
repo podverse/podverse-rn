@@ -42,7 +42,13 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    const { navigation } = this.props
     this.props.navigation.setParams({ _handleSavePodcastByRSSURL: this._handleSavePodcastByRSSURL })
+    const feedUrl = navigation.getParam('podverse-param')
+
+    if (feedUrl) {
+      this.setState({ url: feedUrl })
+    }
   }
 
   _navToRequestPodcastForm = async () => {
@@ -100,7 +106,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
               <TextInput
                 autoCapitalize='none'
                 onChangeText={this._handleChangeText}
-                placeholder='https://example.com/rssFeed'
+                placeholder='example.com/rssFeed'
                 style={[styles.textInput, globalTheme.textInput]}
                 underlineColorAndroid='transparent'
                 value={url}

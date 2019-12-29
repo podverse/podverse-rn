@@ -75,15 +75,17 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { nowPlayingItem = {} } = this.global.player
     const { isLoggedIn } = this.global.session
     const isEditing = this.props.navigation.getParam('isEditing')
+    const initialPrivacy = this.props.navigation.getParam('initialPrivacy')
     const initialProgressValue = this.props.navigation.getParam(
       'initialProgressValue'
     )
 
     const pItems = privacyItems(isLoggedIn)
-    const selectedItem = nowPlayingItem.isPublic ? pItems[0] : pItems[1]
     this.state = {
       endTime: isEditing ? nowPlayingItem.clipEndTime : null,
-      isPublicItemSelected: selectedItem,
+      ...(initialPrivacy
+        ? { isPublicItemSelected: pItems[0] }
+        : { isPublicItemSelected: pItems[1] }),
       isSaving: false,
       progressValue: initialProgressValue || 0,
       startTime: isEditing ? nowPlayingItem.clipStartTime : null
@@ -94,7 +96,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { player, session } = this.global
     const { nowPlayingItem } = player
-    const { isLoggedIn } = session
     navigation.setParams({ _saveMediaRef: this._saveMediaRef })
     const currentPosition = await PVTrackPlayer.getPosition()
     const isEditing = this.props.navigation.getParam('isEditing')
@@ -113,16 +114,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
       )
     }
 
-    const isPublicString = await AsyncStorage.getItem(
-      PV.Keys.MAKE_CLIP_IS_PUBLIC
-    )
-    let isPublic = null
-    if (isPublicString) {
-      isPublic = JSON.parse(isPublicString)
-    }
-
-    const pItems = privacyItems(isLoggedIn)
-
     this.setGlobal(
       {
         player: {
@@ -136,9 +127,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
             ? { showHowToModal: true }
             : { showHowToModal: false }),
           ...(!isEditing ? { startTime: Math.floor(currentPosition) } : {}),
-          ...(isPublic
-            ? { isPublicItemSelected: pItems[0] }
-            : { isPublicItemSelected: pItems[1] }),
           title: isEditing ? nowPlayingItem.clipTitle : ''
         })
       }
@@ -159,13 +147,16 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   _handleSelectPrivacy = async (selectedKey: string) => {
-    const items = [placeholderItem, ...privacyItems]
+    const { session } = this.global
+    const { isLoggedIn } = session
+    const items = [placeholderItem, ...privacyItems(isLoggedIn)]
     const selectedItem = items.find((x) => x.value === selectedKey)
-    if (selectedItem)
+    if (selectedItem) {
       AsyncStorage.setItem(
         PV.Keys.MAKE_CLIP_IS_PUBLIC,
         JSON.stringify(selectedItem.value === _publicKey)
       )
+    }
     this.setState({ isPublicItemSelected: selectedItem })
   }
 
@@ -358,8 +349,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
     Alert.alert(
       'Clip Settings',
       "Only with Link means only people who have your clip's" +
-        'link can play it. These clips will not show up automatically in lists on Podverse.' +
-        'A premium account is required to create Public clips.',
+        ' link can play it. These clips will not show up automatically in the Public list on Podverse.' +
+        ' A premium account is required to create Public clips.',
       [
         {
           text: 'Premium Info',
@@ -401,7 +392,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       Only with Link
                     </Text>
                     <Icon
-                      name="link"
+                      name='link'
                       size={14}
                       style={[styles.isPublicTextIcon, globalTheme.text]}
                     />
@@ -410,7 +401,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               )}
               {isLoggedIn && (
                 <RNPickerSelect
-                  items={privacyItems}
+                  items={privacyItems(isLoggedIn)}
                   onValueChange={this._handleSelectPrivacy}
                   placeholder={placeholderItem}
                   style={hidePickerIconOnAndroidTransparent(isDarkMode)}
@@ -421,7 +412,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       {isPublicItemSelected.label}
                     </Text>
                     <Icon
-                      name="angle-down"
+                      name='angle-down'
                       size={14}
                       style={[styles.isPublicTextIcon, globalTheme.text]}
                     />
@@ -430,17 +421,18 @@ export class MakeClipScreen extends React.Component<Props, State> {
               )}
             </View>
             <TextInput
-              autoCapitalize="none"
+              autoCapitalize='none'
               onChangeText={this._onChangeTitle}
-              placeholder="optional"
-              style={[core.textInput, globalTheme.textInput]}
-              underlineColorAndroid="transparent"
+              numberOfLines={3}
+              placeholder='optional'
+              style={[styles.textInput, globalTheme.textInput]}
+              underlineColorAndroid='transparent'
               value={title}
             />
           </View>
           <View style={styles.wrapperMiddle}>
             <FastImage
-              resizeMode="contain"
+              resizeMode='contain'
               source={{ uri: nowPlayingItem && nowPlayingItem.podcastImageUrl }}
               style={styles.image}
             />
@@ -454,8 +446,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   }
                 }}
                 handleSetTime={this._setStartTime}
-                labelText="Start Time"
-                placeholder="--:--"
+                labelText='Start Time'
+                placeholder='--:--'
                 time={startTime}
                 wrapperStyle={styles.timeInput}
               />
@@ -467,8 +459,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   }
                 }}
                 handleSetTime={this._setEndTime}
-                labelText="End Time"
-                placeholder="optional"
+                labelText='End Time'
+                placeholder='optional'
                 time={endTime}
                 wrapperStyle={styles.timeInput}
               />
@@ -491,12 +483,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
               <TouchableOpacity
                 onPress={this._playerJumpBackward}
                 style={playerStyles.icon}>
-                <Icon name="undo-alt" size={32} />
+                <Icon name='undo-alt' size={32} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={this._playerMiniJumpBackward}
                 style={playerStyles.icon}>
-                <Icon name="angle-left" size={24} />
+                <Icon name='angle-left' size={24} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => togglePlay()}
@@ -518,12 +510,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
               <TouchableOpacity
                 onPress={this._playerMiniJumpForward}
                 style={playerStyles.icon}>
-                <Icon name="angle-right" size={24} />
+                <Icon name='angle-right' size={24} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={this._playerJumpForward}
                 style={playerStyles.icon}>
-                <Icon name="redo-alt" size={32} />
+                <Icon name='redo-alt' size={32} />
               </TouchableOpacity>
             </RNView>
             <View style={styles.bottomRow}>
@@ -611,7 +603,7 @@ const styles = StyleSheet.create({
   bottomRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    height: 48,
+    height: PV.Player.styles.bottomRow.height,
     justifyContent: 'space-around'
   },
   bottomRowText: {
@@ -677,6 +669,11 @@ const styles = StyleSheet.create({
   selectorWrapper: {
     flexDirection: 'row'
   },
+  textInput: {
+    height: PV.TextInputs.multiline.height,
+    paddingHorizontal: 8,
+    paddingVertical: 6
+  },
   textInputLabel: {
     flex: 1,
     lineHeight: PV.Table.sectionHeader.height
@@ -700,9 +697,8 @@ const styles = StyleSheet.create({
   },
   wrapperMiddle: {
     flex: 1,
-    marginBottom: 24,
     marginHorizontal: 8,
-    marginTop: 16
+    marginVertical: 12
   },
   wrapperTop: {
     flex: 0,

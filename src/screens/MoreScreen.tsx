@@ -54,6 +54,14 @@ export class MoreScreen extends React.Component<Props, State> {
         navigationTitle: 'My Profile',
         isMyProfile: true
       })
+    } else if (item.key === PV.RouteNames.MyProfileClipsScreen) {
+      const user = this.global.session.userInfo
+      navigation.navigate(PV.RouteNames.ProfileScreen, {
+        user,
+        navigationTitle: 'My Profile',
+        isMyProfile: true,
+        initializeClips: true
+      })
     } else {
       navigation.navigate(item.key)
     }
@@ -118,7 +126,7 @@ export class MoreScreen extends React.Component<Props, State> {
                           right: -22,
                           top: 19
                         }}
-                        status="error"
+                        status='error'
                         value={downloadsActiveCount}
                       />
                     )}
@@ -174,6 +182,10 @@ const moreFeaturesOptions = () => {
     {
       title: 'My Profile',
       key: PV.RouteNames.MyProfileScreen
+    },
+    {
+      title: 'My Clips',
+      key: PV.RouteNames.MyProfileClipsScreen
     },
     {
       title: 'Settings',
