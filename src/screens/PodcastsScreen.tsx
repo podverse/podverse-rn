@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { Alert, AppState, Linking, Platform, StyleSheet } from 'react-native'
+import { Alert, AppState, StyleSheet } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
@@ -110,7 +110,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { navigation } = this.props
     AppState.addEventListener('change', this._handleAppStateChange)
 
     try {
@@ -126,7 +125,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         )
         await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5')
         this.setState({ showDataSettingsConfirmDialog: true })
-        // navigation.navigate(PV.RouteNames.Onboarding)
       } else {
         this._initializeScreenData()
       }
