@@ -60,9 +60,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const _getEpisodeId = navigation.getParam('_getEpisodeId')
     const _getMediaRefId = navigation.getParam('_getMediaRefId')
     const _showShareActionSheet = navigation.getParam('_showShareActionSheet')
-    const _getInitialProgressValue = navigation.getParam(
-      '_getInitialProgressValue'
-    )
+    const _getInitialProgressValue = navigation.getParam('_getInitialProgressValue')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
     return {

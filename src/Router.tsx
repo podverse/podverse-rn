@@ -259,7 +259,9 @@ const PurchasingNavigator = createStackNavigator({
 })
 
 const AddPodcastByRSSURLNavigator = createStackNavigator({
-  [PV.RouteNames.AddPodcastByRSSScreen]: AddPodcastByRSSScreen
+  [PV.RouteNames.AddPodcastByRSSScreen]: {
+    screen: AddPodcastByRSSScreen, path: PV.DeepLinks.AddByRSSPodcastFeedUrl.path
+  }
 }, {
   defaultNavigationOptions
 })
@@ -273,7 +275,7 @@ const MainApp = createStackNavigator({
   WebPageNavigator,
   EmailVerificationNavigator,
   PurchasingNavigator,
-  AddPodcastByRSSURLNavigator
+  [PV.RouteNames.AddPodcastByRSSScreen]: { screen: AddPodcastByRSSURLNavigator, path: '' }
 }, {
   mode: 'modal',
   headerMode: 'none'
