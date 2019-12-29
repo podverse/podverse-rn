@@ -25,7 +25,7 @@ import {
   togglePlay
 } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
-import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
+import { Icon, PlayerProgressBar, Text } from './'
 
 type Props = {
   navigation: any
@@ -126,12 +126,12 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               }
             }}
             style={playerStyles.icon}>
-            <Icon name="step-backward" size={32} />
+            <Icon name='step-backward' size={32} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this._playerJumpBackward}
             style={playerStyles.icon}>
-            <Icon name="undo-alt" size={32} />
+            <Icon name='undo-alt' size={32} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => togglePlay(this.global)}
@@ -161,7 +161,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           <TouchableOpacity
             onPress={this._playerJumpForward}
             style={playerStyles.icon}>
-            <Icon name="redo-alt" size={32} />
+            <Icon name='redo-alt' size={32} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={async () => {
@@ -177,7 +177,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               }
             }}
             style={playerStyles.icon}>
-            <Icon name="step-forward" size={32} />
+            <Icon name='step-forward' size={32} />
           </TouchableOpacity>
         </View>
         <View style={styles.bottomRow}>
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   bottomRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    height: 48,
+    height: PV.Player.styles.bottomRow.height,
     justifyContent: 'space-around'
   },
   bottomRowText: {

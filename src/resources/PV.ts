@@ -20,6 +20,7 @@ import { RouteNames } from './RouteNames'
 import { SearchBar } from './SearchBar'
 import { Table } from './Table'
 import { Tabs } from './Tabs'
+import { TextInputs } from './TextInputs'
 import { URLs } from './URLs'
 
 export const PV = {
@@ -45,5 +46,6 @@ export const PV = {
   SearchBar,
   Table,
   Tabs,
+  TextInputs,
   URLs
 }

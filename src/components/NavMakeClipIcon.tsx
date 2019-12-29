@@ -1,4 +1,5 @@
 import React from 'react'
+import { getMakeClipIsPublic } from '../lib/utility'
 import { PV } from '../resources'
 import { navHeader } from '../styles'
 import { Icon } from './'
@@ -17,8 +18,10 @@ export const NavMakeClipIcon = (props: Props) => {
       name='cut'
       onPress={async () => {
         const initialProgressValue = await getInitialProgressValue()
+        const isPublic = await getMakeClipIsPublic()
         navigation.navigate(PV.RouteNames.MakeClipScreen, {
-          initialProgressValue
+          initialProgressValue,
+          initialPrivacy: isPublic
         })
       }}
       size={PV.Icons.NAV}

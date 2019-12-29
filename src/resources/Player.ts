@@ -75,5 +75,10 @@ export const Player = {
   jumpSeconds: 30,
   maximumSpeedSelectOptions,
   miniJumpSeconds: 1,
-  speeds
+  speeds,
+  styles: {
+    bottomRow: {
+      height: 54
+    }
+  }
 }

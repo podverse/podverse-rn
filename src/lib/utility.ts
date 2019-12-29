@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import he from 'he'
 import { PV } from '../resources'
 import { NowPlayingItem } from './NowPlayingItem'
@@ -430,4 +431,16 @@ export const hasNumber = (str?: string) => {
 
 export const hasUppercase = (str?: string) => {
   return str && str.match('^(?=.*[A-Z])') ? true : false
+}
+
+export const getMakeClipIsPublic = async () => {
+  const isPublicString = await AsyncStorage.getItem(
+    PV.Keys.MAKE_CLIP_IS_PUBLIC
+  )
+  let isPublic = false
+  if (isPublicString) {
+    isPublic = JSON.parse(isPublicString)
+  }
+
+  return isPublic
 }

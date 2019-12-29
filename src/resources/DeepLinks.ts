@@ -1,5 +1,10 @@
 export const DeepLinks = {
   prefix: 'podverse://',
+  AddByRSSPodcastFeedUrl: {
+    path: 'podcast-by-feed-url/add*',
+    pathPrefix: 'podcast-by-feed-url',
+    pathWithId: (id: string) => `podcast-by-feed-url/${id}`
+  },
   Clip: {
     path: 'clip/:mediaRefId',
     pathPrefix: 'clip',
