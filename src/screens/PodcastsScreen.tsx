@@ -111,14 +111,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    if (Platform.OS === 'android') {
-      Linking.getInitialURL().then((url) => {
-        if (url) this._handleOpenURL(url)
-      })
-    } else {
-      Linking.addEventListener('url', this._handleOpenURLEvent)
-    }
-
+    const { navigation } = this.props
     AppState.addEventListener('change', this._handleAppStateChange)
 
     try {
@@ -133,14 +126,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           '5'
         )
         await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5')
-
-        // if (initialDarkModeSetting === 'dark') {
-        //   await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'TRUE')
-        // }
-
         this.setState({ showDataSettingsConfirmDialog: true })
-
-        // navigation.navigate(PV.RouteNames.Onboarding)
+        navigation.navigate(PV.RouteNames.Onboarding)
       } else {
         this._initializeScreenData()
       }
@@ -161,7 +148,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange)
-    Linking.removeEventListener('url', this._handleOpenURLEvent)
   }
 
   _handleAppStateChange = async (nextAppState: any) => {
@@ -182,65 +168,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
 
     updateUserPlaybackPosition()
-  }
-
-  _handleOpenURLEvent = (event: any) => {
-    if (event) this._handleOpenURL(event.url)
-  }
-
-  _handleOpenURL = async (url: string) => {
-    const { navigate } = this.props.navigation
-
-    try {
-      if (url) {
-        const route = url.replace(/.*?:\/\//g, '')
-        const splitPath = route.split('/')
-        const path = splitPath[1] ? splitPath[1] : ''
-        const id = splitPath[2] ? splitPath[2] : ''
-
-        if (path === PV.DeepLinks.Clip.pathPrefix) {
-          await navigate(PV.RouteNames.PodcastsScreen)
-          await navigate(PV.RouteNames.PlayerScreen, { mediaRefId: id })
-        } else if (path === PV.DeepLinks.Episode.pathPrefix) {
-          await navigate(PV.RouteNames.PodcastsScreen)
-          const episode = await getEpisode(id)
-          if (episode) {
-            const podcast = await getPodcast(episode.podcast.id)
-            await navigate(PV.RouteNames.PodcastScreen, {
-              podcast,
-              navToEpisodeWithId: id
-            })
-          }
-        } else if (path === PV.DeepLinks.Playlist.pathPrefix) {
-          await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.PlaylistsScreen, {
-            navToPlaylistWithId: id
-          })
-        } else if (path === PV.DeepLinks.Playlists.path) {
-          await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.PlaylistsScreen)
-        } else if (path === PV.DeepLinks.Podcast.pathPrefix) {
-          await navigate(PV.RouteNames.PodcastsScreen)
-          await navigate(PV.RouteNames.PodcastScreen, { podcastId: id })
-        } else if (path === PV.DeepLinks.Podcasts.path) {
-          await navigate(PV.RouteNames.PodcastsScreen)
-        } else if (path === PV.DeepLinks.Profile.pathPrefix) {
-          await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.ProfilesScreen, {
-            navToProfileWithId: id
-          })
-        } else if (path === PV.DeepLinks.Profiles.path) {
-          await navigate(PV.RouteNames.MoreScreen)
-          await navigate(PV.RouteNames.ProfilesScreen)
-        } else if (path === PV.DeepLinks.Search.path) {
-          await navigate(PV.RouteNames.SearchScreen)
-        } else {
-          await navigate(PV.RouteNames.PodcastsScreen)
-        }
-      }
-    } catch (error) {
-      //
-    }
   }
 
   _initializeScreenData = async () => {
