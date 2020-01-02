@@ -22,10 +22,12 @@ export const getPodcast = async (id: string) => {
 
 export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
   const filteredQuery = {
-    ...(query.includeAuthors ? { includeAuthors: query.includeAuthors } : {}),
-    ...(query.includeCategories
-      ? { includeCategories: query.includeCategories }
-      : {}),
+    // NOTE: disabling includeAuthors and includeCategories because something is wrong with those queries...
+    // the queries are not returning a full list, and are including duplicates
+    // ...(query.includeAuthors ? { includeAuthors: query.includeAuthors } : {}),
+    // ...(query.includeCategories
+    //   ? { includeCategories: query.includeCategories }
+    //   : {}),
     ...(query.maxResults ? { maxResults: true } : {}),
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
@@ -126,6 +128,7 @@ export const combineWithAddByRSSPodcasts = async () => {
   // Combine the AddByRSSPodcast in with the subscribed podcast data, then alphabetize array
   const subscribedPodcasts = await getSubscribedPodcastsLocally()
   const addByRSSPodcasts = await getAddByRSSPodcasts()
+  // @ts-ignore
   const combinedPodcasts = [...subscribedPodcasts[0], ...addByRSSPodcasts]
   return sortPodcastArrayAlphabetically(combinedPodcasts)
 }
@@ -136,8 +139,9 @@ export const getSubscribedPodcastsLocally = async () => {
   )
   if (subscribedPodcastsJSON) {
     const subscribedPodcasts = JSON.parse(subscribedPodcastsJSON)
-    if (Array.isArray(subscribedPodcasts))
+    if (Array.isArray(subscribedPodcasts)) {
       return [subscribedPodcasts, subscribedPodcasts.length]
+    }
     return [[], 0]
   } else {
     return [[], 0]
@@ -235,11 +239,12 @@ const toggleSubscribeToPodcastLocally = async (id: string) => {
     items.push(id)
   }
 
-  if (Array.isArray(items))
+  if (Array.isArray(items)) {
     await AsyncStorage.setItem(
       PV.Keys.SUBSCRIBED_PODCAST_IDS,
       JSON.stringify(items)
     )
+  }
 
   return items
 }
@@ -257,11 +262,12 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
     podcastIds = JSON.parse(itemsString)
     podcastIds = addOrRemovePodcastIdFromArray(podcastIds, id)
   }
-  if (Array.isArray(podcastIds))
+  if (Array.isArray(podcastIds)) {
     await AsyncStorage.setItem(
       PV.Keys.SUBSCRIBED_PODCAST_IDS,
       JSON.stringify(podcastIds)
     )
+  }
 
   return response && response.data
 }

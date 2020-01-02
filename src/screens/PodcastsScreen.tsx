@@ -412,9 +412,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _renderPodcastItem = ({ item }) => {
     const { downloadedPodcastEpisodeCounts } = this.global
-    const userLocalPodcastView =
-      this.state.queryFrom === _subscribedKey ||
-      this.state.queryFrom === _downloadedKey
+    // const userLocalPodcastView =
+    //   this.state.queryFrom === _subscribedKey ||
+    //   this.state.queryFrom === _downloadedKey
     const episodeCount = downloadedPodcastEpisodeCounts[item.id]
 
     return (
@@ -428,16 +428,16 @@ export class PodcastsScreen extends React.Component<Props, State> {
             addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
           })
         }
-        podcastAuthors={
-          userLocalPodcastView ? '' : generateAuthorsText(item.authors)
-        }
-        podcastCategories={
-          userLocalPodcastView ? '' : generateCategoriesText(item.categories)
-        }
+        // podcastAuthors={
+        //   userLocalPodcastView ? '' : generateAuthorsText(item.authors)
+        // }
+        // podcastCategories={
+        //   userLocalPodcastView ? '' : generateCategoriesText(item.categories)
+        // }
         podcastImageUrl={item.imageUrl}
         podcastTitle={item.title}
-        showAutoDownload={userLocalPodcastView}
-        showDownloadCount={userLocalPodcastView}
+        showAutoDownload={true}
+        showDownloadCount={true}
       />
     )
   }

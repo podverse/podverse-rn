@@ -68,7 +68,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                 <View style={styles.textWrapperRowRight}>
                   <Icon
                     isSecondary={true}
-                    name="download"
+                    name='download'
                     size={13}
                     style={styles.autoDownloadIcon}
                   />
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   textWrapperRow: {
-    flex: 0,
+    flex: 1,
     flexDirection: 'row'
   },
   textWrapperRowLeft: {
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   },
   textWrapperRowRight: {
     alignItems: 'flex-end',
-    flex: 0,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginLeft: 4
