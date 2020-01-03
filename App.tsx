@@ -10,6 +10,8 @@ import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
 import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
+import { addOrUpdateHistoryItem } from './src/services/history'
+import { getNowPlayingItem, updateUserPlaybackPosition } from './src/services/player'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 
@@ -50,11 +52,16 @@ class App extends Component<Props, State> {
   }
 
   handleNetworkChange = async (state: NetInfoState) => {
+    const nowPlayingItem = await getNowPlayingItem()
     if (state.type === 'wifi') {
       refreshDownloads()
+      await addOrUpdateHistoryItem(nowPlayingItem)
+      await updateUserPlaybackPosition()
     } else if (state.type === 'cellular') {
       const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
       if (!downloadingWifiOnly) refreshDownloads()
+      await addOrUpdateHistoryItem(nowPlayingItem)
+      await updateUserPlaybackPosition()
     }
   }
 
