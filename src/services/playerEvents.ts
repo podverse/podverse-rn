@@ -28,6 +28,34 @@ const debouncedSetPlaybackPosition = debounce(
   }
 )
 
+// Sometimes when there is poor internet connectivity, the addOrUpdateHistoryItem request will fail.
+// This will result in the current item mising from the user's history, and the next time they open
+// the app, it will load with an old history item instead of the last one they were listening to.
+// To prevent this, we are repeatedly calling the addOrUpdateHistoryItem method on an interval until
+// it succeeds. When a new item loads, it should clear out the previous interval.
+// addOrUpdateHistoryItem is also called in handleNetworkChange in App.jsx on connection to wifi and cellular,
+// since it is possible that this interval succeeds locally when their is no internet connection,
+// and never calls to sync with the server.
+let addOrUpdateRequestInterval: any
+const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
+  if (addOrUpdateRequestInterval) {
+    clearInterval(addOrUpdateRequestInterval)
+  }
+
+  const startInterval = async () => {
+    try {
+      await addOrUpdateHistoryItem(nowPlayingItem)
+      await updateUserPlaybackPosition()
+      clearInterval(addOrUpdateRequestInterval)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  startInterval()
+  addOrUpdateRequestInterval = setInterval(startInterval, 20000)
+}
+
 const handleSyncNowPlayingItem = async (
   trackId: string,
   currentNowPlayingItem: NowPlayingItem,
@@ -52,7 +80,7 @@ const handleSyncNowPlayingItem = async (
 
     const isPlayingFromHistory = await checkIfPlayingFromHistory()
     if (!isPlayingFromHistory && currentNowPlayingItem) {
-      addOrUpdateHistoryItem(currentNowPlayingItem)
+      handleAddOrUpdateRequestInterval(currentNowPlayingItem)
     }
   }
 
@@ -74,12 +102,13 @@ const syncNowPlayingItemWithTrack = async () => {
       currentTrackId
     )
 
-    if (currentNowPlayingItem)
+    if (currentNowPlayingItem) {
       await handleSyncNowPlayingItem(
         currentTrackId,
         currentNowPlayingItem,
         isSecondTime
       )
+    }
   }
 
   setTimeout(sync, 1000)
@@ -197,9 +226,10 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('remote-seek', async (data) => {
-    if (data.position || data.position >= 0)
+    if (data.position || data.position >= 0) {
       PVTrackPlayer.seekTo(Math.floor(data.position))
-    updateUserPlaybackPosition()
+      updateUserPlaybackPosition()
+    }
   })
 
   PVTrackPlayer.addEventListener('remote-stop', () => {
