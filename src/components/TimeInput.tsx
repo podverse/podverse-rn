@@ -44,7 +44,7 @@ export const TimeInput = (props: Props) => {
           <TouchableOpacity onPress={handlePreview}>
             <Icon
               color={globalTheme.link.color}
-              name="play"
+              name='play'
               size={16}
               style={styles.previewIcon}
             />
@@ -74,7 +74,7 @@ export const TimeInput = (props: Props) => {
                 color={
                   isDarkMode ? iconStyles.dark.color : iconStyles.light.color
                 }
-                name="times"
+                name='times'
                 size={24}
               />
             </View>

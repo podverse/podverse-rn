@@ -94,7 +94,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
-    const { player, session } = this.global
+    const { player } = this.global
     const { nowPlayingItem } = player
     navigation.setParams({ _saveMediaRef: this._saveMediaRef })
     const currentPosition = await PVTrackPlayer.getPosition()
@@ -167,7 +167,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   _setEndTime = async () => {
     const currentPosition = await PVTrackPlayer.getPosition()
-    this.setState({ endTime: Math.floor(currentPosition) })
+    if (currentPosition && currentPosition > 0) {
+      this.setState({ endTime: Math.floor(currentPosition) })
+    }
   }
 
   _adjustSpeed = async () => {
@@ -425,6 +427,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               onChangeText={this._onChangeTitle}
               numberOfLines={3}
               placeholder='optional'
+              returnKeyType='done'
               style={[styles.textInput, globalTheme.textInput]}
               underlineColorAndroid='transparent'
               value={title}

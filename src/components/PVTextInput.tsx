@@ -9,6 +9,7 @@ type Props = {
   numberOfLines?: number
   onChangeText: any
   placeholder?: string
+  returnKeyType?: any
   secureTextEntry?: boolean
   style?: any
   underlineColorAndroid?: any
@@ -22,6 +23,7 @@ export const PVTextInput = (props: Props) => {
     numberOfLines = 0,
     onChangeText,
     placeholder,
+    returnKeyType = 'default',
     secureTextEntry,
     style,
     underlineColorAndroid,
@@ -31,12 +33,14 @@ export const PVTextInput = (props: Props) => {
   return (
     <TextInput
       autoCapitalize={autoCapitalize}
+      blurOnSubmit={returnKeyType === 'done'}
       keyboardType={keyboardType}
       multiline={numberOfLines > 0}
       numberOfLines={numberOfLines}
       onChangeText={onChangeText}
       placeholder={placeholder}
       placeholderTextColor={globalTheme.placeholderText.color}
+      returnKeyType={returnKeyType}
       secureTextEntry={secureTextEntry}
       style={[globalTheme.textInput, core.textInput, style]}
       underlineColorAndroid={underlineColorAndroid}
