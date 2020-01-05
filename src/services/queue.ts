@@ -31,8 +31,9 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
       item.clipId,
       item.episodeId
     )
-  )
+  ) {
     return
+  }
 
   const useServerData = await checkIfShouldUseServerData()
 
@@ -136,8 +137,9 @@ const addQueueItemNextOnServer = async (item: NowPlayingItem) => {
 export const filterItemFromQueueItems = (
   items: NowPlayingItem[] = [],
   item: NowPlayingItem
-) =>
-  items.filter((x) => {
+) => {
+  const itemsArray = Array.isArray(items) ? items : []
+  itemsArray.filter((x) => {
     if (item.clipId && x.clipId === item.clipId) {
       return false
     } else if (!item.clipId && !x.clipId && x.episodeId === item.episodeId) {
@@ -145,6 +147,8 @@ export const filterItemFromQueueItems = (
     }
     return true
   })
+  return itemsArray
+}
 
 const getNextFromQueueLocally = async () => {
   const items = await getQueueItemsLocally()
