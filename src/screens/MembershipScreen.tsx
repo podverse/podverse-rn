@@ -152,10 +152,10 @@ export class MembershipScreen extends React.Component<Props, State> {
         {!isLoading && (
           <View style={styles.tableWrapper}>
             <ComparisonTable
-              column1Title="Free"
-              column2Title="Premium"
+              column1Title='Free'
+              column2Title='Premium'
               data={comparisonData}
-              mainTitle="Features"
+              mainTitle='Features'
             />
           </View>
         )}
@@ -211,7 +211,7 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'share your profile',
+    text: 'share your user profile',
     column1: false,
     column2: true
   },
