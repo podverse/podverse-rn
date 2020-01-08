@@ -548,12 +548,20 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   globalTheme.modalInnerWrapper
                 ]}>
                 <Text style={styles.modalText}>
-                  - Tap the Start and End Time boxes to set them with the
-                  current time.
+                  ▸ Tap the Start and End Time inputs to set them with the
+                  current track time.
                 </Text>
                 <Text style={styles.modalText}>
-                  - If the podcast has dynamically inserted ads, the clip
-                  start/end times may not stay accurate.
+                  ▸ Change the track position with the time jump and 1-second adjust buttons.
+                </Text>
+                <Text style={styles.modalText}>
+                  ▸ "Public" clips may appear on Podverse's home page. (Premium only)
+                </Text>
+                <Text style={styles.modalText}>
+                  ▸ "Only with Link" clips will not appear on the home page.
+                </Text>
+                <Text style={styles.modalText}>
+                  ▸ If the podcast has dynamically inserted ads, the start/end times may not stay accurate.
                 </Text>
                 <TouchableOpacity onPress={this._hideHowTo}>
                   <Text style={styles.modalButton}>Close</Text>
@@ -598,7 +606,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   bottomButton: {
-    fontSize: PV.Fonts.sizes.md,
     paddingVertical: 4,
     textAlign: 'center',
     width: 60
