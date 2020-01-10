@@ -1,12 +1,11 @@
 import { StyleSheet, View } from 'react-native'
 import React from 'reactn'
-import { readableClipTime, readableDate } from '../lib/utility'
+import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer } from '../services/player'
 import { button, core } from '../styles'
 import {
   ActivityIndicator,
-  Divider,
   Icon,
   ScrollView,
   TableSectionHeader,
@@ -19,6 +18,7 @@ type Props = {
   endTime?: number
   handleClosePress: any
   isLoading?: boolean
+  isPublic?: boolean
   navigation: any
   ownerId?: string
   ownerIsPublic?: boolean
@@ -44,17 +44,17 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
   }
 
   _handleEditPress = async () => {
-    const { navigation } = this.props
+    const { isPublic, navigation } = this.props
     const initialProgressValue = await PVTrackPlayer.getPosition()
     navigation.navigate(PV.RouteNames.MakeClipScreen, {
       initialProgressValue,
+      initialPrivacy: isPublic,
       isEditing: true
     })
   }
 
   render() {
     const {
-      createdAt,
       endTime,
       handleClosePress,
       isLoading,
@@ -74,7 +74,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
           <View style={styles.wrapper}>
             <TableSectionHeader
               handleClosePress={handleClosePress}
-              title="Clip Info"
+              title='Clip Info'
             />
             <ScrollView style={styles.scrollView}>
               <View style={core.row}>
@@ -87,7 +87,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                 {userId === ownerId && (
                   <View style={styles.topEditButtonWrapper}>
                     <Icon
-                      name="pencil-alt"
+                      name='pencil-alt'
                       onPress={() => this._handleEditPress()}
                       size={26}
                       style={button.iconOnlySmall}
@@ -102,7 +102,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                     <TextLink
                       onPress={this._navToProfileScreen}
                       style={styles.link}>
-                      {ownerName}
+                      {ownerName || 'anonymous'}
                     </TextLink>
                   ) : (
                     <Text style={styles.inlineText}>anonymous</Text>
