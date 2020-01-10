@@ -487,13 +487,18 @@ export class ProfileScreen extends React.Component<Props, State> {
             )}
             <ActionSheet
               handleCancelPress={this._handleCancelPress}
-              items={() =>
-                PV.ActionSheet.media.moreButtons(
-                  selectedItem,
-                  navigation,
-                  this._handleCancelPress,
-                  this._handleDownloadPressed
-                )
+              items={() => {
+                if (selectedItem) {
+                  const loggedInUserId = safelyUnwrapNestedVariable(() => session.userInfo.id, '')
+                  selectedItem.ownerId = loggedInUserId
+                  return PV.ActionSheet.media.moreButtons(
+                    selectedItem,
+                    navigation,
+                    this._handleCancelPress,
+                    this._handleDownloadPressed
+                  )
+                }
+              }
               }
               showModal={showActionSheet}
             />

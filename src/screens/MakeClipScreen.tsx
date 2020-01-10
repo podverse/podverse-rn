@@ -52,6 +52,7 @@ type State = {
   endTime: number | null
   isPublicItemSelected: any
   isSaving: boolean
+  mediaRefId?: string
   progressValue: number | null
   showHowToModal?: boolean
   startTime?: number
@@ -87,6 +88,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         ? { isPublicItemSelected: pItems[0] }
         : { isPublicItemSelected: pItems[1] }),
       isSaving: false,
+      ...(isEditing ? { mediaRefId: nowPlayingItem.clipId } : {}),
       progressValue: initialProgressValue || 0,
       startTime: isEditing ? nowPlayingItem.clipStartTime : null
     }
@@ -193,7 +195,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   _saveMediaRef = async () => {
     const { navigation } = this.props
-    const { endTime, isPublicItemSelected, startTime, title } = this.state
+    const { endTime, isPublicItemSelected, mediaRefId, startTime, title } = this.state
     const { player, session } = this.global
     const { nowPlayingItem } = player
     const { isLoggedIn } = session
@@ -243,7 +245,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       const data = {
         ...(endTime ? { endTime } : {}),
         episodeId: nowPlayingItem.episodeId,
-        ...(isEditing ? { id: nowPlayingItem.clipId } : {}),
+        ...(isEditing ? { id: mediaRefId } : {}),
         ...(isLoggedIn && isPublicItemSelected.value === _publicKey
           ? { isPublic: true }
           : { isPublic: false }),

@@ -71,7 +71,8 @@ export const Alerts = {
   },
   RESET_PASSWORD_SUCCESS: {
     message:
-      'Please check your inbox. If this email address exists in our system, you should receive a reset password email shortly.',
+      'Please check your inbox. If this address exists in our system, you should receive a reset password email shortly.'
+      + 'The email may go to your Spam folder.',
     title: 'Reset Password Sent'
   },
   SIGN_UP_ERROR: {
