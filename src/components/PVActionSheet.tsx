@@ -42,7 +42,9 @@ export class PVActionSheet extends React.Component<Props, State> {
       items.forEach((item, index) => {
         const buttonStyle = [styles.button]
 
-        if (index === 0 && !message && !title) {
+        if (item.key === 'edit') {
+          buttonStyle.push(styles.buttonTop)
+        } else if (index === 0 && !message && !title) {
           buttonStyle.push(styles.buttonTop)
         } else if (index === items.length - 1) {
           buttonStyle.push(styles.buttonBottom)
@@ -57,6 +59,8 @@ export class PVActionSheet extends React.Component<Props, State> {
         let buttonTextStyle = globalTheme.actionSheetButtonText
         if (item.key === 'delete') {
           buttonTextStyle = globalTheme.actionSheetButtonTextDelete
+        } else if (item.key === 'edit') {
+          buttonTextStyle = globalTheme.actionSheetButtonTextEdit
         }
 
         const isQueueButton = item.key === 'queueNext' || item.key === 'queueLast'

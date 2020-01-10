@@ -52,6 +52,7 @@ type State = {
   endTime: number | null
   isPublicItemSelected: any
   isSaving: boolean
+  mediaRefId?: string
   progressValue: number | null
   showHowToModal?: boolean
   startTime?: number
@@ -87,6 +88,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         ? { isPublicItemSelected: pItems[0] }
         : { isPublicItemSelected: pItems[1] }),
       isSaving: false,
+      ...(isEditing ? { mediaRefId: nowPlayingItem.clipId } : {}),
       progressValue: initialProgressValue || 0,
       startTime: isEditing ? nowPlayingItem.clipStartTime : null
     }
@@ -193,7 +195,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   _saveMediaRef = async () => {
     const { navigation } = this.props
-    const { endTime, isPublicItemSelected, startTime, title } = this.state
+    const { endTime, isPublicItemSelected, mediaRefId, startTime, title } = this.state
     const { player, session } = this.global
     const { nowPlayingItem } = player
     const { isLoggedIn } = session
@@ -243,7 +245,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       const data = {
         ...(endTime ? { endTime } : {}),
         episodeId: nowPlayingItem.episodeId,
-        ...(isEditing ? { id: nowPlayingItem.clipId } : {}),
+        ...(isEditing ? { id: mediaRefId } : {}),
         ...(isLoggedIn && isPublicItemSelected.value === _publicKey
           ? { isPublic: true }
           : { isPublic: false }),
@@ -548,12 +550,20 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   globalTheme.modalInnerWrapper
                 ]}>
                 <Text style={styles.modalText}>
-                  - Tap the Start and End Time boxes to set them with the
-                  current time.
+                  ▸ Tap the Start and End Time inputs to set them with the
+                  current track time.
                 </Text>
                 <Text style={styles.modalText}>
-                  - If the podcast has dynamically inserted ads, the clip
-                  start/end times may not stay accurate.
+                  ▸ Change the track position with the time jump and 1-second adjust buttons.
+                </Text>
+                <Text style={styles.modalText}>
+                  ▸ "Public" clips may appear on Podverse's home page. (Premium only)
+                </Text>
+                <Text style={styles.modalText}>
+                  ▸ "Only with Link" clips will not appear on the home page.
+                </Text>
+                <Text style={styles.modalText}>
+                  ▸ If the podcast has dynamically inserted ads, the start/end times may not stay accurate.
                 </Text>
                 <TouchableOpacity onPress={this._hideHowTo}>
                   <Text style={styles.modalButton}>Close</Text>
@@ -598,7 +608,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   bottomButton: {
-    fontSize: PV.Fonts.sizes.md,
     paddingVertical: 4,
     textAlign: 'center',
     width: 60

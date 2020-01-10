@@ -20,14 +20,17 @@ export const darkTheme = StyleSheet.create({
   actionSheetButtonText: {
     color: PV.Colors.white
   },
-  actionSheetButtonTextDelete: {
-    color: PV.Colors.redLighter
-  },
   actionSheetButtonTextCancel: {
     color: PV.Colors.white
   },
+  actionSheetButtonTextDelete: {
+    color: PV.Colors.redLighter
+  },
   actionSheetButtonTextDisabled: {
     color: PV.Colors.grayLightest
+  },
+  actionSheetButtonTextEdit: {
+    color: PV.Colors.yellow
   },
   actionSheetButtonUnderlay: {
     backgroundColor: PV.Colors.grayDarker
@@ -221,6 +224,9 @@ export const lightTheme = StyleSheet.create({
   },
   actionSheetButtonTextDisabled: {
     color: PV.Colors.grayDarkest
+  },
+  actionSheetButtonTextEdit: {
+    color: PV.Colors.yellow
   },
   actionSheetButtonUnderlay: {
     backgroundColor: PV.Colors.grayLightest
