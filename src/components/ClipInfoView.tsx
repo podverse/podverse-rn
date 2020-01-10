@@ -102,7 +102,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                     <TextLink
                       onPress={this._navToProfileScreen}
                       style={styles.link}>
-                      {ownerName}
+                      {ownerName || 'anonymous'}
                     </TextLink>
                   ) : (
                     <Text style={styles.inlineText}>anonymous</Text>
