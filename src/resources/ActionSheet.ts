@@ -3,10 +3,12 @@ import NetInfo from '@react-native-community/netinfo'
 import { Alert } from 'react-native'
 import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
+import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { IActionSheet } from '../resources/Interfaces'
 import {
   addItemToPlayerQueueLast,
-  addItemToPlayerQueueNext
+  addItemToPlayerQueueNext,
+  PVTrackPlayer
 } from '../services/player'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { loadItemAndPlayTrack } from '../state/actions/player'
@@ -26,6 +28,26 @@ const mediaMoreButtons = (
   const downloadingText = isDownloading ? 'Downloading' : 'Download'
   const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
   const buttons = []
+  const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session.userInfo.id, '')
+
+  if (item.ownerId && item.ownerId === loggedInUserId) {
+    buttons.push({
+      key: 'edit',
+      text: 'Edit',
+      onPress: async () => {
+        await handleDismiss()
+        const shouldPlay = false
+        await loadItemAndPlayTrack(item, shouldPlay)
+        await navigation.navigate(PV.RouteNames.PlayerScreen)
+        const initialProgressValue = await PVTrackPlayer.getPosition()
+        navigation.navigate(PV.RouteNames.MakeClipScreen, {
+          initialProgressValue,
+          initialPrivacy: item.isPublic,
+          isEditing: true
+        })
+      }
+    })
+  }
 
   if (isDownloaded) {
     buttons.push({

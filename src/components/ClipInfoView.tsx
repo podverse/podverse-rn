@@ -1,12 +1,11 @@
 import { StyleSheet, View } from 'react-native'
 import React from 'reactn'
-import { readableClipTime, readableDate } from '../lib/utility'
+import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer } from '../services/player'
 import { button, core } from '../styles'
 import {
   ActivityIndicator,
-  Divider,
   Icon,
   ScrollView,
   TableSectionHeader,
@@ -74,7 +73,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
           <View style={styles.wrapper}>
             <TableSectionHeader
               handleClosePress={handleClosePress}
-              title="Clip Info"
+              title='Clip Info'
             />
             <ScrollView style={styles.scrollView}>
               <View style={core.row}>
@@ -87,7 +86,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                 {userId === ownerId && (
                   <View style={styles.topEditButtonWrapper}>
                     <Icon
-                      name="pencil-alt"
+                      name='pencil-alt'
                       onPress={() => this._handleEditPress()}
                       size={26}
                       style={button.iconOnlySmall}
