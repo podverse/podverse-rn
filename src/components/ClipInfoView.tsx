@@ -18,6 +18,7 @@ type Props = {
   endTime?: number
   handleClosePress: any
   isLoading?: boolean
+  isPublic?: boolean
   navigation: any
   ownerId?: string
   ownerIsPublic?: boolean
@@ -43,17 +44,17 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
   }
 
   _handleEditPress = async () => {
-    const { navigation } = this.props
+    const { isPublic, navigation } = this.props
     const initialProgressValue = await PVTrackPlayer.getPosition()
     navigation.navigate(PV.RouteNames.MakeClipScreen, {
       initialProgressValue,
+      initialPrivacy: isPublic,
       isEditing: true
     })
   }
 
   render() {
     const {
-      createdAt,
       endTime,
       handleClosePress,
       isLoading,

@@ -39,12 +39,14 @@ const mediaMoreButtons = (
         const shouldPlay = false
         await loadItemAndPlayTrack(item, shouldPlay)
         await navigation.navigate(PV.RouteNames.PlayerScreen)
-        const initialProgressValue = await PVTrackPlayer.getPosition()
-        navigation.navigate(PV.RouteNames.MakeClipScreen, {
-          initialProgressValue,
-          initialPrivacy: item.isPublic,
-          isEditing: true
-        })
+        setTimeout(async () => {
+          const initialProgressValue = await PVTrackPlayer.getPosition()
+          navigation.navigate(PV.RouteNames.MakeClipScreen, {
+            initialProgressValue,
+            initialPrivacy: item.isPublic,
+            isEditing: true
+          })
+        }, 1000)
       }
     })
   }

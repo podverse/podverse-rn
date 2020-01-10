@@ -563,6 +563,7 @@ export class PlayerScreen extends React.Component<Props, State> {
               endTime={mediaRef.endTime}
               handleClosePress={this._toggleShowFullClipInfo}
               isLoading={isLoading}
+              isPublic={mediaRef.isPublic}
               navigation={navigation}
               {...(mediaRef.owner ? { ownerId: mediaRef.owner.id } : {})}
               {...(mediaRef.owner
