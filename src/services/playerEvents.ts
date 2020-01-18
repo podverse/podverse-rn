@@ -38,6 +38,8 @@ const debouncedSetPlaybackPosition = debounce(
 // and never calls to sync with the server.
 let addOrUpdateRequestInterval: any
 const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
+  if (!nowPlayingItem) return
+
   if (addOrUpdateRequestInterval) {
     clearInterval(addOrUpdateRequestInterval)
   }

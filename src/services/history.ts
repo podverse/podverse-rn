@@ -145,21 +145,38 @@ const updateHistoryItemPlaybackPositionLocally = async (
 const updateHistoryItemPlaybackPositionOnServer = async (
   nowPlayingItem: NowPlayingItem
 ) => {
+  const origNowPlayingItem = nowPlayingItem
+  nowPlayingItem = {
+    clipId: nowPlayingItem.clipId,
+    episodeId: nowPlayingItem.episodeId,
+    userPlaybackPosition: nowPlayingItem.userPlaybackPosition
+  }
+
   await updateHistoryItemPlaybackPositionLocally(nowPlayingItem)
 
   const bearerToken = await getBearerToken()
-  const response = await request({
-    endpoint: '/user/update-history-item-playback-position',
-    method: 'PATCH',
-    headers: {
-      'Authorization': bearerToken,
-      'Content-Type': 'application/json'
-    },
-    body: { historyItem: nowPlayingItem },
-    opts: { credentials: 'include' }
-  })
+  try {
+    const response = await request({
+      endpoint: '/user/update-history-item-playback-position',
+      method: 'PATCH',
+      headers: {
+        'Authorization': bearerToken,
+        'Content-Type': 'application/json'
+      },
+      body: { historyItem: nowPlayingItem },
+      opts: { credentials: 'include' }
+    })
 
-  return response && response.data
+    return response && response.data
+  } catch (error) {
+
+    // If 406 NotAcceptable error, then the historyItem may be missing from the history, so try to add it.
+    if (error.response && error.response.status === 406) {
+      await addOrUpdateHistoryItem(origNowPlayingItem)
+    }
+
+    return
+  }
 }
 
 const clearHistoryItemsLocally = async () => {

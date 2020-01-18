@@ -55,13 +55,17 @@ class App extends Component<Props, State> {
     const nowPlayingItem = await getNowPlayingItem()
     if (state.type === 'wifi') {
       refreshDownloads()
-      await addOrUpdateHistoryItem(nowPlayingItem)
-      await updateUserPlaybackPosition()
+      if (nowPlayingItem) {
+        await addOrUpdateHistoryItem(nowPlayingItem)
+        await updateUserPlaybackPosition()
+      }
     } else if (state.type === 'cellular') {
       const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
       if (!downloadingWifiOnly) refreshDownloads()
-      await addOrUpdateHistoryItem(nowPlayingItem)
-      await updateUserPlaybackPosition()
+      if (nowPlayingItem) {
+        await addOrUpdateHistoryItem(nowPlayingItem)
+        await updateUserPlaybackPosition()
+      }
     }
   }
 
