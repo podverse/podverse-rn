@@ -238,6 +238,8 @@ export const loadItemAndPlayTrack = async (
   shouldPlay: boolean,
   skipUpdateHistory?: boolean
 ) => {
+  if (!item) return
+
   updateUserPlaybackPosition()
 
   // Episodes and clips must be already loaded in history
@@ -257,7 +259,9 @@ export const playNextFromQueue = async () => {
   await PVTrackPlayer.skipToNext()
   const currentId = await PVTrackPlayer.getCurrentTrack()
   const item = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentId)
-  await addOrUpdateHistoryItem(item)
+  if (item) {
+    await addOrUpdateHistoryItem(item)
+  }
 }
 
 export const addItemToPlayerQueueNext = async (item: NowPlayingItem) => {

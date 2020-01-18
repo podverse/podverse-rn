@@ -115,6 +115,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       Linking.getInitialURL().then((url) => {
         if (url) this._handleOpenURL(url)
       })
+    } else if (Platform.OS === 'ios') {
+      Linking.addEventListener('url', this._handleOpenURLEvent)
     }
 
     AppState.addEventListener('change', this._handleAppStateChange)
@@ -152,6 +154,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange)
+    Linking.removeEventListener('url', this._handleOpenURLEvent)
   }
 
   _handleAppStateChange = async (nextAppState: any) => {
@@ -172,6 +175,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
 
     updateUserPlaybackPosition()
+  }
+
+  // This event is apparently not needed in development on iOS simulator,
+  // but required to work in production (??? unconfirmed).
+  _handleOpenURLEvent = (event: any) => {
+    if (event) this._handleOpenURL(event.url)
   }
 
   _handleOpenURL = async (url: string) => {

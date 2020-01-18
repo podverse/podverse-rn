@@ -266,17 +266,19 @@ export class QueueScreen extends React.Component<Props, State> {
 
     return (
       <TouchableWithoutFeedback onPress={() => this._handlePlayItem(item)}>
-        <QueueTableCell
-          clipEndTime={item.clipEndTime}
-          clipStartTime={item.clipStartTime}
-          clipTitle={item.clipTitle}
-          episodePubDate={item.episodePubDate}
-          episodeTitle={item.episodeTitle}
-          handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
-          podcastImageUrl={item.podcastImageUrl}
-          podcastTitle={item.podcastTitle}
-          showRemoveButton={isEditing}
-        />
+        <View>
+          <QueueTableCell
+            clipEndTime={item.clipEndTime}
+            clipStartTime={item.clipStartTime}
+            clipTitle={item.clipTitle}
+            episodePubDate={item.episodePubDate}
+            episodeTitle={item.episodeTitle}
+            handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
+            podcastImageUrl={item.podcastImageUrl}
+            podcastTitle={item.podcastTitle}
+            showRemoveButton={isEditing}
+          />
+        </View>
       </TouchableWithoutFeedback>
     )
   }

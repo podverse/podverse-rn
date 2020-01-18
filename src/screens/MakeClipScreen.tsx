@@ -525,11 +525,13 @@ export class MakeClipScreen extends React.Component<Props, State> {
             </RNView>
             <View style={styles.bottomRow}>
               <TouchableWithoutFeedback onPress={this._adjustSpeed}>
-                <Text
-                  style={[
-                    styles.bottomButton,
-                    styles.bottomRowText
-                  ]}>{`${playbackRate}X`}</Text>
+                <View>
+                  <Text
+                    style={[
+                      styles.bottomButton,
+                      styles.bottomRowText
+                    ]}>{`${playbackRate}X`}</Text>
+                </View>
               </TouchableWithoutFeedback>
             </View>
           </View>
