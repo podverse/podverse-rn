@@ -541,14 +541,15 @@ export class PlayerScreen extends React.Component<Props, State> {
       showFullClipInfo,
       viewType
     } = screenPlayer
-    const podcastId = nowPlayingItem ? nowPlayingItem.podcastId : null
-    const episodeId = episode ? episode.id : null
-    const mediaRefId = mediaRef ? mediaRef.id : null
     let { mediaRef } = player
 
     if (nowPlayingItem.clipId) {
       mediaRef = convertNowPlayingItemToMediaRef(nowPlayingItem)
     }
+
+    const podcastId = nowPlayingItem ? nowPlayingItem.podcastId : null
+    const episodeId = episode ? episode.id : null
+    const mediaRefId = mediaRef ? mediaRef.id : null
 
     return (
       <SafeAreaView>
