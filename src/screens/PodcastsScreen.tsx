@@ -16,12 +16,8 @@ import {
   View
 } from '../components'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
-import { alertIfNoNetworkConnection } from '../lib/network'
-import {
-  generateAuthorsText,
-  generateCategoriesText,
-  generateCategoryItems
-} from '../lib/utility'
+import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
+import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getEpisode } from '../services/episode'
@@ -70,6 +66,7 @@ type State = {
   selectedCategory: string | null
   selectedSubCategory: string | null
   showDataSettingsConfirmDialog: boolean
+  showNoInternetConnectionMessage?: boolean
   subCategoryItems: any[]
 }
 
@@ -569,14 +566,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const {
       categoryItems,
-      queryFrom,
       isLoading,
       isLoadingMore,
       isRefreshing,
+      queryFrom,
       querySort,
       selectedCategory,
       selectedSubCategory,
       showDataSettingsConfirmDialog,
+      showNoInternetConnectionMessage,
       subCategoryItems
     } = this.state
 
@@ -655,6 +653,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderPodcastItem}
             resultsText='podcasts'
+            showNoInternetConnectionMessage={showNoInternetConnectionMessage}
           />
         )}
         <Dialog.Container visible={showDataSettingsConfirmDialog}>
@@ -722,16 +721,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
     nextState?: {},
     queryOptions: { isSubCategory?: boolean; searchTitle?: string } = {}
   ) => {
-
     const newState = {
       isLoading: false,
       isLoadingMore: false,
       isRefreshing: false,
+      showNoInternetConnectionMessage: false,
       ...nextState
     } as State
-
-    const wasAlerted = await alertIfNoNetworkConnection('load podcasts')
-    if (wasAlerted) return newState
 
     const rItems = rightItems(
       filterKey === _allPodcastsKey || this.state.queryFrom === _allPodcastsKey
@@ -747,6 +743,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
       } = prevState
       const { settings } = this.global
       const { nsfwMode } = settings
+
+      // Use this in every place where the query may have 0 results because of no internet connection.
+      const hasInternetConnection = await hasValidNetworkConnection()
+
       if (filterKey === _subscribedKey) {
         await getAuthUserInfo() // get the latest subscribedPodcastIds first
         await this._querySubscribedPodcasts()
@@ -755,6 +755,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = podcasts.length
       } else if (filterKey === _allPodcastsKey) {
+        newState.showNoInternetConnectionMessage = !hasInternetConnection
+
         const results = await this._queryAllPodcasts(
           querySort,
           newState.queryPage
@@ -764,6 +766,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === _categoryKey) {
+        newState.showNoInternetConnectionMessage = !hasInternetConnection
+
         const { querySort, selectedCategory, selectedSubCategory } = prevState
         if (selectedCategory && selectedSubCategory === _allCategoriesKey) {
           const results = await this._queryPodcastsByCategory(
@@ -800,6 +804,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           newState.flatListDataTotalCount = podcastResults[1]
         }
       } else if (rItems.some((option) => option.value === filterKey)) {
+        newState.showNoInternetConnectionMessage = !hasInternetConnection
+
         const results = await getPodcasts(
           {
             ...(((selectedSubCategory &&
@@ -822,6 +828,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else {
+        newState.showNoInternetConnectionMessage = !hasInternetConnection
+
         const { isSubCategory } = queryOptions
         let categories
         if (isSubCategory) {

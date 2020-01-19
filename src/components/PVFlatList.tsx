@@ -31,6 +31,7 @@ type Props = {
   renderItem: any
   resultsText?: string
   showAddPodcastByRSS?: boolean
+  showNoInternetConnectionMessage?: boolean
   showRequestPodcast?: boolean
 }
 
@@ -61,6 +62,7 @@ export const PVFlatList = (props: Props) => {
     renderItem,
     resultsText = 'results',
     showAddPodcastByRSS,
+    showNoInternetConnectionMessage,
     showRequestPodcast
   } = props
 
@@ -103,7 +105,12 @@ export const PVFlatList = (props: Props) => {
           message='You have no subscribed podcasts'
         />
       )}
-      {noResultsFound && !noSubscribedPodcasts && !isLoadingMore && (
+      {showNoInternetConnectionMessage && !isLoadingMore && (
+        <View style={styles.msgView}>
+          <Text style={[styles.noResultsFoundText]}>{`No internet connection found.`}</Text>
+        </View>
+      )}
+      {noResultsFound && !noSubscribedPodcasts && !isLoadingMore && !showNoInternetConnectionMessage && (
         <View style={styles.msgView}>
           <Text style={[styles.noResultsFoundText]}>{`No ${resultsText} found`}</Text>
           {showRequestPodcast && requestPodcastTextLink}
