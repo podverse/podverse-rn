@@ -17,7 +17,7 @@ import {
   View
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
-import { alertIfNoNetworkConnection } from '../lib/network'
+import { hasValidNetworkConnection } from '../lib/network'
 import {
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem
@@ -44,6 +44,7 @@ type State = {
   searchBarText: string
   selectedItem?: any
   showActionSheet: boolean
+  showNoInternetConnectionMessage?: boolean
   viewType: string | null
 }
 
@@ -341,6 +342,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       querySort,
       selectedItem,
       showActionSheet,
+      showNoInternetConnectionMessage,
       viewType
     } = this.state
     const { downloadedEpisodeIds, downloadsActive } = this.global
@@ -388,10 +390,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
               : {})}
             onEndReached={this._onEndReached}
             renderItem={this._renderItem}
-          />
+            showNoInternetConnectionMessage={showNoInternetConnectionMessage} />
         )}
         {viewType === _showNotesKey && episode && (
-          <HTMLScrollView html={episode.description} />
+          <HTMLScrollView html={episode.description || ''} />
         )}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
@@ -424,11 +426,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
     } = this.state
     const newState = {
       isLoading: false,
-      isLoadingMore: false
+      isLoadingMore: false,
+      showNoInternetConnectionMessage: false
     } as State
 
-    const wasAlerted = await alertIfNoNetworkConnection('load clips')
-    if (wasAlerted) return newState
+    const hasInternetConnection = await hasValidNetworkConnection()
+    newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey === _clipsKey
 
     try {
       if (rightItems.some((option) => option.value === filterKey)) {
