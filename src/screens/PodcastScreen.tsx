@@ -29,7 +29,7 @@ import {
 } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
-import { alertIfNoNetworkConnection } from '../lib/network'
+import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import {
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem
@@ -89,6 +89,7 @@ type State = {
   searchBarText: string
   selectedItem?: any
   showActionSheet: boolean
+  showNoInternetConnectionMessage?: boolean
   showSettings: boolean
   viewType: string | null
 }
@@ -163,11 +164,19 @@ export class PodcastScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const { navigation } = this.props
     const episodeId = navigation.getParam('navToEpisodeWithId')
-    this._initializePageData()
 
-    if (episodeId) {
-      navigation.navigate(PV.RouteNames.EpisodeScreen, { episodeId })
-    }
+    const hasInternetConnection = await hasValidNetworkConnection()
+
+    this.setState({
+      ...(!hasInternetConnection ? {
+        viewType: downloadedKey
+      } : { viewType: this.state.viewType })
+    }, () => {
+      this._initializePageData()
+      if (episodeId) {
+        navigation.navigate(PV.RouteNames.EpisodeScreen, { episodeId })
+      }
+    })
   }
 
   async _initializePageData() {
@@ -566,6 +575,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       querySort,
       selectedItem,
       showActionSheet,
+      showNoInternetConnectionMessage,
       showSettings,
       viewType
     } = this.state
@@ -679,11 +689,12 @@ export class PodcastScreen extends React.Component<Props, State> {
                 renderHiddenItem={this._renderHiddenItem}
                 renderItem={this._renderItem}
                 resultsText={resultsText}
+                showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               />
             )}
             {!isLoading && viewType === aboutKey && podcast && (
               <HTMLScrollView
-                html={podcast.description}
+                html={podcast.description || (showNoInternetConnectionMessage ? 'No internet connection.' : '')}
                 navigation={navigation}
               />
             )}
@@ -743,11 +754,12 @@ export class PodcastScreen extends React.Component<Props, State> {
     const newState = {
       isLoading: false,
       isLoadingMore: false,
-      isRefreshing: false
+      isRefreshing: false,
+      showNoInternetConnectionMessage: false
     } as State
 
-    const wasAlerted = await alertIfNoNetworkConnection('load data')
-    if (wasAlerted) return newState
+    const hasInternetConnection = await hasValidNetworkConnection()
+    newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey !== downloadedKey
 
     try {
       if (filterKey === allEpisodesKey) {
@@ -760,6 +772,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === clipsKey) {
+        newState.showNoInternetConnectionMessage = !hasValid
         const results = await this._queryClips(
           querySort,
           queryOptions.queryPage
@@ -787,8 +800,10 @@ export class PodcastScreen extends React.Component<Props, State> {
           newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === aboutKey) {
-        const newPodcast = await getPodcast(podcastId)
-        newState.podcast = newPodcast
+        if (podcastId && hasInternetConnection) {
+          const newPodcast = await getPodcast(podcastId)
+          newState.podcast = newPodcast
+        }
       }
       newState.queryPage = queryOptions.queryPage || 1
       return newState

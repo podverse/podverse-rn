@@ -105,9 +105,9 @@ export const PVFlatList = (props: Props) => {
           message='You have no subscribed podcasts'
         />
       )}
-      {showNoInternetConnectionMessage && !isLoadingMore && (
+      {showNoInternetConnectionMessage && !dataTotalCount && !isLoadingMore && (
         <View style={styles.msgView}>
-          <Text style={[styles.noResultsFoundText]}>{`No internet connection found.`}</Text>
+          <Text style={[styles.noResultsFoundText]}>{`No internet connection.`}</Text>
         </View>
       )}
       {noResultsFound && !noSubscribedPodcasts && !isLoadingMore && !showNoInternetConnectionMessage && (

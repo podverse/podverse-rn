@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
-import { removeDownloadedPodcast } from '../lib/downloadedPodcast'
+import { getDownloadedPodcast, removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
@@ -13,11 +13,16 @@ import { getAddByRSSPodcasts, removeAddByRSSPodcast } from './parser'
 import { request } from './request'
 
 export const getPodcast = async (id: string) => {
-  const response = await request({
-    endpoint: `/podcast/${id}`
-  })
-
-  return response && response.data
+  const isConnected = await hasValidNetworkConnection()
+  if (isConnected) {
+    const response = await request({
+      endpoint: `/podcast/${id}`
+    })
+    return response && response.data
+  } else {
+    const downloadedPodcast = await getDownloadedPodcast(id)
+    return downloadedPodcast
+  }
 }
 
 export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {

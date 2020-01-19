@@ -93,6 +93,12 @@ export const getDownloadedEpisodes = async () => {
   return episodes
 }
 
+export const getDownloadedPodcast = async (podcastId: string) => {
+  const downloadedPodcasts = await getDownloadedPodcasts()
+  const downloadedPodcast = downloadedPodcasts.find((x: any) => x.id === podcastId)
+  return downloadedPodcast
+}
+
 export const getDownloadedPodcasts = async () => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_PODCASTS)
