@@ -9,7 +9,7 @@ import {
   SwipeRowBack,
   View
 } from '../components'
-import { alertIfNoNetworkConnection } from '../lib/network'
+import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
 import {
@@ -27,6 +27,7 @@ type State = {
   isLoadingMore: boolean
   isUnsubscribing: boolean
   queryPage: number
+  showNoInternetConnectionMessage?: boolean
 }
 
 export class ProfilesScreen extends React.Component<Props, State> {
@@ -128,7 +129,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
   _onPressLogin = () => this.props.navigation.navigate(PV.RouteNames.AuthScreen)
 
   render() {
-    const { isLoading, isLoadingMore } = this.state
+    const { isLoading, isLoadingMore, showNoInternetConnectionMessage } = this.state
     const { flatListData, flatListDataTotalCount } = this.global.profiles
 
     return (
@@ -146,13 +147,11 @@ export class ProfilesScreen extends React.Component<Props, State> {
               onEndReached={this._onEndReached}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderProfileItem}
+              showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             />
           )}
           {!isLoading && flatListData && flatListData.length === 0 && (
-            <MessageWithAction
-              message='You have no subscribed profiles'
-              subMessage='(Ask a friend to send you a link to their profile, then subscribe to it)'
-            />
+            <MessageWithAction message='You have no subscribed profiles' />
           )}
         </View>
       </View>
@@ -166,8 +165,8 @@ export class ProfilesScreen extends React.Component<Props, State> {
       isLoadingMore: false
     } as State
 
-    const wasAlerted = await alertIfNoNetworkConnection('load profiles')
-    if (wasAlerted) return newState
+    const hasInternetConnection = await hasValidNetworkConnection()
+    newState.showNoInternetConnectionMessage = !hasInternetConnection
 
     try {
       const subscribedUserIds = this.global.session.userInfo.subscribedUserIds
