@@ -15,7 +15,7 @@ import {
 } from '../components'
 import { getDownloadedEpisodeIds } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
-import { alertIfNoNetworkConnection } from '../lib/network'
+import { hasValidNetworkConnection } from '../lib/network'
 import {
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem
@@ -44,6 +44,7 @@ type State = {
   selectedItem?: any
   showActionSheet: boolean
   showDeleteConfirmDialog?: boolean
+  showNoInternetConnectionMessage?: boolean
 }
 
 export class ClipsScreen extends React.Component<Props, State> {
@@ -261,7 +262,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   _renderHiddenItem = ({ item }, rowMap) => (
     <SwipeRowBack
       onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      text="Delete"
+      text='Delete'
     />
   )
 
@@ -337,7 +338,8 @@ export class ClipsScreen extends React.Component<Props, State> {
       searchBarText,
       selectedItem,
       showActionSheet,
-      showDeleteConfirmDialog
+      showDeleteConfirmDialog,
+      showNoInternetConnectionMessage
     } = this.state
     const { session } = this.global
     const { isLoggedIn } = session
@@ -371,6 +373,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             onEndReached={this._onEndReached}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderClipItem}
+            showNoInternetConnectionMessage={showNoInternetConnectionMessage}
           />
         )}
         <ActionSheet
@@ -388,8 +391,8 @@ export class ClipsScreen extends React.Component<Props, State> {
         <Dialog.Container visible={showDeleteConfirmDialog}>
           <Dialog.Title>Delete Clip</Dialog.Title>
           <Dialog.Description>Are you sure?</Dialog.Description>
-          <Dialog.Button label="Cancel" onPress={this._cancelDeleteMediaRef} />
-          <Dialog.Button label="Delete" onPress={this._deleteMediaRef} />
+          <Dialog.Button label='Cancel' onPress={this._cancelDeleteMediaRef} />
+          <Dialog.Button label='Delete' onPress={this._deleteMediaRef} />
         </Dialog.Container>
       </View>
     )
@@ -404,11 +407,12 @@ export class ClipsScreen extends React.Component<Props, State> {
   ) => {
     const newState = {
       isLoading: false,
-      isLoadingMore: false
+      isLoadingMore: false,
+      showNoInternetConnectionMessage: false
     } as State
 
-    const wasAlerted = await alertIfNoNetworkConnection('load clips')
-    if (wasAlerted) return newState
+    const hasInternetConnection = await hasValidNetworkConnection()
+    newState.showNoInternetConnectionMessage = !hasInternetConnection
 
     try {
       const { flatListData, queryFrom, querySort } = this.state

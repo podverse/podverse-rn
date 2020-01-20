@@ -14,7 +14,7 @@ import {
 } from '../components'
 import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
-import { alertIfNoNetworkConnection } from '../lib/network'
+import { hasValidNetworkConnection } from '../lib/network'
 import {
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem
@@ -41,6 +41,7 @@ type State = {
   searchBarText: string
   selectedItem?: any
   showActionSheet: boolean
+  showNoInternetConnectionMessage?: boolean
 }
 
 export class EpisodesScreen extends React.Component<Props, State> {
@@ -81,8 +82,14 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { queryFrom } = this.state
-    const newState = await this._queryData(queryFrom)
-    this.setState(newState)
+    const hasInternetConnection = await hasValidNetworkConnection()
+    const from = hasInternetConnection ? queryFrom : _downloadedKey
+    this.setState({
+      queryFrom: from
+    }, async () => {
+      const newState = await this._queryData(from)
+      this.setState(newState)
+    })
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -309,7 +316,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
       querySort,
       searchBarText,
       selectedItem,
-      showActionSheet
+      showActionSheet,
+      showNoInternetConnectionMessage
     } = this.state
 
     const { navigation } = this.props
@@ -350,6 +358,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderEpisodeItem}
             resultsText='episodes'
+            showNoInternetConnectionMessage={showNoInternetConnectionMessage}
           />
         )}
         <ActionSheet
@@ -378,11 +387,12 @@ export class EpisodesScreen extends React.Component<Props, State> {
     const newState = {
       isLoading: false,
       isLoadingMore: false,
-      isRefreshing: false
+      isRefreshing: false,
+      showNoInternetConnectionMessage: false
     } as State
 
-    const wasAlerted = await alertIfNoNetworkConnection('load episodes')
-    if (wasAlerted) return newState
+    const hasInternetConnection = await hasValidNetworkConnection()
+    newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey !== _downloadedKey
 
     try {
       let { flatListData } = this.state
@@ -486,37 +496,37 @@ const leftItems = [
 const rightItems = (onlyMostRecent?: boolean) => [
   ...(onlyMostRecent
     ? [
-        {
-          label: 'most recent',
-          value: _mostRecentKey
-        }
-      ]
-    : [
-        {
-          label: 'most recent',
-          value: _mostRecentKey
-        },
-        {
-          label: 'top - past day',
-          value: _topPastDay
-        },
-        {
-          label: 'top - past week',
-          value: _topPastWeek
-        },
-        {
-          label: 'top - past month',
-          value: _topPastMonth
-        },
-        {
-          label: 'top - past year',
-          value: _topPastYear
-        },
-        {
-          label: 'random',
-          value: _randomKey
-        }
-      ])
+      {
+        label: 'most recent',
+        value: _mostRecentKey
+      }
+    ]
+  : [
+    {
+      label: 'most recent',
+      value: _mostRecentKey
+    },
+    {
+      label: 'top - past day',
+      value: _topPastDay
+    },
+    {
+      label: 'top - past week',
+      value: _topPastWeek
+    },
+    {
+      label: 'top - past month',
+      value: _topPastMonth
+    },
+    {
+      label: 'top - past year',
+      value: _topPastYear
+    },
+    {
+      label: 'random',
+      value: _randomKey
+    }
+  ])
 ]
 
 const styles = StyleSheet.create({
