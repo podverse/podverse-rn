@@ -14,7 +14,7 @@ import {
 } from '../components'
 import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
-import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
+import { hasValidNetworkConnection } from '../lib/network'
 import {
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem
