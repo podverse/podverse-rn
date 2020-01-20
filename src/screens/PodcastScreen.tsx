@@ -694,7 +694,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             )}
             {!isLoading && viewType === aboutKey && podcast && (
               <HTMLScrollView
-                html={podcast.description || (showNoInternetConnectionMessage ? 'No internet connection.' : '')}
+                html={podcast.description || (showNoInternetConnectionMessage ? 'No internet connection' : '')}
                 navigation={navigation}
               />
             )}
