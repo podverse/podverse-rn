@@ -772,7 +772,6 @@ export class PodcastScreen extends React.Component<Props, State> {
           newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === clipsKey) {
-        newState.showNoInternetConnectionMessage = !hasValid
         const results = await this._queryClips(
           querySort,
           queryOptions.queryPage
