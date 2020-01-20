@@ -9,7 +9,7 @@ import {
   TableSectionSelectors,
   View
 } from '../components'
-import { alertIfNoNetworkConnection } from '../lib/network'
+import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getPlaylists } from '../state/actions/playlist'
 import { getLoggedInUserPlaylists } from '../state/actions/user'
@@ -22,6 +22,7 @@ type State = {
   isLoading: boolean
   isLoadingMore: boolean
   queryFrom: string | null
+  showNoInternetConnectionMessage?: boolean
 }
 
 export class PlaylistsScreen extends React.Component<Props, State> {
@@ -62,24 +63,14 @@ export class PlaylistsScreen extends React.Component<Props, State> {
       return
     }
 
-    setGlobal(
+    this.setState(
       {
-        playlists: {
-          myPlaylists: [],
-          subscribedPlaylists: []
-        }
+        isLoading: true,
+        queryFrom: selectedKey
       },
-      () => {
-        this.setState(
-          {
-            isLoading: true,
-            queryFrom: selectedKey
-          },
-          async () => {
-            const newState = await this._queryData(selectedKey)
-            this.setState(newState)
-          }
-        )
+      async () => {
+        const newState = await this._queryData(selectedKey)
+        this.setState(newState)
       }
     )
   }
@@ -113,7 +104,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
   _onPressLogin = () => this.props.navigation.navigate(PV.RouteNames.AuthScreen)
 
   render() {
-    const { isLoading, isLoadingMore, queryFrom } = this.state
+    const { isLoading, isLoadingMore, queryFrom, showNoInternetConnectionMessage } = this.state
     const { myPlaylists, subscribedPlaylists } = this.global.playlists
     const flatListData =
       queryFrom === _myPlaylistsKey ? myPlaylists : subscribedPlaylists
@@ -135,6 +126,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               renderItem={this._renderPlaylistItem}
+              showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             />
           )}
           {!isLoading &&
@@ -157,7 +149,6 @@ export class PlaylistsScreen extends React.Component<Props, State> {
             flatListData.length < 1 && (
               <MessageWithAction
                 message='You have no subscribed playlists'
-                subMessage='(Ask a friend to send you a link to one of their playlists, then subscribe to it)'
               />
             )}
         </View>
@@ -174,11 +165,12 @@ export class PlaylistsScreen extends React.Component<Props, State> {
   ) => {
     const newState = {
       isLoading: false,
-      isLoadingMore: false
+      isLoadingMore: false,
+      showNoInternetConnectionMessage: false
     } as State
 
-    const wasAlerted = await alertIfNoNetworkConnection('load playlist items')
-    if (wasAlerted) return newState
+    const hasInternetConnection = await hasValidNetworkConnection()
+    newState.showNoInternetConnectionMessage = !hasInternetConnection
 
     try {
       if (filterKey === _myPlaylistsKey) {
