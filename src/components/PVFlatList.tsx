@@ -98,7 +98,7 @@ export const PVFlatList = (props: Props) => {
   return (
     <View style={styles.view}>
       {!noSubscribedPodcasts && ListHeaderComponent && <ListHeaderComponent />}
-      {noSubscribedPodcasts && !isLoadingMore && (
+      {noSubscribedPodcasts && !showNoInternetConnectionMessage && !isLoadingMore && (
         <MessageWithAction
           topActionHandler={handleSearchNavigation}
           topActionText='Search'
