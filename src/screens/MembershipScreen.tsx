@@ -7,6 +7,7 @@ import {
   TextLink,
   View
 } from '../components'
+import { hasValidNetworkConnection } from '../lib/network'
 import {
   getMembershipExpiration,
   getMembershipStatus,
@@ -26,6 +27,7 @@ type Props = {
 type State = {
   disableButton: boolean
   isLoading: boolean
+  showNoInternetConnectionMessage?: boolean
 }
 
 export class MembershipScreen extends React.Component<Props, State> {
@@ -48,7 +50,13 @@ export class MembershipScreen extends React.Component<Props, State> {
     } catch (error) {
       //
     }
-    this.setState({ isLoading: false })
+
+    const hasInternetConnection = await hasValidNetworkConnection()
+
+    this.setState({
+      isLoading: false,
+      showNoInternetConnectionMessage: !hasInternetConnection
+    })
   }
 
   handleRenewPress = async () => {
@@ -94,7 +102,7 @@ export class MembershipScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { disableButton, isLoading } = this.state
+    const { disableButton, isLoading, showNoInternetConnectionMessage } = this.state
     const { globalTheme, session } = this.global
     const { isLoggedIn, userInfo } = session
     const membershipStatus = getMembershipStatus(userInfo)
@@ -107,7 +115,15 @@ export class MembershipScreen extends React.Component<Props, State> {
     return (
       <View style={styles.wrapper}>
         {isLoading && isLoggedIn && <ActivityIndicator />}
-        {!isLoading && isLoggedIn && membershipStatus && (
+        {
+          !isLoading && showNoInternetConnectionMessage &&
+            <View style={styles.textRowCentered}>
+              <Text style={[styles.subText, { textAlign: 'center' }]}>
+                Connect to the internet and reload this page to sign up for Premium.
+              </Text>
+            </View>
+        }
+        {!isLoading && isLoggedIn && !!membershipStatus && (
           <View>
             <View style={styles.textRow}>
               <Text style={styles.label}>Status: </Text>
