@@ -17,7 +17,7 @@ import {
   View
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
-import { alertIfNoNetworkConnection } from '../lib/network'
+import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import {
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem
@@ -58,6 +58,7 @@ type State = {
   querySort?: string | null
   selectedItem?: any
   showActionSheet: boolean
+  showNoInternetConnectionMessage?: boolean
   userId?: string
 }
 
@@ -140,30 +141,32 @@ export class ProfileScreen extends React.Component<Props, State> {
     const userId = this.props.navigation.getParam('userId') || this.state.userId
     const { queryFrom } = this.state
 
+    const hasInternetConnection = await hasValidNetworkConnection()
+    if (!hasInternetConnection) {
+      this.setState({
+        endOfResultsReached: false,
+        flatListData: [],
+        flatListDataTotalCount: null,
+        isLoading: false,
+        showNoInternetConnectionMessage: true,
+        userId
+      })
+      return
+    }
+
     this.setState(
       {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
         isLoading: true,
+        showNoInternetConnectionMessage: false,
         userId
       },
       async () => {
         const { id } = this.global.session.userInfo
         const isLoggedInUserProfile = userId === id
         let newState = {} as any
-
-        const wasAlerted = await alertIfNoNetworkConnection('load your profile')
-        if (wasAlerted) {
-          this.setState({
-            flatListData: [],
-            flatListDataTotalCount: null,
-            isLoading: false,
-            isLoadingMore: false,
-            queryPage: 1
-          })
-          return
-        }
 
         if (isLoggedInUserProfile) {
           newState = {
@@ -413,6 +416,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       querySort,
       selectedItem,
       showActionSheet,
+      showNoInternetConnectionMessage,
       userId
     } = this.state
     const { profile, session } = this.global
@@ -483,6 +487,7 @@ export class ProfileScreen extends React.Component<Props, State> {
                 onEndReached={this._onEndReached}
                 renderItem={this._renderItem}
                 resultsText={resultsText}
+                showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               />
             )}
             <ActionSheet
@@ -514,12 +519,6 @@ export class ProfileScreen extends React.Component<Props, State> {
     sort?: string | null
   ) => {
     return new Promise(async (resolve, reject) => {
-      const wasAlerted = await alertIfNoNetworkConnection('load podcasts')
-      if (wasAlerted) {
-        resolve(newState)
-        return
-      }
-
       const { flatListData } = this.state
       const query = {
         includeAuthors: true,
@@ -625,11 +624,15 @@ export class ProfileScreen extends React.Component<Props, State> {
     const { queryFrom, querySort } = this.state
     let newState = {
       isLoading: false,
-      isLoadingMore: false
+      isLoadingMore: false,
+      showNoInternetConnectionMessage: false
     } as State
 
-    const wasAlerted = await alertIfNoNetworkConnection('load profile data')
-    if (wasAlerted) return newState
+    const hasInternetConnection = await hasValidNetworkConnection()
+    if (!hasInternetConnection) {
+      newState.showNoInternetConnectionMessage = true
+      return newState
+    }
 
     try {
       if (filterKey === _podcastsKey || filterKey === _alphabeticalKey) {
