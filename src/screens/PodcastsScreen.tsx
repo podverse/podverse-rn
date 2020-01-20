@@ -744,7 +744,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const { settings } = this.global
       const { nsfwMode } = settings
 
-      // Use this in every place where the query may have 0 results because of no internet connection.
       const hasInternetConnection = await hasValidNetworkConnection()
 
       if (filterKey === _subscribedKey) {
