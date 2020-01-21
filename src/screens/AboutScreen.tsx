@@ -25,7 +25,15 @@ export class AboutScreen extends React.Component<Props, State> {
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text style={styles.text}>
             {
-              'Podverse makes it easy to create, share, and discover full-length clips from your favorite podcasts. Other features include an intuitive design, sharable playlists, user profiles, and the ability to sync your subscriptions and queue across all of your devices. \n\nAll Podverse software is provided under an open source, copyleft license. You may download, modify, and use it for any purpose, as long as you share your changes to the code.'
+              'Create and share highlights of your favorite podcasts with Podverse!'
+              + 'Available on iOS, Android, and web. Sign up today and get 1 year of Podverse premium for free.'
+            }
+          </Text>
+          <View style={styles.separator} />
+          <Text style={styles.text}>
+            {
+              'All Podverse software is provided under an open source, copyleft license.'
+              + 'You may download, modify, and use it for any purpose, as long as you also share your changes to the code.'
             }
           </Text>
           <View style={styles.separator} />
