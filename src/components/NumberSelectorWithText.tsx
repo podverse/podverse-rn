@@ -27,11 +27,11 @@ export const NumberSelectorWithText = (props: Props) => {
   return (
     <View style={styles.wrapper}>
       <TextInput
-        keyboardType="numeric"
+        keyboardType='numeric'
         onChangeText={handleChangeText}
         onSubmitEditing={handleSubmitEditing}
         placeholderTextColor={globalTheme.placeholderText.color}
-        returnKeyType="done"
+        returnKeyType='done'
         style={[globalTheme.textInput, styles.textInput]}
         value={strNum}
       />

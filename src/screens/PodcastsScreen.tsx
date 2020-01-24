@@ -158,20 +158,23 @@ export class PodcastsScreen extends React.Component<Props, State> {
     if (nextAppState === 'active' && !isInitialLoad) {
       const { nowPlayingItem: lastItem } = this.global.player
       const trackId = await PVTrackPlayer.getCurrentTrack()
-      const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(
-        trackId
-      )
 
-      if (
-        !lastItem ||
-        (lastItem && currentItem.episodeId !== lastItem.episodeId)
-      ) {
-        await updatePlayerState(currentItem)
+      if (trackId) {
+        const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(
+          trackId
+        )
+
+        if (
+          !lastItem ||
+          (lastItem && currentItem && currentItem.episodeId !== lastItem.episodeId)
+        ) {
+          await updatePlayerState(currentItem)
+          updateUserPlaybackPosition()
+        }
       }
+
       await updatePlaybackState()
     }
-
-    updateUserPlaybackPosition()
   }
 
   // This event is apparently not needed in development on iOS simulator,

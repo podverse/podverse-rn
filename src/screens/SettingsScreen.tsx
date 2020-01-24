@@ -133,7 +133,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       placeholderItem
     this.setState({ maximumSpeedOptionSelected }, async () => {
       value
-        ? await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, value)
+        ? await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, value.toString())
         : await AsyncStorage.removeItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
     })
   }
@@ -199,7 +199,7 @@ export class SettingsScreen extends React.Component<Props, State> {
         />
         <SwitchWithText
           onValueChange={this._toggleDownloadingWifiOnly}
-          text="Only allow downloading when connected to Wifi"
+          text='Only allow downloading when connected to Wifi'
           value={!!downloadingWifiOnly}
         />
         {/* <SwitchWithText
@@ -208,14 +208,14 @@ export class SettingsScreen extends React.Component<Props, State> {
           value={!!autoDeleteEpisodeOnEnd} /> */}
         <SwitchWithText
           onValueChange={this._handleSelectDownloadedEpisodeLimitDefault}
-          text="Limit downloads by default for all podcasts"
+          text='Limit downloads by default for all podcasts'
           value={!!downloadedEpisodeLimitDefault}
         />
         <NumberSelectorWithText
           handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
           handleSubmitEditing={this._handleSetGlobalDownloadedEpisodeLimitCount}
           selectedNumber={downloadedEpisodeLimitCount}
-          text="Default download limit for all podcasts"
+          text='Default download limit for all podcasts'
         />
         <RNPickerSelect
           items={PV.Player.maximumSpeedSelectOptions}
@@ -230,7 +230,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                 {maximumSpeedOptionSelected.label}
               </Text>
               <Icon
-                name="angle-down"
+                name='angle-down'
                 size={14}
                 style={[styles.pickerSelectIcon, globalTheme.text]}
               />
@@ -249,11 +249,11 @@ export class SettingsScreen extends React.Component<Props, State> {
             subscribed podcasts?
           </Dialog.Description>
           <Dialog.Button
-            label="No"
+            label='No'
             onPress={this._handleToggleSetAllDownloadDialog}
           />
           <Dialog.Button
-            label="Yes"
+            label='Yes'
             onPress={
               showSetAllDownloadDialogIsCount
                 ? this._handleUpdateAllDownloadedEpiosdeLimitCount

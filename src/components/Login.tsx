@@ -59,23 +59,28 @@ export class Login extends React.Component<Props, State> {
     return (
       <View style={[styles.view, style]}>
         <TextInput
+          autoCapitalize='none'
+          blurOnSubmit={false}
           keyboardType='email-address'
           onChangeText={this.emailChanged}
-          style={styles.textField}
-          value={email}
-          autoCapitalize='none'
+          onSubmitEditing={() => { this.secondTextInput.focus() }}
           placeholder='Email'
           placeholderTextColor={PV.Colors.gray}
+          returnKeyType='next'
+          style={styles.textField}
+          value={email}
         />
         <TextInput
-          secureTextEntry={true}
+          autoCapitalize='none'
           onChangeText={this.passwordChanged}
+          placeholder='Password'
+          placeholderTextColor={PV.Colors.gray}
+          ref={(input) => { this.secondTextInput = input }}
+          returnKeyType='done'
+          secureTextEntry={true}
           style={styles.textField}
           value={password}
           underlineColorAndroid='transparent'
-          autoCapitalize='none'
-          placeholder='Password'
-          placeholderTextColor={PV.Colors.gray}
         />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}

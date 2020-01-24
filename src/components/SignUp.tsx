@@ -142,36 +142,43 @@ export class SignUp extends React.Component<Props, State> {
     return (
       <ScrollView contentContainerStyle={styles.scrollView}>
         <TextInput
+          autoCapitalize='none'
           keyboardType='email-address'
           onBlur={this.emailValid}
           onChange={this.emailChanged}
-          style={styles.textField}
-          value={this.state.email}
-          autoCapitalize='none'
+          onSubmitEditing={() => { this.secondTextInput.focus() }}
           placeholder='Email'
           placeholderTextColor={PV.Colors.gray}
+          returnKeyType='next'
+          style={styles.textField}
+          value={this.state.email}
         />
         <TextInput
-          secureTextEntry={true}
+          autoCapitalize='none'
           onBlur={this.uiRefreshed}
           onChange={this.passwordChanged}
-          style={styles.textField}
-          value={this.state.password}
-          underlineColorAndroid='transparent'
-          autoCapitalize='none'
+          onSubmitEditing={() => { this.thirdTextInput.focus() }}
           placeholder='Password'
           placeholderTextColor={PV.Colors.gray}
+          ref={(input) => { this.secondTextInput = input }}
+          returnKeyType='next'
+          secureTextEntry={true}
+          style={styles.textField}
+          underlineColorAndroid='transparent'
+          value={this.state.password}
         />
         <TextInput
-          secureTextEntry={true}
+          autoCapitalize='none'
           onBlur={this.uiRefreshed}
           onChange={this.passwordVerificationChanged}
-          style={[styles.textField, passwordMismatch ? errorStyle : null]}
-          autoCapitalize='none'
-          value={this.state.passwordVerification}
-          underlineColorAndroid='transparent'
           placeholder='Verify Password'
           placeholderTextColor={PV.Colors.gray}
+          ref={(input) => { this.thirdTextInput = input }}
+          returnKeyType='done'
+          secureTextEntry={true}
+          style={[styles.textField, passwordMismatch ? errorStyle : null]}
+          underlineColorAndroid='transparent'
+          value={this.state.passwordVerification}
         />
         {/* <TextInput
           onBlur={this.uiRefreshed}
