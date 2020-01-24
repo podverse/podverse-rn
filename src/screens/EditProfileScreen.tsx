@@ -126,11 +126,12 @@ export class EditProfileScreen extends React.Component<Props, State> {
           <View>
             <Text style={core.textInputLabel}>Name</Text>
             <TextInput
-              autoCapitalize="none"
+              autoCapitalize='none'
               onChangeText={this._onChangeName}
-              placeholder="your name"
+              placeholder='your name'
+              returnKeyType='done'
               style={[styles.textInput, globalTheme.textInput]}
-              underlineColorAndroid="transparent"
+              underlineColorAndroid='transparent'
               value={name}
             />
             <Text style={core.textInputLabel}>Profile Privacy</Text>
@@ -144,7 +145,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
                   {selectedIsPublicOption.label}
                 </Text>
                 <Icon
-                  name="angle-down"
+                  name='angle-down'
                   size={14}
                   style={[core.selectorIcon, globalTheme.textInputIcon]}
                 />

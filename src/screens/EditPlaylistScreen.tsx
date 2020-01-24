@@ -184,11 +184,12 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
         <View style={styles.topWrapper}>
           <Text style={core.textInputLabel}>Title</Text>
           <TextInput
-            autoCapitalize="none"
+            autoCapitalize='none'
             onChangeText={this._onChangeTitle}
-            placeholder="playlist title"
+            placeholder='playlist title'
+            returnKeyType='done'
             style={styles.textInput}
-            underlineColorAndroid="transparent"
+            underlineColorAndroid='transparent'
             value={newTitle}
           />
         </View>

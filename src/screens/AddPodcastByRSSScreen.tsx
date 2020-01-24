@@ -107,6 +107,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
                 autoCapitalize='none'
                 onChangeText={this._handleChangeText}
                 placeholder='example.com/rssFeed'
+                returnKeyType='done'
                 style={[styles.textInput, globalTheme.textInput]}
                 underlineColorAndroid='transparent'
                 value={url}

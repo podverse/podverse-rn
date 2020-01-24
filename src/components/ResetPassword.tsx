@@ -49,12 +49,13 @@ export class ResetPassword extends React.Component<Props, State> {
     return (
       <View style={[styles.view, style]}>
         <TextInput
+          autoCapitalize='none'
           keyboardType='email-address'
           onChangeText={this._emailChanged}
+          placeholder='Email'
+          returnKeyType='done'
           style={styles.textField}
           value={this.state.email}
-          autoCapitalize='none'
-          placeholder='Email'
         />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
