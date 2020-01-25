@@ -6,7 +6,7 @@ export const Tabs = {
   },
   Episodes: {
     title: 'Episodes',
-    icon: require('./images/tab-clips.png'),
+    icon: require('./images/tab-episodes.png'),
     index: 1
   },
   Clips: {
