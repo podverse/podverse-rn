@@ -1,6 +1,7 @@
 import { Animated, Modal, Text, TouchableHighlight, View } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator } from '.'
+import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources/PV'
 
 type Props = {
@@ -120,7 +121,7 @@ export class PVActionSheet extends React.Component<Props, State> {
             onPress={handleCancelPress}
             style={[styles.buttonCancel, globalTheme.actionSheetButtonCancel]}
             underlayColor={
-              globalTheme.actionSheetButtonCancelUnderlay.backgroundColor
+              safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor, '')
             }>
             <Text
               style={[
