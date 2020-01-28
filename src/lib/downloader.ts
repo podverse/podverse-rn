@@ -50,11 +50,17 @@ export const deleteDownloadedEpisode = async (episode: any) => {
 
 const addDLTask = async (episode: any, podcast: any) =>
   DownloadState.addDownloadTask({
+    addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
     episodeDescription: episode.description,
     episodeId: episode.id,
+    episodeImageUrl: episode.imageUrl,
+    episodeMediaUrl: episode.mediaUrl,
     episodePubDate: episode.pubDate,
     episodeTitle: episode.title,
+    podcastId: podcast.id,
     podcastImageUrl: podcast.imageUrl,
+    podcastIsExplicit: podcast.isExplicit,
+    podcastSortableTitle: podcast.sortableTitle,
     podcastTitle: podcast.title
   })
 
