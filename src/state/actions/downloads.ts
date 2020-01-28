@@ -11,16 +11,24 @@ import { getAutoDownloadSettings as getAutoDownloadSettingsService, updateAutoDo
   as updateAutoDownloadSettingsService } from '../../services/autoDownloads'
 import { clearNowPlayingItem } from './player'
 
+// The DownloadTaskState should have the same episode and podcast properties as a NowPlayingItem,
+// or playing the download directly from the DownloadsScreen will not work.
 export type DownloadTaskState = {
+  addByRSSPodcastFeedUrl?: string
   bytesTotal?: string
   bytesWritten?: string
   completed?: boolean
   episodeDescription?: string
   episodeId: string
+  episodeImageUrl?: string
+  episodeMediaUrl: string
   episodePubDate?: string
   episodeTitle?: string
   percent?: number
+  podcastId?: string
   podcastImageUrl?: string
+  podcastIsExplicit?: boolean
+  podcastSortableTitle?: boolean
   podcastTitle?: string
   status?: DownloadStatus
 }
