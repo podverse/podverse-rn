@@ -64,6 +64,12 @@ export const EpisodeTableHeader = (props: Props) => {
           {!isDownloading && handleMorePress && (
             <View style={styles.buttonView}>
               <TouchableOpacity
+                hitSlop={{
+                  bottom: 8,
+                  left: 8,
+                  right: 8,
+                  top: 8
+                }}
                 onPress={handleMorePress}
                 style={styles.moreButton}>
                 <Image

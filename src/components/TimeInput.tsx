@@ -41,7 +41,14 @@ export const TimeInput = (props: Props) => {
       <View style={core.row}>
         <Text style={core.textInputLabel}>{labelText}</Text>
         {(time || time === 0) && (
-          <TouchableOpacity onPress={handlePreview}>
+          <TouchableOpacity
+            hitSlop={{
+              bottom: 4,
+              left: 4,
+              right: 4,
+              top: 4
+            }}
+            onPress={handlePreview}>
             <Icon
               color={globalTheme.link.color}
               name='play'
@@ -67,7 +74,14 @@ export const TimeInput = (props: Props) => {
           </TouchableWithoutFeedback>
         </View>
         {handleClearTime && (
-          <TouchableWithoutFeedback onPress={handleClearTime}>
+          <TouchableWithoutFeedback
+            hitSlop={{
+              bottom: 0,
+              left: 4,
+              right: 4,
+              top: 4
+            }}
+            onPress={handleClearTime}>
             <View
               style={[styles.timeInputTouchableDelete, globalTheme.textInput]}>
               <Icon

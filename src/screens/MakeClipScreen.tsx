@@ -524,7 +524,14 @@ export class MakeClipScreen extends React.Component<Props, State> {
               </TouchableOpacity>
             </RNView>
             <View style={styles.bottomRow}>
-              <TouchableWithoutFeedback onPress={this._adjustSpeed}>
+              <TouchableWithoutFeedback
+                hitSlop={{
+                  bottom: 4,
+                  left: 4,
+                  right: 4,
+                  top: 4
+                }}
+                onPress={this._adjustSpeed}>
                 <View>
                   <Text
                     style={[
@@ -707,12 +714,14 @@ const styles = StyleSheet.create({
     flex: 1
   },
   wrapperBottom: {
-    flex: 0
+    flex: 0,
+    paddingTop: 4
   },
   wrapperMiddle: {
     flex: 1,
+    marginBottom: 8,
     marginHorizontal: 8,
-    marginVertical: 12
+    marginTop: 12
   },
   wrapperTop: {
     flex: 0,
