@@ -1,10 +1,10 @@
 import { StyleSheet, Switch } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import React from 'reactn'
 import { PV } from '../resources'
 import { core } from '../styles'
 import {
   ActivityIndicator,
+  FastImage,
   Icon,
   SettingsButton,
   SubscribeButton,
@@ -50,7 +50,9 @@ export const PodcastTableHeader = (props: Props) => {
       )}
       {!isLoading && !isNotFound && (
         <View style={styles.wrapper}>
-          <FastImage source={{ uri: podcastImageUrl }} style={styles.image} />
+          <FastImage
+            source={podcastImageUrl}
+            styles={styles.image} />
           <View style={styles.textWrapper}>
             <View style={styles.textWrapperTop}>
               <Text numberOfLines={2} style={styles.title}>
@@ -80,7 +82,7 @@ export const PodcastTableHeader = (props: Props) => {
                 </Text>
                 <Icon
                   isSecondary={true}
-                  name="download"
+                  name='download'
                   size={13}
                   style={styles.autoDownloadIcon}
                 />

@@ -1,11 +1,10 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button, core } from '../styles'
-import { ActivityIndicator, Icon, Text, View } from './'
+import { ActivityIndicator, FastImage, Icon, Text, View } from './'
 
 type Props = {
   downloadedEpisodeIds?: any
@@ -41,7 +40,9 @@ export const EpisodeTableHeader = (props: Props) => {
       {isLoading && <ActivityIndicator />}
       {!isLoading && !isNotFound && (
         <View style={styles.innerWrapper}>
-          <FastImage source={{ uri: podcastImageUrl }} style={styles.image} />
+          <FastImage
+            source={podcastImageUrl}
+            styles={styles.image} />
           <View style={styles.textWrapper}>
             <Text numberOfLines={3} style={styles.title}>
               {title}
@@ -53,7 +54,7 @@ export const EpisodeTableHeader = (props: Props) => {
               {isDownloaded && (
                 <Icon
                   isSecondary={true}
-                  name="download"
+                  name='download'
                   size={13}
                   style={styles.downloadedIcon}
                 />
@@ -66,7 +67,7 @@ export const EpisodeTableHeader = (props: Props) => {
                 onPress={handleMorePress}
                 style={styles.moreButton}>
                 <Image
-                  resizeMode="contain"
+                  resizeMode='contain'
                   source={PV.Images.MORE}
                   style={[styles.moreButtonImage, globalTheme.buttonImage]}
                 />

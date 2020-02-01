@@ -1,10 +1,9 @@
 import React from 'react'
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { Slider } from 'react-native-elements'
-import FastImage from 'react-native-fast-image'
 import { PV } from '../resources'
 import { getDownloadStatusText } from '../state/actions/downloads'
-import { Text, View } from './'
+import { FastImage, Text, View } from './'
 
 type Props = {
   bytesTotal: string
@@ -37,7 +36,9 @@ export class DownloadTableCell extends React.PureComponent<Props> {
     return (
       <TouchableWithoutFeedback onPress={onPress}>
         <View style={styles.wrapper}>
-          <FastImage source={{ uri: podcastImageUrl }} style={styles.image} />
+          <FastImage
+            source={podcastImageUrl}
+            styles={styles.image} />
           <View style={styles.textWrapper}>
             <View style={styles.textWrapperTop}>
               <Text numberOfLines={1} style={styles.episodeTitle}>

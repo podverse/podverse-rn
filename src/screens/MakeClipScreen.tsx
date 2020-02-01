@@ -7,12 +7,12 @@ import {
   TouchableWithoutFeedback,
   View as RNView
 } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import RNPickerSelect from 'react-native-picker-select'
 import Share from 'react-native-share'
 import React from 'reactn'
 import {
   ActivityIndicator,
+  FastImage,
   Icon,
   PlayerProgressBar,
   SafeAreaView,
@@ -438,8 +438,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
           <View style={styles.wrapperMiddle}>
             <FastImage
               resizeMode='contain'
-              source={{ uri: nowPlayingItem && nowPlayingItem.podcastImageUrl }}
-              style={styles.image}
+              source={nowPlayingItem && nowPlayingItem.podcastImageUrl}
+              styles={styles.image}
             />
           </View>
           <View style={styles.wrapperBottom}>
