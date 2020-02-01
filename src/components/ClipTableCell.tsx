@@ -52,40 +52,44 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
     const innerTopView = (
       <View style={styles.innerTopView}>
-        {!!podcastImageUrl && (
-          <FastImage
-            isSmall={true}
-            source={podcastImageUrl}
-            styles={styles.image} />
-        )}
-        <View style={styles.textWrapper}>
-          {!!podcastTitle && (
-            <Text
-              isSecondary={true}
-              numberOfLines={1}
-              style={styles.podcastTitle}>
-              {podcastTitle}
-            </Text>
-          )}
-          {!!episodeTitle && (
-            <Text numberOfLines={1} style={styles.episodeTitle}>
-              {episodeTitle}
-            </Text>
-          )}
-          <View style={styles.textWrapperBottomRow}>
-            <Text isSecondary={true} style={styles.episodePubDate}>
-              {readableDate(episodePubDate)}
-            </Text>
-            {isDownloaded && (
-              <Icon
-                isSecondary={true}
-                name='download'
-                size={13}
-                style={styles.downloadedIcon}
-              />
+        <TouchableWithoutFeedback onPress={handleNavigationPress}>
+          <View style={{ flex: 1, flexDirection: 'row' }}>
+            {!!podcastImageUrl && (
+              <FastImage
+                isSmall={true}
+                source={podcastImageUrl}
+                styles={styles.image} />
             )}
+            <View style={styles.textWrapper}>
+              {!!podcastTitle && (
+                <Text
+                  isSecondary={true}
+                  numberOfLines={1}
+                  style={styles.podcastTitle}>
+                  {podcastTitle}
+                </Text>
+              )}
+              {!!episodeTitle && (
+                <Text numberOfLines={1} style={styles.episodeTitle}>
+                  {episodeTitle}
+                </Text>
+              )}
+              <View style={styles.textWrapperBottomRow}>
+                <Text isSecondary={true} style={styles.episodePubDate}>
+                  {readableDate(episodePubDate)}
+                </Text>
+                {isDownloaded && (
+                  <Icon
+                    isSecondary={true}
+                    name='download'
+                    size={13}
+                    style={styles.downloadedIcon}
+                  />
+                )}
+              </View>
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
         {!isDownloading && handleMorePress && moreButton}
         {isDownloading && (
           <ActivityIndicator
@@ -116,13 +120,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       <View style={styles.wrapper}>
         {!!showEpisodeInfo && (
           <View style={styles.wrapperTop}>
-            {handleNavigationPress ? (
-              <TouchableWithoutFeedback onPress={handleNavigationPress}>
-                {innerTopView}
-              </TouchableWithoutFeedback>
-            ) : (
-              innerTopView
-            )}
+            {innerTopView}
           </View>
         )}
         {handleNavigationPress ? (
