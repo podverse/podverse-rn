@@ -96,6 +96,10 @@ export class PVActionSheet extends React.Component<Props, State> {
               <Text style={[styles.buttonText, buttonTextStyle]}>
                 {item.text}
               </Text>
+              <ActivityIndicator
+                size='small'
+                styles={styles.activityIndicator}
+              />
               {item.isDownloading && (
                 <ActivityIndicator
                   size='small'
