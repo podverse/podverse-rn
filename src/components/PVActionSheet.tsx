@@ -193,7 +193,7 @@ const styles = {
   activityIndicator: {
     flex: 0,
     marginLeft: 12,
-    marginRight: -30
+    marginRight: -32
   },
   animatedView: {
     marginBottom: 24,
