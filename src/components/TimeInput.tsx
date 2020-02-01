@@ -77,13 +77,12 @@ export const TimeInput = (props: Props) => {
           <TouchableWithoutFeedback
             hitSlop={{
               bottom: 0,
-              left: 4,
-              right: 4,
+              left: 2,
+              right: 8,
               top: 4
             }}
             onPress={handleClearTime}>
-            <View
-              style={[styles.timeInputTouchableDelete, globalTheme.textInput]}>
+            <View style={styles.timeInputTouchableDelete}>
               <Icon
                 color={
                   isDarkMode ? iconStyles.dark.color : iconStyles.light.color
@@ -118,13 +117,12 @@ const styles = StyleSheet.create({
   },
   timeInputTouchableDelete: {
     alignItems: 'center',
-    height: 44,
+    flex: 0,
+    height: 46,
     justifyContent: 'center',
-    paddingHorizontal: 4,
-    position: 'absolute',
-    right: 0,
-    top: 2,
-    width: 54
+    marginLeft: -44,
+    marginTop: 2,
+    width: 46
   },
   timeInputWrapper: {
     flex: 1,
