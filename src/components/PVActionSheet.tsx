@@ -192,7 +192,8 @@ const _yValueHide = new Animated.Value(400)
 const styles = {
   activityIndicator: {
     flex: 0,
-    marginLeft: 12
+    marginLeft: 12,
+    marginRight: -30
   },
   animatedView: {
     marginBottom: 24,
