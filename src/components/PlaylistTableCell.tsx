@@ -18,7 +18,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
       isSaving,
       itemCount = 0,
       onPress,
-      title = 'Untitled playlist'
+      title = 'untitled playlist'
     } = this.props
 
     const wrapperTopStyles = [styles.wrapperTop]

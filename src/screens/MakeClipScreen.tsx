@@ -284,7 +284,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 text: 'Share',
                 onPress: async () => {
                   const { nowPlayingItem = {} } = this.global.player
-                  const title = `${data.title || 'Untitled clip'} – ${
+                  const title = `${data.title || 'untitled clip'} – ${
                     nowPlayingItem.podcastTitle
                   } – ${
                     nowPlayingItem.episodeTitle

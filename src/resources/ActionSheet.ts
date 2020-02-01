@@ -138,7 +138,7 @@ const mediaMoreButtons = (
           let title = ''
           if (item.clipId) {
             url = PV.URLs.clip + item.clipId
-            title = item.clipTitle ? item.clipTitle : 'Untitled clip –'
+            title = item.clipTitle ? item.clipTitle : 'untitled clip –'
             title += ` ${item.podcastTitle} – ${item.episodeTitle} – clip shared using Podverse`
           } else if (item.episodeId) {
             url = PV.URLs.episode + item.episodeId

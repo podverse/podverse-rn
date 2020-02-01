@@ -43,7 +43,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const isDownloaded = downloadedEpisodeIds[id]
 
     if (!description) description = 'No show notes available'
-    if (!title) title = 'Untitled episode'
+    if (!title) title = 'untitled episode'
 
     const innerTopView = (
       <View style={styles.innerTopView}>

@@ -23,11 +23,11 @@ export class DownloadTableCell extends React.PureComponent<Props> {
       bytesTotal = '---',
       bytesWritten = '---',
       completed,
-      episodeTitle = 'Untitled episode',
+      episodeTitle = 'untitled episode',
       onPress,
       percent,
       podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
-      podcastTitle = 'Untitled podcast',
+      podcastTitle = 'untitled podcast',
       status
     } = this.props
     const per = completed ? 1 : percent

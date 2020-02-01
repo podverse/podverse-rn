@@ -450,7 +450,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       title = `${
         nowPlayingItem.clipTitle
           ? nowPlayingItem.clipTitle + ' – '
-          : 'Untitled clip – '
+          : 'untitled clip – '
       }`
       title += `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} – clip shared using Podverse`
     }

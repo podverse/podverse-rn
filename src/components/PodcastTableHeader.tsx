@@ -37,7 +37,7 @@ export const PodcastTableHeader = (props: Props) => {
     isSubscribed,
     isSubscribing,
     podcastImageUrl,
-    podcastTitle = 'Untitled podcast',
+    podcastTitle = 'untitled podcast',
     showSettings
   } = props
 

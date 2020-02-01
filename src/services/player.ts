@@ -290,9 +290,9 @@ export const createTrack = async (item: NowPlayingItem) => {
     clipId,
     episodeId,
     episodeMediaUrl = '',
-    episodeTitle = 'Untitled episode',
+    episodeTitle = 'untitled episode',
     podcastImageUrl,
-    podcastTitle = 'Untitled podcast'
+    podcastTitle = 'untitled podcast'
   } = item
   const id = clipId || episodeId
   let track = null
