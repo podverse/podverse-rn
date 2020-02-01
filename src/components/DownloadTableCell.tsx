@@ -80,7 +80,9 @@ const styles = StyleSheet.create({
   episodeTitle: {
     flex: 1,
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold
+    fontWeight: PV.Fonts.weights.semibold,
+    lineHeight: PV.Fonts.sizes.md,
+    marginTop: 2
   },
   image: {
     flex: 0,
@@ -89,9 +91,9 @@ const styles = StyleSheet.create({
     width: PV.Table.cells.podcast.image.width
   },
   podcastTitle: {
-    flex: 1,
-    fontSize: PV.Fonts.sizes.md,
-    marginTop: 3
+    flex: 0,
+    fontSize: PV.Fonts.sizes.sm,
+    marginTop: 1
   },
   slider: {
     height: 4
