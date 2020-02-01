@@ -33,6 +33,7 @@ export const PVSearchBar = (props: Props) => {
       onChangeText={onChangeText}
       onClear={onClear}
       placeholder={placeholder}
+      returnKeyType='done'
       searchIcon={true}
       style={globalTheme.textInput}
       value={value}
