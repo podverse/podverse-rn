@@ -32,7 +32,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       podcastImageUrl,
       podcastTitle,
       startTime,
-      title = 'Untitled clip'
+      title = 'untitled clip'
     } = this.props
     const clipTime = readableClipTime(startTime, endTime)
     const { downloadedEpisodeIds, downloadsActive } = this.global
