@@ -24,13 +24,13 @@ export class QueueTableCell extends React.PureComponent<Props> {
     const {
       clipEndTime,
       clipStartTime,
-      clipTitle = 'Untitled clip',
+      clipTitle,
       episodePubDate,
-      episodeTitle = 'Untilted episode',
+      episodeTitle,
       handleRemovePress,
       hideBottomRow,
       podcastImageUrl,
-      podcastTitle = 'Untitled podcast',
+      podcastTitle,
       showMoveButton,
       showRemoveButton
     } = this.props
@@ -49,10 +49,10 @@ export class QueueTableCell extends React.PureComponent<Props> {
               isSecondary={true}
               numberOfLines={1}
               style={styles.podcastTitle}>
-              {podcastTitle}
+              {podcastTitle || 'untitled podcast'}
             </Text>
             <Text numberOfLines={1} style={styles.episodeTitle}>
-              {episodeTitle}
+              {episodeTitle || 'untitled episode'}
             </Text>
             {!!episodePubDate && (
               <Text
@@ -78,7 +78,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
         {!hideBottomRow && (
           <View style={styles.wrapperBottom}>
             <Text numberOfLines={1} style={styles.clipTitle}>
-              {clipStartTime ? clipTitle : 'Full Episode'}
+              {clipStartTime ? (clipTitle || 'untitled clip') : 'Full Episode'}
             </Text>
             {!!clipStartTime && (
               <Text style={styles.clipTime}>
