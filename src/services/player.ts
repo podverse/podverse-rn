@@ -84,6 +84,7 @@ export const handleResumeAfterClipHasEnded = async () => {
     nowPlayingItem
   )
   await setNowPlayingItem(nowPlayingItemEpisode)
+  addOrUpdateHistoryItem(nowPlayingItemEpisode)
   PlayerEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
