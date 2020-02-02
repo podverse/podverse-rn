@@ -901,7 +901,7 @@ const leftItems = [
   }
 ]
 
-const rightItems = (isAllPodcasts?: boolean) => {
+const rightItems = (isAllPodcasts?: boolean, isCategories?: boolean) => {
   const items = [
     {
       label: 'top - past day',
@@ -920,23 +920,6 @@ const rightItems = (isAllPodcasts?: boolean) => {
       value: _topPastYear
     }
   ]
-
-  if (!isAllPodcasts) {
-    items.unshift(
-      {
-        label: 'most recent',
-        value: _mostRecentKey
-      }
-    )
-    items.unshift({
-      label: 'alphabetical',
-      value: _alphabeticalKey
-    })
-    items.push({
-      label: 'random',
-      value: _randomKey
-    })
-  }
 
   return items
 }
