@@ -134,9 +134,16 @@ export const OverlayAlert = (props: Props) => {
           Renew Membership
         </Text>
       </View>
-      <TouchableWithoutFeedback onPress={handleCloseButton}>
+      <TouchableWithoutFeedback
+        hitSlop={{
+          bottom: 4,
+          left: 4,
+          right: 4,
+          top: 4
+        }}
+        onPress={handleCloseButton}>
         <View style={styles.iconWrapper}>
-          <Icon color={PV.Colors.white} name="times" size={28} />
+          <Icon color={PV.Colors.white} name='times' size={28} />
         </View>
       </TouchableWithoutFeedback>
     </View>

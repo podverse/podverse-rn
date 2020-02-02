@@ -18,7 +18,8 @@ const mediaMoreButtons = (
   item: any = {},
   navigation: any,
   handleDismiss: any,
-  handleDownload: any
+  handleDownload: any,
+  handleDeleteClip: any
 ) => {
   if (!item || !item.episodeId) return
 
@@ -32,8 +33,8 @@ const mediaMoreButtons = (
 
   if (item.ownerId && item.ownerId === loggedInUserId) {
     buttons.push({
-      key: 'edit',
-      text: 'Edit',
+      key: 'editClip',
+      text: 'Edit Clip',
       onPress: async () => {
         await handleDismiss()
         const shouldPlay = false
@@ -47,6 +48,13 @@ const mediaMoreButtons = (
             isEditing: true
           })
         }, 1000)
+      }
+    }, {
+      key: 'deleteClip',
+      text: 'Delete Clip',
+      onPress: async () => {
+        await handleDismiss()
+        await handleDeleteClip(item.clipId)
       }
     })
   }
@@ -138,7 +146,7 @@ const mediaMoreButtons = (
           let title = ''
           if (item.clipId) {
             url = PV.URLs.clip + item.clipId
-            title = item.clipTitle ? item.clipTitle : 'Untitled clip –'
+            title = item.clipTitle ? item.clipTitle : 'untitled clip –'
             title += ` ${item.podcastTitle} – ${item.episodeTitle} – clip shared using Podverse`
           } else if (item.episodeId) {
             url = PV.URLs.episode + item.episodeId
@@ -159,8 +167,8 @@ const mediaMoreButtons = (
 
   if (isDownloaded) {
     buttons.push({
-      key: 'delete',
-      text: 'Delete',
+      key: 'deleteEpisode',
+      text: 'Delete Episode',
       onPress: async () => {
         removeDownloadedPodcastEpisode(item.episodeId)
         await handleDismiss()

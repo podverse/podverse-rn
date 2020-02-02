@@ -24,6 +24,34 @@ export type NowPlayingItem = {
   userPlaybackPosition?: number
 }
 
+export const cleanNowPlayingItem = (item: any) => {
+  return {
+    addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
+    clipEndTime: item.clipEndTime,
+    clipId: item.clipId,
+    clipStartTime: item.clipStartTime,
+    clipTitle: item.clipTitle,
+    episodeDescription: item.episodeDescription,
+    episodeId: item.episodeId,
+    episodeImageUrl: item.episodeImageUrl,
+    episodeMediaUrl: item.episodeMediaUrl,
+    episodePubDate: item.episodePubDate,
+    episodeTitle: item.episodeTitle,
+    isPublic: item.isPublic,
+    ownerId: item.ownerId,
+    ownerIsPublic: item.ownerIsPublic,
+    ownerName: item.ownerName,
+    podcastAuthors: item.podcastAuthors,
+    podcastCategories: item.podcastCategories,
+    podcastId: item.podcastId,
+    podcastImageUrl: item.podcastImageUrl,
+    podcastIsExplicit: item.podcastIsExplicit,
+    podcastSortableTitle: item.podcastSortableTitle,
+    podcastTitle: item.podcastTitle,
+    userPlaybackPosition: item.userPlaybackPosition
+  }
+}
+
 export const convertNowPlayingItemToEpisode = (item: NowPlayingItem) => {
   return {
     description: item.episodeDescription,

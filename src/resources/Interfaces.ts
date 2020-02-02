@@ -113,6 +113,7 @@ export interface InitialState {
     flatListDataTotalCount: number | null
     isLoading: boolean
     isLoadingMore: boolean
+    isQuerying: boolean
     queryFrom: string | null
     queryPage: number
     querySort: string | null

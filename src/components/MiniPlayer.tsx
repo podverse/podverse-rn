@@ -5,13 +5,13 @@ import {
   TouchableWithoutFeedback,
   View
 } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import React from 'reactn'
 import { PV } from '../resources'
 import { PVTrackPlayer } from '../services/player'
 import { togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
+import { FastImage } from './'
 
 type Props = {
   navigation: any
@@ -39,10 +39,11 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
             }>
             <View style={[styles.player, globalTheme.player]}>
               <FastImage
-                key={nowPlayingItem.podcastImageUrl}
+                isSmall={true}
+                pvKey={nowPlayingItem.podcastImageUrl}
                 resizeMode='contain'
-                source={{ uri: nowPlayingItem.podcastImageUrl }}
-                style={styles.image}
+                source={nowPlayingItem.podcastImageUrl}
+                styles={styles.image}
               />
               <View style={styles.textWrapper}>
                 <Text

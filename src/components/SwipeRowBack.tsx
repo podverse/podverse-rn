@@ -27,7 +27,7 @@ export const SwipeRowBack = (props: Props) => {
         <View style={s.textWrapper}>
           <ActivityIndicator
             color={globalTheme.activityIndicatorAlternate.color}
-            size="large"
+            size='large'
           />
         </View>
       ) : (

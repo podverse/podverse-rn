@@ -20,22 +20,29 @@ export const SubscribeButton = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
-    <TouchableWithoutFeedback onPress={handleToggleSubscribe}>
+    <TouchableWithoutFeedback
+      hitSlop={{
+        bottom: 4,
+        left: 8,
+        right: 8,
+        top: 4
+      }}
+      onPress={handleToggleSubscribe}>
       <View style={styles.buttonView}>
         {isSubscribing && (
           <View style={styles.activityIndicator}>
             <ActivityIndicator
               color={globalTheme.activityIndicator.color}
-              size="small"
+              size='small'
             />
           </View>
         )}
         {!isSubscribing && (
           <View>
             {isSubscribed ? (
-              <Icon name="star" size={PV.Icons.NAV} solid={true} />
+              <Icon name='star' size={PV.Icons.NAV} solid={true} />
             ) : (
-              <Icon name="star" size={PV.Icons.NAV} />
+              <Icon name='star' size={PV.Icons.NAV} />
             )}
           </View>
         )}
