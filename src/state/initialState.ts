@@ -52,6 +52,7 @@ const initialTheme: InitialState = {
     flatListDataTotalCount: null,
     isLoading: false,
     isLoadingMore: false,
+    isQuerying: false,
     queryFrom: PV.Keys.QUERY_FROM_THIS_PODCAST,
     queryPage: 1,
     querySort: PV.Keys.QUERY_SORT_TOP_PAST_WEEK,

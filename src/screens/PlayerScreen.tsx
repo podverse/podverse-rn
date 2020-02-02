@@ -194,7 +194,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           endOfResultsReached: false,
           flatListData: [],
           flatListDataTotalCount: null,
-          isLoading: true,
+          isQuerying: true,
           queryFrom: PV.Keys.QUERY_FROM_THIS_PODCAST,
           queryPage: 1,
           viewType: selectedKey
@@ -216,7 +216,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           setGlobal({
             screenPlayer: {
               ...this.global.screenPlayer,
-              isLoading: false
+              isQuerying: false
             }
           })
         }
@@ -242,7 +242,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           endOfResultsReached: false,
           flatListData: [],
           flatListDataTotalCount: null,
-          isLoading: true,
+          isQuerying: true,
           queryFrom: selectedKey,
           queryPage: 1
         }
@@ -277,7 +277,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           endOfResultsReached: false,
           flatListData: [],
           flatListDataTotalCount: null,
-          isLoading: true,
+          isQuerying: true,
           querySort: selectedKey
         }
       },
@@ -492,7 +492,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           }
           handleNavigationPress={() => console.log('handle episode press')}
           pubDate={item.pubDate}
-          title={item.title}
+          title={item.title || 'untitled episode'}
         />
       )
     } else {
@@ -511,13 +511,13 @@ export class PlayerScreen extends React.Component<Props, State> {
             ? { episodePubDate: readableDate(item.episode.pubDate) }
             : {})}
           {...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST
-            ? { episodeTitle: item.episode.title }
+            ? { episodeTitle: item.episode.title || 'untitled episode' }
             : {})}
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
           }
           startTime={item.startTime}
-          title={item.title}
+          title={item.title || 'untitled clip'}
         />
       )
     }
@@ -532,6 +532,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       flatListDataTotalCount,
       isLoading,
       isLoadingMore,
+      isQuerying,
       queryFrom,
       querySort,
       selectedItem,
@@ -600,8 +601,9 @@ export class PlayerScreen extends React.Component<Props, State> {
               {viewType === PV.Keys.VIEW_TYPE_EPISODES && (
                 <TableSectionHeader title='From this podcast' />
               )}
-              {isLoading && <ActivityIndicator />}
+              {isLoading || isQuerying && <ActivityIndicator />}
               {!isLoading &&
+               !isQuerying &&
                 viewType &&
                 viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES &&
                 flatListData && (
@@ -720,7 +722,8 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { flatListData, viewType } = screenPlayer
     const newState = {
       isLoading: false,
-      isLoadingMore: false
+      isLoadingMore: false,
+      isQuerying: false
     } as any
 
     const wasAlerted = await alertIfNoNetworkConnection('load data')
