@@ -1,7 +1,6 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
-import FastImage from 'react-native-fast-image'
-import { Icon, Text, View } from '.'
+import { FastImage, Icon, Text, View } from '.'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
@@ -25,13 +24,13 @@ export class QueueTableCell extends React.PureComponent<Props> {
     const {
       clipEndTime,
       clipStartTime,
-      clipTitle = 'Untitled clip',
+      clipTitle,
       episodePubDate,
-      episodeTitle = 'Untilted episode',
+      episodeTitle,
       handleRemovePress,
       hideBottomRow,
       podcastImageUrl,
-      podcastTitle = 'Untitled podcast',
+      podcastTitle,
       showMoveButton,
       showRemoveButton
     } = this.props
@@ -40,19 +39,20 @@ export class QueueTableCell extends React.PureComponent<Props> {
       <View style={styles.wrapper}>
         <View style={styles.wrapperTop}>
           <FastImage
+            isSmall={true}
             key={podcastImageUrl}
-            source={{ uri: podcastImageUrl }}
-            style={styles.image}
+            source={podcastImageUrl}
+            styles={styles.image}
           />
           <View style={styles.textWrapper}>
             <Text
               isSecondary={true}
               numberOfLines={1}
               style={styles.podcastTitle}>
-              {podcastTitle}
+              {podcastTitle || 'untitled podcast'}
             </Text>
             <Text numberOfLines={1} style={styles.episodeTitle}>
-              {episodeTitle}
+              {episodeTitle || 'untitled episode'}
             </Text>
             {!!episodePubDate && (
               <Text
@@ -64,11 +64,11 @@ export class QueueTableCell extends React.PureComponent<Props> {
             )}
           </View>
           {showMoveButton && (
-            <Icon name="bars" size={28} style={button.iconOnlyMedium} />
+            <Icon name='bars' size={28} style={button.iconOnlyMedium} />
           )}
           {showRemoveButton && handleRemovePress && (
             <Icon
-              name="times"
+              name='times'
               onPress={handleRemovePress}
               size={28}
               style={button.iconOnlyMedium}
@@ -78,7 +78,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
         {!hideBottomRow && (
           <View style={styles.wrapperBottom}>
             <Text numberOfLines={1} style={styles.clipTitle}>
-              {clipStartTime ? clipTitle : 'Full Episode'}
+              {clipStartTime ? (clipTitle || 'untitled clip') : 'Full Episode'}
             </Text>
             {!!clipStartTime && (
               <Text style={styles.clipTime}>

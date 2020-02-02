@@ -394,27 +394,31 @@ export const button = StyleSheet.create({
     height: 76,
     lineHeight: 76,
     textAlign: 'center',
-    width: 56
+    width: 56,
+    zIndex: 1000000
   },
   iconOnlyMedium: {
     flex: 0,
     height: 60,
     lineHeight: 60,
     textAlign: 'center',
-    width: 56
+    width: 56,
+    zIndex: 1000000
   },
   iconOnlySmall: {
     flex: 0,
     height: 38,
     lineHeight: 38,
     textAlign: 'center',
-    width: 56
+    width: 56,
+    zIndex: 1000000
   },
   iconOnlyAlignToTop: {
     flex: 0,
     marginBottom: 'auto',
     marginTop: 5,
-    padding: 8
+    padding: 8,
+    zIndex: 1000000
   },
   primaryWrapper: {
     alignItems: 'center',

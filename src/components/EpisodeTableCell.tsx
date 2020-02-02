@@ -1,5 +1,4 @@
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import React from 'reactn'
 import {
   decodeHTMLString,
@@ -8,7 +7,7 @@ import {
 } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
-import { ActivityIndicator, Icon, Text, View } from './'
+import { ActivityIndicator, FastImage, Icon, Text, View } from './'
 
 type Props = {
   description?: string
@@ -44,12 +43,15 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const isDownloaded = downloadedEpisodeIds[id]
 
     if (!description) description = 'No show notes available'
-    if (!title) title = 'Untitled episode'
+    if (!title) title = 'untitled episode'
 
     const innerTopView = (
       <View style={styles.innerTopView}>
         {!!podcastImageUrl && (
-          <FastImage source={{ uri: podcastImageUrl }} style={styles.image} />
+          <FastImage
+            isSmall={true}
+            source={podcastImageUrl}
+            styles={styles.image} />
         )}
         <View style={styles.textWrapper}>
           {!!podcastTitle && (
@@ -70,7 +72,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             {isDownloaded && (
               <Icon
                 isSecondary={true}
-                name="download"
+                name='download'
                 size={13}
                 style={styles.downloadedIcon}
               />
@@ -88,7 +90,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const moreButton = (
       <Icon
-        name="ellipsis-h"
+        name='ellipsis-h'
         onPress={handleMorePress}
         size={32}
         style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall}

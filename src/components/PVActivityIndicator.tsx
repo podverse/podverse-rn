@@ -13,7 +13,7 @@ type Props = {
   children?: any
   isOverlay?: boolean
   onPress?: any
-  size?: string
+  size?: any
   styles?: any
 }
 
@@ -37,6 +37,7 @@ export const PVActivityIndicator = (props: Props) => {
             <ActivityIndicator
               color={globalTheme.activityIndicator.color}
               size={size}
+              style={styles.transparent}
             />
           </View>
         </TouchableWithoutFeedback>
@@ -54,5 +55,8 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
     position: 'absolute',
     width: Dimensions.get('window').width
+  },
+  transparent: {
+    backgroundColor: 'transparent'
   }
 })

@@ -1,10 +1,9 @@
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import React from 'reactn'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
-import { ActivityIndicator, Icon, Text, View } from './'
+import { ActivityIndicator, FastImage, Icon, Text, View } from './'
 
 type Props = {
   downloadedEpisodeIds?: any
@@ -33,7 +32,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       podcastImageUrl,
       podcastTitle,
       startTime,
-      title = 'Untitled clip'
+      title = 'untitled clip'
     } = this.props
     const clipTime = readableClipTime(startTime, endTime)
     const { downloadedEpisodeIds, downloadsActive } = this.global
@@ -44,7 +43,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
     const moreButton = (
       <Icon
-        name="ellipsis-h"
+        name='ellipsis-h'
         onPress={handleMorePress}
         size={32}
         style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall}
@@ -53,37 +52,44 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
     const innerTopView = (
       <View style={styles.innerTopView}>
-        {!!podcastImageUrl && (
-          <FastImage source={{ uri: podcastImageUrl }} style={styles.image} />
-        )}
-        <View style={styles.textWrapper}>
-          {!!podcastTitle && (
-            <Text
-              isSecondary={true}
-              numberOfLines={1}
-              style={styles.podcastTitle}>
-              {podcastTitle}
-            </Text>
-          )}
-          {!!episodeTitle && (
-            <Text numberOfLines={1} style={styles.episodeTitle}>
-              {episodeTitle}
-            </Text>
-          )}
-          <View style={styles.textWrapperBottomRow}>
-            <Text isSecondary={true} style={styles.episodePubDate}>
-              {readableDate(episodePubDate)}
-            </Text>
-            {isDownloaded && (
-              <Icon
-                isSecondary={true}
-                name="download"
-                size={13}
-                style={styles.downloadedIcon}
-              />
+        <TouchableWithoutFeedback onPress={handleNavigationPress}>
+          <View style={{ flex: 1, flexDirection: 'row' }}>
+            {!!podcastImageUrl && (
+              <FastImage
+                isSmall={true}
+                source={podcastImageUrl}
+                styles={styles.image} />
             )}
+            <View style={styles.textWrapper}>
+              {!!podcastTitle && (
+                <Text
+                  isSecondary={true}
+                  numberOfLines={1}
+                  style={styles.podcastTitle}>
+                  {podcastTitle}
+                </Text>
+              )}
+              {!!episodeTitle && (
+                <Text numberOfLines={1} style={styles.episodeTitle}>
+                  {episodeTitle}
+                </Text>
+              )}
+              <View style={styles.textWrapperBottomRow}>
+                <Text isSecondary={true} style={styles.episodePubDate}>
+                  {readableDate(episodePubDate)}
+                </Text>
+                {isDownloaded && (
+                  <Icon
+                    isSecondary={true}
+                    name='download'
+                    size={13}
+                    style={styles.downloadedIcon}
+                  />
+                )}
+              </View>
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
         {!isDownloading && handleMorePress && moreButton}
         {isDownloading && (
           <ActivityIndicator
@@ -114,13 +120,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       <View style={styles.wrapper}>
         {!!showEpisodeInfo && (
           <View style={styles.wrapperTop}>
-            {handleNavigationPress ? (
-              <TouchableWithoutFeedback onPress={handleNavigationPress}>
-                {innerTopView}
-              </TouchableWithoutFeedback>
-            ) : (
-              innerTopView
-            )}
+            {innerTopView}
           </View>
         )}
         {handleNavigationPress ? (

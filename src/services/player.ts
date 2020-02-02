@@ -84,6 +84,7 @@ export const handleResumeAfterClipHasEnded = async () => {
     nowPlayingItem
   )
   await setNowPlayingItem(nowPlayingItemEpisode)
+  addOrUpdateHistoryItem(nowPlayingItemEpisode)
   PlayerEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
@@ -290,9 +291,9 @@ export const createTrack = async (item: NowPlayingItem) => {
     clipId,
     episodeId,
     episodeMediaUrl = '',
-    episodeTitle = 'Untitled episode',
+    episodeTitle = 'untitled episode',
     podcastImageUrl,
-    podcastTitle = 'Untitled podcast'
+    podcastTitle = 'untitled podcast'
   } = item
   const id = clipId || episodeId
   let track = null

@@ -1,4 +1,5 @@
 import React from 'react'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
 import { darkTheme, iconStyles } from '../styles'
@@ -36,14 +37,22 @@ export const PVIcon = (props: Props) => {
     : iconStyles.light.color
 
   return (
-    <Icon
-      {...(brand ? { brand } : {})}
-      color={colorOverride || color}
-      name={name}
-      onPress={onPress}
-      size={size}
-      {...(solid ? { solid } : {})}
-      {...(style ? { style } : {})}
-    />
+    <TouchableWithoutFeedback
+      hitSlop={{
+        bottom: 8,
+        left: 8,
+        right: 8,
+        top: 8
+      }}
+      onPress={onPress}>
+      <Icon
+        {...(brand ? { brand } : {})}
+        color={colorOverride || color}
+        name={name}
+        size={size}
+        {...(solid ? { solid } : {})}
+        {...(style ? { style } : {})}
+      />
+    </TouchableWithoutFeedback>
   )
 }

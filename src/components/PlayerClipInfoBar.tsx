@@ -24,7 +24,7 @@ export class PlayerClipInfoBar extends React.PureComponent<Props, State> {
           <Text
             numberOfLines={1}
             style={[styles.title, globalTheme.playerText]}>
-            {nowPlayingItem.clipTitle || 'Untitled clip'}
+            {nowPlayingItem.clipTitle || 'untitled clip'}
           </Text>
           {!!clipStartTime && (
             <Text

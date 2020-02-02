@@ -1,10 +1,9 @@
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import FastImage from 'react-native-fast-image'
 import React from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
-import { ActivityIndicator, Text, View } from './'
+import { ActivityIndicator, FastImage, Text, View } from './'
 
 type Props = {
   isLoading?: boolean
@@ -27,8 +26,8 @@ export const PlayerTableHeader = (props: Props) => {
           <View style={core.row}>
             <FastImage
               key={nowPlayingItem.podcastImageUrl}
-              source={{ uri: nowPlayingItem.podcastImageUrl }}
-              style={styles.image}
+              source={nowPlayingItem.podcastImageUrl}
+              styles={styles.image}
             />
             <View style={styles.textWrapper}>
               <Text numberOfLines={1} style={styles.podcastTitle}>

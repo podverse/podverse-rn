@@ -41,7 +41,14 @@ export const TimeInput = (props: Props) => {
       <View style={core.row}>
         <Text style={core.textInputLabel}>{labelText}</Text>
         {(time || time === 0) && (
-          <TouchableOpacity onPress={handlePreview}>
+          <TouchableOpacity
+            hitSlop={{
+              bottom: 4,
+              left: 4,
+              right: 4,
+              top: 4
+            }}
+            onPress={handlePreview}>
             <Icon
               color={globalTheme.link.color}
               name='play'
@@ -67,9 +74,15 @@ export const TimeInput = (props: Props) => {
           </TouchableWithoutFeedback>
         </View>
         {handleClearTime && (
-          <TouchableWithoutFeedback onPress={handleClearTime}>
-            <View
-              style={[styles.timeInputTouchableDelete, globalTheme.textInput]}>
+          <TouchableWithoutFeedback
+            hitSlop={{
+              bottom: 0,
+              left: 2,
+              right: 8,
+              top: 4
+            }}
+            onPress={handleClearTime}>
+            <View style={styles.timeInputTouchableDelete}>
               <Icon
                 color={
                   isDarkMode ? iconStyles.dark.color : iconStyles.light.color
@@ -104,13 +117,12 @@ const styles = StyleSheet.create({
   },
   timeInputTouchableDelete: {
     alignItems: 'center',
+    flex: 0,
     height: 44,
     justifyContent: 'center',
-    paddingHorizontal: 4,
-    position: 'absolute',
-    right: 0,
-    top: 2,
-    width: 54
+    marginLeft: -44,
+    marginTop: 2,
+    width: 46
   },
   timeInputWrapper: {
     flex: 1,

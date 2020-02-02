@@ -43,7 +43,7 @@ export class PVActionSheet extends React.Component<Props, State> {
       items.forEach((item, index) => {
         const buttonStyle = [styles.button]
 
-        if (item.key === 'edit') {
+        if (item.key === 'editClip') {
           buttonStyle.push(styles.buttonTop)
         } else if (index === 0 && !message && !title) {
           buttonStyle.push(styles.buttonTop)
@@ -51,16 +51,16 @@ export class PVActionSheet extends React.Component<Props, State> {
           buttonStyle.push(styles.buttonBottom)
         }
 
-        if (item.key === 'delete') {
+        if (item.key === 'deleteEpisode' || item.key === 'deleteClip') {
           buttonStyle.push(globalTheme.actionSheetButtonDelete)
         } else {
           buttonStyle.push(globalTheme.actionSheetButton)
         }
 
         let buttonTextStyle = globalTheme.actionSheetButtonText
-        if (item.key === 'delete') {
+        if (item.key === 'deleteEpisode' || item.key === 'deleteClip') {
           buttonTextStyle = globalTheme.actionSheetButtonTextDelete
-        } else if (item.key === 'edit') {
+        } else if (item.key === 'editClip') {
           buttonTextStyle = globalTheme.actionSheetButtonTextEdit
         }
 
@@ -84,10 +84,13 @@ export class PVActionSheet extends React.Component<Props, State> {
           })
         }
 
+        let onPress = item.onPress
+        if (isQueueButton) onPress = queueOnPress
+
         buttons.push(
           <TouchableHighlight
             key={item.key}
-            onPress={isQueueButton ? queueOnPress : item.onPress}
+            onPress={onPress}
             style={buttonStyle}
             underlayColor={
               globalTheme.actionSheetButtonUnderlay.backgroundColor
@@ -192,7 +195,8 @@ const _yValueHide = new Animated.Value(400)
 const styles = {
   activityIndicator: {
     flex: 0,
-    marginLeft: 12
+    marginLeft: 12,
+    marginRight: -32
   },
   animatedView: {
     marginBottom: 24,

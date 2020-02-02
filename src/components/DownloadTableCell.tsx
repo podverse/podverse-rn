@@ -1,10 +1,9 @@
 import React from 'react'
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { Slider } from 'react-native-elements'
-import FastImage from 'react-native-fast-image'
 import { PV } from '../resources'
 import { getDownloadStatusText } from '../state/actions/downloads'
-import { Text, View } from './'
+import { FastImage, Text, View } from './'
 
 type Props = {
   bytesTotal: string
@@ -24,11 +23,11 @@ export class DownloadTableCell extends React.PureComponent<Props> {
       bytesTotal = '---',
       bytesWritten = '---',
       completed,
-      episodeTitle = 'Untitled episode',
+      episodeTitle = 'untitled episode',
       onPress,
       percent,
       podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
-      podcastTitle = 'Untitled podcast',
+      podcastTitle = 'untitled podcast',
       status
     } = this.props
     const per = completed ? 1 : percent
@@ -37,7 +36,9 @@ export class DownloadTableCell extends React.PureComponent<Props> {
     return (
       <TouchableWithoutFeedback onPress={onPress}>
         <View style={styles.wrapper}>
-          <FastImage source={{ uri: podcastImageUrl }} style={styles.image} />
+          <FastImage
+            source={podcastImageUrl}
+            styles={styles.image} />
           <View style={styles.textWrapper}>
             <View style={styles.textWrapperTop}>
               <Text numberOfLines={1} style={styles.episodeTitle}>
@@ -79,7 +80,9 @@ const styles = StyleSheet.create({
   episodeTitle: {
     flex: 1,
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold
+    fontWeight: PV.Fonts.weights.semibold,
+    lineHeight: PV.Fonts.sizes.md,
+    marginTop: 2
   },
   image: {
     flex: 0,
@@ -88,9 +91,9 @@ const styles = StyleSheet.create({
     width: PV.Table.cells.podcast.image.width
   },
   podcastTitle: {
-    flex: 1,
-    fontSize: PV.Fonts.sizes.md,
-    marginTop: 3
+    flex: 0,
+    fontSize: PV.Fonts.sizes.sm,
+    marginTop: 1
   },
   slider: {
     height: 4

@@ -181,7 +181,14 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </TouchableOpacity>
         </View>
         <View style={styles.bottomRow}>
-          <TouchableWithoutFeedback onPress={this._adjustSpeed}>
+          <TouchableWithoutFeedback
+            hitSlop={{
+              bottom: 4,
+              left: 4,
+              right: 4,
+              top: 4
+            }}
+            onPress={this._adjustSpeed}>
             <Text
               style={[
                 styles.bottomButton,
