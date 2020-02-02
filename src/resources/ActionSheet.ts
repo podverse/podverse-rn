@@ -33,8 +33,8 @@ const mediaMoreButtons = (
 
   if (item.ownerId && item.ownerId === loggedInUserId) {
     buttons.push({
-      key: 'edit',
-      text: 'Edit',
+      key: 'editClip',
+      text: 'Edit Clip',
       onPress: async () => {
         await handleDismiss()
         const shouldPlay = false
