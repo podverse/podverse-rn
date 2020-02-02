@@ -34,7 +34,7 @@ export class PVActionSheet extends React.Component<Props, State> {
   }
 
   generateButtons = (items: any[]) => {
-    const { handleCancelPress, message, title } = this.props
+    const { handleCancelPress, handleDeleteClip, message, title } = this.props
     const { isLoadingQueueLast, isLoadingQueueNext } = this.state
     const { globalTheme } = this.global
     const buttons = []
@@ -51,14 +51,14 @@ export class PVActionSheet extends React.Component<Props, State> {
           buttonStyle.push(styles.buttonBottom)
         }
 
-        if (item.key === 'delete') {
+        if (item.key === 'deleteEpisode' || item.key === 'deleteClip') {
           buttonStyle.push(globalTheme.actionSheetButtonDelete)
         } else {
           buttonStyle.push(globalTheme.actionSheetButton)
         }
 
         let buttonTextStyle = globalTheme.actionSheetButtonText
-        if (item.key === 'delete') {
+        if (item.key === 'deleteEpisode' || item.key === 'deleteClip') {
           buttonTextStyle = globalTheme.actionSheetButtonTextDelete
         } else if (item.key === 'edit') {
           buttonTextStyle = globalTheme.actionSheetButtonTextEdit
@@ -84,10 +84,13 @@ export class PVActionSheet extends React.Component<Props, State> {
           })
         }
 
+        let onPress = item.onPress
+        if (isQueueButton) onPress = queueOnPress
+
         buttons.push(
           <TouchableHighlight
             key={item.key}
-            onPress={isQueueButton ? queueOnPress : item.onPress}
+            onPress={onPress}
             style={buttonStyle}
             underlayColor={
               globalTheme.actionSheetButtonUnderlay.backgroundColor

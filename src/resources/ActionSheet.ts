@@ -18,7 +18,8 @@ const mediaMoreButtons = (
   item: any = {},
   navigation: any,
   handleDismiss: any,
-  handleDownload: any
+  handleDownload: any,
+  handleDeleteClip: any
 ) => {
   if (!item || !item.episodeId) return
 
@@ -47,6 +48,13 @@ const mediaMoreButtons = (
             isEditing: true
           })
         }, 1000)
+      }
+    }, {
+      key: 'deleteClip',
+      text: 'Delete Clip',
+      onPress: async () => {
+        await handleDismiss()
+        await handleDeleteClip(item.clipId)
       }
     })
   }
@@ -159,8 +167,8 @@ const mediaMoreButtons = (
 
   if (isDownloaded) {
     buttons.push({
-      key: 'delete',
-      text: 'Delete',
+      key: 'deleteEpisode',
+      text: 'Delete Episode',
       onPress: async () => {
         removeDownloadedPodcastEpisode(item.episodeId)
         await handleDismiss()

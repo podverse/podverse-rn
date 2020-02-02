@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   timeInputTouchableDelete: {
     alignItems: 'center',
     flex: 0,
-    height: 46,
+    height: 44,
     justifyContent: 'center',
     marginLeft: -44,
     marginTop: 2,
