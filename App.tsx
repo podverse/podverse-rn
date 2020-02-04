@@ -27,6 +27,8 @@ type State = {
 
 setGlobal(initialState)
 
+let ignoreHandleNetworkChange = true
+
 class App extends Component<Props, State> {
   unsubscribeNetListener: NetInfoSubscription | null
 
@@ -51,8 +53,15 @@ class App extends Component<Props, State> {
     this.unsubscribeNetListener && this.unsubscribeNetListener()
   }
 
+  // Don't call handleNetworkChange on initial app launch
   handleNetworkChange = async (state: NetInfoState) => {
+    if (ignoreHandleNetworkChange) {
+      ignoreHandleNetworkChange = false
+      return
+    }
+
     const nowPlayingItem = await getNowPlayingItem()
+
     if (state.type === 'wifi') {
       refreshDownloads()
       if (nowPlayingItem) {
