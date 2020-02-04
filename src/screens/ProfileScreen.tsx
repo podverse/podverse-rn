@@ -48,6 +48,7 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
+  initializeClips: boolean
   isLoading: boolean
   isLoadingMore: boolean
   isSubscribed: boolean
@@ -113,6 +114,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
+      initializeClips,
       isLoading: true,
       isLoadingMore: false,
       isSubscribed,
@@ -408,6 +410,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     const {
       flatListData,
       flatListDataTotalCount,
+      initializeClips,
       isLoading,
       isLoadingMore,
       isSubscribed,
@@ -440,13 +443,14 @@ export class ProfileScreen extends React.Component<Props, State> {
       resultsText = 'playlists'
     }
     const isMyProfile = navigation.getParam('isMyProfile')
+    const message = `Login to view your ${initializeClips ? 'clips' : 'profile'}`
     return (
       <View style={styles.view}>
         {isMyProfile && !isLoggedIn && (
           <MessageWithAction
             topActionHandler={this._onPressLogin}
             topActionText='Login'
-            message='Login to view your profile'
+            message={message}
           />
         )}
         {!(isMyProfile && !isLoggedIn) && (
