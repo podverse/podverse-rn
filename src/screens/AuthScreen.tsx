@@ -199,12 +199,15 @@ export class AuthScreen extends React.Component<Props, State> {
       <SafeAreaView style={styles.safeAreaView}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={screenType === _signup ? styles.viewWithoutBanner : styles.view}>
-            <Icon
-              name='times'
-              onPress={navigation.dismiss}
-              size={26}
-              style={[button.iconOnlyMedium, styles.closeButton]}
-            />
+            <View style={styles.closeButtonWrapper}>
+              <View style={styles.closeButtonSpacer} />
+              <Icon
+                name='times'
+                onPress={navigation.dismiss}
+                size={26}
+                style={[button.iconOnlyMedium, styles.closeButton]}
+              />
+            </View>
             {
               screenType !== _signup &&
                 <Image
@@ -248,9 +251,14 @@ const styles = StyleSheet.create({
     width: '80%'
   },
   closeButton: {
-    position: 'absolute',
-    right: 16,
-    top: 8
+    flex: 0,
+    marginRight: 16
+  },
+  closeButtonSpacer: {
+    flex: 1
+  },
+  closeButtonWrapper: {
+    flexDirection: 'row'
   },
   contentView: {
     width: '100%',
@@ -273,14 +281,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: PV.Colors.brandColor,
-    paddingTop: 80
+    backgroundColor: PV.Colors.brandColor
   },
   viewWithoutBanner: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: PV.Colors.brandColor,
-    paddingTop: 80
+    backgroundColor: PV.Colors.brandColor
   }
 })
