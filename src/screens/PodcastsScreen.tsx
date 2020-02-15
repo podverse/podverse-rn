@@ -21,6 +21,7 @@ import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getEpisode } from '../services/episode'
+import { gaInitialize, gaTrackPageView } from '../services/googleAnalytics'
 import {
   getNowPlayingItemFromQueueOrHistoryByTrackId,
   PVTrackPlayer,
@@ -45,6 +46,7 @@ import {
   toggleSubscribeToPodcast
 } from '../state/actions/podcast'
 import { core } from '../styles'
+const uuidv4 = require('uuid/v4')
 
 type Props = {
   navigation?: any
@@ -147,6 +149,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         PV.Alerts.BUTTONS.OK
       )
     }
+    await gaInitialize()
+    await gaTrackPageView('/podcasts', 'Podcasts Screen')
   }
 
   componentWillUnmount() {
