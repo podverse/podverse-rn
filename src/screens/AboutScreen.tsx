@@ -2,6 +2,7 @@ import { Alert, Linking, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ScrollView, Text, View } from '../components'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 
 type Props = {}
 
@@ -10,6 +11,10 @@ type State = {}
 export class AboutScreen extends React.Component<Props, State> {
   static navigationOptions = {
     title: 'About'
+  }
+
+  componentDidMount() {
+    gaTrackPageView('/about', 'About Screen')
   }
 
   showLeavingAppAlert = (url: string) => {

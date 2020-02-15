@@ -46,7 +46,6 @@ import {
   toggleSubscribeToPodcast
 } from '../state/actions/podcast'
 import { core } from '../styles'
-const uuidv4 = require('uuid/v4')
 
 type Props = {
   navigation?: any
@@ -149,8 +148,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         PV.Alerts.BUTTONS.OK
       )
     }
+
     await gaInitialize()
-    await gaTrackPageView('/podcasts', 'Podcasts Screen')
+    gaTrackPageView('/podcasts', 'Podcasts Screen')
   }
 
   componentWillUnmount() {

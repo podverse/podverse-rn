@@ -2,6 +2,7 @@ import { Alert, Linking, StyleSheet, Text as RNText, TouchableOpacity } from 're
 import React from 'reactn'
 import { ActivityIndicator, Divider, Icon, ScrollView, Text, TextInput, TextLink, View } from '../components'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import { getAddByRSSPodcast } from '../services/parser'
 import { addAddByRSSPodcast } from '../state/actions/parser'
 import { core, navHeader } from '../styles'
@@ -49,6 +50,8 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
     if (feedUrl) {
       this.setState({ url: feedUrl })
     }
+
+    gaTrackPageView('/add-podcast-by-rss', 'Add Podcast By RSS Screen')
   }
 
   _navToRequestPodcastForm = async () => {

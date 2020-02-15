@@ -23,6 +23,7 @@ import {
 } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import { createMediaRef, updateMediaRef } from '../services/mediaRef'
 import {
   playerJumpBackward,
@@ -133,6 +134,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
         })
       }
     )
+
+    gaTrackPageView('/make-clip', 'Make Clip Screen')
   }
 
   componentWillUnmount() {

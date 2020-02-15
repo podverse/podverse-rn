@@ -21,6 +21,7 @@ import {
 } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { core } from '../styles'
 
@@ -90,6 +91,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       const newState = await this._queryData(from)
       this.setState(newState)
     })
+    gaTrackPageView('/episodes', 'Episodes Screen')
   }
 
   selectLeftItem = async (selectedKey: string) => {

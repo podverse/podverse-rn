@@ -24,6 +24,7 @@ import {
 } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRefs } from '../services/mediaRef'
 import { core } from '../styles'
 
@@ -118,7 +119,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    const { episode, episodeId } = this.state
     this._initializePageData()
+    const pageTitle = episode && episode.podcast ?
+      'Episode Screen - ' + episode.podcast.title + ' - ' + episode.title
+      : 'Episode Screen - ' + 'no info available'
+    gaTrackPageView('/episode/' + episodeId, pageTitle)
   }
 
   async _initializePageData() {

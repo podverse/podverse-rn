@@ -7,7 +7,6 @@ import { PV } from '../resources'
 
 const uuidv4 = require('uuid/v4')
 const v = 1
-const tid = PV.Google.analytics.trackingId
 let cid = null as any
 
 export const gaInitialize = async () => {
@@ -26,17 +25,17 @@ export const gaTrackPageView = async (path: string, title: string) => {
 
   let titlePrefix = ''
   if (Platform.OS === 'ios') {
-    titlePrefix = 'iOS Mobile App - '
+    titlePrefix = 'iOS - '
   } else if (Platform.OS === 'android') {
-    titlePrefix = 'Android Mobile App - '
+    titlePrefix = 'Android - '
   } else {
-    titlePrefix = 'Other Mobile App - '
+    titlePrefix = 'Other app - '
   }
   title = titlePrefix + title
 
   const query = {
     v, // GA API version
-    tid, // tracking id
+    tid: PV.Google.analytics.trackingId, // tracking id
     cid, // anonymous client id
     t: 'pageview', // hit type
     dp: path, // page

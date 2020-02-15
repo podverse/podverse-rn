@@ -29,6 +29,7 @@ import {
   safelyUnwrapNestedVariable
 } from '../lib/utility'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import { getPodcasts } from '../services/podcast'
 import {
   getLoggedInUserMediaRefs,
@@ -136,7 +137,9 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    const { userId } = this.state
     this._initializeScreenData()
+    gaTrackPageView('/profile/' + userId, 'Profile Screen')
   }
 
   async _initializeScreenData() {

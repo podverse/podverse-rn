@@ -3,6 +3,7 @@ import React from 'reactn'
 import { ActivityIndicator, SafeAreaView, Text, View } from '../components'
 import { createEmailLinkUrl } from '../lib/utility'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import { androidHandleStatusCheck } from '../state/actions/purchase.android'
 import { iosHandlePurchaseStatusCheck } from '../state/actions/purchase.ios'
 
@@ -20,6 +21,10 @@ export class PurchasingScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
+  }
+
+  componentDidMount() {
+    gaTrackPageView('/purchasing', 'Purchasing Screen')
   }
 
   _handleContactSupportPress = async () => {
