@@ -35,6 +35,7 @@ type State = {
   name: string
   password: string
   passwordVerification: string
+  submitIsDisabled: boolean
 }
 
 export class SignUp extends React.Component<Props, State> {
@@ -51,13 +52,16 @@ export class SignUp extends React.Component<Props, State> {
       hasValidEmail: false,
       name: '',
       password: '',
-      passwordVerification: ''
+      passwordVerification: '',
+      submitIsDisabled: true
     }
   }
 
   emailChanged = (evt: NativeSyntheticEvent<any>) => {
     const text = safelyUnwrapNestedVariable(() => evt.nativeEvent.text, '')
-    this.setState({ email: text })
+    this.setState({ email: text }, () => {
+      this.emailValid()
+    })
   }
 
   passwordChanged = (evt: NativeSyntheticEvent<any>) => {
@@ -81,7 +85,9 @@ export class SignUp extends React.Component<Props, State> {
 
   emailValid = () => {
     const { email } = this.state
-    this.setState({ hasValidEmail: isEmail(email) })
+    this.setState({ hasValidEmail: isEmail(email) }, () => {
+      this.checkIfSubmitIsDisabled()
+    })
   }
 
   passwordsValid = () => {
@@ -100,14 +106,17 @@ export class SignUp extends React.Component<Props, State> {
       hasNoSpaces,
       hasNumber,
       hasUppercase
+    }, () => {
+      this.checkIfSubmitIsDisabled()
     })
   }
 
-  submitDisabled = () => {
+  checkIfSubmitIsDisabled = () => {
     const { hasAtLeastXCharacters, hasLowercase, hasMatching, hasNoSpaces, hasNumber, hasUppercase,
       hasValidEmail } = this.state
-    return !(hasAtLeastXCharacters && hasLowercase && hasMatching && hasNoSpaces && hasNumber &&
+    const submitIsDisabled = !(hasAtLeastXCharacters && hasLowercase && hasMatching && hasNoSpaces && hasNumber &&
       hasUppercase && hasValidEmail)
+    this.setState({ submitIsDisabled })
   }
 
   signUp = () => {
@@ -125,12 +134,11 @@ export class SignUp extends React.Component<Props, State> {
   render() {
     const { bottomButtons, isLoading } = this.props
     const { hasAtLeastXCharacters, hasLowercase, hasNumber, hasUppercase, password,
-      passwordVerification } = this.state
-    const submitDisabled = this.submitDisabled()
-    const submitDisabledStyle = submitDisabled
+      passwordVerification, submitIsDisabled } = this.state
+    const checkIfSubmitIsDisabledStyle = submitIsDisabled
       ? { backgroundColor: PV.Colors.grayDark }
       : null
-    const submitDisabledTextStyle = submitDisabled ? { color: PV.Colors.white } : null
+    const checkIfSubmitIsDisabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
 
     const passwordMismatch =
       passwordVerification.length > 0 && passwordVerification !== password
@@ -195,13 +203,13 @@ export class SignUp extends React.Component<Props, State> {
           hasUppercase={hasUppercase}
           style={styles.passwordValidationInfo} />
         <TouchableOpacity
-          style={[styles.signInButton, submitDisabledStyle]}
-          disabled={submitDisabled || isLoading}
+          style={[styles.signInButton, checkIfSubmitIsDisabledStyle]}
+          disabled={submitIsDisabled || isLoading}
           onPress={this.signUp}>
           {isLoading ? (
             <ActivityIndicator color={PV.Colors.white} size='small' />
           ) : (
-            <Text style={[styles.signInButtonText, submitDisabledTextStyle]}>
+            <Text style={[styles.signInButtonText, checkIfSubmitIsDisabledTextStyle]}>
               Sign Up
             </Text>
           )}
