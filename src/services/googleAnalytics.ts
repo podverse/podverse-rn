@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import axios from 'axios'
 import { Platform } from 'react-native'
 import { getUserAgent } from 'react-native-device-info'
+import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 
 const uuidv4 = require('uuid/v4')
@@ -20,6 +21,9 @@ export const gaInitialize = async () => {
 const collectEndpoint = 'https://www.google-analytics.com/collect'
 
 export const gaTrackPageView = async (path: string, title: string) => {
+  const isConnected = await hasValidNetworkConnection()
+  if (!isConnected) return
+
   let titlePrefix = ''
   if (Platform.OS === 'ios') {
     titlePrefix = 'iOS Mobile App - '
