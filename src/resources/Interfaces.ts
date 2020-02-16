@@ -82,6 +82,7 @@ export interface InitialState {
     showMakeClip: boolean
     showMiniPlayer: boolean
     shouldContinuouslyPlay: boolean
+    sleepTimer: any
   }
   playlists: {
     myPlaylists: []

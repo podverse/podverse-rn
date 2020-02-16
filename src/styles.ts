@@ -436,6 +436,11 @@ export const core = StyleSheet.create({
   backgroundView: {
     flex: 1
   },
+  closeButton: {
+    paddingLeft: 8,
+    paddingRight: 16,
+    paddingVertical: 8
+  },
   ListHeaderComponent: {
     borderBottomWidth: 0,
     borderTopWidth: 0,

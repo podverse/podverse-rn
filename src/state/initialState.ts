@@ -20,7 +20,12 @@ const initialTheme: InitialState = {
     playbackRate: 1,
     shouldContinuouslyPlay: false,
     showMakeClip: false,
-    showMiniPlayer: false
+    showMiniPlayer: false,
+    sleepTimer: {
+      defaultTimeRemaining: 1800000, // 30 mins
+      isActive: false,
+      timeRemaining: 1800000 // 30 mins
+    }
   },
   playlists: {
     myPlaylists: [],

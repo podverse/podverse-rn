@@ -59,6 +59,11 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     await setPlaybackSpeed(newSpeed, this.global)
   }
 
+  _navToStopWatchScreen = () => {
+    const { navigation } = this.props
+    navigation.navigate(PV.RouteNames.SleepTimerScreen)
+  }
+
   _playerJumpBackward = async () => {
     const progressValue = await playerJumpBackward(PV.Player.jumpSeconds)
     this.setState({ progressValue })
@@ -188,12 +193,40 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               right: 4,
               top: 4
             }}
+            onPress={this._navToStopWatchScreen}>
+            <View style={styles.bottomButton}>
+              <Icon
+                name='stopwatch'
+                size={20} />
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            hitSlop={{
+              bottom: 4,
+              left: 4,
+              right: 4,
+              top: 4
+            }}
             onPress={this._adjustSpeed}>
             <Text
               style={[
                 styles.bottomButton,
                 styles.bottomRowText
               ]}>{`${playbackRate}X`}</Text>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            hitSlop={{
+              bottom: 4,
+              left: 4,
+              right: 4,
+              top: 4
+            }}
+            onPress={this._navToStopWatchScreen}>
+            <View style={styles.bottomButton}>
+              <Icon
+                name='stopwatch'
+                size={20} />
+            </View>
           </TouchableWithoutFeedback>
         </View>
       </View>
@@ -203,6 +236,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
 const styles = StyleSheet.create({
   bottomButton: {
+    alignItems: 'center',
+    height: 32,
     paddingVertical: 4,
     textAlign: 'center',
     width: 54
