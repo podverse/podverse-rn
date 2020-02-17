@@ -88,6 +88,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
   }
 
   render() {
+    const { navigation } = this.props
     const { progressValue, showPlayerMoreActionSheet } = this.state
     const { globalTheme, player, screenPlayer } = this.global
     const { nowPlayingItem, playbackRate, playbackState } = player
@@ -243,7 +244,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </TouchableOpacity>
         </View>
         <PlayerMoreActionSheet
-          handleCancelPress={this._hidePlayerMoreActionSheet}
+          handleDismiss={this._hidePlayerMoreActionSheet}
+          navigation={navigation}
           showModal={showPlayerMoreActionSheet} />
       </View>
     )
