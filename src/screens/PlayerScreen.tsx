@@ -1,6 +1,6 @@
-import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
-import { NavigationActions, NavigationScreenOptions, StackActions } from 'react-navigation'
+import { NavigationScreenOptions } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import {
   ActionSheet,
@@ -35,8 +35,7 @@ import {
 import {
   decodeHTMLString,
   readableDate,
-  removeHTMLFromString,
-  safelyUnwrapNestedVariable
+  removeHTMLFromString
 } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
@@ -45,9 +44,7 @@ import { getMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getAddByRSSPodcast } from '../services/parser'
 import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
 import { addQueueItemNext } from '../services/queue'
-import { toggleAddByRSSPodcast } from '../state/actions/parser'
 import { loadItemAndPlayTrack } from '../state/actions/player'
-import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core, navHeader } from '../styles'
 
 type Props = {
@@ -387,53 +384,6 @@ export class PlayerScreen extends React.Component<Props, State> {
     })
   }
 
-  _showHeaderActionSheet = () => {
-    setGlobal({
-      screenPlayer: {
-        ...this.global.screenPlayer,
-        showHeaderActionSheet: true
-      }
-    })
-  }
-
-  _dismissHeaderActionSheet = () => {
-    setGlobal({
-      screenPlayer: {
-        ...this.global.screenPlayer,
-        showHeaderActionSheet: false
-      }
-    })
-  }
-
-  _handleToggleSubscribe = async () => {
-    const wasAlerted = await alertIfNoNetworkConnection('subscribe to podcast')
-    if (wasAlerted) return
-    const { nowPlayingItem } = this.global.player
-    try {
-      if (nowPlayingItem) {
-        if (nowPlayingItem.addByRSSPodcastFeedUrl) {
-          await toggleAddByRSSPodcast(nowPlayingItem.addByRSSPodcastFeedUrl)
-        } else {
-          await toggleSubscribeToPodcast(nowPlayingItem.podcastId)
-        }
-      }
-      this._dismissHeaderActionSheet()
-    } catch (error) {
-      this._dismissHeaderActionSheet()
-      if (error.response) {
-        Alert.alert(
-          PV.Alerts.SOMETHING_WENT_WRONG.title,
-          PV.Alerts.SOMETHING_WENT_WRONG.message,
-          PV.Alerts.BUTTONS.OK
-        )
-      }
-    }
-  }
-
-  _handleNavToPodcastScreen = async () => {
-    console.log('nav to podcast')
-  }
-
   _handleShare = async (
     podcastId?: string,
     episodeId?: string,
@@ -539,7 +489,6 @@ export class PlayerScreen extends React.Component<Props, State> {
       queryFrom,
       querySort,
       selectedItem,
-      showHeaderActionSheet,
       showMoreActionSheet,
       showShareActionSheet,
       showFullClipInfo,
@@ -558,10 +507,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     return (
       <SafeAreaView>
         <View style={styles.view}>
-          <PlayerTableHeader
-            nowPlayingItem={nowPlayingItem}
-            onPress={this._showHeaderActionSheet}
-          />
+          <PlayerTableHeader nowPlayingItem={nowPlayingItem} />
           {showFullClipInfo && (mediaRef || nowPlayingItem.clipId) && (
             <ClipInfoView
               createdAt={mediaRef.createdAt}
@@ -659,11 +605,6 @@ export class PlayerScreen extends React.Component<Props, State> {
             showModal={showShareActionSheet}
             title='Share'
           />
-          <ActionSheet
-            handleCancelPress={this._dismissHeaderActionSheet}
-            items={this._headerActionSheetButtons()}
-            showModal={showHeaderActionSheet}
-          />
         </View>
       </SafeAreaView>
     )
@@ -751,88 +692,6 @@ export class PlayerScreen extends React.Component<Props, State> {
     } catch (error) {
       return newState
     }
-  }
-
-  _headerActionSheetButtons = () => {
-    const { navigation } = this.props
-    const { player, session } = this.global
-    const { episode, nowPlayingItem } = player
-    const podcast = (episode && episode.podcast) || {}
-    const subscribedPodcastIds = safelyUnwrapNestedVariable(
-      () => session.userInfo.subscribedPodcastIds,
-      []
-    )
-    let isSubscribed = subscribedPodcastIds.some(
-      (x: string) => nowPlayingItem && nowPlayingItem.podcastId === x
-    )
-
-    if (!isSubscribed && nowPlayingItem.addByRSSPodcastFeedUrl) {
-      const subscribedPodcasts = safelyUnwrapNestedVariable(
-        () => this.global.subscribedPodcasts,
-        []
-      )
-      isSubscribed = subscribedPodcasts.some((x: any) =>
-        x.addByRSSPodcastFeedUrl && x.addByRSSPodcastFeedUrl === nowPlayingItem.addByRSSPodcastFeedUrl
-      )
-    }
-
-    const items = [
-      {
-        key: 'toggleSubscribe',
-        text: isSubscribed ? 'Unsubscribe' : 'Subscribe',
-        onPress: this._handleToggleSubscribe
-      },
-      {
-        key: 'podcastPage',
-        text: 'Podcast Page',
-        onPress: async () => {
-          this._dismissHeaderActionSheet()
-          const resetAction = StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: PV.RouteNames.TabNavigator })]
-          })
-          await navigation.dispatch(resetAction)
-          if (nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
-            const podcast = await getAddByRSSPodcast(nowPlayingItem.addByRSSPodcastFeedUrl)
-            navigation.navigate(PV.RouteNames.PodcastScreen, {
-              podcast,
-              addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl
-            })
-          } else {
-            navigation.navigate(PV.RouteNames.PodcastScreen, {
-              podcast,
-              addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl
-            })
-          }
-        }
-      }
-    ]
-
-    if (podcast.linkUrl) {
-      items.push({
-        key: 'officialHomePage',
-        text: `Official Home Page`,
-        onPress: () => {
-          this._dismissHeaderActionSheet()
-          Linking.openURL(podcast.linkUrl)
-        }
-      })
-    }
-
-    if (episode && episode.linkUrl) {
-      items.push({
-        key: 'officialEpisodePage',
-        text: `Official Episode Page`,
-        onPress: () => {
-          this._dismissHeaderActionSheet()
-          navigation.navigate(PV.RouteNames.WebPageScreen, {
-            uri: episode.linkUrl
-          })
-        }
-      })
-    }
-
-    return items
   }
 }
 

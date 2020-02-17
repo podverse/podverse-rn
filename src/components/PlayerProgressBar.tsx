@@ -1,9 +1,10 @@
-import { Dimensions, StyleSheet, View } from 'react-native'
+import { Dimensions, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import React from 'reactn'
 import { convertSecToHHMMSS } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer, setPlaybackPosition } from '../services/player'
+import { sliderStyles } from '../styles'
 import { Text } from './'
 
 type Props = {
@@ -72,11 +73,11 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<
     }
 
     return (
-      <View style={styles.wrapper}>
+      <View style={sliderStyles.wrapper}>
         {duration > 0 && (clipStartTime || clipStartTime === 0) && (
           <View
             style={[
-              styles.clipStartTimeFlag,
+              sliderStyles.clipStartTimeFlag,
               globalTheme.playerClipTimeFlag,
               clipStartTimePosition
             ]}
@@ -85,7 +86,7 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<
         {duration > 0 && clipEndTime && (
           <View
             style={[
-              styles.clipEndTimeFlag,
+              sliderStyles.clipEndTimeFlag,
               globalTheme.playerClipTimeFlag,
               clipEndTimePosition
             ]}
@@ -105,62 +106,27 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<
           onValueChange={(value) =>
             this.setState({ slidingPosition: value * duration })
           }
-          thumbStyle={styles.thumbStyle}
+          thumbStyle={sliderStyles.thumbStyle}
           thumbTintColor={PV.Colors.brandColor}
           value={isLoading ? 0 : value}
         />
         {!isLoading && (
-          <View style={styles.timeRow}>
-            <Text style={styles.time}>
+          <View style={sliderStyles.timeRow}>
+            <Text style={sliderStyles.time}>
               {convertSecToHHMMSS(slidingPosition || position)}
             </Text>
-            <Text style={styles.time}>
+            <Text style={sliderStyles.time}>
               {duration > 0 ? convertSecToHHMMSS(duration) : '--:--'}
             </Text>
           </View>
         )}
         {isLoading && (
-          <View style={styles.timeRow}>
-            <Text style={styles.time}>{'--:--'}</Text>
-            <Text style={styles.time}>{'--:--'}</Text>
+          <View style={sliderStyles.timeRow}>
+            <Text style={sliderStyles.time}>{'--:--'}</Text>
+            <Text style={sliderStyles.time}>{'--:--'}</Text>
           </View>
         )}
       </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  clipEndTimeFlag: {
-    height: 36,
-    left: 0,
-    position: 'absolute',
-    top: 2,
-    width: 2
-  },
-  clipStartTimeFlag: {
-    height: 36,
-    left: 0,
-    position: 'absolute',
-    top: 2,
-    width: 2
-  },
-  thumbStyle: {
-    borderRadius: 0,
-    height: 24,
-    width: 7
-  },
-  time: {
-    fontSize: PV.Fonts.sizes.xs,
-    lineHeight: 14,
-    marginHorizontal: 12
-  },
-  timeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  wrapper: {
-    height: 56,
-    position: 'relative'
-  }
-})

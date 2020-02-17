@@ -8,7 +8,7 @@ import { ActivityIndicator, FastImage, Text, View } from './'
 type Props = {
   isLoading?: boolean
   nowPlayingItem: any
-  onPress: any
+  onPress?: any
 }
 
 export const PlayerTableHeader = (props: Props) => {

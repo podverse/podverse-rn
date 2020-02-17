@@ -418,7 +418,7 @@ export const button = StyleSheet.create({
     height: 76,
     lineHeight: 76,
     textAlign: 'center',
-    width: 56,
+    width: 60,
     zIndex: 1000000
   },
   iconOnlyMedium: {
@@ -577,7 +577,42 @@ export const playerStyles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 12,
     paddingVertical: 4,
-    width: 74
+    width: 80
+  }
+})
+
+export const sliderStyles = StyleSheet.create({
+  clipEndTimeFlag: {
+    height: 36,
+    left: 0,
+    position: 'absolute',
+    top: 2,
+    width: 2
+  },
+  clipStartTimeFlag: {
+    height: 36,
+    left: 0,
+    position: 'absolute',
+    top: 2,
+    width: 2
+  },
+  thumbStyle: {
+    borderRadius: 0,
+    height: 24,
+    width: 7
+  },
+  time: {
+    fontSize: PV.Fonts.sizes.xs,
+    lineHeight: 14,
+    marginHorizontal: 12
+  },
+  timeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  wrapper: {
+    height: 56,
+    position: 'relative'
   }
 })
 
@@ -591,6 +626,75 @@ export const table = StyleSheet.create({
     paddingLeft: 8
   }
 })
+
+export const actionSheetStyles = {
+  activityIndicator: {
+    flex: 0,
+    marginLeft: 12,
+    marginRight: -32
+  },
+  animatedView: {
+    marginBottom: 24,
+    marginHorizontal: 15
+  },
+  backdrop: {
+    flex: 1,
+    justifyContent: 'flex-end'
+  },
+  button: {
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderTopWidth: 1,
+    height: 62,
+    justifyContent: 'center'
+  },
+  buttonBottom: {
+    borderBottomWidth: 1,
+    borderBottomLeftRadius: 6,
+    borderBottomRightRadius: 6,
+    borderTopWidth: 1
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  buttonTop: {
+    borderTopLeftRadius: 6,
+    borderTopRightRadius: 6
+  },
+  buttonCancel: {
+    borderRadius: 6,
+    borderWidth: 1,
+    marginTop: 8,
+    height: 62,
+    justifyContent: 'center'
+  },
+  buttonText: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    textAlign: 'center'
+  },
+  header: {
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderTopLeftRadius: 6,
+    borderTopRightRadius: 6,
+    borderTopWidth: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 12
+  },
+  headerMessage: {
+    fontSize: PV.Fonts.sizes.sm,
+    marginTop: 4,
+    textAlign: 'center'
+  },
+  headerTitle: {
+    fontSize: PV.Fonts.sizes.md,
+    fontWeight: PV.Fonts.weights.bold,
+    textAlign: 'center'
+  }
+}
 
 export const iconStyles = {
   dark: {
