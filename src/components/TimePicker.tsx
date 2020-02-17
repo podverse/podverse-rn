@@ -1,5 +1,5 @@
 import React from 'react'
-import { Picker, StyleSheet } from 'react-native'
+import { Picker, StyleSheet, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
 import { getHHMMSSArray } from '../lib/utility'
 import { PV } from '../resources'
@@ -7,6 +7,8 @@ import { Text, View } from './'
 
 type Props = {
   currentTime: number
+  handleUpdateSleepTimer: any
+  isActive: boolean
 }
 
 const generatePickerNumberItems = (total: number, key: string) => {
@@ -16,7 +18,7 @@ const generatePickerNumberItems = (total: number, key: string) => {
       <Picker.Item
         key={i + key}
         label={i.toString()}
-        value={i.toString()} />
+        value={i} />
     )
   }
 
@@ -28,7 +30,7 @@ const minuteItems = generatePickerNumberItems(60, 'minuteItems')
 const secondItems = generatePickerNumberItems(60, 'secondItems')
 
 export const TimePicker = (props: Props) => {
-  const { currentTime } = props
+  const { currentTime, handleUpdateSleepTimer, isActive } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   const hhmmssArray = getHHMMSSArray(currentTime)
@@ -41,7 +43,11 @@ export const TimePicker = (props: Props) => {
       <View style={styles.pickersWrapper}>
         <View style={styles.pickerColumn}>
           <Picker
+            enabled={!isActive}
             itemStyle={[styles.number, globalTheme.text]}
+            onValueChange={(itemValue) => {
+              handleUpdateSleepTimer(itemValue, currentMinute, currentSecond)
+            }}
             selectedValue={currentHour}
             style={styles.numberColumn}>
             {hourItems}
@@ -50,7 +56,11 @@ export const TimePicker = (props: Props) => {
         </View>
         <View style={styles.pickerColumn}>
           <Picker
+            enabled={!isActive}
             itemStyle={[styles.number, globalTheme.text]}
+            onValueChange={(itemValue) => {
+              handleUpdateSleepTimer(currentHour, itemValue, currentSecond)
+            }}
             selectedValue={currentMinute}
             style={styles.numberColumn}>
             {minuteItems}
@@ -59,7 +69,11 @@ export const TimePicker = (props: Props) => {
         </View>
         <View style={styles.pickerColumn}>
           <Picker
+            enabled={!isActive}
             itemStyle={[styles.number, globalTheme.text]}
+            onValueChange={async (itemValue) => {
+              handleUpdateSleepTimer(currentHour, currentMinute, itemValue)
+            }}
             selectedValue={currentSecond}
             style={styles.numberColumn}>
             {secondItems}
@@ -83,16 +97,14 @@ const styles = StyleSheet.create({
     flex: 1
   },
   pickersWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    marginHorizontal: 16
+    flex: 0,
+    flexDirection: 'row'
   },
   text: {
     fontSize: PV.Fonts.sizes.lg,
     textAlign: 'center'
   },
   view: {
-    backgroundColor: 'red',
-    flex: 1
+    flex: 0
   }
 })

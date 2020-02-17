@@ -75,14 +75,26 @@ export const darkTheme = StyleSheet.create({
   buttonPrimaryText: {
     color: PV.Colors.white
   },
-  buttonPrimaryTextDisabled: {
+  buttonDisabledText: {
     color: PV.Colors.gray
   },
-  buttonPrimaryWrapper: {
-    borderColor: PV.Colors.grayDarker
+  buttonSuccessText: {
+    color: PV.Colors.white
   },
-  buttonPrimaryWrapperDisabled: {
+  buttonWarningText: {
+    color: PV.Colors.white
+  },
+  buttonPrimaryWrapper: {
+    backgroundColor: PV.Colors.grayDarker
+  },
+  buttonDisabledWrapper: {
     backgroundColor: PV.Colors.grayLighter
+  },
+  buttonSuccessWrapper: {
+    backgroundColor: PV.Colors.greenDarker
+  },
+  buttonWarningWrapper: {
+    backgroundColor: PV.Colors.redDarker
   },
   divider: {
     backgroundColor: PV.Colors.grayDarker
@@ -268,14 +280,26 @@ export const lightTheme = StyleSheet.create({
   buttonPrimaryText: {
     color: PV.Colors.black
   },
-  buttonPrimaryTextDisabled: {
+  buttonDisabledText: {
     color: PV.Colors.gray
   },
-  buttonPrimaryWrapper: {
-    borderColor: PV.Colors.grayLighter
+  buttonSuccessText: {
+    color: PV.Colors.black
   },
-  buttonPrimaryWrapperDisabled: {
+  buttonWarningText: {
+    color: PV.Colors.black
+  },
+  buttonPrimaryWrapper: {
+    backgroundColor: PV.Colors.grayLighter
+  },
+  buttonDisabledWrapper: {
     backgroundColor: PV.Colors.grayDarker
+  },
+  buttonSuccessWrapper: {
+    backgroundColor: PV.Colors.greenLighter
+  },
+  buttonWarningWrapper: {
+    backgroundColor: PV.Colors.redLighter
   },
   divider: {
     backgroundColor: PV.Colors.grayLighter
@@ -435,6 +459,15 @@ export const core = StyleSheet.create({
   },
   backgroundView: {
     flex: 1
+  },
+  button: {
+    height: 56
+  },
+  buttonText: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    lineHeight: 56,
+    textAlign: 'center'
   },
   closeButton: {
     paddingLeft: 8,

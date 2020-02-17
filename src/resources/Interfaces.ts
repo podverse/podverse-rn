@@ -15,9 +15,9 @@ export interface GlobalTheme {
   buttonGroupTextSelected?: any
   buttonImage?: any
   buttonPrimaryText?: any
-  buttonPrimaryTextDisabled?: any
+  buttonDisabledText?: any
   buttonPrimaryWrapper?: any
-  buttonPrimaryWrapperDisabled?: any
+  buttonDisabledWrapper?: any
   divider?: any
   flatList?: any
   inputContainerText?: any

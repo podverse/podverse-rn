@@ -7,7 +7,7 @@ import { clearNowPlayingItem as clearNowPlayingItemService, getContinuousPlaybac
   initializePlayerQueue as initializePlayerQueueService, loadItemAndPlayTrack as loadItemAndPlayTrackService,
   playNextFromQueue as playNextFromQueueService, PVTrackPlayer, setNowPlayingItem as setNowPlayingItemService,
   setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService } from '../../services/player'
-import { getSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
+import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
   if (!item) return
@@ -122,7 +122,7 @@ export const clearNowPlayingItem = async () => {
 
 export const initPlayerState = async (globalState: any) => {
   const shouldContinuouslyPlay = await getContinuousPlaybackMode()
-  const sleepTimerDefaultTimeRemaining = await getSleepTimerDefaultTimeRemaining()
+  const sleepTimerDefaultTimeRemaining = await initSleepTimerDefaultTimeRemaining()
 
   setGlobal({
     player: {

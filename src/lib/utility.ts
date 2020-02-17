@@ -39,7 +39,8 @@ export const getHHMMSSArray = (sec: number) => {
     delimitedArray.unshift(0)
   }
 
-  return delimitedArray
+  const parsedArray = delimitedArray.map((x) => parseInt(x, 10))
+  return parsedArray
 }
 
 export const convertSecToHHMMSS = (sec: number) => {

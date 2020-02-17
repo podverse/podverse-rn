@@ -22,9 +22,9 @@ const initialTheme: InitialState = {
     showMakeClip: false,
     showMiniPlayer: false,
     sleepTimer: {
-      defaultTimeRemaining: 1800000, // 30 mins
+      defaultTimeRemaining: PV.Player.defaultSleepTimerInSeconds,
       isActive: false,
-      timeRemaining: 1800000 // 30 mins
+      timeRemaining: PV.Player.defaultSleepTimerInSeconds
     }
   },
   playlists: {

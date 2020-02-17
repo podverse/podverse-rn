@@ -214,20 +214,21 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 styles.bottomRowText
               ]}>{`${playbackRate}X`}</Text>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
+          <View style={styles.bottomButton} />
+          {/* <TouchableWithoutFeedback
             hitSlop={{
               bottom: 4,
               left: 4,
               right: 4,
               top: 4
             }}
-            onPress={this._navToStopWatchScreen}>
+            onPress={() => console.log('settings pressed')}>
             <View style={styles.bottomButton}>
               <Icon
-                name='stopwatch'
+                name='cog'
                 size={20} />
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback> */}
         </View>
       </View>
     )

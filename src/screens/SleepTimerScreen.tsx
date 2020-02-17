@@ -1,6 +1,7 @@
 import { StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
 import React from 'reactn'
 import {
+  Button,
   Icon,
   SafeAreaView,
   TimePicker,
@@ -8,8 +9,9 @@ import {
 } from '../components'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
-import { pauseSleepTimerStateUpdates, resumeSleepTimerStateUpdates, startSleepTimer, stopSleepTimer,
-  updateSleepTimerTimeRemaining } from '../state/actions/sleepTimer'
+import { sleepTimerIsRunning } from '../services/sleepTimer'
+import { pauseSleepTimerStateUpdates, resumeSleepTimerStateUpdates, setSleepTimerTimeRemaining,
+  startSleepTimer, stopSleepTimer, updateSleepTimerTimeRemaining } from '../state/actions/sleepTimer'
 import { navHeader } from '../styles'
 
 type Props = {
@@ -43,8 +45,12 @@ export class SleepTimerScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    const isActive = sleepTimerIsRunning()
     updateSleepTimerTimeRemaining()
-    resumeSleepTimerStateUpdates()
+
+    if (isActive) {
+      resumeSleepTimerStateUpdates()
+    }
 
     gaTrackPageView('/sleep-timer', 'Sleep Timer Screen')
   }
@@ -53,22 +59,42 @@ export class SleepTimerScreen extends React.Component<Props, State> {
     pauseSleepTimerStateUpdates()
   }
 
-  _startSleepTimer = () => {
-    const { timeRemaining } = this.state.player.sleepTimer
-    startSleepTimer(timeRemaining)
+  _toggleSleepTimer = () => {
+    const { isActive } = this.global.player.sleepTimer
+    if (isActive) {
+      stopSleepTimer()
+    } else {
+      const { timeRemaining } = this.global.player.sleepTimer
+      startSleepTimer(timeRemaining)
+      resumeSleepTimerStateUpdates()
+    }
   }
 
-  _stopSleepTimer = () => {
-    stopSleepTimer()
+  _updateSleepTimer = (hours: number, minutes: number, seconds: number) => {
+    // The Picker enabled attribute only works on Android, so we prevent the user from being able to
+    // set the pickers while the sleep timer is running.
+    const { isActive } = this.global.player.sleepTimer
+    if (!isActive) {
+      setSleepTimerTimeRemaining(hours, minutes, seconds)
+    }
   }
 
   render() {
-    const { timeRemaining } = this.global.player.sleepTimer
+    const { isActive, timeRemaining } = this.global.player.sleepTimer
 
     return (
       <SafeAreaView>
         <View style={styles.view}>
-          <TimePicker currentTime={timeRemaining} />
+          <TimePicker
+            currentTime={timeRemaining}
+            handleUpdateSleepTimer={this._updateSleepTimer}
+            isActive={isActive} />
+          <Button
+            isSuccess={!isActive}
+            isWarning={isActive}
+            onPress={this._toggleSleepTimer}
+            text={isActive ? 'Stop Timer' : 'Start Timer'}
+            wrapperStyles={styles.button} />
         </View>
       </SafeAreaView>
     )
@@ -76,7 +102,11 @@ export class SleepTimerScreen extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    marginTop: 32
+  },
   view: {
-    flex: 1
+    flex: 1,
+    marginHorizontal: 16
   }
 })
