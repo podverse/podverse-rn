@@ -10,7 +10,7 @@ import {
   getExtensionFromUrl
 } from '../lib/utility'
 import { PV } from '../resources'
-import PlayerEventEmitter from '../services/playerEventEmitter'
+import { gaTrackPageView } from './googleAnalytics'
 import {
   addOrUpdateHistoryItem,
   getHistoryItem,
@@ -18,6 +18,7 @@ import {
   getHistoryItemsLocally,
   updateHistoryItemPlaybackPosition
 } from './history'
+import PlayerEventEmitter from './playerEventEmitter'
 import {
   addQueueItemLast,
   addQueueItemNext,
@@ -234,6 +235,16 @@ export const initializePlayerQueue = async () => {
   }
 }
 
+const sendPlayerScreenGoogleAnalyticsPageView = (item: any) => {
+  if (item.clipId) {
+    gaTrackPageView('/clip/' + item.clipId,
+      'Player Screen - Clip - ' + item.podcastTitle + ' - ' + item.episodeTitle + ' - ' + item.clipTitle)
+  } else if (item.episodeId) {
+    gaTrackPageView('/episode/' + item.episodeId,
+      'Player Screen - Episode - ' + item.podcastTitle + ' - ' + item.episodeTitle)
+  }
+}
+
 export const loadItemAndPlayTrack = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
@@ -253,6 +264,7 @@ export const loadItemAndPlayTrack = async (
   await syncPlayerWithQueue()
 
   if (shouldPlay) setTimeout(() => TrackPlayer.play(), 1500)
+  sendPlayerScreenGoogleAnalyticsPageView(item)
 }
 
 export const playNextFromQueue = async () => {
@@ -263,6 +275,7 @@ export const playNextFromQueue = async () => {
   if (item) {
     await addOrUpdateHistoryItem(item)
   }
+  sendPlayerScreenGoogleAnalyticsPageView(item)
 }
 
 export const addItemToPlayerQueueNext = async (item: NowPlayingItem) => {

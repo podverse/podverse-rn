@@ -25,6 +25,7 @@ import {
   safelyUnwrapNestedVariable
 } from '../lib/utility'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import {
   getPlaylist,
   toggleSubscribeToPlaylist
@@ -57,7 +58,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
       headerRight: (
         <RNView style={core.row}>
           <NavShareIcon
-            endingText=" – playlist shared using Podverse"
+            endingText=' – playlist shared using Podverse'
             playlistTitle={playlistTitle}
             url={PV.URLs.playlist + playlistId}
           />
@@ -103,7 +104,9 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    const { playlistId } = this.state
     this._initializePageData()
+    gaTrackPageView('/playlist/' + playlistId, 'Playlist Screen')
   }
 
   async _initializePageData() {

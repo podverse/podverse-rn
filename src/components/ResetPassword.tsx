@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import { validateEmail } from '../lib/utility'
+import isEmail from 'validator/lib/isEmail'
 import { PV } from '../resources'
 
 type Props = {
@@ -18,22 +18,27 @@ type Props = {
 
 type State = {
   email: string
+  submitIsDisabled: boolean
 }
 
 export class ResetPassword extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      email: ''
+      email: '',
+      submitIsDisabled: true
     }
   }
 
   _emailChanged = (email: string) => {
-    this.setState({ email })
+    this.setState({ email }, () => {
+      this._checkIfSubmitIsDisabled()
+    })
   }
 
-  _inputsValid = () => {
-    return validateEmail(this.state.email)
+  _checkIfSubmitIsDisabled = () => {
+    const submitIsDisabled = !isEmail(this.state.email)
+    this.setState({ submitIsDisabled })
   }
 
   _resetPassword = () => {
@@ -42,9 +47,9 @@ export class ResetPassword extends React.Component<Props, State> {
 
   render() {
     const { isLoading, style } = this.props
-    const disabled = !this._inputsValid()
-    const disabledStyle = disabled ? { backgroundColor: PV.Colors.gray } : null
-    const disabledTextStyle = disabled ? { color: PV.Colors.white } : null
+    const { submitIsDisabled } = this.state
+    const disabledStyle = submitIsDisabled ? { backgroundColor: PV.Colors.gray } : null
+    const disabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
 
     return (
       <View style={[styles.view, style]}>
@@ -59,7 +64,7 @@ export class ResetPassword extends React.Component<Props, State> {
         />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
-          disabled={disabled || isLoading}
+          disabled={submitIsDisabled || isLoading}
           onPress={this._resetPassword}>
           {isLoading ? (
             <ActivityIndicator color={PV.Colors.gray} size='small' />

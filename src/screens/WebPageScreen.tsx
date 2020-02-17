@@ -18,8 +18,8 @@ export class WebPageScreen extends React.Component<Props, State> {
     title: '',
     headerLeft: () => (
       <Icon
-        color="#fff"
-        name="chevron-down"
+        color='#fff'
+        name='chevron-down'
         onPress={navigation.dismiss}
         size={PV.Icons.NAV}
         style={navHeader.buttonIcon}

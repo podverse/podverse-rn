@@ -20,7 +20,9 @@ import {
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem
 } from '../lib/NowPlayingItem'
+import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getLoggedInUserMediaRefs } from '../services/user'
 import { loadItemAndPlayTrack } from '../state/actions/player'
@@ -86,6 +88,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     const { queryFrom } = this.state
     const newState = await this._queryData(queryFrom)
     this.setState(newState)
+    gaTrackPageView('/clips', 'Clips Screen')
   }
 
   selectLeftItem = async (selectedKey: string) => {
@@ -378,15 +381,19 @@ export class ClipsScreen extends React.Component<Props, State> {
         )}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
-          items={() =>
-            PV.ActionSheet.media.moreButtons(
+          items={() => {
+            if (queryFrom === _myClipsKey) {
+              const loggedInUserId = safelyUnwrapNestedVariable(() => session.userInfo.id, '')
+              selectedItem.ownerId = loggedInUserId
+            }
+            return PV.ActionSheet.media.moreButtons(
               selectedItem,
               navigation,
               this._handleCancelPress,
               this._handleDownloadPressed,
               this._handleHiddenItemPress
             )
-          }
+          }}
           showModal={showActionSheet}
         />
         <Dialog.Container visible={showDeleteConfirmDialog}>

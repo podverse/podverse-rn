@@ -11,6 +11,7 @@ import {
 } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { updateLoggedInUser } from '../state/actions/user'
 import { core, navHeader } from '../styles'
@@ -56,6 +57,8 @@ export class EditProfileScreen extends React.Component<Props, State> {
       //
     }
     this.setState({ isLoading: false })
+
+    gaTrackPageView('/edit-profile', 'Edit Profile Screen')
   }
 
   _updateUser = async () => {

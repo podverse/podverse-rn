@@ -18,6 +18,7 @@ import {
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { combineAndSortPlaylistItems } from '../lib/utility'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import { getPlaylist } from '../services/playlist'
 import { updatePlaylist } from '../state/actions/playlist'
 import { core, navHeader } from '../styles'
@@ -80,6 +81,8 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     } catch (error) {
       this.setState({ isLoading: false })
     }
+
+    gaTrackPageView('/edit-playlist', 'Edit Playlist Screen')
   }
 
   _updatePlaylist = async () => {

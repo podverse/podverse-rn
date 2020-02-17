@@ -8,6 +8,7 @@ import {
   View
 } from 'react-native'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 
 type Props = {
   loginUser: ({}) => Promise<any>
@@ -22,6 +23,10 @@ export class OnboardingScreen extends React.Component<Props, State> {
     this.state = {
       name: ''
     }
+  }
+
+  componentDidMount() {
+    gaTrackPageView('/onboarding', 'Onboarding Screen')
   }
 
   dismissOnboarding = () => {

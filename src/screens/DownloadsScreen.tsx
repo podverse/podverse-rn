@@ -11,6 +11,7 @@ import {
 } from '../components'
 import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import {
   pauseDownloadingEpisode,
   removeDownloadingEpisode,
@@ -37,6 +38,10 @@ export class DownloadsScreen extends React.Component<Props, State> {
       selectedItem: null,
       showActionSheet: false
     }
+  }
+
+  componentDidMount() {
+    gaTrackPageView('/downloads', 'Downloads Screen')
   }
 
   _ItemSeparatorComponent = () => {

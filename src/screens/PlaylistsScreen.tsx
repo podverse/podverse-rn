@@ -11,6 +11,7 @@ import {
 } from '../components'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import { getPlaylists } from '../state/actions/playlist'
 import { getLoggedInUserPlaylists } from '../state/actions/user'
 
@@ -55,6 +56,8 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     if (playlistId) {
       navigation.navigate(PV.RouteNames.MorePlaylistScreen, { playlistId })
     }
+
+    gaTrackPageView('/playlists', 'Playlists Screen')
   }
 
   selectLeftItem = async (selectedKey: string) => {

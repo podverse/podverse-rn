@@ -1,6 +1,5 @@
 import {
   Alert,
-  AppState,
   StyleSheet,
   Text as RNText,
   TouchableOpacity,
@@ -19,11 +18,7 @@ import {
 } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
-import {
-  getNowPlayingItemFromQueueOrHistoryByTrackId,
-  PVTrackPlayer
-} from '../services/player'
-import PlayerEventEmitter from '../services/playerEventEmitter'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import {
   addOrRemovePlaylistItem,
   createPlaylist
@@ -95,6 +90,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
       //
     }
     this.setState({ isLoading: false })
+    gaTrackPageView('/playlists-add-to', 'Playlists Add To Screen')
   }
 
   _saveNewPlaylist = async () => {

@@ -10,6 +10,7 @@ import React from 'reactn'
 import { Divider, TableSectionHeader, Text, View } from '../components'
 import { getMembershipStatus } from '../lib/utility'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import { logoutUser } from '../state/actions/auth'
 import { core, getMembershipTextStyle, table } from '../styles'
 
@@ -28,6 +29,10 @@ export class MoreScreen extends React.Component<Props, State> {
 
   state = {
     options: []
+  }
+
+  componentDidMount() {
+    gaTrackPageView('/more', 'More Screen')
   }
 
   _onPress = (item: any) => {

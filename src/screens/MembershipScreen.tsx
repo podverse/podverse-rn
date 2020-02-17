@@ -14,6 +14,7 @@ import {
   readableDate
 } from '../lib/utility'
 import { PV } from '../resources'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import { buy1YearPremium } from '../services/purchaseShared'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { androidHandleStatusCheck } from '../state/actions/purchase.android'
@@ -57,6 +58,8 @@ export class MembershipScreen extends React.Component<Props, State> {
       isLoading: false,
       showNoInternetConnectionMessage: !hasInternetConnection
     })
+
+    gaTrackPageView('/membership', 'Membership Screen')
   }
 
   handleRenewPress = async () => {

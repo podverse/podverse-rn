@@ -42,6 +42,7 @@ import {
 } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRefs } from '../services/mediaRef'
 import { getPodcast } from '../services/podcast'
 import {
@@ -50,7 +51,6 @@ import {
 } from '../state/actions/downloads'
 import { toggleAddByRSSPodcast } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
-import { core } from '../styles'
 
 const {
   aboutKey,
@@ -163,6 +163,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
+    const { podcast, podcastId } = this.state
     const episodeId = navigation.getParam('navToEpisodeWithId')
 
     const hasInternetConnection = await hasValidNetworkConnection()
@@ -177,6 +178,10 @@ export class PodcastScreen extends React.Component<Props, State> {
         navigation.navigate(PV.RouteNames.EpisodeScreen, { episodeId })
       }
     })
+    const pageTitle = podcast ?
+      'Podcasts Screen - ' + podcast.title
+      : 'PodcastsScreen - ' + 'no info available'
+    gaTrackPageView('/podcast/' + podcastId, pageTitle)
   }
 
   async _initializePageData() {

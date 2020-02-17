@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -50,6 +50,7 @@
     "react-native-background-downloader": "2.3.0",
     "react-native-background-fetch": "^2.7.1",
     "react-native-cheerio": "^1.0.0-rc.4",
+    "react-native-device-info": "5.5.3",
     "react-native-dialog": "5.6.0",
     "react-native-elements": "1.1.0",
     "react-native-fast-image": "7.0.2",
@@ -59,6 +60,7 @@
     "react-native-picker-select": "6.3.0",
     "react-native-render-html": "4.1.2",
     "react-native-rss-parser": "1.4.0",
+    "react-native-screens": "^2.0.0-beta.4",
     "react-native-secure-key-store": "2.0.4",
     "react-native-share": "2.0.0",
     "react-native-sortable-list": "0.0.23",

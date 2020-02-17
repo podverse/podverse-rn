@@ -21,6 +21,7 @@ import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getEpisode } from '../services/episode'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import {
   getNowPlayingItemFromQueueOrHistoryByTrackId,
   PVTrackPlayer,
@@ -147,6 +148,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         PV.Alerts.BUTTONS.OK
       )
     }
+
+    gaTrackPageView('/podcasts', 'Podcasts Screen')
   }
 
   componentWillUnmount() {

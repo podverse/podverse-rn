@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
+import isEmail from 'validator/lib/isEmail'
 import { PV } from '../resources'
 
 type Props = {
@@ -19,6 +20,7 @@ type Props = {
 type State = {
   email: string
   password: string
+  submitIsDisabled: boolean
 }
 
 export class Login extends React.Component<Props, State> {
@@ -26,12 +28,14 @@ export class Login extends React.Component<Props, State> {
     super(props)
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      submitIsDisabled: true
     }
   }
 
-  inputsValid = () => {
-    return !!this.state.email && !!this.state.password
+  checkIfSubmitIsDisabled = () => {
+    const submitIsDisabled = !isEmail(this.state.email) || !this.state.password
+    this.setState({ submitIsDisabled })
   }
 
   login = () => {
@@ -42,19 +46,22 @@ export class Login extends React.Component<Props, State> {
   }
 
   emailChanged = (email: string) => {
-    this.setState({ email })
+    this.setState({ email }, () => {
+      this.checkIfSubmitIsDisabled()
+    })
   }
 
   passwordChanged = (password: string) => {
-    this.setState({ password })
+    this.setState({ password }, () => {
+      this.checkIfSubmitIsDisabled()
+    })
   }
 
   render() {
     const { bottomButtons, isLoading, style } = this.props
-    const { email, password } = this.state
-    const disabled = !this.inputsValid()
-    const disabledStyle = disabled ? { backgroundColor: PV.Colors.gray } : null
-    const disabledTextStyle = disabled ? { color: PV.Colors.white } : null
+    const { email, password, submitIsDisabled } = this.state
+    const disabledStyle = submitIsDisabled ? { backgroundColor: PV.Colors.gray } : null
+    const disabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
 
     return (
       <View style={[styles.view, style]}>
@@ -84,7 +91,7 @@ export class Login extends React.Component<Props, State> {
         />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
-          disabled={disabled || isLoading}
+          disabled={submitIsDisabled || isLoading}
           onPress={this.login}>
           {isLoading ? (
             <ActivityIndicator color={PV.Colors.gray} size='small' />
