@@ -20,7 +20,7 @@ export type NowPlayingItem = {
   podcastId?: string
   podcastImageUrl?: string
   podcastIsExplicit?: boolean
-  podcastLinkUrl?: boolean
+  podcastLinkUrl?: string
   podcastSortableTitle?: string
   podcastTitle?: string
   userPlaybackPosition?: number
@@ -44,8 +44,8 @@ export const cleanNowPlayingItem = (item: any) => {
     ownerId: item.ownerId,
     ownerIsPublic: item.ownerIsPublic,
     ownerName: item.ownerName,
-    podcastAuthors: item.podcastAuthors,
-    podcastCategories: item.podcastCategories,
+    // podcastAuthors: item.podcastAuthors,
+    // podcastCategories: item.podcastCategories,
     podcastId: item.podcastId,
     podcastImageUrl: item.podcastImageUrl,
     podcastIsExplicit: item.podcastIsExplicit,
@@ -137,7 +137,7 @@ export const convertToNowPlayingItem = (
     nowPlayingItem.episodePubDate = data.pubDate
     nowPlayingItem.episodeTitle = data.title
     nowPlayingItem.podcastId = data.podcast_id
-    nowPlayingItem.podcastImageUrl = data.podcast_imageUrl
+    nowPlayingItem.podcastImageUrl = data.podcast_shrunkImageUrl || data.podcast_imageUrl
     nowPlayingItem.podcastLinkUrl = data.podcast_linkUrl
     nowPlayingItem.podcastSortableTitle = data.podcast_sortableTitle
     nowPlayingItem.podcastTitle = data.podcast_title
@@ -151,7 +151,7 @@ export const convertToNowPlayingItem = (
     nowPlayingItem.episodePubDate = data.pubDate
     nowPlayingItem.episodeTitle = data.title
     nowPlayingItem.podcastId = p.id
-    nowPlayingItem.podcastImageUrl = p.imageUrl
+    nowPlayingItem.podcastImageUrl = p.shrunkImageUrl || p.imageUrl
     nowPlayingItem.podcastIsExplicit = p.isExplicit
     nowPlayingItem.podcastLinkUrl = p.linkUrl
     nowPlayingItem.podcastSortableTitle = p.sortableTitle
@@ -178,7 +178,7 @@ export const convertToNowPlayingItem = (
     nowPlayingItem.podcastCategories = p.categories
     nowPlayingItem.podcastId = p.id
     nowPlayingItem.podcastIsExplicit = p.isExplicit
-    nowPlayingItem.podcastImageUrl = p.imageUrl
+    nowPlayingItem.podcastImageUrl = p.shrunkImageUrl || p.imageUrl
     nowPlayingItem.podcastLinkUrl = p.linkUrl
     nowPlayingItem.podcastSortableTitle = p.sortableTitle
     nowPlayingItem.podcastTitle = p.title
