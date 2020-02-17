@@ -67,6 +67,7 @@
     "react-native-share": "2.0.0",
     "react-native-sortable-list": "0.0.23",
     "react-native-swipe-list-view": "2.0.0",
+    "react-native-system-setting": "^1.7.4",
     "react-native-track-player": "1.1.8",
     "react-native-vector-icons": "6.6.0",
     "react-native-webview": "7.4.2",
