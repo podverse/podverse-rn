@@ -21,7 +21,7 @@ import { generateCategoryItems } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getEpisode } from '../services/episode'
-import { gaInitialize, gaTrackPageView } from '../services/googleAnalytics'
+import { gaTrackPageView } from '../services/googleAnalytics'
 import {
   getNowPlayingItemFromQueueOrHistoryByTrackId,
   PVTrackPlayer,
@@ -149,7 +149,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       )
     }
 
-    await gaInitialize()
     gaTrackPageView('/podcasts', 'Podcasts Screen')
   }
 
