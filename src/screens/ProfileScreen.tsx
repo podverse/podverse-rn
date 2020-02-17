@@ -139,7 +139,8 @@ export class ProfileScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const { userId } = this.state
     this._initializeScreenData()
-    gaTrackPageView('/profile/' + userId, 'Profile Screen')
+    const idPath = userId ? userId : 'user-not-logged-in'
+    gaTrackPageView('/profile/' + idPath, 'Profile Screen')
   }
 
   async _initializeScreenData() {
