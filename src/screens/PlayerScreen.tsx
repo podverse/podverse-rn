@@ -634,7 +634,7 @@ export class PlayerScreen extends React.Component<Props, State> {
               nowPlayingItem={nowPlayingItem}
             />
           )}
-          <PlayerControls />
+          <PlayerControls navigation={navigation} />
           <ActionSheet
             handleCancelPress={this._handleMoreCancelPress}
             items={() =>

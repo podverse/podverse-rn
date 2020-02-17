@@ -27,6 +27,22 @@ export const readableDate = (date: string) => {
   return month + '/' + day + '/' + year
 }
 
+export const getHHMMSSArray = (sec: number) => {
+  sec = sec > -1 ? sec : 0
+  const str = convertSecToHHMMSS(sec)
+  const delimitedArray = str.split(':')
+
+  if (delimitedArray.length === 1) {
+    delimitedArray.unshift(0)
+    delimitedArray.unshift(0)
+  } else if (delimitedArray.length === 2) {
+    delimitedArray.unshift(0)
+  }
+
+  const parsedArray = delimitedArray.map((x) => parseInt(x, 10))
+  return parsedArray
+}
+
 export const convertSecToHHMMSS = (sec: number) => {
   let totalSec = Math.floor(sec)
   const hours = Math.floor(totalSec / 3600)

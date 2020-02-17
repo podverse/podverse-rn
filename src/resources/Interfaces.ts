@@ -15,9 +15,9 @@ export interface GlobalTheme {
   buttonGroupTextSelected?: any
   buttonImage?: any
   buttonPrimaryText?: any
-  buttonPrimaryTextDisabled?: any
+  buttonDisabledText?: any
   buttonPrimaryWrapper?: any
-  buttonPrimaryWrapperDisabled?: any
+  buttonDisabledWrapper?: any
   divider?: any
   flatList?: any
   inputContainerText?: any
@@ -82,6 +82,7 @@ export interface InitialState {
     showMakeClip: boolean
     showMiniPlayer: boolean
     shouldContinuouslyPlay: boolean
+    sleepTimer: any
   }
   playlists: {
     myPlaylists: []

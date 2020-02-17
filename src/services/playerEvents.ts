@@ -1,5 +1,6 @@
 import debounce from 'lodash/debounce'
 import { Platform } from 'react-native'
+import BackgroundTimer from 'react-native-background-timer'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { setNowPlayingItem } from '../state/actions/player'
@@ -18,7 +19,6 @@ import {
   updateUserPlaybackPosition
 } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
-
 const debouncedSetPlaybackPosition = debounce(
   setPlaybackPositionWhenDurationIsAvailable,
   1000,
@@ -28,7 +28,7 @@ const debouncedSetPlaybackPosition = debounce(
   }
 )
 
-// Sometimes when there is poor internet connectivity, the addOrUpdateHistoryItem request will fail.
+// NOTE: Sometimes when there is poor internet connectivity, the addOrUpdateHistoryItem request will fail.
 // This will result in the current item mising from the user's history, and the next time they open
 // the app, it will load with an old history item instead of the last one they were listening to.
 // To prevent this, we are repeatedly calling the addOrUpdateHistoryItem method on an interval until
@@ -36,26 +36,40 @@ const debouncedSetPlaybackPosition = debounce(
 // addOrUpdateHistoryItem is also called in handleNetworkChange in App.jsx on connection to wifi and cellular,
 // since it is possible that this interval succeeds locally when their is no internet connection,
 // and never calls to sync with the server.
-let addOrUpdateRequestInterval: any
+// handleAddOrUpdateRequestInterval uses the BackgroundTimer so that the code will continue to be called
+// while the app is in the background.
+
+// NOTE: iOS does not run while the screen is locked and the display is off.
+// This seems to be a limitation that cannot be worked around, aside from a geolocation API based work-around...
+
+// NOTE: addOrUpdateHistoryItemSucceeded allows the backgroundtimer to continue to run every 30 seconds,
+// even after we have successfully updated the historyItem on the server. I'm letting the BackgroundTimer
+// interval continue to run because my iPhone XR consistently closes Podverse when I have it in the background
+// and I open another app. I don't know if letting the BackgroundTimer run will prevent it from closing
+// in the background prematurely, but I'm trying it out.
+let timerStarted = false
+let addOrUpdateHistoryItemSucceeded = false
 const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
   if (!nowPlayingItem) return
 
-  if (addOrUpdateRequestInterval) {
-    clearInterval(addOrUpdateRequestInterval)
-  }
-
-  const startInterval = async () => {
-    try {
-      await addOrUpdateHistoryItem(nowPlayingItem)
-      await updateUserPlaybackPosition()
-      clearInterval(addOrUpdateRequestInterval)
-    } catch (error) {
-      console.log(error)
+  const attemptAddOrUpdateHistoryItem = async () => {
+    if (!addOrUpdateHistoryItemSucceeded) {
+      try {
+        await addOrUpdateHistoryItem(nowPlayingItem)
+        await updateUserPlaybackPosition()
+        addOrUpdateHistoryItemSucceeded = true
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
-  startInterval()
-  addOrUpdateRequestInterval = setInterval(startInterval, 20000)
+  if (!timerStarted) {
+    timerStarted = true
+    BackgroundTimer.runBackgroundTimer(async () => {
+      attemptAddOrUpdateHistoryItem()
+    }, 30000)
+  }
 }
 
 const handleSyncNowPlayingItem = async (

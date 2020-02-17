@@ -14,7 +14,7 @@ import { AboutScreen, AddPodcastByRSSScreen, AuthScreen, ClipsScreen, DownloadsS
   EditProfileScreen, EmailVerificationScreen, EpisodeScreen, EpisodesScreen, MakeClipScreen, MembershipScreen,
   MoreScreen, OnboardingScreen, PlayerScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen,
   PodcastScreen, PodcastsScreen, ProfileScreen, ProfilesScreen, PurchasingScreen, QueueScreen, SearchScreen,
-  SettingsScreen, TermsOfServiceScreen, WebPageScreen } from './screens'
+  SettingsScreen, SleepTimerScreen, TermsOfServiceScreen, WebPageScreen } from './screens'
 
 const defaultNavigationOptions = ({ navigation }) => ({
   title: PV.Tabs.Podcasts.title,
@@ -240,6 +240,12 @@ const QueueNavigator = createStackNavigator({
   defaultNavigationOptions
 })
 
+const SleepTimerNavigator = createStackNavigator({
+  [PV.RouteNames.SleepTimerScreen]: SleepTimerScreen
+}, {
+  defaultNavigationOptions
+})
+
 const WebPageNavigator = createStackNavigator({
   [PV.RouteNames.WebPageScreen]: WebPageScreen
 }, {
@@ -272,6 +278,7 @@ const MainApp = createStackNavigator({
   [PV.RouteNames.PlayerNavigator]: { screen: PlayerNavigator, path: '' },
   PlaylistsAddToNavigator,
   QueueNavigator,
+  SleepTimerNavigator,
   WebPageNavigator,
   EmailVerificationNavigator,
   PurchasingNavigator,

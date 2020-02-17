@@ -71,6 +71,7 @@ const maximumSpeedSelectOptions = [
 const errorState = 'error'
 
 export const Player = {
+  defaultSleepTimerInSeconds: 1800,
   errorState,
   jumpSeconds: 30,
   maximumSpeedSelectOptions,

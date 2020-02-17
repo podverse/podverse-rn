@@ -211,6 +211,8 @@ PODS:
   - React-jsinspector (0.61.2)
   - react-native-background-downloader (1.0.0):
     - React
+  - react-native-background-timer (2.1.1):
+    - React
   - react-native-netinfo (4.4.0):
     - React
   - react-native-track-player (1.1.8):
@@ -252,7 +254,7 @@ PODS:
     - React-cxxreact (= 0.61.2)
     - React-jsi (= 0.61.2)
     - ReactCommon/jscallinvoker (= 0.61.2)
-  - RNBackgroundFetch (2.7.1):
+  - RNBackgroundFetch (2.8.0):
     - React
   - RNCAsyncStorage (1.6.2):
     - React
@@ -267,6 +269,8 @@ PODS:
   - RNGestureHandler (1.4.1):
     - React
   - RNIap (4.2.0):
+    - React
+  - RNScreens (2.0.0-beta.4):
     - React
   - RNSecureKeyStore (1.0.0):
     - React
@@ -303,6 +307,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-background-downloader (from `../node_modules/react-native-background-downloader`)
+  - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-track-player (from `../node_modules/react-native-track-player`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -324,6 +329,7 @@ DEPENDENCIES:
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNIap (from `../node_modules/react-native-iap`)
+  - RNScreens (from `../node_modules/react-native-screens`)
   - RNSecureKeyStore (from `../node_modules/react-native-secure-key-store/ios`)
   - RNShare (from `../node_modules/react-native-share`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -375,6 +381,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-background-downloader:
     :path: "../node_modules/react-native-background-downloader"
+  react-native-background-timer:
+    :path: "../node_modules/react-native-background-timer"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-track-player:
@@ -415,6 +423,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNIap:
     :path: "../node_modules/react-native-iap"
+  RNScreens:
+    :path: "../node_modules/react-native-screens"
   RNSecureKeyStore:
     :path: "../node_modules/react-native-secure-key-store/ios"
   RNShare:
@@ -447,6 +457,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 8909917ff7d8f21a57e443a866fd8d4560e50c65
   React-jsinspector: 111d7d342b07a904c400592e02a2b958f1098b60
   react-native-background-downloader: 30c70d39920c5e9c6c37ed270f27b9f826239113
+  react-native-background-timer: 1b6e6b4e10f1b74c367a1fdc3c72b67c619b222b
   react-native-netinfo: 6bb847e64f45a2d69c6173741111cfd95c669301
   react-native-track-player: 6e4e91a246efe7121cdef5a43258659a062499db
   react-native-webview: 5c7578eb1ee5daf16e4c84a500becaa2038db828
@@ -460,13 +471,14 @@ SPEC CHECKSUMS:
   React-RCTText: e3ef6191cdb627855ff7fe8fa0c1e14094967fb8
   React-RCTVibration: fb54c732fd20405a76598e431aa2f8c2bf527de9
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
-  RNBackgroundFetch: 8d8d66b47eafcb9e772b2eb95057939038b3ef95
+  RNBackgroundFetch: 8de4251d9c0b47e18b6d78052ade58c68bec6fd5
   RNCAsyncStorage: 60a80e72d95bf02a01cace55d3697d9724f0d77f
   RNDeviceInfo: 310c1f43d418d950a193c7650de2f9559c906048
   RNFastImage: 9b0c22643872bb7494c8d87bbbb66cc4c0d9e7a2
   RNFS: 54da03c2b7d862c42ea3ca8c7f86f892760a535a
   RNGestureHandler: 4cb47a93019c1a201df2644413a0a1569a51c8aa
   RNIap: 251e9b516965d84eecc67151d76c939e8f5481ea
+  RNScreens: 6053a007667bea81a69087caadf103bba04c032e
   RNSecureKeyStore: f1ad870e53806453039f650720d2845c678d89c8
   RNShare: 8b171d4b43c1d886917fdd303bf7a4b87167b05c
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4

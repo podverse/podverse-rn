@@ -6,12 +6,12 @@ import {
   View as RNView
 } from 'react-native'
 import Dialog from 'react-native-dialog'
-import { Icon } from 'react-native-elements'
 import React from 'reactn'
 import {
   ActivityIndicator,
   Divider,
   FlatList,
+  Icon,
   MessageWithAction,
   PlaylistTableCell,
   View
@@ -43,16 +43,13 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
     title: 'Add to Playlist',
     headerLeft: (
-      <TouchableOpacity onPress={navigation.dismiss}>
-        <Icon
-          color='#fff'
-          iconStyle={styles.closeButton}
-          name='angle-down'
-          size={32}
-          type='font-awesome'
-          underlayColor={PV.Colors.brandColor}
-        />
-      </TouchableOpacity>
+      <Icon
+        color='#fff'
+        name='chevron-down'
+        onPress={navigation.dismiss}
+        size={PV.Icons.NAV}
+        style={navHeader.buttonIcon}
+      />
     ),
     headerRight: (
       <RNView>
@@ -227,11 +224,6 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
-  closeButton: {
-    paddingLeft: 8,
-    paddingRight: 16,
-    paddingVertical: 8
-  },
   view: {
     flex: 1
   }

@@ -20,7 +20,12 @@ const initialTheme: InitialState = {
     playbackRate: 1,
     shouldContinuouslyPlay: false,
     showMakeClip: false,
-    showMiniPlayer: false
+    showMiniPlayer: false,
+    sleepTimer: {
+      defaultTimeRemaining: PV.Player.defaultSleepTimerInSeconds,
+      isActive: false,
+      timeRemaining: PV.Player.defaultSleepTimerInSeconds
+    }
   },
   playlists: {
     myPlaylists: [],

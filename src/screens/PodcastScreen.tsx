@@ -51,6 +51,7 @@ import {
 } from '../state/actions/downloads'
 import { toggleAddByRSSPodcast } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
+import { core } from '../styles'
 
 const {
   aboutKey,
