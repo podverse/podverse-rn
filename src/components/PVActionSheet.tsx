@@ -2,11 +2,11 @@ import { Animated, Modal, Text, TouchableHighlight, View } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator } from '.'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
-import { PV } from '../resources/PV'
+import { actionSheetStyles } from '../styles'
 
 type Props = {
   handleCancelPress?: any
-  items: any
+  items?: any
   message?: string
   omitCancel?: boolean
   showModal?: boolean
@@ -41,14 +41,14 @@ export class PVActionSheet extends React.Component<Props, State> {
 
     if (items && items.length > 0) {
       items.forEach((item, index) => {
-        const buttonStyle = [styles.button]
+        const buttonStyle = [actionSheetStyles.button]
 
         if (item.key === 'editClip') {
-          buttonStyle.push(styles.buttonTop)
+          buttonStyle.push(actionSheetStyles.buttonTop)
         } else if (index === 0 && !message && !title) {
-          buttonStyle.push(styles.buttonTop)
+          buttonStyle.push(actionSheetStyles.buttonTop)
         } else if (index === items.length - 1) {
-          buttonStyle.push(styles.buttonBottom)
+          buttonStyle.push(actionSheetStyles.buttonBottom)
         }
 
         if (item.key === 'deleteEpisode' || item.key === 'deleteClip') {
@@ -95,21 +95,21 @@ export class PVActionSheet extends React.Component<Props, State> {
             underlayColor={
               globalTheme.actionSheetButtonUnderlay.backgroundColor
             }>
-            <View style={styles.buttonRow}>
-              <Text style={[styles.buttonText, buttonTextStyle]}>
+            <View style={actionSheetStyles.buttonRow}>
+              <Text style={[actionSheetStyles.buttonText, buttonTextStyle]}>
                 {item.text}
               </Text>
               {item.isDownloading && (
                 <ActivityIndicator
                   size='small'
-                  styles={styles.activityIndicator}
+                  styles={actionSheetStyles.activityIndicator}
                 />
               )}
               {((item.key === 'queueNext' && isLoadingQueueNext)
                 || (item.key === 'queueLast' && isLoadingQueueLast)) && (
                   <ActivityIndicator
                     size='small'
-                    styles={styles.activityIndicator}
+                    styles={actionSheetStyles.activityIndicator}
                   />
               )}
             </View>
@@ -122,13 +122,13 @@ export class PVActionSheet extends React.Component<Props, State> {
           <TouchableHighlight
             key='cancel'
             onPress={handleCancelPress}
-            style={[styles.buttonCancel, globalTheme.actionSheetButtonCancel]}
+            style={[actionSheetStyles.buttonCancel, globalTheme.actionSheetButtonCancel]}
             underlayColor={
               safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor, '')
             }>
             <Text
               style={[
-                styles.buttonText,
+                actionSheetStyles.buttonText,
                 globalTheme.actionSheetButtonTextCancel
               ]}>
               Cancel
@@ -142,17 +142,17 @@ export class PVActionSheet extends React.Component<Props, State> {
   }
 
   render() {
-    const { items, message, showModal, title } = this.props
+    const { children, items, message, showModal, title } = this.props
     const { globalTheme } = this.global
     const finalItems = typeof items === 'function' ? items() : items
-    const buttons = this.generateButtons(finalItems)
+    const buttons = children ? children : this.generateButtons(finalItems)
 
     return (
       <Modal transparent={true} visible={showModal}>
-        <View style={[styles.backdrop, globalTheme.modalBackdrop]}>
+        <View style={[actionSheetStyles.backdrop, globalTheme.modalBackdrop]}>
           <Animated.View
             style={[
-              styles.animatedView,
+              actionSheetStyles.animatedView,
               {
                 transform: [
                   { translateY: showModal ? _yValueShow : _yValueHide }
@@ -160,11 +160,11 @@ export class PVActionSheet extends React.Component<Props, State> {
               }
             ]}>
             {(!!title || !!message) && (
-              <View style={[styles.header, globalTheme.actionSheetButton]}>
+              <View style={[actionSheetStyles.header, globalTheme.actionSheetButton]}>
                 {!!title && (
                   <Text
                     style={[
-                      styles.headerTitle,
+                      actionSheetStyles.headerTitle,
                       globalTheme.actionSheetHeaderText
                     ]}>
                     {title}
@@ -173,7 +173,7 @@ export class PVActionSheet extends React.Component<Props, State> {
                 {!!message && (
                   <Text
                     style={[
-                      styles.headerMessage,
+                      actionSheetStyles.headerMessage,
                       globalTheme.actionSheetHeaderText
                     ]}>
                     {message}
@@ -191,72 +191,3 @@ export class PVActionSheet extends React.Component<Props, State> {
 
 const _yValueShow = new Animated.Value(0)
 const _yValueHide = new Animated.Value(400)
-
-const styles = {
-  activityIndicator: {
-    flex: 0,
-    marginLeft: 12,
-    marginRight: -32
-  },
-  animatedView: {
-    marginBottom: 24,
-    marginHorizontal: 15
-  },
-  backdrop: {
-    flex: 1,
-    justifyContent: 'flex-end'
-  },
-  button: {
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderTopWidth: 1,
-    height: 62,
-    justifyContent: 'center'
-  },
-  buttonBottom: {
-    borderBottomWidth: 1,
-    borderBottomLeftRadius: 6,
-    borderBottomRightRadius: 6,
-    borderTopWidth: 1
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'center'
-  },
-  buttonTop: {
-    borderTopLeftRadius: 6,
-    borderTopRightRadius: 6
-  },
-  buttonCancel: {
-    borderRadius: 6,
-    borderWidth: 1,
-    marginTop: 8,
-    height: 62,
-    justifyContent: 'center'
-  },
-  buttonText: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    textAlign: 'center'
-  },
-  header: {
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderTopLeftRadius: 6,
-    borderTopRightRadius: 6,
-    borderTopWidth: 1,
-    paddingHorizontal: 8,
-    paddingVertical: 12
-  },
-  headerMessage: {
-    fontSize: PV.Fonts.sizes.sm,
-    marginTop: 4,
-    textAlign: 'center'
-  },
-  headerTitle: {
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.bold,
-    textAlign: 'center'
-  }
-}

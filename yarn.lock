@@ -5327,6 +5327,11 @@ react-native-swipe-list-view@2.0.0:
   resolved "https://registry.yarnpkg.com/react-native-swipe-list-view/-/react-native-swipe-list-view-2.0.0.tgz#031db12a52d3441715ff1d1e127a8aaee95c21aa"
   integrity sha512-Lyoau882tcyWeZ/+8GOM0vi1obLbvHcVEM980D9/Qh9lQ/f2wJhbKM4pTXVBmJoWc+IDn31TRAenWzpGahEK8A==
 
+react-native-system-setting@^1.7.4:
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/react-native-system-setting/-/react-native-system-setting-1.7.4.tgz#605fb21fe901e5d25f37b864326aaddde33e926b"
+  integrity sha512-hS97zoYI/pffiKWBx15X2e8y4srm8q2uCp3aO+49P+Hu3HMNi4BgOvAG+J7KRHdoKEnIapRoVV67pLQsLqjQzw==
+
 react-native-tab-view@^1.2.0, react-native-tab-view@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-1.4.1.tgz#f113cd87485808f0c991abec937f70fa380478b9"
