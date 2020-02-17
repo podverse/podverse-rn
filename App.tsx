@@ -10,6 +10,7 @@ import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
 import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
+import { gaInitialize } from './src/services/googleAnalytics'
 import { addOrUpdateHistoryItem } from './src/services/history'
 import { getNowPlayingItem, updateUserPlaybackPosition } from './src/services/player'
 import initialState from './src/state/initialState'
@@ -47,6 +48,7 @@ class App extends Component<Props, State> {
     const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
     this.setupGlobalState(darkModeEnabled === 'TRUE' || darkModeEnabled === null ? darkTheme : lightTheme)
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
+    await gaInitialize()
   }
 
   componentWillUnmount() {
