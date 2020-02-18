@@ -211,13 +211,13 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
   - React-jsinspector (0.61.5)
-  - react-native-background-downloader (1.0.0):
+  - react-native-background-downloader (2.3.4):
     - React
   - react-native-background-timer (2.1.1):
     - React
   - react-native-netinfo (4.4.0):
     - React
-  - react-native-track-player (1.1.8):
+  - react-native-track-player (1.2.2):
     - React
   - react-native-webview (7.4.2):
     - React
@@ -462,10 +462,10 @@ SPEC CHECKSUMS:
   React-jsi: cb2cd74d7ccf4cffb071a46833613edc79cdf8f7
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
-  react-native-background-downloader: 30c70d39920c5e9c6c37ed270f27b9f826239113
+  react-native-background-downloader: 4a034cf39a3b00fac57364984e360a4f180a5efb
   react-native-background-timer: 1b6e6b4e10f1b74c367a1fdc3c72b67c619b222b
   react-native-netinfo: 6bb847e64f45a2d69c6173741111cfd95c669301
-  react-native-track-player: 6e4e91a246efe7121cdef5a43258659a062499db
+  react-native-track-player: e15f6cabcfb39b04685f93c5858d28a23f1a4108
   react-native-webview: 5c7578eb1ee5daf16e4c84a500becaa2038db828
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
