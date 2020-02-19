@@ -41,8 +41,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
               onError={this._handleError}
               resizeMode={resizeMode}
               source={{
-                uri: source,
-                cache: FastImage.cacheControl.web
+                uri: source
               }}
               style={styles} />
             :

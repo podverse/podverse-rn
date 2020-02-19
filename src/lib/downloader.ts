@@ -58,7 +58,7 @@ const addDLTask = async (episode: any, podcast: any) =>
     episodePubDate: episode.pubDate,
     episodeTitle: episode.title,
     podcastId: podcast.id,
-    podcastImageUrl: podcast.shrunkImageUrl,
+    podcastImageUrl: podcast.shrunkImageUrl || podcast.imageUrl,
     podcastIsExplicit: podcast.isExplicit,
     podcastSortableTitle: podcast.sortableTitle,
     podcastTitle: podcast.title
@@ -214,7 +214,7 @@ export const initDownloads = async () => {
         episodeId: episode.id,
         episodeTitle: episode.title,
         percent: 0,
-        podcastImageUrl: episode.podcast.shrunkImageUrl,
+        podcastImageUrl: episode.podcast.shrunkImageUrl || episode.podcast.imageUrl,
         podcastTitle: (episode.podcast && episode.podcast.title) || '',
         status: downloadTask.state
       } as DownloadState.DownloadTaskState)

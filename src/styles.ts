@@ -198,7 +198,9 @@ export const darkTheme = StyleSheet.create({
   },
   textInputWrapper: {
     backgroundColor: PV.Colors.black,
-    borderColor: PV.Colors.grayDarker
+    borderColor: PV.Colors.grayDarker,
+    borderTopColor: PV.Colors.grayDarker, // override native styles
+    borderBottomColor: PV.Colors.grayDarker // override native style
   },
   textSecondary: {
     color: PV.Colors.grayLighter
@@ -402,7 +404,9 @@ export const lightTheme = StyleSheet.create({
   },
   textInputWrapper: {
     backgroundColor: PV.Colors.white,
-    borderColor: PV.Colors.grayLighter
+    borderColor: PV.Colors.grayLighter,
+    borderTopColor: PV.Colors.grayLighter, // override native styles
+    borderBottomColor: PV.Colors.grayLighter // override native style
   },
   textSecondary: {
     color: PV.Colors.grayDarker
@@ -714,11 +718,11 @@ export const iconStyles = {
     underlayColor: PV.Colors.black
   },
   light: {
-    color: PV.Colors.black,
+    color: PV.Colors.grayDarkest,
     underlayColor: PV.Colors.white
   },
   lightSecondary: {
-    color: PV.Colors.grayDarker,
+    color: PV.Colors.grayDark,
     underlayColor: PV.Colors.white
   },
   lightTertiary: {

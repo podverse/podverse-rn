@@ -170,7 +170,7 @@ export class SearchScreen extends React.Component<Props, State> {
       onPress={() => this._handleMorePress(item)}
       podcastAuthors={generateAuthorsText(item.authors)}
       podcastCategories={generateCategoriesText(item.categories)}
-      podcastImageUrl={item.shrunkImageUrl}
+      podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
       podcastTitle={item.title}
     />
   )

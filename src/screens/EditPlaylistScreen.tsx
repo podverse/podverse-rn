@@ -146,7 +146,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
             clipTitle={data.title}
             episodePubDate={data.episode.pubDate}
             episodeTitle={data.episode.title}
-            podcastImageUrl={data.episode.podcast.shrunkImageUrl}
+            podcastImageUrl={data.episode.podcast.shrunkImageUrl || data.episode.podcast.imageUrl}
             podcastTitle={data.episode.podcast.title}
             showMoveButton={true}
           />
@@ -159,7 +159,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           <QueueTableCell
             episodePubDate={data.pubDate}
             episodeTitle={data.title}
-            podcastImageUrl={(data.podcast && data.podcast.shrunkImageUrl) || ''}
+            podcastImageUrl={(data.podcast && (data.podcast.shrunkImageUrl || data.podcast.imageUrl)) || ''}
             podcastTitle={(data.podcast && data.podcast.title) || ''}
             showMoveButton={true}
           />

@@ -638,7 +638,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           isNotFound={!isLoading && !podcast}
           isSubscribed={isSubscribed}
           isSubscribing={isSubscribing}
-          podcastImageUrl={podcast && podcast.shrunkImageUrl}
+          podcastImageUrl={podcast && (podcast.shrunkImageUrl || podcast.imageUrl)}
           podcastTitle={podcast && podcast.title}
           showSettings={showSettings}
         />
