@@ -255,12 +255,17 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
     const { paused, permanent } = x
-    if (permanent) {
-      PVTrackPlayer.stop()
-    } else if (paused) {
-      PVTrackPlayer.pause()
-    } else {
-      PVTrackPlayer.play()
+
+    // This remote-duck behavior for some Android users was causing playback to resume
+    // after receiving any notification, even when the player was paused.
+    if (Platform.OS === 'ios') {
+      if (permanent) {
+        PVTrackPlayer.stop()
+      } else if (paused) {
+        PVTrackPlayer.pause()
+      } else {
+        PVTrackPlayer.play()
+      }
     }
   })
 }
