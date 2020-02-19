@@ -377,7 +377,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           onPress={() => this._handlePodcastPress(item)}
           podcastAuthors={generateAuthorsText(item.authors)}
           podcastCategories={generateCategoriesText(item.categories)}
-          podcastImageUrl={item.imageUrl}
+          podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
           podcastTitle={item.title}
         />
       )
@@ -391,7 +391,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(item, null, null))
           }
-          podcastImageUrl={item.episode.podcast.imageUrl}
+          podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
           startTime={item.startTime}
           title={item.title}

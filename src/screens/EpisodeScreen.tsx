@@ -368,7 +368,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           isNotFound={!isLoading && !episode}
           podcastImageUrl={
             episode &&
-            ((episode.podcast && episode.podcast.imageUrl) ||
+            ((episode.podcast && episode.podcast.shrunkImageUrl) ||
               episode.podcast_imageUrl)
           }
           pubDate={episode && episode.pubDate}

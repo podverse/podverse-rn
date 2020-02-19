@@ -55,8 +55,13 @@ class App extends Component<Props, State> {
     this.unsubscribeNetListener && this.unsubscribeNetListener()
   }
 
-  // Don't call handleNetworkChange on initial app launch
   handleNetworkChange = async (state: NetInfoState) => {
+    // isInternetReachable will be false
+    if (!state.isInternetReachable) {
+      return
+    }
+
+    // Don't continue handleNetworkChange when internet is first reachable on initial app launch
     if (ignoreHandleNetworkChange) {
       ignoreHandleNetworkChange = false
       return
