@@ -1,5 +1,5 @@
 import React from 'react'
-import { Picker, StyleSheet, TouchableOpacity } from 'react-native'
+import { Picker, Platform, StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
 import { getHHMMSSArray } from '../lib/utility'
 import { PV } from '../resources'
@@ -38,6 +38,16 @@ export const TimePicker = (props: Props) => {
   const currentMinute = hhmmssArray[1]
   const currentSecond = hhmmssArray[2]
 
+  // I cannot figure out how to center the picker text on Android :[
+  // Aligning text to the left on Android as a workaround
+  const stylesText = Platform.OS === 'android' ? [
+    styles.text,
+    {
+      marginLeft: 8,
+      textAlign: 'left'
+    }
+  ] : styles.text
+
   return (
     <View style={styles.view}>
       <View style={styles.pickersWrapper}>
@@ -52,7 +62,7 @@ export const TimePicker = (props: Props) => {
             style={styles.numberColumn}>
             {hourItems}
           </Picker>
-          <Text style={[styles.text, globalTheme.text]}>hours</Text>
+          <Text style={[stylesText, globalTheme.text]}>hours</Text>
         </View>
         <View style={styles.pickerColumn}>
           <Picker
@@ -65,7 +75,7 @@ export const TimePicker = (props: Props) => {
             style={styles.numberColumn}>
             {minuteItems}
           </Picker>
-          <Text style={[styles.text, globalTheme.text]}>minutes</Text>
+          <Text style={[stylesText, globalTheme.text]}>minutes</Text>
         </View>
         <View style={styles.pickerColumn}>
           <Picker
@@ -78,7 +88,7 @@ export const TimePicker = (props: Props) => {
             style={styles.numberColumn}>
             {secondItems}
           </Picker>
-          <Text style={[styles.text, globalTheme.text]}>seconds</Text>
+          <Text style={[stylesText, globalTheme.text]}>seconds</Text>
         </View>
       </View>
     </View>
@@ -91,7 +101,8 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold
   },
   numberColumn: {
-    flex: 0
+    flex: 0,
+    height: 80
   },
   pickerColumn: {
     flex: 1
@@ -101,7 +112,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   text: {
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.xl,
     textAlign: 'center'
   },
   view: {
