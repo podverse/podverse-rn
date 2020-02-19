@@ -178,6 +178,17 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
       await updatePlaybackState()
     }
+
+    if (nextAppState === 'background' || nextAppState === 'inactive') {
+      const currentState = await PVTrackPlayer.getState()
+      // If an episode is not playing, then assume its latest playback position does not
+      // need to get updated in history.
+      // This will also prevent the history from being updated when a user closes the app on Device A,
+      // then reloads it to make it load with last history item (currently playing item) on Device B.
+      if (currentState === PVTrackPlayer.STATE_PLAYING) {
+        updateUserPlaybackPosition()
+      }
+    }
   }
 
   // This event is apparently not needed in development on iOS simulator,
