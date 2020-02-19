@@ -268,7 +268,11 @@ export class QueueScreen extends React.Component<Props, State> {
     const { isEditing } = this.state
 
     return (
-      <TouchableWithoutFeedback onPress={() => this._handlePlayItem(item)}>
+      <TouchableWithoutFeedback onPress={() => {
+        if (!isEditing) {
+          this._handlePlayItem(item)
+        }
+      }}>
         <View>
           <QueueTableCell
             clipEndTime={item.clipEndTime}
@@ -362,7 +366,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
   render() {
     const { historyItems, queueItems } = this.global.session.userInfo
-    const { isLoading, isRemoving, nowPlayingItem = {}, viewType } = this.state
+    const { isEditing, isLoading, isRemoving, nowPlayingItem = {}, viewType } = this.state
 
     return (
       <PVView style={styles.view}>
@@ -393,8 +397,8 @@ export class QueueScreen extends React.Component<Props, State> {
         {!isLoading && viewType === _queueKey && queueItems.length > 0 && (
           <SortableList
             data={queueItems}
-            onPressRow={this._onPressRow}
-            onReleaseRow={this._onReleaseRow}
+            onPressRow={!isEditing && this._onPressRow}
+            onReleaseRow={!isEditing && this._onReleaseRow}
             renderRow={this._renderQueueItemRow}
           />
         )}
