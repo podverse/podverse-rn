@@ -11,30 +11,53 @@ type Props = {
   styles?: any
 }
 
-export const PVFastImage = (props: Props) => {
-  const { isSmall, pvKey, resizeMode = 'contain', source, styles } = props
+type State = {
+  hasError: boolean
+}
 
-  return (
-    <>
-      {
-        source ?
-          <FastImage
-            key={pvKey}
-            resizeMode={resizeMode}
-            source={{ uri: source }}
-            style={styles} />
-          :
-          <View style={{
-            ...styles,
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <Icon
-              isSecondary={true}
-              name='podcast'
-              size={isSmall ? 32 : 36} />
-          </View>
-      }
-    </>
-  )
+export class PVFastImage extends React.PureComponent<Props, State> {
+  constructor(props: Props) {
+    super(props)
+
+    this.state = {
+      hasError: false
+    }
+  }
+
+  _handleError = () => {
+    this.setState({ hasError: true })
+  }
+
+  render() {
+    const { isSmall, pvKey, resizeMode = 'contain', source, styles } = this.props
+    const { hasError } = this.state
+
+    return (
+      <>
+        {
+          source && !hasError ?
+            <FastImage
+              key={pvKey}
+              onError={this._handleError}
+              resizeMode={resizeMode}
+              source={{
+                uri: source,
+                cache: FastImage.cacheControl.web
+              }}
+              style={styles} />
+            :
+            <View style={{
+              ...styles,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Icon
+                isSecondary={true}
+                name='podcast'
+                size={isSmall ? 32 : 36} />
+            </View>
+        }
+      </>
+    )
+  }
 }

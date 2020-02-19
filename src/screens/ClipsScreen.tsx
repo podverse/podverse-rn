@@ -205,7 +205,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       handleNavigationPress={() =>
         this._handleNavigationPress(convertToNowPlayingItem(item, null, null))
       }
-      podcastImageUrl={item.episode.podcast.imageUrl}
+      podcastImageUrl={item.episode.podcast.shrunkImageUrl}
       podcastTitle={item.episode.podcast.title}
       startTime={item.startTime}
       title={item.title || 'untitled clip'}

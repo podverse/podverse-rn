@@ -446,7 +446,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         // podcastCategories={
         //   userLocalPodcastView ? '' : generateCategoriesText(item.categories)
         // }
-        podcastImageUrl={item.imageUrl}
+        podcastImageUrl={item.shrunkImageUrl}
         podcastTitle={item.title}
         showAutoDownload={true}
         showDownloadCount={true}
