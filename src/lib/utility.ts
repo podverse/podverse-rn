@@ -107,8 +107,10 @@ export const decodeHTMLString = (text: string) => {
 
 export const removeHTMLAttributesFromString = (html: string) => {
   const $ = cheerio.load(html)
-  $('*').each(function() {
-    this.attribs = {}
+  $('*').each(function(x: any) {
+    this.attribs = {
+      ...(this.attribs && this.attribs.href ? { href: this.attribs.href } : {})
+    }
   })
 
   return $.html()

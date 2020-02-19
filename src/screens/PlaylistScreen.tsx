@@ -154,7 +154,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(item, null, null))
           }
-          podcastImageUrl={item.episode.podcast.imageUrl}
+          podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
           startTime={item.startTime}
           title={item.title}
@@ -175,7 +175,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
             })
           }
           id={item.id}
-          podcastImageUrl={(item.podcast && item.podcast.imageUrl) || ''}
+          podcastImageUrl={(item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl)) || ''}
           podcastTitle={(item.podcast && item.podcast.title) || ''}
           pubDate={item.pubDate}
           title={item.title}
