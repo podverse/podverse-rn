@@ -226,6 +226,10 @@ const moreOtherOptions = (membershipStatus?: string) => {
     {
       title: 'Terms',
       key: _termsKey
+    },
+    {
+      title: 'Add Podcast by RSS',
+      key: PV.RouteNames.AddPodcastByRSSScreen
     }
   ]
 

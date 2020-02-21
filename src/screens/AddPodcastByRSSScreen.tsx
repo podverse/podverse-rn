@@ -105,11 +105,11 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
         {
           !isLoading &&
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
-              <Text style={core.textInputLabel}>RSS Feed URL</Text>
+              <Text style={core.textInputLabel}>RSS Feed</Text>
               <TextInput
                 autoCapitalize='none'
                 onChangeText={this._handleChangeText}
-                placeholder='example.com/rssFeed'
+                placeholder='paste RSS feed link here'
                 returnKeyType='done'
                 style={[styles.textInput, globalTheme.textInput]}
                 underlineColorAndroid='transparent'
@@ -117,11 +117,15 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
               />
               <Divider style={styles.divider} />
               <Text style={styles.text}>
-                Clips and playlists are not supported for podcasts added by RSS URL.
+                If a podcast is not officially available on Podverse, you can still listen to it by
+                pasting the RSS link here and pressing the Save button.
               </Text>
               <Text style={styles.text}>
-                If you want a podcast officially added to Podverse (for clip and playlist support)
-                please use the Request Podcast link below.
+                Clips and playlists are not supported for podcasts added by RSS feed.
+              </Text>
+              <Text style={styles.text}>
+                If you want a podcast officially added to Podverse
+                press the Request Podcast link below.
               </Text>
               <TextLink onPress={this._navToRequestPodcastForm} style={[styles.textLink]}>
                 Request Podcast
@@ -161,7 +165,7 @@ const styles = StyleSheet.create({
   },
   textLink: {
     fontSize: PV.Fonts.sizes.lg,
-    paddingVertical: 12,
+    paddingVertical: 16,
     textAlign: 'center'
   }
 })

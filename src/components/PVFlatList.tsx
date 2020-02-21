@@ -91,7 +91,7 @@ export const PVFlatList = (props: Props) => {
 
   const addPodcastByRSSTextLink = (
     <TextLink onPress={handleAddPodcastByRSSURLNavigation} style={[styles.textLink]}>
-      Add Podcast by RSS URL
+      Add Podcast by RSS Feed
     </TextLink>
   )
 
