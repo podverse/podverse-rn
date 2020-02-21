@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   numberColumn: {
     flex: 0,
-    height: 80
+    height: 216
   },
   pickerColumn: {
     flex: 1
