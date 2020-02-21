@@ -41,15 +41,10 @@ const debouncedSetPlaybackPosition = debounce(
 
 // NOTE: iOS does not run while the screen is locked and the display is off.
 // This seems to be a limitation that cannot be worked around, aside from a geolocation API based work-around...
-
-// NOTE: addOrUpdateHistoryItemSucceeded allows the backgroundtimer to continue to run every 30 seconds,
-// even after we have successfully updated the historyItem on the server. I'm letting the BackgroundTimer
-// interval continue to run because my iPhone XR consistently closes Podverse when I have it in the background
-// and I open another app. I don't know if letting the BackgroundTimer run will prevent it from closing
-// in the background prematurely, but I'm trying it out.
-let timerStarted = false
 let addOrUpdateHistoryItemSucceeded = false
+let addOrUpdateInterval = null as any
 const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
+  if (addOrUpdateInterval) clearInterval(addOrUpdateInterval)
   if (!nowPlayingItem) return
 
   const attemptAddOrUpdateHistoryItem = async () => {
@@ -58,18 +53,16 @@ const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
         await addOrUpdateHistoryItem(nowPlayingItem)
         await updateUserPlaybackPosition()
         addOrUpdateHistoryItemSucceeded = true
+        clearInterval(addOrUpdateInterval)
       } catch (error) {
         console.log(error)
       }
     }
   }
 
-  if (!timerStarted) {
-    timerStarted = true
-    BackgroundTimer.runBackgroundTimer(async () => {
-      attemptAddOrUpdateHistoryItem()
-    }, 30000)
-  }
+  addOrUpdateInterval = setInterval(() => {
+    attemptAddOrUpdateHistoryItem()
+  }, 30000)
 }
 
 const handleSyncNowPlayingItem = async (
@@ -270,25 +263,44 @@ module.exports = async () => {
   })
 }
 
-let clipEndTimeInterval: any = null
-
+let handleClipEndInterval = null as any
+// Background timer handling from
+// https://github.com/ocetnik/react-native-background-timer/issues/122
 const handlePlayerClipLoaded = async () => {
   console.log('PLAYER_CLIP_LOADED event')
+
+  const stopHandleClipEndInterval = async () => {
+    if (Platform.OS === 'android') {
+      BackgroundTimer.stopBackgroundTimer()
+    }
+    if (handleClipEndInterval) {
+      BackgroundTimer.clearInterval(handleClipEndInterval)
+    }
+    BackgroundTimer.stop()
+  }
+
+  await stopHandleClipEndInterval()
+
   const nowPlayingItem = await getNowPlayingItem()
   if (nowPlayingItem) {
     const { clipEndTime, clipId } = nowPlayingItem
 
-    if (clipEndTimeInterval) clearInterval(clipEndTimeInterval)
+    const checkEndTime = async () => {
+      const currentPosition = await PVTrackPlayer.getPosition()
+      if (currentPosition > clipEndTime) {
+        PVTrackPlayer.pause()
+        await setClipHasEnded(true)
+        stopHandleClipEndInterval()
+      }
+    }
 
     if (clipId && clipEndTime) {
-      clipEndTimeInterval = setInterval(async () => {
-        const currentPosition = await PVTrackPlayer.getPosition()
-        if (currentPosition > clipEndTime) {
-          clearInterval(clipEndTimeInterval)
-          PVTrackPlayer.pause()
-          await setClipHasEnded(true)
-        }
-      }, 250)
+      if (Platform.OS === 'android') {
+        BackgroundTimer.runBackgroundTimer(checkEndTime, 500)
+      } else {
+        await BackgroundTimer.start()
+        handleClipEndInterval = BackgroundTimer.setInterval(checkEndTime, 500)
+      }
     }
     const resolveImmediately = true
     await debouncedSetPlaybackPosition(
