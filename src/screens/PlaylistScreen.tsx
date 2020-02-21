@@ -145,7 +145,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
   _renderItem = ({ item }) => {
     if (item.startTime) {
-      return (
+      return item.episode && item.episode.podcast ? (
         <ClipTableCell
           endTime={item.endTime}
           episodeId={item.episode.id}
@@ -159,7 +159,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           startTime={item.startTime}
           title={item.title}
         />
-      )
+      ) : (<></>)
     } else {
       let description = removeHTMLFromString(item.description)
       description = decodeHTMLString(description)

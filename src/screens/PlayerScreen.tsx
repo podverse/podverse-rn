@@ -456,7 +456,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         }
       }
 
-      return (
+      return item && item.episode && item.episode.id ? (
         <ClipTableCell
           endTime={item.endTime}
           episodeId={item.episode.id}
@@ -472,7 +472,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           startTime={item.startTime}
           title={item.title || 'untitled clip'}
         />
-      )
+      ) : (<></>)
     }
   }
 

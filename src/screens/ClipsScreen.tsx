@@ -193,24 +193,25 @@ export class ClipsScreen extends React.Component<Props, State> {
     })
   }
 
-  _renderClipItem = ({ item }) => (
-    <ClipTableCell
-      endTime={item.endTime}
-      episodeId={item.episode.id}
-      episodePubDate={item.episode.pubDate}
-      episodeTitle={item.episode.title}
-      handleMorePress={() =>
-        this._handleMorePress(convertToNowPlayingItem(item, null, null))
-      }
-      handleNavigationPress={() =>
-        this._handleNavigationPress(convertToNowPlayingItem(item, null, null))
-      }
-      podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
-      podcastTitle={item.episode.podcast.title}
-      startTime={item.startTime}
-      title={item.title || 'untitled clip'}
-    />
-  )
+  _renderClipItem = ({ item }) => {
+    return item && item.episode && item.episode.id ? (
+      <ClipTableCell
+        endTime={item.endTime}
+        episodeId={item.episode.id}
+        episodePubDate={item.episode.pubDate}
+        episodeTitle={item.episode.title}
+        handleMorePress={() =>
+          this._handleMorePress(convertToNowPlayingItem(item, null, null))
+        }
+        handleNavigationPress={() =>
+          this._handleNavigationPress(convertToNowPlayingItem(item, null, null))
+        }
+        podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
+        podcastTitle={item.episode.podcast.title}
+        startTime={item.startTime}
+        title={item.title || 'untitled clip'} />
+    ) : (<></>)
+  }
 
   _handleSearchBarClear = (text: string) => {
     this.setState({
