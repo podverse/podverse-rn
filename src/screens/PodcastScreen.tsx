@@ -411,7 +411,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         />
       )
     } else {
-      return (
+      return item && item.episode && item.episode.id ? (
         <ClipTableCell
           endTime={item.endTime}
           episodeId={item.episode.id}
@@ -423,7 +423,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           startTime={item.startTime}
           title={item.title}
         />
-      )
+      ) : (<></>)
     }
   }
 

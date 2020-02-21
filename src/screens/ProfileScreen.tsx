@@ -382,7 +382,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         />
       )
     } else if (queryFrom === _clipsKey) {
-      return (
+      return item && item.episode && item.episode.id && item.episode.podcast ? (
         <ClipTableCell
           endTime={item.endTime}
           episodeId={item.episode.id}
@@ -396,7 +396,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           startTime={item.startTime}
           title={item.title}
         />
-      )
+      ) : (<></>)
     } else {
       return (
         <PlaylistTableCell
