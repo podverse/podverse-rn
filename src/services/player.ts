@@ -191,17 +191,21 @@ const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
 }
 
 export const updateUserPlaybackPosition = async () => {
-  const item = await getNowPlayingItem()
-  if (item) {
-    const lastPosition = await TrackPlayer.getPosition()
-    const duration = await TrackPlayer.getDuration()
-    if (duration > 0 && lastPosition >= duration - 10) {
-      item.userPlaybackPosition = 0
-      await updateHistoryItemPlaybackPosition(item)
-    } else if (lastPosition > 0) {
-      item.userPlaybackPosition = lastPosition
-      await updateHistoryItemPlaybackPosition(item)
+  try {
+    const item = await getNowPlayingItem()
+    if (item) {
+      const lastPosition = await TrackPlayer.getPosition()
+      const duration = await TrackPlayer.getDuration()
+      if (duration > 0 && lastPosition >= duration - 10) {
+        item.userPlaybackPosition = 0
+        await updateHistoryItemPlaybackPosition(item)
+      } else if (lastPosition > 0) {
+        item.userPlaybackPosition = lastPosition
+        await updateHistoryItemPlaybackPosition(item)
+      }
     }
+  } catch (error) {
+    console.log('updateUserPlaybackPosition', error)
   }
 }
 
@@ -263,9 +267,9 @@ export const loadItemAndPlayTrack = async (
   shouldPlay: boolean,
   skipUpdateHistory?: boolean
 ) => {
-  if (!item) return
-
   updateUserPlaybackPosition()
+
+  if (!item) return
 
   // Episodes and clips must be already loaded in history
   // in order to be handled in playerEvents > handleSyncNowPlayingItem.
