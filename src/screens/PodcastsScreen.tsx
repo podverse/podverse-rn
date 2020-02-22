@@ -163,9 +163,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const trackId = await PVTrackPlayer.getCurrentTrack()
 
       if (trackId) {
-        const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(
-          trackId
-        )
+        const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
 
         if (
           !lastItem ||

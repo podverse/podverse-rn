@@ -53,6 +53,8 @@ type Props = {
 
 type State = {}
 
+let initializedOnce = false
+
 export class PlayerScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const _getEpisodeId = navigation.getParam('_getEpisodeId')
@@ -117,6 +119,18 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _initializeScreenData = () => {
+
+    // This is difficult for me to reproduce in local testing, but upon returning to the player screen
+    // from the lock screen, it appears that componentDidMount is called again, causing the player
+    // to visibly load, as the player fires up from an "idle" or "none" state.
+    // Ensure this only happens once in initializeScreenData.
+    // Updating the PlayerScreen when returning from the background is handled in
+    // PodcastsScreen _handleAppStateChange.
+    if (!initializedOnce) {
+      initializedOnce = true
+      return
+    }
+
     setGlobal(
       {
         screenPlayer: {
