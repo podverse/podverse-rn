@@ -116,8 +116,16 @@ export const removeHTMLAttributesFromString = (html: string) => {
   return $.html()
 }
 
-export const formatEpisodeDescription = (html: string, title?: string) => {
-  return `<p>${title || 'untitled episode'}</p><hr />` + (html || 'No summary available.')
+export const formatTitleViewHtml = (episode: any) => {
+  if (episode.podcast && episode.podcast.title && episode.title && episode.pubDate) {
+    return `<p>${episode.podcast.title}</p><p>${episode.title}</p><p>${readableDate(episode.pubDate)}</p>`
+  } else if (episode && episode.title && episode.pubDate) {
+    return `<p>${episode.title}</p><p>${readableDate(episode.pubDate)}</p>`
+  } else if (episode.title) {
+    return `<p>${episode.title}</p>`
+  } else {
+    return 'untitled episode'
+  }
 }
 
 export const convertURLToSecureProtocol = (url?: string) => {

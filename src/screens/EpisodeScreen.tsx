@@ -22,7 +22,7 @@ import {
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem
 } from '../lib/NowPlayingItem'
-import { formatEpisodeDescription } from '../lib/utility'
+import { formatTitleViewHtml } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -99,13 +99,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
       })
     }
 
-    const formattedDescription = formatEpisodeDescription(episode.description, episode.title)
-
     this.state = {
       endOfResultsReached: false,
       episode,
       episodeId,
-      formattedDescription,
       flatListData: [],
       flatListDataTotalCount: null,
       isLoading: viewType === _clipsKey,
@@ -347,7 +344,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
       episode,
       flatListData,
       flatListDataTotalCount,
-      formattedDescription,
       isLoading,
       isLoadingMore,
       querySort,
@@ -383,12 +379,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={viewType && viewType !== _showNotesKey ? rightItems : []}
+          rightItems={viewType && viewType === _clipsKey ? rightItems : []}
           selectedLeftItemKey={viewType}
           selectedRightItemKey={querySort}
         />
-        {isLoading && viewType !== _showNotesKey && <ActivityIndicator />}
-        {!isLoading && viewType !== _showNotesKey && flatListData && (
+        {isLoading && viewType === _clipsKey && <ActivityIndicator />}
+        {!isLoading && viewType === _clipsKey && flatListData && (
           <FlatList
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
@@ -404,7 +400,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
             showNoInternetConnectionMessage={showNoInternetConnectionMessage} />
         )}
         {viewType === _showNotesKey && episode && (
-          <HTMLScrollView html={formattedDescription || ''} />
+          <HTMLScrollView html={episode.description || ''} />
+        )}
+        {viewType === _titleKey && episode && (
+          <HTMLScrollView html={formatTitleViewHtml(episode)} />
         )}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
@@ -492,6 +491,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
 const _clipsKey = 'clips'
 const _showNotesKey = 'showNotes'
+const _titleKey = 'title'
 const _mostRecentKey = 'most-recent'
 const _randomKey = 'random'
 const _topPastDay = 'top-past-day'
@@ -507,6 +507,10 @@ const leftItems = [
   {
     label: 'Show Notes',
     value: _showNotesKey
+  },
+  {
+    label: 'Title',
+    value: _titleKey
   }
 ]
 

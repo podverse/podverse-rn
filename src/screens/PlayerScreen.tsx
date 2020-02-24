@@ -34,6 +34,7 @@ import {
 } from '../lib/NowPlayingItem'
 import {
   decodeHTMLString,
+  formatTitleViewHtml,
   readableDate,
   removeHTMLFromString
 } from '../lib/utility'
@@ -316,7 +317,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       viewType
     } = screenPlayer
     if (
-      viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES &&
+      (viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES && viewType !== PV.Keys.VIEW_TYPE_TITLE) &&
       !endOfResultsReached &&
       !isLoadingMore
     ) {
@@ -547,7 +548,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                 handleSelectRightItem={this._selectQuerySort}
                 leftItems={viewTypeOptions}
                 rightItems={
-                  viewType && viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES
+                  viewType && (viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES && viewType !== PV.Keys.VIEW_TYPE_TITLE)
                   && (nowPlayingItem && !nowPlayingItem.addByRSSPodcastFeedUrl)
                     ? querySortOptions(viewType === PV.Keys.VIEW_TYPE_EPISODES)
                     : []
@@ -569,7 +570,7 @@ export class PlayerScreen extends React.Component<Props, State> {
               {!isLoading &&
                !isQuerying &&
                 viewType &&
-                viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES &&
+                (viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES && viewType !== PV.Keys.VIEW_TYPE_TITLE) &&
                 flatListData && (
                   <FlatList
                     data={flatListData}
@@ -586,6 +587,11 @@ export class PlayerScreen extends React.Component<Props, State> {
                 viewType === PV.Keys.VIEW_TYPE_SHOW_NOTES &&
                 episode && (
                   <HTMLScrollView html={episode.description} />
+              )}
+              {!isLoading &&
+                viewType === PV.Keys.VIEW_TYPE_TITLE &&
+                episode && (
+                  <HTMLScrollView html={formatTitleViewHtml(episode)} />
                 )}
             </View>
           )}
@@ -722,6 +728,10 @@ const viewTypeOptions = [
   {
     label: 'Show Notes',
     value: PV.Keys.VIEW_TYPE_SHOW_NOTES
+  },
+  {
+    label: 'Title',
+    value: PV.Keys.VIEW_TYPE_TITLE
   }
 ]
 

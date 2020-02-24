@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   name: {
     flex: 1,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.semibold,
+    fontWeight: PV.Fonts.weights.bold,
     height: PV.Table.cells.standard.height,
     lineHeight: PV.Table.cells.standard.height
   },

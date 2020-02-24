@@ -78,10 +78,10 @@ const styles = StyleSheet.create({
   name: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.semibold
+    fontWeight: PV.Fonts.weights.bold
   },
   notFoundText: {
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold
   },
   textWrapper: {
