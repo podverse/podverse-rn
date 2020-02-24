@@ -30,7 +30,10 @@ export const PVButton = (props: Props) => {
       disabled={disabled || isLoading}
       onPress={onPress}>
       {isLoading ? (
-        <ActivityIndicator color={globalTheme.buttonPrimaryText.color} size='small' />
+        <ActivityIndicator
+          animating={true}
+          color={globalTheme.buttonPrimaryText.color}
+          size='small' />
       ) : (
         <Text style={[core.buttonText, globalTheme.buttonPrimaryText, disabledTextStyle, isWarningTextStyle, isSuccessTextStyle]}>
           {text}

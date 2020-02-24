@@ -20,8 +20,6 @@ import {
   convertToNowPlayingItem
 } from '../lib/NowPlayingItem'
 import {
-  decodeHTMLString,
-  removeHTMLFromString,
   safelyUnwrapNestedVariable
 } from '../lib/utility'
 import { PV } from '../resources'

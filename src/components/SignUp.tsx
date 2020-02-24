@@ -202,7 +202,10 @@ export class SignUp extends React.Component<Props, State> {
           disabled={submitIsDisabled || isLoading}
           onPress={this.signUp}>
           {isLoading ? (
-            <ActivityIndicator color={PV.Colors.white} size='small' />
+            <ActivityIndicator
+              animating={true}
+              color={PV.Colors.white}
+              size='small' />
           ) : (
             <Text style={[styles.signInButtonText, checkIfSubmitIsDisabledTextStyle]}>
               Sign Up
