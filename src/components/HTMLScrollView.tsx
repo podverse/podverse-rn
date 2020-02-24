@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   html: {
     marginHorizontal: 8,
-    marginVertical: 20
+    marginVertical: 12
   },
   scrollView: {
     flex: 1

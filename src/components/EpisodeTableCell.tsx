@@ -61,7 +61,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               {podcastTitle}
             </Text>
           )}
-          <Text numberOfLines={4} style={styles.title}>
+          <Text numberOfLines={6} style={styles.title}>
             {title}
           </Text>
           <View style={styles.textWrapperBottomRow}>
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.md,
     lineHeight: PV.Fonts.sizes.md + 2,
     marginTop: 10,
-    paddingLeft: 72
+    paddingLeft: 74
   },
   downloadedIcon: {
     flex: 0,
