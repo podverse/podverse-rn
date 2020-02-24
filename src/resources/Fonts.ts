@@ -3,24 +3,20 @@ import { IFonts } from './Interfaces'
 
 const sizes = Platform.OS === 'android' ?
 ({
-  sizes: {
-    tiny: 12,
-    xs: 13,
-    sm: 14,
-    md: 16,
-    lg: 17,
-    xl: 18
-  }
+  tiny: 12,
+  xs: 13,
+  sm: 14,
+  md: 16,
+  lg: 17,
+  xl: 18
 }) :
 ({
-  sizes: {
-    tiny: 13,
-    xs: 14,
-    sm: 15,
-    md: 17,
-    lg: 18,
-    xl: 19
-  }
+  tiny: 13,
+  xs: 14,
+  sm: 15,
+  md: 17,
+  lg: 18,
+  xl: 19
 })
 
 export const Fonts: IFonts = {
