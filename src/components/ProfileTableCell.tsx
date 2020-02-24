@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
-    height: 60,
-    lineHeight: 60
+    height: PV.Table.cells.standard.height,
+    lineHeight: PV.Table.cells.standard.height
   },
   wrapper: {
     alignItems: 'center',

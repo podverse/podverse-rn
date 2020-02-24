@@ -483,6 +483,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
           }
+          hideImage={true}
           startTime={item.startTime}
           title={item.title || 'untitled clip'}
         />

@@ -67,6 +67,7 @@ export class Login extends React.Component<Props, State> {
       <View style={[styles.view, style]}>
         <TextInput
           autoCapitalize='none'
+          autoCompleteType='email'
           blurOnSubmit={false}
           keyboardType='email-address'
           onChangeText={this.emailChanged}
@@ -79,6 +80,7 @@ export class Login extends React.Component<Props, State> {
         />
         <TextInput
           autoCapitalize='none'
+          autoCompleteType='password'
           onChangeText={this.passwordChanged}
           placeholder='Password'
           placeholderTextColor={PV.Colors.gray}

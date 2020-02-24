@@ -1,10 +1,11 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { button, core } from '../styles'
+import { core } from '../styles'
 import { ActivityIndicator, FastImage, Icon, Text, View } from './'
+import { MoreButton } from './MoreButton'
 
 type Props = {
   downloadedEpisodeIds?: any
@@ -44,7 +45,7 @@ export const EpisodeTableHeader = (props: Props) => {
             source={podcastImageUrl}
             styles={styles.image} />
           <View style={styles.textWrapper}>
-            <Text numberOfLines={3} style={styles.title}>
+            <Text numberOfLines={2} style={styles.title}>
               {title}
             </Text>
             <View style={styles.textWrapperBottomRow}>
@@ -61,33 +62,12 @@ export const EpisodeTableHeader = (props: Props) => {
               )}
             </View>
           </View>
-          {!isDownloading && handleMorePress && (
-            <View style={styles.buttonView}>
-              <TouchableOpacity
-                hitSlop={{
-                  bottom: 8,
-                  left: 8,
-                  right: 8,
-                  top: 8
-                }}
-                onPress={handleMorePress}
-                style={styles.moreButton}>
-                <Image
-                  resizeMode='contain'
-                  source={PV.Images.MORE}
-                  style={[styles.moreButtonImage, globalTheme.buttonImage]}
-                />
-              </TouchableOpacity>
-            </View>
-          )}
-          {isDownloading && (
-            <View style={styles.moreButton}>
-              <ActivityIndicator
-                onPress={handleMorePress}
-                styles={button.iconOnlyMedium}
-              />
-            </View>
-          )}
+          {handleMorePress &&
+            <MoreButton
+              handleShowMore={handleMorePress}
+              height={92}
+              isLoading={isDownloading} />
+          }
         </View>
       )}
       {!isLoading && isNotFound && (
@@ -118,37 +98,23 @@ const styles = StyleSheet.create({
   },
   innerWrapper: {
     flex: 1,
-    flexDirection: 'row'
-  },
-  moreButton: {
-    alignItems: 'center',
-    flex: 0,
-    height: 44,
-    justifyContent: 'center',
-    marginBottom: 'auto',
-    marginTop: 'auto',
-    width: 44
-  },
-  moreButtonImage: {
-    height: 36,
-    tintColor: 'white',
-    width: 36
+    flexDirection: 'row',
+    marginRight: 8
   },
   notFoundText: {
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold
   },
   pubDate: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
-    lineHeight: PV.Fonts.sizes.sm,
     marginTop: 3
   },
   textWrapper: {
     flex: 1,
-    paddingBottom: 5,
+    paddingBottom: 6,
     paddingRight: 8,
-    paddingTop: 6
+    paddingTop: 8
   },
   textWrapperBottomRow: {
     flexDirection: 'row',
@@ -156,9 +122,8 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: PV.Fonts.sizes.lg + 2
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold
   },
   wrapper: {
     flexDirection: 'row',

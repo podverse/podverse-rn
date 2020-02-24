@@ -40,7 +40,6 @@ export const TableSectionSelectors = (props: Props) => {
 
   return (
     <View>
-      <Divider />
       <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
         {!hidePickers && (
           <View style={styles.tableSectionHeaderInner}>
@@ -62,7 +61,7 @@ export const TableSectionSelectors = (props: Props) => {
                     _placeholderDefault.label}
                 </Text>
                 <Icon
-                  name="angle-down"
+                  name='angle-down'
                   size={14}
                   style={[
                     styles.tableSectionHeaderIconLeft,
@@ -90,7 +89,7 @@ export const TableSectionSelectors = (props: Props) => {
                       _placeholderDefault.label}
                   </Text>
                   <Icon
-                    name="angle-down"
+                    name='angle-down'
                     size={14}
                     style={[
                       styles.tableSectionHeaderIconRight,
@@ -116,7 +115,6 @@ export const TableSectionSelectors = (props: Props) => {
           </View>
         )}
       </View>
-      <Divider />
     </View>
   )
 }

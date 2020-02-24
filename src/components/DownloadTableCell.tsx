@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingBottom: 4,
     paddingRight: 8,
-    paddingTop: 6
+    paddingTop: 8
   },
   textWrapperBottom: {
     flex: 1,

@@ -51,7 +51,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
             source={podcastImageUrl}
             styles={styles.image} />
           <View style={styles.textWrapper}>
-            <Text numberOfLines={3} style={styles.title}>
+            <Text numberOfLines={2} style={styles.title}>
               {podcastTitle}
             </Text>
             <View style={styles.textWrapperRow}>
@@ -115,9 +115,8 @@ const styles = StyleSheet.create({
   },
   bottomText: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
+    fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-end',
-    lineHeight: PV.Fonts.sizes.sm + 2,
     marginTop: 2
   },
   textWrapperRow: {
@@ -130,7 +129,7 @@ const styles = StyleSheet.create({
   },
   textWrapperRowRight: {
     alignItems: 'flex-end',
-    flex: 1,
+    flex: 0,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginLeft: 4
@@ -143,15 +142,13 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     flex: 1,
-    paddingBottom: 5,
     paddingRight: 8,
-    paddingTop: 6
+    paddingVertical: 8
   },
   title: {
     flex: 1,
-    fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: PV.Fonts.sizes.lg + 2
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold
   },
   wrapper: {
     flexDirection: 'row'

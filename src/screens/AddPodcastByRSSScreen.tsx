@@ -108,6 +108,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
               <Text style={core.textInputLabel}>RSS Feed</Text>
               <TextInput
                 autoCapitalize='none'
+                autoCompleteType='off'
                 onChangeText={this._handleChangeText}
                 placeholder='paste RSS feed link here'
                 returnKeyType='done'

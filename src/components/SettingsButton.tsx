@@ -4,7 +4,7 @@ import { Icon } from './'
 
 type Props = {
   handleToggleSettings: any
-  showCheckmark: boolean
+  showCheckmark?: boolean
 }
 
 export const SettingsButton = (props: Props) => {

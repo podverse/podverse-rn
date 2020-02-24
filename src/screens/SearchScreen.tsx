@@ -14,7 +14,6 @@ import {
 import { alertIfNoNetworkConnection } from '../lib/network'
 import {
   generateAuthorsText,
-  generateCategoriesText,
   safelyUnwrapNestedVariable
 } from '../lib/utility'
 import { PV } from '../resources'
@@ -169,7 +168,6 @@ export class SearchScreen extends React.Component<Props, State> {
       lastEpisodePubDate={item.lastEpisodePubDate}
       onPress={() => this._handleMorePress(item)}
       podcastAuthors={generateAuthorsText(item.authors)}
-      podcastCategories={generateCategoriesText(item.categories)}
       podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
       podcastTitle={item.title}
     />

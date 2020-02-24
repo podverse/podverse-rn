@@ -22,6 +22,7 @@ import {
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem
 } from '../lib/NowPlayingItem'
+import { formatEpisodeDescription } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -36,6 +37,7 @@ type State = {
   endOfResultsReached: boolean
   episode?: any
   episodeId?: any
+  formattedDescription: string
   flatListData: any[]
   flatListDataTotalCount: number | null
   isLoading: boolean
@@ -97,10 +99,13 @@ export class EpisodeScreen extends React.Component<Props, State> {
       })
     }
 
+    const formattedDescription = formatEpisodeDescription(episode.description, episode.title)
+
     this.state = {
       endOfResultsReached: false,
       episode,
       episodeId,
+      formattedDescription,
       flatListData: [],
       flatListDataTotalCount: null,
       isLoading: viewType === _clipsKey,
@@ -154,8 +159,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
               newState = await this._queryData(_clipsKey)
             }
           }
-
-          newEpisode.description = newEpisode.description || 'No summary available.'
 
           this.setState({
             ...newState,
@@ -274,6 +277,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
             convertToNowPlayingItem(item, episode, episode.podcast)
           )
         }
+        hideImage={true}
         startTime={item.startTime}
         title={item.title}
       />
@@ -343,6 +347,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       episode,
       flatListData,
       flatListDataTotalCount,
+      formattedDescription,
       isLoading,
       isLoadingMore,
       querySort,
@@ -399,7 +404,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
             showNoInternetConnectionMessage={showNoInternetConnectionMessage} />
         )}
         {viewType === _showNotesKey && episode && (
-          <HTMLScrollView html={episode.description || ''} />
+          <HTMLScrollView html={formattedDescription || ''} />
         )}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}

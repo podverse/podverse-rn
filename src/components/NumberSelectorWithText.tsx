@@ -27,6 +27,7 @@ export const NumberSelectorWithText = (props: Props) => {
   return (
     <View style={styles.wrapper}>
       <TextInput
+        autoCompleteType='off'
         keyboardType='numeric'
         onChangeText={handleChangeText}
         onSubmitEditing={handleSubmitEditing}

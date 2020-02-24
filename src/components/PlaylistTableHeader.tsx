@@ -77,7 +77,7 @@ export const PlaylistTableHeader = (props: Props) => {
             </View>
             {handleEditPress && (
               <Icon
-                name="pencil-alt"
+                name='pencil-alt'
                 onPress={() => handleEditPress(id)}
                 size={26}
                 style={button.iconOnlyMedium}
@@ -124,19 +124,6 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
     marginTop: 4
-  },
-  moreButton: {
-    flex: 0,
-    marginBottom: 'auto',
-    marginTop: 'auto'
-  },
-  moreButtonImage: {
-    borderColor: 'white',
-    borderRadius: 22,
-    borderWidth: 1,
-    height: 44,
-    tintColor: 'white',
-    width: 44
   },
   notFoundText: {
     fontSize: PV.Fonts.sizes.lg,

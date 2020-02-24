@@ -55,6 +55,7 @@ export class ResetPassword extends React.Component<Props, State> {
       <View style={[styles.view, style]}>
         <TextInput
           autoCapitalize='none'
+          autoCompleteType='email'
           keyboardType='email-address'
           onChangeText={this._emailChanged}
           placeholder='Email'

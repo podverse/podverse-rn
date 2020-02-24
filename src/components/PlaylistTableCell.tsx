@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     alignItems: 'center',
-    height: 60,
+    height: PV.Table.cells.standard.height,
     justifyContent: 'space-between',
     paddingLeft: 8,
     paddingRight: 8

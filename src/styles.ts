@@ -97,7 +97,7 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.redDarker
   },
   divider: {
-    backgroundColor: PV.Colors.grayDarker
+    backgroundColor: PV.Colors.grayLight
   },
   flatList: {
     backgroundColor: PV.Colors.black
@@ -304,7 +304,7 @@ export const lightTheme = StyleSheet.create({
     backgroundColor: PV.Colors.redLighter
   },
   divider: {
-    backgroundColor: PV.Colors.grayLighter
+    backgroundColor: PV.Colors.grayDark
   },
   flatList: {
     backgroundColor: PV.Colors.white
@@ -427,10 +427,10 @@ export const button = StyleSheet.create({
   },
   iconOnlyMedium: {
     flex: 0,
-    height: 60,
-    lineHeight: 60,
+    height: 64,
+    lineHeight: 64,
     textAlign: 'center',
-    width: 56,
+    width: 44,
     zIndex: 1000000
   },
   iconOnlySmall: {
@@ -689,12 +689,13 @@ export const actionSheetStyles = {
     paddingVertical: 12
   },
   headerMessage: {
-    fontSize: PV.Fonts.sizes.sm,
+    fontSize: PV.Fonts.sizes.md,
+    lineHeight: PV.Fonts.sizes.md + 2,
     marginTop: 4,
     textAlign: 'center'
   },
   headerTitle: {
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
     textAlign: 'center'
   }

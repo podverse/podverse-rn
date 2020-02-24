@@ -30,11 +30,10 @@ export const PlayerTableHeader = (props: Props) => {
               styles={styles.image}
             />
             <View style={styles.textWrapper}>
-              <Text numberOfLines={1} style={styles.podcastTitle}>
+              <Text isSecondary={true} numberOfLines={1} style={styles.podcastTitle}>
                 {nowPlayingItem.podcastTitle}
               </Text>
               <Text
-                isSecondary={true}
                 numberOfLines={2}
                 style={styles.episodeTitle}>
                 {nowPlayingItem.episodeTitle}
@@ -56,13 +55,13 @@ export const PlayerTableHeader = (props: Props) => {
 const styles = StyleSheet.create({
   episodePubDate: {
     fontSize: PV.Fonts.sizes.sm,
-    lineHeight: PV.Fonts.sizes.sm + 2,
     marginTop: 3
   },
   episodeTitle: {
-    fontSize: PV.Fonts.sizes.md,
-    marginTop: 2,
-    lineHeight: PV.Fonts.sizes.md + 2
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    lineHeight: PV.Fonts.sizes.md + 2,
+    marginTop: 5
   },
   image: {
     flex: 0,
@@ -70,9 +69,11 @@ const styles = StyleSheet.create({
     width: PV.Table.cells.podcast.image.width
   },
   podcastTitle: {
+    flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: PV.Fonts.sizes.md + 2
+    justifyContent: 'flex-start',
+    lineHeight: PV.Fonts.sizes.md,
+    marginTop: 1
   },
   textWrapper: {
     flex: 1,

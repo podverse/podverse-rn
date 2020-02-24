@@ -43,7 +43,7 @@ export const ProfileTableHeader = (props: Props) => {
           </View>
           {handleEditPress && (
             <Icon
-              name="pencil-alt"
+              name='pencil-alt'
               onPress={() => handleEditPress(id)}
               size={26}
               style={button.iconOnlyMedium}
@@ -75,24 +75,10 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     marginRight: 8
   },
-  moreButton: {
-    flex: 0,
-    marginBottom: 'auto',
-    marginTop: 'auto'
-  },
-  moreButtonImage: {
-    borderColor: 'white',
-    borderRadius: 22,
-    borderWidth: 1,
-    height: 44,
-    tintColor: 'white',
-    width: 44
-  },
   name: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: 44
+    fontWeight: PV.Fonts.weights.semibold
   },
   notFoundText: {
     fontSize: PV.Fonts.sizes.lg,
@@ -105,7 +91,8 @@ const styles = StyleSheet.create({
   wrapper: {
     alignItems: 'center',
     flexDirection: 'row',
-    height: 60,
+    height: PV.Table.cells.standard.height,
+    lineHeight: PV.Table.cells.standard.height,
     marginHorizontal: 8
   }
 })

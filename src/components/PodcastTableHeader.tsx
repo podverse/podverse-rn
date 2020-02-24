@@ -132,9 +132,8 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     flex: 1,
-    paddingBottom: 4,
     paddingRight: 8,
-    paddingTop: 6
+    paddingTop: 8
   },
   textWrapperBottom: {
     alignItems: 'center',
@@ -157,9 +156,9 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: PV.Fonts.sizes.lg + 2
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    lineHeight: PV.Fonts.sizes.xl
   },
   wrapper: {
     flex: 1,
