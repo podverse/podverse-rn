@@ -64,7 +64,6 @@ export class ClipTableCell extends React.PureComponent<Props> {
               )}
               {!!episodeTitle && (
                 <Text
-                  isSecondary={!isPlaylistItem}
                   numberOfLines={1}
                   style={styles.episodeTitle}>
                   {episodeTitle}
@@ -155,7 +154,6 @@ const styles = StyleSheet.create({
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
     marginTop: 2
   },
   image: {
