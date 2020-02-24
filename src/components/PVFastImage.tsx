@@ -2,10 +2,10 @@ import React from 'react'
 import { View } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import { Icon } from '.'
+const uuidv4 = require('uuid/v4')
 
 type Props = {
   isSmall?: boolean
-  pvKey?: string
   resizeMode?: any
   source?: string
   styles?: any
@@ -13,6 +13,7 @@ type Props = {
 
 type State = {
   hasError: boolean
+  uuid: string
 }
 
 export class PVFastImage extends React.PureComponent<Props, State> {
@@ -20,7 +21,8 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     super(props)
 
     this.state = {
-      hasError: false
+      hasError: false,
+      uuid: uuidv4()
     }
   }
 
@@ -29,15 +31,15 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isSmall, pvKey, resizeMode = 'contain', source, styles } = this.props
-    const { hasError } = this.state
+    const { isSmall, resizeMode = 'contain', source, styles } = this.props
+    const { hasError, uuid } = this.state
 
     return (
       <>
         {
           source && !hasError ?
             <FastImage
-              key={pvKey}
+              key={uuid}
               onError={this._handleError}
               resizeMode={resizeMode}
               source={{

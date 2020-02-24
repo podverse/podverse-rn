@@ -61,7 +61,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               {podcastTitle}
             </Text>
           )}
-          <Text numberOfLines={6} style={styles.title}>
+          <Text numberOfLines={4} style={styles.title}>
             {title}
           </Text>
           <View style={styles.textWrapperBottomRow}>
