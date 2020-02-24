@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import * as rssParser from 'react-native-rss-parser'
-import { convertToSortableTitle } from '../lib/utility'
+import { convertToSortableTitle, convertURLToSecureProtocol } from '../lib/utility'
 import { PV } from '../resources'
 import { combineWithAddByRSSPodcasts } from './podcast'
 const uuidv4 = require('uuid/v4')
@@ -108,7 +108,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
           episode.linkUrl = item.links && item.links[0] && item.links[0].url
           episode.mediaFilesize = enclosure.length
           episode.mediaType = enclosure.mimeType
-          episode.mediaUrl = enclosure.url
+          episode.mediaUrl = convertURLToSecureProtocol(enclosure.url)
           episode.pubDate = item.published
           episode.title = item.title && item.title.trim()
           episodes.push(episode)

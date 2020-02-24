@@ -120,6 +120,13 @@ export const formatEpisodeDescription = (html: string, title?: string) => {
   return `<p>${title || 'untitled episode'}</p><hr />` + (html || 'No summary available.')
 }
 
+export const convertURLToSecureProtocol = (url?: string) => {
+  if (url && (url.indexOf('http://') > -1)) {
+    return url.replace('http://', 'https://')
+  }
+  return ''
+}
+
 export const generateAuthorsText = (authors: any) => {
   let authorText = ''
 

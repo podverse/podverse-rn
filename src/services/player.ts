@@ -7,6 +7,7 @@ import {
 } from '../lib/NowPlayingItem'
 import {
   checkIfIdMatchesClipIdOrEpisodeId,
+  convertURLToSecureProtocol,
   getExtensionFromUrl
 } from '../lib/utility'
 import { PV } from '../resources'
@@ -342,13 +343,14 @@ export const createTrack = async (item: NowPlayingItem) => {
     } else {
       track = {
         id,
-        url: episodeMediaUrl,
+        url: convertURLToSecureProtocol(episodeMediaUrl),
         title: episodeTitle,
         artist: podcastTitle,
         ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
       }
     }
   }
+
   return track
 }
 
