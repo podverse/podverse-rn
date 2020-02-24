@@ -193,16 +193,16 @@ const moreFeaturesOptions = () => {
       key: PV.RouteNames.MyProfileClipsScreen
     },
     {
-      title: 'Settings',
-      key: PV.RouteNames.SettingsScreen
-    },
-    {
       title: 'Log out',
       key: _logoutKey
     },
     {
       title: 'Login',
       key: _loginKey
+    },
+    {
+      title: 'Settings',
+      key: PV.RouteNames.SettingsScreen
     }
   ]
 

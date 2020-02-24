@@ -2,7 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { Divider, Icon, Text } from './'
+import { Icon, Text } from './'
 
 type Props = {
   containerStyles?: any
@@ -16,21 +16,19 @@ export const TableSectionHeader = (props: Props) => {
 
   return (
     <View style={containerStyles}>
-      <Divider />
       <View style={[styles.header, globalTheme.tableSectionHeader]}>
         <Text style={[styles.text, globalTheme.tableSectionHeaderText]}>
           {title}
         </Text>
         {handleClosePress && (
           <Icon
-            name="times"
+            name='times'
             onPress={handleClosePress}
             size={24}
             style={styles.icon}
           />
         )}
       </View>
-      <Divider />
     </View>
   )
 }

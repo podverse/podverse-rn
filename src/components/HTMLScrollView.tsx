@@ -80,7 +80,8 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.lg
   },
   html: {
-    margin: 8
+    marginHorizontal: 8,
+    marginVertical: 20
   },
   scrollView: {
     flex: 1

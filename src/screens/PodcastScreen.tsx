@@ -385,6 +385,7 @@ export class PodcastScreen extends React.Component<Props, State> {
               addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
             })
           }
+          hideImage={true}
           id={item.id}
           pubDate={item.pubDate}
           title={item.title}
@@ -405,6 +406,7 @@ export class PodcastScreen extends React.Component<Props, State> {
               addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
             })
           }
+          hideImage={true}
           id={item.id}
           pubDate={item.pubDate}
           title={item.title}
@@ -420,6 +422,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
           }
+          hideImage={true}
           startTime={item.startTime}
           title={item.title}
         />

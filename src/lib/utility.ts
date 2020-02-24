@@ -88,7 +88,7 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
   const s = convertSecToHHMMSS(startTime)
   if ((startTime || startTime === 0) && endTime) {
     const e = convertSecToHHMMSS(endTime)
-    return `${s} to ${e}`
+    return `${s} - ${e}`
   } else {
     return `Start: ${s}`
   }
@@ -114,6 +114,18 @@ export const removeHTMLAttributesFromString = (html: string) => {
   })
 
   return $.html()
+}
+
+export const formatEpisodeDescription = (html: string, title?: string) => {
+  return `<p>${title || 'untitled episode'}</p><hr />` + (html || 'No summary available.')
+}
+
+export const convertURLToSecureProtocol = (url?: string) => {
+  if (url && (url.indexOf('http://') > -1)) {
+    return url.replace('http://', 'https://')
+  } else {
+    return url
+  }
 }
 
 export const generateAuthorsText = (authors: any) => {

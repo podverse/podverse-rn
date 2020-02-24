@@ -151,6 +151,7 @@ export class SignUp extends React.Component<Props, State> {
       <ScrollView contentContainerStyle={styles.scrollView}>
         <TextInput
           autoCapitalize='none'
+          autoCompleteType='email'
           keyboardType='email-address'
           onBlur={this.emailValid}
           onChange={this.emailChanged}
@@ -163,6 +164,7 @@ export class SignUp extends React.Component<Props, State> {
         />
         <TextInput
           autoCapitalize='none'
+          autoCompleteType='off'
           onBlur={this.uiRefreshed}
           onChange={this.passwordChanged}
           onSubmitEditing={() => { this.thirdTextInput.focus() }}
@@ -177,6 +179,7 @@ export class SignUp extends React.Component<Props, State> {
         />
         <TextInput
           autoCapitalize='none'
+          autoCompleteType='off'
           onBlur={this.uiRefreshed}
           onChange={this.passwordVerificationChanged}
           placeholder='Verify Password'
@@ -188,14 +191,6 @@ export class SignUp extends React.Component<Props, State> {
           underlineColorAndroid='transparent'
           value={this.state.passwordVerification}
         />
-        {/* <TextInput
-          onBlur={this.uiRefreshed}
-          onChange={this.nameChanged}
-          style={styles.textField}
-          value={this.state.name}
-          placeholder='Name (optional)'
-          placeholderTextColor={PV.Colors.gray}
-        /> */}
         <PasswordValidationInfo
           hasAtLeastXCharacters={hasAtLeastXCharacters}
           hasLowercase={hasLowercase}
@@ -207,7 +202,10 @@ export class SignUp extends React.Component<Props, State> {
           disabled={submitIsDisabled || isLoading}
           onPress={this.signUp}>
           {isLoading ? (
-            <ActivityIndicator color={PV.Colors.white} size='small' />
+            <ActivityIndicator
+              animating={true}
+              color={PV.Colors.white}
+              size='small' />
           ) : (
             <Text style={[styles.signInButtonText, checkIfSubmitIsDisabledTextStyle]}>
               Sign Up

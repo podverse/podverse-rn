@@ -6,15 +6,15 @@ import {
   removeHTMLFromString
 } from '../lib/utility'
 import { PV } from '../resources'
-import { button } from '../styles'
-import { ActivityIndicator, FastImage, Icon, Text, View } from './'
+import { FastImage, Icon, Text, View } from './'
+import { MoreButton } from './MoreButton'
 
 type Props = {
   description?: string
   handleMorePress?: any
   handleNavigationPress?: any
+  hideImage?: boolean
   id: string
-  moreButtonAlignToTop?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
   pubDate?: string
@@ -28,30 +28,29 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       pubDate = '',
       handleMorePress,
       handleNavigationPress,
+      hideImage,
       podcastImageUrl,
       podcastTitle
     } = this.props
+    const { globalTheme } = this.global
     let { description = '', title } = this.props
     description = removeHTMLFromString(description)
     description = decodeHTMLString(description)
 
     const { downloadedEpisodeIds, downloadsActive } = this.global
 
-    const showPodcastInfo = !!podcastImageUrl && !!podcastTitle
-
     const isDownloading = downloadsActive[id]
     const isDownloaded = downloadedEpisodeIds[id]
 
-    if (!description) description = 'No show notes available'
     if (!title) title = 'untitled episode'
 
     const innerTopView = (
       <View style={styles.innerTopView}>
         {!!podcastImageUrl && (
-          <FastImage
-            isSmall={true}
-            source={podcastImageUrl}
-            styles={styles.image} />
+            <FastImage
+              isSmall={true}
+              source={podcastImageUrl}
+              styles={styles.image} />
         )}
         <View style={styles.textWrapper}>
           {!!podcastTitle && (
@@ -62,7 +61,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               {podcastTitle}
             </Text>
           )}
-          <Text numberOfLines={2} style={styles.title}>
+          <Text numberOfLines={4} style={styles.title}>
             {title}
           </Text>
           <View style={styles.textWrapperBottomRow}>
@@ -82,19 +81,15 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       </View>
     )
 
+    const descriptionStyle = hideImage ? [styles.description, { paddingLeft: 0 }] : styles.description
+
     const bottomText = (
-      <Text numberOfLines={4} style={styles.description}>
+      <Text
+        isSecondary={true}
+        numberOfLines={4}
+        style={descriptionStyle}>
         {description}
       </Text>
-    )
-
-    const moreButton = (
-      <Icon
-        name='ellipsis-h'
-        onPress={handleMorePress}
-        size={32}
-        style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall}
-      />
     )
 
     return (
@@ -107,15 +102,12 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           ) : (
             innerTopView
           )}
-          {!isDownloading && handleMorePress && moreButton}
-          {isDownloading && (
-            <ActivityIndicator
-              onPress={handleMorePress}
-              styles={
-                showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall
-              }
-            />
-          )}
+          {handleMorePress &&
+            <MoreButton
+              handleShowMore={handleMorePress}
+              height={hideImage ? 46 : 64}
+              isLoading={isDownloading} />
+          }
         </View>
         {!!description && handleNavigationPress && (
           <TouchableWithoutFeedback onPress={handleNavigationPress}>
@@ -131,7 +123,9 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 const styles = StyleSheet.create({
   description: {
     fontSize: PV.Fonts.sizes.md,
-    lineHeight: PV.Fonts.sizes.md + 2
+    lineHeight: PV.Fonts.sizes.md + 2,
+    marginTop: 10,
+    paddingLeft: 72
   },
   downloadedIcon: {
     flex: 0,
@@ -140,9 +134,9 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 0,
-    height: 60,
+    height: 64,
     marginRight: 12,
-    width: 60
+    width: 64
   },
   innerTopView: {
     flex: 1,
@@ -153,14 +147,14 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-start',
-    lineHeight: PV.Fonts.sizes.md + 2,
+    lineHeight: PV.Fonts.sizes.md,
     marginTop: 1
   },
   pubDate: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
-    lineHeight: PV.Fonts.sizes.sm + 2,
-    marginTop: 3
+    lineHeight: PV.Fonts.sizes.sm,
+    marginTop: 6
   },
   textWrapper: {
     flex: 1
@@ -170,18 +164,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start'
   },
   title: {
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: PV.Fonts.sizes.md + 2,
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
     marginTop: 2
   },
   wrapper: {
-    paddingBottom: 12,
+    paddingBottom: 14,
     paddingHorizontal: 8,
-    paddingTop: 12
+    paddingTop: 16
   },
   wrapperTop: {
-    flexDirection: 'row',
-    marginBottom: 10
+    flexDirection: 'row'
   }
 })

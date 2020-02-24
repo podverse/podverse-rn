@@ -55,6 +55,7 @@ export class ResetPassword extends React.Component<Props, State> {
       <View style={[styles.view, style]}>
         <TextInput
           autoCapitalize='none'
+          autoCompleteType='email'
           keyboardType='email-address'
           onChangeText={this._emailChanged}
           placeholder='Email'
@@ -67,7 +68,10 @@ export class ResetPassword extends React.Component<Props, State> {
           disabled={submitIsDisabled || isLoading}
           onPress={this._resetPassword}>
           {isLoading ? (
-            <ActivityIndicator color={PV.Colors.gray} size='small' />
+            <ActivityIndicator
+              animating={true}
+              color={PV.Colors.gray}
+              size='small' />
           ) : (
             <Text style={[styles.signInButtonText, disabledTextStyle]}>
               Send Reset

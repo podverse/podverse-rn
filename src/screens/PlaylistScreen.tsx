@@ -20,8 +20,6 @@ import {
   convertToNowPlayingItem
 } from '../lib/NowPlayingItem'
 import {
-  decodeHTMLString,
-  removeHTMLFromString,
   safelyUnwrapNestedVariable
 } from '../lib/utility'
 import { PV } from '../resources'
@@ -154,6 +152,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(item, null, null))
           }
+          isPlaylistItem={true}
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
           startTime={item.startTime}
@@ -161,11 +160,8 @@ export class PlaylistScreen extends React.Component<Props, State> {
         />
       ) : (<></>)
     } else {
-      let description = removeHTMLFromString(item.description)
-      description = decodeHTMLString(description)
       return (
         <EpisodeTableCell
-          description={description}
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(item, null, null))
           }

@@ -40,7 +40,6 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
             <View style={[styles.player, globalTheme.player]}>
               <FastImage
                 isSmall={true}
-                pvKey={nowPlayingItem.podcastImageUrl}
                 resizeMode='contain'
                 source={nowPlayingItem.podcastImageUrl}
                 styles={styles.image}

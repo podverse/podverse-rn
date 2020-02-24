@@ -2,8 +2,7 @@ import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import React from 'reactn'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { button } from '../styles'
-import { ActivityIndicator, FastImage, Icon, Text, View } from './'
+import { FastImage, Icon, MoreButton, Text, View } from './'
 
 type Props = {
   downloadedEpisodeIds?: any
@@ -14,6 +13,8 @@ type Props = {
   episodeTitle?: string
   handleMorePress?: any
   handleNavigationPress?: any
+  hideImage?: boolean
+  isPlaylistItem?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
   startTime: number
@@ -29,6 +30,8 @@ export class ClipTableCell extends React.PureComponent<Props> {
       episodeTitle,
       handleMorePress,
       handleNavigationPress,
+      hideImage,
+      isPlaylistItem,
       podcastImageUrl,
       podcastTitle,
       startTime,
@@ -39,16 +42,6 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const isDownloading = downloadsActive[episodeId]
     const isDownloaded = downloadedEpisodeIds[episodeId]
     const showEpisodeInfo = !!episodePubDate || !!episodeTitle
-    const showPodcastInfo = !!podcastImageUrl || !!podcastTitle
-
-    const moreButton = (
-      <Icon
-        name='ellipsis-h'
-        onPress={handleMorePress}
-        size={32}
-        style={showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall}
-      />
-    )
 
     const innerTopView = (
       <View style={styles.innerTopView}>
@@ -70,7 +63,10 @@ export class ClipTableCell extends React.PureComponent<Props> {
                 </Text>
               )}
               {!!episodeTitle && (
-                <Text numberOfLines={1} style={styles.episodeTitle}>
+                <Text
+                  isSecondary={!isPlaylistItem}
+                  numberOfLines={1}
+                  style={styles.episodeTitle}>
                   {episodeTitle}
                 </Text>
               )}
@@ -90,29 +86,30 @@ export class ClipTableCell extends React.PureComponent<Props> {
             </View>
           </View>
         </TouchableWithoutFeedback>
-        {!isDownloading && handleMorePress && moreButton}
-        {isDownloading && (
-          <ActivityIndicator
-            onPress={handleMorePress}
-            styles={
-              showPodcastInfo ? button.iconOnlyMedium : button.iconOnlySmall
-            }
-          />
-        )}
+        <MoreButton
+          handleShowMore={handleMorePress}
+          height={hideImage ? 44 : 64}
+          isLoading={isDownloading} />
       </View>
     )
+
+    const bottomTextStyle = !isPlaylistItem ? styles.title : styles.playlistClipTitle
 
     const bottomText = (
       <View style={styles.wrapperBottom}>
         <View style={styles.wrapperBottomTextWrapper}>
-          <Text numberOfLines={4} style={styles.title}>
+          <Text numberOfLines={4} style={bottomTextStyle}>
             {title}
           </Text>
           <Text isSecondary={true} style={styles.clipTime}>
             {clipTime}
           </Text>
         </View>
-        {!showEpisodeInfo && handleMorePress && moreButton}
+        {!showEpisodeInfo && handleMorePress &&
+          <MoreButton
+            handleShowMore={handleMorePress}
+            height={44} />
+        }
       </View>
     )
 
@@ -141,48 +138,51 @@ const styles = StyleSheet.create({
   },
   clipTime: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.sm,
     justifyContent: 'flex-end',
-    lineHeight: PV.Fonts.sizes.md + 2,
-    marginTop: 4
+    marginTop: 8
   },
   downloadedIcon: {
     flex: 0,
     marginLeft: 8,
-    marginTop: 3
+    marginTop: 4
   },
   episodePubDate: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
-    justifyContent: 'flex-end',
-    lineHeight: PV.Fonts.sizes.sm + 2,
-    marginTop: 3
+    lineHeight: PV.Fonts.sizes.sm,
+    marginTop: 6
   },
   episodeTitle: {
-    fontSize: PV.Fonts.sizes.md,
-    lineHeight: PV.Fonts.sizes.md + 2,
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
     marginTop: 2
   },
   image: {
     flex: 0,
-    height: 60,
+    height: 64,
     marginRight: 12,
-    width: 60
+    width: 64
   },
   innerTopView: {
     flex: 1,
     flexDirection: 'row',
     marginRight: 4
   },
+  playlistClipTitle: {
+    fontSize: PV.Fonts.sizes.md,
+    fontWeight: PV.Fonts.weights.bold
+  },
   podcastTitle: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-start',
-    lineHeight: PV.Fonts.sizes.md + 2,
+    lineHeight: PV.Fonts.sizes.md,
     marginTop: 1
   },
   textWrapper: {
-    flex: 1
+    flex: 1,
+    marginRight: 4
   },
   textWrapperBottomRow: {
     flexDirection: 'row',
@@ -190,14 +190,13 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: PV.Fonts.sizes.lg + 2
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    lineHeight: PV.Fonts.sizes.xl + 2
   },
   wrapper: {
-    paddingBottom: 12,
     paddingHorizontal: 8,
-    paddingTop: 12
+    paddingVertical: 16
   },
   wrapperBottom: {
     flexDirection: 'row'

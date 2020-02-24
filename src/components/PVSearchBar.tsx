@@ -24,6 +24,7 @@ export const PVSearchBar = (props: Props) => {
 
   return (
     <SearchBar
+      autoCorrect={false}
       clearIcon={true}
       containerStyle={[globalTheme.textInputWrapper, containerStyle]}
       inputContainerStyle={[

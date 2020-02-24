@@ -99,7 +99,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
         for (const episode of autoDownloadEpisodes[0]) {
           const podcast = {
             id: episode.podcast_id,
-            imageUrl: episode.podcast_imageUrl,
+            imageUrl: episode.podcast_shrunkImageUrl || episode.podcast_imageUrl,
             title: episode.podcast_title
           }
           await downloadEpisode(episode, podcast, false, true)

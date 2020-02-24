@@ -225,10 +225,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
           includeGoToPodcast: true
         })
       }
+      hideImage={false}
       id={item.id}
-      moreButtonAlignToTop={true}
       podcastImageUrl={
-        item.podcast_imageUrl || (item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl))
+        (item.podcast_shrunkImageUrl || item.podcast_imageUrl) || (item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl))
       }
       podcastTitle={item.podcast_title || (item.podcast && item.podcast.title)}
       pubDate={item.pubDate}

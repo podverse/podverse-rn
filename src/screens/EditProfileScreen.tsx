@@ -130,6 +130,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
             <Text style={core.textInputLabel}>Name</Text>
             <TextInput
               autoCapitalize='none'
+              autoCompleteType='off'
               onChangeText={this._onChangeName}
               placeholder='your name'
               returnKeyType='done'

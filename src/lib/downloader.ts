@@ -14,6 +14,7 @@ import {
 import { hasValidDownloadingConnection } from './network'
 import {
   convertBytesToHumanReadableString,
+  convertURLToSecureProtocol,
   getExtensionFromUrl,
   safelyUnwrapNestedVariable
 } from './utility'
@@ -54,7 +55,7 @@ const addDLTask = async (episode: any, podcast: any) =>
     episodeDescription: episode.description,
     episodeId: episode.id,
     episodeImageUrl: episode.imageUrl,
-    episodeMediaUrl: episode.mediaUrl,
+    episodeMediaUrl: convertURLToSecureProtocol(episode.mediaUrl),
     episodePubDate: episode.pubDate,
     episodeTitle: episode.title,
     podcastId: podcast.id,
@@ -123,7 +124,7 @@ export const downloadEpisode = async (
   setTimeout(() => {
     const task = RNBackgroundDownloader.download({
       id: episode.id,
-      url: episode.mediaUrl,
+      url: convertURLToSecureProtocol(episode.mediaUrl),
       destination: `${RNBackgroundDownloader.directories.documents}/${episode.id}${ext}`
     })
       .begin(() => {

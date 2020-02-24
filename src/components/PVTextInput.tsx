@@ -5,6 +5,7 @@ import { core } from '../styles'
 
 type Props = {
   autoCapitalize?: any
+  autoCompleteType?: any
   keyboardType?: any
   numberOfLines?: number
   onChangeText: any
@@ -19,6 +20,7 @@ type Props = {
 export const PVTextInput = (props: Props) => {
   const {
     autoCapitalize,
+    autoCompleteType,
     keyboardType,
     numberOfLines = 0,
     onChangeText,
@@ -33,6 +35,7 @@ export const PVTextInput = (props: Props) => {
   return (
     <TextInput
       autoCapitalize={autoCapitalize}
+      autoCompleteType={autoCompleteType}
       blurOnSubmit={returnKeyType === 'done'}
       keyboardType={keyboardType}
       multiline={numberOfLines > 0}
