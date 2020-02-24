@@ -123,8 +123,9 @@ export const formatEpisodeDescription = (html: string, title?: string) => {
 export const convertURLToSecureProtocol = (url?: string) => {
   if (url && (url.indexOf('http://') > -1)) {
     return url.replace('http://', 'https://')
+  } else {
+    return url
   }
-  return ''
 }
 
 export const generateAuthorsText = (authors: any) => {
