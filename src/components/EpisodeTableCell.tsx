@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.md,
     lineHeight: PV.Fonts.sizes.md + 2,
     marginTop: 10,
-    paddingLeft: 74
+    paddingLeft: 76
   },
   downloadedIcon: {
     flex: 0,
