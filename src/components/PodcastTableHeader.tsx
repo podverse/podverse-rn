@@ -5,7 +5,7 @@ import { core } from '../styles'
 import {
   ActivityIndicator,
   FastImage,
-  Icon,
+  IndicatorDownload,
   SettingsButton,
   SubscribeButton,
   Text,
@@ -80,12 +80,7 @@ export const PodcastTableHeader = (props: Props) => {
                 <Text isSecondary={true} style={styles.autoDownloadText}>
                   Auto
                 </Text>
-                <Icon
-                  isSecondary={true}
-                  name='download'
-                  size={13}
-                  style={styles.autoDownloadIcon}
-                />
+                <IndicatorDownload style={styles.autoDownloadIcon} />
                 <Switch
                   onValueChange={handleToggleAutoDownload}
                   value={autoDownloadOn}
@@ -106,7 +101,9 @@ export const PodcastTableHeader = (props: Props) => {
 
 const styles = StyleSheet.create({
   autoDownloadIcon: {
-    marginRight: 8
+    marginLeft: 0,
+    marginRight: 8,
+    marginTop: 0
   },
   autoDownloadText: {
     fontSize: PV.Fonts.sizes.sm,

@@ -2,7 +2,7 @@ import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import React from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { FastImage, Icon, Text, View } from './'
+import { FastImage, IndicatorDownload, Text, View } from './'
 
 type Props = {
   autoDownloadSettings?: any
@@ -65,16 +65,6 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                   </Text>
                 )}
               </View>
-              {showAutoDownload && shouldAutoDownload && (
-                <View style={styles.textWrapperRowRight}>
-                  <Icon
-                    isSecondary={true}
-                    name='download'
-                    size={13}
-                    style={styles.autoDownloadIcon}
-                  />
-                </View>
-              )}
             </View>
             <View style={styles.textWrapperRow}>
               {!!podcastAuthors && (
@@ -92,6 +82,9 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                   <Text isSecondary={true} style={styles.bottomText}>
                     {`${downloadCount} downloaded`}
                   </Text>
+                  {showAutoDownload && shouldAutoDownload && (
+                    <IndicatorDownload style={styles.autoDownloadIcon} />
+                  )}
                 </View>
               )}
               {!!lastEpisodePubDate && (
@@ -111,21 +104,28 @@ export class PodcastTableCell extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   autoDownloadIcon: {
-    flex: 0
+    flex: 0,
+    marginBottom: 4,
+    marginTop: 0
   },
   bottomText: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.md,
-    justifyContent: 'flex-end',
-    marginTop: 2
+    fontSize: PV.Fonts.sizes.md
+  },
+  image: {
+    flex: 0,
+    height: PV.Table.cells.podcast.image.height,
+    marginRight: 12,
+    width: PV.Table.cells.podcast.image.width
   },
   textWrapperRow: {
     flex: 1,
     flexDirection: 'row'
   },
   textWrapperRowLeft: {
+    alignItems: 'flex-end',
     flex: 1,
-    justifyContent: 'flex-end'
+    flexDirection: 'row'
   },
   textWrapperRowRight: {
     alignItems: 'flex-end',
@@ -133,12 +133,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginLeft: 4
-  },
-  image: {
-    flex: 0,
-    height: PV.Table.cells.podcast.image.height,
-    marginRight: 12,
-    width: PV.Table.cells.podcast.image.width
   },
   textWrapper: {
     flex: 1,

@@ -6,8 +6,7 @@ import {
   removeHTMLFromString
 } from '../lib/utility'
 import { PV } from '../resources'
-import { FastImage, Icon, Text, View } from './'
-import { MoreButton } from './MoreButton'
+import { FastImage, IndicatorDownload, MoreButton, Text, View } from './'
 
 type Props = {
   description?: string
@@ -68,12 +67,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               {readableDate(pubDate)}
             </Text>
             {isDownloaded && (
-              <Icon
-                isSecondary={true}
-                name='download'
-                size={13}
-                style={styles.downloadedIcon}
-              />
+              <IndicatorDownload />
             )}
           </View>
         </View>
@@ -125,11 +119,6 @@ const styles = StyleSheet.create({
     lineHeight: PV.Fonts.sizes.md + 2,
     marginTop: 10,
     paddingLeft: 76
-  },
-  downloadedIcon: {
-    flex: 0,
-    marginLeft: 8,
-    marginTop: 3
   },
   image: {
     flex: 0,

@@ -2,7 +2,7 @@ import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import React from 'reactn'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { FastImage, Icon, MoreButton, Text, View } from './'
+import { FastImage, IndicatorDownload, MoreButton, Text, View } from './'
 
 type Props = {
   downloadedEpisodeIds?: any
@@ -74,12 +74,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                   {readableDate(episodePubDate)}
                 </Text>
                 {isDownloaded && (
-                  <Icon
-                    isSecondary={true}
-                    name='download'
-                    size={13}
-                    style={styles.downloadedIcon}
-                  />
+                  <IndicatorDownload />
                 )}
               </View>
             </View>
@@ -140,11 +135,6 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.sm,
     justifyContent: 'flex-end',
     marginTop: 8
-  },
-  downloadedIcon: {
-    flex: 0,
-    marginLeft: 8,
-    marginTop: 4
   },
   episodePubDate: {
     flex: 0,
