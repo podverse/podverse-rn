@@ -203,7 +203,7 @@ export const darkTheme = StyleSheet.create({
     borderBottomColor: PV.Colors.grayDarker // override native style
   },
   textSecondary: {
-    color: PV.Colors.grayLighter
+    color: PV.Colors.grayLightest
   },
   view: {
     backgroundColor: PV.Colors.black
@@ -409,7 +409,7 @@ export const lightTheme = StyleSheet.create({
     borderBottomColor: PV.Colors.grayLighter // override native style
   },
   textSecondary: {
-    color: PV.Colors.grayDarker
+    color: PV.Colors.grayDarkest
   },
   view: {
     backgroundColor: PV.Colors.white
@@ -707,7 +707,7 @@ export const iconStyles = {
     underlayColor: PV.Colors.black
   },
   darkSecondary: {
-    color: PV.Colors.grayLighter,
+    color: PV.Colors.grayLightest,
     underlayColor: PV.Colors.black
   },
   darkTertiary: {
@@ -723,7 +723,7 @@ export const iconStyles = {
     underlayColor: PV.Colors.white
   },
   lightSecondary: {
-    color: PV.Colors.grayDark,
+    color: PV.Colors.grayDarker,
     underlayColor: PV.Colors.white
   },
   lightTertiary: {

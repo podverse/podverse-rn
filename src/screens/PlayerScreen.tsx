@@ -459,6 +459,7 @@ export class PlayerScreen extends React.Component<Props, State> {
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
           }
           handleNavigationPress={() => console.log('handle episode press')}
+          hideImage={true}
           pubDate={item.pubDate}
           title={item.title || 'untitled episode'}
         />

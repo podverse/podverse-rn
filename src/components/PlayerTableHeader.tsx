@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     marginTop: 3
   },
   episodeTitle: {
-    fontSize: PV.Fonts.sizes.xl,
+    fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.bold,
     lineHeight: PV.Fonts.sizes.md + 2,
     marginTop: 5
@@ -72,8 +72,7 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-start',
-    lineHeight: PV.Fonts.sizes.md,
-    marginTop: 1
+    lineHeight: PV.Fonts.sizes.md
   },
   textWrapper: {
     flex: 1,

@@ -150,11 +150,11 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
     lineHeight: PV.Fonts.sizes.sm,
-    marginTop: 6
+    marginTop: 7
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.xl,
-    marginTop: 2
+    marginTop: 3
   },
   image: {
     flex: 0,

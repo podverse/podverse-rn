@@ -32,7 +32,6 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       podcastImageUrl,
       podcastTitle
     } = this.props
-    const { globalTheme } = this.global
     let { description = '', title } = this.props
     description = removeHTMLFromString(description)
     description = decodeHTMLString(description)
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
     lineHeight: PV.Fonts.sizes.sm,
-    marginTop: 6
+    marginTop: 7
   },
   textWrapper: {
     flex: 1
@@ -166,7 +165,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    marginTop: 2
+    marginTop: 3
   },
   wrapper: {
     paddingBottom: 14,
