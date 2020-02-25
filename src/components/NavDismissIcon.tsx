@@ -1,22 +1,22 @@
 import React from 'react'
 import { View } from 'react-native'
+import { Icon } from '.'
 import { PV } from '../resources'
 import { navHeader } from '../styles'
-import { Icon } from './'
 
 type Props = {
-  navigation: any
+  onPress: any
 }
 
-export const NavQueueIcon = (props: Props) => {
-  const { navigation } = props
+export const NavDismissIcon = (props: Props) => {
+  const { onPress } = props
 
   return (
-    <View style={navHeader.buttonWrapper}>
+    <View style={[navHeader.buttonWrapper]}>
       <Icon
         color='#fff'
-        name='list'
-        onPress={() => navigation.navigate(PV.RouteNames.QueueScreen)}
+        name='chevron-down'
+        onPress={onPress}
         size={PV.Icons.NAV}
         style={navHeader.buttonIcon} />
     </View>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { View } from 'react-native'
 import Share from 'react-native-share'
 import { PV } from '../resources'
 import { navHeader } from '../styles'
@@ -38,8 +39,9 @@ export const NavShareIcon = (props: Props) => {
     if (podcastTitle) title += `${podcastTitle}`
     if (episodeTitle) title += ` – ${episodeTitle}`
     if (endingText) title += `${endingText}`
-    if (profileName)
+    if (profileName) {
       title = `${profileName || 'anonymous'}'s favorite podcasts on Podverse`
+    }
 
     try {
       await Share.open({
@@ -53,12 +55,13 @@ export const NavShareIcon = (props: Props) => {
   }
 
   return (
-    <Icon
-      color="#fff"
-      name="share"
-      onPress={handlePress ? handlePress : onShare}
-      size={PV.Icons.NAV}
-      style={navHeader.buttonIcon}
-    />
+    <View style={navHeader.buttonWrapper}>
+      <Icon
+        color='#fff'
+        name='share'
+        onPress={handlePress ? handlePress : onShare}
+        size={PV.Icons.NAV}
+        style={navHeader.buttonIcon} />
+    </View>
   )
 }

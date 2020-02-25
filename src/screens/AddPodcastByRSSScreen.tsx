@@ -1,11 +1,12 @@
-import { Alert, Linking, StyleSheet, Text as RNText, TouchableOpacity } from 'react-native'
+import { Alert, Linking, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, Divider, Icon, ScrollView, Text, TextInput, TextLink, View } from '../components'
+import { ActivityIndicator, Divider, NavDismissIcon, NavHeaderButtonText, ScrollView, Text, TextInput,
+  TextLink, View } from '../components'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getAddByRSSPodcast } from '../services/parser'
 import { addAddByRSSPodcast } from '../state/actions/parser'
-import { core, navHeader } from '../styles'
+import { core } from '../styles'
 
 type Props = {
   navigation: any
@@ -20,19 +21,13 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
     title: 'Add Podcast by RSS',
     headerLeft: (
-      <Icon
-        color='#fff'
-        name='chevron-down'
-        onPress={navigation.dismiss}
-        size={PV.Icons.NAV}
-        style={navHeader.buttonIcon}
-      />
+      <NavDismissIcon onPress={navigation.dismiss} />
     ),
     headerRight: (
       <TouchableOpacity
         disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
         onPress={navigation.getParam('_handleSavePodcastByRSSURL')}>
-        <RNText style={navHeader.buttonText}>Save</RNText>
+        <NavHeaderButtonText text='Save' />
       </TouchableOpacity>
     )
   })

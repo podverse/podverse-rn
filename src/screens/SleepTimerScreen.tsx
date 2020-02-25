@@ -1,18 +1,16 @@
-import { StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import {
   Button,
-  Icon,
+  NavDismissIcon,
   SafeAreaView,
   TimePicker,
   View
 } from '../components'
-import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { sleepTimerIsRunning } from '../services/sleepTimer'
 import { pauseSleepTimerStateUpdates, resumeSleepTimerStateUpdates, setSleepTimerTimeRemaining,
   startSleepTimer, stopSleepTimer, updateSleepTimerTimeRemaining } from '../state/actions/sleepTimer'
-import { navHeader } from '../styles'
 
 type Props = {
   navigation?: any
@@ -24,15 +22,7 @@ export class SleepTimerScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
     title: 'Sleep Timer',
     headerLeft: (
-      <TouchableOpacity onPress={navigation.dismiss}>
-        <Icon
-          color='#fff'
-          name='chevron-down'
-          onPress={navigation.dismiss}
-          size={PV.Icons.NAV}
-          style={navHeader.buttonIcon}
-        />
-      </TouchableOpacity>
+      <NavDismissIcon onPress={navigation.dismiss} />
     ),
     headerRight: (
       <RNView />

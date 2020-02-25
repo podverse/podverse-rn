@@ -1,13 +1,13 @@
 import {
   Alert,
   StyleSheet,
-  Text as RNText,
   TouchableOpacity
 } from 'react-native'
 import React from 'reactn'
 import {
   ActivityIndicator,
   Divider,
+  NavHeaderButtonText,
   QueueTableCell,
   SortableList,
   SortableListRow,
@@ -21,7 +21,7 @@ import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getPlaylist } from '../services/playlist'
 import { updatePlaylist } from '../state/actions/playlist'
-import { core, navHeader } from '../styles'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
@@ -41,7 +41,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
       title: 'Edit Playlist',
       headerRight: (
         <TouchableOpacity onPress={navigation.getParam('updatePlaylist')}>
-          <RNText style={navHeader.buttonText}>Save</RNText>
+          <NavHeaderButtonText text='Save' />
         </TouchableOpacity>
       )
     }

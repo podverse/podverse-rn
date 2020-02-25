@@ -1,7 +1,6 @@
 import {
   Alert,
   StyleSheet,
-  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View
@@ -12,8 +11,9 @@ import {
   Divider,
   FlatList,
   HeaderTitleSelector,
-  Icon,
   MessageWithAction,
+  NavDismissIcon,
+  NavHeaderButtonText,
   QueueTableCell,
   SortableList,
   SortableListRow,
@@ -36,7 +36,6 @@ import {
   removeQueueItem,
   updateQueueItems
 } from '../state/actions/queue'
-import { navHeader } from '../styles'
 
 type Props = {
   navigation?: any
@@ -65,13 +64,7 @@ export class QueueScreen extends React.Component<Props, State> {
       />
     ),
     headerLeft: (
-      <Icon
-        color='#fff'
-        name='chevron-down'
-        onPress={navigation.dismiss}
-        size={PV.Icons.NAV}
-        style={navHeader.buttonIcon}
-      />
+      <NavDismissIcon onPress={navigation.dismiss} />
     ),
     headerRight: (
       <View>
@@ -80,26 +73,24 @@ export class QueueScreen extends React.Component<Props, State> {
             {!navigation.getParam('isEditing') ? (
               <View style={styles.headerButtonWrapper}>
                 <TouchableOpacity onPress={navigation.getParam('_clearAll')}>
-                  <Text style={navHeader.buttonText}>Clear</Text>
+                  <NavHeaderButtonText text='Clear' />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={navigation.getParam('_startEditing')}>
-                  <Text
-                    style={[navHeader.buttonText, styles.navHeaderTextButton]}>
-                    Edit
-                  </Text>
+                  <NavHeaderButtonText
+                    style={styles.navHeaderTextButton}
+                    text='Edit' />
                 </TouchableOpacity>
               </View>
             ) : (
               <View style={styles.headerButtonWrapper}>
                 <TouchableOpacity onPress={navigation.getParam('_clearAll')}>
-                  <Text style={navHeader.buttonText}>Clear</Text>
+                  <NavHeaderButtonText text='Clear' />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
-                  <Text
-                    style={[navHeader.buttonText, styles.navHeaderTextButton]}>
-                    Done
-                  </Text>
+                  <NavHeaderButtonText
+                    style={styles.navHeaderTextButton}
+                    text='Done' />
                 </TouchableOpacity>
               </View>
             )}
@@ -108,17 +99,15 @@ export class QueueScreen extends React.Component<Props, State> {
           <View>
             {!navigation.getParam('isEditing') ? (
               <TouchableOpacity onPress={navigation.getParam('_startEditing')}>
-                <Text
-                  style={[navHeader.buttonText, styles.navHeaderTextButton]}>
-                  Edit
-                </Text>
+                <NavHeaderButtonText
+                  style={styles.navHeaderTextButton}
+                  text='Edit' />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
-                <Text
-                  style={[navHeader.buttonText, styles.navHeaderTextButton]}>
-                  Done
-                </Text>
+                <NavHeaderButtonText
+                  style={styles.navHeaderTextButton}
+                  text='Done' />
               </TouchableOpacity>
             )}
           </View>

@@ -11,8 +11,8 @@ import {
   EpisodeTableCell,
   FlatList,
   HTMLScrollView,
-  Icon,
   NavAddToPlaylistIcon,
+  NavDismissIcon,
   NavMakeClipIcon,
   NavQueueIcon,
   NavShareIcon,
@@ -68,13 +68,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     return {
       title: '',
       headerLeft: (
-        <Icon
-          color='#fff'
-          name='chevron-down'
-          onPress={navigation.dismiss}
-          size={PV.Icons.NAV}
-          style={navHeader.buttonIcon}
-        />
+        <NavDismissIcon onPress={navigation.dismiss} />
       ),
       headerRight: (
         <RNView style={core.row}>
