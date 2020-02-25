@@ -36,6 +36,7 @@ import {
 } from '../lib/NowPlayingItem'
 import {
   decodeHTMLString,
+  isOdd,
   readableDate,
   removeHTMLFromString,
   safelyUnwrapNestedVariable
@@ -358,7 +359,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     })
   }
 
-  _renderItem = ({ item }) => {
+  _renderItem = ({ item, index }) => {
     const { podcast, viewType } = this.state
     const episode = {
       ...item,
@@ -385,6 +386,7 @@ export class PodcastScreen extends React.Component<Props, State> {
               addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
             })
           }
+          hasZebraStripe={isOdd(index)}
           hideImage={true}
           id={item.id}
           pubDate={item.pubDate}
@@ -406,6 +408,7 @@ export class PodcastScreen extends React.Component<Props, State> {
               addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
             })
           }
+          hasZebraStripe={isOdd(index)}
           hideImage={true}
           id={item.id}
           pubDate={item.pubDate}
@@ -422,6 +425,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
           }
+          hasZebraStripe={isOdd(index)}
           hideImage={true}
           startTime={item.startTime}
           title={item.title}

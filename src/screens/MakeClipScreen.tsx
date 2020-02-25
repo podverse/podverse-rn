@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   FastImage,
   Icon,
+  NavHeaderButtonText,
   PlayerProgressBar,
   SafeAreaView,
   Text,
@@ -66,7 +67,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     headerRight: (
       <RNView style={styles.navHeaderButtonWrapper}>
         <TouchableOpacity onPress={navigation.getParam('_saveMediaRef')}>
-          <Text style={navHeader.buttonText}>Save</Text>
+          <NavHeaderButtonText text='Save' />
         </TouchableOpacity>
       </RNView>
     )

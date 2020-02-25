@@ -14,6 +14,7 @@ import {
 import { alertIfNoNetworkConnection } from '../lib/network'
 import {
   generateAuthorsText,
+  isOdd,
   safelyUnwrapNestedVariable
 } from '../lib/utility'
 import { PV } from '../resources'
@@ -162,8 +163,9 @@ export class SearchScreen extends React.Component<Props, State> {
     this.props.navigation.navigate(PV.RouteNames.AddPodcastByRSSScreen)
   }
 
-  _renderPodcastItem = ({ item }) => (
+  _renderPodcastItem = ({ item, index }) => (
     <PodcastTableCell
+      hasZebraStripe={isOdd(index)}
       id={item.id}
       lastEpisodePubDate={item.lastEpisodePubDate}
       onPress={() => this._handleMorePress(item)}

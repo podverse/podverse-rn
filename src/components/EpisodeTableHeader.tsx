@@ -4,8 +4,7 @@ import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
-import { ActivityIndicator, FastImage, Icon, Text, View } from './'
-import { MoreButton } from './MoreButton'
+import { ActivityIndicator, FastImage, IndicatorDownload, MoreButton, Text, View } from './'
 
 type Props = {
   downloadedEpisodeIds?: any
@@ -52,14 +51,7 @@ export const EpisodeTableHeader = (props: Props) => {
               <Text isSecondary={true} style={styles.pubDate}>
                 {readableDate(pubDate)}
               </Text>
-              {isDownloaded && (
-                <Icon
-                  isSecondary={true}
-                  name='download'
-                  size={13}
-                  style={styles.downloadedIcon}
-                />
-              )}
+              {isDownloaded && <IndicatorDownload />}
             </View>
           </View>
           {handleMorePress &&
@@ -84,11 +76,6 @@ const styles = StyleSheet.create({
     flex: 0,
     marginLeft: 8,
     marginRight: 8
-  },
-  downloadedIcon: {
-    flex: 0,
-    marginLeft: 8,
-    marginTop: 3
   },
   image: {
     flex: 0,

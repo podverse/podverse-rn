@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import { Slider } from 'react-native-elements'
 import { PV } from '../resources'
 import { getDownloadStatusText } from '../state/actions/downloads'
@@ -10,6 +10,7 @@ type Props = {
   bytesWritten: string
   completed?: boolean
   episodeTitle: string
+  hasZebraStripe?: boolean
   onPress?: any
   percent: number
   podcastImageUrl?: string
@@ -24,6 +25,7 @@ export class DownloadTableCell extends React.PureComponent<Props> {
       bytesWritten = '---',
       completed,
       episodeTitle = 'untitled episode',
+      hasZebraStripe,
       onPress,
       percent,
       podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
@@ -35,12 +37,14 @@ export class DownloadTableCell extends React.PureComponent<Props> {
 
     return (
       <TouchableWithoutFeedback onPress={onPress}>
-        <View style={styles.wrapper}>
+        <View
+          hasZebraStripe={hasZebraStripe}
+          style={styles.wrapper}>
           <FastImage
             source={podcastImageUrl}
             styles={styles.image} />
-          <View style={styles.textWrapper}>
-            <View style={styles.textWrapperTop}>
+          <RNView style={styles.textWrapper}>
+            <RNView style={styles.textWrapperTop}>
               <Text numberOfLines={1} style={styles.episodeTitle}>
                 {episodeTitle}
               </Text>
@@ -50,8 +54,8 @@ export class DownloadTableCell extends React.PureComponent<Props> {
                 style={styles.podcastTitle}>
                 {podcastTitle}
               </Text>
-            </View>
-            <View style={styles.textWrapperBottom}>
+            </RNView>
+            <RNView style={styles.textWrapperBottom}>
               <Slider
                 minimumValue={0}
                 maximumValue={1}
@@ -60,16 +64,16 @@ export class DownloadTableCell extends React.PureComponent<Props> {
                 thumbTouchSize={{ height: 0, width: 0 }}
                 value={per}
               />
-              <View style={styles.textWrapperBottomText}>
+              <RNView style={styles.textWrapperBottomText}>
                 <Text>{statusText}</Text>
                 {completed ? (
                   <Text>{bytesTotal}</Text>
                 ) : (
                   <Text>{`${bytesWritten} / ${bytesTotal}`}</Text>
                 )}
-              </View>
-            </View>
-          </View>
+              </RNView>
+            </RNView>
+          </RNView>
         </View>
       </TouchableWithoutFeedback>
     )

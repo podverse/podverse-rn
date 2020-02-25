@@ -10,6 +10,7 @@ import {
   View
 } from '../components'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
+import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getAuthUserInfo } from '../state/actions/auth'
@@ -87,12 +88,13 @@ export class ProfilesScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
-  _renderProfileItem = ({ item }) => {
+  _renderProfileItem = ({ item, index }) => {
     // In order to be subscribed to a profile, that profile must be public,
     // so add isPublic = true so ProfileScreen shows the share icon.
     item.isPublic = true
     return (
       <ProfileTableCell
+        hasZebraStripe={isOdd(index)}
         name={item.name}
         onPress={() =>
           this.props.navigation.navigate(PV.RouteNames.ProfileScreen, {

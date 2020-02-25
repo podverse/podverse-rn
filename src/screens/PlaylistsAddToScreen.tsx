@@ -1,7 +1,6 @@
 import {
   Alert,
   StyleSheet,
-  Text as RNText,
   TouchableOpacity,
   View as RNView
 } from 'react-native'
@@ -11,12 +10,14 @@ import {
   ActivityIndicator,
   Divider,
   FlatList,
-  Icon,
   MessageWithAction,
+  NavDismissIcon,
+  NavHeaderButtonText,
   PlaylistTableCell,
   View
 } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
+import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import {
@@ -24,7 +25,6 @@ import {
   createPlaylist
 } from '../state/actions/playlist'
 import { getLoggedInUserPlaylists } from '../state/actions/user'
-import { navHeader } from '../styles'
 
 type Props = {
   navigation?: any
@@ -43,20 +43,14 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
     title: 'Add to Playlist',
     headerLeft: (
-      <Icon
-        color='#fff'
-        name='chevron-down'
-        onPress={navigation.dismiss}
-        size={PV.Icons.NAV}
-        style={navHeader.buttonIcon}
-      />
+      <NavDismissIcon onPress={navigation.dismiss} />
     ),
     headerRight: (
       <RNView>
         {navigation.getParam('isLoggedIn') && (
           <TouchableOpacity
             onPress={navigation.getParam('showNewPlaylistDialog')}>
-            <RNText style={navHeader.buttonText}>New</RNText>
+            <NavHeaderButtonText text='New' />
           </TouchableOpacity>
         )}
       </RNView>
@@ -135,11 +129,12 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
 
   _ItemSeparatorComponent = () => <Divider />
 
-  _renderPlaylistItem = ({ item }) => {
+  _renderPlaylistItem = ({ item, index }) => {
     const { episodeId, isSavingId, mediaRefId } = this.state
 
     return (
       <PlaylistTableCell
+        hasZebraStripe={isOdd(index)}
         isSaving={item.id && item.id === isSavingId}
         itemCount={item.itemCount}
         onPress={() => {

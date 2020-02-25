@@ -1,8 +1,8 @@
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { FastImage, Icon, MoreButton, Text, View } from './'
+import { FastImage, IndicatorDownload, MoreButton, Text, View } from './'
 
 type Props = {
   downloadedEpisodeIds?: any
@@ -13,12 +13,14 @@ type Props = {
   episodeTitle?: string
   handleMorePress?: any
   handleNavigationPress?: any
+  hasZebraStripe?: boolean
   hideImage?: boolean
   isPlaylistItem?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
   startTime: number
   title?: string
+  zebraStripeIndex?: number
 }
 
 export class ClipTableCell extends React.PureComponent<Props> {
@@ -30,6 +32,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       episodeTitle,
       handleMorePress,
       handleNavigationPress,
+      hasZebraStripe,
       hideImage,
       isPlaylistItem,
       podcastImageUrl,
@@ -44,16 +47,16 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const showEpisodeInfo = !!episodePubDate || !!episodeTitle
 
     const innerTopView = (
-      <View style={styles.innerTopView}>
+      <RNView style={styles.innerTopView}>
         <TouchableWithoutFeedback onPress={handleNavigationPress}>
-          <View style={{ flex: 1, flexDirection: 'row' }}>
+          <RNView style={{ flex: 1, flexDirection: 'row' }}>
             {!!podcastImageUrl && (
               <FastImage
                 isSmall={true}
                 source={podcastImageUrl}
                 styles={styles.image} />
             )}
-            <View style={styles.textWrapper}>
+            <RNView style={styles.textWrapper}>
               {!!podcastTitle && (
                 <Text
                   isSecondary={true}
@@ -69,55 +72,52 @@ export class ClipTableCell extends React.PureComponent<Props> {
                   {episodeTitle}
                 </Text>
               )}
-              <View style={styles.textWrapperBottomRow}>
-                <Text isSecondary={true} style={styles.episodePubDate}>
+              <RNView style={styles.textWrapperBottomRow}>
+                <Text
+                  isSecondary={true}
+                  style={styles.episodePubDate}>
                   {readableDate(episodePubDate)}
                 </Text>
-                {isDownloaded && (
-                  <Icon
-                    isSecondary={true}
-                    name='download'
-                    size={13}
-                    style={styles.downloadedIcon}
-                  />
-                )}
-              </View>
-            </View>
-          </View>
+                {isDownloaded && <IndicatorDownload />}
+              </RNView>
+            </RNView>
+          </RNView>
         </TouchableWithoutFeedback>
         <MoreButton
           handleShowMore={handleMorePress}
           height={hideImage ? 44 : 64}
           isLoading={isDownloading} />
-      </View>
+      </RNView>
     )
 
     const bottomTextStyle = !isPlaylistItem ? styles.title : styles.playlistClipTitle
 
     const bottomText = (
-      <View style={styles.wrapperBottom}>
-        <View style={styles.wrapperBottomTextWrapper}>
+      <RNView style={styles.wrapperBottom}>
+        <RNView style={styles.wrapperBottomTextWrapper}>
           <Text numberOfLines={4} style={bottomTextStyle}>
             {title}
           </Text>
           <Text isSecondary={true} style={styles.clipTime}>
             {clipTime}
           </Text>
-        </View>
+        </RNView>
         {!showEpisodeInfo && handleMorePress &&
           <MoreButton
             handleShowMore={handleMorePress}
             height={44} />
         }
-      </View>
+      </RNView>
     )
 
     return (
-      <View style={styles.wrapper}>
+      <View
+        hasZebraStripe={hasZebraStripe}
+        style={styles.wrapper}>
         {!!showEpisodeInfo && (
-          <View style={styles.wrapperTop}>
+          <RNView style={styles.wrapperTop}>
             {innerTopView}
-          </View>
+          </RNView>
         )}
         {handleNavigationPress ? (
           <TouchableWithoutFeedback onPress={handleNavigationPress}>
@@ -141,20 +141,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 8
   },
-  downloadedIcon: {
-    flex: 0,
-    marginLeft: 8,
-    marginTop: 4
-  },
   episodePubDate: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
     lineHeight: PV.Fonts.sizes.sm,
-    marginTop: 6
+    marginTop: 7
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.xl,
-    marginTop: 2
+    marginTop: 3
   },
   image: {
     flex: 0,

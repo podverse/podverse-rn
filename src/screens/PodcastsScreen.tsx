@@ -17,7 +17,7 @@ import {
 } from '../components'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { generateCategoryItems } from '../lib/utility'
+import { generateCategoryItems, isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getEpisode } from '../services/episode'
@@ -431,7 +431,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
-  _renderPodcastItem = ({ item }) => {
+  _renderPodcastItem = ({ item, index }) => {
     const { downloadedPodcastEpisodeCounts } = this.global
     // const userLocalPodcastView =
     //   this.state.queryFrom === _subscribedKey ||
@@ -440,6 +440,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     return (
       <PodcastTableCell
+        hasZebraStripe={isOdd(index)}
         id={item.id}
         lastEpisodePubDate={item.lastEpisodePubDate}
         onPress={() =>

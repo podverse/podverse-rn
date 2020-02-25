@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import { FastImage, Icon, Text, View } from '.'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -12,6 +12,7 @@ type Props = {
   episodePubDate?: string
   episodeTitle?: string
   handleRemovePress?: any
+  hasZebraStripe?: boolean
   hideBottomRow?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
@@ -28,6 +29,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
       episodePubDate,
       episodeTitle,
       handleRemovePress,
+      hasZebraStripe,
       hideBottomRow,
       podcastImageUrl,
       podcastTitle,
@@ -36,15 +38,17 @@ export class QueueTableCell extends React.PureComponent<Props> {
     } = this.props
 
     return (
-      <View style={styles.wrapper}>
-        <View style={styles.wrapperTop}>
+      <View
+        hasZebraStripe={hasZebraStripe}
+        style={styles.wrapper}>
+        <RNView style={styles.wrapperTop}>
           <FastImage
             isSmall={true}
             key={podcastImageUrl}
             source={podcastImageUrl}
             styles={styles.image}
           />
-          <View style={styles.textWrapper}>
+          <RNView style={styles.textWrapper}>
             <Text
               isSecondary={true}
               numberOfLines={1}
@@ -62,7 +66,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                 {readableDate(episodePubDate)}
               </Text>
             )}
-          </View>
+          </RNView>
           {showMoveButton && (
             <Icon name='bars' size={28} style={button.iconOnlyMedium} />
           )}
@@ -74,9 +78,9 @@ export class QueueTableCell extends React.PureComponent<Props> {
               style={button.iconOnlyMedium}
             />
           )}
-        </View>
+        </RNView>
         {!hideBottomRow && (
-          <View style={styles.wrapperBottom}>
+          <RNView style={styles.wrapperBottom}>
             <Text numberOfLines={1} style={styles.clipTitle}>
               {clipStartTime ? (clipTitle || 'untitled clip') : 'Full Episode'}
             </Text>
@@ -85,7 +89,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                 {readableClipTime(clipStartTime, clipEndTime)}
               </Text>
             )}
-          </View>
+          </RNView>
         )}
       </View>
     )
@@ -131,8 +135,9 @@ const styles = StyleSheet.create({
     paddingRight: 8
   },
   wrapper: {
-    margin: 8,
-    paddingTop: 2
+    paddingBottom: 8,
+    paddingHorizontal: 8,
+    paddingTop: 10
   },
   wrapperBottom: {
     flexDirection: 'row',

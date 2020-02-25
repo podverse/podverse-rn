@@ -203,10 +203,13 @@ export const darkTheme = StyleSheet.create({
     borderBottomColor: PV.Colors.grayDarker // override native style
   },
   textSecondary: {
-    color: PV.Colors.grayLighter
+    color: PV.Colors.grayLightest
   },
   view: {
     backgroundColor: PV.Colors.black
+  },
+  viewWithZebraStripe: {
+    backgroundColor: PV.Colors.grayDarkestZ
   }
 })
 
@@ -409,10 +412,13 @@ export const lightTheme = StyleSheet.create({
     borderBottomColor: PV.Colors.grayLighter // override native style
   },
   textSecondary: {
-    color: PV.Colors.grayDarker
+    color: PV.Colors.grayDarkest
   },
   view: {
     backgroundColor: PV.Colors.white
+  },
+  viewWithZebraStripe: {
+    backgroundColor: PV.Colors.grayLightestZ
   }
 })
 
@@ -548,16 +554,19 @@ export const hidePickerIconOnAndroidTransparent = (isDarkMode: boolean) => {
 export const navHeader = StyleSheet.create({
   buttonIcon: {
     color: PV.Colors.white,
-    height: 44,
-    lineHeight: 44,
-    paddingHorizontal: 12
+    flex: 0
   },
   buttonText: {
     color: PV.Colors.white,
+    flex: 0,
     fontSize: PV.Fonts.sizes.xl,
+    marginRight: 4
+  },
+  buttonWrapper: {
+    alignSelf: 'center',
     height: 44,
+    justifyContent: 'center',
     lineHeight: 44,
-    marginRight: 4,
     paddingHorizontal: 12
   }
 })
@@ -707,7 +716,7 @@ export const iconStyles = {
     underlayColor: PV.Colors.black
   },
   darkSecondary: {
-    color: PV.Colors.grayLighter,
+    color: PV.Colors.grayLightest,
     underlayColor: PV.Colors.black
   },
   darkTertiary: {
@@ -723,7 +732,7 @@ export const iconStyles = {
     underlayColor: PV.Colors.white
   },
   lightSecondary: {
-    color: PV.Colors.grayDark,
+    color: PV.Colors.grayDarker,
     underlayColor: PV.Colors.white
   },
   lightTertiary: {

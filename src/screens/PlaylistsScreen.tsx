@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import React, { setGlobal } from 'reactn'
+import React from 'reactn'
 import {
   ActivityIndicator,
   Divider,
@@ -10,6 +10,7 @@ import {
   View
 } from '../components'
 import { hasValidNetworkConnection } from '../lib/network'
+import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getPlaylists } from '../state/actions/playlist'
@@ -82,7 +83,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
-  _renderPlaylistItem = ({ item }) => {
+  _renderPlaylistItem = ({ item, index }) => {
     const { queryFrom } = this.state
     const ownerName = (item.owner && item.owner.name) || 'anonymous'
 
@@ -91,6 +92,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
         {...(queryFrom === _subscribedPlaylistsKey
           ? { createdBy: ownerName }
           : {})}
+        hasZebraStripe={isOdd(index)}
         itemCount={item.itemCount}
         onPress={() =>
           this.props.navigation.navigate(PV.RouteNames.PlaylistScreen, {

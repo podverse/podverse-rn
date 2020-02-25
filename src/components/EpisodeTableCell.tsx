@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import {
   decodeHTMLString,
@@ -6,13 +6,13 @@ import {
   removeHTMLFromString
 } from '../lib/utility'
 import { PV } from '../resources'
-import { FastImage, Icon, Text, View } from './'
-import { MoreButton } from './MoreButton'
+import { FastImage, IndicatorDownload, MoreButton, Text, View } from './'
 
 type Props = {
   description?: string
   handleMorePress?: any
   handleNavigationPress?: any
+  hasZebraStripe?: boolean
   hideImage?: boolean
   id: string
   podcastImageUrl?: string
@@ -28,11 +28,11 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       pubDate = '',
       handleMorePress,
       handleNavigationPress,
+      hasZebraStripe,
       hideImage,
       podcastImageUrl,
       podcastTitle
     } = this.props
-    const { globalTheme } = this.global
     let { description = '', title } = this.props
     description = removeHTMLFromString(description)
     description = decodeHTMLString(description)
@@ -45,14 +45,14 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     if (!title) title = 'untitled episode'
 
     const innerTopView = (
-      <View style={styles.innerTopView}>
+      <RNView style={styles.innerTopView}>
         {!!podcastImageUrl && (
             <FastImage
               isSmall={true}
               source={podcastImageUrl}
               styles={styles.image} />
         )}
-        <View style={styles.textWrapper}>
+        <RNView style={styles.textWrapper}>
           {!!podcastTitle && (
             <Text
               isSecondary={true}
@@ -64,21 +64,16 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           <Text numberOfLines={6} style={styles.title}>
             {title}
           </Text>
-          <View style={styles.textWrapperBottomRow}>
+          <RNView style={styles.textWrapperBottomRow}>
             <Text isSecondary={true} style={styles.pubDate}>
               {readableDate(pubDate)}
             </Text>
             {isDownloaded && (
-              <Icon
-                isSecondary={true}
-                name='download'
-                size={13}
-                style={styles.downloadedIcon}
-              />
+              <IndicatorDownload />
             )}
-          </View>
-        </View>
-      </View>
+          </RNView>
+        </RNView>
+      </RNView>
     )
 
     const descriptionStyle = hideImage ? [styles.description, { paddingLeft: 0 }] : styles.description
@@ -93,8 +88,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     )
 
     return (
-      <View style={styles.wrapper}>
-        <View style={styles.wrapperTop}>
+      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
+        <RNView style={styles.wrapperTop}>
           {handleNavigationPress ? (
             <TouchableWithoutFeedback onPress={handleNavigationPress}>
               {innerTopView}
@@ -108,7 +103,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               height={hideImage ? 46 : 64}
               isLoading={isDownloading} />
           }
-        </View>
+        </RNView>
         {!!description && handleNavigationPress && (
           <TouchableWithoutFeedback onPress={handleNavigationPress}>
             {bottomText}
@@ -125,12 +120,7 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.md,
     lineHeight: PV.Fonts.sizes.md + 2,
     marginTop: 10,
-    paddingLeft: 74
-  },
-  downloadedIcon: {
-    flex: 0,
-    marginLeft: 8,
-    marginTop: 3
+    paddingLeft: 76
   },
   image: {
     flex: 0,
@@ -154,7 +144,7 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
     lineHeight: PV.Fonts.sizes.sm,
-    marginTop: 6
+    marginTop: 7
   },
   textWrapper: {
     flex: 1
@@ -166,7 +156,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    marginTop: 2
+    marginTop: 3
   },
   wrapper: {
     paddingBottom: 14,

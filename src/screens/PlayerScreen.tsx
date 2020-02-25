@@ -11,8 +11,8 @@ import {
   EpisodeTableCell,
   FlatList,
   HTMLScrollView,
-  Icon,
   NavAddToPlaylistIcon,
+  NavDismissIcon,
   NavMakeClipIcon,
   NavQueueIcon,
   NavShareIcon,
@@ -35,6 +35,7 @@ import {
 import {
   decodeHTMLString,
   formatTitleViewHtml,
+  isOdd,
   readableDate,
   removeHTMLFromString
 } from '../lib/utility'
@@ -46,7 +47,7 @@ import { getAddByRSSPodcast } from '../services/parser'
 import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
 import { addQueueItemNext } from '../services/queue'
 import { loadItemAndPlayTrack } from '../state/actions/player'
-import { core, navHeader } from '../styles'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
@@ -67,13 +68,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     return {
       title: '',
       headerLeft: (
-        <Icon
-          color='#fff'
-          name='chevron-down'
-          onPress={navigation.dismiss}
-          size={PV.Icons.NAV}
-          style={navHeader.buttonIcon}
-        />
+        <NavDismissIcon onPress={navigation.dismiss} />
       ),
       headerRight: (
         <RNView style={core.row}>
@@ -443,7 +438,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     }
   }
 
-  _renderItem = ({ item }) => {
+  _renderItem = ({ item, index }) => {
     const { player, screenPlayer } = this.global
     const { episode } = player
     const podcast = (episode && episode.podcast) || {}
@@ -459,6 +454,8 @@ export class PlayerScreen extends React.Component<Props, State> {
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
           }
           handleNavigationPress={() => console.log('handle episode press')}
+          hasZebraStripe={isOdd(index)}
+          hideImage={true}
           pubDate={item.pubDate}
           title={item.title || 'untitled episode'}
         />

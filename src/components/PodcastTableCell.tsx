@@ -1,13 +1,14 @@
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { FastImage, Icon, Text, View } from './'
+import { FastImage, IndicatorDownload, Text, View } from './'
 
 type Props = {
   autoDownloadSettings?: any
   downloadCount?: number
   downloadedPodcastEpisodeCounts?: any
+  hasZebraStripe?: boolean
   id: string
   lastEpisodePubDate?: string
   onPress?: any
@@ -22,6 +23,7 @@ type Props = {
 export class PodcastTableCell extends React.PureComponent<Props> {
   render() {
     const {
+      hasZebraStripe,
       id,
       lastEpisodePubDate,
       onPress,
@@ -46,16 +48,18 @@ export class PodcastTableCell extends React.PureComponent<Props> {
 
     return (
       <TouchableWithoutFeedback onPress={onPress}>
-        <View style={styles.wrapper}>
+        <View
+          hasZebraStripe={hasZebraStripe}
+          style={styles.wrapper}>
           <FastImage
             source={podcastImageUrl}
             styles={styles.image} />
-          <View style={styles.textWrapper}>
+          <RNView style={styles.textWrapper}>
             <Text numberOfLines={2} style={styles.title}>
               {podcastTitle}
             </Text>
-            <View style={styles.textWrapperRow}>
-              <View style={styles.textWrapperRowLeft}>
+            <RNView style={styles.textWrapperRow}>
+              <RNView style={styles.textWrapperRowLeft}>
                 {!!podcastCategories && (
                   <Text
                     isSecondary={true}
@@ -64,45 +68,44 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                     {podcastCategories}
                   </Text>
                 )}
-              </View>
-              {showAutoDownload && shouldAutoDownload && (
-                <View style={styles.textWrapperRowRight}>
-                  <Icon
-                    isSecondary={true}
-                    name='download'
-                    size={13}
-                    style={styles.autoDownloadIcon}
-                  />
-                </View>
-              )}
-            </View>
-            <View style={styles.textWrapperRow}>
+              </RNView>
+            </RNView>
+            <RNView style={styles.textWrapperRow}>
               {!!podcastAuthors && (
-                <View style={styles.textWrapperRowLeft}>
+                <RNView style={styles.textWrapperRowLeft}>
                   <Text
                     isSecondary={true}
                     numberOfLines={1}
                     style={styles.bottomText}>
                     {podcastAuthors}
                   </Text>
-                </View>
+                </RNView>
               )}
               {showDownloadCount && (
-                <View style={styles.textWrapperRowLeft}>
-                  <Text isSecondary={true} style={styles.bottomText}>
+                <RNView style={styles.textWrapperRowLeft}>
+                  <Text
+                    isSecondary={true}
+                    numberOfLines={1}
+                    style={styles.bottomText}>
                     {`${downloadCount} downloaded`}
                   </Text>
-                </View>
+                  {showAutoDownload && shouldAutoDownload && (
+                    <IndicatorDownload style={styles.autoDownloadIcon} />
+                  )}
+                </RNView>
               )}
               {!!lastEpisodePubDate && (
-                <View style={styles.textWrapperRowRight}>
-                  <Text isSecondary={true} style={styles.bottomText}>
+                <RNView style={styles.textWrapperRowRight}>
+                  <Text
+                    isSecondary={true}
+                    numberOfLines={1}
+                    style={styles.bottomText}>
                     {readableDate(lastEpisodePubDate)}
                   </Text>
-                </View>
+                </RNView>
               )}
-            </View>
-          </View>
+            </RNView>
+          </RNView>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -111,21 +114,28 @@ export class PodcastTableCell extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   autoDownloadIcon: {
-    flex: 0
+    flex: 0,
+    marginBottom: 4,
+    marginTop: 0
   },
   bottomText: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.md,
-    justifyContent: 'flex-end',
-    marginTop: 2
+    fontSize: PV.Fonts.sizes.md
+  },
+  image: {
+    flex: 0,
+    height: PV.Table.cells.podcast.image.height,
+    marginRight: 12,
+    width: PV.Table.cells.podcast.image.width
   },
   textWrapperRow: {
     flex: 1,
     flexDirection: 'row'
   },
   textWrapperRowLeft: {
+    alignItems: 'flex-end',
     flex: 1,
-    justifyContent: 'flex-end'
+    flexDirection: 'row'
   },
   textWrapperRowRight: {
     alignItems: 'flex-end',
@@ -133,12 +143,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginLeft: 4
-  },
-  image: {
-    flex: 0,
-    height: PV.Table.cells.podcast.image.height,
-    marginRight: 12,
-    width: PV.Table.cells.podcast.image.width
   },
   textWrapper: {
     flex: 1,
