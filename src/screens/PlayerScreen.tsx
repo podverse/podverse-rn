@@ -35,6 +35,7 @@ import {
 import {
   decodeHTMLString,
   formatTitleViewHtml,
+  isOdd,
   readableDate,
   removeHTMLFromString
 } from '../lib/utility'
@@ -443,7 +444,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     }
   }
 
-  _renderItem = ({ item }) => {
+  _renderItem = ({ item, index }) => {
     const { player, screenPlayer } = this.global
     const { episode } = player
     const podcast = (episode && episode.podcast) || {}
@@ -459,6 +460,7 @@ export class PlayerScreen extends React.Component<Props, State> {
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
           }
           handleNavigationPress={() => console.log('handle episode press')}
+          hasZebraStripe={isOdd(index)}
           hideImage={true}
           pubDate={item.pubDate}
           title={item.title || 'untitled episode'}

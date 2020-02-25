@@ -1,10 +1,11 @@
 import React from 'react'
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import { PV } from '../resources'
 import { ActivityIndicator, Text, View } from './'
 
 type Props = {
   createdBy?: string
+  hasZebraStripe?: boolean
   isSaving?: boolean
   itemCount?: number
   onPress?: any
@@ -15,6 +16,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
   render() {
     const {
       createdBy,
+      hasZebraStripe,
       isSaving,
       itemCount = 0,
       onPress,
@@ -26,8 +28,10 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
 
     return (
       <TouchableWithoutFeedback onPress={onPress}>
-        <View style={styles.wrapper}>
-          <View style={wrapperTopStyles}>
+        <View
+          hasZebraStripe={hasZebraStripe}
+          style={styles.wrapper}>
+          <RNView style={wrapperTopStyles}>
             <Text numberOfLines={1} style={styles.title}>
               {title}
             </Text>
@@ -38,13 +42,13 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
                 items: {itemCount}
               </Text>
             )}
-          </View>
+          </RNView>
           {!!createdBy && (
-            <View style={styles.wrapperBottom}>
+            <RNView style={styles.wrapperBottom}>
               <Text isSecondary={true} style={styles.createdBy}>
                 by: {createdBy}
               </Text>
-            </View>
+            </RNView>
           )}
         </View>
       </TouchableWithoutFeedback>

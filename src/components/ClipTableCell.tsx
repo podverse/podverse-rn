@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -13,12 +13,14 @@ type Props = {
   episodeTitle?: string
   handleMorePress?: any
   handleNavigationPress?: any
+  hasZebraStripe?: boolean
   hideImage?: boolean
   isPlaylistItem?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
   startTime: number
   title?: string
+  zebraStripeIndex?: number
 }
 
 export class ClipTableCell extends React.PureComponent<Props> {
@@ -30,6 +32,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       episodeTitle,
       handleMorePress,
       handleNavigationPress,
+      hasZebraStripe,
       hideImage,
       isPlaylistItem,
       podcastImageUrl,
@@ -44,16 +47,16 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const showEpisodeInfo = !!episodePubDate || !!episodeTitle
 
     const innerTopView = (
-      <View style={styles.innerTopView}>
+      <RNView style={styles.innerTopView}>
         <TouchableWithoutFeedback onPress={handleNavigationPress}>
-          <View style={{ flex: 1, flexDirection: 'row' }}>
+          <RNView style={{ flex: 1, flexDirection: 'row' }}>
             {!!podcastImageUrl && (
               <FastImage
                 isSmall={true}
                 source={podcastImageUrl}
                 styles={styles.image} />
             )}
-            <View style={styles.textWrapper}>
+            <RNView style={styles.textWrapper}>
               {!!podcastTitle && (
                 <Text
                   isSecondary={true}
@@ -69,50 +72,52 @@ export class ClipTableCell extends React.PureComponent<Props> {
                   {episodeTitle}
                 </Text>
               )}
-              <View style={styles.textWrapperBottomRow}>
-                <Text isSecondary={true} style={styles.episodePubDate}>
+              <RNView style={styles.textWrapperBottomRow}>
+                <Text
+                  isSecondary={true}
+                  style={styles.episodePubDate}>
                   {readableDate(episodePubDate)}
                 </Text>
-                {isDownloaded && (
-                  <IndicatorDownload />
-                )}
-              </View>
-            </View>
-          </View>
+                {isDownloaded && <IndicatorDownload />}
+              </RNView>
+            </RNView>
+          </RNView>
         </TouchableWithoutFeedback>
         <MoreButton
           handleShowMore={handleMorePress}
           height={hideImage ? 44 : 64}
           isLoading={isDownloading} />
-      </View>
+      </RNView>
     )
 
     const bottomTextStyle = !isPlaylistItem ? styles.title : styles.playlistClipTitle
 
     const bottomText = (
-      <View style={styles.wrapperBottom}>
-        <View style={styles.wrapperBottomTextWrapper}>
+      <RNView style={styles.wrapperBottom}>
+        <RNView style={styles.wrapperBottomTextWrapper}>
           <Text numberOfLines={4} style={bottomTextStyle}>
             {title}
           </Text>
           <Text isSecondary={true} style={styles.clipTime}>
             {clipTime}
           </Text>
-        </View>
+        </RNView>
         {!showEpisodeInfo && handleMorePress &&
           <MoreButton
             handleShowMore={handleMorePress}
             height={44} />
         }
-      </View>
+      </RNView>
     )
 
     return (
-      <View style={styles.wrapper}>
+      <View
+        hasZebraStripe={hasZebraStripe}
+        style={styles.wrapper}>
         {!!showEpisodeInfo && (
-          <View style={styles.wrapperTop}>
+          <RNView style={styles.wrapperTop}>
             {innerTopView}
-          </View>
+          </RNView>
         )}
         {handleNavigationPress ? (
           <TouchableWithoutFeedback onPress={handleNavigationPress}>

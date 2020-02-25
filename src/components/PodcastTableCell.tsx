@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -8,6 +8,7 @@ type Props = {
   autoDownloadSettings?: any
   downloadCount?: number
   downloadedPodcastEpisodeCounts?: any
+  hasZebraStripe?: boolean
   id: string
   lastEpisodePubDate?: string
   onPress?: any
@@ -22,6 +23,7 @@ type Props = {
 export class PodcastTableCell extends React.PureComponent<Props> {
   render() {
     const {
+      hasZebraStripe,
       id,
       lastEpisodePubDate,
       onPress,
@@ -46,16 +48,18 @@ export class PodcastTableCell extends React.PureComponent<Props> {
 
     return (
       <TouchableWithoutFeedback onPress={onPress}>
-        <View style={styles.wrapper}>
+        <View
+          hasZebraStripe={hasZebraStripe}
+          style={styles.wrapper}>
           <FastImage
             source={podcastImageUrl}
             styles={styles.image} />
-          <View style={styles.textWrapper}>
+          <RNView style={styles.textWrapper}>
             <Text numberOfLines={2} style={styles.title}>
               {podcastTitle}
             </Text>
-            <View style={styles.textWrapperRow}>
-              <View style={styles.textWrapperRowLeft}>
+            <RNView style={styles.textWrapperRow}>
+              <RNView style={styles.textWrapperRowLeft}>
                 {!!podcastCategories && (
                   <Text
                     isSecondary={true}
@@ -64,38 +68,38 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                     {podcastCategories}
                   </Text>
                 )}
-              </View>
-            </View>
-            <View style={styles.textWrapperRow}>
+              </RNView>
+            </RNView>
+            <RNView style={styles.textWrapperRow}>
               {!!podcastAuthors && (
-                <View style={styles.textWrapperRowLeft}>
+                <RNView style={styles.textWrapperRowLeft}>
                   <Text
                     isSecondary={true}
                     numberOfLines={1}
                     style={styles.bottomText}>
                     {podcastAuthors}
                   </Text>
-                </View>
+                </RNView>
               )}
               {showDownloadCount && (
-                <View style={styles.textWrapperRowLeft}>
+                <RNView style={styles.textWrapperRowLeft}>
                   <Text isSecondary={true} style={styles.bottomText}>
                     {`${downloadCount} downloaded`}
                   </Text>
                   {showAutoDownload && shouldAutoDownload && (
                     <IndicatorDownload style={styles.autoDownloadIcon} />
                   )}
-                </View>
+                </RNView>
               )}
               {!!lastEpisodePubDate && (
-                <View style={styles.textWrapperRowRight}>
+                <RNView style={styles.textWrapperRowRight}>
                   <Text isSecondary={true} style={styles.bottomText}>
                     {readableDate(lastEpisodePubDate)}
                   </Text>
-                </View>
+                </RNView>
               )}
-            </View>
-          </View>
+            </RNView>
+          </RNView>
         </View>
       </TouchableWithoutFeedback>
     )

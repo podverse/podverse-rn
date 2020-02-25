@@ -10,6 +10,7 @@ import {
   View
 } from '../components'
 import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
+import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import {
@@ -74,13 +75,14 @@ export class DownloadsScreen extends React.Component<Props, State> {
     })
   }
 
-  _renderItem = ({ item }) => {
+  _renderItem = ({ item, index }) => {
     return (
       <DownloadTableCell
         bytesTotal={item.bytesTotal}
         bytesWritten={item.bytesWritten}
         completed={item.completed}
         episodeTitle={item.episodeTitle}
+        hasZebraStripe={isOdd(index)}
         onPress={() => this._handleItemPress(item)}
         percent={item.percent}
         podcastImageUrl={item.podcastImageUrl}

@@ -20,6 +20,7 @@ import {
   convertToNowPlayingItem
 } from '../lib/NowPlayingItem'
 import {
+  isOdd,
   safelyUnwrapNestedVariable
 } from '../lib/utility'
 import { PV } from '../resources'
@@ -141,7 +142,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
-  _renderItem = ({ item }) => {
+  _renderItem = ({ item, index }) => {
     if (item.startTime) {
       return item.episode && item.episode.podcast ? (
         <ClipTableCell
@@ -152,6 +153,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(item, null, null))
           }
+          hasZebraStripe={isOdd(index)}
           isPlaylistItem={true}
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
@@ -170,6 +172,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
               episode: item
             })
           }
+          hasZebraStripe={isOdd(index)}
           id={item.id}
           podcastImageUrl={(item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl)) || ''}
           podcastTitle={(item.podcast && item.podcast.title) || ''}

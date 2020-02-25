@@ -25,6 +25,7 @@ import {
 import {
   generateAuthorsText,
   generateCategoriesText,
+  isOdd,
   readableDate,
   safelyUnwrapNestedVariable
 } from '../lib/utility'
@@ -366,12 +367,13 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
   }
 
-  _renderItem = ({ item }) => {
+  _renderItem = ({ item, index }) => {
     const { queryFrom } = this.state
 
     if (queryFrom === _podcastsKey) {
       return (
         <PodcastTableCell
+          hasZebraStripe={isOdd(index)}
           id={item.id}
           lastEpisodePubDate={item.lastEpisodePubDate}
           onPress={() => this._handlePodcastPress(item)}
@@ -391,6 +393,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(item, null, null))
           }
+          hasZebraStripe={isOdd(index)}
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
           startTime={item.startTime}
@@ -400,6 +403,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     } else {
       return (
         <PlaylistTableCell
+          hasZebraStripe={isOdd(index)}
           itemCount={item.itemCount}
           onPress={() => this._handlePlaylistPress(item)}
           title={item.title}

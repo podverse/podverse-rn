@@ -17,6 +17,7 @@ import {
   View
 } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
+import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import {
@@ -135,11 +136,12 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
 
   _ItemSeparatorComponent = () => <Divider />
 
-  _renderPlaylistItem = ({ item }) => {
+  _renderPlaylistItem = ({ item, index }) => {
     const { episodeId, isSavingId, mediaRefId } = this.state
 
     return (
       <PlaylistTableCell
+        hasZebraStripe={isOdd(index)}
         isSaving={item.id && item.id === isSavingId}
         itemCount={item.itemCount}
         onPress={() => {

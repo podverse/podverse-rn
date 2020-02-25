@@ -476,3 +476,5 @@ export const getMakeClipIsPublic = async () => {
 
   return isPublic
 }
+
+export const isOdd = (num: number) => (num % 2) === 1

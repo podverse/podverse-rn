@@ -21,7 +21,7 @@ import {
   View as PVView
 } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
-import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
+import { checkIfIdMatchesClipIdOrEpisodeId, isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { movePlayerItemToNewPosition } from '../services/player'
@@ -264,7 +264,7 @@ export class QueueScreen extends React.Component<Props, State> {
     this._handlePlayItem(item)
   }
 
-  _renderHistoryItem = ({ item = {} as NowPlayingItem }) => {
+  _renderHistoryItem = ({ item = {} as NowPlayingItem, index }) => {
     const { isEditing } = this.state
 
     return (
@@ -281,6 +281,7 @@ export class QueueScreen extends React.Component<Props, State> {
             episodePubDate={item.episodePubDate}
             episodeTitle={item.episodeTitle}
             handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
+            hasZebraStripe={isOdd(index)}
             podcastImageUrl={item.podcastImageUrl}
             podcastTitle={item.podcastTitle}
             showRemoveButton={isEditing}
@@ -290,7 +291,7 @@ export class QueueScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderQueueItemRow = ({ active, data = {} as NowPlayingItem }) => {
+  _renderQueueItemRow = ({ active, data = {} as NowPlayingItem, index }) => {
     const { isEditing } = this.state
 
     const cell = (
@@ -302,6 +303,7 @@ export class QueueScreen extends React.Component<Props, State> {
           episodePubDate={data.episodePubDate}
           episodeTitle={data.episodeTitle}
           handleRemovePress={() => this._handleRemoveQueueItemPress(data)}
+          hasZebraStripe={isOdd(index)}
           podcastImageUrl={data.podcastImageUrl}
           podcastTitle={data.podcastTitle}
           showMoveButton={!isEditing}

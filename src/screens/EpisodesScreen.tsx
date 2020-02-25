@@ -19,6 +19,7 @@ import {
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem
 } from '../lib/NowPlayingItem'
+import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -213,28 +214,30 @@ export class EpisodesScreen extends React.Component<Props, State> {
     })
   }
 
-  _renderEpisodeItem = ({ item }) => (
-    <EpisodeTableCell
-      description={item.description}
-      handleMorePress={() =>
-        this._handleMorePress(convertToNowPlayingItem(item, null, null))
-      }
-      handleNavigationPress={() =>
-        this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
-          episode: item,
-          includeGoToPodcast: true
-        })
-      }
-      hideImage={false}
-      id={item.id}
-      podcastImageUrl={
-        (item.podcast_shrunkImageUrl || item.podcast_imageUrl) || (item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl))
-      }
-      podcastTitle={item.podcast_title || (item.podcast && item.podcast.title)}
-      pubDate={item.pubDate}
-      title={item.title}
-    />
-  )
+  _renderEpisodeItem = ({ item, index }) => {
+    return (
+      <EpisodeTableCell
+        description={item.description}
+        handleMorePress={() =>
+          this._handleMorePress(convertToNowPlayingItem(item, null, null))
+        }
+        handleNavigationPress={() =>
+          this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
+            episode: item,
+            includeGoToPodcast: true
+          })
+        }
+        hasZebraStripe={isOdd(index)}
+        hideImage={false}
+        id={item.id}
+        podcastImageUrl={
+          (item.podcast_shrunkImageUrl || item.podcast_imageUrl) || (item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl))
+        }
+        podcastTitle={item.podcast_title || (item.podcast && item.podcast.title)}
+        pubDate={item.pubDate}
+        title={item.title} />
+    )
+  }
 
   _renderHiddenItem = ({ item }, rowMap) => (
     <SwipeRowBack

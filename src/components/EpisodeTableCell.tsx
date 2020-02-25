@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import {
   decodeHTMLString,
@@ -12,6 +12,7 @@ type Props = {
   description?: string
   handleMorePress?: any
   handleNavigationPress?: any
+  hasZebraStripe?: boolean
   hideImage?: boolean
   id: string
   podcastImageUrl?: string
@@ -27,6 +28,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       pubDate = '',
       handleMorePress,
       handleNavigationPress,
+      hasZebraStripe,
       hideImage,
       podcastImageUrl,
       podcastTitle
@@ -43,14 +45,14 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     if (!title) title = 'untitled episode'
 
     const innerTopView = (
-      <View style={styles.innerTopView}>
+      <RNView style={styles.innerTopView}>
         {!!podcastImageUrl && (
             <FastImage
               isSmall={true}
               source={podcastImageUrl}
               styles={styles.image} />
         )}
-        <View style={styles.textWrapper}>
+        <RNView style={styles.textWrapper}>
           {!!podcastTitle && (
             <Text
               isSecondary={true}
@@ -62,16 +64,16 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           <Text numberOfLines={6} style={styles.title}>
             {title}
           </Text>
-          <View style={styles.textWrapperBottomRow}>
+          <RNView style={styles.textWrapperBottomRow}>
             <Text isSecondary={true} style={styles.pubDate}>
               {readableDate(pubDate)}
             </Text>
             {isDownloaded && (
               <IndicatorDownload />
             )}
-          </View>
-        </View>
-      </View>
+          </RNView>
+        </RNView>
+      </RNView>
     )
 
     const descriptionStyle = hideImage ? [styles.description, { paddingLeft: 0 }] : styles.description
@@ -86,8 +88,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     )
 
     return (
-      <View style={styles.wrapper}>
-        <View style={styles.wrapperTop}>
+      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
+        <RNView style={styles.wrapperTop}>
           {handleNavigationPress ? (
             <TouchableWithoutFeedback onPress={handleNavigationPress}>
               {innerTopView}
@@ -101,7 +103,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               height={hideImage ? 46 : 64}
               isLoading={isDownloading} />
           }
-        </View>
+        </RNView>
         {!!description && handleNavigationPress && (
           <TouchableWithoutFeedback onPress={handleNavigationPress}>
             {bottomText}

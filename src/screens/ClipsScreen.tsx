@@ -20,7 +20,7 @@ import {
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem
 } from '../lib/NowPlayingItem'
-import { safelyUnwrapNestedVariable } from '../lib/utility'
+import { isOdd, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
@@ -193,7 +193,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     })
   }
 
-  _renderClipItem = ({ item }) => {
+  _renderClipItem = ({ item, index }) => {
     return item && item.episode && item.episode.id ? (
       <ClipTableCell
         endTime={item.endTime}
@@ -206,6 +206,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         handleNavigationPress={() =>
           this._handleNavigationPress(convertToNowPlayingItem(item, null, null))
         }
+        hasZebraStripe={isOdd(index)}
         podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
         podcastTitle={item.episode.podcast.title}
         startTime={item.startTime}

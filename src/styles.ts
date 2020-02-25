@@ -97,7 +97,7 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.redDarker
   },
   divider: {
-    backgroundColor: PV.Colors.gray
+    backgroundColor: PV.Colors.grayDark
   },
   flatList: {
     backgroundColor: PV.Colors.black
@@ -207,6 +207,9 @@ export const darkTheme = StyleSheet.create({
   },
   view: {
     backgroundColor: PV.Colors.black
+  },
+  viewWithZebraStripe: {
+    backgroundColor: PV.Colors.grayDarkestZ
   }
 })
 
@@ -304,7 +307,7 @@ export const lightTheme = StyleSheet.create({
     backgroundColor: PV.Colors.redLighter
   },
   divider: {
-    backgroundColor: PV.Colors.gray
+    backgroundColor: PV.Colors.grayLight
   },
   flatList: {
     backgroundColor: PV.Colors.white
@@ -413,6 +416,9 @@ export const lightTheme = StyleSheet.create({
   },
   view: {
     backgroundColor: PV.Colors.white
+  },
+  viewWithZebraStripe: {
+    backgroundColor: PV.Colors.grayLightestZ
   }
 })
 

@@ -22,7 +22,7 @@ import {
   convertNowPlayingItemToEpisode,
   convertToNowPlayingItem
 } from '../lib/NowPlayingItem'
-import { formatTitleViewHtml } from '../lib/utility'
+import { formatTitleViewHtml, isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -263,7 +263,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
-  _renderItem = ({ item }) => {
+  _renderItem = ({ item, index }) => {
     const { episode } = this.state
     return (
       <ClipTableCell
@@ -274,6 +274,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
             convertToNowPlayingItem(item, episode, episode.podcast)
           )
         }
+        hasZebraStripe={isOdd(index)}
         hideImage={true}
         startTime={item.startTime}
         title={item.title}
