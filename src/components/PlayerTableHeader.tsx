@@ -58,9 +58,9 @@ const styles = StyleSheet.create({
     marginTop: 3
   },
   episodeTitle: {
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    lineHeight: PV.Fonts.sizes.md + 2,
+    lineHeight: PV.Fonts.sizes.xl,
     marginTop: 5
   },
   image: {
