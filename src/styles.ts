@@ -97,7 +97,7 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.redDarker
   },
   divider: {
-    backgroundColor: PV.Colors.gray
+    backgroundColor: PV.Colors.grayDark
   },
   flatList: {
     backgroundColor: PV.Colors.black
@@ -307,7 +307,7 @@ export const lightTheme = StyleSheet.create({
     backgroundColor: PV.Colors.redLighter
   },
   divider: {
-    backgroundColor: PV.Colors.gray
+    backgroundColor: PV.Colors.grayLight
   },
   flatList: {
     backgroundColor: PV.Colors.white

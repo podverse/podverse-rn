@@ -51,7 +51,7 @@ const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
     if (!addOrUpdateHistoryItemSucceeded) {
       try {
         await addOrUpdateHistoryItem(nowPlayingItem)
-        await updateUserPlaybackPosition()
+        await updateUserPlaybackPosition(nowPlayingItem)
         addOrUpdateHistoryItemSucceeded = true
         clearInterval(addOrUpdateInterval)
       } catch (error) {
@@ -173,9 +173,9 @@ module.exports = async () => {
 
       if (Platform.OS === 'ios') {
         if (x.state === 'paused') {
-          updateUserPlaybackPosition()
+          await updateUserPlaybackPosition(nowPlayingItem)
         } else if (x.state === 'playing') {
-          updateUserPlaybackPosition()
+          await updateUserPlaybackPosition(nowPlayingItem)
           const rate = await getPlaybackSpeed()
           PVTrackPlayer.setRate(rate)
         }
@@ -192,7 +192,7 @@ module.exports = async () => {
           ???       8
         */
         if ((x.state === 2 && currentPosition > 3) || x.state === 3) {
-          updateUserPlaybackPosition()
+          await updateUserPlaybackPosition(nowPlayingItem)
         }
 
         if (x.state === 3) {
@@ -225,31 +225,28 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('remote-pause', async () => {
     PVTrackPlayer.pause()
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PAUSE)
-    updateUserPlaybackPosition()
+    await updateUserPlaybackPosition()
   })
 
   PVTrackPlayer.addEventListener('remote-play', async () => {
     PVTrackPlayer.play()
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PLAY)
-    updateUserPlaybackPosition()
+    await updateUserPlaybackPosition()
   })
 
   PVTrackPlayer.addEventListener('remote-seek', async (data) => {
     if (data.position || data.position >= 0) {
       PVTrackPlayer.seekTo(Math.floor(data.position))
-      updateUserPlaybackPosition()
     }
   })
 
   PVTrackPlayer.addEventListener('remote-stop', () => {
     PVTrackPlayer.pause()
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_STOP)
-    updateUserPlaybackPosition()
   })
 
   PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
     const { paused, permanent } = x
-    updateUserPlaybackPosition()
 
     // This remote-duck behavior for some Android users was causing playback to resume
     // after receiving any notification, even when the player was paused.

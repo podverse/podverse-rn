@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 import TrackPlayer, { Track } from 'react-native-track-player'
 import {
@@ -55,6 +56,9 @@ TrackPlayer.setupPlayer({
       TrackPlayer.CAPABILITY_PLAY,
       TrackPlayer.CAPABILITY_SEEK_TO
     ],
+    // alwaysPauseOnInterruption caused serious problems with the player unpausing
+    // every time the user receives a notification.
+    alwaysPauseOnInterruption: Platform.OS === 'ios',
     stopWithApp: true,
     jumpInterval: PV.Player.jumpSeconds
   })
@@ -191,18 +195,27 @@ const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
   return isDownloadedFile
 }
 
-export const updateUserPlaybackPosition = async () => {
+export const updateUserPlaybackPosition = async (itemOverride?: any) => {
   try {
-    const item = await getNowPlayingItem()
+    let item = itemOverride
+
+    if (!item) {
+      const currentTrackId = await PVTrackPlayer.getCurrentTrack()
+      item = await getNowPlayingItemFromQueueOrHistoryByTrackId(
+        currentTrackId
+      )
+    }
+
     if (item) {
+      await setNowPlayingItem(item)
       const lastPosition = await TrackPlayer.getPosition()
       const duration = await TrackPlayer.getDuration()
       if (duration > 0 && lastPosition >= duration - 10) {
         item.userPlaybackPosition = 0
-        await updateHistoryItemPlaybackPosition(item)
+        updateHistoryItemPlaybackPosition(item)
       } else if (lastPosition > 0) {
         item.userPlaybackPosition = lastPosition
-        await updateHistoryItemPlaybackPosition(item)
+        updateHistoryItemPlaybackPosition(item)
       }
     }
   } catch (error) {
@@ -268,7 +281,7 @@ export const loadItemAndPlayTrack = async (
   shouldPlay: boolean,
   skipUpdateHistory?: boolean
 ) => {
-  updateUserPlaybackPosition()
+  await updateUserPlaybackPosition()
 
   if (!item) return
 
@@ -286,7 +299,7 @@ export const loadItemAndPlayTrack = async (
 }
 
 export const playNextFromQueue = async () => {
-  updateUserPlaybackPosition()
+  await updateUserPlaybackPosition()
   await PVTrackPlayer.skipToNext()
   const currentId = await PVTrackPlayer.getCurrentTrack()
   const item = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentId)

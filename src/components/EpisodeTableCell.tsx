@@ -44,6 +44,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     if (!title) title = 'untitled episode'
 
+    const titleStyle = podcastTitle ? styles.title : [styles.title, { marginTop: 0 }]
+
     const innerTopView = (
       <RNView style={styles.innerTopView}>
         {!!podcastImageUrl && (
@@ -61,7 +63,9 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               {podcastTitle}
             </Text>
           )}
-          <Text numberOfLines={6} style={styles.title}>
+          <Text
+            numberOfLines={6}
+            style={titleStyle}>
             {title}
           </Text>
           <RNView style={styles.textWrapperBottomRow}>

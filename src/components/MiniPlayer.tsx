@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     borderTopWidth: 1,
     flexDirection: 'row',
-    height: 62
+    height: 61
   },
   podcastTitle: {
     flex: 1,
