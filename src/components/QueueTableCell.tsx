@@ -68,7 +68,11 @@ export class QueueTableCell extends React.PureComponent<Props> {
             )}
           </RNView>
           {showMoveButton && (
-            <Icon name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />
+            <Icon
+              isSecondary={true}
+              name='arrows-alt-v'
+              size={28}
+              style={button.iconOnlyMedium} />
           )}
           {showRemoveButton && handleRemovePress && (
             <Icon
