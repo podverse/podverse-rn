@@ -1,4 +1,4 @@
-import { Image, View } from 'react-native'
+import { Image, Text, View } from 'react-native'
 import { Badge } from 'react-native-elements'
 import {
   createAppContainer,
@@ -8,13 +8,14 @@ import {
 } from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { getGlobal } from 'reactn'
-import { NavQueueIcon, PVTabBar } from './components'
+import { NavQueueIcon, PVTabBar, TabBarLabel } from './components'
 import { PV } from './resources'
 import { AboutScreen, AddPodcastByRSSScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen,
   EditProfileScreen, EmailVerificationScreen, EpisodeScreen, EpisodesScreen, MakeClipScreen, MembershipScreen,
   MoreScreen, OnboardingScreen, PlayerScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen,
   PodcastScreen, PodcastsScreen, ProfileScreen, ProfilesScreen, PurchasingScreen, QueueScreen, SearchScreen,
   SettingsScreen, SleepTimerScreen, TermsOfServiceScreen, WebPageScreen } from './screens'
+import { tabbar } from './styles'
 
 const defaultNavigationOptions = ({ navigation }) => ({
   title: PV.Tabs.Podcasts.title,
@@ -62,7 +63,8 @@ const PodcastsNavigator = createStackNavigator(
           style={{ tintColor }}
           resizeMode={'contain'}
         />
-      )
+      ),
+      tabBarLabel: (() => <TabBarLabel title='Podcasts' />)
     }
   }
 )
@@ -82,7 +84,8 @@ const EpisodesNavigator = createStackNavigator(
           style={{ tintColor }}
           resizeMode={'contain'}
         />
-      )
+      ),
+      tabBarLabel: (() => <TabBarLabel title='Episodes' />)
     }
   }
 )
@@ -100,7 +103,8 @@ const ClipsNavigator = createStackNavigator(
           style={{ tintColor }}
           resizeMode={'contain'}
         />
-      )
+      ),
+      tabBarLabel: (() => <TabBarLabel title='Clips' />)
     }
   }
 )
@@ -120,7 +124,8 @@ const SearchNavigator = createStackNavigator(
           style={{ tintColor }}
           resizeMode={'contain'}
         />
-      )
+      ),
+      tabBarLabel: (() => <TabBarLabel title='Search' />)
     }
   }
 )
@@ -170,7 +175,8 @@ const MoreNavigator = createStackNavigator(
             <DownloadsActiveTabBadge />
           </View>
         )
-      }
+      },
+      tabBarLabel: (() => <TabBarLabel title='More' />)
     }
   }
 )

@@ -1,10 +1,10 @@
 import React from 'react'
 import { View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
-import { useGlobal } from 'reactn'
+import { getGlobal, useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { darkTheme, hidePickerIconOnAndroidSectionSelector } from '../styles'
-import { Divider, Icon, Text } from './'
+import { Icon, Text } from './'
 
 type Props = {
   handleSelectLeftItem?: any
@@ -19,7 +19,8 @@ type Props = {
 }
 
 export const TableSectionSelectors = (props: Props) => {
-  const [globalTheme] = useGlobal('globalTheme')
+  const global = getGlobal()
+  const { fontScaleMode, globalTheme } = global
   const isDarkMode = globalTheme === darkTheme
   const {
     handleSelectLeftItem,
@@ -37,12 +38,15 @@ export const TableSectionSelectors = (props: Props) => {
     leftItems.find((x) => x.value === selectedLeftItemKey) || {}
   const selectedRightItem =
     rightItems.find((x) => x.value === selectedRightItemKey) || {}
+  const wrapperStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+    [styles.tableSectionHeaderInner, { flexDirection: 'column' }] :
+    [styles.tableSectionHeaderInner]
 
   return (
     <View>
       <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
         {!hidePickers && (
-          <View style={styles.tableSectionHeaderInner}>
+          <View style={wrapperStyle}>
             <RNPickerSelect
               items={leftItems}
               onValueChange={handleSelectLeftItem}
@@ -52,6 +56,7 @@ export const TableSectionSelectors = (props: Props) => {
               value={selectedLeftItemKey}>
               <View style={styles.tableSectionHeaderButton}>
                 <Text
+                  numberOfLines={1}
                   style={[
                     styles.tableSectionHeaderTextLeft,
                     globalTheme.tableSectionHeaderText
@@ -80,6 +85,7 @@ export const TableSectionSelectors = (props: Props) => {
                 value={selectedRightItemKey}>
                 <View style={styles.tableSectionHeaderButton}>
                   <Text
+                    numberOfLines={1}
                     style={[
                       styles.tableSectionHeaderTextRight,
                       globalTheme.tableSectionHeaderText
@@ -102,6 +108,7 @@ export const TableSectionSelectors = (props: Props) => {
             {rightItems.length === 1 && (
               <View style={styles.tableSectionHeaderButton}>
                 <Text
+                  numberOfLines={1}
                   style={[
                     styles.tableSectionHeaderTextRight,
                     globalTheme.tableSectionHeaderText
@@ -126,9 +133,7 @@ const _placeholderDefault = {
 
 const styles = {
   tableSectionHeader: {
-    minHeight: PV.Table.sectionHeader.height,
-    paddingLeft: 8,
-    paddingRight: 8
+    minHeight: PV.Table.sectionHeader.height
   },
   tableSectionHeaderButton: {
     alignItems: 'center',
@@ -140,12 +145,12 @@ const styles = {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    paddingRight: 8
+    paddingHorizontal: 8
   },
   tableSectionHeaderIconRight: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    paddingLeft: 8
+    paddingHorizontal: 8
   },
   tableSectionHeaderInner: {
     alignItems: 'stretch',
@@ -155,12 +160,10 @@ const styles = {
   tableSectionHeaderTextLeft: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    paddingRight: 8
+    fontWeight: PV.Fonts.weights.bold
   },
   tableSectionHeaderTextRight: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.xl,
-    paddingLeft: 8
+    fontSize: PV.Fonts.sizes.xl
   }
 }

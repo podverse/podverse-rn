@@ -37,7 +37,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     description = removeHTMLFromString(description)
     description = decodeHTMLString(description)
 
-    const { downloadedEpisodeIds, downloadsActive } = this.global
+    const { downloadedEpisodeIds, downloadsActive, fontScaleMode } = this.global
 
     const isDownloading = downloadsActive[id]
     const isDownloaded = downloadedEpisodeIds[id]
@@ -64,7 +64,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             </Text>
           )}
           <Text
-            numberOfLines={6}
+            numberOfLines={4}
             style={titleStyle}>
             {title}
           </Text>
@@ -101,7 +101,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           ) : (
             innerTopView
           )}
-          {handleMorePress &&
+          {handleMorePress && PV.Fonts.fontScale.largest !== fontScaleMode &&
             <MoreButton
               handleShowMore={handleMorePress}
               height={hideImage ? 46 : 64}
@@ -110,7 +110,12 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         </RNView>
         {!!description && handleNavigationPress && (
           <TouchableWithoutFeedback onPress={handleNavigationPress}>
-            {bottomText}
+            <>
+              {
+                PV.Fonts.fontScale.largest !== fontScaleMode &&
+                  bottomText
+              }
+            </>
           </TouchableWithoutFeedback>
         )}
         {!!description && !handleNavigationPress && bottomText}

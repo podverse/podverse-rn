@@ -22,7 +22,7 @@ type State = {}
 export class MiniPlayer extends React.PureComponent<Props, State> {
   render() {
     const { navigation } = this.props
-    const { globalTheme, player, screenPlayer } = this.global
+    const { fontScaleMode, globalTheme, player, screenPlayer } = this.global
     const { nowPlayingItem, playbackState } = player
     const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
@@ -45,11 +45,14 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
                 styles={styles.image}
               />
               <View style={styles.textWrapper}>
-                <Text
-                  numberOfLines={1}
-                  style={[styles.podcastTitle, globalTheme.playerText]}>
-                  {nowPlayingItem.podcastTitle}
-                </Text>
+                {
+                  ![PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) &&
+                    <Text
+                      numberOfLines={1}
+                      style={[styles.podcastTitle, globalTheme.playerText]}>
+                      {nowPlayingItem.podcastTitle}
+                    </Text>
+                }
                 <Text
                   numberOfLines={1}
                   style={[styles.episodeTitle, globalTheme.playerText]}>
@@ -96,33 +99,32 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
 
 const styles = StyleSheet.create({
   episodeTitle: {
-    flex: 1,
-    fontSize: PV.Fonts.sizes.lg,
+    alignItems: 'center',
+    flex: 0,
+    fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: 24,
-    marginBottom: 6
+    marginBottom: 2
   },
   image: {
     height: 60,
     width: 60
   },
   player: {
+    alignItems: 'center',
     borderBottomWidth: 0,
     borderTopWidth: 1,
     flexDirection: 'row',
-    height: 61
+    minHeight: 61
   },
   podcastTitle: {
-    flex: 1,
-    fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: 27,
-    marginTop: 3
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.semibold
   },
   textWrapper: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     marginLeft: 10,
-    marginRight: 2
+    marginRight: 2,
+    paddingVertical: 3
   }
 })

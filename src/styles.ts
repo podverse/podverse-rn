@@ -167,6 +167,9 @@ export const darkTheme = StyleSheet.create({
   tabbarItem: {
     tintColor: PV.Colors.blue
   },
+  tabbarLabel: {
+    color: PV.Colors.grayLighter
+  },
   tableCellBorder: {
     borderColor: PV.Colors.grayDarker
   },
@@ -376,6 +379,9 @@ export const lightTheme = StyleSheet.create({
   tabbarItem: {
     tintColor: PV.Colors.blue
   },
+  tabbarLabel: {
+    color: PV.Colors.grayDarker
+  },
   tableCellBorder: {
     borderColor: PV.Colors.grayLighter
   },
@@ -419,6 +425,12 @@ export const lightTheme = StyleSheet.create({
   },
   viewWithZebraStripe: {
     backgroundColor: PV.Colors.grayLightestZ
+  }
+})
+
+export const tabbar = StyleSheet.create({
+  label: {
+    fontSize: PV.Fonts.sizes.tiny
   }
 })
 
@@ -488,7 +500,7 @@ export const core = StyleSheet.create({
     borderBottomWidth: 0,
     borderTopWidth: 0,
     flex: 0,
-    height: PV.FlatList.searchBar.height,
+    minHeight: PV.FlatList.searchBar.height,
     justifyContent: 'center',
     marginVertical: 8
   },
@@ -650,8 +662,7 @@ export const table = StyleSheet.create({
   },
   cellWrapper: {
     alignItems: 'center',
-    height: PV.Table.cells.standard.height,
-    lineHeight: PV.Table.cells.standard.height
+    minHeight: PV.Table.cells.standard.height
   }
 })
 
@@ -673,7 +684,7 @@ export const actionSheetStyles = {
     borderLeftWidth: 1,
     borderRightWidth: 1,
     borderTopWidth: 1,
-    height: 62,
+    minHeight: 62,
     justifyContent: 'center'
   },
   buttonBottom: {
@@ -694,7 +705,7 @@ export const actionSheetStyles = {
     borderRadius: 6,
     borderWidth: 1,
     marginTop: 8,
-    height: 62,
+    minHeight: 62,
     justifyContent: 'center'
   },
   buttonText: {

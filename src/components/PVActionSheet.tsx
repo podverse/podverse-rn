@@ -96,7 +96,9 @@ export class PVActionSheet extends React.Component<Props, State> {
               globalTheme.actionSheetButtonUnderlay.backgroundColor
             }>
             <View style={actionSheetStyles.buttonRow}>
-              <Text style={[actionSheetStyles.buttonText, buttonTextStyle]}>
+              <Text
+                numberOfLines={1}
+                style={[actionSheetStyles.buttonText, buttonTextStyle]}>
                 {item.text}
               </Text>
               {item.isDownloading && (

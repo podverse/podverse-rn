@@ -29,15 +29,18 @@ export const Fonts: IFonts = {
     extraBold: '700'
   },
   fontScale: {
+    large: 'large',
     larger: 'larger',
     largest: 'largest'
   }
 }
 
 export const determineFontScaleMode = (fontScale: number) => {
-  if (fontScale > 1 && fontScale < 2) {
+  if (fontScale > 1 && fontScale < 1.25) {
+    return Fonts.fontScale.large
+  } else if (fontScale >= 1.25 && fontScale < 1.65) {
     return Fonts.fontScale.larger
-  } else if (fontScale >= 2) {
+  } else if (fontScale >= 1.65) {
     return Fonts.fontScale.largest
   } else {
     return null
