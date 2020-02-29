@@ -133,7 +133,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 const styles = StyleSheet.create({
   description: {
     fontSize: PV.Fonts.sizes.md,
-    marginTop: 10,
+    marginTop: 8,
     paddingLeft: 76
   },
   image: {
@@ -150,13 +150,11 @@ const styles = StyleSheet.create({
   podcastTitle: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    justifyContent: 'flex-start',
-    marginTop: 1
+    justifyContent: 'flex-start'
   },
   pubDate: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
-    marginTop: 7
+    fontSize: PV.Fonts.sizes.sm
   },
   textWrapper: {
     flex: 1
@@ -167,8 +165,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    marginTop: 3
+    fontWeight: PV.Fonts.weights.bold
   },
   wrapper: {
     paddingBottom: 14,

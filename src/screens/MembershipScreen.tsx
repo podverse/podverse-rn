@@ -141,7 +141,7 @@ export class MembershipScreen extends React.Component<Props, State> {
             <View style={styles.textRow}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                style={styles.label}>Expires:
+                style={styles.label}>{`Expires: `}
               </Text>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}

@@ -154,7 +154,8 @@ const styles = {
   tableSectionHeaderTextLeft: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold
+    fontWeight: PV.Fonts.weights.bold,
+    paddingLeft: 8
   },
   tableSectionHeaderTextRight: {
     flex: 0,

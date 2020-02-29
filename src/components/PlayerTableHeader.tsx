@@ -26,7 +26,7 @@ export const PlayerTableHeader = (props: Props) => {
           </View>
         )}
         {!isLoading && !!nowPlayingItem && (
-          <View style={[core.row, { alignItems: 'center' }]}>
+          <View style={core.row}>
             <FastImage
               key={nowPlayingItem.podcastImageUrl}
               source={nowPlayingItem.podcastImageUrl}

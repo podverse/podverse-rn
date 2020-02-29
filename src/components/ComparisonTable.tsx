@@ -42,34 +42,36 @@ export const ComparisonTable = (props: any) => {
         data={data}
         keyExtractor={(item, index) => item.text + index}
         renderItem={({ item }) => (
-          <View key={item.text} style={styles.tableRow}>
-            <View style={styles.columnTextWrapper}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
-                style={styles.columnText}>
-                {item.text}
-              </Text>
-            </View>
-            <View style={styles.columnIcon}>
-              {item.column1 && (
-                <Icon
-                  name={item.isSmile ? 'smile' : 'check'}
-                  size={26}
-                  style={styles.icon}
-                />
-              )}
-            </View>
-            <View style={styles.columnIcon}>
-              {item.column2 && (
-                <Icon
-                  name={item.isSmile ? 'smile' : 'check'}
-                  size={26}
-                  style={styles.icon}
-                />
-              )}
+          <>
+            <View key={item.text} style={styles.tableRow}>
+              <View style={styles.columnTextWrapper}>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+                  style={styles.columnText}>
+                  {item.text}
+                </Text>
+              </View>
+              <View style={styles.columnIcon}>
+                {item.column1 && (
+                  <Icon
+                    name={item.isSmile ? 'smile' : 'check'}
+                    size={26}
+                    style={styles.icon}
+                  />
+                )}
+              </View>
+              <View style={styles.columnIcon}>
+                {item.column2 && (
+                  <Icon
+                    name={item.isSmile ? 'smile' : 'check'}
+                    size={26}
+                    style={styles.icon}
+                  />
+                )}
+              </View>
             </View>
             <Divider />
-          </View>
+          </>
         )}
       />
     </View>
@@ -85,7 +87,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   columnText: {
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.xl,
     marginLeft: 8
   },
   columnTextWrapper: {
@@ -116,8 +118,8 @@ const styles = StyleSheet.create({
   tableRow: {
     flexDirection: 'row',
     minHeight: 60,
-    paddingVertical: 8,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingVertical: 4
   },
   wrapper: {
     flex: 1

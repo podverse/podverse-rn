@@ -149,16 +149,16 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
     justifyContent: 'flex-end',
-    marginTop: 8
+    marginTop: 6
   },
   episodePubDate: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
-    marginTop: 7
+    marginTop: 2
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.xl,
-    marginTop: 3
+    marginTop: 1
   },
   image: {
     flex: 0,
@@ -178,8 +178,7 @@ const styles = StyleSheet.create({
   podcastTitle: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    justifyContent: 'flex-start',
-    marginTop: 1
+    justifyContent: 'flex-start'
   },
   textWrapper: {
     flex: 1,

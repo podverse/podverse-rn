@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View
@@ -11,7 +10,7 @@ import { PV } from '../resources'
 import { PVTrackPlayer } from '../services/player'
 import { togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
-import { FastImage } from './'
+import { FastImage, Text } from './'
 
 type Props = {
   navigation: any
@@ -26,13 +25,6 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
     const { nowPlayingItem, playbackState } = player
     const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
-
-    const podcastTitleStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.podcastTitle, { fontSize: PV.Fonts.largeSizes.xl }] :
-      [styles.podcastTitle]
-    const episodeTitleStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.episodeTitle, { fontSize: PV.Fonts.largeSizes.xl }] :
-      [styles.episodeTitle]
 
     return (
       <View>
@@ -55,14 +47,16 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
                 {
                   ![PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) &&
                     <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.xl}
                       numberOfLines={1}
-                      style={[podcastTitleStyle, globalTheme.playerText]}>
+                      style={[styles.podcastTitle, globalTheme.playerText]}>
                       {nowPlayingItem.podcastTitle}
                     </Text>
                 }
                 <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.xl}
                   numberOfLines={1}
-                  style={[episodeTitleStyle, globalTheme.playerText]}>
+                  style={[styles.episodeTitle, globalTheme.playerText]}>
                   {nowPlayingItem.episodeTitle}
                 </Text>
               </View>
@@ -117,7 +111,6 @@ const styles = StyleSheet.create({
     width: 60
   },
   player: {
-    alignItems: 'center',
     borderBottomWidth: 0,
     borderTopWidth: 1,
     flexDirection: 'row',
@@ -131,7 +124,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-around',
     marginLeft: 10,
-    marginRight: 2,
-    paddingVertical: 3
+    marginRight: 2
   }
 })

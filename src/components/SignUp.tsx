@@ -235,11 +235,11 @@ const deviceWidth = Dimensions.get('window').width
 const styles = StyleSheet.create({
   forceScrollableAreaTextInput: {
     backgroundColor: 'transparent',
-    height: 196,
+    height: 120,
     zIndex: 1000000
   },
   forceScrollableAreaView: {
-    marginTop: -196
+    marginTop: -120
   },
   passwordValidationInfo: {
     flex: 1,

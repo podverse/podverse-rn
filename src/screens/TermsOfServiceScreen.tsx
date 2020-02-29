@@ -32,7 +32,6 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={styles.text}>
-            {'\n\n'}
             Podverse will never sell or share private user data.
             {'\n\n'}
             We will never put advertisements next to or within a podcast's

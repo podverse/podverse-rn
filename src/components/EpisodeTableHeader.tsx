@@ -113,9 +113,8 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     flex: 1,
-    paddingBottom: 6,
     paddingRight: 8,
-    paddingTop: 8
+    paddingTop: 4
   },
   textWrapperBottomRow: {
     flexDirection: 'row',

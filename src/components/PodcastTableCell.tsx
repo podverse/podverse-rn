@@ -70,28 +70,6 @@ export class PodcastTableCell extends React.PureComponent<Props> {
               fontScaleMode !== PV.Fonts.fontScale.largest &&
                 <>
                   <RNView style={styles.textWrapperRow}>
-                    <RNView style={styles.textWrapperRowLeft}>
-                      {!!podcastCategories && (
-                        <Text
-                          isSecondary={true}
-                          numberOfLines={1}
-                          style={styles.bottomText}>
-                          {podcastCategories}
-                        </Text>
-                      )}
-                    </RNView>
-                  </RNView>
-                  <RNView style={styles.textWrapperRow}>
-                    {!!podcastAuthors && (
-                      <RNView style={styles.textWrapperRowLeft}>
-                        <Text
-                          isSecondary={true}
-                          numberOfLines={1}
-                          style={styles.bottomText}>
-                          {podcastAuthors}
-                        </Text>
-                      </RNView>
-                    )}
                     {showDownloadCount && (
                       <RNView style={styles.textWrapperRowLeft}>
                         <Text
@@ -152,7 +130,7 @@ const styles = StyleSheet.create({
   },
   textWrapperRowRight: {
     alignItems: 'flex-end',
-    flex: 0,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginLeft: 4
@@ -168,7 +146,7 @@ const styles = StyleSheet.create({
   },
   titleWrapper: {
     justifyContent: 'center',
-    flex: 1
+    flex: 0
   },
   wrapper: {
     flexDirection: 'row'

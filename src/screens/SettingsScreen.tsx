@@ -191,7 +191,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       showSetAllDownloadDialog,
       showSetAllDownloadDialogIsCount
     } = this.state
-    const { fontScaleMode, globalTheme } = this.global
+    const { globalTheme } = this.global
     const isDarkMode = globalTheme === darkTheme
 
     return (
@@ -276,13 +276,12 @@ export class SettingsScreen extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   pickerSelect: {
+    flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    minHeight: 48,
-    paddingBottom: 8
+    fontWeight: PV.Fonts.weights.bold
   },
   pickerSelectIcon: {
-    paddingBottom: 8,
+    flex: 0,
     paddingHorizontal: 4
   },
   wrapper: {

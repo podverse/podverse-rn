@@ -17,7 +17,9 @@ export class ProfileTableCell extends React.PureComponent<Props> {
       <View
         hasZebraStripe={hasZebraStripe}
         style={styles.wrapper}>
-        <Text onPress={onPress} style={styles.name}>
+        <Text
+          onPress={onPress}
+          style={styles.name}>
           {name || 'anonymous'}
         </Text>
       </View>
@@ -29,12 +31,12 @@ const styles = StyleSheet.create({
   name: {
     flex: 1,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    minHeight: PV.Table.cells.standard.height
+    fontWeight: PV.Fonts.weights.bold
   },
   wrapper: {
     alignItems: 'center',
     flexDirection: 'row',
+    minHeight: PV.Table.cells.standard.height,
     paddingLeft: 8,
     paddingRight: 8
   }

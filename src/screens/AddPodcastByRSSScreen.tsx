@@ -6,6 +6,7 @@ import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getAddByRSSPodcast } from '../services/parser'
 import { addAddByRSSPodcast } from '../state/actions/parser'
+import { core } from '../styles'
 
 type Props = {
   navigation: any
@@ -101,7 +102,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={styles.textInputLabel}>
+                style={core.textInputLabel}>
                 RSS Feed
               </Text>
               <TextInput

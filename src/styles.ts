@@ -537,6 +537,7 @@ export const core = StyleSheet.create({
     textAlign: 'center'
   },
   selectorWrapperRight: {
+    alignItems: 'center',
     flexBasis: 'auto',
     justifyContent: 'flex-start',
     marginHorizontal: 12
@@ -549,7 +550,8 @@ export const core = StyleSheet.create({
   },
   textInputLabel: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold
+    fontWeight: PV.Fonts.weights.bold,
+    marginBottom: 4
   },
   textInputSubTitle: {
     fontSize: PV.Fonts.sizes.md,
@@ -585,6 +587,7 @@ export const navHeader = StyleSheet.create({
   },
   buttonText: {
     color: PV.Colors.white,
+    fontSize: PV.Fonts.sizes.md,
     textAlign: 'right'
   },
   buttonWrapper: {
@@ -656,7 +659,6 @@ export const table = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
-    height: PV.Table.cells.standard.height,
     paddingLeft: 8
   },
   cellWrapper: {
