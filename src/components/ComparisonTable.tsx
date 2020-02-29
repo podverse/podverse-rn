@@ -12,6 +12,7 @@ export const ComparisonTable = (props: any) => {
     <View style={styles.wrapper}>
       <View style={[styles.tableHeaderRow, globalTheme.tableSectionHeader]}>
         <Text
+          numberOfLines={1}
           style={[
             styles.tableHeaderTextLeft,
             globalTheme.tableSectionHeaderText
@@ -19,6 +20,7 @@ export const ComparisonTable = (props: any) => {
           {mainTitle}
         </Text>
         <Text
+          numberOfLines={1}
           style={[
             styles.tableHeaderTextRight,
             globalTheme.tableSectionHeaderText
@@ -26,6 +28,7 @@ export const ComparisonTable = (props: any) => {
           {column1Title}
         </Text>
         <Text
+          numberOfLines={1}
           style={[
             styles.tableHeaderTextRight,
             globalTheme.tableSectionHeaderText
@@ -87,27 +90,26 @@ const styles = StyleSheet.create({
     paddingVertical: 12
   },
   tableHeaderRow: {
+    alignItems: 'center',
     flex: 0,
     flexDirection: 'row',
-    height: 40
+    minHeight: 40
   },
   tableHeaderTextLeft: {
     flex: 1,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: 40,
     marginHorizontal: 8
   },
   tableHeaderTextRight: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: 40,
     textAlign: 'center',
     width: 90
   },
   tableRow: {
     flexDirection: 'row',
-    height: 60,
+    minHeight: 60,
     justifyContent: 'center'
   },
   wrapper: {

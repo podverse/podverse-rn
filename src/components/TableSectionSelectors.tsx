@@ -126,24 +126,25 @@ const _placeholderDefault = {
 
 const styles = {
   tableSectionHeader: {
-    height: PV.Table.sectionHeader.height,
+    minHeight: PV.Table.sectionHeader.height,
     paddingLeft: 8,
     paddingRight: 8
   },
   tableSectionHeaderButton: {
-    flexDirection: 'row'
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    minHeight: PV.Table.sectionHeader.height
   },
   tableSectionHeaderIconLeft: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    lineHeight: PV.Table.sectionHeader.height,
     paddingRight: 8
   },
   tableSectionHeaderIconRight: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    lineHeight: PV.Table.sectionHeader.height,
     paddingLeft: 8
   },
   tableSectionHeaderInner: {
@@ -155,13 +156,11 @@ const styles = {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    lineHeight: PV.Table.sectionHeader.height,
     paddingRight: 8
   },
   tableSectionHeaderTextRight: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    lineHeight: PV.Table.sectionHeader.height,
     paddingLeft: 8
   }
 }

@@ -395,7 +395,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               </Text>
               {!isLoggedIn && (
                 <TouchableWithoutFeedback onPress={this._showClipPrivacyNote}>
-                  <View style={styles.selectorWrapper}>
+                  <View style={core.selectorWrapper}>
                     <Text style={[styles.isPublicText, globalTheme.text]}>
                       Only with Link
                     </Text>
@@ -415,7 +415,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   style={hidePickerIconOnAndroidTransparent(isDarkMode)}
                   useNativeAndroidPickerStyle={false}
                   value={isPublicItemSelected.value}>
-                  <View style={styles.selectorWrapper}>
+                  <View style={core.selectorWrapper}>
                     <Text style={[styles.isPublicText, globalTheme.text]}>
                       {isPublicItemSelected.label}
                     </Text>
@@ -690,9 +690,6 @@ const styles = StyleSheet.create({
   },
   progressWrapper: {
     marginVertical: 8
-  },
-  selectorWrapper: {
-    flexDirection: 'row'
   },
   textInput: {
     height: PV.TextInputs.multiline.height,

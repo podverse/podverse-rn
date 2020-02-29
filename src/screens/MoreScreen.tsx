@@ -103,26 +103,23 @@ export class MoreScreen extends React.Component<Props, State> {
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
             <TouchableWithoutFeedback onPress={() => this._onPress(item)}>
-              <RNView style={core.row}>
+              <RNView style={[core.row, table.cellWrapper]}>
                 {item.key === _membershipKey && (
-                  <RNView style={core.row}>
+                  <RNView style={[core.row, table.cellWrapper]}>
                     {isLoggedIn ? (
                       <Text style={[table.cellText, membershipTextStyle]}>
                         {membershipStatus}
                       </Text>
                     ) : (
                       <Text
-                        style={[
-                          table.cellText,
-                          globalTheme.tableCellTextPrimary
-                        ]}>
+                        style={[table.cellText, globalTheme.tableCellTextPrimary]}>
                         Membership
                       </Text>
                     )}
                   </RNView>
                 )}
                 {item.key === PV.RouteNames.DownloadsScreen && (
-                  <RNView style={[core.row, { position: 'relative' }]}>
+                  <RNView style={[core.row, { position: 'relative' }, table.cellWrapper]}>
                     <Text style={table.cellText}>Downloads</Text>
                     {downloadsActiveCount > 0 && (
                       <Badge
@@ -140,10 +137,7 @@ export class MoreScreen extends React.Component<Props, State> {
                 {item.key !== _membershipKey &&
                   item.key !== PV.RouteNames.DownloadsScreen && (
                     <Text
-                      style={[
-                        table.cellText,
-                        globalTheme.tableCellTextPrimary
-                      ]}>
+                      style={[table.cellText, globalTheme.tableCellTextPrimary]}>
                       {item.title}
                     </Text>
                   )}

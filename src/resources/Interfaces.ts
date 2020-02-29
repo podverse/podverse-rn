@@ -64,6 +64,7 @@ export interface UserInfo {
 
 export interface InitialState {
   globalTheme: GlobalTheme
+  fontScale: number
   autoDownloadSettings: any
   downloadsActive: any
   downloadsArray: any[]
@@ -173,4 +174,5 @@ interface IFontWeights {
 export interface IFonts {
   sizes: IFontSizes
   weights: IFontWeights
+  fontScale: any
 }

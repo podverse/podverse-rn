@@ -83,10 +83,8 @@ export class DownloadTableCell extends React.PureComponent<Props> {
 const styles = StyleSheet.create({
   episodeTitle: {
     flex: 1,
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: PV.Fonts.sizes.md,
-    marginTop: 2
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.semibold
   },
   image: {
     flex: 0,
@@ -96,11 +94,11 @@ const styles = StyleSheet.create({
   },
   podcastTitle: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
-    marginTop: 1
+    fontSize: PV.Fonts.sizes.sm
   },
   slider: {
-    height: 4
+    height: 4,
+    marginTop: 4
   },
   textWrapper: {
     flex: 1,
@@ -125,7 +123,6 @@ const styles = StyleSheet.create({
     display: 'none'
   },
   wrapper: {
-    flexDirection: 'row',
-    height: PV.Table.cells.podcast.image.height
+    flexDirection: 'row'
   }
 })

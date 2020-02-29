@@ -21,6 +21,7 @@ import { refreshDownloads } from '../lib/downloader'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import {
+  core,
   darkTheme,
   hidePickerIconOnAndroidTransparent,
   lightTheme
@@ -227,8 +228,8 @@ export class SettingsScreen extends React.Component<Props, State> {
           style={hidePickerIconOnAndroidTransparent(isDarkMode)}
           useNativeAndroidPickerStyle={false}
           value={maximumSpeedOptionSelected.value}>
-          <View style={styles.selectorWrapper}>
-            <View style={styles.selectorWrapperLeft}>
+          <View style={core.selectorWrapper}>
+            <View style={core.selectorWrapperLeft}>
               <Text style={[styles.pickerSelect, globalTheme.text]}>
                 {maximumSpeedOptionSelected.label}
               </Text>
@@ -238,9 +239,9 @@ export class SettingsScreen extends React.Component<Props, State> {
                 style={[styles.pickerSelectIcon, globalTheme.text]}
               />
             </View>
-            <View style={styles.selectorWrapperRight}>
+            <View style={core.selectorWrapperRight}>
               <Text style={[styles.pickerSelect, globalTheme.text]}>
-                Maximum playback speed
+                Max playback speed
               </Text>
             </View>
           </View>
@@ -282,21 +283,6 @@ const styles = StyleSheet.create({
     lineHeight: 40,
     paddingBottom: 8,
     paddingHorizontal: 4
-  },
-  selectorWrapper: {
-    flexDirection: 'row'
-  },
-  selectorWrapperLeft: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    textAlign: 'center',
-    width: 51
-  },
-  selectorWrapperRight: {
-    flexBasis: 'auto',
-    justifyContent: 'flex-start',
-    marginHorizontal: 12
   },
   wrapper: {
     flex: 1,

@@ -112,7 +112,6 @@ const styles = StyleSheet.create({
   },
   createdBy: {
     fontSize: PV.Fonts.sizes.sm,
-    lineHeight: PV.Fonts.sizes.sm + 2,
     marginTop: 3
   },
   itemCount: {
@@ -139,12 +138,10 @@ const styles = StyleSheet.create({
   title: {
     flex: 0,
     fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: PV.Fonts.sizes.lg + 2
+    fontWeight: PV.Fonts.weights.semibold
   },
   wrapper: {
     flexDirection: 'row',
-    height: 80,
     padding: 8
   }
 })

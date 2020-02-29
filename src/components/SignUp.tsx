@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  View
 } from 'react-native'
 import isEmail from 'validator/lib/isEmail'
 import { hasAtLeastXCharacters as hasAtLeastXCharactersLib, hasLowercase as hasLowercaseLib,
@@ -148,7 +149,9 @@ export class SignUp extends React.Component<Props, State> {
     }
 
     return (
-      <ScrollView contentContainerStyle={styles.scrollView}>
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        showsVerticalScrollIndicator={true}>
         <TextInput
           autoCapitalize='none'
           autoCompleteType='email'
@@ -191,27 +194,32 @@ export class SignUp extends React.Component<Props, State> {
           underlineColorAndroid='transparent'
           value={this.state.passwordVerification}
         />
-        <PasswordValidationInfo
-          hasAtLeastXCharacters={hasAtLeastXCharacters}
-          hasLowercase={hasLowercase}
-          hasNumber={hasNumber}
-          hasUppercase={hasUppercase}
-          style={styles.passwordValidationInfo} />
-        <TouchableOpacity
-          style={[styles.signInButton, checkIfSubmitIsDisabledStyle]}
-          disabled={submitIsDisabled || isLoading}
-          onPress={this.signUp}>
-          {isLoading ? (
-            <ActivityIndicator
-              animating={true}
-              color={PV.Colors.white}
-              size='small' />
-          ) : (
-            <Text style={[styles.signInButtonText, checkIfSubmitIsDisabledTextStyle]}>
-              Sign Up
-            </Text>
-          )}
-        </TouchableOpacity>
+        <TextInput
+          editable={false}
+          style={styles.forceScrollableAreaTextInput} />
+        <View style={styles.forceScrollableAreaView}>
+          <PasswordValidationInfo
+            hasAtLeastXCharacters={hasAtLeastXCharacters}
+            hasLowercase={hasLowercase}
+            hasNumber={hasNumber}
+            hasUppercase={hasUppercase}
+            style={styles.passwordValidationInfo} />
+          <TouchableOpacity
+            style={[styles.signInButton, checkIfSubmitIsDisabledStyle]}
+            disabled={submitIsDisabled || isLoading}
+            onPress={this.signUp}>
+            {isLoading ? (
+              <ActivityIndicator
+                animating={true}
+                color={PV.Colors.white}
+                size='small' />
+            ) : (
+              <Text style={[styles.signInButtonText, checkIfSubmitIsDisabledTextStyle]}>
+                Sign Up
+              </Text>
+            )}
+          </TouchableOpacity>
+        </View>
         {bottomButtons}
       </ScrollView>
     )
@@ -221,14 +229,21 @@ export class SignUp extends React.Component<Props, State> {
 const deviceWidth = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
+  forceScrollableAreaTextInput: {
+    height: 196,
+    zIndex: 1000000
+  },
+  forceScrollableAreaView: {
+    marginTop: -196
+  },
   passwordValidationInfo: {
+    flex: 1,
     marginBottom: 30,
     marginHorizontal: 48,
     paddingHorizontal: 8
   },
   scrollView: {
     flexGrow: 1,
-    flexShrink: 0,
     width: deviceWidth
   },
   signInButton: {
@@ -237,6 +252,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginHorizontal: 56,
     marginTop: 6,
+    marginBottom: 200,
     padding: 16
   },
   signInButtonText: {

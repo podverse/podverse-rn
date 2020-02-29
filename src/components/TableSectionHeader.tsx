@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Icon, Text } from './'
@@ -33,21 +33,20 @@ export const TableSectionHeader = (props: Props) => {
   )
 }
 
-const styles = {
+const styles = StyleSheet.create({
   header: {
+    alignItems: 'center',
     flexDirection: 'row',
-    height: PV.Table.sectionHeader.height,
+    minHeight: PV.Table.sectionHeader.height,
     paddingHorizontal: 8
   },
   icon: {
     flex: 0,
-    lineHeight: 40,
     paddingHorizontal: 8
   },
   text: {
     flex: 1,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    lineHeight: PV.Table.sectionHeader.height
+    fontWeight: PV.Fonts.weights.bold
   }
-}
+})

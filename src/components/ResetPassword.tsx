@@ -53,6 +53,7 @@ export class ResetPassword extends React.Component<Props, State> {
 
     return (
       <View style={[styles.view, style]}>
+        <Text numberOfLines={1} style={styles.headerLabel}>Reset Password</Text>
         <TextInput
           autoCapitalize='none'
           autoCompleteType='email'
@@ -84,9 +85,16 @@ export class ResetPassword extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
+  headerLabel: {
+    color: PV.Colors.white,
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    marginBottom: 20
+  },
   signInButton: {
     alignItems: 'center',
     backgroundColor: PV.Colors.white,
+    marginBottom: 300,
     padding: 16,
     width: '65%'
   },

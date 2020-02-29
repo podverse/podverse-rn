@@ -27,5 +27,19 @@ export const Fonts: IFonts = {
     semibold: '500',
     bold: '600',
     extraBold: '700'
+  },
+  fontScale: {
+    larger: 'larger',
+    largest: 'largest'
+  }
+}
+
+export const determineFontScaleMode = (fontScale: number) => {
+  if (fontScale > 1 && fontScale < 2) {
+    return Fonts.fontScale.larger
+  } else if (fontScale >= 2) {
+    return Fonts.fontScale.largest
+  } else {
+    return null
   }
 }

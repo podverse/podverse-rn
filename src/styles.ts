@@ -501,17 +501,33 @@ export const core = StyleSheet.create({
     borderWidth: 1
   },
   selectorIcon: {
-    height: 44,
-    lineHeight: 44,
+    flex: 0,
     paddingLeft: 4,
     paddingRight: 12
   },
   selectorText: {
+    flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    height: 44,
-    lineHeight: 44,
     justifyContent: 'center',
     paddingHorizontal: 8
+  },
+  selectorWrapper: {
+    alignItems: 'center',
+    flex: 0,
+    flexDirection: 'row',
+    minHeight: 44
+  },
+  selectorWrapperLeft: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    minWidth: 51,
+    textAlign: 'center'
+  },
+  selectorWrapperRight: {
+    flexBasis: 'auto',
+    justifyContent: 'flex-start',
+    marginHorizontal: 12
   },
   textInput: {
     fontSize: PV.Fonts.sizes.xl,
@@ -558,15 +574,11 @@ export const navHeader = StyleSheet.create({
   },
   buttonText: {
     color: PV.Colors.white,
-    flex: 0,
-    fontSize: PV.Fonts.sizes.xl,
-    marginRight: 4
+    textAlign: 'right'
   },
   buttonWrapper: {
     alignSelf: 'center',
-    height: 44,
     justifyContent: 'center',
-    lineHeight: 44,
     paddingHorizontal: 12
   }
 })
@@ -634,9 +646,12 @@ export const table = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
-    height: PV.Table.cells.standard.height,
-    lineHeight: PV.Table.cells.standard.height,
     paddingLeft: 8
+  },
+  cellWrapper: {
+    alignItems: 'center',
+    height: PV.Table.cells.standard.height,
+    lineHeight: PV.Table.cells.standard.height
   }
 })
 

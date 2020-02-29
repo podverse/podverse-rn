@@ -22,8 +22,8 @@ export const HeaderTitleSelector = (props: Props) => {
         {selectedItem.label || (placeholder && placeholder.label)}
       </Text>
       <Icon
-        color="#fff"
-        name="angle-down"
+        color='#fff'
+        name='angle-down'
         size={16}
         style={styles.closeButton}
       />
@@ -57,12 +57,11 @@ const styles = StyleSheet.create({
   },
   text: {
     color: PV.Colors.white,
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: 'bold',
-    height: 44,
-    lineHeight: 44
+    fontWeight: 'bold'
   },
   wrapper: {
-    flexDirection: 'row'
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: 44
   }
 })

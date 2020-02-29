@@ -145,8 +145,8 @@ export class EditProfileScreen extends React.Component<Props, State> {
               onValueChange={this._onChangeIsPublic}
               placeholder={selectPlaceholder}
               value={selectedIsPublicKey}>
-              <View style={styles.selectorWrapper}>
-                <Text style={[core.selectorText, globalTheme.textInput]}>
+              <View style={[core.selectorWrapper, globalTheme.textInput]}>
+                <Text style={core.selectorText}>
                   {selectedIsPublicOption.label}
                 </Text>
                 <Icon
@@ -199,9 +199,6 @@ const isPublicOptions = [
 ]
 
 const styles = StyleSheet.create({
-  selectorWrapper: {
-    flexDirection: 'row'
-  },
   textInput: {
     fontSize: PV.Fonts.sizes.xl,
     marginBottom: 16

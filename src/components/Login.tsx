@@ -113,11 +113,6 @@ export class Login extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
-  view: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   textField: {
     width: '80%',
     height: 50,
@@ -128,14 +123,20 @@ const styles = StyleSheet.create({
     paddingLeft: 20
   },
   signInButton: {
-    padding: 16,
-    width: '65%',
     alignItems: 'center',
-    backgroundColor: PV.Colors.white
+    backgroundColor: PV.Colors.white,
+    marginBottom: 300,
+    padding: 16,
+    width: '65%'
   },
   signInButtonText: {
     fontSize: PV.Fonts.sizes.md,
     color: PV.Colors.brandColor,
     fontWeight: 'bold'
+  },
+  view: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })

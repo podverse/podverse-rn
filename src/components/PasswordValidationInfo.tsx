@@ -99,12 +99,14 @@ const styles = StyleSheet.create({
   },
   label: {
     color: PV.Colors.white,
+    flex: 0,
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.bold,
     lineHeight: 26
   },
   textRow: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    flex: 0
   },
   validText: {
     color: PV.Colors.greenLighter,
@@ -112,6 +114,6 @@ const styles = StyleSheet.create({
     lineHeight: 26
   },
   wrapper: {
-    flex: 0
+    flex: 1
   }
 })
