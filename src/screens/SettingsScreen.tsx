@@ -191,8 +191,12 @@ export class SettingsScreen extends React.Component<Props, State> {
       showSetAllDownloadDialog,
       showSetAllDownloadDialogIsCount
     } = this.state
-    const { globalTheme } = this.global
+    const { fontScaleMode, globalTheme } = this.global
     const isDarkMode = globalTheme === darkTheme
+
+    const pickerSelectStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.pickerSelect, { fontSize: 10 }] :
+      [styles.pickerSelect]
 
     return (
       <View style={styles.wrapper}>
@@ -230,7 +234,7 @@ export class SettingsScreen extends React.Component<Props, State> {
           value={maximumSpeedOptionSelected.value}>
           <View style={core.selectorWrapper}>
             <View style={core.selectorWrapperLeft}>
-              <Text style={[styles.pickerSelect, globalTheme.text]}>
+              <Text style={[pickerSelectStyle, globalTheme.text]}>
                 {maximumSpeedOptionSelected.label}
               </Text>
               <Icon
@@ -240,7 +244,7 @@ export class SettingsScreen extends React.Component<Props, State> {
               />
             </View>
             <View style={core.selectorWrapperRight}>
-              <Text style={[styles.pickerSelect, globalTheme.text]}>
+              <Text style={[pickerSelectStyle, globalTheme.text]}>
                 Max playback speed
               </Text>
             </View>
@@ -274,13 +278,10 @@ const styles = StyleSheet.create({
   pickerSelect: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    height: 48,
-    lineHeight: 40,
+    minHeight: 48,
     paddingBottom: 8
   },
   pickerSelectIcon: {
-    height: 48,
-    lineHeight: 40,
     paddingBottom: 8,
     paddingHorizontal: 4
   },
