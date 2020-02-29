@@ -149,12 +149,6 @@ export class SignUp extends React.Component<Props, State> {
       borderWidth: 2
     }
 
-    const forceScrollableAreaTextInputStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.forceScrollableAreaTextInput, { height: 350 }] :
-      [styles.forceScrollableAreaTextInput]
-    const forceScrollableAreaViewStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.forceScrollableAreaView, { marginTop: -350 }] :
-      [styles.forceScrollableAreaView]
     const signInButtonTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
       [styles.signInButtonText, { fontSize: 10 }] :
       [styles.signInButtonText]
@@ -207,8 +201,8 @@ export class SignUp extends React.Component<Props, State> {
         />
         <TextInput
           editable={false}
-          style={forceScrollableAreaTextInputStyle} />
-        <View style={forceScrollableAreaViewStyle}>
+          style={styles.forceScrollableAreaTextInput} />
+        <View style={styles.forceScrollableAreaView}>
           <PasswordValidationInfo
             hasAtLeastXCharacters={hasAtLeastXCharacters}
             hasLowercase={hasLowercase}
