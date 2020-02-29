@@ -401,10 +401,14 @@ export class EpisodeScreen extends React.Component<Props, State> {
             showNoInternetConnectionMessage={showNoInternetConnectionMessage} />
         )}
         {viewType === _showNotesKey && episode && (
-          <HTMLScrollView html={episode.description || ''} />
+          <HTMLScrollView
+            fontSizeScaleLargest={PV.Fonts.largeSizes.md}
+            html={episode.description || ''} />
         )}
         {viewType === _titleKey && episode && (
-          <HTMLScrollView html={formatTitleViewHtml(episode)} />
+          <HTMLScrollView
+            fontSizeScaleLargest={PV.Fonts.largeSizes.md}
+            html={formatTitleViewHtml(episode)} />
         )}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}

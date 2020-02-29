@@ -18,28 +18,20 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
     const { hasAtLeastXCharacters, hasLowercase, hasNumber, hasUppercase, style } = this.props
     const { fontScaleMode } = this.global
 
-    const labelStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.label, { fontSize: 9 }] :
-      [styles.label]
-    const validTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.validText, { fontSize: 9 }] :
-      [styles.validText]
-    const invalidTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.invalidText, { fontSize: 9 }] :
-      [styles.invalidText]
-
     return (
       <View style={[styles.wrapper, style]}>
         <View style={styles.textRow}>
           <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
-            style={labelStyle}>Password requirements:
+            style={styles.label}>Password requirements:
           </Text>
         </View>
         <View style={styles.textRow}>
           <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
-            style={hasUppercase ? validTextStyle : invalidTextStyle}>- has uppercase
+            style={hasUppercase ? styles.validText : styles.invalidText}>- has uppercase
           </Text>
           {
             hasUppercase &&
@@ -53,7 +45,7 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
         <View style={styles.textRow}>
           <Text
             numberOfLines={1}
-            style={hasLowercase ? validTextStyle : invalidTextStyle}>- has lowercase
+            style={hasLowercase ? styles.validText : styles.invalidText}>- has lowercase
           </Text>
           {
             hasLowercase &&
@@ -67,21 +59,21 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
         <View style={styles.textRow}>
           <Text
             numberOfLines={1}
-            style={hasNumber ? validTextStyle : invalidTextStyle}>- has number
+            style={hasNumber ? styles.validText : styles.invalidText}>- has number
           </Text>
           {
             hasNumber &&
-            <Icon
-              name='check'
-              size={18}
-              style={styles.icon}
-            />
+              <Icon
+                name='check'
+                size={18}
+                style={styles.icon}
+              />
           }
         </View>
         <View style={styles.textRow}>
           <Text
             numberOfLines={1}
-            style={hasAtLeastXCharacters ? validTextStyle : invalidTextStyle}>- is at least 8 characters
+            style={hasAtLeastXCharacters ? styles.validText : styles.invalidText}>- is at least 8 characters
           </Text>
           {
             hasAtLeastXCharacters &&

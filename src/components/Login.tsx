@@ -65,7 +65,7 @@ export class Login extends React.Component<Props, State> {
     const disabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
 
     const signInButtonTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.signInButtonText, disabledTextStyle, { fontSize: 10 }] :
+      [styles.signInButtonText, disabledTextStyle, { fontSize: PV.Fonts.largeSizes.md }] :
       [styles.signInButtonText, disabledTextStyle]
 
     return (

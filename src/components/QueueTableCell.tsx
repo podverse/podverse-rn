@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, View as RNView } from 'react-native'
+import { getGlobal } from 'reactn'
 import { FastImage, Icon, Text, View } from '.'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -22,6 +23,7 @@ type Props = {
 
 export class QueueTableCell extends React.PureComponent<Props> {
   render() {
+    const { fontScaleMode } = getGlobal()
     const {
       clipEndTime,
       clipStartTime,
@@ -50,16 +52,21 @@ export class QueueTableCell extends React.PureComponent<Props> {
           />
           <RNView style={styles.textWrapper}>
             <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               isSecondary={true}
               numberOfLines={1}
               style={styles.podcastTitle}>
               {podcastTitle || 'untitled podcast'}
             </Text>
-            <Text numberOfLines={1} style={styles.episodeTitle}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              numberOfLines={1}
+              style={styles.episodeTitle}>
               {episodeTitle || 'untitled episode'}
             </Text>
             {!!episodePubDate && (
               <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 isSecondary={true}
                 numberOfLines={1}
                 style={styles.episodePubDate}>
@@ -85,11 +92,16 @@ export class QueueTableCell extends React.PureComponent<Props> {
         </RNView>
         {!hideBottomRow && (
           <RNView style={styles.wrapperBottom}>
-            <Text numberOfLines={1} style={styles.clipTitle}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+              numberOfLines={1}
+              style={styles.clipTitle}>
               {clipStartTime ? (clipTitle || 'untitled clip') : 'Full Episode'}
             </Text>
             {!!clipStartTime && (
-              <Text style={styles.clipTime}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                style={styles.clipTime}>
                 {readableClipTime(clipStartTime, clipEndTime)}
               </Text>
             )}
@@ -118,8 +130,7 @@ const styles = StyleSheet.create({
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    marginTop: 2
+    fontWeight: PV.Fonts.weights.bold
   },
   image: {
     flex: 0,
@@ -131,7 +142,6 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-start',
-    lineHeight: PV.Fonts.sizes.md,
     marginTop: 1
   },
   textWrapper: {

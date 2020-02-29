@@ -53,10 +53,10 @@ export class ResetPassword extends React.Component<Props, State> {
     const { fontScaleMode } = this.global
 
     const headerLabelStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.headerLabel, { fontSize: 10 }] :
+      [styles.headerLabel, { fontSize: PV.Fonts.largeSizes.md }] :
       [styles.headerLabel]
     const signInButtonTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.signInButtonText, disabledTextStyle, { fontSize: 10 }] :
+      [styles.signInButtonText, disabledTextStyle, { fontSize: PV.Fonts.largeSizes.md }] :
       [styles.signInButtonText, disabledTextStyle]
 
     return (
@@ -86,7 +86,7 @@ export class ResetPassword extends React.Component<Props, State> {
               color={PV.Colors.gray}
               size='small' />
           ) : (
-            <Text style={signInButtonTextStyle}>
+            <Text style={[signInButtonTextStyle, disabledTextStyle]}>
               Send Reset
             </Text>
           )}

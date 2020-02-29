@@ -19,7 +19,26 @@ const sizes = Platform.OS === 'android' ?
   xl: 19
 })
 
+const largeSizes = Platform.OS === 'android' ?
+({
+  tiny: 6,
+  xs: 7,
+  sm: 8,
+  md: 10,
+  lg: 11,
+  xl: 12
+}) :
+({
+  tiny: 7,
+  xs: 8,
+  sm: 9,
+  md: 11,
+  lg: 12,
+  xl: 13
+})
+
 export const Fonts: IFonts = {
+  largeSizes,
   sizes,
   weights: {
     thin: '300',

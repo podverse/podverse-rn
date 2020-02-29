@@ -1,11 +1,14 @@
 import React from 'react'
 import { TextInput } from 'react-native'
-import { useGlobal } from 'reactn'
+import { getGlobal } from 'reactn'
+import { PV } from '../resources'
 import { core } from '../styles'
 
 type Props = {
   autoCapitalize?: any
   autoCompleteType?: any
+  fontSizeLargerScale?: number
+  fontSizeLargestScale?: number
   keyboardType?: any
   numberOfLines?: number
   onChangeText: any
@@ -21,6 +24,8 @@ export const PVTextInput = (props: Props) => {
   const {
     autoCapitalize,
     autoCompleteType,
+    fontSizeLargerScale,
+    fontSizeLargestScale,
     keyboardType,
     numberOfLines = 0,
     onChangeText,
@@ -31,7 +36,17 @@ export const PVTextInput = (props: Props) => {
     underlineColorAndroid,
     value
   } = props
-  const [globalTheme] = useGlobal('globalTheme')
+  const { fontScaleMode, globalTheme } = getGlobal()
+
+  const textInputStyle = []
+  if (fontScaleMode === PV.Fonts.fontScale.larger) {
+    textInputStyle.push({ fontSize: fontSizeLargerScale })
+  } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
+    textInputStyle.push({ fontSize: fontSizeLargestScale })
+  }
+
+  console.log('wtf', textInputStyle)
+
   return (
     <TextInput
       autoCapitalize={autoCapitalize}
@@ -45,7 +60,7 @@ export const PVTextInput = (props: Props) => {
       placeholderTextColor={globalTheme.placeholderText.color}
       returnKeyType={returnKeyType}
       secureTextEntry={secureTextEntry}
-      style={[globalTheme.textInput, core.textInput, style]}
+      style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
       underlineColorAndroid={underlineColorAndroid}
       value={value}
     />

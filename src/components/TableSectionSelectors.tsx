@@ -1,7 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
-import { getGlobal, useGlobal } from 'reactn'
+import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { darkTheme, hidePickerIconOnAndroidSectionSelector } from '../styles'
 import { Icon, Text } from './'
@@ -56,11 +56,9 @@ export const TableSectionSelectors = (props: Props) => {
               value={selectedLeftItemKey}>
               <View style={styles.tableSectionHeaderButton}>
                 <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
-                  style={[
-                    styles.tableSectionHeaderTextLeft,
-                    globalTheme.tableSectionHeaderText
-                  ]}>
+                  style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
                   {selectedLeftItem.label ||
                     (placeholderLeft && placeholderLeft.label) ||
                     _placeholderDefault.label}
@@ -85,11 +83,9 @@ export const TableSectionSelectors = (props: Props) => {
                 value={selectedRightItemKey}>
                 <View style={styles.tableSectionHeaderButton}>
                   <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     numberOfLines={1}
-                    style={[
-                      styles.tableSectionHeaderTextRight,
-                      globalTheme.tableSectionHeaderText
-                    ]}>
+                    style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
                     {selectedRightItem.label ||
                       (placeholderRight && placeholderRight.label) ||
                       _placeholderDefault.label}
@@ -97,10 +93,7 @@ export const TableSectionSelectors = (props: Props) => {
                   <Icon
                     name='angle-down'
                     size={14}
-                    style={[
-                      styles.tableSectionHeaderIconRight,
-                      globalTheme.tableSectionHeaderIcon
-                    ]}
+                    style={[styles.tableSectionHeaderIconRight, globalTheme.tableSectionHeaderIcon]}
                   />
                 </View>
               </RNPickerSelect>
@@ -108,6 +101,7 @@ export const TableSectionSelectors = (props: Props) => {
             {rightItems.length === 1 && (
               <View style={styles.tableSectionHeaderButton}>
                 <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
                   style={[
                     styles.tableSectionHeaderTextRight,

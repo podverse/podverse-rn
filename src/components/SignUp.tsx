@@ -150,7 +150,7 @@ export class SignUp extends React.Component<Props, State> {
     }
 
     const signInButtonTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.signInButtonText, { fontSize: 10 }] :
+      [styles.signInButtonText, { fontSize: PV.Fonts.largeSizes.md }] :
       [styles.signInButtonText]
 
     return (

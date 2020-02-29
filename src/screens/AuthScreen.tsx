@@ -171,7 +171,7 @@ export class AuthScreen extends React.Component<Props, State> {
     let bottomButtons
 
     const switchOptionTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.switchOptionText, { fontSize: 10 }] :
+      [styles.switchOptionText, { fontSize: PV.Fonts.largeSizes.sm }] :
       [styles.switchOptionText]
 
     if (screenType === _login) {

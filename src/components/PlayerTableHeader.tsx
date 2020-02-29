@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
   episodeTitle: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    lineHeight: PV.Fonts.sizes.xl,
     marginTop: 5
   },
   image: {
@@ -71,8 +70,7 @@ const styles = StyleSheet.create({
   podcastTitle: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    justifyContent: 'flex-start',
-    lineHeight: PV.Fonts.sizes.md
+    justifyContent: 'flex-start'
   },
   textWrapper: {
     flex: 1,
@@ -80,6 +78,6 @@ const styles = StyleSheet.create({
     marginTop: 6
   },
   wrapper: {
-    height: PV.Table.cells.podcast.wrapper.height
+    minHeight: PV.Table.cells.podcast.wrapper.height
   }
 })

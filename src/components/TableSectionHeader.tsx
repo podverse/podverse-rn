@@ -17,7 +17,9 @@ export const TableSectionHeader = (props: Props) => {
   return (
     <View style={containerStyles}>
       <View style={[styles.header, globalTheme.tableSectionHeader]}>
-        <Text style={[styles.text, globalTheme.tableSectionHeaderText]}>
+        <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          style={[styles.text, globalTheme.tableSectionHeaderText]}>
           {title}
         </Text>
         {handleClosePress && (

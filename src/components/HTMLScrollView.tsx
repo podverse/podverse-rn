@@ -1,17 +1,19 @@
 import { Dimensions, Linking, ScrollView, StyleSheet } from 'react-native'
 import HTML from 'react-native-render-html'
-import React, { useGlobal } from 'reactn'
+import React, { getGlobal } from 'reactn'
 import { convertHHMMSSToAnchorTags, removeHTMLAttributesFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { setPlaybackPosition } from '../services/player'
 
 type Props = {
+  fontSizeScaleLarger?: number
+  fontSizeScaleLargest?: number
   html: string
 }
 
 export const HTMLScrollView = (props: Props) => {
-  const { html } = props
-  const [globalTheme] = useGlobal('globalTheme')
+  const { fontSizeScaleLarger, fontSizeScaleLargest, html } = props
+  const { fontScaleMode, globalTheme } = getGlobal()
   const baseFontStyle = {
     ...globalTheme.text,
     ...styles.baseFontStyle
@@ -20,6 +22,12 @@ export const HTMLScrollView = (props: Props) => {
   let formattedHtml = removeHTMLAttributesFromString(html)
   formattedHtml = convertHHMMSSToAnchorTags(formattedHtml)
   formattedHtml = formattedHtml.linkifyHtml()
+
+  if (fontScaleMode === PV.Fonts.fontScale.larger) {
+    baseFontStyle.fontSize = fontSizeScaleLarger
+  } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
+    baseFontStyle.fontSize = fontSizeScaleLargest
+  }
 
   return (
     <ScrollView style={styles.scrollView}>
@@ -37,7 +45,6 @@ export const HTMLScrollView = (props: Props) => {
             Linking.openURL(href)
           }
         }}
-        ptSize={PV.Fonts.sizes.lg}
         tagsStyles={customHTMLTagStyles}
       />
     </ScrollView>

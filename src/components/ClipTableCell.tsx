@@ -59,6 +59,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
             <RNView style={styles.textWrapper}>
               {!!podcastTitle && (
                 <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
                   isSecondary={true}
                   numberOfLines={1}
                   style={styles.podcastTitle}>
@@ -74,6 +75,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
               )}
               <RNView style={styles.textWrapperBottomRow}>
                 <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
                   isSecondary={true}
                   numberOfLines={1}
                   style={styles.episodePubDate}>
@@ -97,11 +99,13 @@ export class ClipTableCell extends React.PureComponent<Props> {
       <RNView style={styles.wrapperBottom}>
         <RNView style={styles.wrapperBottomTextWrapper}>
           <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={4}
             style={bottomTextStyle}>
             {title}
           </Text>
           <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
             isSecondary={true}
             numberOfLines={1}
             style={styles.clipTime}>
@@ -150,7 +154,6 @@ const styles = StyleSheet.create({
   episodePubDate: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
-    lineHeight: PV.Fonts.sizes.sm,
     marginTop: 7
   },
   episodeTitle: {
@@ -176,7 +179,6 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-start',
-    lineHeight: PV.Fonts.sizes.md,
     marginTop: 1
   },
   textWrapper: {
@@ -190,8 +192,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    lineHeight: PV.Fonts.sizes.xl + 2
+    fontWeight: PV.Fonts.weights.bold
   },
   wrapper: {
     paddingHorizontal: 8,

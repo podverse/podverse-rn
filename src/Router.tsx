@@ -182,7 +182,7 @@ const MoreNavigator = createStackNavigator(
 )
 
 const DownloadsActiveTabBadge = () => {
-  const { downloadsActive } = getGlobal()
+  const { downloadsActive, fontScaleMode } = getGlobal()
   let downloadsActiveCount = 0
   for (const id of Object.keys(downloadsActive)) {
     if (downloadsActive[id]) downloadsActiveCount++
@@ -196,13 +196,14 @@ const DownloadsActiveTabBadge = () => {
         right: -5,
         zIndex: 1000000
       }}>
-      {downloadsActiveCount > 0 && (
-        <Badge
-          badgeStyle={{ borderWidth: 0 }}
-          textStyle={{ fontSize: PV.Fonts.sizes.sm }}
-          status={'error'}
-          value={downloadsActiveCount}
-        />
+      {downloadsActiveCount > 0 &&
+        (fontScaleMode !== PV.Fonts.fontScale.larger && fontScaleMode !== PV.Fonts.fontScale.largest) && (
+          <Badge
+            badgeStyle={{ borderWidth: 0 }}
+            textStyle={{ fontSize: PV.Fonts.sizes.sm }}
+            status={'error'}
+            value={downloadsActiveCount}
+          />
       )}
     </View>
   )

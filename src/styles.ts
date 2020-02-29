@@ -488,7 +488,6 @@ export const core = StyleSheet.create({
   buttonText: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    lineHeight: 56,
     textAlign: 'center'
   },
   closeButton: {
@@ -640,7 +639,6 @@ export const sliderStyles = StyleSheet.create({
   },
   time: {
     fontSize: PV.Fonts.sizes.xs,
-    lineHeight: 14,
     marginHorizontal: 12
   },
   timeRow: {
@@ -725,7 +723,6 @@ export const actionSheetStyles = {
   },
   headerMessage: {
     fontSize: PV.Fonts.sizes.md,
-    lineHeight: PV.Fonts.sizes.md + 2,
     marginTop: 4,
     textAlign: 'center'
   },

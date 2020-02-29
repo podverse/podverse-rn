@@ -2,6 +2,7 @@ import { Animated, Modal, Text, TouchableHighlight, View } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator } from '.'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
+import { PV } from '../resources'
 import { actionSheetStyles } from '../styles'
 
 type Props = {
@@ -36,7 +37,7 @@ export class PVActionSheet extends React.Component<Props, State> {
   generateButtons = (items: any[]) => {
     const { handleCancelPress, message, title } = this.props
     const { isLoadingQueueLast, isLoadingQueueNext } = this.state
-    const { globalTheme } = this.global
+    const { fontScaleMode, globalTheme } = this.global
     const buttons = []
 
     if (items && items.length > 0) {
@@ -62,6 +63,11 @@ export class PVActionSheet extends React.Component<Props, State> {
           buttonTextStyle = globalTheme.actionSheetButtonTextDelete
         } else if (item.key === 'editClip') {
           buttonTextStyle = globalTheme.actionSheetButtonTextEdit
+        }
+
+        if (fontScaleMode === PV.Fonts.fontScale.largest) {
+          buttonTextStyle = [buttonTextStyle]
+          buttonTextStyle.push({ fontSize: PV.Fonts.largeSizes.md })
         }
 
         const isQueueButton = item.key === 'queueNext' || item.key === 'queueLast'
@@ -120,6 +126,11 @@ export class PVActionSheet extends React.Component<Props, State> {
       })
 
       if (handleCancelPress) {
+        const buttonTextCancelStyle = [actionSheetStyles.buttonText, globalTheme.actionSheetButtonTextCancel]
+        if (fontScaleMode === PV.Fonts.fontScale.largest) {
+          buttonTextCancelStyle.push({ fontSize: PV.Fonts.largeSizes.md })
+        }
+
         buttons.push(
           <TouchableHighlight
             key='cancel'
@@ -129,10 +140,7 @@ export class PVActionSheet extends React.Component<Props, State> {
               safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor, '')
             }>
             <Text
-              style={[
-                actionSheetStyles.buttonText,
-                globalTheme.actionSheetButtonTextCancel
-              ]}>
+              style={buttonTextCancelStyle}>
               Cancel
             </Text>
           </TouchableHighlight>

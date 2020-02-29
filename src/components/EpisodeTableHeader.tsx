@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
-import { useGlobal } from 'reactn'
+import { getGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
@@ -30,10 +30,14 @@ export const EpisodeTableHeader = (props: Props) => {
     pubDate = '',
     title
   } = props
-  const [globalTheme] = useGlobal('globalTheme')
 
   const isDownloading = downloadsActive[id]
   const isDownloaded = downloadedEpisodeIds[id]
+
+  const { fontScaleMode } = getGlobal()
+
+  const titleNumberOfLines =
+    [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ? 1 : 2
 
   return (
     <View style={styles.wrapper}>
@@ -44,11 +48,17 @@ export const EpisodeTableHeader = (props: Props) => {
             source={podcastImageUrl}
             styles={styles.image} />
           <View style={styles.textWrapper}>
-            <Text numberOfLines={2} style={styles.title}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              numberOfLines={titleNumberOfLines}
+              style={styles.title}>
               {title}
             </Text>
             <View style={styles.textWrapperBottomRow}>
-              <Text isSecondary={true} style={styles.pubDate}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                isSecondary={true}
+                style={styles.pubDate}>
                 {readableDate(pubDate)}
               </Text>
               {isDownloaded && <IndicatorDownload />}
@@ -64,7 +74,11 @@ export const EpisodeTableHeader = (props: Props) => {
       )}
       {!isLoading && isNotFound && (
         <View style={core.view}>
-          <Text style={styles.notFoundText}>Episode Not Found</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.notFoundText}>
+            Episode Not Found
+          </Text>
         </View>
       )}
     </View>

@@ -163,6 +163,10 @@ export interface IFilters {
   topPastYear: string
 }
 
+interface IFontLargeSizes {
+  [largeSize: string]: number
+}
+
 interface IFontSizes {
   [size: string]: number
 }
@@ -172,6 +176,7 @@ interface IFontWeights {
 }
 
 export interface IFonts {
+  largeSizes: IFontLargeSizes
   sizes: IFontSizes
   weights: IFontWeights
   fontScale: any

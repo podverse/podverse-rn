@@ -115,19 +115,6 @@ export class MembershipScreen extends React.Component<Props, State> {
     )
     const expirationDate = getMembershipExpiration(userInfo)
 
-    const labelStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.label, { fontSize: 10 }] :
-      [styles.label]
-    const subTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.subText, { fontSize: 10 }] :
-      [styles.subText]
-    const subTextCenteredStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.subTextCentered, { fontSize: 10 }] :
-      [styles.subTextCentered]
-    const textStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.text, { fontSize: 10 }] :
-      [styles.text]
-
     return (
       <View style={styles.wrapper}>
         {isLoading && isLoggedIn && <ActivityIndicator />}
@@ -142,20 +129,32 @@ export class MembershipScreen extends React.Component<Props, State> {
         {!isLoading && isLoggedIn && !!membershipStatus && (
           <View>
             <View style={styles.textRow}>
-              <Text style={labelStyle}>Status: </Text>
-              <Text style={[textStyle, membershipTextStyle]}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={styles.label}>Status: </Text>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={[styles.text, membershipTextStyle]}>
                 {membershipStatus}
               </Text>
             </View>
             <View style={styles.textRow}>
-              <Text style={labelStyle}>Expires: </Text>
-              <Text style={textStyle}>{readableDate(expirationDate)}</Text>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={styles.label}>Expires:
+              </Text>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={styles.text}>
+                {readableDate(expirationDate)}
+              </Text>
             </View>
             <View style={styles.textRowCentered}>
               <TextLink
                 disabled={disableButton}
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 onPress={this.handleRenewPress}
-                style={subTextStyle}>
+                style={styles.subText}>
                 Renew Membership
               </TextLink>
             </View>
@@ -164,18 +163,25 @@ export class MembershipScreen extends React.Component<Props, State> {
         {!isLoading && !isLoggedIn && (
           <View>
             <View style={styles.textRowCentered}>
-              <Text style={subTextCenteredStyle}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={styles.subTextCentered}>
                 Get 1 year of Podverse Premium for free
               </Text>
             </View>
             <View style={styles.textRowCentered}>
-              <Text style={subTextCenteredStyle}>$10/year after that</Text>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={styles.subTextCentered}>
+                $10/year after that
+              </Text>
             </View>
             <View style={styles.textRowCentered}>
               <TextLink
                 disabled={disableButton}
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 onPress={this.handleSignUpPress}
-                style={subTextStyle}>
+                style={styles.subText}>
                 Sign Up
               </TextLink>
             </View>

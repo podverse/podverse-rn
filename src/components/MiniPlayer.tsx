@@ -27,6 +27,13 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
     const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
 
+    const podcastTitleStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.podcastTitle, { fontSize: PV.Fonts.largeSizes.xl }] :
+      [styles.podcastTitle]
+    const episodeTitleStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.episodeTitle, { fontSize: PV.Fonts.largeSizes.xl }] :
+      [styles.episodeTitle]
+
     return (
       <View>
         {nowPlayingItem && (
@@ -49,13 +56,13 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
                   ![PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) &&
                     <Text
                       numberOfLines={1}
-                      style={[styles.podcastTitle, globalTheme.playerText]}>
+                      style={[podcastTitleStyle, globalTheme.playerText]}>
                       {nowPlayingItem.podcastTitle}
                     </Text>
                 }
                 <Text
                   numberOfLines={1}
-                  style={[styles.episodeTitle, globalTheme.playerText]}>
+                  style={[episodeTitleStyle, globalTheme.playerText]}>
                   {nowPlayingItem.episodeTitle}
                 </Text>
               </View>

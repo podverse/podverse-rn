@@ -1,45 +1,38 @@
 import { FlatList, StyleSheet } from 'react-native'
-import React, { getGlobal } from 'reactn'
+import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Divider, Icon, Text, View } from './'
 
 export const ComparisonTable = (props: any) => {
   const { column1Title, column2Title, data, mainTitle } = props
-  const { fontScaleMode, globalTheme } = getGlobal()
-
-  const tableHeaderTextLeftStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-    [styles.tableHeaderTextLeft, { fontSize: 7 }] :
-    [styles.tableHeaderTextLeft]
-  const tableHeaderTextRightStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-    [styles.tableHeaderTextRight, { fontSize: 7 }] :
-    [styles.tableHeaderTextRight]
-  const columnTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-    [styles.columnText, { fontSize: 7 }] :
-    [styles.columnText]
+  const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <View style={styles.wrapper}>
       <View style={[styles.tableHeaderRow, globalTheme.tableSectionHeader]}>
         <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
           numberOfLines={1}
           style={[
-            tableHeaderTextLeftStyle,
+            styles.tableHeaderTextLeft,
             globalTheme.tableSectionHeaderText
           ]}>
           {mainTitle}
         </Text>
         <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
           numberOfLines={1}
           style={[
-            tableHeaderTextRightStyle,
+            styles.tableHeaderTextRight,
             globalTheme.tableSectionHeaderText
           ]}>
           {column1Title}
         </Text>
         <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
           numberOfLines={1}
           style={[
-            tableHeaderTextRightStyle,
+            styles.tableHeaderTextRight,
             globalTheme.tableSectionHeaderText
           ]}>
           {column2Title}
@@ -51,7 +44,11 @@ export const ComparisonTable = (props: any) => {
         renderItem={({ item }) => (
           <View key={item.text} style={styles.tableRow}>
             <View style={styles.columnTextWrapper}>
-              <Text style={columnTextStyle}>{item.text}</Text>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+                style={styles.columnText}>
+                {item.text}
+              </Text>
             </View>
             <View style={styles.columnIcon}>
               {item.column1 && (
@@ -119,6 +116,7 @@ const styles = StyleSheet.create({
   tableRow: {
     flexDirection: 'row',
     minHeight: 60,
+    paddingVertical: 8,
     justifyContent: 'center'
   },
   wrapper: {

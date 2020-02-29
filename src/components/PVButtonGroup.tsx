@@ -16,7 +16,7 @@ export const PVButtonGroup = (props: Props) => {
   const { fontScaleMode, globalTheme } = getGlobal()
 
   const textStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-    [styles.text, { fontSize: 10 }] :
+    [styles.text, { fontSize: PV.Fonts.largeSizes.sm }] :
     [styles.text]
 
   return (

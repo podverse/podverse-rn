@@ -73,7 +73,7 @@ export class MoreScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { downloadsActive, globalTheme, session } = this.global
+    const { downloadsActive, fontScaleMode, globalTheme, session } = this.global
     const { isLoggedIn = false, userInfo } = session
     const options = moreFeaturesOptions()
 
@@ -107,11 +107,14 @@ export class MoreScreen extends React.Component<Props, State> {
                 {item.key === _membershipKey && (
                   <RNView style={[core.row, table.cellWrapper]}>
                     {isLoggedIn ? (
-                      <Text style={[table.cellText, membershipTextStyle]}>
+                      <Text
+                        fontSizeLargestScale={PV.Fonts.largeSizes.xl}
+                        style={[table.cellText, membershipTextStyle]}>
                         {membershipStatus}
                       </Text>
                     ) : (
                       <Text
+                        fontSizeLargestScale={PV.Fonts.largeSizes.xl}
                         style={[table.cellText, globalTheme.tableCellTextPrimary]}>
                         Membership
                       </Text>
@@ -120,8 +123,13 @@ export class MoreScreen extends React.Component<Props, State> {
                 )}
                 {item.key === PV.RouteNames.DownloadsScreen && (
                   <RNView style={[core.row, { position: 'relative' }, table.cellWrapper]}>
-                    <Text style={table.cellText}>Downloads</Text>
-                    {downloadsActiveCount > 0 && (
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.xl}
+                      style={table.cellText}>
+                      Downloads
+                    </Text>
+                    {downloadsActiveCount > 0 &&
+                      (fontScaleMode !== PV.Fonts.fontScale.larger && fontScaleMode !== PV.Fonts.fontScale.largest) && (
                       <Badge
                         containerStyle={{
                           position: 'absolute',
@@ -137,6 +145,7 @@ export class MoreScreen extends React.Component<Props, State> {
                 {item.key !== _membershipKey &&
                   item.key !== PV.RouteNames.DownloadsScreen && (
                     <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.xl}
                       style={[table.cellText, globalTheme.tableCellTextPrimary]}>
                       {item.title}
                     </Text>

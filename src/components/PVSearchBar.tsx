@@ -31,7 +31,7 @@ export const PVSearchBar = (props: Props) => {
         globalTheme.inputContainerText,
         inputContainerStyle
       ]}
-      inputStyle={PV.Fonts.fontScale.largest === fontScaleMode ? { fontSize: 12 } : {}}
+      inputStyle={PV.Fonts.fontScale.largest === fontScaleMode ? { fontSize: PV.Fonts.largeSizes.md } : {}}
       onChangeText={onChangeText}
       onClear={onClear}
       placeholder={placeholder}

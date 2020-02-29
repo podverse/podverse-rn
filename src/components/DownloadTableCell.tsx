@@ -45,10 +45,13 @@ export class DownloadTableCell extends React.PureComponent<Props> {
             styles={styles.image} />
           <RNView style={styles.textWrapper}>
             <RNView style={styles.textWrapperTop}>
-              <Text numberOfLines={1} style={styles.episodeTitle}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                numberOfLines={1} style={styles.episodeTitle}>
                 {episodeTitle}
               </Text>
               <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 isSecondary={true}
                 numberOfLines={1}
                 style={styles.podcastTitle}>
@@ -65,11 +68,11 @@ export class DownloadTableCell extends React.PureComponent<Props> {
                 value={per}
               />
               <RNView style={styles.textWrapperBottomText}>
-                <Text>{statusText}</Text>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.tiny}>{statusText}</Text>
                 {completed ? (
-                  <Text>{bytesTotal}</Text>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.tiny}>{bytesTotal}</Text>
                 ) : (
-                  <Text>{`${bytesWritten} / ${bytesTotal}`}</Text>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.tiny}>{`${bytesWritten} / ${bytesTotal}`}</Text>
                 )}
               </RNView>
             </RNView>

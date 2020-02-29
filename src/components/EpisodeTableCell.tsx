@@ -44,7 +44,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     if (!title) title = 'untitled episode'
 
-    const titleStyle = podcastTitle ? styles.title : [styles.title, { marginTop: 0 }]
+    const titleStyle = (podcastTitle ? styles.title : [styles.title, { marginTop: 0 }]) as any
 
     const innerTopView = (
       <RNView style={styles.innerTopView}>
@@ -57,6 +57,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         <RNView style={styles.textWrapper}>
           {!!podcastTitle && (
             <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               isSecondary={true}
               numberOfLines={1}
               style={styles.podcastTitle}>
@@ -64,12 +65,16 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             </Text>
           )}
           <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={4}
             style={titleStyle}>
             {title}
           </Text>
           <RNView style={styles.textWrapperBottomRow}>
-            <Text isSecondary={true} style={styles.pubDate}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              isSecondary={true}
+              style={styles.pubDate}>
               {readableDate(pubDate)}
             </Text>
             {isDownloaded && (
@@ -84,6 +89,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const bottomText = (
       <Text
+        fontSizeLargestScale={PV.Fonts.largeSizes.xl}
         isSecondary={true}
         numberOfLines={4}
         style={descriptionStyle}>
@@ -127,7 +133,6 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 const styles = StyleSheet.create({
   description: {
     fontSize: PV.Fonts.sizes.md,
-    lineHeight: PV.Fonts.sizes.md + 2,
     marginTop: 10,
     paddingLeft: 76
   },
@@ -146,13 +151,11 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
     justifyContent: 'flex-start',
-    lineHeight: PV.Fonts.sizes.md,
     marginTop: 1
   },
   pubDate: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
-    lineHeight: PV.Fonts.sizes.sm,
     marginTop: 7
   },
   textWrapper: {

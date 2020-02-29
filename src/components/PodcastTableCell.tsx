@@ -46,6 +46,10 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       shouldAutoDownload = autoDownloadSettings[id]
     }
 
+    const titleStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.title, { fontSize: PV.Fonts.largeSizes.lg }] :
+      [styles.title]
+
     return (
       <TouchableWithoutFeedback onPress={onPress}>
         <View
@@ -55,11 +59,13 @@ export class PodcastTableCell extends React.PureComponent<Props> {
             source={podcastImageUrl}
             styles={styles.image} />
           <RNView style={styles.textWrapper}>
-            <Text
-              numberOfLines={([PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode)) ? 1 : 2}
-              style={styles.title}>
-              {podcastTitle}
-            </Text>
+            <RNView style={styles.titleWrapper}>
+              <Text
+                numberOfLines={([PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode)) ? 1 : 2}
+                style={titleStyle}>
+                {podcastTitle}
+              </Text>
+            </RNView>
             {
               fontScaleMode !== PV.Fonts.fontScale.largest &&
                 <>
@@ -157,9 +163,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8
   },
   title: {
-    flex: 1,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold
+  },
+  titleWrapper: {
+    justifyContent: 'center',
+    flex: 1
   },
   wrapper: {
     flexDirection: 'row'

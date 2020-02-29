@@ -583,12 +583,16 @@ export class PlayerScreen extends React.Component<Props, State> {
               {!isLoading &&
                 viewType === PV.Keys.VIEW_TYPE_SHOW_NOTES &&
                 episode && (
-                  <HTMLScrollView html={episode.description} />
+                  <HTMLScrollView
+                    fontSizeScaleLargest={PV.Fonts.largeSizes.md}
+                    html={episode.description} />
               )}
               {!isLoading &&
                 viewType === PV.Keys.VIEW_TYPE_TITLE &&
                 episode && (
-                  <HTMLScrollView html={formatTitleViewHtml(episode)} />
+                  <HTMLScrollView
+                    fontSizeScaleLargest={PV.Fonts.largeSizes.md}
+                    html={formatTitleViewHtml(episode)} />
                 )}
             </View>
           )}

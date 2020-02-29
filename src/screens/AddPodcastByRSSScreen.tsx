@@ -6,7 +6,6 @@ import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getAddByRSSPodcast } from '../services/parser'
 import { addAddByRSSPodcast } from '../state/actions/parser'
-import { core } from '../styles'
 
 type Props = {
   navigation: any
@@ -88,21 +87,8 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { fontScaleMode, globalTheme } = this.global
+    const { globalTheme } = this.global
     const { isLoading, url } = this.state
-
-    const textStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.text, { fontSize: 9 }] :
-      [styles.text]
-    const textInputStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.textInput, { fontSize: 9 }] :
-      [styles.textInput]
-    const textInputLabelStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [core.textInputLabel, { fontSize: 9 }] :
-      [core.textInputLabel]
-    const textLinkStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.textLink, { fontSize: 9 }] :
-      [styles.textLink]
 
     return (
       <View style={styles.content}>
@@ -113,30 +99,44 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
         {
           !isLoading &&
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
-              <Text style={textInputLabelStyle}>RSS Feed</Text>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={styles.textInputLabel}>
+                RSS Feed
+              </Text>
               <TextInput
                 autoCapitalize='none'
                 autoCompleteType='off'
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onChangeText={this._handleChangeText}
                 placeholder='paste RSS feed link here'
                 returnKeyType='done'
-                style={[textInputStyle, globalTheme.textInput]}
+                style={[styles.textInput, globalTheme.textInput]}
                 underlineColorAndroid='transparent'
                 value={url}
               />
               <Divider style={styles.divider} />
-              <Text style={textStyle}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={styles.text}>
                 If a podcast is not officially available on Podverse, you can still listen to it by
                 pasting the RSS link here and pressing the Save button.
               </Text>
-              <Text style={textStyle}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={styles.text}>
                 Clips and playlists are not supported for podcasts added by RSS feed.
               </Text>
-              <Text style={textStyle}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={styles.text}>
                 If you want a podcast officially added to Podverse
                 press the Request Podcast link below.
               </Text>
-              <TextLink onPress={this._navToRequestPodcastForm} style={textLinkStyle}>
+              <TextLink
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                onPress={this._navToRequestPodcastForm}
+                style={styles.textLink}>
                 Request Podcast
               </TextLink>
             </ScrollView>

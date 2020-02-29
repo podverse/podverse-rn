@@ -84,14 +84,15 @@ export const PVFlatList = (props: Props) => {
   }
 
   const textLinkStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-    [styles.textLink, { fontSize: 10 }] :
+    [styles.textLink, { fontSize: PV.Fonts.largeSizes.md }] :
     [styles.textLink]
   const noResultsFoundTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-    [styles.noResultsFoundText, { fontSize: 10 }] :
+    [styles.noResultsFoundText, { fontSize: PV.Fonts.largeSizes.md }] :
     [styles.noResultsFoundText]
 
   const requestPodcastTextLink = (
     <TextLink
+      fontSizeLargestScale={PV.Fonts.largeSizes.md}
       onPress={handleRequestPodcast}
       style={textLinkStyle}>
       Request Podcast
@@ -100,6 +101,7 @@ export const PVFlatList = (props: Props) => {
 
   const addPodcastByRSSTextLink = (
     <TextLink
+      fontSizeLargestScale={PV.Fonts.largeSizes.md}
       onPress={handleAddPodcastByRSSURLNavigation}
       style={textLinkStyle}>
       Add Podcast by RSS Feed
@@ -118,12 +120,18 @@ export const PVFlatList = (props: Props) => {
       )}
       {showNoInternetConnectionMessage && !dataTotalCount && !isLoadingMore && (
         <View style={styles.msgView}>
-          <Text style={noResultsFoundTextStyle}>{`No internet connection`}</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={noResultsFoundTextStyle}>{`No internet connection`}</Text>
         </View>
       )}
       {noResultsFound && !noSubscribedPodcasts && !isLoadingMore && !showNoInternetConnectionMessage && (
         <View style={styles.msgView}>
-          <Text style={noResultsFoundTextStyle}>{`No ${resultsText} found`}</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={noResultsFoundTextStyle}>
+            {`No ${resultsText} found`}
+          </Text>
           {showRequestPodcast && requestPodcastTextLink}
           {showAddPodcastByRSS && addPodcastByRSSTextLink}
         </View>
@@ -153,6 +161,7 @@ export const PVFlatList = (props: Props) => {
               return (
                 <View style={[styles.lastCell, globalTheme.tableCellBorder]}>
                   <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     style={[
                       styles.lastCellText
                     ]}>{`End of ${resultsText}`}</Text>

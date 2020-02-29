@@ -194,10 +194,6 @@ export class SettingsScreen extends React.Component<Props, State> {
     const { fontScaleMode, globalTheme } = this.global
     const isDarkMode = globalTheme === darkTheme
 
-    const pickerSelectStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.pickerSelect, { fontSize: 10 }] :
-      [styles.pickerSelect]
-
     return (
       <View style={styles.wrapper}>
         <SwitchWithText
@@ -234,7 +230,9 @@ export class SettingsScreen extends React.Component<Props, State> {
           value={maximumSpeedOptionSelected.value}>
           <View style={core.selectorWrapper}>
             <View style={core.selectorWrapperLeft}>
-              <Text style={[pickerSelectStyle, globalTheme.text]}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={[styles.pickerSelect, globalTheme.text]}>
                 {maximumSpeedOptionSelected.label}
               </Text>
               <Icon
@@ -244,7 +242,9 @@ export class SettingsScreen extends React.Component<Props, State> {
               />
             </View>
             <View style={core.selectorWrapperRight}>
-              <Text style={[pickerSelectStyle, globalTheme.text]}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={[styles.pickerSelect, globalTheme.text]}>
                 Max playback speed
               </Text>
             </View>

@@ -1,8 +1,8 @@
 import React from 'react'
-import { StyleSheet, TextInput, View } from 'react-native'
-import { getGlobal } from 'reactn'
+import { StyleSheet, View } from 'react-native'
+import { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { Text } from './'
+import { Text, TextInput } from './'
 
 type Props = {
   handleChangeText: any
@@ -20,13 +20,7 @@ export const NumberSelectorWithText = (props: Props) => {
     selectedNumber,
     text
   } = props
-  const { fontScaleMode, globalTheme } = getGlobal()
-  const textInputStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-    [styles.textInput, { fontSize: 9 }] :
-    [styles.textInput]
-  const textStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-    [styles.text, { fontSize: 9 }] :
-    [styles.text]
+  const [globalTheme] = useGlobal('globalTheme')
   const strNum = Number.isInteger(selectedNumber)
     ? selectedNumber.toString()
     : selectedNumber
@@ -34,15 +28,20 @@ export const NumberSelectorWithText = (props: Props) => {
     <View style={styles.wrapper}>
       <TextInput
         autoCompleteType='off'
+        fontSizeLargestScale={PV.Fonts.largeSizes.sm}
         keyboardType='numeric'
         onChangeText={handleChangeText}
         onSubmitEditing={handleSubmitEditing}
         placeholderTextColor={globalTheme.placeholderText.color}
         returnKeyType='done'
-        style={[globalTheme.textInput, textInputStyle]}
+        style={[globalTheme.textInput, styles.textInput]}
         value={strNum}
       />
-      <Text style={isSmallText ? styles.smallText : textStyle}>{text}</Text>
+      <Text
+        fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+        style={isSmallText ? styles.smallText : styles.text}>
+        {text}
+      </Text>
     </View>
   )
 }

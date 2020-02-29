@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { hidePickerIconOnAndroid } from '../styles'
 
@@ -16,16 +17,25 @@ export const HeaderTitleSelector = (props: Props) => {
   const { items, onValueChange, placeholder, selectedItemKey } = props
   const selectedItem = items.find((x) => x.value === selectedItemKey) || {}
 
+  const { fontScaleMode } = getGlobal()
+
+  const textStyle = [styles.text]
+  if (fontScaleMode === PV.Fonts.fontScale.larger) {
+    textStyle.push({ fontSize: PV.Fonts.largeSizes.xs })
+  } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
+    textStyle.push({ fontSize: PV.Fonts.largeSizes.tiny })
+  }
+
   const textNode = (
     <View style={styles.wrapper}>
-      <Text style={styles.text}>
+      <Text style={textStyle}>
         {selectedItem.label || (placeholder && placeholder.label)}
       </Text>
       <Icon
         color='#fff'
         name='angle-down'
         size={16}
-        style={styles.closeButton}
+        style={styles.angleDown}
       />
     </View>
   )
@@ -50,9 +60,8 @@ export const HeaderTitleSelector = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
-  closeButton: {
+  angleDown: {
     height: 44,
-    lineHeight: 44,
     paddingLeft: 4
   },
   text: {
