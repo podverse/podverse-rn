@@ -88,8 +88,21 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { globalTheme } = this.global
+    const { fontScaleMode, globalTheme } = this.global
     const { isLoading, url } = this.state
+
+    const textStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.text, { fontSize: 9 }] :
+      [styles.text]
+    const textInputStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.textInput, { fontSize: 9 }] :
+      [styles.textInput]
+    const textInputLabelStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [core.textInputLabel, { fontSize: 9 }] :
+      [core.textInputLabel]
+    const textLinkStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.textLink, { fontSize: 9 }] :
+      [styles.textLink]
 
     return (
       <View style={styles.content}>
@@ -100,30 +113,30 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
         {
           !isLoading &&
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
-              <Text style={core.textInputLabel}>RSS Feed</Text>
+              <Text style={textInputLabelStyle}>RSS Feed</Text>
               <TextInput
                 autoCapitalize='none'
                 autoCompleteType='off'
                 onChangeText={this._handleChangeText}
                 placeholder='paste RSS feed link here'
                 returnKeyType='done'
-                style={[styles.textInput, globalTheme.textInput]}
+                style={[textInputStyle, globalTheme.textInput]}
                 underlineColorAndroid='transparent'
                 value={url}
               />
               <Divider style={styles.divider} />
-              <Text style={styles.text}>
+              <Text style={textStyle}>
                 If a podcast is not officially available on Podverse, you can still listen to it by
                 pasting the RSS link here and pressing the Save button.
               </Text>
-              <Text style={styles.text}>
+              <Text style={textStyle}>
                 Clips and playlists are not supported for podcasts added by RSS feed.
               </Text>
-              <Text style={styles.text}>
+              <Text style={textStyle}>
                 If you want a podcast officially added to Podverse
                 press the Request Podcast link below.
               </Text>
-              <TextLink onPress={this._navToRequestPodcastForm} style={[styles.textLink]}>
+              <TextLink onPress={this._navToRequestPodcastForm} style={textLinkStyle}>
                 Request Podcast
               </TextLink>
             </ScrollView>
