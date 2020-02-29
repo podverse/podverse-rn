@@ -41,7 +41,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       title = 'untitled clip'
     } = this.props
     const clipTime = readableClipTime(startTime, endTime)
-    const { downloadedEpisodeIds, downloadsActive } = this.global
+    const { downloadedEpisodeIds, downloadsActive, fontScaleMode } = this.global
     const isDownloading = downloadsActive[episodeId]
     const isDownloaded = downloadedEpisodeIds[episodeId]
     const showEpisodeInfo = !!episodePubDate || !!episodeTitle
@@ -65,7 +65,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                   {podcastTitle}
                 </Text>
               )}
-              {!!episodeTitle && (
+              {!!episodeTitle && PV.Fonts.fontScale.largest !== fontScaleMode && (
                 <Text
                   numberOfLines={1}
                   style={styles.episodeTitle}>
@@ -75,6 +75,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
               <RNView style={styles.textWrapperBottomRow}>
                 <Text
                   isSecondary={true}
+                  numberOfLines={1}
                   style={styles.episodePubDate}>
                   {readableDate(episodePubDate)}
                 </Text>
@@ -95,10 +96,15 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const bottomText = (
       <RNView style={styles.wrapperBottom}>
         <RNView style={styles.wrapperBottomTextWrapper}>
-          <Text numberOfLines={4} style={bottomTextStyle}>
+          <Text
+            numberOfLines={4}
+            style={bottomTextStyle}>
             {title}
           </Text>
-          <Text isSecondary={true} style={styles.clipTime}>
+          <Text
+            isSecondary={true}
+            numberOfLines={1}
+            style={styles.clipTime}>
             {clipTime}
           </Text>
         </RNView>
