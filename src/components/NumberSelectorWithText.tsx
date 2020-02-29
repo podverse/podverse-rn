@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, TextInput, View } from 'react-native'
-import { useGlobal } from 'reactn'
+import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Text } from './'
 
@@ -20,7 +20,13 @@ export const NumberSelectorWithText = (props: Props) => {
     selectedNumber,
     text
   } = props
-  const [globalTheme] = useGlobal('globalTheme')
+  const { fontScaleMode, globalTheme } = getGlobal()
+  const textInputStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+    [styles.textInput, { fontSize: 9 }] :
+    [styles.textInput]
+  const textStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+    [styles.text, { fontSize: 9 }] :
+    [styles.text]
   const strNum = Number.isInteger(selectedNumber)
     ? selectedNumber.toString()
     : selectedNumber
@@ -33,10 +39,10 @@ export const NumberSelectorWithText = (props: Props) => {
         onSubmitEditing={handleSubmitEditing}
         placeholderTextColor={globalTheme.placeholderText.color}
         returnKeyType='done'
-        style={[globalTheme.textInput, styles.textInput]}
+        style={[globalTheme.textInput, textInputStyle]}
         value={strNum}
       />
-      <Text style={isSmallText ? styles.smallText : styles.text}>{text}</Text>
+      <Text style={isSmallText ? styles.smallText : textStyle}>{text}</Text>
     </View>
   )
 }
