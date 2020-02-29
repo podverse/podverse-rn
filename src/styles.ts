@@ -483,7 +483,7 @@ export const core = StyleSheet.create({
     flex: 1
   },
   button: {
-    height: 56
+    minHeight: 56
   },
   buttonText: {
     fontSize: PV.Fonts.sizes.xl,

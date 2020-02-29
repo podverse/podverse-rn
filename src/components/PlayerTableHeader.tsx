@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import React from 'reactn'
+import React, { getGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
@@ -13,6 +13,9 @@ type Props = {
 
 export const PlayerTableHeader = (props: Props) => {
   const { isLoading, nowPlayingItem, onPress } = props
+  const { fontScaleMode } = getGlobal()
+
+  const episodeTitleNumberOfLines = PV.Fonts.fontScale.largest === fontScaleMode ? 1 : 2
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>
@@ -23,22 +26,28 @@ export const PlayerTableHeader = (props: Props) => {
           </View>
         )}
         {!isLoading && !!nowPlayingItem && (
-          <View style={core.row}>
+          <View style={[core.row, { alignItems: 'center' }]}>
             <FastImage
               key={nowPlayingItem.podcastImageUrl}
               source={nowPlayingItem.podcastImageUrl}
               styles={styles.image}
             />
             <View style={styles.textWrapper}>
-              <Text isSecondary={true} numberOfLines={1} style={styles.podcastTitle}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+                isSecondary={true}
+                numberOfLines={1}
+                style={styles.podcastTitle}>
                 {nowPlayingItem.podcastTitle}
               </Text>
               <Text
-                numberOfLines={2}
+                fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                numberOfLines={episodeTitleNumberOfLines}
                 style={styles.episodeTitle}>
                 {nowPlayingItem.episodeTitle}
               </Text>
               <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
                 isSecondary={true}
                 numberOfLines={1}
                 style={styles.episodePubDate}>
@@ -54,13 +63,11 @@ export const PlayerTableHeader = (props: Props) => {
 
 const styles = StyleSheet.create({
   episodePubDate: {
-    fontSize: PV.Fonts.sizes.sm,
-    marginTop: 3
+    fontSize: PV.Fonts.sizes.sm
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    marginTop: 5
+    fontWeight: PV.Fonts.weights.bold
   },
   image: {
     flex: 0,

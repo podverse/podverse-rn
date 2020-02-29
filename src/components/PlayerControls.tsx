@@ -223,10 +223,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             }}
             onPress={this._adjustSpeed}>
             <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
               style={[
                 styles.bottomButton,
                 styles.bottomRowText
-              ]}>{`${playbackRate}X`}</Text>
+              ]}>
+              {`${playbackRate}X`}
+            </Text>
           </TouchableWithoutFeedback>
           <TouchableOpacity
             hitSlop={{
@@ -255,15 +258,15 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 const styles = StyleSheet.create({
   bottomButton: {
     alignItems: 'center',
-    height: 32,
+    minHeight: 32,
     paddingVertical: 4,
     textAlign: 'center',
-    width: 54
+    minWidth: 54
   },
   bottomRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    height: PV.Player.styles.bottomRow.height,
+    minHeight: PV.Player.styles.bottomRow.height,
     justifyContent: 'space-around'
   },
   bottomRowText: {
@@ -273,7 +276,7 @@ const styles = StyleSheet.create({
   middleRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    height: 60,
+    minHeight: 60,
     justifyContent: 'space-around',
     marginBottom: 4,
     marginTop: 2
@@ -287,7 +290,7 @@ const styles = StyleSheet.create({
     width: 54
   },
   topRow: {
-    height: 52,
+    minHeight: 52,
     paddingTop: 5
   },
   wrapper: {

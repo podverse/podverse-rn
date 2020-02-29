@@ -62,7 +62,11 @@ export const TimePicker = (props: Props) => {
             style={styles.numberColumn}>
             {hourItems}
           </Picker>
-          <Text style={[stylesText, globalTheme.text]}>hours</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+            style={[stylesText, globalTheme.text]}>
+            hours
+          </Text>
         </View>
         <View style={styles.pickerColumn}>
           <Picker
@@ -75,7 +79,11 @@ export const TimePicker = (props: Props) => {
             style={styles.numberColumn}>
             {minuteItems}
           </Picker>
-          <Text style={[stylesText, globalTheme.text]}>minutes</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+            style={[stylesText, globalTheme.text]}>
+            minutes
+          </Text>
         </View>
         <View style={styles.pickerColumn}>
           <Picker
@@ -88,7 +96,11 @@ export const TimePicker = (props: Props) => {
             style={styles.numberColumn}>
             {secondItems}
           </Picker>
-          <Text style={[stylesText, globalTheme.text]}>seconds</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+            style={[stylesText, globalTheme.text]}>
+            seconds
+          </Text>
         </View>
       </View>
     </View>

@@ -140,6 +140,7 @@ export class PVActionSheet extends React.Component<Props, State> {
               safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor, '')
             }>
             <Text
+              numberOfLines={1}
               style={buttonTextCancelStyle}>
               Cancel
             </Text>
@@ -153,9 +154,18 @@ export class PVActionSheet extends React.Component<Props, State> {
 
   render() {
     const { children, items, message, showModal, title } = this.props
-    const { globalTheme } = this.global
+    const { fontScaleMode, globalTheme } = this.global
     const finalItems = typeof items === 'function' ? items() : items
     const buttons = children ? children : this.generateButtons(finalItems)
+
+    const headerTitleStyle = [actionSheetStyles.headerTitle, globalTheme.actionSheetHeaderText]
+    if (fontScaleMode === PV.Fonts.fontScale.largest) {
+      headerTitleStyle.push({ fontSize: PV.Fonts.largeSizes.xs })
+    }
+    const headerMessageStyle = [actionSheetStyles.headerMessage, globalTheme.actionSheetHeaderText]
+    if (fontScaleMode === PV.Fonts.fontScale.largest) {
+      headerMessageStyle.push({ fontSize: PV.Fonts.largeSizes.tiny })
+    }
 
     return (
       <Modal transparent={true} visible={showModal}>
@@ -173,19 +183,14 @@ export class PVActionSheet extends React.Component<Props, State> {
               <View style={[actionSheetStyles.header, globalTheme.actionSheetButton]}>
                 {!!title && (
                   <Text
-                    style={[
-                      actionSheetStyles.headerTitle,
-                      globalTheme.actionSheetHeaderText
-                    ]}>
+                    numberOfLines={1}
+                    style={headerTitleStyle}>
                     {title}
                   </Text>
                 )}
                 {!!message && (
                   <Text
-                    style={[
-                      actionSheetStyles.headerMessage,
-                      globalTheme.actionSheetHeaderText
-                    ]}>
+                    style={headerMessageStyle}>
                     {message}
                   </Text>
                 )}

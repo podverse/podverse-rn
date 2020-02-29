@@ -112,18 +112,30 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<
         />
         {!isLoading && (
           <View style={sliderStyles.timeRow}>
-            <Text style={sliderStyles.time}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+              style={sliderStyles.time}>
               {convertSecToHHMMSS(slidingPosition || position)}
             </Text>
-            <Text style={sliderStyles.time}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+              style={sliderStyles.time}>
               {duration > 0 ? convertSecToHHMMSS(duration) : '--:--'}
             </Text>
           </View>
         )}
         {isLoading && (
           <View style={sliderStyles.timeRow}>
-            <Text style={sliderStyles.time}>{'--:--'}</Text>
-            <Text style={sliderStyles.time}>{'--:--'}</Text>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+              style={sliderStyles.time}>
+              {'--:--'}
+            </Text>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+              style={sliderStyles.time}>
+              {'--:--'}
+            </Text>
           </View>
         )}
       </View>
