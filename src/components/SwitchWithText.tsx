@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, Switch, View } from 'react-native'
+import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Text } from './'
 
@@ -11,11 +12,16 @@ type Props = {
 
 export const SwitchWithText = (props: Props) => {
   const { onValueChange, text, value } = props
+  const { fontScaleMode } = getGlobal()
+
+  const textStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+    [styles.text, { fontSize: 9 }] :
+    [styles.text]
 
   return (
     <View style={styles.wrapper}>
       <Switch onValueChange={onValueChange} value={value} />
-      <Text style={styles.text}>{text}</Text>
+      <Text style={textStyle}>{text}</Text>
     </View>
   )
 }
