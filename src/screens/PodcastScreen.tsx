@@ -710,7 +710,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             )}
             {!isLoading && viewType === aboutKey && podcast && (
               <HTMLScrollView
-                fontSizeScaleLargest={PV.Fonts.largeSizes.md}
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 html={podcast.description || (showNoInternetConnectionMessage ? 'No internet connection' : '')}
                 navigation={navigation}
               />

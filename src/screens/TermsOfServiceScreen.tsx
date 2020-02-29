@@ -29,7 +29,9 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
     return (
       <View style={styles.content}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <Text style={styles.text}>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.text}>
             {'\n\n'}
             Podverse will never sell or share private user data.
             {'\n\n'}
@@ -50,7 +52,11 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
             have no responsibility for their content or activities.
           </Text>
           <View style={styles.separator} />
-          <Text style={styles.sectionTitle}>Third Party Libraries</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.sectionTitle}>
+            Third Party Libraries
+          </Text>
           {Object.keys(packageJson.dependencies).map((license) => {
             return (
               <Text key={license} style={styles.text}>

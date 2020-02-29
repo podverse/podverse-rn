@@ -5,17 +5,16 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View
 } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
+import { PasswordValidationInfo, TextInput } from '.'
 import { hasAtLeastXCharacters as hasAtLeastXCharactersLib, hasLowercase as hasLowercaseLib,
   hasMatchingStrings, hasNoSpaces as hasNoSpacesLib, hasNumber as hasNumberLib,
   hasUppercase as hasUppercaseLib, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
-import { PasswordValidationInfo } from './PasswordValidationInfo'
 
 type Props = {
   bottomButtons: any
@@ -173,12 +172,12 @@ export class SignUp extends React.Component<Props, State> {
         <TextInput
           autoCapitalize='none'
           autoCompleteType='off'
+          inputRef={(input) => { this.secondTextInput = input }}
           onBlur={this.uiRefreshed}
           onChange={this.passwordChanged}
           onSubmitEditing={() => { this.thirdTextInput.focus() }}
           placeholder='Password'
           placeholderTextColor={PV.Colors.gray}
-          ref={(input) => { this.secondTextInput = input }}
           returnKeyType='next'
           secureTextEntry={true}
           style={styles.textField}
@@ -188,11 +187,11 @@ export class SignUp extends React.Component<Props, State> {
         <TextInput
           autoCapitalize='none'
           autoCompleteType='off'
+          inputRef={(input) => { this.thirdTextInput = input }}
           onBlur={this.uiRefreshed}
           onChange={this.passwordVerificationChanged}
           placeholder='Verify Password'
           placeholderTextColor={PV.Colors.gray}
-          ref={(input) => { this.thirdTextInput = input }}
           returnKeyType='done'
           secureTextEntry={true}
           style={[styles.textField, passwordMismatch ? errorStyle : null]}
@@ -235,6 +234,7 @@ const deviceWidth = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
   forceScrollableAreaTextInput: {
+    backgroundColor: 'transparent',
     height: 196,
     zIndex: 1000000
   },

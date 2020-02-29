@@ -2,12 +2,12 @@ import {
   ActivityIndicator,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View
 } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
+import { TextInput } from '.'
 import { PV } from '../resources'
 
 type Props = {
@@ -69,6 +69,7 @@ export class ResetPassword extends React.Component<Props, State> {
         <TextInput
           autoCapitalize='none'
           autoCompleteType='email'
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           keyboardType='email-address'
           onChangeText={this._emailChanged}
           placeholder='Email'

@@ -61,7 +61,6 @@ export const HeaderTitleSelector = (props: Props) => {
 
 const styles = StyleSheet.create({
   angleDown: {
-    height: 44,
     paddingLeft: 4
   },
   text: {

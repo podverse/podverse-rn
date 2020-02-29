@@ -7,12 +7,18 @@ import { core } from '../styles'
 type Props = {
   autoCapitalize?: any
   autoCompleteType?: any
+  editable?: boolean
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
+  inputRef?: any
   keyboardType?: any
   numberOfLines?: number
-  onChangeText: any
+  onBlur?: any
+  onChange?: any
+  onChangeText?: any
+  onSubmitEditing?: any
   placeholder?: string
+  placeholderTextColor?: string
   returnKeyType?: any
   secureTextEntry?: boolean
   style?: any
@@ -24,12 +30,18 @@ export const PVTextInput = (props: Props) => {
   const {
     autoCapitalize,
     autoCompleteType,
+    editable = true,
     fontSizeLargerScale,
     fontSizeLargestScale,
+    inputRef,
     keyboardType,
     numberOfLines = 0,
+    onBlur,
+    onChange,
     onChangeText,
+    onSubmitEditing,
     placeholder,
+    placeholderTextColor,
     returnKeyType = 'default',
     secureTextEntry,
     style,
@@ -45,19 +57,22 @@ export const PVTextInput = (props: Props) => {
     textInputStyle.push({ fontSize: fontSizeLargestScale })
   }
 
-  console.log('wtf', textInputStyle)
-
   return (
     <TextInput
       autoCapitalize={autoCapitalize}
       autoCompleteType={autoCompleteType}
       blurOnSubmit={returnKeyType === 'done'}
+      editable={editable}
       keyboardType={keyboardType}
       multiline={numberOfLines > 0}
       numberOfLines={numberOfLines}
+      onBlur={onBlur}
+      onChange={onChange}
       onChangeText={onChangeText}
+      onSubmitEditing={onSubmitEditing}
       placeholder={placeholder}
-      placeholderTextColor={globalTheme.placeholderText.color}
+      placeholderTextColor={placeholderTextColor || globalTheme.placeholderText.color}
+      ref={inputRef}
       returnKeyType={returnKeyType}
       secureTextEntry={secureTextEntry}
       style={[globalTheme.textInput, core.textInput, style, textInputStyle]}

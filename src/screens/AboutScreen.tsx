@@ -28,14 +28,18 @@ export class AboutScreen extends React.Component<Props, State> {
     return (
       <View style={styles.content}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <Text style={styles.text}>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.text}>
             {
               'Create and share highlights of your favorite podcasts with Podverse! '
               + 'Available on iOS, Android, and web. Sign up today and get 1 year of Podverse premium for free.'
             }
           </Text>
           <View style={styles.separator} />
-          <Text style={styles.text}>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.text}>
             {
               'All Podverse software is provided under an open source, copyleft license. '
               + 'That means anyone can download, modify, and use Podverse software for any purpose for free, '
@@ -45,8 +49,12 @@ export class AboutScreen extends React.Component<Props, State> {
             }
           </Text>
           <View style={styles.separator} />
-          <Text style={styles.sectionTitle}>Team</Text>
-          <Text style={styles.text}>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.sectionTitle}>Team</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.text}>
             {
               'Mitch Downey – Programmer\n\nCreon Creonopoulos - Programmer\n\nGary Johnson – Designer'
             }

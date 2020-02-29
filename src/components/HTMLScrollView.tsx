@@ -6,13 +6,13 @@ import { PV } from '../resources'
 import { setPlaybackPosition } from '../services/player'
 
 type Props = {
-  fontSizeScaleLarger?: number
-  fontSizeScaleLargest?: number
+  fontSizeLargerScale?: number
+  fontSizeLargestScale?: number
   html: string
 }
 
 export const HTMLScrollView = (props: Props) => {
-  const { fontSizeScaleLarger, fontSizeScaleLargest, html } = props
+  const { fontSizeLargerScale, fontSizeLargestScale, html } = props
   const { fontScaleMode, globalTheme } = getGlobal()
   const baseFontStyle = {
     ...globalTheme.text,
@@ -24,9 +24,9 @@ export const HTMLScrollView = (props: Props) => {
   formattedHtml = formattedHtml.linkifyHtml()
 
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
-    baseFontStyle.fontSize = fontSizeScaleLarger
+    baseFontStyle.fontSize = fontSizeLargerScale
   } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
-    baseFontStyle.fontSize = fontSizeScaleLargest
+    baseFontStyle.fontSize = fontSizeLargestScale
   }
 
   return (

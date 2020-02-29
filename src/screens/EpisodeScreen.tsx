@@ -402,12 +402,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
         )}
         {viewType === _showNotesKey && episode && (
           <HTMLScrollView
-            fontSizeScaleLargest={PV.Fonts.largeSizes.md}
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
             html={episode.description || ''} />
         )}
         {viewType === _titleKey && episode && (
           <HTMLScrollView
-            fontSizeScaleLargest={PV.Fonts.largeSizes.md}
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
             html={formatTitleViewHtml(episode)} />
         )}
         <ActionSheet

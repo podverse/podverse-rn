@@ -16,20 +16,19 @@ type State = {}
 export class PasswordValidationInfo extends React.PureComponent<Props, State> {
   render() {
     const { hasAtLeastXCharacters, hasLowercase, hasNumber, hasUppercase, style } = this.props
-    const { fontScaleMode } = this.global
 
     return (
       <View style={[styles.wrapper, style]}>
         <View style={styles.textRow}>
           <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
             numberOfLines={1}
             style={styles.label}>Password requirements:
           </Text>
         </View>
         <View style={styles.textRow}>
           <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
             numberOfLines={1}
             style={hasUppercase ? styles.validText : styles.invalidText}>- has uppercase
           </Text>
@@ -44,6 +43,7 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
         </View>
         <View style={styles.textRow}>
           <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
             numberOfLines={1}
             style={hasLowercase ? styles.validText : styles.invalidText}>- has lowercase
           </Text>
@@ -58,6 +58,7 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
         </View>
         <View style={styles.textRow}>
           <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
             numberOfLines={1}
             style={hasNumber ? styles.validText : styles.invalidText}>- has number
           </Text>
@@ -72,6 +73,7 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
         </View>
         <View style={styles.textRow}>
           <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
             numberOfLines={1}
             style={hasAtLeastXCharacters ? styles.validText : styles.invalidText}>- is at least 8 characters
           </Text>

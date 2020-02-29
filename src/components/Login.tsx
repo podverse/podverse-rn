@@ -2,12 +2,12 @@ import {
   ActivityIndicator,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View
 } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
+import { TextInput } from '.'
 import { PV } from '../resources'
 
 type Props = {
@@ -73,7 +73,7 @@ export class Login extends React.Component<Props, State> {
         <TextInput
           autoCapitalize='none'
           autoCompleteType='email'
-          blurOnSubmit={false}
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           keyboardType='email-address'
           onChangeText={this.emailChanged}
           onSubmitEditing={() => { this.secondTextInput.focus() }}
@@ -86,10 +86,11 @@ export class Login extends React.Component<Props, State> {
         <TextInput
           autoCapitalize='none'
           autoCompleteType='password'
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           onChangeText={this.passwordChanged}
           placeholder='Password'
           placeholderTextColor={PV.Colors.gray}
-          ref={(input) => { this.secondTextInput = input }}
+          inputRef={(input) => { this.secondTextInput = input }}
           returnKeyType='done'
           secureTextEntry={true}
           style={styles.textField}
