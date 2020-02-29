@@ -128,10 +128,15 @@ export class EditProfileScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         {!isLoading ? (
           <View>
-            <Text style={core.textInputLabel}>Name</Text>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={core.textInputLabel}>
+              Name
+            </Text>
             <TextInput
               autoCapitalize='none'
               autoCompleteType='off'
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
               onChangeText={this._onChangeName}
               placeholder='your name'
               returnKeyType='done'
@@ -139,14 +144,20 @@ export class EditProfileScreen extends React.Component<Props, State> {
               underlineColorAndroid='transparent'
               value={name}
             />
-            <Text style={core.textInputLabel}>Profile Privacy</Text>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={core.textInputLabel}>
+              Profile Privacy
+            </Text>
             <RNPickerSelect
               items={isPublicOptions}
               onValueChange={this._onChangeIsPublic}
               placeholder={selectPlaceholder}
               value={selectedIsPublicKey}>
               <View style={[core.selectorWrapper, globalTheme.textInput]}>
-                <Text style={core.selectorText}>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  style={core.selectorText}>
                   {selectedIsPublicOption.label}
                 </Text>
                 <Icon
@@ -158,12 +169,14 @@ export class EditProfileScreen extends React.Component<Props, State> {
 
               {selectedIsPublicKey && (
                 <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
                   style={[core.textInputSubTitle, globalTheme.textSecondary]}>
                   {`Podcasts, clips, and playlists ${privacySubtitleVerbTenseText} visible on your profile page.`}
                 </Text>
               )}
               {selectedIsPublicKey === false && (
                 <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
                   style={[core.textInputSubTitle, globalTheme.textSecondary]}>
                   {`Your profile page ${privacySubtitleVerbTenseText} hidden. Your clip and playlist links ${
                     privacySubtitleVerbTenseText === 'is'

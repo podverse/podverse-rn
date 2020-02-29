@@ -38,8 +38,12 @@ export const TimeInput = (props: Props) => {
 
   return (
     <View style={wrapperStyle}>
-      <View style={core.row}>
-        <Text style={core.textInputLabel}>{labelText}</Text>
+      <View style={[core.row, styles.row]}>
+        <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          style={core.textInputLabel}>
+          {labelText}
+        </Text>
         {(time || time === 0) && (
           <TouchableOpacity
             hitSlop={{
@@ -58,18 +62,19 @@ export const TimeInput = (props: Props) => {
           </TouchableOpacity>
         )}
       </View>
-      <View style={core.row}>
+      <View style={[core.row, styles.row]}>
         <View style={styles.timeInputWrapper}>
           <TouchableWithoutFeedback onPress={handleSetTime}>
             <View style={[styles.timeInputTouchable, globalTheme.textInput]}>
-              <RNText
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 style={[
                   styles.timeInputText,
                   globalTheme.textInput,
                   time || time === 0 ? {} : globalTheme.placeholderText
                 ]}>
                 {time || time === 0 ? convertSecToHHMMSS(time) : placeholder}
-              </RNText>
+              </Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -104,21 +109,21 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingTop: 3
   },
+  row: {
+    alignItems: 'center'
+  },
   timeInputText: {
-    flex: 1,
     fontSize: PV.Fonts.sizes.xl,
-    height: 44,
-    lineHeight: 44,
     textAlign: 'center'
   },
   timeInputTouchable: {
-    flex: 1,
-    height: 44
+    justifyContent: 'center',
+    minHeight: 44
   },
   timeInputTouchableDelete: {
     alignItems: 'center',
     flex: 0,
-    height: 44,
+    minHeight: 44,
     justifyContent: 'center',
     marginLeft: -44,
     marginTop: 2,
@@ -126,7 +131,7 @@ const styles = StyleSheet.create({
   },
   timeInputWrapper: {
     flex: 1,
-    height: 44,
+    minHeight: 44,
     marginTop: 2
   }
 })

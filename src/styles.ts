@@ -483,6 +483,7 @@ export const core = StyleSheet.create({
     flex: 1
   },
   button: {
+    justifyContent: 'center',
     minHeight: 56
   },
   buttonText: {
@@ -548,8 +549,7 @@ export const core = StyleSheet.create({
   },
   textInputLabel: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    marginBottom: 8
+    fontWeight: PV.Fonts.weights.bold
   },
   textInputSubTitle: {
     fontSize: PV.Fonts.sizes.md,
@@ -656,6 +656,7 @@ export const table = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
+    height: PV.Table.cells.standard.height,
     paddingLeft: 8
   },
   cellWrapper: {
