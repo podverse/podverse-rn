@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   ActivityIndicator,
   Dimensions,
@@ -10,6 +9,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
+import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { hasAtLeastXCharacters as hasAtLeastXCharactersLib, hasLowercase as hasLowercaseLib,
   hasMatchingStrings, hasNoSpaces as hasNoSpacesLib, hasNumber as hasNumberLib,
@@ -140,6 +140,7 @@ export class SignUp extends React.Component<Props, State> {
       ? { backgroundColor: PV.Colors.grayDark }
       : null
     const checkIfSubmitIsDisabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
+    const { fontScaleMode } = this.global
 
     const passwordMismatch =
       passwordVerification.length > 0 && passwordVerification !== password
@@ -147,6 +148,16 @@ export class SignUp extends React.Component<Props, State> {
       borderColor: PV.Colors.red,
       borderWidth: 2
     }
+
+    const forceScrollableAreaTextInputStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.forceScrollableAreaTextInput, { height: 350 }] :
+      [styles.forceScrollableAreaTextInput]
+    const forceScrollableAreaViewStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.forceScrollableAreaView, { marginTop: -350 }] :
+      [styles.forceScrollableAreaView]
+    const signInButtonTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.signInButtonText, { fontSize: 10 }] :
+      [styles.signInButtonText]
 
     return (
       <ScrollView
@@ -196,8 +207,8 @@ export class SignUp extends React.Component<Props, State> {
         />
         <TextInput
           editable={false}
-          style={styles.forceScrollableAreaTextInput} />
-        <View style={styles.forceScrollableAreaView}>
+          style={forceScrollableAreaTextInputStyle} />
+        <View style={forceScrollableAreaViewStyle}>
           <PasswordValidationInfo
             hasAtLeastXCharacters={hasAtLeastXCharacters}
             hasLowercase={hasLowercase}
@@ -214,7 +225,7 @@ export class SignUp extends React.Component<Props, State> {
                 color={PV.Colors.white}
                 size='small' />
             ) : (
-              <Text style={[styles.signInButtonText, checkIfSubmitIsDisabledTextStyle]}>
+              <Text style={[signInButtonTextStyle, checkIfSubmitIsDisabledTextStyle]}>
                 Sign Up
               </Text>
             )}
