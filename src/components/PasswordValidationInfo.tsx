@@ -16,19 +16,30 @@ type State = {}
 export class PasswordValidationInfo extends React.PureComponent<Props, State> {
   render() {
     const { hasAtLeastXCharacters, hasLowercase, hasNumber, hasUppercase, style } = this.props
+    const { fontScaleMode } = this.global
+
+    const labelStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.label, { fontSize: 9 }] :
+      [styles.label]
+    const validTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.validText, { fontSize: 9 }] :
+      [styles.validText]
+    const invalidTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.invalidText, { fontSize: 9 }] :
+      [styles.invalidText]
 
     return (
       <View style={[styles.wrapper, style]}>
         <View style={styles.textRow}>
           <Text
             numberOfLines={1}
-            style={styles.label}>Password requirements:
+            style={labelStyle}>Password requirements:
           </Text>
         </View>
         <View style={styles.textRow}>
           <Text
             numberOfLines={1}
-            style={hasUppercase ? styles.validText : styles.invalidText}>- has uppercase
+            style={hasUppercase ? validTextStyle : invalidTextStyle}>- has uppercase
           </Text>
           {
             hasUppercase &&
@@ -42,7 +53,7 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
         <View style={styles.textRow}>
           <Text
             numberOfLines={1}
-            style={hasLowercase ? styles.validText : styles.invalidText}>- has lowercase
+            style={hasLowercase ? validTextStyle : invalidTextStyle}>- has lowercase
           </Text>
           {
             hasLowercase &&
@@ -56,7 +67,7 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
         <View style={styles.textRow}>
           <Text
             numberOfLines={1}
-            style={hasNumber ? styles.validText : styles.invalidText}>- has number
+            style={hasNumber ? validTextStyle : invalidTextStyle}>- has number
           </Text>
           {
             hasNumber &&
@@ -70,7 +81,7 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
         <View style={styles.textRow}>
           <Text
             numberOfLines={1}
-            style={hasAtLeastXCharacters ? styles.validText : styles.invalidText}>- is at least 8 characters
+            style={hasAtLeastXCharacters ? validTextStyle : invalidTextStyle}>- is at least 8 characters
           </Text>
           {
             hasAtLeastXCharacters &&
@@ -89,20 +100,17 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
 const styles = StyleSheet.create({
   icon: {
     color: PV.Colors.greenLighter,
-    lineHeight: 26,
     marginLeft: 8
   },
   invalidText: {
     color: PV.Colors.white,
-    fontSize: PV.Fonts.sizes.lg,
-    lineHeight: 26
+    fontSize: PV.Fonts.sizes.lg
   },
   label: {
     color: PV.Colors.white,
     flex: 0,
     fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.bold,
-    lineHeight: 26
+    fontWeight: PV.Fonts.weights.bold
   },
   textRow: {
     flexDirection: 'row',
@@ -110,8 +118,7 @@ const styles = StyleSheet.create({
   },
   validText: {
     color: PV.Colors.greenLighter,
-    fontSize: PV.Fonts.sizes.lg,
-    lineHeight: 26
+    fontSize: PV.Fonts.sizes.lg
   },
   wrapper: {
     flex: 1
