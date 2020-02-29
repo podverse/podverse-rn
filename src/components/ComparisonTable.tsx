@@ -1,12 +1,21 @@
-import React from 'react'
 import { FlatList, StyleSheet } from 'react-native'
-import { useGlobal } from 'reactn'
+import React, { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Divider, Icon, Text, View } from './'
 
 export const ComparisonTable = (props: any) => {
   const { column1Title, column2Title, data, mainTitle } = props
-  const [globalTheme] = useGlobal('globalTheme')
+  const { fontScaleMode, globalTheme } = getGlobal()
+
+  const tableHeaderTextLeftStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+    [styles.tableHeaderTextLeft, { fontSize: 7 }] :
+    [styles.tableHeaderTextLeft]
+  const tableHeaderTextRightStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+    [styles.tableHeaderTextRight, { fontSize: 7 }] :
+    [styles.tableHeaderTextRight]
+  const columnTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+    [styles.columnText, { fontSize: 7 }] :
+    [styles.columnText]
 
   return (
     <View style={styles.wrapper}>
@@ -14,7 +23,7 @@ export const ComparisonTable = (props: any) => {
         <Text
           numberOfLines={1}
           style={[
-            styles.tableHeaderTextLeft,
+            tableHeaderTextLeftStyle,
             globalTheme.tableSectionHeaderText
           ]}>
           {mainTitle}
@@ -22,7 +31,7 @@ export const ComparisonTable = (props: any) => {
         <Text
           numberOfLines={1}
           style={[
-            styles.tableHeaderTextRight,
+            tableHeaderTextRightStyle,
             globalTheme.tableSectionHeaderText
           ]}>
           {column1Title}
@@ -30,7 +39,7 @@ export const ComparisonTable = (props: any) => {
         <Text
           numberOfLines={1}
           style={[
-            styles.tableHeaderTextRight,
+            tableHeaderTextRightStyle,
             globalTheme.tableSectionHeaderText
           ]}>
           {column2Title}
@@ -42,7 +51,7 @@ export const ComparisonTable = (props: any) => {
         renderItem={({ item }) => (
           <View key={item.text} style={styles.tableRow}>
             <View style={styles.columnTextWrapper}>
-              <Text style={styles.columnText}>{item.text}</Text>
+              <Text style={columnTextStyle}>{item.text}</Text>
             </View>
             <View style={styles.columnIcon}>
               {item.column1 && (

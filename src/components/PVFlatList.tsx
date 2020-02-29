@@ -1,7 +1,7 @@
 import React from 'react'
 import { RefreshControl, StyleSheet } from 'react-native'
 import { SwipeListView } from 'react-native-swipe-list-view'
-import { useGlobal } from 'reactn'
+import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { GlobalTheme } from '../resources/Interfaces'
 import { ActivityIndicator, MessageWithAction, Text, TextLink, View } from './'
@@ -39,7 +39,6 @@ type Props = {
 const _renderHiddenItem = () => <View />
 
 export const PVFlatList = (props: Props) => {
-  const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
   const {
     data,
     dataTotalCount,
@@ -65,6 +64,7 @@ export const PVFlatList = (props: Props) => {
     showNoInternetConnectionMessage,
     showRequestPodcast
   } = props
+  const { fontScaleMode, globalTheme } = getGlobal()
 
   let noResultsFound = false
   let endOfResults = false
@@ -83,14 +83,25 @@ export const PVFlatList = (props: Props) => {
     endOfResults = true
   }
 
+  const textLinkStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+    [styles.textLink, { fontSize: 10 }] :
+    [styles.textLink]
+  const noResultsFoundTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+    [styles.noResultsFoundText, { fontSize: 10 }] :
+    [styles.noResultsFoundText]
+
   const requestPodcastTextLink = (
-    <TextLink onPress={handleRequestPodcast} style={[styles.textLink]}>
+    <TextLink
+      onPress={handleRequestPodcast}
+      style={textLinkStyle}>
       Request Podcast
     </TextLink>
   )
 
   const addPodcastByRSSTextLink = (
-    <TextLink onPress={handleAddPodcastByRSSURLNavigation} style={[styles.textLink]}>
+    <TextLink
+      onPress={handleAddPodcastByRSSURLNavigation}
+      style={textLinkStyle}>
       Add Podcast by RSS Feed
     </TextLink>
   )
@@ -107,12 +118,12 @@ export const PVFlatList = (props: Props) => {
       )}
       {showNoInternetConnectionMessage && !dataTotalCount && !isLoadingMore && (
         <View style={styles.msgView}>
-          <Text style={[styles.noResultsFoundText]}>{`No internet connection`}</Text>
+          <Text style={noResultsFoundTextStyle}>{`No internet connection`}</Text>
         </View>
       )}
       {noResultsFound && !noSubscribedPodcasts && !isLoadingMore && !showNoInternetConnectionMessage && (
         <View style={styles.msgView}>
-          <Text style={[styles.noResultsFoundText]}>{`No ${resultsText} found`}</Text>
+          <Text style={noResultsFoundTextStyle}>{`No ${resultsText} found`}</Text>
           {showRequestPodcast && requestPodcastTextLink}
           {showAddPodcastByRSS && addPodcastByRSSTextLink}
         </View>
@@ -183,7 +194,7 @@ const styles = StyleSheet.create({
     padding: 24
   },
   lastCellText: {
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.xl,
     textAlign: 'center'
   },
   msgView: {
@@ -192,13 +203,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   noResultsFoundText: {
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.xl,
     marginVertical: 12,
     paddingVertical: 12,
     textAlign: 'center'
   },
   textLink: {
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.xl,
     marginVertical: 12,
     paddingVertical: 12,
     textAlign: 'center'

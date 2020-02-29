@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   ActivityIndicator,
   StyleSheet,
@@ -7,6 +6,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
+import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { PV } from '../resources'
 
@@ -50,10 +50,22 @@ export class ResetPassword extends React.Component<Props, State> {
     const { submitIsDisabled } = this.state
     const disabledStyle = submitIsDisabled ? { backgroundColor: PV.Colors.gray } : null
     const disabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
+    const { fontScaleMode } = this.global
+
+    const headerLabelStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.headerLabel, { fontSize: 10 }] :
+      [styles.headerLabel]
+    const signInButtonTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.signInButtonText, disabledTextStyle, { fontSize: 10 }] :
+      [styles.signInButtonText, disabledTextStyle]
 
     return (
       <View style={[styles.view, style]}>
-        <Text numberOfLines={1} style={styles.headerLabel}>Reset Password</Text>
+        <Text
+          numberOfLines={1}
+          style={headerLabelStyle}>
+          Reset Password
+        </Text>
         <TextInput
           autoCapitalize='none'
           autoCompleteType='email'
@@ -74,7 +86,7 @@ export class ResetPassword extends React.Component<Props, State> {
               color={PV.Colors.gray}
               size='small' />
           ) : (
-            <Text style={[styles.signInButtonText, disabledTextStyle]}>
+            <Text style={signInButtonTextStyle}>
               Send Reset
             </Text>
           )}

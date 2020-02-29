@@ -28,12 +28,12 @@ export const MessageWithAction = (props: Props) => {
       )}
       {!isLoading && !!topActionText && topActionHandler && (
         <TouchableOpacity onPress={topActionHandler}>
-          <Text style={[globalTheme.text, styles.button]}>{topActionText}</Text>
+          <Text style={[styles.button, globalTheme.text]}>{topActionText}</Text>
         </TouchableOpacity>
       )}
       {!isLoading && !!bottomActionText && bottomActionHandler && (
         <TouchableOpacity onPress={bottomActionHandler}>
-          <Text style={[globalTheme.text, styles.button]}>{bottomActionText}</Text>
+          <Text style={[styles.button, globalTheme.text]}>{bottomActionText}</Text>
         </TouchableOpacity>
       )}
       {isLoading && <ActivityIndicator />}

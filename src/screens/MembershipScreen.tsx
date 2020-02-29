@@ -106,7 +106,7 @@ export class MembershipScreen extends React.Component<Props, State> {
 
   render() {
     const { disableButton, isLoading, showNoInternetConnectionMessage } = this.state
-    const { globalTheme, session } = this.global
+    const { fontScaleMode, globalTheme, session } = this.global
     const { isLoggedIn, userInfo } = session
     const membershipStatus = getMembershipStatus(userInfo)
     const membershipTextStyle = getMembershipTextStyle(
@@ -115,13 +115,26 @@ export class MembershipScreen extends React.Component<Props, State> {
     )
     const expirationDate = getMembershipExpiration(userInfo)
 
+    const labelStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.label, { fontSize: 10 }] :
+      [styles.label]
+    const subTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.subText, { fontSize: 10 }] :
+      [styles.subText]
+    const subTextCenteredStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.subTextCentered, { fontSize: 10 }] :
+      [styles.subTextCentered]
+    const textStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.text, { fontSize: 10 }] :
+      [styles.text]
+
     return (
       <View style={styles.wrapper}>
         {isLoading && isLoggedIn && <ActivityIndicator />}
         {
           !isLoading && showNoInternetConnectionMessage &&
             <View style={styles.textRowCentered}>
-              <Text style={[styles.subText, { textAlign: 'center' }]}>
+              <Text style={[subTextStyle, { textAlign: 'center' }]}>
                 Connect to the internet and reload this page to sign up for Premium.
               </Text>
             </View>
@@ -129,20 +142,20 @@ export class MembershipScreen extends React.Component<Props, State> {
         {!isLoading && isLoggedIn && !!membershipStatus && (
           <View>
             <View style={styles.textRow}>
-              <Text style={styles.label}>Status: </Text>
-              <Text style={[styles.text, membershipTextStyle]}>
+              <Text style={labelStyle}>Status: </Text>
+              <Text style={[textStyle, membershipTextStyle]}>
                 {membershipStatus}
               </Text>
             </View>
             <View style={styles.textRow}>
-              <Text style={styles.label}>Expires: </Text>
-              <Text style={[styles.text]}>{readableDate(expirationDate)}</Text>
+              <Text style={labelStyle}>Expires: </Text>
+              <Text style={textStyle}>{readableDate(expirationDate)}</Text>
             </View>
             <View style={styles.textRowCentered}>
               <TextLink
                 disabled={disableButton}
                 onPress={this.handleRenewPress}
-                style={[styles.subText]}>
+                style={subTextStyle}>
                 Renew Membership
               </TextLink>
             </View>
@@ -151,18 +164,18 @@ export class MembershipScreen extends React.Component<Props, State> {
         {!isLoading && !isLoggedIn && (
           <View>
             <View style={styles.textRowCentered}>
-              <Text style={styles.subTextCentered}>
+              <Text style={subTextCenteredStyle}>
                 Get 1 year of Podverse Premium for free
               </Text>
             </View>
             <View style={styles.textRowCentered}>
-              <Text style={styles.subTextCentered}>$10/year after that</Text>
+              <Text style={subTextCenteredStyle}>$10/year after that</Text>
             </View>
             <View style={styles.textRowCentered}>
               <TextLink
                 disabled={disableButton}
                 onPress={this.handleSignUpPress}
-                style={[styles.subText]}>
+                style={subTextStyle}>
                 Sign Up
               </TextLink>
             </View>

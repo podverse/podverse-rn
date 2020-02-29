@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   Alert,
   Image,
@@ -8,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   View
 } from 'react-native'
+import React from 'reactn'
 import { Icon, Login, ResetPassword, SafeAreaView, SignUp } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
@@ -167,7 +167,12 @@ export class AuthScreen extends React.Component<Props, State> {
       isLoadingSignUp,
       screenType
     } = this.state
+    const { fontScaleMode } = this.global
     let bottomButtons
+
+    const switchOptionTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.switchOptionText, { fontSize: 10 }] :
+      [styles.switchOptionText]
 
     if (screenType === _login) {
       bottomButtons = [
@@ -175,7 +180,7 @@ export class AuthScreen extends React.Component<Props, State> {
           <Text
             key='reset'
             onPress={this._showResetPassword}
-            style={styles.switchOptionText}>
+            style={switchOptionTextStyle}>
             Reset Password
           </Text>
         ),
@@ -183,7 +188,7 @@ export class AuthScreen extends React.Component<Props, State> {
           <Text
             key='moreInfo'
             onPress={this._showMembership}
-            style={[styles.switchOptionText, { marginTop: 0, width: '100%' }]}>
+            style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}>
             Sign Up
           </Text>
         )
@@ -266,32 +271,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   contentView: {
-    width: '100%',
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center'
+    width: '100%'
   },
   safeAreaView: {
     backgroundColor: PV.Colors.brandColor
   },
   switchOptionText: {
     color: PV.Colors.white,
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.xl,
     marginTop: 16,
     padding: 16,
     textAlign: 'center',
-    textDecorationLine: 'underline',
-    width: '65%'
+    textDecorationLine: 'underline'
   },
   view: {
-    flex: 1,
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: PV.Colors.brandColor
+    backgroundColor: PV.Colors.brandColor,
+    flex: 1,
+    justifyContent: 'flex-start'
   },
   viewWithoutBanner: {
-    flex: 1,
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: PV.Colors.brandColor
+    backgroundColor: PV.Colors.brandColor,
+    flex: 1,
+    justifyContent: 'flex-start'
   }
 })

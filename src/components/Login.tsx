@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   ActivityIndicator,
   StyleSheet,
@@ -7,6 +6,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
+import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { PV } from '../resources'
 
@@ -60,8 +60,13 @@ export class Login extends React.Component<Props, State> {
   render() {
     const { bottomButtons, isLoading, style } = this.props
     const { email, password, submitIsDisabled } = this.state
+    const { fontScaleMode } = this.global
     const disabledStyle = submitIsDisabled ? { backgroundColor: PV.Colors.gray } : null
     const disabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
+
+    const signInButtonTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.signInButtonText, disabledTextStyle, { fontSize: 10 }] :
+      [styles.signInButtonText, disabledTextStyle]
 
     return (
       <View style={[styles.view, style]}>
@@ -101,7 +106,7 @@ export class Login extends React.Component<Props, State> {
               color={PV.Colors.gray}
               size='small' />
           ) : (
-            <Text style={[styles.signInButtonText, disabledTextStyle]}>
+            <Text style={signInButtonTextStyle}>
               Login
             </Text>
           )}
@@ -113,30 +118,30 @@ export class Login extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
-  textField: {
-    width: '80%',
-    height: 50,
-    marginBottom: 40,
-    backgroundColor: PV.Colors.white,
-    color: PV.Colors.black,
-    fontSize: PV.Fonts.sizes.lg,
-    paddingLeft: 20
-  },
   signInButton: {
     alignItems: 'center',
     backgroundColor: PV.Colors.white,
-    marginBottom: 300,
+    marginBottom: 16,
     padding: 16,
     width: '65%'
   },
   signInButtonText: {
-    fontSize: PV.Fonts.sizes.md,
     color: PV.Colors.brandColor,
+    fontSize: PV.Fonts.sizes.md,
     fontWeight: 'bold'
   },
+  textField: {
+    backgroundColor: PV.Colors.white,
+    color: PV.Colors.black,
+    fontSize: PV.Fonts.sizes.lg,
+    height: 50,
+    marginBottom: 40,
+    paddingLeft: 20,
+    width: '80%'
+  },
   view: {
-    width: '100%',
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center'
+    width: '100%'
   }
 })
