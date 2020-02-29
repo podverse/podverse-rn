@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity } from 'react-native'
-import React, { useGlobal } from 'reactn'
+import React, { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { ActivityIndicator, Text, View } from './'
 
@@ -16,24 +16,34 @@ type Props = {
 export const MessageWithAction = (props: Props) => {
   const { bottomActionHandler, bottomActionText, isLoading, message, subMessage, topActionHandler,
     topActionText } = props
-  const [globalTheme] = useGlobal('globalTheme')
+  const { fontScaleMode, globalTheme } = getGlobal()
+
+  const messageStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+    [styles.message, { fontSize: 10 }] :
+    [styles.message]
+  const subMessageStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+    [styles.subMessage, { fontSize: 9 }] :
+    [styles.subMessage]
+  const buttonStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+    [styles.button, { fontSize: 9 }] :
+    [styles.button]
 
   return (
     <View style={styles.view}>
       {!!message && (
-        <Text style={[globalTheme.text, styles.message]}>{message}</Text>
+        <Text style={[globalTheme.text, messageStyle]}>{message}</Text>
       )}
       {!!subMessage && (
-        <Text style={[globalTheme.text, styles.subMessage]}>{subMessage}</Text>
+        <Text style={[globalTheme.text, subMessageStyle]}>{subMessage}</Text>
       )}
       {!isLoading && !!topActionText && topActionHandler && (
         <TouchableOpacity onPress={topActionHandler}>
-          <Text style={[styles.button, globalTheme.text]}>{topActionText}</Text>
+          <Text style={[buttonStyle, globalTheme.text]}>{topActionText}</Text>
         </TouchableOpacity>
       )}
       {!isLoading && !!bottomActionText && bottomActionHandler && (
         <TouchableOpacity onPress={bottomActionHandler}>
-          <Text style={[styles.button, globalTheme.text]}>{bottomActionText}</Text>
+          <Text style={[buttonStyle, globalTheme.text]}>{bottomActionText}</Text>
         </TouchableOpacity>
       )}
       {isLoading && <ActivityIndicator />}
