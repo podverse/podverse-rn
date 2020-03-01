@@ -59,8 +59,8 @@ const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: PV.Fonts.sizes.xl,
-    height: 44,
     justifyContent: 'center',
+    minHeight: 44,
     textAlign: 'center',
     width: 51
   },

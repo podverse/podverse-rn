@@ -128,6 +128,6 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexDirection: 'row',
-    height: PV.Table.cells.podcast.wrapper.height
+    minHeight: PV.Table.cells.podcast.wrapper.height
   }
 })

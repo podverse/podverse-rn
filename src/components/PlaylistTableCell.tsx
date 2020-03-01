@@ -90,8 +90,8 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     alignItems: 'center',
-    height: PV.Table.cells.standard.height,
     justifyContent: 'space-between',
+    minHeight: PV.Table.cells.standard.height,
     paddingLeft: 8,
     paddingRight: 8
   },

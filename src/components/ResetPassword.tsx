@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
     backgroundColor: PV.Colors.white,
     color: PV.Colors.black,
     fontSize: PV.Fonts.sizes.lg,
-    height: 50,
     marginBottom: 40,
+    minHeight: 50,
     paddingLeft: 20,
     width: '80%'
   },

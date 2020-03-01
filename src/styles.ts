@@ -544,7 +544,7 @@ export const core = StyleSheet.create({
   },
   textInput: {
     fontSize: PV.Fonts.sizes.xl,
-    height: 44,
+    minHeight: 44,
     justifyContent: 'center',
     paddingHorizontal: 8
   },
@@ -649,7 +649,7 @@ export const sliderStyles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   wrapper: {
-    height: 56,
+    minHeight: 56,
     marginBottom: 8,
     position: 'relative'
   }

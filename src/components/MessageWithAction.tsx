@@ -61,9 +61,9 @@ const styles = StyleSheet.create({
   button: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    height: 44,
     marginHorizontal: 16,
-    marginVertical: 12
+    marginVertical: 12,
+    minHeight: 44
   },
   message: {
     fontSize: PV.Fonts.sizes.xl,

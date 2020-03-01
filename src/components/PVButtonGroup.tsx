@@ -38,11 +38,11 @@ export const PVButtonGroup = (props: Props) => {
 
 const styles = StyleSheet.create({
   button: {
-    height: 56
+    minHeight: 56
   },
   container: {
-    height: 56,
-    marginTop: 12
+    marginTop: 12,
+    minHeight: 56
   },
   selectedButton: {
     flex: 0
