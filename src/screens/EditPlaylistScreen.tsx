@@ -40,9 +40,9 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     return {
       title: 'Edit Playlist',
       headerRight: (
-        <TouchableOpacity onPress={navigation.getParam('updatePlaylist')}>
-          <NavHeaderButtonText text='Save' />
-        </TouchableOpacity>
+        <NavHeaderButtonText
+          handlePress={navigation.getParam('updatePlaylist')}
+          text='Save' />
       )
     }
   }

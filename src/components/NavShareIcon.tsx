@@ -1,9 +1,8 @@
 import React from 'react'
-import { View } from 'react-native'
 import Share from 'react-native-share'
 import { PV } from '../resources'
 import { navHeader } from '../styles'
-import { Icon } from './'
+import { Icon, NavItemWrapper } from './'
 
 type Props = {
   clipTitle?: string
@@ -55,13 +54,12 @@ export const NavShareIcon = (props: Props) => {
   }
 
   return (
-    <View style={navHeader.buttonWrapper}>
+    <NavItemWrapper handlePress={handlePress ? handlePress : onShare}>
       <Icon
         color='#fff'
         name='share'
-        onPress={handlePress ? handlePress : onShare}
         size={PV.Icons.NAV}
         style={navHeader.buttonIcon} />
-    </View>
+    </NavItemWrapper>
   )
 }

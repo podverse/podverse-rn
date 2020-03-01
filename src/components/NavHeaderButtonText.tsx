@@ -1,15 +1,18 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { Text, TouchableOpacity, View } from 'react-native'
 import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { navHeader } from '../styles'
 
 type Props = {
+  disabled?: boolean
+  handlePress: any
   style?: any
   text: string
 }
 
 export const NavHeaderButtonText = (props: Props) => {
+  const { disabled, handlePress } = props
   const { fontScaleMode } = getGlobal()
 
   const buttonTextStyle = [navHeader.buttonText]
@@ -20,8 +23,12 @@ export const NavHeaderButtonText = (props: Props) => {
   }
 
   return (
-    <View style={[navHeader.buttonWrapper, props.style]}>
-      <Text style={buttonTextStyle}>{props.text}</Text>
-    </View>
+    <TouchableOpacity
+      disabled={disabled}
+      onPress={handlePress}>
+      <View style={[navHeader.buttonWrapper, props.style]}>
+        <Text style={buttonTextStyle}>{props.text}</Text>
+      </View>
+    </TouchableOpacity>
   )
 }

@@ -1,8 +1,7 @@
 import React from 'react'
-import { View } from 'react-native'
 import { PV } from '../resources'
 import { navHeader } from '../styles'
-import { Icon } from './'
+import { Icon, NavItemWrapper } from './'
 
 type Props = {
   navigation: any
@@ -11,14 +10,17 @@ type Props = {
 export const NavQueueIcon = (props: Props) => {
   const { navigation } = props
 
+  const handlePress = () => {
+    navigation.navigate(PV.RouteNames.QueueScreen)
+  }
+
   return (
-    <View style={navHeader.buttonWrapper}>
+    <NavItemWrapper handlePress={handlePress}>
       <Icon
         color='#fff'
         name='list'
-        onPress={() => navigation.navigate(PV.RouteNames.QueueScreen)}
         size={PV.Icons.NAV}
         style={navHeader.buttonIcon} />
-    </View>
+    </NavItemWrapper>
   )
 }

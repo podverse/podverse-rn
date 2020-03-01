@@ -594,7 +594,8 @@ export const navHeader = StyleSheet.create({
   buttonWrapper: {
     alignSelf: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 12
+    paddingHorizontal: 12,
+    paddingVertical: 12
   }
 })
 

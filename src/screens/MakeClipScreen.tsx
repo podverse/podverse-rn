@@ -65,9 +65,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
     title: navigation.getParam('isEditing') ? 'Edit Clip' : 'Make Clip',
     headerRight: (
       <RNView style={styles.navHeaderButtonWrapper}>
-        <TouchableOpacity onPress={navigation.getParam('_saveMediaRef')}>
-          <NavHeaderButtonText text='Save' />
-        </TouchableOpacity>
+          <NavHeaderButtonText
+            handlePress={navigation.getParam('_saveMediaRef')}
+            text='Save' />
       </RNView>
     )
   })
