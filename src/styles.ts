@@ -430,7 +430,8 @@ export const lightTheme = StyleSheet.create({
 
 export const tabbar = StyleSheet.create({
   label: {
-    fontSize: PV.Fonts.sizes.tiny
+    fontSize: PV.Fonts.sizes.tiny,
+    textAlign: 'center'
   }
 })
 
