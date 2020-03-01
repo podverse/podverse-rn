@@ -56,6 +56,9 @@ export const PVTextInput = (props: Props) => {
   } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
     textInputStyle.push({ fontSize: fontSizeLargestScale })
   }
+  if (numberOfLines > 1) {
+    textInputStyle.push({ textAlignVertical: 'top' })
+  }
 
   return (
     <TextInput
@@ -64,7 +67,7 @@ export const PVTextInput = (props: Props) => {
       blurOnSubmit={returnKeyType === 'done'}
       editable={editable}
       keyboardType={keyboardType}
-      multiline={numberOfLines > 0}
+      multiline={numberOfLines > 1}
       numberOfLines={numberOfLines}
       onBlur={onBlur}
       onChange={onChange}

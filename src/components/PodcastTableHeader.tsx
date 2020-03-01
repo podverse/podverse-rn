@@ -142,11 +142,12 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     flex: 1,
+    paddingBottom: 4,
     paddingRight: 8,
-    paddingTop: 4
+    paddingTop: 2
   },
   textWrapperBottom: {
-    alignItems: 'center',
+    alignItems: 'flex-end',
     flex: 0,
     flexDirection: 'row',
     justifyContent: 'space-between'
