@@ -2,6 +2,7 @@ import { Animated, Modal, Text, TouchableHighlight, View } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator } from '.'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
+import { PV } from '../resources'
 import { actionSheetStyles } from '../styles'
 
 type Props = {
@@ -36,7 +37,7 @@ export class PVActionSheet extends React.Component<Props, State> {
   generateButtons = (items: any[]) => {
     const { handleCancelPress, message, title } = this.props
     const { isLoadingQueueLast, isLoadingQueueNext } = this.state
-    const { globalTheme } = this.global
+    const { fontScaleMode, globalTheme } = this.global
     const buttons = []
 
     if (items && items.length > 0) {
@@ -62,6 +63,11 @@ export class PVActionSheet extends React.Component<Props, State> {
           buttonTextStyle = globalTheme.actionSheetButtonTextDelete
         } else if (item.key === 'editClip') {
           buttonTextStyle = globalTheme.actionSheetButtonTextEdit
+        }
+
+        if (fontScaleMode === PV.Fonts.fontScale.largest) {
+          buttonTextStyle = [buttonTextStyle]
+          buttonTextStyle.push({ fontSize: PV.Fonts.largeSizes.md })
         }
 
         const isQueueButton = item.key === 'queueNext' || item.key === 'queueLast'
@@ -96,7 +102,9 @@ export class PVActionSheet extends React.Component<Props, State> {
               globalTheme.actionSheetButtonUnderlay.backgroundColor
             }>
             <View style={actionSheetStyles.buttonRow}>
-              <Text style={[actionSheetStyles.buttonText, buttonTextStyle]}>
+              <Text
+                numberOfLines={1}
+                style={[actionSheetStyles.buttonText, buttonTextStyle]}>
                 {item.text}
               </Text>
               {item.isDownloading && (
@@ -118,6 +126,11 @@ export class PVActionSheet extends React.Component<Props, State> {
       })
 
       if (handleCancelPress) {
+        const buttonTextCancelStyle = [actionSheetStyles.buttonText, globalTheme.actionSheetButtonTextCancel]
+        if (fontScaleMode === PV.Fonts.fontScale.largest) {
+          buttonTextCancelStyle.push({ fontSize: PV.Fonts.largeSizes.md })
+        }
+
         buttons.push(
           <TouchableHighlight
             key='cancel'
@@ -127,10 +140,8 @@ export class PVActionSheet extends React.Component<Props, State> {
               safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor, '')
             }>
             <Text
-              style={[
-                actionSheetStyles.buttonText,
-                globalTheme.actionSheetButtonTextCancel
-              ]}>
+              numberOfLines={1}
+              style={buttonTextCancelStyle}>
               Cancel
             </Text>
           </TouchableHighlight>
@@ -143,9 +154,18 @@ export class PVActionSheet extends React.Component<Props, State> {
 
   render() {
     const { children, items, message, showModal, title } = this.props
-    const { globalTheme } = this.global
+    const { fontScaleMode, globalTheme } = this.global
     const finalItems = typeof items === 'function' ? items() : items
     const buttons = children ? children : this.generateButtons(finalItems)
+
+    const headerTitleStyle = [actionSheetStyles.headerTitle, globalTheme.actionSheetHeaderText]
+    if (fontScaleMode === PV.Fonts.fontScale.largest) {
+      headerTitleStyle.push({ fontSize: PV.Fonts.largeSizes.sm })
+    }
+    const headerMessageStyle = [actionSheetStyles.headerMessage, globalTheme.actionSheetHeaderText]
+    if (fontScaleMode === PV.Fonts.fontScale.largest) {
+      headerMessageStyle.push({ fontSize: PV.Fonts.largeSizes.sm })
+    }
 
     return (
       <Modal transparent={true} visible={showModal}>
@@ -163,19 +183,14 @@ export class PVActionSheet extends React.Component<Props, State> {
               <View style={[actionSheetStyles.header, globalTheme.actionSheetButton]}>
                 {!!title && (
                   <Text
-                    style={[
-                      actionSheetStyles.headerTitle,
-                      globalTheme.actionSheetHeaderText
-                    ]}>
+                    numberOfLines={1}
+                    style={headerTitleStyle}>
                     {title}
                   </Text>
                 )}
                 {!!message && (
                   <Text
-                    style={[
-                      actionSheetStyles.headerMessage,
-                      globalTheme.actionSheetHeaderText
-                    ]}>
+                    style={headerMessageStyle}>
                     {message}
                   </Text>
                 )}

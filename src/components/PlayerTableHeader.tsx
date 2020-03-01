@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import React from 'reactn'
+import React, { getGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
@@ -13,6 +13,9 @@ type Props = {
 
 export const PlayerTableHeader = (props: Props) => {
   const { isLoading, nowPlayingItem, onPress } = props
+  const { fontScaleMode } = getGlobal()
+
+  const episodeTitleNumberOfLines = PV.Fonts.fontScale.largest === fontScaleMode ? 1 : 2
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>
@@ -30,15 +33,24 @@ export const PlayerTableHeader = (props: Props) => {
               styles={styles.image}
             />
             <View style={styles.textWrapper}>
-              <Text isSecondary={true} numberOfLines={1} style={styles.podcastTitle}>
-                {nowPlayingItem.podcastTitle}
-              </Text>
+              {
+                fontScaleMode !== PV.Fonts.fontScale.largest &&
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    isSecondary={true}
+                    numberOfLines={1}
+                    style={styles.podcastTitle}>
+                    {nowPlayingItem.podcastTitle}
+                  </Text>
+              }
               <Text
-                numberOfLines={2}
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                numberOfLines={episodeTitleNumberOfLines}
                 style={styles.episodeTitle}>
                 {nowPlayingItem.episodeTitle}
               </Text>
               <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 isSecondary={true}
                 numberOfLines={1}
                 style={styles.episodePubDate}>
@@ -54,14 +66,11 @@ export const PlayerTableHeader = (props: Props) => {
 
 const styles = StyleSheet.create({
   episodePubDate: {
-    fontSize: PV.Fonts.sizes.sm,
-    marginTop: 3
+    fontSize: PV.Fonts.sizes.sm
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    lineHeight: PV.Fonts.sizes.xl,
-    marginTop: 5
+    fontWeight: PV.Fonts.weights.bold
   },
   image: {
     flex: 0,
@@ -71,15 +80,14 @@ const styles = StyleSheet.create({
   podcastTitle: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    justifyContent: 'flex-start',
-    lineHeight: PV.Fonts.sizes.md
+    justifyContent: 'flex-start'
   },
   textWrapper: {
     flex: 1,
     marginHorizontal: 8,
-    marginTop: 6
+    marginTop: 4
   },
   wrapper: {
-    height: PV.Table.cells.podcast.wrapper.height
+    minHeight: PV.Table.cells.podcast.wrapper.height
   }
 })

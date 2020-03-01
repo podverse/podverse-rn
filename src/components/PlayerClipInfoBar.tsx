@@ -22,12 +22,14 @@ export class PlayerClipInfoBar extends React.PureComponent<Props, State> {
       <TouchableWithoutFeedback onPress={handleOnPress}>
         <View style={[styles.wrapper, globalTheme.player]}>
           <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
             style={[styles.title, globalTheme.playerText]}>
             {nowPlayingItem.clipTitle || 'untitled clip'}
           </Text>
           {!!clipStartTime && (
             <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               isSecondary={true}
               numberOfLines={1}
               style={[styles.time, globalTheme.playerText]}>
@@ -53,7 +55,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     borderTopWidth: 1,
-    height: 62,
+    minHeight: 62,
     justifyContent: 'center'
   }
 })

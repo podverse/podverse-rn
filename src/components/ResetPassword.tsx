@@ -1,13 +1,13 @@
-import React from 'react'
 import {
   ActivityIndicator,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View
 } from 'react-native'
+import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
+import { TextInput } from '.'
 import { PV } from '../resources'
 
 type Props = {
@@ -50,12 +50,26 @@ export class ResetPassword extends React.Component<Props, State> {
     const { submitIsDisabled } = this.state
     const disabledStyle = submitIsDisabled ? { backgroundColor: PV.Colors.gray } : null
     const disabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
+    const { fontScaleMode } = this.global
+
+    const headerLabelStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.headerLabel, { fontSize: PV.Fonts.largeSizes.md }] :
+      [styles.headerLabel]
+    const signInButtonTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.signInButtonText, disabledTextStyle, { fontSize: PV.Fonts.largeSizes.md }] :
+      [styles.signInButtonText, disabledTextStyle]
 
     return (
       <View style={[styles.view, style]}>
+        <Text
+          numberOfLines={1}
+          style={headerLabelStyle}>
+          Reset Password
+        </Text>
         <TextInput
           autoCapitalize='none'
           autoCompleteType='email'
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           keyboardType='email-address'
           onChangeText={this._emailChanged}
           placeholder='Email'
@@ -73,7 +87,7 @@ export class ResetPassword extends React.Component<Props, State> {
               color={PV.Colors.gray}
               size='small' />
           ) : (
-            <Text style={[styles.signInButtonText, disabledTextStyle]}>
+            <Text style={[signInButtonTextStyle, disabledTextStyle]}>
               Send Reset
             </Text>
           )}
@@ -84,9 +98,16 @@ export class ResetPassword extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
+  headerLabel: {
+    color: PV.Colors.white,
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    marginBottom: 20
+  },
   signInButton: {
     alignItems: 'center',
     backgroundColor: PV.Colors.white,
+    marginBottom: 300,
     padding: 16,
     width: '65%'
   },
@@ -99,8 +120,8 @@ const styles = StyleSheet.create({
     backgroundColor: PV.Colors.white,
     color: PV.Colors.black,
     fontSize: PV.Fonts.sizes.lg,
-    height: 50,
     marginBottom: 40,
+    minHeight: 50,
     paddingLeft: 20,
     width: '80%'
   },

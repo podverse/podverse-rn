@@ -52,11 +52,15 @@ export const PlaylistTableHeader = (props: Props) => {
         {!isLoading && !isNotFound && (
           <View style={[styles.wrapper, core.view]}>
             <View style={styles.textWrapper}>
-              <Text numberOfLines={1} style={styles.title}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                numberOfLines={1}
+                style={styles.title}>
                 {title}
               </Text>
               {!!createdBy && (
                 <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
                   numberOfLines={1}
                   style={styles.createdBy}>
@@ -65,12 +69,16 @@ export const PlaylistTableHeader = (props: Props) => {
               )}
               <View style={styles.row}>
                 <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
                   numberOfLines={1}
                   style={styles.itemCount}>
                   items: {itemCount}
                 </Text>
-                <Text isSecondary={true} style={styles.lastUpdated}>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  isSecondary={true}
+                  style={styles.lastUpdated}>
                   {readableDate(lastUpdated)}
                 </Text>
               </View>
@@ -94,7 +102,11 @@ export const PlaylistTableHeader = (props: Props) => {
         )}
         {!isLoading && isNotFound && (
           <View style={[styles.wrapper, core.view]}>
-            <Text style={styles.notFoundText}>Playlist Not Found</Text>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={styles.notFoundText}>
+              Playlist Not Found
+            </Text>
           </View>
         )}
       </View>
@@ -112,7 +124,6 @@ const styles = StyleSheet.create({
   },
   createdBy: {
     fontSize: PV.Fonts.sizes.sm,
-    lineHeight: PV.Fonts.sizes.sm + 2,
     marginTop: 3
   },
   itemCount: {
@@ -139,12 +150,10 @@ const styles = StyleSheet.create({
   title: {
     flex: 0,
     fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: PV.Fonts.sizes.lg + 2
+    fontWeight: PV.Fonts.weights.semibold
   },
   wrapper: {
     flexDirection: 'row',
-    height: 80,
     padding: 8
   }
 })

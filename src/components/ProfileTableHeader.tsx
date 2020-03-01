@@ -37,7 +37,10 @@ export const ProfileTableHeader = (props: Props) => {
       {!isLoading && !isNotFound && (
         <View style={styles.wrapper}>
           <View style={styles.textWrapper}>
-            <Text numberOfLines={1} style={styles.name}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              numberOfLines={1}
+              style={styles.name}>
               {name}
             </Text>
           </View>
@@ -60,7 +63,11 @@ export const ProfileTableHeader = (props: Props) => {
       )}
       {!isLoading && isNotFound && (
         <View style={[styles.wrapper, core.view]}>
-          <Text style={styles.notFoundText}>Playlist Not Found</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.notFoundText}>
+            Playlist Not Found
+          </Text>
         </View>
       )}
     </View>
@@ -91,8 +98,7 @@ const styles = StyleSheet.create({
   wrapper: {
     alignItems: 'center',
     flexDirection: 'row',
-    height: PV.Table.cells.standard.height,
-    lineHeight: PV.Table.cells.standard.height,
+    minHeight: PV.Table.cells.standard.height,
     marginHorizontal: 8
   }
 })

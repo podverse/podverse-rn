@@ -1,5 +1,5 @@
 import { StyleSheet, Switch } from 'react-native'
-import React from 'reactn'
+import React, { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { core } from '../styles'
 import {
@@ -40,6 +40,9 @@ export const PodcastTableHeader = (props: Props) => {
     podcastTitle = 'untitled podcast',
     showSettings
   } = props
+  const { fontScaleMode } = getGlobal()
+
+  const titleNumberOfLines = [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ? 1 : 2
 
   return (
     <View style={core.row}>
@@ -55,7 +58,10 @@ export const PodcastTableHeader = (props: Props) => {
             styles={styles.image} />
           <View style={styles.textWrapper}>
             <View style={styles.textWrapperTop}>
-              <Text numberOfLines={2} style={styles.title}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                numberOfLines={titleNumberOfLines}
+                style={styles.title}>
                 {podcastTitle}
               </Text>
               <SubscribeButton
@@ -77,7 +83,10 @@ export const PodcastTableHeader = (props: Props) => {
                 )}
               </View>
               <View style={styles.textWrapperBottomRight}>
-                <Text isSecondary={true} style={styles.autoDownloadText}>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                  isSecondary={true}
+                  style={styles.autoDownloadText}>
                   Auto
                 </Text>
                 <IndicatorDownload style={styles.autoDownloadIcon} />
@@ -92,7 +101,11 @@ export const PodcastTableHeader = (props: Props) => {
       )}
       {!isLoading && isNotFound && (
         <View style={[styles.wrapper, core.view]}>
-          <Text style={styles.notFoundText}>Podcast Not Found</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.notFoundText}>
+            Podcast Not Found
+          </Text>
         </View>
       )}
     </View>
@@ -130,11 +143,11 @@ const styles = StyleSheet.create({
   textWrapper: {
     flex: 1,
     paddingRight: 8,
-    paddingTop: 8
+    paddingTop: 4
   },
   textWrapperBottom: {
     alignItems: 'center',
-    flex: 1,
+    flex: 0,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
@@ -154,12 +167,11 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    lineHeight: PV.Fonts.sizes.xl
+    fontWeight: PV.Fonts.weights.bold
   },
   wrapper: {
     flex: 1,
     flexDirection: 'row',
-    height: PV.Table.cells.podcast.wrapper.height
+    minHeight: PV.Table.cells.podcast.wrapper.height
   }
 })

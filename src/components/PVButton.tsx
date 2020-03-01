@@ -1,6 +1,8 @@
 import React from 'react'
-import { ActivityIndicator, Text, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
+import { Text } from '.'
+import { PV } from '../resources'
 import { core } from '../styles'
 
 type Props = {
@@ -35,7 +37,10 @@ export const PVButton = (props: Props) => {
           color={globalTheme.buttonPrimaryText.color}
           size='small' />
       ) : (
-        <Text style={[core.buttonText, globalTheme.buttonPrimaryText, disabledTextStyle, isWarningTextStyle, isSuccessTextStyle]}>
+        <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          style={[core.buttonText, globalTheme.buttonPrimaryText, disabledTextStyle,
+            isWarningTextStyle, isSuccessTextStyle]}>
           {text}
         </Text>
       )}

@@ -2,12 +2,14 @@ import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo, { NetInfoState, NetInfoSubscription } from '@react-native-community/netinfo'
 import React, { Component } from 'react'
 import { Image, Platform, StatusBar, View, YellowBox } from 'react-native'
+import { getFontScale } from 'react-native-device-info'
 import 'react-native-gesture-handler'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
 import { OverlayAlert } from './src/components'
 import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
+import { determineFontScaleMode } from './src/resources/Fonts'
 import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
 import { gaInitialize } from './src/services/googleAnalytics'
@@ -46,7 +48,7 @@ class App extends Component<Props, State> {
   async componentDidMount() {
     TrackPlayer.registerPlaybackService(() => require('./src/services/playerEvents'))
     const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
-    this.setupGlobalState(darkModeEnabled === 'TRUE' || darkModeEnabled === null ? darkTheme : lightTheme)
+    await this.setupGlobalState(darkModeEnabled === 'TRUE' || darkModeEnabled === null ? darkTheme : lightTheme)
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
     await gaInitialize()
   }
@@ -85,9 +87,13 @@ class App extends Component<Props, State> {
     }
   }
 
-  setupGlobalState(theme: GlobalTheme) {
+  async setupGlobalState(theme: GlobalTheme) {
+    const fontScale = await getFontScale()
+    const fontScaleMode = determineFontScaleMode(fontScale)
+
     setGlobal({
-      globalTheme: theme
+      globalTheme: theme,
+      fontScaleMode
     }, () => {
       this.setState({ appReady: true })
     })

@@ -21,19 +21,35 @@ export const MessageWithAction = (props: Props) => {
   return (
     <View style={styles.view}>
       {!!message && (
-        <Text style={[globalTheme.text, styles.message]}>{message}</Text>
+        <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          style={[globalTheme.text, styles.message]}>
+          {message}
+        </Text>
       )}
       {!!subMessage && (
-        <Text style={[globalTheme.text, styles.subMessage]}>{subMessage}</Text>
+        <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          style={[globalTheme.text, styles.subMessage]}>
+          {subMessage}
+        </Text>
       )}
       {!isLoading && !!topActionText && topActionHandler && (
         <TouchableOpacity onPress={topActionHandler}>
-          <Text style={[globalTheme.text, styles.button]}>{topActionText}</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+            style={[styles.button, globalTheme.text]}>
+            {topActionText}
+          </Text>
         </TouchableOpacity>
       )}
       {!isLoading && !!bottomActionText && bottomActionHandler && (
         <TouchableOpacity onPress={bottomActionHandler}>
-          <Text style={[globalTheme.text, styles.button]}>{bottomActionText}</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+            style={[styles.button, globalTheme.text]}>
+            {bottomActionText}
+          </Text>
         </TouchableOpacity>
       )}
       {isLoading && <ActivityIndicator />}
@@ -45,10 +61,9 @@ const styles = StyleSheet.create({
   button: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    height: 44,
-    lineHeight: 44,
     marginHorizontal: 16,
-    marginVertical: 12
+    marginVertical: 12,
+    minHeight: 44
   },
   message: {
     fontSize: PV.Fonts.sizes.xl,

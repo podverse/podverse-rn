@@ -45,10 +45,13 @@ export class DownloadTableCell extends React.PureComponent<Props> {
             styles={styles.image} />
           <RNView style={styles.textWrapper}>
             <RNView style={styles.textWrapperTop}>
-              <Text numberOfLines={1} style={styles.episodeTitle}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                numberOfLines={1} style={styles.episodeTitle}>
                 {episodeTitle}
               </Text>
               <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 isSecondary={true}
                 numberOfLines={1}
                 style={styles.podcastTitle}>
@@ -65,11 +68,11 @@ export class DownloadTableCell extends React.PureComponent<Props> {
                 value={per}
               />
               <RNView style={styles.textWrapperBottomText}>
-                <Text>{statusText}</Text>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs}>{statusText}</Text>
                 {completed ? (
-                  <Text>{bytesTotal}</Text>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs}>{bytesTotal}</Text>
                 ) : (
-                  <Text>{`${bytesWritten} / ${bytesTotal}`}</Text>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs}>{`${bytesWritten} / ${bytesTotal}`}</Text>
                 )}
               </RNView>
             </RNView>
@@ -83,10 +86,8 @@ export class DownloadTableCell extends React.PureComponent<Props> {
 const styles = StyleSheet.create({
   episodeTitle: {
     flex: 1,
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: PV.Fonts.sizes.md,
-    marginTop: 2
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.semibold
   },
   image: {
     flex: 0,
@@ -96,18 +97,17 @@ const styles = StyleSheet.create({
   },
   podcastTitle: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
-    marginTop: 1
+    fontSize: PV.Fonts.sizes.sm
   },
   slider: {
-    height: 4
+    height: 4,
+    marginTop: 4
   },
   textWrapper: {
     flex: 1,
     justifyContent: 'space-between',
     paddingBottom: 4,
-    paddingRight: 8,
-    paddingTop: 8
+    paddingRight: 8
   },
   textWrapperBottom: {
     flex: 1,
@@ -125,7 +125,6 @@ const styles = StyleSheet.create({
     display: 'none'
   },
   wrapper: {
-    flexDirection: 'row',
-    height: PV.Table.cells.podcast.image.height
+    flexDirection: 'row'
   }
 })

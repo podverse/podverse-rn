@@ -19,7 +19,7 @@ type State = {
 
 export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
-    title: 'Add Podcast by RSS',
+    title: 'Add by RSS',
     headerLeft: (
       <NavDismissIcon onPress={navigation.dismiss} />
     ),
@@ -100,10 +100,15 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
         {
           !isLoading &&
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
-              <Text style={core.textInputLabel}>RSS Feed</Text>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={core.textInputLabel}>
+                RSS Feed
+              </Text>
               <TextInput
                 autoCapitalize='none'
                 autoCompleteType='off'
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onChangeText={this._handleChangeText}
                 placeholder='paste RSS feed link here'
                 returnKeyType='done'
@@ -112,18 +117,27 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
                 value={url}
               />
               <Divider style={styles.divider} />
-              <Text style={styles.text}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={styles.text}>
                 If a podcast is not officially available on Podverse, you can still listen to it by
                 pasting the RSS link here and pressing the Save button.
               </Text>
-              <Text style={styles.text}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={styles.text}>
                 Clips and playlists are not supported for podcasts added by RSS feed.
               </Text>
-              <Text style={styles.text}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={styles.text}>
                 If you want a podcast officially added to Podverse
                 press the Request Podcast link below.
               </Text>
-              <TextLink onPress={this._navToRequestPodcastForm} style={[styles.textLink]}>
+              <TextLink
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                onPress={this._navToRequestPodcastForm}
+                style={styles.textLink}>
                 Request Podcast
               </TextLink>
             </ScrollView>
