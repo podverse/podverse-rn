@@ -53,7 +53,7 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
                     </Text>
                 }
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.xl}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
                   style={[styles.episodeTitle, globalTheme.playerText]}>
                   {nowPlayingItem.episodeTitle}

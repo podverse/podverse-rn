@@ -160,11 +160,11 @@ export class PVActionSheet extends React.Component<Props, State> {
 
     const headerTitleStyle = [actionSheetStyles.headerTitle, globalTheme.actionSheetHeaderText]
     if (fontScaleMode === PV.Fonts.fontScale.largest) {
-      headerTitleStyle.push({ fontSize: PV.Fonts.largeSizes.xs })
+      headerTitleStyle.push({ fontSize: PV.Fonts.largeSizes.sm })
     }
     const headerMessageStyle = [actionSheetStyles.headerMessage, globalTheme.actionSheetHeaderText]
     if (fontScaleMode === PV.Fonts.fontScale.largest) {
-      headerMessageStyle.push({ fontSize: PV.Fonts.largeSizes.tiny })
+      headerMessageStyle.push({ fontSize: PV.Fonts.largeSizes.sm })
     }
 
     return (

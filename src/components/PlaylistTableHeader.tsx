@@ -60,7 +60,7 @@ export const PlaylistTableHeader = (props: Props) => {
               </Text>
               {!!createdBy && (
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
                   numberOfLines={1}
                   style={styles.createdBy}>
@@ -69,14 +69,14 @@ export const PlaylistTableHeader = (props: Props) => {
               )}
               <View style={styles.row}>
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
                   numberOfLines={1}
                   style={styles.itemCount}>
                   items: {itemCount}
                 </Text>
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
                   style={styles.lastUpdated}>
                   {readableDate(lastUpdated)}

@@ -50,7 +50,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       [styles.titleWrapper, { flex: 1 }] :
       [styles.titleWraper]
     const titleStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.title, { fontSize: PV.Fonts.largeSizes.lg }] :
+      [styles.title, { fontSize: PV.Fonts.largeSizes.md }] :
       [styles.title]
 
     return (

@@ -63,7 +63,7 @@ export const TimePicker = (props: Props) => {
             {hourItems}
           </Picker>
           <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
             style={[stylesText, globalTheme.text]}>
             hours
           </Text>
@@ -80,7 +80,7 @@ export const TimePicker = (props: Props) => {
             {minuteItems}
           </Picker>
           <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
             style={[stylesText, globalTheme.text]}>
             minutes
           </Text>
@@ -97,7 +97,7 @@ export const TimePicker = (props: Props) => {
             {secondItems}
           </Picker>
           <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
             style={[stylesText, globalTheme.text]}>
             seconds
           </Text>

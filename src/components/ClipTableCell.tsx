@@ -57,7 +57,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
             <RNView style={styles.textWrapper}>
               {!!podcastTitle && (
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
                   numberOfLines={1}
                   style={styles.podcastTitle}>
@@ -73,7 +73,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
               )}
               <RNView style={styles.textWrapperBottomRow}>
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
                   numberOfLines={1}
                   style={styles.episodePubDate}>
@@ -101,7 +101,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
             {title}
           </Text>
           <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
             isSecondary={true}
             numberOfLines={1}
             style={styles.clipTime}>

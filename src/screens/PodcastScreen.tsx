@@ -678,7 +678,7 @@ export class PodcastScreen extends React.Component<Props, State> {
               text='Download limit max'
             />
             <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               style={styles.settingsHelpText}>
               Once the download limit is exceeded, the oldest episode will be
               auto deleted.

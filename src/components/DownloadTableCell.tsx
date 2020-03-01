@@ -68,11 +68,11 @@ export class DownloadTableCell extends React.PureComponent<Props> {
                 value={per}
               />
               <RNView style={styles.textWrapperBottomText}>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.tiny}>{statusText}</Text>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs}>{statusText}</Text>
                 {completed ? (
-                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.tiny}>{bytesTotal}</Text>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs}>{bytesTotal}</Text>
                 ) : (
-                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.tiny}>{`${bytesWritten} / ${bytesTotal}`}</Text>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs}>{`${bytesWritten} / ${bytesTotal}`}</Text>
                 )}
               </RNView>
             </RNView>

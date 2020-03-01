@@ -80,10 +80,10 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
               <View style={core.row}>
                 <View style={styles.topText}>
                   <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.lg}
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     style={styles.title}>{title}</Text>
                   <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     style={styles.time}>
                     {readableClipTime(startTime, endTime)}
                   </Text>

@@ -108,13 +108,13 @@ export class MoreScreen extends React.Component<Props, State> {
                   <RNView style={[core.row, table.cellWrapper]}>
                     {isLoggedIn ? (
                       <Text
-                        fontSizeLargestScale={PV.Fonts.largeSizes.xl}
+                        fontSizeLargestScale={PV.Fonts.largeSizes.md}
                         style={[table.cellText, membershipTextStyle]}>
                         {membershipStatus}
                       </Text>
                     ) : (
                       <Text
-                        fontSizeLargestScale={PV.Fonts.largeSizes.xl}
+                        fontSizeLargestScale={PV.Fonts.largeSizes.md}
                         style={[table.cellText, globalTheme.tableCellTextPrimary]}>
                         Membership
                       </Text>
@@ -124,7 +124,7 @@ export class MoreScreen extends React.Component<Props, State> {
                 {item.key === PV.RouteNames.DownloadsScreen && (
                   <RNView style={[core.row, { position: 'relative' }, table.cellWrapper]}>
                     <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.xl}
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
                       style={table.cellText}>
                       Downloads
                     </Text>
@@ -145,7 +145,7 @@ export class MoreScreen extends React.Component<Props, State> {
                 {item.key !== _membershipKey &&
                   item.key !== PV.RouteNames.DownloadsScreen && (
                     <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.xl}
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
                       style={[table.cellText, globalTheme.tableCellTextPrimary]}>
                       {item.title}
                     </Text>

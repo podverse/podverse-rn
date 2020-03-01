@@ -89,7 +89,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const bottomText = (
       <Text
-        fontSizeLargestScale={PV.Fonts.largeSizes.xl}
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
         isSecondary={true}
         numberOfLines={4}
         style={descriptionStyle}>

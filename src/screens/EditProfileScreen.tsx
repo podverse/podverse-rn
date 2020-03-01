@@ -169,14 +169,14 @@ export class EditProfileScreen extends React.Component<Props, State> {
 
               {selectedIsPublicKey && (
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   style={[core.textInputSubTitle, globalTheme.textSecondary]}>
                   {`Podcasts, clips, and playlists ${privacySubtitleVerbTenseText} visible on your profile page.`}
                 </Text>
               )}
               {selectedIsPublicKey === false && (
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   style={[core.textInputSubTitle, globalTheme.textSecondary]}>
                   {`Your profile page ${privacySubtitleVerbTenseText} hidden. Your clip and playlist links ${
                     privacySubtitleVerbTenseText === 'is'

@@ -84,7 +84,7 @@ export const PodcastTableHeader = (props: Props) => {
               </View>
               <View style={styles.textWrapperBottomRight}>
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
                   isSecondary={true}
                   style={styles.autoDownloadText}>
                   Auto
