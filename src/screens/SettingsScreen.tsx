@@ -7,6 +7,7 @@ import React from 'reactn'
 import {
   Icon,
   NumberSelectorWithText,
+  ScrollView,
   SwitchWithText,
   Text,
   View
@@ -21,6 +22,7 @@ import { refreshDownloads } from '../lib/downloader'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import {
+  core,
   darkTheme,
   hidePickerIconOnAndroidTransparent,
   lightTheme
@@ -194,7 +196,7 @@ export class SettingsScreen extends React.Component<Props, State> {
     const isDarkMode = globalTheme === darkTheme
 
     return (
-      <View style={styles.wrapper}>
+      <ScrollView style={styles.wrapper}>
         <SwitchWithText
           onValueChange={this._toggleTheme}
           text={`${globalTheme === darkTheme ? 'Dark Mode' : 'Light Mode'}`}
@@ -227,9 +229,11 @@ export class SettingsScreen extends React.Component<Props, State> {
           style={hidePickerIconOnAndroidTransparent(isDarkMode)}
           useNativeAndroidPickerStyle={false}
           value={maximumSpeedOptionSelected.value}>
-          <View style={styles.selectorWrapper}>
-            <View style={styles.selectorWrapperLeft}>
-              <Text style={[styles.pickerSelect, globalTheme.text]}>
+          <View style={core.selectorWrapper}>
+            <View style={core.selectorWrapperLeft}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={[styles.pickerSelect, globalTheme.text]}>
                 {maximumSpeedOptionSelected.label}
               </Text>
               <Icon
@@ -238,9 +242,11 @@ export class SettingsScreen extends React.Component<Props, State> {
                 style={[styles.pickerSelectIcon, globalTheme.text]}
               />
             </View>
-            <View style={styles.selectorWrapperRight}>
-              <Text style={[styles.pickerSelect, globalTheme.text]}>
-                Maximum playback speed
+            <View style={core.selectorWrapperRight}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={[styles.pickerSelect, globalTheme.text]}>
+                Max playback speed
               </Text>
             </View>
           </View>
@@ -264,44 +270,26 @@ export class SettingsScreen extends React.Component<Props, State> {
             }
           />
         </Dialog.Container>
-      </View>
+      </ScrollView>
     )
   }
 }
 
 const styles = StyleSheet.create({
   pickerSelect: {
+    flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    height: 48,
-    lineHeight: 40,
-    paddingBottom: 8
+    fontWeight: PV.Fonts.weights.bold
   },
   pickerSelectIcon: {
-    height: 48,
-    lineHeight: 40,
-    paddingBottom: 8,
+    flex: 0,
     paddingHorizontal: 4
   },
-  selectorWrapper: {
-    flexDirection: 'row'
-  },
-  selectorWrapperLeft: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    textAlign: 'center',
-    width: 51
-  },
-  selectorWrapperRight: {
-    flexBasis: 'auto',
-    justifyContent: 'flex-start',
-    marginHorizontal: 12
-  },
   wrapper: {
-    flex: 1,
+    flex: 0,
+    paddingBottom: 40,
     paddingHorizontal: 12,
-    paddingVertical: 8
+    paddingTop: 8
   }
 })
 

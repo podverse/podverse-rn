@@ -32,20 +32,29 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
           hasZebraStripe={hasZebraStripe}
           style={styles.wrapper}>
           <RNView style={wrapperTopStyles}>
-            <Text numberOfLines={1} style={styles.title}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              numberOfLines={1}
+              style={styles.title}>
               {title}
             </Text>
             {isSaving ? (
               <ActivityIndicator styles={styles.activityIndicator} />
             ) : (
-              <Text isSecondary={true} style={styles.itemCount}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                isSecondary={true}
+                style={styles.itemCount}>
                 items: {itemCount}
               </Text>
             )}
           </RNView>
           {!!createdBy && (
             <RNView style={styles.wrapperBottom}>
-              <Text isSecondary={true} style={styles.createdBy}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                isSecondary={true}
+                style={styles.createdBy}>
                 by: {createdBy}
               </Text>
             </RNView>
@@ -81,8 +90,8 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     alignItems: 'center',
-    height: PV.Table.cells.standard.height,
     justifyContent: 'space-between',
+    minHeight: PV.Table.cells.standard.height,
     paddingLeft: 8,
     paddingRight: 8
   },

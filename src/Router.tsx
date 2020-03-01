@@ -8,7 +8,7 @@ import {
 } from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { getGlobal } from 'reactn'
-import { NavQueueIcon, PVTabBar } from './components'
+import { NavQueueIcon, PVTabBar, TabBarLabel } from './components'
 import { PV } from './resources'
 import { AboutScreen, AddPodcastByRSSScreen, AuthScreen, ClipsScreen, DownloadsScreen, EditPlaylistScreen,
   EditProfileScreen, EmailVerificationScreen, EpisodeScreen, EpisodesScreen, MakeClipScreen, MembershipScreen,
@@ -16,17 +16,29 @@ import { AboutScreen, AddPodcastByRSSScreen, AuthScreen, ClipsScreen, DownloadsS
   PodcastScreen, PodcastsScreen, ProfileScreen, ProfilesScreen, PurchasingScreen, QueueScreen, SearchScreen,
   SettingsScreen, SleepTimerScreen, TermsOfServiceScreen, WebPageScreen } from './screens'
 
-const defaultNavigationOptions = ({ navigation }) => ({
-  title: PV.Tabs.Podcasts.title,
-  headerStyle: {
-    backgroundColor: PV.Colors.brandColor
-  },
-  headerTintColor: PV.Colors.white,
-  headerTitleStyle: {
-    fontWeight: 'bold'
-  },
-  headerRight: <NavQueueIcon navigation={navigation} />
-}) as NavigationScreenOptions
+const defaultNavigationOptions = ({ navigation }) => {
+  const { fontScale, fontScaleMode } = getGlobal()
+
+  let fontSize = PV.Fonts.sizes.xl
+  if (fontScaleMode === PV.Fonts.fontScale.larger) {
+    fontSize = PV.Fonts.largeSizes.xl * fontScale
+  } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
+    fontSize = PV.Fonts.largeSizes.md * fontScale
+  }
+
+  return {
+    title: PV.Tabs.Podcasts.title,
+    headerStyle: {
+      backgroundColor: PV.Colors.brandColor
+    },
+    headerTintColor: PV.Colors.white,
+    headerTitleStyle: {
+      fontSize,
+      fontWeight: 'bold'
+    },
+    headerRight: <NavQueueIcon navigation={navigation} />
+  } as NavigationScreenOptions
+}
 
 const AuthNavigator = createStackNavigator(
   {
@@ -62,7 +74,8 @@ const PodcastsNavigator = createStackNavigator(
           style={{ tintColor }}
           resizeMode={'contain'}
         />
-      )
+      ),
+      tabBarLabel: (() => <TabBarLabel title='Podcasts' />)
     }
   }
 )
@@ -82,7 +95,8 @@ const EpisodesNavigator = createStackNavigator(
           style={{ tintColor }}
           resizeMode={'contain'}
         />
-      )
+      ),
+      tabBarLabel: (() => <TabBarLabel title='Episodes' />)
     }
   }
 )
@@ -100,7 +114,8 @@ const ClipsNavigator = createStackNavigator(
           style={{ tintColor }}
           resizeMode={'contain'}
         />
-      )
+      ),
+      tabBarLabel: (() => <TabBarLabel title='Clips' />)
     }
   }
 )
@@ -120,7 +135,8 @@ const SearchNavigator = createStackNavigator(
           style={{ tintColor }}
           resizeMode={'contain'}
         />
-      )
+      ),
+      tabBarLabel: (() => <TabBarLabel title='Search' />)
     }
   }
 )
@@ -170,13 +186,14 @@ const MoreNavigator = createStackNavigator(
             <DownloadsActiveTabBadge />
           </View>
         )
-      }
+      },
+      tabBarLabel: (() => <TabBarLabel title='More' />)
     }
   }
 )
 
 const DownloadsActiveTabBadge = () => {
-  const { downloadsActive } = getGlobal()
+  const { downloadsActive, fontScaleMode } = getGlobal()
   let downloadsActiveCount = 0
   for (const id of Object.keys(downloadsActive)) {
     if (downloadsActive[id]) downloadsActiveCount++
@@ -190,13 +207,14 @@ const DownloadsActiveTabBadge = () => {
         right: -5,
         zIndex: 1000000
       }}>
-      {downloadsActiveCount > 0 && (
-        <Badge
-          badgeStyle={{ borderWidth: 0 }}
-          textStyle={{ fontSize: PV.Fonts.sizes.sm }}
-          status={'error'}
-          value={downloadsActiveCount}
-        />
+      {downloadsActiveCount > 0 &&
+        (fontScaleMode !== PV.Fonts.fontScale.larger && fontScaleMode !== PV.Fonts.fontScale.largest) && (
+          <Badge
+            badgeStyle={{ borderWidth: 0 }}
+            textStyle={{ fontSize: PV.Fonts.sizes.sm }}
+            status={'error'}
+            value={downloadsActiveCount}
+          />
       )}
     </View>
   )

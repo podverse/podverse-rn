@@ -592,6 +592,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       showSettings,
       viewType
     } = this.state
+    const { fontScaleMode } = this.global
     const subscribedPodcastIds = safelyUnwrapNestedVariable(
       () => this.global.session.userInfo.subscribedPodcastIds,
       []
@@ -676,7 +677,9 @@ export class PodcastScreen extends React.Component<Props, State> {
               selectedNumber={downloadedEpisodeLimit}
               text='Download limit max'
             />
-            <Text style={styles.settingsHelpText}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              style={styles.settingsHelpText}>
               Once the download limit is exceeded, the oldest episode will be
               auto deleted.
             </Text>
@@ -707,6 +710,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             )}
             {!isLoading && viewType === aboutKey && podcast && (
               <HTMLScrollView
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 html={podcast.description || (showNoInternetConnectionMessage ? 'No internet connection' : '')}
                 navigation={navigation}
               />

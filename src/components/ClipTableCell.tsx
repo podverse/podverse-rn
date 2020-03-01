@@ -15,7 +15,6 @@ type Props = {
   handleNavigationPress?: any
   hasZebraStripe?: boolean
   hideImage?: boolean
-  isPlaylistItem?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
   startTime: number
@@ -34,14 +33,13 @@ export class ClipTableCell extends React.PureComponent<Props> {
       handleNavigationPress,
       hasZebraStripe,
       hideImage,
-      isPlaylistItem,
       podcastImageUrl,
       podcastTitle,
       startTime,
       title = 'untitled clip'
     } = this.props
     const clipTime = readableClipTime(startTime, endTime)
-    const { downloadedEpisodeIds, downloadsActive } = this.global
+    const { downloadedEpisodeIds, downloadsActive, fontScaleMode } = this.global
     const isDownloading = downloadsActive[episodeId]
     const isDownloaded = downloadedEpisodeIds[episodeId]
     const showEpisodeInfo = !!episodePubDate || !!episodeTitle
@@ -59,13 +57,14 @@ export class ClipTableCell extends React.PureComponent<Props> {
             <RNView style={styles.textWrapper}>
               {!!podcastTitle && (
                 <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
                   numberOfLines={1}
                   style={styles.podcastTitle}>
                   {podcastTitle}
                 </Text>
               )}
-              {!!episodeTitle && (
+              {!!episodeTitle && PV.Fonts.fontScale.largest !== fontScaleMode && (
                 <Text
                   numberOfLines={1}
                   style={styles.episodeTitle}>
@@ -74,7 +73,9 @@ export class ClipTableCell extends React.PureComponent<Props> {
               )}
               <RNView style={styles.textWrapperBottomRow}>
                 <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
+                  numberOfLines={1}
                   style={styles.episodePubDate}>
                   {readableDate(episodePubDate)}
                 </Text>
@@ -90,15 +91,20 @@ export class ClipTableCell extends React.PureComponent<Props> {
       </RNView>
     )
 
-    const bottomTextStyle = !isPlaylistItem ? styles.title : styles.playlistClipTitle
-
     const bottomText = (
       <RNView style={styles.wrapperBottom}>
         <RNView style={styles.wrapperBottomTextWrapper}>
-          <Text numberOfLines={4} style={bottomTextStyle}>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            numberOfLines={4}
+            style={styles.title}>
             {title}
           </Text>
-          <Text isSecondary={true} style={styles.clipTime}>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+            isSecondary={true}
+            numberOfLines={1}
+            style={styles.clipTime}>
             {clipTime}
           </Text>
         </RNView>
@@ -139,17 +145,16 @@ const styles = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
     justifyContent: 'flex-end',
-    marginTop: 8
+    marginTop: 6
   },
   episodePubDate: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
-    lineHeight: PV.Fonts.sizes.sm,
-    marginTop: 7
+    marginTop: 2
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.xl,
-    marginTop: 3
+    marginTop: 1
   },
   image: {
     flex: 0,
@@ -169,9 +174,7 @@ const styles = StyleSheet.create({
   podcastTitle: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    justifyContent: 'flex-start',
-    lineHeight: PV.Fonts.sizes.md,
-    marginTop: 1
+    justifyContent: 'flex-start'
   },
   textWrapper: {
     flex: 1,
@@ -184,8 +187,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    lineHeight: PV.Fonts.sizes.xl + 2
+    fontWeight: PV.Fonts.weights.bold
   },
   wrapper: {
     paddingHorizontal: 8,
@@ -199,6 +201,6 @@ const styles = StyleSheet.create({
   },
   wrapperTop: {
     flexDirection: 'row',
-    marginBottom: 10
+    marginBottom: 8
   }
 })

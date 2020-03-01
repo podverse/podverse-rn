@@ -3,6 +3,8 @@ import { InitialState } from '../resources/Interfaces'
 
 const initialTheme: InitialState = {
   globalTheme: {},
+  fontScale: 1,
+  fontScaleMode: null,
   autoDownloadSettings: {},
   downloadsArray: [],
   downloadsActive: {},

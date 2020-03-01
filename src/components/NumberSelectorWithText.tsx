@@ -1,8 +1,8 @@
 import React from 'react'
-import { StyleSheet, TextInput, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { Text } from './'
+import { Text, TextInput } from './'
 
 type Props = {
   handleChangeText: any
@@ -28,6 +28,7 @@ export const NumberSelectorWithText = (props: Props) => {
     <View style={styles.wrapper}>
       <TextInput
         autoCompleteType='off'
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
         keyboardType='numeric'
         onChangeText={handleChangeText}
         onSubmitEditing={handleSubmitEditing}
@@ -36,7 +37,11 @@ export const NumberSelectorWithText = (props: Props) => {
         style={[globalTheme.textInput, styles.textInput]}
         value={strNum}
       />
-      <Text style={isSmallText ? styles.smallText : styles.text}>{text}</Text>
+      <Text
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
+        style={isSmallText ? styles.smallText : styles.text}>
+        {text}
+      </Text>
     </View>
   )
 }
@@ -54,8 +59,8 @@ const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: PV.Fonts.sizes.xl,
-    height: 44,
     justifyContent: 'center',
+    minHeight: 44,
     textAlign: 'center',
     width: 51
   },

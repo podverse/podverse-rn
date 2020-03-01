@@ -102,8 +102,7 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xl,
     textDecorationLine: 'underline',
     fontWeight: PV.Fonts.weights.bold,
-    height: 44,
-    lineHeight: 44,
+    minHeight: 44,
     marginHorizontal: 16,
     marginVertical: 12
   },

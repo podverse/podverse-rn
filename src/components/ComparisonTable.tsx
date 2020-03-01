@@ -1,6 +1,5 @@
-import React from 'react'
 import { FlatList, StyleSheet } from 'react-native'
-import { useGlobal } from 'reactn'
+import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Divider, Icon, Text, View } from './'
 
@@ -12,6 +11,8 @@ export const ComparisonTable = (props: any) => {
     <View style={styles.wrapper}>
       <View style={[styles.tableHeaderRow, globalTheme.tableSectionHeader]}>
         <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          numberOfLines={1}
           style={[
             styles.tableHeaderTextLeft,
             globalTheme.tableSectionHeaderText
@@ -19,6 +20,8 @@ export const ComparisonTable = (props: any) => {
           {mainTitle}
         </Text>
         <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          numberOfLines={1}
           style={[
             styles.tableHeaderTextRight,
             globalTheme.tableSectionHeaderText
@@ -26,6 +29,8 @@ export const ComparisonTable = (props: any) => {
           {column1Title}
         </Text>
         <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          numberOfLines={1}
           style={[
             styles.tableHeaderTextRight,
             globalTheme.tableSectionHeaderText
@@ -37,30 +42,36 @@ export const ComparisonTable = (props: any) => {
         data={data}
         keyExtractor={(item, index) => item.text + index}
         renderItem={({ item }) => (
-          <View key={item.text} style={styles.tableRow}>
-            <View style={styles.columnTextWrapper}>
-              <Text style={styles.columnText}>{item.text}</Text>
-            </View>
-            <View style={styles.columnIcon}>
-              {item.column1 && (
-                <Icon
-                  name={item.isSmile ? 'smile' : 'check'}
-                  size={26}
-                  style={styles.icon}
-                />
-              )}
-            </View>
-            <View style={styles.columnIcon}>
-              {item.column2 && (
-                <Icon
-                  name={item.isSmile ? 'smile' : 'check'}
-                  size={26}
-                  style={styles.icon}
-                />
-              )}
+          <>
+            <View key={item.text} style={styles.tableRow}>
+              <View style={styles.columnTextWrapper}>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  style={styles.columnText}>
+                  {item.text}
+                </Text>
+              </View>
+              <View style={styles.columnIcon}>
+                {item.column1 && (
+                  <Icon
+                    name={item.isSmile ? 'smile' : 'check'}
+                    size={26}
+                    style={styles.icon}
+                  />
+                )}
+              </View>
+              <View style={styles.columnIcon}>
+                {item.column2 && (
+                  <Icon
+                    name={item.isSmile ? 'smile' : 'check'}
+                    size={26}
+                    style={styles.icon}
+                  />
+                )}
+              </View>
             </View>
             <Divider />
-          </View>
+          </>
         )}
       />
     </View>
@@ -76,8 +87,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   columnText: {
-    fontSize: PV.Fonts.sizes.md,
-    marginLeft: 8
+    fontSize: PV.Fonts.sizes.xl,
+    marginLeft: 8,
+    paddingVertical: 4
   },
   columnTextWrapper: {
     flex: 1,
@@ -87,27 +99,26 @@ const styles = StyleSheet.create({
     paddingVertical: 12
   },
   tableHeaderRow: {
+    alignItems: 'center',
     flex: 0,
     flexDirection: 'row',
-    height: 40
+    minHeight: 40
   },
   tableHeaderTextLeft: {
     flex: 1,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: 40,
     marginHorizontal: 8
   },
   tableHeaderTextRight: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
-    lineHeight: 40,
     textAlign: 'center',
     width: 90
   },
   tableRow: {
     flexDirection: 'row',
-    height: 60,
+    minHeight: 60,
     justifyContent: 'center'
   },
   wrapper: {

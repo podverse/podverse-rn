@@ -1,6 +1,6 @@
 import { Alert, Linking, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ScrollView, Text, View } from '../components'
+import { Divider, ScrollView, Text, View } from '../components'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 
@@ -28,14 +28,18 @@ export class AboutScreen extends React.Component<Props, State> {
     return (
       <View style={styles.content}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <Text style={styles.text}>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.text}>
             {
               'Create and share highlights of your favorite podcasts with Podverse! '
               + 'Available on iOS, Android, and web. Sign up today and get 1 year of Podverse premium for free.'
             }
           </Text>
-          <View style={styles.separator} />
-          <Text style={styles.text}>
+          <Divider style={styles.divider} />
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.text}>
             {
               'All Podverse software is provided under an open source, copyleft license. '
               + 'That means anyone can download, modify, and use Podverse software for any purpose for free, '
@@ -44,9 +48,13 @@ export class AboutScreen extends React.Component<Props, State> {
               + 'and copyleft sharing ensures that technology can never be monopolized.'
             }
           </Text>
-          <View style={styles.separator} />
-          <Text style={styles.sectionTitle}>Team</Text>
-          <Text style={styles.text}>
+          <Divider style={styles.divider} />
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.sectionTitle}>Team</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.text}>
             {
               'Mitch Downey – Programmer\n\nCreon Creonopoulos - Programmer\n\nGary Johnson – Designer'
             }
@@ -61,15 +69,12 @@ const styles = StyleSheet.create({
   content: {
     flex: 1
   },
+  divider: {
+    marginVertical: 24
+  },
   scrollViewContent: {
     padding: 15,
     paddingTop: 20
-  },
-  separator: {
-    width: '100%',
-    height: 1,
-    backgroundColor: PV.Colors.grayLight,
-    marginVertical: 15
   },
   link: {
     color: PV.Colors.blue
@@ -77,8 +82,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     marginBottom: 15,
     fontSize: PV.Fonts.sizes.xl,
-    color: PV.Colors.grayLight,
-    fontWeight: PV.Fonts.weights.semibold
+    fontWeight: PV.Fonts.weights.bold
   },
   text: {
     fontSize: PV.Fonts.sizes.md

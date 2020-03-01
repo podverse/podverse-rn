@@ -2,8 +2,9 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { getGlobal } from 'reactn'
 import { PV } from '../resources'
-import { hidePickerIconOnAndroid } from '../styles'
+import { hidePickerIconOnAndroidSelector } from '../styles'
 
 type Props = {
   items: any[]
@@ -16,16 +17,25 @@ export const HeaderTitleSelector = (props: Props) => {
   const { items, onValueChange, placeholder, selectedItemKey } = props
   const selectedItem = items.find((x) => x.value === selectedItemKey) || {}
 
+  const { fontScaleMode } = getGlobal()
+  const textStyle = [styles.text]
+
+  if (fontScaleMode === PV.Fonts.fontScale.larger) {
+    textStyle.push({ fontSize: PV.Fonts.largeSizes.xl })
+  } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
+    textStyle.push({ fontSize: PV.Fonts.largeSizes.md })
+  }
+
   const textNode = (
     <View style={styles.wrapper}>
-      <Text style={styles.text}>
+      <Text style={textStyle}>
         {selectedItem.label || (placeholder && placeholder.label)}
       </Text>
       <Icon
-        color="#fff"
-        name="angle-down"
+        color='#fff'
+        name='angle-down'
         size={16}
-        style={styles.closeButton}
+        style={styles.angleDown}
       />
     </View>
   )
@@ -37,7 +47,7 @@ export const HeaderTitleSelector = (props: Props) => {
           items={items}
           onValueChange={onValueChange}
           placeholder={placeholder}
-          style={hidePickerIconOnAndroid}
+          style={hidePickerIconOnAndroidSelector}
           useNativeAndroidPickerStyle={false}
           value={selectedItemKey}>
           {textNode}
@@ -50,19 +60,17 @@ export const HeaderTitleSelector = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
-  closeButton: {
-    height: 44,
-    lineHeight: 44,
+  angleDown: {
     paddingLeft: 4
   },
   text: {
     color: PV.Colors.white,
     fontSize: PV.Fonts.sizes.md,
-    fontWeight: 'bold',
-    height: 44,
-    lineHeight: 44
+    fontWeight: 'bold'
   },
   wrapper: {
-    flexDirection: 'row'
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: 44
   }
 })

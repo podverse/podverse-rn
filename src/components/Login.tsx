@@ -1,13 +1,13 @@
-import React from 'react'
 import {
   ActivityIndicator,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View
 } from 'react-native'
+import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
+import { TextInput } from '.'
 import { PV } from '../resources'
 
 type Props = {
@@ -60,15 +60,20 @@ export class Login extends React.Component<Props, State> {
   render() {
     const { bottomButtons, isLoading, style } = this.props
     const { email, password, submitIsDisabled } = this.state
+    const { fontScaleMode } = this.global
     const disabledStyle = submitIsDisabled ? { backgroundColor: PV.Colors.gray } : null
     const disabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
+
+    const signInButtonTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.signInButtonText, disabledTextStyle, { fontSize: PV.Fonts.largeSizes.md }] :
+      [styles.signInButtonText, disabledTextStyle]
 
     return (
       <View style={[styles.view, style]}>
         <TextInput
           autoCapitalize='none'
           autoCompleteType='email'
-          blurOnSubmit={false}
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           keyboardType='email-address'
           onChangeText={this.emailChanged}
           onSubmitEditing={() => { this.secondTextInput.focus() }}
@@ -81,10 +86,11 @@ export class Login extends React.Component<Props, State> {
         <TextInput
           autoCapitalize='none'
           autoCompleteType='password'
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           onChangeText={this.passwordChanged}
           placeholder='Password'
           placeholderTextColor={PV.Colors.gray}
-          ref={(input) => { this.secondTextInput = input }}
+          inputRef={(input) => { this.secondTextInput = input }}
           returnKeyType='done'
           secureTextEntry={true}
           style={styles.textField}
@@ -101,7 +107,7 @@ export class Login extends React.Component<Props, State> {
               color={PV.Colors.gray}
               size='small' />
           ) : (
-            <Text style={[styles.signInButtonText, disabledTextStyle]}>
+            <Text style={signInButtonTextStyle}>
               Login
             </Text>
           )}
@@ -113,29 +119,30 @@ export class Login extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
-  view: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center'
+  signInButton: {
+    alignItems: 'center',
+    backgroundColor: PV.Colors.white,
+    marginBottom: 16,
+    padding: 16,
+    width: '65%'
+  },
+  signInButtonText: {
+    color: PV.Colors.brandColor,
+    fontSize: PV.Fonts.sizes.md,
+    fontWeight: 'bold'
   },
   textField: {
-    width: '80%',
-    height: 50,
-    marginBottom: 40,
     backgroundColor: PV.Colors.white,
     color: PV.Colors.black,
     fontSize: PV.Fonts.sizes.lg,
-    paddingLeft: 20
+    marginBottom: 40,
+    minHeight: 50,
+    paddingLeft: 20,
+    width: '80%'
   },
-  signInButton: {
-    padding: 16,
-    width: '65%',
+  view: {
     alignItems: 'center',
-    backgroundColor: PV.Colors.white
-  },
-  signInButtonText: {
-    fontSize: PV.Fonts.sizes.md,
-    color: PV.Colors.brandColor,
-    fontWeight: 'bold'
+    justifyContent: 'center',
+    width: '100%'
   }
 })

@@ -341,10 +341,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     borderTopWidth: 0,
     flex: 0,
-    height: PV.FlatList.searchBar.height,
     justifyContent: 'center',
     marginBottom: 16,
-    marginTop: 12
+    marginTop: 12,
+    minHeight: PV.FlatList.searchBar.height
   },
   view: {
     flex: 1,

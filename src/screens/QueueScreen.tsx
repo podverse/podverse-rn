@@ -5,7 +5,7 @@ import {
   TouchableWithoutFeedback,
   View
 } from 'react-native'
-import React from 'reactn'
+import React, { getGlobal } from 'reactn'
 import {
   ActivityIndicator,
   Divider,
@@ -50,71 +50,81 @@ type State = {
 }
 
 export class QueueScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => ({
-    headerTitle: (
-      <HeaderTitleSelector
-        items={headerTitleItems}
-        onValueChange={navigation.getParam('_onViewTypeSelect')}
-        placeholder={headerTitleItemPlaceholder}
-        selectedItemKey={
-          navigation.getParam('viewType') ||
-          navigation.getParam('viewType') === false ||
-          _queueKey
-        }
-      />
-    ),
-    headerLeft: (
-      <NavDismissIcon onPress={navigation.dismiss} />
-    ),
-    headerRight: (
-      <View>
-        {navigation.getParam('viewType') === _historyKey ? (
-          <View>
-            {!navigation.getParam('isEditing') ? (
-              <View style={styles.headerButtonWrapper}>
-                <TouchableOpacity onPress={navigation.getParam('_clearAll')}>
-                  <NavHeaderButtonText text='Clear' />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={navigation.getParam('_startEditing')}>
+  static navigationOptions = ({ navigation }) => {
+    const { fontScaleMode } = getGlobal()
+
+    return {
+      headerTitle: (
+        <HeaderTitleSelector
+          items={headerTitleItems}
+          onValueChange={navigation.getParam('_onViewTypeSelect')}
+          placeholder={headerTitleItemPlaceholder}
+          selectedItemKey={
+            navigation.getParam('viewType') ||
+            navigation.getParam('viewType') === false ||
+            _queueKey
+          }
+        />
+      ),
+      headerLeft: (
+        <NavDismissIcon onPress={navigation.dismiss} />
+      ),
+      headerRight: (
+        <View>
+          {navigation.getParam('viewType') === _historyKey ? (
+            <View>
+              {!navigation.getParam('isEditing') ? (
+                <View style={styles.headerButtonWrapper}>
+                  {
+                    fontScaleMode !== PV.Fonts.fontScale.largest &&
+                      <TouchableOpacity onPress={navigation.getParam('_clearAll')}>
+                        <NavHeaderButtonText text='Clear' />
+                      </TouchableOpacity>
+                  }
+                  <TouchableOpacity
+                    onPress={navigation.getParam('_startEditing')}>
+                    <NavHeaderButtonText
+                      style={styles.navHeaderTextButton}
+                      text='Edit' />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={styles.headerButtonWrapper}>
+                  {
+                    fontScaleMode !== PV.Fonts.fontScale.largest &&
+                      <TouchableOpacity onPress={navigation.getParam('_clearAll')}>
+                        <NavHeaderButtonText text='Clear' />
+                      </TouchableOpacity>
+                  }
+                  <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
+                    <NavHeaderButtonText
+                      style={styles.navHeaderTextButton}
+                      text='Done' />
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          ) : (
+            <View>
+              {!navigation.getParam('isEditing') ? (
+                <TouchableOpacity onPress={navigation.getParam('_startEditing')}>
                   <NavHeaderButtonText
                     style={styles.navHeaderTextButton}
                     text='Edit' />
                 </TouchableOpacity>
-              </View>
-            ) : (
-              <View style={styles.headerButtonWrapper}>
-                <TouchableOpacity onPress={navigation.getParam('_clearAll')}>
-                  <NavHeaderButtonText text='Clear' />
-                </TouchableOpacity>
+              ) : (
                 <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
                   <NavHeaderButtonText
                     style={styles.navHeaderTextButton}
                     text='Done' />
                 </TouchableOpacity>
-              </View>
-            )}
-          </View>
-        ) : (
-          <View>
-            {!navigation.getParam('isEditing') ? (
-              <TouchableOpacity onPress={navigation.getParam('_startEditing')}>
-                <NavHeaderButtonText
-                  style={styles.navHeaderTextButton}
-                  text='Edit' />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity onPress={navigation.getParam('_stopEditing')}>
-                <NavHeaderButtonText
-                  style={styles.navHeaderTextButton}
-                  text='Done' />
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
-      </View>
-    )
-  })
+              )}
+            </View>
+          )}
+        </View>
+      )
+    }
+  }
 
   constructor(props: Props) {
     super(props)
@@ -456,8 +466,7 @@ const styles = StyleSheet.create({
   },
   navHeaderTextButton: {
     marginLeft: 2,
-    textAlign: 'right',
-    width: 72
+    textAlign: 'right'
   },
   tableCellDivider: {
     marginBottom: 2

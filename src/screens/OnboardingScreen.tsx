@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: PV.Colors.gray,
     borderWidth: 1,
+    marginBottom: 200,
     padding: 10,
     width: '80%'
   },

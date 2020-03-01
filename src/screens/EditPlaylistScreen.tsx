@@ -185,9 +185,14 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view}>
         <View style={styles.topWrapper}>
-          <Text style={core.textInputLabel}>Title</Text>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={core.textInputLabel}>
+            Title
+          </Text>
           <TextInput
             autoCapitalize='none'
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
             onChangeText={this._onChangeTitle}
             placeholder='playlist title'
             returnKeyType='done'

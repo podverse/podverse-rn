@@ -1,5 +1,7 @@
 import React from 'react'
 import { Text, View } from 'react-native'
+import { getGlobal } from 'reactn'
+import { PV } from '../resources'
 import { navHeader } from '../styles'
 
 type Props = {
@@ -8,9 +10,18 @@ type Props = {
 }
 
 export const NavHeaderButtonText = (props: Props) => {
+  const { fontScaleMode } = getGlobal()
+
+  const buttonTextStyle = [navHeader.buttonText]
+  if (fontScaleMode === PV.Fonts.fontScale.larger) {
+    buttonTextStyle.push({ fontSize: PV.Fonts.largeSizes.xl })
+  } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
+    buttonTextStyle.push({ fontSize: PV.Fonts.largeSizes.md })
+  }
+
   return (
     <View style={[navHeader.buttonWrapper, props.style]}>
-      <Text style={navHeader.buttonText}>{props.text}</Text>
+      <Text style={buttonTextStyle}>{props.text}</Text>
     </View>
   )
 }

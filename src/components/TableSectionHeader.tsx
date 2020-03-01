@@ -1,10 +1,11 @@
 import React from 'react'
-import { View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Icon, Text } from './'
 
 type Props = {
+  centerText?: boolean
   containerStyles?: any
   handleClosePress?: any
   title?: string
@@ -12,12 +13,18 @@ type Props = {
 
 export const TableSectionHeader = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
-  const { containerStyles, handleClosePress, title } = props
+  const { centerText, containerStyles, handleClosePress, title } = props
+
+  const textStyle = centerText ?
+    [styles.text, globalTheme.tableSectionHeaderText, { textAlign: 'center' }] :
+    [styles.text, globalTheme.tableSectionHeaderText]
 
   return (
     <View style={containerStyles}>
       <View style={[styles.header, globalTheme.tableSectionHeader]}>
-        <Text style={[styles.text, globalTheme.tableSectionHeaderText]}>
+        <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          style={textStyle}>
           {title}
         </Text>
         {handleClosePress && (
@@ -33,21 +40,20 @@ export const TableSectionHeader = (props: Props) => {
   )
 }
 
-const styles = {
+const styles = StyleSheet.create({
   header: {
+    alignItems: 'center',
     flexDirection: 'row',
-    height: PV.Table.sectionHeader.height,
+    minHeight: PV.Table.sectionHeader.height,
     paddingHorizontal: 8
   },
   icon: {
     flex: 0,
-    lineHeight: 40,
     paddingHorizontal: 8
   },
   text: {
     flex: 1,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    lineHeight: PV.Table.sectionHeader.height
+    fontWeight: PV.Fonts.weights.bold
   }
-}
+})

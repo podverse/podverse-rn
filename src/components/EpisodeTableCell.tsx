@@ -37,14 +37,14 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     description = removeHTMLFromString(description)
     description = decodeHTMLString(description)
 
-    const { downloadedEpisodeIds, downloadsActive } = this.global
+    const { downloadedEpisodeIds, downloadsActive, fontScaleMode } = this.global
 
     const isDownloading = downloadsActive[id]
     const isDownloaded = downloadedEpisodeIds[id]
 
     if (!title) title = 'untitled episode'
 
-    const titleStyle = podcastTitle ? styles.title : [styles.title, { marginTop: 0 }]
+    const titleStyle = (podcastTitle ? styles.title : [styles.title, { marginTop: 0 }]) as any
 
     const innerTopView = (
       <RNView style={styles.innerTopView}>
@@ -57,6 +57,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         <RNView style={styles.textWrapper}>
           {!!podcastTitle && (
             <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               isSecondary={true}
               numberOfLines={1}
               style={styles.podcastTitle}>
@@ -64,12 +65,16 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             </Text>
           )}
           <Text
-            numberOfLines={6}
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            numberOfLines={4}
             style={titleStyle}>
             {title}
           </Text>
           <RNView style={styles.textWrapperBottomRow}>
-            <Text isSecondary={true} style={styles.pubDate}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              isSecondary={true}
+              style={styles.pubDate}>
               {readableDate(pubDate)}
             </Text>
             {isDownloaded && (
@@ -84,6 +89,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const bottomText = (
       <Text
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
         isSecondary={true}
         numberOfLines={4}
         style={descriptionStyle}>
@@ -101,7 +107,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           ) : (
             innerTopView
           )}
-          {handleMorePress &&
+          {handleMorePress && PV.Fonts.fontScale.largest !== fontScaleMode &&
             <MoreButton
               handleShowMore={handleMorePress}
               height={hideImage ? 46 : 64}
@@ -110,7 +116,12 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         </RNView>
         {!!description && handleNavigationPress && (
           <TouchableWithoutFeedback onPress={handleNavigationPress}>
-            {bottomText}
+            <>
+              {
+                PV.Fonts.fontScale.largest !== fontScaleMode &&
+                  bottomText
+              }
+            </>
           </TouchableWithoutFeedback>
         )}
         {!!description && !handleNavigationPress && bottomText}
@@ -122,8 +133,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 const styles = StyleSheet.create({
   description: {
     fontSize: PV.Fonts.sizes.md,
-    lineHeight: PV.Fonts.sizes.md + 2,
-    marginTop: 10,
+    marginTop: 8,
     paddingLeft: 76
   },
   image: {
@@ -140,15 +150,12 @@ const styles = StyleSheet.create({
   podcastTitle: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    justifyContent: 'flex-start',
-    lineHeight: PV.Fonts.sizes.md,
-    marginTop: 1
+    justifyContent: 'flex-start'
   },
   pubDate: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
-    lineHeight: PV.Fonts.sizes.sm,
-    marginTop: 7
+    marginTop: 2
   },
   textWrapper: {
     flex: 1
@@ -159,8 +166,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    marginTop: 3
+    fontWeight: PV.Fonts.weights.bold
   },
   wrapper: {
     paddingBottom: 14,

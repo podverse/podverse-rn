@@ -491,7 +491,7 @@ export class PlayerScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { player, screenPlayer } = this.global
+    const { fontScaleMode, player, screenPlayer } = this.global
     const { episode, nowPlayingItem } = player
     const {
       flatListData,
@@ -561,7 +561,9 @@ export class PlayerScreen extends React.Component<Props, State> {
                 />
               )}
               {viewType === PV.Keys.VIEW_TYPE_EPISODES && (
-                <TableSectionHeader title='From this podcast' />
+                <TableSectionHeader
+                  centerText={PV.Fonts.fontScale.largest === fontScaleMode}
+                  title='From this podcast' />
               )}
               {isLoading || isQuerying && <ActivityIndicator />}
               {!isLoading &&
@@ -583,12 +585,16 @@ export class PlayerScreen extends React.Component<Props, State> {
               {!isLoading &&
                 viewType === PV.Keys.VIEW_TYPE_SHOW_NOTES &&
                 episode && (
-                  <HTMLScrollView html={episode.description} />
+                  <HTMLScrollView
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    html={episode.description} />
               )}
               {!isLoading &&
                 viewType === PV.Keys.VIEW_TYPE_TITLE &&
                 episode && (
-                  <HTMLScrollView html={formatTitleViewHtml(episode)} />
+                  <HTMLScrollView
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    html={formatTitleViewHtml(episode)} />
                 )}
             </View>
           )}

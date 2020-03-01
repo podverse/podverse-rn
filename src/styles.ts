@@ -167,6 +167,9 @@ export const darkTheme = StyleSheet.create({
   tabbarItem: {
     tintColor: PV.Colors.blue
   },
+  tabbarLabel: {
+    color: PV.Colors.grayLighter
+  },
   tableCellBorder: {
     borderColor: PV.Colors.grayDarker
   },
@@ -376,6 +379,9 @@ export const lightTheme = StyleSheet.create({
   tabbarItem: {
     tintColor: PV.Colors.blue
   },
+  tabbarLabel: {
+    color: PV.Colors.grayDarker
+  },
   tableCellBorder: {
     borderColor: PV.Colors.grayLighter
   },
@@ -419,6 +425,12 @@ export const lightTheme = StyleSheet.create({
   },
   viewWithZebraStripe: {
     backgroundColor: PV.Colors.grayLightestZ
+  }
+})
+
+export const tabbar = StyleSheet.create({
+  label: {
+    fontSize: PV.Fonts.sizes.tiny
   }
 })
 
@@ -471,12 +483,12 @@ export const core = StyleSheet.create({
     flex: 1
   },
   button: {
-    height: 56
+    justifyContent: 'center',
+    minHeight: 56
   },
   buttonText: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    lineHeight: 56,
     textAlign: 'center'
   },
   closeButton: {
@@ -488,7 +500,7 @@ export const core = StyleSheet.create({
     borderBottomWidth: 0,
     borderTopWidth: 0,
     flex: 0,
-    height: PV.FlatList.searchBar.height,
+    minHeight: PV.FlatList.searchBar.height,
     justifyContent: 'center',
     marginVertical: 8
   },
@@ -501,28 +513,45 @@ export const core = StyleSheet.create({
     borderWidth: 1
   },
   selectorIcon: {
-    height: 44,
-    lineHeight: 44,
+    flex: 0,
     paddingLeft: 4,
     paddingRight: 12
   },
   selectorText: {
+    flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    height: 44,
-    lineHeight: 44,
     justifyContent: 'center',
     paddingHorizontal: 8
   },
+  selectorWrapper: {
+    alignItems: 'center',
+    flex: 0,
+    flexDirection: 'row',
+    minHeight: 44
+  },
+  selectorWrapperLeft: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    minWidth: 51,
+    textAlign: 'center'
+  },
+  selectorWrapperRight: {
+    alignItems: 'center',
+    flexBasis: 'auto',
+    justifyContent: 'flex-start',
+    marginHorizontal: 12
+  },
   textInput: {
     fontSize: PV.Fonts.sizes.xl,
-    height: 44,
+    minHeight: 44,
     justifyContent: 'center',
     paddingHorizontal: 8
   },
   textInputLabel: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
-    marginBottom: 8
+    marginBottom: 4
   },
   textInputSubTitle: {
     fontSize: PV.Fonts.sizes.md,
@@ -558,15 +587,12 @@ export const navHeader = StyleSheet.create({
   },
   buttonText: {
     color: PV.Colors.white,
-    flex: 0,
-    fontSize: PV.Fonts.sizes.xl,
-    marginRight: 4
+    fontSize: PV.Fonts.sizes.md,
+    textAlign: 'right'
   },
   buttonWrapper: {
     alignSelf: 'center',
-    height: 44,
     justifyContent: 'center',
-    lineHeight: 44,
     paddingHorizontal: 12
   }
 })
@@ -616,7 +642,6 @@ export const sliderStyles = StyleSheet.create({
   },
   time: {
     fontSize: PV.Fonts.sizes.xs,
-    lineHeight: 14,
     marginHorizontal: 12
   },
   timeRow: {
@@ -624,7 +649,8 @@ export const sliderStyles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   wrapper: {
-    height: 56,
+    minHeight: 56,
+    marginBottom: 8,
     position: 'relative'
   }
 })
@@ -634,9 +660,11 @@ export const table = StyleSheet.create({
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.semibold,
-    height: PV.Table.cells.standard.height,
-    lineHeight: PV.Table.cells.standard.height,
     paddingLeft: 8
+  },
+  cellWrapper: {
+    alignItems: 'center',
+    minHeight: PV.Table.cells.standard.height
   }
 })
 
@@ -658,7 +686,7 @@ export const actionSheetStyles = {
     borderLeftWidth: 1,
     borderRightWidth: 1,
     borderTopWidth: 1,
-    height: 62,
+    minHeight: 62,
     justifyContent: 'center'
   },
   buttonBottom: {
@@ -679,7 +707,7 @@ export const actionSheetStyles = {
     borderRadius: 6,
     borderWidth: 1,
     marginTop: 8,
-    height: 62,
+    minHeight: 62,
     justifyContent: 'center'
   },
   buttonText: {
@@ -699,7 +727,6 @@ export const actionSheetStyles = {
   },
   headerMessage: {
     fontSize: PV.Fonts.sizes.md,
-    lineHeight: PV.Fonts.sizes.md + 2,
     marginTop: 4,
     textAlign: 'center'
   },

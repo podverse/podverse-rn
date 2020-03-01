@@ -79,8 +79,12 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
             <ScrollView style={styles.scrollView}>
               <View style={core.row}>
                 <View style={styles.topText}>
-                  <Text style={styles.title}>{title}</Text>
-                  <Text style={styles.time}>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    style={styles.title}>{title}</Text>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    style={styles.time}>
                     {readableClipTime(startTime, endTime)}
                   </Text>
                 </View>
@@ -97,15 +101,22 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
               </View>
               <View style={styles.bottomTextWrapper}>
                 <View style={core.row}>
-                  <Text style={styles.inlineText}>By: </Text>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    style={styles.inlineText}>By: </Text>
                   {ownerIsPublic ? (
                     <TextLink
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
                       onPress={this._navToProfileScreen}
                       style={styles.link}>
                       {ownerName || 'anonymous'}
                     </TextLink>
                   ) : (
-                    <Text style={styles.inlineText}>anonymous</Text>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                      style={styles.inlineText}>
+                      anonymous
+                    </Text>
                   )}
                 </View>
               </View>

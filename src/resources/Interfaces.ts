@@ -64,6 +64,8 @@ export interface UserInfo {
 
 export interface InitialState {
   globalTheme: GlobalTheme
+  fontScale: number
+  fontScaleMode: string | null
   autoDownloadSettings: any
   downloadsActive: any
   downloadsArray: any[]
@@ -162,6 +164,10 @@ export interface IFilters {
   topPastYear: string
 }
 
+interface IFontLargeSizes {
+  [largeSize: string]: number
+}
+
 interface IFontSizes {
   [size: string]: number
 }
@@ -171,6 +177,8 @@ interface IFontWeights {
 }
 
 export interface IFonts {
+  largeSizes: IFontLargeSizes
   sizes: IFontSizes
   weights: IFontWeights
+  fontScale: any
 }
