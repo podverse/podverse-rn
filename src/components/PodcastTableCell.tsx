@@ -12,8 +12,6 @@ type Props = {
   id: string
   lastEpisodePubDate?: string
   onPress?: any
-  podcastAuthors?: string
-  podcastCategories?: string
   podcastImageUrl?: string
   podcastTitle: string
   showAutoDownload?: boolean
@@ -27,8 +25,6 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       id,
       lastEpisodePubDate,
       onPress,
-      podcastAuthors,
-      podcastCategories,
       podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
       podcastTitle = 'untitled podcast',
       showAutoDownload,
@@ -49,9 +45,6 @@ export class PodcastTableCell extends React.PureComponent<Props> {
     const titleWrapperStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
       [styles.titleWrapper, { flex: 1 }] :
       [styles.titleWraper]
-    const titleStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.title, { fontSize: PV.Fonts.largeSizes.md }] :
-      [styles.title]
 
     return (
       <TouchableWithoutFeedback onPress={onPress}>
@@ -64,9 +57,10 @@ export class PodcastTableCell extends React.PureComponent<Props> {
           <RNView style={styles.textWrapper}>
             <RNView style={titleWrapperStyle}>
               <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 numberOfLines={([PV.Fonts.fontScale.large, PV.Fonts.fontScale.larger,
                   PV.Fonts.fontScale.largest].includes(fontScaleMode)) ? 1 : 2}
-                style={titleStyle}>
+                style={styles.title}>
                 {podcastTitle}
               </Text>
             </RNView>
@@ -142,7 +136,7 @@ const styles = StyleSheet.create({
   textWrapper: {
     flex: 1,
     paddingRight: 8,
-    paddingVertical: 8
+    paddingVertical: 4
   },
   title: {
     fontSize: PV.Fonts.sizes.xl,

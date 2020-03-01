@@ -66,7 +66,8 @@ export const PlayerTableHeader = (props: Props) => {
 
 const styles = StyleSheet.create({
   episodePubDate: {
-    fontSize: PV.Fonts.sizes.sm
+    fontSize: PV.Fonts.sizes.xs,
+    marginTop: 1
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.xl,
@@ -79,13 +80,12 @@ const styles = StyleSheet.create({
   },
   podcastTitle: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.xs,
     justifyContent: 'flex-start'
   },
   textWrapper: {
     flex: 1,
-    marginHorizontal: 8,
-    marginTop: 4
+    marginHorizontal: 8
   },
   wrapper: {
     minHeight: PV.Table.cells.podcast.wrapper.height

@@ -30,8 +30,9 @@ const styles = StyleSheet.create({
   buttonView: {
     flex: 0,
     height: 36,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     marginRight: 8,
+    paddingBottom: 2,
     width: 36
   }
 })

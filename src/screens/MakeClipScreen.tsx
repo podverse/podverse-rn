@@ -65,9 +65,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
     title: navigation.getParam('isEditing') ? 'Edit Clip' : 'Make Clip',
     headerRight: (
       <RNView style={styles.navHeaderButtonWrapper}>
-        <TouchableOpacity onPress={navigation.getParam('_saveMediaRef')}>
-          <NavHeaderButtonText text='Save' />
-        </TouchableOpacity>
+          <NavHeaderButtonText
+            handlePress={navigation.getParam('_saveMediaRef')}
+            text='Save' />
       </RNView>
     )
   })
@@ -576,26 +576,22 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 ]}>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={1}
                   style={styles.modalText}>
                   ▸ Tap the Start and End Time inputs to set them with the
                   current track time.
                 </Text>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={1}
                   style={styles.modalText}>
                   ▸ "Only with Link" clips will not appear on the home page.
                 </Text>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={1}
                   style={styles.modalText}>
                   ▸ "Public" clips may appear on the Podverse home page. (Premium only)
                 </Text>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={1}
                   style={styles.modalText}>
                   ▸ If the podcast has dynamically inserted ads, the start/end times may not stay accurate.
                 </Text>

@@ -68,7 +68,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     return {
       title: '',
       headerLeft: (
-        <NavDismissIcon onPress={navigation.dismiss} />
+        <NavDismissIcon handlePress={navigation.dismiss} />
       ),
       headerRight: (
         <RNView style={core.row}>

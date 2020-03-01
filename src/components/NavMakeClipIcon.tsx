@@ -1,9 +1,8 @@
 import React from 'react'
-import { View } from 'react-native'
 import { getMakeClipIsPublic } from '../lib/utility'
 import { PV } from '../resources'
 import { navHeader } from '../styles'
-import { Icon } from './'
+import { Icon, NavItemWrapper } from './'
 
 type Props = {
   getInitialProgressValue: any
@@ -13,21 +12,24 @@ type Props = {
 export const NavMakeClipIcon = (props: Props) => {
   const { getInitialProgressValue, navigation } = props
 
+  const handlePress = async () => {
+    const initialProgressValue = await getInitialProgressValue()
+    const isPublic = await getMakeClipIsPublic()
+    navigation.navigate(PV.RouteNames.MakeClipScreen, {
+      initialProgressValue,
+      initialPrivacy: isPublic
+    })
+  }
+
   return (
-    <View style={navHeader.buttonWrapper}>
+    <NavItemWrapper
+      handlePress={handlePress}>
       <Icon
         color='#fff'
         name='cut'
-        onPress={async () => {
-          const initialProgressValue = await getInitialProgressValue()
-          const isPublic = await getMakeClipIsPublic()
-          navigation.navigate(PV.RouteNames.MakeClipScreen, {
-            initialProgressValue,
-            initialPrivacy: isPublic
-          })
-        }}
         size={PV.Icons.NAV}
         style={navHeader.buttonIcon} />
-    </View>
+    </NavItemWrapper>
+
   )
 }

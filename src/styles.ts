@@ -430,7 +430,8 @@ export const lightTheme = StyleSheet.create({
 
 export const tabbar = StyleSheet.create({
   label: {
-    fontSize: PV.Fonts.sizes.tiny
+    fontSize: PV.Fonts.sizes.tiny,
+    textAlign: 'center'
   }
 })
 
@@ -593,7 +594,8 @@ export const navHeader = StyleSheet.create({
   buttonWrapper: {
     alignSelf: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 12
+    paddingHorizontal: 12,
+    paddingVertical: 12
   }
 })
 

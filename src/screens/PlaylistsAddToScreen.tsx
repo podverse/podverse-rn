@@ -43,15 +43,14 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
     title: 'Add to Playlist',
     headerLeft: (
-      <NavDismissIcon onPress={navigation.dismiss} />
+      <NavDismissIcon handlePress={navigation.dismiss} />
     ),
     headerRight: (
       <RNView>
         {navigation.getParam('isLoggedIn') && (
-          <TouchableOpacity
-            onPress={navigation.getParam('showNewPlaylistDialog')}>
-            <NavHeaderButtonText text='New' />
-          </TouchableOpacity>
+          <NavHeaderButtonText
+            handlePress={navigation.getParam('showNewPlaylistDialog')}
+            text='New' />
         )}
       </RNView>
     )

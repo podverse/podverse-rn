@@ -32,9 +32,9 @@ export class EditProfileScreen extends React.Component<Props, State> {
     return {
       title: 'Edit Profile',
       headerRight: (
-        <TouchableOpacity onPress={navigation.getParam('updateUser')}>
-          <NavHeaderButtonText text='Save' />
-        </TouchableOpacity>
+        <NavHeaderButtonText
+          handlePress={navigation.getParam('updateUser')}
+          text='Save' />
       )
     }
   }

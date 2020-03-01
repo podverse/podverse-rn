@@ -22,7 +22,7 @@ export class SleepTimerScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
     title: 'Sleep Timer',
     headerLeft: (
-      <NavDismissIcon onPress={navigation.dismiss} />
+      <NavDismissIcon handlePress={navigation.dismiss} />
     ),
     headerRight: (
       <RNView />

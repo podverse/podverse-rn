@@ -21,14 +21,13 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
     title: 'Add by RSS',
     headerLeft: (
-      <NavDismissIcon onPress={navigation.dismiss} />
+      <NavDismissIcon handlePress={navigation.dismiss} />
     ),
     headerRight: (
-      <TouchableOpacity
+      <NavHeaderButtonText
         disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
-        onPress={navigation.getParam('_handleSavePodcastByRSSURL')}>
-        <NavHeaderButtonText text='Save' />
-      </TouchableOpacity>
+        handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}
+        text='Save' />
     )
   })
 

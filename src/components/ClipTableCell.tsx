@@ -153,8 +153,7 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   episodeTitle: {
-    fontSize: PV.Fonts.sizes.xl,
-    marginTop: 1
+    fontSize: PV.Fonts.sizes.xl
   },
   image: {
     flex: 0,

@@ -19,23 +19,14 @@ const sizes = Platform.OS === 'android' ?
   xl: 19
 })
 
-const largeSizes = Platform.OS === 'android' ?
-({
-  tiny: 6,
-  xs: 7,
-  sm: 8,
-  md: 10,
-  lg: 11,
-  xl: 12
-}) :
-({
+const largeSizes = {
   tiny: 7,
   xs: 8,
   sm: 9,
   md: 11,
   lg: 12,
   xl: 13
-})
+}
 
 export const Fonts: IFonts = {
   largeSizes,
@@ -57,9 +48,9 @@ export const Fonts: IFonts = {
 export const determineFontScaleMode = (fontScale: number) => {
   if (fontScale > 1 && fontScale < 1.225) {
     return Fonts.fontScale.large
-  } else if (fontScale >= 1.225 && fontScale < 1.65) {
+  } else if (fontScale >= 1.225 && fontScale < 1.725) {
     return Fonts.fontScale.larger
-  } else if (fontScale >= 1.65) {
+  } else if (fontScale >= 1.725) {
     return Fonts.fontScale.largest
   } else {
     return null

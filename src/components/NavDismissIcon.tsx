@@ -1,24 +1,22 @@
 import React from 'react'
-import { View } from 'react-native'
-import { Icon } from '.'
+import { Icon, NavItemWrapper } from '.'
 import { PV } from '../resources'
 import { navHeader } from '../styles'
 
 type Props = {
-  onPress: any
+  handlePress: any
 }
 
 export const NavDismissIcon = (props: Props) => {
-  const { onPress } = props
+  const { handlePress } = props
 
   return (
-    <View style={[navHeader.buttonWrapper]}>
+    <NavItemWrapper handlePress={handlePress}>
       <Icon
         color='#fff'
         name='chevron-down'
-        onPress={onPress}
         size={PV.Icons.NAV}
         style={navHeader.buttonIcon} />
-    </View>
+    </NavItemWrapper>
   )
 }
