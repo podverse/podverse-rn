@@ -61,7 +61,8 @@ export class PodcastTableCell extends React.PureComponent<Props> {
           <RNView style={styles.textWrapper}>
             <RNView style={styles.titleWrapper}>
               <Text
-                numberOfLines={([PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode)) ? 1 : 2}
+                numberOfLines={([PV.Fonts.fontScale.large, PV.Fonts.fontScale.larger,
+                  PV.Fonts.fontScale.largest].includes(fontScaleMode)) ? 1 : 2}
                 style={titleStyle}>
                 {podcastTitle}
               </Text>

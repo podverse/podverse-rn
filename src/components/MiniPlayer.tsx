@@ -47,7 +47,6 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
                 {
                   ![PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) &&
                     <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.xl}
                       numberOfLines={1}
                       style={[styles.podcastTitle, globalTheme.playerText]}>
                       {nowPlayingItem.podcastTitle}

@@ -63,8 +63,7 @@ export const PlayerTableHeader = (props: Props) => {
 
 const styles = StyleSheet.create({
   episodePubDate: {
-    fontSize: PV.Fonts.sizes.sm,
-    marginTop: 3
+    fontSize: PV.Fonts.sizes.sm
   },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.xl,

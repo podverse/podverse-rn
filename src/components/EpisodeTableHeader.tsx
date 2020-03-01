@@ -75,6 +75,7 @@ export const EpisodeTableHeader = (props: Props) => {
       {!isLoading && isNotFound && (
         <View style={core.view}>
           <Text
+            fontSizeLargerScale={PV.Fonts.largeSizes.md}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={styles.notFoundText}>
             Episode Not Found

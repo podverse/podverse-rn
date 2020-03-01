@@ -88,7 +88,8 @@ const styles = StyleSheet.create({
   },
   columnText: {
     fontSize: PV.Fonts.sizes.xl,
-    marginLeft: 8
+    marginLeft: 8,
+    paddingVertical: 4
   },
   columnTextWrapper: {
     flex: 1,
@@ -118,8 +119,7 @@ const styles = StyleSheet.create({
   tableRow: {
     flexDirection: 'row',
     minHeight: 60,
-    justifyContent: 'center',
-    paddingVertical: 4
+    justifyContent: 'center'
   },
   wrapper: {
     flex: 1

@@ -27,8 +27,6 @@ export const PVText = (props: Props) => {
     textStyle.push({ fontSize: fontSizeLargestScale })
   }
 
-  console.log('asdfasdfa', textStyle)
-
   return (
     <Text {...props} style={textStyle}>
       {props.children}

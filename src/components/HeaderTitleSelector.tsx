@@ -21,7 +21,7 @@ export const HeaderTitleSelector = (props: Props) => {
 
   const textStyle = [styles.text]
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
-    textStyle.push({ fontSize: PV.Fonts.largeSizes.xs })
+    textStyle.push({ fontSize: PV.Fonts.largeSizes.xl })
   } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
     textStyle.push({ fontSize: PV.Fonts.largeSizes.tiny })
   }

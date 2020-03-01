@@ -1,4 +1,4 @@
-import { Image, Text, View } from 'react-native'
+import { Image, View } from 'react-native'
 import { Badge } from 'react-native-elements'
 import {
   createAppContainer,
@@ -15,19 +15,30 @@ import { AboutScreen, AddPodcastByRSSScreen, AuthScreen, ClipsScreen, DownloadsS
   MoreScreen, OnboardingScreen, PlayerScreen, PlaylistsAddToScreen, PlaylistScreen, PlaylistsScreen,
   PodcastScreen, PodcastsScreen, ProfileScreen, ProfilesScreen, PurchasingScreen, QueueScreen, SearchScreen,
   SettingsScreen, SleepTimerScreen, TermsOfServiceScreen, WebPageScreen } from './screens'
-import { tabbar } from './styles'
 
-const defaultNavigationOptions = ({ navigation }) => ({
-  title: PV.Tabs.Podcasts.title,
-  headerStyle: {
-    backgroundColor: PV.Colors.brandColor
-  },
-  headerTintColor: PV.Colors.white,
-  headerTitleStyle: {
-    fontWeight: 'bold'
-  },
-  headerRight: <NavQueueIcon navigation={navigation} />
-}) as NavigationScreenOptions
+const defaultNavigationOptions = ({ navigation }) => {
+  const { fontScaleMode } = getGlobal()
+
+  let fontSize = PV.Fonts.sizes.xl
+  if (fontScaleMode === PV.Fonts.fontScale.larger) {
+    fontSize = PV.Fonts.largeSizes.xl + 9
+  } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
+    fontSize = PV.Fonts.largeSizes.tiny + 9
+  }
+
+  return {
+    title: PV.Tabs.Podcasts.title,
+    headerStyle: {
+      backgroundColor: PV.Colors.brandColor
+    },
+    headerTintColor: PV.Colors.white,
+    headerTitleStyle: {
+      fontSize,
+      fontWeight: 'bold'
+    },
+    headerRight: <NavQueueIcon navigation={navigation} />
+  } as NavigationScreenOptions
+}
 
 const AuthNavigator = createStackNavigator(
   {

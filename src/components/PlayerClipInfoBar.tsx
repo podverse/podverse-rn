@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     borderTopWidth: 1,
-    height: 62,
+    minHeight: 62,
     justifyContent: 'center'
   }
 })
