@@ -48,9 +48,9 @@ export const Fonts: IFonts = {
 export const determineFontScaleMode = (fontScale: number) => {
   if (fontScale > 1 && fontScale < 1.225) {
     return Fonts.fontScale.large
-  } else if (fontScale >= 1.225 && fontScale < 1.65) {
+  } else if (fontScale >= 1.225 && fontScale < 1.725) {
     return Fonts.fontScale.larger
-  } else if (fontScale >= 1.65) {
+  } else if (fontScale >= 1.725) {
     return Fonts.fontScale.largest
   } else {
     return null
