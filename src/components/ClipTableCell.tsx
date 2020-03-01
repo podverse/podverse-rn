@@ -201,6 +201,6 @@ const styles = StyleSheet.create({
   },
   wrapperTop: {
     flexDirection: 'row',
-    marginBottom: 10
+    marginBottom: 8
   }
 })
