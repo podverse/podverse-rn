@@ -154,7 +154,6 @@ export class PlaylistScreen extends React.Component<Props, State> {
             this._handleMorePress(convertToNowPlayingItem(item, null, null))
           }
           hasZebraStripe={isOdd(index)}
-          isPlaylistItem={true}
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
           startTime={item.startTime}

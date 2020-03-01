@@ -154,7 +154,8 @@ const styles = StyleSheet.create({
   },
   pubDate: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.sm
+    fontSize: PV.Fonts.sizes.sm,
+    marginTop: 2
   },
   textWrapper: {
     flex: 1

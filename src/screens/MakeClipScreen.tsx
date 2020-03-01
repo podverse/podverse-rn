@@ -42,7 +42,6 @@ import {
   core,
   darkTheme,
   hidePickerIconOnAndroidTransparent,
-  navHeader,
   playerStyles
 } from '../styles'
 
@@ -389,7 +388,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       <SafeAreaView>
         <View style={styles.view}>
           <View style={styles.wrapperTop}>
-            <View style={core.row}>
+            <View style={[core.row, styles.row]}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 numberOfLines={1}
@@ -678,12 +677,9 @@ const styles = StyleSheet.create({
   },
   isPublicText: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    minHeight: 48,
-    paddingBottom: 8
+    fontWeight: PV.Fonts.weights.bold
   },
   isPublicTextIcon: {
-    paddingBottom: 8,
     paddingHorizontal: 4
   },
   makeClipPlayerControls: {
@@ -721,13 +717,18 @@ const styles = StyleSheet.create({
   progressWrapper: {
     marginVertical: 8
   },
+  row: {
+    alignItems: 'center'
+  },
   textInput: {
     minHeight: PV.TextInputs.multiline.height,
     paddingHorizontal: 8,
     paddingVertical: 6
   },
   textInputLabel: {
-    flex: 1
+    alignItems: 'center',
+    flex: 1,
+    marginBottom: 0
   },
   timeInput: {
     flex: 1,
@@ -744,8 +745,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   wrapperBottom: {
-    flex: 0,
-    paddingTop: 4
+    flex: 0
   },
   wrapperMiddle: {
     flex: 1,

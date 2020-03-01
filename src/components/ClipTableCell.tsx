@@ -15,7 +15,6 @@ type Props = {
   handleNavigationPress?: any
   hasZebraStripe?: boolean
   hideImage?: boolean
-  isPlaylistItem?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
   startTime: number
@@ -34,7 +33,6 @@ export class ClipTableCell extends React.PureComponent<Props> {
       handleNavigationPress,
       hasZebraStripe,
       hideImage,
-      isPlaylistItem,
       podcastImageUrl,
       podcastTitle,
       startTime,
@@ -93,15 +91,13 @@ export class ClipTableCell extends React.PureComponent<Props> {
       </RNView>
     )
 
-    const bottomTextStyle = !isPlaylistItem ? styles.title : styles.playlistClipTitle
-
     const bottomText = (
       <RNView style={styles.wrapperBottom}>
         <RNView style={styles.wrapperBottomTextWrapper}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={4}
-            style={bottomTextStyle}>
+            style={styles.title}>
             {title}
           </Text>
           <Text

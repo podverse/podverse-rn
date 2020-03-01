@@ -105,9 +105,9 @@ export const TimeInput = (props: Props) => {
 
 const styles = StyleSheet.create({
   previewIcon: {
+    marginBottom: 4,
     paddingLeft: 12,
-    paddingRight: 20,
-    paddingTop: 3
+    paddingRight: 20
   },
   row: {
     alignItems: 'center'
