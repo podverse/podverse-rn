@@ -93,7 +93,8 @@ class App extends Component<Props, State> {
 
     setGlobal({
       globalTheme: theme,
-      fontScaleMode
+      fontScaleMode,
+      fontScale
     }, () => {
       this.setState({ appReady: true })
     })
