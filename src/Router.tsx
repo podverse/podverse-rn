@@ -17,13 +17,13 @@ import { AboutScreen, AddPodcastByRSSScreen, AuthScreen, ClipsScreen, DownloadsS
   SettingsScreen, SleepTimerScreen, TermsOfServiceScreen, WebPageScreen } from './screens'
 
 const defaultNavigationOptions = ({ navigation }) => {
-  const { fontScaleMode } = getGlobal()
+  const { fontScale, fontScaleMode } = getGlobal()
 
   let fontSize = PV.Fonts.sizes.xl
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
-    fontSize = PV.Fonts.largeSizes.xl + 9
+    fontSize = PV.Fonts.largeSizes.xl * fontScale
   } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
-    fontSize = PV.Fonts.largeSizes.tiny + 9
+    fontSize = PV.Fonts.largeSizes.md * fontScale
   }
 
   return {

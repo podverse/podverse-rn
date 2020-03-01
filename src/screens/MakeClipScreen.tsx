@@ -390,7 +390,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
           <View style={styles.wrapperTop}>
             <View style={[core.row, styles.row]}>
               <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 numberOfLines={1}
                 style={[core.textInputLabel, styles.textInputLabel]}>
                 Clip Title
@@ -399,7 +399,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <TouchableWithoutFeedback onPress={this._showClipPrivacyNote}>
                   <View style={core.selectorWrapper}>
                     <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
                       numberOfLines={1}
                       style={[styles.isPublicText, globalTheme.text]}>
                       Only with Link
@@ -422,7 +422,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   value={isPublicItemSelected.value}>
                   <View style={core.selectorWrapper}>
                     <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
                       numberOfLines={1}
                       style={[styles.isPublicText, globalTheme.text]}>
                       {isPublicItemSelected.label}
@@ -438,7 +438,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
             </View>
             <TextInput
               autoCapitalize='none'
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
               onChangeText={this._onChangeTitle}
               numberOfLines={3}
               placeholder='optional'
@@ -547,7 +547,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 onPress={this._adjustSpeed}>
                 <View>
                   <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     style={[
                       styles.bottomButton,
                       styles.bottomRowText
@@ -575,39 +575,33 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   globalTheme.modalInnerWrapper
                 ]}>
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
                   style={styles.modalText}>
                   ▸ Tap the Start and End Time inputs to set them with the
                   current track time.
                 </Text>
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  numberOfLines={1}
-                  style={styles.modalText}>
-                  ▸ Change the track position with the time jump and 1-second adjust buttons.
-                </Text>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  numberOfLines={1}
-                  style={styles.modalText}>
-                  ▸ "Public" clips may appear on Podverse's home page. (Premium only)
-                </Text>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
                   style={styles.modalText}>
                   ▸ "Only with Link" clips will not appear on the home page.
                 </Text>
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  numberOfLines={1}
+                  style={styles.modalText}>
+                  ▸ "Public" clips may appear on the Podverse home page. (Premium only)
+                </Text>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
                   style={styles.modalText}>
                   ▸ If the podcast has dynamically inserted ads, the start/end times may not stay accurate.
                 </Text>
                 <TouchableOpacity onPress={this._hideHowTo}>
                   <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     numberOfLines={1}
                     style={styles.modalButton}>
                     Close

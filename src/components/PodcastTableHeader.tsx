@@ -59,7 +59,7 @@ export const PodcastTableHeader = (props: Props) => {
           <View style={styles.textWrapper}>
             <View style={styles.textWrapperTop}>
               <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 numberOfLines={titleNumberOfLines}
                 style={styles.title}>
                 {podcastTitle}
@@ -102,7 +102,7 @@ export const PodcastTableHeader = (props: Props) => {
       {!isLoading && isNotFound && (
         <View style={[styles.wrapper, core.view]}>
           <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={styles.notFoundText}>
             Podcast Not Found
           </Text>

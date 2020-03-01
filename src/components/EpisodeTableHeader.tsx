@@ -49,14 +49,14 @@ export const EpisodeTableHeader = (props: Props) => {
             styles={styles.image} />
           <View style={styles.textWrapper}>
             <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
               numberOfLines={titleNumberOfLines}
               style={styles.title}>
               {title}
             </Text>
             <View style={styles.textWrapperBottomRow}>
               <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 isSecondary={true}
                 style={styles.pubDate}>
                 {readableDate(pubDate)}

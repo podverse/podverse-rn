@@ -16,7 +16,7 @@ export const SwitchWithText = (props: Props) => {
     <View style={styles.wrapper}>
       <Switch onValueChange={onValueChange} value={value} />
       <Text
-        fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
         style={styles.text}>
         {text}
       </Text>

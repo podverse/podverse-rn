@@ -40,7 +40,7 @@ export const TimeInput = (props: Props) => {
     <View style={wrapperStyle}>
       <View style={[core.row, styles.row]}>
         <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           style={core.textInputLabel}>
           {labelText}
         </Text>
@@ -67,7 +67,7 @@ export const TimeInput = (props: Props) => {
           <TouchableWithoutFeedback onPress={handleSetTime}>
             <View style={[styles.timeInputTouchable, globalTheme.textInput]}>
               <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 style={[
                   styles.timeInputText,
                   globalTheme.textInput,

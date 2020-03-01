@@ -46,6 +46,9 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       shouldAutoDownload = autoDownloadSettings[id]
     }
 
+    const titleWrapperStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
+      [styles.titleWrapper, { flex: 1 }] :
+      [styles.titleWraper]
     const titleStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
       [styles.title, { fontSize: PV.Fonts.largeSizes.lg }] :
       [styles.title]
@@ -59,7 +62,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
             source={podcastImageUrl}
             styles={styles.image} />
           <RNView style={styles.textWrapper}>
-            <RNView style={styles.titleWrapper}>
+            <RNView style={titleWrapperStyle}>
               <Text
                 numberOfLines={([PV.Fonts.fontScale.large, PV.Fonts.fontScale.larger,
                   PV.Fonts.fontScale.largest].includes(fontScaleMode)) ? 1 : 2}

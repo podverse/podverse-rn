@@ -223,7 +223,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             }}
             onPress={this._adjustSpeed}>
             <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               style={[
                 styles.bottomButton,
                 styles.bottomRowText

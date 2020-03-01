@@ -28,7 +28,7 @@ export const NumberSelectorWithText = (props: Props) => {
     <View style={styles.wrapper}>
       <TextInput
         autoCompleteType='off'
-        fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
         keyboardType='numeric'
         onChangeText={handleChangeText}
         onSubmitEditing={handleSubmitEditing}
@@ -38,7 +38,7 @@ export const NumberSelectorWithText = (props: Props) => {
         value={strNum}
       />
       <Text
-        fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
         style={isSmallText ? styles.smallText : styles.text}>
         {text}
       </Text>

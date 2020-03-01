@@ -65,6 +65,7 @@ export interface UserInfo {
 export interface InitialState {
   globalTheme: GlobalTheme
   fontScale: number
+  fontScaleMode: string | null
   autoDownloadSettings: any
   downloadsActive: any
   downloadsArray: any[]

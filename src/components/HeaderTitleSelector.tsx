@@ -4,7 +4,7 @@ import RNPickerSelect from 'react-native-picker-select'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { getGlobal } from 'reactn'
 import { PV } from '../resources'
-import { hidePickerIconOnAndroid } from '../styles'
+import { hidePickerIconOnAndroidSelector } from '../styles'
 
 type Props = {
   items: any[]
@@ -18,12 +18,12 @@ export const HeaderTitleSelector = (props: Props) => {
   const selectedItem = items.find((x) => x.value === selectedItemKey) || {}
 
   const { fontScaleMode } = getGlobal()
-
   const textStyle = [styles.text]
+
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
     textStyle.push({ fontSize: PV.Fonts.largeSizes.xl })
   } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
-    textStyle.push({ fontSize: PV.Fonts.largeSizes.tiny })
+    textStyle.push({ fontSize: PV.Fonts.largeSizes.md })
   }
 
   const textNode = (
@@ -47,7 +47,7 @@ export const HeaderTitleSelector = (props: Props) => {
           items={items}
           onValueChange={onValueChange}
           placeholder={placeholder}
-          style={hidePickerIconOnAndroid}
+          style={hidePickerIconOnAndroidSelector}
           useNativeAndroidPickerStyle={false}
           value={selectedItemKey}>
           {textNode}

@@ -231,7 +231,7 @@ export class SettingsScreen extends React.Component<Props, State> {
           <View style={core.selectorWrapper}>
             <View style={core.selectorWrapperLeft}>
               <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 style={[styles.pickerSelect, globalTheme.text]}>
                 {maximumSpeedOptionSelected.label}
               </Text>
@@ -243,7 +243,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             </View>
             <View style={core.selectorWrapperRight}>
               <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 style={[styles.pickerSelect, globalTheme.text]}>
                 Max playback speed
               </Text>

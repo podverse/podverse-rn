@@ -11,7 +11,7 @@ export const ComparisonTable = (props: any) => {
     <View style={styles.wrapper}>
       <View style={[styles.tableHeaderRow, globalTheme.tableSectionHeader]}>
         <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
           style={[
             styles.tableHeaderTextLeft,
@@ -20,7 +20,7 @@ export const ComparisonTable = (props: any) => {
           {mainTitle}
         </Text>
         <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
           style={[
             styles.tableHeaderTextRight,
@@ -29,7 +29,7 @@ export const ComparisonTable = (props: any) => {
           {column1Title}
         </Text>
         <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
           style={[
             styles.tableHeaderTextRight,
@@ -46,7 +46,7 @@ export const ComparisonTable = (props: any) => {
             <View key={item.text} style={styles.tableRow}>
               <View style={styles.columnTextWrapper}>
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   style={styles.columnText}>
                   {item.text}
                 </Text>

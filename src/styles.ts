@@ -650,6 +650,7 @@ export const sliderStyles = StyleSheet.create({
   },
   wrapper: {
     height: 56,
+    marginBottom: 8,
     position: 'relative'
   }
 })

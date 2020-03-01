@@ -93,14 +93,14 @@ export class QueueTableCell extends React.PureComponent<Props> {
         {!hideBottomRow && (
           <RNView style={styles.wrapperBottom}>
             <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               numberOfLines={1}
               style={styles.clipTitle}>
               {clipStartTime ? (clipTitle || 'untitled clip') : 'Full Episode'}
             </Text>
             {!!clipStartTime && (
               <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 style={styles.clipTime}>
                 {readableClipTime(clipStartTime, clipEndTime)}
               </Text>

@@ -491,7 +491,7 @@ export class PlayerScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { player, screenPlayer } = this.global
+    const { fontScaleMode, player, screenPlayer } = this.global
     const { episode, nowPlayingItem } = player
     const {
       flatListData,
@@ -561,7 +561,9 @@ export class PlayerScreen extends React.Component<Props, State> {
                 />
               )}
               {viewType === PV.Keys.VIEW_TYPE_EPISODES && (
-                <TableSectionHeader title='From this podcast' />
+                <TableSectionHeader
+                  centerText={PV.Fonts.fontScale.largest === fontScaleMode}
+                  title='From this podcast' />
               )}
               {isLoading || isQuerying && <ActivityIndicator />}
               {!isLoading &&

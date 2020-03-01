@@ -114,13 +114,13 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<
           <View style={sliderStyles.timeRow}>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
-              fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               style={sliderStyles.time}>
               {convertSecToHHMMSS(slidingPosition || position)}
             </Text>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
-              fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               style={sliderStyles.time}>
               {duration > 0 ? convertSecToHHMMSS(duration) : '--:--'}
             </Text>
@@ -130,13 +130,13 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<
           <View style={sliderStyles.timeRow}>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
-              fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               style={sliderStyles.time}>
               {'--:--'}
             </Text>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
-              fontSizeLargestScale={PV.Fonts.largeSizes.tiny}
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               style={sliderStyles.time}>
               {'--:--'}
             </Text>

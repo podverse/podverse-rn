@@ -5,6 +5,7 @@ import { PV } from '../resources'
 import { Icon, Text } from './'
 
 type Props = {
+  centerText?: boolean
   containerStyles?: any
   handleClosePress?: any
   title?: string
@@ -12,14 +13,18 @@ type Props = {
 
 export const TableSectionHeader = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
-  const { containerStyles, handleClosePress, title } = props
+  const { centerText, containerStyles, handleClosePress, title } = props
+
+  const textStyle = centerText ?
+    [styles.text, globalTheme.tableSectionHeaderText, { textAlign: 'center' }] :
+    [styles.text, globalTheme.tableSectionHeaderText]
 
   return (
     <View style={containerStyles}>
       <View style={[styles.header, globalTheme.tableSectionHeader]}>
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          style={[styles.text, globalTheme.tableSectionHeaderText]}>
+          style={textStyle}>
           {title}
         </Text>
         {handleClosePress && (
