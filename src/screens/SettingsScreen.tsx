@@ -7,6 +7,7 @@ import React from 'reactn'
 import {
   Icon,
   NumberSelectorWithText,
+  ScrollView,
   SwitchWithText,
   Text,
   View
@@ -195,7 +196,7 @@ export class SettingsScreen extends React.Component<Props, State> {
     const isDarkMode = globalTheme === darkTheme
 
     return (
-      <View style={styles.wrapper}>
+      <ScrollView style={styles.wrapper}>
         <SwitchWithText
           onValueChange={this._toggleTheme}
           text={`${globalTheme === darkTheme ? 'Dark Mode' : 'Light Mode'}`}
@@ -269,7 +270,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             }
           />
         </Dialog.Container>
-      </View>
+      </ScrollView>
     )
   }
 }
@@ -285,9 +286,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4
   },
   wrapper: {
-    flex: 1,
+    flex: 0,
+    paddingBottom: 40,
     paddingHorizontal: 12,
-    paddingVertical: 8
+    paddingTop: 8
   }
 })
 
