@@ -33,16 +33,15 @@ export const PlayerTableHeader = (props: Props) => {
               styles={styles.image}
             />
             <View style={styles.textWrapper}>
-              {
-                fontScaleMode !== PV.Fonts.fontScale.largest &&
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    isSecondary={true}
-                    numberOfLines={1}
-                    style={styles.podcastTitle}>
-                    {nowPlayingItem.podcastTitle}
-                  </Text>
-              }
+              {fontScaleMode !== PV.Fonts.fontScale.largest && (
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  isSecondary={true}
+                  numberOfLines={1}
+                  style={styles.podcastTitle}>
+                  {nowPlayingItem.podcastTitle}
+                </Text>
+              )}
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 numberOfLines={episodeTitleNumberOfLines}

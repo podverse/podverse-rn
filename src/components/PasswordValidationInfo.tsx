@@ -20,71 +20,45 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
     return (
       <View style={[styles.wrapper, style]}>
         <View style={styles.textRow}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            numberOfLines={1}
-            style={styles.label}>Password requirements:
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.label}>
+            Password requirements:
           </Text>
         </View>
         <View style={styles.textRow}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
-            style={hasUppercase ? styles.validText : styles.invalidText}>- has uppercase
+            style={hasUppercase ? styles.validText : styles.invalidText}>
+            - has uppercase
           </Text>
-          {
-            hasUppercase &&
-              <Icon
-                name='check'
-                size={18}
-                style={styles.icon}
-              />
-          }
+          {hasUppercase && <Icon name='check' size={18} style={styles.icon} />}
         </View>
         <View style={styles.textRow}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
-            style={hasLowercase ? styles.validText : styles.invalidText}>- has lowercase
+            style={hasLowercase ? styles.validText : styles.invalidText}>
+            - has lowercase
           </Text>
-          {
-            hasLowercase &&
-            <Icon
-              name='check'
-              size={18}
-              style={styles.icon}
-            />
-          }
+          {hasLowercase && <Icon name='check' size={18} style={styles.icon} />}
         </View>
         <View style={styles.textRow}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
-            style={hasNumber ? styles.validText : styles.invalidText}>- has number
+            style={hasNumber ? styles.validText : styles.invalidText}>
+            - has number
           </Text>
-          {
-            hasNumber &&
-              <Icon
-                name='check'
-                size={18}
-                style={styles.icon}
-              />
-          }
+          {hasNumber && <Icon name='check' size={18} style={styles.icon} />}
         </View>
         <View style={styles.textRow}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
-            style={hasAtLeastXCharacters ? styles.validText : styles.invalidText}>- is at least 8 characters
+            style={hasAtLeastXCharacters ? styles.validText : styles.invalidText}>
+            - is at least 8 characters
           </Text>
-          {
-            hasAtLeastXCharacters &&
-            <Icon
-              name='check'
-              size={18}
-              style={styles.icon}
-            />
-          }
+          {hasAtLeastXCharacters && <Icon name='check' size={18} style={styles.icon} />}
         </View>
       </View>
     )

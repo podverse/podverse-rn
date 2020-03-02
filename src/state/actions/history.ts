@@ -1,7 +1,11 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { NowPlayingItem } from '../../lib/NowPlayingItem'
-import { clearHistoryItems as clearHistoryItemsService, filterItemFromHistoryItems,
-  getHistoryItems as getHistoryItemsService, removeHistoryItem as removeHistoryItemService } from '../../services/history'
+import {
+  clearHistoryItems as clearHistoryItemsService,
+  filterItemFromHistoryItems,
+  getHistoryItems as getHistoryItemsService,
+  removeHistoryItem as removeHistoryItemService
+} from '../../services/history'
 
 export const clearHistoryItems = async () => {
   const globalState = getGlobal()

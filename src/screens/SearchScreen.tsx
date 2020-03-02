@@ -12,11 +12,7 @@ import {
   View
 } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import {
-  generateAuthorsText,
-  isOdd,
-  safelyUnwrapNestedVariable
-} from '../lib/utility'
+import { generateAuthorsText, isOdd, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getPodcasts } from '../services/podcast'
@@ -62,10 +58,7 @@ export class SearchScreen extends React.Component<Props, State> {
       showActionSheet: false
     }
 
-    this._handleSearchBarTextQuery = debounce(
-      this._handleSearchBarTextQuery,
-      PV.SearchBar.textInputDebounceTime
-    )
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
   componentDidMount() {
@@ -177,26 +170,19 @@ export class SearchScreen extends React.Component<Props, State> {
 
   _moreButtons = (): any[] => {
     const { selectedPodcast } = this.state
-    const subscribedPodcastIds = safelyUnwrapNestedVariable(
-      () => this.global.session.userInfo.subscribedPodcastIds,
-      []
-    )
-    const isSubscribed =
-      selectedPodcast &&
-      subscribedPodcastIds.some((id: any) => id === selectedPodcast.id)
+    const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
+    const isSubscribed = selectedPodcast && subscribedPodcastIds.some((id: any) => id === selectedPodcast.id)
 
     return [
       {
         key: 'toggleSubscribe',
         text: isSubscribed ? 'Unsubscribe' : 'Subscribe',
-        onPress: () =>
-          selectedPodcast && this._toggleSubscribeToPodcast(selectedPodcast.id)
+        onPress: () => selectedPodcast && this._toggleSubscribeToPodcast(selectedPodcast.id)
       },
       {
         key: 'episodes',
         text: 'Episodes',
-        onPress: () =>
-          this._handleNavigationPress(selectedPodcast, allEpisodesKey)
+        onPress: () => this._handleNavigationPress(selectedPodcast, allEpisodesKey)
       },
       {
         key: 'clips',
@@ -212,19 +198,13 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   _toggleSubscribeToPodcast = async (id: string) => {
-    const wasAlerted = await alertIfNoNetworkConnection(
-      'subscribe to this podcast'
-    )
+    const wasAlerted = await alertIfNoNetworkConnection('subscribe to this podcast')
     if (wasAlerted) return
 
     try {
       await toggleSubscribeToPodcast(id, this.global)
     } catch (error) {
-      Alert.alert(
-        PV.Alerts.SOMETHING_WENT_WRONG.title,
-        PV.Alerts.SOMETHING_WENT_WRONG.message,
-        PV.Alerts.BUTTONS.OK
-      )
+      Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
     }
     this.setState({ showActionSheet: false })
   }
@@ -249,11 +229,7 @@ export class SearchScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view}>
-        <ButtonGroup
-          buttons={buttons}
-          onPress={this._handleSearchTypePress}
-          selectedIndex={searchType}
-        />
+        <ButtonGroup buttons={buttons} onPress={this._handleSearchTypePress} selectedIndex={searchType} />
         <SearchBar
           containerStyle={styles.searchBarContainer}
           inputContainerStyle={core.searchBar}
@@ -306,12 +282,8 @@ export class SearchScreen extends React.Component<Props, State> {
       const results = await getPodcasts(
         {
           page,
-          ...(searchType === _podcastByTitle
-            ? { searchTitle: searchBarText }
-            : {}),
-          ...(searchType === _podcastByHost
-            ? { searchAuthor: searchBarText }
-            : {})
+          ...(searchType === _podcastByTitle ? { searchTitle: searchBarText } : {}),
+          ...(searchType === _podcastByHost ? { searchAuthor: searchBarText } : {})
         },
         this.global.settings.nsfwMode
       )

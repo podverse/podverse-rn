@@ -40,16 +40,9 @@ export class QueueTableCell extends React.PureComponent<Props> {
     } = this.props
 
     return (
-      <View
-        hasZebraStripe={hasZebraStripe}
-        style={styles.wrapper}>
+      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
         <RNView style={styles.wrapperTop}>
-          <FastImage
-            isSmall={true}
-            key={podcastImageUrl}
-            source={podcastImageUrl}
-            styles={styles.image}
-          />
+          <FastImage isSmall={true} key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
@@ -58,10 +51,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
               style={styles.podcastTitle}>
               {podcastTitle || 'untitled podcast'}
             </Text>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              numberOfLines={1}
-              style={styles.episodeTitle}>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.episodeTitle}>
               {episodeTitle || 'untitled episode'}
             </Text>
             {!!episodePubDate && (
@@ -74,34 +64,18 @@ export class QueueTableCell extends React.PureComponent<Props> {
               </Text>
             )}
           </RNView>
-          {showMoveButton && (
-            <Icon
-              isSecondary={true}
-              name='arrows-alt-v'
-              size={28}
-              style={button.iconOnlyMedium} />
-          )}
+          {showMoveButton && <Icon isSecondary={true} name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />}
           {showRemoveButton && handleRemovePress && (
-            <Icon
-              name='times'
-              onPress={handleRemovePress}
-              size={28}
-              style={button.iconOnlyMedium}
-            />
+            <Icon name='times' onPress={handleRemovePress} size={28} style={button.iconOnlyMedium} />
           )}
         </RNView>
         {!hideBottomRow && (
           <RNView style={styles.wrapperBottom}>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              numberOfLines={1}
-              style={styles.clipTitle}>
-              {clipStartTime ? (clipTitle || 'untitled clip') : 'Full Episode'}
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} numberOfLines={1} style={styles.clipTitle}>
+              {clipStartTime ? clipTitle || 'untitled clip' : 'Full Episode'}
             </Text>
             {!!clipStartTime && (
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                style={styles.clipTime}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.clipTime}>
                 {readableClipTime(clipStartTime, clipEndTime)}
               </Text>
             )}

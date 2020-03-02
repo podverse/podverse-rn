@@ -37,17 +37,11 @@ export class DownloadTableCell extends React.PureComponent<Props> {
 
     return (
       <TouchableWithoutFeedback onPress={onPress}>
-        <View
-          hasZebraStripe={hasZebraStripe}
-          style={styles.wrapper}>
-          <FastImage
-            source={podcastImageUrl}
-            styles={styles.image} />
+        <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
+          <FastImage source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>
             <RNView style={styles.textWrapperTop}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                numberOfLines={1} style={styles.episodeTitle}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.episodeTitle}>
                 {episodeTitle}
               </Text>
               <Text
@@ -72,7 +66,7 @@ export class DownloadTableCell extends React.PureComponent<Props> {
                 {completed ? (
                   <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs}>{bytesTotal}</Text>
                 ) : (
-                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs}>{`${bytesWritten} / ${bytesTotal}`}</Text>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs}>{`${bytesWritten} / ${bytesTotal}`}</Text>
                 )}
               </RNView>
             </RNView>

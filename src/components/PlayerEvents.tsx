@@ -5,11 +5,7 @@ import { refreshDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
 import { getNowPlayingItem } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import {
-  clearNowPlayingItem,
-  updatePlaybackState,
-  updatePlayerState
-} from '../state/actions/player'
+import { clearNowPlayingItem, updatePlaybackState, updatePlayerState } from '../state/actions/player'
 
 type Props = {}
 
@@ -19,42 +15,20 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    this._playerCannotStreamWithoutWifi = debounce(
-      this._playerCannotStreamWithoutWifi,
-      3000
-    )
+    this._playerCannotStreamWithoutWifi = debounce(this._playerCannotStreamWithoutWifi, 3000)
   }
 
   componentDidMount() {
-    PlayerEventEmitter.on(
-      PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI,
-      this._playerCannotStreamWithoutWifi
-    )
-    PlayerEventEmitter.on(
-      PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED,
-      this._refreshNowPlayingItem
-    )
-    PlayerEventEmitter.on(
-      PV.Events.PLAYER_STATE_CHANGED,
-      this._playerStateUpdated
-    )
-    PlayerEventEmitter.on(
-      PV.Events.PLAYER_TRACK_CHANGED,
-      this._handlePlayerTrackChanged
-    )
-    PlayerEventEmitter.on(
-      PV.Events.PLAYER_PLAYBACK_ERROR,
-      this._handlePlayerPlaybackError
-    )
+    PlayerEventEmitter.on(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI, this._playerCannotStreamWithoutWifi)
+    PlayerEventEmitter.on(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED, this._refreshNowPlayingItem)
+    PlayerEventEmitter.on(PV.Events.PLAYER_STATE_CHANGED, this._playerStateUpdated)
+    PlayerEventEmitter.on(PV.Events.PLAYER_TRACK_CHANGED, this._handlePlayerTrackChanged)
+    PlayerEventEmitter.on(PV.Events.PLAYER_PLAYBACK_ERROR, this._handlePlayerPlaybackError)
   }
 
   componentWillUnmount() {
-    PlayerEventEmitter.removeListener(
-      PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI
-    )
-    PlayerEventEmitter.removeListener(
-      PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED
-    )
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI)
+    PlayerEventEmitter.removeListener(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_STATE_CHANGED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_TRACK_CHANGED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_PLAYBACK_ERROR)

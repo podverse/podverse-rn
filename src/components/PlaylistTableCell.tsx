@@ -14,47 +14,29 @@ type Props = {
 
 export class PlaylistTableCell extends React.PureComponent<Props> {
   render() {
-    const {
-      createdBy,
-      hasZebraStripe,
-      isSaving,
-      itemCount = 0,
-      onPress,
-      title = 'untitled playlist'
-    } = this.props
+    const { createdBy, hasZebraStripe, isSaving, itemCount = 0, onPress, title = 'untitled playlist' } = this.props
 
     const wrapperTopStyles = [styles.wrapperTop]
     if (createdBy) wrapperTopStyles.push(styles.wrapperTopWithCreatedBy)
 
     return (
       <TouchableWithoutFeedback onPress={onPress}>
-        <View
-          hasZebraStripe={hasZebraStripe}
-          style={styles.wrapper}>
+        <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
           <RNView style={wrapperTopStyles}>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              numberOfLines={1}
-              style={styles.title}>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.title}>
               {title}
             </Text>
             {isSaving ? (
               <ActivityIndicator styles={styles.activityIndicator} />
             ) : (
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                isSecondary={true}
-                style={styles.itemCount}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.itemCount}>
                 items: {itemCount}
               </Text>
             )}
           </RNView>
           {!!createdBy && (
             <RNView style={styles.wrapperBottom}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                isSecondary={true}
-                style={styles.createdBy}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.createdBy}>
                 by: {createdBy}
               </Text>
             </RNView>

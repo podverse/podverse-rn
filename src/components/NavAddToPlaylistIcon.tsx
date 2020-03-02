@@ -51,23 +51,12 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
     return (
       <View>
         <NavItemWrapper handlePress={this._handleIconPress}>
-          <Icon
-            color='#fff'
-            name='plus'
-            size={PV.Icons.NAV}
-            style={navHeader.buttonIcon} />
+          <Icon color='#fff' name='plus' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
         </NavItemWrapper>
         <ActionSheet
           handleCancelPress={this._dismissActionSheet}
-          items={actionSheetButtons(
-            episodeId,
-            mediaRefId,
-            navigation,
-            this._dismissActionSheet
-          )}
-          {...(mediaRefId
-            ? { message: 'Do you want to add this episode or clip?' }
-            : '')}
+          items={actionSheetButtons(episodeId, mediaRefId, navigation, this._dismissActionSheet)}
+          {...(mediaRefId ? { message: 'Do you want to add this episode or clip?' } : '')}
           showModal={showActionSheet}
           title='Add to Playlist'
         />
@@ -76,12 +65,7 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
   }
 }
 
-const actionSheetButtons = (
-  episodeId: string,
-  mediaRefId: string,
-  navigation: any,
-  handleDismiss: any
-) => [
+const actionSheetButtons = (episodeId: string, mediaRefId: string, navigation: any, handleDismiss: any) => [
   {
     key: 'episode',
     text: 'Episode',

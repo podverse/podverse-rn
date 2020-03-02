@@ -1,8 +1,4 @@
-import {
-  Alert,
-  StyleSheet,
-  TouchableOpacity
-} from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
 import React from 'reactn'
 import {
   ActivityIndicator,
@@ -39,11 +35,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Edit Playlist',
-      headerRight: (
-        <NavHeaderButtonText
-          handlePress={navigation.getParam('updatePlaylist')}
-          text='Save' />
-      )
+      headerRight: <NavHeaderButtonText handlePress={navigation.getParam('updatePlaylist')} text='Save' />
     }
   }
 
@@ -67,11 +59,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     try {
       const newPlaylist = await getPlaylist(playlist.id)
       const { episodes, itemsOrder, mediaRefs } = newPlaylist
-      const sortableListData = combineAndSortPlaylistItems(
-        episodes,
-        mediaRefs,
-        itemsOrder
-      )
+      const sortableListData = combineAndSortPlaylistItems(episodes, mediaRefs, itemsOrder)
 
       this.setState({
         isLoading: false,
@@ -185,9 +173,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view}>
         <View style={styles.topWrapper}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            style={core.textInputLabel}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
             Title
           </Text>
           <TextInput
@@ -204,11 +190,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
         <Divider />
         {isLoading && <ActivityIndicator />}
         {!isLoading && sortableListData && sortableListData.length > 0 && (
-          <SortableList
-            data={sortableListData}
-            onReleaseRow={this._onReleaseRow}
-            renderRow={this._renderRow}
-          />
+          <SortableList data={sortableListData} onReleaseRow={this._onReleaseRow} renderRow={this._renderRow} />
         )}
       </View>
     )

@@ -25,13 +25,7 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
   const currentTrackId = await PVTrackPlayer.getCurrentTrack()
 
   // Don't add track to queue if it's currently playing
-  if (
-    checkIfIdMatchesClipIdOrEpisodeId(
-      currentTrackId,
-      item.clipId,
-      item.episodeId
-    )
-  ) {
+  if (checkIfIdMatchesClipIdOrEpisodeId(currentTrackId, item.clipId, item.episodeId)) {
     return
   }
 
@@ -71,10 +65,7 @@ export const getNextFromQueue = async () => {
   return item
 }
 
-export const removeQueueItem = async (
-  item: NowPlayingItem,
-  removeFromPlayerQueue: boolean
-) => {
+export const removeQueueItem = async (item: NowPlayingItem, removeFromPlayerQueue: boolean) => {
   let items = []
   const useServerData = await checkIfShouldUseServerData()
 
@@ -134,10 +125,7 @@ const addQueueItemNextOnServer = async (item: NowPlayingItem) => {
   return setAllQueueItemsOnServer(filteredItems)
 }
 
-export const filterItemFromQueueItems = (
-  items: NowPlayingItem[] = [],
-  item: NowPlayingItem
-) => {
+export const filterItemFromQueueItems = (items: NowPlayingItem[] = [], item: NowPlayingItem) => {
   let itemsArray = Array.isArray(items) ? items : []
   itemsArray = itemsArray.filter((x) => {
     if (item.clipId && x.clipId === item.clipId) {

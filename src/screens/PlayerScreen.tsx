@@ -32,13 +32,7 @@ import {
   convertToNowPlayingItem,
   NowPlayingItem
 } from '../lib/NowPlayingItem'
-import {
-  decodeHTMLString,
-  formatTitleViewHtml,
-  isOdd,
-  readableDate,
-  removeHTMLFromString
-} from '../lib/utility'
+import { decodeHTMLString, formatTitleViewHtml, isOdd, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -67,26 +61,20 @@ export class PlayerScreen extends React.Component<Props, State> {
 
     return {
       title: '',
-      headerLeft: (
-        <NavDismissIcon handlePress={navigation.dismiss} />
-      ),
+      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
       headerRight: (
         <RNView style={core.row}>
-          {
-            !addByRSSPodcastFeedUrl &&
-              <RNView style={core.row}>
-                <NavMakeClipIcon
-                  getInitialProgressValue={_getInitialProgressValue}
-                  navigation={navigation}
-                />
-                <NavAddToPlaylistIcon
-                  getEpisodeId={_getEpisodeId}
-                  getMediaRefId={_getMediaRefId}
-                  navigation={navigation}
-                />
-                <NavShareIcon handlePress={_showShareActionSheet} />
-              </RNView>
-          }
+          {!addByRSSPodcastFeedUrl && (
+            <RNView style={core.row}>
+              <NavMakeClipIcon getInitialProgressValue={_getInitialProgressValue} navigation={navigation} />
+              <NavAddToPlaylistIcon
+                getEpisodeId={_getEpisodeId}
+                getMediaRefId={_getMediaRefId}
+                navigation={navigation}
+              />
+              <NavShareIcon handlePress={_showShareActionSheet} />
+            </RNView>
+          )}
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
@@ -115,7 +103,6 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _initializeScreenData = () => {
-
     // This is difficult for me to reproduce in local testing, but upon returning to the player screen
     // from the lock screen, it appears that componentDidMount is called again, causing the player
     // to visibly load, as the player fires up from an "idle" or "none" state.
@@ -211,10 +198,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         }
       },
       async () => {
-        if (
-          selectedKey === PV.Keys.VIEW_TYPE_CLIPS ||
-          selectedKey === PV.Keys.VIEW_TYPE_EPISODES
-        ) {
+        if (selectedKey === PV.Keys.VIEW_TYPE_CLIPS || selectedKey === PV.Keys.VIEW_TYPE_EPISODES) {
           const newState = await this._queryData()
           setGlobal({
             screenPlayer: {
@@ -305,14 +289,10 @@ export class PlayerScreen extends React.Component<Props, State> {
 
   _onEndReached = ({ distanceFromEnd }) => {
     const { screenPlayer } = this.global
-    const {
-      endOfResultsReached,
-      isLoadingMore,
-      queryPage = 1,
-      viewType
-    } = screenPlayer
+    const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = screenPlayer
     if (
-      (viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES && viewType !== PV.Keys.VIEW_TYPE_TITLE) &&
+      viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES &&
+      viewType !== PV.Keys.VIEW_TYPE_TITLE &&
       !endOfResultsReached &&
       !isLoadingMore
     ) {
@@ -394,11 +374,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleShare = async (
-    podcastId?: string,
-    episodeId?: string,
-    mediaRefId?: string
-  ) => {
+  _handleShare = async (podcastId?: string, episodeId?: string, mediaRefId?: string) => {
     const { nowPlayingItem } = this.global.player
     let url = ''
     let title = ''
@@ -410,11 +386,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       title = `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} – shared using Podverse`
     } else {
       url = PV.URLs.clip + mediaRefId
-      title = `${
-        nowPlayingItem.clipTitle
-          ? nowPlayingItem.clipTitle + ' – '
-          : 'untitled clip – '
-      }`
+      title = `${nowPlayingItem.clipTitle ? nowPlayingItem.clipTitle + ' – ' : 'untitled clip – '}`
       title += `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} – clip shared using Podverse`
     }
 
@@ -450,9 +422,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           description={description}
           id={item.id}
-          handleMorePress={() =>
-            this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
-          }
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => console.log('handle episode press')}
           hasZebraStripe={isOdd(index)}
           hideImage={true}
@@ -478,14 +448,14 @@ export class PlayerScreen extends React.Component<Props, State> {
           {...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST
             ? { episodeTitle: item.episode.title || 'untitled episode' }
             : {})}
-          handleMorePress={() =>
-            this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
-          }
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           hideImage={true}
           startTime={item.startTime}
           title={item.title || 'untitled clip'}
         />
-      ) : (<></>)
+      ) : (
+        <></>
+      )
     }
   }
 
@@ -530,9 +500,7 @@ export class PlayerScreen extends React.Component<Props, State> {
               isPublic={mediaRef.isPublic}
               navigation={navigation}
               {...(mediaRef.owner ? { ownerId: mediaRef.owner.id } : {})}
-              {...(mediaRef.owner
-                ? { ownerIsPublic: mediaRef.owner.isPublic }
-                : {})}
+              {...(mediaRef.owner ? { ownerIsPublic: mediaRef.owner.isPublic } : {})}
               {...(mediaRef.owner ? { ownerName: mediaRef.owner.name } : {})}
               startTime={mediaRef.startTime}
               title={mediaRef.title}
@@ -545,8 +513,11 @@ export class PlayerScreen extends React.Component<Props, State> {
                 handleSelectRightItem={this._selectQuerySort}
                 leftItems={viewTypeOptions}
                 rightItems={
-                  viewType && (viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES && viewType !== PV.Keys.VIEW_TYPE_TITLE)
-                  && (nowPlayingItem && !nowPlayingItem.addByRSSPodcastFeedUrl)
+                  viewType &&
+                  viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES &&
+                  viewType !== PV.Keys.VIEW_TYPE_TITLE &&
+                  nowPlayingItem &&
+                  !nowPlayingItem.addByRSSPodcastFeedUrl
                     ? querySortOptions(viewType === PV.Keys.VIEW_TYPE_EPISODES)
                     : []
                 }
@@ -563,13 +534,15 @@ export class PlayerScreen extends React.Component<Props, State> {
               {viewType === PV.Keys.VIEW_TYPE_EPISODES && (
                 <TableSectionHeader
                   centerText={PV.Fonts.fontScale.largest === fontScaleMode}
-                  title='From this podcast' />
+                  title='From this podcast'
+                />
               )}
-              {isLoading || isQuerying && <ActivityIndicator />}
+              {isLoading || (isQuerying && <ActivityIndicator />)}
               {!isLoading &&
-               !isQuerying &&
+                !isQuerying &&
                 viewType &&
-                (viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES && viewType !== PV.Keys.VIEW_TYPE_TITLE) &&
+                viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES &&
+                viewType !== PV.Keys.VIEW_TYPE_TITLE &&
                 flatListData && (
                   <FlatList
                     data={flatListData}
@@ -582,27 +555,16 @@ export class PlayerScreen extends React.Component<Props, State> {
                     renderItem={this._renderItem}
                   />
                 )}
-              {!isLoading &&
-                viewType === PV.Keys.VIEW_TYPE_SHOW_NOTES &&
-                episode && (
-                  <HTMLScrollView
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    html={episode.description} />
+              {!isLoading && viewType === PV.Keys.VIEW_TYPE_SHOW_NOTES && episode && (
+                <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={episode.description} />
               )}
-              {!isLoading &&
-                viewType === PV.Keys.VIEW_TYPE_TITLE &&
-                episode && (
-                  <HTMLScrollView
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    html={formatTitleViewHtml(episode)} />
-                )}
+              {!isLoading && viewType === PV.Keys.VIEW_TYPE_TITLE && episode && (
+                <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={formatTitleViewHtml(episode)} />
+              )}
             </View>
           )}
           {nowPlayingItem && nowPlayingItem.clipId && (
-            <PlayerClipInfoBar
-              handleOnPress={this._toggleShowFullClipInfo}
-              nowPlayingItem={nowPlayingItem}
-            />
+            <PlayerClipInfoBar handleOnPress={this._toggleShowFullClipInfo} nowPlayingItem={nowPlayingItem} />
           )}
           <PlayerControls navigation={navigation} />
           <ActionSheet
@@ -619,12 +581,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           />
           <ActionSheet
             handleCancelPress={this._dismissShareActionSheet}
-            items={shareActionSheetButtons(
-              podcastId,
-              episodeId,
-              mediaRefId,
-              this._handleShare
-            )}
+            items={shareActionSheetButtons(podcastId, episodeId, mediaRefId, this._handleShare)}
             message='What link do you want to share?'
             showModal={showShareActionSheet}
             title='Share'
@@ -701,14 +658,12 @@ export class PlayerScreen extends React.Component<Props, State> {
       if (viewType === PV.Keys.VIEW_TYPE_EPISODES) {
         const results = await this._queryEpisodes()
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached =
-          newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (viewType === PV.Keys.VIEW_TYPE_CLIPS) {
         const results = await this._queryClips()
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached =
-          newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
 
@@ -790,12 +745,7 @@ const queryFromOptions = [
   }
 ]
 
-const shareActionSheetButtons = (
-  podcastId: string,
-  episodeId: string,
-  mediaRefId: string,
-  handleShare: any
-) => {
+const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefId: string, handleShare: any) => {
   const items = [
     {
       key: 'podcast',

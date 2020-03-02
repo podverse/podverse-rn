@@ -1,8 +1,7 @@
 import { sendVerificationEmail } from '../services/auth'
 import { logoutUser } from '../state/actions/auth'
 
-const _expiredMessage =
-  'To renew your membership, please visit podverse.fm, login, then go to your Settings page.'
+const _expiredMessage = 'To renew your membership, please visit podverse.fm, login, then go to your Settings page.'
 const _logoutButtonText = 'Log Out'
 const _networkErrorTitle = 'Network Error'
 const _sendEmailText = 'Send Email'
@@ -17,10 +16,7 @@ export const Alerts = {
   EMAIL_NOT_VERIFIED: (email: string) => ({
     message: _sendVerificationEmailMessage,
     title: 'Verify Your Email',
-    buttons: [
-      { text: _cancelText },
-      { text: _sendEmailText, onPress: () => sendVerificationEmail(email) }
-    ]
+    buttons: [{ text: _cancelText }, { text: _sendEmailText, onPress: () => sendVerificationEmail(email) }]
   }),
   FREE_TRIAL_EXPIRED: {
     message: _expiredMessage,
@@ -33,9 +29,7 @@ export const Alerts = {
   },
   NETWORK_ERROR: {
     message: (str?: string) =>
-      !str
-        ? 'Internet connection required'
-        : `You must be connected to the internet to ${str}.`,
+      !str ? 'Internet connection required' : `You must be connected to the internet to ${str}.`,
     title: _networkErrorTitle
   },
   PLAYER_CANNOT_STREAM_WITHOUT_WIFI: {
@@ -52,8 +46,7 @@ export const Alerts = {
     title: 'Premium Membership Required'
   },
   PURCHASE_CANCELLED: {
-    message:
-      'Purchase has been cancelled. If you are seeing this in error, please contact support.',
+    message: 'Purchase has been cancelled. If you are seeing this in error, please contact support.',
     title: 'Purchase Cancelled'
   },
   PURCHASE_PENDING: {
@@ -65,14 +58,13 @@ export const Alerts = {
     title: 'Purchase Success'
   },
   PURCHASE_SOMETHING_WENT_WRONG: {
-    message:
-      "Please retry processing (you won't be charged again) or contact support.",
+    message: "Please retry processing (you won't be charged again) or contact support.",
     title: 'Purchase Incomplete'
   },
   RESET_PASSWORD_SUCCESS: {
     message:
-      'Please check your inbox. If this address exists in our system, you should receive a reset password email shortly.'
-      + 'The email may go to your Spam folder.',
+      `Please check your inbox. If this address exists in our system, 
+      you should receive a reset password email shortly.` + 'The email may go to your Spam folder.',
     title: 'Reset Password Sent'
   },
   SIGN_UP_ERROR: {
@@ -84,7 +76,6 @@ export const Alerts = {
   },
   LEAVING_APP: {
     title: 'Leaving App',
-    message:
-      'You are about to be navigated to a website outside the app. Are you sure you want to leave Podverse?'
+    message: 'You are about to be navigated to a website outside the app. Are you sure you want to leave Podverse?'
   }
 }

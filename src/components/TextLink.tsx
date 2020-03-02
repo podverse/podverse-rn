@@ -14,8 +14,7 @@ type Props = {
 }
 
 export const TextLink = (props: Props) => {
-  const { children, disabled, fontSizeLargerScale, fontSizeLargestScale, numberOfLines, onPress,
-    style } = props
+  const { children, disabled, fontSizeLargerScale, fontSizeLargestScale, numberOfLines, onPress, style } = props
   const { fontScaleMode, globalTheme } = getGlobal()
 
   const textInputStyle = []

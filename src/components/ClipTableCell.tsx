@@ -48,12 +48,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       <RNView style={styles.innerTopView}>
         <TouchableWithoutFeedback onPress={handleNavigationPress}>
           <RNView style={{ flex: 1, flexDirection: 'row' }}>
-            {!!podcastImageUrl && (
-              <FastImage
-                isSmall={true}
-                source={podcastImageUrl}
-                styles={styles.image} />
-            )}
+            {!!podcastImageUrl && <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />}
             <RNView style={styles.textWrapper}>
               {!!podcastTitle && (
                 <Text
@@ -65,9 +60,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                 </Text>
               )}
               {!!episodeTitle && PV.Fonts.fontScale.largest !== fontScaleMode && (
-                <Text
-                  numberOfLines={1}
-                  style={styles.episodeTitle}>
+                <Text numberOfLines={1} style={styles.episodeTitle}>
                   {episodeTitle}
                 </Text>
               )}
@@ -84,20 +77,14 @@ export class ClipTableCell extends React.PureComponent<Props> {
             </RNView>
           </RNView>
         </TouchableWithoutFeedback>
-        <MoreButton
-          handleShowMore={handleMorePress}
-          height={hideImage ? 44 : 64}
-          isLoading={isDownloading} />
+        <MoreButton handleShowMore={handleMorePress} height={hideImage ? 44 : 64} isLoading={isDownloading} />
       </RNView>
     )
 
     const bottomText = (
       <RNView style={styles.wrapperBottom}>
         <RNView style={styles.wrapperBottomTextWrapper}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            numberOfLines={4}
-            style={styles.title}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={4} style={styles.title}>
             {title}
           </Text>
           <Text
@@ -108,27 +95,15 @@ export class ClipTableCell extends React.PureComponent<Props> {
             {clipTime}
           </Text>
         </RNView>
-        {!showEpisodeInfo && handleMorePress &&
-          <MoreButton
-            handleShowMore={handleMorePress}
-            height={44} />
-        }
+        {!showEpisodeInfo && handleMorePress && <MoreButton handleShowMore={handleMorePress} height={44} />}
       </RNView>
     )
 
     return (
-      <View
-        hasZebraStripe={hasZebraStripe}
-        style={styles.wrapper}>
-        {!!showEpisodeInfo && (
-          <RNView style={styles.wrapperTop}>
-            {innerTopView}
-          </RNView>
-        )}
+      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
+        {!!showEpisodeInfo && <RNView style={styles.wrapperTop}>{innerTopView}</RNView>}
         {handleNavigationPress ? (
-          <TouchableWithoutFeedback onPress={handleNavigationPress}>
-            {bottomText}
-          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={handleNavigationPress}>{bottomText}</TouchableWithoutFeedback>
         ) : (
           bottomText
         )}

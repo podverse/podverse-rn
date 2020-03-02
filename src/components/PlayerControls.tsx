@@ -1,16 +1,8 @@
-import {
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View
-} from 'react-native'
+import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
 import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
-import {
-  checkIfPlayingFromHistory,
-  getHistoryItemsLocally
-} from '../services/history'
+import { checkIfPlayingFromHistory, getHistoryItemsLocally } from '../services/history'
 import {
   getNowPlayingItem,
   loadItemAndPlayTrack,
@@ -18,12 +10,7 @@ import {
   playerJumpForward,
   PVTrackPlayer
 } from '../services/player'
-import {
-  loadAdjacentItemFromHistory,
-  playNextFromQueue,
-  setPlaybackSpeed,
-  togglePlay
-} from '../state/actions/player'
+import { loadAdjacentItemFromHistory, playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { Icon, PlayerProgressBar, Text } from './'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
@@ -99,12 +86,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       <View style={[styles.wrapper, globalTheme.player]}>
         <View style={styles.progressWrapper}>
           <PlayerProgressBar
-            {...(nowPlayingItem && nowPlayingItem.clipEndTime
-              ? { clipEndTime: nowPlayingItem.clipEndTime }
-              : {})}
-            {...(nowPlayingItem && nowPlayingItem.clipStartTime
-              ? { clipStartTime: nowPlayingItem.clipStartTime }
-              : {})}
+            {...(nowPlayingItem && nowPlayingItem.clipEndTime ? { clipEndTime: nowPlayingItem.clipEndTime } : {})}
+            {...(nowPlayingItem && nowPlayingItem.clipStartTime ? { clipStartTime: nowPlayingItem.clipStartTime } : {})}
             globalTheme={globalTheme}
             isLoading={isLoading}
             value={progressValue}
@@ -114,8 +97,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           <TouchableOpacity
             onPress={async () => {
               const playbackState = await PVTrackPlayer.getState()
-              const shouldStartPlayback =
-                playbackState === PVTrackPlayer.STATE_PLAYING
+              const shouldStartPlayback = playbackState === PVTrackPlayer.STATE_PLAYING
               const isPlayingFromHistory = await checkIfPlayingFromHistory()
               if (isPlayingFromHistory) {
                 loadAdjacentItemFromHistory(shouldStartPlayback)
@@ -126,20 +108,12 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 const id = nowPlayingItem.clipId || nowPlayingItem.episodeId
                 if (historyItems[0]) {
                   if (
-                    checkIfIdMatchesClipIdOrEpisodeId(
-                      id,
-                      mostRecentHistoryItem.clipId,
-                      mostRecentHistoryItem.episodeId
-                    )
+                    checkIfIdMatchesClipIdOrEpisodeId(id, mostRecentHistoryItem.clipId, mostRecentHistoryItem.episodeId)
                   ) {
                     loadAdjacentItemFromHistory(shouldStartPlayback)
                   } else {
                     const skipUpdateHistory = true
-                    loadItemAndPlayTrack(
-                      historyItems[0],
-                      shouldStartPlayback,
-                      skipUpdateHistory
-                    )
+                    loadItemAndPlayTrack(historyItems[0], shouldStartPlayback, skipUpdateHistory)
                   }
                 }
               }
@@ -147,46 +121,28 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             style={playerStyles.icon}>
             <Icon name='step-backward' size={36} />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this._playerJumpBackward}
-            style={playerStyles.icon}>
+          <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
             <Icon name='undo-alt' size={36} />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => togglePlay(this.global)}
-            style={playerStyles.iconLarge}>
+          <TouchableOpacity onPress={() => togglePlay(this.global)} style={playerStyles.iconLarge}>
             {hasErrored && (
               <Icon
-                color={
-                  globalTheme === darkTheme
-                    ? iconStyles.lightRed.color
-                    : iconStyles.darkRed.color
-                }
+                color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
                 name={'exclamation-triangle'}
                 size={34}
               />
             )}
             {!hasErrored && (
-              <Icon
-                name={
-                  playbackState === PVTrackPlayer.STATE_PLAYING
-                    ? 'pause-circle'
-                    : 'play-circle'
-                }
-                size={52}
-              />
+              <Icon name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause-circle' : 'play-circle'} size={52} />
             )}
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this._playerJumpForward}
-            style={playerStyles.icon}>
+          <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
             <Icon name='redo-alt' size={36} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={async () => {
               const playbackState = await PVTrackPlayer.getState()
-              const shouldStartPlayback =
-                playbackState === PVTrackPlayer.STATE_PLAYING
+              const shouldStartPlayback = playbackState === PVTrackPlayer.STATE_PLAYING
               const isPlayingFromHistory = await checkIfPlayingFromHistory()
               if (isPlayingFromHistory) {
                 const playNext = true
@@ -209,9 +165,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             }}
             onPress={this._navToStopWatchScreen}>
             <View style={styles.bottomButton}>
-              <Icon
-                name='stopwatch'
-                size={20} />
+              <Icon name='stopwatch' size={20} />
             </View>
           </TouchableOpacity>
           <TouchableWithoutFeedback
@@ -222,12 +176,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               top: 4
             }}
             onPress={this._adjustSpeed}>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              style={[
-                styles.bottomButton,
-                styles.bottomRowText
-              ]}>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.bottomButton, styles.bottomRowText]}>
               {`${playbackRate}X`}
             </Text>
           </TouchableWithoutFeedback>
@@ -240,16 +189,15 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             }}
             onPress={this._showPlayerMoreActionSheet}>
             <View style={styles.bottomButton}>
-              <Icon
-                name='ellipsis-h'
-                size={24} />
+              <Icon name='ellipsis-h' size={24} />
             </View>
           </TouchableOpacity>
         </View>
         <PlayerMoreActionSheet
           handleDismiss={this._hidePlayerMoreActionSheet}
           navigation={navigation}
-          showModal={showPlayerMoreActionSheet} />
+          showModal={showPlayerMoreActionSheet}
+        />
       </View>
     )
   }

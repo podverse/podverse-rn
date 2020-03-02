@@ -12,14 +12,7 @@ type PVRequest = {
 }
 
 export const request = async (req: PVRequest, nsfwMode?: boolean) => {
-  const {
-    endpoint = '',
-    query = {},
-    headers = {},
-    body,
-    method = 'GET',
-    opts = {}
-  } = req
+  const { endpoint = '', query = {}, headers = {}, body, method = 'GET', opts = {} } = req
 
   headers.nsfwMode = nsfwMode ? 'on' : 'off'
 
@@ -48,10 +41,7 @@ export const request = async (req: PVRequest, nsfwMode?: boolean) => {
 
     // NOTE: Maybe we don't want these alerts handled in this global file, and instead handle them in the
     // components that use the requests.
-    if (
-      error.response &&
-      error.response.code === PV.ResponseErrorCodes.PREMIUM_MEMBERSHIP_REQUIRED
-    ) {
+    if (error.response && error.response.code === PV.ResponseErrorCodes.PREMIUM_MEMBERSHIP_REQUIRED) {
       Alert.alert(
         PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.title,
         PV.Alerts.PREMIUM_MEMBERSHIP_REQUIRED.message,

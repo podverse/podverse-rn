@@ -34,13 +34,12 @@ export const TableSectionSelectors = (props: Props) => {
     selectedRightItemKey
   } = props
 
-  const selectedLeftItem =
-    leftItems.find((x) => x.value === selectedLeftItemKey) || {}
-  const selectedRightItem =
-    rightItems.find((x) => x.value === selectedRightItemKey) || {}
-  const wrapperStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-    [styles.tableSectionHeaderInner, { flexDirection: 'column' }] :
-    [styles.tableSectionHeaderInner]
+  const selectedLeftItem = leftItems.find((x) => x.value === selectedLeftItemKey) || {}
+  const selectedRightItem = rightItems.find((x) => x.value === selectedRightItemKey) || {}
+  const wrapperStyle =
+    PV.Fonts.fontScale.largest === fontScaleMode
+      ? [styles.tableSectionHeaderInner, { flexDirection: 'column' }]
+      : [styles.tableSectionHeaderInner]
 
   return (
     <View>
@@ -59,17 +58,12 @@ export const TableSectionSelectors = (props: Props) => {
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
                   style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
-                  {selectedLeftItem.label ||
-                    (placeholderLeft && placeholderLeft.label) ||
-                    _placeholderDefault.label}
+                  {selectedLeftItem.label || (placeholderLeft && placeholderLeft.label) || _placeholderDefault.label}
                 </Text>
                 <Icon
                   name='angle-down'
                   size={14}
-                  style={[
-                    styles.tableSectionHeaderIconLeft,
-                    globalTheme.tableSectionHeaderIcon
-                  ]}
+                  style={[styles.tableSectionHeaderIconLeft, globalTheme.tableSectionHeaderIcon]}
                 />
               </View>
             </RNPickerSelect>
@@ -103,13 +97,8 @@ export const TableSectionSelectors = (props: Props) => {
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
-                  style={[
-                    styles.tableSectionHeaderTextRight,
-                    globalTheme.tableSectionHeaderText
-                  ]}>
-                  {selectedRightItem.label ||
-                    (placeholderRight && placeholderRight.label) ||
-                    _placeholderDefault.label}
+                  style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
+                  {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label}
                 </Text>
               </View>
             )}

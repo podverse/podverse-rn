@@ -72,22 +72,26 @@ export class PVActionSheet extends React.Component<Props, State> {
 
         const isQueueButton = item.key === 'queueNext' || item.key === 'queueLast'
         const queueOnPress = () => {
-          this.setState({
-            ...(item.key === 'queueNext' ?
+          this.setState(
             {
-              isLoadingQueueNext: true,
-              isLoadingQueueLast: false
-            } : {
-              isLoadingQueueNext: false,
-              isLoadingQueueLast: true
-            })
-          }, async () => {
-            await item.onPress()
-            this.setState({
-              isLoadingQueueLast: false,
-              isLoadingQueueNext: false
-            })
-          })
+              ...(item.key === 'queueNext'
+                ? {
+                    isLoadingQueueNext: true,
+                    isLoadingQueueLast: false
+                  }
+                : {
+                    isLoadingQueueNext: false,
+                    isLoadingQueueLast: true
+                  })
+            },
+            async () => {
+              await item.onPress()
+              this.setState({
+                isLoadingQueueLast: false,
+                isLoadingQueueNext: false
+              })
+            }
+          )
         }
 
         let onPress = item.onPress
@@ -98,27 +102,15 @@ export class PVActionSheet extends React.Component<Props, State> {
             key={item.key}
             onPress={onPress}
             style={buttonStyle}
-            underlayColor={
-              globalTheme.actionSheetButtonUnderlay.backgroundColor
-            }>
+            underlayColor={globalTheme.actionSheetButtonUnderlay.backgroundColor}>
             <View style={actionSheetStyles.buttonRow}>
-              <Text
-                numberOfLines={1}
-                style={[actionSheetStyles.buttonText, buttonTextStyle]}>
+              <Text numberOfLines={1} style={[actionSheetStyles.buttonText, buttonTextStyle]}>
                 {item.text}
               </Text>
-              {item.isDownloading && (
-                <ActivityIndicator
-                  size='small'
-                  styles={actionSheetStyles.activityIndicator}
-                />
-              )}
-              {((item.key === 'queueNext' && isLoadingQueueNext)
-                || (item.key === 'queueLast' && isLoadingQueueLast)) && (
-                  <ActivityIndicator
-                    size='small'
-                    styles={actionSheetStyles.activityIndicator}
-                  />
+              {item.isDownloading && <ActivityIndicator size='small' styles={actionSheetStyles.activityIndicator} />}
+              {((item.key === 'queueNext' && isLoadingQueueNext) ||
+                (item.key === 'queueLast' && isLoadingQueueLast)) && (
+                <ActivityIndicator size='small' styles={actionSheetStyles.activityIndicator} />
               )}
             </View>
           </TouchableHighlight>
@@ -136,12 +128,11 @@ export class PVActionSheet extends React.Component<Props, State> {
             key='cancel'
             onPress={handleCancelPress}
             style={[actionSheetStyles.buttonCancel, globalTheme.actionSheetButtonCancel]}
-            underlayColor={
-              safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor, '')
-            }>
-            <Text
-              numberOfLines={1}
-              style={buttonTextCancelStyle}>
+            underlayColor={safelyUnwrapNestedVariable(
+              () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
+              ''
+            )}>
+            <Text numberOfLines={1} style={buttonTextCancelStyle}>
               Cancel
             </Text>
           </TouchableHighlight>
@@ -174,26 +165,17 @@ export class PVActionSheet extends React.Component<Props, State> {
             style={[
               actionSheetStyles.animatedView,
               {
-                transform: [
-                  { translateY: showModal ? _yValueShow : _yValueHide }
-                ]
+                transform: [{ translateY: showModal ? _yValueShow : _yValueHide }]
               }
             ]}>
             {(!!title || !!message) && (
               <View style={[actionSheetStyles.header, globalTheme.actionSheetButton]}>
                 {!!title && (
-                  <Text
-                    numberOfLines={1}
-                    style={headerTitleStyle}>
+                  <Text numberOfLines={1} style={headerTitleStyle}>
                     {title}
                   </Text>
                 )}
-                {!!message && (
-                  <Text
-                    style={headerMessageStyle}>
-                    {message}
-                  </Text>
-                )}
+                {!!message && <Text style={headerMessageStyle}>{message}</Text>}
               </View>
             )}
             {buttons}

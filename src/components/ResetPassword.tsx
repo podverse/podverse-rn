@@ -1,10 +1,4 @@
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { TextInput } from '.'
@@ -52,20 +46,13 @@ export class ResetPassword extends React.Component<Props, State> {
     const disabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
     const { fontScaleMode } = this.global
 
-    const headerLabelStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.headerLabel, { fontSize: PV.Fonts.largeSizes.md }] :
-      [styles.headerLabel]
-    const signInButtonTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.signInButtonText, disabledTextStyle, { fontSize: PV.Fonts.largeSizes.md }] :
-      [styles.signInButtonText, disabledTextStyle]
+    const signInButtonTextStyle =
+      PV.Fonts.fontScale.largest === fontScaleMode
+        ? [styles.signInButtonText, disabledTextStyle, { fontSize: PV.Fonts.largeSizes.md }]
+        : [styles.signInButtonText, disabledTextStyle]
 
     return (
       <View style={[styles.view, style]}>
-        <Text
-          numberOfLines={1}
-          style={headerLabelStyle}>
-          Reset Password
-        </Text>
         <TextInput
           autoCapitalize='none'
           autoCompleteType='email'
@@ -82,14 +69,9 @@ export class ResetPassword extends React.Component<Props, State> {
           disabled={submitIsDisabled || isLoading}
           onPress={this._resetPassword}>
           {isLoading ? (
-            <ActivityIndicator
-              animating={true}
-              color={PV.Colors.gray}
-              size='small' />
+            <ActivityIndicator animating={true} color={PV.Colors.gray} size='small' />
           ) : (
-            <Text style={[signInButtonTextStyle, disabledTextStyle]}>
-              Send Reset
-            </Text>
+            <Text style={[signInButtonTextStyle, disabledTextStyle]}>Send Reset</Text>
           )}
         </TouchableOpacity>
       </View>
@@ -108,8 +90,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: PV.Colors.white,
     marginBottom: 300,
-    padding: 16,
-    width: '65%'
+    padding: 16
   },
   signInButtonText: {
     color: PV.Colors.brandColor,
@@ -122,11 +103,10 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.lg,
     marginBottom: 40,
     minHeight: 50,
-    paddingLeft: 20,
-    width: '80%'
+    paddingLeft: 20
   },
   view: {
-    alignItems: 'center',
+    paddingHorizontal: 20,
     justifyContent: 'center',
     width: '100%'
   }

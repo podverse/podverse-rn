@@ -1,7 +1,16 @@
 import { Alert, Linking, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, Divider, NavDismissIcon, NavHeaderButtonText, ScrollView, Text, TextInput,
-  TextLink, View } from '../components'
+import {
+  ActivityIndicator,
+  Divider,
+  NavDismissIcon,
+  NavHeaderButtonText,
+  ScrollView,
+  Text,
+  TextInput,
+  TextLink,
+  View
+} from '../components'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getAddByRSSPodcast } from '../services/parser'
@@ -20,14 +29,13 @@ type State = {
 export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
     title: 'Add by RSS',
-    headerLeft: (
-      <NavDismissIcon handlePress={navigation.dismiss} />
-    ),
+    headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
     headerRight: (
       <NavHeaderButtonText
         disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
         handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}
-        text='Save' />
+        text='Save'
+      />
     )
   })
 
@@ -38,7 +46,9 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
-    this.props.navigation.setParams({ _handleSavePodcastByRSSURL: this._handleSavePodcastByRSSURL })
+    this.props.navigation.setParams({
+      _handleSavePodcastByRSSURL: this._handleSavePodcastByRSSURL
+    })
     const feedUrl = navigation.getParam('podverse-param')
 
     if (feedUrl) {
@@ -68,7 +78,9 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
       this.setState({ isLoading: true }, async () => {
         try {
           await addAddByRSSPodcast(url)
-          this.props.navigation.setParams({ _savePodcastByRSSUrlIsLoading: false })
+          this.props.navigation.setParams({
+            _savePodcastByRSSUrlIsLoading: false
+          })
           this.setState({ isLoading: false })
           const podcast = await getAddByRSSPodcast(url)
           this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
@@ -77,11 +89,16 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
           })
         } catch (error) {
           console.log('_handleSavePodcastByRSSURL', error)
-          Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
-          this.props.navigation.setParams({ _savePodcastByRSSUrlIsLoading: false })
+          Alert.alert(
+            PV.Alerts.SOMETHING_WENT_WRONG.title,
+            PV.Alerts.SOMETHING_WENT_WRONG.message,
+            PV.Alerts.BUTTONS.OK
+          )
+          this.props.navigation.setParams({
+            _savePodcastByRSSUrlIsLoading: false
+          })
           this.setState({ isLoading: false })
         }
-
       })
     }
   }
@@ -92,55 +109,42 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.content}>
-        {
-          isLoading &&
-            <ActivityIndicator />
-        }
-        {
-          !isLoading &&
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={core.textInputLabel}>
-                RSS Feed
-              </Text>
-              <TextInput
-                autoCapitalize='none'
-                autoCompleteType='off'
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                onChangeText={this._handleChangeText}
-                placeholder='paste RSS feed link here'
-                returnKeyType='done'
-                style={[styles.textInput, globalTheme.textInput]}
-                underlineColorAndroid='transparent'
-                value={url}
-              />
-              <Divider style={styles.divider} />
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                style={styles.text}>
-                If a podcast is not officially available on Podverse, you can still listen to it by
-                pasting the RSS link here and pressing the Save button.
-              </Text>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                style={styles.text}>
-                Clips and playlists are not supported for podcasts added by RSS feed.
-              </Text>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                style={styles.text}>
-                If you want a podcast officially added to Podverse
-                press the Request Podcast link below.
-              </Text>
-              <TextLink
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                onPress={this._navToRequestPodcastForm}
-                style={styles.textLink}>
-                Request Podcast
-              </TextLink>
-            </ScrollView>
-        }
+        {isLoading && <ActivityIndicator />}
+        {!isLoading && (
+          <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
+              RSS Feed
+            </Text>
+            <TextInput
+              autoCapitalize='none'
+              autoCompleteType='off'
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              onChangeText={this._handleChangeText}
+              placeholder='paste RSS feed link here'
+              returnKeyType='done'
+              style={[styles.textInput, globalTheme.textInput]}
+              underlineColorAndroid='transparent'
+              value={url}
+            />
+            <Divider style={styles.divider} />
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
+              If a podcast is not officially available on Podverse, you can still listen to it by pasting the RSS link
+              here and pressing the Save button.
+            </Text>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
+              Clips and playlists are not supported for podcasts added by RSS feed.
+            </Text>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
+              If you want a podcast officially added to Podverse press the Request Podcast link below.
+            </Text>
+            <TextLink
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              onPress={this._navToRequestPodcastForm}
+              style={styles.textLink}>
+              Request Podcast
+            </TextLink>
+          </ScrollView>
+        )}
       </View>
     )
   }

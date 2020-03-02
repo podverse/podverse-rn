@@ -24,10 +24,7 @@ type State = {
 
 let lastPropsValue = ''
 
-export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<
-  Props,
-  State
-> {
+export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, State> {
   static getDerivedStateFromProps(nextProps: any, prevState: any) {
     const { value } = nextProps
     const { position } = prevState
@@ -75,22 +72,10 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<
     return (
       <View style={sliderStyles.wrapper}>
         {duration > 0 && (clipStartTime || clipStartTime === 0) && (
-          <View
-            style={[
-              sliderStyles.clipStartTimeFlag,
-              globalTheme.playerClipTimeFlag,
-              clipStartTimePosition
-            ]}
-          />
+          <View style={[sliderStyles.clipStartTimeFlag, globalTheme.playerClipTimeFlag, clipStartTimePosition]} />
         )}
         {duration > 0 && clipEndTime && (
-          <View
-            style={[
-              sliderStyles.clipEndTimeFlag,
-              globalTheme.playerClipTimeFlag,
-              clipEndTimePosition
-            ]}
-          />
+          <View style={[sliderStyles.clipEndTimeFlag, globalTheme.playerClipTimeFlag, clipEndTimePosition]} />
         )}
         <Slider
           minimumValue={0}
@@ -103,9 +88,7 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<
               slidingPosition: null
             })
           }}
-          onValueChange={(value) =>
-            this.setState({ slidingPosition: value * duration })
-          }
+          onValueChange={(value) => this.setState({ slidingPosition: value * duration })}
           thumbStyle={sliderStyles.thumbStyle}
           thumbTintColor={PV.Colors.brandColor}
           value={isLoading ? 0 : value}

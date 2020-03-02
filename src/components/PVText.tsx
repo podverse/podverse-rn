@@ -16,9 +16,7 @@ type Props = {
 export const PVText = (props: Props) => {
   const { fontSizeLargerScale, fontSizeLargestScale, isSecondary } = props
   const { fontScaleMode, globalTheme } = getGlobal()
-  const globalThemeText = isSecondary
-    ? globalTheme.textSecondary
-    : globalTheme.text
+  const globalThemeText = isSecondary ? globalTheme.textSecondary : globalTheme.text
 
   const textStyle = [globalThemeText, props.style]
   if (fontScaleMode === PV.Fonts.fontScale.larger) {

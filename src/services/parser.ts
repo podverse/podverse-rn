@@ -31,10 +31,7 @@ export const getAddByRSSPodcasts = async () => {
 
 const setAddByRSSPodcasts = async (podcasts: any[]) => {
   if (Array.isArray(podcasts)) {
-    await AsyncStorage.setItem(
-      PV.Keys.ADD_BY_RSS_PODCASTS,
-      JSON.stringify(podcasts)
-    )
+    await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCASTS, JSON.stringify(podcasts))
   }
 }
 
@@ -43,7 +40,7 @@ export const parseAllAddByRSSPodcasts = async () => {
   const parsedPodcasts = []
   for (const rssPodcast of rssPodcasts) {
     try {
-      const parsedPodcast = await parseAddByRSSPodcast(rssPodcast.addByRSSPodcastFeedUrl) as any
+      const parsedPodcast = (await parseAddByRSSPodcast(rssPodcast.addByRSSPodcastFeedUrl)) as any
       if (parsedPodcast) {
         parsedPodcasts.push(parsedPodcast)
       }
@@ -53,7 +50,9 @@ export const parseAllAddByRSSPodcasts = async () => {
   }
 
   for (const parsedPodcast of parsedPodcasts) {
-    const index = rssPodcasts.findIndex((rssPodcast: any) => rssPodcast.addByRSSPodcastFeedUrl === parsedPodcast.addByRSSPodcastFeedUrl)
+    const index = rssPodcasts.findIndex(
+      (rssPodcast: any) => rssPodcast.addByRSSPodcastFeedUrl === parsedPodcast.addByRSSPodcastFeedUrl
+    )
     if (index || index === 0) {
       rssPodcasts[index] = parsedPodcast
     } else {
@@ -123,7 +122,9 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
 
 const addParsedAddByRSSPodcast = async (parsedPodcast: any) => {
   const rssPodcasts = await getAddByRSSPodcasts()
-  const index = rssPodcasts.findIndex((rssPodcast: any) => rssPodcast.addByRSSPodcastFeedUrl === parsedPodcast.addByRSSPodcastFeedUrl)
+  const index = rssPodcasts.findIndex(
+    (rssPodcast: any) => rssPodcast.addByRSSPodcastFeedUrl === parsedPodcast.addByRSSPodcastFeedUrl
+  )
   if ((index && index >= 0) || index === 0) {
     rssPodcasts[index] = parsedPodcast
   } else {

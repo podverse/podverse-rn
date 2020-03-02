@@ -1,10 +1,6 @@
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
-import {
-  decodeHTMLString,
-  readableDate,
-  removeHTMLFromString
-} from '../lib/utility'
+import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { FastImage, IndicatorDownload, MoreButton, Text, View } from './'
 
@@ -48,12 +44,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const innerTopView = (
       <RNView style={styles.innerTopView}>
-        {!!podcastImageUrl && (
-            <FastImage
-              isSmall={true}
-              source={podcastImageUrl}
-              styles={styles.image} />
-        )}
+        {!!podcastImageUrl && <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />}
         <RNView style={styles.textWrapper}>
           {!!podcastTitle && (
             <Text
@@ -64,22 +55,14 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               {podcastTitle}
             </Text>
           )}
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            numberOfLines={4}
-            style={titleStyle}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={4} style={titleStyle}>
             {title}
           </Text>
           <RNView style={styles.textWrapperBottomRow}>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              isSecondary={true}
-              style={styles.pubDate}>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.pubDate}>
               {readableDate(pubDate)}
             </Text>
-            {isDownloaded && (
-              <IndicatorDownload />
-            )}
+            {isDownloaded && <IndicatorDownload />}
           </RNView>
         </RNView>
       </RNView>
@@ -88,11 +71,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const descriptionStyle = hideImage ? [styles.description, { paddingLeft: 0 }] : styles.description
 
     const bottomText = (
-      <Text
-        fontSizeLargestScale={PV.Fonts.largeSizes.md}
-        isSecondary={true}
-        numberOfLines={4}
-        style={descriptionStyle}>
+      <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} isSecondary={true} numberOfLines={4} style={descriptionStyle}>
         {description}
       </Text>
     )
@@ -101,27 +80,17 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
         <RNView style={styles.wrapperTop}>
           {handleNavigationPress ? (
-            <TouchableWithoutFeedback onPress={handleNavigationPress}>
-              {innerTopView}
-            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={handleNavigationPress}>{innerTopView}</TouchableWithoutFeedback>
           ) : (
             innerTopView
           )}
-          {handleMorePress && PV.Fonts.fontScale.largest !== fontScaleMode &&
-            <MoreButton
-              handleShowMore={handleMorePress}
-              height={hideImage ? 46 : 64}
-              isLoading={isDownloading} />
-          }
+          {handleMorePress && PV.Fonts.fontScale.largest !== fontScaleMode && (
+            <MoreButton handleShowMore={handleMorePress} height={hideImage ? 46 : 64} isLoading={isDownloading} />
+          )}
         </RNView>
         {!!description && handleNavigationPress && (
           <TouchableWithoutFeedback onPress={handleNavigationPress}>
-            <>
-              {
-                PV.Fonts.fontScale.largest !== fontScaleMode &&
-                  bottomText
-              }
-            </>
+            <>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</>
           </TouchableWithoutFeedback>
         )}
         {!!description && !handleNavigationPress && bottomText}

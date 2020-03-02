@@ -15,9 +15,8 @@ export const PVButtonGroup = (props: Props) => {
   const { buttons, onPress, selectedIndex } = props
   const { fontScaleMode, globalTheme } = getGlobal()
 
-  const textStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-    [styles.text, { fontSize: PV.Fonts.largeSizes.md }] :
-    [styles.text]
+  const textStyle =
+    PV.Fonts.fontScale.largest === fontScaleMode ? [styles.text, { fontSize: PV.Fonts.largeSizes.md }] : [styles.text]
 
   return (
     <ButtonGroup
@@ -25,10 +24,7 @@ export const PVButtonGroup = (props: Props) => {
       buttonStyle={[styles.button, globalTheme.buttonGroup]}
       containerStyle={styles.container}
       onPress={onPress}
-      selectedButtonStyle={[
-        styles.selectedButton,
-        globalTheme.buttonGroupSelected
-      ]}
+      selectedButtonStyle={[styles.selectedButton, globalTheme.buttonGroupSelected]}
       selectedIndex={selectedIndex}
       selectedTextStyle={globalTheme.buttonGroupTextSelected}
       textStyle={[textStyle, globalTheme.buttonGroupText]}

@@ -1,5 +1,6 @@
 import { getGlobal, setGlobal } from 'reactn'
-import { getSleepTimerTimeRemaining as getSleepTimerTimeRemainingService,
+import {
+  getSleepTimerTimeRemaining as getSleepTimerTimeRemainingService,
   handleSleepTimerReachedEnd as handleSleepTimerReachedEndService,
   setSleepTimerTimeRemaining as setSleepTimerTimeRemainingService,
   sleepTimerIsRunning,
@@ -46,7 +47,6 @@ export const resumeSleepTimerStateUpdates = () => {
         })
       }, 1000)
     }
-
   }, 1000)
 }
 

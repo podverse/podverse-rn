@@ -7,8 +7,8 @@ import { getAuthenticatedUserInfo, getAuthenticatedUserInfoLocally, login, signU
 import { getSubscribedPodcasts } from './podcast'
 
 export type Credentials = {
-  email: string,
-  password: string,
+  email: string
+  password: string
   name?: string
 }
 
@@ -28,7 +28,6 @@ export const getAuthUserInfo = async () => {
       overlayAlert: {
         ...globalState.overlayAlert,
         showAlert: shouldShowAlert
-
       }
     })
     return userInfo
