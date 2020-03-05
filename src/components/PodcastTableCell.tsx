@@ -42,58 +42,49 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       shouldAutoDownload = autoDownloadSettings[id]
     }
 
-    const titleWrapperStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.titleWrapper, { flex: 1 }] :
-      [styles.titleWraper]
+    const titleWrapperStyle =
+      PV.Fonts.fontScale.largest === fontScaleMode ? [styles.titleWrapper, { flex: 1 }] : [styles.titleWraper]
 
     return (
       <TouchableWithoutFeedback onPress={onPress}>
-        <View
-          hasZebraStripe={hasZebraStripe}
-          style={styles.wrapper}>
-          <FastImage
-            source={podcastImageUrl}
-            styles={styles.image} />
+        <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
+          <FastImage source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>
             <RNView style={titleWrapperStyle}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                numberOfLines={([PV.Fonts.fontScale.large, PV.Fonts.fontScale.larger,
-                  PV.Fonts.fontScale.largest].includes(fontScaleMode)) ? 1 : 2}
+                numberOfLines={
+                  [PV.Fonts.fontScale.large, PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(
+                    fontScaleMode
+                  )
+                    ? 1
+                    : 2
+                }
                 style={styles.title}>
                 {podcastTitle}
               </Text>
             </RNView>
-            {
-              fontScaleMode !== PV.Fonts.fontScale.largest &&
-                <>
-                  <RNView style={styles.textWrapperRow}>
-                    {showDownloadCount && (
-                      <RNView style={styles.textWrapperRowLeft}>
-                        <Text
-                          isSecondary={true}
-                          numberOfLines={1}
-                          style={styles.bottomText}>
-                          {`${downloadCount} downloaded`}
-                        </Text>
-                        {showAutoDownload && shouldAutoDownload && (
-                          <IndicatorDownload style={styles.autoDownloadIcon} />
-                        )}
-                      </RNView>
-                    )}
-                    {!!lastEpisodePubDate && (
-                      <RNView style={styles.textWrapperRowRight}>
-                        <Text
-                          isSecondary={true}
-                          numberOfLines={1}
-                          style={styles.bottomText}>
-                          {readableDate(lastEpisodePubDate)}
-                        </Text>
-                      </RNView>
-                    )}
-                  </RNView>
-                </>
-            }
+            {fontScaleMode !== PV.Fonts.fontScale.largest && (
+              <>
+                <RNView style={styles.textWrapperRow}>
+                  {showDownloadCount && (
+                    <RNView style={styles.textWrapperRowLeft}>
+                      <Text isSecondary={true} numberOfLines={1} style={styles.bottomText}>
+                        {`${downloadCount} downloaded`}
+                      </Text>
+                      {showAutoDownload && shouldAutoDownload && <IndicatorDownload style={styles.autoDownloadIcon} />}
+                    </RNView>
+                  )}
+                  {!!lastEpisodePubDate && (
+                    <RNView style={styles.textWrapperRowRight}>
+                      <Text isSecondary={true} numberOfLines={1} style={styles.bottomText}>
+                        {readableDate(lastEpisodePubDate)}
+                      </Text>
+                    </RNView>
+                  )}
+                </RNView>
+              </>
+            )}
           </RNView>
         </View>
       </TouchableWithoutFeedback>

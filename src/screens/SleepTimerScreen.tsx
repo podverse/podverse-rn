@@ -1,16 +1,16 @@
 import { StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
-import {
-  Button,
-  NavDismissIcon,
-  SafeAreaView,
-  TimePicker,
-  View
-} from '../components'
+import { Button, NavDismissIcon, SafeAreaView, TimePicker, View } from '../components'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { sleepTimerIsRunning } from '../services/sleepTimer'
-import { pauseSleepTimerStateUpdates, resumeSleepTimerStateUpdates, setSleepTimerTimeRemaining,
-  startSleepTimer, stopSleepTimer, updateSleepTimerTimeRemaining } from '../state/actions/sleepTimer'
+import {
+  pauseSleepTimerStateUpdates,
+  resumeSleepTimerStateUpdates,
+  setSleepTimerTimeRemaining,
+  startSleepTimer,
+  stopSleepTimer,
+  updateSleepTimerTimeRemaining
+} from '../state/actions/sleepTimer'
 
 type Props = {
   navigation?: any
@@ -21,12 +21,8 @@ type State = {}
 export class SleepTimerScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
     title: 'Sleep Timer',
-    headerLeft: (
-      <NavDismissIcon handlePress={navigation.dismiss} />
-    ),
-    headerRight: (
-      <RNView />
-    )
+    headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
+    headerRight: <RNView />
   })
 
   constructor(props: Props) {
@@ -75,16 +71,14 @@ export class SleepTimerScreen extends React.Component<Props, State> {
     return (
       <SafeAreaView>
         <View style={styles.view}>
-          <TimePicker
-            currentTime={timeRemaining}
-            handleUpdateSleepTimer={this._updateSleepTimer}
-            isActive={isActive} />
+          <TimePicker currentTime={timeRemaining} handleUpdateSleepTimer={this._updateSleepTimer} isActive={isActive} />
           <Button
             isSuccess={!isActive}
             isWarning={isActive}
             onPress={this._toggleSleepTimer}
             text={isActive ? 'Stop Timer' : 'Start Timer'}
-            wrapperStyles={styles.button} />
+            wrapperStyles={styles.button}
+          />
         </View>
       </SafeAreaView>
     )

@@ -12,11 +12,7 @@ export const NavDismissIcon = (props: Props) => {
 
   return (
     <NavItemWrapper handlePress={handlePress}>
-      <Icon
-        color='#fff'
-        name='chevron-down'
-        size={PV.Icons.NAV}
-        style={navHeader.buttonIcon} />
+      <Icon color='#fff' name='chevron-down' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
     </NavItemWrapper>
   )
 }

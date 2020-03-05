@@ -37,20 +37,12 @@ export const ProfileTableHeader = (props: Props) => {
       {!isLoading && !isNotFound && (
         <View style={styles.wrapper}>
           <View style={styles.textWrapper}>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              numberOfLines={1}
-              style={styles.name}>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.name}>
               {name}
             </Text>
           </View>
           {handleEditPress && (
-            <Icon
-              name='pencil-alt'
-              onPress={() => handleEditPress(id)}
-              size={26}
-              style={button.iconOnlyMedium}
-            />
+            <Icon name='pencil-alt' onPress={() => handleEditPress(id)} size={26} style={button.iconOnlyMedium} />
           )}
           {handleToggleSubscribe && (
             <SubscribeButton
@@ -63,9 +55,7 @@ export const ProfileTableHeader = (props: Props) => {
       )}
       {!isLoading && isNotFound && (
         <View style={[styles.wrapper, core.view]}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            style={styles.notFoundText}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.notFoundText}>
             Playlist Not Found
           </Text>
         </View>

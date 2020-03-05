@@ -73,28 +73,21 @@ export const PVFlatList = (props: Props) => {
     noResultsFound = true
   }
 
-  if (
-    !isLoadingMore &&
-    data &&
-    dataTotalCount &&
-    dataTotalCount > 0 &&
-    data.length >= dataTotalCount
-  ) {
+  if (!isLoadingMore && data && dataTotalCount && dataTotalCount > 0 && data.length >= dataTotalCount) {
     endOfResults = true
   }
 
-  const textLinkStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-    [styles.textLink, { fontSize: PV.Fonts.largeSizes.md }] :
-    [styles.textLink]
-  const noResultsFoundTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-    [styles.noResultsFoundText, { fontSize: PV.Fonts.largeSizes.md }] :
-    [styles.noResultsFoundText]
+  const textLinkStyle =
+    PV.Fonts.fontScale.largest === fontScaleMode
+      ? [styles.textLink, { fontSize: PV.Fonts.largeSizes.md }]
+      : [styles.textLink]
+  const noResultsFoundTextStyle =
+    PV.Fonts.fontScale.largest === fontScaleMode
+      ? [styles.noResultsFoundText, { fontSize: PV.Fonts.largeSizes.md }]
+      : [styles.noResultsFoundText]
 
   const requestPodcastTextLink = (
-    <TextLink
-      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-      onPress={handleRequestPodcast}
-      style={textLinkStyle}>
+    <TextLink fontSizeLargestScale={PV.Fonts.largeSizes.md} onPress={handleRequestPodcast} style={textLinkStyle}>
       Request Podcast
     </TextLink>
   )
@@ -127,9 +120,7 @@ export const PVFlatList = (props: Props) => {
       )}
       {noResultsFound && !noSubscribedPodcasts && !isLoadingMore && !showNoInternetConnectionMessage && (
         <View style={styles.msgView}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            style={noResultsFoundTextStyle}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={noResultsFoundTextStyle}>
             {`No ${resultsText} found`}
           </Text>
           {showRequestPodcast && requestPodcastTextLink}
@@ -149,11 +140,7 @@ export const PVFlatList = (props: Props) => {
           ListFooterComponent={() => {
             if (isLoadingMore) {
               return (
-                <View
-                  style={[
-                    styles.isLoadingMoreCell,
-                    globalTheme.tableCellBorder
-                  ]}>
+                <View style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]}>
                   <ActivityIndicator />
                 </View>
               )
@@ -162,9 +149,7 @@ export const PVFlatList = (props: Props) => {
                 <View style={[styles.lastCell, globalTheme.tableCellBorder]}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    style={[
-                      styles.lastCellText
-                    ]}>{`End of ${resultsText}`}</Text>
+                    style={[styles.lastCellText]}>{`End of ${resultsText}`}</Text>
                   {showRequestPodcast && requestPodcastTextLink}
                 </View>
               )
@@ -173,14 +158,11 @@ export const PVFlatList = (props: Props) => {
           }}
           onEndReached={onEndReached}
           onEndReachedThreshold={onEndReachedThreshold}
-          {...(onRefresh ? {
-            refreshControl: (
-              <RefreshControl
-                refreshing={isRefreshing}
-                onRefresh={onRefresh}
-              />
-            )
-          } : {})}
+          {...(onRefresh
+            ? {
+                refreshControl: <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+              }
+            : {})}
           renderHiddenItem={renderHiddenItem || _renderHiddenItem}
           renderItem={renderItem}
           rightOpenValue={-100}

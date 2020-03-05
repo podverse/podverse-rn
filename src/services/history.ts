@@ -10,14 +10,10 @@ import { request } from './request'
 
 export const addOrUpdateHistoryItem = async (item: NowPlayingItem) => {
   const useServerData = await checkIfShouldUseServerData()
-  return useServerData
-    ? addOrUpdateHistoryItemOnServer(item)
-    : addOrUpdateHistoryItemLocally(item)
+  return useServerData ? addOrUpdateHistoryItemOnServer(item) : addOrUpdateHistoryItemLocally(item)
 }
 
-export const updateHistoryItemPlaybackPosition = async (
-  item: NowPlayingItem
-) => {
+export const updateHistoryItemPlaybackPosition = async (item: NowPlayingItem) => {
   const useServerData = await checkIfShouldUseServerData()
   return useServerData
     ? updateHistoryItemPlaybackPositionOnServer(item)
@@ -26,9 +22,7 @@ export const updateHistoryItemPlaybackPosition = async (
 
 export const clearHistoryItems = async () => {
   const useServerData = await checkIfShouldUseServerData()
-  return useServerData
-    ? clearHistoryItemsOnServer()
-    : clearHistoryItemsLocally()
+  return useServerData ? clearHistoryItemsOnServer() : clearHistoryItemsLocally()
 }
 
 export const getHistoryItem = async (id: string) => {
@@ -65,11 +59,7 @@ export const getAdjacentItemFromHistoryLocally = async (playNext?: boolean) => {
 
   const historyItems = await getHistoryItemsLocally()
   const index = historyItems.findIndex((x: any) =>
-    checkIfIdMatchesClipIdOrEpisodeId(
-      x.clipId || x.episodeId,
-      playingItem.clipId,
-      playingItem.episodeId
-    )
+    checkIfIdMatchesClipIdOrEpisodeId(x.clipId || x.episodeId, playingItem.clipId, playingItem.episodeId)
   )
 
   if (index > -1) {
@@ -86,9 +76,7 @@ export const getAdjacentItemFromHistoryLocally = async (playNext?: boolean) => {
 
 export const removeHistoryItem = async (item: NowPlayingItem) => {
   const useServerData = await checkIfShouldUseServerData()
-  return useServerData
-    ? removeHistoryItemOnServer(item.episodeId, item.clipId)
-    : removeHistoryItemLocally(item)
+  return useServerData ? removeHistoryItemOnServer(item.episodeId, item.clipId) : removeHistoryItemLocally(item)
 }
 
 // NOTE: userPlaybackPosition should only ever be updated in the updateUserPlaybackPosition function!
@@ -96,30 +84,23 @@ export const removeHistoryItem = async (item: NowPlayingItem) => {
 export const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem) => {
   const items = await getHistoryItemsLocally()
   const savedItem = items.find((x: NowPlayingItem) =>
-    checkIfIdMatchesClipIdOrEpisodeId(
-      x.clipId || x.episodeId,
-      item.clipId,
-      item.episodeId
-    )
+    checkIfIdMatchesClipIdOrEpisodeId(x.clipId || x.episodeId, item.clipId, item.episodeId)
   )
-  const userPlaybackPosition =
-    (savedItem && savedItem.userPlaybackPosition) || 0
+  const userPlaybackPosition = (savedItem && savedItem.userPlaybackPosition) || 0
   const filteredItems = filterItemFromHistoryItems(items, item)
   item.userPlaybackPosition = userPlaybackPosition
   filteredItems.unshift(item)
   return setAllHistoryItemsLocally(filteredItems)
 }
 
-const addOrUpdateHistoryItemOnServer = async (
-  nowPlayingItem: NowPlayingItem
-) => {
+const addOrUpdateHistoryItemOnServer = async (nowPlayingItem: NowPlayingItem) => {
   await addOrUpdateHistoryItemLocally(nowPlayingItem)
   const bearerToken = await getBearerToken()
   return request({
     endpoint: '/user/add-or-update-history-item',
     method: 'PATCH',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
     body: { historyItem: nowPlayingItem },
@@ -127,13 +108,9 @@ const addOrUpdateHistoryItemOnServer = async (
   })
 }
 
-const updateHistoryItemPlaybackPositionLocally = async (
-  item: NowPlayingItem
-) => {
+const updateHistoryItemPlaybackPositionLocally = async (item: NowPlayingItem) => {
   const items = await getHistoryItemsLocally()
-  const index = items.findIndex(
-    (x: any) => !x.clipId && x.episodeId === item.episodeId
-  )
+  const index = items.findIndex((x: any) => !x.clipId && x.episodeId === item.episodeId)
   if (index > -1) {
     items[index].userPlaybackPosition = item.userPlaybackPosition
     return setAllHistoryItemsLocally(items)
@@ -142,9 +119,7 @@ const updateHistoryItemPlaybackPositionLocally = async (
   }
 }
 
-const updateHistoryItemPlaybackPositionOnServer = async (
-  nowPlayingItem: NowPlayingItem
-) => {
+const updateHistoryItemPlaybackPositionOnServer = async (nowPlayingItem: NowPlayingItem) => {
   const origNowPlayingItem = nowPlayingItem
   nowPlayingItem = {
     clipId: nowPlayingItem.clipId,
@@ -160,7 +135,7 @@ const updateHistoryItemPlaybackPositionOnServer = async (
       endpoint: '/user/update-history-item-playback-position',
       method: 'PATCH',
       headers: {
-        'Authorization': bearerToken,
+        Authorization: bearerToken,
         'Content-Type': 'application/json'
       },
       body: { historyItem: nowPlayingItem },
@@ -169,7 +144,6 @@ const updateHistoryItemPlaybackPositionOnServer = async (
 
     return response && response.data
   } catch (error) {
-
     // If 406 NotAcceptable error, then the historyItem may be missing from the history, so try to add it.
     if (error.response && error.response.status === 406) {
       await addOrUpdateHistoryItem(origNowPlayingItem)
@@ -190,7 +164,7 @@ const clearHistoryItemsOnServer = async () => {
     endpoint: '/user/history-item/clear-all',
     method: 'DELETE',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     },
     opts: { credentials: 'include' }
@@ -199,10 +173,7 @@ const clearHistoryItemsOnServer = async () => {
   return response && response.data
 }
 
-export const filterItemFromHistoryItems = (
-  items: NowPlayingItem[] = [],
-  item: NowPlayingItem
-) =>
+export const filterItemFromHistoryItems = (items: NowPlayingItem[] = [], item: NowPlayingItem) =>
   items.filter((x) => {
     if (item.clipId && x.clipId === item.clipId) {
       return false
@@ -234,10 +205,7 @@ const removeHistoryItemLocally = async (item: NowPlayingItem) => {
   return setAllHistoryItemsLocally(filteredItems)
 }
 
-const removeHistoryItemOnServer = async (
-  episodeId?: string,
-  mediaRefId?: string
-) => {
+const removeHistoryItemOnServer = async (episodeId?: string, mediaRefId?: string) => {
   const bearerToken = await getBearerToken()
   const query = { ...(!mediaRefId ? { episodeId } : { mediaRefId }) }
   const response = await request({
@@ -245,7 +213,7 @@ const removeHistoryItemOnServer = async (
     query,
     method: 'DELETE',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     opts: { credentials: 'include' }
@@ -271,9 +239,7 @@ export const checkIfPlayingFromHistory = async () => {
 
     if (
       !Array.isArray(historyItems) ||
-      !historyItems.some((x: any) =>
-        checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId)
-      )
+      !historyItems.some((x: any) => checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId))
     ) {
       return false
     }
@@ -281,11 +247,7 @@ export const checkIfPlayingFromHistory = async () => {
     const mostRecentHistoryItem = historyItems[0]
     return (
       mostRecentHistoryItem &&
-      !checkIfIdMatchesClipIdOrEpisodeId(
-        id,
-        mostRecentHistoryItem.clipId,
-        mostRecentHistoryItem.episodeId
-      )
+      !checkIfIdMatchesClipIdOrEpisodeId(id, mostRecentHistoryItem.clipId, mostRecentHistoryItem.episodeId)
     )
   } catch (error) {
     console.log('Check if playing from history error: ', error)

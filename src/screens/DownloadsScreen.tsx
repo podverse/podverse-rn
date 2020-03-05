@@ -1,23 +1,11 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import {
-  ActionSheet,
-  Divider,
-  DownloadTableCell,
-  FlatList,
-  MessageWithAction,
-  SwipeRowBack,
-  View
-} from '../components'
+import { ActionSheet, Divider, DownloadTableCell, FlatList, MessageWithAction, SwipeRowBack, View } from '../components'
 import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
 import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
-import {
-  pauseDownloadingEpisode,
-  removeDownloadingEpisode,
-  resumeDownloadingEpisode
-} from '../state/actions/downloads'
+import { pauseDownloadingEpisode, removeDownloadingEpisode, resumeDownloadingEpisode } from '../state/actions/downloads'
 
 type Props = {
   navigation?: any
@@ -93,10 +81,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
   }
 
   _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.episodeId, rowMap)}
-      text='Remove'
-    />
+    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.episodeId, rowMap)} text='Remove' />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
@@ -112,10 +97,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view}>
-        {!downloadsArray ||
-          (downloadsArray.length === 0 && (
-            <MessageWithAction message='No downloads in progress' />
-          ))}
+        {!downloadsArray || (downloadsArray.length === 0 && <MessageWithAction message='No downloads in progress' />)}
         {downloadsArray.length > 0 && (
           <FlatList
             data={downloadsArray}
@@ -131,14 +113,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
         {selectedItem && (
           <ActionSheet
             handleCancelPress={this._handleCancelPress}
-            items={() =>
-              PV.ActionSheet.media.moreButtons(
-                selectedItem,
-                navigation,
-                this._handleCancelPress,
-                null
-              )
-            }
+            items={() => PV.ActionSheet.media.moreButtons(selectedItem, navigation, this._handleCancelPress, null)}
             showModal={showActionSheet}
           />
         )}

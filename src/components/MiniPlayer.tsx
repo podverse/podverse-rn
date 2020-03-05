@@ -1,9 +1,4 @@
-import {
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View
-} from 'react-native'
+import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import React from 'reactn'
 import { PV } from '../resources'
@@ -44,14 +39,11 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
                 styles={styles.image}
               />
               <View style={styles.textWrapper}>
-                {
-                  ![PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) &&
-                    <Text
-                      numberOfLines={1}
-                      style={[styles.podcastTitle, globalTheme.playerText]}>
-                      {nowPlayingItem.podcastTitle}
-                    </Text>
-                }
+                {![PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) && (
+                  <Text numberOfLines={1} style={[styles.podcastTitle, globalTheme.playerText]}>
+                    {nowPlayingItem.podcastTitle}
+                  </Text>
+                )}
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
@@ -59,31 +51,17 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
                   {nowPlayingItem.episodeTitle}
                 </Text>
               </View>
-              <TouchableOpacity
-                onPress={() => togglePlay(this.global)}
-                style={playerStyles.icon}>
+              <TouchableOpacity onPress={() => togglePlay(this.global)} style={playerStyles.icon}>
                 {!hasErrored && (
                   <Icon
-                    color={
-                      isDarkMode
-                        ? iconStyles.dark.color
-                        : iconStyles.light.color
-                    }
-                    name={
-                      playbackState === PVTrackPlayer.STATE_PLAYING
-                        ? 'pause'
-                        : 'play'
-                    }
+                    color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
+                    name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
                     size={30}
                   />
                 )}
                 {hasErrored && (
                   <Icon
-                    color={
-                      globalTheme === darkTheme
-                        ? iconStyles.lightRed.color
-                        : iconStyles.darkRed.color
-                    }
+                    color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
                     name={'exclamation-triangle'}
                     size={26}
                   />

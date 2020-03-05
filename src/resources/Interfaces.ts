@@ -97,7 +97,7 @@ export interface InitialState {
   profiles: {
     flatListData: []
     flatListDataTotalCount: null
-  },
+  }
   purchase: {
     isLoading: boolean
     message: string
@@ -109,7 +109,7 @@ export interface InitialState {
     title: string
     transactionId: string
     transactionReceipt: string
-  },
+  }
   screenPlayer: {
     endOfResultsReached: boolean
     flatListData: any[]

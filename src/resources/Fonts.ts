@@ -1,23 +1,24 @@
 import { Platform } from 'react-native'
 import { IFonts } from './Interfaces'
 
-const sizes = Platform.OS === 'android' ?
-({
-  tiny: 12,
-  xs: 13,
-  sm: 14,
-  md: 16,
-  lg: 17,
-  xl: 18
-}) :
-({
-  tiny: 13,
-  xs: 14,
-  sm: 15,
-  md: 17,
-  lg: 18,
-  xl: 19
-})
+const sizes =
+  Platform.OS === 'android'
+    ? {
+        tiny: 12,
+        xs: 13,
+        sm: 14,
+        md: 16,
+        lg: 17,
+        xl: 18
+      }
+    : {
+        tiny: 13,
+        xs: 14,
+        sm: 15,
+        md: 17,
+        lg: 18,
+        xl: 19
+      }
 
 const largeSizes = {
   tiny: 7,

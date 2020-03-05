@@ -18,10 +18,7 @@ import {
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import {
-  convertNowPlayingItemToEpisode,
-  convertToNowPlayingItem
-} from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import {
   generateAuthorsText,
   generateCategoriesText,
@@ -76,12 +73,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       title: isMyProfile ? 'My Profile' : 'Profile',
       headerRight: (
         <RNView style={core.row}>
-          {userIsPublic && userId && (
-            <NavShareIcon
-              profileName={userName}
-              url={PV.URLs.profile + userId}
-            />
-          )}
+          {userIsPublic && userId && <NavShareIcon profileName={userName} url={PV.URLs.profile + userId} />}
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
@@ -90,14 +82,8 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    const id = safelyUnwrapNestedVariable(
-      () => this.global.session.userInfo.id,
-      ''
-    )
-    const subscribedUserIds = safelyUnwrapNestedVariable(
-      () => this.global.session.userInfo.subscribedUserIds,
-      []
-    )
+    const id = safelyUnwrapNestedVariable(() => this.global.session.userInfo.id, '')
+    const subscribedUserIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedUserIds, [])
     const user = this.props.navigation.getParam('user')
     const userId = (user && user.id) || this.props.navigation.getParam('userId')
     const isLoggedInUserProfile = userId === id
@@ -130,9 +116,7 @@ export class ProfileScreen extends React.Component<Props, State> {
 
     setGlobal({
       profile: {
-        ...(isLoggedInUserProfile
-          ? { user: this.global.session.userInfo }
-          : { user })
+        ...(isLoggedInUserProfile ? { user: this.global.session.userInfo } : { user })
       }
     })
   }
@@ -207,10 +191,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           } as State
 
           try {
-            const { profileFlatListData } = await getPublicUser(
-              userId,
-              this.global
-            )
+            const { profileFlatListData } = await getPublicUser(userId, this.global)
             newState.flatListData = profileFlatListData
             newState = await this._queryData(queryFrom, 1)
           } catch (error) {
@@ -238,9 +219,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         preventSortQuery: true,
         queryFrom: selectedKey,
         queryPage: 1,
-        ...(querySort === _alphabeticalKey && selectedKey !== _podcastsKey
-          ? { querySort: _topPastWeek }
-          : {})
+        ...(querySort === _alphabeticalKey && selectedKey !== _podcastsKey ? { querySort: _topPastWeek } : {})
       },
       async () => {
         const newState = await this._queryData(selectedKey, 1)
@@ -278,12 +257,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
-    const {
-      endOfResultsReached,
-      isLoadingMore,
-      queryFrom,
-      queryPage = 1
-    } = this.state
+    const { endOfResultsReached, isLoadingMore, queryFrom, queryPage = 1 } = this.state
     if (!endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
         this.setState(
@@ -344,10 +318,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     this.setState({ isSubscribing: true }, async () => {
       try {
         await toggleSubscribeToUser(id)
-        const subscribedUserIds = safelyUnwrapNestedVariable(
-          () => this.global.session.userInfo.subscribedUserIds,
-          []
-        )
+        const subscribedUserIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedUserIds, [])
         const isSubscribed = subscribedUserIds.some((x: string) => x === id)
 
         this.setState({
@@ -390,16 +361,16 @@ export class ProfileScreen extends React.Component<Props, State> {
           episodeId={item.episode.id}
           episodePubDate={readableDate(item.episode.pubDate)}
           episodeTitle={item.episode.title}
-          handleMorePress={() =>
-            this._handleMorePress(convertToNowPlayingItem(item, null, null))
-          }
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           hasZebraStripe={isOdd(index)}
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
           startTime={item.startTime}
           title={item.title}
         />
-      ) : (<></>)
+      ) : (
+        <></>
+      )
     } else {
       return (
         <PlaylistTableCell
@@ -455,23 +426,13 @@ export class ProfileScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view}>
         {isMyProfile && !isLoggedIn && (
-          <MessageWithAction
-            topActionHandler={this._onPressLogin}
-            topActionText='Login'
-            message={message}
-          />
+          <MessageWithAction topActionHandler={this._onPressLogin} topActionText='Login' message={message} />
         )}
         {!(isMyProfile && !isLoggedIn) && (
           <View style={styles.view}>
             <ProfileTableHeader
-              handleEditPress={
-                isLoggedInUserProfile ? this._handleEditPress : null
-              }
-              handleToggleSubscribe={
-                isLoggedInUserProfile
-                  ? null
-                  : () => this._handleToggleSubscribe(userId)
-              }
+              handleEditPress={isLoggedInUserProfile ? this._handleEditPress : null}
+              handleToggleSubscribe={isLoggedInUserProfile ? null : () => this._handleToggleSubscribe(userId)}
               id={userId}
               isLoading={isLoading && !user}
               isNotFound={!isLoading && !user}
@@ -515,8 +476,7 @@ export class ProfileScreen extends React.Component<Props, State> {
                     this._handleDownloadPressed
                   )
                 }
-              }
-              }
+              }}
               showModal={showActionSheet}
             />
           </View>
@@ -525,11 +485,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     )
   }
 
-  _queryPodcasts = async (
-    newState: any,
-    page: number = 1,
-    sort?: string | null
-  ) => {
+  _queryPodcasts = async (newState: any, page: number = 1, sort?: string | null) => {
     return new Promise(async (resolve, reject) => {
       const { flatListData } = this.state
       const query = {
@@ -553,8 +509,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         },
         () => {
           newState.flatListData = [...flatListData, ...results[0]]
-          newState.endOfResultsReached =
-            newState.flatListData.length >= results[1]
+          newState.endOfResultsReached = newState.flatListData.length >= results[1]
           newState.flatListDataTotalCount = results[1]
           newState.queryPage = page
           resolve(newState)
@@ -563,11 +518,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     })
   }
 
-  _queryMediaRefs = async (
-    newState: any,
-    page: number = 1,
-    sort?: string | null
-  ) => {
+  _queryMediaRefs = async (newState: any, page: number = 1, sort?: string | null) => {
     return new Promise(async (resolve, reject) => {
       const { flatListData, userId } = this.state
       const { settings } = this.global
@@ -581,11 +532,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       if (isLoggedInUserProfile) {
         results = await getLoggedInUserMediaRefs(query)
       } else {
-        results = await getUserMediaRefs(
-          this.global.profile.user.id,
-          query,
-          nsfwMode
-        )
+        results = await getUserMediaRefs(this.global.profile.user.id, query, nsfwMode)
       }
 
       setGlobal(
@@ -596,8 +543,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         },
         () => {
           newState.flatListData = [...flatListData, ...results[0]]
-          newState.endOfResultsReached =
-            newState.flatListData.length >= results[1]
+          newState.endOfResultsReached = newState.flatListData.length >= results[1]
           newState.flatListDataTotalCount = results[1]
           newState.queryPage = page
           resolve(newState)
@@ -606,11 +552,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     })
   }
 
-  _queryPlaylists = async (
-    newState: any,
-    page: number = 1,
-    sort?: string | null
-  ) => {
+  _queryPlaylists = async (newState: any, page: number = 1, sort?: string | null) => {
     return new Promise(async (resolve, reject) => {
       const { userId } = this.state
       const { id } = this.global.session.userInfo

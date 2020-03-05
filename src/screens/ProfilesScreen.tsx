@@ -14,10 +14,7 @@ import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getAuthUserInfo } from '../state/actions/auth'
-import {
-  getPublicUsersByQuery,
-  toggleSubscribeToUser
-} from '../state/actions/user'
+import { getPublicUsersByQuery, toggleSubscribeToUser } from '../state/actions/user'
 
 type Props = {
   navigation?: any
@@ -115,9 +112,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
-    const wasAlerted = await alertIfNoNetworkConnection(
-      'unsubscribe from this profile'
-    )
+    const wasAlerted = await alertIfNoNetworkConnection('unsubscribe from this profile')
     if (wasAlerted) return
 
     this.setState({ isUnsubscribing: true }, async () => {

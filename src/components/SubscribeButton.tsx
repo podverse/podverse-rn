@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  ActivityIndicator,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View
-} from 'react-native'
+import { ActivityIndicator, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Icon } from './'
@@ -31,11 +26,7 @@ export const SubscribeButton = (props: Props) => {
       <View style={styles.buttonView}>
         {isSubscribing && (
           <View style={styles.activityIndicator}>
-            <ActivityIndicator
-              animating={true}
-              color={globalTheme.activityIndicator.color}
-              size='small'
-            />
+            <ActivityIndicator animating={true} color={globalTheme.activityIndicator.color} size='small' />
           </View>
         )}
         {!isSubscribing && (

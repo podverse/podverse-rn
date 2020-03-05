@@ -91,10 +91,7 @@ export const convertNowPlayingItemToMediaRef = (item: NowPlayingItem = {}) => {
   }
 }
 
-export const convertNowPlayingItemClipToNowPlayingItemEpisode = (
-  data: any,
-  userPlaybackPosition = 0
-) => {
+export const convertNowPlayingItemClipToNowPlayingItemEpisode = (data: any, userPlaybackPosition = 0) => {
   return {
     episodeDescription: data.episodeDescription,
     episodeId: data.episodeId,
@@ -125,8 +122,7 @@ export const convertToNowPlayingItem = (
     return {}
   }
   const e = (data.pubDate && data) || data.episode || inheritedEpisode
-  const p =
-    (data.episode && data.episode.podcast) || data.podcast || inheritedPodcast
+  const p = (data.episode && data.episode.podcast) || data.podcast || inheritedPodcast
 
   // If it has a podcast_id field, assume it is an Episode list item
   if (data.podcast_id) {
@@ -182,11 +178,11 @@ export const convertToNowPlayingItem = (
     nowPlayingItem.podcastLinkUrl = p.linkUrl
     nowPlayingItem.podcastSortableTitle = p.sortableTitle
     nowPlayingItem.podcastTitle = p.title
-    nowPlayingItem.userPlaybackPosition =
-      userPlaybackPosition || data.clipStartTime || 0
+    nowPlayingItem.userPlaybackPosition = userPlaybackPosition || data.clipStartTime || 0
   }
 
-  nowPlayingItem.addByRSSPodcastFeedUrl = data.addByRSSPodcastFeedUrl || (inheritedPodcast && inheritedPodcast.addByRSSPodcastFeedUrl)
+  nowPlayingItem.addByRSSPodcastFeedUrl =
+    data.addByRSSPodcastFeedUrl || (inheritedPodcast && inheritedPodcast.addByRSSPodcastFeedUrl)
 
   return nowPlayingItem
 }

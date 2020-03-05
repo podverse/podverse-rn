@@ -9,7 +9,7 @@ const uuidv4 = require('uuid/v4')
 const v = 1
 
 export const gaInitialize = async () => {
-  let cid = await AsyncStorage.getItem(PV.Keys.GOOGLE_ANALYTICS_CLIENT_ID) as any
+  let cid = (await AsyncStorage.getItem(PV.Keys.GOOGLE_ANALYTICS_CLIENT_ID)) as any
   if (!cid) {
     cid = uuidv4()
     await AsyncStorage.setItem(PV.Keys.GOOGLE_ANALYTICS_CLIENT_ID, cid)

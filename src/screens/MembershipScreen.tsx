@@ -1,18 +1,8 @@
 import { Alert, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
-import {
-  ActivityIndicator,
-  ComparisonTable,
-  Text,
-  TextLink,
-  View
-} from '../components'
+import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
 import { hasValidNetworkConnection } from '../lib/network'
-import {
-  getMembershipExpiration,
-  getMembershipStatus,
-  readableDate
-} from '../lib/utility'
+import { getMembershipExpiration, getMembershipStatus, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { buy1YearPremium } from '../services/purchaseShared'
@@ -98,7 +88,8 @@ export class MembershipScreen extends React.Component<Props, State> {
   handleSignUpPress = () => {
     this.setState({ disableButton: true }, async () => {
       await this.props.navigation.navigate(PV.RouteNames.AuthScreen, {
-        showSignUp: true
+        showSignUp: true,
+        title: 'Sign Up'
       })
       this.setState({ disableButton: false })
     })
@@ -109,43 +100,34 @@ export class MembershipScreen extends React.Component<Props, State> {
     const { fontScaleMode, globalTheme, session } = this.global
     const { isLoggedIn, userInfo } = session
     const membershipStatus = getMembershipStatus(userInfo)
-    const membershipTextStyle = getMembershipTextStyle(
-      globalTheme,
-      membershipStatus
-    )
+    const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
     const expirationDate = getMembershipExpiration(userInfo)
 
     return (
       <View style={styles.wrapper}>
         {isLoading && isLoggedIn && <ActivityIndicator />}
-        {
-          !isLoading && showNoInternetConnectionMessage &&
-            <View style={styles.textRowCentered}>
-              <Text style={[styles.subText, { textAlign: 'center' }]}>
-                Connect to the internet and reload this page to sign up for Premium.
-              </Text>
-            </View>
-        }
+        {!isLoading && showNoInternetConnectionMessage && (
+          <View style={styles.textRowCentered}>
+            <Text style={[styles.subText, { textAlign: 'center' }]}>
+              Connect to the internet and reload this page to sign up for Premium.
+            </Text>
+          </View>
+        )}
         {!isLoading && isLoggedIn && !!membershipStatus && (
           <View>
             <View style={styles.textRow}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={styles.label}>Status: </Text>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={[styles.text, membershipTextStyle]}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.label}>
+                Status:{' '}
+              </Text>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.text, membershipTextStyle]}>
                 {membershipStatus}
               </Text>
             </View>
             <View style={styles.textRow}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={styles.label}>{`Expires: `}
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.label}>
+                {`Expires: `}
               </Text>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={styles.text}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
                 {readableDate(expirationDate)}
               </Text>
             </View>
@@ -163,16 +145,12 @@ export class MembershipScreen extends React.Component<Props, State> {
         {!isLoading && !isLoggedIn && (
           <View>
             <View style={styles.textRowCentered}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={styles.subTextCentered}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.subTextCentered}>
                 Get 1 year of Podverse Premium for free
               </Text>
             </View>
             <View style={styles.textRowCentered}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={styles.subTextCentered}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.subTextCentered}>
                 $10/year after that
               </Text>
             </View>
@@ -189,12 +167,7 @@ export class MembershipScreen extends React.Component<Props, State> {
         )}
         {!isLoading && (
           <View style={styles.tableWrapper}>
-            <ComparisonTable
-              column1Title='Free'
-              column2Title='Premium'
-              data={comparisonData}
-              mainTitle='Features'
-            />
+            <ComparisonTable column1Title='Free' column2Title='Premium' data={comparisonData} mainTitle='Features' />
           </View>
         )}
       </View>

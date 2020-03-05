@@ -15,26 +15,17 @@ export const TableSectionHeader = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
   const { centerText, containerStyles, handleClosePress, title } = props
 
-  const textStyle = centerText ?
-    [styles.text, globalTheme.tableSectionHeaderText, { textAlign: 'center' }] :
-    [styles.text, globalTheme.tableSectionHeaderText]
+  const textStyle = centerText
+    ? [styles.text, globalTheme.tableSectionHeaderText, { textAlign: 'center' }]
+    : [styles.text, globalTheme.tableSectionHeaderText]
 
   return (
     <View style={containerStyles}>
       <View style={[styles.header, globalTheme.tableSectionHeader]}>
-        <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          style={textStyle}>
+        <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={textStyle}>
           {title}
         </Text>
-        {handleClosePress && (
-          <Icon
-            name='times'
-            onPress={handleClosePress}
-            size={24}
-            style={styles.icon}
-          />
-        )}
+        {handleClosePress && <Icon name='times' onPress={handleClosePress} size={24} style={styles.icon} />}
       </View>
     </View>
   )

@@ -13,17 +13,9 @@ type Props = {
 }
 
 export const NumberSelectorWithText = (props: Props) => {
-  const {
-    handleChangeText,
-    handleSubmitEditing,
-    isSmallText,
-    selectedNumber,
-    text
-  } = props
+  const { handleChangeText, handleSubmitEditing, isSmallText, selectedNumber, text } = props
   const [globalTheme] = useGlobal('globalTheme')
-  const strNum = Number.isInteger(selectedNumber)
-    ? selectedNumber.toString()
-    : selectedNumber
+  const strNum = Number.isInteger(selectedNumber) ? selectedNumber.toString() : selectedNumber
   return (
     <View style={styles.wrapper}>
       <TextInput
@@ -37,9 +29,7 @@ export const NumberSelectorWithText = (props: Props) => {
         style={[globalTheme.textInput, styles.textInput]}
         value={strNum}
       />
-      <Text
-        fontSizeLargestScale={PV.Fonts.largeSizes.md}
-        style={isSmallText ? styles.smallText : styles.text}>
+      <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={isSmallText ? styles.smallText : styles.text}>
         {text}
       </Text>
     </View>

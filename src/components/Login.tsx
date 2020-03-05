@@ -1,10 +1,4 @@
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native'
+import { ActivityIndicator, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { TextInput } from '.'
@@ -58,25 +52,28 @@ export class Login extends React.Component<Props, State> {
   }
 
   render() {
-    const { bottomButtons, isLoading, style } = this.props
+    const { bottomButtons, isLoading } = this.props
     const { email, password, submitIsDisabled } = this.state
     const { fontScaleMode } = this.global
     const disabledStyle = submitIsDisabled ? { backgroundColor: PV.Colors.gray } : null
     const disabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
 
-    const signInButtonTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.signInButtonText, disabledTextStyle, { fontSize: PV.Fonts.largeSizes.md }] :
-      [styles.signInButtonText, disabledTextStyle]
+    const signInButtonTextStyle =
+      PV.Fonts.fontScale.largest === fontScaleMode
+        ? [styles.signInButtonText, disabledTextStyle, { fontSize: PV.Fonts.largeSizes.md }]
+        : [styles.signInButtonText, disabledTextStyle]
 
     return (
-      <View style={[styles.view, style]}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent} style={styles.scrollView}>
         <TextInput
           autoCapitalize='none'
           autoCompleteType='email'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           keyboardType='email-address'
           onChangeText={this.emailChanged}
-          onSubmitEditing={() => { this.secondTextInput.focus() }}
+          onSubmitEditing={() => {
+            this.secondTextInput.focus()
+          }}
           placeholder='Email'
           placeholderTextColor={PV.Colors.gray}
           returnKeyType='next'
@@ -90,41 +87,43 @@ export class Login extends React.Component<Props, State> {
           onChangeText={this.passwordChanged}
           placeholder='Password'
           placeholderTextColor={PV.Colors.gray}
-          inputRef={(input) => { this.secondTextInput = input }}
+          inputRef={(input) => {
+            this.secondTextInput = input
+          }}
           returnKeyType='done'
           secureTextEntry={true}
           style={styles.textField}
           value={password}
           underlineColorAndroid='transparent'
         />
-        <TouchableOpacity
-          style={[styles.signInButton, disabledStyle]}
-          disabled={submitIsDisabled || isLoading}
-          onPress={this.login}>
-          {isLoading ? (
-            <ActivityIndicator
-              animating={true}
-              color={PV.Colors.gray}
-              size='small' />
-          ) : (
-            <Text style={signInButtonTextStyle}>
-              Login
-            </Text>
-          )}
+        <TouchableOpacity activeOpacity={1}>
+          <>
+            <TouchableOpacity
+              style={[styles.signInButton, disabledStyle]}
+              disabled={submitIsDisabled || isLoading}
+              onPress={this.login}>
+              {isLoading ? (
+                <ActivityIndicator animating={true} color={PV.Colors.gray} size='small' />
+              ) : (
+                <Text style={signInButtonTextStyle}>Login</Text>
+              )}
+            </TouchableOpacity>
+            {bottomButtons}
+          </>
         </TouchableOpacity>
-        {bottomButtons}
-      </View>
+      </ScrollView>
     )
   }
 }
+
+const deviceWidth = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
   signInButton: {
     alignItems: 'center',
     backgroundColor: PV.Colors.white,
     marginBottom: 16,
-    padding: 16,
-    width: '65%'
+    padding: 16
   },
   signInButtonText: {
     color: PV.Colors.brandColor,
@@ -135,14 +134,15 @@ const styles = StyleSheet.create({
     backgroundColor: PV.Colors.white,
     color: PV.Colors.black,
     fontSize: PV.Fonts.sizes.lg,
-    marginBottom: 40,
-    minHeight: 50,
-    paddingLeft: 20,
-    width: '80%'
+    height: 50,
+    marginBottom: 30,
+    paddingHorizontal: 8
   },
-  view: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  scrollView: {
     width: '100%'
+  },
+  scrollViewContent: {
+    paddingHorizontal: 20,
+    maxWidth: deviceWidth
   }
 })

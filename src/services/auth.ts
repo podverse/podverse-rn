@@ -46,50 +46,35 @@ export const getAuthenticatedUserInfoLocally = async () => {
   let isLoggedIn = false
 
   try {
-    const subscribedPlaylistIdsString = await AsyncStorage.getItem(
-      PV.Keys.SUBSCRIBED_PLAYLIST_IDS
-    )
+    const subscribedPlaylistIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS)
     if (subscribedPlaylistIdsString) {
       subscribedPlaylistIds = JSON.parse(subscribedPlaylistIdsString)
     }
   } catch (error) {
     if (Array.isArray(subscribedPlaylistIds)) {
-      await AsyncStorage.setItem(
-        PV.Keys.SUBSCRIBED_PLAYLIST_IDS,
-        JSON.stringify(subscribedPlaylistIds)
-      )
+      await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS, JSON.stringify(subscribedPlaylistIds))
     }
   }
 
   try {
-    const subscribedPodcastIdsString = await AsyncStorage.getItem(
-      PV.Keys.SUBSCRIBED_PODCAST_IDS
-    )
+    const subscribedPodcastIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCAST_IDS)
     if (subscribedPodcastIdsString) {
       subscribedPodcastIds = JSON.parse(subscribedPodcastIdsString)
     }
   } catch (error) {
     if (Array.isArray(subscribedPodcastIds)) {
-      await AsyncStorage.setItem(
-        PV.Keys.SUBSCRIBED_PODCAST_IDS,
-        JSON.stringify(subscribedPodcastIds)
-      )
+      await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
     }
   }
 
   try {
-    const subscribedUserIdsString = await AsyncStorage.getItem(
-      PV.Keys.SUBSCRIBED_USER_IDS
-    )
+    const subscribedUserIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_USER_IDS)
     if (subscribedUserIdsString) {
       subscribedUserIds = JSON.parse(subscribedUserIdsString)
     }
   } catch (error) {
     if (Array.isArray(subscribedUserIds)) {
-      await AsyncStorage.setItem(
-        PV.Keys.SUBSCRIBED_USER_IDS,
-        JSON.stringify(subscribedUserIds)
-      )
+      await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_USER_IDS, JSON.stringify(subscribedUserIds))
     }
   }
 
@@ -100,10 +85,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
     }
   } catch (error) {
     if (Array.isArray(queueItems)) {
-      await AsyncStorage.setItem(
-        PV.Keys.QUEUE_ITEMS,
-        JSON.stringify(queueItems)
-      )
+      await AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(queueItems))
     }
   }
 
@@ -114,10 +96,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
     }
   } catch (error) {
     if (Array.isArray(historyItems)) {
-      await AsyncStorage.setItem(
-        PV.Keys.HISTORY_ITEMS,
-        JSON.stringify(historyItems)
-      )
+      await AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(historyItems))
     }
   }
 
@@ -136,14 +115,12 @@ export const getAuthenticatedUserInfoLocally = async () => {
   ]
 }
 
-export const getAuthenticatedUserInfoFromServer = async (
-  bearerToken: string
-) => {
+export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) => {
   const response = await request({
     endpoint: '/auth/get-authenticated-user-info',
     method: 'POST',
     headers: {
-      'Authorization': bearerToken,
+      Authorization: bearerToken,
       'Content-Type': 'application/json'
     }
   })
@@ -152,10 +129,7 @@ export const getAuthenticatedUserInfoFromServer = async (
   const { subscribedPodcastIds = [] } = data
 
   if (Array.isArray(subscribedPodcastIds)) {
-    await AsyncStorage.setItem(
-      PV.Keys.SUBSCRIBED_PODCAST_IDS,
-      JSON.stringify(subscribedPodcastIds)
-    )
+    await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))
   }
 
   return [data, true]

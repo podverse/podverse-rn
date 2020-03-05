@@ -36,40 +36,26 @@ export const EpisodeTableHeader = (props: Props) => {
 
   const { fontScaleMode } = getGlobal()
 
-  const titleNumberOfLines =
-    [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ? 1 : 2
+  const titleNumberOfLines = [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ? 1 : 2
 
   return (
     <View style={styles.wrapper}>
       {isLoading && <ActivityIndicator />}
       {!isLoading && !isNotFound && (
         <View style={styles.innerWrapper}>
-          <FastImage
-            source={podcastImageUrl}
-            styles={styles.image} />
+          <FastImage source={podcastImageUrl} styles={styles.image} />
           <View style={styles.textWrapper}>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              numberOfLines={titleNumberOfLines}
-              style={styles.title}>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={titleNumberOfLines} style={styles.title}>
               {title}
             </Text>
             <View style={styles.textWrapperBottomRow}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                isSecondary={true}
-                style={styles.pubDate}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.pubDate}>
                 {readableDate(pubDate)}
               </Text>
               {isDownloaded && <IndicatorDownload />}
             </View>
           </View>
-          {handleMorePress &&
-            <MoreButton
-              handleShowMore={handleMorePress}
-              height={92}
-              isLoading={isDownloading} />
-          }
+          {handleMorePress && <MoreButton handleShowMore={handleMorePress} height={92} isLoading={isDownloading} />}
         </View>
       )}
       {!isLoading && isNotFound && (

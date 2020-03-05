@@ -21,10 +21,7 @@ export const IndicatorDownload = (props: Props) => {
 
   return (
     <View style={[styles.downloadedIcon, style]}>
-      <Icon
-        isSecondary={true}
-        name='download'
-        size={size} />
+      <Icon isSecondary={true} name='download' size={size} />
     </View>
   )
 }

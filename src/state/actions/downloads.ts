@@ -1,14 +1,24 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { getGlobal, setGlobal } from 'reactn'
-import { getDownloadedEpisodeIds as getDownloadedEpisodeIdsService, getDownloadedPodcastEpisodeCounts as
-  getDownloadedPodcastEpisodeCountsService, getDownloadedPodcasts as getDownloadedPodcastsService,
-  removeDownloadedPodcast as removeDownloadedPodcastService, removeDownloadedPodcastEpisode as removeDownloadedPodcastEpisodeService
-  } from '../../lib/downloadedPodcast'
-import { DownloadStatus, initDownloads as initDownloadsService, pauseDownloadTask, resumeDownloadTask } from '../../lib/downloader'
+import {
+  getDownloadedEpisodeIds as getDownloadedEpisodeIdsService,
+  getDownloadedPodcastEpisodeCounts as getDownloadedPodcastEpisodeCountsService,
+  getDownloadedPodcasts as getDownloadedPodcastsService,
+  removeDownloadedPodcast as removeDownloadedPodcastService,
+  removeDownloadedPodcastEpisode as removeDownloadedPodcastEpisodeService
+} from '../../lib/downloadedPodcast'
+import {
+  DownloadStatus,
+  initDownloads as initDownloadsService,
+  pauseDownloadTask,
+  resumeDownloadTask
+} from '../../lib/downloader'
 import { removeDownloadingEpisode as removeDownloadingEpisodeService } from '../../lib/downloadingEpisode'
 import { PV } from '../../resources'
-import { getAutoDownloadSettings as getAutoDownloadSettingsService, updateAutoDownloadSettings
-  as updateAutoDownloadSettingsService } from '../../services/autoDownloads'
+import {
+  getAutoDownloadSettings as getAutoDownloadSettingsService,
+  updateAutoDownloadSettings as updateAutoDownloadSettingsService
+} from '../../services/autoDownloads'
 import { clearNowPlayingItem } from './player'
 
 // The DownloadTaskState should have the same episode and podcast properties as a NowPlayingItem,
@@ -80,12 +90,15 @@ export const updateAutoDownloadSettings = async (podcastId: string, autoDownload
   const { autoDownloadSettings } = getGlobal()
   autoDownloadSettings[podcastId] = autoDownloadOn
 
-  setGlobal({
-    autoDownloadSettings
-  }, async () => {
-    const newAutoDownloadSettings = await updateAutoDownloadSettingsService(podcastId)
-    setGlobal({ autoDownloadSettings: newAutoDownloadSettings })
-  })
+  setGlobal(
+    {
+      autoDownloadSettings
+    },
+    async () => {
+      const newAutoDownloadSettings = await updateAutoDownloadSettingsService(podcastId)
+      setGlobal({ autoDownloadSettings: newAutoDownloadSettings })
+    }
+  )
 }
 
 export const updateDownloadedPodcasts = async () => {
@@ -169,7 +182,12 @@ export const removeDownloadingEpisode = async (episodeId: string) => {
   })
 }
 
-export const updateDownloadProgress = (downloadTaskId: string, percent: number, bytesWritten: string, bytesTotal: string) => {
+export const updateDownloadProgress = (
+  downloadTaskId: string,
+  percent: number,
+  bytesWritten: string,
+  bytesTotal: string
+) => {
   const { downloadsActive, downloadsArray } = getGlobal()
 
   for (const task of downloadsArray) {

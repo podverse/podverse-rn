@@ -1,10 +1,4 @@
-import {
-  Alert,
-  Linking,
-  SectionList,
-  TouchableWithoutFeedback,
-  View as RNView
-} from 'react-native'
+import { Alert, Linking, SectionList, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import { Badge } from 'react-native-elements'
 import React from 'reactn'
 import { Divider, TableSectionHeader, Text, View } from '../components'
@@ -91,10 +85,7 @@ export class MoreScreen extends React.Component<Props, State> {
     })
 
     const membershipStatus = getMembershipStatus(userInfo) || 'Membership'
-    const membershipTextStyle = getMembershipTextStyle(
-      globalTheme,
-      membershipStatus
-    )
+    const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
     const otherOptions = moreOtherOptions(membershipStatus)
 
     return (
@@ -107,9 +98,7 @@ export class MoreScreen extends React.Component<Props, State> {
                 {item.key === _membershipKey && (
                   <RNView style={[core.row, table.cellWrapper]}>
                     {isLoggedIn ? (
-                      <Text
-                        fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                        style={[table.cellText, membershipTextStyle]}>
+                      <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[table.cellText, membershipTextStyle]}>
                         {membershipStatus}
                       </Text>
                     ) : (
@@ -123,39 +112,35 @@ export class MoreScreen extends React.Component<Props, State> {
                 )}
                 {item.key === PV.RouteNames.DownloadsScreen && (
                   <RNView style={[core.row, { position: 'relative' }, table.cellWrapper]}>
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                      style={table.cellText}>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={table.cellText}>
                       Downloads
                     </Text>
                     {downloadsActiveCount > 0 &&
-                      (fontScaleMode !== PV.Fonts.fontScale.larger && fontScaleMode !== PV.Fonts.fontScale.largest) && (
-                      <Badge
-                        containerStyle={{
-                          position: 'absolute',
-                          right: -22,
-                          top: 19
-                        }}
-                        status='error'
-                        value={downloadsActiveCount}
-                      />
-                    )}
+                      fontScaleMode !== PV.Fonts.fontScale.larger &&
+                      fontScaleMode !== PV.Fonts.fontScale.largest && (
+                        <Badge
+                          containerStyle={{
+                            position: 'absolute',
+                            right: -22,
+                            top: 19
+                          }}
+                          status='error'
+                          value={downloadsActiveCount}
+                        />
+                      )}
                   </RNView>
                 )}
-                {item.key !== _membershipKey &&
-                  item.key !== PV.RouteNames.DownloadsScreen && (
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                      style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                      {item.title}
-                    </Text>
-                  )}
+                {item.key !== _membershipKey && item.key !== PV.RouteNames.DownloadsScreen && (
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                    {item.title}
+                  </Text>
+                )}
               </RNView>
             </TouchableWithoutFeedback>
           )}
-          renderSectionHeader={({ section: { title } }) => (
-            <TableSectionHeader title={title} />
-          )}
+          renderSectionHeader={({ section: { title } }) => <TableSectionHeader title={title} />}
           sections={[
             { title: 'Features', data: featureOptions },
             { title: 'Other', data: otherOptions }

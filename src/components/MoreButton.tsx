@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { ActivityIndicator } from '.'
 import { PV } from '../resources'
@@ -30,22 +25,17 @@ export const MoreButton = (props: Props) => {
         top: 4
       }}
       onPress={handleShowMore}>
-      {
-        !isLoading ?
-          <View style={[styles.outerWrapper, heightStyle]}>
-            <View style={styles.innerWrapper}>
-                <Image
-                  resizeMode='contain'
-                  source={PV.Images.MORE}
-                  style={[styles.image, globalTheme.buttonImage]} />
-            </View>
-          </View> :
-          <View style={[styles.activityWrapper, heightStyle]}>
-            <ActivityIndicator
-              onPress={handleShowMore}
-              styles={[styles.activityIndicator, heightStyle]} />
+      {!isLoading ? (
+        <View style={[styles.outerWrapper, heightStyle]}>
+          <View style={styles.innerWrapper}>
+            <Image resizeMode='contain' source={PV.Images.MORE} style={[styles.image, globalTheme.buttonImage]} />
           </View>
-      }
+        </View>
+      ) : (
+        <View style={[styles.activityWrapper, heightStyle]}>
+          <ActivityIndicator onPress={handleShowMore} styles={[styles.activityIndicator, heightStyle]} />
+        </View>
+      )}
     </TouchableOpacity>
   )
 }

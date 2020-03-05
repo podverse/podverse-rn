@@ -14,40 +14,39 @@ type Props = {
 }
 
 export const MessageWithAction = (props: Props) => {
-  const { bottomActionHandler, bottomActionText, isLoading, message, subMessage, topActionHandler,
-    topActionText } = props
+  const {
+    bottomActionHandler,
+    bottomActionText,
+    isLoading,
+    message,
+    subMessage,
+    topActionHandler,
+    topActionText
+  } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <View style={styles.view}>
       {!!message && (
-        <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          style={[globalTheme.text, styles.message]}>
+        <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[globalTheme.text, styles.message]}>
           {message}
         </Text>
       )}
       {!!subMessage && (
-        <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-          style={[globalTheme.text, styles.subMessage]}>
+        <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[globalTheme.text, styles.subMessage]}>
           {subMessage}
         </Text>
       )}
       {!isLoading && !!topActionText && topActionHandler && (
         <TouchableOpacity onPress={topActionHandler}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-            style={[styles.button, globalTheme.text]}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.button, globalTheme.text]}>
             {topActionText}
           </Text>
         </TouchableOpacity>
       )}
       {!isLoading && !!bottomActionText && bottomActionHandler && (
         <TouchableOpacity onPress={bottomActionHandler}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-            style={[styles.button, globalTheme.text]}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.button, globalTheme.text]}>
             {bottomActionText}
           </Text>
         </TouchableOpacity>

@@ -1,15 +1,7 @@
 import { Alert, StyleSheet, TouchableOpacity } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import {
-  ActivityIndicator,
-  Divider,
-  Icon,
-  NavHeaderButtonText,
-  Text,
-  TextInput,
-  View
-} from '../components'
+import { ActivityIndicator, Divider, Icon, NavHeaderButtonText, Text, TextInput, View } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -31,11 +23,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Edit Profile',
-      headerRight: (
-        <NavHeaderButtonText
-          handlePress={navigation.getParam('updateUser')}
-          text='Save' />
-      )
+      headerRight: <NavHeaderButtonText handlePress={navigation.getParam('updateUser')} text='Save' />
     }
   }
 
@@ -113,9 +101,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
     const user = this.props.navigation.getParam('user')
     const { globalTheme } = this.global
     const { isLoading, name, selectedIsPublicKey } = this.state
-    const selectedIsPublicOption =
-      isPublicOptions.find((x) => x.value === selectedIsPublicKey) ||
-      selectPlaceholder
+    const selectedIsPublicOption = isPublicOptions.find((x) => x.value === selectedIsPublicKey) || selectPlaceholder
     let privacySubtitleVerbTenseText = 'will be'
 
     if (user.isPublic && user.isPublic === selectedIsPublicKey) {
@@ -128,9 +114,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
       <View style={styles.view}>
         {!isLoading ? (
           <View>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              style={core.textInputLabel}>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
               Name
             </Text>
             <TextInput
@@ -144,9 +128,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
               underlineColorAndroid='transparent'
               value={name}
             />
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              style={core.textInputLabel}>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
               Profile Privacy
             </Text>
             <RNPickerSelect
@@ -155,16 +137,10 @@ export class EditProfileScreen extends React.Component<Props, State> {
               placeholder={selectPlaceholder}
               value={selectedIsPublicKey}>
               <View style={[core.selectorWrapper, globalTheme.textInput]}>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={core.selectorText}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.selectorText}>
                   {selectedIsPublicOption.label}
                 </Text>
-                <Icon
-                  name='angle-down'
-                  size={14}
-                  style={[core.selectorIcon, globalTheme.textInputIcon]}
-                />
+                <Icon name='angle-down' size={14} style={[core.selectorIcon, globalTheme.textInputIcon]} />
               </View>
 
               {selectedIsPublicKey && (
@@ -179,9 +155,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   style={[core.textInputSubTitle, globalTheme.textSecondary]}>
                   {`Your profile page ${privacySubtitleVerbTenseText} hidden. Your clip and playlist links ${
-                    privacySubtitleVerbTenseText === 'is'
-                      ? 'are'
-                      : privacySubtitleVerbTenseText
+                    privacySubtitleVerbTenseText === 'is' ? 'are' : privacySubtitleVerbTenseText
                   } still accessible to anyone with the links.`}
                 </Text>
               )}

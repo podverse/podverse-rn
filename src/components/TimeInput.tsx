@@ -1,11 +1,5 @@
 import React from 'react'
-import {
-  StyleSheet,
-  Text as RNText,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View
-} from 'react-native'
+import { StyleSheet, Text as RNText, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
 import { convertSecToHHMMSS } from '../lib/utility'
@@ -24,24 +18,14 @@ type Props = {
 }
 
 export const TimeInput = (props: Props) => {
-  const {
-    handleClearTime,
-    handlePreview,
-    handleSetTime,
-    labelText,
-    placeholder,
-    time,
-    wrapperStyle
-  } = props
+  const { handleClearTime, handlePreview, handleSetTime, labelText, placeholder, time, wrapperStyle } = props
   const [globalTheme] = useGlobal('globalTheme')
   const isDarkMode = globalTheme === darkTheme
 
   return (
     <View style={wrapperStyle}>
       <View style={[core.row, styles.row]}>
-        <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          style={core.textInputLabel}>
+        <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
           {labelText}
         </Text>
         {(time || time === 0) && (
@@ -53,12 +37,7 @@ export const TimeInput = (props: Props) => {
               top: 4
             }}
             onPress={handlePreview}>
-            <Icon
-              color={globalTheme.link.color}
-              name='play'
-              size={16}
-              style={styles.previewIcon}
-            />
+            <Icon color={globalTheme.link.color} name='play' size={16} style={styles.previewIcon} />
           </TouchableOpacity>
         )}
       </View>
@@ -88,13 +67,7 @@ export const TimeInput = (props: Props) => {
             }}
             onPress={handleClearTime}>
             <View style={styles.timeInputTouchableDelete}>
-              <Icon
-                color={
-                  isDarkMode ? iconStyles.dark.color : iconStyles.light.color
-                }
-                name='times'
-                size={24}
-              />
+              <Icon color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color} name='times' size={24} />
             </View>
           </TouchableWithoutFeedback>
         )}

@@ -3,11 +3,7 @@ import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { request } from './request'
 
-export const addOrRemovePlaylistItem = async (
-  playlistId: string,
-  episodeId?: string,
-  mediaRefId?: string
-) => {
+export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: string, mediaRefId?: string) => {
   const bearerToken = await getBearerToken()
   const data = {
     playlistId,
@@ -80,17 +76,13 @@ export const getPlaylist = async (id: string) => {
 
 export const toggleSubscribeToPlaylist = async (playlistId: string) => {
   const isLoggedIn = await checkIfLoggedIn()
-  return isLoggedIn
-    ? toggleSubscribeToPlaylistOnServer(playlistId)
-    : toggleSubscribeToPlaylistLocally(playlistId)
+  return isLoggedIn ? toggleSubscribeToPlaylistOnServer(playlistId) : toggleSubscribeToPlaylistLocally(playlistId)
 }
 
 const toggleSubscribeToPlaylistLocally = async (id: string) => {
   let items = []
 
-  const itemsString = await AsyncStorage.getItem(
-    PV.Keys.SUBSCRIBED_PLAYLIST_IDS
-  )
+  const itemsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS)
   if (itemsString) {
     items = JSON.parse(itemsString)
   }
@@ -102,11 +94,7 @@ const toggleSubscribeToPlaylistLocally = async (id: string) => {
     items.push(id)
   }
 
-  if (Array.isArray(items))
-    await AsyncStorage.setItem(
-      PV.Keys.SUBSCRIBED_PLAYLIST_IDS,
-      JSON.stringify(items)
-    )
+  if (Array.isArray(items)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS, JSON.stringify(items))
 
   return items
 }

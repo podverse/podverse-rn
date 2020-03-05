@@ -1,9 +1,4 @@
-import {
-  Alert,
-  StyleSheet,
-  TouchableOpacity,
-  View as RNView
-} from 'react-native'
+import { Alert, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
@@ -20,10 +15,7 @@ import { alertIfNoNetworkConnection } from '../lib/network'
 import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
-import {
-  addOrRemovePlaylistItem,
-  createPlaylist
-} from '../state/actions/playlist'
+import { addOrRemovePlaylistItem, createPlaylist } from '../state/actions/playlist'
 import { getLoggedInUserPlaylists } from '../state/actions/user'
 
 type Props = {
@@ -42,15 +34,11 @@ type State = {
 export class PlaylistsAddToScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
     title: 'Add to Playlist',
-    headerLeft: (
-      <NavDismissIcon handlePress={navigation.dismiss} />
-    ),
+    headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
     headerRight: (
       <RNView>
         {navigation.getParam('isLoggedIn') && (
-          <NavHeaderButtonText
-            handlePress={navigation.getParam('showNewPlaylistDialog')}
-            text='New' />
+          <NavHeaderButtonText handlePress={navigation.getParam('showNewPlaylistDialog')} text='New' />
         )}
       </RNView>
     )
@@ -120,11 +108,9 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
       showNewPlaylistDialog: true
     })
 
-  _handleNewPlaylistTextChange = (text: string) =>
-    this.setState({ newPlaylistTitle: text })
+  _handleNewPlaylistTextChange = (text: string) => this.setState({ newPlaylistTitle: text })
 
-  _handleNewPlaylistDismiss = () =>
-    this.setState({ showNewPlaylistDialog: false })
+  _handleNewPlaylistDismiss = () => this.setState({ showNewPlaylistDialog: false })
 
   _ItemSeparatorComponent = () => <Divider />
 
@@ -204,10 +190,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
                 placeholder='title of playlist'
                 value={newPlaylistTitle}
               />
-              <Dialog.Button
-                label='Cancel'
-                onPress={this._handleNewPlaylistDismiss}
-              />
+              <Dialog.Button label='Cancel' onPress={this._handleNewPlaylistDismiss} />
               <Dialog.Button label='Save' onPress={this._saveNewPlaylist} />
             </Dialog.Container>
           </View>

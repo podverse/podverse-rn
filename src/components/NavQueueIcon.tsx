@@ -16,11 +16,7 @@ export const NavQueueIcon = (props: Props) => {
 
   return (
     <NavItemWrapper handlePress={handlePress}>
-      <Icon
-        color='#fff'
-        name='list'
-        size={PV.Icons.NAV}
-        style={navHeader.buttonIcon} />
+      <Icon color='#fff' name='list' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
     </NavItemWrapper>
   )
 }

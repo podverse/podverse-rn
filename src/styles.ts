@@ -595,7 +595,7 @@ export const navHeader = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     paddingHorizontal: 12,
-    paddingVertical: 12
+    paddingVertical: 8
   }
 })
 
