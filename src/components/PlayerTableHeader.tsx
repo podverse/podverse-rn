@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { Platform, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import React, { getGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -17,6 +17,16 @@ export const PlayerTableHeader = (props: Props) => {
 
   const episodeTitleNumberOfLines = PV.Fonts.fontScale.largest === fontScaleMode ? 1 : 2
 
+  const textWrapperStyle =
+    Platform.OS === 'ios' &&
+    ![PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ?
+      [styles.textWrapper, { marginTop: 4 }] : styles.textWrapper
+
+  const episodePubDateStyle =
+    Platform.OS === 'ios' &&
+    ![PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ?
+      [styles.episodePubDate, { marginTop: 3 }] : styles.episodePubDate
+
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <View style={styles.wrapper}>
@@ -32,7 +42,7 @@ export const PlayerTableHeader = (props: Props) => {
               source={nowPlayingItem.podcastImageUrl}
               styles={styles.image}
             />
-            <View style={styles.textWrapper}>
+            <View style={textWrapperStyle}>
               {
                 fontScaleMode !== PV.Fonts.fontScale.largest &&
                   <Text
@@ -53,7 +63,7 @@ export const PlayerTableHeader = (props: Props) => {
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 isSecondary={true}
                 numberOfLines={1}
-                style={styles.episodePubDate}>
+                style={episodePubDateStyle}>
                 {readableDate(nowPlayingItem.episodePubDate)}
               </Text>
             </View>
