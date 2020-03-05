@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     height: 36,
     justifyContent: 'flex-end',
     marginRight: 8,
-    paddingBottom: 2,
+    paddingBottom: 4,
     width: 36
   }
 })
