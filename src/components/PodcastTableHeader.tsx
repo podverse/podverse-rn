@@ -2,15 +2,7 @@ import { StyleSheet, Switch } from 'react-native'
 import React, { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { core } from '../styles'
-import {
-  ActivityIndicator,
-  FastImage,
-  IndicatorDownload,
-  SettingsButton,
-  SubscribeButton,
-  Text,
-  View
-} from './'
+import { ActivityIndicator, FastImage, IndicatorDownload, SettingsButton, SubscribeButton, Text, View } from './'
 
 type Props = {
   autoDownloadOn?: boolean
@@ -53,9 +45,7 @@ export const PodcastTableHeader = (props: Props) => {
       )}
       {!isLoading && !isNotFound && (
         <View style={styles.wrapper}>
-          <FastImage
-            source={podcastImageUrl}
-            styles={styles.image} />
+          <FastImage source={podcastImageUrl} styles={styles.image} />
           <View style={styles.textWrapper}>
             <View style={styles.textWrapperTop}>
               <Text
@@ -72,28 +62,17 @@ export const PodcastTableHeader = (props: Props) => {
             </View>
             <View style={styles.textWrapperBottom}>
               <View style={styles.textWrapperBottomLeft}>
-                {isSubscribed && !showSettings && (
-                  <SettingsButton handleToggleSettings={handleToggleSettings} />
-                )}
+                {isSubscribed && !showSettings && <SettingsButton handleToggleSettings={handleToggleSettings} />}
                 {isSubscribed && showSettings && (
-                  <SettingsButton
-                    handleToggleSettings={handleToggleSettings}
-                    showCheckmark={true}
-                  />
+                  <SettingsButton handleToggleSettings={handleToggleSettings} showCheckmark={true} />
                 )}
               </View>
               <View style={styles.textWrapperBottomRight}>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
-                  isSecondary={true}
-                  style={styles.autoDownloadText}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} isSecondary={true} style={styles.autoDownloadText}>
                   Auto
                 </Text>
                 <IndicatorDownload style={styles.autoDownloadIcon} />
-                <Switch
-                  onValueChange={handleToggleAutoDownload}
-                  value={autoDownloadOn}
-                />
+                <Switch onValueChange={handleToggleAutoDownload} value={autoDownloadOn} />
               </View>
             </View>
           </View>
@@ -101,9 +80,7 @@ export const PodcastTableHeader = (props: Props) => {
       )}
       {!isLoading && isNotFound && (
         <View style={[styles.wrapper, core.view]}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            style={styles.notFoundText}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.notFoundText}>
             Podcast Not Found
           </Text>
         </View>

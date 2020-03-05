@@ -18,14 +18,14 @@ export const PlayerTableHeader = (props: Props) => {
   const episodeTitleNumberOfLines = PV.Fonts.fontScale.largest === fontScaleMode ? 1 : 2
 
   const textWrapperStyle =
-    Platform.OS === 'ios' &&
-    ![PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ?
-      [styles.textWrapper, { marginTop: 4 }] : styles.textWrapper
+    Platform.OS === 'ios' && ![PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode)
+      ? [styles.textWrapper, { marginTop: 4 }]
+      : styles.textWrapper
 
   const episodePubDateStyle =
-    Platform.OS === 'ios' &&
-    ![PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ?
-      [styles.episodePubDate, { marginTop: 3 }] : styles.episodePubDate
+    Platform.OS === 'ios' && ![PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode)
+      ? [styles.episodePubDate, { marginTop: 3 }]
+      : styles.episodePubDate
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>
@@ -43,16 +43,15 @@ export const PlayerTableHeader = (props: Props) => {
               styles={styles.image}
             />
             <View style={textWrapperStyle}>
-              {
-                fontScaleMode !== PV.Fonts.fontScale.largest &&
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    isSecondary={true}
-                    numberOfLines={1}
-                    style={styles.podcastTitle}>
-                    {nowPlayingItem.podcastTitle}
-                  </Text>
-              }
+              {fontScaleMode !== PV.Fonts.fontScale.largest && (
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  isSecondary={true}
+                  numberOfLines={1}
+                  style={styles.podcastTitle}>
+                  {nowPlayingItem.podcastTitle}
+                </Text>
+              )}
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 numberOfLines={episodeTitleNumberOfLines}

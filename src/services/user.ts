@@ -11,11 +11,7 @@ export const getPublicUser = async (id: string) => {
   return response && response.data
 }
 
-export const getUserMediaRefs = async (
-  userId: string,
-  query: any = {},
-  nsfwMode: boolean
-) => {
+export const getUserMediaRefs = async (userId: string, query: any = {}, nsfwMode: boolean) => {
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'most-recent' })
@@ -61,9 +57,7 @@ export const getPublicUsersByQuery = async (query: any = {}) => {
 
 export const toggleSubscribeToUser = async (id: string) => {
   const isLoggedIn = await checkIfLoggedIn()
-  return isLoggedIn
-    ? toggleSubscribeToUserOnServer(id)
-    : toggleSubscribeToUserLocally(id)
+  return isLoggedIn ? toggleSubscribeToUserOnServer(id) : toggleSubscribeToUserLocally(id)
 }
 
 const toggleSubscribeToUserLocally = async (id: string) => {
@@ -81,11 +75,7 @@ const toggleSubscribeToUserLocally = async (id: string) => {
     items.push(id)
   }
 
-  if (Array.isArray(items))
-    await AsyncStorage.setItem(
-      PV.Keys.SUBSCRIBED_USER_IDS,
-      JSON.stringify(items)
-    )
+  if (Array.isArray(items)) await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_USER_IDS, JSON.stringify(items))
   return items
 }
 
@@ -99,10 +89,7 @@ const toggleSubscribeToUserOnServer = async (id: string) => {
   return response && response.data
 }
 
-export const getLoggedInUserMediaRefs = async (
-  query: any = {},
-  nsfwMode?: boolean
-) => {
+export const getLoggedInUserMediaRefs = async (query: any = {}, nsfwMode?: boolean) => {
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' })

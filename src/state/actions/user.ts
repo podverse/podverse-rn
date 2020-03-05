@@ -1,8 +1,11 @@
 import { getGlobal, setGlobal } from 'reactn'
-import { getLoggedInUserPlaylists as getLoggedInUserPlaylistsService,
-  getPublicUser as getPublicUserService, getPublicUsersByQuery as getPublicUsersByQueryService,
-  toggleSubscribeToUser as toggleSubscribeToUserService, updateLoggedInUser as updateLoggedInUserService
-  } from '../../services/user'
+import {
+  getLoggedInUserPlaylists as getLoggedInUserPlaylistsService,
+  getPublicUser as getPublicUserService,
+  getPublicUsersByQuery as getPublicUsersByQueryService,
+  toggleSubscribeToUser as toggleSubscribeToUserService,
+  updateLoggedInUser as updateLoggedInUserService
+} from '../../services/user'
 
 export const getPublicUsersByQuery = async (userIds: string, page: number = 1) => {
   const results = await getPublicUsersByQueryService({

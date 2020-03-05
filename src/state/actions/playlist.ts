@@ -1,8 +1,13 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { combineAndSortPlaylistItems } from '../../lib/utility'
-import { addOrRemovePlaylistItem as addOrRemovePlaylistItemService, createPlaylist as createPlaylistService , 
-  getPlaylist as getPlaylistService, getPlaylists as getPlaylistsService, toggleSubscribeToPlaylist as toggleSubscribeToPlaylistService,
-  updatePlaylist as updatePlaylistService } from '../../services/playlist'
+import {
+  addOrRemovePlaylistItem as addOrRemovePlaylistItemService,
+  createPlaylist as createPlaylistService,
+  getPlaylist as getPlaylistService,
+  getPlaylists as getPlaylistsService,
+  toggleSubscribeToPlaylist as toggleSubscribeToPlaylistService,
+  updatePlaylist as updatePlaylistService
+} from '../../services/playlist'
 
 export const addOrRemovePlaylistItem = async (playlistId: string, episodeId?: string, mediaRefId?: string) => {
   const globalState = getGlobal()

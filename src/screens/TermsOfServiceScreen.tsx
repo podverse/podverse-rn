@@ -29,31 +29,23 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
     return (
       <View style={styles.content}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            style={styles.text}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             Podverse will never sell or share private user data.
             {'\n\n'}
-            We will never put advertisements next to or within a podcast's
-            content without that podcast's permission.
+            We will never put advertisements next to or within a podcast's content without that podcast's permission.
             {'\n\n'}
-            All audio files found on podverse.fm load from the podcaster's own
-            public server. We do not host podcast audio files ourselves.
+            All audio files found on podverse.fm load from the podcaster's own public server. We do not host podcast
+            audio files ourselves.
             {'\n\n'}
-            All clips hosted on podverse.fm are crowd-sourced and unofficial,
-            unless otherwise noted by the podcaster.
+            All clips hosted on podverse.fm are crowd-sourced and unofficial, unless otherwise noted by the podcaster.
             {'\n\n'}
-            Clips load within the full episode's media file, so the user always
-            has access to the full recording.
+            Clips load within the full episode's media file, so the user always has access to the full recording.
             {'\n\n'}
-            We host podcast links and content from third-party podcast feeds and
-            sites. These have their own independent privacy policies, and we
-            have no responsibility for their content or activities.
+            We host podcast links and content from third-party podcast feeds and sites. These have their own independent
+            privacy policies, and we have no responsibility for their content or activities.
           </Text>
           <Divider style={styles.divider} />
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            style={styles.sectionTitle}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
             Third Party Libraries
           </Text>
           {Object.keys(packageJson.dependencies).map((license) => {
@@ -66,11 +58,7 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
           <Divider style={styles.divider} />
           <Text
             style={styles.copyRight}
-            onPress={() =>
-              this.showLeavingAppAlert(
-                'https://www.gnu.org/licenses/agpl-3.0.en.html'
-              )
-            }>
+            onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}>
             copyleft ©
           </Text>
         </ScrollView>

@@ -13,24 +13,14 @@ type Props = {
 }
 
 export const PVSearchBar = (props: Props) => {
-  const {
-    containerStyle,
-    inputContainerStyle,
-    onChangeText,
-    onClear,
-    placeholder,
-    value
-  } = props
+  const { containerStyle, inputContainerStyle, onChangeText, onClear, placeholder, value } = props
   const { fontScaleMode, globalTheme } = getGlobal()
   return (
     <SearchBar
       autoCorrect={false}
       clearIcon={{ size: 24 }}
       containerStyle={[globalTheme.textInputWrapper, containerStyle]}
-      inputContainerStyle={[
-        globalTheme.inputContainerText,
-        inputContainerStyle
-      ]}
+      inputContainerStyle={[globalTheme.inputContainerText, inputContainerStyle]}
       inputStyle={PV.Fonts.fontScale.largest === fontScaleMode ? { fontSize: PV.Fonts.largeSizes.md } : {}}
       onChangeText={onChangeText}
       onClear={onClear}

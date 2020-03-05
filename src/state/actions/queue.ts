@@ -1,8 +1,12 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { NowPlayingItem } from '../../lib/NowPlayingItem'
-import { addQueueItemLast as addQueueItemLastService, addQueueItemNext as addQueueItemNextService,
-  getQueueItems as getQueueItemsService, removeQueueItem as removeQueueItemService,
-  setAllQueueItems as setAllQueueItemsService } from '../../services/queue'
+import {
+  addQueueItemLast as addQueueItemLastService,
+  addQueueItemNext as addQueueItemNextService,
+  getQueueItems as getQueueItemsService,
+  removeQueueItem as removeQueueItemService,
+  setAllQueueItems as setAllQueueItemsService
+} from '../../services/queue'
 
 export const addQueueItemLast = async (queueItem: NowPlayingItem) => {
   const globalState = getGlobal()

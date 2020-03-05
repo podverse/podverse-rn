@@ -36,28 +36,26 @@ export class PVFastImage extends React.PureComponent<Props, State> {
 
     return (
       <>
-        {
-          source && !hasError ?
-            <FastImage
-              key={uuid}
-              onError={this._handleError}
-              resizeMode={resizeMode}
-              source={{
-                uri: source
-              }}
-              style={styles} />
-            :
-            <View style={{
+        {source && !hasError ? (
+          <FastImage
+            key={uuid}
+            onError={this._handleError}
+            resizeMode={resizeMode}
+            source={{
+              uri: source
+            }}
+            style={styles}
+          />
+        ) : (
+          <View
+            style={{
               ...styles,
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <Icon
-                isSecondary={true}
-                name='podcast'
-                size={isSmall ? 32 : 36} />
-            </View>
-        }
+            <Icon isSecondary={true} name='podcast' size={isSmall ? 32 : 36} />
+          </View>
+        )}
       </>
     )
   }

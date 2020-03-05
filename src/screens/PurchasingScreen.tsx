@@ -29,7 +29,7 @@ export class PurchasingScreen extends React.Component<Props, State> {
 
   _handleContactSupportPress = async () => {
     const subject = 'Podverse Checkout Issue'
-    const body = 'Please explain your issue below and we\'ll get back to you as soon as we can:'
+    const body = "Please explain your issue below and we'll get back to you as soon as we can:"
     const emailLinkUrl = createEmailLinkUrl(PV.Emails.SUPPORT, subject, body)
     Linking.openURL(emailLinkUrl)
   }
@@ -50,25 +50,14 @@ export class PurchasingScreen extends React.Component<Props, State> {
 
   render() {
     const { globalTheme, purchase } = this.global
-    const {
-      isLoading,
-      message,
-      showContactSupportLink,
-      showDismissLink,
-      showRetryLink,
-      title
-    } = purchase
+    const { isLoading, message, showContactSupportLink, showDismissLink, showRetryLink, title } = purchase
 
     return (
       <SafeAreaView style={styles.safeAreaView}>
         <View style={styles.view}>
           <Text style={[globalTheme.text, styles.title]}>{title}</Text>
-          {!!isLoading && (
-            <ActivityIndicator styles={styles.activityIndicator} />
-          )}
-          {!!message && (
-            <Text style={[globalTheme.text, styles.message]}>{message}</Text>
-          )}
+          {!!isLoading && <ActivityIndicator styles={styles.activityIndicator} />}
+          {!!message && <Text style={[globalTheme.text, styles.message]}>{message}</Text>}
           {!isLoading && showRetryLink && (
             <TouchableOpacity onPress={this._handleRetryProcessing}>
               <Text style={[globalTheme.text, styles.button]}>Retry</Text>
@@ -76,9 +65,7 @@ export class PurchasingScreen extends React.Component<Props, State> {
           )}
           {!isLoading && showContactSupportLink && (
             <TouchableOpacity onPress={this._handleContactSupportPress}>
-              <Text style={[globalTheme.text, styles.button]}>
-                Contact Support
-              </Text>
+              <Text style={[globalTheme.text, styles.button]}>Contact Support</Text>
             </TouchableOpacity>
           )}
           {!isLoading && showDismissLink && (

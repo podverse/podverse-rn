@@ -4,14 +4,7 @@ import { StyleSheet } from 'react-native'
 import Dialog from 'react-native-dialog'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import {
-  Icon,
-  NumberSelectorWithText,
-  ScrollView,
-  SwitchWithText,
-  Text,
-  View
-} from '../components'
+import { Icon, NumberSelectorWithText, ScrollView, SwitchWithText, Text, View } from '../components'
 import {
   setDownloadedEpisodeLimitGlobalCount,
   setDownloadedEpisodeLimitGlobalDefault,
@@ -21,12 +14,7 @@ import {
 import { refreshDownloads } from '../lib/downloader'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
-import {
-  core,
-  darkTheme,
-  hidePickerIconOnAndroidTransparent,
-  lightTheme
-} from '../styles'
+import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {
   navigation: any
@@ -50,10 +38,7 @@ export class SettingsScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    const {
-      downloadedEpisodeLimitCount,
-      downloadedEpisodeLimitDefault
-    } = this.global
+    const { downloadedEpisodeLimitCount, downloadedEpisodeLimitDefault } = this.global
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
     this.state = {
       downloadedEpisodeLimitCount,
@@ -63,25 +48,13 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    const downloadingWifiOnly = await AsyncStorage.getItem(
-      PV.Keys.DOWNLOADING_WIFI_ONLY
-    )
-    const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(
-      PV.Keys.AUTO_DELETE_EPISODE_ON_END
-    )
-    const downloadedEpisodeLimitCount = await AsyncStorage.getItem(
-      PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT
-    )
-    const downloadedEpisodeLimitDefault = await AsyncStorage.getItem(
-      PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT
-    )
-    const maximumSpeed = await AsyncStorage.getItem(
-      PV.Keys.PLAYER_MAXIMUM_SPEED
-    )
+    const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
+    const autoDeleteEpisodeOnEnd = await AsyncStorage.getItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+    const downloadedEpisodeLimitCount = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT)
+    const downloadedEpisodeLimitDefault = await AsyncStorage.getItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_DEFAULT)
+    const maximumSpeed = await AsyncStorage.getItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
-    const maximumSpeedOptionSelected = maximumSpeedSelectOptions.find(
-      (x: any) => x.value === Number(maximumSpeed)
-    )
+    const maximumSpeedOptionSelected = maximumSpeedSelectOptions.find((x: any) => x.value === Number(maximumSpeed))
 
     this.setState(
       {
@@ -89,8 +62,7 @@ export class SettingsScreen extends React.Component<Props, State> {
         downloadedEpisodeLimitCount,
         downloadedEpisodeLimitDefault,
         downloadingWifiOnly: !!downloadingWifiOnly,
-        maximumSpeedOptionSelected:
-          maximumSpeedOptionSelected || maximumSpeedSelectOptions[1]
+        maximumSpeedOptionSelected: maximumSpeedOptionSelected || maximumSpeedSelectOptions[1]
       },
       () => this.setState({ hasLoaded: true })
     )
@@ -99,14 +71,11 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   _toggleTheme = (value: boolean) => {
-    this.setGlobal(
-      { globalTheme: value ? darkTheme : lightTheme },
-      async () => {
-        value
-          ? await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'TRUE')
-          : await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'FALSE')
-      }
-    )
+    this.setGlobal({ globalTheme: value ? darkTheme : lightTheme }, async () => {
+      value
+        ? await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'TRUE')
+        : await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'FALSE')
+    })
   }
 
   _toggleDownloadingWifiOnly = (value: boolean) => {
@@ -133,9 +102,7 @@ export class SettingsScreen extends React.Component<Props, State> {
 
   _setMaximumSpeed = (value: string) => {
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
-    const maximumSpeedOptionSelected =
-      maximumSpeedSelectOptions.find((x: any) => x.value === value) ||
-      placeholderItem
+    const maximumSpeedOptionSelected = maximumSpeedSelectOptions.find((x: any) => x.value === value) || placeholderItem
     this.setState({ maximumSpeedOptionSelected }, async () => {
       value
         ? await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, value.toString())
@@ -170,16 +137,12 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   _handleUpdateAllDownloadedEpiosdeLimitCount = async () => {
-    await updateAllDownloadedEpisodeLimitCounts(
-      this.state.downloadedEpisodeLimitCount
-    )
+    await updateAllDownloadedEpisodeLimitCounts(this.state.downloadedEpisodeLimitCount)
     this.setState({ showSetAllDownloadDialog: false })
   }
 
   _handleUpdateAllDownloadedEpiosdeLimitDefault = async () => {
-    await updateAllDownloadedEpisodeLimitDefaults(
-      this.state.downloadedEpisodeLimitDefault
-    )
+    await updateAllDownloadedEpisodeLimitDefaults(this.state.downloadedEpisodeLimitDefault)
     this.setState({ showSetAllDownloadDialog: false })
   }
 
@@ -231,21 +194,13 @@ export class SettingsScreen extends React.Component<Props, State> {
           value={maximumSpeedOptionSelected.value}>
           <View style={core.selectorWrapper}>
             <View style={core.selectorWrapperLeft}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={[styles.pickerSelect, globalTheme.text]}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.pickerSelect, globalTheme.text]}>
                 {maximumSpeedOptionSelected.label}
               </Text>
-              <Icon
-                name='angle-down'
-                size={14}
-                style={[styles.pickerSelectIcon, globalTheme.text]}
-              />
+              <Icon name='angle-down' size={14} style={[styles.pickerSelectIcon, globalTheme.text]} />
             </View>
             <View style={core.selectorWrapperRight}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                style={[styles.pickerSelect, globalTheme.text]}>
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.pickerSelect, globalTheme.text]}>
                 Max playback speed
               </Text>
             </View>
@@ -254,13 +209,9 @@ export class SettingsScreen extends React.Component<Props, State> {
         <Dialog.Container visible={showSetAllDownloadDialog}>
           <Dialog.Title>Global Update</Dialog.Title>
           <Dialog.Description>
-            Do you want to update the download limit for all of your currently
-            subscribed podcasts?
+            Do you want to update the download limit for all of your currently subscribed podcasts?
           </Dialog.Description>
-          <Dialog.Button
-            label='No'
-            onPress={this._handleToggleSetAllDownloadDialog}
-          />
+          <Dialog.Button label='No' onPress={this._handleToggleSetAllDownloadDialog} />
           <Dialog.Button
             label='Yes'
             onPress={
@@ -286,7 +237,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4
   },
   wrapper: {
-    flex: 0,
     paddingBottom: 40,
     paddingHorizontal: 12,
     paddingTop: 8

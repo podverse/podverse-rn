@@ -17,16 +17,7 @@ type Props = {
 }
 
 export const NavShareIcon = (props: Props) => {
-  const {
-    clipTitle,
-    endingText,
-    episodeTitle,
-    getUrl,
-    handlePress,
-    playlistTitle,
-    podcastTitle,
-    profileName
-  } = props
+  const { clipTitle, endingText, episodeTitle, getUrl, handlePress, playlistTitle, podcastTitle, profileName } = props
   let { url = '' } = props
 
   const onShare = async () => {
@@ -55,11 +46,7 @@ export const NavShareIcon = (props: Props) => {
 
   return (
     <NavItemWrapper handlePress={handlePress ? handlePress : onShare}>
-      <Icon
-        color='#fff'
-        name='share'
-        size={PV.Icons.NAV}
-        style={navHeader.buttonIcon} />
+      <Icon color='#fff' name='share' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
     </NavItemWrapper>
   )
 }

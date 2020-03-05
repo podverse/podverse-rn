@@ -2,14 +2,15 @@ import * as RNIap from 'react-native-iap'
 import { setGlobal } from 'reactn'
 import { androidHandleStatusCheck as androidHandleStatusCheckService } from '../../services/purchase.android'
 import { getAuthUserInfo } from './auth'
-import { handleStatusCancel, handleStatusPending, handleStatusSuccessful, purchaseLoading,
-  showPurchaseSomethingWentWrongError } from './purchaseShared'
+import {
+  handleStatusCancel,
+  handleStatusPending,
+  handleStatusSuccessful,
+  purchaseLoading,
+  showPurchaseSomethingWentWrongError
+} from './purchaseShared'
 
-export const androidHandlePurchaseLoading = async (
-  productId: string,
-  transactionId: string,
-  purchaseToken: string
-) => {
+export const androidHandlePurchaseLoading = async (productId: string, transactionId: string, purchaseToken: string) => {
   const loadingState = purchaseLoading()
   loadingState.purchase.transactionId = transactionId
   loadingState.purchase.productId = productId
@@ -17,11 +18,7 @@ export const androidHandlePurchaseLoading = async (
   setGlobal(loadingState)
 }
 
-export const androidHandleStatusCheck = async (
-  productId: string,
-  transactionId: string,
-  purchaseToken: string
-) => {
+export const androidHandleStatusCheck = async (productId: string, transactionId: string, purchaseToken: string) => {
   try {
     await androidHandlePurchaseLoading(productId, transactionId, purchaseToken)
     const response = await androidHandleStatusCheckService(productId, purchaseToken)

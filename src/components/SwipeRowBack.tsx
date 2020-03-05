@@ -1,11 +1,5 @@
 import React from 'react'
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useGlobal } from 'reactn'
 
 type Props = {
@@ -20,16 +14,10 @@ export const SwipeRowBack = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={[styles, s.swipeRowBack, globalTheme.swipeRowBack]}>
+    <TouchableOpacity onPress={onPress} style={[styles, s.swipeRowBack, globalTheme.swipeRowBack]}>
       {isLoading ? (
         <View style={s.textWrapper}>
-          <ActivityIndicator
-            animating={true}
-            color={globalTheme.activityIndicatorAlternate.color}
-            size='large'
-          />
+          <ActivityIndicator animating={true} color={globalTheme.activityIndicatorAlternate.color} size='large' />
         </View>
       ) : (
         <Text style={s.textWrapper}>{text}</Text>

@@ -26,7 +26,6 @@ type State = {
 let volumeListener = null as any
 
 export class PlayerMoreActionSheet extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
 
@@ -70,11 +69,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     } catch (error) {
       handleDismiss()
       if (error.response) {
-        Alert.alert(
-          PV.Alerts.SOMETHING_WENT_WRONG.title,
-          PV.Alerts.SOMETHING_WENT_WRONG.message,
-          PV.Alerts.BUTTONS.OK
-        )
+        Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
       }
     }
   }
@@ -121,59 +116,39 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     const { globalTheme, player, session } = this.global
     const { episode, nowPlayingItem } = player
     const podcast = (episode && episode.podcast) || {}
-    const subscribedPodcastIds = safelyUnwrapNestedVariable(
-      () => session.userInfo.subscribedPodcastIds,
-      []
-    )
-    let isSubscribed = subscribedPodcastIds.some(
-      (x: string) => nowPlayingItem && nowPlayingItem.podcastId === x
-    )
+    const subscribedPodcastIds = safelyUnwrapNestedVariable(() => session.userInfo.subscribedPodcastIds, [])
+    let isSubscribed = subscribedPodcastIds.some((x: string) => nowPlayingItem && nowPlayingItem.podcastId === x)
 
     if (!isSubscribed && nowPlayingItem.addByRSSPodcastFeedUrl) {
-      const subscribedPodcasts = safelyUnwrapNestedVariable(
-        () => this.global.subscribedPodcasts,
-        []
-      )
-      isSubscribed = subscribedPodcasts.some((x: any) =>
-        x.addByRSSPodcastFeedUrl && x.addByRSSPodcastFeedUrl === nowPlayingItem.addByRSSPodcastFeedUrl
+      const subscribedPodcasts = safelyUnwrapNestedVariable(() => this.global.subscribedPodcasts, [])
+      isSubscribed = subscribedPodcasts.some(
+        (x: any) => x.addByRSSPodcastFeedUrl && x.addByRSSPodcastFeedUrl === nowPlayingItem.addByRSSPodcastFeedUrl
       )
     }
 
     const children = [
-      (
-        <TouchableHighlight
-          key='toggleSubscribe'
-          onPress={this._handleToggleSubscribe}
-          style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
-          underlayColor={
-            safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor, '')
-          }>
-          <Text
-            style={[
-              actionSheetStyles.buttonText,
-              globalTheme.actionSheetButtonText
-            ]}>
-            {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
-          </Text>
-        </TouchableHighlight>
-      ),
-      (
-        <TouchableHighlight
-          key='podcastPage'
-          onPress={this._handlePodcastPagePress}
-          style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
-          underlayColor={
-            safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor, '')
-          }>
-          <Text
-            style={[
-              actionSheetStyles.buttonText,
-              globalTheme.actionSheetButtonText
-            ]}>
-            Podcast Page
-          </Text>
-        </TouchableHighlight>
-      )
+      <TouchableHighlight
+        key='toggleSubscribe'
+        onPress={this._handleToggleSubscribe}
+        style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
+        underlayColor={safelyUnwrapNestedVariable(
+          () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
+          ''
+        )}>
+        <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>
+          {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
+        </Text>
+      </TouchableHighlight>,
+      <TouchableHighlight
+        key='podcastPage'
+        onPress={this._handlePodcastPagePress}
+        style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
+        underlayColor={safelyUnwrapNestedVariable(
+          () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
+          ''
+        )}>
+        <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>Podcast Page</Text>
+      </TouchableHighlight>
     ]
 
     if (podcast && podcast.linkUrl) {
@@ -182,16 +157,11 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
           key='officialHomePage'
           onPress={() => this._handleOfficialHomePagePress(podcast)}
           style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
-          underlayColor={
-            safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor, '')
-          }>
-          <Text
-            style={[
-              actionSheetStyles.buttonText,
-              globalTheme.actionSheetButtonText
-            ]}>
-            Official Podcast Page
-          </Text>
+          underlayColor={safelyUnwrapNestedVariable(
+            () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
+            ''
+          )}>
+          <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>Official Podcast Page</Text>
         </TouchableHighlight>
       )
     }
@@ -202,16 +172,11 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
           key='officialEpisodePage'
           onPress={() => this._handleOfficialEpisodePagePress(episode)}
           style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
-          underlayColor={
-            safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor, '')
-          }>
-          <Text
-            style={[
-              actionSheetStyles.buttonText,
-              globalTheme.actionSheetButtonText
-            ]}>
-            Official Episode Page
-          </Text>
+          underlayColor={safelyUnwrapNestedVariable(
+            () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
+            ''
+          )}>
+          <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>Official Episode Page</Text>
         </TouchableHighlight>
       )
     }
@@ -227,22 +192,13 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     const items = this._headerActionSheetButtons()
 
     return (
-      <ActionSheet
-        showModal={showModal}
-        title={nowPlayingItem.podcastTitle}>
+      <ActionSheet showModal={showModal} title={nowPlayingItem.podcastTitle}>
         {items}
         <View
           key='volume'
-          style={[
-            actionSheetStyles.button,
-            actionSheetStyles.buttonBottom,
-            globalTheme.actionSheetButton
-          ]}>
+          style={[actionSheetStyles.button, actionSheetStyles.buttonBottom, globalTheme.actionSheetButton]}>
           <View style={styles.volumeSliderWrapper}>
-            <Icon
-              name='volume-down'
-              size={28}
-              style={styles.volumeSliderIcon} />
+            <Icon name='volume-down' size={28} style={styles.volumeSliderIcon} />
             <Slider
               minimumValue={0}
               maximumValue={1}
@@ -251,26 +207,20 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
               style={styles.volumeSlider}
               thumbStyle={sliderStyles.thumbStyle}
               thumbTintColor={PV.Colors.brandColor}
-              value={volume} />
-            <Icon
-              name='volume-up'
-              size={28} />
+              value={volume}
+            />
+            <Icon name='volume-up' size={28} />
           </View>
         </View>
         <TouchableHighlight
           key='cancel'
           onPress={handleDismiss}
           style={[actionSheetStyles.buttonCancel, globalTheme.actionSheetButtonCancel]}
-          underlayColor={
-            safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor, '')
-          }>
-          <Text
-            style={[
-              actionSheetStyles.buttonText,
-              globalTheme.actionSheetButtonTextCancel
-            ]}>
-            Cancel
-          </Text>
+          underlayColor={safelyUnwrapNestedVariable(
+            () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
+            ''
+          )}>
+          <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonTextCancel]}>Cancel</Text>
         </TouchableHighlight>
       </ActionSheet>
     )

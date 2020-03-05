@@ -13,28 +13,19 @@ export const ComparisonTable = (props: any) => {
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
-          style={[
-            styles.tableHeaderTextLeft,
-            globalTheme.tableSectionHeaderText
-          ]}>
+          style={[styles.tableHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
           {mainTitle}
         </Text>
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
-          style={[
-            styles.tableHeaderTextRight,
-            globalTheme.tableSectionHeaderText
-          ]}>
+          style={[styles.tableHeaderTextRight, globalTheme.tableSectionHeaderText]}>
           {column1Title}
         </Text>
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
-          style={[
-            styles.tableHeaderTextRight,
-            globalTheme.tableSectionHeaderText
-          ]}>
+          style={[styles.tableHeaderTextRight, globalTheme.tableSectionHeaderText]}>
           {column2Title}
         </Text>
       </View>
@@ -45,29 +36,15 @@ export const ComparisonTable = (props: any) => {
           <>
             <View key={item.text} style={styles.tableRow}>
               <View style={styles.columnTextWrapper}>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={styles.columnText}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.columnText}>
                   {item.text}
                 </Text>
               </View>
               <View style={styles.columnIcon}>
-                {item.column1 && (
-                  <Icon
-                    name={item.isSmile ? 'smile' : 'check'}
-                    size={26}
-                    style={styles.icon}
-                  />
-                )}
+                {item.column1 && <Icon name={item.isSmile ? 'smile' : 'check'} size={26} style={styles.icon} />}
               </View>
               <View style={styles.columnIcon}>
-                {item.column2 && (
-                  <Icon
-                    name={item.isSmile ? 'smile' : 'check'}
-                    size={26}
-                    style={styles.icon}
-                  />
-                )}
+                {item.column2 && <Icon name={item.isSmile ? 'smile' : 'check'} size={26} style={styles.icon} />}
               </View>
             </View>
             <Divider />

@@ -5,10 +5,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
-import {
-  getAutoDownloadEpisodes,
-  removeAutoDownloadSetting
-} from './autoDownloads'
+import { getAutoDownloadEpisodes, removeAutoDownloadSetting } from './autoDownloads'
 import { getAddByRSSPodcasts, removeAddByRSSPodcast } from './parser'
 import { request } from './request'
 
@@ -43,9 +40,7 @@ export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
   if (query.categories) {
     filteredQuery.categories = query.categories
   } else if (query.podcastIds) {
-    filteredQuery.podcastId = query.podcastIds
-      ? query.podcastIds.join(',')
-      : ['no-results']
+    filteredQuery.podcastId = query.podcastIds ? query.podcastIds.join(',') : ['no-results']
   }
 
   const response = await request(
@@ -70,28 +65,17 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
 
   if (isConnected) {
     try {
-      const date = await AsyncStorage.getItem(
-        PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED
-      )
+      const date = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED)
       const dateObj = (date && new Date(date).toISOString()) || new Date().toISOString()
 
-      const autoDownloadSettingsString = await AsyncStorage.getItem(
-        PV.Keys.AUTO_DOWNLOAD_SETTINGS
-      )
-      const autoDownloadSettings = autoDownloadSettingsString
-        ? JSON.parse(autoDownloadSettingsString)
-        : {}
+      const autoDownloadSettingsString = await AsyncStorage.getItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS)
+      const autoDownloadSettings = autoDownloadSettingsString ? JSON.parse(autoDownloadSettingsString) : {}
       const data = await getPodcasts(query, true)
       const subscribedPodcasts = data[0]
       const subscribedPodcastsTotalCount = data[1]
-      const podcastIds = Object.keys(autoDownloadSettings).filter(
-        (key: string) => autoDownloadSettings[key] === true
-      )
+      const podcastIds = Object.keys(autoDownloadSettings).filter((key: string) => autoDownloadSettings[key] === true)
 
-      const autoDownloadEpisodes = await getAutoDownloadEpisodes(
-        dateObj,
-        podcastIds
-      )
+      const autoDownloadEpisodes = await getAutoDownloadEpisodes(dateObj, podcastIds)
 
       // Wait for app to initialize. Without this setTimeout, then when getSubscribedPodcasts is called in
       // PodcastsScreen _initializeScreenData, then downloadEpisode will not successfully update global state
@@ -106,15 +90,9 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
         }
       }, 3000)
 
-      await AsyncStorage.setItem(
-        PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED,
-        new Date().toISOString()
-      )
+      await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED, new Date().toISOString())
       if (Array.isArray(subscribedPodcasts)) {
-        await AsyncStorage.setItem(
-          PV.Keys.SUBSCRIBED_PODCASTS,
-          JSON.stringify(subscribedPodcasts)
-        )
+        await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts))
       }
 
       const combinedPodcasts = await combineWithAddByRSSPodcasts()
@@ -139,9 +117,7 @@ export const combineWithAddByRSSPodcasts = async () => {
 }
 
 export const getSubscribedPodcastsLocally = async () => {
-  const subscribedPodcastsJSON = await AsyncStorage.getItem(
-    PV.Keys.SUBSCRIBED_PODCASTS
-  )
+  const subscribedPodcastsJSON = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS)
   if (subscribedPodcastsJSON) {
     const subscribedPodcasts = JSON.parse(subscribedPodcastsJSON)
     if (Array.isArray(subscribedPodcasts)) {
@@ -153,11 +129,7 @@ export const getSubscribedPodcastsLocally = async () => {
   }
 }
 
-export const searchPodcasts = async (
-  title?: string,
-  author?: string,
-  nsfwMode?: boolean
-) => {
+export const searchPodcasts = async (title?: string, author?: string, nsfwMode?: boolean) => {
   const response = await request(
     {
       endpoint: '/podcast',
@@ -182,8 +154,7 @@ export const toggleSubscribeToPodcast = async (id: string) => {
 
   if (itemsString) {
     const podcastIds = JSON.parse(itemsString)
-    isUnsubscribing =
-      Array.isArray(podcastIds) && podcastIds.some((x: string) => id === x)
+    isUnsubscribing = Array.isArray(podcastIds) && podcastIds.some((x: string) => id === x)
   }
 
   const addByRSSPodcastsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCASTS)
@@ -201,10 +172,7 @@ export const toggleSubscribeToPodcast = async (id: string) => {
       PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT
     )) as any
     if (globalDownloadedEpisodeLimitCount) {
-      globalDownloadedEpisodeLimitCount = parseInt(
-        globalDownloadedEpisodeLimitCount,
-        10
-      )
+      globalDownloadedEpisodeLimitCount = parseInt(globalDownloadedEpisodeLimitCount, 10)
       await setDownloadedEpisodeLimit(id, globalDownloadedEpisodeLimitCount)
     }
   }
@@ -245,10 +213,7 @@ const toggleSubscribeToPodcastLocally = async (id: string) => {
   }
 
   if (Array.isArray(items)) {
-    await AsyncStorage.setItem(
-      PV.Keys.SUBSCRIBED_PODCAST_IDS,
-      JSON.stringify(items)
-    )
+    await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(items))
   }
 
   return items
@@ -268,10 +233,7 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
     podcastIds = addOrRemovePodcastIdFromArray(podcastIds, id)
   }
   if (Array.isArray(podcastIds)) {
-    await AsyncStorage.setItem(
-      PV.Keys.SUBSCRIBED_PODCAST_IDS,
-      JSON.stringify(podcastIds)
-    )
+    await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(podcastIds))
   }
 
   return response && response.data
@@ -279,12 +241,8 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
 
 export const sortPodcastArrayAlphabetically = (podcasts: any[]) => {
   podcasts.sort((a, b) => {
-    let titleA = a.sortableTitle
-      ? a.sortableTitle.toLowerCase().trim()
-      : a.title.toLowerCase().trim()
-    let titleB = b.sortableTitle
-      ? b.sortableTitle.toLowerCase().trim()
-      : b.title.toLowerCase().trim()
+    let titleA = a.sortableTitle ? a.sortableTitle.toLowerCase().trim() : a.title.toLowerCase().trim()
+    let titleB = b.sortableTitle ? b.sortableTitle.toLowerCase().trim() : b.title.toLowerCase().trim()
     titleA = titleA.replace(/#/g, '')
     titleB = titleB.replace(/#/g, '')
     return titleA < titleB ? -1 : titleA > titleB ? 1 : 0
@@ -293,10 +251,7 @@ export const sortPodcastArrayAlphabetically = (podcasts: any[]) => {
   return podcasts
 }
 
-export const insertOrRemovePodcastFromAlphabetizedArray = (
-  podcasts: any[],
-  podcast: any
-) => {
+export const insertOrRemovePodcastFromAlphabetizedArray = (podcasts: any[], podcast: any) => {
   if (!Array.isArray(podcasts)) return []
   if (podcasts.some((x) => x.id === podcast.id)) {
     return podcasts.filter((x) => x.id !== podcast.id)
@@ -307,10 +262,7 @@ export const insertOrRemovePodcastFromAlphabetizedArray = (
   }
 }
 
-const addOrRemovePodcastIdFromArray = (
-  podcastIds: any[],
-  podcastId: string
-) => {
+const addOrRemovePodcastIdFromArray = (podcastIds: any[], podcastId: string) => {
   if (!Array.isArray(podcastIds)) return []
   if (podcastIds.some((x) => x === podcastId)) {
     return podcastIds.filter((x) => x !== podcastId)

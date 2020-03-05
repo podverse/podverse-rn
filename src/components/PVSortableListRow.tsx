@@ -1,11 +1,5 @@
 import React from 'react'
-import {
-  Animated,
-  Dimensions,
-  Easing,
-  Platform,
-  StyleSheet
-} from 'react-native'
+import { Animated, Dimensions, Easing, Platform, StyleSheet } from 'react-native'
 
 type Props = {
   active: any
@@ -69,9 +63,7 @@ export class PVSortableListRow extends React.Component<Props, State> {
 
   render() {
     const { cell } = this.props
-    return (
-      <Animated.View style={[styles.row, this._style]}>{cell}</Animated.View>
-    )
+    return <Animated.View style={[styles.row, this._style]}>{cell}</Animated.View>
   }
 }
 

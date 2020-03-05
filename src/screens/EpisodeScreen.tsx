@@ -18,10 +18,7 @@ import {
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
-import {
-  convertNowPlayingItemToEpisode,
-  convertToNowPlayingItem
-} from '../lib/NowPlayingItem'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { formatTitleViewHtml, isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
@@ -62,15 +59,14 @@ export class EpisodeScreen extends React.Component<Props, State> {
       title: 'Episode',
       headerRight: (
         <RNView style={core.row}>
-          {
-            !addByRSSPodcastFeedUrl &&
-              <NavShareIcon
-                endingText=' – shared using Podverse'
-                episodeTitle={episodeTitle}
-                podcastTitle={podcastTitle}
-                url={PV.URLs.episode + episodeId}
-              />
-          }
+          {!addByRSSPodcastFeedUrl && (
+            <NavShareIcon
+              endingText=' – shared using Podverse'
+              episodeTitle={episodeTitle}
+              podcastTitle={podcastTitle}
+              url={PV.URLs.episode + episodeId}
+            />
+          )}
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
@@ -82,8 +78,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     const viewType = this.props.navigation.getParam('viewType') || _showNotesKey
     const episode = this.props.navigation.getParam('episode')
-    const episodeId =
-      (episode && episode.id) || this.props.navigation.getParam('episodeId')
+    const episodeId = (episode && episode.id) || this.props.navigation.getParam('episodeId')
 
     if (episode && !episode.podcast) {
       episode.podcast = {
@@ -114,25 +109,22 @@ export class EpisodeScreen extends React.Component<Props, State> {
       viewType
     }
 
-    this._handleSearchBarTextQuery = debounce(
-      this._handleSearchBarTextQuery,
-      PV.SearchBar.textInputDebounceTime
-    )
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
   async componentDidMount() {
     const { episode, episodeId } = this.state
     this._initializePageData()
-    const pageTitle = episode && episode.podcast ?
-      'Episode Screen - ' + episode.podcast.title + ' - ' + episode.title
-      : 'Episode Screen - ' + 'no info available'
+    const pageTitle =
+      episode && episode.podcast
+        ? 'Episode Screen - ' + episode.podcast.title + ' - ' + episode.title
+        : 'Episode Screen - ' + 'no info available'
     gaTrackPageView('/episode/' + episodeId, pageTitle)
   }
 
   async _initializePageData() {
     const { episode, viewType } = this.state
-    const episodeId =
-      this.props.navigation.getParam('episodeId') || this.state.episodeId
+    const episodeId = this.props.navigation.getParam('episodeId') || this.state.episodeId
 
     this.setState(
       {
@@ -220,12 +212,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
-    const {
-      endOfResultsReached,
-      isLoadingMore,
-      queryPage = 1,
-      viewType
-    } = this.state
+    const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = this.state
     if (viewType === _clipsKey && !endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
         this.setState(
@@ -269,11 +256,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       <ClipTableCell
         episodeId={episode.id}
         endTime={item.endTime}
-        handleMorePress={() =>
-          this._handleMorePress(
-            convertToNowPlayingItem(item, episode, episode.podcast)
-          )
-        }
+        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
         hasZebraStripe={isOdd(index)}
         hideImage={true}
         startTime={item.startTime}
@@ -309,10 +292,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleSearchBarTextQuery = async (
-    viewType: string | null,
-    queryOptions: any
-  ) => {
+  _handleSearchBarTextQuery = async (viewType: string | null, queryOptions: any) => {
     this.setState(
       {
         flatListData: [],
@@ -360,18 +340,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
         <EpisodeTableHeader
           downloadedEpisodeIds={downloadedEpisodeIds}
           downloadsActive={downloadsActive}
-          handleMorePress={() =>
-            this._handleMorePress(
-              convertToNowPlayingItem(episode, null, episode.podcast)
-            )
-          }
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast))}
           id={episode && episode.id}
           isLoading={isLoading && !episode}
           isNotFound={!isLoading && !episode}
           podcastImageUrl={
-            episode &&
-            ((episode.podcast && episode.podcast.shrunkImageUrl) ||
-              episode.podcast_shrunkImageUrl)
+            episode && ((episode.podcast && episode.podcast.shrunkImageUrl) || episode.podcast_shrunkImageUrl)
           }
           pubDate={episode && episode.pubDate}
           title={episode && episode.title}
@@ -393,22 +367,17 @@ export class EpisodeScreen extends React.Component<Props, State> {
             extraData={flatListData}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
-            {...(viewType === _clipsKey
-              ? { ListHeaderComponent: this._ListHeaderComponent }
-              : {})}
+            {...(viewType === _clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
             onEndReached={this._onEndReached}
             renderItem={this._renderItem}
-            showNoInternetConnectionMessage={showNoInternetConnectionMessage} />
+            showNoInternetConnectionMessage={showNoInternetConnectionMessage}
+          />
         )}
         {viewType === _showNotesKey && episode && (
-          <HTMLScrollView
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            html={episode.description || ''} />
+          <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={episode.description || ''} />
         )}
         {viewType === _titleKey && episode && (
-          <HTMLScrollView
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            html={formatTitleViewHtml(episode)} />
+          <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={formatTitleViewHtml(episode)} />
         )}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
@@ -433,12 +402,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       searchAllFieldsText?: string
     } = {}
   ) => {
-    const {
-      episode,
-      flatListData,
-      querySort,
-      searchBarText: searchAllFieldsText
-    } = this.state
+    const { episode, flatListData, querySort, searchBarText: searchAllFieldsText } = this.state
     const newState = {
       isLoading: false,
       isLoadingMore: false,
@@ -461,8 +425,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         )
 
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached =
-          newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (!filterKey) {
         newState.flatListData = []
@@ -480,8 +443,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         )
 
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached =
-          newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
 

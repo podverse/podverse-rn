@@ -22,14 +22,8 @@ export const NavMakeClipIcon = (props: Props) => {
   }
 
   return (
-    <NavItemWrapper
-      handlePress={handlePress}>
-      <Icon
-        color='#fff'
-        name='cut'
-        size={PV.Icons.NAV}
-        style={navHeader.buttonIcon} />
+    <NavItemWrapper handlePress={handlePress}>
+      <Icon color='#fff' name='cut' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
     </NavItemWrapper>
-
   )
 }

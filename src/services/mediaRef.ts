@@ -1,7 +1,4 @@
-import {
-  hasValidDownloadingConnection,
-  hasValidNetworkConnection
-} from '../lib/network'
+import { hasValidDownloadingConnection, hasValidNetworkConnection } from '../lib/network'
 import { getBearerToken } from './auth'
 import { request } from './request'
 
@@ -50,9 +47,7 @@ export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
     ...(query.podcastId ? { podcastId: query.podcastId } : {}),
     ...(query.episodeId ? { episodeId: query.episodeId } : {}),
-    ...(query.searchAllFieldsText
-      ? { searchAllFieldsText: query.searchAllFieldsText }
-      : {}),
+    ...(query.searchAllFieldsText ? { searchAllFieldsText: query.searchAllFieldsText } : {}),
     ...(query.includeEpisode ? { includeEpisode: true } : {}),
     ...(query.includePodcast ? { includePodcast: true } : {})
   }

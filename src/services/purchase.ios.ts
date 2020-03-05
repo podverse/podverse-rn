@@ -11,6 +11,6 @@ export const iosHandlePurchaseStatusCheck = async (transactionReceipt: string) =
       }
     }
   } catch (error) {
-    throw (error)
+    throw error
   }
 }

@@ -28,19 +28,28 @@ export const PVButton = (props: Props) => {
 
   return (
     <TouchableOpacity
-      style={[core.button, globalTheme.buttonPrimaryWrapper, disabledStyle, wrapperStyles, isWarningStyle, isSuccessStyle]}
+      style={[
+        core.button,
+        globalTheme.buttonPrimaryWrapper,
+        disabledStyle,
+        wrapperStyles,
+        isWarningStyle,
+        isSuccessStyle
+      ]}
       disabled={disabled || isLoading}
       onPress={onPress}>
       {isLoading ? (
-        <ActivityIndicator
-          animating={true}
-          color={globalTheme.buttonPrimaryText.color}
-          size='small' />
+        <ActivityIndicator animating={true} color={globalTheme.buttonPrimaryText.color} size='small' />
       ) : (
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          style={[core.buttonText, globalTheme.buttonPrimaryText, disabledTextStyle,
-            isWarningTextStyle, isSuccessTextStyle]}>
+          style={[
+            core.buttonText,
+            globalTheme.buttonPrimaryText,
+            disabledTextStyle,
+            isWarningTextStyle,
+            isSuccessTextStyle
+          ]}>
           {text}
         </Text>
       )}

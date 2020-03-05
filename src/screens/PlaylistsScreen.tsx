@@ -89,16 +89,13 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
     return (
       <PlaylistTableCell
-        {...(queryFrom === _subscribedPlaylistsKey
-          ? { createdBy: ownerName }
-          : {})}
+        {...(queryFrom === _subscribedPlaylistsKey ? { createdBy: ownerName } : {})}
         hasZebraStripe={isOdd(index)}
         itemCount={item.itemCount}
         onPress={() =>
           this.props.navigation.navigate(PV.RouteNames.PlaylistScreen, {
             playlist: item,
-            navigationTitle:
-              queryFrom === _myPlaylistsKey ? 'My Playlist' : 'Playlist'
+            navigationTitle: queryFrom === _myPlaylistsKey ? 'My Playlist' : 'Playlist'
           })
         }
         title={item.title}
@@ -111,8 +108,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
   render() {
     const { isLoading, isLoadingMore, queryFrom, showNoInternetConnectionMessage } = this.state
     const { myPlaylists, subscribedPlaylists } = this.global.playlists
-    const flatListData =
-      queryFrom === _myPlaylistsKey ? myPlaylists : subscribedPlaylists
+    const flatListData = queryFrom === _myPlaylistsKey ? myPlaylists : subscribedPlaylists
 
     return (
       <View style={styles.view}>
@@ -134,28 +130,19 @@ export class PlaylistsScreen extends React.Component<Props, State> {
               showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             />
           )}
-          {!isLoading &&
-            queryFrom === _myPlaylistsKey &&
-            !this.global.session.isLoggedIn && (
-              <MessageWithAction
-                topActionHandler={this._onPressLogin}
-                topActionText='Login'
-                message='Login to view your playlists'
-              />
-            )}
-          {!isLoading &&
-            queryFrom === _myPlaylistsKey &&
-            this.global.session.isLoggedIn &&
-            flatListData.length < 1 && (
-              <MessageWithAction message='You have no subscribed playlists' />
-            )}
-          {!isLoading &&
-            queryFrom === _subscribedPlaylistsKey &&
-            flatListData.length < 1 && (
-              <MessageWithAction
-                message='You have no subscribed playlists'
-              />
-            )}
+          {!isLoading && queryFrom === _myPlaylistsKey && !this.global.session.isLoggedIn && (
+            <MessageWithAction
+              topActionHandler={this._onPressLogin}
+              topActionText='Login'
+              message='Login to view your playlists'
+            />
+          )}
+          {!isLoading && queryFrom === _myPlaylistsKey && this.global.session.isLoggedIn && flatListData.length < 1 && (
+            <MessageWithAction message='You have no subscribed playlists' />
+          )}
+          {!isLoading && queryFrom === _subscribedPlaylistsKey && flatListData.length < 1 && (
+            <MessageWithAction message='You have no subscribed playlists' />
+          )}
         </View>
       </View>
     )

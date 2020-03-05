@@ -23,33 +23,18 @@ import {
   Text,
   View
 } from '../components'
-import {
-  getDownloadedEpisodeLimit,
-  setDownloadedEpisodeLimit
-} from '../lib/downloadedEpisodeLimiter'
+import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import {
-  convertNowPlayingItemToEpisode,
-  convertToNowPlayingItem
-} from '../lib/NowPlayingItem'
-import {
-  decodeHTMLString,
-  isOdd,
-  readableDate,
-  removeHTMLFromString,
-  safelyUnwrapNestedVariable
-} from '../lib/utility'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import { decodeHTMLString, isOdd, readableDate, removeHTMLFromString, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRefs } from '../services/mediaRef'
 import { getPodcast } from '../services/podcast'
-import {
-  removeDownloadedPodcastEpisode,
-  updateAutoDownloadSettings
-} from '../state/actions/downloads'
+import { removeDownloadedPodcastEpisode, updateAutoDownloadSettings } from '../state/actions/downloads'
 import { toggleAddByRSSPodcast } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
@@ -106,14 +91,13 @@ export class PodcastScreen extends React.Component<Props, State> {
       title: 'Podcast',
       headerRight: (
         <RNView style={core.row}>
-          {
-            !addByRSSPodcastFeedUrl &&
-              <NavShareIcon
-                endingText=' – shared using Podverse'
-                podcastTitle={podcastTitle}
-                url={PV.URLs.podcast + podcastId}
-              />
-          }
+          {!addByRSSPodcastFeedUrl && (
+            <NavShareIcon
+              endingText=' – shared using Podverse'
+              podcastTitle={podcastTitle}
+              url={PV.URLs.podcast + podcastId}
+            />
+          )}
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
@@ -125,9 +109,10 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     const podcast = this.props.navigation.getParam('podcast')
     const podcastId =
-      (podcast && podcast.id) || (podcast && podcast.addByRSSPodcastFeedUrl) || this.props.navigation.getParam('podcastId')
-    const viewType =
-      this.props.navigation.getParam('viewType') || allEpisodesKey
+      (podcast && podcast.id) ||
+      (podcast && podcast.addByRSSPodcastFeedUrl) ||
+      this.props.navigation.getParam('podcastId')
+    const viewType = this.props.navigation.getParam('viewType') || allEpisodesKey
 
     if (podcast && (podcast.id || podcast.addByRSSPodcastFeedUrl)) {
       this.props.navigation.setParams({
@@ -157,10 +142,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       viewType
     }
 
-    this._handleSearchBarTextQuery = debounce(
-      this._handleSearchBarTextQuery,
-      PV.SearchBar.textInputDebounceTime
-    )
+    this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
   async componentDidMount() {
@@ -170,26 +152,28 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     const hasInternetConnection = await hasValidNetworkConnection()
 
-    this.setState({
-      ...(!hasInternetConnection ? {
-        viewType: downloadedKey
-      } : { viewType: this.state.viewType })
-    }, () => {
-      this._initializePageData()
-      if (episodeId) {
-        navigation.navigate(PV.RouteNames.EpisodeScreen, { episodeId })
+    this.setState(
+      {
+        ...(!hasInternetConnection
+          ? {
+              viewType: downloadedKey
+            }
+          : { viewType: this.state.viewType })
+      },
+      () => {
+        this._initializePageData()
+        if (episodeId) {
+          navigation.navigate(PV.RouteNames.EpisodeScreen, { episodeId })
+        }
       }
-    })
-    const pageTitle = podcast ?
-      'Podcasts Screen - ' + podcast.title
-      : 'PodcastsScreen - ' + 'no info available'
+    )
+    const pageTitle = podcast ? 'Podcasts Screen - ' + podcast.title : 'PodcastsScreen - ' + 'no info available'
     gaTrackPageView('/podcast/' + podcastId, pageTitle)
   }
 
   async _initializePageData() {
     const { podcast, viewType } = this.state
-    const podcastId =
-      this.props.navigation.getParam('podcastId') || this.state.podcastId
+    const podcastId = this.props.navigation.getParam('podcastId') || this.state.podcastId
     const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
 
     this.setState(
@@ -199,8 +183,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         flatListData: [],
         flatListDataTotalCount: null,
         isLoading: true,
-        limitDownloadedEpisodes:
-          downloadedEpisodeLimit && downloadedEpisodeLimit > 0,
+        limitDownloadedEpisodes: downloadedEpisodeLimit && downloadedEpisodeLimit > 0,
         podcastId,
         queryPage: 1
       },
@@ -222,8 +205,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             }
           }
 
-          newPodcast.description =
-            newPodcast.description || 'No summary available.'
+          newPodcast.description = newPodcast.description || 'No summary available.'
 
           this.setState({
             ...newState,
@@ -287,13 +269,7 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
-    const {
-      endOfResultsReached,
-      isLoadingMore,
-      podcast,
-      queryPage = 1,
-      viewType
-    } = this.state
+    const { endOfResultsReached, isLoadingMore, podcast, queryPage = 1, viewType } = this.state
 
     if (!podcast.addByRSSPodcastFeedUrl && viewType !== downloadedKey && !endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
@@ -367,9 +343,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     }
 
     const isSearchScreen = this.props.navigation.getParam('isSearchScreen')
-    const screen = isSearchScreen
-      ? PV.RouteNames.SearchEpisodeScreen
-      : PV.RouteNames.EpisodeScreen
+    const screen = isSearchScreen ? PV.RouteNames.SearchEpisodeScreen : PV.RouteNames.EpisodeScreen
 
     if (viewType === downloadedKey) {
       let description = removeHTMLFromString(item.description)
@@ -377,9 +351,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       return (
         <EpisodeTableCell
           description={description}
-          handleMorePress={() =>
-            this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
-          }
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() =>
             this.props.navigation.navigate(screen, {
               episode,
@@ -399,9 +371,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       return (
         <EpisodeTableCell
           description={description}
-          handleMorePress={() =>
-            this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
-          }
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() =>
             this.props.navigation.navigate(screen, {
               episode,
@@ -422,29 +392,24 @@ export class PodcastScreen extends React.Component<Props, State> {
           episodeId={item.episode.id}
           episodePubDate={readableDate(item.episode.pubDate)}
           episodeTitle={item.episode.title}
-          handleMorePress={() =>
-            this._handleMorePress(convertToNowPlayingItem(item, null, podcast))
-          }
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           hasZebraStripe={isOdd(index)}
           hideImage={true}
           startTime={item.startTime}
           title={item.title}
         />
-      ) : (<></>)
+      ) : (
+        <></>
+      )
     }
   }
 
   _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      text='Delete'
-    />
+    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text='Delete' />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
-    const filteredEpisodes = this.state.flatListData.filter(
-      (x: any) => x.id !== selectedId
-    )
+    const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
     this.setState(
       {
         flatListData: filteredEpisodes
@@ -471,10 +436,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleSearchBarTextQuery = async (
-    viewType: string | null,
-    queryOptions: any
-  ) => {
+  _handleSearchBarTextQuery = async (viewType: string | null, queryOptions: any) => {
     this.setState(
       {
         flatListData: [],
@@ -499,9 +461,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     const { addByRSSPodcastFeedUrl } = podcast
 
     if (podcastId) {
-      const wasAlerted = await alertIfNoNetworkConnection(
-        'subscribe to podcast'
-      )
+      const wasAlerted = await alertIfNoNetworkConnection('subscribe to podcast')
       if (wasAlerted) return
 
       this.setState({ isSubscribing: true }, async () => {
@@ -516,14 +476,11 @@ export class PodcastScreen extends React.Component<Props, State> {
           this.setState({ isSubscribing: false })
         }
 
-        const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(
-          podcastId
-        )
+        const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
 
         this.setState({
           downloadedEpisodeLimit,
-          limitDownloadedEpisodes:
-            downloadedEpisodeLimit && downloadedEpisodeLimit > 0
+          limitDownloadedEpisodes: downloadedEpisodeLimit && downloadedEpisodeLimit > 0
         })
       })
     }
@@ -553,14 +510,9 @@ export class PodcastScreen extends React.Component<Props, State> {
       const globalDownloadedEpisodeLimitCount = (await AsyncStorage.getItem(
         PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT
       )) as any
-      setDownloadedEpisodeLimit(
-        podcastId,
-        shouldLimitDownloads ? globalDownloadedEpisodeLimitCount : null
-      )
+      setDownloadedEpisodeLimit(podcastId, shouldLimitDownloads ? globalDownloadedEpisodeLimitCount : null)
       this.setState({
-        downloadedEpisodeLimit: shouldLimitDownloads
-          ? globalDownloadedEpisodeLimitCount
-          : null,
+        downloadedEpisodeLimit: shouldLimitDownloads ? globalDownloadedEpisodeLimitCount : null,
         limitDownloadedEpisodes: shouldLimitDownloads
       })
     }
@@ -593,28 +545,21 @@ export class PodcastScreen extends React.Component<Props, State> {
       viewType
     } = this.state
     const { fontScaleMode } = this.global
-    const subscribedPodcastIds = safelyUnwrapNestedVariable(
-      () => this.global.session.userInfo.subscribedPodcastIds,
-      []
-    )
+    const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
 
-    let isSubscribed = subscribedPodcastIds.some(
-      (x: string) => x === podcastId
-    )
+    let isSubscribed = subscribedPodcastIds.some((x: string) => x === podcastId)
 
     if (!isSubscribed) {
-      const subscribedPodcasts = safelyUnwrapNestedVariable(
-        () => this.global.subscribedPodcasts,
-        []
+      const subscribedPodcasts = safelyUnwrapNestedVariable(() => this.global.subscribedPodcasts, [])
+      isSubscribed = subscribedPodcasts.some(
+        (x: any) => x.addByRSSPodcastFeedUrl && x.addByRSSPodcastFeedUrl === podcastId
       )
-      isSubscribed = subscribedPodcasts.some((x: any) => x.addByRSSPodcastFeedUrl && x.addByRSSPodcastFeedUrl === podcastId)
     }
 
     let { flatListData, flatListDataTotalCount } = this.state
     const { autoDownloadSettings } = this.global
     const autoDownloadOn =
-      (podcast && autoDownloadSettings[podcast.id]) ||
-      (podcastId && autoDownloadSettings[podcastId])
+      (podcast && autoDownloadSettings[podcast.id]) || (podcastId && autoDownloadSettings[podcastId])
 
     let items = rightItems(false, viewType === allEpisodesKey)
     if (viewType === downloadedKey) {
@@ -665,11 +610,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           <View style={styles.settingsView}>
             <SwitchWithText
               onValueChange={this._handleToggleLimitDownloads}
-              text={
-                limitDownloadedEpisodes
-                  ? 'Download limit on'
-                  : 'Download limit off'
-              }
+              text={limitDownloadedEpisodes ? 'Download limit on' : 'Download limit off'}
               value={limitDownloadedEpisodes}
             />
             <NumberSelectorWithText
@@ -677,11 +618,8 @@ export class PodcastScreen extends React.Component<Props, State> {
               selectedNumber={downloadedEpisodeLimit}
               text='Download limit max'
             />
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              style={styles.settingsHelpText}>
-              Once the download limit is exceeded, the oldest episode will be
-              auto deleted.
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.settingsHelpText}>
+              Once the download limit is exceeded, the oldest episode will be auto deleted.
             </Text>
           </View>
         )}
@@ -780,28 +718,17 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     try {
       if (filterKey === allEpisodesKey) {
-        const results = await this._queryAllEpisodes(
-          querySort,
-          queryOptions.queryPage
-        )
+        const results = await this._queryAllEpisodes(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached =
-          newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === clipsKey) {
-        const results = await this._queryClips(
-          querySort,
-          queryOptions.queryPage
-        )
+        const results = await this._queryClips(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached =
-          newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (
-        rightItems(
-          viewType === downloadedKey,
-          viewType === allEpisodesKey
-        ).some((option) => option.value === filterKey)
+        rightItems(viewType === downloadedKey, viewType === allEpisodesKey).some((option) => option.value === filterKey)
       ) {
         let results = []
 
@@ -812,8 +739,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         }
 
         newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached =
-          newState.flatListData.length >= results[1]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === aboutKey) {
         if (podcastId && hasInternetConnection) {
@@ -858,12 +784,10 @@ const rightItems = (onlyMostRecent?: boolean, includeOldest?: boolean) => {
       value: mostRecentKey
     })
   } else {
-    items.push(
-      {
-        label: 'most recent',
-        value: mostRecentKey
-      }
-    )
+    items.push({
+      label: 'most recent',
+      value: mostRecentKey
+    })
 
     if (includeOldest) {
       items.push({

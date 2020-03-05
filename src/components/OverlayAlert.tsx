@@ -1,11 +1,7 @@
 import { StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useEffect, useGlobal, useState } from 'reactn'
 import { Icon } from '../components'
-import {
-  getMembershipStatus,
-  readableDate,
-  safelyUnwrapNestedVariable
-} from '../lib/utility'
+import { getMembershipStatus, readableDate, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 
 type Props = {}
@@ -39,23 +35,18 @@ export const OverlayAlert = (props: Props) => {
     if (currentMembershipStatus !== membershipStatus) {
       setMembershipStatus(currentMembershipStatus)
       if (currentMembershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRED) {
-        const freeTrialExpiration = readableDate(
-          safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, '')
-        )
+        const freeTrialExpiration = readableDate(safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, ''))
         setState({
           hideKey: 'hideFreeTrialExpired',
-          alertTitle: `Your free trial expired ${freeTrialExpiration}. Please renew your membership to continue using premium features.`,
+          alertTitle: `Your free trial expired ${freeTrialExpiration}. 
+          Please renew your membership to continue using premium features.`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
           alertTitleStyle: globalTheme.overlayAlertDanger,
           linkAction: handleRenewMembership,
           showAlert: true
         })
-      } else if (
-        currentMembershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON
-      ) {
-        const freeTrialExpiration = readableDate(
-          safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, '')
-        )
+      } else if (currentMembershipStatus === PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON) {
+        const freeTrialExpiration = readableDate(safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, ''))
         setState({
           hideKey: 'hideFreeTrialExpiring',
           alertTitle: `Your free trial expires ${freeTrialExpiration}`,
@@ -64,27 +55,20 @@ export const OverlayAlert = (props: Props) => {
           linkAction: handleRenewMembership,
           showAlert: true
         })
-      } else if (
-        currentMembershipStatus === PV.MembershipStatus.PREMIUM_EXPIRED
-      ) {
-        const membershipExpiration = readableDate(
-          safelyUnwrapNestedVariable(() => userInfo.membershipExpiration, '')
-        )
+      } else if (currentMembershipStatus === PV.MembershipStatus.PREMIUM_EXPIRED) {
+        const membershipExpiration = readableDate(safelyUnwrapNestedVariable(() => userInfo.membershipExpiration, ''))
 
         setState({
           hideKey: 'hideMembershipExpired',
-          alertTitle: `Your membership expired ${membershipExpiration}. Please renew your membership to continue using premium features.`,
+          alertTitle: `Your membership expired ${membershipExpiration}. 
+          Please renew your membership to continue using premium features.`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
           alertTitleStyle: globalTheme.overlayAlertDanger,
           linkAction: handleRenewMembership,
           showAlert: true
         })
-      } else if (
-        currentMembershipStatus === PV.MembershipStatus.PREMIUM_EXPIRING_SOON
-      ) {
-        const membershipExpiration = readableDate(
-          safelyUnwrapNestedVariable(() => userInfo.membershipExpiration, '')
-        )
+      } else if (currentMembershipStatus === PV.MembershipStatus.PREMIUM_EXPIRING_SOON) {
+        const membershipExpiration = readableDate(safelyUnwrapNestedVariable(() => userInfo.membershipExpiration, ''))
         setState({
           hideKey: 'hideMembershipExpiring',
           alertTitle: `Your premium membership expires ${membershipExpiration}.`,
@@ -125,12 +109,8 @@ export const OverlayAlert = (props: Props) => {
   return (
     <View style={state.wrapperStyles}>
       <View style={styles.textWrapper}>
-        <Text style={[styles.text, state.alertTitleStyle]}>
-          {state.alertTitle}
-        </Text>
-        <Text
-          onPress={state.linkAction}
-          style={[styles.textLink, overlayAlertLinkStyles]}>
+        <Text style={[styles.text, state.alertTitleStyle]}>{state.alertTitle}</Text>
+        <Text onPress={state.linkAction} style={[styles.textLink, overlayAlertLinkStyles]}>
           Renew Membership
         </Text>
       </View>

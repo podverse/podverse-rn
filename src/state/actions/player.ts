@@ -1,12 +1,23 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { getGlobal, setGlobal } from 'reactn'
-import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, NowPlayingItem } from '../../lib/NowPlayingItem'
+import {
+  convertNowPlayingItemToEpisode,
+  convertNowPlayingItemToMediaRef,
+  NowPlayingItem
+} from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
 import { getAdjacentItemFromHistoryLocally } from '../../services/history'
-import { clearNowPlayingItem as clearNowPlayingItemService, getContinuousPlaybackMode,
-  initializePlayerQueue as initializePlayerQueueService, loadItemAndPlayTrack as loadItemAndPlayTrackService,
-  playNextFromQueue as playNextFromQueueService, PVTrackPlayer, setNowPlayingItem as setNowPlayingItemService,
-  setPlaybackSpeed as setPlaybackSpeedService, togglePlay as togglePlayService } from '../../services/player'
+import {
+  clearNowPlayingItem as clearNowPlayingItemService,
+  getContinuousPlaybackMode,
+  initializePlayerQueue as initializePlayerQueueService,
+  loadItemAndPlayTrack as loadItemAndPlayTrackService,
+  playNextFromQueue as playNextFromQueueService,
+  PVTrackPlayer,
+  setNowPlayingItem as setNowPlayingItemService,
+  setPlaybackSpeed as setPlaybackSpeedService,
+  togglePlay as togglePlayService
+} from '../../services/player'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
@@ -53,7 +64,11 @@ export const initializePlayerQueue = async () => {
   })
 }
 
-export const addItemsToPlayerQueueNext = async (items: NowPlayingItem[], shouldPlay?: boolean, shouldRemoveFromPVQueue?: boolean) => {
+export const addItemsToPlayerQueueNext = async (
+  items: NowPlayingItem[],
+  shouldPlay?: boolean,
+  shouldRemoveFromPVQueue?: boolean
+) => {
   if (items.length < 1) return
   const item = items[0]
 
@@ -159,9 +174,7 @@ export const playNextFromQueue = async () => {
   await playNextFromQueueService()
 }
 
-export const loadItemAndPlayTrack = async (
-  item: NowPlayingItem, shouldPlay: boolean) => {
-
+export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boolean) => {
   if (item) {
     await updatePlayerState(item)
     await loadItemAndPlayTrackService(item, shouldPlay)
@@ -225,9 +238,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem | null) => {
 
 export const initializePlaybackSpeed = async () => {
   const globalState = getGlobal()
-  const playbackSpeedString = await AsyncStorage.getItem(
-    PV.Keys.PLAYER_PLAYBACK_SPEED
-  )
+  const playbackSpeedString = await AsyncStorage.getItem(PV.Keys.PLAYER_PLAYBACK_SPEED)
   let playbackSpeed = 1
   if (playbackSpeedString) {
     playbackSpeed = JSON.parse(playbackSpeedString)

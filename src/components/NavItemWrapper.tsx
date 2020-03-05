@@ -20,7 +20,7 @@ export const NavItemWrapper = (props: Props) => {
           top: 12
         }}
         onPress={handlePress}>
-          {children}
+        {children}
       </TouchableOpacity>
     </View>
   )

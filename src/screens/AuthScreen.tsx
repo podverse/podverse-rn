@@ -1,20 +1,11 @@
-import {
-  Alert,
-  Image,
-  Keyboard,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View
-} from 'react-native'
+import { Alert, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
-import { Icon, Login, ResetPassword, SafeAreaView, SignUp } from '../components'
+import { Login, NavDismissIcon, ResetPassword, SafeAreaView, SignUp } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { sendResetPassword } from '../services/auth'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { Credentials, loginUser, signUpUser } from '../state/actions/auth'
-import { button } from '../styles'
 
 type Props = {
   navigation?: any
@@ -33,6 +24,19 @@ const _resetPassword = 'resetPassword'
 const _signup = 'signup'
 
 export class AuthScreen extends React.Component<Props, State> {
+  static navigationOptions = ({ navigation }) => {
+    const title = navigation.getParam('title') || 'Login'
+    return {
+      title,
+      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
+      headerRight: null,
+      headerStyle: {
+        borderBottomWidth: 0,
+        backgroundColor: PV.Colors.brandColor
+      }
+    }
+  }
+
   constructor(props: Props) {
     super(props)
 
@@ -65,27 +69,11 @@ export class AuthScreen extends React.Component<Props, State> {
           navigation.goBack(null)
         }
       } catch (error) {
-        const EMAIL_NOT_VERIFIED = PV.Alerts.EMAIL_NOT_VERIFIED(
-          credentials.email
-        )
-        if (
-          error.response &&
-          error.response.status === PV.ResponseStatusCodes.EMAIL_NOT_VERIFIED
-        ) {
-          Alert.alert(
-            EMAIL_NOT_VERIFIED.title,
-            EMAIL_NOT_VERIFIED.message,
-            EMAIL_NOT_VERIFIED.buttons
-          )
-        } else if (
-          error.response &&
-          error.response.status === PV.ResponseStatusCodes.UNAUTHORIZED
-        ) {
-          Alert.alert(
-            PV.Alerts.LOGIN_INVALID.title,
-            PV.Alerts.LOGIN_INVALID.message,
-            PV.Alerts.BUTTONS.OK
-          )
+        const EMAIL_NOT_VERIFIED = PV.Alerts.EMAIL_NOT_VERIFIED(credentials.email)
+        if (error.response && error.response.status === PV.ResponseStatusCodes.EMAIL_NOT_VERIFIED) {
+          Alert.alert(EMAIL_NOT_VERIFIED.title, EMAIL_NOT_VERIFIED.message, EMAIL_NOT_VERIFIED.buttons)
+        } else if (error.response && error.response.status === PV.ResponseStatusCodes.UNAUTHORIZED) {
+          Alert.alert(PV.Alerts.LOGIN_INVALID.title, PV.Alerts.LOGIN_INVALID.message, PV.Alerts.BUTTONS.OK)
         } else {
           Alert.alert(
             PV.Alerts.SOMETHING_WENT_WRONG.title,
@@ -109,11 +97,7 @@ export class AuthScreen extends React.Component<Props, State> {
           PV.Alerts.BUTTONS.OK
         )
       } catch (error) {
-        Alert.alert(
-          PV.Alerts.SOMETHING_WENT_WRONG.title,
-          PV.Alerts.SOMETHING_WENT_WRONG.message,
-          PV.Alerts.BUTTONS.OK
-        )
+        Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
       }
       this.setState({ isLoadingResetPassword: false })
       navigation.goBack(null)
@@ -134,16 +118,8 @@ export class AuthScreen extends React.Component<Props, State> {
         })
       } catch (error) {
         console.log('attemptSignUp', error)
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.message
-        ) {
-          Alert.alert(
-            PV.Alerts.SIGN_UP_ERROR.title,
-            error.response.data.message,
-            PV.Alerts.BUTTONS.OK
-          )
+        if (error.response && error.response.data && error.response.data.message) {
+          Alert.alert(PV.Alerts.SIGN_UP_ERROR.title, error.response.data.message, PV.Alerts.BUTTONS.OK)
         }
       }
       this.setState({ isLoadingSignUp: false })
@@ -156,52 +132,38 @@ export class AuthScreen extends React.Component<Props, State> {
   }
 
   _showResetPassword = () => {
+    this.props.navigation.setParams({ title: 'Reset Password' })
     this.setState({ screenType: _resetPassword })
   }
 
   render() {
     const { navigation } = this.props
-    const {
-      isLoadingLogin,
-      isLoadingResetPassword,
-      isLoadingSignUp,
-      screenType
-    } = this.state
+    const { isLoadingLogin, isLoadingResetPassword, isLoadingSignUp, screenType } = this.state
     const { fontScaleMode } = this.global
     let bottomButtons
 
-    const switchOptionTextStyle = PV.Fonts.fontScale.largest === fontScaleMode ?
-      [styles.switchOptionText, { fontSize: PV.Fonts.largeSizes.sm }] :
-      [styles.switchOptionText]
+    const switchOptionTextStyle =
+      PV.Fonts.fontScale.largest === fontScaleMode
+        ? [styles.switchOptionText, { fontSize: PV.Fonts.largeSizes.sm }]
+        : [styles.switchOptionText]
 
     if (screenType === _login) {
       bottomButtons = [
-        (
-          <Text
-            key='reset'
-            onPress={this._showResetPassword}
-            style={switchOptionTextStyle}>
-            Reset Password
-          </Text>
-        ),
-        (
-          <Text
-            key='moreInfo'
-            onPress={this._showMembership}
-            style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}>
-            Sign Up
-          </Text>
-        )
+        <Text key='reset' onPress={this._showResetPassword} style={switchOptionTextStyle}>
+          Reset Password
+        </Text>,
+        <Text
+          key='moreInfo'
+          onPress={this._showMembership}
+          style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}>
+          Sign Up
+        </Text>
       ]
     } else if (screenType === _resetPassword) {
       bottomButtons = [
-        (
-          <Text
-            key='membership'
-            onPress={this._showMembership} style={styles.switchOptionText}>
-            Login
-          </Text>
-        )
+        <Text key='membership' onPress={this._showMembership} style={styles.switchOptionText}>
+          Login
+        </Text>
       ]
     }
 
@@ -209,36 +171,13 @@ export class AuthScreen extends React.Component<Props, State> {
       <SafeAreaView style={styles.safeAreaView}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={screenType === _signup ? styles.viewWithoutBanner : styles.view}>
-            <View style={styles.closeButtonWrapper}>
-              <View style={styles.closeButtonSpacer} />
-              <Icon
-                name='times'
-                onPress={navigation.dismiss}
-                size={26}
-                style={[button.iconOnlyMedium, styles.closeButton]}
-              />
-            </View>
-            {
-              screenType !== _signup &&
-                <Image
-                  source={PV.Images.BANNER}
-                  style={styles.banner}
-                  resizeMode='contain'
-                />
-            }
+            {screenType !== _signup && <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />}
             <View style={styles.contentView}>
               {screenType === _login && (
-                <Login
-                  bottomButtons={bottomButtons}
-                  isLoading={isLoadingLogin}
-                  onLoginPressed={this.attemptLogin}
-                />
+                <Login bottomButtons={bottomButtons} isLoading={isLoadingLogin} onLoginPressed={this.attemptLogin} />
               )}
               {screenType === _resetPassword && (
-                <ResetPassword
-                  isLoading={isLoadingResetPassword}
-                  onResetPasswordPressed={this.attemptResetPassword}
-                />
+                <ResetPassword isLoading={isLoadingResetPassword} onResetPasswordPressed={this.attemptResetPassword} />
               )}
               {screenType === _signup && (
                 <SignUp
@@ -290,12 +229,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: PV.Colors.brandColor,
     flex: 1,
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    paddingTop: 40
   },
   viewWithoutBanner: {
     alignItems: 'center',
     backgroundColor: PV.Colors.brandColor,
     flex: 1,
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    paddingTop: 40
   }
 })

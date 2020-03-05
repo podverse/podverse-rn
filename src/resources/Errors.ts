@@ -20,7 +20,6 @@ export const Errors = {
   },
   PREMIUM_MEMBERSHIP_EXPIRED: {
     name: _premiumMembershipExpiredName,
-    error: () =>
-      PVError(_premiumMembershipExpiredName, 'Premium Membership Expired')
+    error: () => PVError(_premiumMembershipExpiredName, 'Premium Membership Expired')
   }
 }

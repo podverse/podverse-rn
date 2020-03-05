@@ -5,11 +5,7 @@ import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { IActionSheet } from '../resources/Interfaces'
-import {
-  addItemToPlayerQueueLast,
-  addItemToPlayerQueueNext,
-  PVTrackPlayer
-} from '../services/player'
+import { addItemToPlayerQueueLast, addItemToPlayerQueueNext, PVTrackPlayer } from '../services/player'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { PV } from './PV'
@@ -24,39 +20,41 @@ const mediaMoreButtons = (
   if (!item || !item.episodeId) return
 
   const globalState = getGlobal()
-  const isDownloading =
-    globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
+  const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
   const downloadingText = isDownloading ? 'Downloading' : 'Download'
   const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
   const buttons = []
   const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session.userInfo.id, '')
 
   if (item.ownerId && item.ownerId === loggedInUserId) {
-    buttons.push({
-      key: 'editClip',
-      text: 'Edit Clip',
-      onPress: async () => {
-        await handleDismiss()
-        const shouldPlay = false
-        await loadItemAndPlayTrack(item, shouldPlay)
-        await navigation.navigate(PV.RouteNames.PlayerScreen)
-        setTimeout(async () => {
-          const initialProgressValue = await PVTrackPlayer.getPosition()
-          navigation.navigate(PV.RouteNames.MakeClipScreen, {
-            initialProgressValue,
-            initialPrivacy: item.isPublic,
-            isEditing: true
-          })
-        }, 1000)
+    buttons.push(
+      {
+        key: 'editClip',
+        text: 'Edit Clip',
+        onPress: async () => {
+          await handleDismiss()
+          const shouldPlay = false
+          await loadItemAndPlayTrack(item, shouldPlay)
+          await navigation.navigate(PV.RouteNames.PlayerScreen)
+          setTimeout(async () => {
+            const initialProgressValue = await PVTrackPlayer.getPosition()
+            navigation.navigate(PV.RouteNames.MakeClipScreen, {
+              initialProgressValue,
+              initialPrivacy: item.isPublic,
+              isEditing: true
+            })
+          }, 1000)
+        }
+      },
+      {
+        key: 'deleteClip',
+        text: 'Delete Clip',
+        onPress: async () => {
+          await handleDismiss()
+          await handleDeleteClip(item.clipId)
+        }
       }
-    }, {
-      key: 'deleteClip',
-      text: 'Delete Clip',
-      onPress: async () => {
-        await handleDismiss()
-        await handleDeleteClip(item.clipId)
-      }
-    })
+    )
   }
 
   if (isDownloaded) {
@@ -130,9 +128,7 @@ const mediaMoreButtons = (
       onPress: async () => {
         await handleDismiss()
         navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, {
-          ...(item.clipId
-            ? { mediaRefId: item.clipId }
-            : { episodeId: item.episodeId })
+          ...(item.clipId ? { mediaRefId: item.clipId } : { episodeId: item.episodeId })
         })
       }
     })
@@ -192,11 +188,7 @@ const mediaMoreButtons = (
   return buttons
 }
 
-const hasTriedStreamingWithoutWifiAlert = async (
-  handleDismiss: any,
-  navigation: any,
-  download: boolean
-) => {
+const hasTriedStreamingWithoutWifiAlert = async (handleDismiss: any, navigation: any, download: boolean) => {
   const shouldDownloadWithoutWifi = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
   if (shouldDownloadWithoutWifi !== 'TRUE') {
     return false
@@ -212,11 +204,7 @@ const hasTriedStreamingWithoutWifiAlert = async (
   return showAlert
 }
 
-const hasTriedDownloadingWithoutWifiAlert = async (
-  handleDismiss: any,
-  navigation: any,
-  download: boolean
-) => {
+const hasTriedDownloadingWithoutWifiAlert = async (handleDismiss: any, navigation: any, download: boolean) => {
   const shouldDownloadWithoutWifi = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
   if (shouldDownloadWithoutWifi !== 'TRUE') {
     return false
@@ -232,17 +220,11 @@ const hasTriedDownloadingWithoutWifiAlert = async (
   return showAlert
 }
 
-const hasTriedWithoutWifiAlert = (
-  handleDismiss: any,
-  navigation: any,
-  download: boolean
-) => {
+const hasTriedWithoutWifiAlert = (handleDismiss: any, navigation: any, download: boolean) => {
   Alert.alert(
     'No Wifi Connection',
     `You cannot ${download ? 'download' : 'stream'} without a Wifi connection.
-    To allow ${
-      download ? 'downloading' : 'streaming'
-    } with your data plan, go to your Settings page.`,
+    To allow ${download ? 'downloading' : 'streaming'} with your data plan, go to your Settings page.`,
     [
       {
         text: 'Cancel',

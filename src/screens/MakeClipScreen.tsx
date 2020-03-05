@@ -1,12 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import {
-  Alert,
-  Modal,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View as RNView
-} from 'react-native'
+import { Alert, Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import Share from 'react-native-share'
 import React from 'reactn'
@@ -33,17 +26,8 @@ import {
   playerPreviewStartTime,
   PVTrackPlayer
 } from '../services/player'
-import {
-  setNowPlayingItem,
-  setPlaybackSpeed,
-  togglePlay
-} from '../state/actions/player'
-import {
-  core,
-  darkTheme,
-  hidePickerIconOnAndroidTransparent,
-  playerStyles
-} from '../styles'
+import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
+import { core, darkTheme, hidePickerIconOnAndroidTransparent, playerStyles } from '../styles'
 
 type Props = {
   navigation?: any
@@ -65,9 +49,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     title: navigation.getParam('isEditing') ? 'Edit Clip' : 'Make Clip',
     headerRight: (
       <RNView style={styles.navHeaderButtonWrapper}>
-          <NavHeaderButtonText
-            handlePress={navigation.getParam('_saveMediaRef')}
-            text='Save' />
+        <NavHeaderButtonText handlePress={navigation.getParam('_saveMediaRef')} text='Save' />
       </RNView>
     )
   })
@@ -78,16 +60,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { isLoggedIn } = this.global.session
     const isEditing = this.props.navigation.getParam('isEditing')
     const initialPrivacy = this.props.navigation.getParam('initialPrivacy')
-    const initialProgressValue = this.props.navigation.getParam(
-      'initialProgressValue'
-    )
+    const initialProgressValue = this.props.navigation.getParam('initialProgressValue')
 
     const pItems = privacyItems(isLoggedIn)
     this.state = {
       endTime: isEditing ? nowPlayingItem.clipEndTime : null,
-      ...(initialPrivacy
-        ? { isPublicItemSelected: pItems[0] }
-        : { isPublicItemSelected: pItems[1] }),
+      ...(initialPrivacy ? { isPublicItemSelected: pItems[0] } : { isPublicItemSelected: pItems[1] }),
       isSaving: false,
       ...(isEditing ? { mediaRefId: nowPlayingItem.clipId } : {}),
       progressValue: initialProgressValue || 0,
@@ -106,15 +84,10 @@ export class MakeClipScreen extends React.Component<Props, State> {
     // Prevent the temporary progressValue from sticking in the progress bar
     setTimeout(() => this.setState({ progressValue: null }), 250)
 
-    const hideHowToModal = await AsyncStorage.getItem(
-      PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED
-    )
+    const hideHowToModal = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED)
 
     if (!hideHowToModal) {
-      await AsyncStorage.setItem(
-        PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED,
-        JSON.stringify(true)
-      )
+      await AsyncStorage.setItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED, JSON.stringify(true))
     }
 
     this.setGlobal(
@@ -126,9 +99,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       },
       () => {
         this.setState({
-          ...(!hideHowToModal
-            ? { showHowToModal: true }
-            : { showHowToModal: false }),
+          ...(!hideHowToModal ? { showHowToModal: true } : { showHowToModal: false }),
           ...(!isEditing ? { startTime: Math.floor(currentPosition) } : {}),
           title: isEditing ? nowPlayingItem.clipTitle : ''
         })
@@ -157,10 +128,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const items = [placeholderItem, ...privacyItems(isLoggedIn)]
     const selectedItem = items.find((x) => x.value === selectedKey)
     if (selectedItem) {
-      AsyncStorage.setItem(
-        PV.Keys.MAKE_CLIP_IS_PUBLIC,
-        JSON.stringify(selectedItem.value === _publicKey)
-      )
+      AsyncStorage.setItem(PV.Keys.MAKE_CLIP_IS_PUBLIC, JSON.stringify(selectedItem.value === _publicKey))
     }
     this.setState({ isPublicItemSelected: selectedItem })
   }
@@ -207,11 +175,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     if (wasAlerted) return
 
     if (endTime === 0) {
-      Alert.alert(
-        'Clip Error',
-        'End time cannot be equal to 0.',
-        PV.Alerts.BUTTONS.OK
-      )
+      Alert.alert('Clip Error', 'End time cannot be equal to 0.', PV.Alerts.BUTTONS.OK)
       return
     }
 
@@ -225,20 +189,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
     }
 
     if (!startTime) {
-      Alert.alert(
-        'Clip Error',
-        'A start time must be provided.',
-        PV.Alerts.BUTTONS.OK
-      )
+      Alert.alert('Clip Error', 'A start time must be provided.', PV.Alerts.BUTTONS.OK)
       return
     }
 
     if (endTime && startTime >= endTime) {
-      Alert.alert(
-        'Clip Error',
-        'The start time must be before the end time.',
-        PV.Alerts.BUTTONS.OK
-      )
+      Alert.alert('Clip Error', 'The start time must be before the end time.', PV.Alerts.BUTTONS.OK)
       return
     }
 
@@ -249,17 +205,13 @@ export class MakeClipScreen extends React.Component<Props, State> {
         ...(endTime ? { endTime } : {}),
         episodeId: nowPlayingItem.episodeId,
         ...(isEditing ? { id: mediaRefId } : {}),
-        ...(isLoggedIn && isPublicItemSelected.value === _publicKey
-          ? { isPublic: true }
-          : { isPublic: false }),
+        ...(isLoggedIn && isPublicItemSelected.value === _publicKey ? { isPublic: true } : { isPublic: false }),
         startTime,
         title
       }
 
       try {
-        const mediaRef = isEditing
-          ? await updateMediaRef(data)
-          : await createMediaRef(data)
+        const mediaRef = isEditing ? await updateMediaRef(data) : await createMediaRef(data)
         const url = PV.URLs.clip + mediaRef.id
 
         if (isEditing) {
@@ -287,9 +239,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 text: 'Share',
                 onPress: async () => {
                   const { nowPlayingItem = {} } = this.global.player
-                  const title = `${data.title || 'untitled clip'} – ${
-                    nowPlayingItem.podcastTitle
-                  } – ${
+                  const title = `${data.title || 'untitled clip'} – ${nowPlayingItem.podcastTitle} – ${
                     nowPlayingItem.episodeTitle
                   } – clip created using Podverse`
 
@@ -312,11 +262,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         })
       } catch (error) {
         if (error.response) {
-          Alert.alert(
-            PV.Alerts.SOMETHING_WENT_WRONG.title,
-            error.response.data.message,
-            PV.Alerts.BUTTONS.OK
-          )
+          Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, error.response.data.message, PV.Alerts.BUTTONS.OK)
         }
         console.log(error)
       }
@@ -361,8 +307,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       [
         {
           text: 'Premium Info',
-          onPress: () =>
-            this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
+          onPress: () => this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
         },
         { text: 'Ok' }
       ]
@@ -374,15 +319,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const isDarkMode = globalTheme === darkTheme
     const { nowPlayingItem, playbackRate, playbackState } = player
     const { isLoggedIn } = session
-    const {
-      endTime,
-      isPublicItemSelected,
-      isSaving,
-      progressValue,
-      showHowToModal,
-      startTime,
-      title
-    } = this.state
+    const { endTime, isPublicItemSelected, isSaving, progressValue, showHowToModal, startTime, title } = this.state
 
     return (
       <SafeAreaView>
@@ -404,11 +341,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       style={[styles.isPublicText, globalTheme.text]}>
                       Only with Link
                     </Text>
-                    <Icon
-                      name='link'
-                      size={14}
-                      style={[styles.isPublicTextIcon, globalTheme.text]}
-                    />
+                    <Icon name='link' size={14} style={[styles.isPublicTextIcon, globalTheme.text]} />
                   </View>
                 </TouchableWithoutFeedback>
               )}
@@ -427,11 +360,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       style={[styles.isPublicText, globalTheme.text]}>
                       {isPublicItemSelected.label}
                     </Text>
-                    <Icon
-                      name='angle-down'
-                      size={14}
-                      style={[styles.isPublicTextIcon, globalTheme.text]}
-                    />
+                    <Icon name='angle-down' size={14} style={[styles.isPublicTextIcon, globalTheme.text]} />
                   </View>
                 </RNPickerSelect>
               )}
@@ -488,36 +417,20 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 clipEndTime={endTime}
                 clipStartTime={startTime}
                 globalTheme={globalTheme}
-                {...(progressValue || progressValue === 0
-                  ? { value: progressValue }
-                  : {})}
+                {...(progressValue || progressValue === 0 ? { value: progressValue } : {})}
               />
             </View>
-            <RNView
-              style={[
-                styles.makeClipPlayerControls,
-                globalTheme.makeClipPlayerControlsWrapper
-              ]}>
-              <TouchableOpacity
-                onPress={this._playerJumpBackward}
-                style={playerStyles.icon}>
+            <RNView style={[styles.makeClipPlayerControls, globalTheme.makeClipPlayerControlsWrapper]}>
+              <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
                 <Icon name='undo-alt' size={32} />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={this._playerMiniJumpBackward}
-                style={playerStyles.icon}>
+              <TouchableOpacity onPress={this._playerMiniJumpBackward} style={playerStyles.icon}>
                 <Icon name='angle-left' size={24} />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => togglePlay()}
-                style={[playerStyles.iconLarge, styles.playButton]}>
+              <TouchableOpacity onPress={() => togglePlay()} style={[playerStyles.iconLarge, styles.playButton]}>
                 {playbackState !== PVTrackPlayer.STATE_BUFFERING && (
                   <Icon
-                    name={
-                      playbackState === PVTrackPlayer.STATE_PLAYING
-                        ? 'pause-circle'
-                        : 'play-circle'
-                    }
+                    name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause-circle' : 'play-circle'}
                     size={48}
                   />
                 )}
@@ -525,14 +438,10 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   <ActivityIndicator styles={styles.activityIndicator} />
                 )}
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={this._playerMiniJumpForward}
-                style={playerStyles.icon}>
+              <TouchableOpacity onPress={this._playerMiniJumpForward} style={playerStyles.icon}>
                 <Icon name='angle-right' size={24} />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={this._playerJumpForward}
-                style={playerStyles.icon}>
+              <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
                 <Icon name='redo-alt' size={32} />
               </TouchableOpacity>
             </RNView>
@@ -548,10 +457,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <View>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    style={[
-                      styles.bottomButton,
-                      styles.bottomRowText
-                    ]}>
+                    style={[styles.bottomButton, styles.bottomRowText]}>
                     {`${playbackRate}X`}
                   </Text>
                 </View>
@@ -569,37 +475,21 @@ export class MakeClipScreen extends React.Component<Props, State> {
         {showHowToModal && (
           <Modal transparent={true} visible={true}>
             <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
-              <RNView
-                style={[
-                  styles.modalInnerWrapper,
-                  globalTheme.modalInnerWrapper
-                ]}>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={styles.modalText}>
-                  ▸ Tap the Start and End Time inputs to set them with the
-                  current track time.
+              <RNView style={[styles.modalInnerWrapper, globalTheme.modalInnerWrapper]}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
+                  ▸ Tap the Start and End Time inputs to set them with the current track time.
                 </Text>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={styles.modalText}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
                   ▸ "Only with Link" clips will not appear on the home page.
                 </Text>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={styles.modalText}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
                   ▸ "Public" clips may appear on the Podverse home page. (Premium only)
                 </Text>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  style={styles.modalText}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
                   ▸ If the podcast has dynamically inserted ads, the start/end times may not stay accurate.
                 </Text>
                 <TouchableOpacity onPress={this._hideHowTo}>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    numberOfLines={1}
-                    style={styles.modalButton}>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.modalButton}>
                     Close
                   </Text>
                 </TouchableOpacity>

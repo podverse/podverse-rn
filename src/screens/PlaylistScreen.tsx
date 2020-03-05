@@ -15,20 +15,11 @@ import {
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import {
-  convertNowPlayingItemToEpisode,
-  convertToNowPlayingItem
-} from '../lib/NowPlayingItem'
-import {
-  isOdd,
-  safelyUnwrapNestedVariable
-} from '../lib/utility'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
+import { isOdd, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
-import {
-  getPlaylist,
-  toggleSubscribeToPlaylist
-} from '../state/actions/playlist'
+import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { core } from '../styles'
 
 type Props = {
@@ -74,8 +65,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
       []
     )
     const playlist = this.props.navigation.getParam('playlist')
-    const playlistId =
-      (playlist && playlist.id) || this.props.navigation.getParam('playlistId')
+    const playlistId = (playlist && playlist.id) || this.props.navigation.getParam('playlistId')
     const isSubscribed = subscribedPlaylistIds.some((x: string) => playlistId)
 
     if (playlist && playlist.id) {
@@ -109,8 +99,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   async _initializePageData() {
-    const playlistId =
-      this.props.navigation.getParam('playlistId') || this.state.playlistId
+    const playlistId = this.props.navigation.getParam('playlistId') || this.state.playlistId
 
     this.setState(
       {
@@ -150,22 +139,20 @@ export class PlaylistScreen extends React.Component<Props, State> {
           episodeId={item.episode.id}
           episodePubDate={item.episode.pubDate}
           episodeTitle={item.episode.title}
-          handleMorePress={() =>
-            this._handleMorePress(convertToNowPlayingItem(item, null, null))
-          }
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           hasZebraStripe={isOdd(index)}
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
           startTime={item.startTime}
           title={item.title}
         />
-      ) : (<></>)
+      ) : (
+        <></>
+      )
     } else {
       return (
         <EpisodeTableCell
-          handleMorePress={() =>
-            this._handleMorePress(convertToNowPlayingItem(item, null, null))
-          }
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           handleNavigationPress={() =>
             this.props.navigation.navigate(PV.RouteNames.MoreEpisodeScreen, {
               episode: item
@@ -242,30 +229,17 @@ export class PlaylistScreen extends React.Component<Props, State> {
       showActionSheet
     } = this.state
     const { screenPlaylist, session } = this.global
-    const playlist = screenPlaylist.playlist
-      ? screenPlaylist.playlist
-      : navigation.getParam('playlist')
+    const playlist = screenPlaylist.playlist ? screenPlaylist.playlist : navigation.getParam('playlist')
     const flatListData = screenPlaylist.flatListData || []
     const flatListDataTotalCount = screenPlaylist.flatListDataTotalCount || 0
-    const isLoggedInUserPlaylist =
-      (playlist && playlist.owner && playlist.owner.id) === session.userInfo.id
+    const isLoggedInUserPlaylist = (playlist && playlist.owner && playlist.owner.id) === session.userInfo.id
 
     return (
       <View style={styles.view}>
         <PlaylistTableHeader
-          createdBy={
-            isLoggedInUserPlaylist && playlist && playlist.owner
-              ? playlist.owner.name
-              : null
-          }
-          handleEditPress={
-            isLoggedInUserPlaylist ? this._handleEditPress : null
-          }
-          handleToggleSubscribe={
-            isLoggedInUserPlaylist
-              ? null
-              : () => this._handleToggleSubscribe(playlistId)
-          }
+          createdBy={isLoggedInUserPlaylist && playlist && playlist.owner ? playlist.owner.name : null}
+          handleEditPress={isLoggedInUserPlaylist ? this._handleEditPress : null}
+          handleToggleSubscribe={isLoggedInUserPlaylist ? null : () => this._handleToggleSubscribe(playlistId)}
           id={playlistId}
           isLoading={isLoading && !playlist}
           isNotFound={!isLoading && !playlist}

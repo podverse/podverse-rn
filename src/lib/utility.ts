@@ -129,7 +129,7 @@ export const formatTitleViewHtml = (episode: any) => {
 }
 
 export const convertURLToSecureProtocol = (url?: string) => {
-  if (url && (url.indexOf('http://') > -1)) {
+  if (url && url.indexOf('http://') > -1) {
     return url.replace('http://', 'https://')
   } else {
     return url
@@ -155,9 +155,7 @@ export const generateCategoriesText = (categories: any) => {
   if (categories) {
     for (let i = 0; i < categories.length; i++) {
       const category = categories[i]
-      categoryText += `${category.title}${
-        i < categories.length - 1 ? ', ' : ''
-      }`
+      categoryText += `${category.title}${i < categories.length - 1 ? ', ' : ''}`
     }
   }
 
@@ -179,17 +177,12 @@ export const generateCategoryItems = (categories: any[]) => {
   return items
 }
 
-export const combineAndSortPlaylistItems = (
-  episodes: [any],
-  mediaRefs: [any],
-  itemsOrder: [string]
-) => {
+export const combineAndSortPlaylistItems = (episodes: [any], mediaRefs: [any], itemsOrder: [string]) => {
   const allPlaylistItems = [...episodes, ...mediaRefs]
   const remainingPlaylistItems = [] as any[]
 
   const unsortedItems = allPlaylistItems.filter((x: any) => {
-    const isSortedItem =
-      Array.isArray(itemsOrder) && itemsOrder.some((id) => x.id === id)
+    const isSortedItem = Array.isArray(itemsOrder) && itemsOrder.some((id) => x.id === id)
     if (!isSortedItem) {
       return x
     } else {
@@ -207,10 +200,7 @@ export const combineAndSortPlaylistItems = (
   return [...sortedItems, ...unsortedItems]
 }
 
-export const haveNowPlayingItemsChanged = (
-  lastItem: NowPlayingItem,
-  nextItem: NowPlayingItem
-) =>
+export const haveNowPlayingItemsChanged = (lastItem: NowPlayingItem, nextItem: NowPlayingItem) =>
   (nextItem.clipId && nextItem.clipId !== lastItem.clipId) ||
   (nextItem.episodeId && nextItem.episodeId !== lastItem.episodeId)
 
@@ -231,38 +221,17 @@ export const getMembershipStatus = (user: any) => {
   const weekBeforeCurrentDate = new Date()
   weekBeforeCurrentDate.setDate(weekBeforeCurrentDate.getDate() + 7)
 
-  if (
-    !membershipExpirationDate &&
-    freeTrialExpirationDate &&
-    freeTrialExpirationDate <= currentDate
-  ) {
+  if (!membershipExpirationDate && freeTrialExpirationDate && freeTrialExpirationDate <= currentDate) {
     return PV.MembershipStatus.FREE_TRIAL_EXPIRED
-  } else if (
-    !membershipExpirationDate &&
-    freeTrialExpirationDate &&
-    freeTrialExpirationDate <= weekBeforeCurrentDate
-  ) {
+  } else if (!membershipExpirationDate && freeTrialExpirationDate && freeTrialExpirationDate <= weekBeforeCurrentDate) {
     return PV.MembershipStatus.FREE_TRIAL_EXPIRING_SOON
-  } else if (
-    !membershipExpirationDate &&
-    freeTrialExpirationDate &&
-    freeTrialExpirationDate > currentDate
-  ) {
+  } else if (!membershipExpirationDate && freeTrialExpirationDate && freeTrialExpirationDate > currentDate) {
     return PV.MembershipStatus.FREE_TRIAL
-  } else if (
-    membershipExpirationDate &&
-    membershipExpirationDate <= currentDate
-  ) {
+  } else if (membershipExpirationDate && membershipExpirationDate <= currentDate) {
     return PV.MembershipStatus.PREMIUM_EXPIRED
-  } else if (
-    membershipExpirationDate &&
-    membershipExpirationDate <= weekBeforeCurrentDate
-  ) {
+  } else if (membershipExpirationDate && membershipExpirationDate <= weekBeforeCurrentDate) {
     return PV.MembershipStatus.PREMIUM_EXPIRING_SOON
-  } else if (
-    membershipExpirationDate &&
-    membershipExpirationDate > currentDate
-  ) {
+  } else if (membershipExpirationDate && membershipExpirationDate > currentDate) {
     return PV.MembershipStatus.PREMIUM
   }
 
@@ -337,9 +306,11 @@ export const checkIfIdMatchesClipIdOrEpisodeId = (
   episodeId?: string,
   addByRSSPodcastFeedUrl?: string
 ) => {
-  return id === clipId ||
+  return (
+    id === clipId ||
     (!clipId && addByRSSPodcastFeedUrl && id === addByRSSPodcastFeedUrl) ||
     (!clipId && episodeId && id === episodeId)
+  )
 }
 
 export const createEmailLinkUrl = (email: string, subject?: string, body?: string) => {
@@ -373,15 +344,15 @@ export const convertHHMMSSToAnchorTags = (html: string) => {
 }
 
 export function validateHHMMSSString(hhmmss: string) {
-  /* tslint:disable-next-line max-line-length */
-  const regex = new RegExp('^(([0-9][0-9]):([0-5][0-9]):([0-5][0-9]))$|(([0-9]):([0-5][0-9]):([0-5][0-9]))$|^(([0-5][0-9]):([0-5][0-9]))$|^(([0-9]):([0-5][0-9]))$|^([0-5][0-9])$|^([0-9])')
+  const regex = new RegExp(
+    // tslint:disable-next-line: max-line-length
+    '^(([0-9][0-9]):([0-5][0-9]):([0-5][0-9]))$|(([0-9]):([0-5][0-9]):([0-5][0-9]))$|^(([0-5][0-9]):([0-5][0-9]))$|^(([0-9]):([0-5][0-9]))$|^([0-5][0-9])$|^([0-9])'
+  )
   return regex.test(hhmmss)
 }
 
 export function convertHHMMSSToSeconds(hhmmssString: string) {
-
   if (hhmmssString) {
-
     if (!validateHHMMSSString(hhmmssString)) {
       return -1
     }
@@ -403,7 +374,6 @@ export function convertHHMMSSToSeconds(hhmmssString: string) {
 
       hours = hours * 3600
       minutes = minutes * 60
-
     } else if (hhmmssArray.length === 2) {
       minutes = parseInt(hhmmssArray[0], 10)
       seconds = parseInt(hhmmssArray[1], 10)
@@ -414,7 +384,6 @@ export function convertHHMMSSToSeconds(hhmmssString: string) {
       }
 
       minutes = minutes * 60
-
     } else if (hhmmssArray.length === 1) {
       seconds = parseInt(hhmmssArray[0], 10) || 0
 
@@ -422,22 +391,24 @@ export function convertHHMMSSToSeconds(hhmmssString: string) {
         console.log('Invalid time provided.')
         return -1
       }
-
     } else {
       console.log('Invalid time provided.')
       return -1
     }
 
     return hours + minutes + seconds
-
   } else {
     return null
   }
-
 }
 
 export const convertToSortableTitle = (title: string) => {
-  const sortableTitle = title ? title.toLowerCase().replace(/\b^the\b|\b^a\b|\b^an\b/i, '').trim() : ''
+  const sortableTitle = title
+    ? title
+        .toLowerCase()
+        .replace(/\b^the\b|\b^a\b|\b^an\b/i, '')
+        .trim()
+    : ''
   return sortableTitle ? sortableTitle.replace(/#/g, '') : ''
 }
 
@@ -454,7 +425,7 @@ export const hasMatchingStrings = (str1?: string, str2?: string) => {
 }
 
 export const hasNoSpaces = (str?: string) => {
-  return str && str.match('\s') ? true : false
+  return str && str.match('s') ? true : false
 }
 
 export const hasNumber = (str?: string) => {
@@ -466,9 +437,7 @@ export const hasUppercase = (str?: string) => {
 }
 
 export const getMakeClipIsPublic = async () => {
-  const isPublicString = await AsyncStorage.getItem(
-    PV.Keys.MAKE_CLIP_IS_PUBLIC
-  )
+  const isPublicString = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_IS_PUBLIC)
   let isPublic = false
   if (isPublicString) {
     isPublic = JSON.parse(isPublicString)
@@ -477,4 +446,4 @@ export const getMakeClipIsPublic = async () => {
   return isPublic
 }
 
-export const isOdd = (num: number) => (num % 2) === 1
+export const isOdd = (num: number) => num % 2 === 1

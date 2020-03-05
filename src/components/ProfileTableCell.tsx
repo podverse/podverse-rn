@@ -14,12 +14,8 @@ export class ProfileTableCell extends React.PureComponent<Props> {
     const { hasZebraStripe, name, onPress } = this.props
 
     return (
-      <View
-        hasZebraStripe={hasZebraStripe}
-        style={styles.wrapper}>
-        <Text
-          onPress={onPress}
-          style={styles.name}>
+      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
+        <Text onPress={onPress} style={styles.name}>
           {name || 'anonymous'}
         </Text>
       </View>

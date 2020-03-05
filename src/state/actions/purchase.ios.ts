@@ -15,7 +15,11 @@ export const iosHandlePurchaseLoading = async (
   setGlobal(loadingState)
 }
 
-export const iosHandlePurchaseStatusCheck = async (productId: string, transactionId: string, transactionReceipt: string) => {
+export const iosHandlePurchaseStatusCheck = async (
+  productId: string,
+  transactionId: string,
+  transactionReceipt: string
+) => {
   try {
     await iosHandlePurchaseLoading(productId, transactionId, transactionReceipt)
     await iosHandlePurchaseStatusCheckService(transactionReceipt)

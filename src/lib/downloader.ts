@@ -2,15 +2,8 @@ import Bottleneck from 'bottleneck'
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
 import * as DownloadState from '../state/actions/downloads'
-import {
-  addDownloadedPodcastEpisode,
-  getDownloadedPodcasts
-} from './downloadedPodcast'
-import {
-  addDownloadingEpisode,
-  getDownloadingEpisodes,
-  removeDownloadingEpisode
-} from './downloadingEpisode'
+import { addDownloadedPodcastEpisode, getDownloadedPodcasts } from './downloadedPodcast'
+import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode } from './downloadingEpisode'
 import { hasValidDownloadingConnection } from './network'
 import {
   convertBytesToHumanReadableString,
@@ -68,12 +61,7 @@ const addDLTask = async (episode: any, podcast: any) =>
 // NOTE: I was unable to get RNBackgroundDownloader to successfully resume tasks that were
 // retrieved from checkForExistingDownloads, so as a workaround, I am forcing those existing tasks
 // to always be restarted instead of resumed.
-export const downloadEpisode = async (
-  episode: any,
-  podcast: any,
-  restart?: boolean,
-  waitToAddTask?: boolean
-) => {
+export const downloadEpisode = async (episode: any, podcast: any, restart?: boolean, waitToAddTask?: boolean) => {
   // Updates UI immediately
   if (!waitToAddTask) await addDLTask(episode, podcast)
 
@@ -91,10 +79,7 @@ export const downloadEpisode = async (
 
     const downloadedPodcasts = await getDownloadedPodcasts()
     for (const downloadedPodcast of downloadedPodcasts) {
-      const episodes = safelyUnwrapNestedVariable(
-        () => downloadedPodcast.episodes,
-        []
-      )
+      const episodes = safelyUnwrapNestedVariable(() => downloadedPodcast.episodes, [])
       if (episodes.some((x: any) => x.id === episode.id)) return
     }
   }
@@ -103,9 +88,7 @@ export const downloadEpisode = async (
   if (waitToAddTask) await addDLTask(episode, podcast)
 
   let timeout = 0
-  const existingTasks = existingDownloadTasks.filter(
-    (x: any) => x.id === episode.id
-  )
+  const existingTasks = existingDownloadTasks.filter((x: any) => x.id === episode.id)
 
   for (const t of existingTasks) {
     if (t.id === episode.id) {
@@ -133,9 +116,7 @@ export const downloadEpisode = async (
           episode.podcast = podcast
           addDownloadingEpisode(episode)
         } else {
-          const downloadTaskIndex = downloadTasks.indexOf(
-            (x: any) => x.episodeId === episode.id
-          )
+          const downloadTaskIndex = downloadTasks.indexOf((x: any) => x.episodeId === episode.id)
           if (downloadTaskIndex > -1) {
             downloadTasks[downloadTaskIndex] = task
           } else {
@@ -143,24 +124,17 @@ export const downloadEpisode = async (
           }
         }
       })
-      .progress(
-        async (percent: number, bytesWritten: number, bytesTotal: number) => {
-          progressLimiter
-            .schedule(async () => {
-              const written = convertBytesToHumanReadableString(bytesWritten)
-              const total = convertBytesToHumanReadableString(bytesTotal)
-              DownloadState.updateDownloadProgress(
-                episode.id,
-                percent,
-                written,
-                total
-              )
-            })
-            .catch(() => {
-              // limiter has been stopped
-            })
-        }
-      )
+      .progress(async (percent: number, bytesWritten: number, bytesTotal: number) => {
+        progressLimiter
+          .schedule(async () => {
+            const written = convertBytesToHumanReadableString(bytesWritten)
+            const total = convertBytesToHumanReadableString(bytesTotal)
+            DownloadState.updateDownloadProgress(episode.id, percent, written, total)
+          })
+          .catch(() => {
+            // limiter has been stopped
+          })
+      })
       .done(async () => {
         await progressLimiter.stop()
         DownloadState.updateDownloadComplete(episode.id)
@@ -205,9 +179,7 @@ export const initDownloads = async () => {
     )
 
     if (episode) {
-      const bytesTotal = downloadTask.totalBytes
-        ? convertBytesToHumanReadableString(downloadTask.totalBytes)
-        : '---'
+      const bytesTotal = downloadTask.totalBytes ? convertBytesToHumanReadableString(downloadTask.totalBytes) : '---'
 
       downloadTaskStates.push({
         bytesTotal,
@@ -223,15 +195,9 @@ export const initDownloads = async () => {
   }
 
   for (const filteredDownloadTask of downloadTaskStates) {
-    const episode = episodes.find(
-      (x: any) => x.id === filteredDownloadTask.episodeId
-    )
+    const episode = episodes.find((x: any) => x.id === filteredDownloadTask.episodeId)
     if (filteredDownloadTask.status === DownloadStatus.DOWNLOADING) {
-      if (
-        existingDownloadTasks.some(
-          (x: any) => x.id === filteredDownloadTask.episodeId
-        )
-      ) {
+      if (existingDownloadTasks.some((x: any) => x.id === filteredDownloadTask.episodeId)) {
         // Wait for task.stop() to complete
         setTimeout(() => {
           downloadEpisode(episode, episode.podcast, true)
@@ -264,9 +230,7 @@ export const resumeDownloadTask = async (episodeId: string) => {
     const downloadingEpisodes = await getDownloadingEpisodes()
     const episode = downloadingEpisodes.find((x: any) => x.id === episodeId)
     await downloadEpisode(episode, episode.podcast, true)
-    existingDownloadTasks = existingDownloadTasks.filter(
-      (x: any) => x.id !== episodeId
-    )
+    existingDownloadTasks = existingDownloadTasks.filter((x: any) => x.id !== episodeId)
   } else if (task) {
     task.resume()
   }

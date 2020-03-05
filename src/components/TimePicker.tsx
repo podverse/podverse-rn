@@ -14,12 +14,7 @@ type Props = {
 const generatePickerNumberItems = (total: number, key: string) => {
   const arr = [] as any
   for (let i = 0; i < total; i++) {
-    arr.push(
-      <Picker.Item
-        key={i + key}
-        label={i.toString()}
-        value={i} />
-    )
+    arr.push(<Picker.Item key={i + key} label={i.toString()} value={i} />)
   }
 
   return arr
@@ -40,13 +35,16 @@ export const TimePicker = (props: Props) => {
 
   // I cannot figure out how to center the picker text on Android :[
   // Aligning text to the left on Android as a workaround
-  const stylesText = Platform.OS === 'android' ? [
-    styles.text,
-    {
-      marginLeft: 8,
-      textAlign: 'left'
-    }
-  ] : styles.text
+  const stylesText =
+    Platform.OS === 'android'
+      ? [
+          styles.text,
+          {
+            marginLeft: 8,
+            textAlign: 'left'
+          }
+        ]
+      : styles.text
 
   return (
     <View style={styles.view}>
@@ -62,9 +60,7 @@ export const TimePicker = (props: Props) => {
             style={styles.numberColumn}>
             {hourItems}
           </Picker>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
-            style={[stylesText, globalTheme.text]}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} style={[stylesText, globalTheme.text]}>
             hours
           </Text>
         </View>
@@ -79,9 +75,7 @@ export const TimePicker = (props: Props) => {
             style={styles.numberColumn}>
             {minuteItems}
           </Picker>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
-            style={[stylesText, globalTheme.text]}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} style={[stylesText, globalTheme.text]}>
             minutes
           </Text>
         </View>
@@ -96,9 +90,7 @@ export const TimePicker = (props: Props) => {
             style={styles.numberColumn}>
             {secondItems}
           </Picker>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.xs}
-            style={[stylesText, globalTheme.text]}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} style={[stylesText, globalTheme.text]}>
             seconds
           </Text>
         </View>
