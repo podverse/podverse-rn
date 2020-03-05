@@ -3,7 +3,7 @@ import { Platform } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { setNowPlayingItem } from '../state/actions/player'
+import { initializePlayerQueue, setNowPlayingItem } from '../state/actions/player'
 import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'
 import {
   getClipHasEnded,
@@ -125,6 +125,26 @@ const syncNowPlayingItemWithTrack = async () => {
   setTimeout(() => sync(isSecondTime), 5000)
 }
 
+// NOTE: On iOS, when returning to the app from the background while the player was paused,
+// sometimes the player will be in an idle state, requiring the user to press play twice to
+// reload the item in the player and begin playing. By calling initializePlayerQueue once whenever
+// the idle playback-state event is called, it automatically reloads the item.
+// I don't think this issue is happening on Android, so we're not using this workaround on Android.
+const reloadFromIdleState = async () => {
+  if (Platform.OS === 'ios') {
+    await initializePlayerQueue()
+  }
+}
+
+const debouncedReloadFromIdleState = debounce(
+  reloadFromIdleState,
+  10000,
+  {
+    leading: true,
+    trailing: false
+  }
+)
+
 module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-error', (x) =>
     console.log('playback error', x)
@@ -138,16 +158,12 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
     console.log('playback-state', x)
 
-    // Sometimes when the app is paused, and the app switches between wifi, data, or airplane mode,
-    // the TrackPlayer will be in an "idle" or "none" state when you return to the app.
-    // This line is an attempt to prevent the UI from getting frozen in a buffering state.
-    // NOTE: As of 10/23/19 I can't reproduce the problem...hopefully it was fixed in iOS or the TrackPlayer.
     if (
       x.state === 'idle' ||
       x.state === 0 ||
       x.state === PVTrackPlayer.STATE_NONE
     ) {
-      // setTimeout(syncNowPlayingItemWithTrack, 1000)
+      await debouncedReloadFromIdleState()
       return
     }
 
