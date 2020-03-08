@@ -1,12 +1,4 @@
-import {
-  ActivityIndicator,
-  Dimensions,
-  NativeSyntheticEvent,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity
-} from 'react-native'
+import { ActivityIndicator, Dimensions, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { PasswordValidationInfo, TextInput } from '.'
@@ -62,41 +54,37 @@ export class SignUp extends React.Component<Props, State> {
     }
   }
 
-  emailChanged = (evt: NativeSyntheticEvent<any>) => {
-    const text = safelyUnwrapNestedVariable(() => evt.nativeEvent.text, '')
-    this.setState({ email: text }, () => {
-      this.emailValid()
-    })
+  componentDidMount() {
+    Keyboard.addListener('keyboardWillHide', this.checkIfSubmitIsDisabled)
   }
 
-  passwordChanged = (evt: NativeSyntheticEvent<any>) => {
-    const text = safelyUnwrapNestedVariable(() => evt.nativeEvent.text, '')
-    this.setState({ password: text }, () => {
-      this.passwordsValid()
-    })
+  componentWillUnmount() {
+    Keyboard.removeListener('keyboardWillHide', this.checkIfSubmitIsDisabled)
   }
 
-  passwordVerificationChanged = (evt: NativeSyntheticEvent<any>) => {
-    const text = safelyUnwrapNestedVariable(() => evt.nativeEvent.text, '')
-    this.setState({ passwordVerification: text }, () => {
-      this.passwordsValid()
-    })
+  emailChanged = (emailText: string) => {
+    const hasValidEmail = isEmail(emailText)
+    this.setState({ email: emailText, hasValidEmail }, this.checkIfSubmitIsDisabled)
   }
 
-  nameChanged = (evt: NativeSyntheticEvent<any>) => {
-    const text = safelyUnwrapNestedVariable(() => evt.nativeEvent.text, '')
-    this.setState({ name: text })
+  passwordChanged = (passwordText: string) => {
+    const passwordValidation = this.passwordsValid(passwordText, this.state.passwordVerification)
+    this.setState({ password: passwordText, ...passwordValidation }, this.checkIfSubmitIsDisabled)
   }
 
-  emailValid = () => {
-    const { email } = this.state
-    this.setState({ hasValidEmail: isEmail(email) }, () => {
-      this.checkIfSubmitIsDisabled()
-    })
+  passwordVerificationChanged = (passwordVerificationText: string) => {
+    const passwordValidation = this.passwordsValid(this.state.password, passwordVerificationText)
+    this.setState(
+      { passwordVerification: passwordVerificationText, ...passwordValidation },
+      this.checkIfSubmitIsDisabled
+    )
   }
 
-  passwordsValid = () => {
-    const { password, passwordVerification } = this.state
+  nameChanged = (nameText: string) => {
+    this.setState({ name: nameText })
+  }
+
+  passwordsValid = (password: string, passwordVerification: string) => {
     const hasAtLeastXCharacters = hasAtLeastXCharactersLib(password)
     const hasLowercase = hasLowercaseLib(password)
     const hasMatching = hasMatchingStrings(password, passwordVerification)
@@ -104,19 +92,14 @@ export class SignUp extends React.Component<Props, State> {
     const hasNumber = hasNumberLib(password)
     const hasUppercase = hasUppercaseLib(password)
 
-    this.setState(
-      {
-        hasAtLeastXCharacters,
-        hasLowercase,
-        hasMatching,
-        hasNoSpaces,
-        hasNumber,
-        hasUppercase
-      },
-      () => {
-        this.checkIfSubmitIsDisabled()
-      }
-    )
+    return {
+      hasAtLeastXCharacters,
+      hasLowercase,
+      hasMatching,
+      hasNoSpaces,
+      hasNumber,
+      hasUppercase
+    }
   }
 
   checkIfSubmitIsDisabled = () => {
@@ -145,12 +128,6 @@ export class SignUp extends React.Component<Props, State> {
     const { onSignUpPressed } = this.props
     const { email, name, password } = this.state
     onSignUpPressed({ email, password, name })
-  }
-
-  uiRefreshed = () => {
-    this.setState({ ...this.state }, () => {
-      this.forceUpdate()
-    })
   }
 
   render() {
@@ -188,8 +165,7 @@ export class SignUp extends React.Component<Props, State> {
           autoCapitalize='none'
           autoCompleteType='email'
           keyboardType='email-address'
-          onBlur={this.emailValid}
-          onChange={this.emailChanged}
+          onChangeText={this.emailChanged}
           onSubmitEditing={() => {
             this.secondTextInput.focus()
           }}
@@ -205,8 +181,7 @@ export class SignUp extends React.Component<Props, State> {
           inputRef={(input) => {
             this.secondTextInput = input
           }}
-          onBlur={this.uiRefreshed}
-          onChange={this.passwordChanged}
+          onChangeText={this.passwordChanged}
           onSubmitEditing={() => {
             this.thirdTextInput.focus()
           }}
@@ -224,8 +199,7 @@ export class SignUp extends React.Component<Props, State> {
           inputRef={(input) => {
             this.thirdTextInput = input
           }}
-          onBlur={this.uiRefreshed}
-          onChange={this.passwordVerificationChanged}
+          onChangeText={this.passwordVerificationChanged}
           placeholder='Verify Password'
           placeholderTextColor={PV.Colors.gray}
           returnKeyType='done'
