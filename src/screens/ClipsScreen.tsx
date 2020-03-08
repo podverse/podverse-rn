@@ -35,6 +35,7 @@ type State = {
   flatListDataTotalCount: number | null
   isLoading: boolean
   isLoadingMore: boolean
+  isRefreshing: boolean
   mediaRefIdToDelete?: string
   queryFrom: string | null
   queryPage: number
@@ -62,6 +63,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       flatListDataTotalCount: null,
       isLoading: true,
       isLoadingMore: false,
+      isRefreshing: false,
       queryFrom: subscribedPodcastIds && subscribedPodcastIds.length > 0 ? _subscribedKey : _allPodcastsKey,
       queryPage: 1,
       querySort: subscribedPodcastIds && subscribedPodcastIds.length > 0 ? _mostRecentKey : _topPastWeek,
@@ -142,6 +144,23 @@ export class ClipsScreen extends React.Component<Props, State> {
         )
       }
     }
+  }
+
+  _onRefresh = () => {
+    const { queryFrom } = this.state
+
+    this.setState(
+      {
+        isRefreshing: true
+      },
+      async () => {
+        const newState = await this._queryData(queryFrom, {
+          queryPage: 1,
+          searchAllFieldsText: this.state.searchBarText
+        })
+        this.setState(newState)
+      }
+    )
   }
 
   _ListHeaderComponent = () => {
@@ -313,6 +332,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       queryFrom,
       isLoading,
       isLoadingMore,
+      isRefreshing,
       querySort,
       searchBarText,
       selectedItem,
@@ -342,12 +362,14 @@ export class ClipsScreen extends React.Component<Props, State> {
             extraData={flatListData}
             handleSearchNavigation={this._handleSearchNavigation}
             isLoadingMore={isLoadingMore}
+            isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             ListHeaderComponent={this._ListHeaderComponent}
             noSubscribedPodcasts={
               queryFrom === _subscribedKey && (!flatListData || flatListData.length === 0) && !searchBarText
             }
             onEndReached={this._onEndReached}
+            onRefresh={this._onRefresh}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderClipItem}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
@@ -390,6 +412,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     const newState = {
       isLoading: false,
       isLoadingMore: false,
+      isRefreshing: false,
       showNoInternetConnectionMessage: false
     } as State
 
@@ -397,10 +420,13 @@ export class ClipsScreen extends React.Component<Props, State> {
     newState.showNoInternetConnectionMessage = !hasInternetConnection
 
     try {
-      const { flatListData, queryFrom, querySort } = this.state
+      let { flatListData } = this.state
+      const { queryFrom, querySort } = this.state
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
       const nsfwMode = this.global.settings.nsfwMode
       const { queryPage, searchAllFieldsText } = queryOptions
+
+      flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
       if (filterKey === _subscribedKey) {
         const results = await getMediaRefs(
