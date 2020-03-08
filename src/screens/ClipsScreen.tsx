@@ -378,10 +378,13 @@ export class ClipsScreen extends React.Component<Props, State> {
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={() => {
+            if (!selectedItem) return []
+
             if (queryFrom === _myClipsKey) {
               const loggedInUserId = safelyUnwrapNestedVariable(() => session.userInfo.id, '')
               selectedItem.ownerId = loggedInUserId
             }
+
             return PV.ActionSheet.media.moreButtons(
               selectedItem,
               navigation,
