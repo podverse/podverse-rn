@@ -90,7 +90,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         </RNView>
         {!!description && handleNavigationPress && (
           <TouchableWithoutFeedback onPress={handleNavigationPress}>
-            <>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</>
+            <RNView>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</RNView>
           </TouchableWithoutFeedback>
         )}
         {!!description && !handleNavigationPress && bottomText}
