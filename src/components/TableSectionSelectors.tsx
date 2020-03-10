@@ -133,7 +133,7 @@ const styles = {
   tableSectionHeaderIconRight: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    paddingHorizontal: 8
+    paddingRight: 8
   },
   tableSectionHeaderInner: {
     alignItems: 'stretch',
@@ -148,6 +148,7 @@ const styles = {
   },
   tableSectionHeaderTextRight: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.xl
+    fontSize: PV.Fonts.sizes.xl,
+    paddingRight: 8
   }
 }
