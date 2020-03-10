@@ -174,6 +174,7 @@ const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
   try {
     await RNFS.stat(filePath)
   } catch (innerErr) {
+    console.log('innerErr', innerErr)
     isDownloadedFile = false
   }
   return isDownloadedFile
