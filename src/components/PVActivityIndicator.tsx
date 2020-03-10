@@ -25,7 +25,7 @@ export const PVActivityIndicator = (props: Props) => {
       )}
       {!isOverlay && (
         <TouchableWithoutFeedback onPress={onPress}>
-          <View style={[core.view, props.styles]}>
+          <View style={[core.view, props.styles, styles.transparent]}>
             <ActivityIndicator
               animating={true}
               color={globalTheme.activityIndicator.color}
