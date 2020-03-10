@@ -35,7 +35,7 @@ export const PVTextInput = (props: Props) => {
     fontSizeLargestScale,
     inputRef,
     keyboardType,
-    numberOfLines = 0,
+    numberOfLines = 1,
     onBlur,
     onChange,
     onChangeText,

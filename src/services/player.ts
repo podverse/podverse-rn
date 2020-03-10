@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Platform } from 'react-native'
+import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
 import TrackPlayer, { Track } from 'react-native-track-player'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from '../lib/NowPlayingItem'
@@ -163,7 +164,7 @@ export const setNowPlayingItem = async (item: NowPlayingItem | null) => {
 
 const getDownloadedFilePath = (id: string, episodeMediaUrl: string) => {
   const ext = getExtensionFromUrl(episodeMediaUrl)
-  return `${RNFS.DocumentDirectoryPath}/${id}${ext}`
+  return `${RNBackgroundDownloader.directories.documents}/${id}${ext}`
 }
 
 const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
