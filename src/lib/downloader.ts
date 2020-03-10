@@ -103,12 +103,14 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
     minTime: 2000
   })
 
+  const destination = `${RNBackgroundDownloader.directories.documents}/${episode.id}${ext}`
+
   // Wait for t.stop() to complete
   setTimeout(() => {
     const task = RNBackgroundDownloader.download({
       id: episode.id,
       url: convertURLToSecureProtocol(episode.mediaUrl),
-      destination: `${RNBackgroundDownloader.directories.documents}/${episode.id}${ext}`
+      destination
     })
       .begin(() => {
         if (!restart) {
@@ -141,7 +143,6 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
         removeDownloadingEpisode(episode.id)
         await addDownloadedPodcastEpisode(episode, podcast)
         DownloadState.updateDownloadedPodcasts()
-        console.log('downloadEpisode complete')
       })
       .error((error: string) => {
         DownloadState.updateDownloadError(episode.id)
