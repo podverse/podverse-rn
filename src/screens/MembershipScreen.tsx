@@ -97,7 +97,7 @@ export class MembershipScreen extends React.Component<Props, State> {
 
   render() {
     const { disableButton, isLoading, showNoInternetConnectionMessage } = this.state
-    const { fontScaleMode, globalTheme, session } = this.global
+    const { globalTheme, session } = this.global
     const { isLoggedIn, userInfo } = session
     const membershipStatus = getMembershipStatus(userInfo)
     const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
@@ -146,7 +146,7 @@ export class MembershipScreen extends React.Component<Props, State> {
           <View>
             <View style={styles.textRowCentered}>
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.subTextCentered}>
-                Get 1 year of Podverse Premium for free
+                Get 1 year of Premium for free
               </Text>
             </View>
             <View style={styles.textRowCentered}>
@@ -203,8 +203,8 @@ const comparisonData = [
   },
   {
     text: 'large font accessibility support',
-    icon1: true,
-    icon2: true
+    column1: true,
+    column2: true
   },
   {
     text: 'sync your subscriptions on all devices',
