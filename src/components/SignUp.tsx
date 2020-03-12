@@ -1,4 +1,13 @@
-import { ActivityIndicator, Dimensions, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import {
+  ActivityIndicator,
+  Dimensions,
+  Keyboard,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity
+} from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { PasswordValidationInfo, TextInput } from '.'
@@ -8,8 +17,7 @@ import {
   hasMatchingStrings,
   hasNoSpaces as hasNoSpacesLib,
   hasNumber as hasNumberLib,
-  hasUppercase as hasUppercaseLib,
-  safelyUnwrapNestedVariable
+  hasUppercase as hasUppercaseLib
 } from '../lib/utility'
 import { PV } from '../resources'
 
@@ -55,11 +63,11 @@ export class SignUp extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    Keyboard.addListener('keyboardWillHide', this.checkIfSubmitIsDisabled)
+    Keyboard.addListener('keyboardDidHide', this.checkIfSubmitIsDisabled)
   }
 
   componentWillUnmount() {
-    Keyboard.removeListener('keyboardWillHide', this.checkIfSubmitIsDisabled)
+    Keyboard.removeListener('keyboardDidHide', this.checkIfSubmitIsDisabled)
   }
 
   emailChanged = (emailText: string) => {
@@ -199,10 +207,13 @@ export class SignUp extends React.Component<Props, State> {
           inputRef={(input) => {
             this.thirdTextInput = input
           }}
+          onSubmitEditing={() => {
+            Keyboard.dismiss()
+          }}
           onChangeText={this.passwordVerificationChanged}
           placeholder='Verify Password'
           placeholderTextColor={PV.Colors.gray}
-          returnKeyType='done'
+          returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
           secureTextEntry={true}
           style={[styles.textField, passwordMismatch ? errorStyle : null]}
           underlineColorAndroid='transparent'
