@@ -227,6 +227,7 @@ export class SignUp extends React.Component<Props, State> {
                 <Text style={[signInButtonTextStyle, checkIfSubmitIsDisabledTextStyle]}>Sign Up</Text>
               )}
             </TouchableOpacity>
+            <Text>{JSON.stringify(this.state)}</Text>
             {bottomButtons}
           </>
         </TouchableOpacity>

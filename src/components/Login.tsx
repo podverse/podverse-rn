@@ -108,6 +108,7 @@ export class Login extends React.Component<Props, State> {
                 <Text style={signInButtonTextStyle}>Login</Text>
               )}
             </TouchableOpacity>
+            <Text>{JSON.stringify(this.state)}</Text>
             {bottomButtons}
           </>
         </TouchableOpacity>
