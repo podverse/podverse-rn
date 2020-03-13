@@ -424,10 +424,6 @@ export const hasMatchingStrings = (str1?: string, str2?: string) => {
   return str1 && str1 === str2 ? true : false
 }
 
-export const hasNoSpaces = (str?: string) => {
-  return str && str.match('s') ? true : false
-}
-
 export const hasNumber = (str?: string) => {
   return str && str.match('^(?=.*[0-9])') ? true : false
 }

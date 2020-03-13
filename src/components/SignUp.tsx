@@ -15,7 +15,6 @@ import {
   hasAtLeastXCharacters as hasAtLeastXCharactersLib,
   hasLowercase as hasLowercaseLib,
   hasMatchingStrings,
-  hasNoSpaces as hasNoSpacesLib,
   hasNumber as hasNumberLib,
   hasUppercase as hasUppercaseLib
 } from '../lib/utility'
@@ -33,7 +32,6 @@ type State = {
   hasAtLeastXCharacters: boolean
   hasLowercase: boolean
   hasMatching: boolean
-  hasNoSpaces: boolean
   hasNumber: boolean
   hasUppercase: boolean
   hasValidEmail: boolean
@@ -51,7 +49,6 @@ export class SignUp extends React.Component<Props, State> {
       hasAtLeastXCharacters: false,
       hasLowercase: false,
       hasMatching: false,
-      hasNoSpaces: false,
       hasNumber: false,
       hasUppercase: false,
       hasValidEmail: false,
@@ -96,7 +93,6 @@ export class SignUp extends React.Component<Props, State> {
     const hasAtLeastXCharacters = hasAtLeastXCharactersLib(password)
     const hasLowercase = hasLowercaseLib(password)
     const hasMatching = hasMatchingStrings(password, passwordVerification)
-    const hasNoSpaces = hasNoSpacesLib(password)
     const hasNumber = hasNumberLib(password)
     const hasUppercase = hasUppercaseLib(password)
 
@@ -104,27 +100,17 @@ export class SignUp extends React.Component<Props, State> {
       hasAtLeastXCharacters,
       hasLowercase,
       hasMatching,
-      hasNoSpaces,
       hasNumber,
       hasUppercase
     }
   }
 
   checkIfSubmitIsDisabled = () => {
-    const {
-      hasAtLeastXCharacters,
-      hasLowercase,
-      hasMatching,
-      hasNoSpaces,
-      hasNumber,
-      hasUppercase,
-      hasValidEmail
-    } = this.state
+    const { hasAtLeastXCharacters, hasLowercase, hasMatching, hasNumber, hasUppercase, hasValidEmail } = this.state
     const submitIsDisabled = !(
       hasAtLeastXCharacters &&
       hasLowercase &&
       hasMatching &&
-      hasNoSpaces &&
       hasNumber &&
       hasUppercase &&
       hasValidEmail
