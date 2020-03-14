@@ -1,8 +1,9 @@
-import { Alert, Linking, StyleSheet } from 'react-native'
+import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
-import { Divider, ScrollView, Text, View } from '../components'
+import { Divider, Icon, ScrollView, Text, View } from '../components'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
+import { button } from '../styles'
 
 type Props = {}
 
@@ -47,6 +48,33 @@ export class AboutScreen extends React.Component<Props, State> {
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {'Mitch Downey – Programmer\n\nCreon Creonopoulos - Programmer\n\nGary Johnson – Designer'}
           </Text>
+          <Divider style={styles.divider} />
+          <RNView style={styles.socialLinksWrapper}>
+            <Icon
+              name='reddit'
+              onPress={() => Linking.openURL(PV.URLs.social.reddit)}
+              size={28}
+              style={[button.iconOnlySmall, styles.icon]}
+            />
+            <Icon
+              name='twitter'
+              onPress={() => Linking.openURL(PV.URLs.social.twitter)}
+              size={28}
+              style={[button.iconOnlySmall, styles.icon]}
+            />
+            <Icon
+              name='facebook'
+              onPress={() => Linking.openURL(PV.URLs.social.facebook)}
+              size={28}
+              style={[button.iconOnlySmall, styles.icon]}
+            />
+            <Icon
+              name='github'
+              onPress={() => Linking.openURL(PV.URLs.social.github)}
+              size={28}
+              style={[button.iconOnlySmall, styles.icon]}
+            />
+          </RNView>
         </ScrollView>
       </View>
     )
@@ -60,17 +88,28 @@ const styles = StyleSheet.create({
   divider: {
     marginVertical: 24
   },
-  scrollViewContent: {
-    padding: 15,
-    paddingTop: 20
+  icon: {
+    alignItems: 'center',
+    marginHorizontal: 6
   },
   link: {
     color: PV.Colors.blue
+  },
+  scrollViewContent: {
+    padding: 15,
+    paddingTop: 20
   },
   sectionTitle: {
     marginBottom: 15,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold
+  },
+  socialLinksWrapper: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 8
   },
   text: {
     fontSize: PV.Fonts.sizes.md
