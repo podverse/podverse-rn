@@ -49,8 +49,6 @@ type Props = {
 
 type State = {}
 
-let initializedOnce = false
-
 export class PlayerScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const _getEpisodeId = navigation.getParam('_getEpisodeId')
@@ -89,8 +87,8 @@ export class PlayerScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
-
     const mediaRefId = navigation.getParam('mediaRefId')
+
     if (mediaRefId) this._initializeScreenData()
     this.props.navigation.setParams({
       _getEpisodeId: this._getEpisodeId,
@@ -103,16 +101,17 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _initializeScreenData = () => {
-    // This is difficult for me to reproduce in local testing, but upon returning to the player screen
-    // from the lock screen, it appears that componentDidMount is called again, causing the player
-    // to visibly load, as the player fires up from an "idle" or "none" state.
-    // Ensure this only happens once in initializeScreenData.
-    // Updating the PlayerScreen when returning from the background is handled in
-    // PodcastsScreen _handleAppStateChange.
-    if (!initializedOnce) {
-      initializedOnce = true
-      return
-    }
+    // NOTE: Commenting this out...but unsure if it is still necessary to address playback issues.
+    // // This is difficult for me to reproduce in local testing, but upon returning to the player screen
+    // // from the lock screen, it appears that componentDidMount is called again, causing the player
+    // // to visibly load, as the player fires up from an "idle" or "none" state.
+    // // Ensure this only happens once in initializeScreenData.
+    // // Updating the PlayerScreen when returning from the background is handled in
+    // // PodcastsScreen _handleAppStateChange.
+    // if (!initializedOnce) {
+    //   initializedOnce = true
+    //   return
+    // }
 
     setGlobal(
       {
@@ -131,6 +130,7 @@ export class PlayerScreen extends React.Component<Props, State> {
 
         try {
           const currentItem = await getNowPlayingItem()
+
           if (mediaRefId && mediaRefId !== currentItem.mediaRefId) {
             const mediaRef = await getMediaRef(mediaRefId)
             if (mediaRef) {
@@ -479,7 +479,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     } = screenPlayer
     let { mediaRef } = player
 
-    if (nowPlayingItem.clipId) {
+    if (nowPlayingItem && nowPlayingItem.clipId) {
       mediaRef = convertNowPlayingItemToMediaRef(nowPlayingItem)
     }
 
@@ -491,7 +491,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       <SafeAreaView>
         <View style={styles.view}>
           <PlayerTableHeader nowPlayingItem={nowPlayingItem} />
-          {showFullClipInfo && (mediaRef || nowPlayingItem.clipId) && (
+          {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
             <ClipInfoView
               createdAt={mediaRef.createdAt}
               endTime={mediaRef.endTime}

@@ -174,7 +174,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleOpenURL = async (url: string) => {
-    const { navigate } = this.props.navigation
+    const { navigation } = this.props
+    const { navigate } = navigation
 
     try {
       if (url) {
@@ -184,7 +185,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const id = splitPath[2] ? splitPath[2] : ''
 
         if (path === PV.DeepLinks.Clip.pathPrefix) {
-          await navigate(PV.RouteNames.PodcastsScreen)
+          // Go back to the root screen in order to make sure
+          // componentDidMount is called on the PlayerScreen,
+          // so _initializeScreenData is called on the PlayerScreen
+          // and the clip is loaded from the deep link.
+          await navigation.goBack(null)
+          await navigation.goBack(null)
           await navigate(PV.RouteNames.PlayerScreen, { mediaRefId: id })
         } else if (path === PV.DeepLinks.Episode.pathPrefix) {
           await navigate(PV.RouteNames.PodcastsScreen)

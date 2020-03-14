@@ -274,7 +274,15 @@ export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boo
   await TrackPlayer.add(track)
   await syncPlayerWithQueue()
 
-  if (shouldPlay) setTimeout(() => TrackPlayer.play(), 1500)
+  if (shouldPlay) {
+    if (item && !item.clipId) {
+      setTimeout(() => {
+        TrackPlayer.play()
+      }, 1500)
+    } else if (item && item.clipId) {
+      AsyncStorage.setItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED, 'true')
+    }
+  }
   sendPlayerScreenGoogleAnalyticsPageView(item)
 }
 
@@ -388,7 +396,8 @@ export const setPlaybackPosition = async (position?: number) => {
 export const setPlaybackPositionWhenDurationIsAvailable = async (
   position: number,
   trackId?: string,
-  resolveImmediately?: boolean
+  resolveImmediately?: boolean,
+  shouldPlay?: boolean
 ) => {
   return new Promise((resolve, reject) => {
     const interval = setInterval(async () => {
@@ -413,6 +422,16 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
             await TrackPlayer.seekTo(position)
           }
         }, 500)
+
+        const shouldPlayWhenClipIsLoaded = await AsyncStorage.getItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
+
+        if (shouldPlay) {
+          await TrackPlayer.play()
+        } else if (shouldPlayWhenClipIsLoaded === 'true') {
+          AsyncStorage.removeItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
+          await TrackPlayer.play()
+        }
+
         resolve()
       }
       if (resolveImmediately) resolve()
