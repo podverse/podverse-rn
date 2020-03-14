@@ -94,8 +94,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
       })
     } else {
       navigation.navigate(PV.RouteNames.PodcastScreen, {
-        podcast,
-        addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl
+        podcast
       })
     }
   }
@@ -119,7 +118,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => session.userInfo.subscribedPodcastIds, [])
     let isSubscribed = subscribedPodcastIds.some((x: string) => nowPlayingItem && nowPlayingItem.podcastId === x)
 
-    if (!isSubscribed && nowPlayingItem.addByRSSPodcastFeedUrl) {
+    if (!isSubscribed && nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
       const subscribedPodcasts = safelyUnwrapNestedVariable(() => this.global.subscribedPodcasts, [])
       isSubscribed = subscribedPodcasts.some(
         (x: any) => x.addByRSSPodcastFeedUrl && x.addByRSSPodcastFeedUrl === nowPlayingItem.addByRSSPodcastFeedUrl
@@ -192,7 +191,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     const items = this._headerActionSheetButtons()
 
     return (
-      <ActionSheet showModal={showModal} title={nowPlayingItem.podcastTitle}>
+      <ActionSheet showModal={showModal} title={(nowPlayingItem && nowPlayingItem.podcastTitle) || ''}>
         {items}
         <View
           key='volume'
