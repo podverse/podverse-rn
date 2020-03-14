@@ -192,7 +192,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           flatListData: [],
           flatListDataTotalCount: null,
           isQuerying: true,
-          queryFrom: PV.Keys.QUERY_FROM_THIS_PODCAST,
+          queryFrom: PV.Keys.QUERY_FROM_THIS_EPISODE,
           queryPage: 1,
           viewType: selectedKey
         }
