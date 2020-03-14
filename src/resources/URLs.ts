@@ -14,5 +14,11 @@ export const URLs = {
   profile: `${root}/profile/`,
   // tslint:disable-next-line: max-line-length
   requestPodcast: `https://docs.google.com/forms/d/e/1FAIpQLSdewKP-YrE8zGjDPrkmoJEwCxPl_gizEkmzAlTYsiWAuAk1Ng/viewform?usp=sf_link`,
-  terms: `${root}/terms`
+  terms: `${root}/terms`,
+  social: {
+    facebook: 'https://facebook.com/podverse',
+    github: 'https://github.com/podverse',
+    reddit: 'https:reddit.com/r/podverse',
+    twitter: 'https://twitter.com/podverse'
+  }
 }
