@@ -237,6 +237,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         flatListDataTotalCount: null,
         isLoading: true,
         queryPage: 1,
+        searchBarText: '',
         viewType: selectedKey
       },
       async () => {

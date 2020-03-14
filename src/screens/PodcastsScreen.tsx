@@ -279,7 +279,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         isLoading: true,
         queryFrom: selectedKey,
         queryPage: 1,
-        querySort: sort
+        querySort: sort,
+        searchBarText: ''
       },
       async () => {
         const newState = await this._queryData(selectedKey, this.state)

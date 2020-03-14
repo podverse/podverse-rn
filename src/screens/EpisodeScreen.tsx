@@ -178,6 +178,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         flatListDataTotalCount: null,
         isLoading: selectedKey === _clipsKey,
         queryPage: 1,
+        searchBarText: '',
         viewType: selectedKey
       },
       async () => {

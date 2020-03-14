@@ -94,7 +94,8 @@ export class ClipsScreen extends React.Component<Props, State> {
         flatListDataTotalCount: null,
         isLoading: true,
         queryFrom: selectedKey,
-        queryPage: 1
+        queryPage: 1,
+        searchBarText: ''
       },
       async () => {
         const newState = await this._queryData(selectedKey)
