@@ -1,4 +1,4 @@
-import { Alert, Linking, StyleSheet } from 'react-native'
+import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import packageJson from '../../package.json'
 import { Divider, ScrollView, Text, View } from '../components'
@@ -56,11 +56,25 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
             )
           })}
           <Divider style={styles.divider} />
-          <Text
-            style={styles.copyRight}
-            onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}>
-            copyleft ©
-          </Text>
+          <RNView style={styles.copyLeftWrapper}>
+            <Text
+              onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}
+              style={styles.copyLeftText}>
+              All Podverse software is provided free and open source under the AGPLv3 license.
+            </Text>
+          </RNView>
+          <RNView style={styles.copyLeftWrapper}>
+            <Text
+              onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}
+              style={styles.copyLeftText}>
+              copyleft
+            </Text>
+            <Text
+              onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}
+              style={styles.copyLeftSymbol}>
+              &copy;
+            </Text>
+          </RNView>
         </ScrollView>
       </View>
     )
@@ -71,6 +85,21 @@ const styles = StyleSheet.create({
   content: {
     flex: 1
   },
+  copyLeftSymbol: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    marginLeft: 8,
+    transform: [{ rotateY: '180deg' }]
+  },
+  copyLeftText: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.xl
+  },
+  copyLeftWrapper: {
+    flexDirection: 'row',
+    marginBottom: 15
+  },
   divider: {
     marginVertical: 24
   },
@@ -78,11 +107,6 @@ const styles = StyleSheet.create({
     padding: 15
   },
   sectionTitle: {
-    marginBottom: 15,
-    fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold
-  },
-  copyRight: {
     marginBottom: 15,
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold
