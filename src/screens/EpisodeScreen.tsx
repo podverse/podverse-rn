@@ -140,7 +140,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         let newEpisode: any
 
         try {
-          if (episode.podcast && episode.podcast.addByRSSPodcastFeedUrl) {
+          if (episode && episode.podcast && episode.podcast.addByRSSPodcastFeedUrl) {
             newEpisode = episode
           } else {
             newEpisode = await getEpisode(episodeId)

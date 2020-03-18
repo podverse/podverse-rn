@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import { ButtonGroup } from 'react-native-elements'
 import { getGlobal } from 'reactn'
 import { PV } from '../resources'
@@ -34,17 +34,18 @@ export const PVButtonGroup = (props: Props) => {
 
 const styles = StyleSheet.create({
   button: {
-    minHeight: 56
+    minHeight: 52
   },
   container: {
     marginTop: 12,
-    minHeight: 56
+    minHeight: 52
   },
   selectedButton: {
     flex: 0
   },
   text: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold
+    fontWeight: PV.Fonts.weights.bold,
+    marginBottom: Platform.OS === 'android' ? 4 : 0
   }
 })

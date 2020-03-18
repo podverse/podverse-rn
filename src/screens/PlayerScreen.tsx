@@ -131,10 +131,12 @@ export class PlayerScreen extends React.Component<Props, State> {
         try {
           const currentItem = await getNowPlayingItem()
 
-          if (mediaRefId && mediaRefId !== currentItem.mediaRefId) {
+          if (!currentItem || (mediaRefId && mediaRefId !== currentItem.mediaRefId)) {
             const mediaRef = await getMediaRef(mediaRefId)
             if (mediaRef) {
-              await addQueueItemNext(currentItem)
+              if (currentItem) {
+                await addQueueItemNext(currentItem)
+              }
               const newItem = convertToNowPlayingItem(mediaRef, null, null)
               const shouldPlay = true
               await loadItemAndPlayTrack(newItem, shouldPlay)

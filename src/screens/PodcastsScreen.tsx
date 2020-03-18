@@ -184,16 +184,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const path = splitPath[1] ? splitPath[1] : ''
         const id = splitPath[2] ? splitPath[2] : ''
 
+        // Go back to the root screen in order to make sure
+        // componentDidMount is called on all screens
+        // so initialize methods are run.
+        await navigation.goBack(null)
+        await navigation.goBack(null)
+
         if (path === PV.DeepLinks.Clip.pathPrefix) {
-          // Go back to the root screen in order to make sure
-          // componentDidMount is called on the PlayerScreen,
-          // so _initializeScreenData is called on the PlayerScreen
-          // and the clip is loaded from the deep link.
-          await navigation.goBack(null)
-          await navigation.goBack(null)
           await navigate(PV.RouteNames.PlayerScreen, { mediaRefId: id })
         } else if (path === PV.DeepLinks.Episode.pathPrefix) {
-          await navigate(PV.RouteNames.PodcastsScreen)
           const episode = await getEpisode(id)
           if (episode) {
             const podcast = await getPodcast(episode.podcast.id)
@@ -211,7 +210,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
           await navigate(PV.RouteNames.MoreScreen)
           await navigate(PV.RouteNames.PlaylistsScreen)
         } else if (path === PV.DeepLinks.Podcast.pathPrefix) {
-          await navigate(PV.RouteNames.PodcastsScreen)
           await navigate(PV.RouteNames.PodcastScreen, { podcastId: id })
         } else if (path === PV.DeepLinks.Podcasts.path) {
           await navigate(PV.RouteNames.PodcastsScreen)
