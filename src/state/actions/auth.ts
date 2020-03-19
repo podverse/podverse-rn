@@ -4,6 +4,7 @@ import { getGlobal, setGlobal } from 'reactn'
 import { shouldShowMembershipAlert } from '../../lib/utility'
 import { PV } from '../../resources'
 import { getAuthenticatedUserInfo, getAuthenticatedUserInfoLocally, login, signUp } from '../../services/auth'
+import { getNowPlayingItem } from '../../services/player'
 import { getSubscribedPodcasts } from './podcast'
 
 export type Credentials = {
@@ -57,11 +58,32 @@ export const getAuthUserInfo = async () => {
   }
 }
 
+const askToSyncWithLastHistoryItem = async (historyItems: any) => {
+  const nowPlayingItem = await getNowPlayingItem()
+  if (historyItems && historyItems.length > 0) {
+    const mostRecentHistoryItem = historyItems[0]
+    const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(mostRecentHistoryItem)
+    if (
+      (mostRecentHistoryItem.clipId && mostRecentHistoryItem.clipId !== nowPlayingItem.clipId) ||
+      (mostRecentHistoryItem.episodeId && mostRecentHistoryItem.episodeId !== nowPlayingItem.episodeId)
+    ) {
+      Alert.alert(
+        askToSyncWithLastHistoryItem.title,
+        askToSyncWithLastHistoryItem.message,
+        askToSyncWithLastHistoryItem.buttons
+      )
+    }
+  }
+}
+
 export const loginUser = async (credentials: Credentials) => {
   try {
     const userInfo = await login(credentials.email, credentials.password)
 
     await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
+
+    await askToSyncWithLastHistoryItem(userInfo.historyItems)
+
     setGlobal({ session: { userInfo, isLoggedIn: true } })
     return userInfo
   } catch (error) {

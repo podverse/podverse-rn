@@ -1,5 +1,7 @@
+import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { sendVerificationEmail } from '../services/auth'
 import { logoutUser } from '../state/actions/auth'
+import { loadItemAndPlayTrack } from '../state/actions/player'
 
 const _expiredMessage = 'To renew your membership, please visit podverse.fm, login, then go to your Settings page.'
 const _logoutButtonText = 'Log Out'
@@ -10,6 +12,16 @@ const _sendVerificationEmailMessage =
 const _cancelText = 'Cancel'
 
 export const Alerts = {
+  ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM: (item: NowPlayingItem) => {
+    const title = item.clipId ? item.clipTitle : item.episodeTitle
+    const type = item.clipId ? 'Clip' : 'Episode'
+
+    return {
+      message: `Do you want to resume ${item.podcastTitle} - ${title}?`,
+      title: `Most Recent ${type}`,
+      buttons: [{ text: 'No' }, { text: 'Yes', onPress: () => loadItemAndPlayTrack(item, /* shouldPlay */ false) }]
+    }
+  },
   BUTTONS: {
     OK: [{ text: 'OK' }]
   },
