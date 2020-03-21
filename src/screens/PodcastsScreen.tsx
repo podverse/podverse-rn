@@ -173,6 +173,29 @@ export class PodcastsScreen extends React.Component<Props, State> {
     if (event) this._handleOpenURL(event.url)
   }
 
+  // On some Android devices, the .goBack method appears to not work reliably
+  // unless there is some delay between screen changes. Wrapping each .goBack method
+  // in a delay to make this happen.
+  _goBackWithDelay = async () => {
+    const { navigation } = this.props
+
+    return new Promise(async (resolve) => {
+      if (Platform.OS === 'android') {
+        setTimeout(async () => {
+          await navigation.goBack(null)
+          setTimeout(async () => {
+            await navigation.goBack(null)
+            resolve()
+          }, 1000)
+        }, 1000)
+      } else if (Platform.OS === 'ios') {
+        await navigation.goBack(null)
+        await navigation.goBack(null)
+        resolve()
+      }
+    })
+  }
+
   _handleOpenURL = async (url: string) => {
     const { navigation } = this.props
     const { navigate } = navigation
@@ -187,8 +210,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         // Go back to the root screen in order to make sure
         // componentDidMount is called on all screens
         // so initialize methods are run.
-        await navigation.goBack(null)
-        await navigation.goBack(null)
+        await this._goBackWithDelay()
 
         if (path === PV.DeepLinks.Clip.pathPrefix) {
           await navigate(PV.RouteNames.PlayerScreen, { mediaRefId: id })
