@@ -634,7 +634,8 @@ export class PlayerScreen extends React.Component<Props, State> {
     } else {
       const results = await getEpisodes(
         {
-          sort: querySort,
+          sort:
+            !querySort || querySort === PV.Keys.QUERY_SORT_CHRONOLOGICAL ? PV.Keys.QUERY_SORT_MOST_RECENT : querySort,
           page: page || queryPage,
           podcastId: nowPlayingItem && nowPlayingItem.podcastId
         },
@@ -695,15 +696,22 @@ const viewTypeOptions = [
   }
 ]
 
-const querySortOptions = (includeOldest?: boolean) => {
-  const items = [
-    {
-      label: 'most recent',
-      value: PV.Keys.QUERY_SORT_MOST_RECENT
-    }
-  ]
+const querySortOptions = (isEpisodes?: boolean) => {
+  const items = []
 
-  if (includeOldest) {
+  if (!isEpisodes) {
+    items.push({
+      label: 'chronological',
+      value: PV.Keys.QUERY_SORT_CHRONOLOGICAL
+    })
+  }
+
+  items.push({
+    label: 'most recent',
+    value: PV.Keys.QUERY_SORT_MOST_RECENT
+  })
+
+  if (isEpisodes) {
     items.push({
       label: 'oldest',
       value: PV.Keys.QUERY_SORT_OLDEST
