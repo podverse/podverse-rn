@@ -59,7 +59,8 @@ export const getAuthUserInfo = async () => {
 }
 
 const askToSyncWithLastHistoryItem = async (historyItems: any) => {
-  const nowPlayingItem = await getNowPlayingItem()
+  let nowPlayingItem = await getNowPlayingItem()
+  nowPlayingItem = nowPlayingItem || {}
   if (historyItems && historyItems.length > 0) {
     const mostRecentHistoryItem = historyItems[0]
     const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(mostRecentHistoryItem)

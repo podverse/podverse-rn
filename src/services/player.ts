@@ -329,9 +329,9 @@ export const createTrack = async (item: NowPlayingItem) => {
   } = item
   const id = clipId || episodeId
   let track = null
-  if (id) {
-    const isDownloadedFile = await checkIfFileIsDownloaded(id, episodeMediaUrl)
-    const filePath = getDownloadedFilePath(id, episodeMediaUrl)
+  if (id && episodeId) {
+    const isDownloadedFile = await checkIfFileIsDownloaded(episodeId, episodeMediaUrl)
+    const filePath = getDownloadedFilePath(episodeId, episodeMediaUrl)
 
     if (isDownloadedFile) {
       track = {

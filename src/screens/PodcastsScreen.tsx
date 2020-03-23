@@ -99,13 +99,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    if (Platform.OS === 'android') {
-      Linking.getInitialURL().then((url) => {
-        if (url) this._handleOpenURL(url)
-      })
-    } else if (Platform.OS === 'ios') {
-      Linking.addEventListener('url', this._handleOpenURLEvent)
-    }
+    Linking.addEventListener('url', this._handleOpenURLEvent)
 
     AppState.addEventListener('change', this._handleAppStateChange)
 
@@ -178,7 +172,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
   // in a delay to make this happen.
   _goBackWithDelay = async () => {
     const { navigation } = this.props
-
     return new Promise(async (resolve) => {
       if (Platform.OS === 'android') {
         setTimeout(async () => {
@@ -204,8 +197,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       if (url) {
         const route = url.replace(/.*?:\/\//g, '')
         const splitPath = route.split('/')
-        const path = splitPath[1] ? splitPath[1] : ''
-        const id = splitPath[2] ? splitPath[2] : ''
+        const path = splitPath[0] ? splitPath[0] : ''
+        const id = splitPath[1] ? splitPath[1] : ''
 
         // Go back to the root screen in order to make sure
         // componentDidMount is called on all screens

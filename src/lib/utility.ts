@@ -434,7 +434,7 @@ export const hasUppercase = (str?: string) => {
 
 export const getMakeClipIsPublic = async () => {
   const isPublicString = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_IS_PUBLIC)
-  let isPublic = false
+  let isPublic = true
   if (isPublicString) {
     isPublic = JSON.parse(isPublicString)
   }

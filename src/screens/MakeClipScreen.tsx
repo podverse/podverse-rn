@@ -5,6 +5,7 @@ import Share from 'react-native-share'
 import React from 'reactn'
 import {
   ActivityIndicator,
+  Divider,
   FastImage,
   Icon,
   NavHeaderButtonText,
@@ -57,12 +58,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     const { nowPlayingItem = {} } = this.global.player
-    const { isLoggedIn } = this.global.session
     const isEditing = this.props.navigation.getParam('isEditing')
     const initialPrivacy = this.props.navigation.getParam('initialPrivacy')
     const initialProgressValue = this.props.navigation.getParam('initialProgressValue')
 
-    const pItems = privacyItems(isLoggedIn)
+    const pItems = privacyItems()
     this.state = {
       endTime: isEditing ? nowPlayingItem.clipEndTime : null,
       ...(initialPrivacy ? { isPublicItemSelected: pItems[0] } : { isPublicItemSelected: pItems[1] }),
@@ -123,9 +123,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   _handleSelectPrivacy = async (selectedKey: string) => {
-    const { session } = this.global
-    const { isLoggedIn } = session
-    const items = [placeholderItem, ...privacyItems(isLoggedIn)]
+    const items = [placeholderItem, ...privacyItems()]
     const selectedItem = items.find((x) => x.value === selectedKey)
     if (selectedItem) {
       AsyncStorage.setItem(PV.Keys.MAKE_CLIP_IS_PUBLIC, JSON.stringify(selectedItem.value === _publicKey))
@@ -171,6 +169,22 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { nowPlayingItem } = player
     const { isLoggedIn } = session
 
+    if (!isLoggedIn) {
+      Alert.alert('Login Needed', 'You need to login to make clips.', [
+        { text: 'OK' },
+        {
+          text: 'Go to Login',
+          onPress: () => {
+            navigation.goBack(null)
+            setTimeout(() => {
+              navigation.navigate(PV.RouteNames.AuthScreen)
+            }, 1000)
+          }
+        }
+      ])
+      return
+    }
+
     const wasAlerted = await alertIfNoNetworkConnection('save a clip')
     if (wasAlerted) return
 
@@ -205,7 +219,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         ...(endTime ? { endTime } : {}),
         episodeId: nowPlayingItem.episodeId,
         ...(isEditing ? { id: mediaRefId } : {}),
-        ...(isLoggedIn && isPublicItemSelected.value === _publicKey ? { isPublic: true } : { isPublic: false }),
+        ...(isPublicItemSelected.value === _publicKey ? { isPublic: true } : { isPublic: false }),
         startTime,
         title
       }
@@ -325,6 +339,17 @@ export class MakeClipScreen extends React.Component<Props, State> {
       <SafeAreaView>
         <View style={styles.view}>
           <View style={styles.wrapperTop}>
+            {!isLoggedIn && (
+              <RNView>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  numberOfLines={1}
+                  style={[core.textInputLabel, styles.loginMessage]}>
+                  You must be logged in to make clips.
+                </Text>
+                <Divider style={styles.divider} />
+              </RNView>
+            )}
             <View style={[core.row, styles.row]}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -332,38 +357,23 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 style={[core.textInputLabel, styles.textInputLabel]}>
                 Clip Title
               </Text>
-              {!isLoggedIn && (
-                <TouchableWithoutFeedback onPress={this._showClipPrivacyNote}>
-                  <View style={core.selectorWrapper}>
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                      numberOfLines={1}
-                      style={[styles.isPublicText, globalTheme.text]}>
-                      Only with Link
-                    </Text>
-                    <Icon name='link' size={14} style={[styles.isPublicTextIcon, globalTheme.text]} />
-                  </View>
-                </TouchableWithoutFeedback>
-              )}
-              {isLoggedIn && (
-                <RNPickerSelect
-                  items={privacyItems(isLoggedIn)}
-                  onValueChange={this._handleSelectPrivacy}
-                  placeholder={placeholderItem}
-                  style={hidePickerIconOnAndroidTransparent(isDarkMode)}
-                  useNativeAndroidPickerStyle={false}
-                  value={isPublicItemSelected.value}>
-                  <View style={core.selectorWrapper}>
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                      numberOfLines={1}
-                      style={[styles.isPublicText, globalTheme.text]}>
-                      {isPublicItemSelected.label}
-                    </Text>
-                    <Icon name='angle-down' size={14} style={[styles.isPublicTextIcon, globalTheme.text]} />
-                  </View>
-                </RNPickerSelect>
-              )}
+              <RNPickerSelect
+                items={privacyItems()}
+                onValueChange={this._handleSelectPrivacy}
+                placeholder={placeholderItem}
+                style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+                useNativeAndroidPickerStyle={false}
+                value={isPublicItemSelected.value}>
+                <View style={core.selectorWrapper}>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    numberOfLines={1}
+                    style={[styles.isPublicText, globalTheme.text]}>
+                    {isPublicItemSelected.label}
+                  </Text>
+                  <Icon name='angle-down' size={14} style={[styles.isPublicTextIcon, globalTheme.text]} />
+                </View>
+              </RNPickerSelect>
             </View>
             <TextInput
               autoCapitalize='none'
@@ -480,13 +490,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   ▸ Tap the Start and End Time inputs to set them with the current track time.
                 </Text>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  ▸ "Only with Link" clips will not appear on the home page.
-                </Text>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  ▸ "Public" clips may appear on the Podverse home page. (Premium only)
-                </Text>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  ▸ If the podcast has dynamically inserted ads, the start/end times may not stay accurate.
+                  ▸ If a podcast uses dynamically inserted ads, its clip start times will not stay 100% accurate.
                 </Text>
                 <TouchableOpacity onPress={this._hideHowTo}>
                   <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.modalButton}>
@@ -510,20 +514,17 @@ const placeholderItem = {
   value: null
 }
 
-const privacyItems = (isLoggedIn?: boolean) => {
+const privacyItems = () => {
   const items = [
+    {
+      label: 'Public',
+      value: _publicKey
+    },
     {
       label: 'Only with link',
       value: _onlyWithLinkKey
     }
   ]
-
-  if (isLoggedIn) {
-    items.unshift({
-      label: 'Public',
-      value: _publicKey
-    })
-  }
 
   return items
 }
@@ -547,6 +548,10 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold
   },
+  divider: {
+    marginBottom: 8,
+    marginTop: 10
+  },
   endTime: {
     flex: 1,
     marginLeft: 8
@@ -561,6 +566,12 @@ const styles = StyleSheet.create({
   },
   isPublicTextIcon: {
     paddingHorizontal: 4
+  },
+  loginMessage: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    textAlign: 'center',
+    marginBottom: 4
   },
   makeClipPlayerControls: {
     alignItems: 'center',
@@ -607,8 +618,7 @@ const styles = StyleSheet.create({
   },
   textInputLabel: {
     alignItems: 'center',
-    flex: 1,
-    marginBottom: 0
+    flex: 1
   },
   timeInput: {
     flex: 1,

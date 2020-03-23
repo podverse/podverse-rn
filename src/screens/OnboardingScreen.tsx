@@ -40,7 +40,6 @@ export class OnboardingScreen extends React.Component<Props, State> {
         <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />
         <View style={styles.content}>
           <Text style={styles.title}>No login needed to:</Text>
-          <Text style={styles.text}>- Create and share clips</Text>
           <Text style={styles.text}>- Listen to episodes and clips</Text>
           <Text style={styles.text}>- Subscribe to podcasts</Text>
           <Text style={[styles.title, extraMargin]}>Login to:</Text>

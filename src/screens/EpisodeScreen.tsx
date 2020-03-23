@@ -460,6 +460,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 const _clipsKey = 'clips'
 const _showNotesKey = 'showNotes'
 const _titleKey = 'title'
+const _chronologicalKey = 'chronological'
 const _mostRecentKey = 'most-recent'
 const _randomKey = 'random'
 const _topPastDay = 'top-past-day'
@@ -483,6 +484,10 @@ const leftItems = [
 ]
 
 const rightItems = [
+  {
+    label: 'chronological',
+    value: _chronologicalKey
+  },
   {
     label: 'most recent',
     value: _mostRecentKey
