@@ -3,9 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>com.apple.developer.associated-domains</key>
-	<array>
-		<string>applinks:$(WEB_DOMAIN)</string>
-		<string>activitycontinuation:$(WEB_DOMAIN)</string>
-	</array>
+	<array/>
 </dict>
 </plist>

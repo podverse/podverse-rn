@@ -456,7 +456,6 @@
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Podverse-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
-				WEB_DOMAIN = stage.podverse.fm;
 			};
 			name = Debug;
 		};
@@ -491,7 +490,6 @@
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Podverse-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
-				WEB_DOMAIN = podverse.fm;
 			};
 			name = Release;
 		};
