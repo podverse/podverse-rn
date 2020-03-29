@@ -18,7 +18,7 @@ export const URLs = {
   social: {
     facebook: 'https://facebook.com/podverse',
     github: 'https://github.com/podverse',
-    reddit: 'https:reddit.com/r/podverse',
+    reddit: 'https://reddit.com/r/podcastclips',
     twitter: 'https://twitter.com/podverse'
   }
 }
