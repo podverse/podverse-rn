@@ -202,11 +202,6 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'large font accessibility support',
-    column1: true,
-    column2: true
-  },
-  {
     text: 'sync your subscriptions on all devices',
     column1: false,
     column2: true
