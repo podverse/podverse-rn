@@ -41,8 +41,7 @@ export const updatePlayerState = async (item: NowPlayingItem) => {
   if (!item.clipId) {
     newState.screenPlayer = {
       ...globalState.screenPlayer,
-      showFullClipInfo: false,
-      viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES
+      showFullClipInfo: false
     }
   }
 
