@@ -195,6 +195,10 @@ export class PlayerScreen extends React.Component<Props, State> {
           flatListDataTotalCount: null,
           isQuerying: true,
           queryFrom: PV.Keys.QUERY_FROM_THIS_EPISODE,
+          querySort:
+            selectedKey === PV.Keys.QUERY_FROM_THIS_EPISODE
+              ? PV.Keys.QUERY_SORT_CHRONOLOGICAL
+              : PV.Keys.QUERY_SORT_TOP_PAST_WEEK,
           queryPage: 1,
           viewType: selectedKey
         }
@@ -520,7 +524,10 @@ export class PlayerScreen extends React.Component<Props, State> {
                   viewType !== PV.Keys.VIEW_TYPE_TITLE &&
                   nowPlayingItem &&
                   !nowPlayingItem.addByRSSPodcastFeedUrl
-                    ? querySortOptions(viewType === PV.Keys.VIEW_TYPE_EPISODES)
+                    ? querySortOptions(
+                        viewType === PV.Keys.VIEW_TYPE_EPISODES,
+                        queryFrom !== PV.Keys.QUERY_FROM_THIS_PODCAST && viewType === PV.Keys.VIEW_TYPE_CLIPS
+                      )
                     : []
                 }
                 selectedLeftItemKey={viewType}
@@ -596,11 +603,14 @@ export class PlayerScreen extends React.Component<Props, State> {
   _queryClips = async () => {
     const { player, screenPlayer } = this.global
     const { nowPlayingItem } = player
-    const { queryFrom, queryPage, querySort } = screenPlayer
+    const { queryFrom, queryPage } = screenPlayer
+
+    const sort = this._validSort()
+
     if (nowPlayingItem && !nowPlayingItem.addByRSSPodcastFeedUrl) {
       const results = await getMediaRefs(
         {
-          sort: querySort,
+          sort,
           page: queryPage,
           ...(queryFrom === PV.Keys.QUERY_FROM_THIS_EPISODE && nowPlayingItem
             ? { episodeId: nowPlayingItem.episodeId }
@@ -612,6 +622,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         },
         this.global.settings.nsfwMode
       )
+
       return results
     } else {
       return [[], 0]
@@ -645,6 +656,16 @@ export class PlayerScreen extends React.Component<Props, State> {
     }
   }
 
+  _validSort = () => {
+    const { screenPlayer } = this.global
+    const { queryFrom, querySort } = screenPlayer
+
+    return !querySort ||
+      (queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST && querySort === PV.Keys.QUERY_SORT_CHRONOLOGICAL)
+      ? PV.Keys.QUERY_SORT_TOP_PAST_WEEK
+      : querySort
+  }
+
   _queryData = async (item?: NowPlayingItem, page?: number) => {
     const { screenPlayer } = this.global
     const { flatListData, viewType } = screenPlayer
@@ -669,6 +690,8 @@ export class PlayerScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
+
+      newState.querySort = this._validSort()
 
       return newState
     } catch (error) {
@@ -696,10 +719,10 @@ const viewTypeOptions = [
   }
 ]
 
-const querySortOptions = (isEpisodes?: boolean) => {
+const querySortOptions = (isEpisodes?: boolean, showChronological?: boolean) => {
   const items = []
 
-  if (!isEpisodes) {
+  if (showChronological) {
     items.push({
       label: 'chronological',
       value: PV.Keys.QUERY_SORT_CHRONOLOGICAL
