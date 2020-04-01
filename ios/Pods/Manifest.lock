@@ -256,7 +256,7 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
     - ReactCommon/jscallinvoker (= 0.61.5)
-  - RNBackgroundFetch (2.8.0):
+  - RNBackgroundFetch (2.7.1):
     - React
   - RNCAsyncStorage (1.6.2):
     - React
@@ -272,11 +272,11 @@ PODS:
     - React
   - RNIap (4.2.0):
     - React
-  - RNScreens (2.0.0-beta.4):
+  - RNScreens (2.2.0):
     - React
   - RNSecureKeyStore (1.0.0):
     - React
-  - RNShare (2.0.0):
+  - RNShare (3.1.2):
     - React
   - RNVectorIcons (6.6.0):
     - React
@@ -477,16 +477,16 @@ SPEC CHECKSUMS:
   React-RCTText: 9ccc88273e9a3aacff5094d2175a605efa854dbe
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
-  RNBackgroundFetch: 8de4251d9c0b47e18b6d78052ade58c68bec6fd5
+  RNBackgroundFetch: 8d8d66b47eafcb9e772b2eb95057939038b3ef95
   RNCAsyncStorage: 60a80e72d95bf02a01cace55d3697d9724f0d77f
   RNDeviceInfo: 310c1f43d418d950a193c7650de2f9559c906048
   RNFastImage: 9b0c22643872bb7494c8d87bbbb66cc4c0d9e7a2
   RNFS: 54da03c2b7d862c42ea3ca8c7f86f892760a535a
   RNGestureHandler: 4cb47a93019c1a201df2644413a0a1569a51c8aa
   RNIap: 251e9b516965d84eecc67151d76c939e8f5481ea
-  RNScreens: 6053a007667bea81a69087caadf103bba04c032e
+  RNScreens: 812b79d384e2bea7eebc4ec981469160d4948fd5
   RNSecureKeyStore: f1ad870e53806453039f650720d2845c678d89c8
-  RNShare: 8b171d4b43c1d886917fdd303bf7a4b87167b05c
+  RNShare: c19dbe4a7224098cd3cfc4d3b92c886ca817b3f0
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   SDWebImage: 46a7f73228f84ce80990c786e4372cf4db5875ce
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
