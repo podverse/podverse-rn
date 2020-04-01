@@ -18,13 +18,6 @@ export class AboutScreen extends React.Component<Props, State> {
     gaTrackPageView('/about', 'About Screen')
   }
 
-  showLeavingAppAlert = (url: string) => {
-    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Cancel' },
-      { text: 'Yes', onPress: () => Linking.openURL(url) }
-    ])
-  }
-
   render() {
     return (
       <View style={styles.content}>

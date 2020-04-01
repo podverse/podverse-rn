@@ -1,7 +1,7 @@
 import { Alert } from 'react-native'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { getGlobal, setGlobal } from 'reactn'
-import { shouldShowMembershipAlert } from '../../lib/utility'
+import { safelyUnwrapNestedVariable, shouldShowMembershipAlert } from '../../lib/utility'
 import { PV } from '../../resources'
 import { getAuthenticatedUserInfo, getAuthenticatedUserInfoLocally, login, signUp } from '../../services/auth'
 import { getNowPlayingItem } from '../../services/player'
@@ -11,6 +11,7 @@ export type Credentials = {
   email: string
   password: string
   name?: string
+  subscribedPodcastIds?: []
 }
 
 export const getAuthUserInfo = async () => {
@@ -103,5 +104,12 @@ export const logoutUser = async () => {
 }
 
 export const signUpUser = async (credentials: Credentials) => {
+  const globalState = getGlobal()
+  const subscribedPodcastIds = safelyUnwrapNestedVariable(() => globalState.session.userInfo.subscribedPodcastIds, [])
+
+  if (subscribedPodcastIds.length > 0) {
+    credentials.subscribedPodcastIds = subscribedPodcastIds
+  }
+
   await signUp(credentials)
 }
