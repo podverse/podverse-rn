@@ -202,7 +202,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       return
     }
 
-    if (!startTime) {
+    if (!startTime && startTime !== 0) {
       Alert.alert('Clip Error', 'A start time must be provided.', PV.Alerts.BUTTONS.OK)
       return
     }
