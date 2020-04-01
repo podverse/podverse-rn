@@ -256,17 +256,14 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   const title = `${data.title || 'untitled clip'} – ${nowPlayingItem.podcastTitle} – ${
                     nowPlayingItem.episodeTitle
                   } – clip created using Podverse`
-
-                  if (!isEditing) {
-                    try {
-                      await Share.open({
-                        title,
-                        subject: title,
-                        url
-                      })
-                    } catch (error) {
-                      alert(error.message)
-                    }
+                  try {
+                    await Share.open({
+                      title,
+                      subject: title,
+                      url
+                    })
+                  } catch (error) {
+                    console.log(error)
                   }
                   navigation.goBack(null)
                 }
