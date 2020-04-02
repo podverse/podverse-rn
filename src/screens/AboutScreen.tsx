@@ -1,4 +1,4 @@
-import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
+import { Linking, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { Divider, Icon, ScrollView, Text, View } from '../components'
 import { PV } from '../resources'
