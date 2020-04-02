@@ -408,6 +408,11 @@ export class PlayerScreen extends React.Component<Props, State> {
     this._dismissShareActionSheet()
   }
 
+  _handleNavigationPress = (selectedItem: any) => {
+    const shouldPlay = true
+    loadItemAndPlayTrack(selectedItem, shouldPlay)
+  }
+
   _handleDownloadPressed = () => {
     const { selectedItem } = this.global.screenPlayer
     if (selectedItem) {
@@ -429,7 +434,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           description={description}
           id={item.id}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
-          handleNavigationPress={() => console.log('handle episode press')}
+          handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, podcast))}
           hasZebraStripe={isOdd(index)}
           hideImage={true}
           pubDate={item.pubDate}
@@ -455,6 +460,7 @@ export class PlayerScreen extends React.Component<Props, State> {
             ? { episodeTitle: item.episode.title || 'untitled episode' }
             : {})}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
+          handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, podcast))}
           hideImage={true}
           startTime={item.startTime}
           title={item.title || 'untitled clip'}
