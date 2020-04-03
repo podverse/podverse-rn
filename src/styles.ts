@@ -213,6 +213,18 @@ export const darkTheme = StyleSheet.create({
   },
   viewWithZebraStripe: {
     backgroundColor: PV.Colors.grayDarkestZ
+  },
+  webViewStaticHTMLHeader: {
+    color: PV.Colors.grayLightest
+  },
+  webViewStaticHTMLLink: {
+    color: PV.Colors.blueLighter
+  },
+  webViewStaticHTMLText: {
+    color: PV.Colors.white
+  },
+  webViewStaticHTMLWrapper: {
+    backgroundColor: PV.Colors.black
   }
 })
 
@@ -425,6 +437,18 @@ export const lightTheme = StyleSheet.create({
   },
   viewWithZebraStripe: {
     backgroundColor: PV.Colors.grayLightestZ
+  },
+  webViewStaticHTMLHeader: {
+    color: PV.Colors.grayDarkest
+  },
+  webViewStaticHTMLLink: {
+    color: PV.Colors.blueDarker
+  },
+  webViewStaticHTMLText: {
+    color: PV.Colors.black
+  },
+  webViewStaticHTMLWrapper: {
+    backgroundColor: PV.Colors.white
   }
 })
 

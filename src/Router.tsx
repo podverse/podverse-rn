@@ -21,6 +21,7 @@ import {
   EmailVerificationScreen,
   EpisodeScreen,
   EpisodesScreen,
+  FAQScreen,
   MakeClipScreen,
   MembershipScreen,
   MoreScreen,
@@ -178,7 +179,8 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.MorePodcastScreen]: PodcastScreen,
     [PV.RouteNames.MembershipScreen]: MembershipScreen,
     [PV.RouteNames.AboutScreen]: AboutScreen,
-    [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen
+    [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen,
+    [PV.RouteNames.FAQScreen]: FAQScreen
   },
   {
     defaultNavigationOptions,

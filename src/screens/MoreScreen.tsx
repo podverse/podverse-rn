@@ -35,6 +35,8 @@ export class MoreScreen extends React.Component<Props, State> {
       navigation.navigate(PV.RouteNames.MembershipScreen)
     } else if (item.key === _aboutKey) {
       navigation.navigate(PV.RouteNames.AboutScreen)
+    } else if (item.key === _faqKey) {
+      navigation.navigate(PV.RouteNames.FAQScreen)
     } else if (item.key === _contactKey) {
       Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
         { text: 'Cancel' },
@@ -153,6 +155,7 @@ export class MoreScreen extends React.Component<Props, State> {
 
 const _aboutKey = 'about'
 const _contactKey = 'contact'
+const _faqKey = 'faq'
 const _membershipKey = 'membership'
 const _termsKey = 'terms'
 const _logoutKey = 'logout'
@@ -204,20 +207,24 @@ const moreOtherOptions = (membershipStatus?: string) => {
       key: _membershipKey
     },
     {
-      title: 'Contact',
+      title: 'Add Podcast by RSS',
+      key: PV.RouteNames.AddPodcastByRSSScreen
+    },
+    {
+      title: 'Contact Us',
       key: _contactKey
     },
     {
-      title: 'About',
-      key: _aboutKey
+      title: 'FAQ',
+      key: _faqKey
     },
     {
       title: 'Terms',
       key: _termsKey
     },
     {
-      title: 'Add Podcast by RSS',
-      key: PV.RouteNames.AddPodcastByRSSScreen
+      title: 'About',
+      key: _aboutKey
     }
   ]
 
