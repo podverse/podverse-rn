@@ -196,9 +196,9 @@ export class PlayerScreen extends React.Component<Props, State> {
           isQuerying: true,
           queryFrom: PV.Keys.QUERY_FROM_THIS_EPISODE,
           querySort:
-            selectedKey === PV.Keys.QUERY_FROM_THIS_EPISODE
-              ? PV.Keys.QUERY_SORT_CHRONOLOGICAL
-              : PV.Keys.QUERY_SORT_TOP_PAST_WEEK,
+            selectedKey === PV.Keys.VIEW_TYPE_EPISODES
+              ? PV.Keys.QUERY_SORT_MOST_RECENT
+              : PV.Keys.QUERY_SORT_CHRONOLOGICAL,
           queryPage: 1,
           viewType: selectedKey
         }
