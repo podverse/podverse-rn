@@ -260,14 +260,14 @@ const sendPlayerScreenGoogleAnalyticsPageView = (item: any) => {
   }
 }
 
-export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boolean, skipUpdateHistory?: boolean) => {
+export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boolean) => {
   await updateUserPlaybackPosition()
 
   if (!item) return
 
   // Episodes and clips must be already loaded in history
   // in order to be handled in playerEvents > handleSyncNowPlayingItem.
-  if (!skipUpdateHistory) await addOrUpdateHistoryItem(item)
+  await addOrUpdateHistoryItem(item)
 
   await TrackPlayer.reset()
   const track = (await createTrack(item)) as Track

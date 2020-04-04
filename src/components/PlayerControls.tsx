@@ -1,16 +1,9 @@
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
-import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
-import { checkIfPlayingFromHistory, getHistoryItemsLocally } from '../services/history'
-import {
-  getNowPlayingItem,
-  loadItemAndPlayTrack,
-  playerJumpBackward,
-  playerJumpForward,
-  PVTrackPlayer
-} from '../services/player'
-import { loadAdjacentItemFromHistory, playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
+import { checkIfPlayingFromHistory } from '../services/history'
+import { playerJumpBackward, playerJumpForward, PVTrackPlayer, setPlaybackPosition } from '../services/player'
+import { playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { Icon, PlayerProgressBar, Text } from './'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
@@ -74,6 +67,10 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     })
   }
 
+  _returnToBeginningOfTrack = async () => {
+    await setPlaybackPosition(0)
+  }
+
   render() {
     const { navigation } = this.props
     const { progressValue, showPlayerMoreActionSheet } = this.state
@@ -94,31 +91,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           />
         </View>
         <View style={styles.middleRow}>
-          <TouchableOpacity
-            onPress={async () => {
-              const playbackState = await PVTrackPlayer.getState()
-              const shouldStartPlayback = playbackState === PVTrackPlayer.STATE_PLAYING
-              const isPlayingFromHistory = await checkIfPlayingFromHistory()
-              if (isPlayingFromHistory) {
-                loadAdjacentItemFromHistory(shouldStartPlayback)
-              } else {
-                const historyItems = await getHistoryItemsLocally()
-                const mostRecentHistoryItem = historyItems[0]
-                const nowPlayingItem = await getNowPlayingItem()
-                const id = nowPlayingItem.clipId || nowPlayingItem.episodeId
-                if (historyItems[0]) {
-                  if (
-                    checkIfIdMatchesClipIdOrEpisodeId(id, mostRecentHistoryItem.clipId, mostRecentHistoryItem.episodeId)
-                  ) {
-                    loadAdjacentItemFromHistory(shouldStartPlayback)
-                  } else {
-                    const skipUpdateHistory = true
-                    loadItemAndPlayTrack(historyItems[0], shouldStartPlayback, skipUpdateHistory)
-                  }
-                }
-              }
-            }}
-            style={playerStyles.icon}>
+          <TouchableOpacity onPress={this._returnToBeginningOfTrack} style={playerStyles.icon}>
             <Icon name='step-backward' size={36} />
           </TouchableOpacity>
           <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
@@ -139,19 +112,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
             <Icon name='redo-alt' size={36} />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={async () => {
-              const playbackState = await PVTrackPlayer.getState()
-              const shouldStartPlayback = playbackState === PVTrackPlayer.STATE_PLAYING
-              const isPlayingFromHistory = await checkIfPlayingFromHistory()
-              if (isPlayingFromHistory) {
-                const playNext = true
-                loadAdjacentItemFromHistory(shouldStartPlayback, playNext)
-              } else {
-                playNextFromQueue()
-              }
-            }}
-            style={playerStyles.icon}>
+          <TouchableOpacity onPress={playNextFromQueue} style={playerStyles.icon}>
             <Icon name='step-forward' size={36} />
           </TouchableOpacity>
         </View>
