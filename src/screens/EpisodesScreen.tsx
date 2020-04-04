@@ -16,8 +16,9 @@ import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { isOdd } from '../lib/utility'
+import { generateCategoryItems, isOdd } from '../lib/utility'
 import { PV } from '../resources'
+import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
@@ -28,6 +29,7 @@ type Props = {
 }
 
 type State = {
+  categoryItems: any[]
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
@@ -39,8 +41,11 @@ type State = {
   querySort: string | null
   searchBarText: string
   selectedItem?: any
+  selectedCategory: string | null
+  selectedSubCategory: string | null
   showActionSheet: boolean
   showNoInternetConnectionMessage?: boolean
+  subCategoryItems: any[]
 }
 
 export class EpisodesScreen extends React.Component<Props, State> {
@@ -54,6 +59,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
     const { subscribedPodcastIds } = this.global.session.userInfo
 
     this.state = {
+      categoryItems: [],
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
@@ -64,7 +70,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
       queryPage: 1,
       querySort: subscribedPodcastIds && subscribedPodcastIds.length > 0 ? _mostRecentKey : _topPastWeek,
       searchBarText: '',
-      showActionSheet: false
+      selectedCategory: null,
+      selectedSubCategory: null,
+      showActionSheet: false,
+      subCategoryItems: []
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
@@ -126,6 +135,30 @@ export class EpisodesScreen extends React.Component<Props, State> {
       },
       async () => {
         const newState = await this._queryData(selectedKey)
+        this.setState(newState)
+      }
+    )
+  }
+
+  _selectCategory = async (selectedKey: string, isSubCategory?: boolean) => {
+    if (!selectedKey) {
+      this.setState({
+        ...((isSubCategory ? { selectedSubCategory: null } : { selectedCategory: null }) as any)
+      })
+      return
+    }
+
+    this.setState(
+      {
+        endOfResultsReached: false,
+        isLoading: true,
+        ...((isSubCategory ? { selectedSubCategory: selectedKey } : { selectedCategory: selectedKey }) as any),
+        ...(!isSubCategory ? { subCategoryItems: [] } : {}),
+        flatListData: [],
+        flatListDataTotalCount: null
+      },
+      async () => {
+        const newState = await this._queryData(selectedKey, { isSubCategory })
         this.setState(newState)
       }
     )
@@ -292,17 +325,21 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
   render() {
     const {
+      categoryItems,
       flatListData,
       flatListDataTotalCount,
-      queryFrom,
       isLoading,
       isLoadingMore,
       isRefreshing,
+      queryFrom,
       querySort,
       searchBarText,
+      selectedCategory,
       selectedItem,
+      selectedSubCategory,
       showActionSheet,
-      showNoInternetConnectionMessage
+      showNoInternetConnectionMessage,
+      subCategoryItems
     } = this.state
 
     const { navigation } = this.props
@@ -317,6 +354,18 @@ export class EpisodesScreen extends React.Component<Props, State> {
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort}
         />
+        {queryFrom === _categoryKey && categoryItems && (
+          <TableSectionSelectors
+            handleSelectLeftItem={(x: string) => this._selectCategory(x)}
+            handleSelectRightItem={(x: string) => this._selectCategory(x, true)}
+            leftItems={categoryItems}
+            placeholderLeft={{ label: 'All', value: _allCategoriesKey }}
+            placeholderRight={{ label: 'All', value: _allCategoriesKey }}
+            rightItems={subCategoryItems}
+            selectedLeftItemKey={selectedCategory}
+            selectedRightItemKey={selectedSubCategory}
+          />
+        )}
         {isLoading && <ActivityIndicator />}
         {!isLoading && queryFrom && (
           <FlatList
@@ -359,6 +408,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   _queryData = async (
     filterKey: string | null,
     queryOptions: {
+      isSubCategory?: boolean
       queryPage?: number
       searchAllFieldsText?: string
     } = {}
@@ -375,7 +425,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
     try {
       let { flatListData } = this.state
-      const { queryFrom, querySort } = this.state
+      const { queryFrom, querySort, selectedCategory, selectedSubCategory } = this.state
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
       const nsfwMode = this.global.settings.nsfwMode
       const { queryPage, searchAllFieldsText } = queryOptions
@@ -405,22 +455,40 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = downloadedEpisodes.length
       } else if (filterKey === _allPodcastsKey) {
-        const { searchBarText: searchAllFieldsText } = this.state
-        const results = await getEpisodes(
-          {
-            sort: querySort,
-            page: queryPage,
-            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-            includePodcast: true
-          },
-          this.global.settings.nsfwMode
-        )
+        const results = this._queryAllEpisodes(querySort, queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
+      } else if (filterKey === _categoryKey) {
+        if (selectedCategory && selectedSubCategory === _allCategoriesKey) {
+          const results = await this._queryEpisodesByCategory(selectedCategory, querySort, queryPage)
+          newState.flatListData = [...flatListData, ...results[0]]
+          newState.endOfResultsReached = newState.flatListData.length >= results[1]
+          newState.flatListDataTotalCount = results[1]
+        } else if (selectedSubCategory) {
+          const results = await this._queryEpisodesByCategory(selectedSubCategory, querySort, queryPage)
+          newState.flatListData = [...flatListData, ...results[0]]
+          newState.endOfResultsReached = newState.flatListData.length >= results[1]
+          newState.flatListDataTotalCount = results[1]
+          newState.selectedSubCategory = selectedSubCategory || _allCategoriesKey
+        } else {
+          const categoryResults = await getTopLevelCategories()
+          const podcastResults = await this._queryAllEpisodes(querySort, queryPage)
+          newState.categoryItems = generateCategoryItems(categoryResults[0])
+          newState.flatListData = [...flatListData, ...podcastResults[0]]
+          newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
+          newState.flatListDataTotalCount = podcastResults[1]
+        }
       } else if (sortingItems.some((option) => option.value === filterKey)) {
         const results = await getEpisodes(
           {
+            ...(((selectedSubCategory && selectedSubCategory !== _allCategoriesKey) || selectedCategory
+              ? {
+                  categories:
+                    (selectedSubCategory && selectedSubCategory !== _allCategoriesKey && selectedSubCategory) ||
+                    selectedCategory
+                }
+              : {}) as object),
             ...(queryFrom === _subscribedKey ? { podcastId } : {}),
             sort: filterKey,
             ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
@@ -432,6 +500,25 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.flatListData = results[0]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
+      } else {
+        const { isSubCategory } = queryOptions
+        let categories
+        if (isSubCategory) {
+          categories = filterKey === _allCategoriesKey ? selectedCategory : filterKey
+        } else if (filterKey === _allCategoriesKey) {
+          newState.selectedCategory = _allCategoriesKey
+        } else {
+          categories = filterKey
+          const category = await getCategoryById(filterKey || '')
+          newState.subCategoryItems = generateCategoryItems(category.categories)
+          newState.selectedSubCategory = _allCategoriesKey
+          newState.selectedCategory = filterKey
+        }
+
+        const results = await this._queryEpisodesByCategory(categories, querySort, queryPage)
+        newState.flatListData = results[0]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       }
 
       return newState
@@ -440,9 +527,40 @@ export class EpisodesScreen extends React.Component<Props, State> {
       return newState
     }
   }
+
+  _queryAllEpisodes = async (sort: string | null, page: number = 1) => {
+    const { searchBarText: searchAllFieldsText } = this.state
+    const results = await getEpisodes(
+      {
+        sort,
+        page,
+        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+        includePodcast: true
+      },
+      this.global.settings.nsfwMode
+    )
+    return results
+  }
+
+  _queryEpisodesByCategory = async (categoryId?: string | null, sort?: string | null, page: number = 1) => {
+    const { searchBarText: searchAllFieldsText } = this.state
+    const results = await getEpisodes(
+      {
+        categories: categoryId,
+        sort,
+        page,
+        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+        includePodcast: true
+      },
+      this.global.settings.nsfwMode
+    )
+    return results
+  }
 }
 
+const _allCategoriesKey = 'allCategories'
 const _allPodcastsKey = 'allPodcasts'
+const _categoryKey = 'category'
 const _downloadedKey = 'downloaded'
 const _subscribedKey = 'subscribed'
 const _mostRecentKey = 'most-recent'
@@ -464,6 +582,10 @@ const leftItems = [
   {
     label: 'All Podcasts',
     value: _allPodcastsKey
+  },
+  {
+    label: 'Category',
+    value: _categoryKey
   }
 ]
 

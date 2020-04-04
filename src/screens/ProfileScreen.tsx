@@ -489,8 +489,6 @@ export class ProfileScreen extends React.Component<Props, State> {
     return new Promise(async (resolve, reject) => {
       const { flatListData } = this.state
       const query = {
-        includeAuthors: true,
-        includeCategories: true,
         page,
         podcastIds: this.global.profile.user.subscribedPodcastIds,
         sort

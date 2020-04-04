@@ -24,12 +24,6 @@ export const getPodcast = async (id: string) => {
 
 export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
   const filteredQuery = {
-    // NOTE: disabling includeAuthors and includeCategories because something is wrong with those queries...
-    // the queries are not returning a full list, and are including duplicates
-    // ...(query.includeAuthors ? { includeAuthors: query.includeAuthors } : {}),
-    // ...(query.includeCategories
-    //   ? { includeCategories: query.includeCategories }
-    //   : {}),
     ...(query.maxResults ? { maxResults: true } : {}),
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),

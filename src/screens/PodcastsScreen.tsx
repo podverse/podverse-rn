@@ -362,7 +362,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             const nextPage = queryPage + 1
             const newState = await this._queryData(queryFrom, this.state, {
               queryPage: nextPage,
-              searchAllFieldsText: this.state.searchBarText
+              searchTitle: this.state.searchBarText
             })
             this.setState(newState)
           }
@@ -644,8 +644,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       {
         sort,
         page,
-        includeAuthors: true,
-        includeCategories: true,
         ...(searchTitle ? { searchTitle } : {})
       },
       this.global.settings.nsfwMode
@@ -653,14 +651,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
     return results
   }
 
-  _queryPodcastsByCategory = async (categoryId: string | null, sort: string | null, page: number = 1) => {
+  _queryPodcastsByCategory = async (categoryId?: string | null, sort?: string | null, page: number = 1) => {
     const { searchBarText: searchTitle } = this.state
     const results = await getPodcasts(
       {
         categories: categoryId,
         sort,
         page,
-        includeAuthors: true,
         ...(searchTitle ? { searchTitle } : {})
       },
       this.global.settings.nsfwMode
@@ -741,7 +738,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
           {
             ...(((selectedSubCategory && selectedSubCategory !== _allCategoriesKey) || selectedCategory
               ? {
-                  categories: (selectedSubCategory && selectedSubCategory !== _allCategoriesKey) || selectedCategory
+                  categories:
+                    (selectedSubCategory && selectedSubCategory !== _allCategoriesKey && selectedSubCategory) ||
+                    selectedCategory
                 }
               : {}) as object),
             sort: filterKey,
@@ -769,15 +768,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           newState.selectedCategory = filterKey
         }
 
-        const results = await getPodcasts(
-          {
-            categories,
-            sort: querySort,
-            includeAuthors: true,
-            ...(searchTitle ? { searchTitle } : {})
-          },
-          nsfwMode
-        )
+        const results = await this._queryPodcastsByCategory(categories, querySort)
         newState.flatListData = results[0]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
@@ -790,14 +781,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 }
 
-const _subscribedKey = 'subscribed'
-const _downloadedKey = 'downloaded'
+const _allCategoriesKey = 'allCategories'
 const _allPodcastsKey = 'allPodcasts'
 const _categoryKey = 'category'
-const _allCategoriesKey = 'allCategories'
+const _downloadedKey = 'downloaded'
+const _subscribedKey = 'subscribed'
 const _alphabeticalKey = 'alphabetical'
 const _mostRecentKey = 'most-recent'
-const _randomKey = 'random'
 const _topPastDay = 'top-past-day'
 const _topPastWeek = 'top-past-week'
 const _topPastMonth = 'top-past-month'
@@ -822,7 +812,7 @@ const leftItems = [
   }
 ]
 
-const rightItems = (isAllPodcasts?: boolean, isCategories?: boolean) => {
+const rightItems = () => {
   const items = [
     {
       label: 'top - past day',

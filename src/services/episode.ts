@@ -2,6 +2,7 @@ import { request } from './request'
 
 export const getEpisodes = async (query: any = {}, nsfwMode: boolean) => {
   const filteredQuery = {
+    ...(query.categories ? { categories: query.categories } : {}),
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
     ...(query.podcastId ? { podcastId: query.podcastId } : {}),
