@@ -49,6 +49,7 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
+  hideRightItemWhileLoading: boolean
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
@@ -81,6 +82,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
+      hideRightItemWhileLoading: false,
       isLoading: true,
       isLoadingMore: false,
       isRefreshing: false,
@@ -279,8 +281,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     const { querySort } = this.state
     let sort = !querySort || querySort === _alphabeticalKey || querySort === _mostRecentKey ? _topPastWeek : querySort
+    let hideRightItemWhileLoading = false
     if (querySortOverride) {
       sort = querySortOverride
+      hideRightItemWhileLoading = true
     }
     isInitialLoad = false
 
@@ -289,6 +293,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
+        hideRightItemWhileLoading,
         isLoading: true,
         queryFrom: selectedKey,
         queryPage: 1,
@@ -340,7 +345,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         ...((isSubCategory ? { selectedSubCategory: selectedKey } : { selectedCategory: selectedKey }) as any),
         ...(!isSubCategory ? { subCategoryItems: [] } : {}),
         flatListData: [],
-        flatListDataTotalCount: null
+        flatListDataTotalCount: null,
+        queryPage: 1
       },
       async () => {
         const newState = await this._queryData(selectedKey, this.state, {}, { isSubCategory })
@@ -547,6 +553,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const {
       categoryItems,
+      hideRightItemWhileLoading,
       isLoading,
       isLoadingMore,
       isRefreshing,
@@ -582,7 +589,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
           handleSelectRightItem={(selectedKey: string) => this.selectRightItem(selectedKey)}
           hidePickers={isInitialLoad}
           leftItems={leftItems}
-          rightItems={!queryFrom || queryFrom === _subscribedKey || queryFrom === _downloadedKey ? [] : rItems}
+          rightItems={
+            hideRightItemWhileLoading || !queryFrom || queryFrom === _subscribedKey || queryFrom === _downloadedKey
+              ? []
+              : rItems
+          }
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort}
         />
@@ -672,6 +683,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     queryOptions: { isSubCategory?: boolean; searchTitle?: string } = {}
   ) => {
     const newState = {
+      hideRightItemWhileLoading: false,
       isLoading: false,
       isLoadingMore: false,
       isRefreshing: false,

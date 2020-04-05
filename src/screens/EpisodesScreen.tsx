@@ -33,6 +33,7 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
+  hideRightItemWhileLoading: boolean
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
@@ -63,6 +64,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
+      hideRightItemWhileLoading: false,
       isLoading: true,
       isLoadingMore: false,
       isRefreshing: false,
@@ -101,14 +103,31 @@ export class EpisodesScreen extends React.Component<Props, State> {
       return
     }
 
+    const { querySort } = this.state
+
+    let sort = querySort
+    let hideRightItemWhileLoading = false
+    if (
+      (selectedKey === _allPodcastsKey || selectedKey === _categoryKey) &&
+      (querySort === _mostRecentKey || querySort === _randomKey)
+    ) {
+      sort = _topPastWeek
+      hideRightItemWhileLoading = true
+    } else if (selectedKey === _downloadedKey) {
+      sort = _mostRecentKey
+      hideRightItemWhileLoading = true
+    }
+
     this.setState(
       {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
+        hideRightItemWhileLoading,
         isLoading: true,
         queryFrom: selectedKey,
         queryPage: 1,
+        querySort: sort,
         searchBarText: ''
       },
       async () => {
@@ -155,7 +174,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
         ...((isSubCategory ? { selectedSubCategory: selectedKey } : { selectedCategory: selectedKey }) as any),
         ...(!isSubCategory ? { subCategoryItems: [] } : {}),
         flatListData: [],
-        flatListDataTotalCount: null
+        flatListDataTotalCount: null,
+        queryPage: 1
       },
       async () => {
         const newState = await this._queryData(selectedKey, { isSubCategory })
@@ -328,6 +348,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       categoryItems,
       flatListData,
       flatListDataTotalCount,
+      hideRightItemWhileLoading,
       isLoading,
       isLoadingMore,
       isRefreshing,
@@ -350,7 +371,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           leftItems={leftItems}
-          rightItems={queryFrom === _downloadedKey ? rightItems(true) : rightItems(false)}
+          rightItems={
+            hideRightItemWhileLoading ? [] : queryFrom === _downloadedKey ? rightItems(true) : rightItems(false)
+          }
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort}
         />
@@ -414,6 +437,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
     } = {}
   ) => {
     const newState = {
+      hideRightItemWhileLoading: false,
       isLoading: false,
       isLoadingMore: false,
       isRefreshing: false,
@@ -455,7 +479,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = downloadedEpisodes.length
       } else if (filterKey === _allPodcastsKey) {
-        const results = this._queryAllEpisodes(querySort, queryPage)
+        const results = await this._queryAllEpisodes(querySort, queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
@@ -530,6 +554,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
   _queryAllEpisodes = async (sort: string | null, page: number = 1) => {
     const { searchBarText: searchAllFieldsText } = this.state
+
     const results = await getEpisodes(
       {
         sort,
@@ -539,6 +564,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       },
       this.global.settings.nsfwMode
     )
+
     return results
   }
 

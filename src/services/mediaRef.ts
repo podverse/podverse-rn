@@ -43,6 +43,7 @@ export const getMediaRef = async (id: string) => {
 
 export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
   const filteredQuery = {
+    ...(query.categories ? { categories: query.categories } : {}),
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
     ...(query.podcastId ? { podcastId: query.podcastId } : {}),
@@ -55,6 +56,11 @@ export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
   if (query.subscribedOnly && query.podcastId && query.podcastId.length === 0) {
     return [0, 0]
   }
+
+  if (query.episodeId && query.episodeId.length === 0) {
+    return [0, 0]
+  }
+
   const response = await request(
     {
       endpoint: '/mediaRef',
