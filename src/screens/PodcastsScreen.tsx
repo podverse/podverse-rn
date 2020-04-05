@@ -581,21 +581,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
           handleSelectLeftItem={(selectedKey: string) => this.selectLeftItem(selectedKey)}
           handleSelectRightItem={(selectedKey: string) => this.selectRightItem(selectedKey)}
           hidePickers={isInitialLoad}
-          leftItems={leftItems}
-          rightItems={!queryFrom || queryFrom === _subscribedKey || queryFrom === _downloadedKey ? [] : rItems}
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort}
+          screenName='PodcastsScreen'
         />
         {queryFrom === _categoryKey && categoryItems && (
           <TableSectionSelectors
             handleSelectLeftItem={(x: string) => this._selectCategory(x)}
             handleSelectRightItem={(x: string) => this._selectCategory(x, true)}
-            leftItems={categoryItems}
-            placeholderLeft={{ label: 'All', value: _allCategoriesKey }}
-            placeholderRight={{ label: 'All', value: _allCategoriesKey }}
-            rightItems={subCategoryItems}
             selectedLeftItemKey={selectedCategory}
             selectedRightItemKey={selectedSubCategory}
+            isBottomBar={true}
+            screenName='PodcastsScreen'
           />
         )}
         {isLoading && <ActivityIndicator />}

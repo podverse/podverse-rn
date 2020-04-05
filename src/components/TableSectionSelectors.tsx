@@ -1,4 +1,5 @@
-import React from 'react'
+import AsyncStorage from '@react-native-community/async-storage'
+import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import { getGlobal } from 'reactn'
@@ -10,29 +11,94 @@ type Props = {
   handleSelectLeftItem?: any
   handleSelectRightItem?: any
   hidePickers?: boolean
-  leftItems: any[]
   placeholderLeft?: any
   placeholderRight?: any
-  rightItems?: any[]
   selectedLeftItemKey: string | null
   selectedRightItemKey?: string | null
+  screenName: string
+  isBottomBar?: boolean
 }
 
 export const TableSectionSelectors = (props: Props) => {
-  const global = getGlobal()
-  const { fontScaleMode, globalTheme } = global
+  const { fontScaleMode, globalTheme } = getGlobal()
   const isDarkMode = globalTheme === darkTheme
+  const [leftItems, setLeftItems] = useState([])
+  const [rightItems, setRightItems] = useState([])
+
   const {
     handleSelectLeftItem,
     handleSelectRightItem,
     hidePickers,
-    leftItems = [],
     placeholderLeft,
     placeholderRight,
-    rightItems = [],
     selectedLeftItemKey,
-    selectedRightItemKey
+    selectedRightItemKey,
+    screenName,
+    isBottomBar = false
   } = props
+
+  useEffect(() => {
+    let leftItems = []
+    let rightItems = []
+    if (!isBottomBar) {
+      leftItems = PV.FilterOptions.typeItems.filter((type: string) => {
+        return PV.FilterOptions.screenFilters[screenName].type.includes(type.value)
+      })
+
+      rightItems = PV.FilterOptions.sortItems.filter((sortKey: string) => {
+        return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
+      })
+    } else {
+      // Bottom bar
+      const newleftItems = PV.FilterOptions.screenFilters[screenName].sublist
+      const newRightItems = []
+      // add more categories
+      AsyncStorage.getItem('CATEGORIES_LIST')
+        .then((listString = '') => {
+          const categories = JSON.parse(listString).map((category) => {
+            return {
+              label: category.title,
+              value: category.id,
+              ...category
+            }
+          })
+
+          setLeftItems([...newleftItems, ...categories])
+        })
+        .catch((err) => {
+          console.log('Bottom Selection Bar error: ', err)
+        })
+    }
+
+    setLeftItems(leftItems)
+    setRightItems(rightItems)
+  }, [])
+
+  useEffect(() => {
+    let rightItems = []
+    if (PV.FilterOptions.screenFilters[screenName].hideSort.includes(selectedLeftItemKey)) {
+      setRightItems(rightItems)
+    } else {
+      if (!isBottomBar) {
+        rightItems = PV.FilterOptions.sortItems.filter((sortKey: string) => {
+          return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
+        })
+      } else {
+        const selectedCategory = leftItems.find((category) => category.value === selectedLeftItemKey)
+        if (selectedCategory && selectedCategory.categories) {
+          rightItems = selectedCategory.categories.map((subCat) => {
+            return {
+              label: subCat.title,
+              value: subCat.id,
+              ...subCat
+            }
+          })
+        }
+      }
+
+      setRightItems(rightItems)
+    }
+  }, [selectedLeftItemKey])
 
   const selectedLeftItem = leftItems.find((x) => x.value === selectedLeftItemKey) || {}
   const selectedRightItem = rightItems.find((x) => x.value === selectedRightItemKey) || {}
@@ -40,7 +106,6 @@ export const TableSectionSelectors = (props: Props) => {
     PV.Fonts.fontScale.largest === fontScaleMode
       ? [styles.tableSectionHeaderInner, { flexDirection: 'column' }]
       : [styles.tableSectionHeaderInner]
-
   return (
     <View>
       <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>

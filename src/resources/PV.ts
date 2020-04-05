@@ -6,6 +6,7 @@ import { DeepLinks } from './DeepLinks'
 import { Emails } from './Emails'
 import { Errors } from './Errors'
 import { Events } from './Events'
+import { FilterOptions } from './FilterOptions'
 import { Filters } from './Filters'
 import { FlatList } from './FlatList'
 import { Fonts } from './Fonts'
@@ -34,6 +35,7 @@ export const PV = {
   Errors,
   Events,
   Filters,
+  FilterOptions,
   FlatList,
   Fonts,
   Google,
