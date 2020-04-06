@@ -82,7 +82,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const isEditing = this.props.navigation.getParam('isEditing')
 
     // Prevent the temporary progressValue from sticking in the progress bar
-    setTimeout(() => this.setState({ progressValue: null }), 250)
+    setTimeout(() => this.setState({ progressValue: null }), 1000)
 
     const hideHowToModal = await AsyncStorage.getItem(PV.Keys.MAKE_CLIP_HOW_TO_HAS_LOADED)
 
@@ -288,25 +288,25 @@ export class MakeClipScreen extends React.Component<Props, State> {
   _playerJumpBackward = async () => {
     const progressValue = await playerJumpBackward(PV.Player.jumpSeconds)
     this.setState({ progressValue })
-    setTimeout(() => this.setState({ progressValue: null }), 250)
+    setTimeout(() => this.setState({ progressValue: null }), 1000)
   }
 
   _playerJumpForward = async () => {
     const progressValue = await playerJumpForward(PV.Player.jumpSeconds)
     this.setState({ progressValue })
-    setTimeout(() => this.setState({ progressValue: null }), 250)
+    setTimeout(() => this.setState({ progressValue: null }), 1000)
   }
 
   _playerMiniJumpBackward = async () => {
     const progressValue = await playerJumpBackward(PV.Player.miniJumpSeconds)
     this.setState({ progressValue })
-    setTimeout(() => this.setState({ progressValue: null }), 250)
+    setTimeout(() => this.setState({ progressValue: null }), 1000)
   }
 
   _playerMiniJumpForward = async () => {
     const progressValue = await playerJumpForward(PV.Player.miniJumpSeconds)
     this.setState({ progressValue })
-    setTimeout(() => this.setState({ progressValue: null }), 250)
+    setTimeout(() => this.setState({ progressValue: null }), 1000)
   }
 
   _showClipPrivacyNote = async () => {
