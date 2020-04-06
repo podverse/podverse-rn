@@ -17,7 +17,7 @@ import {
 } from '../components'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { generateCategoryItems, isOdd } from '../lib/utility'
+import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { getEpisode } from '../services/episode'
@@ -45,7 +45,6 @@ type Props = {
 }
 
 type State = {
-  categoryItems: any[]
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
@@ -61,7 +60,6 @@ type State = {
   selectedSubCategory: string | null
   showDataSettingsConfirmDialog: boolean
   showNoInternetConnectionMessage?: boolean
-  subCategoryItems: any[]
 }
 
 // isInitialLoad is used to prevent rendering the PodcastsScreen components until
@@ -77,7 +75,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      categoryItems: [],
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
@@ -89,10 +86,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
       queryPage: 1,
       querySort: null,
       searchBarText: '',
-      selectedCategory: null,
-      selectedSubCategory: null,
-      showDataSettingsConfirmDialog: false,
-      subCategoryItems: []
+      selectedCategory: _allCategoriesKey,
+      selectedSubCategory: _allCategoriesKey,
+      showDataSettingsConfirmDialog: false
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
@@ -338,7 +334,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         endOfResultsReached: false,
         isLoading: true,
         ...((isSubCategory ? { selectedSubCategory: selectedKey } : { selectedCategory: selectedKey }) as any),
-        ...(!isSubCategory ? { subCategoryItems: [] } : {}),
         flatListData: [],
         flatListDataTotalCount: null
       },
@@ -546,7 +541,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const {
-      categoryItems,
       isLoading,
       isLoadingMore,
       isRefreshing,
@@ -555,8 +549,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       selectedCategory,
       selectedSubCategory,
       showDataSettingsConfirmDialog,
-      showNoInternetConnectionMessage,
-      subCategoryItems
+      showNoInternetConnectionMessage
     } = this.state
 
     let flatListData = []
@@ -572,8 +565,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       flatListDataTotalCount = this.state.flatListDataTotalCount
     }
 
-    const rItems = rightItems(queryFrom === _allPodcastsKey)
-
     return (
       <View style={styles.view}>
         <PlayerEvents />
@@ -585,7 +576,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           selectedRightItemKey={querySort}
           screenName='PodcastsScreen'
         />
-        {queryFrom === _categoryKey && categoryItems && (
+        {queryFrom === _categoryKey && (
           <TableSectionSelectors
             handleSelectLeftItem={(x: string) => this._selectCategory(x)}
             handleSelectRightItem={(x: string) => this._selectCategory(x, true)}
@@ -724,9 +715,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           newState.flatListDataTotalCount = results[1]
           newState.selectedSubCategory = selectedSubCategory || _allCategoriesKey
         } else {
-          const categoryResults = await getTopLevelCategories()
           const podcastResults = await this._queryAllPodcasts(querySort, newState.queryPage)
-          newState.categoryItems = generateCategoryItems(categoryResults[0])
           newState.flatListData = [...flatListData, ...podcastResults[0]]
           newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
           newState.flatListDataTotalCount = podcastResults[1]
@@ -760,8 +749,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
           newState.selectedCategory = _allCategoriesKey
         } else {
           categories = filterKey
-          const category = await getCategoryById(filterKey || '')
-          newState.subCategoryItems = generateCategoryItems(category.categories)
           newState.selectedSubCategory = _allCategoriesKey
           newState.selectedCategory = filterKey
         }

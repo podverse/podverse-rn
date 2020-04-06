@@ -11,8 +11,6 @@ type Props = {
   handleSelectLeftItem?: any
   handleSelectRightItem?: any
   hidePickers?: boolean
-  placeholderLeft?: any
-  placeholderRight?: any
   selectedLeftItemKey: string | null
   selectedRightItemKey?: string | null
   screenName: string
@@ -29,8 +27,6 @@ export const TableSectionSelectors = (props: Props) => {
     handleSelectLeftItem,
     handleSelectRightItem,
     hidePickers,
-    placeholderLeft,
-    placeholderRight,
     selectedLeftItemKey,
     selectedRightItemKey,
     screenName,
@@ -40,6 +36,7 @@ export const TableSectionSelectors = (props: Props) => {
   useEffect(() => {
     let leftItems = []
     let rightItems = []
+
     if (!isBottomBar) {
       leftItems = PV.FilterOptions.typeItems.filter((type: string) => {
         return PV.FilterOptions.screenFilters[screenName].type.includes(type.value)
@@ -51,7 +48,7 @@ export const TableSectionSelectors = (props: Props) => {
     } else {
       // Bottom bar
       const newleftItems = PV.FilterOptions.screenFilters[screenName].sublist
-      const newRightItems = []
+
       // add more categories
       AsyncStorage.getItem('CATEGORIES_LIST')
         .then((listString = '') => {
@@ -62,7 +59,6 @@ export const TableSectionSelectors = (props: Props) => {
               ...category
             }
           })
-
           setLeftItems([...newleftItems, ...categories])
         })
         .catch((err) => {
@@ -84,15 +80,18 @@ export const TableSectionSelectors = (props: Props) => {
           return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
         })
       } else {
-        const selectedCategory = leftItems.find((category) => category.value === selectedLeftItemKey)
-        if (selectedCategory && selectedCategory.categories) {
-          rightItems = selectedCategory.categories.map((subCat) => {
-            return {
-              label: subCat.title,
-              value: subCat.id,
-              ...subCat
-            }
-          })
+        if (leftItems.length > 0) {
+          const selectedCategory = leftItems.find((category) => category.value === selectedLeftItemKey)
+          if (selectedCategory && selectedCategory.categories) {
+            rightItems = selectedCategory.categories.map((subCat) => {
+              return {
+                label: subCat.title,
+                value: subCat.id,
+                ...subCat
+              }
+            })
+            rightItems.unshift(...PV.FilterOptions.screenFilters[screenName].sublist)
+          }
         }
       }
 
@@ -106,15 +105,15 @@ export const TableSectionSelectors = (props: Props) => {
     PV.Fonts.fontScale.largest === fontScaleMode
       ? [styles.tableSectionHeaderInner, { flexDirection: 'column' }]
       : [styles.tableSectionHeaderInner]
+
   return (
     <View>
       <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
-        {!hidePickers && (
+        {!hidePickers && leftItems && leftItems.length > 0 && (
           <View style={wrapperStyle}>
             <RNPickerSelect
               items={leftItems}
               onValueChange={handleSelectLeftItem}
-              placeholder={placeholderLeft || _placeholderDefault}
               style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
               useNativeAndroidPickerStyle={false}
               value={selectedLeftItemKey}>
@@ -123,7 +122,7 @@ export const TableSectionSelectors = (props: Props) => {
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
                   style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
-                  {selectedLeftItem.label || (placeholderLeft && placeholderLeft.label) || _placeholderDefault.label}
+                  {selectedLeftItem.label}
                 </Text>
                 <Icon
                   name='angle-down'
@@ -136,7 +135,6 @@ export const TableSectionSelectors = (props: Props) => {
               <RNPickerSelect
                 items={rightItems}
                 onValueChange={handleSelectRightItem}
-                placeholder={placeholderRight || _placeholderDefault}
                 style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
                 useNativeAndroidPickerStyle={false}
                 value={selectedRightItemKey}>
@@ -145,9 +143,7 @@ export const TableSectionSelectors = (props: Props) => {
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     numberOfLines={1}
                     style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                    {selectedRightItem.label ||
-                      (placeholderRight && placeholderRight.label) ||
-                      _placeholderDefault.label}
+                    {selectedRightItem.label}
                   </Text>
                   <Icon
                     name='angle-down'
@@ -163,7 +159,7 @@ export const TableSectionSelectors = (props: Props) => {
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
                   style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                  {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label}
+                  {selectedRightItem.label}
                 </Text>
               </View>
             )}
@@ -172,11 +168,6 @@ export const TableSectionSelectors = (props: Props) => {
       </View>
     </View>
   )
-}
-
-const _placeholderDefault = {
-  label: 'Select...',
-  value: null
 }
 
 const styles = {

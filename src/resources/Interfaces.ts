@@ -150,18 +150,32 @@ export interface IActionSheet {
 }
 
 export interface IFilters {
-  downloadedKey: string
-  allEpisodesKey: string
-  clipsKey: string
-  aboutKey: string
-  mostRecentKey: string
-  mostRecentAllKey: string
-  oldestKey: string
-  randomKey: string
-  topPastDay: string
-  topPastWeek: string
-  topPastMonth: string
-  topPastYear: string
+  _subscribedKey: string
+  _downloadedKey: string
+  _allPodcastsKey: string
+  _categoryKey: string
+  _alphabeticalKey: string
+  _mostRecentKey: string
+  _randomKey: string
+  _topPastDay: string
+  _topPastWeek: string
+  _topPastMonth: string
+  _topPastYear: string
+  _chronologicalKey: string
+  _oldestKey: string
+  _myClipsKey: string
+  _allEpisodesKey: string
+  _podcastsKey: string
+  _episodesKey: string
+  _clipsKey: string
+  _playlistKey: string
+  _aboutKey: string
+  _showNotesKey: string
+  _titleKey: string
+  _myPlaylistsKey: string
+  _fromThisPodcast: string
+  _fromThisEpisode: string
+  _allCategories: string
 }
 
 interface IFontLargeSizes {

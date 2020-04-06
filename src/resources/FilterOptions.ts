@@ -1,30 +1,33 @@
-const _subscribedKey = 'subscribed'
-const _downloadedKey = 'downloaded'
-const _allPodcastsKey = 'allPodcasts'
-const _categoryKey = 'category'
-const _allCategoriesKey = 'allCategories'
-const _alphabeticalKey = 'alphabetical'
-const _mostRecentKey = 'most-recent'
-const _randomKey = 'random'
-const _topPastDay = 'top-past-day'
-const _topPastWeek = 'top-past-week'
-const _topPastMonth = 'top-past-month'
-const _topPastYear = 'top-past-year'
-const _chronologicalKey = 'chronological'
-const _oldestKey = 'oldest'
-const _myClipsKey = 'clips'
-const _allEpisodesKey = 'allEpisodes'
-const _podcastsKey = 'podcasts'
-const _episodesKey = 'episodes'
-const _clipsKey = 'clips'
-const _playlistKey = 'playlist'
-const _aboutKey = 'about'
-const _showNotesKey = 'showNotes'
-const _titleKey = 'title'
-const _myPlaylistsKey = 'myPlaylists'
-const _fromThisPodcast = 'fromThisPodcast'
-const _fromThisEpisode = 'fromThisEpisode'
-const _allCategories = 'allCategories'
+import { Filters } from './Filters'
+
+const {
+  _subscribedKey,
+  _downloadedKey,
+  _allPodcastsKey,
+  _categoryKey,
+  _alphabeticalKey,
+  _mostRecentKey,
+  _randomKey,
+  _topPastDay,
+  _topPastWeek,
+  _topPastMonth,
+  _topPastYear,
+  _chronologicalKey,
+  _oldestKey,
+  _myClipsKey,
+  _allEpisodesKey,
+  _podcastsKey,
+  _episodesKey,
+  _clipsKey,
+  _playlistKey,
+  _aboutKey,
+  _showNotesKey,
+  _titleKey,
+  _myPlaylistsKey,
+  _fromThisPodcast,
+  _fromThisEpisode,
+  _allCategories
+} = Filters
 
 export const FilterOptions = {
   typeItems: [
