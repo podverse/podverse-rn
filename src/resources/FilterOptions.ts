@@ -161,6 +161,21 @@ export const FilterOptions = {
       sublist: [],
       hideSort: []
     },
+    PlayerScreen: {
+      type: [_episodesKey, _clipsKey, _showNotesKey, _titleKey],
+      sort: [_chronologicalKey, _mostRecentKey, _oldestKey, ..._top, _randomKey],
+      sublist: [
+        {
+          label: 'From this podcast',
+          value: _fromThisPodcastKey
+        },
+        {
+          label: 'From this episode',
+          value: _fromThisEpisodeKey
+        }
+      ],
+      hideSort: [_showNotesKey, _titleKey]
+    },
     PlaylistsScreen: {
       type: [_myPlaylistsKey, _subscribedKey],
       sort: [],

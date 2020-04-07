@@ -30,7 +30,8 @@ export const TableSectionSelectors = (props: Props) => {
     selectedLeftItemKey,
     selectedRightItemKey,
     screenName,
-    isBottomBar = false
+    isBottomBar = false,
+    isCategories = false
   } = props
 
   useEffect(() => {
@@ -49,21 +50,26 @@ export const TableSectionSelectors = (props: Props) => {
       // Bottom bar
       const newleftItems = PV.FilterOptions.screenFilters[screenName].sublist
 
-      // add more categories
-      AsyncStorage.getItem('CATEGORIES_LIST')
-        .then((listString = '') => {
-          const categories = JSON.parse(listString).map((category) => {
-            return {
-              label: category.title,
-              value: category.id,
-              ...category
-            }
+      if (isCategories) {
+        // add more categories
+        AsyncStorage.getItem('CATEGORIES_LIST')
+          .then((listString = '') => {
+            const categories = JSON.parse(listString).map((category) => {
+              return {
+                label: category.title,
+                value: category.id,
+                ...category
+              }
+            })
+            setLeftItems([...newleftItems, ...categories])
           })
-          setLeftItems([...newleftItems, ...categories])
-        })
-        .catch((err) => {
-          console.log('Bottom Selection Bar error: ', err)
-        })
+          .catch((err) => {
+            console.log('Bottom Selection Bar error: ', err)
+          })
+      } else {
+        setLeftItems(newleftItems)
+        return
+      }
     }
 
     setLeftItems(leftItems)

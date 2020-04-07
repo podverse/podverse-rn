@@ -585,6 +585,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             selectedLeftItemKey={selectedCategory}
             selectedRightItemKey={selectedSubCategory}
             isBottomBar={true}
+            isCategories={true}
             screenName='PodcastsScreen'
           />
         )}
