@@ -14,7 +14,7 @@ export const Filters: IFilters = {
   _topPastYear: 'top-past-year',
   _chronologicalKey: 'chronological',
   _oldestKey: 'oldest',
-  _myClipsKey: 'clips',
+  _myClipsKey: 'myClips',
   _allEpisodesKey: 'allEpisodes',
   _podcastsKey: 'podcasts',
   _episodesKey: 'episodes',

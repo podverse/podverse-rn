@@ -132,11 +132,11 @@ export const FilterOptions = {
       value: _allCategories
     },
     {
-      label: 'From This Podcast',
+      label: 'From this podcast',
       value: _fromThisPodcastKey
     },
     {
-      label: 'From This Episode',
+      label: 'From this episode',
       value: _fromThisEpisodeKey
     }
   ],
@@ -149,6 +149,12 @@ export const FilterOptions = {
     },
     EpisodesScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey],
+      sort: [_mostRecentKey, _topPastDay, _topPastWeek, _topPastMonth, _topPastYear],
+      sublist: [],
+      hideSort: []
+    },
+    ClipsScreen: {
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _myClipsKey],
       sort: [_mostRecentKey, _topPastDay, _topPastWeek, _topPastMonth, _topPastYear],
       sublist: [],
       hideSort: []
