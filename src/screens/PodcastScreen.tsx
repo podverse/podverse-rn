@@ -39,21 +39,6 @@ import { toggleAddByRSSPodcast } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
-const {
-  aboutKey,
-  allEpisodesKey,
-  clipsKey,
-  downloadedKey,
-  mostRecentKey,
-  mostRecentAllKey,
-  oldestKey,
-  randomKey,
-  topPastDay,
-  topPastMonth,
-  topPastWeek,
-  topPastYear
-} = PV.Filters
-
 type Props = {
   navigation?: any
 }
@@ -112,7 +97,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       (podcast && podcast.id) ||
       (podcast && podcast.addByRSSPodcastFeedUrl) ||
       this.props.navigation.getParam('podcastId')
-    const viewType = this.props.navigation.getParam('viewType') || allEpisodesKey
+    const viewType = this.props.navigation.getParam('viewType') || PV.Filters._episodesKey
 
     if (podcast && (podcast.id || podcast.addByRSSPodcastFeedUrl)) {
       this.props.navigation.setParams({
@@ -127,7 +112,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
-      isLoading: viewType !== downloadedKey || !podcast,
+      isLoading: viewType !== PV.Filters._downloadedKey || !podcast,
       isLoadingMore: false,
       isRefreshing: false,
       isSubscribing: false,
@@ -135,7 +120,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       podcast,
       podcastId,
       queryPage: 1,
-      querySort: mostRecentKey,
+      querySort: PV.Filters._mostRecentKey,
       searchBarText: '',
       showActionSheet: false,
       showSettings: false,
@@ -156,7 +141,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       {
         ...(!hasInternetConnection
           ? {
-              viewType: downloadedKey
+              viewType: PV.Filters._downloadedKey
             }
           : { viewType: this.state.viewType })
       },
@@ -198,10 +183,10 @@ export class PodcastScreen extends React.Component<Props, State> {
             newState.flatListDataTotalCount = newState.flatListData.length
           } else {
             newPodcast = await getPodcast(podcastId)
-            if (viewType === allEpisodesKey) {
-              newState = await this._queryData(allEpisodesKey)
-            } else if (viewType === clipsKey) {
-              newState = await this._queryData(clipsKey)
+            if (viewType === PV.Filters._episodesKey) {
+              newState = await this._queryData(PV.Filters._episodesKey)
+            } else if (viewType === PV.Filters._clipsKey) {
+              newState = await this._queryData(PV.Filters._clipsKey)
             }
           }
 
@@ -272,7 +257,12 @@ export class PodcastScreen extends React.Component<Props, State> {
   _onEndReached = ({ distanceFromEnd }) => {
     const { endOfResultsReached, isLoadingMore, podcast, queryPage = 1, viewType } = this.state
 
-    if (!podcast.addByRSSPodcastFeedUrl && viewType !== downloadedKey && !endOfResultsReached && !isLoadingMore) {
+    if (
+      !podcast.addByRSSPodcastFeedUrl &&
+      viewType !== PV.Filters._downloadedKey &&
+      !endOfResultsReached &&
+      !isLoadingMore
+    ) {
       if (distanceFromEnd > -1) {
         this.setState(
           {
@@ -346,7 +336,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     const isSearchScreen = this.props.navigation.getParam('isSearchScreen')
     const screen = isSearchScreen ? PV.RouteNames.SearchEpisodeScreen : PV.RouteNames.EpisodeScreen
 
-    if (viewType === downloadedKey) {
+    if (viewType === PV.Filters._downloadedKey) {
       let description = removeHTMLFromString(item.description)
       description = decodeHTMLString(description)
       return (
@@ -366,7 +356,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           title={item.title}
         />
       )
-    } else if (viewType === allEpisodesKey) {
+    } else if (viewType === PV.Filters._episodesKey) {
       let description = removeHTMLFromString(item.description)
       description = decodeHTMLString(description)
       return (
@@ -545,7 +535,6 @@ export class PodcastScreen extends React.Component<Props, State> {
       showSettings,
       viewType
     } = this.state
-    const { fontScaleMode } = this.global
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
 
     let isSubscribed = subscribedPodcastIds.some((x: string) => x === podcastId)
@@ -562,23 +551,22 @@ export class PodcastScreen extends React.Component<Props, State> {
     const autoDownloadOn =
       (podcast && autoDownloadSettings[podcast.id]) || (podcastId && autoDownloadSettings[podcastId])
 
-    let items = rightItems(false, viewType === allEpisodesKey)
-    if (viewType === downloadedKey) {
+    let items = PV.FilterOptions.screenFilters.PodcastScreen.sort
+    if (viewType === PV.Filters._downloadedKey) {
       const { downloadedPodcasts } = this.global
       const downloadedPodcast = downloadedPodcasts.find(
         (x: any) => (podcast && x.id === podcast.id) || x.id === podcastId
       )
       flatListData = (downloadedPodcast && downloadedPodcast.episodes) || []
       flatListDataTotalCount = flatListData.length
-      items = rightItems(true)
-    } else if (!viewType || viewType === aboutKey) {
+    } else if (!viewType || viewType === PV.Filters._aboutKey) {
       items = []
     }
 
     const resultsText =
-      (viewType === downloadedKey && 'episodes') ||
-      (viewType === allEpisodesKey && 'episodes') ||
-      (viewType === clipsKey && 'clips') ||
+      (viewType === PV.Filters._downloadedKey && 'episodes') ||
+      (viewType === PV.Filters._episodesKey && 'episodes') ||
+      (viewType === PV.Filters._clipsKey && 'clips') ||
       'results'
 
     return (
@@ -600,8 +588,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           <TableSectionSelectors
             handleSelectLeftItem={this.selectLeftItem}
             handleSelectRightItem={this.selectRightItem}
-            leftItems={leftItems}
-            rightItems={items}
+            screenName='PodcastScreen'
             selectedLeftItemKey={viewType}
             selectedRightItemKey={querySort}
           />
@@ -627,18 +614,19 @@ export class PodcastScreen extends React.Component<Props, State> {
         {!showSettings && (
           <View style={styles.view}>
             {isLoading && <ActivityIndicator />}
-            {!isLoading && viewType !== aboutKey && flatListData && podcast && (
+            {!isLoading && viewType !== PV.Filters._aboutKey && flatListData && podcast && (
               <FlatList
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
-                disableLeftSwipe={viewType !== downloadedKey}
+                disableLeftSwipe={viewType !== PV.Filters._downloadedKey}
                 extraData={flatListData}
-                hideEndOfResults={querySort === mostRecentAllKey}
                 isLoadingMore={isLoadingMore}
                 isRefreshing={isRefreshing}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
                 ListHeaderComponent={
-                  viewType === allEpisodesKey || viewType === clipsKey ? this._ListHeaderComponent : null
+                  viewType === PV.Filters._episodesKey || viewType === PV.Filters._clipsKey
+                    ? this._ListHeaderComponent
+                    : null
                 }
                 onEndReached={this._onEndReached}
                 renderHiddenItem={this._renderHiddenItem}
@@ -647,7 +635,7 @@ export class PodcastScreen extends React.Component<Props, State> {
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               />
             )}
-            {!isLoading && viewType === aboutKey && podcast && (
+            {!isLoading && viewType === PV.Filters._aboutKey && podcast && (
               <HTMLScrollView
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 html={podcast.description || (showNoInternetConnectionMessage ? 'No internet connection' : '')}
@@ -672,7 +660,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     )
   }
 
-  _queryAllEpisodes = async (sort: string | null, page: number = 1) => {
+  _queryEpisodes = async (sort: string | null, page: number = 1) => {
     const { podcastId, searchBarText: searchAllFieldsText } = this.state
     const results = await getEpisodes(
       {
@@ -715,34 +703,32 @@ export class PodcastScreen extends React.Component<Props, State> {
     } as State
 
     const hasInternetConnection = await hasValidNetworkConnection()
-    newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey !== downloadedKey
+    newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey !== PV.Filters._downloadedKey
 
     try {
-      if (filterKey === allEpisodesKey) {
-        const results = await this._queryAllEpisodes(querySort, queryOptions.queryPage)
+      if (filterKey === PV.Filters._episodesKey) {
+        const results = await this._queryEpisodes(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (filterKey === clipsKey) {
+      } else if (filterKey === PV.Filters._clipsKey) {
         const results = await this._queryClips(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (
-        rightItems(viewType === downloadedKey, viewType === allEpisodesKey).some((option) => option.value === filterKey)
-      ) {
+      } else if (PV.FilterOptions.screenFilters.PodcastScreen.sort.some((option) => option === filterKey)) {
         let results = []
 
-        if (viewType === allEpisodesKey) {
-          results = await this._queryAllEpisodes(querySort)
-        } else if (viewType === clipsKey) {
+        if (viewType === PV.Filters._episodesKey) {
+          results = await this._queryEpisodes(querySort)
+        } else if (viewType === PV.Filters._clipsKey) {
           results = await this._queryClips(querySort)
         }
 
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (filterKey === aboutKey) {
+      } else if (filterKey === PV.Filters._aboutKey) {
         if (podcastId && hasInternetConnection) {
           const newPodcast = await getPodcast(podcastId)
           newState.podcast = newPodcast
@@ -755,77 +741,6 @@ export class PodcastScreen extends React.Component<Props, State> {
       return newState
     }
   }
-}
-
-const leftItems = [
-  {
-    label: 'Downloaded',
-    value: downloadedKey
-  },
-  {
-    label: 'All Episodes',
-    value: allEpisodesKey
-  },
-  {
-    label: 'Clips',
-    value: clipsKey
-  },
-  {
-    label: 'About',
-    value: aboutKey
-  }
-]
-
-const rightItems = (onlyMostRecent?: boolean, includeOldest?: boolean) => {
-  const items = []
-
-  if (onlyMostRecent) {
-    items.push({
-      label: 'most recent',
-      value: mostRecentKey
-    })
-  } else {
-    items.push({
-      label: 'most recent',
-      value: mostRecentKey
-    })
-
-    if (includeOldest) {
-      items.push({
-        label: 'oldest',
-        value: oldestKey
-      })
-    }
-
-    items.push(
-      {
-        label: 'top - past day',
-        value: topPastDay
-      },
-      {
-        label: 'top - past week',
-        value: topPastWeek
-      },
-      {
-        label: 'top - past month',
-        value: topPastMonth
-      },
-      {
-        label: 'top - past year',
-        value: topPastYear
-      },
-      {
-        label: 'random',
-        value: randomKey
-      },
-      {
-        label: 'most recent (all)',
-        value: mostRecentAllKey
-      }
-    )
-  }
-
-  return items
 }
 
 const styles = {

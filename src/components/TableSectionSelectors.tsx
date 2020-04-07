@@ -155,7 +155,7 @@ export const TableSectionSelectors = (props: Props) => {
                 </View>
               </RNPickerSelect>
             )}
-            {rightItems.length === 1 && selectedRightItemKey !== PV.Filters._allCategories && (
+            {rightItems.length === 1 && selectedRightItemKey !== PV.Filters._allCategoriesKey && (
               <View style={styles.tableSectionHeaderButton}>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}

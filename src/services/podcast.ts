@@ -31,7 +31,7 @@ export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
     ...(query.searchTitle ? { searchTitle: query.searchTitle } : {})
   } as any
 
-  if (query.categories && query.categories !== PV.Filters._allCategories) {
+  if (query.categories && query.categories !== PV.Filters._allCategoriesKey) {
     filteredQuery.categories = query.categories
   } else if (query.podcastIds) {
     filteredQuery.podcastId = query.podcastIds ? query.podcastIds.join(',') : ['no-results']

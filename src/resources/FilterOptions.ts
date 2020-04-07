@@ -26,8 +26,10 @@ const {
   _myPlaylistsKey,
   _fromThisPodcastKey,
   _fromThisEpisodeKey,
-  _allCategories
+  _allCategoriesKey
 } = Filters
+
+const _top = [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear]
 
 export const FilterOptions = {
   typeItems: [
@@ -129,7 +131,7 @@ export const FilterOptions = {
   fromListItems: [
     {
       label: 'All',
-      value: _allCategories
+      value: _allCategoriesKey
     },
     {
       label: 'From this podcast',
@@ -143,19 +145,25 @@ export const FilterOptions = {
   screenFilters: {
     PodcastsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
-      sort: [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear],
-      sublist: [{ label: 'All', value: _allCategories }],
+      sort: [..._top],
+      sublist: [{ label: 'All', value: _allCategoriesKey }],
       hideSort: [_subscribedKey, _downloadedKey]
+    },
+    PodcastScreen: {
+      type: [_episodesKey, _clipsKey, _aboutKey],
+      sort: [_mostRecentKey, ..._top],
+      sublist: [],
+      hideSort: []
     },
     EpisodesScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey],
-      sort: [_mostRecentKey, _topPastDay, _topPastWeek, _topPastMonth, _topPastYear],
+      sort: [_mostRecentKey, ..._top],
       sublist: [],
       hideSort: []
     },
     ClipsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _myClipsKey],
-      sort: [_mostRecentKey, _topPastDay, _topPastWeek, _topPastMonth, _topPastYear],
+      sort: [_mostRecentKey, ..._top],
       sublist: [],
       hideSort: []
     }

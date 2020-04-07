@@ -26,5 +26,5 @@ export const Filters: IFilters = {
   _myPlaylistsKey: 'myPlaylists',
   _fromThisPodcastKey: 'fromThisPodcast',
   _fromThisEpisodeKey: 'fromThisEpisode',
-  _allCategories: 'allCategories'
+  _allCategoriesKey: 'allCategories'
 }
