@@ -173,9 +173,9 @@ export interface IFilters {
   _showNotesKey: string
   _titleKey: string
   _myPlaylistsKey: string
-  _fromThisPodcast: string
-  _fromThisEpisode: string
-  _allCategories: string
+  _fromThisPodcastKey: string
+  _fromThisEpisodeKey: string
+  _allCategoriesKey: string
 }
 
 interface IFontLargeSizes {

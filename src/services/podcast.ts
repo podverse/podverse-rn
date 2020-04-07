@@ -24,12 +24,6 @@ export const getPodcast = async (id: string) => {
 
 export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
   const filteredQuery = {
-    // NOTE: disabling includeAuthors and includeCategories because something is wrong with those queries...
-    // the queries are not returning a full list, and are including duplicates
-    // ...(query.includeAuthors ? { includeAuthors: query.includeAuthors } : {}),
-    // ...(query.includeCategories
-    //   ? { includeCategories: query.includeCategories }
-    //   : {}),
     ...(query.maxResults ? { maxResults: true } : {}),
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
@@ -37,7 +31,7 @@ export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
     ...(query.searchTitle ? { searchTitle: query.searchTitle } : {})
   } as any
 
-  if (query.categories) {
+  if (query.categories && query.categories !== PV.Filters._allCategories) {
     filteredQuery.categories = query.categories
   } else if (query.podcastIds) {
     filteredQuery.podcastId = query.podcastIds ? query.podcastIds.join(',') : ['no-results']

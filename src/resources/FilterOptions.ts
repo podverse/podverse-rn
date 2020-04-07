@@ -24,8 +24,8 @@ const {
   _showNotesKey,
   _titleKey,
   _myPlaylistsKey,
-  _fromThisPodcast,
-  _fromThisEpisode,
+  _fromThisPodcastKey,
+  _fromThisEpisodeKey,
   _allCategories
 } = Filters
 
@@ -133,11 +133,11 @@ export const FilterOptions = {
     },
     {
       label: 'From This Podcast',
-      value: _fromThisPodcast
+      value: _fromThisPodcastKey
     },
     {
       label: 'From This Episode',
-      value: _fromThisEpisode
+      value: _fromThisEpisodeKey
     }
   ],
   screenFilters: {
