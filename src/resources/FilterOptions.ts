@@ -90,19 +90,19 @@ export const FilterOptions = {
   ],
   sortItems: [
     {
-      label: 'Chronological',
+      label: 'chronological',
       value: _chronologicalKey
     },
     {
-      label: 'Alphabetical',
+      label: 'alphabetical',
       value: _alphabeticalKey
     },
     {
-      label: 'Most Recent',
+      label: 'most recent',
       value: _mostRecentKey
     },
     {
-      label: 'Oldest',
+      label: 'oldest',
       value: _oldestKey
     },
     {
@@ -122,7 +122,7 @@ export const FilterOptions = {
       value: _topPastYear
     },
     {
-      label: 'Random',
+      label: 'random',
       value: _randomKey
     }
   ],
@@ -146,6 +146,12 @@ export const FilterOptions = {
       sort: [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear],
       sublist: [{ label: 'All', value: _allCategories }],
       hideSort: [_subscribedKey, _downloadedKey]
+    },
+    EpisodesScreen: {
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey],
+      sort: [_mostRecentKey, _topPastDay, _topPastWeek, _topPastMonth, _topPastYear],
+      sublist: [],
+      hideSort: []
     }
   }
 }

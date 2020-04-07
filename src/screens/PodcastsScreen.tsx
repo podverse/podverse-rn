@@ -676,8 +676,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       ...nextState
     } as State
 
-    const rItems = PV.FilterOptions.screenFilters.PodcastsScreen.sort
-
     try {
       const {
         searchBarText: searchTitle,
@@ -725,7 +723,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
           newState.flatListDataTotalCount = podcastResults[1]
         }
-      } else if (rItems.some((option) => option.value === filterKey)) {
+      } else if (PV.FilterOptions.screenFilters.PodcastsScreen.sort.some((option) => option === filterKey)) {
         newState.showNoInternetConnectionMessage = !hasInternetConnection
 
         const results = await getPodcasts(
