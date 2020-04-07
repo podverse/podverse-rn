@@ -143,20 +143,8 @@ export const FilterOptions = {
     }
   ],
   screenFilters: {
-    PodcastsScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
-      sort: [..._top],
-      sublist: [{ label: 'All', value: _allCategoriesKey }],
-      hideSort: [_subscribedKey, _downloadedKey]
-    },
-    PodcastScreen: {
-      type: [_episodesKey, _clipsKey, _aboutKey],
-      sort: [_mostRecentKey, ..._top, _randomKey],
-      sublist: [],
-      hideSort: [_aboutKey]
-    },
-    EpisodesScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey],
+    ClipsScreen: {
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _myClipsKey],
       sort: [_mostRecentKey, ..._top],
       sublist: [],
       hideSort: []
@@ -167,11 +155,29 @@ export const FilterOptions = {
       sublist: [],
       hideSort: [_showNotesKey, _titleKey]
     },
-    ClipsScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _myClipsKey],
+    EpisodesScreen: {
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey],
       sort: [_mostRecentKey, ..._top],
       sublist: [],
       hideSort: []
+    },
+    PlaylistsScreen: {
+      type: [_myPlaylistsKey, _subscribedKey],
+      sort: [],
+      sublist: [],
+      hideSort: []
+    },
+    PodcastScreen: {
+      type: [_episodesKey, _clipsKey, _aboutKey],
+      sort: [_mostRecentKey, ..._top, _randomKey],
+      sublist: [],
+      hideSort: [_aboutKey]
+    },
+    PodcastsScreen: {
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
+      sort: [..._top],
+      sublist: [{ label: 'All', value: _allCategoriesKey }],
+      hideSort: [_subscribedKey, _downloadedKey]
     }
   }
 }

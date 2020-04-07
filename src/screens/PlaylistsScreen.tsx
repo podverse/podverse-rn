@@ -39,7 +39,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     this.state = {
       isLoading: isLoggedIn,
       isLoadingMore: false,
-      queryFrom: isLoggedIn ? _myPlaylistsKey : _subscribedPlaylistsKey
+      queryFrom: isLoggedIn ? PV.Filters._myPlaylistsKey : PV.Filters.subscribedKey
     }
   }
 
@@ -89,13 +89,13 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
     return (
       <PlaylistTableCell
-        {...(queryFrom === _subscribedPlaylistsKey ? { createdBy: ownerName } : {})}
+        {...(queryFrom === PV.Filters.subscribedKey ? { createdBy: ownerName } : {})}
         hasZebraStripe={isOdd(index)}
         itemCount={item.itemCount}
         onPress={() =>
           this.props.navigation.navigate(PV.RouteNames.PlaylistScreen, {
             playlist: item,
-            navigationTitle: queryFrom === _myPlaylistsKey ? 'My Playlist' : 'Playlist'
+            navigationTitle: queryFrom === PV.Filters._myPlaylistsKey ? 'My Playlist' : 'Playlist'
           })
         }
         title={item.title}
@@ -108,14 +108,14 @@ export class PlaylistsScreen extends React.Component<Props, State> {
   render() {
     const { isLoading, isLoadingMore, queryFrom, showNoInternetConnectionMessage } = this.state
     const { myPlaylists, subscribedPlaylists } = this.global.playlists
-    const flatListData = queryFrom === _myPlaylistsKey ? myPlaylists : subscribedPlaylists
+    const flatListData = queryFrom === PV.Filters._myPlaylistsKey ? myPlaylists : subscribedPlaylists
 
     return (
       <View style={styles.view}>
         <View style={styles.view}>
           <TableSectionSelectors
             handleSelectLeftItem={this.selectLeftItem}
-            leftItems={leftItems}
+            screenName='PlaylistsScreen'
             selectedLeftItemKey={queryFrom}
           />
           {isLoading && <ActivityIndicator />}
@@ -130,17 +130,18 @@ export class PlaylistsScreen extends React.Component<Props, State> {
               showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             />
           )}
-          {!isLoading && queryFrom === _myPlaylistsKey && !this.global.session.isLoggedIn && (
+          {!isLoading && queryFrom === PV.Filters._myPlaylistsKey && !this.global.session.isLoggedIn && (
             <MessageWithAction
               topActionHandler={this._onPressLogin}
               topActionText='Login'
               message='Login to view your playlists'
             />
           )}
-          {!isLoading && queryFrom === _myPlaylistsKey && this.global.session.isLoggedIn && flatListData.length < 1 && (
-            <MessageWithAction message='You have no subscribed playlists' />
-          )}
-          {!isLoading && queryFrom === _subscribedPlaylistsKey && flatListData.length < 1 && (
+          {!isLoading &&
+            queryFrom === PV.Filters._myPlaylistsKey &&
+            this.global.session.isLoggedIn &&
+            flatListData.length < 1 && <MessageWithAction message='You have no subscribed playlists' />}
+          {!isLoading && queryFrom === PV.Filters.subscribedKey && flatListData.length < 1 && (
             <MessageWithAction message='You have no subscribed playlists' />
           )}
         </View>
@@ -165,7 +166,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     newState.showNoInternetConnectionMessage = !hasInternetConnection
 
     try {
-      if (filterKey === _myPlaylistsKey) {
+      if (filterKey === PV.Filters._myPlaylistsKey) {
         if (this.global.session.isLoggedIn) {
           await getLoggedInUserPlaylists(this.global)
         }
@@ -183,20 +184,6 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     }
   }
 }
-
-const _myPlaylistsKey = 'myPlaylists'
-const _subscribedPlaylistsKey = 'subscribed'
-
-const leftItems = [
-  {
-    label: 'My Playlists',
-    value: _myPlaylistsKey
-  },
-  {
-    label: 'Subscribed',
-    value: _subscribedPlaylistsKey
-  }
-]
 
 const styles = StyleSheet.create({
   view: {
