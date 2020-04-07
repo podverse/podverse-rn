@@ -168,7 +168,7 @@ export interface IFilters {
   _podcastsKey: string
   _episodesKey: string
   _clipsKey: string
-  _playlistKey: string
+  _playlistsKey: string
   _aboutKey: string
   _showNotesKey: string
   _titleKey: string

@@ -19,7 +19,7 @@ const {
   _podcastsKey,
   _episodesKey,
   _clipsKey,
-  _playlistKey,
+  _playlistsKey,
   _aboutKey,
   _showNotesKey,
   _titleKey,
@@ -71,7 +71,7 @@ export const FilterOptions = {
     },
     {
       label: 'Playlists',
-      value: _playlistKey
+      value: _playlistsKey
     },
     {
       label: 'About',
@@ -178,6 +178,12 @@ export const FilterOptions = {
       sort: [..._top],
       sublist: [{ label: 'All', value: _allCategoriesKey }],
       hideSort: [_subscribedKey, _downloadedKey]
+    },
+    ProfileScreen: {
+      type: [_podcastsKey, _clipsKey, _playlistsKey],
+      sort: [_alphabeticalKey, _mostRecentKey, ..._top, _randomKey],
+      sublist: [],
+      hideSort: [_playlistsKey]
     }
   }
 }

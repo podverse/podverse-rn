@@ -19,7 +19,7 @@ export const Filters: IFilters = {
   _podcastsKey: 'podcasts',
   _episodesKey: 'episodes',
   _clipsKey: 'clips',
-  _playlistKey: 'playlist',
+  _playlistsKey: 'playlists',
   _aboutKey: 'about',
   _showNotesKey: 'showNotes',
   _titleKey: 'title',
