@@ -114,6 +114,7 @@ export const TableSectionSelectors = (props: Props) => {
             <RNPickerSelect
               items={leftItems}
               onValueChange={handleSelectLeftItem}
+              placeholder={defaultPlaceholder}
               style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
               useNativeAndroidPickerStyle={false}
               value={selectedLeftItemKey}>
@@ -131,10 +132,11 @@ export const TableSectionSelectors = (props: Props) => {
                 />
               </View>
             </RNPickerSelect>
-            {rightItems.length > 1 && (
+            {selectedLeftItemKey && rightItems.length > 1 && (
               <RNPickerSelect
                 items={rightItems}
                 onValueChange={handleSelectRightItem}
+                placeholder={defaultPlaceholder}
                 style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
                 useNativeAndroidPickerStyle={false}
                 value={selectedRightItemKey}>
@@ -168,6 +170,11 @@ export const TableSectionSelectors = (props: Props) => {
       </View>
     </View>
   )
+}
+
+const defaultPlaceholder = {
+  label: 'Select an item',
+  value: null
 }
 
 const styles = {
