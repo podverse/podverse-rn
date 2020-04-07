@@ -151,15 +151,21 @@ export const FilterOptions = {
     },
     PodcastScreen: {
       type: [_episodesKey, _clipsKey, _aboutKey],
-      sort: [_mostRecentKey, ..._top],
+      sort: [_mostRecentKey, ..._top, _randomKey],
       sublist: [],
-      hideSort: []
+      hideSort: [_aboutKey]
     },
     EpisodesScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey],
       sort: [_mostRecentKey, ..._top],
       sublist: [],
       hideSort: []
+    },
+    EpisodeScreen: {
+      type: [_clipsKey, _showNotesKey, _titleKey],
+      sort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey],
+      sublist: [],
+      hideSort: [_showNotesKey, _titleKey]
     },
     ClipsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _myClipsKey],

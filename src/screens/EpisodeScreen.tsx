@@ -76,7 +76,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    const viewType = this.props.navigation.getParam('viewType') || _showNotesKey
+    const viewType = this.props.navigation.getParam('viewType') || PV.Filters._showNotesKey
     const episode = this.props.navigation.getParam('episode')
     const episodeId = (episode && episode.id) || this.props.navigation.getParam('episodeId')
 
@@ -100,10 +100,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
       episodeId,
       flatListData: [],
       flatListDataTotalCount: null,
-      isLoading: viewType === _clipsKey,
+      isLoading: viewType === PV.Filters._clipsKey,
       isLoadingMore: false,
       queryPage: 1,
-      querySort: _mostRecentKey,
+      querySort: PV.Filters._chronologicalKey,
       searchBarText: '',
       showActionSheet: false,
       viewType
@@ -144,8 +144,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
             newEpisode = episode
           } else {
             newEpisode = await getEpisode(episodeId)
-            if (viewType === _clipsKey) {
-              newState = await this._queryData(_clipsKey)
+            if (viewType === PV.Filters._clipsKey) {
+              newState = await this._queryData(PV.Filters._clipsKey)
             }
           }
 
@@ -173,16 +173,16 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     this.setState(
       {
-        endOfResultsReached: selectedKey !== _clipsKey,
+        endOfResultsReached: selectedKey !== PV.Filters._clipsKey,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: selectedKey === _clipsKey,
+        isLoading: selectedKey === PV.Filters._clipsKey,
         queryPage: 1,
         searchBarText: '',
         viewType: selectedKey
       },
       async () => {
-        if (selectedKey === _clipsKey) {
+        if (selectedKey === PV.Filters._clipsKey) {
           const newState = await this._queryData(selectedKey)
           this.setState(newState)
         }
@@ -214,7 +214,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
   _onEndReached = ({ distanceFromEnd }) => {
     const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = this.state
-    if (viewType === _clipsKey && !endOfResultsReached && !isLoadingMore) {
+    if (viewType === PV.Filters._clipsKey && !endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
         this.setState(
           {
@@ -354,13 +354,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
-          leftItems={leftItems}
-          rightItems={viewType && viewType === _clipsKey ? rightItems : []}
+          screenName='EpisodeScreen'
           selectedLeftItemKey={viewType}
           selectedRightItemKey={querySort}
         />
-        {isLoading && viewType === _clipsKey && <ActivityIndicator />}
-        {!isLoading && viewType === _clipsKey && flatListData && (
+        {isLoading && viewType === PV.Filters._clipsKey && <ActivityIndicator />}
+        {!isLoading && viewType === PV.Filters._clipsKey && flatListData && (
           <FlatList
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
@@ -368,16 +367,16 @@ export class EpisodeScreen extends React.Component<Props, State> {
             extraData={flatListData}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
-            {...(viewType === _clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
+            {...(viewType === PV.Filters._clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
             onEndReached={this._onEndReached}
             renderItem={this._renderItem}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
           />
         )}
-        {viewType === _showNotesKey && episode && (
+        {viewType === PV.Filters._showNotesKey && episode && (
           <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={episode.description || ''} />
         )}
-        {viewType === _titleKey && episode && (
+        {viewType === PV.Filters._titleKey && episode && (
           <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={formatTitleViewHtml(episode)} />
         )}
         <ActionSheet
@@ -411,10 +410,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
     } as State
 
     const hasInternetConnection = await hasValidNetworkConnection()
-    newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey === _clipsKey
+    newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey === PV.Filters._clipsKey
 
     try {
-      if (rightItems.some((option) => option.value === filterKey)) {
+      if (PV.FilterOptions.screenFilters.EpisodeScreen.sort.some((option) => option.value === filterKey)) {
         const results = await getMediaRefs(
           {
             sort: filterKey,
@@ -456,63 +455,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
     }
   }
 }
-
-const _clipsKey = 'clips'
-const _showNotesKey = 'showNotes'
-const _titleKey = 'title'
-const _chronologicalKey = 'chronological'
-const _mostRecentKey = 'most-recent'
-const _randomKey = 'random'
-const _topPastDay = 'top-past-day'
-const _topPastWeek = 'top-past-week'
-const _topPastMonth = 'top-past-month'
-const _topPastYear = 'top-past-year'
-
-const leftItems = [
-  {
-    label: 'Clips',
-    value: _clipsKey
-  },
-  {
-    label: 'Show Notes',
-    value: _showNotesKey
-  },
-  {
-    label: 'Title',
-    value: _titleKey
-  }
-]
-
-const rightItems = [
-  {
-    label: 'chronological',
-    value: _chronologicalKey
-  },
-  {
-    label: 'most recent',
-    value: _mostRecentKey
-  },
-  {
-    label: 'top - past day',
-    value: _topPastDay
-  },
-  {
-    label: 'top - past week',
-    value: _topPastWeek
-  },
-  {
-    label: 'top - past month',
-    value: _topPastMonth
-  },
-  {
-    label: 'top - past year',
-    value: _topPastYear
-  },
-  {
-    label: 'random',
-    value: _randomKey
-  }
-]
 
 const styles = StyleSheet.create({
   showNotesView: {
