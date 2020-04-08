@@ -17,7 +17,7 @@ import {
 } from '../components'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { isOdd } from '../lib/utility'
+import { isOdd, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -728,12 +728,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
         const results = await getPodcasts(
           {
-            ...(((selectedSubCategory && selectedSubCategory !== PV.Filters._allCategoriesKey) || selectedCategory
-              ? {
-                  categories:
-                    (selectedSubCategory && selectedSubCategory !== PV.Filters._allCategoriesKey) || selectedCategory
-                }
-              : {}) as object),
+            ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedSubCategory),
             sort: filterKey,
             ...(searchTitle ? { searchTitle } : {})
           },

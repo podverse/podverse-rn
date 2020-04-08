@@ -46,6 +46,8 @@ export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
+    ...(query.podcastId ? { podcastId: query.podcastId } : {}),
+    ...(query.episodeId ? { episodeId: query.episodeId } : {}),
     ...(query.searchAllFieldsText ? { searchAllFieldsText: query.searchAllFieldsText } : {}),
     ...(query.includeEpisode ? { includeEpisode: true } : {}),
     ...(query.includePodcast ? { includePodcast: true } : {})
@@ -53,10 +55,6 @@ export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
 
   if (query.categories && query.categories !== PV.Filters._allCategoriesKey) {
     filteredQuery.categories = query.categories
-  } else if (query.podcastId) {
-    filteredQuery.podcastId = query.podcastId ? query.podcastId.join(',') : ['no-results']
-  } else if (query.episodeId) {
-    filteredQuery.episodeId = query.episodeId ? query.episodeId.join(',') : ['no-results']
   }
 
   if (query.subscribedOnly && query.podcastId && query.podcastId.length === 0) {

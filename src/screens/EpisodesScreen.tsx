@@ -16,7 +16,7 @@ import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { isOdd } from '../lib/utility'
+import { isOdd, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -497,15 +497,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       } else if (PV.FilterOptions.screenFilters.EpisodesScreen.sort.some((option) => option === filterKey)) {
         const results = await getEpisodes(
           {
-            ...(((selectedSubCategory && selectedSubCategory !== PV.Filters._allCategoriesKey) || selectedCategory
-              ? {
-                  categories:
-                    (selectedSubCategory &&
-                      selectedSubCategory !== PV.Filters._allCategoriesKey &&
-                      selectedSubCategory) ||
-                    selectedCategory
-                }
-              : {}) as object),
+            ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedSubCategory),
             ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
             sort: filterKey,
             ...(searchAllFieldsText ? { searchAllFieldsText } : {}),

@@ -443,3 +443,17 @@ export const getMakeClipIsPublic = async () => {
 }
 
 export const isOdd = (num: number) => num % 2 === 1
+
+export const setCategoryQueryProperty = (queryFrom?: any, selectedCategory?: any, selectedSubCategory?: any) => {
+  if (queryFrom === PV.Filters._categoryKey && selectedCategory) {
+    return { categories: selectedCategory }
+  } else if (
+    queryFrom === PV.Filters._categoryKey &&
+    selectedSubCategory &&
+    selectedSubCategory !== PV.Filters._allCategoriesKey
+  ) {
+    return { categories: selectedSubCategory }
+  } else {
+    return {}
+  }
+}

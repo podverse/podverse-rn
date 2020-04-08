@@ -538,7 +538,6 @@ export class PodcastScreen extends React.Component<Props, State> {
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
 
     let isSubscribed = subscribedPodcastIds.some((x: string) => x === podcastId)
-
     if (!isSubscribed) {
       const subscribedPodcasts = safelyUnwrapNestedVariable(() => this.global.subscribedPodcasts, [])
       isSubscribed = subscribedPodcasts.some(
