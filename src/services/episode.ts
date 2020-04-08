@@ -1,14 +1,19 @@
+import { PV } from '../resources'
 import { request } from './request'
 
 export const getEpisodes = async (query: any = {}, nsfwMode: boolean) => {
   const filteredQuery = {
-    ...(query.categories ? { categories: query.categories } : {}),
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
-    ...(query.podcastId ? { podcastId: query.podcastId } : {}),
     ...(query.searchAllFieldsText ? { searchAllFieldsText: query.searchAllFieldsText } : {}),
     ...(query.includePodcast ? { includePodcast: query.includePodcast } : {}),
     ...(query.sincePubDate ? { sincePubDate: query.sincePubDate } : {})
+  } as any
+
+  if (query.categories && query.categories !== PV.Filters._allCategoriesKey) {
+    filteredQuery.categories = query.categories
+  } else if (query.podcastIds) {
+    filteredQuery.podcastId = query.podcastIds ? query.podcastIds.join(',') : ['no-results']
   }
 
   if (query.subscribedOnly && query.podcastId && query.podcastId.length === 0) {
