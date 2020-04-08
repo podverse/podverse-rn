@@ -1,4 +1,5 @@
-import React from 'react'
+import AsyncStorage from '@react-native-community/async-storage'
+import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import { getGlobal } from 'reactn'
@@ -10,29 +11,112 @@ type Props = {
   handleSelectLeftItem?: any
   handleSelectRightItem?: any
   hidePickers?: boolean
-  leftItems: any[]
-  placeholderLeft?: any
-  placeholderRight?: any
-  rightItems?: any[]
+  hideRightItemWhileLoading?: boolean
+  includeChronological?: boolean
+  isBottomBar?: boolean
+  isCategories?: boolean
   selectedLeftItemKey: string | null
   selectedRightItemKey?: string | null
+  screenName: string
 }
 
 export const TableSectionSelectors = (props: Props) => {
-  const global = getGlobal()
-  const { fontScaleMode, globalTheme } = global
+  const { fontScaleMode, globalTheme } = getGlobal()
   const isDarkMode = globalTheme === darkTheme
+  const [leftItems, setLeftItems] = useState([])
+  const [rightItems, setRightItems] = useState([])
+
   const {
     handleSelectLeftItem,
     handleSelectRightItem,
     hidePickers,
-    leftItems = [],
-    placeholderLeft,
-    placeholderRight,
-    rightItems = [],
+    hideRightItemWhileLoading,
+    includeChronological = false,
+    isBottomBar = false,
+    isCategories = false,
     selectedLeftItemKey,
-    selectedRightItemKey
+    selectedRightItemKey,
+    screenName
   } = props
+
+  useEffect(() => {
+    let leftItems = []
+    let rightItems = []
+
+    if (!isBottomBar) {
+      leftItems = PV.FilterOptions.typeItems.filter((type: string) => {
+        return PV.FilterOptions.screenFilters[screenName].type.includes(type.value)
+      })
+
+      rightItems = PV.FilterOptions.sortItems.filter((sortKey: string) => {
+        return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
+      })
+    } else {
+      // Bottom bar
+      const newleftItems = PV.FilterOptions.screenFilters[screenName].sublist
+
+      if (isCategories) {
+        // add more categories
+        AsyncStorage.getItem('CATEGORIES_LIST')
+          .then((listString = '') => {
+            const categories = JSON.parse(listString).map((category) => {
+              return {
+                label: category.title,
+                value: category.id,
+                ...category
+              }
+            })
+            setLeftItems([...newleftItems, ...categories])
+          })
+          .catch((err) => {
+            console.log('Bottom Selection Bar error: ', err)
+          })
+      } else {
+        leftItems = newleftItems
+      }
+    }
+
+    setLeftItems(leftItems)
+    setRightItems(rightItems)
+  }, [])
+
+  useEffect(() => {
+    let rightItems = []
+    const screen = PV.FilterOptions.screenFilters[screenName]
+    if (screen.hideSort.includes(selectedLeftItemKey)) {
+      setRightItems(rightItems)
+    } else {
+      if (!isBottomBar) {
+        rightItems = PV.FilterOptions.sortItems.filter((sortKey: string) => {
+          return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
+        })
+
+        if (screen.includeAlphabetical && screen.includeAlphabetical.includes(selectedLeftItemKey)) {
+          rightItems.unshift(PV.FilterOptions.items.sortAlphabeticalItem)
+        }
+
+        if (includeChronological) {
+          rightItems.unshift(PV.FilterOptions.items.sortChronologicalItem)
+        }
+      } else {
+        if (leftItems.length > 0) {
+          const selectedCategory = leftItems.find((category) => category.value === selectedLeftItemKey)
+          if (selectedCategory && selectedCategory.categories) {
+            rightItems = selectedCategory.categories.map((subCat) => {
+              return {
+                label: subCat.title,
+                value: subCat.id,
+                ...subCat
+              }
+            })
+            rightItems.unshift(...PV.FilterOptions.screenFilters[screenName].sublist)
+          }
+        }
+      }
+
+      setRightItems(rightItems)
+    }
+  }, [selectedLeftItemKey])
 
   const selectedLeftItem = leftItems.find((x) => x.value === selectedLeftItemKey) || {}
   const selectedRightItem = rightItems.find((x) => x.value === selectedRightItemKey) || {}
@@ -44,12 +128,12 @@ export const TableSectionSelectors = (props: Props) => {
   return (
     <View>
       <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
-        {!hidePickers && (
+        {!hidePickers && leftItems && leftItems.length > 0 && (
           <View style={wrapperStyle}>
             <RNPickerSelect
               items={leftItems}
               onValueChange={handleSelectLeftItem}
-              placeholder={placeholderLeft || _placeholderDefault}
+              placeholder={defaultPlaceholder}
               style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
               useNativeAndroidPickerStyle={false}
               value={selectedLeftItemKey}>
@@ -58,7 +142,7 @@ export const TableSectionSelectors = (props: Props) => {
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
                   style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
-                  {selectedLeftItem.label || (placeholderLeft && placeholderLeft.label) || _placeholderDefault.label}
+                  {selectedLeftItem.label}
                 </Text>
                 <Icon
                   name='angle-down'
@@ -67,11 +151,11 @@ export const TableSectionSelectors = (props: Props) => {
                 />
               </View>
             </RNPickerSelect>
-            {rightItems.length > 1 && (
+            {!hideRightItemWhileLoading && selectedLeftItemKey && rightItems.length > 1 && (
               <RNPickerSelect
                 items={rightItems}
                 onValueChange={handleSelectRightItem}
-                placeholder={placeholderRight || _placeholderDefault}
+                placeholder={defaultPlaceholder}
                 style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
                 useNativeAndroidPickerStyle={false}
                 value={selectedRightItemKey}>
@@ -80,9 +164,7 @@ export const TableSectionSelectors = (props: Props) => {
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     numberOfLines={1}
                     style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                    {selectedRightItem.label ||
-                      (placeholderRight && placeholderRight.label) ||
-                      _placeholderDefault.label}
+                    {selectedRightItem.label}
                   </Text>
                   <Icon
                     name='angle-down'
@@ -92,16 +174,18 @@ export const TableSectionSelectors = (props: Props) => {
                 </View>
               </RNPickerSelect>
             )}
-            {rightItems.length === 1 && (
-              <View style={styles.tableSectionHeaderButton}>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={1}
-                  style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                  {selectedRightItem.label || (placeholderRight && placeholderRight.label) || _placeholderDefault.label}
-                </Text>
-              </View>
-            )}
+            {!hideRightItemWhileLoading &&
+              rightItems.length === 1 &&
+              selectedRightItemKey !== PV.Filters._allCategoriesKey && (
+                <View style={styles.tableSectionHeaderButton}>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    numberOfLines={1}
+                    style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
+                    {selectedRightItem.label}
+                  </Text>
+                </View>
+              )}
           </View>
         )}
       </View>
@@ -109,8 +193,8 @@ export const TableSectionSelectors = (props: Props) => {
   )
 }
 
-const _placeholderDefault = {
-  label: 'Select...',
+const defaultPlaceholder = {
+  label: 'Select an item',
   value: null
 }
 

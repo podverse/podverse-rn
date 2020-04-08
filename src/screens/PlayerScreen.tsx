@@ -206,6 +206,15 @@ export class PlayerScreen extends React.Component<Props, State> {
       return
     }
 
+    let sort = PV.Filters._topPastWeek
+    let hideRightItemWhileLoading = false
+    if (selectedKey === PV.Filters._clipsKey) {
+      sort = PV.Filters._chronologicalKey
+      hideRightItemWhileLoading = true
+    } else if (selectedKey === PV.Filters._episodesKey) {
+      hideRightItemWhileLoading = true
+    }
+
     setGlobal(
       {
         screenPlayer: {
@@ -213,18 +222,16 @@ export class PlayerScreen extends React.Component<Props, State> {
           endOfResultsReached: false,
           flatListData: [],
           flatListDataTotalCount: null,
+          hideRightItemWhileLoading,
           isQuerying: true,
-          queryFrom: PV.Keys.QUERY_FROM_THIS_EPISODE,
-          querySort:
-            selectedKey === PV.Keys.VIEW_TYPE_EPISODES
-              ? PV.Keys.QUERY_SORT_MOST_RECENT
-              : PV.Keys.QUERY_SORT_CHRONOLOGICAL,
+          queryFrom: PV.Filters._fromThisEpisodeKey,
+          querySort: sort,
           queryPage: 1,
           viewType: selectedKey
         }
       },
       async () => {
-        if (selectedKey === PV.Keys.VIEW_TYPE_CLIPS || selectedKey === PV.Keys.VIEW_TYPE_EPISODES) {
+        if (selectedKey === PV.Filters._clipsKey || selectedKey === PV.Filters._episodesKey) {
           const newState = await this._queryData()
           setGlobal({
             screenPlayer: {
@@ -255,6 +262,15 @@ export class PlayerScreen extends React.Component<Props, State> {
       return
     }
 
+    let sort = PV.Filters._topPastWeek
+    let hideRightItemWhileLoading = false
+    if (selectedKey === PV.Filters._fromThisEpisodeKey) {
+      sort = PV.Filters._chronologicalKey
+      hideRightItemWhileLoading = true
+    } else if (selectedKey === PV.Filters._episodesKey) {
+      hideRightItemWhileLoading = true
+    }
+
     setGlobal(
       {
         screenPlayer: {
@@ -262,9 +278,11 @@ export class PlayerScreen extends React.Component<Props, State> {
           endOfResultsReached: false,
           flatListData: [],
           flatListDataTotalCount: null,
+          hideRightItemWhileLoading,
           isQuerying: true,
           queryFrom: selectedKey,
-          queryPage: 1
+          queryPage: 1,
+          querySort: sort
         }
       },
       async () => {
@@ -317,8 +335,8 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { screenPlayer } = this.global
     const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = screenPlayer
     if (
-      viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES &&
-      viewType !== PV.Keys.VIEW_TYPE_TITLE &&
+      viewType !== PV.Filters._showNotesKey &&
+      viewType !== PV.Filters._titleKey &&
       !endOfResultsReached &&
       !isLoadingMore
     ) {
@@ -446,7 +464,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { episode } = player
     const podcast = (episode && episode.podcast) || {}
     const { queryFrom, viewType } = screenPlayer
-    if (viewType === PV.Keys.VIEW_TYPE_EPISODES) {
+    if (viewType === PV.Filters._episodesKey) {
       let description = removeHTMLFromString(item.description)
       description = decodeHTMLString(description)
       return (
@@ -462,7 +480,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         />
       )
     } else {
-      if (queryFrom === PV.Keys.QUERY_FROM_THIS_EPISODE) {
+      if (queryFrom === PV.Filters._fromThisEpisodeKey) {
         item = {
           ...item,
           episode
@@ -473,10 +491,10 @@ export class PlayerScreen extends React.Component<Props, State> {
         <ClipTableCell
           endTime={item.endTime}
           episodeId={item.episode.id}
-          {...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST
+          {...(queryFrom === PV.Filters._fromThisPodcastKey
             ? { episodePubDate: readableDate(item.episode.pubDate) }
             : {})}
-          {...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST
+          {...(queryFrom === PV.Filters._fromThisPodcastKey
             ? { episodeTitle: item.episode.title || 'untitled episode' }
             : {})}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
@@ -498,6 +516,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const {
       flatListData,
       flatListDataTotalCount,
+      hideRightItemWhileLoading,
       isLoading,
       isLoadingMore,
       isQuerying,
@@ -543,30 +562,21 @@ export class PlayerScreen extends React.Component<Props, State> {
               <TableSectionSelectors
                 handleSelectLeftItem={this._selectViewType}
                 handleSelectRightItem={this._selectQuerySort}
-                leftItems={viewTypeOptions}
-                rightItems={
-                  viewType &&
-                  viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES &&
-                  viewType !== PV.Keys.VIEW_TYPE_TITLE &&
-                  nowPlayingItem &&
-                  !nowPlayingItem.addByRSSPodcastFeedUrl
-                    ? querySortOptions(
-                        viewType === PV.Keys.VIEW_TYPE_EPISODES,
-                        queryFrom !== PV.Keys.QUERY_FROM_THIS_PODCAST && viewType === PV.Keys.VIEW_TYPE_CLIPS
-                      )
-                    : []
-                }
+                hideRightItemWhileLoading={hideRightItemWhileLoading}
+                includeChronological={viewType === PV.Filters._clipsKey && queryFrom === PV.Filters._fromThisEpisodeKey}
+                screenName='PlayerScreen'
                 selectedLeftItemKey={viewType}
                 selectedRightItemKey={querySort}
               />
-              {viewType === PV.Keys.VIEW_TYPE_CLIPS && (
+              {viewType === PV.Filters._clipsKey && (
                 <TableSectionSelectors
                   handleSelectLeftItem={this._selectQueryFrom}
-                  leftItems={queryFromOptions}
+                  isBottomBar={true}
+                  screenName='PlayerScreen'
                   selectedLeftItemKey={queryFrom}
                 />
               )}
-              {viewType === PV.Keys.VIEW_TYPE_EPISODES && (
+              {viewType === PV.Filters._episodesKey && (
                 <TableSectionHeader
                   centerText={PV.Fonts.fontScale.largest === fontScaleMode}
                   title='From this podcast'
@@ -576,8 +586,8 @@ export class PlayerScreen extends React.Component<Props, State> {
               {!isLoading &&
                 !isQuerying &&
                 viewType &&
-                viewType !== PV.Keys.VIEW_TYPE_SHOW_NOTES &&
-                viewType !== PV.Keys.VIEW_TYPE_TITLE &&
+                viewType !== PV.Filters._showNotesKey &&
+                viewType !== PV.Filters._titleKey &&
                 flatListData && (
                   <FlatList
                     data={flatListData}
@@ -590,10 +600,10 @@ export class PlayerScreen extends React.Component<Props, State> {
                     renderItem={this._renderItem}
                   />
                 )}
-              {!isLoading && viewType === PV.Keys.VIEW_TYPE_SHOW_NOTES && episode && (
+              {!isLoading && viewType === PV.Filters._showNotesKey && episode && (
                 <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={episode.description} />
               )}
-              {!isLoading && viewType === PV.Keys.VIEW_TYPE_TITLE && episode && (
+              {!isLoading && viewType === PV.Filters._titleKey && episode && (
                 <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={formatTitleViewHtml(episode)} />
               )}
             </View>
@@ -638,13 +648,13 @@ export class PlayerScreen extends React.Component<Props, State> {
         {
           sort,
           page: queryPage,
-          ...(queryFrom === PV.Keys.QUERY_FROM_THIS_EPISODE && nowPlayingItem
+          ...(queryFrom === PV.Filters._fromThisEpisodeKey && nowPlayingItem
             ? { episodeId: nowPlayingItem.episodeId }
             : {}),
-          ...(queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST && nowPlayingItem
+          ...(queryFrom === PV.Filters._fromThisPodcastKey && nowPlayingItem
             ? { podcastId: nowPlayingItem.podcastId }
             : {}),
-          includeEpisode: queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST
+          includeEpisode: queryFrom === PV.Filters._fromThisPodcastKey
         },
         this.global.settings.nsfwMode
       )
@@ -671,8 +681,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     } else {
       const results = await getEpisodes(
         {
-          sort:
-            !querySort || querySort === PV.Keys.QUERY_SORT_CHRONOLOGICAL ? PV.Keys.QUERY_SORT_MOST_RECENT : querySort,
+          sort: !querySort || querySort === PV.Filters._chronologicalKey ? PV.Filters._mostRecentKey : querySort,
           page: page || queryPage,
           podcastId: nowPlayingItem && nowPlayingItem.podcastId
         },
@@ -686,9 +695,8 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { screenPlayer } = this.global
     const { queryFrom, querySort } = screenPlayer
 
-    return !querySort ||
-      (queryFrom === PV.Keys.QUERY_FROM_THIS_PODCAST && querySort === PV.Keys.QUERY_SORT_CHRONOLOGICAL)
-      ? PV.Keys.QUERY_SORT_TOP_PAST_WEEK
+    return !querySort || (queryFrom === PV.Filters._fromThisPodcastKey && querySort === PV.Filters._chronologicalKey)
+      ? PV.Filters._topPastWeek
       : querySort
   }
 
@@ -696,6 +704,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { screenPlayer } = this.global
     const { flatListData, viewType } = screenPlayer
     const newState = {
+      hideRightItemWhileLoading: false,
       isLoading: false,
       isLoadingMore: false,
       isQuerying: false
@@ -705,12 +714,12 @@ export class PlayerScreen extends React.Component<Props, State> {
     if (wasAlerted) return newState
 
     try {
-      if (viewType === PV.Keys.VIEW_TYPE_EPISODES) {
+      if (viewType === PV.Filters._episodesKey) {
         const results = await this._queryEpisodes()
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (viewType === PV.Keys.VIEW_TYPE_CLIPS) {
+      } else if (viewType === PV.Filters._clipsKey) {
         const results = await this._queryClips()
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
@@ -725,84 +734,6 @@ export class PlayerScreen extends React.Component<Props, State> {
     }
   }
 }
-
-const viewTypeOptions = [
-  {
-    label: 'Episodes',
-    value: PV.Keys.VIEW_TYPE_EPISODES
-  },
-  {
-    label: 'Clips',
-    value: PV.Keys.VIEW_TYPE_CLIPS
-  },
-  {
-    label: 'Show Notes',
-    value: PV.Keys.VIEW_TYPE_SHOW_NOTES
-  },
-  {
-    label: 'Title',
-    value: PV.Keys.VIEW_TYPE_TITLE
-  }
-]
-
-const querySortOptions = (isEpisodes?: boolean, showChronological?: boolean) => {
-  const items = []
-
-  if (showChronological) {
-    items.push({
-      label: 'chronological',
-      value: PV.Keys.QUERY_SORT_CHRONOLOGICAL
-    })
-  }
-
-  items.push({
-    label: 'most recent',
-    value: PV.Keys.QUERY_SORT_MOST_RECENT
-  })
-
-  if (isEpisodes) {
-    items.push({
-      label: 'oldest',
-      value: PV.Keys.QUERY_SORT_OLDEST
-    })
-  }
-
-  items.push(
-    {
-      label: 'top - past day',
-      value: PV.Keys.QUERY_SORT_TOP_PAST_DAY
-    },
-    {
-      label: 'top - past week',
-      value: PV.Keys.QUERY_SORT_TOP_PAST_WEEK
-    },
-    {
-      label: 'top - past month',
-      value: PV.Keys.QUERY_SORT_TOP_PAST_MONTH
-    },
-    {
-      label: 'top - past year',
-      value: PV.Keys.QUERY_SORT_TOP_PAST_YEAR
-    },
-    {
-      label: 'random',
-      value: PV.Keys.QUERY_SORT_RANDOM
-    }
-  )
-
-  return items
-}
-
-const queryFromOptions = [
-  {
-    label: 'From this podcast',
-    value: PV.Keys.QUERY_FROM_THIS_PODCAST
-  },
-  {
-    label: 'From this episode',
-    value: PV.Keys.QUERY_FROM_THIS_EPISODE
-  }
-]
 
 const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefId: string, handleShare: any) => {
   const items = [

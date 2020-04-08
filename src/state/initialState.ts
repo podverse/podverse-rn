@@ -60,14 +60,14 @@ const initialTheme: InitialState = {
     isLoading: false,
     isLoadingMore: false,
     isQuerying: false,
-    queryFrom: PV.Keys.QUERY_FROM_THIS_EPISODE,
+    queryFrom: PV.Filters._fromThisEpisodeKey,
     queryPage: 1,
-    querySort: PV.Keys.QUERY_SORT_TOP_PAST_WEEK,
+    querySort: PV.Filters._topPastWeek,
     showFullClipInfo: false,
     showHeaderActionSheet: false,
     showMoreActionSheet: false,
     showShareActionSheet: false,
-    viewType: PV.Keys.VIEW_TYPE_SHOW_NOTES
+    viewType: PV.Filters._showNotesKey
   },
   screenPlaylist: {
     flatListData: [],

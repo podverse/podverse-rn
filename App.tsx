@@ -12,6 +12,7 @@ import { PV } from './src/resources'
 import { determineFontScaleMode } from './src/resources/Fonts'
 import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
+import { downloadCategoriesList } from './src/services/category'
 import { gaInitialize } from './src/services/googleAnalytics'
 import { addOrUpdateHistoryItem } from './src/services/history'
 import { getNowPlayingItem, updateUserPlaybackPosition } from './src/services/player'
@@ -43,6 +44,7 @@ class App extends Component<Props, State> {
       appReady: false
     }
     this.unsubscribeNetListener = null
+    downloadCategoriesList()
   }
 
   async componentDidMount() {
@@ -91,13 +93,16 @@ class App extends Component<Props, State> {
     const fontScale = await getFontScale()
     const fontScaleMode = determineFontScaleMode(fontScale)
 
-    setGlobal({
-      globalTheme: theme,
-      fontScaleMode,
-      fontScale
-    }, () => {
-      this.setState({ appReady: true })
-    })
+    setGlobal(
+      {
+        globalTheme: theme,
+        fontScaleMode,
+        fontScale
+      },
+      () => {
+        this.setState({ appReady: true })
+      }
+    )
   }
 
   _renderIntersitial = () => {
@@ -114,7 +119,9 @@ class App extends Component<Props, State> {
         <Router />
         <OverlayAlert />
       </View>
-    ) : this._renderIntersitial()
+    ) : (
+      this._renderIntersitial()
+    )
   }
 }
 

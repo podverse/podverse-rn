@@ -47,6 +47,7 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
+  hideRightItemWhileLoading: boolean
   initializeClips: boolean
   isLoading: boolean
   isLoadingMore: boolean
@@ -102,14 +103,15 @@ export class ProfileScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
+      hideRightItemWhileLoading: false,
       initializeClips,
       isLoading: true,
       isLoadingMore: false,
       isSubscribed,
       isSubscribing: false,
-      queryFrom: initializeClips ? _clipsKey : _podcastsKey,
+      queryFrom: initializeClips ? PV.Filters._clipsKey : PV.Filters._podcastsKey,
       queryPage: 1,
-      querySort: initializeClips ? _mostRecentKey : _alphabeticalKey,
+      querySort: initializeClips ? PV.Filters._mostRecentKey : PV.Filters._alphabeticalKey,
       showActionSheet: false,
       userId
     }
@@ -210,16 +212,24 @@ export class ProfileScreen extends React.Component<Props, State> {
       return
     }
 
+    let sort = querySort
+    let hideRightItemWhileLoading = false
+    if (querySort === PV.Filters._alphabeticalKey && selectedKey !== PV.Filters._podcastsKey) {
+      sort = PV.Filters._topPastWeek
+      hideRightItemWhileLoading = true
+    }
+
     this.setState(
       {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
+        hideRightItemWhileLoading,
         isLoading: true,
         preventSortQuery: true,
         queryFrom: selectedKey,
         queryPage: 1,
-        ...(querySort === _alphabeticalKey && selectedKey !== _podcastsKey ? { querySort: _topPastWeek } : {})
+        querySort: sort
       },
       async () => {
         const newState = await this._queryData(selectedKey, 1)
@@ -341,7 +351,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   _renderItem = ({ item, index }) => {
     const { queryFrom } = this.state
 
-    if (queryFrom === _podcastsKey) {
+    if (queryFrom === PV.Filters._podcastsKey) {
       return (
         <PodcastTableCell
           hasZebraStripe={isOdd(index)}
@@ -354,7 +364,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           podcastTitle={item.title}
         />
       )
-    } else if (queryFrom === _clipsKey) {
+    } else if (queryFrom === PV.Filters._clipsKey) {
       return item && item.episode && item.episode.id && item.episode.podcast ? (
         <ClipTableCell
           endTime={item.endTime}
@@ -389,6 +399,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     const {
       flatListData,
       flatListDataTotalCount,
+      hideRightItemWhileLoading,
       initializeClips,
       isLoading,
       isLoadingMore,
@@ -401,24 +412,18 @@ export class ProfileScreen extends React.Component<Props, State> {
       showNoInternetConnectionMessage,
       userId
     } = this.state
+
     const { profile, session } = this.global
     const { user } = profile
     const { isLoggedIn, userInfo } = session
     const { id } = userInfo
-    let rightOptions = [] as any[]
     const { navigation } = this.props
     const isLoggedInUserProfile = userId && id && userId === id
 
-    if (queryFrom === _podcastsKey) {
-      rightOptions = rightItemsWithAlphabetical
-    } else if (queryFrom === _clipsKey) {
-      rightOptions = rightItems
-    }
-
     let resultsText = 'podcasts'
-    if (queryFrom === _clipsKey) {
+    if (queryFrom === PV.Filters._clipsKey) {
       resultsText = 'clips'
-    } else if (queryFrom === _playlistsKey) {
+    } else if (queryFrom === PV.Filters._playlistsKey) {
       resultsText = 'playlists'
     }
     const isMyProfile = navigation.getParam('isMyProfile')
@@ -443,8 +448,8 @@ export class ProfileScreen extends React.Component<Props, State> {
             <TableSectionSelectors
               handleSelectLeftItem={this.selectLeftItem}
               handleSelectRightItem={this.selectRightItem}
-              leftItems={leftItems}
-              rightItems={rightOptions}
+              hideRightItemWhileLoading={hideRightItemWhileLoading}
+              screenName='ProfileScreen'
               selectedLeftItemKey={queryFrom}
               selectedRightItemKey={querySort}
             />
@@ -563,7 +568,6 @@ export class ProfileScreen extends React.Component<Props, State> {
       } else {
         results = await getUserPlaylists(this.global.profile.user.id, query)
       }
-
       newState.flatListData = results[0]
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
       newState.flatListDataTotalCount = results[1]
@@ -575,6 +579,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   _queryData = async (filterKey: string | null, page: number = 1) => {
     const { queryFrom, querySort } = this.state
     let newState = {
+      hideRightItemWhileLoading: false,
       isLoading: false,
       isLoadingMore: false,
       showNoInternetConnectionMessage: false
@@ -587,19 +592,19 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
 
     try {
-      if (filterKey === _podcastsKey || filterKey === _alphabeticalKey) {
+      if (filterKey === PV.Filters._podcastsKey || filterKey === PV.Filters._alphabeticalKey) {
         newState = await this._queryPodcasts(newState, page, querySort)
-      } else if (filterKey === _clipsKey) {
-        newState.querySort = PV.Filters.mostRecentKey
-        newState = await this._queryMediaRefs(newState, page, PV.Filters.mostRecentKey)
-      } else if (filterKey === _playlistsKey) {
+      } else if (filterKey === PV.Filters._clipsKey) {
+        newState.querySort = PV.Filters._mostRecentKey
+        newState = await this._queryMediaRefs(newState, page, PV.Filters._mostRecentKey)
+      } else if (filterKey === PV.Filters._playlistsKey) {
         newState = await this._queryPlaylists(newState, page, querySort)
-      } else if (rightItems.some((option) => option.value === filterKey)) {
-        if (queryFrom === _podcastsKey) {
+      } else if (PV.FilterOptions.screenFilters.ProfileScreen.sort.some((option) => option === filterKey)) {
+        if (queryFrom === PV.Filters._podcastsKey) {
           newState = await this._queryPodcasts(newState, page, filterKey)
-        } else if (queryFrom === _clipsKey) {
+        } else if (queryFrom === PV.Filters._clipsKey) {
           newState = await this._queryMediaRefs(newState, page, filterKey)
-        } else if (queryFrom === _playlistsKey) {
+        } else if (queryFrom === PV.Filters._playlistsKey) {
           newState = await this._queryPlaylists(newState, page, filterKey)
         }
       }
@@ -610,90 +615,6 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
   }
 }
-
-const _podcastsKey = 'podcasts'
-const _clipsKey = 'clips'
-const _playlistsKey = 'playlists'
-const _alphabeticalKey = 'alphabetical'
-const _mostRecentKey = 'most-recent'
-const _randomKey = 'random'
-const _topPastDay = 'top-past-day'
-const _topPastWeek = 'top-past-week'
-const _topPastMonth = 'top-past-month'
-const _topPastYear = 'top-past-year'
-
-const leftItems = [
-  {
-    label: 'Podcasts',
-    value: _podcastsKey
-  },
-  {
-    label: 'Clips',
-    value: _clipsKey
-  },
-  {
-    label: 'Playlists',
-    value: _playlistsKey
-  }
-]
-
-const rightItems = [
-  {
-    label: 'most recent',
-    value: _mostRecentKey
-  },
-  {
-    label: 'top - past day',
-    value: _topPastDay
-  },
-  {
-    label: 'top - past week',
-    value: _topPastWeek
-  },
-  {
-    label: 'top - past month',
-    value: _topPastMonth
-  },
-  {
-    label: 'top - past year',
-    value: _topPastYear
-  },
-  {
-    label: 'random',
-    value: _randomKey
-  }
-]
-
-const rightItemsWithAlphabetical = [
-  {
-    label: 'alphabetical',
-    value: _alphabeticalKey
-  },
-  {
-    label: 'most recent',
-    value: _mostRecentKey
-  },
-  {
-    label: 'top - past day',
-    value: _topPastDay
-  },
-  {
-    label: 'top - past week',
-    value: _topPastWeek
-  },
-  {
-    label: 'top - past month',
-    value: _topPastMonth
-  },
-  {
-    label: 'top - past year',
-    value: _topPastYear
-  },
-  {
-    label: 'random',
-    value: _randomKey
-  }
-]
 
 const styles = StyleSheet.create({
   msgView: {

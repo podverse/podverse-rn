@@ -54,31 +54,58 @@ export const HTMLScrollView = (props: Props) => {
 const customHTMLTagStyles = {
   h1: {
     marginBottom: 8,
-    marginTop: 4
+    marginTop: 4,
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold
   },
   h2: {
     marginBottom: 8,
-    marginTop: 4
+    marginTop: 4,
+    fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.bold
   },
   h3: {
     marginBottom: 8,
-    marginTop: 4
+    marginTop: 4,
+    fontSize: PV.Fonts.sizes.md,
+    fontWeight: PV.Fonts.weights.bold
   },
   h4: {
     marginBottom: 8,
-    marginTop: 4
+    marginTop: 4,
+    fontSize: PV.Fonts.sizes.md,
+    fontWeight: PV.Fonts.weights.bold
   },
   h5: {
     marginBottom: 8,
-    marginTop: 4
+    marginTop: 4,
+    fontSize: PV.Fonts.sizes.md,
+    fontWeight: PV.Fonts.weights.bold
   },
   h6: {
     marginBottom: 8,
-    marginTop: 4
+    marginTop: 4,
+    fontSize: PV.Fonts.sizes.md,
+    fontWeight: PV.Fonts.weights.bold
   },
   p: {
     marginBottom: 8,
-    marginTop: 4
+    marginTop: 4,
+    fontSize: PV.Fonts.sizes.lg
+  },
+  a: {
+    fontSize: PV.Fonts.sizes.lg
+  },
+  ul: {
+    marginBottom: 0,
+    marginLeft: -16,
+    marginRight: 0,
+    marginTop: 0,
+    paddingLeft: 0,
+    listStyleType: 'none'
+  },
+  li: {
+    listStyleType: 'none'
   }
 }
 
