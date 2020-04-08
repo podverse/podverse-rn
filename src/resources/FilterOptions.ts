@@ -31,6 +31,16 @@ const {
 
 const _top = [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear]
 
+const sortAlphabeticalItem = {
+  label: 'alphabetical',
+  value: _alphabeticalKey
+}
+
+const sortChronologicalItem = {
+  label: 'chronological',
+  value: _chronologicalKey
+}
+
 export const FilterOptions = {
   typeItems: [
     {
@@ -91,14 +101,8 @@ export const FilterOptions = {
     }
   ],
   sortItems: [
-    {
-      label: 'chronological',
-      value: _chronologicalKey
-    },
-    {
-      label: 'alphabetical',
-      value: _alphabeticalKey
-    },
+    sortChronologicalItem,
+    sortAlphabeticalItem,
     {
       label: 'most recent',
       value: _mostRecentKey
@@ -163,7 +167,7 @@ export const FilterOptions = {
     },
     PlayerScreen: {
       type: [_episodesKey, _clipsKey, _showNotesKey, _titleKey],
-      sort: [_chronologicalKey, _mostRecentKey, _oldestKey, ..._top, _randomKey],
+      sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
       sublist: [
         {
           label: 'From this podcast',
@@ -196,9 +200,14 @@ export const FilterOptions = {
     },
     ProfileScreen: {
       type: [_podcastsKey, _clipsKey, _playlistsKey],
-      sort: [_alphabeticalKey, _mostRecentKey, ..._top, _randomKey],
+      sort: [_mostRecentKey, ..._top],
       sublist: [],
-      hideSort: [_playlistsKey]
+      hideSort: [_playlistsKey],
+      includeAlphabetical: [_podcastsKey]
     }
+  },
+  items: {
+    sortAlphabeticalItem,
+    sortChronologicalItem
   }
 }

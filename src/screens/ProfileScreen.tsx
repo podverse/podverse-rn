@@ -47,6 +47,7 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
+  hideRightItemWhileLoading: boolean
   initializeClips: boolean
   isLoading: boolean
   isLoadingMore: boolean
@@ -102,6 +103,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
+      hideRightItemWhileLoading: false,
       initializeClips,
       isLoading: true,
       isLoadingMore: false,
@@ -210,18 +212,24 @@ export class ProfileScreen extends React.Component<Props, State> {
       return
     }
 
+    let sort = querySort
+    let hideRightItemWhileLoading = false
+    if (querySort === PV.Filters._alphabeticalKey && selectedKey !== PV.Filters._podcastsKey) {
+      sort = PV.Filters._topPastWeek
+      hideRightItemWhileLoading = true
+    }
+
     this.setState(
       {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
+        hideRightItemWhileLoading,
         isLoading: true,
         preventSortQuery: true,
         queryFrom: selectedKey,
         queryPage: 1,
-        ...(querySort === PV.Filters._alphabeticalKey && selectedKey !== PV.Filters._podcastsKey
-          ? { querySort: PV.Filters._topPastWeek }
-          : {})
+        querySort: sort
       },
       async () => {
         const newState = await this._queryData(selectedKey, 1)
@@ -391,6 +399,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     const {
       flatListData,
       flatListDataTotalCount,
+      hideRightItemWhileLoading,
       initializeClips,
       isLoading,
       isLoadingMore,
@@ -439,6 +448,7 @@ export class ProfileScreen extends React.Component<Props, State> {
             <TableSectionSelectors
               handleSelectLeftItem={this.selectLeftItem}
               handleSelectRightItem={this.selectRightItem}
+              hideRightItemWhileLoading={hideRightItemWhileLoading}
               screenName='ProfileScreen'
               selectedLeftItemKey={queryFrom}
               selectedRightItemKey={querySort}
@@ -569,6 +579,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   _queryData = async (filterKey: string | null, page: number = 1) => {
     const { queryFrom, querySort } = this.state
     let newState = {
+      hideRightItemWhileLoading: false,
       isLoading: false,
       isLoadingMore: false,
       showNoInternetConnectionMessage: false

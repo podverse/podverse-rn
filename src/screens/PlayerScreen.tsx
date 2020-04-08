@@ -206,6 +206,15 @@ export class PlayerScreen extends React.Component<Props, State> {
       return
     }
 
+    let sort = PV.Filters._topPastWeek
+    let hideRightItemWhileLoading = false
+    if (selectedKey === PV.Filters._clipsKey) {
+      sort = PV.Filters._chronologicalKey
+      hideRightItemWhileLoading = true
+    } else if (selectedKey === PV.Filters._episodesKey) {
+      hideRightItemWhileLoading = true
+    }
+
     setGlobal(
       {
         screenPlayer: {
@@ -213,10 +222,10 @@ export class PlayerScreen extends React.Component<Props, State> {
           endOfResultsReached: false,
           flatListData: [],
           flatListDataTotalCount: null,
+          hideRightItemWhileLoading,
           isQuerying: true,
           queryFrom: PV.Filters._fromThisEpisodeKey,
-          querySort:
-            selectedKey === PV.Filters._fromThisEpisodeKey ? PV.Filters._chronologicalKey : PV.Filters._topPastWeek,
+          querySort: sort,
           queryPage: 1,
           viewType: selectedKey
         }
@@ -253,6 +262,15 @@ export class PlayerScreen extends React.Component<Props, State> {
       return
     }
 
+    let sort = PV.Filters._topPastWeek
+    let hideRightItemWhileLoading = false
+    if (selectedKey === PV.Filters._fromThisEpisodeKey) {
+      sort = PV.Filters._chronologicalKey
+      hideRightItemWhileLoading = true
+    } else if (selectedKey === PV.Filters._episodesKey) {
+      hideRightItemWhileLoading = true
+    }
+
     setGlobal(
       {
         screenPlayer: {
@@ -260,9 +278,11 @@ export class PlayerScreen extends React.Component<Props, State> {
           endOfResultsReached: false,
           flatListData: [],
           flatListDataTotalCount: null,
+          hideRightItemWhileLoading,
           isQuerying: true,
           queryFrom: selectedKey,
-          queryPage: 1
+          queryPage: 1,
+          querySort: sort
         }
       },
       async () => {
@@ -496,6 +516,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const {
       flatListData,
       flatListDataTotalCount,
+      hideRightItemWhileLoading,
       isLoading,
       isLoadingMore,
       isQuerying,
@@ -541,6 +562,8 @@ export class PlayerScreen extends React.Component<Props, State> {
               <TableSectionSelectors
                 handleSelectLeftItem={this._selectViewType}
                 handleSelectRightItem={this._selectQuerySort}
+                hideRightItemWhileLoading={hideRightItemWhileLoading}
+                includeChronological={viewType === PV.Filters._clipsKey && queryFrom === PV.Filters._fromThisEpisodeKey}
                 screenName='PlayerScreen'
                 selectedLeftItemKey={viewType}
                 selectedRightItemKey={querySort}
@@ -681,6 +704,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { screenPlayer } = this.global
     const { flatListData, viewType } = screenPlayer
     const newState = {
+      hideRightItemWhileLoading: false,
       isLoading: false,
       isLoadingMore: false,
       isQuerying: false

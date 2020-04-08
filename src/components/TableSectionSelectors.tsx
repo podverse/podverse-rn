@@ -12,11 +12,12 @@ type Props = {
   handleSelectRightItem?: any
   hidePickers?: boolean
   hideRightItemWhileLoading?: boolean
+  includeChronological?: boolean
+  isBottomBar?: boolean
+  isCategories?: boolean
   selectedLeftItemKey: string | null
   selectedRightItemKey?: string | null
   screenName: string
-  isBottomBar?: boolean
-  isCategories?: boolean
 }
 
 export const TableSectionSelectors = (props: Props) => {
@@ -30,11 +31,12 @@ export const TableSectionSelectors = (props: Props) => {
     handleSelectRightItem,
     hidePickers,
     hideRightItemWhileLoading,
+    includeChronological = false,
+    isBottomBar = false,
+    isCategories = false,
     selectedLeftItemKey,
     selectedRightItemKey,
-    screenName,
-    isBottomBar = false,
-    isCategories = false
+    screenName
   } = props
 
   useEffect(() => {
@@ -81,13 +83,22 @@ export const TableSectionSelectors = (props: Props) => {
 
   useEffect(() => {
     let rightItems = []
-    if (PV.FilterOptions.screenFilters[screenName].hideSort.includes(selectedLeftItemKey)) {
+    const screen = PV.FilterOptions.screenFilters[screenName]
+    if (screen.hideSort.includes(selectedLeftItemKey)) {
       setRightItems(rightItems)
     } else {
       if (!isBottomBar) {
         rightItems = PV.FilterOptions.sortItems.filter((sortKey: string) => {
           return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
         })
+
+        if (screen.includeAlphabetical && screen.includeAlphabetical.includes(selectedLeftItemKey)) {
+          rightItems.unshift(PV.FilterOptions.items.sortAlphabeticalItem)
+        }
+
+        if (includeChronological) {
+          rightItems.unshift(PV.FilterOptions.items.sortChronologicalItem)
+        }
       } else {
         if (leftItems.length > 0) {
           const selectedCategory = leftItems.find((category) => category.value === selectedLeftItemKey)
