@@ -72,8 +72,7 @@ export const TableSectionSelectors = (props: Props) => {
             console.log('Bottom Selection Bar error: ', err)
           })
       } else {
-        setLeftItems(newleftItems)
-        return
+        leftItems = newleftItems
       }
     }
 
