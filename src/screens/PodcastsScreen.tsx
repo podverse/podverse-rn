@@ -277,6 +277,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       !querySort || querySort === PV.Filters._alphabeticalKey || querySort === PV.Filters._mostRecentKey
         ? PV.Filters._topPastWeek
         : querySort
+
     if (querySortOverride) {
       sort = querySortOverride
     }
@@ -337,7 +338,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         isLoading: true,
         ...((isSubCategory ? { selectedSubCategory: selectedKey } : { selectedCategory: selectedKey }) as any),
         flatListData: [],
-        flatListDataTotalCount: null
+        flatListDataTotalCount: null,
+        queryPage: 1
       },
       async () => {
         const newState = await this._queryData(selectedKey, this.state, {}, { isSubCategory })
@@ -359,7 +361,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             const nextPage = queryPage + 1
             const newState = await this._queryData(queryFrom, this.state, {
               queryPage: nextPage,
-              searchAllFieldsText: this.state.searchBarText
+              searchTitle: this.state.searchBarText
             })
             this.setState(newState)
           }
@@ -639,8 +641,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
       {
         sort,
         page,
-        includeAuthors: true,
-        includeCategories: true,
         ...(searchTitle ? { searchTitle } : {})
       },
       this.global.settings.nsfwMode
@@ -648,14 +648,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
     return results
   }
 
-  _queryPodcastsByCategory = async (categoryId: string | null, sort: string | null, page: number = 1) => {
+  _queryPodcastsByCategory = async (categoryId?: string | null, sort?: string | null, page: number = 1) => {
     const { searchBarText: searchTitle } = this.state
     const results = await getPodcasts(
       {
         categories: categoryId,
         sort,
         page,
-        includeAuthors: true,
         ...(searchTitle ? { searchTitle } : {})
       },
       this.global.settings.nsfwMode
@@ -758,15 +757,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           newState.selectedCategory = filterKey
         }
 
-        const results = await getPodcasts(
-          {
-            categories,
-            sort: querySort,
-            includeAuthors: true,
-            ...(searchTitle ? { searchTitle } : {})
-          },
-          nsfwMode
-        )
+        const results = await this._queryPodcastsByCategory(categories, querySort)
         newState.flatListData = results[0]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]

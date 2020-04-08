@@ -265,6 +265,8 @@ export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boo
 
   if (!item) return
 
+  const lastPlayingItem = await getNowPlayingItem()
+
   // Episodes and clips must be already loaded in history
   // in order to be handled in playerEvents > handleSyncNowPlayingItem.
   await addOrUpdateHistoryItem(item)
@@ -283,6 +285,11 @@ export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boo
       AsyncStorage.setItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED, 'true')
     }
   }
+
+  if (lastPlayingItem && lastPlayingItem.episodeId && lastPlayingItem.episodeId !== item.episodeId) {
+    PlayerEventEmitter.emit(PV.Events.PLAYER_NEW_EPISODE_LOADED)
+  }
+
   sendPlayerScreenGoogleAnalyticsPageView(item)
 }
 

@@ -156,10 +156,10 @@ export const FilterOptions = {
       hideSort: [_showNotesKey, _titleKey]
     },
     EpisodesScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey],
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
       sort: [_mostRecentKey, ..._top],
-      sublist: [],
-      hideSort: []
+      sublist: [{ label: 'All', value: _allCategoriesKey }],
+      hideSort: [_downloadedKey]
     },
     PlayerScreen: {
       type: [_episodesKey, _clipsKey, _showNotesKey, _titleKey],

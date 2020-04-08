@@ -31,6 +31,7 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
+  hideRightItemWhileLoading: boolean
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
@@ -39,6 +40,8 @@ type State = {
   querySort: string | null
   searchBarText: string
   selectedItem?: any
+  selectedCategory: string | null
+  selectedSubCategory: string | null
   showActionSheet: boolean
   showNoInternetConnectionMessage?: boolean
 }
@@ -57,6 +60,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
+      hideRightItemWhileLoading: false,
       isLoading: true,
       isLoadingMore: false,
       isRefreshing: false,
@@ -68,6 +72,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
       querySort:
         subscribedPodcastIds && subscribedPodcastIds.length > 0 ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
       searchBarText: '',
+      selectedCategory: PV.Filters._allCategoriesKey,
+      selectedSubCategory: PV.Filters._allCategoriesKey,
       showActionSheet: false
     }
 
@@ -96,14 +102,31 @@ export class EpisodesScreen extends React.Component<Props, State> {
       return
     }
 
+    const { querySort } = this.state
+
+    let sort = querySort
+    let hideRightItemWhileLoading = false
+    if (
+      (selectedKey === PV.Filters._allPodcastsKey || selectedKey === PV.Filters._categoryKey) &&
+      (querySort === PV.Filters._mostRecentKey || querySort === PV.Filters._randomKey)
+    ) {
+      sort = PV.Filters._topPastWeek
+      hideRightItemWhileLoading = true
+    } else if (selectedKey === PV.Filters._downloadedKey) {
+      sort = PV.Filters._mostRecentKey
+      hideRightItemWhileLoading = true
+    }
+
     this.setState(
       {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
+        hideRightItemWhileLoading,
         isLoading: true,
         queryFrom: selectedKey,
         queryPage: 1,
+        querySort: sort,
         searchBarText: ''
       },
       async () => {
@@ -130,6 +153,30 @@ export class EpisodesScreen extends React.Component<Props, State> {
       },
       async () => {
         const newState = await this._queryData(selectedKey)
+        this.setState(newState)
+      }
+    )
+  }
+
+  _selectCategory = async (selectedKey: string, isSubCategory?: boolean) => {
+    if (!selectedKey) {
+      this.setState({
+        ...((isSubCategory ? { selectedSubCategory: null } : { selectedCategory: null }) as any)
+      })
+      return
+    }
+
+    this.setState(
+      {
+        endOfResultsReached: false,
+        isLoading: true,
+        ...((isSubCategory ? { selectedSubCategory: selectedKey } : { selectedCategory: selectedKey }) as any),
+        flatListData: [],
+        flatListDataTotalCount: null,
+        queryPage: 1
+      },
+      async () => {
+        const newState = await this._queryData(selectedKey, { isSubCategory })
         this.setState(newState)
       }
     )
@@ -298,13 +345,16 @@ export class EpisodesScreen extends React.Component<Props, State> {
     const {
       flatListData,
       flatListDataTotalCount,
-      queryFrom,
+      hideRightItemWhileLoading,
       isLoading,
       isLoadingMore,
       isRefreshing,
+      queryFrom,
       querySort,
       searchBarText,
+      selectedCategory,
       selectedItem,
+      selectedSubCategory,
       showActionSheet,
       showNoInternetConnectionMessage
     } = this.state
@@ -316,10 +366,22 @@ export class EpisodesScreen extends React.Component<Props, State> {
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
+          hideRightItemWhileLoading={hideRightItemWhileLoading}
           screenName='EpisodesScreen'
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort}
         />
+        {queryFrom === PV.Filters._categoryKey && (
+          <TableSectionSelectors
+            handleSelectLeftItem={(x: string) => this._selectCategory(x)}
+            handleSelectRightItem={(x: string) => this._selectCategory(x, true)}
+            isBottomBar={true}
+            isCategories={true}
+            screenName='EpisodesScreen'
+            selectedLeftItemKey={selectedCategory}
+            selectedRightItemKey={selectedSubCategory}
+          />
+        )}
         {isLoading && <ActivityIndicator />}
         {!isLoading && queryFrom && (
           <FlatList
@@ -362,11 +424,13 @@ export class EpisodesScreen extends React.Component<Props, State> {
   _queryData = async (
     filterKey: string | null,
     queryOptions: {
+      isSubCategory?: boolean
       queryPage?: number
       searchAllFieldsText?: string
     } = {}
   ) => {
     const newState = {
+      hideRightItemWhileLoading: false,
       isLoading: false,
       isLoadingMore: false,
       isRefreshing: false,
@@ -378,12 +442,14 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
     try {
       let { flatListData } = this.state
-      const { queryFrom, querySort } = this.state
+      const { queryFrom, querySort, selectedCategory, selectedSubCategory } = this.state
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
       const nsfwMode = this.global.settings.nsfwMode
       const { queryPage, searchAllFieldsText } = queryOptions
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
+
+      console.log('hey', filterKey, queryOptions, newState, this.state)
 
       if (filterKey === PV.Filters._subscribedKey) {
         const results = await getEpisodes(
@@ -406,22 +472,40 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = downloadedEpisodes.length
       } else if (filterKey === PV.Filters._allPodcastsKey) {
-        const { searchBarText: searchAllFieldsText } = this.state
-        const results = await getEpisodes(
-          {
-            sort: querySort,
-            page: queryPage,
-            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-            includePodcast: true
-          },
-          this.global.settings.nsfwMode
-        )
+        const results = await this._queryAllEpisodes(querySort, queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
+      } else if (filterKey === PV.Filters._categoryKey) {
+        if (selectedCategory && selectedSubCategory === PV.Filters._allCategoriesKey) {
+          const results = await this._queryEpisodesByCategory(selectedCategory, querySort, queryPage)
+          newState.flatListData = [...flatListData, ...results[0]]
+          newState.endOfResultsReached = newState.flatListData.length >= results[1]
+          newState.flatListDataTotalCount = results[1]
+        } else if (selectedSubCategory) {
+          const results = await this._queryEpisodesByCategory(selectedSubCategory, querySort, queryPage)
+          newState.flatListData = [...flatListData, ...results[0]]
+          newState.endOfResultsReached = newState.flatListData.length >= results[1]
+          newState.flatListDataTotalCount = results[1]
+          newState.selectedSubCategory = selectedSubCategory || PV.Filters._allCategoriesKey
+        } else {
+          const podcastResults = await this._queryAllEpisodes(querySort, queryPage)
+          newState.flatListData = [...flatListData, ...podcastResults[0]]
+          newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
+          newState.flatListDataTotalCount = podcastResults[1]
+        }
       } else if (PV.FilterOptions.screenFilters.EpisodesScreen.sort.some((option) => option === filterKey)) {
         const results = await getEpisodes(
           {
+            ...(((selectedSubCategory && selectedSubCategory !== PV.Filters._allCategoriesKey) || selectedCategory
+              ? {
+                  categories:
+                    (selectedSubCategory &&
+                      selectedSubCategory !== PV.Filters._allCategoriesKey &&
+                      selectedSubCategory) ||
+                    selectedCategory
+                }
+              : {}) as object),
             ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
             sort: filterKey,
             ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
@@ -433,6 +517,23 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.flatListData = results[0]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
+      } else {
+        const { isSubCategory } = queryOptions
+        let categories
+        if (isSubCategory) {
+          categories = filterKey === PV.Filters._allCategoriesKey ? selectedCategory : filterKey
+        } else if (filterKey === PV.Filters._allCategoriesKey) {
+          newState.selectedCategory = PV.Filters._allCategoriesKey
+        } else {
+          categories = filterKey
+          newState.selectedSubCategory = PV.Filters._allCategoriesKey
+          newState.selectedCategory = filterKey
+        }
+
+        const results = await this._queryEpisodesByCategory(categories, querySort, queryPage)
+        newState.flatListData = results[0]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       }
 
       return newState
@@ -440,6 +541,37 @@ export class EpisodesScreen extends React.Component<Props, State> {
       console.log(error)
       return newState
     }
+  }
+
+  _queryAllEpisodes = async (sort: string | null, page: number = 1) => {
+    const { searchBarText: searchAllFieldsText } = this.state
+
+    const results = await getEpisodes(
+      {
+        sort,
+        page,
+        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+        includePodcast: true
+      },
+      this.global.settings.nsfwMode
+    )
+
+    return results
+  }
+
+  _queryEpisodesByCategory = async (categoryId?: string | null, sort?: string | null, page: number = 1) => {
+    const { searchBarText: searchAllFieldsText } = this.state
+    const results = await getEpisodes(
+      {
+        categories: categoryId,
+        sort,
+        page,
+        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+        includePodcast: true
+      },
+      this.global.settings.nsfwMode
+    )
+    return results
   }
 }
 

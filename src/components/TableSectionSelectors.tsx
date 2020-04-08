@@ -11,10 +11,12 @@ type Props = {
   handleSelectLeftItem?: any
   handleSelectRightItem?: any
   hidePickers?: boolean
+  hideRightItemWhileLoading?: boolean
   selectedLeftItemKey: string | null
   selectedRightItemKey?: string | null
   screenName: string
   isBottomBar?: boolean
+  isCategories?: boolean
 }
 
 export const TableSectionSelectors = (props: Props) => {
@@ -27,6 +29,7 @@ export const TableSectionSelectors = (props: Props) => {
     handleSelectLeftItem,
     handleSelectRightItem,
     hidePickers,
+    hideRightItemWhileLoading,
     selectedLeftItemKey,
     selectedRightItemKey,
     screenName,
@@ -111,7 +114,7 @@ export const TableSectionSelectors = (props: Props) => {
     PV.Fonts.fontScale.largest === fontScaleMode
       ? [styles.tableSectionHeaderInner, { flexDirection: 'column' }]
       : [styles.tableSectionHeaderInner]
-
+console.log('props', props, hideRightItemWhileLoading, selectedLeftItemKey, rightItems)
   return (
     <View>
       <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
@@ -138,7 +141,7 @@ export const TableSectionSelectors = (props: Props) => {
                 />
               </View>
             </RNPickerSelect>
-            {selectedLeftItemKey && rightItems.length > 1 && (
+            {!hideRightItemWhileLoading && selectedLeftItemKey && rightItems.length > 1 && (
               <RNPickerSelect
                 items={rightItems}
                 onValueChange={handleSelectRightItem}
@@ -161,15 +164,17 @@ export const TableSectionSelectors = (props: Props) => {
                 </View>
               </RNPickerSelect>
             )}
-            {rightItems.length === 1 && selectedRightItemKey !== PV.Filters._allCategoriesKey && (
-              <View style={styles.tableSectionHeaderButton}>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={1}
-                  style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                  {selectedRightItem.label}
-                </Text>
-              </View>
+            {!hideRightItemWhileLoading &&
+              rightItems.length === 1 &&
+              selectedRightItemKey !== PV.Filters._allCategoriesKey && (
+                <View style={styles.tableSectionHeaderButton}>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    numberOfLines={1}
+                    style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
+                    {selectedRightItem.label}
+                  </Text>
+                </View>
             )}
           </View>
         )}

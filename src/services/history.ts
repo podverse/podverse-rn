@@ -39,41 +39,6 @@ export const getHistoryItems = async () => {
   return useServerData ? getHistoryItemsFromServer() : getHistoryItemsLocally()
 }
 
-// Find the currently playing item in historyItems, then load the track
-// previous to it in the history, OR play the track in front of it if playNext === true.
-// If should playNext but there are no items in front of it, then try to play next from the queue,
-// else do nothing.
-export const getAdjacentItemFromHistoryLocally = async (playNext?: boolean) => {
-  const playingItem = await getNowPlayingItem()
-
-  if (playingItem) {
-    const playbackPosition = await PVTrackPlayer.getPosition()
-    const duration = await PVTrackPlayer.getDuration()
-    if (duration > 0 && playbackPosition >= duration - 10) {
-      playingItem.userPlaybackPosition = 0
-    } else if (playbackPosition > 0) {
-      playingItem.userPlaybackPosition = playbackPosition
-    }
-    updateHistoryItemPlaybackPosition(playingItem)
-  }
-
-  const historyItems = await getHistoryItemsLocally()
-  const index = historyItems.findIndex((x: any) =>
-    checkIfIdMatchesClipIdOrEpisodeId(x.clipId || x.episodeId, playingItem.clipId, playingItem.episodeId)
-  )
-
-  if (index > -1) {
-    if (playNext && index - 1 > -1) {
-      return historyItems[index - 1]
-    } else if (!playNext && index + 1 <= historyItems.length - 1) {
-      return historyItems[index + 1]
-    } else if (playNext) {
-      const nextItem = await popNextFromQueue()
-      return nextItem
-    }
-  }
-}
-
 export const removeHistoryItem = async (item: NowPlayingItem) => {
   const useServerData = await checkIfShouldUseServerData()
   return useServerData ? removeHistoryItemOnServer(item.episodeId, item.clipId) : removeHistoryItemLocally(item)

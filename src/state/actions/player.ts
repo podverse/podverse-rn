@@ -6,7 +6,6 @@ import {
   NowPlayingItem
 } from '../../lib/NowPlayingItem'
 import { PV } from '../../resources'
-import { getAdjacentItemFromHistoryLocally } from '../../services/history'
 import {
   clearNowPlayingItem as clearNowPlayingItemService,
   getContinuousPlaybackMode,

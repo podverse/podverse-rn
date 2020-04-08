@@ -39,6 +39,7 @@ import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getAddByRSSPodcast } from '../services/parser'
 import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
+import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { core } from '../styles'
@@ -48,6 +49,9 @@ type Props = {
 }
 
 type State = {}
+
+let eventListenerPlayerNewEpisodeLoaded: any
+let shouldQueryAgain = false
 
 export class PlayerScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
@@ -97,7 +101,23 @@ export class PlayerScreen extends React.Component<Props, State> {
       _showShareActionSheet: this._showShareActionSheet
     })
 
+    if (shouldQueryAgain) {
+      shouldQueryAgain = false
+      this._selectViewType(this.global.screenPlayer.viewType)
+    }
+
+    if (!eventListenerPlayerNewEpisodeLoaded) {
+      eventListenerPlayerNewEpisodeLoaded = PlayerEventEmitter.on(
+        PV.Events.PLAYER_NEW_EPISODE_LOADED,
+        this._setShouldQueryAgain
+      )
+    }
+
     gaTrackPageView('/player', 'Player Screen')
+  }
+
+  _setShouldQueryAgain = () => {
+    shouldQueryAgain = true
   }
 
   _initializeScreenData = () => {
