@@ -449,8 +449,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
-      console.log('hey', filterKey, queryOptions, newState, this.state)
-
       if (filterKey === PV.Filters._subscribedKey) {
         const results = await getEpisodes(
           {
