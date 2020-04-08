@@ -1,4 +1,5 @@
 import { hasValidDownloadingConnection, hasValidNetworkConnection } from '../lib/network'
+import { PV } from '../resources'
 import { getBearerToken } from './auth'
 import { request } from './request'
 
@@ -43,14 +44,19 @@ export const getMediaRef = async (id: string) => {
 
 export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
   const filteredQuery = {
-    ...(query.categories ? { categories: query.categories } : {}),
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
-    ...(query.podcastId ? { podcastId: query.podcastId } : {}),
-    ...(query.episodeId ? { episodeId: query.episodeId } : {}),
     ...(query.searchAllFieldsText ? { searchAllFieldsText: query.searchAllFieldsText } : {}),
     ...(query.includeEpisode ? { includeEpisode: true } : {}),
     ...(query.includePodcast ? { includePodcast: true } : {})
+  } as any
+
+  if (query.categories && query.categories !== PV.Filters._allCategoriesKey) {
+    filteredQuery.categories = query.categories
+  } else if (query.podcastId) {
+    filteredQuery.podcastId = query.podcastId ? query.podcastId.join(',') : ['no-results']
+  } else if (query.episodeId) {
+    filteredQuery.episodeId = query.episodeId ? query.episodeId.join(',') : ['no-results']
   }
 
   if (query.subscribedOnly && query.podcastId && query.podcastId.length === 0) {

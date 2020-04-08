@@ -114,7 +114,7 @@ export const TableSectionSelectors = (props: Props) => {
     PV.Fonts.fontScale.largest === fontScaleMode
       ? [styles.tableSectionHeaderInner, { flexDirection: 'column' }]
       : [styles.tableSectionHeaderInner]
-console.log('props', props, hideRightItemWhileLoading, selectedLeftItemKey, rightItems)
+
   return (
     <View>
       <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
@@ -175,7 +175,7 @@ console.log('props', props, hideRightItemWhileLoading, selectedLeftItemKey, righ
                     {selectedRightItem.label}
                   </Text>
                 </View>
-            )}
+              )}
           </View>
         )}
       </View>

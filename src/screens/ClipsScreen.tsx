@@ -17,9 +17,8 @@ import { getDownloadedEpisodeIds } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { generateCategoryItems, isOdd, safelyUnwrapNestedVariable } from '../lib/utility'
+import { isOdd, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
-import { getCategoryById, getTopLevelCategories } from '../services/category'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getLoggedInUserMediaRefs } from '../services/user'
@@ -31,7 +30,6 @@ type Props = {
 }
 
 type State = {
-  categoryItems: any[]
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
@@ -50,7 +48,6 @@ type State = {
   showActionSheet: boolean
   showDeleteConfirmDialog?: boolean
   showNoInternetConnectionMessage?: boolean
-  subCategoryItems: any[]
 }
 
 export class ClipsScreen extends React.Component<Props, State> {
@@ -64,7 +61,6 @@ export class ClipsScreen extends React.Component<Props, State> {
     const { subscribedPodcastIds } = this.global.session.userInfo
 
     this.state = {
-      categoryItems: [],
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
@@ -80,10 +76,9 @@ export class ClipsScreen extends React.Component<Props, State> {
       querySort:
         subscribedPodcastIds && subscribedPodcastIds.length > 0 ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
       searchBarText: '',
-      selectedCategory: null,
-      selectedSubCategory: null,
-      showActionSheet: false,
-      subCategoryItems: []
+      selectedCategory: PV.Filters._allCategoriesKey,
+      selectedSubCategory: PV.Filters._allCategoriesKey,
+      showActionSheet: false
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
@@ -171,7 +166,6 @@ export class ClipsScreen extends React.Component<Props, State> {
         endOfResultsReached: false,
         isLoading: true,
         ...((isSubCategory ? { selectedSubCategory: selectedKey } : { selectedCategory: selectedKey }) as any),
-        ...(!isSubCategory ? { subCategoryItems: [] } : {}),
         flatListData: [],
         flatListDataTotalCount: null,
         queryPage: 1
@@ -385,7 +379,6 @@ export class ClipsScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const {
-      categoryItems,
       flatListData,
       flatListDataTotalCount,
       hideRightItemWhileLoading,
@@ -400,8 +393,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       selectedSubCategory,
       showActionSheet,
       showDeleteConfirmDialog,
-      showNoInternetConnectionMessage,
-      subCategoryItems
+      showNoInternetConnectionMessage
     } = this.state
     const { session } = this.global
 
@@ -410,14 +402,19 @@ export class ClipsScreen extends React.Component<Props, State> {
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
+          hideRightItemWhileLoading={hideRightItemWhileLoading}
           screenName='ClipsScreen'
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort}
         />
-        {queryFrom === PV.Filters._categoryKey && categoryItems && (
+        {queryFrom === PV.Filters._categoryKey && (
           <TableSectionSelectors
             handleSelectLeftItem={(x: string) => this._selectCategory(x)}
             handleSelectRightItem={(x: string) => this._selectCategory(x, true)}
+            hideRightItemWhileLoading={hideRightItemWhileLoading}
+            isBottomBar={true}
+            isCategories={true}
+            screenName='ClipsScreen'
             selectedLeftItemKey={selectedCategory}
             selectedRightItemKey={selectedSubCategory}
           />
@@ -564,16 +561,20 @@ export class ClipsScreen extends React.Component<Props, State> {
           newState.flatListDataTotalCount = results[1]
           newState.selectedSubCategory = selectedSubCategory || PV.Filters._allCategoriesKey
         } else {
-          const categoryResults = await getTopLevelCategories()
           const podcastResults = await this._queryAllMediaRefs(querySort, queryPage)
-          newState.categoryItems = generateCategoryItems(categoryResults[0])
           newState.flatListData = [...flatListData, ...podcastResults[0]]
           newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
           newState.flatListDataTotalCount = podcastResults[1]
         }
-      } else if (rightItems.some((option) => option.value === filterKey)) {
+      } else if (PV.FilterOptions.screenFilters.ClipsScreen.sort.some((option) => option === filterKey)) {
         const results = await getMediaRefs(
           {
+            ...(queryFrom === PV.Filters._categoryKey && selectedCategory ? { categories: selectedCategory } : {}),
+            ...(queryFrom === PV.Filters._categoryKey &&
+            selectedSubCategory &&
+            selectedSubCategory !== PV.Filters._allCategoriesKey
+              ? { categories: selectedSubCategory }
+              : {}),
             ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
             sort: filterKey,
             ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
@@ -594,8 +595,6 @@ export class ClipsScreen extends React.Component<Props, State> {
           newState.selectedCategory = PV.Filters._allCategoriesKey
         } else {
           categories = filterKey
-          const category = await getCategoryById(filterKey || '')
-          newState.subCategoryItems = generateCategoryItems(category.categories)
           newState.selectedSubCategory = PV.Filters._allCategoriesKey
           newState.selectedCategory = filterKey
         }

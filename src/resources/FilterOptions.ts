@@ -144,9 +144,9 @@ export const FilterOptions = {
   ],
   screenFilters: {
     ClipsScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _myClipsKey],
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _myClipsKey],
       sort: [_mostRecentKey, ..._top],
-      sublist: [],
+      sublist: [{ label: 'All', value: _allCategoriesKey }],
       hideSort: []
     },
     EpisodeScreen: {
