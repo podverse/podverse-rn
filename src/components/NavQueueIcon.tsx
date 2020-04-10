@@ -6,13 +6,14 @@ import { Icon, NavItemWrapper } from './'
 type Props = {
   navigation: any
   useThemeTextColor?: boolean
+  showBackButton?: boolean
 }
 
 export const NavQueueIcon = (props: Props) => {
-  const { navigation, useThemeTextColor } = props
+  const { navigation, useThemeTextColor, showBackButton } = props
 
   const handlePress = () => {
-    navigation.navigate(PV.RouteNames.QueueScreen)
+    navigation.navigate({ routeName: PV.RouteNames.QueueScreen, params: { showBackButton } })
   }
 
   const color = useThemeTextColor ? '' : '#fff'
