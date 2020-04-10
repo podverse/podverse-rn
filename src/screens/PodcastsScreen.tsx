@@ -680,6 +680,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const {
         searchBarText: searchTitle,
         flatListData = [],
+        queryFrom,
         querySort,
         selectedCategory,
         selectedSubCategory
