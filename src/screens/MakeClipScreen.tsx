@@ -326,10 +326,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   render() {
+    const { navigation } = this.props
     const { globalTheme, player, session } = this.global
     const isDarkMode = globalTheme === darkTheme
     const { nowPlayingItem, playbackRate, playbackState } = player
-    const { isLoggedIn } = session
+    const { isLoggedIn, userInfo } = session
     const { endTime, isPublicItemSelected, isSaving, progressValue, showHowToModal, startTime, title } = this.state
 
     return (
@@ -453,6 +454,20 @@ export class MakeClipScreen extends React.Component<Props, State> {
               </TouchableOpacity>
             </RNView>
             <View style={styles.bottomRow}>
+              <TouchableOpacity
+                hitSlop={{
+                  bottom: 4,
+                  left: 4,
+                  right: 4,
+                  top: 4
+                }}
+                onPress={() => navigation.navigate(PV.RouteNames.FAQScreen)}>
+                <View>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.bottomRowText, globalTheme.link]}>
+                    Clips FAQ
+                  </Text>
+                </View>
+              </TouchableOpacity>
               <TouchableWithoutFeedback
                 hitSlop={{
                   bottom: 4,
@@ -469,6 +484,27 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   </Text>
                 </View>
               </TouchableWithoutFeedback>
+              <TouchableOpacity
+                hitSlop={{
+                  bottom: 4,
+                  left: 4,
+                  right: 4,
+                  top: 4
+                }}
+                onPress={() =>
+                  navigation.navigate(PV.RouteNames.ProfileScreen, {
+                    user: userInfo,
+                    navigationTitle: 'My Profile',
+                    isMyProfile: true,
+                    initializeClips: true
+                  })
+                }>
+                <View>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.bottomRowText, globalTheme.link]}>
+                    My Clips
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -542,8 +578,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   bottomRowText: {
-    fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold
+    fontSize: PV.Fonts.sizes.md
   },
   divider: {
     marginBottom: 8,
