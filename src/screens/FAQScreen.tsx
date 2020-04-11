@@ -65,18 +65,13 @@ Why do some clips start at the wrong time?
   </h2>
 
   <p>
-An advantage of Podverse is that it lets you create <b>podcast clips of any length</b>,
-whereas most podcast apps today limit your clips to be less than a minute long.
-  </p>
-  <p>
-However, a current drawback to this clip-sharing approach is that it does not support podcasts
-that insert dynamic ads.
+An advantage of Podverse is it lets you create podcast clips of any length,
+whereas most apps today limit clips to be less than a minute long.
+A disadvantage to this is that Podverse currently does not support clips from podcasts that insert dynamic ads.
   </p>
   <p>
 "Dynamic ads" refers to the practice of rotating different advertisements into the same episode,
 so each listener may hear a different series of advertisements.
-  </p>
-  <p>
 Since dynamic ads change the overall length of the episode,
 the timestamps of clips created from that episode will not stay accurate.
   </p>
