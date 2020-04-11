@@ -46,7 +46,7 @@ const html = `
 
   <ul>
     <li>
-      <a href='#dyanmic-ads'>Dynamic ads: Why do some clips start at the wrong time?</a>
+      <a href='#why-do-some-clips-start-at-the-wrong-time'>Why do some clips start at the wrong time?</a>
     </li>
     <li>
       <a href='#what-does-open-source-mean'>What does open source mean?</a>
@@ -60,25 +60,31 @@ const html = `
 
   <h2
     className='offset-anchor-tag'
-    id='dyanmic-ads'>
-Dynamic ads: Why do some clips start at the wrong time?
+    id='why-do-some-clips-start-at-the-wrong-time'>
+Why do some clips start at the wrong time?
   </h2>
 
   <p>
-Podverse clips should work reliably for the majority of
-podcasts that do not use dynamic ads, but the start times of clips from shows
-that use dynamic ads will not stay accurate.
+An advantage of Podverse is that it lets you create <b>podcast clips of any length</b>,
+whereas most podcast apps today limit your clips to be less than a minute long.
   </p>
   <p>
-Podcasts that use dyanmic ads rotate different ads into the same episode.
-Since we can't predict which ads each listener will get or how long they will be,
-we can't determine the correct clip start time for all listeners.
+However, a current drawback to this clip-sharing approach is that it does not support podcasts
+that insert dynamic ads.
   </p>
   <p>
-We would love to add full support for podcasts that use dynamic ads some day,
-but we will need to collaborate with podcasters and their ad networks to do so.
+"Dynamic ads" refers to the practice of rotating different advertisements into the same episode,
+so each listener may hear a different series of advertisements.
   </p>
-
+  <p>
+Since dynamic ads change the overall length of the episode,
+the timestamps of clips created from that episode will not stay accurate.
+  </p>
+  <p>
+We would love to add full support for podcasts with dynamic ads some day, and we can,
+but for fair use / legal reasons we will need to get permission from each podcaster to do so.
+  </p>
+  
   <hr />
 
   <h2
