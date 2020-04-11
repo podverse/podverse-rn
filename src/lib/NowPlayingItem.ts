@@ -17,6 +17,7 @@ export type NowPlayingItem = {
   ownerName?: string
   podcastAuthors?: string
   podcastCategories?: string
+  podcastHideDynamicAdsWarning?: boolean
   podcastId?: string
   podcastImageUrl?: string
   podcastIsExplicit?: boolean
@@ -46,6 +47,7 @@ export const cleanNowPlayingItem = (item: any) => {
     ownerName: item.ownerName,
     // podcastAuthors: item.podcastAuthors,
     // podcastCategories: item.podcastCategories,
+    podcastHideDynamicAdsWarning: item.podcastHideDynamicAdsWarning,
     podcastId: item.podcastId,
     podcastImageUrl: item.podcastImageUrl,
     podcastIsExplicit: item.podcastIsExplicit,
@@ -65,6 +67,7 @@ export const convertNowPlayingItemToEpisode = (item: NowPlayingItem) => {
     pubDate: item.episodePubDate,
     title: item.episodeTitle,
     podcast: {
+      hideDynamicAdsWarning: item.podcastHideDynamicAdsWarning,
       id: item.podcastId,
       imageUrl: item.podcastImageUrl,
       isExplicit: item.podcastIsExplicit,
@@ -99,6 +102,7 @@ export const convertNowPlayingItemClipToNowPlayingItemEpisode = (data: any, user
     episodeMediaUrl: data.episodeMediaUrl,
     episodePubDate: data.episodePubDate,
     episodeTitle: data.episodeTitle,
+    podcastHideDynamicAdsWarning: data.podcastHideDynamicAdsWarning,
     podcastId: data.podcastId,
     podcastImageUrl: data.podcastImageUrl,
     podcastIsExplicit: data.podcastIsExplicit,
@@ -111,7 +115,7 @@ export const convertNowPlayingItemClipToNowPlayingItemEpisode = (data: any, user
 }
 
 export const convertToNowPlayingItem = (
-  data,
+  data: any,
   inheritedEpisode = {} as any,
   inheritedPodcast = {} as any,
   userPlaybackPosition = 0
@@ -132,6 +136,7 @@ export const convertToNowPlayingItem = (
     nowPlayingItem.episodeMediaUrl = data.mediaUrl
     nowPlayingItem.episodePubDate = data.pubDate
     nowPlayingItem.episodeTitle = data.title
+    nowPlayingItem.podcastHideDynamicAdsWarning = data.podcast_hideDynamicAdsWarning
     nowPlayingItem.podcastId = data.podcast_id
     nowPlayingItem.podcastImageUrl = data.podcast_shrunkImageUrl || data.podcast_imageUrl
     nowPlayingItem.podcastLinkUrl = data.podcast_linkUrl
@@ -146,6 +151,7 @@ export const convertToNowPlayingItem = (
     nowPlayingItem.episodeMediaUrl = data.mediaUrl
     nowPlayingItem.episodePubDate = data.pubDate
     nowPlayingItem.episodeTitle = data.title
+    nowPlayingItem.podcastHideDynamicAdsWarning = p.hideDynamicAdsWarning
     nowPlayingItem.podcastId = p.id
     nowPlayingItem.podcastImageUrl = p.shrunkImageUrl || p.imageUrl
     nowPlayingItem.podcastIsExplicit = p.isExplicit
@@ -172,6 +178,7 @@ export const convertToNowPlayingItem = (
     nowPlayingItem.ownerName = data.owner && data.owner.name
     nowPlayingItem.podcastAuthors = p.authors
     nowPlayingItem.podcastCategories = p.categories
+    nowPlayingItem.podcastHideDynamicAdsWarning = p.hideDynamicAdsWarning
     nowPlayingItem.podcastId = p.id
     nowPlayingItem.podcastIsExplicit = p.isExplicit
     nowPlayingItem.podcastImageUrl = p.shrunkImageUrl || p.imageUrl
