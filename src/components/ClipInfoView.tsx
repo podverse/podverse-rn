@@ -10,6 +10,7 @@ type Props = {
   createdAt: string
   endTime?: number
   handleClosePress: any
+  hideDynamicAdsWarning?: boolean
   isLoading?: boolean
   isPublic?: boolean
   navigation: any
@@ -50,6 +51,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
     const {
       endTime,
       handleClosePress,
+      hideDynamicAdsWarning,
       isLoading,
       ownerIsPublic,
       ownerId,
@@ -105,6 +107,13 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                     </Text>
                   )}
                 </View>
+                {!hideDynamicAdsWarning && (
+                  <View style={styles.bottomTextWrapper}>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.dynamicAdsWarning}>
+                      Note: If a podcast uses dynamic ads, the clip start time may be off by seconds or minutes.
+                    </Text>
+                  </View>
+                )}
               </View>
             </ScrollView>
           </View>
@@ -120,6 +129,10 @@ const styles = StyleSheet.create({
   },
   divider: {
     marginBottom: 8
+  },
+  dynamicAdsWarning: {
+    fontSize: PV.Fonts.sizes.md,
+    fontStyle: 'italic'
   },
   inlineText: {
     flex: 0,
