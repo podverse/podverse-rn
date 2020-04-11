@@ -110,7 +110,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                 {!hideDynamicAdsWarning && (
                   <View style={styles.bottomTextWrapper}>
                     <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.dynamicAdsWarning}>
-                      Note: If a podcast uses dynamic ads, the clip start time may be off by seconds or minutes.
+                      Note: If a podcast uses dynamic ads, the clip start time will not stay accurate.
                     </Text>
                   </View>
                 )}
