@@ -71,8 +71,8 @@ This approach for clip sharing has a tradeoff however,
 as it currently does not support clips from podcasts that insert dynamic ads.
   </p>
   <p>
-Dynamic ads are different advertisements that rotate into the same episode,
-so each listener may hear a different series of advertisements.
+Dynamic ads are different advertisements that are rotated into the same episode,
+so each listener can hear a different series of advertisements.
 Since dynamic ads change the overall length of the episode,
 the timestamps of clips created from that episode will not stay accurate.
   </p>
