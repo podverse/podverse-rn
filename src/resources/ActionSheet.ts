@@ -15,7 +15,8 @@ const mediaMoreButtons = (
   navigation: any,
   handleDismiss: any,
   handleDownload: any,
-  handleDeleteClip: any
+  handleDeleteClip: any,
+  includeGoToPodcast?: boolean
 ) => {
   if (!item || !item.episodeId) return
 
@@ -172,7 +173,7 @@ const mediaMoreButtons = (
     })
   }
 
-  if (navigation.getParam('includeGoToPodcast')) {
+  if (includeGoToPodcast) {
     buttons.push({
       key: 'goToPodcast',
       text: 'Go to Podcast',

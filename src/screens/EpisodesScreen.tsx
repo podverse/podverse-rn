@@ -360,6 +360,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
     } = this.state
 
     const { navigation } = this.props
+    const includeGoToPodcast = true
 
     return (
       <View style={styles.view}>
@@ -412,7 +413,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
               selectedItem,
               navigation,
               this._handleCancelPress,
-              this._handleDownloadPressed
+              this._handleDownloadPressed,
+              null,
+              includeGoToPodcast
             )
           }
           showModal={showActionSheet}
