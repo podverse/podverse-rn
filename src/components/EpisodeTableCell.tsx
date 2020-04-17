@@ -15,6 +15,7 @@ type Props = {
   podcastTitle?: string
   pubDate?: string
   title?: string
+  transparent?: boolean
 }
 
 export class EpisodeTableCell extends React.PureComponent<Props> {
@@ -27,7 +28,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       hasZebraStripe,
       hideImage,
       podcastImageUrl,
-      podcastTitle
+      podcastTitle,
+      transparent
     } = this.props
     let { description = '', title } = this.props
     description = removeHTMLFromString(description)
@@ -77,7 +79,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     )
 
     return (
-      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
+      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent}>
         <RNView style={styles.wrapperTop}>
           {handleNavigationPress ? (
             <TouchableWithoutFeedback onPress={handleNavigationPress}>{innerTopView}</TouchableWithoutFeedback>

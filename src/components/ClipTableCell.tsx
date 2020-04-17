@@ -19,6 +19,7 @@ type Props = {
   podcastTitle?: string
   startTime: number
   title?: string
+  transparent?: boolean
   zebraStripeIndex?: number
 }
 
@@ -36,7 +37,8 @@ export class ClipTableCell extends React.PureComponent<Props> {
       podcastImageUrl,
       podcastTitle,
       startTime,
-      title = 'untitled clip'
+      title = 'untitled clip',
+      transparent
     } = this.props
     const clipTime = readableClipTime(startTime, endTime)
     const { downloadedEpisodeIds, downloadsActive, fontScaleMode } = this.global
@@ -100,7 +102,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
     )
 
     return (
-      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
+      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent}>
         {!!showEpisodeInfo && <RNView style={styles.wrapperTop}>{innerTopView}</RNView>}
         {handleNavigationPress ? (
           <TouchableWithoutFeedback onPress={handleNavigationPress}>{bottomText}</TouchableWithoutFeedback>

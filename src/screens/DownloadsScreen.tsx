@@ -105,7 +105,6 @@ export class DownloadsScreen extends React.Component<Props, State> {
             disableLeftSwipe={false}
             extraData={downloadsArray}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
-            keyExtractor={(item: any) => item.episodeId}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderItem}
           />

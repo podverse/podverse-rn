@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { View as RNView } from 'react-native'
-import { NavigationScreenOptions } from 'react-navigation'
+import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -86,7 +86,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
-    } as NavigationScreenOptions
+    } as NavigationStackOptions
   }
 
   constructor(props: Props) {

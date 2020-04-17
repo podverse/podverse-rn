@@ -1,5 +1,5 @@
 import { StyleSheet, View as RNView } from 'react-native'
-import { NavigationScreenOptions } from 'react-navigation'
+import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { setGlobal } from 'reactn'
 import {
   ActionSheet,
@@ -78,7 +78,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
-    } as NavigationScreenOptions
+    } as NavigationStackOptions
   }
 
   constructor(props: Props) {

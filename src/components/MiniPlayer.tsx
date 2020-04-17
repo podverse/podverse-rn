@@ -28,7 +28,8 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
             onPress={() =>
               navigation.navigate(PV.RouteNames.PlayerScreen, {
                 nowPlayingItem,
-                addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl
+                addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl,
+                isDarkMode
               })
             }>
             <View style={[styles.player, globalTheme.player]}>

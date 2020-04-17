@@ -1,6 +1,6 @@
 import debounce from 'lodash/debounce'
 import { StyleSheet, View as RNView } from 'react-native'
-import { NavigationScreenOptions } from 'react-navigation'
+import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -34,9 +34,10 @@ type State = {
   endOfResultsReached: boolean
   episode?: any
   episodeId?: any
-  formattedDescription: string
   flatListData: any[]
   flatListDataTotalCount: number | null
+  formattedDescription?: string
+  includeGoToPodcast?: boolean
   isLoading: boolean
   isLoadingMore: boolean
   queryPage: number
@@ -70,7 +71,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
-    } as NavigationScreenOptions
+    } as NavigationStackOptions
   }
 
   constructor(props: Props) {
@@ -79,6 +80,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const viewType = this.props.navigation.getParam('viewType') || PV.Filters._showNotesKey
     const episode = this.props.navigation.getParam('episode')
     const episodeId = (episode && episode.id) || this.props.navigation.getParam('episodeId')
+    const includeGoToPodcast = this.props.navigation.getParam('includeGoToPodcast')
 
     if (episode && !episode.podcast) {
       episode.podcast = {
@@ -100,6 +102,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       episodeId,
       flatListData: [],
       flatListDataTotalCount: null,
+      includeGoToPodcast,
       isLoading: viewType === PV.Filters._clipsKey,
       isLoadingMore: false,
       queryPage: 1,
@@ -326,6 +329,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       episode,
       flatListData,
       flatListDataTotalCount,
+      includeGoToPodcast,
       isLoading,
       isLoadingMore,
       querySort,
@@ -386,7 +390,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
               selectedItem,
               navigation,
               this._handleCancelPress,
-              this._handleDownloadPressed
+              this._handleDownloadPressed,
+              null,
+              includeGoToPodcast
             )
           }
           showModal={showActionSheet}

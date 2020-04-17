@@ -31,7 +31,6 @@ export const ComparisonTable = (props: any) => {
       </View>
       <FlatList
         data={data}
-        keyExtractor={(item, index) => item.text + index}
         renderItem={({ item }) => (
           <>
             <View key={item.text} style={styles.tableRow}>

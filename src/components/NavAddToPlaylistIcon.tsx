@@ -8,6 +8,7 @@ type Props = {
   getEpisodeId: any
   getMediaRefId: any
   navigation: any
+  useThemeTextColor?: boolean
 }
 
 type State = {
@@ -43,15 +44,17 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
   }
 
   render() {
-    const { getEpisodeId, getMediaRefId, navigation } = this.props
+    const { getEpisodeId, getMediaRefId, navigation, useThemeTextColor } = this.props
     const episodeId = getEpisodeId ? getEpisodeId() : null
     const mediaRefId = getMediaRefId ? getMediaRefId() : null
     const { showActionSheet } = this.state
 
+    const color = useThemeTextColor ? '' : '#fff'
+
     return (
       <View>
         <NavItemWrapper handlePress={this._handleIconPress}>
-          <Icon color='#fff' name='plus' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
+          <Icon color={color} name='plus' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
         </NavItemWrapper>
         <ActionSheet
           handleCancelPress={this._dismissActionSheet}

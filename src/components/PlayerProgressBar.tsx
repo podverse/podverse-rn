@@ -88,7 +88,11 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
               slidingPosition: null
             })
           }}
-          onValueChange={(value) => this.setState({ slidingPosition: value * duration })}
+          onValueChange={(value) =>
+            this.setState({ slidingPosition: value * duration }, () => {
+              setTimeout(() => this.setState({ slidingPosition: null }), 500)
+            })
+          }
           thumbStyle={sliderStyles.thumbStyle}
           thumbTintColor={PV.Colors.brandColor}
           value={isLoading ? 0 : value}

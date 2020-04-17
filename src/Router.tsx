@@ -1,11 +1,7 @@
 import { Image, View } from 'react-native'
 import { Badge } from 'react-native-elements'
-import {
-  createAppContainer,
-  createStackNavigator,
-  createSwitchNavigator,
-  NavigationScreenOptions
-} from 'react-navigation'
+import { createAppContainer, createSwitchNavigator } from 'react-navigation'
+import { createStackNavigator, NavigationStackOptions } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { getGlobal } from 'reactn'
 import { NavQueueIcon, PVTabBar, TabBarLabel } from './components'
@@ -64,7 +60,7 @@ const defaultNavigationOptions = ({ navigation }) => {
       fontWeight: 'bold'
     },
     headerRight: <NavQueueIcon navigation={navigation} />
-  } as NavigationScreenOptions
+  } as NavigationStackOptions
 }
 
 const AuthNavigator = createStackNavigator(

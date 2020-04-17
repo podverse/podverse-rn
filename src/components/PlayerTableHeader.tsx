@@ -29,20 +29,20 @@ export const PlayerTableHeader = (props: Props) => {
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>
-      <View style={styles.wrapper}>
+      <View style={styles.wrapper} transparent={true}>
         {isLoading && (
           <View style={core.row}>
             <ActivityIndicator />
           </View>
         )}
         {!isLoading && !!nowPlayingItem && (
-          <View style={core.row}>
+          <View style={core.row} transparent={true}>
             <FastImage
               key={nowPlayingItem.podcastImageUrl}
               source={nowPlayingItem.podcastImageUrl}
               styles={styles.image}
             />
-            <View style={textWrapperStyle}>
+            <View style={textWrapperStyle} transparent={true}>
               {fontScaleMode !== PV.Fonts.fontScale.largest && (
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
