@@ -1,7 +1,8 @@
 import React from 'react'
+import { Image } from 'react-native'
 import { PV } from '../resources'
 import { navHeader } from '../styles'
-import { Icon, NavItemWrapper } from './'
+import { NavItemWrapper } from './'
 
 type Props = {
   navigation: any
@@ -19,7 +20,10 @@ export const NavQueueIcon = (props: Props) => {
   const color = useThemeTextColor ? '' : '#fff'
   return (
     <NavItemWrapper handlePress={handlePress}>
-      <Icon color={color} name='list' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
+      <Image
+        source={PV.Images.QUEUE}
+        style={[navHeader.buttonIcon, { tintColor: '#fff', width: PV.Icons.NAV, height: PV.Icons.NAV }]}
+      />
     </NavItemWrapper>
   )
 }
