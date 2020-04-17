@@ -1,6 +1,6 @@
-import { StyleSheet, View as RNView } from 'react-native'
+import { Platform, StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
-import { NavigationScreenOptions } from 'react-navigation'
+import { NavigationScreenOptions, SafeAreaView } from 'react-navigation'
 import React, { setGlobal } from 'reactn'
 import {
   ActionSheet,
@@ -19,7 +19,6 @@ import {
   PlayerClipInfoBar,
   PlayerControls,
   PlayerTableHeader,
-  SafeAreaView,
   TableSectionHeader,
   TableSectionSelectors,
   View
@@ -63,6 +62,12 @@ export class PlayerScreen extends React.Component<Props, State> {
 
     return {
       title: '',
+      headerMode: 'none',
+      headerTransparent: true,
+      headerStyle: {
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10
+      },
       headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
       headerRight: (
         <RNView style={core.row}>
@@ -539,100 +544,104 @@ export class PlayerScreen extends React.Component<Props, State> {
     const mediaRefId = mediaRef ? mediaRef.id : null
 
     return (
-      <SafeAreaView>
-        <View style={styles.view}>
-          <PlayerTableHeader nowPlayingItem={nowPlayingItem} />
-          {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
-            <ClipInfoView
-              createdAt={mediaRef.createdAt}
-              endTime={mediaRef.endTime}
-              handleClosePress={this._toggleShowFullClipInfo}
-              isLoading={isLoading}
-              isPublic={mediaRef.isPublic}
-              navigation={navigation}
-              {...(mediaRef.owner ? { ownerId: mediaRef.owner.id } : {})}
-              {...(mediaRef.owner ? { ownerIsPublic: mediaRef.owner.isPublic } : {})}
-              {...(mediaRef.owner ? { ownerName: mediaRef.owner.name } : {})}
-              startTime={mediaRef.startTime}
-              title={mediaRef.title}
-            />
-          )}
-          {!showFullClipInfo && (
-            <View style={styles.view}>
-              <TableSectionSelectors
-                handleSelectLeftItem={this._selectViewType}
-                handleSelectRightItem={this._selectQuerySort}
-                hideRightItemWhileLoading={hideRightItemWhileLoading}
-                includeChronological={viewType === PV.Filters._clipsKey && queryFrom === PV.Filters._fromThisEpisodeKey}
-                screenName='PlayerScreen'
-                selectedLeftItemKey={viewType}
-                selectedRightItemKey={querySort}
+      <View style={{ flex: 1 }}>
+        <SafeAreaView forceInset={{ bottom: 'always', top: 'always' }} style={{ flex: 1 }}>
+          <View style={[styles.view, { paddingTop: Platform.select({ ios: 44, android: 56 }) }]}>
+            <PlayerTableHeader nowPlayingItem={nowPlayingItem} />
+            {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
+              <ClipInfoView
+                createdAt={mediaRef.createdAt}
+                endTime={mediaRef.endTime}
+                handleClosePress={this._toggleShowFullClipInfo}
+                isLoading={isLoading}
+                isPublic={mediaRef.isPublic}
+                navigation={navigation}
+                {...(mediaRef.owner ? { ownerId: mediaRef.owner.id } : {})}
+                {...(mediaRef.owner ? { ownerIsPublic: mediaRef.owner.isPublic } : {})}
+                {...(mediaRef.owner ? { ownerName: mediaRef.owner.name } : {})}
+                startTime={mediaRef.startTime}
+                title={mediaRef.title}
               />
-              {viewType === PV.Filters._clipsKey && (
+            )}
+            {!showFullClipInfo && (
+              <View style={styles.view}>
                 <TableSectionSelectors
-                  handleSelectLeftItem={this._selectQueryFrom}
-                  isBottomBar={true}
+                  handleSelectLeftItem={this._selectViewType}
+                  handleSelectRightItem={this._selectQuerySort}
+                  hideRightItemWhileLoading={hideRightItemWhileLoading}
+                  includeChronological={
+                    viewType === PV.Filters._clipsKey && queryFrom === PV.Filters._fromThisEpisodeKey
+                  }
                   screenName='PlayerScreen'
-                  selectedLeftItemKey={queryFrom}
+                  selectedLeftItemKey={viewType}
+                  selectedRightItemKey={querySort}
                 />
-              )}
-              {viewType === PV.Filters._episodesKey && (
-                <TableSectionHeader
-                  centerText={PV.Fonts.fontScale.largest === fontScaleMode}
-                  title='From this podcast'
-                />
-              )}
-              {isLoading || (isQuerying && <ActivityIndicator />)}
-              {!isLoading &&
-                !isQuerying &&
-                viewType &&
-                viewType !== PV.Filters._showNotesKey &&
-                viewType !== PV.Filters._titleKey &&
-                flatListData && (
-                  <FlatList
-                    data={flatListData}
-                    dataTotalCount={flatListDataTotalCount}
-                    disableLeftSwipe={true}
-                    extraData={flatListData}
-                    isLoadingMore={isLoadingMore}
-                    ItemSeparatorComponent={this._ItemSeparatorComponent}
-                    onEndReached={this._onEndReached}
-                    renderItem={this._renderItem}
+                {viewType === PV.Filters._clipsKey && (
+                  <TableSectionSelectors
+                    handleSelectLeftItem={this._selectQueryFrom}
+                    isBottomBar={true}
+                    screenName='PlayerScreen'
+                    selectedLeftItemKey={queryFrom}
                   />
                 )}
-              {!isLoading && viewType === PV.Filters._showNotesKey && episode && (
-                <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={episode.description} />
-              )}
-              {!isLoading && viewType === PV.Filters._titleKey && episode && (
-                <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={formatTitleViewHtml(episode)} />
-              )}
-            </View>
-          )}
-          {nowPlayingItem && nowPlayingItem.clipId && (
-            <PlayerClipInfoBar handleOnPress={this._toggleShowFullClipInfo} nowPlayingItem={nowPlayingItem} />
-          )}
-          <PlayerControls navigation={navigation} />
-          <ActionSheet
-            handleCancelPress={this._handleMoreCancelPress}
-            items={() =>
-              PV.ActionSheet.media.moreButtons(
-                selectedItem,
-                navigation,
-                this._handleMoreCancelPress,
-                this._handleDownloadPressed
-              )
-            }
-            showModal={showMoreActionSheet}
-          />
-          <ActionSheet
-            handleCancelPress={this._dismissShareActionSheet}
-            items={shareActionSheetButtons(podcastId, episodeId, mediaRefId, this._handleShare)}
-            message='What link do you want to share?'
-            showModal={showShareActionSheet}
-            title='Share'
-          />
-        </View>
-      </SafeAreaView>
+                {viewType === PV.Filters._episodesKey && (
+                  <TableSectionHeader
+                    centerText={PV.Fonts.fontScale.largest === fontScaleMode}
+                    title='From this podcast'
+                  />
+                )}
+                {isLoading || (isQuerying && <ActivityIndicator />)}
+                {!isLoading &&
+                  !isQuerying &&
+                  viewType &&
+                  viewType !== PV.Filters._showNotesKey &&
+                  viewType !== PV.Filters._titleKey &&
+                  flatListData && (
+                    <FlatList
+                      data={flatListData}
+                      dataTotalCount={flatListDataTotalCount}
+                      disableLeftSwipe={true}
+                      extraData={flatListData}
+                      isLoadingMore={isLoadingMore}
+                      ItemSeparatorComponent={this._ItemSeparatorComponent}
+                      onEndReached={this._onEndReached}
+                      renderItem={this._renderItem}
+                    />
+                  )}
+                {!isLoading && viewType === PV.Filters._showNotesKey && episode && (
+                  <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={episode.description} />
+                )}
+                {!isLoading && viewType === PV.Filters._titleKey && episode && (
+                  <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={formatTitleViewHtml(episode)} />
+                )}
+              </View>
+            )}
+            {nowPlayingItem && nowPlayingItem.clipId && (
+              <PlayerClipInfoBar handleOnPress={this._toggleShowFullClipInfo} nowPlayingItem={nowPlayingItem} />
+            )}
+            <PlayerControls navigation={navigation} />
+            <ActionSheet
+              handleCancelPress={this._handleMoreCancelPress}
+              items={() =>
+                PV.ActionSheet.media.moreButtons(
+                  selectedItem,
+                  navigation,
+                  this._handleMoreCancelPress,
+                  this._handleDownloadPressed
+                )
+              }
+              showModal={showMoreActionSheet}
+            />
+            <ActionSheet
+              handleCancelPress={this._dismissShareActionSheet}
+              items={shareActionSheetButtons(podcastId, episodeId, mediaRefId, this._handleShare)}
+              message='What link do you want to share?'
+              showModal={showShareActionSheet}
+              title='Share'
+            />
+          </View>
+        </SafeAreaView>
+      </View>
     )
   }
 
