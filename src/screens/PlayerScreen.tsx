@@ -544,8 +544,10 @@ export class PlayerScreen extends React.Component<Props, State> {
     const mediaRefId = mediaRef ? mediaRef.id : null
 
     return (
-      <View style={{ flex: 1 }}>
-        <SafeAreaView forceInset={{ bottom: 'always', top: 'always' }} style={{ flex: 1 }}>
+      <View style={styles.viewBackdrop}>
+        <SafeAreaView
+          forceInset={{ bottom: 'always', top: 'always' }}
+          style={{ flex: 1, backgroundColor: 'transparent' }}>
           <View style={[styles.view, { paddingTop: Platform.select({ ios: 44, android: 56 }) }]}>
             <PlayerTableHeader nowPlayingItem={nowPlayingItem} />
             {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
@@ -775,6 +777,12 @@ const styles = StyleSheet.create({
     marginTop: 8
   },
   view: {
+    flex: 1
+  },
+  viewBackdrop: {
+    backgroundColor: 'transparent',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     flex: 1
   }
 })
