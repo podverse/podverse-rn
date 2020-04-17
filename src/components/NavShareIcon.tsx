@@ -14,11 +14,24 @@ type Props = {
   podcastTitle?: string
   profileName?: string
   url?: string
+  useThemeTextColor?: boolean
 }
 
 export const NavShareIcon = (props: Props) => {
-  const { clipTitle, endingText, episodeTitle, getUrl, handlePress, playlistTitle, podcastTitle, profileName } = props
+  const {
+    clipTitle,
+    endingText,
+    episodeTitle,
+    getUrl,
+    handlePress,
+    playlistTitle,
+    podcastTitle,
+    profileName,
+    useThemeTextColor
+  } = props
   let { url = '' } = props
+
+  const color = useThemeTextColor ? '' : '#fff'
 
   const onShare = async () => {
     if (getUrl) url = getUrl()
@@ -46,7 +59,7 @@ export const NavShareIcon = (props: Props) => {
 
   return (
     <NavItemWrapper handlePress={handlePress ? handlePress : onShare}>
-      <Icon color='#fff' name='share' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
+      <Icon color={color} name='share' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
     </NavItemWrapper>
   )
 }

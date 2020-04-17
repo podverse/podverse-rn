@@ -1,6 +1,6 @@
 import debounce from 'lodash/debounce'
 import { StyleSheet, View as RNView } from 'react-native'
-import { NavigationScreenOptions } from 'react-navigation'
+import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -71,7 +71,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           <NavQueueIcon navigation={navigation} />
         </RNView>
       )
-    } as NavigationScreenOptions
+    } as NavigationStackOptions
   }
 
   constructor(props: Props) {

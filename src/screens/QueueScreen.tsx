@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import React, { getGlobal } from 'reactn'
 import {
   ActivityIndicator,
@@ -22,6 +22,7 @@ import { movePlayerItemToNewPosition } from '../services/player'
 import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
+import { darkTheme } from '../styles'
 
 type Props = {
   navigation?: any
@@ -203,11 +204,12 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   _handlePlayItem = async (item: NowPlayingItem) => {
+    const isDarkMode = this.global.globalTheme === darkTheme
     try {
       const { navigation } = this.props
       this.setState({ isLoading: true }, async () => {
         navigation.goBack(null)
-        navigation.navigate(PV.RouteNames.PlayerScreen)
+        navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
         const shouldPlay = true
         await loadItemAndPlayTrack(item, shouldPlay)
         const nowPlayingItem = this.global.player.nowPlayingItem

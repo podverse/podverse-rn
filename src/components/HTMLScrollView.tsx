@@ -114,10 +114,12 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.lg
   },
   html: {
+    backgroundColor: 'transparent',
     marginHorizontal: 8,
     marginVertical: 12
   },
   scrollView: {
+    backgroundColor: 'transparent',
     flex: 1
   }
 })

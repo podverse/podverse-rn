@@ -7,10 +7,11 @@ import { Icon, NavItemWrapper } from './'
 type Props = {
   getInitialProgressValue: any
   navigation: any
+  useThemeTextColor?: boolean
 }
 
 export const NavMakeClipIcon = (props: Props) => {
-  const { getInitialProgressValue, navigation } = props
+  const { getInitialProgressValue, navigation, useThemeTextColor } = props
 
   const handlePress = async () => {
     const initialProgressValue = await getInitialProgressValue()
@@ -21,9 +22,11 @@ export const NavMakeClipIcon = (props: Props) => {
     })
   }
 
+  const color = useThemeTextColor ? '' : '#fff'
+
   return (
     <NavItemWrapper handlePress={handlePress}>
-      <Icon color='#fff' name='cut' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
+      <Icon color={color} name='cut' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
     </NavItemWrapper>
   )
 }

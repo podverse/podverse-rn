@@ -36,7 +36,7 @@ const mediaMoreButtons = (
           await handleDismiss()
           const shouldPlay = false
           await loadItemAndPlayTrack(item, shouldPlay)
-          await navigation.navigate(PV.RouteNames.PlayerScreen)
+          await navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
           setTimeout(async () => {
             const initialProgressValue = await PVTrackPlayer.getPosition()
             navigation.navigate(PV.RouteNames.MakeClipScreen, {

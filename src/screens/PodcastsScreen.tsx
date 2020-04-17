@@ -37,7 +37,7 @@ import {
   updatePlayerState
 } from '../state/actions/player'
 import { getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
-import { core } from '../styles'
+import { core, darkTheme } from '../styles'
 
 type Props = {
   navigation?: any
@@ -187,6 +187,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _handleOpenURL = async (url: string) => {
     const { navigation } = this.props
     const { navigate } = navigation
+    const isDarkMode = this.global.globaTheme === darkTheme
 
     try {
       if (url) {
@@ -201,7 +202,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await this._goBackWithDelay()
 
         if (path === PV.DeepLinks.Clip.pathPrefix) {
-          await navigate(PV.RouteNames.PlayerScreen, { mediaRefId: id })
+          await navigate(PV.RouteNames.PlayerScreen, {
+            mediaRefId: id,
+            isDarkMode
+          })
         } else if (path === PV.DeepLinks.Episode.pathPrefix) {
           const episode = await getEpisode(id)
           if (episode) {
