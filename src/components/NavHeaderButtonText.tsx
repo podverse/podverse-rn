@@ -1,8 +1,8 @@
-import React from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
-import { getGlobal } from 'reactn'
+import { TouchableOpacity } from 'react-native'
+import React, { getGlobal, useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { navHeader } from '../styles'
+import { Text } from './'
 
 type Props = {
   disabled?: boolean
@@ -14,6 +14,7 @@ type Props = {
 export const NavHeaderButtonText = (props: Props) => {
   const { disabled, handlePress } = props
   const { fontScaleMode } = getGlobal()
+  const [globalTheme] = useGlobal('globalTheme')
 
   const buttonTextStyle = [navHeader.buttonText]
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
@@ -21,6 +22,8 @@ export const NavHeaderButtonText = (props: Props) => {
   } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
     buttonTextStyle.push({ fontSize: PV.Fonts.largeSizes.md })
   }
+
+  buttonTextStyle.push(globalTheme.text)
 
   return (
     <TouchableOpacity disabled={disabled} onPress={handlePress}>

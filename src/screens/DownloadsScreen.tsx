@@ -29,7 +29,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Downloads',
-      headerRight: <NavQueueIcon navigation={navigation} useThemeTextColor={true} showBackButton={true} />
+      headerRight: <NavQueueIcon navigation={navigation} showBackButton={true} />
     }
   }
 

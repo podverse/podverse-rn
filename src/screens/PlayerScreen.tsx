@@ -66,26 +66,21 @@ export class PlayerScreen extends React.Component<Props, State> {
       headerTransparent: true,
       headerStyle: {},
       headerTintColor: PV.Colors.black,
-      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} useThemeTextColor={true} />,
+      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
       headerRight: (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
             <RNView style={core.row}>
-              <NavMakeClipIcon
-                getInitialProgressValue={_getInitialProgressValue}
-                navigation={navigation}
-                useThemeTextColor={true}
-              />
+              <NavMakeClipIcon getInitialProgressValue={_getInitialProgressValue} navigation={navigation} />
               <NavAddToPlaylistIcon
                 getEpisodeId={_getEpisodeId}
                 getMediaRefId={_getMediaRefId}
                 navigation={navigation}
-                useThemeTextColor={true}
               />
-              <NavShareIcon handlePress={_showShareActionSheet} useThemeTextColor={true} />
+              <NavShareIcon handlePress={_showShareActionSheet} />
             </RNView>
           )}
-          <NavQueueIcon navigation={navigation} useThemeTextColor={true} showBackButton={true} />
+          <NavQueueIcon navigation={navigation} showBackButton={true} />
         </RNView>
       )
     } as NavigationStackOptions

@@ -38,8 +38,6 @@ class App extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    StatusBar.setBarStyle('light-content')
-    Platform.OS === 'android' && StatusBar.setBackgroundColor(PV.Colors.brandColor)
     this.state = {
       appReady: false
     }
@@ -50,6 +48,7 @@ class App extends Component<Props, State> {
   async componentDidMount() {
     TrackPlayer.registerPlaybackService(() => require('./src/services/playerEvents'))
     const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
+    StatusBar.setBarStyle(darkModeEnabled === 'TRUE' ? 'light-content' : 'dark-content')
     await this.setupGlobalState(darkModeEnabled === 'TRUE' || darkModeEnabled === null ? darkTheme : lightTheme)
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
     await gaInitialize()

@@ -1,9 +1,8 @@
 import React from 'react'
-import { Image } from 'react-native'
 import { PV } from '../resources'
-import { navHeader } from '../styles'
 import { NavItemWrapper } from './'
 import { DownloadsActiveBadge } from './DownloadsActiveBadge'
+import { NavItemIcon } from './NavItemIcon'
 
 type Props = {
   navigation: any
@@ -18,11 +17,7 @@ export const NavMoreButton = (props: Props) => {
 
   return (
     <NavItemWrapper handlePress={handlePress}>
-      <Image
-        source={PV.Images.MORE}
-        style={[navHeader.buttonIcon, { tintColor: '#fff', transform: [{ rotate: '90deg' }] }]}
-        resizeMode={'contain'}
-      />
+      <NavItemIcon name='ellipsis-v' />
       <DownloadsActiveBadge />
     </NavItemWrapper>
   )

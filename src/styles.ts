@@ -607,7 +607,9 @@ export const hidePickerIconOnAndroidTransparent = (isDarkMode: boolean) => {
 
 export const navHeader = StyleSheet.create({
   buttonIcon: {
-    flex: 0
+    flex: 0,
+    textAlign: 'center',
+    width: 36
   },
   buttonText: {
     color: PV.Colors.white,
