@@ -557,13 +557,15 @@ export class PlayerScreen extends React.Component<Props, State> {
         ? { backgroundColor: PV.Colors.blackOpaque }
         : { backgroundColor: PV.Colors.whiteOpaque }
 
+    const headerHeightStyle = { ios: PV.Navigation.header.height.ios, android: PV.Navigation.header.height.android }
+
     return (
       <ImageBackground blurRadius={25} source={bgImageSource} style={styles.imageBackground}>
         <View style={[styles.viewBackdrop, backdropColor]} transparent={true}>
           <SafeAreaView
             forceInset={{ bottom: 'always', top: 'always' }}
             style={{ flex: 1, backgroundColor: 'transparent' }}>
-            <View style={[styles.view, { paddingTop: Platform.select({ ios: 44, android: 56 }) }]} transparent={true}>
+            <View style={[styles.view, { paddingTop: Platform.select(headerHeightStyle) }]} transparent={true}>
               <PlayerTableHeader nowPlayingItem={nowPlayingItem} />
               {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
                 <ClipInfoView

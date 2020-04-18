@@ -24,9 +24,7 @@ export const NavHeaderButtonText = (props: Props) => {
 
   return (
     <TouchableOpacity disabled={disabled} onPress={handlePress}>
-      <View style={[navHeader.buttonWrapper, props.style]}>
-        <Text style={buttonTextStyle}>{props.text}</Text>
-      </View>
+      <Text style={buttonTextStyle}>{props.text}</Text>
     </TouchableOpacity>
   )
 }
