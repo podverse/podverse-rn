@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native'
 import React from 'reactn'
-import { readableClipTime } from '../lib/utility'
+import { readableClipTime, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer } from '../services/player'
 import { button, core } from '../styles'
@@ -40,10 +40,13 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
   _handleEditPress = async () => {
     const { isPublic, navigation } = this.props
     const initialProgressValue = await PVTrackPlayer.getPosition()
+    const isLoggedIn = safelyUnwrapNestedVariable(() => this.global.session.isLoggedIn, '')
+
     navigation.navigate(PV.RouteNames.MakeClipScreen, {
       initialProgressValue,
       initialPrivacy: isPublic,
-      isEditing: true
+      isEditing: true,
+      isLoggedIn
     })
   }
 
