@@ -609,7 +609,7 @@ export const navHeader = StyleSheet.create({
   buttonIcon: {
     flex: 0,
     textAlign: 'center',
-    width: 36
+    width: 28
   },
   buttonText: {
     color: PV.Colors.white,
