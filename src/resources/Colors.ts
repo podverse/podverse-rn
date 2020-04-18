@@ -22,6 +22,6 @@ export const Colors = {
   greenDarker: '#1d7c43',
   yellow: '#ffc107',
   opacity: 0.1,
-  whiteOpaque: 'rgba(255, 255, 255, 0.925)',
-  blackOpaque: 'rgba(0, 0, 0, 0.84)'
+  whiteOpaque: 'rgba(255, 255, 255, 0.975)',
+  blackOpaque: 'rgba(0, 0, 0, 0.85)'
 }
