@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
-import { StatusBar, StyleSheet } from 'react-native'
+import { Alert, StatusBar, StyleSheet } from 'react-native'
 import Dialog from 'react-native-dialog'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
@@ -76,6 +76,11 @@ export class SettingsScreen extends React.Component<Props, State> {
       value
         ? await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'TRUE')
         : await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'FALSE')
+      Alert.alert(
+        PV.Alerts.UI_THEME_CHANGE_WARNING.title,
+        PV.Alerts.UI_THEME_CHANGE_WARNING.message,
+        PV.Alerts.BUTTONS.OK
+      )
     })
   }
 
