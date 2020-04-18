@@ -316,7 +316,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
       const newItems = await updateQueueItems(sortedItems)
       const newQueueItemIndex = newItems.findIndex((x: any) =>
-        checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeIvd)
+        checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId)
       )
 
       if (queueItems.length >= newQueueItemIndex) {
