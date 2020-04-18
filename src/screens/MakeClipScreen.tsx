@@ -463,7 +463,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 }}
                 onPress={() => navigation.navigate(PV.RouteNames.FAQScreen)}>
                 <View>
-                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.bottomRowText, globalTheme.link]}>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    style={[styles.bottomRowTextMini, globalTheme.link]}>
                     Clips FAQ
                   </Text>
                 </View>
@@ -500,7 +502,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   })
                 }>
                 <View>
-                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.bottomRowText, globalTheme.link]}>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    style={[styles.bottomRowTextMini, globalTheme.link]}>
                     My Clips
                   </Text>
                 </View>
@@ -576,6 +580,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: PV.Player.styles.bottomRow.height,
     justifyContent: 'space-around'
+  },
+  bottomRowTextMini: {
+    fontSize: PV.Fonts.sizes.sm
   },
   bottomRowText: {
     fontSize: PV.Fonts.sizes.md
