@@ -8,6 +8,7 @@ import {
   MessageWithAction,
   NavDismissIcon,
   NavHeaderButtonText,
+  NavMoreButton,
   QueueTableCell,
   SortableList,
   SortableListRow,
@@ -22,7 +23,7 @@ import { movePlayerItemToNewPosition } from '../services/player'
 import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
-import { darkTheme } from '../styles'
+import { core, darkTheme } from '../styles'
 
 type Props = {
   navigation?: any
@@ -49,9 +50,9 @@ export class QueueScreen extends React.Component<Props, State> {
           selectedItemKey={navigation.getParam('viewType') || navigation.getParam('viewType') === false || _queueKey}
         />
       ),
-      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
+      headerLeft: !navigation.getParam('showBackButton') && null,
       headerRight: (
-        <View>
+        <View style={core.row}>
           {navigation.getParam('viewType') === _historyKey ? (
             <View>
               {!navigation.getParam('isEditing') ? (
@@ -95,6 +96,7 @@ export class QueueScreen extends React.Component<Props, State> {
               )}
             </View>
           )}
+          {navigation.getParam('showMoreNavButton') && <NavMoreButton navigation={navigation} />}
         </View>
       )
     }
@@ -307,7 +309,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
   _onReleaseRow = async (key: number, currentOrder: [string]) => {
     try {
-      const { queueItems } = this.global.session.userInfo
+      const { queueItems = [] } = this.global.session.userInfo
       const item = queueItems[key]
       const id = item.clipId || item.episodeId
       const sortedItems = currentOrder.map((index: string) => queueItems[index])

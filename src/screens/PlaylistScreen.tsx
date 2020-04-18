@@ -52,7 +52,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
             playlistTitle={playlistTitle}
             url={PV.URLs.playlist + playlistId}
           />
-          <NavQueueIcon navigation={navigation} />
+          <NavQueueIcon navigation={navigation} useThemeTextColor={true} showBackButton={true} />
         </RNView>
       )
     } as NavigationStackOptions

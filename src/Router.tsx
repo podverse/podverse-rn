@@ -1,10 +1,9 @@
 import { Image, View } from 'react-native'
-import { Badge } from 'react-native-elements'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator, NavigationStackOptions } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { getGlobal } from 'reactn'
-import { NavQueueIcon, PVTabBar, TabBarLabel } from './components'
+import { NavMoreButton, PVTabBar, TabBarLabel } from './components'
 import { PV } from './resources'
 import {
   AboutScreen,
@@ -59,7 +58,7 @@ const defaultNavigationOptions = ({ navigation }) => {
       fontSize,
       fontWeight: 'bold'
     },
-    headerRight: <NavQueueIcon navigation={navigation} />
+    headerRight: <NavMoreButton navigation={navigation} />
   } as NavigationStackOptions
 }
 
@@ -94,7 +93,7 @@ const PodcastsNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }) => (
         <Image source={PV.Tabs.Podcasts.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
-      tabBarLabel: () => <TabBarLabel title='Podcasts' />
+      tabBarLabel: () => <TabBarLabel title={PV.Tabs.Podcasts.title} />
     }
   }
 )
@@ -111,7 +110,7 @@ const EpisodesNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }) => (
         <Image source={PV.Tabs.Episodes.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
-      tabBarLabel: () => <TabBarLabel title='Episodes' />
+      tabBarLabel: () => <TabBarLabel title={PV.Tabs.Episodes.title} />
     }
   }
 )
@@ -124,7 +123,7 @@ const ClipsNavigator = createStackNavigator(
     defaultNavigationOptions,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => <Image source={PV.Tabs.Clips.icon} style={{ tintColor }} resizeMode={'contain'} />,
-      tabBarLabel: () => <TabBarLabel title='Clips' />
+      tabBarLabel: () => <TabBarLabel title={PV.Tabs.Clips.title} />
     }
   }
 )
@@ -141,7 +140,7 @@ const SearchNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }) => (
         <Image source={PV.Tabs.Search.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
-      tabBarLabel: () => <TabBarLabel title='Search' />
+      tabBarLabel: () => <TabBarLabel title={PV.Tabs.Search.title} />
     }
   }
 )
@@ -176,52 +175,15 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.MembershipScreen]: MembershipScreen,
     [PV.RouteNames.AboutScreen]: AboutScreen,
     [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen,
-    [PV.RouteNames.FAQScreen]: FAQScreen
+    [PV.RouteNames.FAQScreen]: FAQScreen,
+    [PV.RouteNames.QueueScreen]: QueueScreen
   },
   {
-    defaultNavigationOptions,
-    navigationOptions: {
-      tabBarIcon: ({ tintColor }) => {
-        return (
-          <View>
-            <Image source={PV.Tabs.More.icon} style={{ tintColor }} resizeMode={'contain'} />
-            <DownloadsActiveTabBadge />
-          </View>
-        )
-      },
-      tabBarLabel: () => <TabBarLabel title='More' />
+    defaultNavigationOptions: ({ navigation }) => {
+      return { ...defaultNavigationOptions({ navigation }), headerRight: null }
     }
   }
 )
-
-const DownloadsActiveTabBadge = () => {
-  const { downloadsActive, fontScaleMode } = getGlobal()
-  let downloadsActiveCount = 0
-  for (const id of Object.keys(downloadsActive)) {
-    if (downloadsActive[id]) downloadsActiveCount++
-  }
-
-  return (
-    <View
-      style={{
-        position: 'absolute',
-        top: 3,
-        right: -5,
-        zIndex: 1000000
-      }}>
-      {downloadsActiveCount > 0 &&
-        fontScaleMode !== PV.Fonts.fontScale.larger &&
-        fontScaleMode !== PV.Fonts.fontScale.largest && (
-          <Badge
-            badgeStyle={{ borderWidth: 0 }}
-            textStyle={{ fontSize: PV.Fonts.sizes.sm }}
-            status={'error'}
-            value={downloadsActiveCount}
-          />
-        )}
-    </View>
-  )
-}
 
 const OnboardingNavigator = createStackNavigator(
   {
@@ -235,13 +197,33 @@ const OnboardingNavigator = createStackNavigator(
   }
 )
 
+const QueueNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.QueueScreen]: QueueScreen
+  },
+  {
+    defaultNavigationOptions,
+    navigationOptions: {
+      tabBarIcon: ({ tintColor }) => {
+        return (
+          <View>
+            <Image source={PV.Tabs.Queue.icon} style={{ tintColor }} resizeMode={'contain'} />
+          </View>
+        )
+      },
+      tabBarLabel: () => <TabBarLabel title={PV.Tabs.Queue.title} />
+    },
+    initialRouteParams: { showMoreNavButton: true }
+  }
+)
+
 const TabNavigator = createBottomTabNavigator(
   {
     Podcasts: { screen: PodcastsNavigator, path: '' },
     Episodes: EpisodesNavigator,
     Clips: ClipsNavigator,
     Search: { screen: SearchNavigator, path: PV.DeepLinks.Search.path },
-    More: { screen: MoreNavigator, path: '' }
+    Queue: { screen: QueueNavigator, path: '' }
   },
   {
     tabBarComponent: (props: any) => <PVTabBar {...props} />
@@ -254,7 +236,8 @@ const PlayerNavigator = createStackNavigator(
       screen: PlayerScreen,
       path: PV.DeepLinks.Clip.path
     },
-    [PV.RouteNames.MakeClipScreen]: MakeClipScreen
+    [PV.RouteNames.MakeClipScreen]: MakeClipScreen,
+    [PV.RouteNames.QueueScreen]: QueueScreen
   },
   {
     defaultNavigationOptions
@@ -264,15 +247,6 @@ const PlayerNavigator = createStackNavigator(
 const PlaylistsAddToNavigator = createStackNavigator(
   {
     [PV.RouteNames.PlaylistsAddToScreen]: PlaylistsAddToScreen
-  },
-  {
-    defaultNavigationOptions
-  }
-)
-
-const QueueNavigator = createStackNavigator(
-  {
-    [PV.RouteNames.QueueScreen]: QueueScreen
   },
   {
     defaultNavigationOptions
@@ -333,7 +307,7 @@ const MainApp = createStackNavigator(
     [PV.RouteNames.AuthNavigator]: AuthNavigator,
     [PV.RouteNames.PlayerNavigator]: { screen: PlayerNavigator, path: '' },
     PlaylistsAddToNavigator,
-    QueueNavigator,
+    MoreNavigator,
     SleepTimerNavigator,
     WebPageNavigator,
     EmailVerificationNavigator,
