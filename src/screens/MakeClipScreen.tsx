@@ -28,7 +28,7 @@ import {
   PVTrackPlayer
 } from '../services/player'
 import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
-import { core, darkTheme, hidePickerIconOnAndroidTransparent, playerStyles } from '../styles'
+import { core, darkTheme, hidePickerIconOnAndroidTransparent, navHeader, playerStyles } from '../styles'
 
 type Props = {
   navigation?: any
@@ -36,6 +36,7 @@ type Props = {
 
 type State = {
   endTime: number | null
+  isLoggedIn?: boolean
   isPublicItemSelected: any
   isSaving: boolean
   mediaRefId?: string
@@ -48,6 +49,7 @@ type State = {
 export class MakeClipScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
     title: navigation.getParam('isEditing') ? 'Edit Clip' : 'Make Clip',
+    headerTransparent: true,
     headerRight: (
       <RNView style={styles.navHeaderButtonWrapper}>
         <NavHeaderButtonText handlePress={navigation.getParam('_saveMediaRef')} text='Save' />
@@ -61,10 +63,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const isEditing = this.props.navigation.getParam('isEditing')
     const initialPrivacy = this.props.navigation.getParam('initialPrivacy')
     const initialProgressValue = this.props.navigation.getParam('initialProgressValue')
+    const isLoggedIn = this.props.navigation.getParam('isLoggedIn')
 
     const pItems = privacyItems()
     this.state = {
       endTime: isEditing ? nowPlayingItem.clipEndTime : null,
+      isLoggedIn,
       ...(initialPrivacy ? { isPublicItemSelected: pItems[0] } : { isPublicItemSelected: pItems[1] }),
       isSaving: false,
       ...(isEditing ? { mediaRefId: nowPlayingItem.clipId } : {}),
@@ -330,12 +334,21 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { globalTheme, player, session } = this.global
     const isDarkMode = globalTheme === darkTheme
     const { nowPlayingItem, playbackRate, playbackState } = player
-    const { isLoggedIn, userInfo } = session
-    const { endTime, isPublicItemSelected, isSaving, progressValue, showHowToModal, startTime, title } = this.state
+    const { userInfo } = session
+    const {
+      endTime,
+      isLoggedIn,
+      isPublicItemSelected,
+      isSaving,
+      progressValue,
+      showHowToModal,
+      startTime,
+      title
+    } = this.state
 
     return (
       <SafeAreaView>
-        <View style={styles.view}>
+        <View style={[styles.view, navHeader.headerHeight]}>
           <View style={styles.wrapperTop}>
             {!isLoggedIn && (
               <RNView>
