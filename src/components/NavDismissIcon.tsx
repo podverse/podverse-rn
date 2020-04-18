@@ -1,20 +1,16 @@
 import React from 'react'
-import { Icon, NavItemWrapper } from '.'
-import { PV } from '../resources'
-import { navHeader } from '../styles'
+import { NavItemIcon, NavItemWrapper } from '.'
 
 type Props = {
   handlePress: any
-  useThemeTextColor?: boolean
 }
 
 export const NavDismissIcon = (props: Props) => {
-  const { handlePress, useThemeTextColor } = props
-  const color = useThemeTextColor ? '' : '#fff'
+  const { handlePress } = props
 
   return (
     <NavItemWrapper handlePress={handlePress}>
-      <Icon color={color} name='chevron-down' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
+      <NavItemIcon name='chevron-down' />
     </NavItemWrapper>
   )
 }

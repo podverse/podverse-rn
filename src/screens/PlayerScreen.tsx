@@ -66,26 +66,21 @@ export class PlayerScreen extends React.Component<Props, State> {
       headerTransparent: true,
       headerStyle: {},
       headerTintColor: PV.Colors.black,
-      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} useThemeTextColor={true} />,
+      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
       headerRight: (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
             <RNView style={core.row}>
-              <NavMakeClipIcon
-                getInitialProgressValue={_getInitialProgressValue}
-                navigation={navigation}
-                useThemeTextColor={true}
-              />
+              <NavMakeClipIcon getInitialProgressValue={_getInitialProgressValue} navigation={navigation} />
               <NavAddToPlaylistIcon
                 getEpisodeId={_getEpisodeId}
                 getMediaRefId={_getMediaRefId}
                 navigation={navigation}
-                useThemeTextColor={true}
               />
-              <NavShareIcon handlePress={_showShareActionSheet} useThemeTextColor={true} />
+              <NavShareIcon handlePress={_showShareActionSheet} />
             </RNView>
           )}
-          <NavQueueIcon navigation={navigation} useThemeTextColor={true} showBackButton={true} />
+          <NavQueueIcon navigation={navigation} showBackButton={true} />
         </RNView>
       )
     } as NavigationStackOptions
@@ -557,13 +552,15 @@ export class PlayerScreen extends React.Component<Props, State> {
         ? { backgroundColor: PV.Colors.blackOpaque }
         : { backgroundColor: PV.Colors.whiteOpaque }
 
+    const headerHeightStyle = { ios: PV.Navigation.header.height.ios, android: PV.Navigation.header.height.android }
+
     return (
-      <ImageBackground blurRadius={15} source={bgImageSource} style={styles.imageBackground}>
+      <ImageBackground blurRadius={25} source={bgImageSource} style={styles.imageBackground}>
         <View style={[styles.viewBackdrop, backdropColor]} transparent={true}>
           <SafeAreaView
             forceInset={{ bottom: 'always', top: 'always' }}
             style={{ flex: 1, backgroundColor: 'transparent' }}>
-            <View style={[styles.view, { paddingTop: Platform.select({ ios: 44, android: 56 }) }]} transparent={true}>
+            <View style={[styles.view, { paddingTop: Platform.select(headerHeightStyle) }]} transparent={true}>
               <PlayerTableHeader nowPlayingItem={nowPlayingItem} />
               {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
                 <ClipInfoView

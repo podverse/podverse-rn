@@ -6,7 +6,6 @@ import {
   FlatList,
   HeaderTitleSelector,
   MessageWithAction,
-  NavDismissIcon,
   NavHeaderButtonText,
   NavMoreButton,
   QueueTableCell,
@@ -50,16 +49,34 @@ export class QueueScreen extends React.Component<Props, State> {
           selectedItemKey={navigation.getParam('viewType') || navigation.getParam('viewType') === false || _queueKey}
         />
       ),
-      headerLeft: !navigation.getParam('showBackButton') && null,
-      headerRight: (
+      headerLeft: (
         <View style={core.row}>
-          {navigation.getParam('viewType') === _historyKey ? (
+          <View style={styles.navHeaderSpacer} />
+          {navigation.getParam('viewType') === _historyKey && (
             <View>
               {!navigation.getParam('isEditing') ? (
                 <View style={styles.headerButtonWrapper}>
                   {fontScaleMode !== PV.Fonts.fontScale.largest && (
                     <NavHeaderButtonText handlePress={navigation.getParam('_clearAll')} text='Clear' />
                   )}
+                </View>
+              ) : (
+                <View style={styles.headerButtonWrapper}>
+                  {fontScaleMode !== PV.Fonts.fontScale.largest && (
+                    <NavHeaderButtonText handlePress={navigation.getParam('_clearAll')} text='Clear' />
+                  )}
+                </View>
+              )}
+            </View>
+          )}
+        </View>
+      ),
+      headerRight: (
+        <View style={[core.row]}>
+          {navigation.getParam('viewType') === _historyKey ? (
+            <View>
+              {!navigation.getParam('isEditing') ? (
+                <View style={styles.headerButtonWrapper}>
                   <NavHeaderButtonText
                     handlePress={navigation.getParam('_startEditing')}
                     style={styles.navHeaderTextButton}
@@ -68,9 +85,6 @@ export class QueueScreen extends React.Component<Props, State> {
                 </View>
               ) : (
                 <View style={styles.headerButtonWrapper}>
-                  {fontScaleMode !== PV.Fonts.fontScale.largest && (
-                    <NavHeaderButtonText handlePress={navigation.getParam('_clearAll')} text='Clear' />
-                  )}
                   <NavHeaderButtonText
                     handlePress={navigation.getParam('_stopEditing')}
                     style={styles.navHeaderTextButton}
@@ -421,8 +435,11 @@ const styles = StyleSheet.create({
   headerNowPlayingItem: {
     marginBottom: 2
   },
+  navHeaderSpacer: {
+    width: 36
+  },
   navHeaderTextButton: {
-    marginLeft: 2,
+    fontSize: PV.Fonts.sizes.lg,
     textAlign: 'right'
   },
   tableCellDivider: {

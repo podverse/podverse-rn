@@ -215,6 +215,7 @@ export const initializePlayerQueue = async () => {
     const historyItems = await getHistoryItems()
     let item = null
     let isNowPlayingItem = false
+
     if (historyItems[0]) {
       item = historyItems[0]
     } else {

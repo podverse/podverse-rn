@@ -1,14 +1,12 @@
 import React from 'react'
 import { View } from 'react-native'
 import { PV } from '../resources'
-import { navHeader } from '../styles'
-import { ActionSheet, Icon, NavItemWrapper } from './'
+import { ActionSheet, NavItemIcon, NavItemWrapper } from './'
 
 type Props = {
   getEpisodeId: any
   getMediaRefId: any
   navigation: any
-  useThemeTextColor?: boolean
 }
 
 type State = {
@@ -44,17 +42,15 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
   }
 
   render() {
-    const { getEpisodeId, getMediaRefId, navigation, useThemeTextColor } = this.props
+    const { getEpisodeId, getMediaRefId, navigation } = this.props
     const episodeId = getEpisodeId ? getEpisodeId() : null
     const mediaRefId = getMediaRefId ? getMediaRefId() : null
     const { showActionSheet } = this.state
 
-    const color = useThemeTextColor ? '' : '#fff'
-
     return (
       <View>
         <NavItemWrapper handlePress={this._handleIconPress}>
-          <Icon color={color} name='plus' size={PV.Icons.NAV} style={navHeader.buttonIcon} />
+          <NavItemIcon name='plus' />
         </NavItemWrapper>
         <ActionSheet
           handleCancelPress={this._dismissActionSheet}

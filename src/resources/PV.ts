@@ -15,6 +15,7 @@ import { Icons } from './Icons'
 import { Images } from './Images'
 import { Keys } from './Keys'
 import { MembershipStatus } from './MembershipStatus'
+import { Navigation } from './Navigation'
 import { Player } from './Player'
 import { ResponseErrorCodes } from './ResponseErrorCodes'
 import { ResponseStatusCodes } from './ResponseStatusCodes'
@@ -43,6 +44,7 @@ export const PV = {
   Images,
   Keys,
   MembershipStatus,
+  Navigation,
   Player,
   ResponseErrorCodes,
   ResponseStatusCodes,

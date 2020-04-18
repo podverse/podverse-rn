@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import { PV } from './resources'
 
 export const darkTheme = StyleSheet.create({
@@ -607,16 +607,19 @@ export const hidePickerIconOnAndroidTransparent = (isDarkMode: boolean) => {
 
 export const navHeader = StyleSheet.create({
   buttonIcon: {
-    flex: 0
+    flex: 0,
+    textAlign: 'center',
+    width: 36
   },
   buttonText: {
     color: PV.Colors.white,
-    fontSize: PV.Fonts.sizes.md,
-    textAlign: 'right'
+    fontSize: PV.Fonts.sizes.lg,
+    height: Platform.OS === 'android' ? PV.Navigation.header.height.android : PV.Navigation.header.height.ios,
+    lineHeight: Platform.OS === 'android' ? PV.Navigation.header.height.android : PV.Navigation.header.height.ios,
+    marginLeft: 16,
+    marginRight: 16
   },
   buttonWrapper: {
-    alignSelf: 'center',
-    justifyContent: 'center',
     paddingHorizontal: 12,
     paddingVertical: 8
   }

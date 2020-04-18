@@ -37,9 +37,10 @@ import {
   TermsOfServiceScreen,
   WebPageScreen
 } from './screens'
+import { darkTheme } from './styles'
 
 const defaultNavigationOptions = ({ navigation }) => {
-  const { fontScale, fontScaleMode } = getGlobal()
+  const { fontScale, fontScaleMode, globalTheme } = getGlobal()
 
   let fontSize = PV.Fonts.sizes.xl
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
@@ -48,12 +49,15 @@ const defaultNavigationOptions = ({ navigation }) => {
     fontSize = PV.Fonts.largeSizes.md * fontScale
   }
 
+  const isDarkMode = globalTheme === darkTheme
+  const headerStyle = isDarkMode
+    ? { backgroundColor: PV.Colors.grayDarkest }
+    : { backgroundColor: PV.Colors.grayLightest }
+
   return {
     title: PV.Tabs.Podcasts.title,
-    headerStyle: {
-      backgroundColor: PV.Colors.brandColor
-    },
-    headerTintColor: PV.Colors.white,
+    headerStyle,
+    headerTintColor: globalTheme.text.color,
     headerTitleStyle: {
       fontSize,
       fontWeight: 'bold'
