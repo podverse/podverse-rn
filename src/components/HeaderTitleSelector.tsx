@@ -29,7 +29,7 @@ export const HeaderTitleSelector = (props: Props) => {
   const textNode = (
     <View style={styles.wrapper}>
       <Text style={textStyle}>{selectedItem.label || (placeholder && placeholder.label)}</Text>
-      <Icon color={globalTheme.text.color} name='angle-down' size={16} style={styles.angleDown} />
+      <Icon color={globalTheme?.text?.color} name='angle-down' size={16} style={styles.angleDown} />
     </View>
   )
 

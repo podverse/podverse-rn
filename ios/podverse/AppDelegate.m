@@ -28,11 +28,17 @@
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"podverse"
                                             initialProperties:nil];
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:37.0/255.0f green:105.0/255.0f blue:178.0/255.0f alpha:1];
 
+  UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
+  UIViewController *rootViewController = [storyboard instantiateInitialViewController];
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  UIViewController *rootViewController = [UIViewController new];
+  
+  UIView *loadingView = rootViewController.view;
+  rootView.loadingView = loadingView;
+  rootView.backgroundColor = [[UIColor alloc] initWithRed:37.0/255.0f green:105.0/255.0f blue:178.0/255.0f alpha:1];
+  
   rootViewController.view = rootView;
+  
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   return YES;

@@ -57,7 +57,7 @@ const defaultNavigationOptions = ({ navigation }) => {
   return {
     title: PV.Tabs.Podcasts.title,
     headerStyle,
-    headerTintColor: globalTheme.text.color,
+    headerTintColor: globalTheme?.text?.color,
     headerTitleStyle: {
       fontSize,
       fontWeight: 'bold'
