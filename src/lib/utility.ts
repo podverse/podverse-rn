@@ -457,3 +457,10 @@ export const setCategoryQueryProperty = (queryFrom?: any, selectedCategory?: any
     return {}
   }
 }
+
+export const convertSpacesBeforeAnchorTagsToHtmlCodes = (html: string) => {
+  if (html) {
+    return html.replace(/<a\s/g, '&shy;<a ')
+  }
+  return ''
+}
