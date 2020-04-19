@@ -38,7 +38,7 @@ export const NavShareIcon = (props: Props) => {
         url
       })
     } catch (error) {
-      alert(error.message)
+      console.log('error', error)
     }
   }
 

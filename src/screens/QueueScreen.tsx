@@ -7,7 +7,7 @@ import {
   HeaderTitleSelector,
   MessageWithAction,
   NavHeaderButtonText,
-  NavMoreButton,
+  NavSearchButton,
   QueueTableCell,
   SortableList,
   SortableListRow,
@@ -115,7 +115,7 @@ export class QueueScreen extends React.Component<Props, State> {
               )}
             </View>
           )}
-          {navigation.getParam('showMoreNavButton') && <NavMoreButton navigation={navigation} />}
+          {navigation.getParam('showMoreNavButton') && <NavSearchButton navigation={navigation} />}
         </View>
       )
     }

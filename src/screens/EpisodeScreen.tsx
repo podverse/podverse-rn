@@ -10,7 +10,7 @@ import {
   EpisodeTableHeader,
   FlatList,
   HTMLScrollView,
-  NavMoreButton,
+  NavSearchButton,
   NavShareIcon,
   SearchBar,
   TableSectionSelectors,
@@ -68,7 +68,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
               url={PV.URLs.episode + episodeId}
             />
           )}
-          <NavMoreButton navigation={navigation} />
+          <NavSearchButton navigation={navigation} />
         </RNView>
       )
     } as NavigationStackOptions

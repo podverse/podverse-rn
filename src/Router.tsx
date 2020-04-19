@@ -3,7 +3,7 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator, NavigationStackOptions } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { getGlobal } from 'reactn'
-import { NavMoreButton, PVTabBar, TabBarLabel } from './components'
+import { DownloadsActiveBadge, NavSearchButton, PVTabBar, TabBarLabel } from './components'
 import { PV } from './resources'
 import {
   AboutScreen,
@@ -62,7 +62,7 @@ const defaultNavigationOptions = ({ navigation }) => {
       fontSize,
       fontWeight: 'bold'
     },
-    headerRight: <NavMoreButton navigation={navigation} />
+    headerRight: <NavSearchButton navigation={navigation} />
   } as NavigationStackOptions
 }
 
@@ -139,13 +139,7 @@ const SearchNavigator = createStackNavigator(
     [PV.RouteNames.SearchEpisodeScreen]: EpisodeScreen
   },
   {
-    defaultNavigationOptions,
-    navigationOptions: {
-      tabBarIcon: ({ tintColor }) => (
-        <Image source={PV.Tabs.Search.icon} style={{ tintColor }} resizeMode={'contain'} />
-      ),
-      tabBarLabel: () => <TabBarLabel title={PV.Tabs.Search.title} />
-    }
+    defaultNavigationOptions
   }
 )
 
@@ -183,8 +177,17 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.QueueScreen]: QueueScreen
   },
   {
-    defaultNavigationOptions: ({ navigation }) => {
-      return { ...defaultNavigationOptions({ navigation }), headerRight: null }
+    defaultNavigationOptions,
+    navigationOptions: {
+      tabBarIcon: ({ tintColor }) => {
+        return (
+          <View>
+            <Image source={PV.Tabs.More.icon} style={{ tintColor }} resizeMode={'contain'} />
+            <DownloadsActiveBadge />
+          </View>
+        )
+      },
+      tabBarLabel: () => <TabBarLabel title='More' />
     }
   }
 )
@@ -226,8 +229,8 @@ const TabNavigator = createBottomTabNavigator(
     Podcasts: { screen: PodcastsNavigator, path: '' },
     Episodes: EpisodesNavigator,
     Clips: ClipsNavigator,
-    Search: { screen: SearchNavigator, path: PV.DeepLinks.Search.path },
-    Queue: { screen: QueueNavigator, path: '' }
+    Queue: { screen: QueueNavigator, path: '' },
+    More: { screen: MoreNavigator, path: PV.DeepLinks.Search.path }
   },
   {
     tabBarComponent: (props: any) => <PVTabBar {...props} />
@@ -314,7 +317,7 @@ const MainApp = createStackNavigator(
     [PV.RouteNames.AuthNavigator]: AuthNavigator,
     [PV.RouteNames.PlayerNavigator]: { screen: PlayerNavigator, path: '' },
     PlaylistsAddToNavigator,
-    MoreNavigator,
+    SearchNavigator,
     SleepTimerNavigator,
     WebPageNavigator,
     EmailVerificationNavigator,

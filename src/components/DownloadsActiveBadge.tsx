@@ -16,7 +16,7 @@ export const DownloadsActiveBadge = () => {
     <View
       style={{
         position: 'absolute',
-        top: -5,
+        top: 3,
         left: -5,
         zIndex: 1000000
       }}>

@@ -40,7 +40,8 @@ type State = {
 
 export class SearchScreen extends React.Component<Props, State> {
   static navigationOptions = {
-    title: 'Search'
+    title: 'Search',
+    headerRight: null
   }
 
   constructor(props: Props) {
