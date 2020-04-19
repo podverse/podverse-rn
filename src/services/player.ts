@@ -500,3 +500,8 @@ export const togglePlay = async () => {
     TrackPlayer.play()
   }
 }
+
+export const checkIdlePlayerState = async () => {
+  const state = await TrackPlayer.getState()
+  return state === 'idle' || state === 0 || state === TrackPlayer.STATE_NONE
+}
