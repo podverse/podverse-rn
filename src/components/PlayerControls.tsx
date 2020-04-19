@@ -1,7 +1,6 @@
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources'
-import { checkIfPlayingFromHistory } from '../services/history'
 import { playerJumpBackward, playerJumpForward, PVTrackPlayer, setPlaybackPosition } from '../services/player'
 import { playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
