@@ -116,6 +116,12 @@ export const removeHTMLAttributesFromString = (html: string) => {
   return $.html()
 }
 
+export const filterHTMLElementsFromString = (html: string) => {
+  let finalHtml = html
+  finalHtml = finalHtml.replace(/<audio.*>.*?<\/audio>|<video.*>.*?<\/video>|<img.*>.*?<\/img>|<img.*>/gi, '')
+  return finalHtml
+}
+
 export const formatTitleViewHtml = (episode: any) => {
   if (episode.podcast && episode.podcast.title && episode.title && episode.pubDate) {
     return `<p>${episode.podcast.title}</p><p>${episode.title}</p><p>${readableDate(episode.pubDate)}</p>`
@@ -456,4 +462,11 @@ export const setCategoryQueryProperty = (queryFrom?: any, selectedCategory?: any
   } else {
     return {}
   }
+}
+
+export const convertSpacesBeforeAnchorTagsToHtmlCodes = (html: string) => {
+  if (html) {
+    return html.replace(/<a[\t\r\n ]+/g, `<span style="color: transparent;">-</span><a `)
+  }
+  return ''
 }

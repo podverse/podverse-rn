@@ -36,7 +36,6 @@ type State = {
   episodeId?: any
   flatListData: any[]
   flatListDataTotalCount: number | null
-  formattedDescription?: string
   includeGoToPodcast?: boolean
   isLoading: boolean
   isLoadingMore: boolean

@@ -294,14 +294,17 @@ export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boo
 }
 
 export const playNextFromQueue = async () => {
-  await updateUserPlaybackPosition()
-  await PVTrackPlayer.skipToNext()
-  const currentId = await PVTrackPlayer.getCurrentTrack()
-  const item = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentId)
-  if (item) {
-    await addOrUpdateHistoryItem(item)
+  const queueItems = await PVTrackPlayer.getQueue()
+  if (queueItems && queueItems.length > 1) {
+    await updateUserPlaybackPosition()
+    await PVTrackPlayer.skipToNext()
+    const currentId = await PVTrackPlayer.getCurrentTrack()
+    const item = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentId)
+    if (item) {
+      await addOrUpdateHistoryItem(item)
+    }
+    sendPlayerScreenGoogleAnalyticsPageView(item)
   }
-  sendPlayerScreenGoogleAnalyticsPageView(item)
 }
 
 export const addItemToPlayerQueueNext = async (item: NowPlayingItem) => {
@@ -496,4 +499,9 @@ export const togglePlay = async () => {
   } else {
     TrackPlayer.play()
   }
+}
+
+export const checkIdlePlayerState = async () => {
+  const state = await TrackPlayer.getState()
+  return state === 'idle' || state === 0 || state === TrackPlayer.STATE_NONE
 }

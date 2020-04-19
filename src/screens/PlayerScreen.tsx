@@ -553,7 +553,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         : { backgroundColor: PV.Colors.whiteOpaque }
 
     return (
-      <ImageBackground blurRadius={25} source={bgImageSource} style={styles.imageBackground}>
+      <ImageBackground blurRadius={50} source={bgImageSource} style={styles.imageBackground}>
         <View style={[styles.viewBackdrop, backdropColor]} transparent={true}>
           <SafeAreaView
             forceInset={{ bottom: 'always', top: 'always' }}
