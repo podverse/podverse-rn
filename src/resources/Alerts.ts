@@ -89,9 +89,5 @@ export const Alerts = {
   SOMETHING_WENT_WRONG: {
     message: 'Please check your internet connection and try again later.',
     title: _networkErrorTitle
-  },
-  UI_THEME_CHANGE_WARNING: {
-    message: 'Please restart the app to finish updating light/dark mode on all screens.',
-    title: 'Restart Required'
   }
 }
