@@ -474,7 +474,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   right: 4,
                   top: 4
                 }}
-                onPress={() => navigation.navigate(PV.RouteNames.FAQScreen)}>
+                onPress={() => navigation.navigate(PV.RouteNames.PlayerFAQScreen)}>
                 <View>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
@@ -507,7 +507,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   top: 4
                 }}
                 onPress={() =>
-                  navigation.navigate(PV.RouteNames.ProfileScreen, {
+                  navigation.navigate(PV.RouteNames.PlayerMyProfileScreen, {
                     user: userInfo,
                     navigationTitle: 'My Profile',
                     isMyProfile: true,

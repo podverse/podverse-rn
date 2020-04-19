@@ -4,8 +4,7 @@ import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
-import { getNowPlayingItem, PVTrackPlayer } from './player'
-import { popNextFromQueue } from './queue'
+import { getNowPlayingItem } from './player'
 import { request } from './request'
 
 export const addOrUpdateHistoryItem = async (item: NowPlayingItem) => {
