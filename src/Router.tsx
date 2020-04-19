@@ -3,7 +3,7 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator, NavigationStackOptions } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import React, { getGlobal } from 'reactn'
-import { DownloadsActiveBadge, NavSearchButton, PVTabBar, TabBarLabel } from './components'
+import { DownloadsActiveBadge, NavSearchIcon, PVTabBar, TabBarLabel } from './components'
 import { PV } from './resources'
 import {
   AboutScreen,
@@ -62,7 +62,7 @@ const defaultNavigationOptions = ({ navigation }) => {
       fontSize,
       fontWeight: 'bold'
     },
-    headerRight: <NavSearchButton navigation={navigation} />
+    headerRight: <NavSearchIcon navigation={navigation} />
   } as NavigationStackOptions
 }
 

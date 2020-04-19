@@ -9,7 +9,7 @@ import {
   Divider,
   FlatList,
   MessageWithAction,
-  NavQueueIcon,
+  NavSearchIcon,
   NavShareIcon,
   PlaylistTableCell,
   PodcastTableCell,
@@ -79,7 +79,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       headerRight: (
         <RNView style={core.row}>
           {userIsPublic && userId && <NavShareIcon profileName={userName} url={PV.URLs.profile + userId} />}
-          <NavQueueIcon navigation={navigation} showBackButton={true} />
+          <NavSearchIcon navigation={navigation} showBackButton={true} />
         </RNView>
       )
     } as NavigationStackOptions

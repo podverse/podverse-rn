@@ -6,7 +6,7 @@ type Props = {
   navigation: any
 }
 
-export const NavSearchButton = (props: Props) => {
+export const NavSearchIcon = (props: Props) => {
   const { navigation } = props
 
   const handlePress = () => {
