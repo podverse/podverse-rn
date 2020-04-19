@@ -30,6 +30,7 @@ import {
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { deleteMediaRef } from '../services/mediaRef'
+import { loadItemAndPlayTrack } from '../services/player'
 import { getPodcasts } from '../services/podcast'
 import {
   getLoggedInUserMediaRefs,
@@ -395,6 +396,11 @@ export class ProfileScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleNavigationPress = (selectedItem: any) => {
+    const shouldPlay = true
+    loadItemAndPlayTrack(selectedItem, shouldPlay)
+  }
+
   _renderItem = ({ item, index }) => {
     const { queryFrom } = this.state
 
@@ -419,6 +425,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           episodePubDate={readableDate(item.episode.pubDate)}
           episodeTitle={item.episode.title}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+          handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, null))}
           hasZebraStripe={isOdd(index)}
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
