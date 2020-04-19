@@ -98,7 +98,6 @@ const syncNowPlayingItemWithTrack = async () => {
   async function sync(isSecondTime?: boolean) {
     const currentTrackId = await PVTrackPlayer.getCurrentTrack()
     const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentTrackId)
-
     if (currentNowPlayingItem) {
       await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem, isSecondTime)
     }
@@ -108,22 +107,6 @@ const syncNowPlayingItemWithTrack = async () => {
   const isSecondTime = true
   setTimeout(() => sync(isSecondTime), 5000)
 }
-
-// NOTE: On iOS, when returning to the app from the background while the player was paused,
-// sometimes the player will be in an idle state, requiring the user to press play twice to
-// reload the item in the player and begin playing. By calling initializePlayerQueue once whenever
-// the idle playback-state event is called, it automatically reloads the item.
-// I don't think this issue is happening on Android, so we're not using this workaround on Android.
-const reloadFromIdleState = async () => {
-  if (Platform.OS === 'ios') {
-    await initializePlayerQueue()
-  }
-}
-
-const debouncedReloadFromIdleState = debounce(reloadFromIdleState, 10000, {
-  leading: true,
-  trailing: false
-})
 
 module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
@@ -135,11 +118,6 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
     console.log('playback-state', x)
-
-    if (x.state === 'idle' || x.state === 0 || x.state === PVTrackPlayer.STATE_NONE) {
-      await debouncedReloadFromIdleState()
-      return
-    }
 
     PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 

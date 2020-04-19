@@ -210,8 +210,7 @@ export const initializePlayerQueue = async () => {
     const queueItems = await getQueueItems()
     let filteredItems = [] as any
 
-    // Use whatever the most recent item in the history is if one exists, else
-    // fallback to the last NowPlayingItem.
+    // Use whatever the most recent item in the history is if one exists, else fallback to the last NowPlayingItem.
     const historyItems = await getHistoryItems()
     let item = null
     let isNowPlayingItem = false
