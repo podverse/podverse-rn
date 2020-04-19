@@ -79,7 +79,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       headerRight: (
         <RNView style={core.row}>
           {userIsPublic && userId && <NavShareIcon profileName={userName} url={PV.URLs.profile + userId} />}
-          <NavSearchIcon navigation={navigation} showBackButton={true} />
+          <NavSearchIcon navigation={navigation} />
         </RNView>
       )
     } as NavigationStackOptions
