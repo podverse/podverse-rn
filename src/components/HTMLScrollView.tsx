@@ -4,6 +4,7 @@ import React, { getGlobal } from 'reactn'
 import {
   convertHHMMSSToAnchorTags,
   convertSpacesBeforeAnchorTagsToHtmlCodes,
+  filterHTMLElementsFromString,
   removeHTMLAttributesFromString
 } from '../lib/utility'
 import { PV } from '../resources'
@@ -24,9 +25,10 @@ export const HTMLScrollView = (props: Props) => {
   }
 
   let formattedHtml = removeHTMLAttributesFromString(html)
+  formattedHtml = filterHTMLElementsFromString(formattedHtml)
   formattedHtml = convertHHMMSSToAnchorTags(formattedHtml)
   formattedHtml = formattedHtml.linkifyHtml()
-  formattedHtml = convertSpacesBeforeAnchorTagsToHtmlCodes(html)
+  formattedHtml = convertSpacesBeforeAnchorTagsToHtmlCodes(formattedHtml)
 
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
     baseFontStyle.fontSize = fontSizeLargerScale
@@ -111,6 +113,9 @@ const customHTMLTagStyles = {
   },
   li: {
     listStyleType: 'none'
+  },
+  img: {
+    display: 'none'
   }
 }
 
