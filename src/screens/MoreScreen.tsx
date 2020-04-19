@@ -1,7 +1,7 @@
 import { Alert, Linking, SectionList, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import { Badge } from 'react-native-elements'
 import React from 'reactn'
-import { Divider, NavDismissIcon, NavQueueIcon, TableSectionHeader, Text, View } from '../components'
+import { Divider, TableSectionHeader, Text, View } from '../components'
 import { getMembershipStatus } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -19,9 +19,7 @@ type State = {
 export class MoreScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'More',
-      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
-      headerRight: null
+      title: 'More'
     }
   }
 

@@ -1,4 +1,5 @@
-import { StyleSheet, View as RNView } from 'react-native'
+import { Alert, StyleSheet, View as RNView } from 'react-native'
+import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { setGlobal } from 'reactn'
 import {
@@ -8,7 +9,7 @@ import {
   Divider,
   FlatList,
   MessageWithAction,
-  NavQueueIcon,
+  NavSearchIcon,
   NavShareIcon,
   PlaylistTableCell,
   PodcastTableCell,
@@ -28,6 +29,8 @@ import {
 } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
+import { deleteMediaRef } from '../services/mediaRef'
+import { loadItemAndPlayTrack } from '../services/player'
 import { getPodcasts } from '../services/podcast'
 import {
   getLoggedInUserMediaRefs,
@@ -59,6 +62,7 @@ type State = {
   querySort?: string | null
   selectedItem?: any
   showActionSheet: boolean
+  showDeleteConfirmDialog?: boolean
   showNoInternetConnectionMessage?: boolean
   userId?: string
 }
@@ -75,7 +79,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       headerRight: (
         <RNView style={core.row}>
           {userIsPublic && userId && <NavShareIcon profileName={userName} url={PV.URLs.profile + userId} />}
-          <NavQueueIcon navigation={navigation} showBackButton={true} />
+          <NavSearchIcon navigation={navigation} />
         </RNView>
       )
     } as NavigationStackOptions
@@ -348,6 +352,55 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
   }
 
+  _showDeleteConfirmDialog = () => {
+    this.setState({ showDeleteConfirmDialog: true })
+  }
+
+  _deleteMediaRef = async () => {
+    const { selectedItem } = this.state
+    let { flatListData, flatListDataTotalCount } = this.state
+
+    if (selectedItem && selectedItem.clipId) {
+      this.setState(
+        {
+          isLoading: true,
+          showDeleteConfirmDialog: false
+        },
+        async () => {
+          try {
+            await deleteMediaRef(selectedItem.clipId)
+            flatListData = flatListData.filter((x: any) => x.id !== selectedItem.clipId)
+            flatListDataTotalCount = flatListData.length
+          } catch (error) {
+            if (error.response) {
+              Alert.alert(
+                PV.Alerts.SOMETHING_WENT_WRONG.title,
+                PV.Alerts.SOMETHING_WENT_WRONG.message,
+                PV.Alerts.BUTTONS.OK
+              )
+            }
+          }
+          this.setState({
+            flatListData,
+            flatListDataTotalCount,
+            isLoading: false
+          })
+        }
+      )
+    }
+  }
+
+  _cancelDeleteMediaRef = async () => {
+    this.setState({
+      showDeleteConfirmDialog: false
+    })
+  }
+
+  _handleNavigationPress = (selectedItem: any) => {
+    const shouldPlay = true
+    loadItemAndPlayTrack(selectedItem, shouldPlay)
+  }
+
   _renderItem = ({ item, index }) => {
     const { queryFrom } = this.state
 
@@ -372,6 +425,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           episodePubDate={readableDate(item.episode.pubDate)}
           episodeTitle={item.episode.title}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+          handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, null))}
           hasZebraStripe={isOdd(index)}
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
@@ -409,6 +463,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       querySort,
       selectedItem,
       showActionSheet,
+      showDeleteConfirmDialog,
       showNoInternetConnectionMessage,
       userId
     } = this.state
@@ -478,12 +533,19 @@ export class ProfileScreen extends React.Component<Props, State> {
                     selectedItem,
                     navigation,
                     this._handleCancelPress,
-                    this._handleDownloadPressed
+                    this._handleDownloadPressed,
+                    this._showDeleteConfirmDialog
                   )
                 }
               }}
               showModal={showActionSheet}
             />
+            <Dialog.Container visible={showDeleteConfirmDialog}>
+              <Dialog.Title>Delete Clip</Dialog.Title>
+              <Dialog.Description>Are you sure?</Dialog.Description>
+              <Dialog.Button label='Cancel' onPress={this._cancelDeleteMediaRef} />
+              <Dialog.Button label='Delete' onPress={this._deleteMediaRef} />
+            </Dialog.Container>
           </View>
         )}
       </View>

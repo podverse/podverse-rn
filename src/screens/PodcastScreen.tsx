@@ -11,7 +11,7 @@ import {
   EpisodeTableCell,
   FlatList,
   HTMLScrollView,
-  NavMoreButton,
+  NavSearchIcon,
   NavShareIcon,
   NumberSelectorWithText,
   PodcastTableHeader,
@@ -83,7 +83,7 @@ export class PodcastScreen extends React.Component<Props, State> {
               url={PV.URLs.podcast + podcastId}
             />
           )}
-          <NavMoreButton navigation={navigation} />
+          <NavSearchIcon navigation={navigation} />
         </RNView>
       )
     } as NavigationStackOptions

@@ -609,19 +609,26 @@ export const navHeader = StyleSheet.create({
   buttonIcon: {
     flex: 0,
     textAlign: 'center',
-    width: 36
+    width: 28
   },
   buttonText: {
     color: PV.Colors.white,
     fontSize: PV.Fonts.sizes.lg,
-    height: Platform.OS === 'android' ? PV.Navigation.header.height.android : PV.Navigation.header.height.ios,
-    lineHeight: Platform.OS === 'android' ? PV.Navigation.header.height.android : PV.Navigation.header.height.ios,
+    height: Platform.OS === 'android' ? PV.Navigation.header.height.android - 4 : PV.Navigation.header.height.ios - 4,
+    lineHeight:
+      Platform.OS === 'android' ? PV.Navigation.header.height.android - 4 : PV.Navigation.header.height.ios - 4,
     marginLeft: 16,
     marginRight: 16
   },
   buttonWrapper: {
     paddingHorizontal: 12,
     paddingVertical: 8
+  },
+  headerHeight: {
+    paddingTop: Platform.select({
+      android: PV.Navigation.header.height.android,
+      ios: PV.Navigation.header.height.ios
+    })
   }
 })
 

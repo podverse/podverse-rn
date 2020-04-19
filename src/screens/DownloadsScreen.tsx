@@ -1,15 +1,6 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import {
-  ActionSheet,
-  Divider,
-  DownloadTableCell,
-  FlatList,
-  MessageWithAction,
-  NavQueueIcon,
-  SwipeRowBack,
-  View
-} from '../components'
+import { ActionSheet, Divider, DownloadTableCell, FlatList, MessageWithAction, SwipeRowBack, View } from '../components'
 import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
 import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
@@ -28,8 +19,7 @@ type State = {
 export class DownloadsScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Downloads',
-      headerRight: <NavQueueIcon navigation={navigation} showBackButton={true} />
+      title: 'Downloads'
     }
   }
 

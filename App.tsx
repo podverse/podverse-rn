@@ -48,7 +48,7 @@ class App extends Component<Props, State> {
   async componentDidMount() {
     TrackPlayer.registerPlaybackService(() => require('./src/services/playerEvents'))
     const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
-    StatusBar.setBarStyle(darkModeEnabled === 'TRUE' ? 'light-content' : 'dark-content')
+    StatusBar.setBarStyle(darkModeEnabled === 'TRUE' || darkModeEnabled === null ? 'light-content' : 'dark-content')
     await this.setupGlobalState(darkModeEnabled === 'TRUE' || darkModeEnabled === null ? darkTheme : lightTheme)
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
     await gaInitialize()

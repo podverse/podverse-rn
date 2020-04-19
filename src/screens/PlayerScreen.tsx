@@ -1,4 +1,4 @@
-import { ImageBackground, Platform, StyleSheet, View as RNView } from 'react-native'
+import { ImageBackground, StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
 import { SafeAreaView } from 'react-navigation'
 import { NavigationStackOptions } from 'react-navigation-stack'
@@ -42,7 +42,7 @@ import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
 import { loadItemAndPlayTrack } from '../state/actions/player'
-import { core, darkTheme } from '../styles'
+import { core, darkTheme, navHeader } from '../styles'
 
 type Props = {
   navigation?: any
@@ -552,15 +552,13 @@ export class PlayerScreen extends React.Component<Props, State> {
         ? { backgroundColor: PV.Colors.blackOpaque }
         : { backgroundColor: PV.Colors.whiteOpaque }
 
-    const headerHeightStyle = { ios: PV.Navigation.header.height.ios, android: PV.Navigation.header.height.android }
-
     return (
       <ImageBackground blurRadius={25} source={bgImageSource} style={styles.imageBackground}>
         <View style={[styles.viewBackdrop, backdropColor]} transparent={true}>
           <SafeAreaView
             forceInset={{ bottom: 'always', top: 'always' }}
             style={{ flex: 1, backgroundColor: 'transparent' }}>
-            <View style={[styles.view, { paddingTop: Platform.select(headerHeightStyle) }]} transparent={true}>
+            <View style={[styles.view, navHeader.headerHeight]} transparent={true}>
               <PlayerTableHeader nowPlayingItem={nowPlayingItem} />
               {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
                 <ClipInfoView

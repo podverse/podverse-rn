@@ -3,7 +3,7 @@ import { Platform } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
-import { initializePlayerQueue, setNowPlayingItem } from '../state/actions/player'
+import { setNowPlayingItem } from '../state/actions/player'
 import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'
 import {
   getClipHasEnded,
@@ -61,29 +61,21 @@ const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
   }, 30000)
 }
 
-const handleSyncNowPlayingItem = async (
-  trackId: string,
-  currentNowPlayingItem: NowPlayingItem,
-  isSecondTime?: boolean
-) => {
+const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem) => {
   if (!currentNowPlayingItem) return
   await setNowPlayingItem(currentNowPlayingItem)
 
-  if (!isSecondTime) {
-    if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
-      PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
-    }
-    if (!currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
-      debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
-    }
-
-    const isPlayingFromHistory = await checkIfPlayingFromHistory()
-    if (!isPlayingFromHistory && currentNowPlayingItem) {
-      handleAddOrUpdateRequestInterval(currentNowPlayingItem)
-    }
+  if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
+    PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+  }
+  if (!currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
+    debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
   }
 
-  PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
+  const isPlayingFromHistory = await checkIfPlayingFromHistory()
+  if (!isPlayingFromHistory && currentNowPlayingItem) {
+    handleAddOrUpdateRequestInterval(currentNowPlayingItem)
+  }
 }
 
 const syncNowPlayingItemWithTrack = async () => {
@@ -95,35 +87,16 @@ const syncNowPlayingItemWithTrack = async () => {
   // before playing from the clip start. Hopefully we can iron this out sometime...
   // - The second timeout is called in case something was out of sync previously from getCurrentTrack
   // or getNowPlayingItemFromQueueOrHistoryByTrackId...
-  async function sync(isSecondTime?: boolean) {
+  async function sync() {
     const currentTrackId = await PVTrackPlayer.getCurrentTrack()
     const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentTrackId)
-
     if (currentNowPlayingItem) {
-      await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem, isSecondTime)
+      await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
     }
   }
 
   setTimeout(sync, 1000)
-  const isSecondTime = true
-  setTimeout(() => sync(isSecondTime), 5000)
 }
-
-// NOTE: On iOS, when returning to the app from the background while the player was paused,
-// sometimes the player will be in an idle state, requiring the user to press play twice to
-// reload the item in the player and begin playing. By calling initializePlayerQueue once whenever
-// the idle playback-state event is called, it automatically reloads the item.
-// I don't think this issue is happening on Android, so we're not using this workaround on Android.
-const reloadFromIdleState = async () => {
-  if (Platform.OS === 'ios') {
-    await initializePlayerQueue()
-  }
-}
-
-const debouncedReloadFromIdleState = debounce(reloadFromIdleState, 10000, {
-  leading: true,
-  trailing: false
-})
 
 module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
@@ -135,11 +108,6 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
     console.log('playback-state', x)
-
-    if (x.state === 'idle' || x.state === 0 || x.state === PVTrackPlayer.STATE_NONE) {
-      await debouncedReloadFromIdleState()
-      return
-    }
 
     PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 

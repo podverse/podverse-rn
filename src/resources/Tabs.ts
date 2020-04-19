@@ -14,9 +14,9 @@ export const Tabs = {
     icon: require('./images/tab-clips.png'),
     index: 2
   },
-  Search: {
-    title: 'Search',
-    icon: require('./images/tab-search.png'),
+  More: {
+    title: 'More',
+    icon: require('./images/tab-more.png'),
     index: 3
   },
   Queue: {

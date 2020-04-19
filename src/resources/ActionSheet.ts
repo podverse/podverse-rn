@@ -26,6 +26,7 @@ const mediaMoreButtons = (
   const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
   const buttons = []
   const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session.userInfo.id, '')
+  const isLoggedIn = safelyUnwrapNestedVariable(() => globalState.session.isLoggedIn, '')
 
   if (item.ownerId && item.ownerId === loggedInUserId) {
     buttons.push(
@@ -33,6 +34,8 @@ const mediaMoreButtons = (
         key: 'editClip',
         text: 'Edit Clip',
         onPress: async () => {
+          const { darkTheme } = require('../styles')
+          const isDarkMode = globalState.globalTheme === darkTheme
           await handleDismiss()
           const shouldPlay = false
           await loadItemAndPlayTrack(item, shouldPlay)
@@ -42,7 +45,8 @@ const mediaMoreButtons = (
             navigation.navigate(PV.RouteNames.MakeClipScreen, {
               initialProgressValue,
               initialPrivacy: item.isPublic,
-              isEditing: true
+              isEditing: true,
+              isLoggedIn
             })
           }, 1000)
         }
