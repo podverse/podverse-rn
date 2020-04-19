@@ -39,6 +39,7 @@ type State = {
 export class QueueScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const { fontScaleMode } = getGlobal()
+    const showBackButton = navigation.getParam('showBackButton')
 
     return {
       headerTitle: (
@@ -49,28 +50,32 @@ export class QueueScreen extends React.Component<Props, State> {
           selectedItemKey={navigation.getParam('viewType') || navigation.getParam('viewType') === false || _queueKey}
         />
       ),
-      headerLeft: (
-        <View style={core.row}>
-          <View style={styles.navHeaderSpacer} />
-          {navigation.getParam('viewType') === _historyKey && (
-            <View>
-              {!navigation.getParam('isEditing') ? (
-                <View style={styles.headerButtonWrapper}>
-                  {fontScaleMode !== PV.Fonts.fontScale.largest && (
-                    <NavHeaderButtonText handlePress={navigation.getParam('_clearAll')} text='Clear' />
-                  )}
-                </View>
-              ) : (
-                <View style={styles.headerButtonWrapper}>
-                  {fontScaleMode !== PV.Fonts.fontScale.largest && (
-                    <NavHeaderButtonText handlePress={navigation.getParam('_clearAll')} text='Clear' />
-                  )}
-                </View>
-              )}
-            </View>
-          )}
-        </View>
-      ),
+      ...(showBackButton
+        ? {}
+        : {
+            headerLeft: (
+              <View style={core.row}>
+                <View style={styles.navHeaderSpacer} />
+                {navigation.getParam('viewType') === _historyKey && (
+                  <View>
+                    {!navigation.getParam('isEditing') ? (
+                      <View style={styles.headerButtonWrapper}>
+                        {fontScaleMode !== PV.Fonts.fontScale.largest && (
+                          <NavHeaderButtonText handlePress={navigation.getParam('_clearAll')} text='Clear' />
+                        )}
+                      </View>
+                    ) : (
+                      <View style={styles.headerButtonWrapper}>
+                        {fontScaleMode !== PV.Fonts.fontScale.largest && (
+                          <NavHeaderButtonText handlePress={navigation.getParam('_clearAll')} text='Clear' />
+                        )}
+                      </View>
+                    )}
+                  </View>
+                )}
+              </View>
+            )
+          }),
       headerRight: (
         <View style={[core.row]}>
           {navigation.getParam('viewType') === _historyKey ? (
