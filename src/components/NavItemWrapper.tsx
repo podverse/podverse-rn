@@ -1,5 +1,5 @@
 import React from 'react'
-import { TouchableWithoutFeedback, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import { navHeader } from '../styles'
 
 type Props = {
@@ -12,7 +12,7 @@ export const NavItemWrapper = (props: Props) => {
 
   return (
     <View style={navHeader.buttonWrapper}>
-      <TouchableWithoutFeedback
+      <TouchableOpacity
         hitSlop={{
           bottom: 12,
           left: 12,
@@ -21,7 +21,7 @@ export const NavItemWrapper = (props: Props) => {
         }}
         onPress={handlePress}>
         {children}
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     </View>
   )
 }
