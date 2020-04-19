@@ -1,4 +1,5 @@
-import { StyleSheet, View as RNView } from 'react-native'
+import { Alert, StyleSheet, View as RNView } from 'react-native'
+import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React, { setGlobal } from 'reactn'
 import {
@@ -28,6 +29,7 @@ import {
 } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
+import { deleteMediaRef } from '../services/mediaRef'
 import { getPodcasts } from '../services/podcast'
 import {
   getLoggedInUserMediaRefs,
@@ -59,6 +61,7 @@ type State = {
   querySort?: string | null
   selectedItem?: any
   showActionSheet: boolean
+  showDeleteConfirmDialog?: boolean
   showNoInternetConnectionMessage?: boolean
   userId?: string
 }
@@ -348,6 +351,50 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
   }
 
+  _showDeleteConfirmDialog = () => {
+    this.setState({ showDeleteConfirmDialog: true })
+  }
+
+  _deleteMediaRef = async () => {
+    const { selectedItem } = this.state
+    let { flatListData, flatListDataTotalCount } = this.state
+
+    if (selectedItem && selectedItem.clipId) {
+      this.setState(
+        {
+          isLoading: true,
+          showDeleteConfirmDialog: false
+        },
+        async () => {
+          try {
+            await deleteMediaRef(selectedItem.clipId)
+            flatListData = flatListData.filter((x: any) => x.id !== selectedItem.clipId)
+            flatListDataTotalCount = flatListData.length
+          } catch (error) {
+            if (error.response) {
+              Alert.alert(
+                PV.Alerts.SOMETHING_WENT_WRONG.title,
+                PV.Alerts.SOMETHING_WENT_WRONG.message,
+                PV.Alerts.BUTTONS.OK
+              )
+            }
+          }
+          this.setState({
+            flatListData,
+            flatListDataTotalCount,
+            isLoading: false
+          })
+        }
+      )
+    }
+  }
+
+  _cancelDeleteMediaRef = async () => {
+    this.setState({
+      showDeleteConfirmDialog: false
+    })
+  }
+
   _renderItem = ({ item, index }) => {
     const { queryFrom } = this.state
 
@@ -409,6 +456,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       querySort,
       selectedItem,
       showActionSheet,
+      showDeleteConfirmDialog,
       showNoInternetConnectionMessage,
       userId
     } = this.state
@@ -478,12 +526,19 @@ export class ProfileScreen extends React.Component<Props, State> {
                     selectedItem,
                     navigation,
                     this._handleCancelPress,
-                    this._handleDownloadPressed
+                    this._handleDownloadPressed,
+                    this._showDeleteConfirmDialog
                   )
                 }
               }}
               showModal={showActionSheet}
             />
+            <Dialog.Container visible={showDeleteConfirmDialog}>
+              <Dialog.Title>Delete Clip</Dialog.Title>
+              <Dialog.Description>Are you sure?</Dialog.Description>
+              <Dialog.Button label='Cancel' onPress={this._cancelDeleteMediaRef} />
+              <Dialog.Button label='Delete' onPress={this._deleteMediaRef} />
+            </Dialog.Container>
           </View>
         )}
       </View>
