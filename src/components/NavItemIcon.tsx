@@ -11,5 +11,5 @@ export const NavItemIcon = (props: Props) => {
   const { name } = props
   const [globalTheme] = useGlobal('globalTheme')
 
-  return <Icon color={globalTheme.text.color} name={name} size={PV.Icons.NAV} style={navHeader.buttonIcon} />
+  return <Icon color={globalTheme?.text?.color} name={name} size={PV.Icons.NAV} style={navHeader.buttonIcon} />
 }
