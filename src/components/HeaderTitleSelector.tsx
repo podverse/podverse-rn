@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: PV.Colors.white,
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.xl,
     fontWeight: 'bold'
   },
   wrapper: {
