@@ -3,7 +3,6 @@ import { BottomTabBar } from 'react-navigation-tabs'
 import { useGlobal } from 'reactn'
 import { View } from '../components'
 import { PV } from '../resources'
-import { GlobalTheme } from '../resources/Interfaces'
 import { darkTheme } from '../styles'
 import { MiniPlayer } from './MiniPlayer'
 
@@ -14,8 +13,6 @@ type Props = {
 export const PVTabBar = (props: Props) => {
   const { navigation } = props
   const [player] = useGlobal<any>('player')
-  // include downloadsActive so the More tab downloading badge will re-render on downloadsActive updates
-  const [downloadsActive] = useGlobal('downloadsActive')
 
   return (
     <View>
