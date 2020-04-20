@@ -221,7 +221,6 @@ export class QueueScreen extends React.Component<Props, State> {
     try {
       const { navigation } = this.props
       this.setState({ isLoading: true }, async () => {
-        navigation.goBack(null)
         navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
         const shouldPlay = true
         await loadItemAndPlayTrack(item, shouldPlay)
