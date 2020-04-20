@@ -138,7 +138,7 @@ export const PVFlatList = (props: Props) => {
           disableRightSwipe={true}
           extraData={extraData}
           ItemSeparatorComponent={ItemSeparatorComponent}
-          keyExtractor={keyExtractor ? keyExtractor : uuidv4()}
+          keyExtractor={keyExtractor ? keyExtractor : uuidv4}
           ListFooterComponent={() => {
             if (isLoadingMore) {
               return (
