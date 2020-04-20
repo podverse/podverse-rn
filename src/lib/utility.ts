@@ -313,7 +313,7 @@ export const checkIfIdMatchesClipIdOrEpisodeId = (
   addByRSSPodcastFeedUrl?: string
 ) => {
   return (
-    id === clipId ||
+    (clipId && id === clipId) ||
     (!clipId && addByRSSPodcastFeedUrl && id === addByRSSPodcastFeedUrl) ||
     (!clipId && episodeId && id === episodeId)
   )
