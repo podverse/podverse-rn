@@ -474,7 +474,7 @@ export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: stri
   )
   let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
 
-  if (currentNowPlayingItem) removeQueueItem(currentNowPlayingItem, false)
+  if (currentNowPlayingItem) removeQueueItem(currentNowPlayingItem)
 
   if (!currentNowPlayingItem) {
     const historyItems = await getHistoryItemsLocally()

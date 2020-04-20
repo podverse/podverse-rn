@@ -59,9 +59,9 @@ export const getQueueItems = async () => {
   return results
 }
 
-export const removeQueueItem = async (queueItem: NowPlayingItem, removeFromPlayerQueue: boolean) => {
+export const removeQueueItem = async (queueItem: NowPlayingItem) => {
   const globalState = getGlobal()
-  const results = await removeQueueItemService(queueItem, removeFromPlayerQueue)
+  const results = await removeQueueItemService(queueItem)
 
   setGlobal({
     session: {

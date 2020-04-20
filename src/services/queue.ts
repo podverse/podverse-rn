@@ -3,7 +3,7 @@ import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getAuthenticatedUserInfo } from './auth'
-import { PVTrackPlayer } from './player'
+import { PVTrackPlayer, syncPlayerWithQueue } from './player'
 import { updateUserQueueItems } from './user'
 
 export const addQueueItemLast = async (item: NowPlayingItem) => {
@@ -15,6 +15,8 @@ export const addQueueItemLast = async (item: NowPlayingItem) => {
   } else {
     results = await addQueueItemLastLocally(item)
   }
+
+  await syncPlayerWithQueue()
 
   return results
 }
@@ -36,6 +38,8 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
     results = await addQueueItemNextLocally(item)
   }
 
+  await syncPlayerWithQueue()
+
   return results
 }
 
@@ -50,13 +54,13 @@ export const getNextFromQueue = async () => {
   if (useServerData) getNextFromQueueFromServer()
 
   if (item) {
-    removeQueueItem(item, false)
+    removeQueueItem(item)
   }
 
   return item
 }
 
-export const removeQueueItem = async (item: NowPlayingItem, removeFromPlayerQueue: boolean) => {
+export const removeQueueItem = async (item: NowPlayingItem) => {
   let items = []
   const useServerData = await checkIfShouldUseServerData()
 
@@ -66,13 +70,7 @@ export const removeQueueItem = async (item: NowPlayingItem, removeFromPlayerQueu
     items = await removeQueueItemLocally(item)
   }
 
-  if (removeFromPlayerQueue) {
-    try {
-      PVTrackPlayer.remove(item.clipId || item.episodeId)
-    } catch (error) {
-      console.log('removeQueueItem service', error)
-    }
-  }
+  await syncPlayerWithQueue()
 
   return items
 }
@@ -82,6 +80,8 @@ export const setAllQueueItems = async (items: NowPlayingItem[]) => {
 
   await setAllQueueItemsLocally(items)
   if (useServerData) await setAllQueueItemsOnServer(items)
+
+  await syncPlayerWithQueue()
 
   return items
 }

@@ -238,7 +238,7 @@ export class QueueScreen extends React.Component<Props, State> {
     const { queueItems } = this.global.session.userInfo
     if (queueItems && queueItems[rowIndex]) {
       const item = queueItems[rowIndex]
-      await removeQueueItem(item, true)
+      await removeQueueItem(item)
       this._handlePlayItem(item)
     }
   }
@@ -299,7 +299,7 @@ export class QueueScreen extends React.Component<Props, State> {
   _handleRemoveQueueItemPress = async (item: NowPlayingItem) => {
     this.setState({ isRemoving: true }, async () => {
       try {
-        await removeQueueItem(item, true)
+        await removeQueueItem(item)
       } catch (error) {
         //
       }
