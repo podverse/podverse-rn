@@ -23,7 +23,6 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
   let results = []
 
   const currentTrackId = await PVTrackPlayer.getCurrentTrack()
-
   // Don't add track to queue if it's currently playing
   if (checkIfIdMatchesClipIdOrEpisodeId(currentTrackId, item.clipId, item.episodeId)) {
     return

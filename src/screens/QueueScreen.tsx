@@ -32,7 +32,6 @@ type State = {
   isEditing?: boolean
   isLoading?: boolean
   isRemoving?: boolean
-  nowPlayingItem?: any
   viewType?: string
 }
 
@@ -127,7 +126,6 @@ export class QueueScreen extends React.Component<Props, State> {
     this.state = {
       isLoading: true,
       isRemoving: false,
-      nowPlayingItem: null,
       viewType: props.navigation.getParam('viewType') || _queueKey
     }
   }
@@ -143,11 +141,9 @@ export class QueueScreen extends React.Component<Props, State> {
     })
 
     try {
-      const nowPlayingItem = this.global.player.nowPlayingItem
       await getQueueItems()
       this.setState({
-        isLoading: false,
-        nowPlayingItem
+        isLoading: false
       })
     } catch (error) {
       this.setState({ isLoading: false })
@@ -198,7 +194,6 @@ export class QueueScreen extends React.Component<Props, State> {
     this.setState({
       isEditing: false,
       isLoading: true,
-      nowPlayingItem: null,
       viewType: x
     })
     this.props.navigation.setParams({
@@ -208,11 +203,9 @@ export class QueueScreen extends React.Component<Props, State> {
 
     try {
       if (x === _queueKey) {
-        const nowPlayingItem = this.global.player.nowPlayingItem
         await getQueueItems()
         this.setState({
-          isLoading: false,
-          nowPlayingItem
+          isLoading: false
         })
       } else if (x === _historyKey) {
         await getHistoryItems()
@@ -232,11 +225,9 @@ export class QueueScreen extends React.Component<Props, State> {
         navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
         const shouldPlay = true
         await loadItemAndPlayTrack(item, shouldPlay)
-        const nowPlayingItem = this.global.player.nowPlayingItem
         getQueueItems()
         this.setState({
-          isLoading: false,
-          nowPlayingItem
+          isLoading: false
         })
       })
     } catch (error) {
@@ -246,8 +237,10 @@ export class QueueScreen extends React.Component<Props, State> {
 
   _onPressRow = async (rowIndex: number) => {
     const { queueItems } = this.global.session.userInfo
-    const item = queueItems[rowIndex]
-    this._handlePlayItem(item)
+    if (queueItems && queueItems[rowIndex]) {
+      const item = queueItems[rowIndex]
+      this._handlePlayItem(item)
+    }
   }
 
   _renderHistoryItem = ({ item = {} as NowPlayingItem, index }) => {
@@ -352,7 +345,8 @@ export class QueueScreen extends React.Component<Props, State> {
 
   render() {
     const { historyItems, queueItems } = this.global.session.userInfo
-    const { isEditing, isLoading, isRemoving, nowPlayingItem = {}, viewType } = this.state
+    const { nowPlayingItem } = this.global.player
+    const { isEditing, isLoading, isRemoving, viewType } = this.state
 
     return (
       <PVView style={styles.view}>
@@ -376,7 +370,7 @@ export class QueueScreen extends React.Component<Props, State> {
             <TableSectionHeader title='Next Up' />
           </View>
         )}
-        {!isLoading && viewType === _queueKey && queueItems.length > 0 && (
+        {!isLoading && viewType === _queueKey && queueItems && queueItems.length > 0 && (
           <SortableList
             data={queueItems}
             onPressRow={!isEditing && this._onPressRow}
@@ -384,10 +378,10 @@ export class QueueScreen extends React.Component<Props, State> {
             renderRow={this._renderQueueItemRow}
           />
         )}
-        {!isLoading && viewType === _queueKey && queueItems.length < 1 && (
+        {!isLoading && viewType === _queueKey && queueItems && queueItems.length < 1 && (
           <MessageWithAction message='Your queue is empty' />
         )}
-        {!isLoading && viewType === _historyKey && historyItems.length > 0 && (
+        {!isLoading && viewType === _historyKey && historyItems && historyItems.length > 0 && (
           <FlatList
             data={historyItems}
             dataTotalCount={historyItems.length}
@@ -397,7 +391,7 @@ export class QueueScreen extends React.Component<Props, State> {
             renderItem={this._renderHistoryItem}
           />
         )}
-        {!isLoading && viewType === _historyKey && historyItems.length < 1 && (
+        {!isLoading && viewType === _historyKey && historyItems && historyItems.length < 1 && (
           <MessageWithAction message='No history items found' />
         )}
         {(isLoading || isRemoving) && <ActivityIndicator isOverlay={isRemoving} styles={styles.activityIndicator} />}

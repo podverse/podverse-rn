@@ -83,6 +83,7 @@ const initialTheme: InitialState = {
       membershipExpiration: '',
       name: '',
       playlists: [],
+      queueItems: [],
       subscribedPlaylistIds: [],
       subscribedPodcastIds: [],
       subscribedUserIds: []
