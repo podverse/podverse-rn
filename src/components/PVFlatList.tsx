@@ -21,6 +21,7 @@ type Props = {
   isLoadingMore?: boolean
   isRefreshing?: boolean
   ItemSeparatorComponent?: any
+  keyExtractor?: any
   ListHeaderComponent?: any
   noSubscribedPodcasts?: boolean
   onEndReached?: any
@@ -51,6 +52,7 @@ export const PVFlatList = (props: Props) => {
     isLoadingMore,
     isRefreshing = false,
     ItemSeparatorComponent,
+    keyExtractor,
     ListHeaderComponent,
     noSubscribedPodcasts,
     onEndReached,
@@ -136,7 +138,7 @@ export const PVFlatList = (props: Props) => {
           disableRightSwipe={true}
           extraData={extraData}
           ItemSeparatorComponent={ItemSeparatorComponent}
-          keyExtractor={uuidv4}
+          keyExtractor={keyExtractor ? keyExtractor : uuidv4()}
           ListFooterComponent={() => {
             if (isLoadingMore) {
               return (
