@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
-import { StatusBar, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import Dialog from 'react-native-dialog'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
@@ -71,7 +71,6 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   _toggleTheme = (value: boolean) => {
-    StatusBar.setBarStyle(value ? 'dark-content' : 'light-content')
     this.setGlobal({ globalTheme: value ? darkTheme : lightTheme }, async () => {
       value
         ? await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'TRUE')

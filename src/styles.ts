@@ -168,7 +168,7 @@ export const darkTheme = StyleSheet.create({
     tintColor: PV.Colors.blue
   },
   tabbarLabel: {
-    color: PV.Colors.grayLighter
+    color: PV.Colors.white
   },
   tableCellBorder: {
     borderColor: PV.Colors.grayDarker
@@ -455,7 +455,8 @@ export const lightTheme = StyleSheet.create({
 export const tabbar = StyleSheet.create({
   label: {
     fontSize: PV.Fonts.sizes.tiny,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: PV.Colors.white
   }
 })
 

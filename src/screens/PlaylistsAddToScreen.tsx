@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
+import { Alert, StatusBar, StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
@@ -153,6 +153,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view}>
+        <StatusBar barStyle='light-content' />
         {!isLoggedIn && (
           <MessageWithAction
             topActionHandler={this._onPressLogin}

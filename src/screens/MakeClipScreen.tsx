@@ -1,5 +1,13 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Alert, Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import {
+  Alert,
+  Modal,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View as RNView
+} from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import Share from 'react-native-share'
 import React from 'reactn'
@@ -348,6 +356,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
     return (
       <SafeAreaView>
+        <StatusBar barStyle='light-content' />
         <View style={[styles.view, navHeader.headerHeight]}>
           <View style={styles.wrapperTop}>
             {!isLoggedIn && (

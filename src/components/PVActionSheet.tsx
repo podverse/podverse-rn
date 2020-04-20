@@ -102,7 +102,7 @@ export class PVActionSheet extends React.Component<Props, State> {
             key={item.key}
             onPress={onPress}
             style={buttonStyle}
-            underlayColor={globalTheme.actionSheetButtonUnderlay.backgroundColor}>
+            underlayColor={globalTheme.actionSheetButtonUnderlay?.backgroundColor}>
             <View style={actionSheetStyles.buttonRow}>
               <Text numberOfLines={1} style={[actionSheetStyles.buttonText, buttonTextStyle]}>
                 {item.text}

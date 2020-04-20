@@ -1,5 +1,5 @@
 import { StyleSheet, Switch } from 'react-native'
-import React, { getGlobal } from 'reactn'
+import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { ActivityIndicator, FastImage, IndicatorDownload, SettingsButton, SubscribeButton, Text, View } from './'
@@ -32,7 +32,7 @@ export const PodcastTableHeader = (props: Props) => {
     podcastTitle = 'untitled podcast',
     showSettings
   } = props
-  const { fontScaleMode } = getGlobal()
+  const [fontScaleMode] = useGlobal('fontScaleMode')
 
   const titleNumberOfLines = [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ? 1 : 2
 

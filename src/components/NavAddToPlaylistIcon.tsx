@@ -1,5 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
+import { GlobalTheme } from '../../src/resources/Interfaces'
+import { darkTheme } from '../../src/styles'
 import { PV } from '../resources'
 import { ActionSheet, NavItemIcon, NavItemWrapper } from './'
 
@@ -7,6 +9,7 @@ type Props = {
   getEpisodeId: any
   getMediaRefId: any
   navigation: any
+  globalTheme?: GlobalTheme
 }
 
 type State = {
@@ -46,11 +49,14 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
     const episodeId = getEpisodeId ? getEpisodeId() : null
     const mediaRefId = getMediaRefId ? getMediaRefId() : null
     const { showActionSheet } = this.state
-
+    let color = darkTheme.text.color
+    if (this.props.globalTheme) {
+      color = this.props.globalTheme?.text?.color
+    }
     return (
       <View>
         <NavItemWrapper handlePress={this._handleIconPress}>
-          <NavItemIcon name='plus' />
+          <NavItemIcon name='plus' color={color} />
         </NavItemWrapper>
         <ActionSheet
           handleCancelPress={this._dismissActionSheet}

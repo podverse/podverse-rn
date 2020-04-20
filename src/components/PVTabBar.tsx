@@ -14,23 +14,20 @@ type Props = {
 export const PVTabBar = (props: Props) => {
   const { navigation } = props
   const [player] = useGlobal<any>('player')
-  const [globalTheme] = useGlobal<GlobalTheme>('globalTheme')
   // include downloadsActive so the More tab downloading badge will re-render on downloadsActive updates
   const [downloadsActive] = useGlobal('downloadsActive')
-
-  const isDarkMode = globalTheme === darkTheme
 
   return (
     <View>
       {player && player.showMiniPlayer && player.nowPlayingItem && <MiniPlayer navigation={navigation} />}
       <BottomTabBar
         {...props}
-        activeTintColor={isDarkMode ? PV.Colors.blueLighter : PV.Colors.blueDarker}
-        inactiveTintColor={isDarkMode ? PV.Colors.grayLighter : PV.Colors.grayDarker}
+        activeTintColor={PV.Colors.blueLighter}
+        inactiveTintColor={PV.Colors.grayLight}
         labelStyle={{
           fontSize: PV.Fonts.sizes.tiny
         }}
-        style={globalTheme.tabbar}
+        style={darkTheme.tabbar}
       />
     </View>
   )

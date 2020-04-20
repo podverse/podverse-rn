@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
-import { getGlobal } from 'reactn'
+import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { darkTheme, hidePickerIconOnAndroidSectionSelector } from '../styles'
 import { Icon, Text } from './'
@@ -21,7 +21,8 @@ type Props = {
 }
 
 export const TableSectionSelectors = (props: Props) => {
-  const { fontScaleMode, globalTheme } = getGlobal()
+  const [globalTheme] = useGlobal('globalTheme')
+  const [fontScaleMode] = useGlobal('fontScaleMode')
   const isDarkMode = globalTheme === darkTheme
   const [leftItems, setLeftItems] = useState([])
   const [rightItems, setRightItems] = useState([])

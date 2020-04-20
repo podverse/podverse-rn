@@ -1,6 +1,6 @@
 import React from 'react'
 import { TextInput } from 'react-native'
-import { getGlobal } from 'reactn'
+import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { core } from '../styles'
 
@@ -48,7 +48,8 @@ export const PVTextInput = (props: Props) => {
     underlineColorAndroid,
     value
   } = props
-  const { fontScaleMode, globalTheme } = getGlobal()
+  const [globalTheme] = useGlobal('globalTheme')
+  const [fontScaleMode] = useGlobal('fontScaleMode')
 
   const textInputStyle = []
   if (fontScaleMode === PV.Fonts.fontScale.larger) {

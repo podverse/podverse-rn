@@ -1,6 +1,6 @@
 import { Dimensions, Linking, ScrollView, StyleSheet } from 'react-native'
 import HTML from 'react-native-render-html'
-import React, { getGlobal } from 'reactn'
+import React, { useGlobal } from 'reactn'
 import {
   convertHHMMSSToAnchorTags,
   convertSpacesBeforeAnchorTagsToHtmlCodes,
@@ -18,7 +18,8 @@ type Props = {
 
 export const HTMLScrollView = (props: Props) => {
   const { fontSizeLargerScale, fontSizeLargestScale, html } = props
-  const { fontScaleMode, globalTheme } = getGlobal()
+  const [globalTheme] = useGlobal('globalTheme')
+  const [fontScaleMode] = useGlobal('fontScaleMode')
   const baseFontStyle = {
     ...globalTheme.text,
     ...styles.baseFontStyle

@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import React, { getGlobal, useGlobal } from 'reactn'
+import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { hidePickerIconOnAndroidSelector } from '../styles'
+import { darkTheme, hidePickerIconOnAndroidSelector } from '../styles'
 
 type Props = {
   items: any[]
@@ -15,10 +15,8 @@ type Props = {
 export const HeaderTitleSelector = (props: Props) => {
   const { items, onValueChange, placeholder, selectedItemKey } = props
   const selectedItem = items.find((x) => x.value === selectedItemKey) || {}
-  const [globalTheme] = useGlobal('globalTheme')
-
-  const { fontScaleMode } = getGlobal()
-  const textStyle = [styles.text, globalTheme.text]
+  const [fontScaleMode] = useGlobal('fontScaleMode')
+  const textStyle = [styles.text, darkTheme.text]
 
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
     textStyle.push({ fontSize: PV.Fonts.largeSizes.xl })
@@ -29,7 +27,7 @@ export const HeaderTitleSelector = (props: Props) => {
   const textNode = (
     <View style={styles.wrapper}>
       <Text style={textStyle}>{selectedItem.label || (placeholder && placeholder.label)}</Text>
-      <Icon color={globalTheme?.text?.color} name='angle-down' size={16} style={styles.angleDown} />
+      <Icon color={darkTheme.text.color} name='angle-down' size={16} style={styles.angleDown} />
     </View>
   )
 

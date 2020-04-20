@@ -1,6 +1,6 @@
 import React from 'react'
 import { SearchBar } from 'react-native-elements'
-import { getGlobal } from 'reactn'
+import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 
 type Props = {
@@ -14,7 +14,8 @@ type Props = {
 
 export const PVSearchBar = (props: Props) => {
   const { containerStyle, inputContainerStyle, onChangeText, onClear, placeholder, value } = props
-  const { fontScaleMode, globalTheme } = getGlobal()
+  const [globalTheme] = useGlobal('globalTheme')
+  const [fontScaleMode] = useGlobal('fontScaleMode')
   return (
     <SearchBar
       autoCorrect={false}

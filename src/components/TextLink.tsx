@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, TouchableOpacity } from 'react-native'
-import { getGlobal } from 'reactn'
+import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 
 type Props = {
@@ -15,7 +15,8 @@ type Props = {
 
 export const TextLink = (props: Props) => {
   const { children, disabled, fontSizeLargerScale, fontSizeLargestScale, numberOfLines, onPress, style } = props
-  const { fontScaleMode, globalTheme } = getGlobal()
+  const [globalTheme] = useGlobal('globalTheme')
+  const [fontScaleMode] = useGlobal('fontScaleMode')
 
   const textInputStyle = []
   if (fontScaleMode === PV.Fonts.fontScale.larger) {

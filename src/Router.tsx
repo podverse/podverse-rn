@@ -40,7 +40,7 @@ import {
 import { darkTheme } from './styles'
 
 const defaultNavigationOptions = ({ navigation }) => {
-  const { fontScale, fontScaleMode, globalTheme } = getGlobal()
+  const { fontScale, fontScaleMode } = getGlobal()
 
   let fontSize = PV.Fonts.sizes.xl
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
@@ -49,15 +49,10 @@ const defaultNavigationOptions = ({ navigation }) => {
     fontSize = PV.Fonts.largeSizes.md * fontScale
   }
 
-  const isDarkMode = globalTheme === darkTheme
-  const headerStyle = isDarkMode
-    ? { backgroundColor: PV.Colors.grayDarkest }
-    : { backgroundColor: PV.Colors.grayLightest }
-
   return {
     title: PV.Tabs.Podcasts.title,
-    headerStyle,
-    headerTintColor: globalTheme?.text?.color,
+    headerStyle: { backgroundColor: PV.Colors.grayDarkest },
+    headerTintColor: darkTheme.text.color,
     headerTitleStyle: {
       fontSize,
       fontWeight: 'bold'

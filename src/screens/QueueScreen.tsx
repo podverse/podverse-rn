@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, StatusBar, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import React, { getGlobal } from 'reactn'
 import {
   ActivityIndicator,
@@ -357,6 +357,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
     return (
       <PVView style={styles.view}>
+        <StatusBar barStyle='light-content' />
         {!isLoading && viewType === _queueKey && (queueItems.length > 0 || nowPlayingItem) && (
           <View>
             {!!nowPlayingItem && (
