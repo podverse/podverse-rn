@@ -302,6 +302,7 @@ export const playNextFromQueue = async () => {
     const item = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentId)
     if (item) {
       await addOrUpdateHistoryItem(item)
+      await removeQueueItem(item)
     }
     sendPlayerScreenGoogleAnalyticsPageView(item)
   }
