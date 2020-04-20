@@ -451,7 +451,7 @@ export class PlayerScreen extends React.Component<Props, State> {
         url
       })
     } catch (error) {
-      alert(error.message)
+      console.log(error)
     }
     this._dismissShareActionSheet()
   }
