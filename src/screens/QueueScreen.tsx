@@ -225,7 +225,7 @@ export class QueueScreen extends React.Component<Props, State> {
         navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
         const shouldPlay = true
         await loadItemAndPlayTrack(item, shouldPlay)
-        getQueueItems()
+        await getQueueItems()
         this.setState({
           isLoading: false
         })
@@ -239,6 +239,7 @@ export class QueueScreen extends React.Component<Props, State> {
     const { queueItems } = this.global.session.userInfo
     if (queueItems && queueItems[rowIndex]) {
       const item = queueItems[rowIndex]
+      await removeQueueItem(item, true)
       this._handlePlayItem(item)
     }
   }
