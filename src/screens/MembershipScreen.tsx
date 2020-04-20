@@ -187,7 +187,12 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'manage your queue',
+    text: 'download episodes',
+    column1: true,
+    column2: true
+  },
+  {
+    text: 'drag-and-drop queue',
     column1: true,
     column2: true
   },
@@ -217,7 +222,7 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'auto save your clips to a playlist',
+    text: 'auto-save your clips to a playlist',
     column1: false,
     column2: true
   },
