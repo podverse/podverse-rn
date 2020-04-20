@@ -5,9 +5,10 @@ import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { IActionSheet } from '../resources/Interfaces'
-import { addItemToPlayerQueueLast, addItemToPlayerQueueNext, PVTrackPlayer } from '../services/player'
+import { PVTrackPlayer } from '../services/player'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { loadItemAndPlayTrack } from '../state/actions/player'
+import { addQueueItemLast, addQueueItemNext } from '../state/actions/queue'
 import { PV } from './PV'
 
 const mediaMoreButtons = (
@@ -112,7 +113,7 @@ const mediaMoreButtons = (
       key: 'queueNext',
       text: 'Queue: Next',
       onPress: async () => {
-        await addItemToPlayerQueueNext(item)
+        await addQueueItemNext(item)
         await handleDismiss()
       }
     },
@@ -120,7 +121,7 @@ const mediaMoreButtons = (
       key: 'queueLast',
       text: 'Queue: Last',
       onPress: async () => {
-        await addItemToPlayerQueueLast(item)
+        await addQueueItemLast(item)
         await handleDismiss()
       }
     }

@@ -302,6 +302,7 @@ export const playNextFromQueue = async () => {
     const item = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentId)
     if (item) {
       await addOrUpdateHistoryItem(item)
+      await removeQueueItem(item)
     }
     sendPlayerScreenGoogleAnalyticsPageView(item)
   }
@@ -474,7 +475,7 @@ export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: stri
   )
   let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
 
-  if (currentNowPlayingItem) removeQueueItem(currentNowPlayingItem, false)
+  if (currentNowPlayingItem) removeQueueItem(currentNowPlayingItem)
 
   if (!currentNowPlayingItem) {
     const historyItems = await getHistoryItemsLocally()

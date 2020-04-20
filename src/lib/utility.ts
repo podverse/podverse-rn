@@ -313,7 +313,7 @@ export const checkIfIdMatchesClipIdOrEpisodeId = (
   addByRSSPodcastFeedUrl?: string
 ) => {
   return (
-    id === clipId ||
+    (clipId && id === clipId) ||
     (!clipId && addByRSSPodcastFeedUrl && id === addByRSSPodcastFeedUrl) ||
     (!clipId && episodeId && id === episodeId)
   )
@@ -462,11 +462,4 @@ export const setCategoryQueryProperty = (queryFrom?: any, selectedCategory?: any
   } else {
     return {}
   }
-}
-
-export const convertSpacesBeforeAnchorTagsToHtmlCodes = (html: string) => {
-  if (html) {
-    return html.replace(/<a[\t\r\n ]+/g, `<span style="color: transparent;">-</span><a `)
-  }
-  return ''
 }

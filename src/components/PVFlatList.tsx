@@ -1,7 +1,7 @@
 import React from 'react'
 import { RefreshControl, StyleSheet } from 'react-native'
 import { SwipeListView } from 'react-native-swipe-list-view'
-import { getGlobal } from 'reactn'
+import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { ActivityIndicator, MessageWithAction, Text, TextLink, View } from './'
 const uuidv4 = require('uuid/v4')
@@ -21,6 +21,7 @@ type Props = {
   isLoadingMore?: boolean
   isRefreshing?: boolean
   ItemSeparatorComponent?: any
+  keyExtractor?: any
   ListHeaderComponent?: any
   noSubscribedPodcasts?: boolean
   onEndReached?: any
@@ -51,6 +52,7 @@ export const PVFlatList = (props: Props) => {
     isLoadingMore,
     isRefreshing = false,
     ItemSeparatorComponent,
+    keyExtractor,
     ListHeaderComponent,
     noSubscribedPodcasts,
     onEndReached,
@@ -64,7 +66,8 @@ export const PVFlatList = (props: Props) => {
     showRequestPodcast,
     transparent
   } = props
-  const { fontScaleMode, globalTheme } = getGlobal()
+  const [globalTheme] = useGlobal('globalTheme')
+  const [fontScaleMode] = useGlobal('fontScaleMode')
 
   let noResultsFound = false
   let endOfResults = false
@@ -135,7 +138,7 @@ export const PVFlatList = (props: Props) => {
           disableRightSwipe={true}
           extraData={extraData}
           ItemSeparatorComponent={ItemSeparatorComponent}
-          keyExtractor={uuidv4}
+          keyExtractor={keyExtractor ? keyExtractor : uuidv4}
           ListFooterComponent={() => {
             if (isLoadingMore) {
               return (

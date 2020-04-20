@@ -1,4 +1,6 @@
 import React, { getGlobal } from 'reactn'
+import { GlobalTheme } from '../../src/resources/Interfaces'
+import { darkTheme } from '../../src/styles'
 import { getMakeClipIsPublic, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { NavItemIcon, NavItemWrapper } from './'
@@ -6,6 +8,7 @@ import { NavItemIcon, NavItemWrapper } from './'
 type Props = {
   getInitialProgressValue: any
   navigation: any
+  globalTheme: GlobalTheme
 }
 
 export const NavMakeClipIcon = (props: Props) => {
@@ -24,9 +27,14 @@ export const NavMakeClipIcon = (props: Props) => {
     })
   }
 
+  let color = darkTheme.text.color
+  if (props.globalTheme) {
+    color = props.globalTheme?.text?.color
+  }
+
   return (
     <NavItemWrapper handlePress={handlePress}>
-      <NavItemIcon name='cut' />
+      <NavItemIcon name='cut' color={color} />
     </NavItemWrapper>
   )
 }

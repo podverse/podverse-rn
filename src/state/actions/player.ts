@@ -18,6 +18,7 @@ import {
   togglePlay as togglePlayService
 } from '../../services/player'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
+import { getQueueItems } from '../../state/actions/queue'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
   if (!item) return
@@ -62,60 +63,6 @@ export const initializePlayerQueue = async () => {
   })
 }
 
-export const addItemsToPlayerQueueNext = async (
-  items: NowPlayingItem[],
-  shouldPlay?: boolean,
-  shouldRemoveFromPVQueue?: boolean
-) => {
-  if (items.length < 1) return
-  const item = items[0]
-
-  try {
-    await addItemsToPlayerQueueNextService(items, shouldPlay, shouldRemoveFromPVQueue)
-    const episode = convertNowPlayingItemToEpisode(item)
-    const mediaRef = convertNowPlayingItemToMediaRef(item)
-
-    try {
-      await updatePlayerState(item)
-    } catch (error) {
-      const globalState = getGlobal()
-      setGlobal({
-        player: {
-          ...globalState.player,
-          nowPlayingItem: null,
-          playbackState: await PVTrackPlayer.getState(),
-          showMiniPlayer: false
-        },
-        screenPlayer: {
-          ...globalState.screenPlayer,
-          isLoading: false
-        }
-      })
-    }
-
-    const globalState = getGlobal()
-    setGlobal({
-      player: {
-        ...globalState.player,
-        ...(episode && episode.id ? { episode } : {}),
-        ...(mediaRef && mediaRef.id ? { mediaRef } : {})
-      },
-      screenPlayer: {
-        ...globalState.screenPlayer,
-        isLoading: false
-      }
-    })
-  } catch (error) {
-    const globalState = getGlobal()
-    setGlobal({
-      screenPlayer: {
-        ...globalState.screenPlayer,
-        isLoading: false
-      }
-    })
-  }
-}
-
 export const clearNowPlayingItem = async () => {
   const globalState = getGlobal()
   await clearNowPlayingItemService()
@@ -152,6 +99,7 @@ export const initPlayerState = async (globalState: any) => {
 
 export const playNextFromQueue = async () => {
   await playNextFromQueueService()
+  await getQueueItems()
 }
 
 export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boolean) => {

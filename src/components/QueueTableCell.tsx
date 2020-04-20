@@ -1,6 +1,5 @@
-import React from 'react'
 import { StyleSheet, View as RNView } from 'react-native'
-import { getGlobal } from 'reactn'
+import React, { getGlobal } from 'reactn'
 import { FastImage, Icon, Text, View } from '.'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -23,7 +22,6 @@ type Props = {
 
 export class QueueTableCell extends React.PureComponent<Props> {
   render() {
-    const { fontScaleMode } = getGlobal()
     const {
       clipEndTime,
       clipStartTime,

@@ -1,8 +1,8 @@
-import { ImageBackground, StyleSheet, View as RNView } from 'react-native'
+import { ImageBackground, StatusBar, StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
 import { SafeAreaView } from 'react-navigation'
 import { NavigationStackOptions } from 'react-navigation-stack'
-import React, { setGlobal } from 'reactn'
+import React, { getGlobal, setGlobal } from 'reactn'
 import {
   ActionSheet,
   ActivityIndicator,
@@ -61,29 +61,36 @@ export class PlayerScreen extends React.Component<Props, State> {
     const _getInitialProgressValue = navigation.getParam('_getInitialProgressValue')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
+    const { globalTheme } = getGlobal()
+
     return {
       title: '',
       headerTransparent: true,
       headerStyle: {},
       headerTintColor: PV.Colors.black,
-      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
+      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} globalTheme={globalTheme} />,
       headerRight: (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
             <RNView style={core.row}>
-              <NavMakeClipIcon getInitialProgressValue={_getInitialProgressValue} navigation={navigation} />
+              <NavMakeClipIcon
+                getInitialProgressValue={_getInitialProgressValue}
+                navigation={navigation}
+                globalTheme={globalTheme}
+              />
               <NavAddToPlaylistIcon
                 getEpisodeId={_getEpisodeId}
                 getMediaRefId={_getMediaRefId}
                 navigation={navigation}
+                globalTheme={globalTheme}
               />
-              <NavShareIcon handlePress={_showShareActionSheet} />
+              <NavShareIcon handlePress={_showShareActionSheet} globalTheme={globalTheme} />
             </RNView>
           )}
-          <NavQueueIcon navigation={navigation} showBackButton={true} />
+          <NavQueueIcon navigation={navigation} showBackButton={true} globalTheme={globalTheme} />
         </RNView>
       )
-    } as NavigationStackOptions
+    }
   }
 
   constructor(props: Props) {
@@ -554,6 +561,7 @@ export class PlayerScreen extends React.Component<Props, State> {
 
     return (
       <ImageBackground blurRadius={50} source={bgImageSource} style={styles.imageBackground}>
+        <StatusBar barStyle={globalTheme === darkTheme ? 'light-content' : 'dark-content'} />
         <View style={[styles.viewBackdrop, backdropColor]} transparent={true}>
           <SafeAreaView
             forceInset={{ bottom: 'always', top: 'always' }}

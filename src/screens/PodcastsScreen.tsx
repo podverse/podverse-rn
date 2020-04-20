@@ -198,7 +198,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _handleOpenURL = async (url: string) => {
     const { navigation } = this.props
     const { navigate } = navigation
-    const isDarkMode = this.global.globaTheme === darkTheme
+    const isDarkMode = this.global.globalTheme === darkTheme
 
     try {
       if (url) {

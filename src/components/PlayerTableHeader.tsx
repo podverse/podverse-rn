@@ -1,5 +1,5 @@
 import { Platform, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import React, { getGlobal } from 'reactn'
+import React, { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
@@ -13,7 +13,7 @@ type Props = {
 
 export const PlayerTableHeader = (props: Props) => {
   const { isLoading, nowPlayingItem, onPress } = props
-  const { fontScaleMode } = getGlobal()
+  const [fontScaleMode] = useGlobal('fontScaleMode')
 
   const episodeTitleNumberOfLines = PV.Fonts.fontScale.largest === fontScaleMode ? 1 : 2
 

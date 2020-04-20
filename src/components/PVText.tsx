@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text } from 'react-native'
-import { getGlobal } from 'reactn'
+import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 
 type Props = {
@@ -15,7 +15,9 @@ type Props = {
 
 export const PVText = (props: Props) => {
   const { fontSizeLargerScale, fontSizeLargestScale, isSecondary } = props
-  const { fontScaleMode, globalTheme } = getGlobal()
+  const [globalTheme] = useGlobal('globalTheme')
+  const [fontScaleMode] = useGlobal('fontScaleMode')
+
   const globalThemeText = isSecondary ? globalTheme.textSecondary : globalTheme.text
 
   const textStyle = [globalThemeText, props.style]

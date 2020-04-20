@@ -1,7 +1,7 @@
 import React from 'react'
 import { Platform, StyleSheet } from 'react-native'
 import { ButtonGroup } from 'react-native-elements'
-import { getGlobal } from 'reactn'
+import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 
 type Props = {
@@ -13,7 +13,8 @@ type Props = {
 
 export const PVButtonGroup = (props: Props) => {
   const { buttons, onPress, selectedIndex } = props
-  const { fontScaleMode, globalTheme } = getGlobal()
+  const [globalTheme] = useGlobal('globalTheme')
+  const [fontScaleMode] = useGlobal('fontScaleMode')
 
   const textStyle =
     PV.Fonts.fontScale.largest === fontScaleMode ? [styles.text, { fontSize: PV.Fonts.largeSizes.md }] : [styles.text]

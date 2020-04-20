@@ -3,7 +3,7 @@ import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getAuthenticatedUserInfo } from './auth'
-import { PVTrackPlayer } from './player'
+import { PVTrackPlayer, syncPlayerWithQueue } from './player'
 import { updateUserQueueItems } from './user'
 
 export const addQueueItemLast = async (item: NowPlayingItem) => {
@@ -16,6 +16,8 @@ export const addQueueItemLast = async (item: NowPlayingItem) => {
     results = await addQueueItemLastLocally(item)
   }
 
+  await syncPlayerWithQueue()
+
   return results
 }
 
@@ -23,7 +25,6 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
   let results = []
 
   const currentTrackId = await PVTrackPlayer.getCurrentTrack()
-
   // Don't add track to queue if it's currently playing
   if (checkIfIdMatchesClipIdOrEpisodeId(currentTrackId, item.clipId, item.episodeId)) {
     return
@@ -37,6 +38,8 @@ export const addQueueItemNext = async (item: NowPlayingItem) => {
     results = await addQueueItemNextLocally(item)
   }
 
+  await syncPlayerWithQueue()
+
   return results
 }
 
@@ -45,27 +48,19 @@ export const getQueueItems = async () => {
   return useServerData ? getQueueItemsFromServer() : getQueueItemsLocally()
 }
 
-export const popNextFromQueue = async () => {
-  let item = null
-  const useServerData = await checkIfShouldUseServerData()
-  item = await popNextFromQueueLocally()
-  if (useServerData) popNextFromQueueFromServer()
-  return item
-}
-
 export const getNextFromQueue = async () => {
   const useServerData = await checkIfShouldUseServerData()
   const item = await getNextFromQueueLocally()
   if (useServerData) getNextFromQueueFromServer()
 
   if (item) {
-    removeQueueItem(item, false)
+    removeQueueItem(item)
   }
 
   return item
 }
 
-export const removeQueueItem = async (item: NowPlayingItem, removeFromPlayerQueue: boolean) => {
+export const removeQueueItem = async (item: NowPlayingItem) => {
   let items = []
   const useServerData = await checkIfShouldUseServerData()
 
@@ -75,13 +70,7 @@ export const removeQueueItem = async (item: NowPlayingItem, removeFromPlayerQueu
     items = await removeQueueItemLocally(item)
   }
 
-  if (removeFromPlayerQueue) {
-    try {
-      PVTrackPlayer.remove(item.clipId || item.episodeId)
-    } catch (error) {
-      console.log('removeQueueItem service', error)
-    }
-  }
+  await syncPlayerWithQueue()
 
   return items
 }
@@ -91,6 +80,8 @@ export const setAllQueueItems = async (items: NowPlayingItem[]) => {
 
   await setAllQueueItemsLocally(items)
   if (useServerData) await setAllQueueItemsOnServer(items)
+
+  await syncPlayerWithQueue()
 
   return items
 }
@@ -166,20 +157,6 @@ const getQueueItemsFromServer = async () => {
   const { queueItems = [] } = user
   await setAllQueueItemsLocally(queueItems)
   return queueItems
-}
-
-const popNextFromQueueLocally = async () => {
-  const items = await getQueueItemsLocally()
-  const item = items.shift()
-  if (item) removeQueueItemLocally(item)
-  return item
-}
-
-const popNextFromQueueFromServer = async () => {
-  const items = await getQueueItemsFromServer()
-  const item = items.shift()
-  if (item) removeQueueItemOnServer(item)
-  return item
 }
 
 const removeQueueItemLocally = async (item: NowPlayingItem) => {

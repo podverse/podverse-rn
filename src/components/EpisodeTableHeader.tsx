@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
-import { getGlobal } from 'reactn'
+import { useGlobal } from 'reactn'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
@@ -34,7 +34,7 @@ export const EpisodeTableHeader = (props: Props) => {
   const isDownloading = downloadsActive[id]
   const isDownloaded = downloadedEpisodeIds[id]
 
-  const { fontScaleMode } = getGlobal()
+  const [fontScaleMode] = useGlobal('fontScaleMode')
 
   const titleNumberOfLines = [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ? 1 : 2
 
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     flex: 1,
-    paddingRight: 8,
+    marginRight: 4,
     paddingTop: 2
   },
   textWrapperBottomRow: {

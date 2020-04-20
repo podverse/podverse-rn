@@ -1,5 +1,7 @@
 import React from 'react'
 import Share from 'react-native-share'
+import { GlobalTheme } from '../../src/resources/Interfaces'
+import { darkTheme } from '../../src/styles'
 import { NavItemIcon, NavItemWrapper } from './'
 
 type Props = {
@@ -12,6 +14,7 @@ type Props = {
   podcastTitle?: string
   profileName?: string
   url?: string
+  globalTheme: GlobalTheme
 }
 
 export const NavShareIcon = (props: Props) => {
@@ -42,9 +45,14 @@ export const NavShareIcon = (props: Props) => {
     }
   }
 
+  let color = darkTheme.text.color
+  if (props.globalTheme) {
+    color = props.globalTheme?.text?.color
+  }
+
   return (
     <NavItemWrapper handlePress={handlePress ? handlePress : onShare}>
-      <NavItemIcon name='share' />
+      <NavItemIcon name='share' color={color} />
     </NavItemWrapper>
   )
 }

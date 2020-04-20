@@ -1,4 +1,4 @@
-import { Linking, StyleSheet, View as RNView } from 'react-native'
+import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { Divider, Icon, ScrollView, Text, View } from '../components'
 import { PV } from '../resources'
@@ -16,6 +16,13 @@ export class AboutScreen extends React.Component<Props, State> {
 
   componentDidMount() {
     gaTrackPageView('/about', 'About Screen')
+  }
+
+  handleFollowLink = (url: string) => {
+    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
+      { text: 'Cancel' },
+      { text: 'Yes', onPress: () => Linking.openURL(url) }
+    ])
   }
 
   render() {
@@ -45,25 +52,25 @@ export class AboutScreen extends React.Component<Props, State> {
           <RNView style={styles.socialLinksWrapper}>
             <Icon
               name='reddit'
-              onPress={() => Linking.openURL(PV.URLs.social.reddit)}
+              onPress={() => this.handleFollowLink(PV.URLs.social.reddit)}
               size={28}
               style={[button.iconOnlySmall, styles.icon]}
             />
             <Icon
               name='twitter'
-              onPress={() => Linking.openURL(PV.URLs.social.twitter)}
+              onPress={() => this.handleFollowLink(PV.URLs.social.twitter)}
               size={28}
               style={[button.iconOnlySmall, styles.icon]}
             />
             <Icon
               name='facebook'
-              onPress={() => Linking.openURL(PV.URLs.social.facebook)}
+              onPress={() => this.handleFollowLink(PV.URLs.social.facebook)}
               size={28}
               style={[button.iconOnlySmall, styles.icon]}
             />
             <Icon
               name='github'
-              onPress={() => Linking.openURL(PV.URLs.social.github)}
+              onPress={() => this.handleFollowLink(PV.URLs.social.github)}
               size={28}
               style={[button.iconOnlySmall, styles.icon]}
             />
