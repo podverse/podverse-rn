@@ -160,7 +160,7 @@ const mediaMoreButtons = (
             url
           })
         } catch (error) {
-          alert(error.message)
+          console.log(error)
         }
         await handleDismiss()
       }
