@@ -44,14 +44,6 @@ export const getQueueItems = async () => {
   return useServerData ? getQueueItemsFromServer() : getQueueItemsLocally()
 }
 
-export const popNextFromQueue = async () => {
-  let item = null
-  const useServerData = await checkIfShouldUseServerData()
-  item = await popNextFromQueueLocally()
-  if (useServerData) popNextFromQueueFromServer()
-  return item
-}
-
 export const getNextFromQueue = async () => {
   const useServerData = await checkIfShouldUseServerData()
   const item = await getNextFromQueueLocally()
@@ -165,20 +157,6 @@ const getQueueItemsFromServer = async () => {
   const { queueItems = [] } = user
   await setAllQueueItemsLocally(queueItems)
   return queueItems
-}
-
-const popNextFromQueueLocally = async () => {
-  const items = await getQueueItemsLocally()
-  const item = items.shift()
-  if (item) removeQueueItemLocally(item)
-  return item
-}
-
-const popNextFromQueueFromServer = async () => {
-  const items = await getQueueItemsFromServer()
-  const item = items.shift()
-  if (item) removeQueueItemOnServer(item)
-  return item
 }
 
 const removeQueueItemLocally = async (item: NowPlayingItem) => {
