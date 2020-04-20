@@ -222,11 +222,6 @@ const comparisonData = [
     column2: true
   },
   {
-    text: 'auto-save your clips to a playlist',
-    column1: false,
-    column2: true
-  },
-  {
     text: 'edit your clips',
     column1: false,
     column2: true
