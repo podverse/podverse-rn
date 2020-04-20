@@ -144,11 +144,10 @@ export class QueueScreen extends React.Component<Props, State> {
 
     try {
       const nowPlayingItem = this.global.player.nowPlayingItem
-      const queueItems = await getQueueItems()
+      await getQueueItems()
       this.setState({
         isLoading: false,
-        nowPlayingItem,
-        queueItems
+        nowPlayingItem
       })
     } catch (error) {
       this.setState({ isLoading: false })
@@ -358,7 +357,7 @@ export class QueueScreen extends React.Component<Props, State> {
     return (
       <PVView style={styles.view}>
         <StatusBar barStyle='light-content' />
-        {!isLoading && viewType === _queueKey && (queueItems.length > 0 || nowPlayingItem) && (
+        {!isLoading && viewType === _queueKey && ((queueItems && queueItems.length > 0) || nowPlayingItem) && (
           <View>
             {!!nowPlayingItem && (
               <View>
