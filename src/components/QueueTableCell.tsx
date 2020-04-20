@@ -22,7 +22,6 @@ type Props = {
 
 export class QueueTableCell extends React.PureComponent<Props> {
   render() {
-    const { fontScaleMode } = this.global
     const {
       clipEndTime,
       clipStartTime,
