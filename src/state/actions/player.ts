@@ -18,6 +18,7 @@ import {
   togglePlay as togglePlayService
 } from '../../services/player'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
+import { getQueueItems } from '../../state/actions/queue'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
   if (!item) return
@@ -98,6 +99,7 @@ export const initPlayerState = async (globalState: any) => {
 
 export const playNextFromQueue = async () => {
   await playNextFromQueueService()
+  await getQueueItems()
 }
 
 export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boolean) => {
