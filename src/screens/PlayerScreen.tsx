@@ -624,6 +624,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                         extraData={flatListData}
                         isLoadingMore={isLoadingMore}
                         ItemSeparatorComponent={this._ItemSeparatorComponent}
+                        keyExtractor={(item: any) => item.id}
                         onEndReached={this._onEndReached}
                         renderItem={this._renderItem}
                         transparent={true}

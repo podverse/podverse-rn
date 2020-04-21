@@ -126,6 +126,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
               extraData={flatListData}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
+              keyExtractor={(item: any) => item.id}
               renderItem={this._renderPlaylistItem}
               showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             />

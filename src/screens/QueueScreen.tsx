@@ -388,6 +388,7 @@ export class QueueScreen extends React.Component<Props, State> {
             disableLeftSwipe={true}
             extraData={historyItems}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
+            keyExtractor={(item: any) => item.clipId || item.episodeId}
             renderItem={this._renderHistoryItem}
           />
         )}

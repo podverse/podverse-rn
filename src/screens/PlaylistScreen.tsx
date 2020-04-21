@@ -258,6 +258,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
             extraData={flatListData}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
+            keyExtractor={(item: any) => item.id}
             renderItem={this._renderItem}
           />
         )}

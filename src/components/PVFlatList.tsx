@@ -4,7 +4,6 @@ import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { ActivityIndicator, MessageWithAction, Text, TextLink, View } from './'
-const uuidv4 = require('uuid/v4')
 
 type Props = {
   data?: any
@@ -21,7 +20,7 @@ type Props = {
   isLoadingMore?: boolean
   isRefreshing?: boolean
   ItemSeparatorComponent?: any
-  keyExtractor?: any
+  keyExtractor: any
   ListHeaderComponent?: any
   noSubscribedPodcasts?: boolean
   onEndReached?: any
@@ -138,7 +137,7 @@ export const PVFlatList = (props: Props) => {
           disableRightSwipe={true}
           extraData={extraData}
           ItemSeparatorComponent={ItemSeparatorComponent}
-          keyExtractor={keyExtractor ? keyExtractor : uuidv4}
+          keyExtractor={keyExtractor}
           ListFooterComponent={() => {
             if (isLoadingMore) {
               return (
