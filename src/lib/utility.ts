@@ -463,3 +463,16 @@ export const setCategoryQueryProperty = (queryFrom?: any, selectedCategory?: any
     return {}
   }
 }
+
+export const isValidUrl = (str?: string) => {
+  if (!str) return false
+
+  try {
+    // tslint:disable-next-line:no-unused-expression
+    new URL(str)
+  } catch (_) {
+    return false
+  }
+
+  return true
+}
