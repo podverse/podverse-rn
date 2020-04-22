@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
-import { StyleSheet } from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
 import Dialog from 'react-native-dialog'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { Icon, NumberSelectorWithText, ScrollView, SwitchWithText, Text, View } from '../components'
+import { Button, Divider, Icon, NumberSelectorWithText, ScrollView, SwitchWithText, Text, View } from '../components'
 import {
   setDownloadedEpisodeLimitGlobalCount,
   setDownloadedEpisodeLimitGlobalDefault,
@@ -14,6 +14,7 @@ import {
 import { refreshDownloads } from '../lib/downloader'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
+import { clearHistoryItems } from '../state/actions/history'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {
@@ -146,6 +147,36 @@ export class SettingsScreen extends React.Component<Props, State> {
     this.setState({ showSetAllDownloadDialog: false })
   }
 
+  _handleClearHistory = () => {
+    Alert.alert('Clear History', 'Are you sure you want to clear your history?', [
+      {
+        text: 'Cancel',
+        style: 'cancel'
+      },
+      {
+        text: 'Yes',
+        onPress: () => {
+          this.setState(
+            {
+              isLoading: true
+            },
+            async () => {
+              try {
+                await clearHistoryItems()
+                this.setState({
+                  historyItems: [],
+                  isLoading: false
+                })
+              } catch (error) {
+                this.setState({ isLoading: false })
+              }
+            }
+          )
+        }
+      }
+    ])
+  }
+
   render() {
     const {
       downloadedEpisodeLimitCount,
@@ -206,6 +237,8 @@ export class SettingsScreen extends React.Component<Props, State> {
             </View>
           </View>
         </RNPickerSelect>
+        <Divider style={styles.divider} />
+        <Button onPress={this._handleClearHistory} wrapperStyles={styles.button} text={'Clear History'} />
         <Dialog.Container visible={showSetAllDownloadDialog}>
           <Dialog.Title>Global Update</Dialog.Title>
           <Dialog.Description>
@@ -227,6 +260,12 @@ export class SettingsScreen extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    marginVertical: 8
+  },
+  divider: {
+    marginVertical: 16
+  },
   pickerSelect: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,

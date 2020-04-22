@@ -517,6 +517,12 @@ export const core = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold,
     textAlign: 'center'
   },
+  buttonTextLink: {
+    fontSize: PV.Fonts.sizes.xl,
+    marginVertical: 12,
+    paddingVertical: 12,
+    textAlign: 'center'
+  },
   closeButton: {
     paddingLeft: 8,
     paddingRight: 16,

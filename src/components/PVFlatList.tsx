@@ -3,6 +3,7 @@ import { RefreshControl, StyleSheet } from 'react-native'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
+import { core } from '../styles'
 import { ActivityIndicator, MessageWithAction, Text, TextLink, View } from './'
 
 type Props = {
@@ -81,8 +82,8 @@ export const PVFlatList = (props: Props) => {
 
   const textLinkStyle =
     PV.Fonts.fontScale.largest === fontScaleMode
-      ? [styles.textLink, { fontSize: PV.Fonts.largeSizes.md }]
-      : [styles.textLink]
+      ? [core.buttonTextLink, { fontSize: PV.Fonts.largeSizes.md }]
+      : [core.buttonTextLink]
   const noResultsFoundTextStyle =
     PV.Fonts.fontScale.largest === fontScaleMode
       ? [styles.noResultsFoundText, { fontSize: PV.Fonts.largeSizes.md }]
@@ -195,12 +196,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   noResultsFoundText: {
-    fontSize: PV.Fonts.sizes.xl,
-    marginVertical: 12,
-    paddingVertical: 12,
-    textAlign: 'center'
-  },
-  textLink: {
     fontSize: PV.Fonts.sizes.xl,
     marginVertical: 12,
     paddingVertical: 12,

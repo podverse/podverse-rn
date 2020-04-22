@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React, { getGlobal } from 'reactn'
 import {
   ActivityIndicator,
@@ -20,7 +20,7 @@ import { checkIfIdMatchesClipIdOrEpisodeId, isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { movePlayerItemToNewPosition } from '../services/player'
-import { clearHistoryItems, getHistoryItems, removeHistoryItem } from '../state/actions/history'
+import { getHistoryItems, removeHistoryItem } from '../state/actions/history'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
 import { core, darkTheme } from '../styles'
@@ -118,7 +118,6 @@ export class QueueScreen extends React.Component<Props, State> {
     const { navigation } = this.props
 
     navigation.setParams({
-      _clearAll: this._clearAll,
       _onViewTypeSelect: this._onViewTypeSelect,
       _startEditing: this._startEditing,
       _stopEditing: this._stopEditing
@@ -142,36 +141,6 @@ export class QueueScreen extends React.Component<Props, State> {
 
   _stopEditing = () => {
     this.setState({ isEditing: false }, () => this.props.navigation.setParams({ isEditing: false }))
-  }
-
-  _clearAll = () => {
-    Alert.alert('Clear History', 'Are you sure you want to clear your history?', [
-      {
-        text: 'Cancel',
-        style: 'cancel'
-      },
-      {
-        text: 'Yes',
-        onPress: () => {
-          this.setState(
-            {
-              isLoading: true
-            },
-            async () => {
-              try {
-                await clearHistoryItems()
-                this.setState({
-                  historyItems: [],
-                  isLoading: false
-                })
-              } catch (error) {
-                this.setState({ isLoading: false })
-              }
-            }
-          )
-        }
-      }
-    ])
   }
 
   _onViewTypeSelect = async (x: string) => {
