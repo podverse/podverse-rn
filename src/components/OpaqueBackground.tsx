@@ -1,8 +1,9 @@
 import React from 'react'
 import { ImageBackground, StyleSheet } from 'react-native'
+import { SafeAreaView } from 'react-navigation'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { darkTheme } from '../styles'
+import { darkTheme, navHeader } from '../styles'
 import { View } from './'
 
 type Props = {
@@ -19,9 +20,16 @@ export const OpaqueBackground = (props: Props) => {
     globalTheme === darkTheme ? { backgroundColor: PV.Colors.blackOpaque } : { backgroundColor: PV.Colors.whiteOpaque }
 
   return (
-    <ImageBackground blurRadius={50} source={bgImageSource} style={styles.imageBackground}>
-      <View style={[styles.viewBackdrop, backdropColor]} transparent={true}>
-        {children}
+    <ImageBackground blurRadius={65} source={bgImageSource} style={styles.imageBackground}>
+      <View style={[styles.viewBackdrop, backdropColor, navHeader.headerHeight]} transparent={true}>
+        <SafeAreaView
+          forceInset={{ bottom: 'always', top: 'always' }}
+          style={{
+            backgroundColor: 'transparent',
+            flex: 1
+          }}>
+          {children}
+        </SafeAreaView>
       </View>
     </ImageBackground>
   )
