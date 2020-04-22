@@ -17,13 +17,14 @@ export const NavMakeClipIcon = (props: Props) => {
   const handlePress = async () => {
     const initialProgressValue = await getInitialProgressValue()
     const isPublic = await getMakeClipIsPublic()
-    const { session } = getGlobal()
-    const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, '')
+    const { globalTheme, session } = getGlobal()
+    const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
 
     navigation.navigate(PV.RouteNames.MakeClipScreen, {
       initialProgressValue,
       initialPrivacy: isPublic,
-      isLoggedIn
+      isLoggedIn,
+      globalTheme
     })
   }
 

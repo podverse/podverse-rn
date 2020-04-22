@@ -370,6 +370,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
             extraData={flatListData}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
+            keyExtractor={(item: any) => item.id}
             {...(viewType === PV.Filters._clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
             onEndReached={this._onEndReached}
             renderItem={this._renderItem}

@@ -430,6 +430,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             isLoadingMore={isLoadingMore}
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
+            keyExtractor={(item: any) => item.id}
             ListHeaderComponent={this._ListHeaderComponent}
             noSubscribedPodcasts={
               queryFrom === PV.Filters._subscribedKey && (!flatListData || flatListData.length === 0) && !searchBarText

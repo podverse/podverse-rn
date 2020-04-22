@@ -153,7 +153,6 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view}>
-        <StatusBar barStyle='light-content' />
         {!isLoggedIn && (
           <MessageWithAction
             topActionHandler={this._onPressLogin}
@@ -171,6 +170,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
                 disableLeftSwipe={true}
                 extraData={myPlaylists}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
+                keyExtractor={(item: any, index: number) => `myPlaylists_${index}`}
                 renderItem={this._renderPlaylistItem}
               />
             )}
@@ -181,6 +181,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
                 disableLeftSwipe={true}
                 extraData={myPlaylists}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
+                keyExtractor={(item: any, index: number) => `myPlaylists2_${index}`}
                 renderItem={this._renderPlaylistItem}
               />
             )}

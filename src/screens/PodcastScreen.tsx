@@ -622,6 +622,7 @@ export class PodcastScreen extends React.Component<Props, State> {
                 isLoadingMore={isLoadingMore}
                 isRefreshing={isRefreshing}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
+                keyExtractor={(item: any) => item.id}
                 ListHeaderComponent={
                   viewType === PV.Filters._episodesKey || viewType === PV.Filters._clipsKey
                     ? this._ListHeaderComponent

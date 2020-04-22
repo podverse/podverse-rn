@@ -18,6 +18,7 @@ type Props = {
   podcastTitle?: string
   showMoveButton?: boolean
   showRemoveButton?: boolean
+  transparent?: boolean
 }
 
 export class QueueTableCell extends React.PureComponent<Props> {
@@ -34,11 +35,12 @@ export class QueueTableCell extends React.PureComponent<Props> {
       podcastImageUrl,
       podcastTitle,
       showMoveButton,
-      showRemoveButton
+      showRemoveButton,
+      transparent
     } = this.props
 
     return (
-      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
+      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent}>
         <RNView style={styles.wrapperTop}>
           <FastImage isSmall={true} key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>

@@ -28,6 +28,7 @@ const mediaMoreButtons = (
   const buttons = []
   const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session.userInfo.id, '')
   const isLoggedIn = safelyUnwrapNestedVariable(() => globalState.session.isLoggedIn, '')
+  const globalTheme = safelyUnwrapNestedVariable(() => globalState.globalTheme, {})
 
   if (item.ownerId && item.ownerId === loggedInUserId) {
     buttons.push(
@@ -47,7 +48,8 @@ const mediaMoreButtons = (
               initialProgressValue,
               initialPrivacy: item.isPublic,
               isEditing: true,
-              isLoggedIn
+              isLoggedIn,
+              globalTheme
             })
           }, 1000)
         }
@@ -160,7 +162,7 @@ const mediaMoreButtons = (
             url
           })
         } catch (error) {
-          alert(error.message)
+          console.log(error)
         }
         await handleDismiss()
       }

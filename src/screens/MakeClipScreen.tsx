@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import {
   Alert,
   Modal,
-  StatusBar,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -17,8 +17,8 @@ import {
   FastImage,
   Icon,
   NavHeaderButtonText,
+  OpaqueBackground,
   PlayerProgressBar,
-  SafeAreaView,
   Text,
   TextInput,
   TimeInput,
@@ -36,7 +36,7 @@ import {
   PVTrackPlayer
 } from '../services/player'
 import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
-import { core, darkTheme, hidePickerIconOnAndroidTransparent, navHeader, playerStyles } from '../styles'
+import { core, darkTheme, hidePickerIconOnAndroidTransparent, playerStyles } from '../styles'
 
 type Props = {
   navigation?: any
@@ -55,15 +55,25 @@ type State = {
 }
 
 export class MakeClipScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => ({
-    title: navigation.getParam('isEditing') ? 'Edit Clip' : 'Make Clip',
-    headerTransparent: true,
-    headerRight: (
-      <RNView style={styles.navHeaderButtonWrapper}>
-        <NavHeaderButtonText handlePress={navigation.getParam('_saveMediaRef')} text='Save' />
-      </RNView>
-    )
-  })
+  static navigationOptions = ({ navigation }) => {
+    const globalTheme = navigation.getParam('globalTheme')
+
+    return {
+      title: navigation.getParam('isEditing') ? 'Edit Clip' : 'Make Clip',
+      headerTransparent: true,
+      headerStyle: {},
+      headerTintColor: globalTheme.text.color,
+      headerRight: (
+        <RNView style={styles.navHeaderButtonWrapper}>
+          <NavHeaderButtonText
+            color={globalTheme.text.color}
+            handlePress={navigation.getParam('_saveMediaRef')}
+            text='Save'
+          />
+        </RNView>
+      )
+    }
+  }
 
   constructor(props: Props) {
     super(props)
@@ -355,10 +365,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
     } = this.state
 
     return (
-      <SafeAreaView>
-        <StatusBar barStyle='light-content' />
-        <View style={[styles.view, navHeader.headerHeight]}>
-          <View style={styles.wrapperTop}>
+      <OpaqueBackground nowPlayingItem={nowPlayingItem}>
+        <View style={styles.view} transparent={true}>
+          <View style={styles.wrapperTop} transparent={true}>
             {!isLoggedIn && (
               <RNView>
                 <Text
@@ -370,7 +379,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <Divider style={styles.divider} />
               </RNView>
             )}
-            <View style={[core.row, styles.row]}>
+            <View style={[core.row, styles.row]} transparent={true}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 numberOfLines={1}
@@ -381,10 +390,10 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 items={privacyItems()}
                 onValueChange={this._handleSelectPrivacy}
                 placeholder={placeholderItem}
-                style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+                style={[hidePickerIconOnAndroidTransparent(isDarkMode), { backgroundColor: 'transparent' }]}
                 useNativeAndroidPickerStyle={false}
                 value={isPublicItemSelected.value}>
-                <View style={core.selectorWrapper}>
+                <View style={core.selectorWrapper} transparent={true}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     numberOfLines={1}
@@ -407,15 +416,15 @@ export class MakeClipScreen extends React.Component<Props, State> {
               value={title}
             />
           </View>
-          <View style={styles.wrapperMiddle}>
+          <View style={styles.wrapperMiddle} transparent={true}>
             <FastImage
               resizeMode='contain'
               source={nowPlayingItem && nowPlayingItem.podcastImageUrl}
               styles={styles.image}
             />
           </View>
-          <View style={styles.wrapperBottom}>
-            <View style={core.row}>
+          <View style={styles.wrapperBottom} transparent={true}>
+            <View style={core.row} transparent={true}>
               <TimeInput
                 handlePreview={() => {
                   if (startTime) {
@@ -442,7 +451,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 wrapperStyle={styles.timeInput}
               />
             </View>
-            <View style={styles.progressWrapper}>
+            <View style={styles.progressWrapper} transparent={true}>
               <PlayerProgressBar
                 clipEndTime={endTime}
                 clipStartTime={startTime}
@@ -475,7 +484,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <Icon name='redo-alt' size={32} />
               </TouchableOpacity>
             </RNView>
-            <View style={styles.bottomRow}>
+            <View style={styles.bottomRow} transparent={true}>
               <TouchableOpacity
                 hitSlop={{
                   bottom: 4,
@@ -484,7 +493,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   top: 4
                 }}
                 onPress={() => navigation.navigate(PV.RouteNames.PlayerFAQScreen)}>
-                <View>
+                <View transparent={true}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     style={[styles.bottomRowTextMini, globalTheme.link]}>
@@ -500,7 +509,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   top: 4
                 }}
                 onPress={this._adjustSpeed}>
-                <View>
+                <View transparent={true}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     style={[styles.bottomButton, styles.bottomRowText]}>
@@ -523,7 +532,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     initializeClips: true
                   })
                 }>
-                <View>
+                <View transparent={true}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     style={[styles.bottomRowTextMini, globalTheme.link]}>
@@ -560,7 +569,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
             </RNView>
           </Modal>
         )}
-      </SafeAreaView>
+      </OpaqueBackground>
     )
   }
 }
@@ -604,7 +613,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   bottomRowTextMini: {
-    fontSize: PV.Fonts.sizes.sm
+    fontSize: PV.Fonts.sizes.sm,
+    minWidth: 80,
+    textAlign: 'center'
   },
   bottomRowText: {
     fontSize: PV.Fonts.sizes.md
@@ -619,7 +630,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    marginVertical: 16
+    marginVertical: 8
   },
   isPublicText: {
     fontSize: PV.Fonts.sizes.xl,
@@ -707,6 +718,6 @@ const styles = StyleSheet.create({
   wrapperTop: {
     flex: 0,
     marginHorizontal: 8,
-    marginTop: 16
+    marginTop: Platform.os === 'ios' ? 16 : 0
   }
 })

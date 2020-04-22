@@ -144,6 +144,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
               extraData={flatListData}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
+              keyExtractor={(item: any) => item.id}
               onEndReached={this._onEndReached}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderProfileItem}

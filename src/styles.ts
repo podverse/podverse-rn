@@ -517,6 +517,12 @@ export const core = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold,
     textAlign: 'center'
   },
+  buttonTextLink: {
+    fontSize: PV.Fonts.sizes.xl,
+    marginVertical: 12,
+    paddingVertical: 12,
+    textAlign: 'center'
+  },
   closeButton: {
     paddingLeft: 8,
     paddingRight: 16,
@@ -617,11 +623,12 @@ export const navHeader = StyleSheet.create({
     fontSize: PV.Fonts.sizes.lg,
     height: Platform.OS === 'android' ? PV.Navigation.header.height.android - 4 : PV.Navigation.header.height.ios - 4,
     lineHeight:
-      Platform.OS === 'android' ? PV.Navigation.header.height.android - 4 : PV.Navigation.header.height.ios - 4,
+      Platform.OS === 'android' ? PV.Navigation.header.height.android - 10 : PV.Navigation.header.height.ios - 4,
     marginLeft: 16,
     marginRight: 16
   },
   buttonWrapper: {
+    justifyContent: 'center',
     paddingHorizontal: 12,
     paddingVertical: 8
   },

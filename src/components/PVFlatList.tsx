@@ -3,8 +3,8 @@ import { RefreshControl, StyleSheet } from 'react-native'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
+import { core } from '../styles'
 import { ActivityIndicator, MessageWithAction, Text, TextLink, View } from './'
-const uuidv4 = require('uuid/v4')
 
 type Props = {
   data?: any
@@ -21,7 +21,7 @@ type Props = {
   isLoadingMore?: boolean
   isRefreshing?: boolean
   ItemSeparatorComponent?: any
-  keyExtractor?: any
+  keyExtractor: any
   ListHeaderComponent?: any
   noSubscribedPodcasts?: boolean
   onEndReached?: any
@@ -82,8 +82,8 @@ export const PVFlatList = (props: Props) => {
 
   const textLinkStyle =
     PV.Fonts.fontScale.largest === fontScaleMode
-      ? [styles.textLink, { fontSize: PV.Fonts.largeSizes.md }]
-      : [styles.textLink]
+      ? [core.buttonTextLink, { fontSize: PV.Fonts.largeSizes.md }]
+      : [core.buttonTextLink]
   const noResultsFoundTextStyle =
     PV.Fonts.fontScale.largest === fontScaleMode
       ? [styles.noResultsFoundText, { fontSize: PV.Fonts.largeSizes.md }]
@@ -138,7 +138,7 @@ export const PVFlatList = (props: Props) => {
           disableRightSwipe={true}
           extraData={extraData}
           ItemSeparatorComponent={ItemSeparatorComponent}
-          keyExtractor={keyExtractor ? keyExtractor : uuidv4}
+          keyExtractor={keyExtractor}
           ListFooterComponent={() => {
             if (isLoadingMore) {
               return (
@@ -196,12 +196,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   noResultsFoundText: {
-    fontSize: PV.Fonts.sizes.xl,
-    marginVertical: 12,
-    paddingVertical: 12,
-    textAlign: 'center'
-  },
-  textLink: {
     fontSize: PV.Fonts.sizes.xl,
     marginVertical: 12,
     paddingVertical: 12,

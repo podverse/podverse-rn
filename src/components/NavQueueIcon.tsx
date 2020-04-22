@@ -5,16 +5,23 @@ import { PV } from '../resources'
 import { NavItemIcon, NavItemWrapper } from './'
 
 type Props = {
+  globalTheme: GlobalTheme
+  isTransparent?: boolean
   navigation: any
   showBackButton?: boolean
-  globalTheme: GlobalTheme
 }
 
 export const NavQueueIcon = (props: Props) => {
-  const { navigation, showBackButton } = props
+  const { isTransparent, navigation, showBackButton } = props
 
   const handlePress = () => {
-    navigation.navigate({ routeName: PV.RouteNames.QueueScreen, params: { showBackButton } })
+    navigation.navigate({
+      routeName: PV.RouteNames.QueueScreen,
+      params: {
+        isTransparent,
+        showBackButton
+      }
+    })
   }
 
   let color = darkTheme.text.color

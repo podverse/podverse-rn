@@ -2,6 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import { Icon } from '.'
+import { isValidUrl } from '../lib/utility'
 const uuidv4 = require('uuid/v4')
 
 type Props = {
@@ -34,9 +35,11 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     const { isSmall, resizeMode = 'contain', source, styles } = this.props
     const { hasError, uuid } = this.state
 
+    const isValid = isValidUrl(source)
+
     return (
       <>
-        {source && !hasError ? (
+        {isValid && !hasError ? (
           <FastImage
             key={uuid}
             onError={this._handleError}
