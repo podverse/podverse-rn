@@ -604,7 +604,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   bottomRowTextMini: {
-    fontSize: PV.Fonts.sizes.sm
+    fontSize: PV.Fonts.sizes.sm,
+    minWidth: 80,
+    textAlign: 'center'
   },
   bottomRowText: {
     fontSize: PV.Fonts.sizes.md
