@@ -153,7 +153,6 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view}>
-        <StatusBar barStyle='light-content' />
         {!isLoggedIn && (
           <MessageWithAction
             topActionHandler={this._onPressLogin}

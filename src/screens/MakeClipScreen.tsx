@@ -1,24 +1,17 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import {
-  Alert,
-  Modal,
-  StatusBar,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View as RNView
-} from 'react-native'
+import { Alert, Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import Share from 'react-native-share'
-import React from 'reactn'
+import { SafeAreaView } from 'react-navigation'
+import React, { useGlobal } from 'reactn'
 import {
   ActivityIndicator,
   Divider,
   FastImage,
   Icon,
   NavHeaderButtonText,
+  OpaqueBackground,
   PlayerProgressBar,
-  SafeAreaView,
   Text,
   TextInput,
   TimeInput,
@@ -55,15 +48,25 @@ type State = {
 }
 
 export class MakeClipScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => ({
-    title: navigation.getParam('isEditing') ? 'Edit Clip' : 'Make Clip',
-    headerTransparent: true,
-    headerRight: (
-      <RNView style={styles.navHeaderButtonWrapper}>
-        <NavHeaderButtonText handlePress={navigation.getParam('_saveMediaRef')} text='Save' />
-      </RNView>
-    )
-  })
+  static navigationOptions = ({ navigation }) => {
+    const globalTheme = navigation.getParam('globalTheme')
+
+    return {
+      title: navigation.getParam('isEditing') ? 'Edit Clip' : 'Make Clip',
+      headerTransparent: true,
+      headerStyle: {},
+      headerTintColor: globalTheme.text.color,
+      headerRight: (
+        <RNView style={styles.navHeaderButtonWrapper}>
+          <NavHeaderButtonText
+            color={globalTheme.text.color}
+            handlePress={navigation.getParam('_saveMediaRef')}
+            text='Save'
+          />
+        </RNView>
+      )
+    }
+  }
 
   constructor(props: Props) {
     super(props)
@@ -355,212 +358,215 @@ export class MakeClipScreen extends React.Component<Props, State> {
     } = this.state
 
     return (
-      <SafeAreaView>
-        <StatusBar barStyle='light-content' />
-        <View style={[styles.view, navHeader.headerHeight]}>
-          <View style={styles.wrapperTop}>
-            {!isLoggedIn && (
-              <RNView>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={1}
-                  style={[core.textInputLabel, styles.loginMessage]}>
-                  You must be logged in to make clips.
-                </Text>
-                <Divider style={styles.divider} />
-              </RNView>
-            )}
-            <View style={[core.row, styles.row]}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                numberOfLines={1}
-                style={[core.textInputLabel, styles.textInputLabel]}>
-                Clip Title
-              </Text>
-              <RNPickerSelect
-                items={privacyItems()}
-                onValueChange={this._handleSelectPrivacy}
-                placeholder={placeholderItem}
-                style={hidePickerIconOnAndroidTransparent(isDarkMode)}
-                useNativeAndroidPickerStyle={false}
-                value={isPublicItemSelected.value}>
-                <View style={core.selectorWrapper}>
+      <OpaqueBackground nowPlayingItem={nowPlayingItem}>
+        <SafeAreaView
+          forceInset={{ bottom: 'always', top: 'always' }}
+          style={{ flex: 1, backgroundColor: 'transparent' }}>
+          <View style={[styles.view, navHeader.headerHeight]} transparent={true}>
+            <View style={styles.wrapperTop} transparent={true}>
+              {!isLoggedIn && (
+                <RNView>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     numberOfLines={1}
-                    style={[styles.isPublicText, globalTheme.text]}>
-                    {isPublicItemSelected.label}
+                    style={[core.textInputLabel, styles.loginMessage]}>
+                    You must be logged in to make clips.
                   </Text>
-                  <Icon name='angle-down' size={14} style={[styles.isPublicTextIcon, globalTheme.text]} />
-                </View>
-              </RNPickerSelect>
-            </View>
-            <TextInput
-              autoCapitalize='none'
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              onChangeText={this._onChangeTitle}
-              numberOfLines={3}
-              placeholder='optional'
-              returnKeyType='done'
-              style={[styles.textInput, globalTheme.textInput]}
-              underlineColorAndroid='transparent'
-              value={title}
-            />
-          </View>
-          <View style={styles.wrapperMiddle}>
-            <FastImage
-              resizeMode='contain'
-              source={nowPlayingItem && nowPlayingItem.podcastImageUrl}
-              styles={styles.image}
-            />
-          </View>
-          <View style={styles.wrapperBottom}>
-            <View style={core.row}>
-              <TimeInput
-                handlePreview={() => {
-                  if (startTime) {
-                    playerPreviewStartTime(startTime, endTime)
-                  }
-                }}
-                handleSetTime={this._setStartTime}
-                labelText='Start Time'
-                placeholder='--:--'
-                time={startTime}
-                wrapperStyle={styles.timeInput}
-              />
-              <TimeInput
-                handleClearTime={endTime ? this._clearEndTime : null}
-                handlePreview={() => {
-                  if (endTime) {
-                    playerPreviewEndTime(endTime)
-                  }
-                }}
-                handleSetTime={this._setEndTime}
-                labelText='End Time'
+                  <Divider style={styles.divider} />
+                </RNView>
+              )}
+              <View style={[core.row, styles.row]} transparent={true}>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  numberOfLines={1}
+                  style={[core.textInputLabel, styles.textInputLabel]}>
+                  Clip Title
+                </Text>
+                <RNPickerSelect
+                  items={privacyItems()}
+                  onValueChange={this._handleSelectPrivacy}
+                  placeholder={placeholderItem}
+                  style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+                  useNativeAndroidPickerStyle={false}
+                  value={isPublicItemSelected.value}>
+                  <View style={core.selectorWrapper} transparent={true}>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                      numberOfLines={1}
+                      style={[styles.isPublicText, globalTheme.text]}>
+                      {isPublicItemSelected.label}
+                    </Text>
+                    <Icon name='angle-down' size={14} style={[styles.isPublicTextIcon, globalTheme.text]} />
+                  </View>
+                </RNPickerSelect>
+              </View>
+              <TextInput
+                autoCapitalize='none'
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                onChangeText={this._onChangeTitle}
+                numberOfLines={3}
                 placeholder='optional'
-                time={endTime}
-                wrapperStyle={styles.timeInput}
+                returnKeyType='done'
+                style={[styles.textInput, globalTheme.textInput]}
+                underlineColorAndroid='transparent'
+                value={title}
               />
             </View>
-            <View style={styles.progressWrapper}>
-              <PlayerProgressBar
-                clipEndTime={endTime}
-                clipStartTime={startTime}
-                globalTheme={globalTheme}
-                {...(progressValue || progressValue === 0 ? { value: progressValue } : {})}
+            <View style={styles.wrapperMiddle} transparent={true}>
+              <FastImage
+                resizeMode='contain'
+                source={nowPlayingItem && nowPlayingItem.podcastImageUrl}
+                styles={styles.image}
               />
             </View>
-            <RNView style={[styles.makeClipPlayerControls, globalTheme.makeClipPlayerControlsWrapper]}>
-              <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
-                <Icon name='undo-alt' size={32} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this._playerMiniJumpBackward} style={playerStyles.icon}>
-                <Icon name='angle-left' size={24} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => togglePlay()} style={[playerStyles.iconLarge, styles.playButton]}>
-                {playbackState !== PVTrackPlayer.STATE_BUFFERING && (
-                  <Icon
-                    name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause-circle' : 'play-circle'}
-                    size={48}
-                  />
-                )}
-                {playbackState === PVTrackPlayer.STATE_BUFFERING && (
-                  <ActivityIndicator styles={styles.activityIndicator} />
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this._playerMiniJumpForward} style={playerStyles.icon}>
-                <Icon name='angle-right' size={24} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
-                <Icon name='redo-alt' size={32} />
-              </TouchableOpacity>
-            </RNView>
-            <View style={styles.bottomRow}>
-              <TouchableOpacity
-                hitSlop={{
-                  bottom: 4,
-                  left: 4,
-                  right: 4,
-                  top: 4
-                }}
-                onPress={() => navigation.navigate(PV.RouteNames.PlayerFAQScreen)}>
-                <View>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    style={[styles.bottomRowTextMini, globalTheme.link]}>
-                    Clips FAQ
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableWithoutFeedback
-                hitSlop={{
-                  bottom: 4,
-                  left: 4,
-                  right: 4,
-                  top: 4
-                }}
-                onPress={this._adjustSpeed}>
-                <View>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    style={[styles.bottomButton, styles.bottomRowText]}>
-                    {`${playbackRate}X`}
-                  </Text>
-                </View>
-              </TouchableWithoutFeedback>
-              <TouchableOpacity
-                hitSlop={{
-                  bottom: 4,
-                  left: 4,
-                  right: 4,
-                  top: 4
-                }}
-                onPress={() =>
-                  navigation.navigate(PV.RouteNames.PlayerMyProfileScreen, {
-                    user: userInfo,
-                    navigationTitle: 'My Profile',
-                    isMyProfile: true,
-                    initializeClips: true
-                  })
-                }>
-                <View>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    style={[styles.bottomRowTextMini, globalTheme.link]}>
-                    My Clips
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-        {isSaving && (
-          <Modal transparent={true} visible={true}>
-            <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
-              <ActivityIndicator styles={styles.activityIndicator} />
-            </RNView>
-          </Modal>
-        )}
-        {showHowToModal && (
-          <Modal transparent={true} visible={true}>
-            <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
-              <RNView style={[styles.modalInnerWrapper, globalTheme.modalInnerWrapper]}>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  ▸ Tap the Start and End Time inputs to set them with the current track time.
-                </Text>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  ▸ If a podcast uses dynamically inserted ads, its clip start times will not stay 100% accurate.
-                </Text>
-                <TouchableOpacity onPress={this._hideHowTo}>
-                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.modalButton}>
-                    Close
-                  </Text>
+            <View style={styles.wrapperBottom} transparent={true}>
+              <View style={core.row} transparent={true}>
+                <TimeInput
+                  handlePreview={() => {
+                    if (startTime) {
+                      playerPreviewStartTime(startTime, endTime)
+                    }
+                  }}
+                  handleSetTime={this._setStartTime}
+                  labelText='Start Time'
+                  placeholder='--:--'
+                  time={startTime}
+                  wrapperStyle={styles.timeInput}
+                />
+                <TimeInput
+                  handleClearTime={endTime ? this._clearEndTime : null}
+                  handlePreview={() => {
+                    if (endTime) {
+                      playerPreviewEndTime(endTime)
+                    }
+                  }}
+                  handleSetTime={this._setEndTime}
+                  labelText='End Time'
+                  placeholder='optional'
+                  time={endTime}
+                  wrapperStyle={styles.timeInput}
+                />
+              </View>
+              <View style={styles.progressWrapper} transparent={true}>
+                <PlayerProgressBar
+                  clipEndTime={endTime}
+                  clipStartTime={startTime}
+                  globalTheme={globalTheme}
+                  {...(progressValue || progressValue === 0 ? { value: progressValue } : {})}
+                />
+              </View>
+              <RNView style={[styles.makeClipPlayerControls, globalTheme.makeClipPlayerControlsWrapper]}>
+                <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
+                  <Icon name='undo-alt' size={32} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this._playerMiniJumpBackward} style={playerStyles.icon}>
+                  <Icon name='angle-left' size={24} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => togglePlay()} style={[playerStyles.iconLarge, styles.playButton]}>
+                  {playbackState !== PVTrackPlayer.STATE_BUFFERING && (
+                    <Icon
+                      name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause-circle' : 'play-circle'}
+                      size={48}
+                    />
+                  )}
+                  {playbackState === PVTrackPlayer.STATE_BUFFERING && (
+                    <ActivityIndicator styles={styles.activityIndicator} />
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this._playerMiniJumpForward} style={playerStyles.icon}>
+                  <Icon name='angle-right' size={24} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
+                  <Icon name='redo-alt' size={32} />
                 </TouchableOpacity>
               </RNView>
-            </RNView>
-          </Modal>
-        )}
-      </SafeAreaView>
+              <View style={styles.bottomRow} transparent={true}>
+                <TouchableOpacity
+                  hitSlop={{
+                    bottom: 4,
+                    left: 4,
+                    right: 4,
+                    top: 4
+                  }}
+                  onPress={() => navigation.navigate(PV.RouteNames.PlayerFAQScreen)}>
+                  <View transparent={true}>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                      style={[styles.bottomRowTextMini, globalTheme.link]}>
+                      Clips FAQ
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableWithoutFeedback
+                  hitSlop={{
+                    bottom: 4,
+                    left: 4,
+                    right: 4,
+                    top: 4
+                  }}
+                  onPress={this._adjustSpeed}>
+                  <View transparent={true}>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                      style={[styles.bottomButton, styles.bottomRowText]}>
+                      {`${playbackRate}X`}
+                    </Text>
+                  </View>
+                </TouchableWithoutFeedback>
+                <TouchableOpacity
+                  hitSlop={{
+                    bottom: 4,
+                    left: 4,
+                    right: 4,
+                    top: 4
+                  }}
+                  onPress={() =>
+                    navigation.navigate(PV.RouteNames.PlayerMyProfileScreen, {
+                      user: userInfo,
+                      navigationTitle: 'My Profile',
+                      isMyProfile: true,
+                      initializeClips: true
+                    })
+                  }>
+                  <View transparent={true}>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                      style={[styles.bottomRowTextMini, globalTheme.link]}>
+                      My Clips
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          {isSaving && (
+            <Modal transparent={true} visible={true}>
+              <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
+                <ActivityIndicator styles={styles.activityIndicator} />
+              </RNView>
+            </Modal>
+          )}
+          {showHowToModal && (
+            <Modal transparent={true} visible={true}>
+              <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
+                <RNView style={[styles.modalInnerWrapper, globalTheme.modalInnerWrapper]}>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
+                    ▸ Tap the Start and End Time inputs to set them with the current track time.
+                  </Text>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
+                    ▸ If a podcast uses dynamically inserted ads, its clip start times will not stay 100% accurate.
+                  </Text>
+                  <TouchableOpacity onPress={this._hideHowTo}>
+                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.modalButton}>
+                      Close
+                    </Text>
+                  </TouchableOpacity>
+                </RNView>
+              </RNView>
+            </Modal>
+          )}
+        </SafeAreaView>
+      </OpaqueBackground>
     )
   }
 }

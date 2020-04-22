@@ -350,7 +350,6 @@ export class QueueScreen extends React.Component<Props, State> {
 
     return (
       <PVView style={styles.view}>
-        <StatusBar barStyle='light-content' />
         {!isLoading && viewType === _queueKey && ((queueItems && queueItems.length > 0) || nowPlayingItem) && (
           <View>
             {!!nowPlayingItem && (
