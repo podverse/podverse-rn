@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Platform, StyleSheet, Text, View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { darkTheme, hidePickerIconOnAndroidSelector } from '../styles'
+import { darkTheme } from '../styles'
 
 type Props = {
   items: any[]
@@ -38,7 +38,6 @@ export const HeaderTitleSelector = (props: Props) => {
           items={items}
           onValueChange={onValueChange}
           placeholder={placeholder}
-          style={hidePickerIconOnAndroidSelector}
           useNativeAndroidPickerStyle={false}
           value={selectedItemKey}>
           {textNode}
@@ -56,12 +55,13 @@ const styles = StyleSheet.create({
   },
   text: {
     color: PV.Colors.white,
-    fontSize: PV.Fonts.sizes.xl,
+    fontSize: Platform.os === 'ios' ? PV.Fonts.sizes.xl : PV.Fonts.sizes.md,
     fontWeight: 'bold'
   },
   wrapper: {
     alignItems: 'center',
     flexDirection: 'row',
-    height: 44
+    height: 44,
+    marginHorizontal: 16
   }
 })
