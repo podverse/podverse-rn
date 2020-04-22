@@ -1,5 +1,13 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Alert, Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import {
+  Alert,
+  Modal,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View as RNView
+} from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import Share from 'react-native-share'
 import React from 'reactn'
@@ -382,7 +390,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 items={privacyItems()}
                 onValueChange={this._handleSelectPrivacy}
                 placeholder={placeholderItem}
-                style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+                style={[hidePickerIconOnAndroidTransparent(isDarkMode), { backgroundColor: 'transparent' }]}
                 useNativeAndroidPickerStyle={false}
                 value={isPublicItemSelected.value}>
                 <View style={core.selectorWrapper} transparent={true}>
@@ -710,6 +718,6 @@ const styles = StyleSheet.create({
   wrapperTop: {
     flex: 0,
     marginHorizontal: 8,
-    marginTop: 16
+    marginTop: Platform.os === 'ios' ? 16 : 0
   }
 })
