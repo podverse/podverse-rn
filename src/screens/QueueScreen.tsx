@@ -334,7 +334,7 @@ export class QueueScreen extends React.Component<Props, State> {
           />
         )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length < 1 && (
-          <MessageWithAction message='Your queue is empty' />
+          <MessageWithAction message='Your queue is empty' transparent={isTransparent} />
         )}
         {!isLoading && viewType === _historyKey && historyItems && historyItems.length > 0 && (
           <FlatList
