@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import { readableClipTime, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
-import { PVTrackPlayer } from '../services/player'
+import { PVTrackPlayer, restartNowPlayingItemClip } from '../services/player'
 import { button, core } from '../styles'
 import { ActivityIndicator, Icon, ScrollView, TableSectionHeader, Text, TextLink } from './'
 
@@ -64,16 +64,16 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
       startTime,
       title
     } = this.props
-    const { globalTheme, session } = this.global
+    const { session } = this.global
     const userId = session.userInfo.id
 
     return (
-      <View style={[styles.wrapper, globalTheme.view]}>
+      <View style={styles.wrapper}>
         {isLoading && <ActivityIndicator />}
         {!isLoading && (
           <View style={styles.wrapper}>
             <TableSectionHeader handleClosePress={handleClosePress} title='Clip Info' />
-            <ScrollView style={styles.scrollView}>
+            <ScrollView style={styles.scrollView} transparent={true}>
               <View style={core.row}>
                 <View style={styles.topText}>
                   <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>
@@ -119,6 +119,11 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                     </Text>
                   </View>
                 )}
+                <View style={styles.bottomTextWrapper}>
+                  <TextLink onPress={restartNowPlayingItemClip} style={styles.link}>
+                    Replay Clip
+                  </TextLink>
+                </View>
               </View>
             </ScrollView>
           </View>

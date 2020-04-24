@@ -186,7 +186,7 @@ const removeHistoryItemOnServer = async (episodeId?: string, mediaRefId?: string
   return response && response.data
 }
 
-const setAllHistoryItemsLocally = async (items: NowPlayingItem[]) => {
+export const setAllHistoryItemsLocally = async (items: NowPlayingItem[]) => {
   if (Array.isArray(items)) {
     await AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(items))
   }

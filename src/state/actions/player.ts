@@ -102,10 +102,14 @@ export const playNextFromQueue = async () => {
   await getQueueItems()
 }
 
-export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boolean) => {
+export const loadItemAndPlayTrack = async (
+  item: NowPlayingItem,
+  shouldPlay: boolean,
+  skipAddOrUpdateHistory: boolean
+) => {
   if (item) {
     await updatePlayerState(item)
-    await loadItemAndPlayTrackService(item, shouldPlay)
+    await loadItemAndPlayTrackService(item, shouldPlay, skipAddOrUpdateHistory)
   }
 
   const globalState = getGlobal()

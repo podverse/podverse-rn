@@ -271,7 +271,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     if (subscribedPodcastIds && subscribedPodcastIds.length > 0) {
       this.selectLeftItem(PV.Filters._subscribedKey, PV.Filters._alphabeticalKey)
     } else {
-      this.selectLeftItem(PV.Filters._allPodcastsKey, PV.Filters._topPastWeek)
+      this.selectLeftItem(PV.Filters._allPodcastsKey, PV.Filters._topPastDay)
     }
 
     await initDownloads()
@@ -290,7 +290,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const { querySort } = this.state
     let sort =
       !querySort || querySort === PV.Filters._alphabeticalKey || querySort === PV.Filters._mostRecentKey
-        ? PV.Filters._topPastWeek
+        ? PV.Filters._topPastDay
         : querySort
 
     if (querySortOverride) {

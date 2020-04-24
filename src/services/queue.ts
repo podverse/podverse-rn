@@ -172,7 +172,7 @@ const removeQueueItemOnServer = async (item: NowPlayingItem) => {
   return setAllQueueItemsOnServer(filteredItems)
 }
 
-const setAllQueueItemsLocally = async (items: NowPlayingItem[]) => {
+export const setAllQueueItemsLocally = async (items: NowPlayingItem[]) => {
   if (Array.isArray(items)) {
     await AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(items))
   }

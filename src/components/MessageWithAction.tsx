@@ -11,6 +11,7 @@ type Props = {
   subMessage?: string
   topActionHandler?: any
   topActionText?: string
+  transparent?: boolean
 }
 
 export const MessageWithAction = (props: Props) => {
@@ -21,12 +22,13 @@ export const MessageWithAction = (props: Props) => {
     message,
     subMessage,
     topActionHandler,
-    topActionText
+    topActionText,
+    transparent
   } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
-    <View style={styles.view}>
+    <View style={styles.view} transparent={transparent}>
       {!!message && (
         <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[globalTheme.text, styles.message]}>
           {message}
