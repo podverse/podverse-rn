@@ -70,7 +70,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           : PV.Filters._allPodcastsKey,
       queryPage: 1,
       querySort:
-        subscribedPodcastIds && subscribedPodcastIds.length > 0 ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
+        subscribedPodcastIds && subscribedPodcastIds.length > 0 ? PV.Filters._mostRecentKey : PV.Filters._topPastDay,
       searchBarText: '',
       selectedCategory: PV.Filters._allCategoriesKey,
       selectedSubCategory: PV.Filters._allCategoriesKey,
@@ -110,7 +110,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       (selectedKey === PV.Filters._allPodcastsKey || selectedKey === PV.Filters._categoryKey) &&
       (querySort === PV.Filters._mostRecentKey || querySort === PV.Filters._randomKey)
     ) {
-      sort = PV.Filters._topPastWeek
+      sort = PV.Filters._topPastDay
       hideRightItemWhileLoading = true
     } else if (selectedKey === PV.Filters._downloadedKey) {
       sort = PV.Filters._mostRecentKey
