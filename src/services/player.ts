@@ -260,7 +260,11 @@ const sendPlayerScreenGoogleAnalyticsPageView = (item: any) => {
   }
 }
 
-export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boolean) => {
+export const loadItemAndPlayTrack = async (
+  item: NowPlayingItem,
+  shouldPlay: boolean,
+  skipAddOrUpdateHistory?: boolean
+) => {
   await updateUserPlaybackPosition()
 
   if (!item) return
@@ -269,7 +273,11 @@ export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boo
 
   // Episodes and clips must be already loaded in history
   // in order to be handled in playerEvents > handleSyncNowPlayingItem.
-  await addOrUpdateHistoryItem(item)
+  // Currently skipAddOrUpdateHistory is true only when loading the most recent item from history
+  // after a user logs in.
+  if (!skipAddOrUpdateHistory) {
+    await addOrUpdateHistoryItem(item)
+  }
 
   await TrackPlayer.reset()
   const track = (await createTrack(item)) as Track
@@ -450,6 +458,14 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
   })
 }
 
+export const restartNowPlayingItemClip = async () => {
+  const nowPlayingItem = await getNowPlayingItem()
+  if (nowPlayingItem && nowPlayingItem.clipStartTime) {
+    setPlaybackPosition(nowPlayingItem.clipStartTime)
+    TrackPlayer.play()
+  }
+}
+
 export const setPlaybackSpeed = async (rate: number) => {
   await AsyncStorage.setItem(PV.Keys.PLAYER_PLAYBACK_SPEED, JSON.stringify(rate))
   await TrackPlayer.setRate(rate)
@@ -474,7 +490,6 @@ export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: stri
     checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId, x.addByRSSPodcastFeedUrl)
   )
   let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
-
   if (currentNowPlayingItem) removeQueueItem(currentNowPlayingItem)
 
   if (!currentNowPlayingItem) {
