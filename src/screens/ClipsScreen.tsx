@@ -33,7 +33,6 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
-  hideRightItemWhileLoading: boolean
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
@@ -64,7 +63,6 @@ export class ClipsScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
-      hideRightItemWhileLoading: false,
       isLoading: true,
       isLoadingMore: false,
       isRefreshing: false,
@@ -74,7 +72,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           : PV.Filters._allPodcastsKey,
       queryPage: 1,
       querySort:
-        subscribedPodcastIds && subscribedPodcastIds.length > 0 ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
+        subscribedPodcastIds && subscribedPodcastIds.length > 0 ? PV.Filters._mostRecentKey : PV.Filters._topPastDay,
       searchBarText: '',
       selectedCategory: PV.Filters._allCategoriesKey,
       selectedSubCategory: PV.Filters._allCategoriesKey,
@@ -99,29 +97,15 @@ export class ClipsScreen extends React.Component<Props, State> {
 
     const { querySort } = this.state
 
-    let sort = querySort
-    let hideRightItemWhileLoading = false
-    if (
-      (selectedKey === PV.Filters._allPodcastsKey || selectedKey === PV.Filters._categoryKey) &&
-      (querySort === PV.Filters._mostRecentKey || querySort === PV.Filters._randomKey)
-    ) {
-      sort = PV.Filters._topPastWeek
-      hideRightItemWhileLoading = true
-    } else if (selectedKey === PV.Filters._downloadedKey) {
-      sort = PV.Filters._mostRecentKey
-      hideRightItemWhileLoading = true
-    }
-
     this.setState(
       {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        hideRightItemWhileLoading,
         isLoading: true,
         queryFrom: selectedKey,
         queryPage: 1,
-        querySort: sort,
+        querySort,
         searchBarText: ''
       },
       async () => {
@@ -381,7 +365,6 @@ export class ClipsScreen extends React.Component<Props, State> {
     const {
       flatListData,
       flatListDataTotalCount,
-      hideRightItemWhileLoading,
       isLoading,
       isLoadingMore,
       isRefreshing,
@@ -402,7 +385,6 @@ export class ClipsScreen extends React.Component<Props, State> {
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
-          hideRightItemWhileLoading={hideRightItemWhileLoading}
           screenName='ClipsScreen'
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort}
@@ -411,7 +393,6 @@ export class ClipsScreen extends React.Component<Props, State> {
           <TableSectionSelectors
             handleSelectLeftItem={(x: string) => this._selectCategory(x)}
             handleSelectRightItem={(x: string) => this._selectCategory(x, true)}
-            hideRightItemWhileLoading={hideRightItemWhileLoading}
             isBottomBar={true}
             isCategories={true}
             screenName='ClipsScreen'
@@ -481,7 +462,6 @@ export class ClipsScreen extends React.Component<Props, State> {
     } = {}
   ) => {
     const newState = {
-      hideRightItemWhileLoading: false,
       isLoading: false,
       isLoadingMore: false,
       isRefreshing: false,
