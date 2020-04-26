@@ -252,11 +252,15 @@ const sendPlayerScreenGoogleAnalyticsPageView = (item: any) => {
       '/clip/' + item.clipId,
       'Player Screen - Clip - ' + item.podcastTitle + ' - ' + item.episodeTitle + ' - ' + item.clipTitle
     )
-  } else if (item.episodeId) {
+  }
+  if (item.episodeId) {
     gaTrackPageView(
       '/episode/' + item.episodeId,
       'Player Screen - Episode - ' + item.podcastTitle + ' - ' + item.episodeTitle
     )
+  }
+  if (item.podcastId) {
+    gaTrackPageView('/podcast/' + item.podcastId, 'Player Screen - Podcast - ' + item.podcastTitle)
   }
 }
 
