@@ -19,7 +19,10 @@ export const Alerts = {
     return {
       message: `Do you want to resume ${item.podcastTitle} - ${title}?`,
       title: `Most Recent ${type}`,
-      buttons: [{ text: 'No' }, { text: 'Yes', onPress: () => loadItemAndPlayTrack(item, /* shouldPlay */ false) }]
+      buttons: [
+        { text: 'No' },
+        { text: 'Yes', onPress: () => loadItemAndPlayTrack(item, /* shouldPlay */ false, true) }
+      ]
     }
   },
   BUTTONS: {

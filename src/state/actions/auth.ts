@@ -4,7 +4,9 @@ import { getGlobal, setGlobal } from 'reactn'
 import { safelyUnwrapNestedVariable, shouldShowMembershipAlert } from '../../lib/utility'
 import { PV } from '../../resources'
 import { getAuthenticatedUserInfo, getAuthenticatedUserInfoLocally, login, signUp } from '../../services/auth'
+import { setAllHistoryItemsLocally } from '../../services/history'
 import { getNowPlayingItem } from '../../services/player'
+import { setAllQueueItemsLocally } from '../../services/queue'
 import { getSubscribedPodcasts } from './podcast'
 
 export type Credentials = {
@@ -78,12 +80,26 @@ const askToSyncWithLastHistoryItem = async (historyItems: any) => {
   }
 }
 
+// If a new player item should be loaded, the local history/queue must be up-to-date
+// so that the item plays from the correct userPlaybackPosition. The only time where
+// this is needed currently is when a user logs in, and they select to play their last item from history.
+// If we don't call syncItemsWithLocalStorage before loading the item,
+// syncNowPlayingItemWithTrack won't
+const syncItemsWithLocalStorage = async (userInfo: any) => {
+  if (userInfo && Array.isArray(userInfo.historyItems)) {
+    await setAllHistoryItemsLocally(userInfo.historyItems)
+  }
+
+  if (userInfo && Array.isArray(userInfo.queueItems)) {
+    await setAllQueueItemsLocally(userInfo.queueItems)
+  }
+}
+
 export const loginUser = async (credentials: Credentials) => {
   try {
     const userInfo = await login(credentials.email, credentials.password)
-
     await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
-
+    await syncItemsWithLocalStorage(userInfo)
     await askToSyncWithLastHistoryItem(userInfo.historyItems)
 
     setGlobal({ session: { userInfo, isLoggedIn: true } })
