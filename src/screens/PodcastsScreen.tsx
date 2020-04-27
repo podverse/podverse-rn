@@ -17,7 +17,7 @@ import {
 } from '../components'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { isOdd, setCategoryQueryProperty } from '../lib/utility'
+import { isOdd, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -576,7 +576,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('podcasts_screen_view')}>
         <PlayerEvents />
         <TableSectionSelectors
           handleSelectLeftItem={(selectedKey: string) => this.selectLeftItem(selectedKey)}
@@ -629,7 +629,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
           <Dialog.Title>Data Settings</Dialog.Title>
           <Dialog.Description>Do you want to allow downloading episodes with your data plan?</Dialog.Description>
           <Dialog.Button label='No, Wifi Only' onPress={this._handleDataSettingsWifiOnly} />
-          <Dialog.Button label='Yes, Allow Data' onPress={this._handleDataSettingsAllowData} />
+          <Dialog.Button
+            label='Yes, Allow Data'
+            onPress={this._handleDataSettingsAllowData}
+            {...testProps('alert_yes_allow_data')}
+          />
         </Dialog.Container>
         <PurchaseListener navigation={navigation} />
       </View>
