@@ -1,6 +1,7 @@
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import React from 'reactn'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer } from '../services/player'
 import { togglePlay } from '../state/actions/player'
@@ -31,7 +32,8 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
                 addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl,
                 isDarkMode
               })
-            }>
+            }
+            {...testProps('mini_player')}>
             <View style={[styles.player, globalTheme.player]}>
               <FastImage
                 isSmall={true}

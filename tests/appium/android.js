@@ -17,16 +17,13 @@ Object.assign(capabilities, {
 
 driver = wd.promiseRemote("http://hub-cloud.browserstack.com/wd/hub")
 
-driver
-  .init(capabilities)
-  .then(function () {
-    console.log(1)
-    return driver.sleep(5000)
-  })
-  .then(function () {
-    console.log(3)
-    return driver.waitForElementByAccessibilityId('PodcastsScreenView')
-  })
-  .fin(function () { return driver.quit() })
-  .done()
+const runTests = async () => {
+  await driver.init(capabilities)
+  await driver.waitForElementByAccessibilityId('alert_yes_allow_data')
+  const element = await driver.elementByAccessibilityId('alert_yes_allow_data')
+  await element.click()
+  await driver.waitForElementByAccessibilityId('podcasts_screen_view')
+  await driver.quit()
+}
 
+runTests()

@@ -34,7 +34,7 @@ export const NavMakeClipIcon = (props: Props) => {
   }
 
   return (
-    <NavItemWrapper handlePress={handlePress}>
+    <NavItemWrapper handlePress={handlePress} testId='nav_make_clip_icon'>
       <NavItemIcon name='cut' color={color} />
     </NavItemWrapper>
   )

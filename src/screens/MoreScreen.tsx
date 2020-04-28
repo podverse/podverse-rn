@@ -2,7 +2,7 @@ import { Alert, Linking, SectionList, TouchableWithoutFeedback, View as RNView }
 import { Badge } from 'react-native-elements'
 import React from 'reactn'
 import { Divider, TableSectionHeader, Text, View } from '../components'
-import { getMembershipStatus } from '../lib/utility'
+import { getMembershipStatus, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { logoutUser } from '../state/actions/auth'
@@ -97,7 +97,7 @@ export class MoreScreen extends React.Component<Props, State> {
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
-            <TouchableWithoutFeedback onPress={() => this._onPress(item)}>
+            <TouchableWithoutFeedback onPress={() => this._onPress(item)} {...testProps(item.testId)}>
               <RNView style={[core.row, table.cellWrapper]}>
                 {item.key === _membershipKey && (
                   <RNView style={[core.row, table.cellWrapper]}>
@@ -167,35 +167,43 @@ const moreFeaturesOptions = () => {
   const items = [
     {
       title: 'Downloads',
-      key: PV.RouteNames.DownloadsScreen
+      key: PV.RouteNames.DownloadsScreen,
+      testId: 'more_screen_downloads_cell'
     },
     {
       title: 'Playlists',
-      key: PV.RouteNames.PlaylistsScreen
+      key: PV.RouteNames.PlaylistsScreen,
+      testId: 'more_screen_playlists_cell'
     },
     {
       title: 'Profiles',
-      key: PV.RouteNames.ProfilesScreen
+      key: PV.RouteNames.ProfilesScreen,
+      testId: 'more_screen_profiles_cell'
     },
     {
       title: 'My Profile',
-      key: PV.RouteNames.MyProfileScreen
+      key: PV.RouteNames.MyProfileScreen,
+      testId: 'more_screen_my_profile_cell'
     },
     {
       title: 'My Clips',
-      key: PV.RouteNames.MyProfileClipsScreen
+      key: PV.RouteNames.MyProfileClipsScreen,
+      testId: 'more_screen_my_clips_cell'
     },
     {
       title: 'Log out',
-      key: _logoutKey
+      key: _logoutKey,
+      testId: 'more_screen_log_out_cell'
     },
     {
       title: 'Login',
-      key: _loginKey
+      key: _loginKey,
+      testId: 'more_screen_login_cell'
     },
     {
       title: 'Settings',
-      key: PV.RouteNames.SettingsScreen
+      key: PV.RouteNames.SettingsScreen,
+      testId: 'more_screen_settings_cell'
     }
   ]
 
@@ -206,27 +214,33 @@ const moreOtherOptions = (membershipStatus?: string) => {
   const options = [
     {
       title: membershipStatus,
-      key: _membershipKey
+      key: _membershipKey,
+      testId: 'more_screen_membership_cell'
     },
     {
       title: 'Add Podcast by RSS',
-      key: PV.RouteNames.AddPodcastByRSSScreen
+      key: PV.RouteNames.AddPodcastByRSSScreen,
+      testId: 'more_screen_add_podcast_by_rss_cell'
     },
     {
       title: 'Contact Us',
-      key: _contactKey
+      key: _contactKey,
+      testId: 'more_screen_contact_us_cell'
     },
     {
       title: 'FAQ',
-      key: _faqKey
+      key: _faqKey,
+      testId: 'more_screen_faq_cell'
     },
     {
       title: 'Terms',
-      key: _termsKey
+      key: _termsKey,
+      testId: 'more_screen_terms_cell'
     },
     {
       title: 'About',
-      key: _aboutKey
+      key: _aboutKey,
+      testId: 'more_screen_about_cell'
     }
   ]
 

@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
-import { readableDate } from '../lib/utility'
+import { readableDate, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { FastImage, IndicatorDownload, Text, View } from './'
 
@@ -16,6 +16,7 @@ type Props = {
   podcastTitle: string
   showAutoDownload?: boolean
   showDownloadCount?: boolean
+  testId?: string
 }
 
 export class PodcastTableCell extends React.PureComponent<Props> {
@@ -28,7 +29,8 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
       podcastTitle = 'untitled podcast',
       showAutoDownload,
-      showDownloadCount
+      showDownloadCount,
+      testId
     } = this.props
     const { autoDownloadSettings, downloadedPodcastEpisodeCounts, fontScaleMode } = this.global
 
@@ -46,7 +48,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       PV.Fonts.fontScale.largest === fontScaleMode ? [styles.titleWrapper, { flex: 1 }] : [styles.titleWraper]
 
     return (
-      <TouchableWithoutFeedback onPress={onPress}>
+      <TouchableWithoutFeedback onPress={onPress} {...(testId ? testProps(testId) : {})}>
         <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>

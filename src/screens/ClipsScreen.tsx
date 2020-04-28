@@ -244,6 +244,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
         podcastTitle={item.episode.podcast.title}
         startTime={item.startTime}
+        testId={'clips_screen_clip_item_' + index}
         title={item.title || 'untitled clip'}
       />
     ) : (
