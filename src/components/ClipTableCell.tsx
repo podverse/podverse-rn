@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
-import { readableClipTime, readableDate } from '../lib/utility'
+import { readableClipTime, readableDate, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { FastImage, IndicatorDownload, MoreButton, Text, View } from './'
 
@@ -18,6 +18,7 @@ type Props = {
   podcastImageUrl?: string
   podcastTitle?: string
   startTime: number
+  testId?: string
   title?: string
   transparent?: boolean
   zebraStripeIndex?: number
@@ -37,6 +38,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       podcastImageUrl,
       podcastTitle,
       startTime,
+      testId,
       title = 'untitled clip',
       transparent
     } = this.props
@@ -48,7 +50,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
     const innerTopView = (
       <RNView style={styles.innerTopView}>
-        <TouchableWithoutFeedback onPress={handleNavigationPress}>
+        <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testId ? testProps(testId) : {})}>
           <RNView style={{ flex: 1, flexDirection: 'row' }}>
             {!!podcastImageUrl && <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />}
             <RNView style={styles.textWrapper}>
@@ -105,7 +107,9 @@ export class ClipTableCell extends React.PureComponent<Props> {
       <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent}>
         {!!showEpisodeInfo && <RNView style={styles.wrapperTop}>{innerTopView}</RNView>}
         {handleNavigationPress ? (
-          <TouchableWithoutFeedback onPress={handleNavigationPress}>{bottomText}</TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testId ? testProps(testId) : {})}>
+            {bottomText}
+          </TouchableWithoutFeedback>
         ) : (
           bottomText
         )}

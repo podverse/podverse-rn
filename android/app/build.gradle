@@ -1,5 +1,5 @@
 apply plugin: "com.android.application"
-
+  
 import com.android.build.OutputFile
 
 /**
@@ -132,7 +132,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "2.6.7"
+        versionName "2.6.8"
         multiDexEnabled true
     }
     splits {

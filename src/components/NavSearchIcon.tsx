@@ -14,7 +14,7 @@ export const NavSearchIcon = (props: Props) => {
   }
 
   return (
-    <NavItemWrapper handlePress={handlePress}>
+    <NavItemWrapper handlePress={handlePress} testId='nav_search_icon'>
       <NavItemIcon name='search' />
     </NavItemWrapper>
   )

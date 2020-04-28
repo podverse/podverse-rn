@@ -5,15 +5,17 @@ import { navHeader } from '../styles'
 import { Text } from './'
 
 type Props = {
+  accessibilityLabel?: string
   color?: string
   disabled?: boolean
   handlePress: any
   style?: any
+  testID?: string
   text: string
 }
 
 export const NavHeaderButtonText = (props: Props) => {
-  const { color, disabled, handlePress } = props
+  const { accessibilityLabel, color, disabled, handlePress, testID } = props
   const [fontScaleMode] = useGlobal('fontScaleMode')
 
   const buttonTextStyle = [navHeader.buttonText]
@@ -28,7 +30,7 @@ export const NavHeaderButtonText = (props: Props) => {
   }
 
   return (
-    <TouchableOpacity disabled={disabled} onPress={handlePress}>
+    <TouchableOpacity accessibilityLabel={accessibilityLabel} disabled={disabled} onPress={handlePress} testID={testID}>
       <Text style={buttonTextStyle}>{props.text}</Text>
     </TouchableOpacity>
   )

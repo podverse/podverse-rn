@@ -1,5 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
+import { testProps } from '../../src/lib/utility'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
 import { PV } from '../resources'
@@ -55,7 +56,7 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
     }
     return (
       <View>
-        <NavItemWrapper handlePress={this._handleIconPress}>
+        <NavItemWrapper handlePress={this._handleIconPress} testId='nav_add_to_playlist_icon'>
           <NavItemIcon name='plus' color={color} />
         </NavItemWrapper>
         <ActionSheet

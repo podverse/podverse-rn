@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
-import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
+import { decodeHTMLString, readableDate, removeHTMLFromString, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { FastImage, IndicatorDownload, MoreButton, Text, View } from './'
 
@@ -14,6 +14,7 @@ type Props = {
   podcastImageUrl?: string
   podcastTitle?: string
   pubDate?: string
+  testId?: string
   title?: string
   transparent?: boolean
 }
@@ -29,6 +30,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       hideImage,
       podcastImageUrl,
       podcastTitle,
+      testId,
       transparent
     } = this.props
     let { description = '', title } = this.props
@@ -82,7 +84,9 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent}>
         <RNView style={styles.wrapperTop}>
           {handleNavigationPress ? (
-            <TouchableWithoutFeedback onPress={handleNavigationPress}>{innerTopView}</TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testId ? testProps(testId) : {})}>
+              {innerTopView}
+            </TouchableWithoutFeedback>
           ) : (
             innerTopView
           )}
@@ -91,7 +95,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           )}
         </RNView>
         {!!description && handleNavigationPress && (
-          <TouchableWithoutFeedback onPress={handleNavigationPress}>
+          <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testId ? testProps(testId) : {})}>
             <RNView>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</RNView>
           </TouchableWithoutFeedback>
         )}
