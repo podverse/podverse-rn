@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActionSheet, Divider, DownloadTableCell, FlatList, MessageWithAction, SwipeRowBack, View } from '../components'
 import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
-import { isOdd } from '../lib/utility'
+import { isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { pauseDownloadingEpisode, removeDownloadingEpisode, resumeDownloadingEpisode } from '../state/actions/downloads'
@@ -98,7 +98,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
     const { selectedItem, showActionSheet } = this.state
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('downloads_screen_view')}>
         {!downloadsArray || (downloadsArray.length === 0 && <MessageWithAction message='No downloads in progress' />)}
         {downloadsArray.length > 0 && (
           <FlatList

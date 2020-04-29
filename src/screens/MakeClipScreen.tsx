@@ -25,6 +25,7 @@ import {
   View
 } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { createMediaRef, updateMediaRef } from '../services/mediaRef'
@@ -366,7 +367,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
     return (
       <OpaqueBackground nowPlayingItem={nowPlayingItem}>
-        <View style={styles.view} transparent={true}>
+        <View style={styles.view} transparent={true} {...testProps('make_clip_screen_view')}>
           <View style={styles.wrapperTop} transparent={true}>
             {!isLoggedIn && (
               <RNView>

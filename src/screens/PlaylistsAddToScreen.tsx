@@ -1,4 +1,4 @@
-import { Alert, StatusBar, StyleSheet, View as RNView } from 'react-native'
+import { Alert, StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
@@ -12,7 +12,7 @@ import {
   View
 } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { isOdd } from '../lib/utility'
+import { isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { addOrRemovePlaylistItem, createPlaylist } from '../state/actions/playlist'
@@ -152,7 +152,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
     const { isLoggedIn } = session
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('playlists_add_to_screen_view')}>
         {!isLoggedIn && (
           <MessageWithAction
             topActionHandler={this._onPressLogin}

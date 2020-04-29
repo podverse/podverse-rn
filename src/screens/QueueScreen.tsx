@@ -16,7 +16,7 @@ import {
   View
 } from '../components'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
-import { checkIfIdMatchesClipIdOrEpisodeId, isOdd } from '../lib/utility'
+import { checkIfIdMatchesClipIdOrEpisodeId, isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { movePlayerItemToNewPosition } from '../services/player'
@@ -304,7 +304,7 @@ export class QueueScreen extends React.Component<Props, State> {
     const { isEditing, isLoading, isRemoving, isTransparent, viewType } = this.state
 
     const view = (
-      <View style={styles.view} transparent={isTransparent}>
+      <View style={styles.view} transparent={isTransparent} {...testProps('queue_screen_view')}>
         {!isLoading && viewType === _queueKey && ((queueItems && queueItems.length > 0) || nowPlayingItem) && (
           <View transparent={isTransparent}>
             {!!nowPlayingItem && (

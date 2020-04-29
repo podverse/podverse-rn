@@ -1,6 +1,7 @@
 import { StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { Button, NavDismissIcon, SafeAreaView, TimePicker, View } from '../components'
+import { testProps } from '../lib/utility'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { sleepTimerIsRunning } from '../services/sleepTimer'
 import {
@@ -69,7 +70,7 @@ export class SleepTimerScreen extends React.Component<Props, State> {
     const { isActive, timeRemaining } = this.global.player.sleepTimer
 
     return (
-      <SafeAreaView>
+      <SafeAreaView {...testProps('sleep_timer_screen_view')}>
         <View style={styles.view}>
           <TimePicker currentTime={timeRemaining} handleUpdateSleepTimer={this._updateSleepTimer} isActive={isActive} />
           <Button

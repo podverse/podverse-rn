@@ -25,7 +25,8 @@ import {
   generateCategoriesText,
   isOdd,
   readableDate,
-  safelyUnwrapNestedVariable
+  safelyUnwrapNestedVariable,
+  testProps
 } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -484,7 +485,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     const isMyProfile = navigation.getParam('isMyProfile')
     const message = `Login to view your ${initializeClips ? 'clips' : 'profile'}`
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('profile_screen_view')}>
         {isMyProfile && !isLoggedIn && (
           <MessageWithAction topActionHandler={this._onPressLogin} topActionText='Login' message={message} />
         )}

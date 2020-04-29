@@ -1,8 +1,9 @@
-import { Alert, StyleSheet, TouchableOpacity } from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { ActivityIndicator, Divider, Icon, NavHeaderButtonText, Text, TextInput, View } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getAuthUserInfo } from '../state/actions/auth'
@@ -111,7 +112,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
     }
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('edit_profile_screen_view')}>
         {!isLoading ? (
           <View>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
