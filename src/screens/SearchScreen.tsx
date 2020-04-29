@@ -13,7 +13,7 @@ import {
   View
 } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { generateAuthorsText, isOdd, safelyUnwrapNestedVariable } from '../lib/utility'
+import { generateAuthorsText, isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getPodcasts } from '../services/podcast'
@@ -233,7 +233,7 @@ export class SearchScreen extends React.Component<Props, State> {
     } = this.state
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('search_screen_view')}>
         <ButtonGroup buttons={buttons} onPress={this._handleSearchTypePress} selectedIndex={searchType} />
         <SearchBar
           containerStyle={styles.searchBarContainer}

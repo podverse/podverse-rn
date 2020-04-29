@@ -17,7 +17,7 @@ import { getDownloadedEpisodeIds } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { isOdd, safelyUnwrapNestedVariable, setCategoryQueryProperty } from '../lib/utility'
+import { isOdd, safelyUnwrapNestedVariable, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
@@ -382,7 +382,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     const { session } = this.global
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('clips_screen_view')}>
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}

@@ -93,7 +93,7 @@ export class MoreScreen extends React.Component<Props, State> {
     const otherOptions = moreOtherOptions(membershipStatus)
 
     return (
-      <View style={core.backgroundView}>
+      <View style={core.backgroundView} {...testProps('more_screen_view')}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (

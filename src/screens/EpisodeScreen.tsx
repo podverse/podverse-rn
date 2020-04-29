@@ -19,7 +19,7 @@ import {
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { formatTitleViewHtml, isOdd } from '../lib/utility'
+import { formatTitleViewHtml, isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -341,7 +341,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const { downloadedEpisodeIds, downloadsActive } = this.global
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('episode_screen_view')}>
         <EpisodeTableHeader
           downloadedEpisodeIds={downloadedEpisodeIds}
           downloadsActive={downloadsActive}

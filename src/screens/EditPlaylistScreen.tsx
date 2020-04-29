@@ -12,7 +12,7 @@ import {
   View
 } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { combineAndSortPlaylistItems } from '../lib/utility'
+import { combineAndSortPlaylistItems, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getPlaylist } from '../services/playlist'
@@ -171,7 +171,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     const { sortableListData, isLoading, newTitle } = this.state
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('edit_playlist_screen_view')}>
         <View style={styles.topWrapper}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
             Title

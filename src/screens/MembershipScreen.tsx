@@ -2,7 +2,7 @@ import { Alert, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
 import { hasValidNetworkConnection } from '../lib/network'
-import { getMembershipExpiration, getMembershipStatus, readableDate } from '../lib/utility'
+import { getMembershipExpiration, getMembershipStatus, readableDate, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { buy1YearPremium } from '../services/purchaseShared'
@@ -104,7 +104,7 @@ export class MembershipScreen extends React.Component<Props, State> {
     const expirationDate = getMembershipExpiration(userInfo)
 
     return (
-      <View style={styles.wrapper}>
+      <View style={styles.wrapper} {...testProps('membership_screen_view')}>
         {isLoading && isLoggedIn && <ActivityIndicator />}
         {!isLoading && showNoInternetConnectionMessage && (
           <View style={styles.textRowCentered}>

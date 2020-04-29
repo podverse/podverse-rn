@@ -1,6 +1,7 @@
 import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { Divider, Icon, ScrollView, Text, View } from '../components'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { button } from '../styles'
@@ -27,7 +28,7 @@ export class AboutScreen extends React.Component<Props, State> {
 
   render() {
     return (
-      <View style={styles.content}>
+      <View style={styles.content} {...testProps('about_screen_view')}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {'Create and share highlights of your favorite podcasts with Podverse! ' +

@@ -16,7 +16,7 @@ import {
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { isOdd, safelyUnwrapNestedVariable } from '../lib/utility'
+import { isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
@@ -235,7 +235,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
     const isLoggedInUserPlaylist = (playlist && playlist.owner && playlist.owner.id) === session.userInfo.id
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('playlist_screen_view')}>
         <PlaylistTableHeader
           createdBy={isLoggedInUserPlaylist && playlist && playlist.owner ? playlist.owner.name : null}
           handleEditPress={isLoggedInUserPlaylist ? this._handleEditPress : null}

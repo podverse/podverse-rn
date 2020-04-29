@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, View, WebViewStaticHTML } from '../components'
+import { testProps } from '../lib/utility'
 import { gaTrackPageView } from '../services/googleAnalytics'
 
 type Props = {}
@@ -34,7 +35,7 @@ export class FAQScreen extends React.Component<Props, State> {
     const { isLoading } = this.state
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('faq_screen_view')}>
         {isLoading && <ActivityIndicator />}
         <WebViewStaticHTML html={html} isLoading={isLoading} />
       </View>

@@ -2,6 +2,7 @@ import { Alert, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, Vie
 import React from 'reactn'
 import { Login, NavDismissIcon, ResetPassword, SafeAreaView, SignUp } from '../components'
 import { alertIfNoNetworkConnection } from '../lib/network'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { sendResetPassword } from '../services/auth'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -168,7 +169,7 @@ export class AuthScreen extends React.Component<Props, State> {
     }
 
     return (
-      <SafeAreaView style={styles.safeAreaView}>
+      <SafeAreaView style={styles.safeAreaView} {...testProps('auth_screen_view')}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={screenType === _signup ? styles.viewWithoutBanner : styles.view}>
             {screenType !== _signup && <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />}

@@ -10,7 +10,7 @@ import {
   View
 } from '../components'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { isOdd } from '../lib/utility'
+import { isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getAuthUserInfo } from '../state/actions/auth'
@@ -133,7 +133,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
     const { flatListData, flatListDataTotalCount } = this.global.profiles
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('profiles_screen_view')}>
         <View style={styles.view}>
           {isLoading && <ActivityIndicator />}
           {!isLoading && flatListData && flatListData.length > 0 && (

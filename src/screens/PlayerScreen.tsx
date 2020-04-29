@@ -1,6 +1,5 @@
 import { StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
-import { SafeAreaView } from 'react-navigation'
 import React, { getGlobal, setGlobal } from 'reactn'
 import {
   ActionSheet,
@@ -32,7 +31,14 @@ import {
   convertToNowPlayingItem,
   NowPlayingItem
 } from '../lib/NowPlayingItem'
-import { decodeHTMLString, formatTitleViewHtml, isOdd, readableDate, removeHTMLFromString } from '../lib/utility'
+import {
+  decodeHTMLString,
+  formatTitleViewHtml,
+  isOdd,
+  readableDate,
+  removeHTMLFromString,
+  testProps
+} from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -42,7 +48,7 @@ import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
 import { loadItemAndPlayTrack } from '../state/actions/player'
-import { core, navHeader } from '../styles'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
@@ -552,7 +558,7 @@ export class PlayerScreen extends React.Component<Props, State> {
 
     return (
       <OpaqueBackground nowPlayingItem={nowPlayingItem}>
-        <View style={styles.view} transparent={true}>
+        <View style={styles.view} transparent={true} {...testProps('player_screen_view')}>
           <PlayerTableHeader nowPlayingItem={nowPlayingItem} />
           {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
             <ClipInfoView

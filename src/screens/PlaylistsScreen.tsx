@@ -10,7 +10,7 @@ import {
   View
 } from '../components'
 import { hasValidNetworkConnection } from '../lib/network'
-import { isOdd } from '../lib/utility'
+import { isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getPlaylists } from '../state/actions/playlist'
@@ -111,7 +111,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     const flatListData = queryFrom === PV.Filters._myPlaylistsKey ? myPlaylists : subscribedPlaylists
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('playlists_screen_view')}>
         <View style={styles.view}>
           <TableSectionSelectors
             handleSelectLeftItem={this.selectLeftItem}

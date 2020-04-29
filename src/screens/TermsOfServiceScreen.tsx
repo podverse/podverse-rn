@@ -2,6 +2,7 @@ import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import packageJson from '../../package.json'
 import { Divider, ScrollView, Text, View } from '../components'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 
@@ -27,7 +28,7 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
 
   render() {
     return (
-      <View style={styles.content}>
+      <View style={styles.content} {...testProps('terms_of_service_screen_view')}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             Podverse will never sell or share private user data.

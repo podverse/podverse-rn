@@ -1,4 +1,4 @@
-import { Alert, Linking, StyleSheet, TouchableOpacity } from 'react-native'
+import { Alert, Linking, StyleSheet } from 'react-native'
 import React from 'reactn'
 import {
   ActivityIndicator,
@@ -11,6 +11,7 @@ import {
   TextLink,
   View
 } from '../components'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getAddByRSSPodcast } from '../services/parser'
@@ -108,7 +109,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
     const { isLoading, url } = this.state
 
     return (
-      <View style={styles.content}>
+      <View style={styles.content} {...testProps('add_podcast_by_rss_screen_view')}>
         {isLoading && <ActivityIndicator />}
         {!isLoading && (
           <ScrollView contentContainerStyle={styles.scrollViewContent}>

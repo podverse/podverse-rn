@@ -16,7 +16,7 @@ import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { isOdd, setCategoryQueryProperty } from '../lib/utility'
+import { isOdd, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -364,7 +364,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
     const includeGoToPodcast = true
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('episodes_screen_view')}>
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}

@@ -12,6 +12,7 @@ import {
   updateAllDownloadedEpisodeLimitDefaults
 } from '../lib/downloadedEpisodeLimiter'
 import { refreshDownloads } from '../lib/downloader'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { clearHistoryItems } from '../state/actions/history'
@@ -190,7 +191,7 @@ export class SettingsScreen extends React.Component<Props, State> {
     const isDarkMode = globalTheme === darkTheme
 
     return (
-      <ScrollView style={styles.wrapper}>
+      <ScrollView style={styles.wrapper} {...testProps('settings_screen_view')}>
         <SwitchWithText
           onValueChange={this._toggleTheme}
           text={`${globalTheme === darkTheme ? 'Dark Mode' : 'Light Mode'}`}

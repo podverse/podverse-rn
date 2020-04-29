@@ -28,7 +28,14 @@ import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
-import { decodeHTMLString, isOdd, readableDate, removeHTMLFromString, safelyUnwrapNestedVariable } from '../lib/utility'
+import {
+  decodeHTMLString,
+  isOdd,
+  readableDate,
+  removeHTMLFromString,
+  safelyUnwrapNestedVariable,
+  testProps
+} from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -572,7 +579,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       'results'
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} {...testProps('podcast_screen_view')}>
         <PodcastTableHeader
           autoDownloadOn={autoDownloadOn}
           handleToggleAutoDownload={this._handleToggleAutoDownload}
