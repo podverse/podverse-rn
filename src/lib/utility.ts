@@ -477,6 +477,6 @@ export const isValidUrl = (str?: string) => {
   return true
 }
 
-export function testProps(id: string) {
+export const testProps = (id: string) => {
   return { testID: id, accessibilityLabel: id }
 }
