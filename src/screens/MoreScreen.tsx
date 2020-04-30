@@ -45,7 +45,7 @@ export class MoreScreen extends React.Component<Props, State> {
         { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.contact) }
       ])
     } else if (item.key === _termsKey) {
-      navigation.navigate(PV.RouteNames.TermsOfServiceScreen)
+      navigation.navigate(PV.RouteNames.TermsScreen)
     } else if (item.key === _logoutKey) {
       logoutUser()
     } else if (item.key === _loginKey) {
@@ -233,14 +233,14 @@ const moreOtherOptions = (membershipStatus?: string) => {
       testId: 'more_screen_faq_cell'
     },
     {
-      title: 'Terms',
-      key: _termsKey,
-      testId: 'more_screen_terms_cell'
-    },
-    {
       title: 'About',
       key: _aboutKey,
       testId: 'more_screen_about_cell'
+    },
+    {
+      title: 'Terms of Service',
+      key: _termsKey,
+      testId: 'more_screen_terms_of_service_cell'
     }
   ]
 
