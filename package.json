@@ -13,7 +13,9 @@
     "dev:ios": "react-native run-ios",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "tslint --fix 'src/**/*.{ts,tsx}'",
-    "format": "prettier --write src/**/*.ts*"
+    "format": "prettier --write src/**/*.ts*",
+    "test:e2e:android": "BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./tests/appium/index.js",
+    "test:e2e:ios": "BROWSERSTACK_DEVICE='iPhone 11 Pro Max' BROWSERSTACK_OS_VERSION='13.0' node ./tests/appium/index.js"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -46,6 +48,7 @@
     "he": "1.2.0",
     "linkifyjs": "2.1.8",
     "lodash": "4.17.15",
+    "perf_hooks": "^0.0.1",
     "react": "16.12.0",
     "react-native": "0.61.5",
     "react-native-background-downloader": "2.3.4",
