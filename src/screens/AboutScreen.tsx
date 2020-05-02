@@ -1,4 +1,6 @@
 import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
+import Config from 'react-native-config'
+import { getBuildNumber, getVersion } from 'react-native-device-info'
 import React from 'reactn'
 import { Divider, Icon, ScrollView, Text, View } from '../components'
 import { testProps } from '../lib/utility'
@@ -49,6 +51,11 @@ export class AboutScreen extends React.Component<Props, State> {
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {'Mitch Downey – Programmer\n\nCreon Creonopoulos - Programmer\n\nGary Johnson – Designer'}
           </Text>
+          <Divider style={styles.divider} />
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.text}>{`Version ${getVersion()} Build ${getBuildNumber()} ${Config.RELEASE_TYPE ||
+            ''}`}</Text>
           <Divider style={styles.divider} />
           <RNView style={styles.socialLinksWrapper}>
             <Icon
