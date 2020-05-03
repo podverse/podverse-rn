@@ -14,7 +14,7 @@ Object.assign(capabilities, {
   'project': 'Podverse - Mobile App - React Native',
   'build': 'Android',
   'name': 'Android',
-  'app': process.env.APP
+  'app': process.env.BROWSERSTACK_APP_URL
 })
 
 driver = wd.promiseRemote("http://hub-cloud.browserstack.com/wd/hub")
@@ -115,11 +115,12 @@ const runTests = async () => {
     await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', goBack)
 
     await driver.sleep(3000)
+    await driver.quit()
   } catch (error) {
-    console.log(error.message)
+    await driver.quit()
+    throw error
   }
 
-  await driver.quit()
 }
 
 runTests()
