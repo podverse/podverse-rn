@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-npx jetify
+if [ "$PLATFORM" == "ios" ] ; then
+    cd ./ios && rm -rf Pods && pod cache clean --all && pod install && cd ..
+else
+    npx jetify
+fi
 
-cd ./ios && rm -rf Pods && pod cache clean --all && pod install && cd ..
-
-#!/usr/bin/env bash
 # Creates an .env from ENV variables for use with react-native-config
 ENV_WHITELIST=${ENV_WHITELIST:-"^RN_"}
 printf "Creating an .env file with the following whitelist:\n"
