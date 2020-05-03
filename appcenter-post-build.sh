@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "AGENT JOB STATUS: $AGENT_JOBSTATUS"
+
 if [ "$AGENT_JOBSTATUS" == "Succeeded" ]; then
 
     echo "======= Browserstack upload start ======="
