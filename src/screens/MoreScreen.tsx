@@ -45,7 +45,7 @@ export class MoreScreen extends React.Component<Props, State> {
         { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.contact) }
       ])
     } else if (item.key === _termsKey) {
-      navigation.navigate(PV.RouteNames.TermsScreen)
+      navigation.navigate(PV.RouteNames.TermsOfServiceScreen)
     } else if (item.key === _logoutKey) {
       logoutUser()
     } else if (item.key === _loginKey) {

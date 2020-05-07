@@ -14,7 +14,7 @@ Object.assign(capabilities, {
   'project': 'Podverse - Mobile App - React Native',
   'build': 'Android',
   'name': 'Android',
-  'app': process.env.APP
+  'app': process.env.BROWSERSTACK_APP_URL
 })
 
 driver = wd.promiseRemote("http://hub-cloud.browserstack.com/wd/hub")
@@ -23,10 +23,12 @@ let windowSize
 
 const elementByIdAndClickAndTest = async (id, waitForElement, goBack) => {
   logPerformance(id, 'start')
+  await driver.sleep(500)
   const element = await driver.elementByAccessibilityId(id)
   await element.click()
   await driver.waitForElementByAccessibilityId(waitForElement)
   if (goBack) await driver.back()
+  await driver.sleep(500)
   logPerformance(id, 'end')
 }
 
@@ -108,16 +110,17 @@ const runTests = async () => {
 
     await elementByIdAndClickAndTest('more_screen_faq_cell', 'faq_screen_view', goBack)
 
-    await elementByIdAndClickAndTest('more_screen_terms_cell', 'terms_of_service_screen_view', goBack)
-
     await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', goBack)
 
+    await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', goBack)
+
     await driver.sleep(3000)
+    await driver.quit()
   } catch (error) {
-    console.log(error.message)
+    await driver.quit()
+    throw error
   }
 
-  await driver.quit()
 }
 
 runTests()
