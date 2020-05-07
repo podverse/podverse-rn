@@ -565,6 +565,7 @@ export class PlayerScreen extends React.Component<Props, State> {
               createdAt={mediaRef.createdAt}
               endTime={mediaRef.endTime}
               handleClosePress={this._toggleShowFullClipInfo}
+              hideDynamicAdsWarning={nowPlayingItem.podcastHideDynamicAdsWarning}
               isLoading={isLoading}
               isPublic={mediaRef.isPublic}
               navigation={navigation}
