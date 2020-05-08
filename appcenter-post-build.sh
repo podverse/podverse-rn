@@ -30,7 +30,7 @@ if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
         echo "======= Browserstack API URL EMAILED ======="
 
         jsonval() {
-            temp=`echo $APP_URL | sed 's/\\\\\//\//g' | sed 's/[{}]//g' | awk -v k="text" '{n=split($0,a,","); for (i=1; i<=n; i++) print a[i]}' | sed 's/\"\:\"/\|/g' | sed 's/[\,]/ /g' | sed 's/\"//g' | grep -w "app_url"| cut -d":" -f2- | sed -e 's/^ *//g' -e 's/ *$//g'`
+            temp=`echo $APP_URL | sed 's/\\\\\//\//g' | sed 's/[{}]//g' | awk -v k="text" '{n=split($0,a,","); for (i=1; i<=n; i++) print a[i]}' | sed 's/\"\:\"/\|/g' | sed 's/[\,]/ /g' | sed 's/\"//g' | grep -w "app_url"| cut -d":" -f1- | sed -e 's/^ *//g' -e 's/ *$//g'`
             echo ${temp##*|}
         }
 
@@ -41,7 +41,11 @@ if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
         RUN_TESTS=$(curl -X POST "https://ci.podverse.fm/job/test-podverse-rn-android-stage/buildWithParameters" -F "BROWSERSTACK_APP_URL=$APP_ID" --user "$JENKINS_USERNAME:$JENKINS_PASSWORD")
         
         echo "======= Browserstack TESTS REQUEST END ======="
-        echo "Browserstack TEST CURL Results: $RUN_TESTS"
+        
+        if [ -n "$RUN_TESTS" ]; then
+         echo "Browserstack TEST CURL ERROR: $RUN_TESTS"
+        fi
+        
      else
         echo "Current branch is $APPCENTER_BRANCH"
      fi
