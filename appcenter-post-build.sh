@@ -38,7 +38,7 @@ if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
 
         echo "======= Browserstack TESTS REQUEST START ======="
 
-        RUN_TESTS=$(curl -X POST "https://ci.podverse.fm/job/test-podverse-rn-android-stage/buildWithParameters" -F "BROWSERSTACK_APP_URL=$APP_ID" --user "podverse-ci-stage:11a4850ed0931054f050fe2afff7824677")
+        RUN_TESTS=$(curl -X POST "https://ci.podverse.fm/job/test-podverse-rn-android-stage/buildWithParameters" -F "BROWSERSTACK_APP_URL=$APP_ID" --user "$JENKINS_USERNAME:$JENKINS_PASSWORD")
         
         echo "======= Browserstack TESTS REQUEST END ======="
         echo "Browserstack TEST CURL Results: $RUN_TESTS"
