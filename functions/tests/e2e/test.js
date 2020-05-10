@@ -104,7 +104,7 @@ const runTests = async (customCapabilities) => {
 
         await elementByIdAndClickAndTest('more_screen_faq_cell', 'faq_screen_view', goBack)
 
-        //await elementByIdAndClickAndTest('more_screen_terms_cell', 'terms_of_service_screen_view', goBack)
+        await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', goBack)
 
         await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', goBack)
 
