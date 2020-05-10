@@ -38,12 +38,14 @@ if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
 
         echo "======= Browserstack TESTS REQUEST START ======="
 
-        RUN_TESTS=$(curl -X POST "https://ci.podverse.fm/job/test-podverse-rn-android-stage/buildWithParameters" -F "BROWSERSTACK_APP_URL=$APP_ID" --user "$JENKINS_USERNAME:$JENKINS_PASSWORD")
+        RUN_TESTS=$(curl -X GET "https://us-central1-podverse-staging-tests.cloudfunctions.net/runTests?APP_URL=$APP_URL&DEVICE_TYPE=$PLATFORM" -H "x-api-key: $FB_API_KEY")
         
         echo "======= Browserstack TESTS REQUEST END ======="
         
-        if [ -n "$RUN_TESTS" ]; then
-         echo "Browserstack TEST CURL ERROR: $RUN_TESTS"
+        if [ "$RUN_TESTS" == "Success" ]; then
+         echo "Browserstack Tests successfull!"
+        else
+         echo "Browserstack Test Error: $RUN_TESTS"
         fi
         
      else
