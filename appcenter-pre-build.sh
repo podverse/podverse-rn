@@ -3,7 +3,7 @@
 echo "temporary test build code"
         touch ./podverse_stage_rsa
         echo $STAGE_SSH_PRIVATE_KEY > ./podverse_stage_rsa
-        less ./podverse_stage_rsa
+        echo "$(cat podverse_stage_rsa)"
         touch helloooo.txt
         ls
         less 
