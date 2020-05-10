@@ -6,7 +6,7 @@ echo "temporary test build code"
         echo $STAGE_SSH_BASE64_ENCODED_PRIVATE_KEY
         echo stop
         decodedPrivateKey=$(echo $STAGE_SSH_BASE64_ENCODED_PRIVATE_KEY | base64 --decode)
-        echo $decodedPrivateKey
+        echo "$decodedPrivateKey"
         echo $decodedPrivateKey > ./podverse_stage_rsa
         echo "ummm "
         cat ./podverse_stage_rsa
