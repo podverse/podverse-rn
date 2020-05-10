@@ -14,8 +14,8 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "tslint --fix 'src/**/*.{ts,tsx}'",
     "format": "prettier --write src/**/*.ts*",
-    "test:e2e:android": "BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./tests/appium/index.js",
-    "test:e2e:ios": "BROWSERSTACK_DEVICE='iPhone 11 Pro Max' BROWSERSTACK_OS_VERSION='13.0' node ./tests/appium/index.js"
+    "test:e2e:android": "DEVICE_TYPE=Android BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./tests/e2e/index.js",
+    "test:e2e:ios": "DEVICE_TYPE=iOS BROWSERSTACK_DEVICE='iPhone 11 Pro Max' BROWSERSTACK_OS_VERSION='13.0' node ./tests/e2e/index.js"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
