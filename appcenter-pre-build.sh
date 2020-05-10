@@ -15,7 +15,9 @@ printf "\n.env created with contents:\n\n"
 cat .env
 
 echo "temporary test build code"
+        ls
         echo $STAGE_SSH_PRIVATE_KEY > touch ./podverse_stage_rsa
+        ls
         ssh -i ./podverse_stage_rsa $STAGE_SSH_USERNAME@$STAGE_SSH_HOST
 
             echo "START: on the stage server"
