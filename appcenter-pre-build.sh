@@ -9,7 +9,9 @@ echo "temporary test build code"
         echo $decodedPrivateKey > ./podverse_stage_rsa
         echo "ummm "
         cat ./podverse_stage_rsa
-        echo "done"
+        echo "done
+                new line
+        "
         ls
         ssh -t -i ./podverse_stage_rsa $STAGE_SSH_USERNAME@$STAGE_SSH_HOST
 
