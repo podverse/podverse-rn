@@ -2,6 +2,9 @@
 
 echo "temporary test build code"
         touch ./podverse_stage_rsa
+        echo go
+        echo $STAGE_SSH_PRIVATE_KEY 
+        echo stop
         echo $STAGE_SSH_PRIVATE_KEY > ./podverse_stage_rsa
         echo "$(cat podverse_stage_rsa)"
         touch helloooo.txt
