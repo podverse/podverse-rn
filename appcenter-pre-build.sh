@@ -5,8 +5,8 @@ echo "temporary test build code"
         echo $STAGE_SSH_PRIVATE_KEY > ./podverse_stage_rsa
         echo "$(cat podverse_stage_rsa)"
         touch helloooo.txt
+        echo "ummm"
         ls
-        less 
         ssh -t -i ./podverse_stage_rsa $STAGE_SSH_USERNAME@$STAGE_SSH_HOST
 
             echo "START: on the stage server"
