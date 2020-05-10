@@ -59,7 +59,8 @@ const logPerformance = (subject, stage, notes = '') => {
 
 const goBack = true
 
-const runTests = async () => {
+const runTests = async (customCapabilities) => {
+    Object.assign(capabilities, customCapabilities)
     try {
         console.log('init')
         await driver.init(capabilities)
@@ -116,4 +117,4 @@ const runTests = async () => {
     await driver.quit()
 }
 
-runTests()
+module.exports = { runTests }
