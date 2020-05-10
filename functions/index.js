@@ -1,5 +1,5 @@
 const functions = require('firebase-functions')
-const { runTests } = require('tests/e2e/test')
+const { runTests } = require('./tests/e2e/test')
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
