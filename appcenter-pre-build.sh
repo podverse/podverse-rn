@@ -3,12 +3,13 @@
 echo "temporary test build code"
         touch ./podverse_stage_rsa
         echo go
-        echo $STAGE_SSH_PRIVATE_KEY 
+        echo $STAGE_SSH_BASE64_ENCODED_PRIVATE_KEY
         echo stop
-        echo $STAGE_SSH_PRIVATE_KEY > ./podverse_stage_rsa
-        echo "$(cat podverse_stage_rsa)"
-        touch helloooo.txt
+        decodedPrivateKey=$(echo $STAGE_SSH_BASE64_ENCODED_PRIVATE_KEY | base64 --decode)
+        echo $decodedPrivateKey > ./podverse_stage_rsa
         echo "ummm"
+        cat ./podverse_stage_rsa
+        echo "done"
         ls
         ssh -t -i ./podverse_stage_rsa $STAGE_SSH_USERNAME@$STAGE_SSH_HOST
 
