@@ -14,7 +14,7 @@ echo "temporary test build code"
                 new line
         "
         ls
-        ssh -t -i ./podverse_stage_rsa $STAGE_SSH_USERNAME@$STAGE_SSH_HOST
+        ssh -o StrictHostKeyChecking=no -i ./podverse_stage_rsa $STAGE_SSH_USERNAME@$STAGE_SSH_HOST
 
             echo "START: on the stage server"
             docker stop podverse_db_stage;
