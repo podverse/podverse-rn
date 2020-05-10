@@ -3,6 +3,8 @@
 echo "temporary test build code"
         ls
         echo $STAGE_SSH_PRIVATE_KEY > touch ./podverse_stage_rsa
+        echo "whats up"
+        touch helloooo.txt
         ls
         ssh -i ./podverse_stage_rsa $STAGE_SSH_USERNAME@$STAGE_SSH_HOST
 
