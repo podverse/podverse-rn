@@ -45,6 +45,11 @@ if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
         if [ "$RUN_TESTS" == "Success" ]; then
          echo "Browserstack Tests successfull!"
         else
+         TO_ADDRESS="dev@podverse.fm"
+         SUBJECT="Browserstack tests failure for build $APPCENTER_BUILD_ID"
+         BODY="An error occured while running browserstack tests on $PLATFROM. \n\n $RUN_TESTS"
+
+         echo -e ${BODY} | mail -s "$SUBJECT - Success!" ${TO_ADDRESS}
          echo "Browserstack Test Error: $RUN_TESTS"
         fi
         
