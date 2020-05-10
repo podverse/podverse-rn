@@ -3,9 +3,11 @@
 echo "temporary test build code"
         touch ./podverse_stage_rsa
         echo $STAGE_SSH_PRIVATE_KEY > ./podverse_stage_rsa
+        less ./podverse_stage_rsa
         touch helloooo.txt
         ls
-        ssh -i ./podverse_stage_rsa $STAGE_SSH_USERNAME@$STAGE_SSH_HOST
+        less 
+        ssh -t -i ./podverse_stage_rsa $STAGE_SSH_USERNAME@$STAGE_SSH_HOST
 
             echo "START: on the stage server"
             docker stop podverse_db_stage;
