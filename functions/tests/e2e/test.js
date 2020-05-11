@@ -2,6 +2,7 @@ const wd = require('wd');
 const assert = require('assert');
 const { performance } = require('perf_hooks')
 const asserters = wd.asserters;
+const request = require('request');
 
 const capabilities = process.env.DEVICE_TYPE === 'Android' ?
   {
@@ -60,6 +61,12 @@ const logPerformance = (subject, stage, notes = '') => {
 const goBack = true
 
 const runTests = async (customCapabilities) => {
+
+    await request.post(
+      process.env.SLACK_WEBHOOK,
+      { json: { text: `Start e2e tests - ${process.env.DEVICE_TYPE}` } }
+    )
+
     Object.assign(capabilities, customCapabilities)
     try {
         console.log('init')
@@ -110,8 +117,19 @@ const runTests = async (customCapabilities) => {
 
         await driver.sleep(3000)
 
+        await request.post(
+          process.env.SLACK_WEBHOOK,
+          { json: { text: `SUCCESS: End e2e tests - ${process.env.DEVICE_TYPE}` } }
+        )
+
     } catch (error) {
         console.log('runTests', error)
+
+        await request.post(
+          process.env.SLACK_WEBHOOK,
+          { json: { text: `FAILURE: End e2e tests - ${process.env.DEVICE_TYPE}` } }
+        )
+
         throw error
     }
 
