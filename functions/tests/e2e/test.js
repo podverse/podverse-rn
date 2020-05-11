@@ -2,6 +2,7 @@ const wd = require('wd');
 const assert = require('assert');
 const { performance } = require('perf_hooks')
 const asserters = wd.asserters;
+const request = require('request');
 
 const capabilities = process.env.DEVICE_TYPE === 'Android' ?
   {
@@ -57,9 +58,20 @@ const logPerformance = (subject, stage, notes = '') => {
     console.log(subject + ',' + stage + ',' + Math.ceil(performance.now()).toString() + 'ms' + (notes ? ',' + notes + ',' : ''))
 }
 
+const postSlackNotification = async (text) => {
+  return request.post(
+    process.env.SLACK_WEBHOOK,
+    { json: { text: `${text} - ${process.env.DEVICE_TYPE}` } }
+  )
+}
+
 const goBack = true
 
-const runTests = async () => {
+const runTests = async (customCapabilities) => {
+
+    await postSlackNotification('Start e2e tests')
+
+    Object.assign(capabilities, customCapabilities)
     try {
         console.log('init')
         await driver.init(capabilities)
@@ -103,17 +115,20 @@ const runTests = async () => {
 
         await elementByIdAndClickAndTest('more_screen_faq_cell', 'faq_screen_view', goBack)
 
-        await elementByIdAndClickAndTest('more_screen_terms_cell', 'terms_of_service_screen_view', goBack)
+        await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', goBack)
 
         await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', goBack)
 
         await driver.sleep(3000)
 
+        await postSlackNotification('SUCCESS: End e2e tests')
     } catch (error) {
         console.log('runTests', error)
+        await postSlackNotification('FAILURE: End e2e tests')
+        throw error
     }
 
     await driver.quit()
 }
 
-runTests()
+module.exports = { runTests }
