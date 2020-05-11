@@ -1,5 +1,6 @@
 const functions = require('firebase-functions')
 const { runTests } = require('./tests/e2e/test')
+const Client = require('ssh2').Client
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
@@ -58,6 +59,51 @@ exports.runTests = functions.runWith({ timeoutSeconds: 540 }).https.onRequest((r
       })
       .catch((err) => {
         response.send(err)
+      })
+  } else {
+    response.status(401).json({
+      code: 401,
+      message: 'Unauthorized'
+    })
+  }
+})
+
+exports.resetStageDatabase = functions.runWith({ timeoutSeconds: 540 }).https.onRequest((request, response) => {
+  if (request.headers['x-api-key'] === functions.config().api.key) {
+    const pg_pass = functions.config().pg.password
+    const ip = functions.config().pg.ip
+
+    const resetDB = `docker stop podverse_db_stage; docker rm podverse_db_stage; docker-compose -f ./podverse-ops/docker-compose.stage.yml up -d podverse_db; sleep 10; PGPASSWORD='${pg_pass}' psql -h localhost -U postgres -d postgres -f ./podverse-ops/sample-database/qa-database.sql;`
+    const conn = new Client()
+    conn
+      .on('ready', function() {
+        console.log('Client :: ready')
+        let error = ''
+        conn.exec(resetDB, function(err, stream) {
+          if (err) {
+            response.status(400).send({ error: err })
+            return
+          }
+          stream
+            .on('close', function(code, signal) {
+              if (code) {
+                response.status(400).send({ error })
+              } else {
+                response.send('Success')
+              }
+              conn.end()
+            })
+            .on('data', (data) => {})
+            .stderr.on('data', function(data) {
+              error = data
+            })
+        })
+      })
+      .connect({
+        host: ip,
+        port: 22,
+        username: 'mitch',
+        privateKey: require('fs').readFileSync('./ssh_key')
       })
   } else {
     response.status(401).json({

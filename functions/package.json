@@ -16,6 +16,7 @@
     "firebase-admin": "^8.10.0",
     "firebase-functions": "^3.6.1",
     "perf_hooks": "^0.0.1",
+    "ssh2": "^0.8.9",
     "wd": "^1.12.1"
   },
   "devDependencies": {
