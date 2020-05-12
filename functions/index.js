@@ -36,7 +36,8 @@ exports.runTests = functions.runWith({ timeoutSeconds: 540 }).https.onRequest((r
     const capabilities = {
       'browserstack.user': functions.config().bs.username,
       'browserstack.key': functions.config().bs.key,
-      app: request.query['APP_URL']
+      app: request.query['APP_URL'],
+      webhook: functions.config().slack.webhook
     }
 
     if (request.query['DEVICE_TYPE'].toLowerCase() === 'ios') {
