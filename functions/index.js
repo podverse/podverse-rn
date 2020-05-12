@@ -58,7 +58,11 @@ exports.runTests = functions.runWith({ timeoutSeconds: 540 }).https.onRequest((r
         response.send('Success')
       })
       .catch((err) => {
-        response.send(err)
+        if (err.message) {
+          response.send({ message: err.message })
+        } else {
+          response.status(400).send(JSON.parse(err.data))
+        }
       })
   } else {
     response.status(401).json({

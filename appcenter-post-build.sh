@@ -36,9 +36,15 @@ if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
 
         APP_ID=`jsonval`
 
+        #Don't run tests on iOS for now
+        if [ "$PLATFORM" == "ios" ] ; then
+            echo "======= Skipping iOS Testing ======="
+            exit 0
+        fi
+
         echo "======= Browserstack TESTS REQUEST START ======="
 
-        RUN_TESTS=$(curl -X GET "https://us-central1-podverse-staging-tests.cloudfunctions.net/runTests?APP_URL=$APP_URL&DEVICE_TYPE=$PLATFORM" -H "x-api-key: $FB_API_KEY")
+        RUN_TESTS=$(curl -X GET "https://us-central1-podverse-staging-tests.cloudfunctions.net/runTests?APP_URL=$APP_ID&DEVICE_TYPE=$PLATFORM" -H "x-api-key: $FB_API_KEY")
         
         echo "======= Browserstack TESTS REQUEST END ======="
         
@@ -47,9 +53,9 @@ if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
         else
          TO_ADDRESS="dev@podverse.fm"
          SUBJECT="Browserstack tests failure for build $APPCENTER_BUILD_ID"
-         BODY="An error occured while running browserstack tests on $PLATFROM. \n\n $RUN_TESTS"
+         BODY="An error occured while running browserstack tests on $PLATFORM for id: $APP_ID. \n\n Info: \n\n $RUN_TESTS"
 
-         echo -e ${BODY} | mail -s "$SUBJECT - Success!" ${TO_ADDRESS}
+         echo -e ${BODY} | mail -s "$SUBJECT" ${TO_ADDRESS}
          echo "Browserstack Test Error: $RUN_TESTS"
         fi
         

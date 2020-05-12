@@ -59,21 +59,23 @@ const logPerformance = (subject, stage, notes = '') => {
 }
 
 const postSlackNotification = async (text) => {
-  return request.post(
-    process.env.SLACK_WEBHOOK,
-    { json: { text: `${text} - ${process.env.DEVICE_TYPE}` } }
-  )
+  // ADD BACK WITH WEBHOOK URL
+  // return request.post(
+  //   process.env.SLACK_WEBHOOK,
+  //   { json: { text: `${text} - ${process.env.DEVICE_TYPE}` } }
+  // )
 }
 
 const goBack = true
 
 const runTests = async (customCapabilities) => {
+  try {
+        await postSlackNotification('Start e2e tests')
 
-    await postSlackNotification('Start e2e tests')
-
-    Object.assign(capabilities, customCapabilities)
-    try {
-        console.log('init')
+        Object.assign(capabilities, customCapabilities)
+        
+        console.log('init testing')
+        
         await driver.init(capabilities)
 
         windowSize = await driver.getWindowSize()
@@ -123,8 +125,8 @@ const runTests = async (customCapabilities) => {
 
         await postSlackNotification('SUCCESS: End e2e tests')
     } catch (error) {
-        console.log('runTests', error)
-        await postSlackNotification('FAILURE: End e2e tests')
+        console.log('runTests error: ', error)
+        await postSlackNotification(`FAILURE: End e2e tests. Hint: ${error.message || error.data || error}`)
         throw error
     }
 
