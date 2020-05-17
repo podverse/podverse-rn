@@ -6,7 +6,7 @@ import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { getAutoDownloadEpisodes, removeAutoDownloadSetting } from './autoDownloads'
-import { getAddByRSSPodcasts, removeAddByRSSPodcast } from './parser'
+import { getAddByRSSPodcasts, parseAllAddByRSSPodcasts, removeAddByRSSPodcast } from './parser'
 import { request } from './request'
 
 export const getPodcast = async (id: string) => {
@@ -89,6 +89,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
         await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts))
       }
 
+      await parseAllAddByRSSPodcasts()
       const combinedPodcasts = await combineWithAddByRSSPodcasts()
       return [combinedPodcasts, combinedPodcasts.length]
     } catch (error) {
