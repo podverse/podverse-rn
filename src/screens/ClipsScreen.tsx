@@ -556,7 +556,11 @@ export class ClipsScreen extends React.Component<Props, State> {
             sort: filterKey,
             ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
             subscribedOnly: queryFrom === PV.Filters._subscribedKey,
-            includePodcast: true
+            includePodcast: true,
+            censorNSFWResults:
+              queryFrom !== PV.Filters._subscribedKey &&
+              queryFrom !== PV.Filters._downloadedKey &&
+              this.global.censorNSFWEpisodesAndClips
           },
           nsfwMode
         )
@@ -595,7 +599,8 @@ export class ClipsScreen extends React.Component<Props, State> {
         sort,
         page,
         ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-        includePodcast: true
+        includePodcast: true,
+        censorNSFWResults: this.global.censorNSFWEpisodesAndClips
       },
       this.global.settings.nsfwMode
     )
@@ -611,7 +616,8 @@ export class ClipsScreen extends React.Component<Props, State> {
         sort,
         page,
         ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-        includePodcast: true
+        includePodcast: true,
+        censorNSFWResults: this.global.censorNSFWEpisodesAndClips
       },
       this.global.settings.nsfwMode
     )

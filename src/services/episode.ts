@@ -1,5 +1,7 @@
 import { PV } from '../resources'
 import { request } from './request'
+const BadWords = require('bad-words')
+const badWords = new BadWords()
 
 export const getEpisodes = async (query: any = {}, nsfwMode: boolean) => {
   const filteredQuery = {
@@ -27,7 +29,17 @@ export const getEpisodes = async (query: any = {}, nsfwMode: boolean) => {
     nsfwMode
   )
 
-  return response && response.data
+  if (query.censorNSFWResults && response && response.data) {
+    let results = response.data[0]
+    results = results.map((x: any) => {
+      x.title = badWords.clean(x.title)
+      return x
+    })
+
+    return [results, response.data[1]]
+  } else {
+    return response && response.data
+  }
 }
 
 export const getEpisode = async (id: string) => {
