@@ -1549,6 +1549,11 @@ babylon@^6.18.0:
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.18.0.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
   integrity sha512-q/UEjfGJ2Cm3oKV71DJz9d25TPnq5rhBVL2Q4fA5wcC3jcrdn7+SssEybFIxwAvvP+YCsCYNKughoF33GxgycQ==
 
+badwords@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/badwords/-/badwords-1.0.0.tgz#5bfe152838a32958c0045c81fb4cb51c10ed781c"
+  integrity sha1-W/4VKDijKVjABFyB+0y1HBDteBw=
+
 balanced-match@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"

@@ -38,6 +38,7 @@ import {
   updatePlayerState
 } from '../state/actions/player'
 import { getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
+import { initializeSettings } from '../state/actions/settings'
 import { core, darkTheme } from '../styles'
 
 type Props = {
@@ -105,6 +106,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
         await AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5')
+        await AsyncStorage.setItem(PV.Keys.HIDE_NSFW_EPISODES_AND_CLIPS, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5')
         this.setState({ showDataSettingsConfirmDialog: true })
       } else {
@@ -277,6 +279,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     await initDownloads()
     await initializePlayerQueue()
     await initializePlaybackSpeed()
+    await initializeSettings()
   }
 
   // querySortOverride is only used in _initializeScreenData, and it determines

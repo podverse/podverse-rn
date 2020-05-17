@@ -73,6 +73,7 @@ export interface InitialState {
   downloadedPodcastEpisodeCounts: any
   downloadedEpisodeLimitCount: number
   downloadedEpisodeLimitDefault: number | null
+  hideNSFWEpisodesAndClips?: boolean
   overlayAlert: {
     shouldShowAlert: boolean
   }
