@@ -2,7 +2,9 @@ import AsyncStorage from '@react-native-community/async-storage'
 import * as rssParser from 'react-native-rss-parser'
 import { convertToSortableTitle, convertURLToSecureProtocol } from '../lib/utility'
 import { PV } from '../resources'
+import { checkIfLoggedIn, getBearerToken } from './auth'
 import { combineWithAddByRSSPodcasts } from './podcast'
+import { request } from './request'
 const uuidv4 = require('uuid/v4')
 
 /*
@@ -14,33 +16,61 @@ addByRSSPodcast: object {
 }
 */
 
-export const getAddByRSSPodcast = async (feedUrl: string) => {
-  const addByRSSPodcastFeedUrlPodcasts = await getAddByRSSPodcasts()
+export const getAddByRSSPodcastLocally = async (feedUrl: string) => {
+  const addByRSSPodcastFeedUrlPodcasts = await getAddByRSSPodcastsLocally()
   return addByRSSPodcastFeedUrlPodcasts.find((x: any) => x.addByRSSPodcastFeedUrl === feedUrl)
 }
 
-export const getAddByRSSPodcasts = async () => {
+export const getAddByRSSPodcastsLocally = async () => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCASTS)
     return itemsString ? JSON.parse(itemsString) : []
   } catch (error) {
-    console.log('getAddByRSSPodcasts', error)
+    console.log('getAddByRSSPodcastsLocally', error)
     return []
   }
 }
 
-const setAddByRSSPodcasts = async (podcasts: any[]) => {
+export const getAddByRSSPodcastFeedUrlsLocally = async () => {
+  try {
+    const itemsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS)
+    return itemsString ? JSON.parse(itemsString) : []
+  } catch (error) {
+    console.log('getAddByRSSPodcastFeedUrlsLocally', error)
+    return []
+  }
+}
+
+export const getAddByRSSPodcastFeedUrlsFromServer = async () => {
+  try {
+    const itemsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS)
+    return itemsString ? JSON.parse(itemsString) : []
+  } catch (error) {
+    console.log('getAddByRSSPodcastFeedUrlsFromServer', error)
+    return []
+  }
+}
+
+const setAddByRSSPodcastsLocally = async (podcasts: any[]) => {
   if (Array.isArray(podcasts)) {
     await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCASTS, JSON.stringify(podcasts))
   }
 }
 
+export const setAddByRSSPodcastFeedUrlsLocally = async (addByRSSPodcastFeedUrls: any[]) => {
+  if (Array.isArray(addByRSSPodcastFeedUrls)) {
+    await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))
+  }
+}
+
 export const parseAllAddByRSSPodcasts = async () => {
-  const rssPodcasts = await getAddByRSSPodcasts()
+  const urls = await getAddByRSSPodcastFeedUrlsLocally()
   const parsedPodcasts = []
-  for (const rssPodcast of rssPodcasts) {
+  const finalParsedPodcasts = []
+
+  for (const url of urls) {
     try {
-      const parsedPodcast = (await parseAddByRSSPodcast(rssPodcast.addByRSSPodcastFeedUrl)) as any
+      const parsedPodcast = await parseAddByRSSPodcast(url)
       if (parsedPodcast) {
         parsedPodcasts.push(parsedPodcast)
       }
@@ -49,20 +79,21 @@ export const parseAllAddByRSSPodcasts = async () => {
     }
   }
 
+  const localPodcasts = await getAddByRSSPodcastsLocally()
   for (const parsedPodcast of parsedPodcasts) {
-    const index = rssPodcasts.findIndex(
-      (rssPodcast: any) => rssPodcast.addByRSSPodcastFeedUrl === parsedPodcast.addByRSSPodcastFeedUrl
+    const index = localPodcasts.findIndex(
+      (localPodcast: any) => localPodcast.addByRSSPodcastFeedUrl === parsedPodcast.addByRSSPodcastFeedUrl
     )
     if (index || index === 0) {
-      rssPodcasts[index] = parsedPodcast
+      finalParsedPodcasts[index] = parsedPodcast
     } else {
-      rssPodcasts.push(parsedPodcast)
+      finalParsedPodcasts.push(parsedPodcast)
     }
   }
 
-  await setAddByRSSPodcasts(rssPodcasts)
+  await setAddByRSSPodcastsLocally(finalParsedPodcasts)
 
-  return rssPodcasts
+  return finalParsedPodcasts
 }
 
 export const parseAddByRSSPodcast = async (feedUrl: string) => {
@@ -75,10 +106,11 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
         throw new Error('parseAddByRSSPodcast: Title not defined')
       }
       const podcast = {} as any
+
       podcast.addByRSSPodcastFeedUrl = feedUrl
       podcast.description = rss.description && rss.description.trim()
       podcast.feedLastUpdated = rss.lastUpdated || rss.lastPublished
-      podcast.imageUrl = rss.image && rss.image.url
+      podcast.imageUrl = (rss.image && rss.image.url) || (rss.itunes && rss.itunes.image)
       podcast.isExplicit = rss.itunes && rss.itunes.explicit
       podcast.language = rss.language
 
@@ -102,7 +134,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
           episode.id = uuidv4()
           episode.description = item.description && item.description.trim()
           episode.duration = item.itunes && item.itunes.duration
-          episode.imageUrl = item.imageUrl
+          // episode.imageUrl = (item.image && item.image.url) || (item.itunes && item.itunes.image)
           episode.isExplicit = item.itunes && item.itunes.explicit
           episode.linkUrl = item.links && item.links[0] && item.links[0].url
           episode.mediaFilesize = enclosure.length
@@ -116,12 +148,14 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
 
       podcast.episodes = episodes
 
-      await addParsedAddByRSSPodcast(podcast)
+      await addParsedAddByRSSPodcastLocally(podcast)
+
+      return podcast
     })
 }
 
-const addParsedAddByRSSPodcast = async (parsedPodcast: any) => {
-  const rssPodcasts = await getAddByRSSPodcasts()
+const addParsedAddByRSSPodcastLocally = async (parsedPodcast: any) => {
+  const rssPodcasts = await getAddByRSSPodcastsLocally()
   const index = rssPodcasts.findIndex(
     (rssPodcast: any) => rssPodcast.addByRSSPodcastFeedUrl === parsedPodcast.addByRSSPodcastFeedUrl
   )
@@ -130,13 +164,51 @@ const addParsedAddByRSSPodcast = async (parsedPodcast: any) => {
   } else {
     rssPodcasts.push(parsedPodcast)
   }
-  await setAddByRSSPodcasts(rssPodcasts)
+  await setAddByRSSPodcastsLocally(rssPodcasts)
+}
+
+export const addAddByRSSPodcastFeedUrlOnServer = async (addByRSSPodcastFeedUrl: string) => {
+  const bearerToken = await getBearerToken()
+  const response = await request({
+    endpoint: '/add-by-rss-podcast-feed-url/add',
+    method: 'POST',
+    headers: {
+      Authorization: bearerToken,
+      'Content-Type': 'application/json'
+    },
+    body: { addByRSSPodcastFeedUrl }
+  })
+
+  return response && response.data
 }
 
 export const removeAddByRSSPodcast = async (feedUrl: string) => {
-  let podcasts = await getAddByRSSPodcasts()
+  const isLoggedIn = await checkIfLoggedIn()
+  if (isLoggedIn) {
+    await removeAddByRSSPodcastFeedUrlOnServer(feedUrl)
+  }
+
+  let podcasts = await getAddByRSSPodcastsLocally()
   podcasts = podcasts.filter((x: any) => x.addByRSSPodcastFeedUrl !== feedUrl)
-  await setAddByRSSPodcasts(podcasts)
+  await setAddByRSSPodcastsLocally(podcasts)
+  let addByRSSPodcastFeedUrls = await getAddByRSSPodcastFeedUrlsLocally()
+  addByRSSPodcastFeedUrls = addByRSSPodcastFeedUrls.filter((x: string) => x !== feedUrl)
+  await setAddByRSSPodcastFeedUrlsLocally(addByRSSPodcastFeedUrls)
   const combinedPodcasts = await combineWithAddByRSSPodcasts()
   return combinedPodcasts
+}
+
+const removeAddByRSSPodcastFeedUrlOnServer = async (addByRSSPodcastFeedUrl: string) => {
+  const bearerToken = await getBearerToken()
+  const response = await request({
+    endpoint: '/add-by-rss-podcast-feed-url/remove',
+    method: 'POST',
+    headers: {
+      Authorization: bearerToken,
+      'Content-Type': 'application/json'
+    },
+    body: { addByRSSPodcastFeedUrl }
+  })
+
+  return response && response.data
 }

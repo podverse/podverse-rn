@@ -5,11 +5,13 @@ import { safelyUnwrapNestedVariable, shouldShowMembershipAlert } from '../../lib
 import { PV } from '../../resources'
 import { getAuthenticatedUserInfo, getAuthenticatedUserInfoLocally, login, signUp } from '../../services/auth'
 import { setAllHistoryItemsLocally } from '../../services/history'
+import { setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
 import { getNowPlayingItem } from '../../services/player'
 import { setAllQueueItemsLocally } from '../../services/queue'
 import { getSubscribedPodcasts } from './podcast'
 
 export type Credentials = {
+  addByRSSPodcastFeedUrls?: []
   email: string
   password: string
   name?: string
@@ -86,6 +88,10 @@ const askToSyncWithLastHistoryItem = async (historyItems: any) => {
 // If we don't call syncItemsWithLocalStorage before loading the item,
 // syncNowPlayingItemWithTrack won't
 const syncItemsWithLocalStorage = async (userInfo: any) => {
+  if (userInfo && Array.isArray(userInfo.addByRSSPodcastFeedUrls)) {
+    await setAddByRSSPodcastFeedUrlsLocally(userInfo.addByRSSPodcastFeedUrls)
+  }
+
   if (userInfo && Array.isArray(userInfo.historyItems)) {
     await setAllHistoryItemsLocally(userInfo.historyItems)
   }
@@ -98,8 +104,8 @@ const syncItemsWithLocalStorage = async (userInfo: any) => {
 export const loginUser = async (credentials: Credentials) => {
   try {
     const userInfo = await login(credentials.email, credentials.password)
-    await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
     await syncItemsWithLocalStorage(userInfo)
+    await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
     await askToSyncWithLastHistoryItem(userInfo.historyItems)
 
     setGlobal({ session: { userInfo, isLoggedIn: true } })

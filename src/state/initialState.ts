@@ -76,6 +76,7 @@ const initialTheme: InitialState = {
   },
   session: {
     userInfo: {
+      addByRSSPodcastFeedUrls: [],
       email: '',
       freeTrialExpiration: '',
       historyItems: [],
