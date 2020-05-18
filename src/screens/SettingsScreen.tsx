@@ -224,7 +224,7 @@ export class SettingsScreen extends React.Component<Props, State> {
         />
         <SwitchWithText
           onValueChange={this._handleToggleNSFWEpisodesAndClips}
-          text='Censor NSFW language in titles on the Episodes and Clips tab'
+          text='Censor NSFW language in text on the Episodes and Clips tab'
           value={!!censorNSFWEpisodesAndClips}
         />
         <RNPickerSelect

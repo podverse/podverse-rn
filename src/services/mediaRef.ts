@@ -2,8 +2,6 @@ import { hasValidDownloadingConnection, hasValidNetworkConnection } from '../lib
 import { PV } from '../resources'
 import { getBearerToken } from './auth'
 import { request } from './request'
-const BadWords = require('bad-words')
-const badWords = new BadWords()
 
 export const createMediaRef = async (data: any) => {
   await hasValidNetworkConnection()
@@ -78,8 +76,8 @@ export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
   if (query.censorNSFWResults && response && response.data) {
     let results = response.data[0]
     results = results.map((x: any) => {
-      x.title = badWords.clean(x.title)
-      x.episode.title = badWords.clean(x.episode.title)
+      x.title = x && x.title ? x.title.sanitize() : ''
+      x.episode.title = x && x.episode && x.episode.title ? x.episode.title.sanitize() : ''
       return x
     })
 
