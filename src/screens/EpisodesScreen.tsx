@@ -253,9 +253,16 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _renderEpisodeItem = ({ item, index }) => {
+    const { censorNSFWEpisodesAndClips } = this.global
+    const description = item.description ? item.description.substr(0, 300).sanitize(censorNSFWEpisodesAndClips) : ''
+    const title = item.title ? item.title.sanitize(censorNSFWEpisodesAndClips) : ''
+    const podcastTitle =
+      (item.podcast_title ? item.podcast_title.sanitize(censorNSFWEpisodesAndClips) : '') ||
+      (item.podcast && item.podcast.title ? item.podcast.title.sanitize(censorNSFWEpisodesAndClips) : '')
+
     return (
       <EpisodeTableCell
-        description={item.description}
+        description={description}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
         handleNavigationPress={() =>
           this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
@@ -271,10 +278,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
           item.podcast_imageUrl ||
           (item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl))
         }
-        podcastTitle={item.podcast_title || (item.podcast && item.podcast.title)}
+        podcastTitle={podcastTitle}
         pubDate={item.pubDate}
         testId={'episodes_screen_episode_item_' + index}
-        title={item.title}
+        title={title}
       />
     )
   }
@@ -505,11 +512,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             sort: filterKey,
             ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
             subscribedOnly: queryFrom === PV.Filters._subscribedKey,
-            includePodcast: true,
-            censorNSFWResults:
-              queryFrom !== PV.Filters._subscribedKey &&
-              queryFrom !== PV.Filters._downloadedKey &&
-              this.global.censorNSFWEpisodesAndClips
+            includePodcast: true
           },
           nsfwMode
         )
@@ -550,8 +553,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         sort,
         page,
         ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-        includePodcast: true,
-        censorNSFWResults: this.global.censorNSFWEpisodesAndClips
+        includePodcast: true
       },
       this.global.settings.nsfwMode
     )
@@ -567,8 +569,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         sort,
         page,
         ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-        includePodcast: true,
-        censorNSFWResults: this.global.censorNSFWEpisodesAndClips
+        includePodcast: true
       },
       this.global.settings.nsfwMode
     )

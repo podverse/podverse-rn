@@ -6,6 +6,6 @@ String.prototype.linkifyHtml = function() {
   return this ? linkifyHtml(this) : ''
 }
 
-String.prototype.sanitize = function() {
-  return this ? badWords.clean(this) : ''
+String.prototype.sanitize = function(nsfw: boolean) {
+  return nsfw && this ? badWords.clean(this) : this
 }

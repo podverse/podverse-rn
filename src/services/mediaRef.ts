@@ -73,18 +73,7 @@ export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
     nsfwMode
   )
 
-  if (query.censorNSFWResults && response && response.data) {
-    let results = response.data[0]
-    results = results.map((x: any) => {
-      x.title = x && x.title ? x.title.sanitize() : ''
-      x.episode.title = x && x.episode && x.episode.title ? x.episode.title.sanitize() : ''
-      return x
-    })
-
-    return [results, response.data[1]]
-  } else {
-    return response && response.data
-  }
+  return response && response.data
 }
 
 export const updateMediaRef = async (data: any) => {

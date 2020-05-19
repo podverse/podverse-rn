@@ -27,19 +27,7 @@ export const getEpisodes = async (query: any = {}, nsfwMode: boolean) => {
     nsfwMode
   )
 
-  if (query.censorNSFWResults && response && response.data) {
-    let results = response.data[0]
-    results = results.map((x: any) => {
-      x.title = x && x.title ? x.title.sanitize() : ''
-      x.description = x && x.description && x.description.substr(0, 300)
-      x.description = x && x.description ? x.description.sanitize() : ''
-      return x
-    })
-
-    return [results, response.data[1]]
-  } else {
-    return response && response.data
-  }
+  return response && response.data
 }
 
 export const getEpisode = async (id: string) => {

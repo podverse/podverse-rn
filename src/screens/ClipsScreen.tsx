@@ -232,20 +232,29 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _renderClipItem = ({ item, index }) => {
+    const { censorNSFWEpisodesAndClips } = this.global
+    const title = item.title ? item.title.sanitize(censorNSFWEpisodesAndClips) : ''
+    const episodeTitle =
+      item.episode && item.episode.title ? item.episode.title.sanitize(censorNSFWEpisodesAndClips) : ''
+    const podcastTitle =
+      item.episode && item.episode.podcast && item.episode.podcast.title
+        ? item.episode.podcast.title.sanitize(censorNSFWEpisodesAndClips)
+        : ''
+
     return item && item.episode && item.episode.id ? (
       <ClipTableCell
         endTime={item.endTime}
         episodeId={item.episode.id}
         episodePubDate={item.episode.pubDate}
-        episodeTitle={item.episode.title}
+        episodeTitle={episodeTitle}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
         handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, null))}
         hasZebraStripe={isOdd(index)}
         podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
-        podcastTitle={item.episode.podcast.title}
+        podcastTitle={podcastTitle}
         startTime={item.startTime}
         testId={'clips_screen_clip_item_' + index}
-        title={item.title || 'untitled clip'}
+        title={title || 'untitled clip'}
       />
     ) : (
       <></>
@@ -556,11 +565,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             sort: filterKey,
             ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
             subscribedOnly: queryFrom === PV.Filters._subscribedKey,
-            includePodcast: true,
-            censorNSFWResults:
-              queryFrom !== PV.Filters._subscribedKey &&
-              queryFrom !== PV.Filters._downloadedKey &&
-              this.global.censorNSFWEpisodesAndClips
+            includePodcast: true
           },
           nsfwMode
         )
@@ -599,8 +604,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         sort,
         page,
         ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-        includePodcast: true,
-        censorNSFWResults: this.global.censorNSFWEpisodesAndClips
+        includePodcast: true
       },
       this.global.settings.nsfwMode
     )
@@ -616,8 +620,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         sort,
         page,
         ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-        includePodcast: true,
-        censorNSFWResults: this.global.censorNSFWEpisodesAndClips
+        includePodcast: true
       },
       this.global.settings.nsfwMode
     )
