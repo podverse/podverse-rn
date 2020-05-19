@@ -41,16 +41,6 @@ export const getAddByRSSPodcastFeedUrlsLocally = async () => {
   }
 }
 
-export const getAddByRSSPodcastFeedUrlsFromServer = async () => {
-  try {
-    const itemsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS)
-    return itemsString ? JSON.parse(itemsString) : []
-  } catch (error) {
-    console.log('getAddByRSSPodcastFeedUrlsFromServer', error)
-    return []
-  }
-}
-
 const setAddByRSSPodcastsLocally = async (podcasts: any[]) => {
   if (Array.isArray(podcasts)) {
     await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCASTS, JSON.stringify(podcasts))
@@ -134,7 +124,6 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
           episode.id = uuidv4()
           episode.description = item.description && item.description.trim()
           episode.duration = item.itunes && item.itunes.duration
-          // episode.imageUrl = (item.image && item.image.url) || (item.itunes && item.itunes.image)
           episode.isExplicit = item.itunes && item.itunes.explicit
           episode.linkUrl = item.links && item.links[0] && item.links[0].url
           episode.mediaFilesize = enclosure.length
