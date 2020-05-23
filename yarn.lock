@@ -1279,38 +1279,39 @@ anymatch@^2.0.0:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
 
-appcenter-analytics@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/appcenter-analytics/-/appcenter-analytics-2.4.0.tgz#2b20047a72e2e469890359ab3ae26b791c4e1921"
-  integrity sha512-Rf9GLE7fOuNP95jW5eRgDgTBtvofW9KMJ+ckxAgVrd3sEEq2n+6lKe7SLvrl5FNuS3IMgO8RuR/0Iuf08w2tPA==
+appcenter-analytics@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/appcenter-analytics/-/appcenter-analytics-3.0.2.tgz#d2d165057e9fbfe62672fa01f55f2b646292dbd0"
+  integrity sha512-KXN1DL5mQJVUJ9ISudG41IlcXdH8P7wiU7+i+FUouhq+t5HZiSc+G8tKX4v55Z8Pz/DQLo8YjgFUaYuKwl+n2Q==
   dependencies:
-    appcenter "2.4.0"
+    appcenter "3.0.2"
 
-appcenter-crashes@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/appcenter-crashes/-/appcenter-crashes-2.4.0.tgz#95d1e4f8c50b760411d211061f2e323c57c2a09d"
-  integrity sha512-B1GCIzn4Kf5c0+P7iSwqzW5CnaOQifMV2s6yz4GapC8bOA2xVdrX8SfJjiKV48F1ZpHCURxa7P1XvAvApx5NJg==
+appcenter-crashes@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/appcenter-crashes/-/appcenter-crashes-3.0.2.tgz#67c8f78d9f9347d6e2fd6b0e1d1e72e10b6dcf18"
+  integrity sha512-M4jp6oVkSYS0pNzXH3vMpd/7S+fbYUd0pO/NloJbNsXpbdTlewB7ecLZn1fnHNrAqziBxEDDeCnQT+cLgcZZkQ==
   dependencies:
-    appcenter "2.4.0"
+    appcenter "3.0.2"
 
-appcenter-link-scripts@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/appcenter-link-scripts/-/appcenter-link-scripts-2.4.0.tgz#2db2f3c7f701a7c901dd0b9e419600ecb59002af"
-  integrity sha512-83uH2hb2C2ORp9yqipKaA3uR4yt2w+0x5Tyli6ukvqTrKm1hBJwL+I4lM2TD4jOrfkycgiRtVmPPIwQyFZkp6g==
+appcenter-link-scripts@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/appcenter-link-scripts/-/appcenter-link-scripts-3.0.2.tgz#7bf560130df6c39bfe2893fdb44cf8652a583842"
+  integrity sha512-zD4u1u4IS+23UY5QeX+0STAXMNzgAijzuDhLwNQyF3Wi3EybgMXPV8srNOM/Ut6ItnnY02gj8GyU92CVgbDPQg==
   dependencies:
-    debug "2.2.0"
+    debug "4.1.1"
     glob "5.0.15"
-    mkdirp "0.5.1"
+    minimist "1.2.5"
+    mkdirp "0.5.3"
     plist "3.0.1"
     which "1.2.11"
     xcode "2.0.0"
 
-appcenter@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/appcenter/-/appcenter-2.4.0.tgz#9e8737d2edbecbec139e20402bc85670900d84fa"
-  integrity sha512-BV9/b9lH8mkg4O6NMXRFZ2PzTTt8GXnIWTSOZRTJBJxUOm4XgsguQ/yfdWckZeUTwsnA8u4aE0C/pKzNaw9d3A==
+appcenter@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/appcenter/-/appcenter-3.0.2.tgz#d4653dc0fd6e5058dc00ef1b614833ab44a40cb2"
+  integrity sha512-z8afzO+6ew70XX2rBcYrm0Nt46Y8Ohca9580XbQyivnvzT8jSvsw+8FtvlZRfIuXBTTq3xfBIADh6OD1nv5rZA==
   dependencies:
-    appcenter-link-scripts "2.4.0"
+    appcenter-link-scripts "3.0.2"
 
 argparse@^1.0.7:
   version "1.0.10"
@@ -1549,7 +1550,7 @@ babylon@^6.18.0:
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.18.0.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
   integrity sha512-q/UEjfGJ2Cm3oKV71DJz9d25TPnq5rhBVL2Q4fA5wcC3jcrdn7+SssEybFIxwAvvP+YCsCYNKughoF33GxgycQ==
 
-bad-words@^3.0.3:
+bad-words@3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/bad-words/-/bad-words-3.0.3.tgz#fa6fe18ffce3101a415193ebd8647c289b58b554"
   integrity sha512-To+nGz+U8SpEQieZ2kSadY/1hVO88UXAslCJuTgLjDOuGrs/tNW2BYwl0fctxcRLooe0nzYN1pGzgvRIrd0BeA==
@@ -2138,13 +2139,6 @@ debounce@^1.2.0:
   resolved "https://registry.yarnpkg.com/debounce/-/debounce-1.2.0.tgz#44a540abc0ea9943018dc0eaa95cce87f65cd131"
   integrity sha512-mYtLl1xfZLi1m4RtQYlZgJUNQjl4ZxVnHzIR8nLLgi4q1YT8o/WM+MK/f8yfcc9s5Ir5zRaPZyZU6xs1Syoocg==
 
-debug@2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
-  integrity sha1-+HBX6ZWxofauaklgZkE3vFbwOdo=
-  dependencies:
-    ms "0.7.1"
-
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.8:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -2152,19 +2146,19 @@ debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.8:
   dependencies:
     ms "2.0.0"
 
+debug@4.1.1, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.1.1.tgz#3b72260255109c6b589cee050f1d516139664791"
+  integrity sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw==
+  dependencies:
+    ms "^2.1.1"
+
 debug@=3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
   integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
   dependencies:
     ms "2.0.0"
-
-debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.1.1.tgz#3b72260255109c6b589cee050f1d516139664791"
-  integrity sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw==
-  dependencies:
-    ms "^2.1.1"
 
 decamelize@^1.1.1, decamelize@^1.2.0:
   version "1.2.0"
@@ -4529,6 +4523,11 @@ minimist@0.0.8:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d"
   integrity sha1-hX/Kv8M5fSYluCKCYuhqp6ARsF0=
 
+minimist@1.2.5, minimist@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
+  integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
+
 minimist@^1.1.1, minimist@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
@@ -4542,7 +4541,14 @@ mixin-deep@^1.2.0:
     for-in "^1.0.2"
     is-extendable "^1.0.1"
 
-mkdirp@0.5.1, mkdirp@^0.5.1:
+mkdirp@0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.3.tgz#5a514b7179259287952881e94410ec5465659f8c"
+  integrity sha512-P+2gwrFqx8lhew375MQHHeTlY8AuOJSrGf0R5ddkEndUkmwpgUob/vQuBD1V22/Cw1/lJr4x+EjllSezBThzBg==
+  dependencies:
+    minimist "^1.2.5"
+
+mkdirp@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   integrity sha1-MAV0OOrGz3+MR2fzhkjWaX11yQM=
@@ -4559,11 +4565,6 @@ morgan@^1.9.0:
     depd "~1.1.2"
     on-finished "~2.3.0"
     on-headers "~1.0.1"
-
-ms@0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
-  integrity sha1-nNE8A62/8ltl7/3nzoZO6VIBcJg=
 
 ms@2.0.0:
   version "2.0.0"
