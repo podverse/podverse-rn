@@ -68,12 +68,6 @@ export class AboutScreen extends React.Component<Props, State> {
           <Divider style={styles.divider} />
           <RNView style={styles.socialLinksWrapper}>
             <Icon
-              name='github'
-              onPress={() => this.handleFollowLink(PV.URLs.social.github)}
-              size={28}
-              style={[button.iconOnlySmall, styles.icon]}
-            />
-            <Icon
               name='reddit'
               onPress={() => this.handleFollowLink(PV.URLs.social.reddit)}
               size={28}
@@ -97,6 +91,12 @@ export class AboutScreen extends React.Component<Props, State> {
               size={28}
               style={[button.iconOnlySmall, styles.icon]}
             />
+            <Icon
+              name='github'
+              onPress={() => this.handleFollowLink(PV.URLs.social.github)}
+              size={28}
+              style={[button.iconOnlySmall, styles.icon]}
+            />
           </RNView>
         </ScrollView>
       </View>
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   divider: {
-    marginVertical: 24
+    marginBottom: 24
   },
   icon: {
     alignItems: 'center',
@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8
   },
   text: {
-    fontSize: PV.Fonts.sizes.md
+    fontSize: PV.Fonts.sizes.md,
+    marginBottom: 24
   }
 })
