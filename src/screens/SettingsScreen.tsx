@@ -16,6 +16,7 @@ import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { clearHistoryItems } from '../state/actions/history'
+import { setCensorNSFWEpisodesAndClips } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {
@@ -148,6 +149,10 @@ export class SettingsScreen extends React.Component<Props, State> {
     this.setState({ showSetAllDownloadDialog: false })
   }
 
+  _handleToggleNSFWEpisodesAndClips = async (value: boolean) => {
+    await setCensorNSFWEpisodesAndClips(value)
+  }
+
   _handleClearHistory = () => {
     Alert.alert('Clear History', 'Are you sure you want to clear your history?', [
       {
@@ -187,7 +192,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       showSetAllDownloadDialog,
       showSetAllDownloadDialogIsCount
     } = this.state
-    const { globalTheme } = this.global
+    const { globalTheme, censorNSFWEpisodesAndClips } = this.global
     const isDarkMode = globalTheme === darkTheme
 
     return (
@@ -208,14 +213,19 @@ export class SettingsScreen extends React.Component<Props, State> {
           value={!!autoDeleteEpisodeOnEnd} /> */}
         <SwitchWithText
           onValueChange={this._handleSelectDownloadedEpisodeLimitDefault}
-          text='Limit downloads by default for all podcasts'
+          text='Limit the number of downloaded episodes for each podcast by default'
           value={!!downloadedEpisodeLimitDefault}
         />
         <NumberSelectorWithText
           handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
           handleSubmitEditing={this._handleSetGlobalDownloadedEpisodeLimitCount}
           selectedNumber={downloadedEpisodeLimitCount}
-          text='Default download limit for all podcasts'
+          text='Default downloaded episode limit for each podcast'
+        />
+        <SwitchWithText
+          onValueChange={this._handleToggleNSFWEpisodesAndClips}
+          text='Censor NSFW language in text on the Episodes and Clips tab'
+          value={!!censorNSFWEpisodesAndClips}
         />
         <RNPickerSelect
           items={PV.Player.maximumSpeedSelectOptions}

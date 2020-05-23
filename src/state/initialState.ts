@@ -12,6 +12,7 @@ const initialTheme: InitialState = {
   downloadedEpisodeLimitCount: 5,
   downloadedEpisodeLimitDefault: null,
   downloadedPodcastEpisodeCounts: {},
+  censorNSFWEpisodesAndClips: true,
   overlayAlert: {
     shouldShowAlert: false
   },
