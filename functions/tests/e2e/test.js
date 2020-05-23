@@ -31,7 +31,7 @@ const elementByIdAndClickAndTest = async (id, waitForElement, back) => {
     logPerformance(id, 'START')
     const element = await driver.elementByAccessibilityId(id)
     await element.click()
-    await driver.waitForElementByAccessibilityId(waitForElement)
+    await driver.waitForElementByAccessibilityId(waitForElement, 10000)
     if (back) {
         await driver.back()
     }
