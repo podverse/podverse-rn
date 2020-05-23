@@ -70,7 +70,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           : PV.Filters._allPodcastsKey,
       queryPage: 1,
       querySort:
-        subscribedPodcastIds && subscribedPodcastIds.length > 0 ? PV.Filters._mostRecentKey : PV.Filters._topPastDay,
+        subscribedPodcastIds && subscribedPodcastIds.length > 0 ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
       searchBarText: '',
       selectedCategory: PV.Filters._allCategoriesKey,
       selectedSubCategory: PV.Filters._allCategoriesKey,
@@ -110,7 +110,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       (selectedKey === PV.Filters._allPodcastsKey || selectedKey === PV.Filters._categoryKey) &&
       (querySort === PV.Filters._mostRecentKey || querySort === PV.Filters._randomKey)
     ) {
-      sort = PV.Filters._topPastDay
+      sort = PV.Filters._topPastWeek
       hideRightItemWhileLoading = true
     } else if (selectedKey === PV.Filters._downloadedKey) {
       sort = PV.Filters._mostRecentKey
@@ -253,9 +253,16 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _renderEpisodeItem = ({ item, index }) => {
+    const { censorNSFWEpisodesAndClips } = this.global
+    const description = item.description ? item.description.substr(0, 300).sanitize(censorNSFWEpisodesAndClips) : ''
+    const title = item.title ? item.title.sanitize(censorNSFWEpisodesAndClips) : ''
+    const podcastTitle =
+      (item.podcast_title ? item.podcast_title.sanitize(censorNSFWEpisodesAndClips) : '') ||
+      (item.podcast && item.podcast.title ? item.podcast.title.sanitize(censorNSFWEpisodesAndClips) : '')
+
     return (
       <EpisodeTableCell
-        description={item.description}
+        description={description}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
         handleNavigationPress={() =>
           this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
@@ -271,10 +278,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
           item.podcast_imageUrl ||
           (item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl))
         }
-        podcastTitle={item.podcast_title || (item.podcast && item.podcast.title)}
+        podcastTitle={podcastTitle}
         pubDate={item.pubDate}
         testId={'episodes_screen_episode_item_' + index}
-        title={item.title}
+        title={title}
       />
     )
   }

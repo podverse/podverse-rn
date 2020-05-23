@@ -49,6 +49,7 @@ export interface GlobalTheme {
 }
 
 export interface UserInfo {
+  addByRSSPodcastFeedUrls?: []
   email?: string
   freeTrialExpiration?: string
   historyItems?: []
@@ -73,6 +74,7 @@ export interface InitialState {
   downloadedPodcastEpisodeCounts: any
   downloadedEpisodeLimitCount: number
   downloadedEpisodeLimitDefault: number | null
+  censorNSFWEpisodesAndClips?: boolean
   overlayAlert: {
     shouldShowAlert: boolean
   }

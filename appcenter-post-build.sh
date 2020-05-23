@@ -19,6 +19,7 @@ if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
 
         echo "======= Browserstack upload done ======="
         echo "Upload to browserstack successful. App url: $APP_URL"
+        echo "======= EMAILING Browserstack API URL ======="
 
         TO_ADDRESS="dev@podverse.fm"
         SUBJECT="Browserstack app build upload"
@@ -27,6 +28,37 @@ if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
         echo -e ${BODY} | mail -s "$SUBJECT - Success!" ${TO_ADDRESS}
         
         echo "======= Browserstack API URL EMAILED ======="
+
+        jsonval() {
+            temp=`echo $APP_URL | sed 's/\\\\\//\//g' | sed 's/[{}]//g' | awk -v k="text" '{n=split($0,a,","); for (i=1; i<=n; i++) print a[i]}' | sed 's/\"\:\"/\|/g' | sed 's/[\,]/ /g' | sed 's/\"//g' | grep -w "app_url"| cut -d":" -f1- | sed -e 's/^ *//g' -e 's/ *$//g'`
+            echo ${temp##*|}
+        }
+
+        APP_ID=`jsonval`
+
+        #Don't run tests on iOS for now
+        if [ "$PLATFORM" == "ios" ] ; then
+            echo "======= Skipping iOS Testing ======="
+            exit 0
+        fi
+
+        echo "======= Browserstack TESTS REQUEST START ======="
+
+        RUN_TESTS=$(curl -X GET "https://us-central1-podverse-staging-tests.cloudfunctions.net/runTests?APP_URL=$APP_ID&DEVICE_TYPE=$PLATFORM" -H "x-api-key: $FB_API_KEY")
+        
+        echo "======= Browserstack TESTS REQUEST END ======="
+        
+        if [ "$RUN_TESTS" == "Success" ]; then
+         echo "Browserstack Tests successfull!"
+        else
+         TO_ADDRESS="dev@podverse.fm"
+         SUBJECT="Browserstack tests failure for build $APPCENTER_BUILD_ID"
+         BODY="An error occured while running browserstack tests on $PLATFORM for id: $APP_ID. \n\n Info: \n\n $RUN_TESTS"
+
+         echo -e ${BODY} | mail -s "$SUBJECT" ${TO_ADDRESS}
+         echo "Browserstack Test Error: $RUN_TESTS"
+        fi
+        
      else
         echo "Current branch is $APPCENTER_BRANCH"
      fi

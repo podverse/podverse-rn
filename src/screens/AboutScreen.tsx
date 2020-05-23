@@ -33,16 +33,25 @@ export class AboutScreen extends React.Component<Props, State> {
       <View style={styles.content} {...testProps('about_screen_view')}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {'Create and share highlights of your favorite podcasts with Podverse! ' +
-              'Available on iOS, Android, and web. Sign up today and get 1 year of Podverse premium for free.'}
+            {'Podverse is an open source podcast manager for Android, iOS, and web' +
+              ' with cross-platform syncing, clip and playlist sharing, an intuitive interface, and more!'}
           </Text>
-          <Divider style={styles.divider} />
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {'All Podverse software is provided under an open source, copyleft license. ' +
-              'That means anyone can download, modify, and use Podverse software for any purpose for free, ' +
-              'as long as they also share their changes to the code. ' +
-              'We believe open source transparency is necessary to create technology that respects its users, ' +
-              'and copyleft sharing ensures that technology can never be monopolized.'}
+            {'Our mission is to support the original independent spirit' +
+              ' of podcasting, and we would love to collaborate with all podcast apps' +
+              ' to make our technologies as cross-compatible, easy-to-use,' +
+              ' and empowering for people as possible.'}
+          </Text>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
+            {'All Podverse software is provided free and open source (FOSS)' +
+              ' but features that require updating our servers' +
+              ' are available only with a Premium membership.' +
+              ' Sign up today and get 1 year of Premium for free!'}
+          </Text>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
+            {'If you have any questions or would be interested in collaborating' +
+              ' please email contact@podverse.fm' +
+              ' or reach us through one of our social media channels.'}
           </Text>
           <Divider style={styles.divider} />
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
@@ -77,6 +86,12 @@ export class AboutScreen extends React.Component<Props, State> {
               style={[button.iconOnlySmall, styles.icon]}
             />
             <Icon
+              name='linkedin'
+              onPress={() => this.handleFollowLink(PV.URLs.social.linkedin)}
+              size={28}
+              style={[button.iconOnlySmall, styles.icon]}
+            />
+            <Icon
               name='github'
               onPress={() => this.handleFollowLink(PV.URLs.social.github)}
               size={28}
@@ -94,7 +109,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   divider: {
-    marginVertical: 24
+    marginBottom: 24
   },
   icon: {
     alignItems: 'center',
@@ -120,6 +135,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8
   },
   text: {
-    fontSize: PV.Fonts.sizes.md
+    fontSize: PV.Fonts.sizes.md,
+    marginBottom: 24
   }
 })

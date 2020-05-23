@@ -42,7 +42,7 @@ import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRefs } from '../services/mediaRef'
 import { getPodcast } from '../services/podcast'
 import { removeDownloadedPodcastEpisode, updateAutoDownloadSettings } from '../state/actions/downloads'
-import { toggleAddByRSSPodcast } from '../state/actions/parser'
+import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
@@ -468,7 +468,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       this.setState({ isSubscribing: true }, async () => {
         try {
           if (addByRSSPodcastFeedUrl) {
-            await toggleAddByRSSPodcast(podcastId)
+            await toggleAddByRSSPodcastFeedUrl(podcastId)
           } else {
             await toggleSubscribeToPodcast(podcastId)
           }
