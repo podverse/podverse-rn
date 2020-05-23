@@ -1,35 +1,64 @@
 import { setGlobal } from 'reactn'
-import { getAddByRSSPodcasts, parseAddByRSSPodcast, removeAddByRSSPodcast } from '../../services/parser'
+import { checkIfLoggedIn } from '../../services/auth'
+import {
+  addAddByRSSPodcastFeedUrlOnServer,
+  getAddByRSSPodcastFeedUrlsLocally,
+  getAddByRSSPodcastsLocally,
+  parseAddByRSSPodcast,
+  removeAddByRSSPodcast as removeAddByRSSPodcastService
+} from '../../services/parser'
 import { getSubscribedPodcastsLocally, sortPodcastArrayAlphabetically } from '../../services/podcast'
 
 export const addAddByRSSPodcast = async (feedUrl: string) => {
   if (!feedUrl) return
 
   try {
-    await parseAddByRSSPodcast(feedUrl)
-    const parsedPodcasts = await getAddByRSSPodcasts()
-    const latestSubscribedPodcasts = await getSubscribedPodcastsLocally()
-    const combinedPodcasts = parsedPodcasts.concat(latestSubscribedPodcasts[0])
-    const alphabetizedPodcasts = sortPodcastArrayAlphabetically(combinedPodcasts)
-    setGlobal({
-      subscribedPodcasts: alphabetizedPodcasts,
-      subscribedPodcastsTotalCount: alphabetizedPodcasts.length
-    })
+    await handleAddOrRemoveByRSSPodcast(feedUrl, true)
   } catch (error) {
-    console.log('addAddByRSSPodcast action', error)
+    console.log('addAddByRSSPodcast add', error)
     throw error
   }
 }
 
-export const toggleAddByRSSPodcast = async (feedUrl: string) => {
-  const podcasts = await getAddByRSSPodcasts()
-  const isSubscribed = podcasts.some((x: any) => x.addByRSSPodcastFeedUrl === feedUrl)
-  if (isSubscribed) {
-    const podcasts = await removeAddByRSSPodcast(feedUrl)
-    setGlobal({
-      subscribedPodcasts: podcasts,
-      subscribedPodcastsTotalCount: podcasts.length
-    })
+export const removeAddByRSSPodcast = async (feedUrl: string) => {
+  if (!feedUrl) return
+
+  try {
+    await handleAddOrRemoveByRSSPodcast(feedUrl, false)
+  } catch (error) {
+    console.log('addAddByRSSPodcast remove', error)
+    throw error
+  }
+}
+
+const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean) => {
+  if (shouldAdd) {
+    const podcast = await parseAddByRSSPodcast(feedUrl)
+    if (podcast) {
+      const isLoggedIn = await checkIfLoggedIn()
+      if (isLoggedIn) {
+        await addAddByRSSPodcastFeedUrlOnServer(feedUrl)
+      }
+    }
+  } else {
+    await removeAddByRSSPodcastService(feedUrl)
+  }
+
+  const parsedPodcasts = await getAddByRSSPodcastsLocally()
+  const latestSubscribedPodcasts = await getSubscribedPodcastsLocally()
+  const combinedPodcasts = parsedPodcasts.concat(latestSubscribedPodcasts[0])
+  const alphabetizedPodcasts = sortPodcastArrayAlphabetically(combinedPodcasts)
+  setGlobal({
+    subscribedPodcasts: alphabetizedPodcasts,
+    subscribedPodcastsTotalCount: alphabetizedPodcasts.length
+  })
+}
+
+export const toggleAddByRSSPodcastFeedUrl = async (feedUrl: string) => {
+  const addByRSSPodcastFeedUrls = await getAddByRSSPodcastFeedUrlsLocally()
+  const shouldRemove = addByRSSPodcastFeedUrls.some((x: string) => x === feedUrl)
+  if (shouldRemove) {
+    await removeAddByRSSPodcast(feedUrl)
   } else {
     await addAddByRSSPodcast(feedUrl)
   }

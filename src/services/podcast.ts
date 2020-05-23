@@ -6,7 +6,7 @@ import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { getAutoDownloadEpisodes, removeAutoDownloadSetting } from './autoDownloads'
-import { getAddByRSSPodcasts, removeAddByRSSPodcast } from './parser'
+import { getAddByRSSPodcastsLocally, parseAllAddByRSSPodcasts, removeAddByRSSPodcast } from './parser'
 import { request } from './request'
 
 export const getPodcast = async (id: string) => {
@@ -66,7 +66,6 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
       const autoDownloadSettings = autoDownloadSettingsString ? JSON.parse(autoDownloadSettingsString) : {}
       const data = await getPodcasts(query, true)
       const subscribedPodcasts = data[0]
-      const subscribedPodcastsTotalCount = data[1]
       const podcastIds = Object.keys(autoDownloadSettings).filter((key: string) => autoDownloadSettings[key] === true)
 
       const autoDownloadEpisodes = await getAutoDownloadEpisodes(dateObj, podcastIds)
@@ -89,6 +88,8 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
         await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts))
       }
 
+      await parseAllAddByRSSPodcasts()
+
       const combinedPodcasts = await combineWithAddByRSSPodcasts()
       return [combinedPodcasts, combinedPodcasts.length]
     } catch (error) {
@@ -104,9 +105,10 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
 export const combineWithAddByRSSPodcasts = async () => {
   // Combine the AddByRSSPodcast in with the subscribed podcast data, then alphabetize array
   const subscribedPodcasts = await getSubscribedPodcastsLocally()
-  const addByRSSPodcasts = await getAddByRSSPodcasts()
+  const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
   // @ts-ignore
   const combinedPodcasts = [...subscribedPodcasts[0], ...addByRSSPodcasts]
+
   return sortPodcastArrayAlphabetically(combinedPodcasts)
 }
 

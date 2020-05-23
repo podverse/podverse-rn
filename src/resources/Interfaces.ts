@@ -49,6 +49,7 @@ export interface GlobalTheme {
 }
 
 export interface UserInfo {
+  addByRSSPodcastFeedUrls?: []
   email?: string
   freeTrialExpiration?: string
   historyItems?: []

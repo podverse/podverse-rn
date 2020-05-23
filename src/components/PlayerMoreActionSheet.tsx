@@ -6,8 +6,7 @@ import React from 'reactn'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
-import { getAddByRSSPodcast } from '../services/parser'
-import { toggleAddByRSSPodcast } from '../state/actions/parser'
+import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { actionSheetStyles, sliderStyles } from '../styles'
 import { ActionSheet, Icon, Text } from './'
@@ -60,7 +59,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     try {
       if (nowPlayingItem) {
         if (nowPlayingItem.addByRSSPodcastFeedUrl) {
-          await toggleAddByRSSPodcast(nowPlayingItem.addByRSSPodcastFeedUrl)
+          await toggleAddByRSSPodcastFeedUrl(nowPlayingItem.addByRSSPodcastFeedUrl)
         } else {
           await toggleSubscribeToPodcast(nowPlayingItem.podcastId)
         }
