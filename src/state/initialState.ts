@@ -12,6 +12,7 @@ const initialTheme: InitialState = {
   downloadedEpisodeLimitCount: 5,
   downloadedEpisodeLimitDefault: null,
   downloadedPodcastEpisodeCounts: {},
+  censorNSFWEpisodesAndClips: true,
   overlayAlert: {
     shouldShowAlert: false
   },
@@ -76,6 +77,7 @@ const initialTheme: InitialState = {
   },
   session: {
     userInfo: {
+      addByRSSPodcastFeedUrls: [],
       email: '',
       freeTrialExpiration: '',
       historyItems: [],

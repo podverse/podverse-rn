@@ -38,12 +38,24 @@ export const getAuthenticatedUserInfo = async () => {
 }
 
 export const getAuthenticatedUserInfoLocally = async () => {
+  let addByRSSPodcastFeedUrls = []
   let subscribedPlaylistIds = []
   let subscribedPodcastIds = []
   let subscribedUserIds = []
   let queueItems = []
   let historyItems = []
   let isLoggedIn = false
+
+  try {
+    const addByRSSPodcastFeedUrlsString = await AsyncStorage.getItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS)
+    if (addByRSSPodcastFeedUrlsString) {
+      addByRSSPodcastFeedUrls = JSON.parse(addByRSSPodcastFeedUrlsString)
+    }
+  } catch (error) {
+    if (Array.isArray(addByRSSPodcastFeedUrls)) {
+      await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))
+    }
+  }
 
   try {
     const subscribedPlaylistIdsString = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PLAYLIST_IDS)
@@ -105,6 +117,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
 
   return [
     {
+      addByRSSPodcastFeedUrls,
       subscribedPlaylistIds,
       subscribedPodcastIds,
       subscribedUserIds,
@@ -126,7 +139,11 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
   })
 
   const data = (response && response.data) || []
-  const { subscribedPodcastIds = [] } = data
+  const { addByRSSPodcastFeedUrls, subscribedPodcastIds = [] } = data
+
+  if (Array.isArray(addByRSSPodcastFeedUrls)) {
+    await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))
+  }
 
   if (Array.isArray(subscribedPodcastIds)) {
     await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCAST_IDS, JSON.stringify(subscribedPodcastIds))

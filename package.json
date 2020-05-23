@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "react-native start",
     "dev:android": "react-native run-android",
-    "dev:ios": "react-native run-ios",
+    "dev:ios": "react-native run-ios --simulator 'iPhone 11 Pro Max'",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "tslint --fix 'src/**/*.{ts,tsx}'",
     "format": "prettier --write src/**/*.ts*",
@@ -43,6 +43,7 @@
     "appcenter-analytics": "2.4.0",
     "appcenter-crashes": "2.4.0",
     "axios": "0.19.0",
+    "bad-words": "3.0.3",
     "bottleneck": "2.19.1",
     "eventemitter3": "4.0.0",
     "he": "1.2.0",
