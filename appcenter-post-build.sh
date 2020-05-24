@@ -39,6 +39,7 @@ if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
         #Don't run tests on iOS for now
         if [ "$PLATFORM" == "ios" ] ; then
             echo "======= Skipping iOS Testing ======="
+            rm -f "$APPCENTER_OUTPUT_DIRECTORY/build-$APPCENTER_BUILD_ID.ipa"
             exit 0
         fi
 
