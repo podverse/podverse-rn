@@ -59,7 +59,6 @@ const styles = StyleSheet.create({
   },
   image: {
     height: 36,
-    lineHeight: 36,
     marginLeft: 3,
     marginTop: 3,
     tintColor: 'white',
