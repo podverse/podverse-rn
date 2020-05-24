@@ -15,12 +15,14 @@ export const HTMLScrollView = (props: Props) => {
   const { fontSizeLargerScale, fontSizeLargestScale, html } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
+  const [censorNSFWText] = useGlobal('censorNSFWText')
+
   const baseFontStyle = {
     ...globalTheme.text,
     ...styles.baseFontStyle
   }
 
-  let formattedHtml = removeHTMLAttributesFromString(html)
+  let formattedHtml = removeHTMLAttributesFromString(html.sanitize(censorNSFWText))
   formattedHtml = filterHTMLElementsFromString(formattedHtml)
   formattedHtml = convertHHMMSSToAnchorTags(formattedHtml)
   formattedHtml = formattedHtml.linkifyHtml()

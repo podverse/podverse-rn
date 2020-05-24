@@ -17,6 +17,7 @@ export const PVText = (props: Props) => {
   const { fontSizeLargerScale, fontSizeLargestScale, isSecondary } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
+  const [censorNSFWText] = useGlobal('censorNSFWText')
 
   const globalThemeText = isSecondary ? globalTheme.textSecondary : globalTheme.text
 
@@ -29,7 +30,7 @@ export const PVText = (props: Props) => {
 
   return (
     <Text {...props} style={textStyle}>
-      {props.children}
+      {typeof props.children === 'string' ? props.children?.sanitize(censorNSFWText) : props.children}
     </Text>
   )
 }

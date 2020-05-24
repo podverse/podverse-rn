@@ -12,7 +12,7 @@ const initialTheme: InitialState = {
   downloadedEpisodeLimitCount: 5,
   downloadedEpisodeLimitDefault: null,
   downloadedPodcastEpisodeCounts: {},
-  censorNSFWEpisodesAndClips: true,
+  censorNSFWText: true,
   overlayAlert: {
     shouldShowAlert: false
   },

@@ -253,12 +253,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _renderEpisodeItem = ({ item, index }) => {
-    const { censorNSFWEpisodesAndClips } = this.global
-    const description = item.description ? item.description.substr(0, 300).sanitize(censorNSFWEpisodesAndClips) : ''
-    const title = item.title ? item.title.sanitize(censorNSFWEpisodesAndClips) : ''
-    const podcastTitle =
-      (item.podcast_title ? item.podcast_title.sanitize(censorNSFWEpisodesAndClips) : '') ||
-      (item.podcast && item.podcast.title ? item.podcast.title.sanitize(censorNSFWEpisodesAndClips) : '')
+    const description = item.description ? item.description.substr(0, 300) : ''
+    const title = item.title || ''
+    const podcastTitle = item?.podcast_title || item?.podcast?.title || ''
 
     return (
       <EpisodeTableCell
