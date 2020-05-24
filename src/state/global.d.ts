@@ -81,5 +81,6 @@ declare module 'reactn/default' {
     }
     subscribedPodcasts: []
     subscribedPodcastsTotalCount: number
+    censorNSFWText: boolean
   }
 }

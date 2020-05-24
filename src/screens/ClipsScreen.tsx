@@ -232,14 +232,9 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _renderClipItem = ({ item, index }) => {
-    const { censorNSFWEpisodesAndClips } = this.global
-    const title = item.title ? item.title.sanitize(censorNSFWEpisodesAndClips) : ''
-    const episodeTitle =
-      item.episode && item.episode.title ? item.episode.title.sanitize(censorNSFWEpisodesAndClips) : ''
-    const podcastTitle =
-      item.episode && item.episode.podcast && item.episode.podcast.title
-        ? item.episode.podcast.title.sanitize(censorNSFWEpisodesAndClips)
-        : ''
+    const title = item?.title || ''
+    const episodeTitle = item?.episode?.title || ''
+    const podcastTitle = item?.episode?.podcast?.title || ''
 
     return item && item.episode && item.episode.id ? (
       <ClipTableCell

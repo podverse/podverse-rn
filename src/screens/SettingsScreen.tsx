@@ -16,7 +16,7 @@ import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { clearHistoryItems } from '../state/actions/history'
-import { setCensorNSFWEpisodesAndClips } from '../state/actions/settings'
+import { setcensorNSFWText } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {
@@ -149,8 +149,8 @@ export class SettingsScreen extends React.Component<Props, State> {
     this.setState({ showSetAllDownloadDialog: false })
   }
 
-  _handleToggleNSFWEpisodesAndClips = async (value: boolean) => {
-    await setCensorNSFWEpisodesAndClips(value)
+  _handleToggleNSFWText = async (value: boolean) => {
+    await setcensorNSFWText(value)
   }
 
   _handleClearHistory = () => {
@@ -192,7 +192,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       showSetAllDownloadDialog,
       showSetAllDownloadDialogIsCount
     } = this.state
-    const { globalTheme, censorNSFWEpisodesAndClips } = this.global
+    const { globalTheme, censorNSFWText } = this.global
     const isDarkMode = globalTheme === darkTheme
 
     return (
@@ -223,9 +223,9 @@ export class SettingsScreen extends React.Component<Props, State> {
           text='Default downloaded episode limit for each podcast'
         />
         <SwitchWithText
-          onValueChange={this._handleToggleNSFWEpisodesAndClips}
-          text='Censor NSFW language in text on the Episodes and Clips tab'
-          value={!!censorNSFWEpisodesAndClips}
+          onValueChange={this._handleToggleNSFWText}
+          text='Censor NSFW language'
+          value={!!censorNSFWText}
         />
         <RNPickerSelect
           items={PV.Player.maximumSpeedSelectOptions}

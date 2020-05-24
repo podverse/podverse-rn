@@ -3,17 +3,17 @@ import { setGlobal } from 'reactn'
 import { PV } from '../../resources'
 
 export const initializeSettings = async () => {
-  const censorNSFWEpisodesAndClips = await AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_EPISODES_AND_CLIPS)
+  const censorNSFWText = await AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_TEXT)
 
   setGlobal({
-    censorNSFWEpisodesAndClips
+    censorNSFWText
   })
 }
 
-export const setCensorNSFWEpisodesAndClips = async (value: boolean) => {
-  setGlobal({ censorNSFWEpisodesAndClips: value }, async () => {
+export const setcensorNSFWText = async (value: boolean) => {
+  setGlobal({ censorNSFWText: value }, async () => {
     value
-      ? await AsyncStorage.setItem(PV.Keys.CENSOR_NSFW_EPISODES_AND_CLIPS, 'TRUE')
-      : await AsyncStorage.removeItem(PV.Keys.CENSOR_NSFW_EPISODES_AND_CLIPS)
+      ? await AsyncStorage.setItem(PV.Keys.CENSOR_NSFW_TEXT, 'TRUE')
+      : await AsyncStorage.removeItem(PV.Keys.CENSOR_NSFW_TEXT)
   })
 }
