@@ -14,7 +14,7 @@ Environment variables and other build information for setting up CI with App Cen
 
 **Project:** package.json
 **Build Variant:** release
-**Node.js version:** 10.x
+**Node.js version:** 12.x
 **Build scripts:** Pre-build, Post-build
 **Build frequency:** Build this branch on every push
 **Build Android App Bundle:** Off
@@ -48,7 +48,7 @@ Environment variables and other build information for setting up CI with App Cen
 
 **Project:** package.json
 **Build Variant:** release
-**Node.js version:** 10.x
+**Node.js version:** 12.x
 **Build scripts:** Pre-build, Post-build
 **Build frequency:** Build this branch on every push
 **Build Android App Bundle:** Off
@@ -122,8 +122,8 @@ Groups > Collaborators
 
 **Project:** package.json
 **Shared Scheme:** podverse
-**Xcode version:** 11.1
-**Node.js version:** 10.x
+**Xcode version:** 11.4
+**Node.js version:** 12.x
 **Build scripts:** Pre-build, Post-build
 **Build frequency:** Build this branch on every push
 **Use legacy build system:** On
