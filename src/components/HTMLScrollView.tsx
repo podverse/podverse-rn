@@ -22,7 +22,7 @@ export const HTMLScrollView = (props: Props) => {
     ...styles.baseFontStyle
   }
 
-  let formattedHtml = removeHTMLAttributesFromString(html.sanitize(censorNSFWText))
+  let formattedHtml = html ? removeHTMLAttributesFromString(html.sanitize(censorNSFWText)) : ''
   formattedHtml = filterHTMLElementsFromString(formattedHtml)
   formattedHtml = convertHHMMSSToAnchorTags(formattedHtml)
   formattedHtml = formattedHtml.linkifyHtml()

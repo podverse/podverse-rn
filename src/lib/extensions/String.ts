@@ -10,6 +10,6 @@ String.prototype.sanitize = function(nsfw: boolean) {
   return nsfw && this
     ? this.replace(regex, function(a) {
         return '*'.repeat(a.length)
-      })
-    : this
+      }).toString()
+    : this.toString()
 }
