@@ -37,9 +37,9 @@ export const toggleSubscribeToPlaylist = async (id: string) => {
   const globalState = getGlobal()
   const subscribedPlaylistIds = await toggleSubscribeToPlaylistService(id)
 
-  let results = []
+  let subscribedPlaylists = []
   if (subscribedPlaylistIds && subscribedPlaylistIds.length > 0) {
-    results = await getPlaylistsService({ playlistId: subscribedPlaylistIds })
+    subscribedPlaylists = await getPlaylistsService({ playlistId: subscribedPlaylistIds })
   }
 
   setGlobal({
@@ -52,7 +52,7 @@ export const toggleSubscribeToPlaylist = async (id: string) => {
     },
     playlists: {
       myPlaylists: globalState.playlists.myPlaylists,
-      subscribedPlaylists: results
+      subscribedPlaylists
     }
   })
 
