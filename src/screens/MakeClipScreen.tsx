@@ -719,6 +719,6 @@ const styles = StyleSheet.create({
   wrapperTop: {
     flex: 0,
     marginHorizontal: 8,
-    marginTop: Platform.os === 'ios' ? 16 : 0
+    marginTop: Platform.OS === 'ios' ? 16 : 0
   }
 })
