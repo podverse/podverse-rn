@@ -1,5 +1,5 @@
 import { StyleSheet, View as RNView } from 'react-native'
-import React, { getGlobal } from 'reactn'
+import React from 'reactn'
 import { FastImage, Icon, Text, View } from '.'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
