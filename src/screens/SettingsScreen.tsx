@@ -15,6 +15,8 @@ import { refreshDownloads } from '../lib/downloader'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
+import { deleteLoggedInUser } from '../services/user'
+import { logoutUser } from '../state/actions/auth'
 import { clearHistoryItems } from '../state/actions/history'
 import { setcensorNSFWText } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
@@ -25,11 +27,14 @@ type Props = {
 
 type State = {
   autoDeleteEpisodeOnEnd?: boolean
+  deleteAccountDialogText: string
+  deleteAccountDialogConfirmed?: boolean
   downloadedEpisodeLimitCount: any
   downloadedEpisodeLimitDefault: any
   downloadingWifiOnly?: boolean
   hasLoaded?: boolean
   maximumSpeedOptionSelected?: any
+  showDeleteAccountDialog?: boolean
   showSetAllDownloadDialog?: boolean
   showSetAllDownloadDialogIsCount?: boolean
 }
@@ -44,6 +49,7 @@ export class SettingsScreen extends React.Component<Props, State> {
     const { downloadedEpisodeLimitCount, downloadedEpisodeLimitDefault } = this.global
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
     this.state = {
+      deleteAccountDialogText: '',
       downloadedEpisodeLimitCount,
       downloadedEpisodeLimitDefault,
       maximumSpeedOptionSelected: maximumSpeedSelectOptions[1]
@@ -183,16 +189,58 @@ export class SettingsScreen extends React.Component<Props, State> {
     ])
   }
 
+  _handleToggleDeleteAccountDialog = () => {
+    this.setState({
+      deleteAccountDialogText: '',
+      deleteAccountDialogConfirmed: false,
+      showDeleteAccountDialog: !this.state.showDeleteAccountDialog
+    })
+  }
+
+  _handleDeleteAccountDialogTextChange = (text: string) => {
+    this.setState({
+      deleteAccountDialogConfirmed: !!text && text.toUpperCase() === 'DELETE',
+      deleteAccountDialogText: text
+    })
+  }
+
+  _handleDeleteAccount = async () => {
+    const { deleteAccountDialogText } = this.state
+
+    try {
+      if (deleteAccountDialogText && deleteAccountDialogText.toUpperCase() === 'DELETE') {
+        await deleteLoggedInUser()
+        await logoutUser()
+        this.setState({ showDeleteAccountDialog: false })
+      }
+    } catch (error) {
+      this.setState({ showDeleteAccountDialog: false }, () => {
+        setTimeout(() => {
+          Alert.alert(
+            PV.Alerts.SOMETHING_WENT_WRONG.title,
+            PV.Alerts.SOMETHING_WENT_WRONG.message,
+            PV.Alerts.BUTTONS.OK
+          )
+        }, 1500)
+      })
+    }
+  }
+
   render() {
     const {
+      deleteAccountDialogConfirmed,
+      deleteAccountDialogText,
       downloadedEpisodeLimitCount,
       downloadedEpisodeLimitDefault,
       downloadingWifiOnly,
       maximumSpeedOptionSelected,
+      showDeleteAccountDialog,
       showSetAllDownloadDialog,
       showSetAllDownloadDialogIsCount
     } = this.state
-    const { globalTheme, censorNSFWText } = this.global
+    const { censorNSFWText, globalTheme, session } = this.global
+    const { isLoggedIn } = session
+
     const isDarkMode = globalTheme === darkTheme
 
     return (
@@ -250,6 +298,18 @@ export class SettingsScreen extends React.Component<Props, State> {
         </RNPickerSelect>
         <Divider style={styles.divider} />
         <Button onPress={this._handleClearHistory} wrapperStyles={styles.button} text={'Clear History'} />
+
+        {isLoggedIn && (
+          <View>
+            <Divider style={styles.divider} />
+            <Button
+              isWarning={true}
+              onPress={this._handleToggleDeleteAccountDialog}
+              text={'Delete Account'}
+              wrapperStyles={styles.button}
+            />
+          </View>
+        )}
         <Dialog.Container visible={showSetAllDownloadDialog}>
           <Dialog.Title>Global Update</Dialog.Title>
           <Dialog.Description>
@@ -263,6 +323,25 @@ export class SettingsScreen extends React.Component<Props, State> {
                 ? this._handleUpdateAllDownloadedEpiosdeLimitCount
                 : this._handleUpdateAllDownloadedEpiosdeLimitDefault
             }
+          />
+        </Dialog.Container>
+
+        <Dialog.Container visible={showDeleteAccountDialog}>
+          <Dialog.Title>Delete Account</Dialog.Title>
+          <Dialog.Description>Are you sure you want to delete your account?</Dialog.Description>
+          <Dialog.Description>Type DELETE in the input below to confirm.</Dialog.Description>
+          <Dialog.Input
+            onChangeText={this._handleDeleteAccountDialogTextChange}
+            placeholder=''
+            value={deleteAccountDialogText}
+          />
+          <Dialog.Button label='Cancel' onPress={this._handleToggleDeleteAccountDialog} />
+          <Dialog.Button
+            bold={deleteAccountDialogConfirmed}
+            color={deleteAccountDialogConfirmed ? PV.Colors.redDarker : PV.Colors.grayDark}
+            disabled={!deleteAccountDialogConfirmed}
+            label='Delete'
+            onPress={this._handleDeleteAccount}
           />
         </Dialog.Container>
       </ScrollView>

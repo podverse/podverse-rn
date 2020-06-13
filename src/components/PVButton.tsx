@@ -32,9 +32,9 @@ export const PVButton = (props: Props) => {
         core.button,
         globalTheme.buttonPrimaryWrapper,
         disabledStyle,
-        wrapperStyles,
+        isSuccessStyle,
         isWarningStyle,
-        isSuccessStyle
+        wrapperStyles
       ]}
       disabled={disabled || isLoading}
       onPress={onPress}>
@@ -47,8 +47,8 @@ export const PVButton = (props: Props) => {
             core.buttonText,
             globalTheme.buttonPrimaryText,
             disabledTextStyle,
-            isWarningTextStyle,
-            isSuccessTextStyle
+            isSuccessTextStyle,
+            isWarningTextStyle
           ]}>
           {text}
         </Text>
