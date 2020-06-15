@@ -201,7 +201,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     this.setState({ isRemoving: true }, async () => {
       try {
         const episodeId = !item.startTime && item.id
-        const mediaRefId = (item.startTime || item.startTime === 0) && item.id
+        const mediaRefId = item.startTime || item.startTime === 0 ? item.id : null
         await addOrRemovePlaylistItem(playlist.id, episodeId, mediaRefId)
         await getPlaylist(playlist.id)
         const newSortableListData = sortableListData.filter((x) => {
