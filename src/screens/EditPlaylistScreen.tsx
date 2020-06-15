@@ -35,27 +35,15 @@ type State = {
 
 export class EditPlaylistScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
+    const isEditing = !!navigation.getParam('isEditing')
+    const handlePress = navigation.getParam(isEditing ? '_stopEditing' : '_startEditing')
+    const text = isEditing ? 'Done' : 'Edit'
+
     return {
       title: 'Edit Playlist',
       headerRight: (
-        <RNView>
-          {!navigation.getParam('isEditing') ? (
-            <RNView style={styles.headerButtonWrapper}>
-              <NavHeaderButtonText
-                handlePress={navigation.getParam('_startEditing')}
-                style={styles.navHeaderTextButton}
-                text='Edit'
-              />
-            </RNView>
-          ) : (
-            <RNView style={styles.headerButtonWrapper}>
-              <NavHeaderButtonText
-                handlePress={navigation.getParam('_stopEditing')}
-                style={styles.navHeaderTextButton}
-                text='Done'
-              />
-            </RNView>
-          )}
+        <RNView style={styles.headerButtonWrapper}>
+          <NavHeaderButtonText handlePress={handlePress} style={styles.navHeaderTextButton} text={text} />
         </RNView>
       )
     }
