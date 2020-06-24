@@ -5,6 +5,7 @@ import { Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'r
 import { RNCamera } from 'react-native-camera'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
+import { saveSpecialUserInfo } from '../services/user'
 import { addAddByRSSPodcast } from '../state/actions/parser'
 
 type Props = {}
@@ -27,9 +28,10 @@ export const ScanQRCodeScreen = (props: Props) => {
     try {
       const validatedData = validatePayload(scannedData)
 
-      console.log(validatedData)
+      await saveSpecialUserInfo(validatedData.userInfo)
       await addAddByRSSPodcast(validatedData.feedUrl)
       const podcast = await getAddByRSSPodcastLocally(validatedData.feedUrl)
+
       navigate(PV.RouteNames.PodcastScreen, {
         podcast,
         addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
@@ -93,7 +95,6 @@ const styles = StyleSheet.create({
     backgroundColor: PV.Colors.black
   },
   preview: {
-    position: 'absolute',
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center'
@@ -104,7 +105,6 @@ const styles = StyleSheet.create({
     backgroundColor: PV.Colors.black + 'CC'
   },
   verticalFiller: {
-    position: 'absolute',
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'space-between'
@@ -128,20 +128,23 @@ const styles = StyleSheet.create({
     width: '100%',
     color: PV.Colors.grayLightest,
     fontSize: PV.Fonts.sizes.xl,
-    paddingVertical: 20,
-    paddingHorizontal: 74
+    paddingVertical: 10
   },
   contentContainer: {
     width: '100%',
     flex: 1,
-    paddingVertical: 20,
-    justifyContent: 'center',
+    paddingVertical: 10,
+    justifyContent: 'space-around',
     backgroundColor: PV.Colors.black + 'CC'
   },
   dismissButton: {
     paddingVertical: 15,
     paddingHorizontal: 30,
-    alignItems: 'center'
+    alignItems: 'center',
+    alignSelf: 'center',
+    width: '90%',
+    borderColor: PV.Colors.white,
+    borderWidth: 1
   },
   dismissButtonText: {
     fontSize: PV.Fonts.sizes.lg,
