@@ -1,5 +1,6 @@
 import debounce from 'lodash/debounce'
 import { Alert, Linking, StyleSheet } from 'react-native'
+import Config from 'react-native-config'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -265,7 +266,7 @@ export class SearchScreen extends React.Component<Props, State> {
             renderItem={this._renderPodcastItem}
             resultsText='podcasts'
             showAddPodcastByRSS={flatListData && flatListData.length === 0}
-            showAddPodcastByQR={flatListData && flatListData.length === 0}
+            showAddPodcastByQR={flatListData && flatListData.length === 0 && !!Config.SHOW_QR_SCANNER}
             showRequestPodcast={true}
           />
         )}
