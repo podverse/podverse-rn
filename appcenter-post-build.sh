@@ -50,6 +50,11 @@ if [ "$AGENT_JOBSTATUS" == "Succeeded" ] ; then
         echo "======= Browserstack TESTS REQUEST END ======="
         
         if [ "$RUN_TESTS" == "Success" ]; then
+         TO_ADDRESS="dev@podverse.fm"
+         SUBJECT="Browserstack tests succeeded for build $APPCENTER_BUILD_ID"
+         BODY="Browserstack tests have passed on $PLATFORM for id: $APP_ID. \n\n Info: \n\n $RUN_TESTS"
+
+         echo -e ${BODY} | mail -s "$SUBJECT" ${TO_ADDRESS}
          echo "Browserstack Tests successfull!"
         else
          TO_ADDRESS="dev@podverse.fm"
