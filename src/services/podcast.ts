@@ -239,8 +239,8 @@ export const sortPodcastArrayAlphabetically = (podcasts: any[]) => {
   podcasts.sort((a, b) => {
     let titleA = a.sortableTitle ? a.sortableTitle.toLowerCase().trim() : a.title.toLowerCase().trim()
     let titleB = b.sortableTitle ? b.sortableTitle.toLowerCase().trim() : b.title.toLowerCase().trim()
-    titleA = titleA.replace(/#/g, '')
-    titleB = titleB.replace(/#/g, '')
+    titleA = titleA ? titleA.replace(/#/g, '') : ''
+    titleB = titleB ? titleB.replace(/#/g, '') : ''
     return titleA < titleB ? -1 : titleA > titleB ? 1 : 0
   })
 
