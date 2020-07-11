@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: PV.Colors.white,
-    fontSize: Platform.os === 'ios' ? PV.Fonts.sizes.xl : PV.Fonts.sizes.md,
+    fontSize: Platform.OS === 'ios' ? PV.Fonts.sizes.xl : PV.Fonts.sizes.md,
     fontWeight: 'bold'
   },
   wrapper: {

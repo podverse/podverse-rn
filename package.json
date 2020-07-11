@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "2.6.9",
+  "version": "2.7.0",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -83,7 +83,8 @@
     "react-navigation-tabs": "1.2.0",
     "reactn": "2.2.4",
     "rss-parser": "3.7.3",
-    "validator": "12.2.0"
+    "validator": "12.2.0",
+    "wd": "1.12.1"
   },
   "devDependencies": {
     "@babel/core": "7.4.5",

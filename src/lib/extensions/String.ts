@@ -1,14 +1,19 @@
 import linkifyHtml from 'linkifyjs/html'
-const badWordsRegex = require('badwords-list').regex
-const regex = new RegExp(badWordsRegex, 'gi')
 
 String.prototype.linkifyHtml = function() {
   return this ? linkifyHtml(this) : ''
 }
 
+let badWordsRegexString = require('badwords-list').regex.toString()
+// replace double first character
+badWordsRegexString = badWordsRegexString.replace('/\\b', '\\b')
+// append additional words to the blacklist here
+badWordsRegexString = badWordsRegexString.replace(')\\b/gi', '|dicks)\\b')
+const badWordsRegex = new RegExp(badWordsRegexString, 'gi')
+
 String.prototype.sanitize = function(nsfw: boolean) {
   return nsfw && this
-    ? this.replace(regex, function(a) {
+    ? this.replace(badWordsRegex, function(a) {
         return '*'.repeat(a.length)
       }).toString()
     : this.toString()

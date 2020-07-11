@@ -67,73 +67,74 @@ const postSlackNotification = async (text, opts) => {
 const goBack = true
 
 const runTests = async (customCapabilities) => {
-  try {
-    Object.assign(capabilities, customCapabilities)
+  Object.assign(capabilities, customCapabilities)
 
-    const slackOpts = {
-      device_type: capabilities.name,
-      webhook: capabilities.webhook
-    }
+  const slackOpts = {
+    device_type: capabilities.name,
+    webhook: capabilities.webhook
+  }
+
+  try {
 
     await postSlackNotification('Start e2e tests', slackOpts)
         
-        console.log('init testing')
-        
-        await driver.init(capabilities)
+    console.log('init testing')
+    
+    await driver.init(capabilities)
 
-        windowSize = await driver.getWindowSize()
+    windowSize = await driver.getWindowSize()
 
-        await driver.sleep(3000)
+    await driver.sleep(3000)
 
-        await driver.waitForElementByAccessibilityId('alert_yes_allow_data')
-        await elementByIdAndClickAndTest('alert_yes_allow_data', 'podcasts_screen_view')
+    await driver.waitForElementByAccessibilityId('alert_yes_allow_data')
+    await elementByIdAndClickAndTest('alert_yes_allow_data', 'podcasts_screen_view')
 
-        await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
+    await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
 
-        await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
+    await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
 
-        await elementByIdAndClickAndTest('tab_queue_screen', 'queue_screen_view')
+    await elementByIdAndClickAndTest('tab_queue_screen', 'queue_screen_view')
 
-        await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+    await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
 
-        await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
-        await elementByIdAndClickAndTest('nav_dismiss_icon', 'more_screen_view')
+    await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
+    await elementByIdAndClickAndTest('nav_dismiss_icon', 'more_screen_view')
 
-        await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view', goBack)
+    await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view', goBack)
 
-        await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', goBack)
+    await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', goBack)
 
-        await elementByIdAndClickAndTest('more_screen_profiles_cell', 'profiles_screen_view', goBack)
+    await elementByIdAndClickAndTest('more_screen_profiles_cell', 'profiles_screen_view', goBack)
 
-        await elementByIdAndClickAndTest('more_screen_my_profile_cell', 'profile_screen_view', goBack)
+    await elementByIdAndClickAndTest('more_screen_my_profile_cell', 'profile_screen_view', goBack)
 
-        await elementByIdAndClickAndTest('more_screen_my_clips_cell', 'profile_screen_view', goBack)
+    await elementByIdAndClickAndTest('more_screen_my_clips_cell', 'profile_screen_view', goBack)
 
-        await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view', goBack)
+    await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view', goBack)
 
-        await elementByIdAndClickAndTest('more_screen_membership_cell', 'membership_screen_view', goBack)
+    await elementByIdAndClickAndTest('more_screen_membership_cell', 'membership_screen_view', goBack)
 
-        await elementByIdAndClickAndTest('more_screen_add_podcast_by_rss_cell', 'add_podcast_by_rss_screen_view')
-        await elementByIdAndClickAndTest('nav_dismiss_icon', 'more_screen_view')
+    await elementByIdAndClickAndTest('more_screen_add_podcast_by_rss_cell', 'add_podcast_by_rss_screen_view')
+    await elementByIdAndClickAndTest('nav_dismiss_icon', 'more_screen_view')
 
-        await performScrollDown()
+    await performScrollDown()
 
-        await elementByIdAndClickAndTest('more_screen_faq_cell', 'faq_screen_view', goBack)
+    await elementByIdAndClickAndTest('more_screen_faq_cell', 'faq_screen_view', goBack)
 
-        await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', goBack)
+    await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', goBack)
 
-        await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', goBack)
+    await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', goBack)
 
-        await driver.sleep(3000)
+    await driver.sleep(3000)
 
     await postSlackNotification('SUCCESS: End e2e tests', slackOpts)
-    } catch (error) {
-        console.log('runTests error: ', error)
+  } catch (error) {
+    console.log('runTests error: ', error)
     await postSlackNotification(`FAILURE: End e2e tests. Hint: ${error.message || error.data || error}`, slackOpts)
-        throw error
-    }
+    throw error
+  }
 
-    await driver.quit()
+  await driver.quit()
 }
 
 module.exports = { runTests }

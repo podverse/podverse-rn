@@ -181,12 +181,8 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
     this.setState({ isSubscribing: true }, async () => {
       try {
-        await toggleSubscribeToPlaylist(id, this.global)
-        const subscribedPlaylistIds = safelyUnwrapNestedVariable(
-          () => this.global.session.userInfo.subscribedPlaylistIds,
-          []
-        )
-        const isSubscribed = subscribedPlaylistIds.some((x: string) => id)
+        const subscribedPlaylistIds = await toggleSubscribeToPlaylist(id)
+        const isSubscribed = subscribedPlaylistIds.some((x: string) => x === id)
         this.setState({
           isSubscribed,
           isSubscribing: false

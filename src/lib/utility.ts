@@ -95,14 +95,20 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
 }
 
 export const removeHTMLFromString = (text: string) => {
-  const htmlEntitiesRegex = /(<([^>]+)>)|(\r?\n|\r)/gi
-  return text.replace(htmlEntitiesRegex, '')
+  if (text) {
+    const htmlEntitiesRegex = /(<([^>]+)>)|(\r?\n|\r)/gi
+    return text.replace(htmlEntitiesRegex, '')
+  }
+  return text
 }
 
 export const decodeHTMLString = (text: string) => {
-  const limitSingleSpaceRegex = /\s+/g
-  const newString = text.replace(limitSingleSpaceRegex, ' ')
-  return he.decode(newString)
+  if (text) {
+    const limitSingleSpaceRegex = /\s+/g
+    const newString = text.replace(limitSingleSpaceRegex, ' ')
+    return he.decode(newString)
+  }
+  return text
 }
 
 export const removeHTMLAttributesFromString = (html: string) => {
@@ -117,9 +123,11 @@ export const removeHTMLAttributesFromString = (html: string) => {
 }
 
 export const filterHTMLElementsFromString = (html: string) => {
-  let finalHtml = html
-  finalHtml = finalHtml.replace(/<audio.*>.*?<\/audio>|<video.*>.*?<\/video>|<img.*>.*?<\/img>|<img.*>/gi, '')
-  return finalHtml
+  if (html) {
+    const finalHtml = html.replace(/<audio.*>.*?<\/audio>|<video.*>.*?<\/video>|<img.*>.*?<\/img>|<img.*>/gi, '')
+    return finalHtml
+  }
+  return html
 }
 
 export const formatTitleViewHtml = (episode: any) => {
@@ -327,7 +335,7 @@ export const createEmailLinkUrl = (email: string, subject?: string, body?: strin
 }
 
 export const getHHMMSSMatchesInString = (str: string) => {
-  const regex = /(?:2[0-3]|[01]?[0-9]):[0-5][0-9]:[0-5][0-9]/g
+  const regex = /([0-9]?[0-9]:[0-5]?[0-9]:[0-5][0-9])|([0-5]?[0-9]:[0-5][0-9])/g
   return str.match(regex)
 }
 
@@ -337,16 +345,19 @@ const createHHMMSSAnchorTag = (hhmmss: string) => {
 }
 
 export const convertHHMMSSToAnchorTags = (html: string) => {
-  const matches = getHHMMSSMatchesInString(html) || []
-  let formattedHtml = html
-  for (const match of matches) {
-    const replace = match
-    const regex = new RegExp(replace, 'g')
-    const anchorTag = createHHMMSSAnchorTag(match)
-    formattedHtml = formattedHtml.replace(regex, anchorTag)
+  if (html) {
+    const matches = getHHMMSSMatchesInString(html) || []
+    let formattedHtml = html
+    for (const match of matches) {
+      const replace = match
+      const regex = new RegExp(replace, 'g')
+      const anchorTag = createHHMMSSAnchorTag(match)
+      formattedHtml = formattedHtml.replace(regex, anchorTag)
+    }
+  
+    return formattedHtml
   }
-
-  return formattedHtml
+  return html
 }
 
 export function validateHHMMSSString(hhmmss: string) {
@@ -379,7 +390,7 @@ export function convertHHMMSSToSeconds(hhmmssString: string) {
       }
 
       hours = hours * 3600
-      minutes = minutes * 60
+      minutes = minutes ? minutes * 60 : 0
     } else if (hhmmssArray.length === 2) {
       minutes = parseInt(hhmmssArray[0], 10)
       seconds = parseInt(hhmmssArray[1], 10)

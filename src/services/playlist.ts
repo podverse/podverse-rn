@@ -40,13 +40,12 @@ export const createPlaylist = async (data: any) => {
   return response && response.data
 }
 
-export const deletePlaylistOnServer = async (data: any) => {
+export const deletePlaylistOnServer = async (id: string) => {
   const bearerToken = await getBearerToken()
   const response = await request({
-    endpoint: '/mediaRef',
+    endpoint: `/playlist/${id}`,
     method: 'DELETE',
     headers: { Authorization: bearerToken },
-    body: data,
     opts: { credentials: 'include' }
   })
 
