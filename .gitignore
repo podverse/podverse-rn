@@ -59,3 +59,5 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+
+truffle.log
