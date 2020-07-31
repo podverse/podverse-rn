@@ -1,3 +1,3 @@
 export const Emails = {
-  SUPPORT: 'support@podverse.fm'
+  SUPPORT: 'contact@podverse.fm'
 }
