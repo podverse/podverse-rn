@@ -40,7 +40,7 @@ export class AboutScreen extends React.Component<Props, State> {
             {'Our mission is to support the original independent spirit' +
               ' of podcasting, and we would love to collaborate with all podcast apps' +
               ' to make our technologies as cross-compatible, easy-to-use,' +
-              ' and empowering for people as possible.'}
+              ' and liberating for people as possible.'}
           </Text>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {'All Podverse software is provided free and open source (FOSS)' +
