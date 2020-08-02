@@ -25,5 +25,9 @@
   "top - past week": "top - past week",
   "top - past month": "top - past month",
   "top - past year": "top - past year",
-  "Title": "Title"
+  "Title": "Title",
+  "AddPodcastByRSSScreenText1": "If a podcast is not officially available on Podverse, you can still listen to it by pasting the RSS link here and pressing the Save button.",
+  "AddPodcastByRSSScreenText2": "If you are logged in, your podcasts added by RSS feed will be synced across your devices.",
+  "AddPodcastByRSSScreenText3": "Clips and playlists are not supported for podcasts added by RSS feed.",
+  "AddPodcastByRSSScreenText4": "If you want a podcast officially added to Podverse press the Request Podcast link below."
 }
