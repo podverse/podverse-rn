@@ -145,7 +145,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               onPress={this._navToRequestPodcastForm}
               style={styles.textLink}>
-              Request Podcast
+              {translate('Request Podcast')}
             </TextLink>
           </ScrollView>
         )}
