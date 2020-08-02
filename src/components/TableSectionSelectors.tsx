@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import { useGlobal } from 'reactn'
+import { convertFilterOptionsToI18N } from '../lib/i18n'
 import { PV } from '../resources'
 import { darkTheme, hidePickerIconOnAndroidSectionSelector } from '../styles'
 import { Icon, Text } from './'
@@ -41,8 +42,8 @@ export const TableSectionSelectors = (props: Props) => {
   } = props
 
   useEffect(() => {
-    let leftItems = []
-    let rightItems = []
+    let leftItems = [] as any
+    let rightItems = [] as any
 
     if (!isBottomBar) {
       leftItems = PV.FilterOptions.typeItems.filter((type: string) => {
@@ -77,6 +78,9 @@ export const TableSectionSelectors = (props: Props) => {
       }
     }
 
+    leftItems = convertFilterOptionsToI18N(leftItems)
+    rightItems = convertFilterOptionsToI18N(rightItems)
+
     setLeftItems(leftItems)
     setRightItems(rightItems)
   }, [])
@@ -84,9 +88,7 @@ export const TableSectionSelectors = (props: Props) => {
   useEffect(() => {
     let rightItems = []
     const screen = PV.FilterOptions.screenFilters[screenName]
-    if (screen.hideSort.includes(selectedLeftItemKey)) {
-      setRightItems(rightItems)
-    } else {
+    if (!screen.hideSort.includes(selectedLeftItemKey)) {
       if (!isBottomBar) {
         rightItems = PV.FilterOptions.sortItems.filter((sortKey: string) => {
           return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
@@ -114,9 +116,10 @@ export const TableSectionSelectors = (props: Props) => {
           }
         }
       }
-
-      setRightItems(rightItems)
     }
+
+    rightItems = convertFilterOptionsToI18N(rightItems)
+    setRightItems(rightItems)
   }, [selectedLeftItemKey])
 
   const selectedLeftItem = leftItems.find((x) => x.value === selectedLeftItemKey) || {}
