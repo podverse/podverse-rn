@@ -29,17 +29,19 @@ type State = {
 }
 
 export class AddPodcastByRSSScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => ({
-    title: 'Add by RSS',
-    headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
-    headerRight: (
-      <NavHeaderButtonText
-        disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
-        handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}
-        text='Save'
-      />
-    )
-  })
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: translate('Add by RSS'),
+      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
+      headerRight: (
+        <NavHeaderButtonText
+          disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
+          handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}
+          text={translate('Save')}
+        />
+      )
+    }
+  }
 
   constructor(props: Props) {
     super(props)

@@ -14,9 +14,11 @@ type Props = {
 type State = {}
 
 export class PurchasingScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    title: 'Processing',
-    headerRight: null
+  static navigationOptions = () => {
+    return {
+      title: 'Processing',
+      headerRight: null
+    }
   }
 
   constructor(props: Props) {

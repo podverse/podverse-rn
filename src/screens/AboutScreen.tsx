@@ -13,8 +13,10 @@ type Props = {}
 type State = {}
 
 export class AboutScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    title: 'About'
+  static navigationOptions = () => {
+    return {
+      title: 'About'
+    }
   }
 
   componentDidMount() {

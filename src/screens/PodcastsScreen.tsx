@@ -70,8 +70,10 @@ type State = {
 let isInitialLoad = true
 
 export class PodcastsScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    title: 'Podcasts'
+  static navigationOptions = () => {
+    return {
+      title: 'Podcasts'
+    }
   }
 
   constructor(props: Props) {

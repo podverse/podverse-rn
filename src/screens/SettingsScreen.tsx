@@ -40,8 +40,10 @@ type State = {
 }
 
 export class SettingsScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    title: 'Settings'
+  static navigationOptions = () => {
+    return {
+      title: 'Settings'
+    }
   }
 
   constructor(props: Props) {

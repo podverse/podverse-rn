@@ -14,8 +14,10 @@ type State = {
 }
 
 export class EmailVerificationScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    title: 'Verify Your Email'
+  static navigationOptions = () => {
+    return {
+      title: 'Verify Your Email'
+    }
   }
 
   constructor(props: Props) {
