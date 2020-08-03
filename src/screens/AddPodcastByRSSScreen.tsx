@@ -130,16 +130,16 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             />
             <Divider style={styles.divider} />
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
-              {translate('AddPodcastByRSSScreenText1')}
+              {translate('AddPodcastByRSSScreen.text1')}
             </Text>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
-              {translate('AddPodcastByRSSScreenText2')}
+              {translate('AddPodcastByRSSScreen.text2')}
             </Text>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
-              {translate('AddPodcastByRSSScreenText3')}
+              {translate('AddPodcastByRSSScreen.text3')}
             </Text>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
-              {translate('AddPodcastByRSSScreenText4')}
+              {translate('AddPodcastByRSSScreen.text4')}
             </Text>
             <TextLink
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
