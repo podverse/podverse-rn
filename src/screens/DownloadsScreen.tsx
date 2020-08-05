@@ -17,7 +17,7 @@ type State = {
 }
 
 export class DownloadsScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = () => {
     return {
       title: 'Downloads'
     }

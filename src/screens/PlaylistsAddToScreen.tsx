@@ -32,17 +32,19 @@ type State = {
 }
 
 export class PlaylistsAddToScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => ({
-    title: 'Add to Playlist',
-    headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
-    headerRight: (
-      <RNView>
-        {navigation.getParam('isLoggedIn') && (
-          <NavHeaderButtonText handlePress={navigation.getParam('showNewPlaylistDialog')} text='New' />
-        )}
-      </RNView>
-    )
-  })
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Add to Playlist',
+      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
+      headerRight: (
+        <RNView>
+          {navigation.getParam('isLoggedIn') && (
+            <NavHeaderButtonText handlePress={navigation.getParam('showNewPlaylistDialog')} text='New' />
+          )}
+        </RNView>
+      )
+    }
+  }
 
   constructor(props: Props) {
     super(props)
