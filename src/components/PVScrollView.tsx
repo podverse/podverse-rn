@@ -4,6 +4,7 @@ import { useGlobal } from 'reactn'
 
 type Props = {
   children: any
+  contentContainerStyle?: any
   style: any
   transparent?: boolean
 }

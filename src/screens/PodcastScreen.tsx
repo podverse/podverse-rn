@@ -1,11 +1,13 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { View as RNView } from 'react-native'
+import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
 import {
   ActionSheet,
   ActivityIndicator,
+  Button,
   ClipTableCell,
   Divider,
   EpisodeTableCell,
@@ -24,7 +26,7 @@ import {
   View
 } from '../components'
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
-import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
+import { getDownloadedEpisodes, removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
@@ -41,7 +43,7 @@ import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRefs } from '../services/mediaRef'
 import { getPodcast } from '../services/podcast'
-import { removeDownloadedPodcastEpisode, updateAutoDownloadSettings } from '../state/actions/downloads'
+import * as DownloadState from '../state/actions/downloads'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
@@ -68,6 +70,7 @@ type State = {
   searchBarText: string
   selectedItem?: any
   showActionSheet: boolean
+  showDeleteDownloadedEpisodesDialog?: boolean
   showNoInternetConnectionMessage?: boolean
   showSettings: boolean
   viewType: string | null
@@ -416,11 +419,28 @@ export class PodcastScreen extends React.Component<Props, State> {
         flatListData: filteredEpisodes
       },
       async () => {
-        await removeDownloadedPodcastEpisode(selectedId)
+        await DownloadState.removeDownloadedPodcastEpisode(selectedId)
         const finalDownloadedEpisodes = await getDownloadedEpisodes()
         this.setState({ flatListData: finalDownloadedEpisodes })
       }
     )
+  }
+
+  _handleToggleDeleteDownloadedEpisodesDialog = () => {
+    this.setState({ showDeleteDownloadedEpisodesDialog: !this.state.showDeleteDownloadedEpisodesDialog })
+  }
+
+  _handleDeleteDownloadedEpisodes = async () => {
+    this.setState({ showDeleteDownloadedEpisodesDialog: false }, async () => {
+      const { podcast, podcastId } = this.state
+      const id = (podcast && podcast.id) || podcastId
+      try {
+        await removeDownloadedPodcast(id)
+      } catch (error) {
+        //
+      }
+      DownloadState.updateDownloadedPodcasts()
+    })
   }
 
   _handleSearchBarTextChange = (text: string) => {
@@ -497,7 +517,7 @@ export class PodcastScreen extends React.Component<Props, State> {
   _handleToggleAutoDownload = (autoDownloadOn: boolean) => {
     const { podcast, podcastId } = this.state
     const id = (podcast && podcast.id) || podcastId
-    if (id) updateAutoDownloadSettings(id, autoDownloadOn)
+    if (id) DownloadState.updateAutoDownloadSettings(id, autoDownloadOn)
   }
 
   _handleToggleSettings = () => {
@@ -541,6 +561,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       querySort,
       selectedItem,
       showActionSheet,
+      showDeleteDownloadedEpisodesDialog,
       showNoInternetConnectionMessage,
       showSettings,
       viewType
@@ -560,7 +581,6 @@ export class PodcastScreen extends React.Component<Props, State> {
     const autoDownloadOn =
       (podcast && autoDownloadSettings[podcast.id]) || (podcastId && autoDownloadSettings[podcastId])
 
-    let items = PV.FilterOptions.screenFilters.PodcastScreen.sort
     if (viewType === PV.Filters._downloadedKey) {
       const { downloadedPodcasts } = this.global
       const downloadedPodcast = downloadedPodcasts.find(
@@ -568,8 +588,6 @@ export class PodcastScreen extends React.Component<Props, State> {
       )
       flatListData = (downloadedPodcast && downloadedPodcast.episodes) || []
       flatListDataTotalCount = flatListData.length
-    } else if (!viewType || viewType === PV.Filters._aboutKey) {
-      items = []
     }
 
     const resultsText =
@@ -618,6 +636,12 @@ export class PodcastScreen extends React.Component<Props, State> {
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.settingsHelpText}>
               Once the download limit is exceeded, the oldest episode will be auto deleted.
             </Text>
+            <Divider style={styles.divider} />
+            <Button
+              onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
+              wrapperStyles={styles.button}
+              text='Delete Downloaded Episodes'
+            />
           </View>
         )}
         {!showSettings && (
@@ -666,6 +690,14 @@ export class PodcastScreen extends React.Component<Props, State> {
             />
           </View>
         )}
+        <Dialog.Container visible={showDeleteDownloadedEpisodesDialog}>
+          <Dialog.Title>Delete Downloaded Episodes</Dialog.Title>
+          <Dialog.Description>
+            Are you sure you want to delete all of your downloaded episodes from this podcast?
+          </Dialog.Description>
+          <Dialog.Button label='No' onPress={this._handleToggleDeleteDownloadedEpisodesDialog} />
+          <Dialog.Button label='Yes' onPress={this._handleDeleteDownloadedEpisodes} />
+        </Dialog.Container>
       </View>
     )
   }
@@ -759,6 +791,12 @@ const styles = {
   },
   aboutViewText: {
     fontSize: PV.Fonts.sizes.lg
+  },
+  button: {
+    marginVertical: 8
+  },
+  divider: {
+    marginVertical: 16
   },
   settingsHelpText: {
     fontSize: PV.Fonts.sizes.md
