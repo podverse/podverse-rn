@@ -3,6 +3,7 @@ import NetInfo from '@react-native-community/netinfo'
 import { Alert } from 'react-native'
 import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
+import { translate } from '../lib/i18n'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { IActionSheet } from '../resources/Interfaces'
 import { PVTrackPlayer } from '../services/player'
@@ -78,7 +79,7 @@ const mediaMoreButtons = (
   } else {
     buttons.push({
       key: 'stream',
-      text: 'Stream',
+      text: translate('Stream'),
       onPress: async () => {
         const showAlert = await hasTriedStreamingWithoutWifiAlert(handleDismiss, navigation, false)
         if (showAlert) return

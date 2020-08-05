@@ -50,8 +50,10 @@ type State = {
 }
 
 export class ClipsScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    title: 'Clips'
+  static navigationOptions = () => {
+    return {
+      title: 'Clips'
+    }
   }
 
   constructor(props: Props) {

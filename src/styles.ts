@@ -182,6 +182,9 @@ export const darkTheme = StyleSheet.create({
   tableSectionHeader: {
     backgroundColor: PV.Colors.grayDarker
   },
+  tableSectionHeaderTransparent: {
+    backgroundColor: PV.Colors.grayDarkerTransparent
+  },
   tableSectionHeaderIcon: {
     color: PV.Colors.white
   },
@@ -406,6 +409,9 @@ export const lightTheme = StyleSheet.create({
   tableSectionHeader: {
     backgroundColor: PV.Colors.grayLighter
   },
+  tableSectionHeaderTransparent: {
+    backgroundColor: PV.Colors.grayLighterTransparent
+  },
   tableSectionHeaderIcon: {
     color: PV.Colors.black
   },
@@ -534,7 +540,7 @@ export const core = StyleSheet.create({
     flex: 0,
     minHeight: PV.FlatList.searchBar.height,
     justifyContent: 'center',
-    marginVertical: 8
+    marginBottom: 8
   },
   row: {
     backgroundColor: 'transparent',
@@ -598,9 +604,9 @@ export const core = StyleSheet.create({
 
 export const hidePickerIconOnAndroidSectionSelector = (isDarkMode: boolean) => {
   return {
-    inputAndroidContainer: {
-      backgroundColor: isDarkMode ? PV.Colors.grayDarker : PV.Colors.grayLighter
-    }
+    // inputAndroidContainer: {
+    //   backgroundColor: isDarkMode ? PV.Colors.grayDarker : PV.Colors.grayLighter
+    // }
   }
 }
 

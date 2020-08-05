@@ -11,6 +11,7 @@ import {
   TextLink,
   View
 } from '../components'
+import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -28,17 +29,19 @@ type State = {
 }
 
 export class AddPodcastByRSSScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => ({
-    title: 'Add by RSS',
-    headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
-    headerRight: (
-      <NavHeaderButtonText
-        disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
-        handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}
-        text='Save'
-      />
-    )
-  })
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: translate('Add by RSS'),
+      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
+      headerRight: (
+        <NavHeaderButtonText
+          disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
+          handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}
+          text={translate('Save')}
+        />
+      )
+    }
+  }
 
   constructor(props: Props) {
     super(props)
@@ -129,23 +132,22 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             />
             <Divider style={styles.divider} />
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
-              If a podcast is not officially available on Podverse, you can still listen to it by pasting the RSS link
-              here and pressing the Save button.
+              {translate('AddPodcastByRSSScreen.text1')}
             </Text>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
-              If you are logged in, your podcasts added by RSS feed will be synced across your devices.
+              {translate('AddPodcastByRSSScreen.text2')}
             </Text>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
-              Clips and playlists are not supported for podcasts added by RSS feed.
+              {translate('AddPodcastByRSSScreen.text3')}
             </Text>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
-              If you want a podcast officially added to Podverse press the Request Podcast link below.
+              {translate('AddPodcastByRSSScreen.text4')}
             </Text>
             <TextLink
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               onPress={this._navToRequestPodcastForm}
               style={styles.textLink}>
-              Request Podcast
+              {translate('Request Podcast')}
             </TextLink>
           </ScrollView>
         )}

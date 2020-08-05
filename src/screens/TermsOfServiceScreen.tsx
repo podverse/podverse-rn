@@ -11,8 +11,10 @@ type Props = {}
 type State = {}
 
 export class TermsOfServiceScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    title: 'Terms of Service'
+  static navigationOptions = () => {
+    return {
+      title: 'Terms of Service'
+    }
   }
 
   componentDidMount() {

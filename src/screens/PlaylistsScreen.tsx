@@ -30,8 +30,10 @@ type State = {
 }
 
 export class PlaylistsScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    title: 'Playlists'
+  static navigationOptions = () => {
+    return {
+      title: 'Playlists'
+    }
   }
 
   constructor(props: Props) {

@@ -9,6 +9,8 @@ export const Colors = {
   grayDark: '#575757',
   grayDarker: '#373737',
   grayDarkest: '#1a1a1a',
+  grayDarkerTransparent: 'rgba(55, 55, 55, 0.2)',
+  grayLighterTransparent: 'rgba(193, 193, 193, 0.2)',
   grayDarkestZ: '#181818', // only used in zebra stripe cells
   black: '#000000',
   blueLighter: '#4f83bf',

@@ -37,6 +37,7 @@ import {
   isOdd,
   readableDate,
   removeHTMLFromString,
+  replaceLinebreaksWithBrTags,
   testProps
 } from '../lib/utility'
 import { PV } from '../resources'
@@ -556,6 +557,8 @@ export class PlayerScreen extends React.Component<Props, State> {
     const episodeId = episode ? episode.id : null
     const mediaRefId = mediaRef ? mediaRef.id : null
 
+    episode.description = replaceLinebreaksWithBrTags(episode.description)
+
     return (
       <OpaqueBackground nowPlayingItem={nowPlayingItem}>
         <View style={styles.view} transparent={true} {...testProps('player_screen_view')}>
@@ -583,6 +586,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                 handleSelectRightItem={this._selectQuerySort}
                 hideRightItemWhileLoading={hideRightItemWhileLoading}
                 includeChronological={viewType === PV.Filters._clipsKey && queryFrom === PV.Filters._fromThisEpisodeKey}
+                isTransparent={true}
                 screenName='PlayerScreen'
                 selectedLeftItemKey={viewType}
                 selectedRightItemKey={querySort}
@@ -591,6 +595,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                 <TableSectionSelectors
                   handleSelectLeftItem={this._selectQueryFrom}
                   isBottomBar={true}
+                  isTransparent={true}
                   screenName='PlayerScreen'
                   selectedLeftItemKey={queryFrom}
                 />
@@ -598,6 +603,7 @@ export class PlayerScreen extends React.Component<Props, State> {
               {viewType === PV.Filters._episodesKey && (
                 <TableSectionHeader
                   centerText={PV.Fonts.fontScale.largest === fontScaleMode}
+                  isTransparent={true}
                   title='From this podcast'
                 />
               )}

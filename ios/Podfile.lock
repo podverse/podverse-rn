@@ -221,7 +221,7 @@ PODS:
     - React
   - react-native-safe-area-context (0.7.3):
     - React
-  - react-native-track-player (1.1.8):
+  - react-native-track-player (1.2.3):
     - React
   - react-native-webview (7.4.2):
     - React
@@ -277,6 +277,8 @@ PODS:
   - RNGestureHandler (1.6.1):
     - React
   - RNIap (4.2.0):
+    - React
+  - RNLocalize (1.4.1):
     - React
   - RNReanimated (1.8.0):
     - React
@@ -343,6 +345,7 @@ DEPENDENCIES:
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNIap (from `../node_modules/react-native-iap`)
+  - RNLocalize (from `../node_modules/react-native-localize`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSecureKeyStore (from `../node_modules/react-native-secure-key-store/ios`)
@@ -446,6 +449,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNIap:
     :path: "../node_modules/react-native-iap"
+  RNLocalize:
+    :path: "../node_modules/react-native-localize"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -487,7 +492,7 @@ SPEC CHECKSUMS:
   react-native-config: 7db9b96479164dfd7b2be68eb9079e08279511c4
   react-native-netinfo: 6bb847e64f45a2d69c6173741111cfd95c669301
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
-  react-native-track-player: 6e4e91a246efe7121cdef5a43258659a062499db
+  react-native-track-player: 28b96dd6404dea3eee80e67b74507679235a8dfb
   react-native-webview: 5c7578eb1ee5daf16e4c84a500becaa2038db828
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
@@ -507,6 +512,7 @@ SPEC CHECKSUMS:
   RNFS: 54da03c2b7d862c42ea3ca8c7f86f892760a535a
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
   RNIap: 251e9b516965d84eecc67151d76c939e8f5481ea
+  RNLocalize: 49634a6a605dcdeb319e9c42a5c2f1aec508694b
   RNReanimated: 955cf4068714003d2f1a6e2bae3fb1118f359aff
   RNScreens: ac02d0e4529f08ced69f5580d416f968a6ec3a1d
   RNSecureKeyStore: f1ad870e53806453039f650720d2845c678d89c8
