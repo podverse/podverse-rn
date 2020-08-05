@@ -327,10 +327,10 @@ export const checkIfIdMatchesClipIdOrEpisodeId = (
   )
 }
 
-export const createEmailLinkUrl = (email: string, subject?: string, body?: string) => {
-  let str = 'mailto:' + email + '?'
-  str += encodeURI(subject ? 'subject=' + subject + '&' : '')
-  str += encodeURI(body ? 'body=' + body : '')
+export const createEmailLinkUrl = (obj: any) => {
+  let str = 'mailto:' + obj.email + '?'
+  str += encodeURI(obj.subject ? 'subject=' + obj.subject + '&' : '')
+  str += encodeURI(obj.body ? 'body=' + obj.body : '')
   return str
 }
 
@@ -354,7 +354,7 @@ export const convertHHMMSSToAnchorTags = (html: string) => {
       const anchorTag = createHHMMSSAnchorTag(match)
       formattedHtml = formattedHtml.replace(regex, anchorTag)
     }
-  
+
     return formattedHtml
   }
   return html

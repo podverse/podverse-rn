@@ -7,7 +7,7 @@ import * as RNLocalize from 'react-native-localize'
 export const setI18nConfig = async () => {
   const translationsDir = await (Platform.OS === 'android'
     ? RNFS.readDirAssets('translations')
-    : RNFS.readDir(RNFS.MainBundlePath + '/i18n/locales'))
+    : RNFS.readDir(RNFS.MainBundlePath + '/i18n/translations'))
   const translationPaths = translationsDir
     .filter(({ isFile, name }) => isFile() && name.endsWith('.json'))
     .reduce((all, { name, path }) => {
@@ -39,7 +39,7 @@ export const translate = memoize(
   (key: string, config: string) => (config ? key + JSON.stringify(config) : key)
 ) as any
 
-export const supportedLanguages = ['en', 'es']
+export const supportedLanguages = ['en']
 
 export const convertFilterOptionsToI18N = (rightItems: any) => rightItems.map((x: any) => convertFilterOptionToI18N(x))
 

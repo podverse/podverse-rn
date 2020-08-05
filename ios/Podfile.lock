@@ -221,7 +221,7 @@ PODS:
     - React
   - react-native-safe-area-context (0.7.3):
     - React
-  - react-native-track-player (1.1.8):
+  - react-native-track-player (1.2.3):
     - React
   - react-native-webview (7.4.2):
     - React
@@ -492,7 +492,7 @@ SPEC CHECKSUMS:
   react-native-config: 7db9b96479164dfd7b2be68eb9079e08279511c4
   react-native-netinfo: 6bb847e64f45a2d69c6173741111cfd95c669301
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
-  react-native-track-player: 6e4e91a246efe7121cdef5a43258659a062499db
+  react-native-track-player: 28b96dd6404dea3eee80e67b74507679235a8dfb
   react-native-webview: 5c7578eb1ee5daf16e4c84a500becaa2038db828
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360

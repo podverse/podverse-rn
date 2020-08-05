@@ -1,8 +1,8 @@
-import { Alert, Linking, SectionList, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Linking, SectionList, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import { Badge } from 'react-native-elements'
 import React from 'reactn'
 import { Divider, TableSectionHeader, Text, View } from '../components'
-import { getMembershipStatus, testProps } from '../lib/utility'
+import { createEmailLinkUrl, getMembershipStatus, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { logoutUser } from '../state/actions/auth'
@@ -40,10 +40,7 @@ export class MoreScreen extends React.Component<Props, State> {
     } else if (item.key === _faqKey) {
       navigation.navigate(PV.RouteNames.FAQScreen)
     } else if (item.key === _contactKey) {
-      Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-        { text: 'Cancel' },
-        { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.contact) }
-      ])
+      Linking.openURL(createEmailLinkUrl(PV.Emails.CONTACT_US))
     } else if (item.key === _termsKey) {
       navigation.navigate(PV.RouteNames.TermsOfServiceScreen)
     } else if (item.key === _logoutKey) {
