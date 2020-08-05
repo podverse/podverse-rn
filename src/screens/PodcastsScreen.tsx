@@ -641,19 +641,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               />
             )}
-            <Dialog.Container visible={showDataSettingsConfirmDialog}>
-              <Dialog.Title>Data Settings</Dialog.Title>
-              <Dialog.Description>Do you want to allow downloading episodes with your data plan?</Dialog.Description>
-              <Dialog.Button label='No, Wifi Only' onPress={this._handleDataSettingsWifiOnly} />
-              <Dialog.Button
-                label='Yes, Allow Data'
-                onPress={this._handleDataSettingsAllowData}
-                {...testProps('alert_yes_allow_data')}
-              />
-            </Dialog.Container>
-            <PurchaseListener navigation={navigation} />
           </RNView>
         )}
+        <Dialog.Container visible={showDataSettingsConfirmDialog}>
+          <Dialog.Title>Data Settings</Dialog.Title>
+          <Dialog.Description>Do you want to allow downloading episodes with your data plan?</Dialog.Description>
+          <Dialog.Button label='No, Wifi Only' onPress={this._handleDataSettingsWifiOnly} />
+          <Dialog.Button
+            label='Yes, Allow Data'
+            onPress={this._handleDataSettingsAllowData}
+            {...testProps('alert_yes_allow_data')}
+          />
+        </Dialog.Container>
+        <PurchaseListener navigation={navigation} />
       </View>
     )
   }
