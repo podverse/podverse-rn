@@ -96,8 +96,8 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
 
 export const removeHTMLFromString = (text: string) => {
   if (text) {
-    const htmlEntitiesRegex = /(<([^>]+)>)|(\r?\n|\r)/gi
-    return text.replace(htmlEntitiesRegex, '')
+    const htmlEntitiesRegex = /<[^>]*>?/gm
+    text = text.replace(htmlEntitiesRegex, '')
   }
   return text
 }
