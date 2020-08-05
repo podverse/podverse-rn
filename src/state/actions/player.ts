@@ -105,7 +105,7 @@ export const playNextFromQueue = async () => {
 export const loadItemAndPlayTrack = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
-  skipAddOrUpdateHistory: boolean
+  skipAddOrUpdateHistory?: boolean
 ) => {
   if (item) {
     await updatePlayerState(item)

@@ -13,8 +13,10 @@ type Props = {}
 type State = {}
 
 export class AboutScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    title: 'About'
+  static navigationOptions = () => {
+    return {
+      title: 'About'
+    }
   }
 
   componentDidMount() {
@@ -39,8 +41,7 @@ export class AboutScreen extends React.Component<Props, State> {
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {'Our mission is to support the original independent spirit' +
               ' of podcasting, and we would love to collaborate with all podcast apps' +
-              ' to make our technologies as cross-compatible, easy-to-use,' +
-              ' and empowering for people as possible.'}
+              ' to make our technologies as cross-compatible and convenient for people as possible.'}
           </Text>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {'All Podverse software is provided free and open source (FOSS)' +

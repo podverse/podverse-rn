@@ -22,8 +22,10 @@ type State = {
 }
 
 export class MembershipScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    title: 'Membership'
+  static navigationOptions = () => {
+    return {
+      title: 'Membership'
+    }
   }
 
   constructor(props: Props) {
