@@ -233,7 +233,7 @@
   dependencies:
     "@babel/types" "^7.8.3"
 
-"@babel/helper-validator-identifier@^7.10.4":
+"@babel/helper-validator-identifier@7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.10.4.tgz#a78c7a7251e01f616512d31b10adcf52ada5e0d2"
   integrity sha512-3U9y+43hz7ZM+rzG24Qe2mufW5KhvFg/NhnNph+i9mgCtdTCtMJuI1TMkrIUiK7Ix4PYlRF9I5dhqaLYA/ADXw==
@@ -984,7 +984,7 @@
   resolved "https://registry.yarnpkg.com/@types/he/-/he-1.1.0.tgz#0ddc2ae80f0814f729f0f7e5aa77b191ab4a9598"
   integrity sha512-HyiLOiJhclRBPzcbYrNThdi0JOdq7bT4hq9jFBPQk4HGjzkwYVQnMj9IDi7qvYkg9QTly2oZ9kjm4j7d8Ic9eA==
 
-"@types/i18n-js@^3.0.3":
+"@types/i18n-js@3.0.3":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/i18n-js/-/i18n-js-3.0.3.tgz#84f66fb969741fecd91b854387e0682aa7fd70b7"
   integrity sha512-GiZzazvxQ5j+EA4Zf4MtDsSaokAR/gW7FxxTlHi2p2xKFUhwAUT0B/MB8WL77P1TcqAO3MefWorFFyZS8F7s0Q==
@@ -1021,7 +1021,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/lodash.memoize@^4.1.6":
+"@types/lodash.memoize@4.1.6":
   version "4.1.6"
   resolved "https://registry.yarnpkg.com/@types/lodash.memoize/-/lodash.memoize-4.1.6.tgz#3221f981790a415cab1a239f25c17efd8b604c23"
   integrity sha512-mYxjKiKzRadRJVClLKxS4wb3Iy9kzwJ1CkbyKiadVxejnswnRByyofmPMscFKscmYpl36BEEhCMPuWhA1R/1ZQ==
@@ -2618,7 +2618,7 @@ copy-descriptor@^0.1.0:
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
 
-copy-webpack-plugin@^6.0.3:
+copy-webpack-plugin@6.0.3:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/copy-webpack-plugin/-/copy-webpack-plugin-6.0.3.tgz#2b3d2bfc6861b96432a65f0149720adbd902040b"
   integrity sha512-q5m6Vz4elsuyVEIUXr7wJdIdePWTubsqVbEMvf1WQnHGv0Q+9yPRu7MtYFPt+GBOXRav9lvIINifTQ1vSCs+eA==
@@ -4248,7 +4248,7 @@ htmlparser2-without-node-native@^3.9.0:
     inherits "^2.0.1"
     readable-stream "^2.0.2"
 
-htmlparser2@^3.10.1:
+htmlparser2@3.10.1:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-3.10.1.tgz#bd679dc3f59897b6a34bb10749c855bb53a9392f"
   integrity sha512-IgieNijUMbkDovyoKObU1DUhm1iwNYE/fuifEoEHfd1oZKZDaONBSkal7Y01shxsM49R4XaMdGez3WnF9UfiCQ==
@@ -4302,7 +4302,7 @@ husky@3.1.0:
     run-node "^1.0.0"
     slash "^3.0.0"
 
-i18n-js@^3.7.1:
+i18n-js@3.7.1:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/i18n-js/-/i18n-js-3.7.1.tgz#c70de6a64dc0ad5d2b6273eecfac636e5ed0421a"
   integrity sha512-xrRzCeda5ZC0u0yRN+dMdidtda0N+f7t7Pek0ajWb+iyKqSGdrMmuBtbNpWJWY5N4Th0cxbp/BR57zSPdrM3Rw==
@@ -5219,7 +5219,7 @@ lodash.isplainobject@^4.0.6:
   resolved "https://registry.yarnpkg.com/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz#7c526a52d89b45c45cc690b88163be0497f550cb"
   integrity sha1-fFJqUtibRcRcxpC4gWO+BJf1UMs=
 
-lodash.memoize@^4.1.2:
+lodash.memoize@4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
   integrity sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=
@@ -6900,7 +6900,7 @@ react-native-iap@4.2.0:
   dependencies:
     dooboolab-welcome "^1.1.1"
 
-react-native-localize@^1.4.1:
+react-native-localize@1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/react-native-localize/-/react-native-localize-1.4.1.tgz#031bd2089f09cc16ee7daee03019684dda60c275"
   integrity sha512-g1L1au6GtCd0Ci6lQ8JVPYgl7uvEtKY2jeVghJcV6qQEN9+qACyqjOIR8pskUyI+qcSj1z4/nZh3IFxDVu1drw==
@@ -6942,15 +6942,15 @@ react-native-reanimated@1.8.0:
   dependencies:
     fbjs "^1.0.0"
 
-react-native-render-html@4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-render-html/-/react-native-render-html-4.1.2.tgz#dfd06ac7e87ed68b6421750e88dd7895d284935b"
-  integrity sha512-lIW7GfNCsqOzdv0hxiZms24uC9Hu8hqufMyD4FBjfs8HSc4pUKnvBgOljiqEXmjGhDEJM6oY7QGglAV0hL69bQ==
+react-native-render-html@4.2.2:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/react-native-render-html/-/react-native-render-html-4.2.2.tgz#5a4ce7ee0a0b6e2f52fb2a8e5497b8e06d0779ea"
+  integrity sha512-NuCfYEQ5PNDEbOGaJbsm6LRjEgKgVtfM/7AFKGC88pIMGKXjbftwtFi/QjLRYOlzoLOKiI/QE4/lyJFTy1R9Ig==
   dependencies:
     buffer "^4.5.1"
     events "^1.1.0"
     html-entities "^1.2.0"
-    htmlparser2 "^3.10.1"
+    htmlparser2 "3.10.1"
 
 react-native-rss-parser@1.4.0:
   version "1.4.0"
@@ -8721,7 +8721,7 @@ wd@1.12.1:
     request "2.88.0"
     vargs "^0.1.0"
 
-webpack-cli@^3.3.12:
+webpack-cli@3.3.12:
   version "3.3.12"
   resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-3.3.12.tgz#94e9ada081453cd0aa609c99e500012fd3ad2d4a"
   integrity sha512-NVWBaz9k839ZH/sinurM+HcDvJOTXwSjYp1ku+5XKeOC03z8v5QitnK/x+lAxGXFyhdayoIf/GOpv85z3/xPag==
@@ -8746,7 +8746,7 @@ webpack-sources@^1.4.0, webpack-sources@^1.4.1, webpack-sources@^1.4.3:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-webpack@^4.44.1:
+webpack@4.44.1:
   version "4.44.1"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.44.1.tgz#17e69fff9f321b8f117d1fda714edfc0b939cc21"
   integrity sha512-4UOGAohv/VGUNQJstzEywwNxqX417FnjZgZJpJQegddzPmTvph37eBIRbRTfdySXzVtJXLJfbMN3mMYhM6GdmQ==
