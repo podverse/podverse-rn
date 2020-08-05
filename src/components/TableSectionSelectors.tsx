@@ -37,7 +37,7 @@ export const TableSectionSelectors = (props: Props) => {
     includeChronological = false,
     isBottomBar = false,
     isCategories = false,
-    isTransparent = true,
+    isTransparent,
     selectedLeftItemKey,
     selectedRightItemKey,
     screenName
