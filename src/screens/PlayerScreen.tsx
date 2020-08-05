@@ -598,6 +598,7 @@ export class PlayerScreen extends React.Component<Props, State> {
               {viewType === PV.Filters._episodesKey && (
                 <TableSectionHeader
                   centerText={PV.Fonts.fontScale.largest === fontScaleMode}
+                  isTransparent={true}
                   title='From this podcast'
                 />
               )}

@@ -8,20 +8,26 @@ type Props = {
   centerText?: boolean
   containerStyles?: any
   handleClosePress?: any
+  isTransparent?: boolean
   title?: string
 }
 
 export const TableSectionHeader = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
-  const { centerText, containerStyles, handleClosePress, title } = props
+  const { centerText, containerStyles, handleClosePress, isTransparent = true, title } = props
 
   const textStyle = centerText
     ? [styles.text, globalTheme.tableSectionHeaderText, { textAlign: 'center' }]
     : [styles.text, globalTheme.tableSectionHeaderText]
 
+  const headerStyle = [styles.header, globalTheme.tableSectionHeader]
+  if (isTransparent) {
+    headerStyle.push(globalTheme.tableSectionHeaderTransparent)
+  }
+
   return (
     <View style={containerStyles}>
-      <View style={[styles.header, globalTheme.tableSectionHeader]}>
+      <View style={headerStyle}>
         <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={textStyle}>
           {title}
         </Text>
