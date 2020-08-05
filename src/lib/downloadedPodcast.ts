@@ -99,7 +99,7 @@ export const getDownloadedPodcasts = async () => {
 
 export const refreshDownloadedPodcasts = async () => {
   const downloadedPodcasts = await getDownloadedPodcasts()
-  setDownloadedPodcasts(downloadedPodcasts)
+  await setDownloadedPodcasts(downloadedPodcasts)
 }
 
 export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
@@ -122,7 +122,7 @@ export const removeDownloadedPodcastEpisode = async (episodeId: string) => {
       newPodcasts.push(podcast)
     }
   }
-  setDownloadedPodcasts(newPodcasts)
+  await setDownloadedPodcasts(newPodcasts)
 
   const nowPlayingItem = await getNowPlayingItem()
   let clearedNowPlayingItem = false
@@ -151,6 +151,13 @@ export const removeDownloadedPodcast = async (podcastId: string) => {
   }
 
   return { clearedNowPlayingItem }
+}
+
+export const removeAllDownloadedPodcasts = async () => {
+  const downloadedPodcasts = await getDownloadedPodcasts()
+  for (const podcast of downloadedPodcasts) {
+    await removeDownloadedPodcast(podcast.id)
+  }
 }
 
 const setDownloadedPodcasts = async (podcasts: any[]) => {

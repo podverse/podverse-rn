@@ -1,0 +1,11 @@
+.vscode/.react/index.bundle
+yarn.lock
+functions/yarn.lock
+ios/Podfile.lock
+ios/Pods/AppCenter/AppCenter-SDK-Apple/iOS/AppCenter.framework/Headers/MSConstants.h
+ios/Pods/Manifest.lock
+ios/Pods/Pods.xcodeproj/project.pbxproj
+ios/podverse.xcodeproj/project.pbxproj
+ios/podverse.xcodeproj/xcshareddata/xcschemes/podverse-tvOS.xcscheme
+ios/podverse.xcodeproj/xcshareddata/xcschemes/podverse.xcscheme
+src/resources/URLs.ts

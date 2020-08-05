@@ -4,19 +4,31 @@ import { Alert, StyleSheet } from 'react-native'
 import Dialog from 'react-native-dialog'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { Button, Divider, Icon, NumberSelectorWithText, ScrollView, SwitchWithText, Text, View } from '../components'
+import {
+  ActivityIndicator,
+  Button,
+  Divider,
+  Icon,
+  NumberSelectorWithText,
+  ScrollView,
+  SwitchWithText,
+  Text,
+  View
+} from '../components'
 import {
   setDownloadedEpisodeLimitGlobalCount,
   setDownloadedEpisodeLimitGlobalDefault,
   updateAllDownloadedEpisodeLimitCounts,
   updateAllDownloadedEpisodeLimitDefaults
 } from '../lib/downloadedEpisodeLimiter'
+import { removeAllDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { refreshDownloads } from '../lib/downloader'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { deleteLoggedInUser } from '../services/user'
 import { logoutUser } from '../state/actions/auth'
+import * as DownloadState from '../state/actions/downloads'
 import { clearHistoryItems } from '../state/actions/history'
 import { setcensorNSFWText } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
@@ -33,15 +45,19 @@ type State = {
   downloadedEpisodeLimitDefault: any
   downloadingWifiOnly?: boolean
   hasLoaded?: boolean
+  isLoading?: boolean
   maximumSpeedOptionSelected?: any
   showDeleteAccountDialog?: boolean
+  showDeleteDownloadedEpisodesDialog?: boolean
   showSetAllDownloadDialog?: boolean
   showSetAllDownloadDialogIsCount?: boolean
 }
 
 export class SettingsScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    title: 'Settings'
+  static navigationOptions = () => {
+    return {
+      title: 'Settings'
+    }
   }
 
   constructor(props: Props) {
@@ -189,6 +205,30 @@ export class SettingsScreen extends React.Component<Props, State> {
     ])
   }
 
+  _handleToggleDeleteDownloadedEpisodesDialog = () => {
+    this.setState({
+      showDeleteDownloadedEpisodesDialog: !this.state.showDeleteDownloadedEpisodesDialog
+    })
+  }
+
+  _handleDeleteDownloadedEpisodes = () => {
+    this.setState(
+      {
+        isLoading: true,
+        showDeleteDownloadedEpisodesDialog: false
+      },
+      async () => {
+        try {
+          await removeAllDownloadedPodcasts()
+        } catch (error) {
+          //
+        }
+        DownloadState.updateDownloadedPodcasts()
+        this.setState({ isLoading: false })
+      }
+    )
+  }
+
   _handleToggleDeleteAccountDialog = () => {
     this.setState({
       deleteAccountDialogText: '',
@@ -233,10 +273,12 @@ export class SettingsScreen extends React.Component<Props, State> {
       downloadedEpisodeLimitCount,
       downloadedEpisodeLimitDefault,
       downloadingWifiOnly,
+      isLoading,
       maximumSpeedOptionSelected,
       showDeleteAccountDialog,
       showSetAllDownloadDialog,
-      showSetAllDownloadDialogIsCount
+      showSetAllDownloadDialogIsCount,
+      showDeleteDownloadedEpisodesDialog
     } = this.state
     const { censorNSFWText, globalTheme, session } = this.global
     const { isLoggedIn } = session
@@ -244,70 +286,82 @@ export class SettingsScreen extends React.Component<Props, State> {
     const isDarkMode = globalTheme === darkTheme
 
     return (
-      <ScrollView style={styles.wrapper} {...testProps('settings_screen_view')}>
-        <SwitchWithText
-          onValueChange={this._toggleTheme}
-          text={`${globalTheme === darkTheme ? 'Dark Mode' : 'Light Mode'}`}
-          value={globalTheme === darkTheme}
-        />
-        <SwitchWithText
-          onValueChange={this._toggleDownloadingWifiOnly}
-          text='Only allow downloading when connected to Wifi'
-          value={!!downloadingWifiOnly}
-        />
-        {/* <SwitchWithText
-          onValueChange={this._toggleAutoDeleteEpisodeOnEnd}
-          text='Delete downloaded episodes after end is reached'
-          value={!!autoDeleteEpisodeOnEnd} /> */}
-        <SwitchWithText
-          onValueChange={this._handleSelectDownloadedEpisodeLimitDefault}
-          text='Limit the number of downloaded episodes for each podcast by default'
-          value={!!downloadedEpisodeLimitDefault}
-        />
-        <NumberSelectorWithText
-          handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
-          handleSubmitEditing={this._handleSetGlobalDownloadedEpisodeLimitCount}
-          selectedNumber={downloadedEpisodeLimitCount}
-          text='Default downloaded episode limit for each podcast'
-        />
-        <SwitchWithText
-          onValueChange={this._handleToggleNSFWText}
-          text='Censor NSFW language'
-          value={!!censorNSFWText}
-        />
-        <RNPickerSelect
-          items={PV.Player.maximumSpeedSelectOptions}
-          onValueChange={this._setMaximumSpeed}
-          placeholder={placeholderItem}
-          style={hidePickerIconOnAndroidTransparent(isDarkMode)}
-          useNativeAndroidPickerStyle={false}
-          value={maximumSpeedOptionSelected.value}>
-          <View style={core.selectorWrapper}>
-            <View style={core.selectorWrapperLeft}>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.pickerSelect, globalTheme.text]}>
-                {maximumSpeedOptionSelected.label}
-              </Text>
-              <Icon name='angle-down' size={14} style={[styles.pickerSelectIcon, globalTheme.text]} />
-            </View>
-            <View style={core.selectorWrapperRight}>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.pickerSelect, globalTheme.text]}>
-                Max playback speed
-              </Text>
-            </View>
-          </View>
-        </RNPickerSelect>
-        <Divider style={styles.divider} />
-        <Button onPress={this._handleClearHistory} wrapperStyles={styles.button} text={'Clear History'} />
-
-        {isLoggedIn && (
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} style={styles.wrapper} {...testProps('settings_screen_view')}>
+        {isLoading && <ActivityIndicator styles={styles.activityIndicator} />}
+        {!isLoading && (
           <View>
+            <SwitchWithText
+              onValueChange={this._toggleTheme}
+              text={`${globalTheme === darkTheme ? 'Dark Mode' : 'Light Mode'}`}
+              value={globalTheme === darkTheme}
+            />
+            <SwitchWithText
+              onValueChange={this._toggleDownloadingWifiOnly}
+              text='Only allow downloading when connected to Wifi'
+              value={!!downloadingWifiOnly}
+            />
+            {/* <SwitchWithText
+              onValueChange={this._toggleAutoDeleteEpisodeOnEnd}
+              text='Delete downloaded episodes after end is reached'
+              value={!!autoDeleteEpisodeOnEnd} /> */}
+            <SwitchWithText
+              onValueChange={this._handleSelectDownloadedEpisodeLimitDefault}
+              text='Limit the number of downloaded episodes for each podcast by default'
+              value={!!downloadedEpisodeLimitDefault}
+            />
+            <NumberSelectorWithText
+              handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
+              handleSubmitEditing={this._handleSetGlobalDownloadedEpisodeLimitCount}
+              selectedNumber={downloadedEpisodeLimitCount}
+              text='Default downloaded episode limit for each podcast'
+            />
+            <SwitchWithText
+              onValueChange={this._handleToggleNSFWText}
+              text='Censor NSFW language'
+              value={!!censorNSFWText}
+            />
+            <RNPickerSelect
+              items={PV.Player.maximumSpeedSelectOptions}
+              onValueChange={this._setMaximumSpeed}
+              placeholder={placeholderItem}
+              style={hidePickerIconOnAndroidTransparent(isDarkMode)}
+              useNativeAndroidPickerStyle={false}
+              value={maximumSpeedOptionSelected.value}>
+              <View style={core.selectorWrapper}>
+                <View style={core.selectorWrapperLeft}>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.pickerSelect, globalTheme.text]}>
+                    {maximumSpeedOptionSelected.label}
+                  </Text>
+                  <Icon name='angle-down' size={14} style={[styles.pickerSelectIcon, globalTheme.text]} />
+                </View>
+                <View style={core.selectorWrapperRight}>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.pickerSelect, globalTheme.text]}>
+                    Max playback speed
+                  </Text>
+                </View>
+              </View>
+            </RNPickerSelect>
+            <Divider style={styles.divider} />
+            <Button onPress={this._handleClearHistory} wrapperStyles={styles.button} text={'Clear History'} />
+
             <Divider style={styles.divider} />
             <Button
-              isWarning={true}
-              onPress={this._handleToggleDeleteAccountDialog}
-              text={'Delete Account'}
+              onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
               wrapperStyles={styles.button}
+              text='Delete Downloaded Episodes'
             />
+
+            {isLoggedIn && (
+              <View>
+                <Divider style={styles.divider} />
+                <Button
+                  isWarning={true}
+                  onPress={this._handleToggleDeleteAccountDialog}
+                  text={'Delete Account'}
+                  wrapperStyles={styles.button}
+                />
+              </View>
+            )}
           </View>
         )}
         <Dialog.Container visible={showSetAllDownloadDialog}>
@@ -324,6 +378,13 @@ export class SettingsScreen extends React.Component<Props, State> {
                 : this._handleUpdateAllDownloadedEpiosdeLimitDefault
             }
           />
+        </Dialog.Container>
+
+        <Dialog.Container visible={showDeleteDownloadedEpisodesDialog}>
+          <Dialog.Title>Delete All Downloaded Episodes</Dialog.Title>
+          <Dialog.Description>Are you sure you want to delete all of your downloaded episodes?</Dialog.Description>
+          <Dialog.Button label='No' onPress={this._handleToggleDeleteDownloadedEpisodesDialog} />
+          <Dialog.Button label='Yes' onPress={this._handleDeleteDownloadedEpisodes} />
         </Dialog.Container>
 
         <Dialog.Container visible={showDeleteAccountDialog}>
@@ -350,6 +411,9 @@ export class SettingsScreen extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
+  activityIndicator: {
+    paddingTop: 40
+  },
   button: {
     marginVertical: 8
   },
@@ -366,6 +430,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4
   },
   wrapper: {
+    flex: 1,
     paddingBottom: 40,
     paddingHorizontal: 12,
     paddingTop: 8
