@@ -37,6 +37,7 @@ import {
   isOdd,
   readableDate,
   removeHTMLFromString,
+  replaceLinebreaksWithBrTags,
   testProps
 } from '../lib/utility'
 import { PV } from '../resources'
@@ -555,6 +556,8 @@ export class PlayerScreen extends React.Component<Props, State> {
     const podcastId = nowPlayingItem ? nowPlayingItem.podcastId : null
     const episodeId = episode ? episode.id : null
     const mediaRefId = mediaRef ? mediaRef.id : null
+
+    episode.description = replaceLinebreaksWithBrTags(episode.description)
 
     return (
       <OpaqueBackground nowPlayingItem={nowPlayingItem}>
