@@ -14,7 +14,7 @@ type Props = {
 
 export const TableSectionHeader = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
-  const { centerText, containerStyles, handleClosePress, isTransparent = true, title } = props
+  const { centerText, containerStyles, handleClosePress, isTransparent, title } = props
 
   const textStyle = centerText
     ? [styles.text, globalTheme.tableSectionHeaderText, { textAlign: 'center' }]
