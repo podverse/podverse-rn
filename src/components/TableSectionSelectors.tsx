@@ -16,6 +16,7 @@ type Props = {
   includeChronological?: boolean
   isBottomBar?: boolean
   isCategories?: boolean
+  isTransparent?: boolean
   selectedLeftItemKey: string | null
   selectedRightItemKey?: string | null
   screenName: string
@@ -36,6 +37,7 @@ export const TableSectionSelectors = (props: Props) => {
     includeChronological = false,
     isBottomBar = false,
     isCategories = false,
+    isTransparent = true,
     selectedLeftItemKey,
     selectedRightItemKey,
     screenName
@@ -128,10 +130,14 @@ export const TableSectionSelectors = (props: Props) => {
     PV.Fonts.fontScale.largest === fontScaleMode
       ? [styles.tableSectionHeaderInner, { flexDirection: 'column' }]
       : [styles.tableSectionHeaderInner]
+  const headerStyle = [styles.tableSectionHeader, globalTheme.tableSectionHeader]
+  if (isTransparent) {
+    headerStyle.push(globalTheme.tableSectionHeaderTransparent)
+  }
 
   return (
     <View>
-      <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
+      <View style={headerStyle}>
         {!hidePickers && leftItems && leftItems.length > 0 && (
           <View style={wrapperStyle}>
             <RNPickerSelect

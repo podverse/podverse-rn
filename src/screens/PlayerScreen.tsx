@@ -583,6 +583,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                 handleSelectRightItem={this._selectQuerySort}
                 hideRightItemWhileLoading={hideRightItemWhileLoading}
                 includeChronological={viewType === PV.Filters._clipsKey && queryFrom === PV.Filters._fromThisEpisodeKey}
+                isTransparent={true}
                 screenName='PlayerScreen'
                 selectedLeftItemKey={viewType}
                 selectedRightItemKey={querySort}
@@ -591,6 +592,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                 <TableSectionSelectors
                   handleSelectLeftItem={this._selectQueryFrom}
                   isBottomBar={true}
+                  isTransparent={true}
                   screenName='PlayerScreen'
                   selectedLeftItemKey={queryFrom}
                 />
