@@ -14,6 +14,7 @@ import {
   View
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
@@ -44,7 +45,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
     const playlistTitle = navigation.getParam('playlistTitle')
 
     return {
-      title: 'Playlist',
+      title: translate('Playlist'),
       headerRight: (
         <RNView style={core.row}>
           <NavShareIcon

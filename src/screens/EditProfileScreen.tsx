@@ -2,6 +2,7 @@ import { Alert, StyleSheet } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { ActivityIndicator, Divider, Icon, NavHeaderButtonText, Text, TextInput, View } from '../components'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -23,7 +24,7 @@ type State = {
 export class EditProfileScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Edit Profile',
+      title: translate('Edit Profile'),
       headerRight: <NavHeaderButtonText handlePress={navigation.getParam('updateUser')} text='Save' />
     }
   }

@@ -1,6 +1,7 @@
 import { Alert, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
+import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { getMembershipExpiration, getMembershipStatus, readableDate, testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -24,7 +25,7 @@ type State = {
 export class MembershipScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'Membership'
+      title: translate('Membership')
     }
   }
 

@@ -3,6 +3,7 @@ import Config from 'react-native-config'
 import { getBuildNumber, getVersion } from 'react-native-device-info'
 import React from 'reactn'
 import { Divider, Icon, ScrollView, Text, View } from '../components'
+import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -15,7 +16,7 @@ type State = {}
 export class AboutScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'About'
+      title: translate('About')
     }
   }
 
