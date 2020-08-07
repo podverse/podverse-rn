@@ -23,6 +23,7 @@ import {
 } from '../lib/downloadedEpisodeLimiter'
 import { removeAllDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { refreshDownloads } from '../lib/downloader'
+import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -56,7 +57,7 @@ type State = {
 export class SettingsScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'Settings'
+      title: translate('Settings')
     }
   }
 

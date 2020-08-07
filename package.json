@@ -28,11 +28,6 @@
       "git add"
     ]
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "dependencies": {
     "@babel/helper-validator-identifier": "7.10.4",
     "@react-native-community/async-storage": "1.6.2",

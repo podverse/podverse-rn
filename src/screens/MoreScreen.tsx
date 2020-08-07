@@ -2,6 +2,7 @@ import { Linking, SectionList, TouchableWithoutFeedback, View as RNView } from '
 import { Badge } from 'react-native-elements'
 import React from 'reactn'
 import { Divider, TableSectionHeader, Text, View } from '../components'
+import { translate } from '../lib/i18n'
 import { createEmailLinkUrl, getMembershipStatus, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -19,7 +20,7 @@ type State = {
 export class MoreScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'More'
+      title: translate('More')
     }
   }
 

@@ -1,6 +1,7 @@
 import debounce from 'lodash/debounce'
 import { Alert, Linking, StyleSheet } from 'react-native'
 import React from 'reactn'
+import { translate } from 'src/lib/i18n'
 import {
   ActionSheet,
   ActivityIndicator,
@@ -43,7 +44,7 @@ type State = {
 export class SearchScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Search',
+      title: translate('Search'),
       headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
       headerRight: null
     }

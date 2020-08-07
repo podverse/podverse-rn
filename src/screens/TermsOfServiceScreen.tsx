@@ -1,5 +1,6 @@
 import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
+import { translate } from 'src/lib/i18n'
 import packageJson from '../../package.json'
 import { Divider, ScrollView, Text, View } from '../components'
 import { testProps } from '../lib/utility'
@@ -13,7 +14,7 @@ type State = {}
 export class TermsOfServiceScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'Terms of Service'
+      title: translate('Terms of Service')
     }
   }
 

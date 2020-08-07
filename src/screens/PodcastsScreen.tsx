@@ -17,6 +17,7 @@ import {
 } from '../components'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { setI18nConfig } from '../lib/i18n'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { isOdd, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -72,7 +73,7 @@ let isInitialLoad = true
 export class PodcastsScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'Podcasts'
+      title: translate('Podcasts')
     }
   }
 
