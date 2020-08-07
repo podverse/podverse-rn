@@ -18,7 +18,11 @@
     "test:e2e:android": "export $(cat .env | xargs) && DEVICE_TYPE=Android BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./functions/tests/e2e/index.js",
     "test:e2e:ios": "export $(cat .env | xargs) && DEVICE_TYPE=iOS BROWSERSTACK_DEVICE='iPhone 11 Pro Max' BROWSERSTACK_OS_VERSION='13.0' node ./functions/tests/e2e/index.js"
   },
-
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
     "*.{ts,tsx}": [
       "tslint --fix",
