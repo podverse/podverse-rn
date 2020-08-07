@@ -252,7 +252,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         podcastTitle={podcastTitle}
         startTime={item.startTime}
         testId={'clips_screen_clip_item_' + index}
-        title={title || 'untitled clip'}
+        title={title || translate('untitled clip')}
       />
     ) : (
       <></>
@@ -307,7 +307,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text='Delete' />
+    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text={translate('Delete')} />
   )
 
   _handleHiddenItemPress = (selectedId, rowMap) => {
@@ -452,10 +452,10 @@ export class ClipsScreen extends React.Component<Props, State> {
           showModal={showActionSheet}
         />
         <Dialog.Container visible={showDeleteConfirmDialog}>
-          <Dialog.Title>Delete Clip</Dialog.Title>
-          <Dialog.Description>Are you sure?</Dialog.Description>
-          <Dialog.Button label='Cancel' onPress={this._cancelDeleteMediaRef} />
-          <Dialog.Button label='Delete' onPress={this._deleteMediaRef} />
+          <Dialog.Title>{translate('Delete Clip')}</Dialog.Title>
+          <Dialog.Description>{translate('Are you sure?')}</Dialog.Description>
+          <Dialog.Button label={translate('Cancel')} onPress={this._cancelDeleteMediaRef} />
+          <Dialog.Button label={translate('Delete')} onPress={this._deleteMediaRef} />
         </Dialog.Container>
       </View>
     )

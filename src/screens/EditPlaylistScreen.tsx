@@ -239,7 +239,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             onChangeText={this._onChangeTitle}
             onSubmitEditing={this._updatePlaylist}
-            placeholder='playlist title'
+            placeholder={translate('playlist title')}
             returnKeyType='done'
             style={styles.textInput}
             underlineColorAndroid='transparent'
