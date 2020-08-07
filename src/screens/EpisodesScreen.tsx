@@ -14,6 +14,7 @@ import {
 } from '../components'
 import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
+import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { isOdd, setCategoryQueryProperty, testProps } from '../lib/utility'
@@ -49,7 +50,7 @@ type State = {
 export class EpisodesScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'Episodes'
+      title: translate('Episodes')
     }
   }
 

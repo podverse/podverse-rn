@@ -11,6 +11,7 @@ import {
   TextInput,
   View
 } from '../components'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { combineAndSortPlaylistItems, testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -40,7 +41,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     const text = isEditing ? 'Done' : 'Edit'
 
     return {
-      title: 'Edit Playlist',
+      title: translate('Edit Playlist'),
       headerRight: (
         <RNView style={styles.headerButtonWrapper}>
           <NavHeaderButtonText handlePress={handlePress} style={styles.navHeaderTextButton} text={text} />

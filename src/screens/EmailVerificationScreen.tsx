@@ -1,5 +1,6 @@
 import React from 'reactn'
 import { MessageWithAction } from '../components'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { sendVerificationEmail } from '../services/auth'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -16,7 +17,7 @@ type State = {
 export class EmailVerificationScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'Verify Your Email'
+      title: translate('Verify Your Email')
     }
   }
 

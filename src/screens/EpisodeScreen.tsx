@@ -17,6 +17,7 @@ import {
   View
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
+import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { formatTitleViewHtml, isOdd, replaceLinebreaksWithBrTags, testProps } from '../lib/utility'
@@ -56,7 +57,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
     return {
-      title: 'Episode',
+      title: translate('Episode'),
       headerRight: (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (

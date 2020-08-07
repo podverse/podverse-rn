@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
+import { translate } from 'src/lib/i18n'
 import {
   ActivityIndicator,
   Divider,
@@ -32,7 +33,7 @@ type State = {
 export class PlaylistsScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'Playlists'
+      title: translate('Playlists')
     }
   }
 
