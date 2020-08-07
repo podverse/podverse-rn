@@ -1,6 +1,5 @@
 import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
-import { translate } from 'src/lib/i18n'
 import packageJson from '../../package.json'
 import { Divider, ScrollView, Text, View } from '../components'
 import { testProps } from '../lib/utility'

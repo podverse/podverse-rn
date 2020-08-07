@@ -1,7 +1,6 @@
 import debounce from 'lodash/debounce'
 import { Alert, Linking, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { translate } from 'src/lib/i18n'
 import {
   ActionSheet,
   ActivityIndicator,

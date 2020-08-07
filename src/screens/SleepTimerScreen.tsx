@@ -1,6 +1,5 @@
 import { StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
-import { translate } from 'src/lib/i18n'
 import { Button, NavDismissIcon, SafeAreaView, TimePicker, View } from '../components'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
