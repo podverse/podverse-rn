@@ -8,6 +8,7 @@ import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
 import { OverlayAlert } from './src/components'
 import { refreshDownloads } from './src/lib/downloader'
+import { setI18nConfig } from './src/lib/i18n'
 import { PV } from './src/resources'
 import { determineFontScaleMode } from './src/resources/Fonts'
 import { GlobalTheme } from './src/resources/Interfaces'
@@ -38,6 +39,7 @@ class App extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
+    setI18nConfig()
     this.state = {
       appReady: false
     }

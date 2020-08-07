@@ -1,7 +1,9 @@
 /** @format */
+import { setI18nConfig } from './src/lib/i18n'
+setI18nConfig()
 
-import { AppRegistry } from "react-native"
-import App from "./App"
+const { AppRegistry } = require('react-native')
+const App = require("./App").default
 import { name as appName } from "./app.json"
 import './src/lib/extensions'
 

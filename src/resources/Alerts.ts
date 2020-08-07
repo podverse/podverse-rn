@@ -1,3 +1,4 @@
+import { translate } from '../lib/i18n'
 import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { sendVerificationEmail } from '../services/auth'
 import { logoutUser } from '../state/actions/auth'
@@ -43,7 +44,7 @@ export const Alerts = {
     message: 'You are about to be navigated to a website outside the app. Are you sure you want to leave Podverse?'
   },
   LOGIN_INVALID: {
-    message: 'Invalid username or password.',
+    message: translate('Invalid username or password'),
     title: 'Login Error'
   },
   NETWORK_ERROR: {
