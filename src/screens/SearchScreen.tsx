@@ -1,7 +1,6 @@
 import debounce from 'lodash/debounce'
 import { Alert, Linking, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { translate } from 'src/lib/i18n'
 import {
   ActionSheet,
   ActivityIndicator,
@@ -13,6 +12,7 @@ import {
   SearchBar,
   View
 } from '../components'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { generateAuthorsText, isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'

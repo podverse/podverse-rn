@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { translate } from 'src/lib/i18n'
 import {
   ActivityIndicator,
   Divider,
@@ -11,6 +10,7 @@ import {
   TableSectionSelectors,
   View
 } from '../components'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
