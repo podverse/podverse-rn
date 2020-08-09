@@ -124,7 +124,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
               autoCompleteType='off'
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               onChangeText={this._onChangeName}
-              placeholder='your name'
+              placeholder={translate('your name')}
               returnKeyType='done'
               style={[styles.textInput, globalTheme.textInput]}
               underlineColorAndroid='transparent'
@@ -172,17 +172,17 @@ export class EditProfileScreen extends React.Component<Props, State> {
 }
 
 const selectPlaceholder = {
-  label: 'Select...',
+  label: translate('Select'),
   value: null
 }
 
 const isPublicOptions = [
   {
-    label: 'Public',
+    label: translate('Public'),
     value: true
   },
   {
-    label: 'Private',
+    label: translate('Private'),
     value: false
   }
 ]
