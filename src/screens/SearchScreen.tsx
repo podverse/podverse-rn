@@ -1,5 +1,6 @@
 import debounce from 'lodash/debounce'
 import { Alert, Linking, StyleSheet } from 'react-native'
+import Config from 'react-native-config'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -162,6 +163,10 @@ export class SearchScreen extends React.Component<Props, State> {
     this.props.navigation.navigate(PV.RouteNames.AddPodcastByRSSScreen)
   }
 
+  _handleAddPodcastByRSSQRCodeNavigation = () => {
+    this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
+  }
+
   _renderPodcastItem = ({ item, index }) => (
     <PodcastTableCell
       hasZebraStripe={isOdd(index)}
@@ -252,6 +257,7 @@ export class SearchScreen extends React.Component<Props, State> {
             disableLeftSwipe={true}
             extraData={flatListData}
             handleAddPodcastByRSSURLNavigation={this._handleAddPodcastByRSSURLNavigation}
+            handleAddPodcastByRSSQRCodeNavigation={this._handleAddPodcastByRSSQRCodeNavigation}
             handleRequestPodcast={this._navToRequestPodcastForm}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
@@ -260,6 +266,7 @@ export class SearchScreen extends React.Component<Props, State> {
             renderItem={this._renderPodcastItem}
             resultsText='podcasts'
             showAddPodcastByRSS={flatListData && flatListData.length === 0}
+            showAddPodcastByQR={flatListData && flatListData.length === 0 && !!Config.SHOW_QR_SCANNER}
             showRequestPodcast={true}
           />
         )}

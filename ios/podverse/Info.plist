@@ -28,10 +28,10 @@
 			<key>CFBundleURLIconFile</key>
 			<string></string>
 			<key>CFBundleURLName</key>
-			<string>podverse</string>
+			<string>podable</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>podverse</string>
+				<string>podable</string>
 			</array>
 		</dict>
 	</array>
@@ -58,6 +58,8 @@
 	<string>Please allow Poverse to use your location to provide you with a better user experience.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Please allow Poverse to use your location to provide you with a better user experience.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Please allow Podverse to use your camera to scan for a feed url code.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

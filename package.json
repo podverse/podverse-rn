@@ -61,6 +61,7 @@
     "react-native-background-downloader": "2.3.4",
     "react-native-background-fetch": "2.7.1",
     "react-native-background-timer": "2.1.1",
+    "react-native-camera": "^3.30.0",
     "react-native-cheerio": "1.0.0-rc.4",
     "react-native-config": "1.0.0",
     "react-native-device-info": "5.5.3",
