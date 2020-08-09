@@ -172,7 +172,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
 }
 
 const selectPlaceholder = {
-  label: translate('Select...'),
+  label: translate('Select'),
   value: null
 }
 

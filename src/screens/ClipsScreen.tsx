@@ -453,7 +453,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         />
         <Dialog.Container visible={showDeleteConfirmDialog}>
           <Dialog.Title>{translate('Delete Clip')}</Dialog.Title>
-          <Dialog.Description>{translate('Are you sure?')}</Dialog.Description>
+          <Dialog.Description>{translate('Are you sure')}</Dialog.Description>
           <Dialog.Button label={translate('Cancel')} onPress={this._cancelDeleteMediaRef} />
           <Dialog.Button label={translate('Delete')} onPress={this._deleteMediaRef} />
         </Dialog.Container>
