@@ -26,7 +26,7 @@
   [AppCenterReactNativeCrashes registerWithAutomaticProcessing];  // Initialize AppCenter crashes
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
-                                                   moduleName:@"podverse"
+                                                   moduleName:@"podable"
                                             initialProperties:nil];
 
   UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
