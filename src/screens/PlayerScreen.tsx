@@ -1,3 +1,9 @@
+import {
+  convertNowPlayingItemToEpisode,
+  convertNowPlayingItemToMediaRef,
+  convertToNowPlayingItem,
+  NowPlayingItem
+} from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
 import React, { getGlobal, setGlobal } from 'reactn'
@@ -25,12 +31,6 @@ import {
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import {
-  convertNowPlayingItemToEpisode,
-  convertNowPlayingItemToMediaRef,
-  convertToNowPlayingItem,
-  NowPlayingItem
-} from '../lib/NowPlayingItem'
 import {
   decodeHTMLString,
   formatTitleViewHtml,

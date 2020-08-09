@@ -1,3 +1,4 @@
+import { NowPlayingItem } from 'podverse-shared'
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React, { getGlobal } from 'reactn'
 import {
@@ -15,7 +16,6 @@ import {
   TableSectionHeader,
   View
 } from '../components'
-import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { checkIfIdMatchesClipIdOrEpisodeId, isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'

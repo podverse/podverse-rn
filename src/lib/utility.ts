@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import he from 'he'
+import { NowPlayingItem } from 'podverse-shared'
 import { PV } from '../resources'
-import { NowPlayingItem } from './NowPlayingItem'
 
 const cheerio = require('react-native-cheerio')
 

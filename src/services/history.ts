@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { NowPlayingItem } from '../lib/NowPlayingItem'
+import { NowPlayingItem } from 'podverse-shared'
 import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
 import { getAuthUserInfo } from '../state/actions/auth'

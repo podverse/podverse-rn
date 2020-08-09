@@ -1,6 +1,6 @@
+import { NowPlayingItem } from 'podverse-shared'
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
-import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { Text } from './'

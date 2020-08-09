@@ -1,5 +1,5 @@
+import { NowPlayingItem } from 'podverse-shared'
 import { translate } from '../lib/i18n'
-import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { sendVerificationEmail } from '../services/auth'
 import { logoutUser } from '../state/actions/auth'
 import { loadItemAndPlayTrack } from '../state/actions/player'
