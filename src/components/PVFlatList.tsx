@@ -110,7 +110,7 @@ export const PVFlatList = (props: Props) => {
         <MessageWithAction
           topActionHandler={handleSearchNavigation}
           topActionText='Search'
-          message={`You aren't subscribed to any podcasts. Add one now.`}
+          message={`You aren't subscribed to any podcasts. \n Add one now.`}
         />
       )}
       {showNoInternetConnectionMessage && !dataTotalCount && !isLoadingMore && (
