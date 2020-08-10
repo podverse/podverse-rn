@@ -52,14 +52,14 @@ export class MoreScreen extends React.Component<Props, State> {
       const user = this.global.session.userInfo
       navigation.navigate(PV.RouteNames.ProfileScreen, {
         user,
-        navigationTitle: 'My Profile',
+        navigationTitle: translate('My Profile'),
         isMyProfile: true
       })
     } else if (item.key === PV.RouteNames.MyProfileClipsScreen) {
       const user = this.global.session.userInfo
       navigation.navigate(PV.RouteNames.ProfileScreen, {
         user,
-        navigationTitle: 'My Profile',
+        navigationTitle: translate('My Profile'),
         isMyProfile: true,
         initializeClips: true
       })
@@ -86,7 +86,7 @@ export class MoreScreen extends React.Component<Props, State> {
       }
     })
 
-    const membershipStatus = getMembershipStatus(userInfo) || 'Membership'
+    const membershipStatus = getMembershipStatus(userInfo) || translate('Membership')
     const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
     const otherOptions = moreOtherOptions(membershipStatus)
 
@@ -144,8 +144,8 @@ export class MoreScreen extends React.Component<Props, State> {
           )}
           renderSectionHeader={({ section: { title } }) => <TableSectionHeader title={title} />}
           sections={[
-            { title: 'Features', data: featureOptions },
-            { title: 'Other', data: otherOptions }
+            { title: translate('Features'), data: featureOptions },
+            { title: translate('Other'), data: otherOptions }
           ]}
         />
       </View>
@@ -164,42 +164,42 @@ const _loginKey = 'login'
 const moreFeaturesOptions = () => {
   const items = [
     {
-      title: 'Downloads',
+      title: translate('Downloads'),
       key: PV.RouteNames.DownloadsScreen,
       testId: 'more_screen_downloads_cell'
     },
     {
-      title: 'Playlists',
+      title: translate('Playlists'),
       key: PV.RouteNames.PlaylistsScreen,
       testId: 'more_screen_playlists_cell'
     },
     {
-      title: 'Profiles',
+      title: translate('Profiles'),
       key: PV.RouteNames.ProfilesScreen,
       testId: 'more_screen_profiles_cell'
     },
     {
-      title: 'My Profile',
+      title: translate('My Profile'),
       key: PV.RouteNames.MyProfileScreen,
       testId: 'more_screen_my_profile_cell'
     },
     {
-      title: 'My Clips',
+      title: translate('My Clips'),
       key: PV.RouteNames.MyProfileClipsScreen,
       testId: 'more_screen_my_clips_cell'
     },
     {
-      title: 'Log out',
+      title: translate('Log out'),
       key: _logoutKey,
       testId: 'more_screen_log_out_cell'
     },
     {
-      title: 'Login',
+      title: translate('Login'),
       key: _loginKey,
       testId: 'more_screen_login_cell'
     },
     {
-      title: 'Settings',
+      title: translate('Settings'),
       key: PV.RouteNames.SettingsScreen,
       testId: 'more_screen_settings_cell'
     }
@@ -216,27 +216,27 @@ const moreOtherOptions = (membershipStatus?: string) => {
       testId: 'more_screen_membership_cell'
     },
     {
-      title: 'Add Podcast by RSS',
+      title: translate('Add Podcast by RSS'),
       key: PV.RouteNames.AddPodcastByRSSScreen,
       testId: 'more_screen_add_podcast_by_rss_cell'
     },
     {
-      title: 'Contact Us',
+      title: translate('Contact Us'),
       key: _contactKey,
       testId: 'more_screen_contact_us_cell'
     },
     {
-      title: 'FAQ',
+      title: translate('FAQ'),
       key: _faqKey,
       testId: 'more_screen_faq_cell'
     },
     {
-      title: 'About',
+      title: translate('About'),
       key: _aboutKey,
       testId: 'more_screen_about_cell'
     },
     {
-      title: 'Terms of Service',
+      title: translate('Terms of Service'),
       key: _termsKey,
       testId: 'more_screen_terms_of_service_cell'
     }
