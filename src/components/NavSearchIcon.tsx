@@ -1,4 +1,5 @@
 import React from 'react'
+import Config from 'react-native-config'
 import { NavItemIcon, NavItemWrapper } from '.'
 import { PV } from '../resources'
 
@@ -7,6 +8,8 @@ type Props = {
 }
 
 export const NavSearchIcon = (props: Props) => {
+  if (Config.DISABLE_SEARCH) return null
+
   const { navigation } = props
 
   const handlePress = () => {
