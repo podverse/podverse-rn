@@ -648,7 +648,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         {!showSettings && (
           <View style={styles.view}>
             {isLoading && <ActivityIndicator />}
-            {!isLoading && viewType !== PV.Filters._aboutKey && flatListData && podcast && (
+            {!isLoading && viewType !== PV.Filters._aboutPodcastKey && flatListData && podcast && (
               <FlatList
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
@@ -670,7 +670,7 @@ export class PodcastScreen extends React.Component<Props, State> {
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               />
             )}
-            {!isLoading && viewType === PV.Filters._aboutKey && podcast && (
+            {!isLoading && viewType === PV.Filters._aboutPodcastKey && podcast && (
               <HTMLScrollView
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 html={podcast.description || (showNoInternetConnectionMessage ? 'No internet connection' : '')}
@@ -771,7 +771,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (filterKey === PV.Filters._aboutKey) {
+      } else if (filterKey === PV.Filters._aboutPodcastKey) {
         if (podcastId && hasInternetConnection) {
           const newPodcast = await getPodcast(podcastId)
           newState.podcast = newPodcast

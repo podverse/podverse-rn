@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import { testProps } from '../../src/lib/utility'
+import Config from 'react-native-config'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
 import { PV } from '../resources'
@@ -46,6 +46,8 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
   }
 
   render() {
+    if (Config.DISABLE_ADD_TO_PLAYLIST) return null
+
     const { getEpisodeId, getMediaRefId, navigation } = this.props
     const episodeId = getEpisodeId ? getEpisodeId() : null
     const mediaRefId = getMediaRefId ? getMediaRefId() : null

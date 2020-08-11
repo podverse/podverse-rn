@@ -196,7 +196,7 @@ export class SearchScreen extends React.Component<Props, State> {
         onPress: () => this._handleNavigationPress(selectedPodcast, clipsKey)
       },
       {
-        key: 'about',
+        key: 'aboutPodcast',
         text: 'About',
         onPress: () => this._handleNavigationPress(selectedPodcast, aboutKey)
       }

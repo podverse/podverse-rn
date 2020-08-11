@@ -13,7 +13,6 @@ import {
   SearchBar,
   SwipeRowBack,
   TableSectionSelectors,
-  Text,
   View
 } from '../components'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'

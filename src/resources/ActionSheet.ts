@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
 import { Alert } from 'react-native'
+import Config from 'react-native-config'
 import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
@@ -131,43 +132,47 @@ const mediaMoreButtons = (
   )
 
   if (!item.addByRSSPodcastFeedUrl) {
-    buttons.push({
-      key: 'addToPlaylist',
-      text: 'Add to Playlist',
-      onPress: async () => {
-        await handleDismiss()
-        navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, {
-          ...(item.clipId ? { mediaRefId: item.clipId } : { episodeId: item.episodeId })
-        })
-      }
-    })
-
-    buttons.push({
-      key: 'share',
-      text: 'Share',
-      onPress: async () => {
-        try {
-          let url = ''
-          let title = ''
-          if (item.clipId) {
-            url = PV.URLs.clip + item.clipId
-            title = item.clipTitle ? item.clipTitle : 'untitled clip –'
-            title += ` ${item.podcastTitle} – ${item.episodeTitle} – clip shared using Podverse`
-          } else if (item.episodeId) {
-            url = PV.URLs.episode + item.episodeId
-            title += `${item.podcastTitle} – ${item.episodeTitle} – shared using Podverse`
-          }
-          await Share.open({
-            title,
-            subject: title,
-            url
+    if (!Config.DISABLE_ADD_TO_PLAYLIST) {
+      buttons.push({
+        key: 'addToPlaylist',
+        text: 'Add to Playlist',
+        onPress: async () => {
+          await handleDismiss()
+          navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, {
+            ...(item.clipId ? { mediaRefId: item.clipId } : { episodeId: item.episodeId })
           })
-        } catch (error) {
-          console.log(error)
         }
-        await handleDismiss()
-      }
-    })
+      })
+    }
+
+    if (!Config.DISABLE_SHARE) {
+      buttons.push({
+        key: 'share',
+        text: 'Share',
+        onPress: async () => {
+          try {
+            let url = ''
+            let title = ''
+            if (item.clipId) {
+              url = PV.URLs.clip + item.clipId
+              title = item.clipTitle ? item.clipTitle : 'untitled clip –'
+              title += ` ${item.podcastTitle} – ${item.episodeTitle} – clip shared using Podverse`
+            } else if (item.episodeId) {
+              url = PV.URLs.episode + item.episodeId
+              title += `${item.podcastTitle} – ${item.episodeTitle} – shared using Podverse`
+            }
+            await Share.open({
+              title,
+              subject: title,
+              url
+            })
+          } catch (error) {
+            console.log(error)
+          }
+          await handleDismiss()
+        }
+      })
+    }
   }
 
   if (isDownloaded) {
