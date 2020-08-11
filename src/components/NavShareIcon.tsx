@@ -14,7 +14,7 @@ type Props = {
   podcastTitle?: string
   profileName?: string
   url?: string
-  globalTheme: GlobalTheme
+  globalTheme?: GlobalTheme
 }
 
 export const NavShareIcon = (props: Props) => {
