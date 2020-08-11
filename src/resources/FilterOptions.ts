@@ -1,5 +1,4 @@
 import Config from 'react-native-config'
-import { translate } from '../lib/i18n'
 import { Filters } from './Filters'
 
 const {
