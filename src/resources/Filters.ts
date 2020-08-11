@@ -1,5 +1,9 @@
 import { IFilters } from './Interfaces'
 
+/* NOTE: Filter values *have to use hyphen-case* because they are passed as
+ * query param values in requests to the API, and the API expects hyphen-case.
+ */
+
 export const Filters: IFilters = {
   _subscribedKey: 'subscribed',
   _downloadedKey: 'downloaded',
