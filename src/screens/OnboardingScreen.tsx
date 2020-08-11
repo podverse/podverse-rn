@@ -43,7 +43,7 @@ export class OnboardingScreen extends React.Component<Props, State> {
           <Text style={styles.title}>{translate('No login needed to:')}</Text>
           <Text style={styles.text}>{translate('- Listen to episodes and clips')}</Text>
           <Text style={styles.text}>{translate('- Subscribe to podcasts')}</Text>
-          <Text style={[styles.title, extraMargin]}>{translate('Login to:')}</Text>
+          <Text style={[styles.title, extraMargin]}>{translate('Login to')}</Text>
           <Text style={styles.text}>{translate('- Create and share playlists')}</Text>
           <Text style={styles.text}>{translate('- Edit clips and playlists')}</Text>
           <Text style={styles.text}>{translate('- Sync podcasts across devices')}</Text>

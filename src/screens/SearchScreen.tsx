@@ -182,29 +182,29 @@ export class SearchScreen extends React.Component<Props, State> {
     return [
       {
         key: 'toggleSubscribe',
-        text: isSubscribed ? 'Unsubscribe' : 'Subscribe',
+        text: isSubscribed ? translate('Unsubscribe') : translate('Subscribe'),
         onPress: () => selectedPodcast && this._toggleSubscribeToPodcast(selectedPodcast.id)
       },
       {
         key: 'episodes',
-        text: 'Episodes',
+        text: translate('Episodes'),
         onPress: () => this._handleNavigationPress(selectedPodcast, allEpisodesKey)
       },
       {
         key: 'clips',
-        text: 'Clips',
+        text: translate('Clips'),
         onPress: () => this._handleNavigationPress(selectedPodcast, clipsKey)
       },
       {
         key: 'about',
-        text: 'About',
+        text: translate('About'),
         onPress: () => this._handleNavigationPress(selectedPodcast, aboutKey)
       }
     ]
   }
 
   _toggleSubscribeToPodcast = async (id: string) => {
-    const wasAlerted = await alertIfNoNetworkConnection('subscribe to this podcast')
+    const wasAlerted = await alertIfNoNetworkConnection(translate('subscribe to this podcast'))
     if (wasAlerted) return
 
     try {
@@ -217,8 +217,8 @@ export class SearchScreen extends React.Component<Props, State> {
 
   _navToRequestPodcastForm = async () => {
     Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Cancel' },
-      { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.requestPodcast) }
+      { text: translate('Cancel') },
+      { text: translate('Yes'), onPress: () => Linking.openURL(PV.URLs.requestPodcast) }
     ])
   }
 
@@ -241,7 +241,7 @@ export class SearchScreen extends React.Component<Props, State> {
           inputContainerStyle={core.searchBar}
           onChangeText={this._handleSearchBarTextChange}
           onClear={this._handleSearchBarClear}
-          placeholder='search'
+          placeholder={translate('search')}
           value={searchBarText}
         />
         <Divider />
@@ -258,7 +258,7 @@ export class SearchScreen extends React.Component<Props, State> {
             keyExtractor={(item: any) => item.id}
             onEndReached={this._onEndReached}
             renderItem={this._renderPodcastItem}
-            resultsText='podcasts'
+            resultsText={translate('podcasts')}
             showAddPodcastByRSS={flatListData && flatListData.length === 0}
             showRequestPodcast={true}
           />
@@ -282,7 +282,7 @@ export class SearchScreen extends React.Component<Props, State> {
       isLoadingMore: false
     }
 
-    const wasAlerted = await alertIfNoNetworkConnection('search podcasts')
+    const wasAlerted = await alertIfNoNetworkConnection(translate('search podcasts'))
     if (wasAlerted) return newState
 
     try {
@@ -313,7 +313,7 @@ export class SearchScreen extends React.Component<Props, State> {
 const _podcastByTitle = 0
 const _podcastByHost = 1
 
-const buttons = ['Podcast', 'Host']
+const buttons = [translate('Podcast'), translate('Host')]
 
 const styles = StyleSheet.create({
   searchBarContainer: {

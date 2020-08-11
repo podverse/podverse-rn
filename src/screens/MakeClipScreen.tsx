@@ -194,7 +194,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { isLoggedIn } = session
 
     if (!isLoggedIn) {
-      Alert.alert(translate('Login Needed'), translate('You need to login to make clips.'), [
+      Alert.alert(translate('Login Needed'), translate('You need to login to make clips'), [
         { text: 'OK' },
         {
           text: 'Go to Login',
@@ -213,28 +213,28 @@ export class MakeClipScreen extends React.Component<Props, State> {
     if (wasAlerted) return
 
     if (endTime === 0) {
-      Alert.alert(translate('Clip Error'), translate('End time cannot be equal to 0.'), PV.Alerts.BUTTONS.OK)
+      Alert.alert(translate('Clip Error'), translate('End time cannot be equal to 0'), PV.Alerts.BUTTONS.OK)
       return
     }
 
     if (startTime === 0 && !endTime) {
       Alert.alert(
         translate('Clip Error'),
-        translate('The start time must be greater than 0 if no end time is provided.'),
+        translate('The start time must be greater than 0 if no end time is provided'),
         PV.Alerts.BUTTONS.OK
       )
       return
     }
 
     if (!startTime && startTime !== 0) {
-      Alert.alert(translate('Clip Error'), translate('A start time must be provided.'), PV.Alerts.BUTTONS.OK)
+      Alert.alert(translate('Clip Error'), translate('A start time must be provided'), PV.Alerts.BUTTONS.OK)
       return
     }
 
     if (endTime && startTime >= endTime) {
       Alert.alert(
         translate('Clip Error'),
-        translate('The start time must be before the end time.'),
+        translate('The start time must be before the end time'),
         PV.Alerts.BUTTONS.OK
       )
       return
@@ -561,11 +561,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
             <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
               <RNView style={[styles.modalInnerWrapper, globalTheme.modalInnerWrapper]}>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  {translate('▸ Tap the Start and End Time inputs to set them with the current track time.')}
+                  {translate('▸ Tap the Start and End Time inputs to set them with the current track time')}
                 </Text>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
                   {translate(
-                    '▸ If a podcast uses dynamically inserted ads, its clip start times will not stay 100% accurate.'
+                    '▸ If a podcast uses dynamically inserted ads, its clip start times will not stay 100% accurate'
                   )}
                 </Text>
                 <TouchableOpacity onPress={this._hideHowTo}>
@@ -586,7 +586,7 @@ const _publicKey = 'public'
 const _onlyWithLinkKey = 'onlyWithLink'
 
 const placeholderItem = {
-  label: translate('Select...'),
+  label: translate('Select'),
   value: null
 }
 

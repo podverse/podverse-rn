@@ -439,6 +439,6 @@ const styles = StyleSheet.create({
 })
 
 const placeholderItem = {
-  label: 'Select...',
+  label: 'Select',
   value: null
 }

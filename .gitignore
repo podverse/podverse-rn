@@ -63,3 +63,4 @@ buck-out/
 truffle.log
 
 main.js
+package.json

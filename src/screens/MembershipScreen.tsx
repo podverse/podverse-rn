@@ -112,7 +112,7 @@ export class MembershipScreen extends React.Component<Props, State> {
         {!isLoading && showNoInternetConnectionMessage && (
           <View style={styles.textRowCentered}>
             <Text style={[styles.subText, { textAlign: 'center' }]}>
-              {translate('Connect to the internet and reload this page to sign up for Premium.')}
+              {translate('Connect to the internet and reload this page to sign up for Premium')}
             </Text>
           </View>
         )}

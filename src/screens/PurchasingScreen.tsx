@@ -70,7 +70,7 @@ export class PurchasingScreen extends React.Component<Props, State> {
           )}
           {!isLoading && showDismissLink && (
             <TouchableOpacity onPress={this._handleDismiss}>
-              <Text style={[globalTheme.text, styles.button]}>Close</Text>
+              <Text style={[globalTheme.text, styles.button]}>{translate('Close')}</Text>
             </TouchableOpacity>
           )}
         </View>

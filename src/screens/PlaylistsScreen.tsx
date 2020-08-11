@@ -90,7 +90,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
   _renderPlaylistItem = ({ item, index }) => {
     const { queryFrom } = this.state
-    const ownerName = (item.owner && item.owner.name) || 'anonymous'
+    const ownerName = (item.owner && item.owner.name) || translate('anonymous')
 
     return (
       <PlaylistTableCell
@@ -100,7 +100,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
         onPress={() =>
           this.props.navigation.navigate(PV.RouteNames.PlaylistScreen, {
             playlist: item,
-            navigationTitle: queryFrom === PV.Filters._myPlaylistsKey ? 'My Playlist' : 'Playlist'
+            navigationTitle: queryFrom === PV.Filters._myPlaylistsKey ? translate('My Playlist') : translate('Playlist')
           })
         }
         title={item.title}
@@ -110,7 +110,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
   _renderHiddenItem = ({ item }, rowMap) => {
     const { isRemoving, queryFrom } = this.state
-    const text = queryFrom === PV.Filters._myPlaylistsKey ? 'Delete' : 'Unsubscribe'
+    const text = queryFrom === PV.Filters._myPlaylistsKey ? translate('Delete') : translate('Unsubscribe')
     return (
       <SwipeRowBack isLoading={isRemoving} onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text={text} />
     )
@@ -118,9 +118,9 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
     const { queryFrom } = this.state
-    const text = queryFrom === PV.Filters._myPlaylistsKey ? 'Delete' : 'Unsubscribe from'
+    const text = queryFrom === PV.Filters._myPlaylistsKey ? translate('Delete') : translate('Unsubscribe from')
 
-    const wasAlerted = await alertIfNoNetworkConnection(`${text} this profile`)
+    const wasAlerted = await alertIfNoNetworkConnection(`${text}${translate('this profile')}`)
     if (wasAlerted) return
 
     this.setState({ isRemoving: true }, async () => {
@@ -170,16 +170,16 @@ export class PlaylistsScreen extends React.Component<Props, State> {
           {!isLoading && queryFrom === PV.Filters._myPlaylistsKey && !this.global.session.isLoggedIn && (
             <MessageWithAction
               topActionHandler={this._onPressLogin}
-              topActionText='Login'
-              message='Login to view your playlists'
+              topActionText={translate('Login')}
+              message={translate('Login to view your playlists')}
             />
           )}
           {!isLoading &&
-            queryFrom === PV.Filters._myPlaylistsKey &&
+            queryFrom === PV.Filters._myPlaylistsKey &&like
             this.global.session.isLoggedIn &&
-            flatListData.length < 1 && <MessageWithAction message='You have no created playlists' />}
+            flatListData.length < 1 && <MessageWithAction message={translate('You have no created playlists')} />}
           {!isLoading && queryFrom === PV.Filters._subscribedKey && flatListData.length < 1 && (
-            <MessageWithAction message='You have no subscribed playlists' />
+            <MessageWithAction message={translate('You have no subscribed playlists')} />
           )}
         </View>
       </View>

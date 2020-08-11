@@ -19,6 +19,7 @@ import {
   View
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import {
   generateAuthorsText,
@@ -76,7 +77,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     const isMyProfile = navigation.getParam('isMyProfile')
 
     return {
-      title: isMyProfile ? 'My Profile' : 'Profile',
+      title: isMyProfile ? translate('My Profile') : translate('Profile'),
       headerRight: (
         <RNView style={core.row}>
           {userIsPublic && userId && <NavShareIcon profileName={userName} url={PV.URLs.profile + userId} />}
@@ -327,7 +328,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _handleToggleSubscribe = async (id: string) => {
-    const wasAlerted = await alertIfNoNetworkConnection('subscribe to profile')
+    const wasAlerted = await alertIfNoNetworkConnection(translate('subscribe to profile'))
     if (wasAlerted) return
 
     this.setState({ isSubscribing: true }, async () => {
@@ -476,18 +477,22 @@ export class ProfileScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const isLoggedInUserProfile = userId && id && userId === id
 
-    let resultsText = 'podcasts'
+    let resultsText = translate('podcasts')
     if (queryFrom === PV.Filters._clipsKey) {
-      resultsText = 'clips'
+      resultsText = translate('clips')
     } else if (queryFrom === PV.Filters._playlistsKey) {
-      resultsText = 'playlists'
+      resultsText = translate('playlists')
     }
     const isMyProfile = navigation.getParam('isMyProfile')
-    const message = `Login to view your ${initializeClips ? 'clips' : 'profile'}`
+    const message = `${translate('Login to view your')} ${initializeClips ? translate('clips') : translate('profile')}`
     return (
       <View style={styles.view} {...testProps('profile_screen_view')}>
         {isMyProfile && !isLoggedIn && (
-          <MessageWithAction topActionHandler={this._onPressLogin} topActionText='Login' message={message} />
+          <MessageWithAction
+            topActionHandler={this._onPressLogin}
+            topActionText={translate('Login')}
+            message={message}
+          />
         )}
         {!(isMyProfile && !isLoggedIn) && (
           <View style={styles.view}>
@@ -499,7 +504,7 @@ export class ProfileScreen extends React.Component<Props, State> {
               isNotFound={!isLoading && !user}
               isSubscribed={isSubscribed}
               isSubscribing={isSubscribing}
-              name={(user && user.name) || 'anonymous'}
+              name={(user && user.name) || translate('anonymous')}
             />
             <TableSectionSelectors
               handleSelectLeftItem={this.selectLeftItem}
@@ -545,8 +550,8 @@ export class ProfileScreen extends React.Component<Props, State> {
             <Dialog.Container visible={showDeleteConfirmDialog}>
               <Dialog.Title>Delete Clip</Dialog.Title>
               <Dialog.Description>Are you sure?</Dialog.Description>
-              <Dialog.Button label='Cancel' onPress={this._cancelDeleteMediaRef} />
-              <Dialog.Button label='Delete' onPress={this._deleteMediaRef} />
+              <Dialog.Button label={translate('Cancel')} onPress={this._cancelDeleteMediaRef} />
+              <Dialog.Button label={translate('Delete')} onPress={this._deleteMediaRef} />
             </Dialog.Container>
           </View>
         )}
