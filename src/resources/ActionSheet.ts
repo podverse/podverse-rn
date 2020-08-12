@@ -132,7 +132,7 @@ const mediaMoreButtons = (
   )
 
   if (!item.addByRSSPodcastFeedUrl) {
-    if (!Config.DISABLE_ADD_TO_PLAYLIST) {
+    if (Config.DISABLE_ADD_TO_PLAYLIST !== 'TRUE') {
       buttons.push({
         key: 'addToPlaylist',
         text: 'Add to Playlist',
@@ -145,7 +145,7 @@ const mediaMoreButtons = (
       })
     }
 
-    if (!Config.DISABLE_SHARE) {
+    if (Config.DISABLE_SHARE !== 'TRUE') {
       buttons.push({
         key: 'share',
         text: 'Share',
