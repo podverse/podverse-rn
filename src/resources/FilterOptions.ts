@@ -178,6 +178,7 @@ export const FilterOptions = {
     },
     EpisodeScreen: {
       type: [_clipsKey, _showNotesKey, _titleKey],
+      addByPodcastRSSFeedURLType: [_showNotesKey, _titleKey],
       sort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey],
       sublist: [],
       hideSort: [_showNotesKey, _titleKey]
@@ -190,6 +191,7 @@ export const FilterOptions = {
     },
     PlayerScreen: {
       type: [_episodesKey, _clipsKey, _showNotesKey, _titleKey],
+      addByPodcastRSSFeedURLType: [_episodesKey, _showNotesKey, _titleKey],
       sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
       sublist: fromItems,
       hideSort: [_showNotesKey, _titleKey]
@@ -202,6 +204,7 @@ export const FilterOptions = {
     },
     PodcastScreen: {
       type: [_episodesKey, _clipsKey, _aboutPodcastKey],
+      addByPodcastRSSFeedURLType: [_episodesKey, _aboutPodcastKey],
       sort: [_mostRecentKey, ..._top, _randomKey],
       sublist: [],
       hideSort: [_aboutPodcastKey]

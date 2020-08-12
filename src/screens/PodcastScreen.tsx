@@ -616,6 +616,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           <TableSectionSelectors
             handleSelectLeftItem={this.selectLeftItem}
             handleSelectRightItem={this.selectRightItem}
+            isAddByRSSPodcastFeedUrl={podcast && podcast.addByRSSPodcastFeedUrl}
             screenName='PodcastScreen'
             selectedLeftItemKey={viewType}
             selectedRightItemKey={querySort}
