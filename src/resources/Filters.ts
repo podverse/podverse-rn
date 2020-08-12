@@ -20,6 +20,7 @@ export const Filters: IFilters = {
   _oldestKey: 'oldest',
   _myClipsKey: 'my-clips',
   _allEpisodesKey: 'all-episodes',
+  _addedByRSSKey: 'added-by-rss',
   _podcastsKey: 'podcasts',
   _episodesKey: 'episodes',
   _clipsKey: 'clips',

@@ -1,6 +1,7 @@
 {
   "About": "About",
   "Add by RSS": "Add by RSS",
+  "Added By RSS": "Added by RSS",
   "AddPodcastByRSSScreen": {
     "text1": "If a podcast is not officially available on Podverse, you can still listen to it by pasting the RSS link here and pressing the Save button.",
     "text2": "If you are logged in, your podcasts added by RSS feed will be synced across your devices.",

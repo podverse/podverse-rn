@@ -166,6 +166,7 @@ export interface IFilters {
   _topPastYear: string
   _chronologicalKey: string
   _oldestKey: string
+  _addedByRSSKey: string
   _myClipsKey: string
   _allEpisodesKey: string
   _podcastsKey: string

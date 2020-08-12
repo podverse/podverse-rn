@@ -16,6 +16,25 @@ addByRSSPodcast: object {
 }
 */
 
+export const getAddByRSSEpisodesLocally = async () => {
+  const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
+  const combinedEpisodes = [] as any[]
+  for (const addByRSSPodcast of addByRSSPodcasts) {
+    for (const episode of addByRSSPodcast.episodes) {
+      episode.podcast = addByRSSPodcast
+      combinedEpisodes.push(episode)
+    }
+  }
+
+  const sortedEpisodes = combinedEpisodes.sort((a: any, b: any) => {
+    const dateA = new Date(a.pubDate) as any
+    const dateB = new Date(b.pubDate) as any
+    return dateB - dateA
+  })
+
+  return sortedEpisodes
+}
+
 export const getAddByRSSPodcastLocally = async (feedUrl: string) => {
   const addByRSSPodcastFeedUrlPodcasts = await getAddByRSSPodcastsLocally()
   return addByRSSPodcastFeedUrlPodcasts.find((x: any) => x.addByRSSPodcastFeedUrl === feedUrl)
