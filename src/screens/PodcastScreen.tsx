@@ -738,7 +738,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     filterKey: string | null,
     queryOptions: { queryPage?: number; searchAllFieldsText?: string } = {}
   ) => {
-    const { flatListData, podcastId, querySort, viewType } = this.state
+    const { flatListData, podcast, podcastId, querySort, viewType } = this.state
     const newState = {
       isLoading: false,
       isLoadingMore: false,
@@ -750,7 +750,10 @@ export class PodcastScreen extends React.Component<Props, State> {
     newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey !== PV.Filters._downloadedKey
 
     try {
-      if (filterKey === PV.Filters._episodesKey) {
+      if (filterKey === PV.Filters._episodesKey && podcast && podcast.addByRSSPodcastFeedUrl) {
+        newState.flatListData = podcast.episodes || []
+        newState.flatListDataTotalCount = newState.flatListData.length
+      } else if (filterKey === PV.Filters._episodesKey) {
         const results = await this._queryEpisodes(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
