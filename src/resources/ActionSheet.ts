@@ -24,7 +24,7 @@ const mediaMoreButtons = (
 
   const globalState = getGlobal()
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
-  const downloadingText = isDownloading ? 'Downloading' : 'Download'
+  const downloadingText = isDownloading ? translate('Downloading') : translate('Download')
   const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
   const buttons = []
   const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session.userInfo.id, '')
@@ -35,7 +35,7 @@ const mediaMoreButtons = (
     buttons.push(
       {
         key: 'editClip',
-        text: 'Edit Clip',
+        text: translate('Edit Clip'),
         onPress: async () => {
           const { darkTheme } = require('../styles')
           const isDarkMode = globalState.globalTheme === darkTheme
@@ -57,7 +57,7 @@ const mediaMoreButtons = (
       },
       {
         key: 'deleteClip',
-        text: 'Delete Clip',
+        text: translate('Delete Clip'),
         onPress: async () => {
           await handleDismiss()
           await handleDeleteClip(item.clipId)
@@ -69,7 +69,7 @@ const mediaMoreButtons = (
   if (isDownloaded) {
     buttons.push({
       key: 'play',
-      text: 'Play',
+      text: translate('Play'),
       onPress: async () => {
         await handleDismiss()
         const shouldPlay = true
@@ -114,7 +114,7 @@ const mediaMoreButtons = (
   buttons.push(
     {
       key: 'queueNext',
-      text: 'Queue: Next',
+      text: translate('Queue: Next'),
       onPress: async () => {
         await addQueueItemNext(item)
         await handleDismiss()
@@ -122,7 +122,7 @@ const mediaMoreButtons = (
     },
     {
       key: 'queueLast',
-      text: 'Queue: Last',
+      text: translate('Queue: Last'),
       onPress: async () => {
         await addQueueItemLast(item)
         await handleDismiss()
@@ -133,7 +133,7 @@ const mediaMoreButtons = (
   if (!item.addByRSSPodcastFeedUrl) {
     buttons.push({
       key: 'addToPlaylist',
-      text: 'Add to Playlist',
+      text: translate('Add to Playlist'),
       onPress: async () => {
         await handleDismiss()
         navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, {
@@ -144,18 +144,18 @@ const mediaMoreButtons = (
 
     buttons.push({
       key: 'share',
-      text: 'Share',
+      text: translate('Share'),
       onPress: async () => {
         try {
           let url = ''
           let title = ''
           if (item.clipId) {
             url = PV.URLs.clip + item.clipId
-            title = item.clipTitle ? item.clipTitle : 'untitled clip –'
-            title += ` ${item.podcastTitle} – ${item.episodeTitle} – clip shared using Podverse`
+            title = item.clipTitle ? item.clipTitle : translate('untitled clip –')
+            title += ` ${item.podcastTitle} – ${item.episodeTitle}${translate(' – clip shared using Podverse')}`
           } else if (item.episodeId) {
             url = PV.URLs.episode + item.episodeId
-            title += `${item.podcastTitle} – ${item.episodeTitle} – shared using Podverse`
+            title += `${item.podcastTitle} – ${item.episodeTitle}${translate(' – shared using Podverse')}`
           }
           await Share.open({
             title,
@@ -173,7 +173,7 @@ const mediaMoreButtons = (
   if (isDownloaded) {
     buttons.push({
       key: 'deleteEpisode',
-      text: 'Delete Episode',
+      text: translate('Delete Episode'),
       onPress: async () => {
         removeDownloadedPodcastEpisode(item.episodeId)
         await handleDismiss()
@@ -184,7 +184,7 @@ const mediaMoreButtons = (
   if (includeGoToPodcast) {
     buttons.push({
       key: 'goToPodcast',
-      text: 'Go to Podcast',
+      text: translate('Go to Podcast'),
       onPress: async () => {
         await handleDismiss()
         navigation.navigate(PV.RouteNames.EpisodePodcastScreen, {
@@ -231,17 +231,17 @@ const hasTriedDownloadingWithoutWifiAlert = async (handleDismiss: any, navigatio
 
 const hasTriedWithoutWifiAlert = (handleDismiss: any, navigation: any, download: boolean) => {
   Alert.alert(
-    'No Wifi Connection',
+    translate('No Wifi Connection'),
     `You cannot ${download ? 'download' : 'stream'} without a Wifi connection.
     To allow ${download ? 'downloading' : 'streaming'} with your data plan, go to your Settings page.`,
     [
       {
-        text: 'Cancel',
+        text: translate('Cancel'),
         style: 'cancel',
         onPress: handleDismiss
       },
       {
-        text: 'Go to Settings',
+        text: translate('Go to Settings'),
         onPress: async () => {
           await handleDismiss()
           navigation.navigate(PV.RouteNames.SettingsScreen)
