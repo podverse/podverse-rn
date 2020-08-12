@@ -1,6 +1,7 @@
 import debounce from 'lodash/debounce'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet } from 'react-native'
+import Config from 'react-native-config'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -465,31 +466,39 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
+      const handleAddByRSSEpisodes = async () => {
+        const addByRSSEpisodes = await getAddByRSSEpisodesLocally()
+        newState.flatListData = [...addByRSSEpisodes]
+        newState.endOfResultsReached = true
+        newState.flatListDataTotalCount = addByRSSEpisodes.length
+      }
+
       if (filterKey === PV.Filters._subscribedKey) {
-        const results = await getEpisodes(
-          {
-            sort: querySort,
-            page: queryPage,
-            podcastId,
-            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-            subscribedOnly: true,
-            includePodcast: true
-          },
-          this.global.settings.nsfwMode
-        )
-        newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
-        newState.flatListDataTotalCount = results[1]
+        if (Config.DISABLE_API_SUBSCRIBED_PODCASTS === 'TRUE') {
+          await handleAddByRSSEpisodes()
+        } else {
+          const results = await getEpisodes(
+            {
+              sort: querySort,
+              page: queryPage,
+              podcastId,
+              ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+              subscribedOnly: true,
+              includePodcast: true
+            },
+            this.global.settings.nsfwMode
+          )
+          newState.flatListData = [...flatListData, ...results[0]]
+          newState.endOfResultsReached = newState.flatListData.length >= results[1]
+          newState.flatListDataTotalCount = results[1]
+        }
       } else if (filterKey === PV.Filters._downloadedKey) {
         const downloadedEpisodes = await getDownloadedEpisodes()
         newState.flatListData = [...downloadedEpisodes]
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = downloadedEpisodes.length
       } else if (filterKey === PV.Filters._addedByRSSKey) {
-        const addByRSSEpisodes = await getAddByRSSEpisodesLocally()
-        newState.flatListData = [...addByRSSEpisodes]
-        newState.endOfResultsReached = true
-        newState.flatListDataTotalCount = addByRSSEpisodes.length
+        await handleAddByRSSEpisodes()
       } else if (filterKey === PV.Filters._allPodcastsKey) {
         const results = await this._queryAllEpisodes(querySort, queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
