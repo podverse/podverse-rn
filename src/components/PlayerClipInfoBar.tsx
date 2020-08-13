@@ -1,6 +1,7 @@
 import { NowPlayingItem } from 'podverse-shared'
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { Text } from './'
@@ -25,7 +26,7 @@ export class PlayerClipInfoBar extends React.PureComponent<Props, State> {
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
             style={[styles.title, globalTheme.playerText]}>
-            {nowPlayingItem.clipTitle || 'untitled clip'}
+            {nowPlayingItem.clipTitle || translate('untitled clip')}
           </Text>
           {!!clipStartTime && (
             <Text

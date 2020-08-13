@@ -3,6 +3,7 @@ import { Slider } from 'react-native-elements'
 import SystemSetting from 'react-native-system-setting'
 import { NavigationActions, StackActions } from 'react-navigation'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
@@ -53,7 +54,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
   _handleToggleSubscribe = async () => {
     const { handleDismiss } = this.props
 
-    const wasAlerted = await alertIfNoNetworkConnection('subscribe to podcast')
+    const wasAlerted = await alertIfNoNetworkConnection(translate('subscribe to podcast'))
     if (wasAlerted) return
     const { nowPlayingItem } = this.global.player
     try {
@@ -134,7 +135,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
           ''
         )}>
         <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>
-          {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
+          {isSubscribed ? translate('Unsubscribe') : translate('Subscribe')}
         </Text>
       </TouchableHighlight>,
       <TouchableHighlight
@@ -145,7 +146,9 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
           () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
           ''
         )}>
-        <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>Podcast Page</Text>
+        <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>
+          {translate('Podcast Page')}
+        </Text>
       </TouchableHighlight>
     ]
 
@@ -159,7 +162,9 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
             () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
             ''
           )}>
-          <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>Official Podcast Page</Text>
+          <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>
+            {translate('Official Podcast Page')}
+          </Text>
         </TouchableHighlight>
       )
     }
@@ -174,7 +179,9 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
             () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
             ''
           )}>
-          <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>Official Episode Page</Text>
+          <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>
+            {translate('Official Episode Page')}
+          </Text>
         </TouchableHighlight>
       )
     }

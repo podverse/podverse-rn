@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { readableClipTime, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer, restartNowPlayingItemClip } from '../services/player'
@@ -33,7 +34,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
 
     navigation.navigate(PV.RouteNames.ProfileScreen, {
       user,
-      navigationTitle: 'Profile'
+      navigationTitle: translate('Profile')
     })
   }
 
@@ -60,7 +61,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
       isLoading,
       ownerIsPublic,
       ownerId,
-      ownerName = 'anonymous',
+      ownerName = translate('anonymous'),
       startTime,
       title
     } = this.props
@@ -72,7 +73,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
         {isLoading && <ActivityIndicator />}
         {!isLoading && (
           <View style={styles.wrapper}>
-            <TableSectionHeader handleClosePress={handleClosePress} title='Clip Info' />
+            <TableSectionHeader handleClosePress={handleClosePress} title={translate('Clip Info')} />
             <ScrollView style={styles.scrollView} transparent={true}>
               <View style={core.row}>
                 <View style={styles.topText}>
@@ -104,24 +105,24 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                       fontSizeLargestScale={PV.Fonts.largeSizes.md}
                       onPress={this._navToProfileScreen}
                       style={styles.link}>
-                      {ownerName || 'anonymous'}
+                      {ownerName || translate('anonymous')}
                     </TextLink>
                   ) : (
                     <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.inlineText}>
-                      anonymous
+                      {translate('anonymous')}
                     </Text>
                   )}
                 </View>
                 {!hideDynamicAdsWarning && (
                   <View style={styles.bottomTextWrapper}>
                     <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.dynamicAdsWarning}>
-                      Note: If a podcast uses dynamic ads, the clip start time may not stay accurate.
+                      {translate('Note If a podcast uses dynamic ads, the clip start time may not stay accurate')}
                     </Text>
                   </View>
                 )}
                 <View style={styles.bottomTextWrapper}>
                   <TextLink onPress={restartNowPlayingItemClip} style={styles.link}>
-                    Replay Clip
+                    {translate('Replay Clip')}
                   </TextLink>
                 </View>
               </View>

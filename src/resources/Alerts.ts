@@ -4,13 +4,16 @@ import { sendVerificationEmail } from '../services/auth'
 import { logoutUser } from '../state/actions/auth'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 
-const _expiredMessage = 'To renew your membership, please visit podverse.fm, login, then go to your Settings page.'
-const _logoutButtonText = 'Log Out'
-const _networkErrorTitle = 'Network Error'
-const _sendEmailText = 'Send Email'
-const _sendVerificationEmailMessage =
-  'You must verify your email address to login. Press Send Email then check your inbox of a verification email.'
-const _cancelText = 'Cancel'
+const _expiredMessage = translate(
+  'To renew your membership, please visit podversefm, login, then go to your Settings page'
+)
+const _logoutButtonText = translate('Log Out')
+const _networkErrorTitle = translate('Network Error')
+const _sendEmailText = translate('Send Email')
+const _sendVerificationEmailMessage = translate(
+  'You must verify your email address to login Press Send Email then check your inbox of a verification email'
+)
+const _cancelText = translate('Cancel')
 
 export const Alerts = {
   ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM: (item: NowPlayingItem) => {

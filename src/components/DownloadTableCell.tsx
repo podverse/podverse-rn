@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import { Slider } from 'react-native-elements'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { getDownloadStatusText } from '../state/actions/downloads'
 import { FastImage, Text, View } from './'
@@ -24,12 +25,12 @@ export class DownloadTableCell extends React.PureComponent<Props> {
       bytesTotal = '---',
       bytesWritten = '---',
       completed,
-      episodeTitle = 'untitled episode',
+      episodeTitle = translate('untitled episode'),
       hasZebraStripe,
       onPress,
       percent,
       podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
-      podcastTitle = 'untitled podcast',
+      podcastTitle = translate('untitled podcast'),
       status
     } = this.props
     const per = completed ? 1 : percent
