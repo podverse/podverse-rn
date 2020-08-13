@@ -19,7 +19,8 @@ const mediaMoreButtons = (
   handleDismiss: any,
   handleDownload: any,
   handleDeleteClip: any,
-  includeGoToPodcast?: boolean
+  includeGoToPodcast?: boolean,
+  includeGoToEpisode?: boolean
 ) => {
   if (!item || !item.episodeId) return
 
@@ -192,8 +193,36 @@ const mediaMoreButtons = (
       text: 'Go to Podcast',
       onPress: async () => {
         await handleDismiss()
-        navigation.navigate(PV.RouteNames.EpisodePodcastScreen, {
+        // first navigate to the PodcastScreen, then goBack to the PodcastsScreen,
+        // then back again to the PodcastScreen to force it to rerender with the new podcast.
+        // TODO: This could apparently be done without goBack if we update to React Navigation 5
+        // tslint:disable-next-line:max-line-length
+        // https://stackoverflow.com/questions/52805879/re-render-component-when-navigating-the-stack-with-react-navigation
+        navigation.navigate(PV.RouteNames.PodcastScreen)
+        navigation.goBack(null)
+        navigation.navigate(PV.RouteNames.PodcastScreen, {
+          addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
           podcastId: item.podcastId
+        })
+      }
+    })
+  }
+
+  if (includeGoToEpisode) {
+    buttons.push({
+      key: 'goToEpisode',
+      text: 'Go to Episode',
+      onPress: async () => {
+        await handleDismiss()
+        // TODO: This could apparently be done without goBack if we update to React Navigation 5
+        // tslint:disable-next-line:max-line-length
+        // https://stackoverflow.com/questions/52805879/re-render-component-when-navigating-the-stack-with-react-navigation
+        navigation.navigate(PV.RouteNames.PodcastScreen)
+        navigation.goBack(null)
+        navigation.navigate(PV.RouteNames.PodcastScreen, {
+          addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
+          podcastId: item.podcastId,
+          navToEpisodeWithId: item.episodeId
         })
       }
     })

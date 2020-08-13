@@ -43,6 +43,7 @@ import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRefs } from '../services/mediaRef'
+import { getAddByRSSPodcastLocally } from '../services/parser'
 import { getPodcast } from '../services/podcast'
 import * as DownloadState from '../state/actions/downloads'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
@@ -143,10 +144,17 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
-    const { podcast, podcastId } = this.state
+    const { podcastId } = this.state
+    let { podcast } = this.state
     const episodeId = navigation.getParam('navToEpisodeWithId')
-
+    const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
     const hasInternetConnection = await hasValidNetworkConnection()
+
+    // If passed the addByRSSPodcastFeedUrl in the navigation,
+    // use the podcast from local storage.
+    if (addByRSSPodcastFeedUrl) {
+      podcast = await getAddByRSSPodcastLocally(addByRSSPodcastFeedUrl)
+    }
 
     this.setState(
       {
@@ -154,7 +162,8 @@ export class PodcastScreen extends React.Component<Props, State> {
           ? {
               viewType: PV.Filters._downloadedKey
             }
-          : { viewType: this.state.viewType })
+          : { viewType: this.state.viewType }),
+        podcast
       },
       () => {
         this._initializePageData()

@@ -268,11 +268,11 @@ export class EpisodesScreen extends React.Component<Props, State> {
     return (
       <EpisodeTableCell
         description={description}
-        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.podcast))}
         handleNavigationPress={() =>
           this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
             episode: item,
-            includeGoToPodcast: true
+            includeGoToPodcastScreen: true
           })
         }
         hasZebraStripe={isOdd(index)}
@@ -373,7 +373,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
     } = this.state
 
     const { navigation } = this.props
-    const includeGoToPodcast = true
+    const includeGoToPodcastScreen = true
 
     return (
       <View style={styles.view} {...testProps('episodes_screen_view')}>
@@ -428,8 +428,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
               navigation,
               this._handleCancelPress,
               this._handleDownloadPressed,
-              null,
-              includeGoToPodcast
+              null, // handleDeleteEpisode
+              includeGoToPodcastScreen
             )
           }
           showModal={showActionSheet}

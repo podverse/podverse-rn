@@ -446,7 +446,9 @@ export class ClipsScreen extends React.Component<Props, State> {
               navigation,
               this._handleCancelPress,
               this._handleDownloadPressed,
-              this._handleHiddenItemPress
+              this._handleHiddenItemPress,
+              true, // includeGoToPodcast
+              true // includeGoToEpisode
             )
           }}
           showModal={showActionSheet}
