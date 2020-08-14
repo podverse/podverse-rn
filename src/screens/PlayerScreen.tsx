@@ -763,18 +763,7 @@ export class PlayerScreen extends React.Component<Props, State> {
 }
 
 const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefId: string, handleShare: any) => {
-  const items = [
-    {
-      key: 'podcast',
-      text: 'Podcast',
-      onPress: async () => handleShare(podcastId, null, null)
-    },
-    {
-      key: 'episode',
-      text: 'Episode',
-      onPress: async () => handleShare(null, episodeId, null)
-    }
-  ]
+  const items = []
 
   if (mediaRefId) {
     items.push({
@@ -783,6 +772,18 @@ const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefI
       onPress: async () => handleShare(null, null, mediaRefId)
     })
   }
+
+  items.push({
+    key: 'episode',
+    text: 'Episode',
+    onPress: async () => handleShare(null, episodeId, null)
+  })
+
+  items.push({
+    key: 'podcast',
+    text: 'Podcast',
+    onPress: async () => handleShare(podcastId, null, null)
+  })
 
   return items
 }
