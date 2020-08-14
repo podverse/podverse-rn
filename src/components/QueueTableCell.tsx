@@ -1,6 +1,7 @@
 import { StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { FastImage, Icon, Text, View } from '.'
+import { translate } from '../lib/i18n'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
@@ -49,10 +50,10 @@ export class QueueTableCell extends React.PureComponent<Props> {
               isSecondary={true}
               numberOfLines={1}
               style={styles.podcastTitle}>
-              {podcastTitle || 'untitled podcast'}
+              {podcastTitle || translate('untitled podcast')}
             </Text>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.episodeTitle}>
-              {episodeTitle || 'untitled episode'}
+              {episodeTitle || translate('untitled episode')}
             </Text>
             {!!episodePubDate && (
               <Text
@@ -72,7 +73,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
         {!hideBottomRow && (
           <RNView style={styles.wrapperBottom}>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} numberOfLines={1} style={styles.clipTitle}>
-              {clipStartTime ? clipTitle || 'untitled clip' : 'Full Episode'}
+              {clipStartTime ? clipTitle || translate('untitled clip') : translate('Full Episode')}
             </Text>
             {!!clipStartTime && (
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.clipTime}>

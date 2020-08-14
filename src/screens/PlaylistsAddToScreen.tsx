@@ -189,7 +189,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
               />
             )}
             <Dialog.Container visible={showNewPlaylistDialog}>
-              <Dialog.Title>New Playlist</Dialog.Title>
+              <Dialog.Title>{translate('New Playlist')}</Dialog.Title>
               <Dialog.Input
                 onChangeText={this._handleNewPlaylistTextChange}
                 placeholder={translate('title of playlist')}

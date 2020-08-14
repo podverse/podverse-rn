@@ -25,7 +25,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: translate('Edit Profile'),
-      headerRight: <NavHeaderButtonText handlePress={navigation.getParam('updateUser')} text='Save' />
+      headerRight: <NavHeaderButtonText handlePress={navigation.getParam('updateUser')} text={translate('Save')} />
     }
   }
 
@@ -117,7 +117,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
         {!isLoading ? (
           <View>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
-              Name
+              {translate('Name')}
             </Text>
             <TextInput
               autoCapitalize='none'
@@ -131,7 +131,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
               value={name}
             />
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
-              Profile Privacy
+              {translate('Profile Privacy')}
             </Text>
             <RNPickerSelect
               items={isPublicOptions}
@@ -149,7 +149,9 @@ export class EditProfileScreen extends React.Component<Props, State> {
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   style={[core.textInputSubTitle, globalTheme.textSecondary]}>
-                  {`Podcasts, clips, and playlists ${privacySubtitleVerbTenseText} visible on your profile page.`}
+                  {`${translate('Podcasts, clips, and playlists')} ${privacySubtitleVerbTenseText} ${translate(
+                    'visible on your profile page'
+                  )}`}
                 </Text>
               )}
               {selectedIsPublicKey === false && (

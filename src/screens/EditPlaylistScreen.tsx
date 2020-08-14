@@ -38,7 +38,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const isEditing = !!navigation.getParam('isEditing')
     const handlePress = navigation.getParam(isEditing ? '_stopEditing' : '_startEditing')
-    const text = isEditing ? 'Done' : 'Edit'
+    const text = isEditing ? translate('Done') : translate('Edit')
 
     return {
       title: translate('Edit Playlist'),

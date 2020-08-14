@@ -58,8 +58,8 @@ export class EmailVerificationScreen extends React.Component<Props, State> {
         bottomActionHandler={this._navToLogin}
         bottomActionText={translate('Login')}
         isLoading={isResendingEmail}
-        message={`Please verify your email address to login. 
-        You should receive an email shortly. The email may go to your Spam folder.`}
+        message={`${translate('Please verify your email address to login')} 
+        ${translate('You should receive an email shortly The email may go to your Spam folder')}`}
         topActionHandler={this._sendVerificationEmail}
         topActionText={translate('Resend Verification Email')}
       />

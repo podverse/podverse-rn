@@ -195,9 +195,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
     if (!isLoggedIn) {
       Alert.alert(translate('Login Needed'), translate('You need to login to make clips'), [
-        { text: 'OK' },
+        { text: translate('OK') },
         {
-          text: 'Go to Login',
+          text: translate('Go to Login'),
           onPress: () => {
             navigation.goBack(null)
             setTimeout(() => {
@@ -340,9 +340,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
   _showClipPrivacyNote = async () => {
     Alert.alert(
       translate('Clip Settings'),
-      "Only with Link means only people who have your clip's" +
-        ' link can play it. These clips will not show up automatically in the Public list on Podverse.' +
-        ' A premium account is required to create Public clips.',
+      translate(`Only with Link means only people who have your clip's`) +
+        translate('link can play it. These clips will not show up automatically in the Public list on Podverse') +
+        translate('A premium account is required to create Public clips'),
       [
         {
           text: translate('Premium Info'),
@@ -503,7 +503,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     style={[styles.bottomRowTextMini, globalTheme.link]}>
-                    Clips FAQ
+                    {translate('Clips FAQ')}
                   </Text>
                 </View>
               </TouchableOpacity>

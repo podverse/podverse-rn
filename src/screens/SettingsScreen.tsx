@@ -298,7 +298,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             />
             <SwitchWithText
               onValueChange={this._toggleDownloadingWifiOnly}
-              text='Only allow downloading when connected to Wifi'
+              text={translate('Only allow downloading when connected to Wifi')}
               value={!!downloadingWifiOnly}
             />
             {/* <SwitchWithText
@@ -307,18 +307,18 @@ export class SettingsScreen extends React.Component<Props, State> {
               value={!!autoDeleteEpisodeOnEnd} /> */}
             <SwitchWithText
               onValueChange={this._handleSelectDownloadedEpisodeLimitDefault}
-              text='Limit the number of downloaded episodes for each podcast by default'
+              text={translate('Limit the number of downloaded episodes for each podcast by default')}
               value={!!downloadedEpisodeLimitDefault}
             />
             <NumberSelectorWithText
               handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
               handleSubmitEditing={this._handleSetGlobalDownloadedEpisodeLimitCount}
               selectedNumber={downloadedEpisodeLimitCount}
-              text='Default downloaded episode limit for each podcast'
+              text={translate('Default downloaded episode limit for each podcast')}
             />
             <SwitchWithText
               onValueChange={this._handleToggleNSFWText}
-              text='Censor NSFW language'
+              text={translate('Censor NSFW language')}
               value={!!censorNSFWText}
             />
             <RNPickerSelect

@@ -27,7 +27,7 @@ const _signup = 'signup'
 
 export class AuthScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
-    const title = navigation.getParam('title') || 'Login'
+    const title = navigation.getParam('title') || translate('Login')
     return {
       title,
       headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
@@ -152,19 +152,19 @@ export class AuthScreen extends React.Component<Props, State> {
     if (screenType === _login) {
       bottomButtons = [
         <Text key='reset' onPress={this._showResetPassword} style={switchOptionTextStyle}>
-          Reset Password
+          {translate('Reset Password')}
         </Text>,
         <Text
           key='moreInfo'
           onPress={this._showMembership}
           style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}>
-          Sign Up
+          {translate('Sign Up')}
         </Text>
       ]
     } else if (screenType === _resetPassword) {
       bottomButtons = [
         <Text key='membership' onPress={this._showMembership} style={styles.switchOptionText}>
-          Login
+          {translate('Login')}
         </Text>
       ]
     }

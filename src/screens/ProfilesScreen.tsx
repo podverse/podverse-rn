@@ -110,7 +110,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
     <SwipeRowBack
       isLoading={this.state.isUnsubscribing}
       onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      text='Remove'
+      text={translate('Remove')}
     />
   )
 

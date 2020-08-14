@@ -117,7 +117,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
         {!isLoading && (
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
-              RSS Feed
+              {translate('RSS Feed')}
             </Text>
             <TextInput
               autoCapitalize='none'

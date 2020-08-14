@@ -107,7 +107,7 @@ export class MoreScreen extends React.Component<Props, State> {
                       <Text
                         fontSizeLargestScale={PV.Fonts.largeSizes.md}
                         style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                        Membership
+                        {translate('Membership')}
                       </Text>
                     )}
                   </RNView>

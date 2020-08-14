@@ -120,7 +120,7 @@ export class MembershipScreen extends React.Component<Props, State> {
           <View>
             <View style={styles.textRow}>
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.label}>
-                Status:{' '}
+                {translate('Status')}{' '}
               </Text>
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.text, membershipTextStyle]}>
                 {membershipStatus}

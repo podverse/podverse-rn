@@ -9,6 +9,7 @@ import {
   TouchableOpacity
 } from 'react-native'
 import React from 'reactn'
+import { translate } from 'src/lib/i18n'
 import isEmail from 'validator/lib/isEmail'
 import { PasswordValidationInfo, TextInput } from '.'
 import {
@@ -163,7 +164,7 @@ export class SignUp extends React.Component<Props, State> {
           onSubmitEditing={() => {
             this.secondTextInput.focus()
           }}
-          placeholder='Email'
+          placeholder={translate('Email')}
           placeholderTextColor={PV.Colors.gray}
           returnKeyType='next'
           style={styles.textField}
@@ -179,7 +180,7 @@ export class SignUp extends React.Component<Props, State> {
           onSubmitEditing={() => {
             this.thirdTextInput.focus()
           }}
-          placeholder='Password'
+          placeholder={translate('Password')}
           placeholderTextColor={PV.Colors.gray}
           returnKeyType='next'
           secureTextEntry={true}
@@ -197,7 +198,7 @@ export class SignUp extends React.Component<Props, State> {
             Keyboard.dismiss()
           }}
           onChangeText={this.passwordVerificationChanged}
-          placeholder='Verify Password'
+          placeholder={translate('Verify Password')}
           placeholderTextColor={PV.Colors.gray}
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
           secureTextEntry={true}
@@ -221,7 +222,7 @@ export class SignUp extends React.Component<Props, State> {
               {isLoading ? (
                 <ActivityIndicator animating={true} color={PV.Colors.white} size='small' />
               ) : (
-                <Text style={[signInButtonTextStyle, checkIfSubmitIsDisabledTextStyle]}>Sign Up</Text>
+                <Text style={[signInButtonTextStyle, checkIfSubmitIsDisabledTextStyle]}>{translate('Sign Up')}</Text>
               )}
             </TouchableOpacity>
             {bottomButtons}
