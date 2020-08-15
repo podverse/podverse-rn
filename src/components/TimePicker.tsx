@@ -1,7 +1,7 @@
 import React from 'react'
 import { Picker, Platform, StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
-import { translate } from 'src/lib/i18n'
+import { translate } from '../lib/i18n'
 import { getHHMMSSArray } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, View } from './'
