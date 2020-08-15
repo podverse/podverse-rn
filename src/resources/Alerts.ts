@@ -90,10 +90,9 @@ export const Alerts = {
   },
   RESET_PASSWORD_SUCCESS: {
     message:
-      translate(
-        // tslint:disable-next-line: max-line-length
-        'Please check your inbox If this address exists in our system you should receive a reset password email shortly'
-      ) + translate('The email may go to your Spam folder'),
+      // tslint:disable-next-line
+      `${translate('Please check your inbox If this address exists in our system you should receive a reset password email shortly')}
+       ${translate('The email may go to your Spam folder')}`,
     title: translate('Reset Password Sent')
   },
   SIGN_UP_ERROR: {
