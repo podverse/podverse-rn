@@ -14,6 +14,7 @@ type Props = {
   hidePickers?: boolean
   hideRightItemWhileLoading?: boolean
   includeChronological?: boolean
+  isAddByRSSPodcastFeedUrl?: boolean
   isBottomBar?: boolean
   isCategories?: boolean
   isTransparent?: boolean
@@ -35,6 +36,7 @@ export const TableSectionSelectors = (props: Props) => {
     hidePickers,
     hideRightItemWhileLoading,
     includeChronological = false,
+    isAddByRSSPodcastFeedUrl = false,
     isBottomBar = false,
     isCategories = false,
     isTransparent,
@@ -49,7 +51,9 @@ export const TableSectionSelectors = (props: Props) => {
 
     if (!isBottomBar) {
       leftItems = PV.FilterOptions.typeItems.filter((type: string) => {
-        return PV.FilterOptions.screenFilters[screenName].type.includes(type.value)
+        return isAddByRSSPodcastFeedUrl
+          ? PV.FilterOptions.screenFilters[screenName].addByPodcastRSSFeedURLType.includes(type.value)
+          : PV.FilterOptions.screenFilters[screenName].type.includes(type.value)
       })
 
       rightItems = PV.FilterOptions.sortItems.filter((sortKey: string) => {

@@ -43,6 +43,7 @@ import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRefs } from '../services/mediaRef'
+import { getAddByRSSPodcastLocally } from '../services/parser'
 import { getPodcast } from '../services/podcast'
 import * as DownloadState from '../state/actions/downloads'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
@@ -143,10 +144,17 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   async componentDidMount() {
     const { navigation } = this.props
-    const { podcast, podcastId } = this.state
+    const { podcastId } = this.state
+    let { podcast } = this.state
     const episodeId = navigation.getParam('navToEpisodeWithId')
-
+    const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
     const hasInternetConnection = await hasValidNetworkConnection()
+
+    // If passed the addByRSSPodcastFeedUrl in the navigation,
+    // use the podcast from local storage.
+    if (addByRSSPodcastFeedUrl) {
+      podcast = await getAddByRSSPodcastLocally(addByRSSPodcastFeedUrl)
+    }
 
     this.setState(
       {
@@ -154,7 +162,8 @@ export class PodcastScreen extends React.Component<Props, State> {
           ? {
               viewType: PV.Filters._downloadedKey
             }
-          : { viewType: this.state.viewType })
+          : { viewType: this.state.viewType }),
+        podcast
       },
       () => {
         this._initializePageData()
@@ -618,6 +627,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           <TableSectionSelectors
             handleSelectLeftItem={this.selectLeftItem}
             handleSelectRightItem={this.selectRightItem}
+            isAddByRSSPodcastFeedUrl={podcast && podcast.addByRSSPodcastFeedUrl}
             screenName='PodcastScreen'
             selectedLeftItemKey={viewType}
             selectedRightItemKey={querySort}
@@ -650,7 +660,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         {!showSettings && (
           <View style={styles.view}>
             {isLoading && <ActivityIndicator />}
-            {!isLoading && viewType !== PV.Filters._aboutKey && flatListData && podcast && (
+            {!isLoading && viewType !== PV.Filters._aboutPodcastKey && flatListData && podcast && (
               <FlatList
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
@@ -672,7 +682,7 @@ export class PodcastScreen extends React.Component<Props, State> {
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               />
             )}
-            {!isLoading && viewType === PV.Filters._aboutKey && podcast && (
+            {!isLoading && viewType === PV.Filters._aboutPodcastKey && podcast && (
               <HTMLScrollView
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 html={
@@ -741,7 +751,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     filterKey: string | null,
     queryOptions: { queryPage?: number; searchAllFieldsText?: string } = {}
   ) => {
-    const { flatListData, podcastId, querySort, viewType } = this.state
+    const { flatListData, podcast, podcastId, querySort, viewType } = this.state
     const newState = {
       isLoading: false,
       isLoadingMore: false,
@@ -753,7 +763,10 @@ export class PodcastScreen extends React.Component<Props, State> {
     newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey !== PV.Filters._downloadedKey
 
     try {
-      if (filterKey === PV.Filters._episodesKey) {
+      if (filterKey === PV.Filters._episodesKey && podcast && podcast.addByRSSPodcastFeedUrl) {
+        newState.flatListData = podcast.episodes || []
+        newState.flatListDataTotalCount = newState.flatListData.length
+      } else if (filterKey === PV.Filters._episodesKey) {
         const results = await this._queryEpisodes(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
@@ -775,7 +788,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (filterKey === PV.Filters._aboutKey) {
+      } else if (filterKey === PV.Filters._aboutPodcastKey) {
         if (podcastId && hasInternetConnection) {
           const newPodcast = await getPodcast(podcastId)
           newState.podcast = newPodcast
