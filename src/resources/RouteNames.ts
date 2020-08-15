@@ -8,7 +8,6 @@ export const RouteNames = {
   EditPlaylistScreen: 'EditPlaylistScreen',
   EditProfileScreen: 'EditProfileScreen',
   EmailVerificationScreen: 'EmailVerificationScreen',
-  EpisodePodcastScreen: 'EpisodePodcastScreen',
   EpisodeScreen: 'EpisodeScreen',
   EpisodesScreen: 'EpisodesScreen',
   FAQScreen: 'FAQScreen',
