@@ -46,7 +46,7 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
   }
 
   render() {
-    if (Config.DISABLE_ADD_TO_PLAYLIST === 'TRUE') return null
+    if (Config.DISABLE_ADD_TO_PLAYLIST) return null
 
     const { getEpisodeId, getMediaRefId, navigation } = this.props
     const episodeId = getEpisodeId ? getEpisodeId() : null

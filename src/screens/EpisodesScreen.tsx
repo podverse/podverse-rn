@@ -474,7 +474,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       }
 
       if (filterKey === PV.Filters._subscribedKey) {
-        if (Config.DISABLE_API_SUBSCRIBED_PODCASTS === 'TRUE') {
+        if (Config.DISABLE_API_SUBSCRIBED_PODCASTS) {
           await handleAddByRSSEpisodes()
         } else {
           const results = await getEpisodes(

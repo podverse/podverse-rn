@@ -19,7 +19,7 @@ type Props = {
 }
 
 export const NavShareIcon = (props: Props) => {
-  if (Config.DISABLE_SHARE === 'TRUE') return null
+  if (Config.DISABLE_SHARE) return null
 
   const { clipTitle, endingText, episodeTitle, getUrl, handlePress, playlistTitle, podcastTitle, profileName } = props
   let { url = '' } = props

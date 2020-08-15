@@ -8,7 +8,7 @@ type Props = {
 }
 
 export const NavSearchIcon = (props: Props) => {
-  if (Config.DISABLE_SEARCH === 'TRUE') return null
+  if (Config.DISABLE_SEARCH) return null
 
   const { navigation } = props
 
