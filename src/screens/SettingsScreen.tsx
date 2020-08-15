@@ -177,7 +177,7 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   _handleClearHistory = () => {
-    Alert.alert(translate('Clear History'), translate('Are you sure you want to clear your history?'), [
+    Alert.alert(translate('Clear History'), translate('Are you sure you want to clear your history'), [
       {
         text: translate('Cancel'),
         style: translate('cancel')
