@@ -372,7 +372,7 @@ export class SettingsScreen extends React.Component<Props, State> {
         <Dialog.Container visible={showSetAllDownloadDialog}>
           <Dialog.Title>{translate('Global Update')}</Dialog.Title>
           <Dialog.Description>
-            {translate('Do you want to update the download limit for all of your currently subscribed podcasts?')}
+            {translate('Do you want to update the download limit for all of your currently subscribed podcasts')}
           </Dialog.Description>
           <Dialog.Button label={translate('No')} onPress={this._handleToggleSetAllDownloadDialog} />
           <Dialog.Button
@@ -396,7 +396,7 @@ export class SettingsScreen extends React.Component<Props, State> {
 
         <Dialog.Container visible={showDeleteAccountDialog}>
           <Dialog.Title>{translate('Delete Account')}</Dialog.Title>
-          <Dialog.Description>{translate('Are you sure you want to delete your account?')}</Dialog.Description>
+          <Dialog.Description>{translate('Are you sure you want to delete your account')}</Dialog.Description>
           <Dialog.Description>{translate('Type DELETE in the input below to confirm')}</Dialog.Description>
           <Dialog.Input
             onChangeText={this._handleDeleteAccountDialogTextChange}
