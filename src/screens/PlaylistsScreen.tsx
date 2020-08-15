@@ -175,7 +175,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
             />
           )}
           {!isLoading &&
-            queryFrom === PV.Filters._myPlaylistsKey &&like
+            queryFrom === PV.Filters._myPlaylistsKey &&
             this.global.session.isLoggedIn &&
             flatListData.length < 1 && <MessageWithAction message={translate('You have no created playlists')} />}
           {!isLoading && queryFrom === PV.Filters._subscribedKey && flatListData.length < 1 && (
