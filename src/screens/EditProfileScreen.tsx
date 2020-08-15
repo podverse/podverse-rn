@@ -149,7 +149,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   style={[core.textInputSubTitle, globalTheme.textSecondary]}>
-                  {`${translate('Podcasts, clips, and playlists')} ${privacySubtitleVerbTenseText} ${translate(
+                  {`${translate('Podcasts clips and playlists')} ${privacySubtitleVerbTenseText} ${translate(
                     'visible on your profile page'
                   )}`}
                 </Text>

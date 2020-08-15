@@ -338,19 +338,13 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   _showClipPrivacyNote = async () => {
-    Alert.alert(
-      translate('Clip Settings'),
-      translate(`Only with Link means only people who have your clip's`) +
-        translate('link can play it. These clips will not show up automatically in the Public list on Podverse') +
-        translate('A premium account is required to create Public clips'),
-      [
-        {
-          text: translate('Premium Info'),
-          onPress: () => this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
-        },
-        { text: translate('Ok') }
-      ]
-    )
+    Alert.alert(translate('Clip Settings'), translate(`Only with Link means only people who`), [
+      {
+        text: translate('Premium Info'),
+        onPress: () => this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
+      },
+      { text: translate('Ok') }
+    ])
   }
 
   render() {
@@ -561,11 +555,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
             <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
               <RNView style={[styles.modalInnerWrapper, globalTheme.modalInnerWrapper]}>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  {translate('▸ Tap the Start and End Time inputs to set them with the current track time')}
+                  {translate('Tap the Start and End Time inputs to set them with the current track time')}
                 </Text>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
                   {translate(
-                    '▸ If a podcast uses dynamically inserted ads, its clip start times will not stay 100% accurate'
+                    'If a podcast uses dynamically inserted ads, its clip start times will not stay 100% accurate'
                   )}
                 </Text>
                 <TouchableOpacity onPress={this._hideHowTo}>

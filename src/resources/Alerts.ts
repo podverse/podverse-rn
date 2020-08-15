@@ -5,7 +5,7 @@ import { logoutUser } from '../state/actions/auth'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 
 const _expiredMessage = translate(
-  'To renew your membership, please visit podversefm, login, then go to your Settings page'
+  'To renew your membership please visit podversefm login then go to your Settings page'
 )
 const _logoutButtonText = translate('Log Out')
 const _networkErrorTitle = translate('Network Error')
@@ -45,7 +45,7 @@ export const Alerts = {
   LEAVING_APP: {
     title: translate('Leaving App'),
     message: translate(
-      'You are about to be navigated to a website outside the app. Are you sure you want to leave Podverse?'
+      'You are about to be navigated to a website outside the app Are you sure you want to leave Podverse'
     )
   },
   LOGIN_INVALID: {
@@ -73,7 +73,7 @@ export const Alerts = {
     title: translate('Premium Membership Required')
   },
   PURCHASE_CANCELLED: {
-    message: translate('Purchase has been cancelled. If you are seeing this in error, please contact support'),
+    message: translate('Purchase has been cancelled If you are seeing this in error please contact support'),
     title: translate('Purchase Cancelled')
   },
   PURCHASE_PENDING: {
@@ -81,18 +81,18 @@ export const Alerts = {
     title: translate('Purchase Pending')
   },
   PURCHASE_SUCCESS: {
-    message: translate('Your purchase was successful. You may close this window'),
+    message: translate('Your purchase was successful You may close this window'),
     title: translate('Purchase Success')
   },
   PURCHASE_SOMETHING_WENT_WRONG: {
-    message: translate('Please retry processing (you wont be charged again) or contact support'),
+    message: translate('Please retry processing or contact support'),
     title: translate('Purchase Incomplete')
   },
   RESET_PASSWORD_SUCCESS: {
     message:
       translate(
         // tslint:disable-next-line: max-line-length
-        'Please check your inbox If this address exists in our system, you should receive a reset password email shortly'
+        'Please check your inbox If this address exists in our system you should receive a reset password email shortly'
       ) + translate('The email may go to your Spam folder'),
     title: translate('Reset Password Sent')
   },

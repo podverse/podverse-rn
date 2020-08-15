@@ -639,7 +639,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           <Dialog.Description>Do you want to allow downloading episodes with your data plan?</Dialog.Description>
           <Dialog.Button label={translate('No, Wifi Only')} onPress={this._handleDataSettingsWifiOnly} />
           <Dialog.Button
-            label={translate('Yes, Allow Data')}
+            label={translate('Yes Allow Data')}
             onPress={this._handleDataSettingsAllowData}
             {...testProps('alert_yes_allow_data')}
           />

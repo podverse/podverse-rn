@@ -32,7 +32,7 @@ export const NavShareIcon = (props: Props) => {
     if (episodeTitle) title += ` – ${episodeTitle}`
     if (endingText) title += `${endingText}`
     if (profileName) {
-      title = `${profileName || translate('anonymous')}${translate(`s favorite podcasts on Podverse`)}`
+      title = `${profileName || translate('anonymous')} - ${translate(`favorite podcasts on Podverse`)}`
     }
 
     try {
