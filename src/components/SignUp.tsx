@@ -9,9 +9,9 @@ import {
   TouchableOpacity
 } from 'react-native'
 import React from 'reactn'
-import { translate } from 'src/lib/i18n'
 import isEmail from 'validator/lib/isEmail'
 import { PasswordValidationInfo, TextInput } from '.'
+import { translate } from '../lib/i18n'
 import {
   hasAtLeastXCharacters as hasAtLeastXCharactersLib,
   hasLowercase as hasLowercaseLib,
