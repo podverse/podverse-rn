@@ -11,6 +11,7 @@ import {
   PlaylistTableCell,
   View
 } from '../components'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -34,12 +35,12 @@ type State = {
 export class PlaylistsAddToScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Add to Playlist',
+      title: translate('Add to Playlist'),
       headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
       headerRight: (
         <RNView>
           {navigation.getParam('isLoggedIn') && (
-            <NavHeaderButtonText handlePress={navigation.getParam('showNewPlaylistDialog')} text='New' />
+            <NavHeaderButtonText handlePress={navigation.getParam('showNewPlaylistDialog')} text={translate('New')} />
           )}
         </RNView>
       )
@@ -158,8 +159,8 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
         {!isLoggedIn && (
           <MessageWithAction
             topActionHandler={this._onPressLogin}
-            topActionText='Login'
-            message='Login to add to playlists'
+            topActionText={translate('Login')}
+            message={translate('Login to add to playlists')}
           />
         )}
         {isLoggedIn && (
@@ -188,14 +189,14 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
               />
             )}
             <Dialog.Container visible={showNewPlaylistDialog}>
-              <Dialog.Title>New Playlist</Dialog.Title>
+              <Dialog.Title>{translate('New Playlist')}</Dialog.Title>
               <Dialog.Input
                 onChangeText={this._handleNewPlaylistTextChange}
-                placeholder='title of playlist'
+                placeholder={translate('title of playlist')}
                 value={newPlaylistTitle}
               />
-              <Dialog.Button label='Cancel' onPress={this._handleNewPlaylistDismiss} />
-              <Dialog.Button label='Save' onPress={this._saveNewPlaylist} />
+              <Dialog.Button label={translate('Cancel')} onPress={this._handleNewPlaylistDismiss} />
+              <Dialog.Button label={translate('Save')} onPress={this._saveNewPlaylist} />
             </Dialog.Container>
           </View>
         )}

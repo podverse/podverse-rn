@@ -25,7 +25,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: translate('Edit Profile'),
-      headerRight: <NavHeaderButtonText handlePress={navigation.getParam('updateUser')} text='Save' />
+      headerRight: <NavHeaderButtonText handlePress={navigation.getParam('updateUser')} text={translate('Save')} />
     }
   }
 
@@ -104,20 +104,16 @@ export class EditProfileScreen extends React.Component<Props, State> {
     const { globalTheme } = this.global
     const { isLoading, name, selectedIsPublicKey } = this.state
     const selectedIsPublicOption = isPublicOptions.find((x) => x.value === selectedIsPublicKey) || selectPlaceholder
-    let privacySubtitleVerbTenseText = 'will be'
-
-    if (user.isPublic && user.isPublic === selectedIsPublicKey) {
-      privacySubtitleVerbTenseText = 'are'
-    } else if (!user.isPublic && user.isPublic === selectedIsPublicKey) {
-      privacySubtitleVerbTenseText = 'is'
-    }
+    const userIsPublic = user.isPublic && user.isPublic === selectedIsPublicKey
+    const userIsNotPublic = !user.isPublic && user.isPublic === selectedIsPublicKey
+    const willBeDifferent = user.isPublic !== selectedIsPublicKey
 
     return (
       <View style={styles.view} {...testProps('edit_profile_screen_view')}>
         {!isLoading ? (
           <View>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
-              Name
+              {translate('Name')}
             </Text>
             <TextInput
               autoCapitalize='none'
@@ -131,7 +127,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
               value={name}
             />
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
-              Profile Privacy
+              {translate('Profile Privacy')}
             </Text>
             <RNPickerSelect
               items={isPublicOptions}
@@ -149,16 +145,18 @@ export class EditProfileScreen extends React.Component<Props, State> {
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   style={[core.textInputSubTitle, globalTheme.textSecondary]}>
-                  {`Podcasts, clips, and playlists ${privacySubtitleVerbTenseText} visible on your profile page.`}
+                  {willBeDifferent
+                    ? translate('Podcasts clips and playlists will be visible')
+                    : translate('Podcasts clips and playlists are visible')}
                 </Text>
               )}
               {selectedIsPublicKey === false && (
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   style={[core.textInputSubTitle, globalTheme.textSecondary]}>
-                  {`Your profile page ${privacySubtitleVerbTenseText} hidden. Your clip and playlist links ${
-                    privacySubtitleVerbTenseText === 'is' ? 'are' : privacySubtitleVerbTenseText
-                  } still accessible to anyone with the links.`}
+                  {willBeDifferent
+                    ? translate('Your profile page will be hidden')
+                    : translate('Your profile page is hidden')}
                 </Text>
               )}
             </RNPickerSelect>

@@ -30,6 +30,7 @@ import {
   View
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import {
   decodeHTMLString,
@@ -440,14 +441,16 @@ export class PlayerScreen extends React.Component<Props, State> {
     let title = ''
     if (podcastId) {
       url = PV.URLs.podcast + podcastId
-      title = `${nowPlayingItem.podcastTitle} – shared using Podverse`
+      title = `${nowPlayingItem.podcastTitle}${translate(' – shared using Podverse')}`
     } else if (episodeId) {
       url = PV.URLs.episode + episodeId
-      title = `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} – shared using Podverse`
+      title = `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate(' – shared using Podverse')}`
     } else {
       url = PV.URLs.clip + mediaRefId
-      title = `${nowPlayingItem.clipTitle ? nowPlayingItem.clipTitle + ' – ' : 'untitled clip – '}`
-      title += `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} – clip shared using Podverse`
+      title = `${nowPlayingItem.clipTitle ? nowPlayingItem.clipTitle + ' – ' : translate('untitled clip – ')}`
+      title += `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate(
+        '– clip shared using Podverse'
+      )}`
     }
 
     try {
@@ -493,7 +496,7 @@ export class PlayerScreen extends React.Component<Props, State> {
           hasZebraStripe={isOdd(index)}
           hideImage={true}
           pubDate={item.pubDate}
-          title={item.title || 'untitled episode'}
+          title={item.title || translate('untitled episode')}
           transparent={true}
         />
       )
@@ -513,13 +516,13 @@ export class PlayerScreen extends React.Component<Props, State> {
             ? { episodePubDate: readableDate(item.episode.pubDate) }
             : {})}
           {...(queryFrom === PV.Filters._fromThisPodcastKey
-            ? { episodeTitle: item.episode.title || 'untitled episode' }
+            ? { episodeTitle: item.episode.title || translate('untitled episode') }
             : {})}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, podcast))}
           hideImage={true}
           startTime={item.startTime}
-          title={item.title || 'untitled clip'}
+          title={item.title || translate('untitled clip')}
           transparent={true}
         />
       ) : (
@@ -604,7 +607,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                 <TableSectionHeader
                   centerText={PV.Fonts.fontScale.largest === fontScaleMode}
                   isTransparent={true}
-                  title='From this podcast'
+                  title={translate('From this podcast')}
                 />
               )}
               {isLoading || (isQuerying && <ActivityIndicator />)}
@@ -654,9 +657,9 @@ export class PlayerScreen extends React.Component<Props, State> {
           <ActionSheet
             handleCancelPress={this._dismissShareActionSheet}
             items={shareActionSheetButtons(podcastId, episodeId, mediaRefId, this._handleShare)}
-            message='What link do you want to share?'
+            message={translate('What link do you want to share?')}
             showModal={showShareActionSheet}
-            title='Share'
+            title={translate('Share')}
           />
         </View>
       </OpaqueBackground>
@@ -766,12 +769,12 @@ const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefI
   const items = [
     {
       key: 'podcast',
-      text: 'Podcast',
+      text: translate('Podcast'),
       onPress: async () => handleShare(podcastId, null, null)
     },
     {
       key: 'episode',
-      text: 'Episode',
+      text: translate('Episode'),
       onPress: async () => handleShare(null, episodeId, null)
     }
   ]
@@ -779,7 +782,7 @@ const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefI
   if (mediaRefId) {
     items.push({
       key: 'clip',
-      text: 'Clip',
+      text: translate('Clip'),
       onPress: async () => handleShare(null, null, mediaRefId)
     })
   }

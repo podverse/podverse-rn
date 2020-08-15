@@ -2,6 +2,7 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { TextInput } from '.'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 
 type Props = {
@@ -59,7 +60,7 @@ export class ResetPassword extends React.Component<Props, State> {
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           keyboardType='email-address'
           onChangeText={this._emailChanged}
-          placeholder='Email'
+          placeholder={translate('Email')}
           returnKeyType='done'
           style={styles.textField}
           value={this.state.email}

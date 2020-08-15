@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useEffect, useGlobal, useState } from 'reactn'
 import { Icon } from '../components'
+import { translate } from '../lib/i18n'
 import { getMembershipStatus, readableDate, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 
@@ -38,8 +39,8 @@ export const OverlayAlert = (props: Props) => {
         const freeTrialExpiration = readableDate(safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, ''))
         setState({
           hideKey: 'hideFreeTrialExpired',
-          alertTitle: `Your free trial expired ${freeTrialExpiration}. 
-          Please renew your membership to continue using premium features.`,
+          alertTitle: `${translate('Your free trial expired ')}${freeTrialExpiration}. 
+          ${translate('Please renew your membership to continue using premium features.')}`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
           alertTitleStyle: globalTheme.overlayAlertDanger,
           linkAction: handleRenewMembership,
@@ -49,7 +50,7 @@ export const OverlayAlert = (props: Props) => {
         const freeTrialExpiration = readableDate(safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, ''))
         setState({
           hideKey: 'hideFreeTrialExpiring',
-          alertTitle: `Your free trial expires ${freeTrialExpiration}`,
+          alertTitle: `${translate('Your free trial expires ')}${freeTrialExpiration}`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertWarning],
           alertTitleStyle: globalTheme.overlayAlertWarning,
           linkAction: handleRenewMembership,
@@ -60,8 +61,8 @@ export const OverlayAlert = (props: Props) => {
 
         setState({
           hideKey: 'hideMembershipExpired',
-          alertTitle: `Your membership expired ${membershipExpiration}. 
-          Please renew your membership to continue using premium features.`,
+          alertTitle: `${translate('Your membership expired ')}${membershipExpiration}. 
+          ${translate('Please renew your membership to continue using premium features')}`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
           alertTitleStyle: globalTheme.overlayAlertDanger,
           linkAction: handleRenewMembership,
@@ -71,7 +72,7 @@ export const OverlayAlert = (props: Props) => {
         const membershipExpiration = readableDate(safelyUnwrapNestedVariable(() => userInfo.membershipExpiration, ''))
         setState({
           hideKey: 'hideMembershipExpiring',
-          alertTitle: `Your premium membership expires ${membershipExpiration}.`,
+          alertTitle: `${translate('Your premium membership expires ')}${membershipExpiration}.`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertWarning],
           alertTitleStyle: globalTheme.overlayAlertWarning,
           linkAction: handleRenewMembership,
@@ -111,7 +112,7 @@ export const OverlayAlert = (props: Props) => {
       <View style={styles.textWrapper}>
         <Text style={[styles.text, state.alertTitleStyle]}>{state.alertTitle}</Text>
         <Text onPress={state.linkAction} style={[styles.textLink, overlayAlertLinkStyles]}>
-          Renew Membership
+          {translate('Renew Membership')}
         </Text>
       </View>
       <TouchableWithoutFeedback

@@ -2,6 +2,7 @@ import { ActivityIndicator, Dimensions, ScrollView, StyleSheet, Text, TouchableO
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { TextInput } from '.'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 
 type Props = {
@@ -74,7 +75,7 @@ export class Login extends React.Component<Props, State> {
           onSubmitEditing={() => {
             this.secondTextInput.focus()
           }}
-          placeholder='Email'
+          placeholder={translate('Email')}
           placeholderTextColor={PV.Colors.gray}
           returnKeyType='next'
           style={styles.textField}
@@ -85,7 +86,7 @@ export class Login extends React.Component<Props, State> {
           autoCompleteType='password'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           onChangeText={this.passwordChanged}
-          placeholder='Password'
+          placeholder={translate('Password')}
           placeholderTextColor={PV.Colors.gray}
           inputRef={(input) => {
             this.secondTextInput = input
@@ -105,7 +106,7 @@ export class Login extends React.Component<Props, State> {
               {isLoading ? (
                 <ActivityIndicator animating={true} color={PV.Colors.gray} size='small' />
               ) : (
-                <Text style={signInButtonTextStyle}>Login</Text>
+                <Text style={signInButtonTextStyle}>{translate('Login')}</Text>
               )}
             </TouchableOpacity>
             {bottomButtons}

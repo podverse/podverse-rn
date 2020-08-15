@@ -177,13 +177,13 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   _handleClearHistory = () => {
-    Alert.alert('Clear History', 'Are you sure you want to clear your history?', [
+    Alert.alert(translate('Clear History'), translate('Are you sure you want to clear your history?'), [
       {
-        text: 'Cancel',
-        style: 'cancel'
+        text: translate('Cancel'),
+        style: translate('cancel')
       },
       {
-        text: 'Yes',
+        text: translate('Yes'),
         onPress: () => {
           this.setState(
             {
@@ -240,7 +240,7 @@ export class SettingsScreen extends React.Component<Props, State> {
 
   _handleDeleteAccountDialogTextChange = (text: string) => {
     this.setState({
-      deleteAccountDialogConfirmed: !!text && text.toUpperCase() === 'DELETE',
+      deleteAccountDialogConfirmed: !!text && text.toUpperCase() === translate('DELETE'),
       deleteAccountDialogText: text
     })
   }
@@ -249,7 +249,7 @@ export class SettingsScreen extends React.Component<Props, State> {
     const { deleteAccountDialogText } = this.state
 
     try {
-      if (deleteAccountDialogText && deleteAccountDialogText.toUpperCase() === 'DELETE') {
+      if (deleteAccountDialogText && deleteAccountDialogText.toUpperCase() === translate('DELETE')) {
         await deleteLoggedInUser()
         await logoutUser()
         this.setState({ showDeleteAccountDialog: false })
@@ -293,12 +293,12 @@ export class SettingsScreen extends React.Component<Props, State> {
           <View>
             <SwitchWithText
               onValueChange={this._toggleTheme}
-              text={`${globalTheme === darkTheme ? 'Dark Mode' : 'Light Mode'}`}
+              text={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}
               value={globalTheme === darkTheme}
             />
             <SwitchWithText
               onValueChange={this._toggleDownloadingWifiOnly}
-              text='Only allow downloading when connected to Wifi'
+              text={translate('Only allow downloading when connected to Wifi')}
               value={!!downloadingWifiOnly}
             />
             {/* <SwitchWithText
@@ -307,18 +307,18 @@ export class SettingsScreen extends React.Component<Props, State> {
               value={!!autoDeleteEpisodeOnEnd} /> */}
             <SwitchWithText
               onValueChange={this._handleSelectDownloadedEpisodeLimitDefault}
-              text='Limit the number of downloaded episodes for each podcast by default'
+              text={translate('Limit the number of downloaded episodes for each podcast by default')}
               value={!!downloadedEpisodeLimitDefault}
             />
             <NumberSelectorWithText
               handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
               handleSubmitEditing={this._handleSetGlobalDownloadedEpisodeLimitCount}
               selectedNumber={downloadedEpisodeLimitCount}
-              text='Default downloaded episode limit for each podcast'
+              text={translate('Default downloaded episode limit for each podcast')}
             />
             <SwitchWithText
               onValueChange={this._handleToggleNSFWText}
-              text='Censor NSFW language'
+              text={translate('Censor NSFW language')}
               value={!!censorNSFWText}
             />
             <RNPickerSelect
@@ -337,19 +337,23 @@ export class SettingsScreen extends React.Component<Props, State> {
                 </View>
                 <View style={core.selectorWrapperRight}>
                   <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.pickerSelect, globalTheme.text]}>
-                    Max playback speed
+                    {translate('Max playback speed')}
                   </Text>
                 </View>
               </View>
             </RNPickerSelect>
             <Divider style={styles.divider} />
-            <Button onPress={this._handleClearHistory} wrapperStyles={styles.button} text={'Clear History'} />
+            <Button
+              onPress={this._handleClearHistory}
+              wrapperStyles={styles.button}
+              text={translate('Clear History')}
+            />
 
             <Divider style={styles.divider} />
             <Button
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
               wrapperStyles={styles.button}
-              text='Delete Downloaded Episodes'
+              text={translate('Delete Downloaded Episodes')}
             />
 
             {isLoggedIn && (
@@ -358,7 +362,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                 <Button
                   isWarning={true}
                   onPress={this._handleToggleDeleteAccountDialog}
-                  text={'Delete Account'}
+                  text={translate('Delete Account')}
                   wrapperStyles={styles.button}
                 />
               </View>
@@ -366,13 +370,13 @@ export class SettingsScreen extends React.Component<Props, State> {
           </View>
         )}
         <Dialog.Container visible={showSetAllDownloadDialog}>
-          <Dialog.Title>Global Update</Dialog.Title>
+          <Dialog.Title>{translate('Global Update')}</Dialog.Title>
           <Dialog.Description>
-            Do you want to update the download limit for all of your currently subscribed podcasts?
+            {translate('Do you want to update the download limit for all of your currently subscribed podcasts?')}
           </Dialog.Description>
-          <Dialog.Button label='No' onPress={this._handleToggleSetAllDownloadDialog} />
+          <Dialog.Button label={translate('No')} onPress={this._handleToggleSetAllDownloadDialog} />
           <Dialog.Button
-            label='Yes'
+            label={translate('Yes')}
             onPress={
               showSetAllDownloadDialogIsCount
                 ? this._handleUpdateAllDownloadedEpiosdeLimitCount
@@ -382,27 +386,29 @@ export class SettingsScreen extends React.Component<Props, State> {
         </Dialog.Container>
 
         <Dialog.Container visible={showDeleteDownloadedEpisodesDialog}>
-          <Dialog.Title>Delete All Downloaded Episodes</Dialog.Title>
-          <Dialog.Description>Are you sure you want to delete all of your downloaded episodes?</Dialog.Description>
-          <Dialog.Button label='No' onPress={this._handleToggleDeleteDownloadedEpisodesDialog} />
-          <Dialog.Button label='Yes' onPress={this._handleDeleteDownloadedEpisodes} />
+          <Dialog.Title>{translate('Delete All Downloaded Episodes')}</Dialog.Title>
+          <Dialog.Description>
+            {translate('Are you sure you want to delete all of your downloaded episodes?')}
+          </Dialog.Description>
+          <Dialog.Button label={translate('No')} onPress={this._handleToggleDeleteDownloadedEpisodesDialog} />
+          <Dialog.Button label={translate('Yes')} onPress={this._handleDeleteDownloadedEpisodes} />
         </Dialog.Container>
 
         <Dialog.Container visible={showDeleteAccountDialog}>
-          <Dialog.Title>Delete Account</Dialog.Title>
-          <Dialog.Description>Are you sure you want to delete your account?</Dialog.Description>
-          <Dialog.Description>Type DELETE in the input below to confirm.</Dialog.Description>
+          <Dialog.Title>{translate('Delete Account')}</Dialog.Title>
+          <Dialog.Description>{translate('Are you sure you want to delete your account?')}</Dialog.Description>
+          <Dialog.Description>{translate('Type DELETE in the input below to confirm')}</Dialog.Description>
           <Dialog.Input
             onChangeText={this._handleDeleteAccountDialogTextChange}
             placeholder=''
             value={deleteAccountDialogText}
           />
-          <Dialog.Button label='Cancel' onPress={this._handleToggleDeleteAccountDialog} />
+          <Dialog.Button label={translate('Cancel')} onPress={this._handleToggleDeleteAccountDialog} />
           <Dialog.Button
             bold={deleteAccountDialogConfirmed}
             color={deleteAccountDialogConfirmed ? PV.Colors.redDarker : PV.Colors.grayDark}
             disabled={!deleteAccountDialogConfirmed}
-            label='Delete'
+            label={translate('Delete')}
             onPress={this._handleDeleteAccount}
           />
         </Dialog.Container>
@@ -439,6 +445,6 @@ const styles = StyleSheet.create({
 })
 
 const placeholderItem = {
-  label: 'Select...',
+  label: 'Select',
   value: null
 }

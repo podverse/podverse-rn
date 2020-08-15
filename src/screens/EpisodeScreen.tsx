@@ -62,7 +62,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
-              endingText=' – shared using Podverse'
+              endingText={translate(' – shared using Podverse')}
               episodeTitle={episodeTitle}
               podcastTitle={podcastTitle}
               url={PV.URLs.episode + episodeId}
@@ -120,8 +120,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
     this._initializePageData()
     const pageTitle =
       episode && episode.podcast
-        ? 'Episode Screen - ' + episode.podcast.title + ' - ' + episode.title
-        : 'Episode Screen - ' + 'no info available'
+        ? translate('Episode Screen - ') + episode.podcast.title + ' - ' + episode.title
+        : translate('Episode Screen - ') + translate('no info available')
     gaTrackPageView('/episode/' + episodeId, pageTitle)
   }
 
