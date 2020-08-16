@@ -108,9 +108,8 @@ const allFilterTypeItems = [
 
 const filterTypeItemsList = Config.FILTER_TYPE_ITEMS ? Config.FILTER_TYPE_ITEMS.split(',') : []
 
-const typeItems = [] as any[]
-filterTypeItemsList.forEach((value: string) => {
-  typeItems.push(allFilterTypeItems.find((x: any) => x.value === value))
+const typeItems = allFilterTypeItems.filter((item: any) => {
+  return filterTypeItemsList.find((value: string) => item.value === value)
 })
 
 const allSortItems = [
@@ -148,9 +147,8 @@ const allSortItems = [
 
 const filterSortItemsList = Config.FILTER_SORT_ITEMS ? Config.FILTER_SORT_ITEMS.split(',') : []
 
-const sortItems = [] as any[]
-filterSortItemsList.forEach((value: string) => {
-  sortItems.push(allSortItems.find((x: any) => x.value === value))
+const sortItems = allSortItems.filter((item: any) => {
+  return filterSortItemsList.find((value: string) => item.value === value)
 })
 
 const allFromListItems = [
@@ -166,9 +164,8 @@ const allFromListItems = [
 
 const filterFromListItemsList = Config.FILTER_FROM_ITEMS ? Config.FILTER_FROM_ITEMS.split(',') : []
 
-const fromItems = [] as any[]
-filterFromListItemsList.forEach((value: string) => {
-  fromItems.push(allFromListItems.find((x: any) => x.value === value))
+const fromItems = allFromListItems.filter((item: any) => {
+  return filterFromListItemsList.find((value: string) => item.value === value)
 })
 
 export const FilterOptions = {
