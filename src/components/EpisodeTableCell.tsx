@@ -1,5 +1,6 @@
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { decodeHTMLString, readableDate, removeHTMLFromString, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { FastImage, IndicatorDownload, MoreButton, Text, View } from './'
@@ -42,7 +43,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const isDownloading = downloadsActive[id]
     const isDownloaded = downloadedEpisodeIds[id]
 
-    if (!title) title = 'untitled episode'
+    if (!title) title = translate('untitled episode')
 
     const titleStyle = (podcastTitle ? styles.title : [styles.title, { marginTop: 0 }]) as any
 

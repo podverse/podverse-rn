@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, View, WebViewStaticHTML } from '../components'
+import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { gaTrackPageView } from '../services/googleAnalytics'
 
@@ -13,7 +14,7 @@ type State = {
 export class FAQScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'FAQ'
+      title: translate('FAQ')
     }
   }
 

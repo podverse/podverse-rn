@@ -1,6 +1,7 @@
 import { Alert, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
 import { Login, NavDismissIcon, ResetPassword, SafeAreaView, SignUp } from '../components'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -26,7 +27,7 @@ const _signup = 'signup'
 
 export class AuthScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
-    const title = navigation.getParam('title') || 'Login'
+    const title = navigation.getParam('title') || translate('Login')
     return {
       title,
       headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
@@ -133,7 +134,7 @@ export class AuthScreen extends React.Component<Props, State> {
   }
 
   _showResetPassword = () => {
-    this.props.navigation.setParams({ title: 'Reset Password' })
+    this.props.navigation.setParams({ title: translate('Reset Password') })
     this.setState({ screenType: _resetPassword })
   }
 
@@ -151,19 +152,19 @@ export class AuthScreen extends React.Component<Props, State> {
     if (screenType === _login) {
       bottomButtons = [
         <Text key='reset' onPress={this._showResetPassword} style={switchOptionTextStyle}>
-          Reset Password
+          {translate('Reset Password')}
         </Text>,
         <Text
           key='moreInfo'
           onPress={this._showMembership}
           style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}>
-          Sign Up
+          {translate('Sign Up')}
         </Text>
       ]
     } else if (screenType === _resetPassword) {
       bottomButtons = [
         <Text key='membership' onPress={this._showMembership} style={styles.switchOptionText}>
-          Login
+          {translate('Login')}
         </Text>
       ]
     }

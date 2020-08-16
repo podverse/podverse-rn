@@ -1,6 +1,7 @@
 import React from 'react'
 import { Picker, Platform, StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
+import { translate } from '../lib/i18n'
 import { getHHMMSSArray } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, View } from './'
@@ -61,7 +62,7 @@ export const TimePicker = (props: Props) => {
             {hourItems}
           </Picker>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} style={[stylesText, globalTheme.text]}>
-            hours
+            {translate('hours')}
           </Text>
         </View>
         <View style={styles.pickerColumn}>
@@ -76,7 +77,7 @@ export const TimePicker = (props: Props) => {
             {minuteItems}
           </Picker>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} style={[stylesText, globalTheme.text]}>
-            minutes
+            {translate('minutes')}
           </Text>
         </View>
         <View style={styles.pickerColumn}>
@@ -91,7 +92,7 @@ export const TimePicker = (props: Props) => {
             {secondItems}
           </Picker>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} style={[stylesText, globalTheme.text]}>
-            seconds
+            {translate('seconds')}
           </Text>
         </View>
       </View>

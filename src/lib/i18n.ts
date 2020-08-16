@@ -1,28 +1,23 @@
 import i18n from 'i18n-js'
 import memoize from 'lodash.memoize'
-import { I18nManager, Platform } from 'react-native'
-import RNFS from 'react-native-fs'
+import { I18nManager } from 'react-native'
 import * as RNLocalize from 'react-native-localize'
 
-export const setI18nConfig = async () => {
-  const translationsDir = await (Platform.OS === 'android'
-    ? RNFS.readDirAssets('translations')
-    : RNFS.readDir(RNFS.MainBundlePath + '/i18n/translations'))
-  const translationPaths = translationsDir
-    .filter(({ isFile, name }) => isFile() && name.endsWith('.json'))
-    .reduce((all, { name, path }) => {
-      const languageTag = name.replace('.json', '')
-      return { ...all, [languageTag]: path }
-    }, {})
+const translationGetters = {
+  // lazy requires (metro bundler does not support symlinks)
+  en: () => require('../resources/i18n/translations/en.json'),
+  es: () => require('../resources/i18n/translations/es.json')
+}
 
+export const translate = memoize(
+  (key: any, config: any) => i18n.t(key, config),
+  (key: any, config: any) => (config ? key + JSON.stringify(config) : key)
+) as any
+
+export const setI18nConfig = () => {
   // fallback if no available language fits
   const fallback = { languageTag: 'en', isRTL: false }
-
-  const { languageTag, isRTL } = RNLocalize.findBestAvailableLanguage(Object.keys(translationPaths)) || fallback
-
-  const fileContent = await (Platform.OS === 'android'
-    ? RNFS.readFileAssets(translationPaths[languageTag], 'utf8')
-    : RNFS.readFile(translationPaths[languageTag], 'utf8'))
+  const { languageTag, isRTL } = RNLocalize.findBestAvailableLanguage(Object.keys(translationGetters)) || fallback
 
   // clear translation cache
   translate.cache.clear()
@@ -30,16 +25,9 @@ export const setI18nConfig = async () => {
   I18nManager.forceRTL(isRTL)
 
   // set i18n-js config
-  i18n.translations = { [languageTag]: JSON.parse(fileContent) }
+  i18n.translations = { [languageTag]: translationGetters[languageTag]() }
   i18n.locale = languageTag
 }
-
-export const translate = memoize(
-  (key: string, config: any) => i18n.t(key, config),
-  (key: string, config: string) => (config ? key + JSON.stringify(config) : key)
-) as any
-
-export const supportedLanguages = ['en']
 
 export const convertFilterOptionsToI18N = (rightItems: any) => rightItems.map((x: any) => convertFilterOptionToI18N(x))
 

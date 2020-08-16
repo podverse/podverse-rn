@@ -1,7 +1,9 @@
 import React from 'react'
+import Config from 'react-native-config'
 import Share from 'react-native-share'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
+import { translate } from '../lib/i18n'
 import { NavItemIcon, NavItemWrapper } from './'
 
 type Props = {
@@ -14,10 +16,12 @@ type Props = {
   podcastTitle?: string
   profileName?: string
   url?: string
-  globalTheme: GlobalTheme
+  globalTheme?: GlobalTheme
 }
 
 export const NavShareIcon = (props: Props) => {
+  if (Config.DISABLE_SHARE) return null
+
   const { clipTitle, endingText, episodeTitle, getUrl, handlePress, playlistTitle, podcastTitle, profileName } = props
   let { url = '' } = props
 
@@ -31,7 +35,7 @@ export const NavShareIcon = (props: Props) => {
     if (episodeTitle) title += ` – ${episodeTitle}`
     if (endingText) title += `${endingText}`
     if (profileName) {
-      title = `${profileName || 'anonymous'}'s favorite podcasts on Podverse`
+      title = `${profileName || translate('anonymous')} - ${translate(`favorite podcasts on Podverse`)}`
     }
 
     try {

@@ -11,6 +11,7 @@ import {
   TextInput,
   View
 } from '../components'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { combineAndSortPlaylistItems, testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -37,10 +38,10 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const isEditing = !!navigation.getParam('isEditing')
     const handlePress = navigation.getParam(isEditing ? '_stopEditing' : '_startEditing')
-    const text = isEditing ? 'Done' : 'Edit'
+    const text = isEditing ? translate('Done') : translate('Edit')
 
     return {
-      title: 'Edit Playlist',
+      title: translate('Edit Playlist'),
       headerRight: (
         <RNView style={styles.headerButtonWrapper}>
           <NavHeaderButtonText handlePress={handlePress} style={styles.navHeaderTextButton} text={text} />
@@ -238,7 +239,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             onChangeText={this._onChangeTitle}
             onSubmitEditing={this._updatePlaylist}
-            placeholder='playlist title'
+            placeholder={translate('playlist title')}
             returnKeyType='done'
             style={styles.textInput}
             underlineColorAndroid='transparent'

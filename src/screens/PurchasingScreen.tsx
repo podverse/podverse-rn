@@ -1,6 +1,7 @@
 import { Linking, Platform, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, SafeAreaView, Text, View } from '../components'
+import { translate } from '../lib/i18n'
 import { createEmailLinkUrl, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -16,7 +17,7 @@ type State = {}
 export class PurchasingScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'Processing',
+      title: translate('Processing'),
       headerRight: null
     }
   }
@@ -69,7 +70,7 @@ export class PurchasingScreen extends React.Component<Props, State> {
           )}
           {!isLoading && showDismissLink && (
             <TouchableOpacity onPress={this._handleDismiss}>
-              <Text style={[globalTheme.text, styles.button]}>Close</Text>
+              <Text style={[globalTheme.text, styles.button]}>{translate('Close')}</Text>
             </TouchableOpacity>
           )}
         </View>

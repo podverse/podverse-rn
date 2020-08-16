@@ -1,5 +1,6 @@
 import { StyleSheet, Switch } from 'react-native'
 import React, { useGlobal } from 'reactn'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { ActivityIndicator, FastImage, IndicatorDownload, SettingsButton, SubscribeButton, Text, View } from './'
@@ -29,7 +30,7 @@ export const PodcastTableHeader = (props: Props) => {
     isSubscribed,
     isSubscribing,
     podcastImageUrl,
-    podcastTitle = 'untitled podcast',
+    podcastTitle = translate('untitled podcast'),
     showSettings
   } = props
   const [fontScaleMode] = useGlobal('fontScaleMode')
@@ -69,7 +70,7 @@ export const PodcastTableHeader = (props: Props) => {
               </View>
               <View style={styles.textWrapperBottomRight}>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} isSecondary={true} style={styles.autoDownloadText}>
-                  Auto
+                  {translate('Auto')}
                 </Text>
                 <IndicatorDownload style={styles.autoDownloadIcon} />
                 <Switch onValueChange={handleToggleAutoDownload} value={autoDownloadOn} />
@@ -81,7 +82,7 @@ export const PodcastTableHeader = (props: Props) => {
       {!isLoading && isNotFound && (
         <View style={[styles.wrapper, core.view]}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.notFoundText}>
-            Podcast Not Found
+            {translate('Podcast Not Found')}
           </Text>
         </View>
       )}

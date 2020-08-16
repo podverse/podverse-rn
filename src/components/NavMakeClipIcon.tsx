@@ -1,3 +1,4 @@
+import Config from 'react-native-config'
 import React, { getGlobal } from 'reactn'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
@@ -12,6 +13,8 @@ type Props = {
 }
 
 export const NavMakeClipIcon = (props: Props) => {
+  if (Config.DISABLE_MAKE_CLIP) return null
+
   const { getInitialProgressValue, navigation } = props
 
   const handlePress = async () => {
