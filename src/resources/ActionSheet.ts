@@ -116,7 +116,7 @@ const mediaMoreButtons = (
   buttons.push(
     {
       key: 'queueNext',
-      text: translate('Queue: Next'),
+      text: translate('Queue Next'),
       onPress: async () => {
         await addQueueItemNext(item)
         await handleDismiss()
@@ -124,7 +124,7 @@ const mediaMoreButtons = (
     },
     {
       key: 'queueLast',
-      text: translate('Queue: Last'),
+      text: translate('Queue Last'),
       onPress: async () => {
         await addQueueItemLast(item)
         await handleDismiss()
