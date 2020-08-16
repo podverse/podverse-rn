@@ -50,13 +50,13 @@ export const TableSectionSelectors = (props: Props) => {
     let rightItems = [] as any
 
     if (!isBottomBar) {
-      leftItems = PV.FilterOptions.typeItems.filter((type: string) => {
+      leftItems = PV.FilterOptions.typeItems.filter((type: any) => {
         return isAddByRSSPodcastFeedUrl
           ? PV.FilterOptions.screenFilters[screenName].addByPodcastRSSFeedURLType.includes(type.value)
           : PV.FilterOptions.screenFilters[screenName].type.includes(type.value)
       })
 
-      rightItems = PV.FilterOptions.sortItems.filter((sortKey: string) => {
+      rightItems = PV.FilterOptions.sortItems.filter((sortKey: any) => {
         return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
       })
     } else {
@@ -96,7 +96,7 @@ export const TableSectionSelectors = (props: Props) => {
     const screen = PV.FilterOptions.screenFilters[screenName]
     if (!screen.hideSort.includes(selectedLeftItemKey)) {
       if (!isBottomBar) {
-        rightItems = PV.FilterOptions.sortItems.filter((sortKey: string) => {
+        rightItems = PV.FilterOptions.sortItems.filter((sortKey: any) => {
           return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
         })
 
