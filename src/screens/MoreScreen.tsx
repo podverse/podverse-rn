@@ -208,9 +208,8 @@ const allMoreFeatures = [
 
 const moreFeaturesList = Config.NAV_STACK_MORE_FEATURES.split(',')
 
-const moreFeaturesOptions = [] as any[]
-moreFeaturesList.forEach((screenKey: string) => {
-  moreFeaturesOptions.push(allMoreFeatures.find((x: any) => x.key === screenKey))
+const moreFeaturesOptions = allMoreFeatures.filter((item: any) => {
+  return moreFeaturesList.find((screenKey: any) => item.key === screenKey)
 })
 
 const moreOtherOptions = (membershipStatus?: string) => {
@@ -254,9 +253,8 @@ const moreOtherOptions = (membershipStatus?: string) => {
 
   const moreOtherList = Config.NAV_STACK_MORE_OTHER.split(',')
 
-  const options = [] as any[]
-  moreOtherList.forEach((screenKey: string) => {
-    options.push(allMoreOtherOptions.find((x: any) => x.key === screenKey))
+  const options = allMoreOtherOptions.filter((item: any) => {
+    return moreOtherList.find((screenKey: string) => item.key === screenKey)
   })
 
   return options
