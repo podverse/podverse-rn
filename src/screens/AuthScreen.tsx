@@ -1,6 +1,7 @@
 import { Alert, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
 import { Login, NavDismissIcon, ResetPassword, SafeAreaView, SignUp } from '../components'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -133,7 +134,7 @@ export class AuthScreen extends React.Component<Props, State> {
   }
 
   _showResetPassword = () => {
-    this.props.navigation.setParams({ title: 'Reset Password' })
+    this.props.navigation.setParams({ title: translate('Reset Password') })
     this.setState({ screenType: _resetPassword })
   }
 

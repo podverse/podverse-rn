@@ -1,4 +1,5 @@
 import { Image, View } from 'react-native'
+import Config from 'react-native-config'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator, NavigationStackOptions } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
@@ -105,9 +106,7 @@ const PodcastsNavigator = createStackNavigator(
 
 const EpisodesNavigator = createStackNavigator(
   {
-    [PV.RouteNames.EpisodesScreen]: EpisodesScreen,
-    [PV.RouteNames.EpisodeScreen]: EpisodeScreen,
-    [PV.RouteNames.EpisodePodcastScreen]: PodcastScreen
+    [PV.RouteNames.EpisodesScreen]: EpisodesScreen
   },
   {
     defaultNavigationOptions,
@@ -229,18 +228,24 @@ const QueueNavigator = createStackNavigator(
   }
 )
 
-const TabNavigator = createBottomTabNavigator(
-  {
-    Podcasts: { screen: PodcastsNavigator, path: '' },
-    Episodes: EpisodesNavigator,
-    Clips: ClipsNavigator,
-    Queue: { screen: QueueNavigator, path: '' },
-    More: { screen: MoreNavigator, path: PV.DeepLinks.Search.path }
-  },
-  {
-    tabBarComponent: (props: any) => <PVTabBar {...props} />
-  }
-)
+const allTabs = {
+  Podcasts: { screen: PodcastsNavigator, path: '' },
+  Episodes: EpisodesNavigator,
+  Queue: { screen: QueueNavigator, path: '' },
+  Clips: ClipsNavigator,
+  More: { screen: MoreNavigator, path: PV.DeepLinks.Search.path }
+}
+
+const tabsList = Config.NAV_STACK_TABS.split(',')
+
+const tabs = {}
+tabsList.forEach((tabName: string) => {
+  tabs[tabName] = allTabs[tabName]
+})
+
+const TabNavigator = createBottomTabNavigator(tabs, {
+  tabBarComponent: (props: any) => <PVTabBar {...props} />
+})
 
 const PlayerNavigator = createStackNavigator(
   {

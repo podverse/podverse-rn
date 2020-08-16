@@ -8,7 +8,6 @@
     "Gary Johnson"
   ],
   "scripts": {
-    "build-assets": "webpack",
     "dev": "react-native start",
     "dev:android": "react-native run-android",
     "dev:ios": "react-native run-ios --simulator 'iPhone 11 Pro Max'",
@@ -49,13 +48,13 @@
     "axios": "0.19.0",
     "bad-words": "3.0.3",
     "bottleneck": "2.19.1",
-    "copy-webpack-plugin": "6.0.3",
     "eventemitter3": "4.0.0",
     "he": "1.2.0",
     "i18n-js": "3.7.1",
     "linkifyjs": "2.1.8",
     "lodash": "4.17.19",
     "lodash.memoize": "4.1.2",
+    "podverse-shared": "^1.0.3",
     "react": "16.12.0",
     "react-native": "0.61.5",
     "react-native-background-downloader": "2.3.4",
@@ -93,8 +92,7 @@
     "reactn": "2.2.4",
     "rss-parser": "3.7.3",
     "validator": "12.2.0",
-    "wd": "1.12.1",
-    "webpack": "4.44.1"
+    "wd": "1.12.1"
   },
   "devDependencies": {
     "@babel/core": "7.4.5",
@@ -126,8 +124,7 @@
     "tslint-config-standard": "8.0.1",
     "tslint-plugin-prettier": "2.1.0",
     "tslint-react": "3.6.0",
-    "typescript": "3.3.3333",
-    "webpack-cli": "3.3.12"
+    "typescript": "3.3.3333"
   },
   "isSwift": true
 }

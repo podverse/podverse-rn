@@ -49,9 +49,11 @@ export const EpisodeTableHeader = (props: Props) => {
               {title}
             </Text>
             <View style={styles.textWrapperBottomRow}>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.pubDate}>
-                {readableDate(pubDate)}
-              </Text>
+              {!!pubDate && (
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.pubDate}>
+                  {readableDate(pubDate)}
+                </Text>
+              )}
               {isDownloaded && <IndicatorDownload />}
             </View>
           </View>

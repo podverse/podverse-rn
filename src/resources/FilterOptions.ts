@@ -1,4 +1,4 @@
-import { translate } from '../lib/i18n'
+import Config from 'react-native-config'
 import { Filters } from './Filters'
 
 const {
@@ -15,13 +15,14 @@ const {
   _topPastYear,
   _chronologicalKey,
   _oldestKey,
+  _addedByRSSKey,
   _myClipsKey,
   _allEpisodesKey,
   _podcastsKey,
   _episodesKey,
   _clipsKey,
   _playlistsKey,
-  _aboutKey,
+  _aboutPodcastKey,
   _showNotesKey,
   _titleKey,
   _myPlaylistsKey,
@@ -42,111 +43,137 @@ const sortChronologicalItem = {
   value: _chronologicalKey
 }
 
+const allFilterTypeItems = [
+  {
+    i18nKey: 'Subscribed',
+    value: _subscribedKey
+  },
+  {
+    i18nKey: 'Downloaded',
+    value: _downloadedKey
+  },
+  {
+    i18nKey: 'All Podcasts',
+    value: _allPodcastsKey
+  },
+  {
+    i18nKey: 'Category',
+    value: _categoryKey
+  },
+  {
+    i18nKey: 'Added By RSS',
+    value: _addedByRSSKey
+  },
+  {
+    i18nKey: 'My Clips',
+    value: _myClipsKey
+  },
+  {
+    i18nKey: 'All Episodes',
+    value: _allEpisodesKey
+  },
+  {
+    i18nKey: 'Podcasts',
+    value: _podcastsKey
+  },
+  {
+    i18nKey: 'Episodes',
+    value: _episodesKey
+  },
+  {
+    i18nKey: 'Clips',
+    value: _clipsKey
+  },
+  {
+    i18nKey: 'Playlists',
+    value: _playlistsKey
+  },
+  {
+    i18nKey: 'About',
+    value: _aboutPodcastKey
+  },
+  {
+    i18nKey: 'Show Notes',
+    value: _showNotesKey
+  },
+  {
+    i18nKey: 'Title',
+    value: _titleKey
+  },
+  {
+    i18nKey: 'My Playlists',
+    value: _myPlaylistsKey
+  }
+]
+
+const filterTypeItemsList = Config.FILTER_TYPE_ITEMS ? Config.FILTER_TYPE_ITEMS.split(',') : []
+
+const typeItems = [] as any[]
+filterTypeItemsList.forEach((value: string) => {
+  typeItems.push(allFilterTypeItems.find((x: any) => x.value === value))
+})
+
+const allSortItems = [
+  sortChronologicalItem,
+  sortAlphabeticalItem,
+  {
+    i18nKey: 'most recent',
+    value: _mostRecentKey
+  },
+  {
+    i18nKey: 'oldest',
+    value: _oldestKey
+  },
+  {
+    i18nKey: 'top - past day',
+    value: _topPastDay
+  },
+  {
+    i18nKey: 'top - past week',
+    value: _topPastWeek
+  },
+  {
+    i18nKey: 'top - past month',
+    value: _topPastMonth
+  },
+  {
+    i18nKey: 'top - past year',
+    value: _topPastYear
+  },
+  {
+    i18nKey: 'random',
+    value: _randomKey
+  }
+]
+
+const filterSortItemsList = Config.FILTER_SORT_ITEMS ? Config.FILTER_SORT_ITEMS.split(',') : []
+
+const sortItems = [] as any[]
+filterSortItemsList.forEach((value: string) => {
+  sortItems.push(allSortItems.find((x: any) => x.value === value))
+})
+
+const allFromListItems = [
+  {
+    i18nKey: 'From this podcast',
+    value: _fromThisPodcastKey
+  },
+  {
+    i18nKey: 'From this episode',
+    value: _fromThisEpisodeKey
+  }
+]
+
+const filterFromListItemsList = Config.FILTER_FROM_ITEMS ? Config.FILTER_FROM_ITEMS.split(',') : []
+
+const fromItems = [] as any[]
+filterFromListItemsList.forEach((value: string) => {
+  fromItems.push(allFromListItems.find((x: any) => x.value === value))
+})
+
 export const FilterOptions = {
-  typeItems: [
-    {
-      i18nKey: 'Subscribed',
-      value: _subscribedKey
-    },
-    {
-      i18nKey: 'Downloaded',
-      value: _downloadedKey
-    },
-    {
-      i18nKey: 'All Podcasts',
-      value: _allPodcastsKey
-    },
-    {
-      i18nKey: 'Category',
-      value: _categoryKey
-    },
-    {
-      i18nKey: 'My Clips',
-      value: _myClipsKey
-    },
-    {
-      i18nKey: 'All Episodes',
-      value: _allEpisodesKey
-    },
-    {
-      i18nKey: 'Podcasts',
-      value: _podcastsKey
-    },
-    {
-      i18nKey: 'Episodes',
-      value: _episodesKey
-    },
-    {
-      i18nKey: 'Clips',
-      value: _clipsKey
-    },
-    {
-      i18nKey: 'Playlists',
-      value: _playlistsKey
-    },
-    {
-      i18nKey: 'About',
-      value: _aboutKey
-    },
-    {
-      i18nKey: 'Show Notes',
-      value: _showNotesKey
-    },
-    {
-      i18nKey: 'Title',
-      value: _titleKey
-    },
-    {
-      i18nKey: 'My Playlists',
-      value: _myPlaylistsKey
-    }
-  ],
-  sortItems: [
-    sortChronologicalItem,
-    sortAlphabeticalItem,
-    {
-      i18nKey: 'most recent',
-      value: _mostRecentKey
-    },
-    {
-      i18nKey: 'oldest',
-      value: _oldestKey
-    },
-    {
-      i18nKey: 'top - past day',
-      value: _topPastDay
-    },
-    {
-      i18nKey: 'top - past week',
-      value: _topPastWeek
-    },
-    {
-      i18nKey: 'top - past month',
-      value: _topPastMonth
-    },
-    {
-      i18nKey: 'top - past year',
-      value: _topPastYear
-    },
-    {
-      i18nKey: 'random',
-      value: _randomKey
-    }
-  ],
-  fromListItems: [
-    {
-      i18nKey: 'All',
-      value: _allCategoriesKey
-    },
-    {
-      i18nKey: 'From this podcast',
-      value: _fromThisPodcastKey
-    },
-    {
-      i18nKey: 'From this episode',
-      value: _fromThisEpisodeKey
-    }
-  ],
+  typeItems,
+  sortItems,
   screenFilters: {
     ClipsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _myClipsKey],
@@ -156,29 +183,22 @@ export const FilterOptions = {
     },
     EpisodeScreen: {
       type: [_clipsKey, _showNotesKey, _titleKey],
+      addByPodcastRSSFeedURLType: [_showNotesKey, _titleKey],
       sort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey],
       sublist: [],
       hideSort: [_showNotesKey, _titleKey]
     },
     EpisodesScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _addedByRSSKey],
       sort: [_mostRecentKey, ..._top],
       sublist: [{ i18nKey: 'All', value: _allCategoriesKey }],
-      hideSort: [_downloadedKey]
+      hideSort: []
     },
     PlayerScreen: {
       type: [_episodesKey, _clipsKey, _showNotesKey, _titleKey],
+      addByPodcastRSSFeedURLType: [_episodesKey, _showNotesKey, _titleKey],
       sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
-      sublist: [
-        {
-          i18nKey: 'From this podcast',
-          value: _fromThisPodcastKey
-        },
-        {
-          i18nKey: 'From this episode',
-          value: _fromThisEpisodeKey
-        }
-      ],
+      sublist: fromItems,
       hideSort: [_showNotesKey, _titleKey]
     },
     PlaylistsScreen: {
@@ -188,10 +208,11 @@ export const FilterOptions = {
       hideSort: []
     },
     PodcastScreen: {
-      type: [_episodesKey, _clipsKey, _aboutKey],
+      type: [_episodesKey, _clipsKey, _aboutPodcastKey],
+      addByPodcastRSSFeedURLType: [_episodesKey, _aboutPodcastKey],
       sort: [_mostRecentKey, ..._top, _randomKey],
       sublist: [],
-      hideSort: [_aboutKey]
+      hideSort: [_aboutPodcastKey]
     },
     PodcastsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],

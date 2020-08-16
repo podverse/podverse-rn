@@ -1,5 +1,6 @@
 import React from 'react'
 import { RefreshControl, StyleSheet } from 'react-native'
+import Config from 'react-native-config'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
@@ -119,12 +120,12 @@ export const PVFlatList = (props: Props) => {
 
   return (
     <View style={styles.view} transparent={transparent}>
-      {!noSubscribedPodcasts && ListHeaderComponent && <ListHeaderComponent />}
+      {!noSubscribedPodcasts && ListHeaderComponent && !Config.DISABLE_FILTER_TEXT_QUERY && <ListHeaderComponent />}
       {noSubscribedPodcasts && !showNoInternetConnectionMessage && !isLoadingMore && (
         <MessageWithAction
           topActionHandler={handleSearchNavigation}
           topActionText='Search'
-          message='You have no subscribed podcasts'
+          message={`You aren't subscribed to any podcasts. \n Add one now.`}
         />
       )}
       {showNoInternetConnectionMessage && !dataTotalCount && !isLoadingMore && (

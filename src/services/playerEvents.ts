@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce'
+import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
-import { NowPlayingItem } from '../lib/NowPlayingItem'
 import { PV } from '../resources'
 import { setNowPlayingItem } from '../state/actions/player'
 import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'

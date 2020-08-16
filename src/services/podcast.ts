@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import Config from 'react-native-config'
 import { setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedPodcast, removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
@@ -57,7 +58,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   }
   const isConnected = await hasValidNetworkConnection()
 
-  if (isConnected) {
+  if (isConnected && !Config.DISABLE_API_SUBSCRIBED_PODCASTS) {
     try {
       const date = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED)
       const dateObj = (date && new Date(date).toISOString()) || new Date().toISOString()
