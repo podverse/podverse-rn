@@ -484,7 +484,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       resultsText = translate('playlists')
     }
     const isMyProfile = navigation.getParam('isMyProfile')
-    const message = `${translate('Login to view your')} ${initializeClips ? translate('clips') : translate('profile')}`
+    const message = initializeClips ? translate('Login to view your clips') : translate('Login to view your profile')
     return (
       <View style={styles.view} {...testProps('profile_screen_view')}>
         {isMyProfile && !isLoggedIn && (
