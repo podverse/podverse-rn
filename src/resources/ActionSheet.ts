@@ -187,23 +187,26 @@ const mediaMoreButtons = (
     })
   }
 
+  const navToPodcastScreen = () => {
+    navigation.navigate(PV.RouteNames.PodcastScreen, {
+      addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
+      podcastId: item.podcastId,
+      podcast: {
+        id: item.podcastId,
+        title: item.podcastTitle,
+        imageUrl: item.podcastImageUrl
+      },
+      shouldReload: true
+    })
+  }
+
   if (includeGoToPodcast) {
     buttons.push({
       key: 'goToPodcast',
       text: translate('Go to Podcast'),
       onPress: async () => {
         await handleDismiss()
-        // first navigate to the PodcastScreen, then goBack to the PodcastsScreen,
-        // then back again to the PodcastScreen to force it to rerender with the new podcast.
-        // TODO: This could apparently be done without goBack if we update to React Navigation 5
-        // tslint:disable-next-line:max-line-length
-        // https://stackoverflow.com/questions/52805879/re-render-component-when-navigating-the-stack-with-react-navigation
-        navigation.navigate(PV.RouteNames.PodcastScreen)
-        navigation.goBack(null)
-        navigation.navigate(PV.RouteNames.PodcastScreen, {
-          addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
-          podcastId: item.podcastId
-        })
+        navToPodcastScreen()
       }
     })
   }
@@ -214,15 +217,17 @@ const mediaMoreButtons = (
       text: 'Go to Episode',
       onPress: async () => {
         await handleDismiss()
-        // TODO: This could apparently be done without goBack if we update to React Navigation 5
-        // tslint:disable-next-line:max-line-length
-        // https://stackoverflow.com/questions/52805879/re-render-component-when-navigating-the-stack-with-react-navigation
-        navigation.navigate(PV.RouteNames.PodcastScreen)
-        navigation.goBack(null)
-        navigation.navigate(PV.RouteNames.PodcastScreen, {
-          addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
-          podcastId: item.podcastId,
-          navToEpisodeWithId: item.episodeId
+        navToPodcastScreen()
+        navigation.navigate(PV.RouteNames.EpisodeScreen, {
+          episodeId: item.episodeId,
+          episode: {
+            id: item.episodeId,
+            title: item.episodeTitle,
+            podcast: {
+              imageUrl: item.podcastImageUrl,
+              title: item.podcastTitle
+            }
+          }
         })
       }
     })

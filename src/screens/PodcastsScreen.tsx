@@ -225,9 +225,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
           const episode = await getEpisode(id)
           if (episode) {
             const podcast = await getPodcast(episode.podcast.id)
-            await navigate(PV.RouteNames.PodcastScreen, {
+            navigate(PV.RouteNames.PodcastScreen, {
               podcast,
-              navToEpisodeWithId: id
+              navToEpisodeWithId: id,
+              shouldReload: true
+            })
+            navigate(PV.RouteNames.EpisodeScreen, {
+              episode
             })
           }
         } else if (path === PV.DeepLinks.Playlist.pathPrefix) {
@@ -239,7 +243,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
           await navigate(PV.RouteNames.MoreScreen)
           await navigate(PV.RouteNames.PlaylistsScreen)
         } else if (path === PV.DeepLinks.Podcast.pathPrefix) {
-          await navigate(PV.RouteNames.PodcastScreen, { podcastId: id })
+          await navigate(PV.RouteNames.PodcastScreen, {
+            podcastId: id,
+            shouldReload: true
+          })
         } else if (path === PV.DeepLinks.Podcasts.path) {
           await navigate(PV.RouteNames.PodcastsScreen)
         } else if (path === PV.DeepLinks.Profile.pathPrefix) {
@@ -437,8 +444,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         onPress={() =>
           this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
             podcast: item,
-            episodeCount,
-            addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
+            addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
+            shouldReload: true
           })
         }
         podcastImageUrl={item.shrunkImageUrl || item.imageUrl}

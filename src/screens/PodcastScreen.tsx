@@ -3,6 +3,7 @@ import debounce from 'lodash/debounce'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
+import { NavigationEvents } from 'react-navigation'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
 import {
@@ -142,11 +143,10 @@ export class PodcastScreen extends React.Component<Props, State> {
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
-  async componentDidMount() {
+  handleDidMount = async () => {
     const { navigation } = this.props
     const { podcastId } = this.state
-    let { podcast } = this.state
-    const episodeId = navigation.getParam('navToEpisodeWithId')
+    let podcast = this.props.navigation.getParam('podcast')
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
     const hasInternetConnection = await hasValidNetworkConnection()
 
@@ -167,9 +167,6 @@ export class PodcastScreen extends React.Component<Props, State> {
       },
       () => {
         this._initializePageData()
-        if (episodeId) {
-          navigation.navigate(PV.RouteNames.EpisodeScreen, { episodeId })
-        }
       }
     )
     const pageTitle = podcast
@@ -713,6 +710,14 @@ export class PodcastScreen extends React.Component<Props, State> {
           <Dialog.Button label={translate('No')} onPress={this._handleToggleDeleteDownloadedEpisodesDialog} />
           <Dialog.Button label={translate('Yes')} onPress={this._handleDeleteDownloadedEpisodes} />
         </Dialog.Container>
+        <NavigationEvents
+          onWillFocus={() => {
+            const shouldReload = navigation.getParam('shouldReload')
+            if (shouldReload) {
+              this.handleDidMount()
+            }
+          }}
+        />
       </View>
     )
   }
