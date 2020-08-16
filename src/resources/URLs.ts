@@ -1,13 +1,13 @@
 import Config from 'react-native-config'
 
 const protocol = 'https://'
-const domain = Config.WEB_DOMAIN || 'stage.podverse.fm'
+const domain = Config.RN_WEB_DOMAIN || 'stage.podverse.fm'
 const root = protocol + domain
 
 export const URLs = {
   about: `${root}/about`,
   // tslint:disable-next-line: max-line-length
-  baseUrl: Config.API_DOMAIN || 'https://api.stage.podverse.fm/api/v1',
+  baseUrl: Config.RN_API_DOMAIN || 'https://api.stage.podverse.fm/api/v1',
   clip: `${root}/clip/`,
   contact: 'https://docs.google.com/forms/d/e/1FAIpQLSe-1_1qmv5Z21ZLc37KWke3cXFluItnzmstjqGwm9_BT7BGRg/viewform',
   episode: `${root}/episode/`,
