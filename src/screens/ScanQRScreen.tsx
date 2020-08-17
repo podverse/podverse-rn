@@ -14,23 +14,45 @@ export const ScanQRCodeScreen = (props: Props) => {
   const [scanned, setScanned] = useState(false)
   const { navigate, dismiss } = props.navigation
 
-  const validatePayload = (payload = '') => {
-    const json = JSON.parse(payload)
-
-    if (!json || typeof json.feedUrl !== 'string' || !json.feedUrl.startsWith('https://')) {
-      throw new Error('Invalid QR Data Format')
+  const parsePayload = (qrData = '') => {
+    if (!qrData || !qrData.startsWith('https://')) {
+      throw new Error('Invalid or missing QR Data')
     }
 
-    return json
+    const parsedData = qrData.split('?')
+
+    let userInfo: object | null = null
+
+    if (parsedData.length > 1) {
+      userInfo = {}
+      const params = parsedData[1].split('&')
+
+      params.forEach((param) => {
+        const pair = param.split('=')
+        if (pair.length < 2) {
+          throw new Error('Invalid params in feed url')
+        }
+
+        userInfo[pair[0]] = pair[1]
+      })
+    }
+
+    return {
+      feedUrl: parsedData[0],
+      userInfo
+    }
   }
 
   const showQRRead = async (scannedData: string) => {
     try {
-      const validatedData = validatePayload(scannedData)
+      const parsedData = parsePayload(scannedData)
 
-      await saveSpecialUserInfo(validatedData.userInfo)
-      await addAddByRSSPodcast(validatedData.feedUrl)
-      const podcast = await getAddByRSSPodcastLocally(validatedData.feedUrl)
+      if (parsedData.userInfo) {
+        await saveSpecialUserInfo(parsedData.userInfo)
+      }
+
+      await addAddByRSSPodcast(parsedData.feedUrl)
+      const podcast = await getAddByRSSPodcastLocally(parsedData.feedUrl)
 
       navigate(PV.RouteNames.PodcastScreen, {
         podcast,
@@ -38,7 +60,7 @@ export const ScanQRCodeScreen = (props: Props) => {
       })
     } catch (error) {
       console.log(error)
-      Alert.alert('QR Code Error', error.message || error, [
+      Alert.alert('QR Code Error: ', error.message || error, [
         {
           text: 'OK',
           onPress: () => {
@@ -56,7 +78,9 @@ export const ScanQRCodeScreen = (props: Props) => {
         onBarCodeRead={(event) => {
           if (!scanned) {
             setScanned(true)
-            showQRRead(event.data)
+
+            // Give it a nice illusion of processing
+            setTimeout(() => showQRRead(event.data), 300)
           }
         }}
         captureAudio={false}
@@ -85,7 +109,7 @@ export const ScanQRCodeScreen = (props: Props) => {
 }
 
 ScanQRCodeScreen.navigationOptions = () => ({
-  title: 'Scan QR Code',
+  title: 'QR Reader',
   headerRight: null
 })
 

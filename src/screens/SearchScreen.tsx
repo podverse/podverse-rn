@@ -266,7 +266,7 @@ export class SearchScreen extends React.Component<Props, State> {
             renderItem={this._renderPodcastItem}
             resultsText='podcasts'
             showAddPodcastByRSS={flatListData && flatListData.length === 0}
-            showAddPodcastByQR={flatListData && flatListData.length === 0 && !!Config.SHOW_QR_SCANNER}
+            showAddPodcastByQR={flatListData && flatListData.length === 0 && !Config.DISABLE_QR_SCANNER}
             showRequestPodcast={true}
           />
         )}
