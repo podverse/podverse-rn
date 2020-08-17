@@ -14,6 +14,7 @@ type Props = {
   disableLeftSwipe: boolean
   extraData?: any
   handleAddPodcastByRSSURLNavigation?: any
+  handleAddPodcastByRSSQRCodeNavigation?: any
   handleFilterInputChangeText?: any
   handleFilterInputClear?: any
   handleRequestPodcast?: any
@@ -33,6 +34,7 @@ type Props = {
   renderItem: any
   resultsText?: string
   showAddPodcastByRSS?: boolean
+  showAddPodcastByQR?: boolean
   showNoInternetConnectionMessage?: boolean
   showRequestPodcast?: boolean
   transparent?: boolean
@@ -48,6 +50,7 @@ export const PVFlatList = (props: Props) => {
     disableLeftSwipe = true,
     extraData,
     handleAddPodcastByRSSURLNavigation,
+    handleAddPodcastByRSSQRCodeNavigation,
     handleSearchNavigation,
     handleRequestPodcast,
     hideEndOfResults,
@@ -64,6 +67,7 @@ export const PVFlatList = (props: Props) => {
     renderItem,
     resultsText = 'results',
     showAddPodcastByRSS,
+    showAddPodcastByQR,
     showNoInternetConnectionMessage,
     showRequestPodcast,
     transparent
@@ -105,6 +109,16 @@ export const PVFlatList = (props: Props) => {
       {translate('Add Podcast by RSS Feed')}
     </TextLink>
   )
+
+  const scanRSSCode = (
+    <TextLink
+      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+      onPress={handleAddPodcastByRSSQRCodeNavigation}
+      style={textLinkStyle}>
+      Scan RSS Feed QR Code
+    </TextLink>
+  )
+
   return (
     <View style={styles.view} transparent={transparent}>
       {!noSubscribedPodcasts && ListHeaderComponent && !Config.DISABLE_FILTER_TEXT_QUERY && <ListHeaderComponent />}
@@ -129,6 +143,7 @@ export const PVFlatList = (props: Props) => {
           </Text>
           {showRequestPodcast && requestPodcastTextLink}
           {showAddPodcastByRSS && addPodcastByRSSTextLink}
+          {showAddPodcastByQR && scanRSSCode}
         </View>
       )}
       {((!noSubscribedPodcasts && !noResultsFound) || isLoadingMore) && (

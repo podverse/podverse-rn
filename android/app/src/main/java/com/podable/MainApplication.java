@@ -1,4 +1,4 @@
-package com.podverse;
+package com.podable;
 
 import android.app.Application;
 import android.content.Context;

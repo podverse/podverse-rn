@@ -32,6 +32,7 @@ import {
   ProfilesScreen,
   PurchasingScreen,
   QueueScreen,
+  ScanQRCodeScreen,
   SearchScreen,
   SettingsScreen,
   SleepTimerScreen,
@@ -320,6 +321,17 @@ const AddPodcastByRSSURLNavigator = createStackNavigator(
   }
 )
 
+const ScanQRCodeScreenNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.ScanQRCodeScreen]: {
+      screen: ScanQRCodeScreen
+    }
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
 const MainApp = createStackNavigator(
   {
     [PV.RouteNames.TabNavigator]: { screen: TabNavigator, path: '' },
@@ -331,6 +343,7 @@ const MainApp = createStackNavigator(
     WebPageNavigator,
     EmailVerificationNavigator,
     PurchasingNavigator,
+    ScanQRCodeScreenNavigator,
     [PV.RouteNames.AddPodcastByRSSScreen]: {
       screen: AddPodcastByRSSURLNavigator,
       path: ''
