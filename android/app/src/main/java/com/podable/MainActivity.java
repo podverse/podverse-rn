@@ -1,4 +1,4 @@
-package com.podverse;
+package com.podable;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
