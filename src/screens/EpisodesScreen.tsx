@@ -292,7 +292,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text='Delete' />
+    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text={translate('Delete')} />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
@@ -416,7 +416,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             onRefresh={this._onRefresh}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderEpisodeItem}
-            resultsText='episodes'
+            resultsText={translate('episodes')}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
           />
         )}

@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { Icon, Text } from './'
 
@@ -21,7 +22,7 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
       <View style={[styles.wrapper, style]}>
         <View style={styles.textRow}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.label}>
-            Password requirements:
+            {translate('Password requirements')}
           </Text>
         </View>
         <View style={styles.textRow}>
@@ -29,7 +30,7 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
             style={hasUppercase ? styles.validText : styles.invalidText}>
-            - has uppercase
+            {translate('- has uppercase')}
           </Text>
           {hasUppercase && <Icon name='check' size={18} style={styles.icon} />}
         </View>
@@ -38,7 +39,7 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
             style={hasLowercase ? styles.validText : styles.invalidText}>
-            - has lowercase
+            {translate('- has lowercase')}
           </Text>
           {hasLowercase && <Icon name='check' size={18} style={styles.icon} />}
         </View>
@@ -47,7 +48,7 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
             style={hasNumber ? styles.validText : styles.invalidText}>
-            - has number
+            {translate('- has number')}
           </Text>
           {hasNumber && <Icon name='check' size={18} style={styles.icon} />}
         </View>
@@ -56,7 +57,7 @@ export class PasswordValidationInfo extends React.PureComponent<Props, State> {
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
             style={hasAtLeastXCharacters ? styles.validText : styles.invalidText}>
-            - is at least 8 characters
+            {translate('- is at least 8 characters')}
           </Text>
           {hasAtLeastXCharacters && <Icon name='check' size={18} style={styles.icon} />}
         </View>

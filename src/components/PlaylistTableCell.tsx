@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { ActivityIndicator, Text, View } from './'
 
@@ -14,7 +15,14 @@ type Props = {
 
 export class PlaylistTableCell extends React.PureComponent<Props> {
   render() {
-    const { createdBy, hasZebraStripe, isSaving, itemCount = 0, onPress, title = 'untitled playlist' } = this.props
+    const {
+      createdBy,
+      hasZebraStripe,
+      isSaving,
+      itemCount = 0,
+      onPress,
+      title = translate('untitled playlist')
+    } = this.props
 
     const wrapperTopStyles = [styles.wrapperTop]
     if (createdBy) wrapperTopStyles.push(styles.wrapperTopWithCreatedBy)

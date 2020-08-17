@@ -225,9 +225,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
           const episode = await getEpisode(id)
           if (episode) {
             const podcast = await getPodcast(episode.podcast.id)
-            await navigate(PV.RouteNames.PodcastScreen, {
+            navigate(PV.RouteNames.PodcastScreen, {
               podcast,
-              navToEpisodeWithId: id
+              navToEpisodeWithId: id,
+              shouldReload: true
+            })
+            navigate(PV.RouteNames.EpisodeScreen, {
+              episode
             })
           }
         } else if (path === PV.DeepLinks.Playlist.pathPrefix) {
@@ -239,7 +243,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
           await navigate(PV.RouteNames.MoreScreen)
           await navigate(PV.RouteNames.PlaylistsScreen)
         } else if (path === PV.DeepLinks.Podcast.pathPrefix) {
-          await navigate(PV.RouteNames.PodcastScreen, { podcastId: id })
+          await navigate(PV.RouteNames.PodcastScreen, {
+            podcastId: id,
+            shouldReload: true
+          })
         } else if (path === PV.DeepLinks.Podcasts.path) {
           await navigate(PV.RouteNames.PodcastsScreen)
         } else if (path === PV.DeepLinks.Profile.pathPrefix) {
@@ -437,8 +444,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         onPress={() =>
           this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
             podcast: item,
-            episodeCount,
-            addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
+            addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
+            shouldReload: true
           })
         }
         podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
@@ -452,7 +459,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _renderHiddenItem = ({ item }, rowMap) => {
     const { queryFrom } = this.state
-    const buttonText = queryFrom === PV.Filters._downloadedKey ? 'Delete' : 'Unsubscribe'
+    const buttonText = queryFrom === PV.Filters._downloadedKey ? translate('Delete') : translate('Unsubscribe')
 
     return (
       <SwipeRowBack
@@ -468,7 +475,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     let wasAlerted = false
     if (queryFrom === PV.Filters._subscribedKey) {
-      wasAlerted = await alertIfNoNetworkConnection('unsubscribe from podcast')
+      wasAlerted = await alertIfNoNetworkConnection(translate('unsubscribe from podcast'))
     }
 
     if (wasAlerted) return
@@ -628,7 +635,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               onRefresh={queryFrom === PV.Filters._subscribedKey ? this._onRefresh : null}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderPodcastItem}
-              resultsText='podcasts'
+              resultsText={translate('podcasts')}
               showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             />
           )}
@@ -636,9 +643,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         <Dialog.Container visible={showDataSettingsConfirmDialog}>
           <Dialog.Title>Data Settings</Dialog.Title>
           <Dialog.Description>Do you want to allow downloading episodes with your data plan?</Dialog.Description>
-          <Dialog.Button label='No, Wifi Only' onPress={this._handleDataSettingsWifiOnly} />
+          <Dialog.Button label={translate('No Wifi Only')} onPress={this._handleDataSettingsWifiOnly} />
           <Dialog.Button
-            label='Yes, Allow Data'
+            label={translate('Yes Allow Data')}
             onPress={this._handleDataSettingsAllowData}
             {...testProps('alert_yes_allow_data')}
           />

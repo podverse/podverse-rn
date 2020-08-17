@@ -3,6 +3,7 @@ import { RefreshControl, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { ActivityIndicator, MessageWithAction, Text, TextLink, View } from './'
@@ -96,7 +97,7 @@ export const PVFlatList = (props: Props) => {
 
   const requestPodcastTextLink = (
     <TextLink fontSizeLargestScale={PV.Fonts.largeSizes.md} onPress={handleRequestPodcast} style={textLinkStyle}>
-      Request Podcast
+      {translate('Request Podcast')}
     </TextLink>
   )
 
@@ -105,7 +106,7 @@ export const PVFlatList = (props: Props) => {
       fontSizeLargestScale={PV.Fonts.largeSizes.md}
       onPress={handleAddPodcastByRSSURLNavigation}
       style={textLinkStyle}>
-      Add Podcast by RSS Feed
+      {translate('Add Podcast by RSS Feed')}
     </TextLink>
   )
 
@@ -124,15 +125,15 @@ export const PVFlatList = (props: Props) => {
       {noSubscribedPodcasts && !showNoInternetConnectionMessage && !isLoadingMore && (
         <MessageWithAction
           topActionHandler={handleSearchNavigation}
-          topActionText='Search'
-          message={`You aren't subscribed to any podcasts. \n Add one now.`}
+          topActionText={translate('Search')}
+          message={translate('You are not subscribed to any podcasts')}
         />
       )}
       {showNoInternetConnectionMessage && !dataTotalCount && !isLoadingMore && (
         <View style={styles.msgView} transparent={transparent}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            style={noResultsFoundTextStyle}>{`No internet connection`}</Text>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={noResultsFoundTextStyle}>{`${translate(
+            'No internet connection'
+          )}`}</Text>
         </View>
       )}
       {noResultsFound && !noSubscribedPodcasts && !isLoadingMore && !showNoInternetConnectionMessage && (

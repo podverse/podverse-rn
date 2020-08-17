@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
-import { NavigationStackOptions } from 'react-navigation-stack'
+import { HeaderBackButton, NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -25,7 +25,7 @@ import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRefs } from '../services/mediaRef'
-import { core } from '../styles'
+import { core, darkTheme } from '../styles'
 
 type Props = {
   navigation?: any
@@ -57,11 +57,23 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     return {
       title: translate('Episode'),
+      headerLeft: (
+        <HeaderBackButton
+          backTitleVisible={true}
+          tintColor={darkTheme.text.color}
+          title='Podcast'
+          onPress={() => {
+            navigation.navigate(PV.RouteNames.PodcastScreen, {
+              shouldReload: false
+            })
+          }}
+        />
+      ),
       headerRight: (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
-              endingText=' – shared using Podverse'
+              endingText={translate(' – shared using Podverse')}
               episodeTitle={episodeTitle}
               podcastTitle={podcastTitle}
               url={PV.URLs.episode + episodeId}
@@ -117,8 +129,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
     this._initializePageData()
     const pageTitle =
       episode && episode.podcast
-        ? 'Episode Screen - ' + episode.podcast.title + ' - ' + episode.title
-        : 'Episode Screen - ' + 'no info available'
+        ? translate('Episode Screen - ') + episode.podcast.title + ' - ' + episode.title
+        : translate('Episode Screen - ') + translate('no info available')
     gaTrackPageView('/episode/' + episodeId, pageTitle)
   }
 

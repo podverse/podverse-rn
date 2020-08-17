@@ -3,6 +3,7 @@ import Config from 'react-native-config'
 import Share from 'react-native-share'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
+import { translate } from '../lib/i18n'
 import { NavItemIcon, NavItemWrapper } from './'
 
 type Props = {
@@ -34,7 +35,7 @@ export const NavShareIcon = (props: Props) => {
     if (episodeTitle) title += ` – ${episodeTitle}`
     if (endingText) title += `${endingText}`
     if (profileName) {
-      title = `${profileName || 'anonymous'}'s favorite podcasts on Podverse`
+      title = `${profileName || translate('anonymous')} - ${translate(`favorite podcasts on Podverse`)}`
     }
 
     try {

@@ -43,14 +43,14 @@ export class MoreScreen extends React.Component<Props, State> {
       const user = this.global.session.userInfo
       navigation.navigate(PV.RouteNames.ProfileScreen, {
         user,
-        navigationTitle: 'My Profile',
+        navigationTitle: translate('My Profile'),
         isMyProfile: true
       })
     } else if (item.key === _myClipsKey) {
       const user = this.global.session.userInfo
       navigation.navigate(PV.RouteNames.ProfileScreen, {
         user,
-        navigationTitle: 'My Profile',
+        navigationTitle: translate('My Profile'),
         isMyProfile: true,
         initializeClips: true
       })
@@ -76,7 +76,7 @@ export class MoreScreen extends React.Component<Props, State> {
       }
     })
 
-    const membershipStatus = getMembershipStatus(userInfo) || 'Membership'
+    const membershipStatus = getMembershipStatus(userInfo) || translate('Membership')
     const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
     const otherOptions = moreOtherOptions(membershipStatus)
 
@@ -97,7 +97,7 @@ export class MoreScreen extends React.Component<Props, State> {
                       <Text
                         fontSizeLargestScale={PV.Fonts.largeSizes.md}
                         style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                        Membership
+                        {translate('Membership')}
                       </Text>
                     )}
                   </RNView>
@@ -134,8 +134,8 @@ export class MoreScreen extends React.Component<Props, State> {
           )}
           renderSectionHeader={({ section: { title } }) => <TableSectionHeader title={title} />}
           sections={[
-            { title: 'Features', data: featureOptions },
-            { title: 'Other', data: otherOptions }
+            { title: translate('Features'), data: featureOptions },
+            { title: translate('Other'), data: otherOptions }
           ]}
         />
       </View>
@@ -208,9 +208,8 @@ const allMoreFeatures = [
 
 const moreFeaturesList = Config.NAV_STACK_MORE_FEATURES.split(',')
 
-const moreFeaturesOptions = [] as any[]
-moreFeaturesList.forEach((screenKey: string) => {
-  moreFeaturesOptions.push(allMoreFeatures.find((x: any) => x.key === screenKey))
+const moreFeaturesOptions = allMoreFeatures.filter((item: any) => {
+  return moreFeaturesList.find((screenKey: any) => item.key === screenKey)
 })
 
 const moreOtherOptions = (membershipStatus?: string) => {
@@ -222,30 +221,30 @@ const moreOtherOptions = (membershipStatus?: string) => {
       testId: 'more_screen_membership_cell'
     },
     {
-      title: 'Add Podcast by RSS',
+      title: translate('Add Podcast by RSS'),
       key: _addPodcastByRSSKey,
       routeName: PV.RouteNames.AddPodcastByRSSScreen,
       testId: 'more_screen_add_podcast_by_rss_cell'
     },
     {
-      title: 'Contact Us',
+      title: translate('Contact Us'),
       key: _contactKey,
       testId: 'more_screen_contact_us_cell'
     },
     {
-      title: 'FAQ',
+      title: translate('FAQ'),
       key: _faqKey,
       routeName: PV.RouteNames.FAQScreen,
       testId: 'more_screen_faq_cell'
     },
     {
-      title: 'About',
+      title: translate('About'),
       key: _aboutKey,
       routeName: PV.RouteNames.AboutScreen,
       testId: 'more_screen_about_cell'
     },
     {
-      title: 'Terms of Service',
+      title: translate('Terms of Service'),
       key: _termsOfServiceKey,
       routeName: PV.RouteNames.TermsOfServiceScreen,
       testId: 'more_screen_terms_of_service_cell'
@@ -254,9 +253,8 @@ const moreOtherOptions = (membershipStatus?: string) => {
 
   const moreOtherList = Config.NAV_STACK_MORE_OTHER.split(',')
 
-  const options = [] as any[]
-  moreOtherList.forEach((screenKey: string) => {
-    options.push(allMoreOtherOptions.find((x: any) => x.key === screenKey))
+  const options = allMoreOtherOptions.filter((item: any) => {
+    return moreOtherList.find((screenKey: string) => item.key === screenKey)
   })
 
   return options

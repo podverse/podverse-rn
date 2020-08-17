@@ -1,5 +1,6 @@
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { readableClipTime, readableDate, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { FastImage, IndicatorDownload, MoreButton, Text, View } from './'
@@ -39,7 +40,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       podcastTitle,
       startTime,
       testId,
-      title = 'untitled clip',
+      title = translate('untitled clip'),
       transparent
     } = this.props
     const clipTime = readableClipTime(startTime, endTime)

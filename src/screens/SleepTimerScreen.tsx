@@ -78,7 +78,7 @@ export class SleepTimerScreen extends React.Component<Props, State> {
             isSuccess={!isActive}
             isWarning={isActive}
             onPress={this._toggleSleepTimer}
-            text={isActive ? 'Stop Timer' : 'Start Timer'}
+            text={isActive ? translate('Stop Timer') : translate('Start Timer')}
             wrapperStyles={styles.button}
           />
         </View>
