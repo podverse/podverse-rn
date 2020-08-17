@@ -90,11 +90,13 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
       const podcast = await getAddByRSSPodcast(nowPlayingItem.addByRSSPodcastFeedUrl)
       navigation.navigate(PV.RouteNames.PodcastScreen, {
         podcast,
-        addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl
+        addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl,
+        shouldReload: true
       })
     } else {
       navigation.navigate(PV.RouteNames.PodcastScreen, {
-        podcast
+        podcast,
+        shouldReload: true
       })
     }
   }

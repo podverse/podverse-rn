@@ -33,7 +33,7 @@ export const convertFilterOptionsToI18N = (rightItems: any) => rightItems.map((x
 
 const convertFilterOptionToI18N = (item: any) => {
   return {
-    label: translate(item.i18nKey),
+    label: translate(item.label),
     value: item.value
   }
 }
