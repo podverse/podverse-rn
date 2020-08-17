@@ -128,12 +128,16 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
     defaultConfig {
         applicationId "com.podable"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "2.8.0"
+        versionName "1.0.0"
         multiDexEnabled true
         missingDimensionStrategy 'react-native-camera', 'general'
     }
