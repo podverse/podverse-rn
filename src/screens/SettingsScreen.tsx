@@ -388,7 +388,7 @@ export class SettingsScreen extends React.Component<Props, State> {
         <Dialog.Container visible={showDeleteDownloadedEpisodesDialog}>
           <Dialog.Title>{translate('Delete All Downloaded Episodes')}</Dialog.Title>
           <Dialog.Description>
-            {translate('Are you sure you want to delete all of your downloaded episodes?')}
+            {translate('Are you sure you want to delete all of your downloaded episodes')}
           </Dialog.Description>
           <Dialog.Button label={translate('No')} onPress={this._handleToggleDeleteDownloadedEpisodesDialog} />
           <Dialog.Button label={translate('Yes')} onPress={this._handleDeleteDownloadedEpisodes} />
