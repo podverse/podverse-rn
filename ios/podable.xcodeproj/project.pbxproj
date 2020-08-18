@@ -409,6 +409,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.podable;
 				PRODUCT_NAME = podable;
 				SWIFT_OBJC_BRIDGING_HEADER = "podable-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "podable-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -437,6 +438,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.podable;
 				PRODUCT_NAME = podable;
 				SWIFT_OBJC_BRIDGING_HEADER = "podable-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "podable-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
