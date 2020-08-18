@@ -15,7 +15,6 @@
 		E78B98FB24EAEE62008CFD99 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E78B98FA24EAEE62008CFD99 /* LaunchScreen.storyboard */; };
 		E78B98FC24EAEF17008CFD99 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		E78B990324EB7C43008CFD99 /* RNPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78B990224EB7C43008CFD99 /* RNPlaceholder.swift */; };
-		E78B990524EB7CD1008CFD99 /* i18n in Resources */ = {isa = PBXBuildFile; fileRef = E78B990424EB7CD1008CFD99 /* i18n */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,7 +55,6 @@
 		E78B98FA24EAEE62008CFD99 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = podable/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E78B98FD24EAF1C0008CFD99 /* podable-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "podable-Bridging-Header.h"; sourceTree = "<group>"; };
 		E78B990224EB7C43008CFD99 /* RNPlaceholder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNPlaceholder.swift; sourceTree = "<group>"; };
-		E78B990424EB7CD1008CFD99 /* i18n */ = {isa = PBXFileReference; lastKnownFileType = folder; name = i18n; path = ../src/resources/i18n; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F37D10A5683D4BC8BA640E71 /* Pods-podable-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-podable-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-podable-tvOSTests/Pods-podable-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -125,7 +123,6 @@
 		4FD962590E704AFEB5D0BC1E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				E78B990424EB7CD1008CFD99 /* i18n */,
 				7C8ADF22BCD44AACB0815C1C /* AntDesign.ttf */,
 				781AC982109349069A7308B2 /* Entypo.ttf */,
 				B527CDBFF3664B07A4BA7F7C /* EvilIcons.ttf */,
@@ -257,7 +254,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E78B990524EB7CD1008CFD99 /* i18n in Resources */,
 				E78B98FB24EAEE62008CFD99 /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				E78B98F924EAEE21008CFD99 /* AppCenter-Config.plist in Resources */,
