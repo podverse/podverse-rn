@@ -10,13 +10,13 @@ PODS:
     - AppCenter/Crashes
     - AppCenterReactNativeShared
     - React
-  - AppCenter/Analytics (3.1.1):
+  - AppCenter/Analytics (3.3.2):
     - AppCenter/Core
-  - AppCenter/Core (3.1.1)
-  - AppCenter/Crashes (3.1.1):
+  - AppCenter/Core (3.3.2)
+  - AppCenter/Crashes (3.3.2):
     - AppCenter/Core
-  - AppCenterReactNativeShared (3.0.2):
-    - AppCenter/Core (= 3.1.1)
+  - AppCenterReactNativeShared (3.1.1):
+    - AppCenter/Core (= 3.3.2)
   - boost-for-react-native (1.63.0)
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.61.5)
@@ -215,13 +215,13 @@ PODS:
     - React
   - react-native-background-timer (2.1.1):
     - React
-  - react-native-camera (3.30.0):
+  - react-native-camera (3.36.0):
     - React
-    - react-native-camera/RCT (= 3.30.0)
-    - react-native-camera/RN (= 3.30.0)
-  - react-native-camera/RCT (3.30.0):
+    - react-native-camera/RCT (= 3.36.0)
+    - react-native-camera/RN (= 3.36.0)
+  - react-native-camera/RCT (3.36.0):
     - React
-  - react-native-camera/RN (3.30.0):
+  - react-native-camera/RN (3.36.0):
     - React
   - react-native-config (1.0.0):
     - React
@@ -231,7 +231,7 @@ PODS:
     - React
   - react-native-track-player (1.2.3):
     - React
-  - react-native-webview (7.4.2):
+  - react-native-webview (10.7.0):
     - React
   - React-RCTActionSheet (0.61.5):
     - React-Core/RCTActionSheetHeaders (= 0.61.5)
@@ -298,9 +298,9 @@ PODS:
     - React
   - RNVectorIcons (6.6.0):
     - React
-  - SDWebImage (5.8.0):
-    - SDWebImage/Core (= 5.8.0)
-  - SDWebImage/Core (5.8.0)
+  - SDWebImage (5.8.4):
+    - SDWebImage/Core (= 5.8.4)
+  - SDWebImage/Core (5.8.4)
   - SDWebImageWebPCoder (0.2.5):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.0)
@@ -476,11 +476,11 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AppCenter: 513d32888854d67d8cfbd3a8db16aeb5fb2e2a75
+  AppCenter: aba7de06e4c2184f90dc84f7866bd07f82427d69
   appcenter-analytics: f819aa9bd41c43b8b9ae53aa5dfd862b48a65f50
   appcenter-core: 74a3db7d48a720fc3a70e0cf5cbda720decac008
   appcenter-crashes: 0aea510872e4f9186553941b75ba0e9e6c7d9e07
-  AppCenterReactNativeShared: c4eb2ad593c32fbc2fc5f2ea9f5cf1faae61c182
+  AppCenterReactNativeShared: b9fa50d999e830e03f086f487b1aa0f9772088c1
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   FBLazyVector: aaeaf388755e4f29cd74acbc9e3b8da6d807c37f
@@ -500,12 +500,12 @@ SPEC CHECKSUMS:
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-background-downloader: 4a034cf39a3b00fac57364984e360a4f180a5efb
   react-native-background-timer: 1b6e6b4e10f1b74c367a1fdc3c72b67c619b222b
-  react-native-camera: eeb5b5f4ba4c1365fed3563af8a72007cbad7aab
+  react-native-camera: 8016138a8348b889e22c95b23f668a234f124335
   react-native-config: 7db9b96479164dfd7b2be68eb9079e08279511c4
   react-native-netinfo: 6bb847e64f45a2d69c6173741111cfd95c669301
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   react-native-track-player: 28b96dd6404dea3eee80e67b74507679235a8dfb
-  react-native-webview: 5c7578eb1ee5daf16e4c84a500becaa2038db828
+  react-native-webview: 6edf4d6f71b9161fc3e96083726a538ee395304d
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
   React-RCTBlob: d89293cc0236d9cb0933d85e430b0bbe81ad1d72
@@ -530,10 +530,10 @@ SPEC CHECKSUMS:
   RNSecureKeyStore: f1ad870e53806453039f650720d2845c678d89c8
   RNShare: c19dbe4a7224098cd3cfc4d3b92c886ca817b3f0
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
-  SDWebImage: 84000f962cbfa70c07f19d2234cbfcf5d779b5dc
+  SDWebImage: cf6922231e95550934da2ada0f20f2becf2ceba9
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: bb266d1d4332a9d4b32aad052881c7c37a15d722
+PODFILE CHECKSUM: fb34c9b86ec0f7fdb6bf3bdddec1449635b67f92
 
 COCOAPODS: 1.9.2

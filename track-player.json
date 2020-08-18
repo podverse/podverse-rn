@@ -1,5 +1,5 @@
 {
-    "dash": false,
-    "hls": false,
-    "smoothstreaming": false
+  "dash": false,
+  "hls": false,
+  "smoothstreaming": false
 }
