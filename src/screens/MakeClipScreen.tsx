@@ -283,7 +283,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   const { nowPlayingItem = {} } = this.global.player
                   const title = `${data.title || translate('untitled clip')} – ${nowPlayingItem.podcastTitle} – ${
                     nowPlayingItem.episodeTitle
-                  }${translate(' – clip created using Podverse')}`
+                  }${translate('clip created using Podverse')}`
                   try {
                     await Share.open({
                       title,
@@ -559,7 +559,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 </Text>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
                   {translate(
-                    'If a podcast uses dynamically inserted ads, its clip start times will not stay 100% accurate'
+                    'If a podcast uses dynamically inserted ads its clip start times will not stay 100 accurate'
                   )}
                 </Text>
                 <TouchableOpacity onPress={this._hideHowTo}>

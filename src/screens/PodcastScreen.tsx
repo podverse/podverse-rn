@@ -91,7 +91,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
-              endingText={translate(' – shared using Podverse')}
+              endingText={translate('shared using Podverse')}
               podcastTitle={podcastTitle}
               url={PV.URLs.podcast + podcastId}
             />
@@ -705,7 +705,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <Dialog.Container visible={showDeleteDownloadedEpisodesDialog}>
           <Dialog.Title>{translate('Delete Downloaded Episodes')}</Dialog.Title>
           <Dialog.Description>
-            {translate('Are you sure you want to delete all of your downloaded episodes from this podcast?')}
+            {translate('Are you sure you want to delete all of your downloaded episodes from this podcast')}
           </Dialog.Description>
           <Dialog.Button label={translate('No')} onPress={this._handleToggleDeleteDownloadedEpisodesDialog} />
           <Dialog.Button label={translate('Yes')} onPress={this._handleDeleteDownloadedEpisodes} />
