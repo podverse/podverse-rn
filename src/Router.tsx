@@ -136,9 +136,7 @@ const ClipsNavigator = createStackNavigator(
 
 const SearchNavigator = createStackNavigator(
   {
-    [PV.RouteNames.SearchScreen]: { screen: SearchScreen, path: '' },
-    [PV.RouteNames.SearchPodcastScreen]: PodcastScreen,
-    [PV.RouteNames.SearchEpisodeScreen]: EpisodeScreen
+    [PV.RouteNames.SearchScreen]: { screen: SearchScreen, path: '' }
   },
   {
     defaultNavigationOptions

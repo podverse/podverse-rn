@@ -13,6 +13,7 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
+import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { generateAuthorsText, isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -151,11 +152,7 @@ export class SearchScreen extends React.Component<Props, State> {
 
   _handleNavigationPress = (podcast: any, viewType: string) => {
     this.setState({ showActionSheet: false })
-    this.props.navigation.navigate(PV.RouteNames.SearchPodcastScreen, {
-      podcast,
-      viewType,
-      isSearchScreen: true
-    })
+    navigateToPodcastScreenWithPodcast(this.props.navigation, podcast, viewType)
   }
 
   _handleAddPodcastByRSSURLNavigation = () => {

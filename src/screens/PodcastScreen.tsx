@@ -62,7 +62,6 @@ type State = {
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
-  isSearchScreen?: boolean
   isSubscribing: boolean
   limitDownloadedEpisodes: boolean
   podcast?: any
@@ -350,9 +349,6 @@ export class PodcastScreen extends React.Component<Props, State> {
       podcast
     }
 
-    const isSearchScreen = this.props.navigation.getParam('isSearchScreen')
-    const screen = isSearchScreen ? PV.RouteNames.SearchEpisodeScreen : PV.RouteNames.EpisodeScreen
-
     if (viewType === PV.Filters._downloadedKey) {
       let description = removeHTMLFromString(item.description)
       description = decodeHTMLString(description)
@@ -361,7 +357,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           description={description}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => {
-            this.props.navigation.navigate(screen, {
+            this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,
               addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
             })
