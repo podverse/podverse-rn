@@ -19,8 +19,9 @@ const mediaMoreButtons = (
   handleDismiss: any,
   handleDownload: any,
   handleDeleteClip: any,
-  includeGoToPodcast?: boolean,
-  includeGoToEpisode?: boolean
+  navToPodcastRouteName?: string,
+  navToEpisodeRouteName?: string,
+  screenStackPrefix?: string
 ) => {
   if (!item || !item.episodeId) return
 
@@ -187,38 +188,33 @@ const mediaMoreButtons = (
     })
   }
 
-  const navToPodcastScreen = () => {
-    navigation.navigate(PV.RouteNames.PodcastScreen, {
-      addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
-      podcastId: item.podcastId,
-      podcast: {
-        id: item.podcastId,
-        title: item.podcastTitle,
-        imageUrl: item.podcastImageUrl
-      },
-      shouldReload: true
-    })
-  }
-
-  if (includeGoToPodcast) {
+  if (navToPodcastRouteName) {
     buttons.push({
       key: 'goToPodcast',
       text: translate('Go to Podcast'),
       onPress: async () => {
         await handleDismiss()
-        navToPodcastScreen()
+        navigation.navigate(navToPodcastRouteName, {
+          addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
+          podcastId: item.podcastId,
+          podcast: {
+            id: item.podcastId,
+            title: item.podcastTitle,
+            imageUrl: item.podcastImageUrl
+          },
+          screenStackPrefix
+        })
       }
     })
   }
 
-  if (includeGoToEpisode) {
+  if (navToEpisodeRouteName) {
     buttons.push({
       key: 'goToEpisode',
-      text: 'Go to Episode',
+      text: translate('Go to Episode'),
       onPress: async () => {
         await handleDismiss()
-        navToPodcastScreen()
-        navigation.navigate(PV.RouteNames.EpisodeScreen, {
+        navigation.navigate(navToEpisodeRouteName, {
           episodeId: item.episodeId,
           episode: {
             id: item.episodeId,
@@ -227,7 +223,8 @@ const mediaMoreButtons = (
               imageUrl: item.podcastImageUrl,
               title: item.podcastTitle
             }
-          }
+          },
+          screenStackPrefix
         })
       }
     })

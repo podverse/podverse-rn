@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
-import { HeaderBackButton, NavigationStackOptions } from 'react-navigation-stack'
+import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -41,6 +41,7 @@ type State = {
   isLoadingMore: boolean
   queryPage: number
   querySort: string | null
+  screenStackPrefix?: string
   searchBarText: string
   selectedItem?: any
   showActionSheet: boolean
@@ -57,18 +58,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     return {
       title: translate('Episode'),
-      headerLeft: (
-        <HeaderBackButton
-          backTitleVisible={true}
-          tintColor={darkTheme.text.color}
-          title='Podcast'
-          onPress={() => {
-            navigation.navigate(PV.RouteNames.PodcastScreen, {
-              shouldReload: false
-            })
-          }}
-        />
-      ),
       headerRight: (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
@@ -91,6 +80,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const viewType = this.props.navigation.getParam('viewType') || PV.Filters._showNotesKey
     const episode = this.props.navigation.getParam('episode')
     const episodeId = (episode && episode.id) || this.props.navigation.getParam('episodeId')
+    const screenStackPrefix = this.props.navigation.getParam('screenStackPrefix')
 
     if (episode && !episode.podcast) {
       episode.podcast = {
@@ -116,6 +106,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       isLoadingMore: false,
       queryPage: 1,
       querySort: PV.Filters._chronologicalKey,
+      screenStackPrefix,
       searchBarText: '',
       showActionSheet: false,
       viewType
@@ -342,6 +333,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       isLoading,
       isLoadingMore,
       querySort,
+      screenStackPrefix,
       selectedItem,
       showActionSheet,
       showNoInternetConnectionMessage,
@@ -406,7 +398,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
               navigation,
               this._handleCancelPress,
               this._handleDownloadPressed,
-              null // handleDeleteClip
+              null, // handleDeleteClip
+              PV.RouteNames[screenStackPrefix + 'PodcastScreen'], // navToPodcastScreen
+              null, // navToEpisodeScreen
+              screenStackPrefix
             )
           }
           showModal={showActionSheet}

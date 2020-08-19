@@ -87,10 +87,10 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
           })
           this.setState({ isLoading: false })
           const podcast = await getAddByRSSPodcastLocally(url)
-          this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
+          this.props.navigation.navigate(PV.RouteNames.PodcastsPodcastScreen, {
             podcast,
             addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
-            shouldReload: true
+            screenStackPrefix: PV.RouteNames.ScreenStackPrefix.Podcasts
           })
         } catch (error) {
           console.log('_handleSavePodcastByRSSURL', error)

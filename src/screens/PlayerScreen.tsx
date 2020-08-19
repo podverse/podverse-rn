@@ -45,7 +45,7 @@ import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
-import { getAddByRSSPodcast } from '../services/parser'
+import { getAddByRSSPodcastLocally } from '../services/parser'
 import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
@@ -701,7 +701,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { queryPage, querySort } = screenPlayer
 
     if (nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
-      const parsedPodcast = await getAddByRSSPodcast(nowPlayingItem.addByRSSPodcastFeedUrl)
+      const parsedPodcast = await getAddByRSSPodcastLocally(nowPlayingItem.addByRSSPodcastFeedUrl)
       if (parsedPodcast) {
         const { episodes = [] } = parsedPodcast
         return [episodes, episodes.length]
