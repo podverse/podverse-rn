@@ -257,7 +257,7 @@ const PlayerNavigator = createStackNavigator(
       screen: PlayerScreen,
       path: PV.DeepLinks.Clip.path
     },
-    [PV.RouteNames.MakeClipScreen]: MakeClipScreen,
+    [PV.RouteNames.MakeClipScreen]: { screen: MakeClipScreen, navigationOptions: { gesturesEnabled: false } },
     [PV.RouteNames.QueueScreen]: QueueScreen,
     [PV.RouteNames.PlayerFAQScreen]: FAQScreen,
     [PV.RouteNames.PlayerMyProfileScreen]: ProfileScreen,
