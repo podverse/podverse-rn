@@ -3,6 +3,7 @@ import NetInfo from '@react-native-community/netinfo'
 import { Alert } from 'react-native'
 import Config from 'react-native-config'
 import Share from 'react-native-share'
+import { NavigationActions, StackActions } from 'react-navigation'
 import { getGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
@@ -193,15 +194,28 @@ const mediaMoreButtons = (
       text: translate('Go to Podcast'),
       onPress: async () => {
         await handleDismiss()
-        navigation.navigate(PV.RouteNames.PodcastScreen, {
-          addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
-          podcastId: item.podcastId,
-          podcast: {
-            id: item.podcastId,
-            title: item.podcastTitle,
-            imageUrl: item.podcastImageUrl
-          }
+
+        const resetAction = StackActions.reset({
+          index: 1,
+          actions: [
+            NavigationActions.navigate({ routeName: PV.RouteNames.PodcastsScreen }),
+            NavigationActions.navigate({
+              routeName: PV.RouteNames.PodcastScreen,
+              params: {
+                addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
+                podcastId: item.podcastId,
+                podcast: {
+                  id: item.podcastId,
+                  title: item.podcastTitle,
+                  imageUrl: item.podcastImageUrl
+                }
+              }
+            })
+          ],
+          key: 'Podcasts'
         })
+
+        navigation.dispatch(resetAction)
       }
     })
   }
@@ -212,17 +226,30 @@ const mediaMoreButtons = (
       text: translate('Go to Episode'),
       onPress: async () => {
         await handleDismiss()
-        navigation.navigate(PV.RouteNames.EpisodeScreen, {
-          episodeId: item.episodeId,
-          episode: {
-            id: item.episodeId,
-            title: item.episodeTitle,
-            podcast: {
-              imageUrl: item.podcastImageUrl,
-              title: item.podcastTitle
-            }
-          }
+
+        const resetAction = StackActions.reset({
+          index: 1,
+          actions: [
+            NavigationActions.navigate({ routeName: PV.RouteNames.EpisodesScreen }),
+            NavigationActions.navigate({
+              routeName: PV.RouteNames.EpisodeScreen,
+              params: {
+                episodeId: item.episodeId,
+                episode: {
+                  id: item.episodeId,
+                  title: item.episodeTitle,
+                  podcast: {
+                    imageUrl: item.podcastImageUrl,
+                    title: item.podcastTitle
+                  }
+                }
+              }
+            })
+          ],
+          key: 'Episodes'
         })
+
+        navigation.dispatch(resetAction)
       }
     })
   }
