@@ -69,7 +69,6 @@ type State = {
   podcastId?: string
   queryPage: number
   querySort: string | null
-  screenStackPrefix?: string
   searchBarText: string
   selectedItem?: any
   showActionSheet: boolean
@@ -111,7 +110,6 @@ export class PodcastScreen extends React.Component<Props, State> {
       (podcast && podcast.addByRSSPodcastFeedUrl) ||
       this.props.navigation.getParam('podcastId')
     const viewType = this.props.navigation.getParam('viewType') || PV.Filters._episodesKey
-    const screenStackPrefix = this.props.navigation.getParam('screenStackPrefix')
 
     if (podcast && (podcast.id || podcast.addByRSSPodcastFeedUrl)) {
       this.props.navigation.setParams({
@@ -135,7 +133,6 @@ export class PodcastScreen extends React.Component<Props, State> {
       podcastId,
       queryPage: 1,
       querySort: PV.Filters._mostRecentKey,
-      screenStackPrefix,
       searchBarText: '',
       showActionSheet: false,
       showSettings: false,
@@ -347,16 +344,14 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _renderItem = ({ item, index }) => {
-    const { podcast, screenStackPrefix, viewType } = this.state
+    const { podcast, viewType } = this.state
     const episode = {
       ...item,
       podcast
     }
 
     const isSearchScreen = this.props.navigation.getParam('isSearchScreen')
-    const screen = isSearchScreen
-      ? PV.RouteNames.SearchEpisodeScreen
-      : screenStackPrefix + PV.RouteNames.ScreenStackSuffix.EpisodeScreen
+    const screen = isSearchScreen ? PV.RouteNames.SearchEpisodeScreen : PV.RouteNames.EpisodeScreen
 
     if (viewType === PV.Filters._downloadedKey) {
       let description = removeHTMLFromString(item.description)
@@ -368,8 +363,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           handleNavigationPress={() => {
             this.props.navigation.navigate(screen, {
               episode,
-              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
-              screenStackPrefix
+              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
             })
           }}
           hasZebraStripe={isOdd(index)}
@@ -390,8 +384,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           handleNavigationPress={() =>
             this.props.navigation.navigate(screen, {
               episode,
-              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
-              screenStackPrefix
+              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
             })
           }
           hasZebraStripe={isOdd(index)}
@@ -580,7 +573,6 @@ export class PodcastScreen extends React.Component<Props, State> {
       showSettings,
       viewType
     } = this.state
-    const screenStackPrefix = navigation.getParam('screenStackPrefix')
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
 
     let isSubscribed = subscribedPodcastIds.some((x: string) => x === podcastId)
@@ -703,9 +695,8 @@ export class PodcastScreen extends React.Component<Props, State> {
                   this._handleCancelPress,
                   this._handleDownloadPressed,
                   null, // handleDeleteClip
-                  null, // navToPodcastRouteName
-                  PV.RouteNames[screenStackPrefix + 'EpisodeScreen'], // navToEpisodeScreen
-                  screenStackPrefix
+                  false, // includeGoToPodcast
+                  true // includeGoToEpisode
                 )
               }
               showModal={showActionSheet}

@@ -154,8 +154,7 @@ export class SearchScreen extends React.Component<Props, State> {
     this.props.navigation.navigate(PV.RouteNames.SearchPodcastScreen, {
       podcast,
       viewType,
-      isSearchScreen: true,
-      screenStackPrefix: PV.RouteNames.ScreenStackPrefix.Search
+      isSearchScreen: true
     })
   }
 

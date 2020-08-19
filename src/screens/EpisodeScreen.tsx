@@ -41,7 +41,6 @@ type State = {
   isLoadingMore: boolean
   queryPage: number
   querySort: string | null
-  screenStackPrefix?: string
   searchBarText: string
   selectedItem?: any
   showActionSheet: boolean
@@ -80,7 +79,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const viewType = this.props.navigation.getParam('viewType') || PV.Filters._showNotesKey
     const episode = this.props.navigation.getParam('episode')
     const episodeId = (episode && episode.id) || this.props.navigation.getParam('episodeId')
-    const screenStackPrefix = this.props.navigation.getParam('screenStackPrefix')
 
     if (episode && !episode.podcast) {
       episode.podcast = {
@@ -106,7 +104,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
       isLoadingMore: false,
       queryPage: 1,
       querySort: PV.Filters._chronologicalKey,
-      screenStackPrefix,
       searchBarText: '',
       showActionSheet: false,
       viewType
@@ -333,7 +330,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
       isLoading,
       isLoadingMore,
       querySort,
-      screenStackPrefix,
       selectedItem,
       showActionSheet,
       showNoInternetConnectionMessage,
@@ -399,9 +395,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
               this._handleCancelPress,
               this._handleDownloadPressed,
               null, // handleDeleteClip
-              PV.RouteNames[screenStackPrefix + 'PodcastScreen'], // navToPodcastScreen
-              null, // navToEpisodeScreen
-              screenStackPrefix
+              true, // includeGoToPodcast
+              false // includeGoToEpisode
             )
           }
           showModal={showActionSheet}

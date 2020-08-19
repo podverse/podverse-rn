@@ -89,15 +89,13 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     await navigation.dispatch(resetAction)
     if (nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
       const podcast = await getAddByRSSPodcastLocally(nowPlayingItem.addByRSSPodcastFeedUrl)
-      navigation.navigate(PV.RouteNames.PodcastsPodcastScreen, {
+      navigation.navigate(PV.RouteNames.PodcastScreen, {
         podcast,
-        addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl,
-        screenStackPrefix: PV.RouteNames.ScreenStackPrefix.Podcasts
+        addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl
       })
     } else {
-      navigation.navigate(PV.RouteNames.PodcastsPodcastScreen, {
-        podcast,
-        screenStackPrefix: PV.RouteNames.ScreenStackPrefix.Podcasts
+      navigation.navigate(PV.RouteNames.PodcastScreen, {
+        podcast
       })
     }
   }

@@ -19,9 +19,8 @@ const mediaMoreButtons = (
   handleDismiss: any,
   handleDownload: any,
   handleDeleteClip: any,
-  navToPodcastRouteName?: string,
-  navToEpisodeRouteName?: string,
-  screenStackPrefix?: string
+  includeGoToPodcast?: boolean,
+  includeGoToEpisode?: boolean
 ) => {
   if (!item || !item.episodeId) return
 
@@ -188,33 +187,32 @@ const mediaMoreButtons = (
     })
   }
 
-  if (navToPodcastRouteName) {
+  if (includeGoToPodcast) {
     buttons.push({
       key: 'goToPodcast',
       text: translate('Go to Podcast'),
       onPress: async () => {
         await handleDismiss()
-        navigation.navigate(navToPodcastRouteName, {
+        navigation.navigate(PV.RouteNames.PodcastScreen, {
           addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
           podcastId: item.podcastId,
           podcast: {
             id: item.podcastId,
             title: item.podcastTitle,
             imageUrl: item.podcastImageUrl
-          },
-          screenStackPrefix
+          }
         })
       }
     })
   }
 
-  if (navToEpisodeRouteName) {
+  if (includeGoToEpisode) {
     buttons.push({
       key: 'goToEpisode',
       text: translate('Go to Episode'),
       onPress: async () => {
         await handleDismiss()
-        navigation.navigate(navToEpisodeRouteName, {
+        navigation.navigate(PV.RouteNames.EpisodeScreen, {
           episodeId: item.episodeId,
           episode: {
             id: item.episodeId,
@@ -223,8 +221,7 @@ const mediaMoreButtons = (
               imageUrl: item.podcastImageUrl,
               title: item.podcastTitle
             }
-          },
-          screenStackPrefix
+          }
         })
       }
     })

@@ -81,11 +81,11 @@ const PodcastsNavigator = createStackNavigator(
       screen: PodcastsScreen,
       path: PV.DeepLinks.Podcasts.path
     },
-    [PV.RouteNames.PodcastsPodcastScreen]: {
+    [PV.RouteNames.PodcastScreen]: {
       screen: PodcastScreen,
       path: PV.DeepLinks.Podcast.path
     },
-    [PV.RouteNames.PodcastsEpisodeScreen]: {
+    [PV.RouteNames.EpisodeScreen]: {
       screen: EpisodeScreen,
       path: PV.DeepLinks.Episode.path
     }
@@ -106,8 +106,8 @@ const PodcastsNavigator = createStackNavigator(
 const EpisodesNavigator = createStackNavigator(
   {
     [PV.RouteNames.EpisodesScreen]: EpisodesScreen,
-    [PV.RouteNames.EpisodesEpisodeScreen]: EpisodeScreen,
-    [PV.RouteNames.EpisodesPodcastScreen]: PodcastScreen
+    [PV.RouteNames.EpisodeScreen]: EpisodeScreen,
+    [PV.RouteNames.PodcastScreen]: PodcastScreen
   },
   {
     defaultNavigationOptions,
@@ -124,8 +124,8 @@ const EpisodesNavigator = createStackNavigator(
 const ClipsNavigator = createStackNavigator(
   {
     [PV.RouteNames.ClipsScreen]: ClipsScreen,
-    [PV.RouteNames.ClipsEpisodeScreen]: EpisodeScreen,
-    [PV.RouteNames.ClipsPodcastScreen]: PodcastScreen
+    [PV.RouteNames.EpisodeScreen]: EpisodeScreen,
+    [PV.RouteNames.PodcastScreen]: PodcastScreen
   },
   {
     defaultNavigationOptions,
