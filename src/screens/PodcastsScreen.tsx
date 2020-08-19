@@ -225,13 +225,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
           const episode = await getEpisode(id)
           if (episode) {
             const podcast = await getPodcast(episode.podcast.id)
-            navigate(PV.RouteNames.PodcastScreen, {
+            navigate(PV.RouteNames.PodcastsPodcastScreen, {
               podcast,
               navToEpisodeWithId: id,
-              shouldReload: true
+              screenStackPrefix: PV.RouteNames.ScreenStackPrefix.Podcasts
             })
-            navigate(PV.RouteNames.EpisodeScreen, {
-              episode
+            navigate(PV.RouteNames.PodcastsEpisodeScreen, {
+              episode,
+              screenStackPrefix: PV.RouteNames.ScreenStackPrefix.Podcasts
             })
           }
         } else if (path === PV.DeepLinks.Playlist.pathPrefix) {
@@ -243,9 +244,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
           await navigate(PV.RouteNames.MoreScreen)
           await navigate(PV.RouteNames.PlaylistsScreen)
         } else if (path === PV.DeepLinks.Podcast.pathPrefix) {
-          await navigate(PV.RouteNames.PodcastScreen, {
+          await navigate(PV.RouteNames.PodcastsPodcastScreen, {
             podcastId: id,
-            shouldReload: true
+            screenStackPrefix: PV.RouteNames.ScreenStackPrefix.Podcasts
           })
         } else if (path === PV.DeepLinks.Podcasts.path) {
           await navigate(PV.RouteNames.PodcastsScreen)
@@ -433,19 +434,16 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _renderPodcastItem = ({ item, index }) => {
-    const { downloadedPodcastEpisodeCounts } = this.global
-    const episodeCount = downloadedPodcastEpisodeCounts[item.id]
-
     return (
       <PodcastTableCell
         hasZebraStripe={isOdd(index)}
         id={item.id}
         lastEpisodePubDate={item.lastEpisodePubDate}
         onPress={() =>
-          this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
+          this.props.navigation.navigate(PV.RouteNames.PodcastsPodcastScreen, {
             podcast: item,
             addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
-            shouldReload: true
+            screenStackPrefix: PV.RouteNames.ScreenStackPrefix.Podcasts
           })
         }
         podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
@@ -547,7 +545,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleSearchNavigation = () => {
-    this.props.navigation.navigate(PV.RouteNames.SearchScreen)
+    this.props.navigation.navigate(PV.RouteNames.SearchScreen, {
+      screenStackPrefix: PV.RouteNames.ScreenStackPrefix.Search
+    })
   }
 
   _handleDataSettingsWifiOnly = () => {
