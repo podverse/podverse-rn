@@ -105,7 +105,7 @@ export class MoreScreen extends React.Component<Props, State> {
                 {item.key === _downloadsKey && (
                   <RNView style={[core.row, { position: 'relative' }, table.cellWrapper]}>
                     <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={table.cellText}>
-                      Downloads
+                      {translate('Downloads')}
                     </Text>
                     {downloadsActiveCount > 0 &&
                       fontScaleMode !== PV.Fonts.fontScale.larger &&
@@ -160,46 +160,46 @@ const _termsOfServiceKey = 'TermsOfService'
 
 const allMoreFeatures = [
   {
-    title: 'Downloads',
+    title: translate('Downloads'),
     key: _downloadsKey,
     routeName: PV.RouteNames.DownloadsScreen,
     testId: 'more_screen_downloads_cell'
   },
   {
-    title: 'Playlists',
+    title: translate('Playlists'),
     key: _playlistsKey,
     routeName: PV.RouteNames.PlaylistsScreen,
     testId: 'more_screen_playlists_cell'
   },
   {
-    title: 'Profiles',
+    title: translate('Profiles'),
     key: _profilesKey,
     routeName: PV.RouteNames.ProfilesScreen,
     testId: 'more_screen_profiles_cell'
   },
   {
-    title: 'My Profile',
+    title: translate('My Profile'),
     key: _myProfileKey,
     testId: 'more_screen_my_profile_cell'
   },
   {
-    title: 'My Clips',
+    title: translate('My Clips'),
     key: _myClipsKey,
     testId: 'more_screen_my_clips_cell'
   },
   {
-    title: 'Log out',
+    title: translate('Log out'),
     key: _logoutKey,
     testId: 'more_screen_log_out_cell'
   },
   {
-    title: 'Login',
+    title: translate('Login'),
     key: _loginKey,
     routeName: PV.RouteNames.AuthNavigator,
     testId: 'more_screen_login_cell'
   },
   {
-    title: 'Settings',
+    title: translate('Settings'),
     key: _settingsKey,
     routeName: PV.RouteNames.SettingsScreen,
     testId: 'more_screen_settings_cell'
