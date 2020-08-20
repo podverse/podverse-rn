@@ -3,7 +3,6 @@ import debounce from 'lodash/debounce'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
-import { NavigationEvents } from 'react-navigation'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
 import {
@@ -63,7 +62,6 @@ type State = {
   isLoading: boolean
   isLoadingMore: boolean
   isRefreshing: boolean
-  isSearchScreen?: boolean
   isSubscribing: boolean
   limitDownloadedEpisodes: boolean
   podcast?: any
@@ -143,8 +141,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
-  handleDidMount = async () => {
-    const { navigation } = this.props
+  async componentDidMount() {
     const { podcastId } = this.state
     let podcast = this.props.navigation.getParam('podcast')
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
@@ -352,9 +349,6 @@ export class PodcastScreen extends React.Component<Props, State> {
       podcast
     }
 
-    const isSearchScreen = this.props.navigation.getParam('isSearchScreen')
-    const screen = isSearchScreen ? PV.RouteNames.SearchEpisodeScreen : PV.RouteNames.EpisodeScreen
-
     if (viewType === PV.Filters._downloadedKey) {
       let description = removeHTMLFromString(item.description)
       description = decodeHTMLString(description)
@@ -362,12 +356,12 @@ export class PodcastScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           description={description}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
-          handleNavigationPress={() =>
-            this.props.navigation.navigate(screen, {
+          handleNavigationPress={() => {
+            this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,
               addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
             })
-          }
+          }}
           hasZebraStripe={isOdd(index)}
           hideImage={true}
           id={item.id}
@@ -384,7 +378,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           description={description}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() =>
-            this.props.navigation.navigate(screen, {
+            this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,
               addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
             })
@@ -695,7 +689,10 @@ export class PodcastScreen extends React.Component<Props, State> {
                   selectedItem,
                   navigation,
                   this._handleCancelPress,
-                  this._handleDownloadPressed
+                  this._handleDownloadPressed,
+                  null, // handleDeleteClip
+                  false, // includeGoToPodcast
+                  true // includeGoToEpisode
                 )
               }
               showModal={showActionSheet}
@@ -710,14 +707,6 @@ export class PodcastScreen extends React.Component<Props, State> {
           <Dialog.Button label={translate('No')} onPress={this._handleToggleDeleteDownloadedEpisodesDialog} />
           <Dialog.Button label={translate('Yes')} onPress={this._handleDeleteDownloadedEpisodes} />
         </Dialog.Container>
-        <NavigationEvents
-          onWillFocus={() => {
-            const shouldReload = navigation.getParam('shouldReload')
-            if (shouldReload) {
-              this.handleDidMount()
-            }
-          }}
-        />
       </View>
     )
   }

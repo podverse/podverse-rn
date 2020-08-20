@@ -227,8 +227,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             const podcast = await getPodcast(episode.podcast.id)
             navigate(PV.RouteNames.PodcastScreen, {
               podcast,
-              navToEpisodeWithId: id,
-              shouldReload: true
+              navToEpisodeWithId: id
             })
             navigate(PV.RouteNames.EpisodeScreen, {
               episode
@@ -244,8 +243,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           await navigate(PV.RouteNames.PlaylistsScreen)
         } else if (path === PV.DeepLinks.Podcast.pathPrefix) {
           await navigate(PV.RouteNames.PodcastScreen, {
-            podcastId: id,
-            shouldReload: true
+            podcastId: id
           })
         } else if (path === PV.DeepLinks.Podcasts.path) {
           await navigate(PV.RouteNames.PodcastsScreen)
@@ -433,9 +431,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _renderPodcastItem = ({ item, index }) => {
-    const { downloadedPodcastEpisodeCounts } = this.global
-    const episodeCount = downloadedPodcastEpisodeCounts[item.id]
-
     return (
       <PodcastTableCell
         hasZebraStripe={isOdd(index)}
@@ -444,8 +439,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         onPress={() =>
           this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
             podcast: item,
-            addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
-            shouldReload: true
+            addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
           })
         }
         podcastImageUrl={item.shrunkImageUrl || item.imageUrl}

@@ -7,6 +7,7 @@ import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import { getAddByRSSPodcastLocally } from '../services/parser'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { actionSheetStyles, sliderStyles } from '../styles'
@@ -87,16 +88,14 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     })
     await navigation.dispatch(resetAction)
     if (nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
-      const podcast = await getAddByRSSPodcast(nowPlayingItem.addByRSSPodcastFeedUrl)
+      const podcast = await getAddByRSSPodcastLocally(nowPlayingItem.addByRSSPodcastFeedUrl)
       navigation.navigate(PV.RouteNames.PodcastScreen, {
         podcast,
-        addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl,
-        shouldReload: true
+        addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl
       })
     } else {
       navigation.navigate(PV.RouteNames.PodcastScreen, {
-        podcast,
-        shouldReload: true
+        podcast
       })
     }
   }

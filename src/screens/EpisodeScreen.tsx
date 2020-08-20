@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
-import { HeaderBackButton, NavigationStackOptions } from 'react-navigation-stack'
+import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -57,18 +57,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     return {
       title: translate('Episode'),
-      headerLeft: (
-        <HeaderBackButton
-          backTitleVisible={true}
-          tintColor={darkTheme.text.color}
-          title='Podcast'
-          onPress={() => {
-            navigation.navigate(PV.RouteNames.PodcastScreen, {
-              shouldReload: false
-            })
-          }}
-        />
-      ),
       headerRight: (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
@@ -406,7 +394,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
               navigation,
               this._handleCancelPress,
               this._handleDownloadPressed,
-              null // handleDeleteClip
+              null, // handleDeleteClip
+              true, // includeGoToPodcast
+              false // includeGoToEpisode
             )
           }
           showModal={showActionSheet}
