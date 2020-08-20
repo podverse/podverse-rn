@@ -52,10 +52,11 @@ export const navigateToPodcastScreenWithItem = (navigation: any, item: any) => {
 }
 
 export const navigateToPodcastScreenWithPodcast = (navigation: any, podcast: any, viewType: string) => {
+  navigation.dismiss()
+
   const resetAction = StackActions.reset({
-    index: 0,
+    index: 1,
     actions: [
-      NavigationActions.navigate({ routeName: PV.RouteNames.TabNavigator }),
       NavigationActions.navigate({ routeName: PV.RouteNames.PodcastsScreen }),
       NavigationActions.navigate({
         routeName: PV.RouteNames.PodcastScreen,
