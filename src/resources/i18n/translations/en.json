@@ -128,6 +128,7 @@
   "Limit the number of downloaded episodes for each podcast by default": "Limit the number of downloaded episodes for each podcast by default",
   "Listen to episodes and clips": "- Listen to episodes and clips",
   "Log out": "Log out",
+  "Login Error": "Login Error",
   "Login Needed": "Login Needed",
   "Login Register": "Login / Register",
   "Login to add to playlists": "Login to add to playlists",
@@ -137,7 +138,6 @@
   "Login to view your profiles": "Login to view your profiles",
   "Login to": "Login to:",
   "Login": "Login",
-  "Login Error": "Login Error",
   "Make Clip": "Make Clip",
   "Max playback speed": "Max playback speed",
   "Membership": "Membership",
@@ -313,5 +313,5 @@
   "Your profile page is hidden": "Your profile page is hidden. Your clip and playlist links are still accessible to anyone with the links.",
   "Your profile page will be hidden": "Your profile page will be hidden. Your clip and playlist links will still be accessible to anyone with the links.",
   "Your purchase was successful You may close this window": "Your purchase was successful. You may close this window.",
-  "Your queue is empty": "Your queue is empty",
+  "Your queue is empty": "Your queue is empty"
 }
