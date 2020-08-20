@@ -374,7 +374,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
                   style={[core.textInputLabel, styles.loginMessage]}>
-                  {translate('You must be logged in to make clips.')}
+                  {translate('You must be logged in to make clips')}
                 </Text>
                 <Divider style={styles.divider} />
               </RNView>
