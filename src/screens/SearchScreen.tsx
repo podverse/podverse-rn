@@ -13,6 +13,7 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
+import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { generateAuthorsText, isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -21,7 +22,7 @@ import { getPodcasts } from '../services/podcast'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
-const { aboutKey, allEpisodesKey, clipsKey } = PV.Filters
+const { _aboutPodcastKey, _episodesKey, _clipsKey } = PV.Filters
 
 type Props = {
   navigation?: any
@@ -151,11 +152,7 @@ export class SearchScreen extends React.Component<Props, State> {
 
   _handleNavigationPress = (podcast: any, viewType: string) => {
     this.setState({ showActionSheet: false })
-    this.props.navigation.navigate(PV.RouteNames.SearchPodcastScreen, {
-      podcast,
-      viewType,
-      isSearchScreen: true
-    })
+    navigateToPodcastScreenWithPodcast(this.props.navigation, podcast, viewType)
   }
 
   _handleAddPodcastByRSSURLNavigation = () => {
@@ -188,17 +185,17 @@ export class SearchScreen extends React.Component<Props, State> {
       {
         key: 'episodes',
         text: translate('Episodes'),
-        onPress: () => this._handleNavigationPress(selectedPodcast, allEpisodesKey)
+        onPress: () => this._handleNavigationPress(selectedPodcast, _episodesKey)
       },
       {
         key: 'clips',
         text: translate('Clips'),
-        onPress: () => this._handleNavigationPress(selectedPodcast, clipsKey)
+        onPress: () => this._handleNavigationPress(selectedPodcast, _clipsKey)
       },
       {
         key: 'about',
         text: translate('About'),
-        onPress: () => this._handleNavigationPress(selectedPodcast, aboutKey)
+        onPress: () => this._handleNavigationPress(selectedPodcast, _aboutPodcastKey)
       }
     ]
   }

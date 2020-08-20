@@ -38,14 +38,14 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
               <ActivityIndicator styles={styles.activityIndicator} />
             ) : (
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.itemCount}>
-                items: {itemCount}
+                {translate('items')} {itemCount}
               </Text>
             )}
           </RNView>
           {!!createdBy && (
             <RNView style={styles.wrapperBottom}>
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.createdBy}>
-                by: {createdBy}
+                {translate('by')} {createdBy}
               </Text>
             </RNView>
           )}

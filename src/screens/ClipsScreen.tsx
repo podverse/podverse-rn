@@ -447,7 +447,7 @@ export class ClipsScreen extends React.Component<Props, State> {
               this._handleCancelPress,
               this._handleDownloadPressed,
               this._handleHiddenItemPress,
-              false, // includeGoToPodcast
+              true, // includeGoToPodcast
               true // includeGoToEpisode
             )
           }}

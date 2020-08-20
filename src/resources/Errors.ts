@@ -16,7 +16,7 @@ export const Errors = {
   },
   LOGIN_INVALID: {
     name: _loginInvalidName,
-    error: () => PVError(_loginInvalidName, 'Invalid username or password.')
+    error: () => PVError(_loginInvalidName, 'Invalid username or password')
   },
   PREMIUM_MEMBERSHIP_EXPIRED: {
     name: _premiumMembershipExpiredName,

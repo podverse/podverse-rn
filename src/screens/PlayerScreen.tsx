@@ -45,7 +45,7 @@ import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
-import { getAddByRSSPodcast } from '../services/parser'
+import { getAddByRSSPodcastLocally } from '../services/parser'
 import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
@@ -441,15 +441,15 @@ export class PlayerScreen extends React.Component<Props, State> {
     let title = ''
     if (podcastId) {
       url = PV.URLs.podcast + podcastId
-      title = `${nowPlayingItem.podcastTitle}${translate(' – shared using Podverse')}`
+      title = `${nowPlayingItem.podcastTitle}${translate('shared using Podverse')}`
     } else if (episodeId) {
       url = PV.URLs.episode + episodeId
-      title = `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate(' – shared using Podverse')}`
+      title = `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate('shared using Podverse')}`
     } else {
       url = PV.URLs.clip + mediaRefId
       title = `${nowPlayingItem.clipTitle ? nowPlayingItem.clipTitle + ' – ' : translate('untitled clip – ')}`
       title += `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate(
-        '– clip shared using Podverse'
+        'clip shared using Podverse'
       )}`
     }
 
@@ -701,7 +701,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { queryPage, querySort } = screenPlayer
 
     if (nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
-      const parsedPodcast = await getAddByRSSPodcast(nowPlayingItem.addByRSSPodcastFeedUrl)
+      const parsedPodcast = await getAddByRSSPodcastLocally(nowPlayingItem.addByRSSPodcastFeedUrl)
       if (parsedPodcast) {
         const { episodes = [] } = parsedPodcast
         return [episodes, episodes.length]

@@ -72,7 +72,7 @@ export class ResetPassword extends React.Component<Props, State> {
           {isLoading ? (
             <ActivityIndicator animating={true} color={PV.Colors.gray} size='small' />
           ) : (
-            <Text style={[signInButtonTextStyle, disabledTextStyle]}>Send Reset</Text>
+            <Text style={[signInButtonTextStyle, disabledTextStyle]}>{translate('Send Reset')}</Text>
           )}
         </TouchableOpacity>
       </View>

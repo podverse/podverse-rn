@@ -41,12 +41,12 @@ export class OnboardingScreen extends React.Component<Props, State> {
         <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />
         <View style={styles.content}>
           <Text style={styles.title}>{translate('No login needed to:')}</Text>
-          <Text style={styles.text}>{translate('- Listen to episodes and clips')}</Text>
-          <Text style={styles.text}>{translate('- Subscribe to podcasts')}</Text>
+          <Text style={styles.text}>{translate('Listen to episodes and clips')}</Text>
+          <Text style={styles.text}>{translate('Subscribe to podcasts')}</Text>
           <Text style={[styles.title, extraMargin]}>{translate('Login to')}</Text>
-          <Text style={styles.text}>{translate('- Create and share playlists')}</Text>
-          <Text style={styles.text}>{translate('- Edit clips and playlists')}</Text>
-          <Text style={styles.text}>{translate('- Sync podcasts across devices')}</Text>
+          <Text style={styles.text}>{translate('Create and share playlists')}</Text>
+          <Text style={styles.text}>{translate('Edit clips and playlists')}</Text>
+          <Text style={styles.text}>{translate('Sync podcasts across devices')}</Text>
         </View>
         <TouchableOpacity style={styles.signInButton} onPress={this.goToLogin}>
           <Text style={styles.signInButtonText}>Login / Register</Text>

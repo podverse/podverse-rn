@@ -39,8 +39,8 @@ export const OverlayAlert = (props: Props) => {
         const freeTrialExpiration = readableDate(safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, ''))
         setState({
           hideKey: 'hideFreeTrialExpired',
-          alertTitle: `${translate('Your free trial expired ')}${freeTrialExpiration}. 
-          ${translate('Please renew your membership to continue using premium features.')}`,
+          alertTitle: `${translate('Your free trial expired')}${freeTrialExpiration}. 
+          ${translate('Please renew your membership to continue using premium features')}`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
           alertTitleStyle: globalTheme.overlayAlertDanger,
           linkAction: handleRenewMembership,
@@ -50,7 +50,7 @@ export const OverlayAlert = (props: Props) => {
         const freeTrialExpiration = readableDate(safelyUnwrapNestedVariable(() => userInfo.freeTrialExpiration, ''))
         setState({
           hideKey: 'hideFreeTrialExpiring',
-          alertTitle: `${translate('Your free trial expires ')}${freeTrialExpiration}`,
+          alertTitle: `${translate('Your free trial expires')}${freeTrialExpiration}`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertWarning],
           alertTitleStyle: globalTheme.overlayAlertWarning,
           linkAction: handleRenewMembership,
@@ -61,7 +61,7 @@ export const OverlayAlert = (props: Props) => {
 
         setState({
           hideKey: 'hideMembershipExpired',
-          alertTitle: `${translate('Your membership expired ')}${membershipExpiration}. 
+          alertTitle: `${translate('Your membership expired')}${membershipExpiration}. 
           ${translate('Please renew your membership to continue using premium features')}`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertDanger],
           alertTitleStyle: globalTheme.overlayAlertDanger,
@@ -72,7 +72,7 @@ export const OverlayAlert = (props: Props) => {
         const membershipExpiration = readableDate(safelyUnwrapNestedVariable(() => userInfo.membershipExpiration, ''))
         setState({
           hideKey: 'hideMembershipExpiring',
-          alertTitle: `${translate('Your premium membership expires ')}${membershipExpiration}.`,
+          alertTitle: `${translate('Your premium membership expires')}${membershipExpiration}.`,
           wrapperStyles: [styles.wrapper, globalTheme.overlayAlertWarning],
           alertTitleStyle: globalTheme.overlayAlertWarning,
           linkAction: handleRenewMembership,
