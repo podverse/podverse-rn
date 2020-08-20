@@ -541,7 +541,9 @@ export class ProfileScreen extends React.Component<Props, State> {
                     navigation,
                     this._handleCancelPress,
                     this._handleDownloadPressed,
-                    this._showDeleteConfirmDialog
+                    this._showDeleteConfirmDialog,
+                    true, // includeGoToPodcast
+                    true // includeGoToEpisode
                   )
                 }
               }}
