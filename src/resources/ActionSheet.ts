@@ -5,7 +5,11 @@ import Config from 'react-native-config'
 import Share from 'react-native-share'
 import { getGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
-import { navigateToEpisodeScreenWithItem, navigateToPodcastScreenWithItem } from '../lib/navigate'
+import {
+  navigateToEpisodeScreenWithItem,
+  navigateToPodcastScreenWithItem,
+  navigateToPodcastsEpisodeScreenWithItem
+} from '../lib/navigate'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { IActionSheet } from '../resources/Interfaces'
 import { PVTrackPlayer } from '../services/player'
@@ -21,7 +25,7 @@ const mediaMoreButtons = (
   handleDownload: any,
   handleDeleteClip: any,
   includeGoToPodcast?: boolean,
-  includeGoToEpisode?: boolean
+  includeGoToEpisode?: boolean | string
 ) => {
   if (!item || !item.episodeId) return
 
@@ -205,7 +209,12 @@ const mediaMoreButtons = (
       text: translate('Go to Episode'),
       onPress: async () => {
         await handleDismiss()
-        navigateToEpisodeScreenWithItem(navigation, item)
+
+        if (includeGoToEpisode === 'isPodcastsStack') {
+          navigateToPodcastsEpisodeScreenWithItem(navigation, item)
+        } else {
+          navigateToEpisodeScreenWithItem(navigation, item)
+        }
       }
     })
   }
