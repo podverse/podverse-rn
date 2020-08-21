@@ -1,6 +1,22 @@
 import { NavigationActions, StackActions } from 'react-navigation'
 import { PV } from '../resources'
 
+const navigateToEpisodeScreenParams = (item: any) => ({
+  episodeId: item.episodeId,
+  episode: {
+    id: item.episodeId,
+    title: item.episodeTitle,
+    podcast: {
+      imageUrl: item.podcastImageUrl,
+      title: item.podcastTitle
+    }
+  }
+})
+
+export const navigateToPodcastsEpisodeScreenWithItem = (navigation: any, item: any) => {
+  navigation.navigate(PV.RouteNames.EpisodeScreen, navigateToEpisodeScreenParams(item))
+}
+
 export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
   const resetAction = StackActions.reset({
     index: 1,
@@ -8,17 +24,7 @@ export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
       NavigationActions.navigate({ routeName: PV.RouteNames.EpisodesScreen }),
       NavigationActions.navigate({
         routeName: PV.RouteNames.EpisodeScreen,
-        params: {
-          episodeId: item.episodeId,
-          episode: {
-            id: item.episodeId,
-            title: item.episodeTitle,
-            podcast: {
-              imageUrl: item.podcastImageUrl,
-              title: item.podcastTitle
-            }
-          }
-        }
+        params: navigateToEpisodeScreenParams(item)
       })
     ],
     key: 'Episodes'
