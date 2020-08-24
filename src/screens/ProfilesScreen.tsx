@@ -139,7 +139,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
       <View style={styles.view} {...testProps('profiles_screen_view')}>
         <View style={styles.view}>
           {isLoading && <ActivityIndicator />}
-          {!isLoading && flatListData && flatListData.length > 0 && (
+          {!isLoading && (
             <FlatList
               data={flatListData}
               dataTotalCount={flatListDataTotalCount}
@@ -148,14 +148,12 @@ export class ProfilesScreen extends React.Component<Props, State> {
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               keyExtractor={(item: any) => item.id}
+              noResultsMessage={translate('No profiles found')}
               onEndReached={this._onEndReached}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderProfileItem}
               showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             />
-          )}
-          {!isLoading && flatListData && flatListData.length === 0 && (
-            <MessageWithAction message={translate('You have no subscribed profiles')} />
           )}
         </View>
       </View>

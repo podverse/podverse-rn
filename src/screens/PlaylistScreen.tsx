@@ -256,6 +256,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.id}
+            noResultsMessage={translate('No playlist items found')}
             renderItem={this._renderItem}
           />
         )}
