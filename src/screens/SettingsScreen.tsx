@@ -31,7 +31,7 @@ import { deleteLoggedInUser } from '../services/user'
 import { logoutUser } from '../state/actions/auth'
 import * as DownloadState from '../state/actions/downloads'
 import { clearHistoryItems } from '../state/actions/history'
-import { setcensorNSFWText } from '../state/actions/settings'
+import { setCensorNSFWText, setOfflineModeEnabled } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {
@@ -48,6 +48,7 @@ type State = {
   hasLoaded?: boolean
   isLoading?: boolean
   maximumSpeedOptionSelected?: any
+  offlineModeEnabled: any
   showDeleteAccountDialog?: boolean
   showDeleteDownloadedEpisodesDialog?: boolean
   showSetAllDownloadDialog?: boolean
@@ -63,13 +64,15 @@ export class SettingsScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    const { downloadedEpisodeLimitCount, downloadedEpisodeLimitDefault } = this.global
+    const { downloadedEpisodeLimitCount, downloadedEpisodeLimitDefault, offlineModeEnabled } = this.global
+
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
     this.state = {
       deleteAccountDialogText: '',
       downloadedEpisodeLimitCount,
       downloadedEpisodeLimitDefault,
-      maximumSpeedOptionSelected: maximumSpeedSelectOptions[1]
+      maximumSpeedOptionSelected: maximumSpeedSelectOptions[1],
+      offlineModeEnabled
     }
   }
 
@@ -81,6 +84,7 @@ export class SettingsScreen extends React.Component<Props, State> {
     const maximumSpeed = await AsyncStorage.getItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
     const maximumSpeedOptionSelected = maximumSpeedSelectOptions.find((x: any) => x.value === Number(maximumSpeed))
+    const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
 
     this.setState(
       {
@@ -88,7 +92,8 @@ export class SettingsScreen extends React.Component<Props, State> {
         downloadedEpisodeLimitCount,
         downloadedEpisodeLimitDefault,
         downloadingWifiOnly: !!downloadingWifiOnly,
-        maximumSpeedOptionSelected: maximumSpeedOptionSelected || maximumSpeedSelectOptions[1]
+        maximumSpeedOptionSelected: maximumSpeedOptionSelected || maximumSpeedSelectOptions[1],
+        offlineModeEnabled
       },
       () => this.setState({ hasLoaded: true })
     )
@@ -173,7 +178,14 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   _handleToggleNSFWText = async (value: boolean) => {
-    await setcensorNSFWText(value)
+    await setCensorNSFWText(value)
+  }
+
+  _handleToggleOfflineMode = async (value: boolean) => {
+    this.setState({ offlineModeEnabled: value }, async () => {
+      setOfflineModeEnabled(value)
+    })
+    this.setGlobal({ offlineModeEnabled: value })
   }
 
   _handleClearHistory = () => {
@@ -276,6 +288,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       downloadingWifiOnly,
       isLoading,
       maximumSpeedOptionSelected,
+      offlineModeEnabled,
       showDeleteAccountDialog,
       showSetAllDownloadDialog,
       showSetAllDownloadDialogIsCount,
@@ -342,30 +355,30 @@ export class SettingsScreen extends React.Component<Props, State> {
                 </View>
               </View>
             </RNPickerSelect>
+            <SwitchWithText
+              onValueChange={this._handleToggleOfflineMode}
+              subText={translate('Offline mode can save battery life and improve performance')}
+              text={translate('Offline Mode')}
+              value={!!offlineModeEnabled}
+            />
             <Divider style={styles.divider} />
             <Button
               onPress={this._handleClearHistory}
               wrapperStyles={styles.button}
               text={translate('Clear History')}
             />
-
-            <Divider style={styles.divider} />
             <Button
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
               wrapperStyles={styles.button}
               text={translate('Delete Downloaded Episodes')}
             />
-
             {isLoggedIn && (
-              <View>
-                <Divider style={styles.divider} />
-                <Button
-                  isWarning={true}
-                  onPress={this._handleToggleDeleteAccountDialog}
-                  text={translate('Delete Account')}
-                  wrapperStyles={styles.button}
-                />
-              </View>
+              <Button
+                isWarning={true}
+                onPress={this._handleToggleDeleteAccountDialog}
+                text={translate('Delete Account')}
+                wrapperStyles={styles.button}
+              />
             )}
           </View>
         )}
@@ -422,7 +435,9 @@ const styles = StyleSheet.create({
     paddingTop: 40
   },
   button: {
-    marginVertical: 8
+    marginHorizontal: 12,
+    marginBottom: 16,
+    marginTop: 8
   },
   divider: {
     marginVertical: 16
@@ -430,7 +445,8 @@ const styles = StyleSheet.create({
   pickerSelect: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold
+    fontWeight: PV.Fonts.weights.bold,
+    marginVertical: 14
   },
   pickerSelectIcon: {
     flex: 0,
