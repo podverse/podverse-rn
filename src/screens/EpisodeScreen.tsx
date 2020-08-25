@@ -25,7 +25,7 @@ import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRefs } from '../services/mediaRef'
-import { core, darkTheme } from '../styles'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
@@ -421,7 +421,11 @@ export class EpisodeScreen extends React.Component<Props, State> {
     } as State
 
     const hasInternetConnection = await hasValidNetworkConnection()
-    newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey === PV.Filters._clipsKey
+
+    if (!hasInternetConnection && filterKey === PV.Filters._clipsKey) {
+      newState.showNoInternetConnectionMessage = true
+      return newState
+    }
 
     try {
       if (PV.FilterOptions.screenFilters.EpisodeScreen.sort.some((option) => option.value === filterKey)) {
