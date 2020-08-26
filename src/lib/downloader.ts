@@ -8,9 +8,20 @@ import { hasValidDownloadingConnection } from './network'
 import {
   convertBytesToHumanReadableString,
   convertURLToSecureProtocol,
+  getAppUserAgent,
   getExtensionFromUrl,
   safelyUnwrapNestedVariable
 } from './utility'
+
+export const BackgroundDownloader = async () => {
+  const userAgent = await getAppUserAgent()
+  RNBackgroundDownloader.setHeaders({
+    'user-agent': userAgent,
+    whatupppppp: userAgent
+  })
+
+  return RNBackgroundDownloader
+}
 
 export enum DownloadStatus {
   DOWNLOADING = 'DOWNLOADING',
@@ -32,7 +43,8 @@ export const cancelDownloadTask = (episodeId: string) => {
 
 export const deleteDownloadedEpisode = async (episode: any) => {
   const ext = getExtensionFromUrl(episode.mediaUrl)
-  const path = `${RNBackgroundDownloader.directories.documents}/${episode.id}${ext}`
+  const downloader = await BackgroundDownloader()
+  const path = `${downloader.directories.documents}/${episode.id}${ext}`
 
   try {
     await RNFS.unlink(path)
@@ -58,7 +70,7 @@ const addDLTask = async (episode: any, podcast: any) =>
     podcastTitle: podcast.title
   })
 
-// NOTE: I was unable to get RNBackgroundDownloader to successfully resume tasks that were
+// NOTE: I was unable to get BackgroundDownloader to successfully resume tasks that were
 // retrieved from checkForExistingDownloads, so as a workaround, I am forcing those existing tasks
 // to always be restarted instead of resumed.
 export const downloadEpisode = async (episode: any, podcast: any, restart?: boolean, waitToAddTask?: boolean) => {
@@ -103,15 +115,17 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
     minTime: 2000
   })
 
-  const destination = `${RNBackgroundDownloader.directories.documents}/${episode.id}${ext}`
+  const downloader = await BackgroundDownloader()
+  const destination = `${downloader.directories.documents}/${episode.id}${ext}`
 
   // Wait for t.stop() to complete
   setTimeout(() => {
-    const task = RNBackgroundDownloader.download({
-      id: episode.id,
-      url: convertURLToSecureProtocol(episode.mediaUrl),
-      destination
-    })
+    const task = downloader
+      .download({
+        id: episode.id,
+        url: convertURLToSecureProtocol(episode.mediaUrl),
+        destination
+      })
       .begin(() => {
         if (!restart) {
           downloadTasks.push(task)
@@ -153,7 +167,8 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
 
 export const initDownloads = async () => {
   const episodes = await getDownloadingEpisodes()
-  existingDownloadTasks = await RNBackgroundDownloader.checkForExistingDownloads()
+  const downloader = await BackgroundDownloader()
+  existingDownloadTasks = await downloader.checkForExistingDownloads()
 
   let timeout = 0
   for (const task of existingDownloadTasks) {

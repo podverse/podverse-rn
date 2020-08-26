@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
-import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
 import TrackPlayer, { Track } from 'react-native-track-player'
+import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeId, convertURLToSecureProtocol, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from './googleAnalytics'
@@ -164,14 +164,15 @@ export const setNowPlayingItem = async (item: NowPlayingItem | null) => {
   }
 }
 
-const getDownloadedFilePath = (id: string, episodeMediaUrl: string) => {
+const getDownloadedFilePath = async (id: string, episodeMediaUrl: string) => {
   const ext = getExtensionFromUrl(episodeMediaUrl)
-  return `${RNBackgroundDownloader.directories.documents}/${id}${ext}`
+  const downloader = await BackgroundDownloader()
+  return `${downloader.directories.documents}/${id}${ext}`
 }
 
 const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
   let isDownloadedFile = true
-  const filePath = getDownloadedFilePath(id, episodeMediaUrl)
+  const filePath = await getDownloadedFilePath(id, episodeMediaUrl)
 
   try {
     await RNFS.stat(filePath)
@@ -356,7 +357,7 @@ export const createTrack = async (item: NowPlayingItem) => {
   let track = null
   if (id && episodeId) {
     const isDownloadedFile = await checkIfFileIsDownloaded(episodeId, episodeMediaUrl)
-    const filePath = getDownloadedFilePath(episodeId, episodeMediaUrl)
+    const filePath = await getDownloadedFilePath(episodeId, episodeMediaUrl)
 
     if (isDownloadedFile) {
       track = {

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Alert } from 'react-native'
+import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
 
 type PVRequest = {
@@ -22,9 +23,14 @@ export const request = async (req: PVRequest, nsfwMode?: boolean) => {
     })
     .join('&')
 
+  const userAgent = await getAppUserAgent()
+
   const axiosRequest = {
     url: `${PV.URLs.baseUrl}${endpoint}?${queryString}`,
-    headers,
+    headers: {
+      ...headers,
+      'User-Agent': userAgent
+    },
     ...(body ? { data: body } : {}),
     method,
     ...opts,
