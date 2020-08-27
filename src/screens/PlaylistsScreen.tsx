@@ -154,32 +154,27 @@ export class PlaylistsScreen extends React.Component<Props, State> {
             selectedLeftItemKey={queryFrom}
           />
           {isLoading && <ActivityIndicator />}
-          {!isLoading && flatListData && flatListData.length > 0 && (
+          {!isLoading && this.global.session.isLoggedIn && (
             <FlatList
               data={flatListData}
+              dataTotalCount={flatListData && flatListData.length}
               disableLeftSwipe={false}
               extraData={flatListData}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               keyExtractor={(item: any) => item.id}
+              noResultsMessage={translate('No playlists found')}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderPlaylistItem}
               showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             />
           )}
-          {!isLoading && queryFrom === PV.Filters._myPlaylistsKey && !this.global.session.isLoggedIn && (
+          {!isLoading && !this.global.session.isLoggedIn && (
             <MessageWithAction
               topActionHandler={this._onPressLogin}
               topActionText={translate('Login')}
               message={translate('Login to view your playlists')}
             />
-          )}
-          {!isLoading &&
-            queryFrom === PV.Filters._myPlaylistsKey &&
-            this.global.session.isLoggedIn &&
-            flatListData.length < 1 && <MessageWithAction message={translate('You have no created playlists')} />}
-          {!isLoading && queryFrom === PV.Filters._subscribedKey && flatListData.length < 1 && (
-            <MessageWithAction message={translate('You have no subscribed playlists')} />
           )}
         </View>
       </View>
@@ -200,7 +195,11 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     } as State
 
     const hasInternetConnection = await hasValidNetworkConnection()
-    newState.showNoInternetConnectionMessage = !hasInternetConnection
+
+    if (!hasInternetConnection) {
+      newState.showNoInternetConnectionMessage = true
+      return newState
+    }
 
     try {
       if (filterKey === PV.Filters._myPlaylistsKey) {

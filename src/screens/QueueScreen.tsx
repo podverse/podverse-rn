@@ -337,7 +337,7 @@ export class QueueScreen extends React.Component<Props, State> {
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length < 1 && (
           <MessageWithAction message={translate('Your queue is empty')} transparent={isTransparent} />
         )}
-        {!isLoading && viewType === _historyKey && historyItems && historyItems.length > 0 && (
+        {!isLoading && viewType === _historyKey && historyItems && (
           <FlatList
             data={historyItems}
             dataTotalCount={historyItems.length}
@@ -345,12 +345,10 @@ export class QueueScreen extends React.Component<Props, State> {
             extraData={historyItems}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.clipId || item.episodeId}
+            noResultsMessage={translate('No history items found')}
             renderItem={this._renderHistoryItem}
             transparent={isTransparent}
           />
-        )}
-        {!isLoading && viewType === _historyKey && historyItems && historyItems.length < 1 && (
-          <MessageWithAction message={translate('No history items found')} />
         )}
         {(isLoading || isRemoving) && <ActivityIndicator isOverlay={isRemoving} styles={styles.activityIndicator} />}
       </View>

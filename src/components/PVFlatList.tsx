@@ -5,36 +5,32 @@ import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { core } from '../styles'
-import { ActivityIndicator, MessageWithAction, Text, TextLink, View } from './'
+import { ActivityIndicator, MessageWithAction, Text, View } from './'
 
 type Props = {
   data?: any
   dataTotalCount: number | null
   disableLeftSwipe: boolean
   extraData?: any
-  handleAddPodcastByRSSURLNavigation?: any
+  handleNoResultsBottomAction?: any
+  handleNoResultsTopAction?: any
   handleFilterInputChangeText?: any
   handleFilterInputClear?: any
-  handleRequestPodcast?: any
-  handleSearchNavigation?: any
-  hideEndOfResults?: boolean
   initialScrollIndex?: number
   isLoadingMore?: boolean
   isRefreshing?: boolean
   ItemSeparatorComponent?: any
   keyExtractor: any
   ListHeaderComponent?: any
-  noSubscribedPodcasts?: boolean
+  noResultsBottomActionText?: string
+  noResultsMessage?: string
+  noResultsTopActionText?: string
   onEndReached?: any
   onEndReachedThreshold?: number
   onRefresh?: any
   renderHiddenItem?: any
   renderItem: any
-  resultsText?: string
-  showAddPodcastByRSS?: boolean
   showNoInternetConnectionMessage?: boolean
-  showRequestPodcast?: boolean
   transparent?: boolean
 }
 
@@ -47,91 +43,43 @@ export const PVFlatList = (props: Props) => {
     dataTotalCount,
     disableLeftSwipe = true,
     extraData,
-    handleAddPodcastByRSSURLNavigation,
-    handleSearchNavigation,
-    handleRequestPodcast,
-    hideEndOfResults,
+    handleNoResultsBottomAction,
+    handleNoResultsTopAction,
     isLoadingMore,
     isRefreshing = false,
     ItemSeparatorComponent,
     keyExtractor,
     ListHeaderComponent,
-    noSubscribedPodcasts,
+    noResultsBottomActionText,
+    noResultsMessage,
+    noResultsTopActionText,
     onEndReached,
     onEndReachedThreshold = 0.9,
     onRefresh,
     renderHiddenItem,
     renderItem,
-    resultsText = 'results',
-    showAddPodcastByRSS,
     showNoInternetConnectionMessage,
-    showRequestPodcast,
     transparent
   } = props
+
   const [globalTheme] = useGlobal('globalTheme')
-  const [fontScaleMode] = useGlobal('fontScaleMode')
+  const noResultsFound = !dataTotalCount
+  const isEndOfResults = !isLoadingMore && data && dataTotalCount && dataTotalCount > 0 && data.length >= dataTotalCount
 
-  let noResultsFound = false
-  let endOfResults = false
-
-  if (dataTotalCount === 0 || dataTotalCount === null) {
-    noResultsFound = true
-  }
-
-  if (!isLoadingMore && data && dataTotalCount && dataTotalCount > 0 && data.length >= dataTotalCount) {
-    endOfResults = true
-  }
-
-  const textLinkStyle =
-    PV.Fonts.fontScale.largest === fontScaleMode
-      ? [core.buttonTextLink, { fontSize: PV.Fonts.largeSizes.md }]
-      : [core.buttonTextLink]
-  const noResultsFoundTextStyle =
-    PV.Fonts.fontScale.largest === fontScaleMode
-      ? [styles.noResultsFoundText, { fontSize: PV.Fonts.largeSizes.md }]
-      : [styles.noResultsFoundText]
-
-  const requestPodcastTextLink = (
-    <TextLink fontSizeLargestScale={PV.Fonts.largeSizes.md} onPress={handleRequestPodcast} style={textLinkStyle}>
-      {translate('Request Podcast')}
-    </TextLink>
-  )
-
-  const addPodcastByRSSTextLink = (
-    <TextLink
-      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-      onPress={handleAddPodcastByRSSURLNavigation}
-      style={textLinkStyle}>
-      {translate('Add Podcast by RSS Feed')}
-    </TextLink>
-  )
   return (
     <View style={styles.view} transparent={transparent}>
-      {!noSubscribedPodcasts && ListHeaderComponent && !Config.DISABLE_FILTER_TEXT_QUERY && <ListHeaderComponent />}
-      {noSubscribedPodcasts && !showNoInternetConnectionMessage && !isLoadingMore && (
+      {!noResultsMessage && ListHeaderComponent && !Config.DISABLE_FILTER_TEXT_QUERY && <ListHeaderComponent />}
+      {!isLoadingMore && !showNoInternetConnectionMessage && noResultsFound && noResultsMessage && (
         <MessageWithAction
-          topActionHandler={handleSearchNavigation}
-          topActionText={translate('Search')}
-          message={translate('You are not subscribed to any podcasts')}
+          bottomActionHandler={handleNoResultsBottomAction}
+          bottomActionText={noResultsBottomActionText}
+          topActionHandler={handleNoResultsTopAction}
+          topActionText={noResultsTopActionText}
+          message={noResultsMessage}
         />
       )}
-      {showNoInternetConnectionMessage && !dataTotalCount && !isLoadingMore && (
-        <View style={styles.msgView} transparent={transparent}>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={noResultsFoundTextStyle}>{`${translate(
-            'No internet connection'
-          )}`}</Text>
-        </View>
-      )}
-      {noResultsFound && !noSubscribedPodcasts && !isLoadingMore && !showNoInternetConnectionMessage && (
-        <View style={styles.msgView} transparent={transparent}>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={noResultsFoundTextStyle}>
-            {`No ${resultsText} found`}
-          </Text>
-          {showRequestPodcast && requestPodcastTextLink}
-          {showAddPodcastByRSS && addPodcastByRSSTextLink}
-        </View>
-      )}
-      {((!noSubscribedPodcasts && !noResultsFound) || isLoadingMore) && (
+      {showNoInternetConnectionMessage && <MessageWithAction message={translate('No internet connection')} />}
+      {!noResultsFound && (
         <SwipeListView
           useFlatList={true}
           closeOnRowPress={true}
@@ -148,13 +96,12 @@ export const PVFlatList = (props: Props) => {
                   <ActivityIndicator />
                 </View>
               )
-            } else if (endOfResults && !hideEndOfResults) {
+            } else if (isEndOfResults) {
               return (
                 <View style={[styles.lastCell, globalTheme.tableCellBorder]} transparent={transparent}>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    style={[styles.lastCellText]}>{`End of ${resultsText}`}</Text>
-                  {showRequestPodcast && requestPodcastTextLink}
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.lastCellText]}>
+                    {translate('End of results')}
+                  </Text>
                 </View>
               )
             }

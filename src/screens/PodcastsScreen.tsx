@@ -568,6 +568,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       showDataSettingsConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
+    const { subscribedPodcastIds } = this.global.session.userInfo
 
     let flatListData = []
     let flatListDataTotalCount = null
@@ -581,6 +582,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
       flatListData = this.state.flatListData
       flatListDataTotalCount = this.state.flatListDataTotalCount
     }
+
+    const noSubscribedPodcasts =
+      queryFrom === PV.Filters._subscribedKey && (!subscribedPodcastIds || subscribedPodcastIds.length === 0)
 
     return (
       <View style={styles.view} {...testProps('podcasts_screen_view')}>
@@ -612,7 +616,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={queryFrom !== PV.Filters._subscribedKey && queryFrom !== PV.Filters._downloadedKey}
               extraData={flatListData}
-              handleSearchNavigation={this._handleSearchNavigation}
+              handleNoResultsTopAction={this._handleSearchNavigation}
               keyExtractor={(item: any) => item.id}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
@@ -622,14 +626,16 @@ export class PodcastsScreen extends React.Component<Props, State> {
                   ? this._ListHeaderComponent
                   : null
               }
-              noSubscribedPodcasts={
-                queryFrom === PV.Filters._subscribedKey && (!flatListData || flatListData.length === 0)
+              noResultsTopActionText={noSubscribedPodcasts ? translate('Search') : ''}
+              noResultsMessage={
+                noSubscribedPodcasts
+                  ? translate('You are not subscribed to any podcasts')
+                  : translate('No podcasts found')
               }
               onEndReached={this._onEndReached}
               onRefresh={queryFrom === PV.Filters._subscribedKey ? this._onRefresh : null}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderPodcastItem}
-              resultsText={translate('podcasts')}
               showNoInternetConnectionMessage={showNoInternetConnectionMessage}
             />
           )}
@@ -709,6 +715,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const { nsfwMode } = settings
 
       const hasInternetConnection = await hasValidNetworkConnection()
+
       if (filterKey === PV.Filters._subscribedKey) {
         await getAuthUserInfo() // get the latest subscribedPodcastIds first
         await this._querySubscribedPodcasts()

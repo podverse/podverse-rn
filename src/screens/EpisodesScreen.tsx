@@ -370,8 +370,13 @@ export class EpisodesScreen extends React.Component<Props, State> {
       showActionSheet,
       showNoInternetConnectionMessage
     } = this.state
-
     const { navigation } = this.props
+    const { subscribedPodcastIds } = this.global.session.userInfo
+
+    const noSubscribedPodcasts =
+      queryFrom === PV.Filters._subscribedKey &&
+      (!subscribedPodcastIds || subscribedPodcastIds.length === 0) &&
+      !searchBarText
 
     return (
       <View style={styles.view} {...testProps('episodes_screen_view')}>
@@ -401,20 +406,22 @@ export class EpisodesScreen extends React.Component<Props, State> {
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe={queryFrom !== PV.Filters._downloadedKey}
             extraData={flatListData}
-            handleSearchNavigation={this._handleSearchNavigation}
+            handleNoResultsTopAction={this._handleSearchNavigation}
             isLoadingMore={isLoadingMore}
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.id}
             ListHeaderComponent={queryFrom !== PV.Filters._downloadedKey ? this._ListHeaderComponent : null}
-            noSubscribedPodcasts={
-              queryFrom === PV.Filters._subscribedKey && (!flatListData || flatListData.length === 0) && !searchBarText
+            noResultsMessage={
+              noSubscribedPodcasts
+                ? translate('You are not subscribed to any podcasts')
+                : translate('No episodes found')
             }
+            noResultsTopActionText={noSubscribedPodcasts ? translate('Search') : ''}
             onEndReached={this._onEndReached}
             onRefresh={this._onRefresh}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderEpisodeItem}
-            resultsText={translate('episodes')}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
           />
         )}
@@ -454,7 +461,11 @@ export class EpisodesScreen extends React.Component<Props, State> {
     } as State
 
     const hasInternetConnection = await hasValidNetworkConnection()
-    newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey !== PV.Filters._downloadedKey
+
+    if (!hasInternetConnection && filterKey !== PV.Filters._downloadedKey) {
+      newState.showNoInternetConnectionMessage = true
+      return newState
+    }
 
     try {
       let { flatListData } = this.state

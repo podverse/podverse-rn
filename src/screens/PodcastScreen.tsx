@@ -593,11 +593,10 @@ export class PodcastScreen extends React.Component<Props, State> {
       flatListDataTotalCount = flatListData.length
     }
 
-    const resultsText =
-      (viewType === PV.Filters._downloadedKey && translate('episodes')) ||
-      (viewType === PV.Filters._episodesKey && translate('episodes')) ||
-      (viewType === PV.Filters._clipsKey && translate('clips')) ||
-      translate('results')
+    const noResultsMessage =
+      (viewType === PV.Filters._downloadedKey && translate('No episodes found')) ||
+      (viewType === PV.Filters._episodesKey && translate('No episodes found')) ||
+      (viewType === PV.Filters._clipsKey && translate('No clips found'))
 
     return (
       <View style={styles.view} {...testProps('podcast_screen_view')}>
@@ -666,10 +665,10 @@ export class PodcastScreen extends React.Component<Props, State> {
                     ? this._ListHeaderComponent
                     : null
                 }
+                noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
                 renderHiddenItem={this._renderHiddenItem}
                 renderItem={this._renderItem}
-                resultsText={resultsText}
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               />
             )}
@@ -754,7 +753,11 @@ export class PodcastScreen extends React.Component<Props, State> {
     } as State
 
     const hasInternetConnection = await hasValidNetworkConnection()
-    newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey !== PV.Filters._downloadedKey
+
+    if (!hasInternetConnection && filterKey !== PV.Filters._downloadedKey) {
+      newState.showNoInternetConnectionMessage = true
+      return newState
+    }
 
     try {
       if (filterKey === PV.Filters._episodesKey && podcast && podcast.addByRSSPodcastFeedUrl) {

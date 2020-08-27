@@ -477,21 +477,25 @@ export class ProfileScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const isLoggedInUserProfile = userId && id && userId === id
 
-    let resultsText = translate('podcasts')
+    let noResultsMessage = translate('No podcasts found')
     if (queryFrom === PV.Filters._clipsKey) {
-      resultsText = translate('clips')
+      noResultsMessage = translate('No clips found')
     } else if (queryFrom === PV.Filters._playlistsKey) {
-      resultsText = translate('playlists')
+      noResultsMessage = translate('No playlists found')
     }
+
     const isMyProfile = navigation.getParam('isMyProfile')
-    const message = initializeClips ? translate('Login to view your clips') : translate('Login to view your profile')
+    const loginMessage = initializeClips
+      ? translate('Login to view your clips')
+      : translate('Login to view your profile')
+
     return (
       <View style={styles.view} {...testProps('profile_screen_view')}>
         {isMyProfile && !isLoggedIn && (
           <MessageWithAction
             topActionHandler={this._onPressLogin}
             topActionText={translate('Login')}
-            message={message}
+            message={loginMessage}
           />
         )}
         {!(isMyProfile && !isLoggedIn) && (
@@ -524,9 +528,9 @@ export class ProfileScreen extends React.Component<Props, State> {
                 isLoadingMore={isLoadingMore}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
                 keyExtractor={(item: any) => item.id}
+                noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
                 renderItem={this._renderItem}
-                resultsText={resultsText}
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               />
             )}
@@ -571,7 +575,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       }
 
       let results = [[], 0]
-      if (this.global.profile.user.subscribedPodcastIds.length > 1) {
+      if (this.global.profile.user.subscribedPodcastIds.length > 0) {
         results = await getPodcasts(query, this.global.settings.nsfwMode)
       }
 
@@ -657,6 +661,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     } as State
 
     const hasInternetConnection = await hasValidNetworkConnection()
+
     if (!hasInternetConnection) {
       newState.showNoInternetConnectionMessage = true
       return newState

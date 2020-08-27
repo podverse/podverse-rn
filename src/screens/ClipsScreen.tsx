@@ -387,6 +387,12 @@ export class ClipsScreen extends React.Component<Props, State> {
       showNoInternetConnectionMessage
     } = this.state
     const { session } = this.global
+    const { subscribedPodcastIds } = this.global.session.userInfo
+
+    const noSubscribedPodcasts =
+      queryFrom === PV.Filters._subscribedKey &&
+      (!subscribedPodcastIds || subscribedPodcastIds.length === 0) &&
+      !searchBarText
 
     return (
       <View style={styles.view} {...testProps('clips_screen_view')}>
@@ -415,14 +421,15 @@ export class ClipsScreen extends React.Component<Props, State> {
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe={queryFrom !== PV.Filters._myClipsKey}
             extraData={flatListData}
-            handleSearchNavigation={this._handleSearchNavigation}
+            handleNoResultsTopAction={this._handleSearchNavigation}
             isLoadingMore={isLoadingMore}
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.id}
             ListHeaderComponent={this._ListHeaderComponent}
-            noSubscribedPodcasts={
-              queryFrom === PV.Filters._subscribedKey && (!flatListData || flatListData.length === 0) && !searchBarText
+            noResultsTopActionText={noSubscribedPodcasts ? translate('Search') : ''}
+            noResultsMessage={
+              noSubscribedPodcasts ? translate('You are not subscribed to any podcasts') : translate('No clips found')
             }
             onEndReached={this._onEndReached}
             onRefresh={this._onRefresh}
@@ -479,7 +486,11 @@ export class ClipsScreen extends React.Component<Props, State> {
     } as State
 
     const hasInternetConnection = await hasValidNetworkConnection()
-    newState.showNoInternetConnectionMessage = !hasInternetConnection
+
+    if (!hasInternetConnection) {
+      newState.showNoInternetConnectionMessage = true
+      return newState
+    }
 
     try {
       let { flatListData } = this.state
