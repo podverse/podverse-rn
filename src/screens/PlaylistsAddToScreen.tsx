@@ -166,7 +166,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
         {isLoggedIn && (
           <View style={styles.view}>
             {isLoading && <ActivityIndicator />}
-            {!isLoading && myPlaylists && myPlaylists.length > 0 && (
+            {!isLoading && myPlaylists && (
               <FlatList
                 data={myPlaylists}
                 dataTotalCount={myPlaylists.length}
@@ -174,17 +174,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
                 extraData={myPlaylists}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
                 keyExtractor={(item: any, index: number) => `myPlaylists_${index}`}
-                renderItem={this._renderPlaylistItem}
-              />
-            )}
-            {!isLoading && myPlaylists && myPlaylists.length === 0 && (
-              <FlatList
-                data={myPlaylists}
-                dataTotalCount={0}
-                disableLeftSwipe={true}
-                extraData={myPlaylists}
-                ItemSeparatorComponent={this._ItemSeparatorComponent}
-                keyExtractor={(item: any, index: number) => `myPlaylists2_${index}`}
+                noResultsMessage={translate('No playlists found')}
                 renderItem={this._renderPlaylistItem}
               />
             )}

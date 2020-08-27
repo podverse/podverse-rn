@@ -63,19 +63,20 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
     marginHorizontal: 16,
-    marginVertical: 12,
+    marginTop: 24,
     minHeight: 44
   },
   message: {
     fontSize: PV.Fonts.sizes.xl,
     marginHorizontal: 16,
-    marginVertical: 12,
+    minHeight: 44,
     textAlign: 'center'
   },
   subMessage: {
     fontSize: PV.Fonts.sizes.md,
     marginHorizontal: 16,
-    marginVertical: 12,
+    marginTop: 12,
+    minHeight: 44,
     textAlign: 'center'
   },
   view: {

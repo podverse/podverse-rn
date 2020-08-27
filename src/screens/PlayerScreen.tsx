@@ -562,6 +562,9 @@ export class PlayerScreen extends React.Component<Props, State> {
 
     episode.description = replaceLinebreaksWithBrTags(episode.description)
 
+    const noResultsMessage =
+      viewType === PV.Filters._clipsKey ? translate('No clips found') : translate('No episodes found')
+
     return (
       <OpaqueBackground nowPlayingItem={nowPlayingItem}>
         <View style={styles.view} transparent={true} {...testProps('player_screen_view')}>
@@ -625,6 +628,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                     isLoadingMore={isLoadingMore}
                     ItemSeparatorComponent={this._ItemSeparatorComponent}
                     keyExtractor={(item: any) => item.id}
+                    noResultsMessage={noResultsMessage}
                     onEndReached={this._onEndReached}
                     renderItem={this._renderItem}
                     transparent={true}

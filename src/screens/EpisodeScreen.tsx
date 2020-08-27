@@ -375,6 +375,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.id}
             {...(viewType === PV.Filters._clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
+            noResultsMessage={translate('No clips found')}
             onEndReached={this._onEndReached}
             renderItem={this._renderItem}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}

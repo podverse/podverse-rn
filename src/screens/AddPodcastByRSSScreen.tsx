@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: PV.Fonts.sizes.md,
     marginVertical: 12,
-    textAlign: 'center'
+    textAlign: 'left'
   },
   textInput: {
     fontSize: PV.Fonts.sizes.xl,

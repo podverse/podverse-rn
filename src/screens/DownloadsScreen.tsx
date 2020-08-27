@@ -100,20 +100,17 @@ export class DownloadsScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view} {...testProps('downloads_screen_view')}>
-        {!downloadsArray ||
-          (downloadsArray.length === 0 && <MessageWithAction message={translate('No downloads in progress')} />)}
-        {downloadsArray.length > 0 && (
-          <FlatList
-            data={downloadsArray}
-            dataTotalCount={downloadsArray.length}
-            disableLeftSwipe={false}
-            extraData={downloadsArray}
-            keyExtractor={(item: any) => item.episodeId}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
-            renderHiddenItem={this._renderHiddenItem}
-            renderItem={this._renderItem}
-          />
-        )}
+        <FlatList
+          data={downloadsArray}
+          dataTotalCount={downloadsArray.length}
+          disableLeftSwipe={false}
+          extraData={downloadsArray}
+          keyExtractor={(item: any) => item.episodeId}
+          ItemSeparatorComponent={this._ItemSeparatorComponent}
+          noResultsMessage={translate('No downloads in progress')}
+          renderHiddenItem={this._renderHiddenItem}
+          renderItem={this._renderItem}
+        />
         {selectedItem && (
           <ActionSheet
             handleCancelPress={this._handleCancelPress}
