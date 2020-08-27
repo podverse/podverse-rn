@@ -69,7 +69,7 @@ export class MoreScreen extends React.Component<Props, State> {
         testId: 'more_screen_contact_us_cell'
       },
       {
-        title: translate('FAQ'),
+        title: 'FAQ',
         key: _faqKey,
         routeName: PV.RouteNames.FAQScreen,
         testId: 'more_screen_faq_cell'

@@ -557,9 +557,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   {translate('Press the blue play button to preview the start or end time')}
                 </Text>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  {translate(
-                    'If a podcast uses dynamically inserted ads its clip start times will not stay 100 accurate'
-                  )}
+                  {translate('If a podcast uses dynamically inserted ads its clip start times will not stay accurate')}
                 </Text>
                 <TouchableOpacity onPress={this._hideHowTo}>
                   <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.modalButton}>
