@@ -76,6 +76,7 @@ export interface InitialState {
   downloadedEpisodeLimitCount: number
   downloadedEpisodeLimitDefault: number | null
   censorNSFWText?: boolean
+  offlineModeEnabled?: any
   overlayAlert: {
     shouldShowAlert: boolean
   }

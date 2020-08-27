@@ -15,12 +15,24 @@ export const alertIfNoNetworkConnection = async (str?: string) => {
 }
 
 export const hasValidNetworkConnection = async () => {
-  const state = await NetInfo.fetch()
-  return state.isConnected
+  const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
+
+  if (offlineModeEnabled) {
+    return false
+  } else {
+    const state = await NetInfo.fetch()
+    return state.isConnected
+  }
 }
 
 export const hasValidDownloadingConnection = async () => {
-  const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-  const state = await NetInfo.fetch()
-  return downloadingWifiOnly ? state.type === 'wifi' : state.isConnected
+  const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
+
+  if (offlineModeEnabled) {
+    return false
+  } else {
+    const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
+    const state = await NetInfo.fetch()
+    return downloadingWifiOnly ? state.type === 'wifi' : state.isConnected
+  }
 }

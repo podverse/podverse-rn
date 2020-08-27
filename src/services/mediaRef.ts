@@ -1,11 +1,8 @@
-import { hasValidDownloadingConnection, hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { getBearerToken } from './auth'
 import { request } from './request'
 
 export const createMediaRef = async (data: any) => {
-  await hasValidNetworkConnection()
-  await hasValidDownloadingConnection()
   const bearerToken = await getBearerToken()
 
   const response = await request({

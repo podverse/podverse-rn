@@ -1,9 +1,17 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import he from 'he'
 import { NowPlayingItem } from 'podverse-shared'
+import Config from 'react-native-config'
+import { getUserAgent } from 'react-native-device-info'
 import { PV } from '../resources'
 
 const cheerio = require('react-native-cheerio')
+
+export const getAppUserAgent = async () => {
+  const userAgent = await getUserAgent()
+  return `${Config.USER_AGENT_PREFIX || 'Unknown App'}/${`${Config.USER_AGENT_APP_TYPE}` ||
+    'Unknown App Type'}/${userAgent}`
+}
 
 export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
   try {

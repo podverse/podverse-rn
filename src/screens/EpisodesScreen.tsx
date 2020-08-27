@@ -461,7 +461,11 @@ export class EpisodesScreen extends React.Component<Props, State> {
     } as State
 
     const hasInternetConnection = await hasValidNetworkConnection()
-    newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey !== PV.Filters._downloadedKey
+
+    if (!hasInternetConnection && filterKey !== PV.Filters._downloadedKey) {
+      newState.showNoInternetConnectionMessage = true
+      return newState
+    }
 
     try {
       let { flatListData } = this.state

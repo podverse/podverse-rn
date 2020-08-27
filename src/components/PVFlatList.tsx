@@ -78,9 +78,7 @@ export const PVFlatList = (props: Props) => {
           message={noResultsMessage}
         />
       )}
-      {showNoInternetConnectionMessage && !dataTotalCount && !isLoadingMore && (
-        <MessageWithAction message={translate('No internet connection')} />
-      )}
+      {showNoInternetConnectionMessage && <MessageWithAction message={translate('No internet connection')} />}
       {!noResultsFound && (
         <SwipeListView
           useFlatList={true}

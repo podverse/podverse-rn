@@ -715,6 +715,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const { nsfwMode } = settings
 
       const hasInternetConnection = await hasValidNetworkConnection()
+
       if (filterKey === PV.Filters._subscribedKey) {
         await getAuthUserInfo() // get the latest subscribedPodcastIds first
         await this._querySubscribedPodcasts()

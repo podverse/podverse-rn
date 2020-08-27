@@ -1,14 +1,6 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import {
-  ActivityIndicator,
-  Divider,
-  FlatList,
-  MessageWithAction,
-  ProfileTableCell,
-  SwipeRowBack,
-  View
-} from '../components'
+import { ActivityIndicator, Divider, FlatList, ProfileTableCell, SwipeRowBack, View } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { isOdd, testProps } from '../lib/utility'
@@ -168,7 +160,11 @@ export class ProfilesScreen extends React.Component<Props, State> {
     } as State
 
     const hasInternetConnection = await hasValidNetworkConnection()
-    newState.showNoInternetConnectionMessage = !hasInternetConnection
+
+    if (!hasInternetConnection) {
+      newState.showNoInternetConnectionMessage = true
+      return newState
+    }
 
     try {
       const subscribedUserIds = this.global.session.userInfo.subscribedUserIds

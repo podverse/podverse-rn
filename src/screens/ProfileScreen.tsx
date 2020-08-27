@@ -661,6 +661,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     } as State
 
     const hasInternetConnection = await hasValidNetworkConnection()
+
     if (!hasInternetConnection) {
       newState.showNoInternetConnectionMessage = true
       return newState

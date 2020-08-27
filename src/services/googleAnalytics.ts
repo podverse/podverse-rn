@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import axios from 'axios'
 import { Platform } from 'react-native'
-import { getUserAgent } from 'react-native-device-info'
 import { hasValidNetworkConnection } from '../lib/network'
+import { getAppUserAgent } from '../lib/utility'
 import { PV } from '../resources'
 
 const uuidv4 = require('uuid/v4')
@@ -42,7 +42,7 @@ export const gaTrackPageView = async (path: string, title: string) => {
     dt: title // title
   }
 
-  const userAgent = await getUserAgent()
+  const userAgent = await getAppUserAgent()
 
   const queryString = Object.keys(query)
     .map((key) => {
