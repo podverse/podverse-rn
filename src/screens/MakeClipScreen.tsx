@@ -492,12 +492,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   right: 4,
                   top: 4
                 }}
-                onPress={() => navigation.navigate(PV.RouteNames.PlayerFAQScreen)}>
+                onPress={() => this.setState({ showHowToModal: true })}>
                 <View transparent={true}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     style={[styles.bottomRowTextMini, globalTheme.link]}>
-                    {translate('Clips FAQ')}
+                    {translate('How To')}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -524,19 +524,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   right: 4,
                   top: 4
                 }}
-                onPress={() =>
-                  navigation.navigate(PV.RouteNames.PlayerMyProfileScreen, {
-                    user: userInfo,
-                    navigationTitle: translate('My Profile'),
-                    isMyProfile: true,
-                    initializeClips: true
-                  })
-                }>
+                onPress={() => navigation.navigate(PV.RouteNames.PlayerFAQScreen)}>
                 <View transparent={true}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     style={[styles.bottomRowTextMini, globalTheme.link]}>
-                    {translate('My Clips')}
+                    FAQ
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -556,6 +549,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
               <RNView style={[styles.modalInnerWrapper, globalTheme.modalInnerWrapper]}>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
                   {translate('Tap the Start and End Time inputs to set them with the current track time')}
+                </Text>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
+                  {translate('Press the left or right caret symbols to adjust the time by one second')}
+                </Text>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
+                  {translate('Press the blue play button to preview the start or end time')}
                 </Text>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
                   {translate(
