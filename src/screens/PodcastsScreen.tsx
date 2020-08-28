@@ -727,7 +727,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
       if (filterKey === PV.Filters._subscribedKey) {
         if (Config.DISABLE_API_SUBSCRIBED_PODCASTS) {
-          await handleAddByRSSPodcasts()
+          await getAddByRSSPodcasts()
         } else {
           await getAuthUserInfo() // get the latest subscribedPodcastIds first
           await this._querySubscribedPodcasts()
