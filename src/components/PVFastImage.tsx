@@ -1,11 +1,12 @@
-import React from 'react'
 import { View } from 'react-native'
 import FastImage from 'react-native-fast-image'
+import React from 'reactn'
 import { Icon } from '.'
 import { isValidUrl } from '../lib/utility'
 const uuidv4 = require('uuid/v4')
 
 type Props = {
+  cache?: string
   isSmall?: boolean
   resizeMode?: any
   source?: string
@@ -34,7 +35,8 @@ export class PVFastImage extends React.PureComponent<Props, State> {
   render() {
     const { isSmall, resizeMode = 'contain', source, styles } = this.props
     const { hasError, uuid } = this.state
-
+    const { offlineModeEnabled, userAgent } = this.global
+    const cache = offlineModeEnabled ? 'cacheOnly' : 'web'
     const isValid = isValidUrl(source)
 
     return (
@@ -46,7 +48,10 @@ export class PVFastImage extends React.PureComponent<Props, State> {
             resizeMode={resizeMode}
             source={{
               uri: source,
-              cache: 'web'
+              cache,
+              headers: {
+                ...(userAgent ? { 'User-Agent': userAgent } : {})
+              }
             }}
             style={styles}
           />
