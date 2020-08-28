@@ -1,6 +1,9 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { safelyUnwrapNestedVariable } from '../../lib/utility'
-import { removeAddByRSSPodcast as removeAddByRSSPodcastService } from '../../services/parser'
+import {
+  getAddByRSSPodcastsLocally,
+  removeAddByRSSPodcast as removeAddByRSSPodcastService
+} from '../../services/parser'
 import {
   getPodcast as getPodcastService,
   getSubscribedPodcasts as getSubscribedPodcastsService,
@@ -13,7 +16,13 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   const data = await getSubscribedPodcastsService(subscribedPodcastIds)
   const subscribedPodcasts = data[0]
   const subscribedPodcastsTotalCount = data[1]
-  setGlobal({ subscribedPodcasts, subscribedPodcastsTotalCount })
+  const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
+
+  setGlobal({
+    addByRSSPodcasts,
+    subscribedPodcasts,
+    subscribedPodcastsTotalCount
+  })
   return subscribedPodcasts
 }
 
