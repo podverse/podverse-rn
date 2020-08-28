@@ -12,6 +12,8 @@ const initialTheme: InitialState = {
   downloadedEpisodeLimitCount: 5,
   downloadedEpisodeLimitDefault: null,
   downloadedPodcastEpisodeCounts: {},
+  downloadedPodcasts: [],
+  addByRSSPodcasts: [],
   censorNSFWText: true,
   offlineModeEnabled: false,
   overlayAlert: {
@@ -59,6 +61,7 @@ const initialTheme: InitialState = {
     endOfResultsReached: false,
     flatListData: [],
     flatListDataTotalCount: null,
+    hideRightItemWhileLoading: false,
     isLoading: false,
     isLoadingMore: false,
     isQuerying: false,
@@ -68,6 +71,7 @@ const initialTheme: InitialState = {
     showFullClipInfo: false,
     showHeaderActionSheet: false,
     showMoreActionSheet: false,
+    showNoInternetConnectionMessage: false,
     showShareActionSheet: false,
     viewType: PV.Filters._showNotesKey
   },

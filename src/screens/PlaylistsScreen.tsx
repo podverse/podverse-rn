@@ -138,12 +138,18 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     })
   }
 
-  _onPressLogin = () => this.props.navigation.navigate(PV.RouteNames.AuthScreen)
+  _onPressLogin = () => {
+    this.props.navigation.goBack(null)
+    this.props.navigation.navigate(PV.RouteNames.AuthScreen)
+  }
 
   render() {
     const { isLoading, isLoadingMore, queryFrom, showNoInternetConnectionMessage } = this.state
+    const { offlineModeEnabled } = this.global
     const { myPlaylists, subscribedPlaylists } = this.global.playlists
     const flatListData = queryFrom === PV.Filters._myPlaylistsKey ? myPlaylists : subscribedPlaylists
+
+    const showOfflineMessage = offlineModeEnabled
 
     return (
       <View style={styles.view} {...testProps('playlists_screen_view')}>
@@ -166,7 +172,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
               noResultsMessage={translate('No playlists found')}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderPlaylistItem}
-              showNoInternetConnectionMessage={showNoInternetConnectionMessage}
+              showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
             />
           )}
           {!isLoading && !this.global.session.isLoggedIn && (

@@ -470,7 +470,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       userId
     } = this.state
 
-    const { profile, session } = this.global
+    const { offlineModeEnabled, profile, session } = this.global
     const { user } = profile
     const { isLoggedIn, userInfo } = session
     const { id } = userInfo
@@ -488,6 +488,8 @@ export class ProfileScreen extends React.Component<Props, State> {
     const loginMessage = initializeClips
       ? translate('Login to view your clips')
       : translate('Login to view your profile')
+
+    const showOfflineMessage = offlineModeEnabled
 
     return (
       <View style={styles.view} {...testProps('profile_screen_view')}>
@@ -531,7 +533,7 @@ export class ProfileScreen extends React.Component<Props, State> {
                 noResultsMessage={noResultsMessage}
                 onEndReached={this._onEndReached}
                 renderItem={this._renderItem}
-                showNoInternetConnectionMessage={showNoInternetConnectionMessage}
+                showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
               />
             )}
             <ActionSheet

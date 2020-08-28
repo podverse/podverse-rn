@@ -8,7 +8,7 @@ const _expiredMessage = translate(
   'To renew your membership please visit podversefm login then go to your Settings page'
 )
 const _logoutButtonText = translate('Log Out')
-const _networkErrorTitle = translate('Network Error')
+const _networkErrorTitle = translate('Network error')
 const _sendEmailText = translate('Send Email')
 const _sendVerificationEmailMessage = translate(
   'You must verify your email address to login Press Send Email then check your inbox of a verification email'

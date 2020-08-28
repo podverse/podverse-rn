@@ -13,6 +13,8 @@ declare module 'reactn/default' {
     downloadedPodcastEpisodeCounts: any
     downloadedEpisodeLimitCount: number
     downloadedEpisodeLimitDefault: number | null
+    downloadedPodcasts: any[]
+    addByRSSPodcasts: any[]
     offlineModeEnabled: any
     overlayAlert: {
       shouldShowAlert: boolean
@@ -55,6 +57,7 @@ declare module 'reactn/default' {
       endOfResultsReached: boolean
       flatListData: any[]
       flatListDataTotalCount: number | null
+      hideRightItemWhileLoading?: boolean
       isLoading: boolean
       isLoadingMore: boolean
       isQuerying: boolean
@@ -65,6 +68,7 @@ declare module 'reactn/default' {
       showFullClipInfo: boolean
       showHeaderActionSheet: boolean
       showMoreActionSheet: boolean
+      showNoInternetConnectionMessage: boolean
       showShareActionSheet: boolean
       viewType: string | null
     }
