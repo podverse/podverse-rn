@@ -335,9 +335,11 @@ export class EpisodeScreen extends React.Component<Props, State> {
       showNoInternetConnectionMessage,
       viewType
     } = this.state
-    const { downloadedEpisodeIds, downloadsActive } = this.global
+    const { downloadedEpisodeIds, downloadsActive, offlineModeEnabled } = this.global
 
     if (episode) episode.description = replaceLinebreaksWithBrTags(episode.description)
+
+    const showOfflineMessage = offlineModeEnabled && viewType === PV.Filters._clipsKey
 
     return (
       <View style={styles.view} {...testProps('episode_screen_view')}>
@@ -378,7 +380,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
             noResultsMessage={translate('No clips found')}
             onEndReached={this._onEndReached}
             renderItem={this._renderItem}
-            showNoInternetConnectionMessage={showNoInternetConnectionMessage}
+            showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
           />
         )}
         {viewType === PV.Filters._showNotesKey && episode && (

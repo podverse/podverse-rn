@@ -125,7 +125,10 @@ export class ProfilesScreen extends React.Component<Props, State> {
 
   render() {
     const { isLoading, isLoadingMore, showNoInternetConnectionMessage } = this.state
+    const { offlineModeEnabled } = this.global
     const { flatListData, flatListDataTotalCount } = this.global.profiles
+
+    const showOfflineMessage = offlineModeEnabled
 
     return (
       <View style={styles.view} {...testProps('profiles_screen_view')}>
@@ -144,7 +147,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
               onEndReached={this._onEndReached}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderProfileItem}
-              showNoInternetConnectionMessage={showNoInternetConnectionMessage}
+              showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
             />
           )}
         </View>

@@ -31,7 +31,7 @@ import {
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
-import { alertIfNoNetworkConnection } from '../lib/network'
+import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import {
   decodeHTMLString,
   formatTitleViewHtml,
@@ -533,7 +533,7 @@ export class PlayerScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { fontScaleMode, player, screenPlayer } = this.global
+    const { fontScaleMode, offlineModeEnabled, player, screenPlayer } = this.global
     const { episode, nowPlayingItem } = player
     const {
       flatListData,
@@ -545,9 +545,10 @@ export class PlayerScreen extends React.Component<Props, State> {
       queryFrom,
       querySort,
       selectedItem,
-      showMoreActionSheet,
-      showShareActionSheet,
       showFullClipInfo,
+      showMoreActionSheet,
+      showNoInternetConnectionMessage,
+      showShareActionSheet,
       viewType
     } = screenPlayer
     let { mediaRef } = player
@@ -564,6 +565,9 @@ export class PlayerScreen extends React.Component<Props, State> {
 
     const noResultsMessage =
       viewType === PV.Filters._clipsKey ? translate('No clips found') : translate('No episodes found')
+
+    const showOfflineMessage =
+      offlineModeEnabled && queryFrom !== PV.Filters._showNotesKey && queryFrom !== PV.Filters._titleKey
 
     return (
       <OpaqueBackground nowPlayingItem={nowPlayingItem}>
@@ -631,6 +635,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                     noResultsMessage={noResultsMessage}
                     onEndReached={this._onEndReached}
                     renderItem={this._renderItem}
+                    showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
                     transparent={true}
                   />
                 )}
@@ -741,11 +746,16 @@ export class PlayerScreen extends React.Component<Props, State> {
       hideRightItemWhileLoading: false,
       isLoading: false,
       isLoadingMore: false,
-      isQuerying: false
+      isQuerying: false,
+      showNoInternetConnectionMessage: false
     } as any
 
-    const wasAlerted = await alertIfNoNetworkConnection('load data')
-    if (wasAlerted) return newState
+    const hasInternetConnection = await hasValidNetworkConnection()
+
+    if (!hasInternetConnection) {
+      newState.showNoInternetConnectionMessage = true
+      return newState
+    }
 
     try {
       if (viewType === PV.Filters._episodesKey) {

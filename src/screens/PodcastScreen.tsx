@@ -571,6 +571,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       showSettings,
       viewType
     } = this.state
+    const { offlineModeEnabled } = this.global
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
 
     let isSubscribed = subscribedPodcastIds.some((x: string) => x === podcastId)
@@ -599,6 +600,8 @@ export class PodcastScreen extends React.Component<Props, State> {
       (viewType === PV.Filters._downloadedKey && translate('No episodes found')) ||
       (viewType === PV.Filters._episodesKey && translate('No episodes found')) ||
       (viewType === PV.Filters._clipsKey && translate('No clips found'))
+
+    const showOfflineMessage = offlineModeEnabled && queryFrom !== PV.Filters._downloadedKey
 
     return (
       <View style={styles.view} {...testProps('podcast_screen_view')}>
@@ -671,7 +674,7 @@ export class PodcastScreen extends React.Component<Props, State> {
                 onEndReached={this._onEndReached}
                 renderHiddenItem={this._renderHiddenItem}
                 renderItem={this._renderItem}
-                showNoInternetConnectionMessage={showNoInternetConnectionMessage}
+                showNoInternetConnectionMessage={offlineModeEnabled || showNoInternetConnectionMessage}
               />
             )}
             {!isLoading && viewType === PV.Filters._aboutPodcastKey && podcast && (

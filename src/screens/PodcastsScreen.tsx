@@ -574,6 +574,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       showDataSettingsConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
+    const { offlineModeEnabled } = this.global
     const { subscribedPodcastIds } = this.global.session.userInfo
 
     let flatListData = []
@@ -594,6 +595,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     const noSubscribedPodcasts =
       queryFrom === PV.Filters._subscribedKey && (!subscribedPodcastIds || subscribedPodcastIds.length === 0)
+
+    const showOfflineMessage =
+      offlineModeEnabled && queryFrom !== PV.Filters._downloadedKey && queryFrom !== PV.Filters._subscribedKey
 
     return (
       <View style={styles.view} {...testProps('podcasts_screen_view')}>
@@ -645,7 +649,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               onRefresh={queryFrom === PV.Filters._subscribedKey ? this._onRefresh : null}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderPodcastItem}
-              showNoInternetConnectionMessage={showNoInternetConnectionMessage}
+              showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
             />
           )}
         </RNView>

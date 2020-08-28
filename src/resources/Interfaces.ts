@@ -120,6 +120,7 @@ export interface InitialState {
     endOfResultsReached: boolean
     flatListData: any[]
     flatListDataTotalCount: number | null
+    hideRightItemWhileLoading: boolean
     isLoading: boolean
     isLoadingMore: boolean
     isQuerying: boolean
@@ -130,6 +131,7 @@ export interface InitialState {
     showFullClipInfo: boolean
     showHeaderActionSheet: boolean
     showMoreActionSheet: boolean
+    showNoInternetConnectionMessage: boolean
     showShareActionSheet: boolean
     viewType: string | null
   }

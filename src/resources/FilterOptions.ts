@@ -205,11 +205,11 @@ export const FilterOptions = {
       hideSort: []
     },
     PodcastScreen: {
-      type: [_episodesKey, _clipsKey, _aboutPodcastKey],
+      type: [_downloadedKey, _episodesKey, _clipsKey, _aboutPodcastKey],
       addByPodcastRSSFeedURLType: [_episodesKey, _aboutPodcastKey],
       sort: [_mostRecentKey, ..._top, _randomKey],
       sublist: [],
-      hideSort: [_aboutPodcastKey]
+      hideSort: [_downloadedKey, _aboutPodcastKey]
     },
     PodcastsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _addedByRSSKey],

@@ -386,13 +386,15 @@ export class ClipsScreen extends React.Component<Props, State> {
       showDeleteConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
-    const { session } = this.global
+    const { offlineModeEnabled, session } = this.global
     const { subscribedPodcastIds } = this.global.session.userInfo
 
     const noSubscribedPodcasts =
       queryFrom === PV.Filters._subscribedKey &&
       (!subscribedPodcastIds || subscribedPodcastIds.length === 0) &&
       !searchBarText
+
+    const showOfflineMessage = offlineModeEnabled
 
     return (
       <View style={styles.view} {...testProps('clips_screen_view')}>
@@ -435,7 +437,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             onRefresh={this._onRefresh}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderClipItem}
-            showNoInternetConnectionMessage={showNoInternetConnectionMessage}
+            showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
           />
         )}
         <ActionSheet
