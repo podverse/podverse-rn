@@ -65,6 +65,7 @@ export const PVFlatList = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
   const noResultsFound = !dataTotalCount
   const isEndOfResults = !isLoadingMore && data && dataTotalCount && dataTotalCount > 0 && data.length >= dataTotalCount
+  const shouldShowResults = !noResultsFound && !showNoInternetConnectionMessage
 
   return (
     <View style={styles.view} transparent={transparent}>
@@ -79,7 +80,7 @@ export const PVFlatList = (props: Props) => {
         />
       )}
       {showNoInternetConnectionMessage && <MessageWithAction message={translate('No internet connection')} />}
-      {!noResultsFound && (
+      {shouldShowResults && (
         <SwipeListView
           useFlatList={true}
           closeOnRowPress={true}

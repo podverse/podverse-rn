@@ -145,6 +145,7 @@ export interface InitialState {
   }
   subscribedPodcasts: []
   subscribedPodcastsTotalCount: number
+  userAgent?: string
 }
 
 export interface IActionSheet {

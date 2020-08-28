@@ -18,7 +18,7 @@ import {
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { isOdd, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { getAppUserAgent, isOdd, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -269,6 +269,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _initializeScreenData = async () => {
     await initPlayerState(this.global)
     await initializeSettings()
+
+    // Set the userAgent on the global state so it can be accessed synchronously
+    const userAgent = await getAppUserAgent()
+    this.setGlobal({ userAgent })
 
     try {
       await getAuthUserInfo()
