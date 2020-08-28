@@ -121,7 +121,10 @@ export class ProfilesScreen extends React.Component<Props, State> {
     })
   }
 
-  _onPressLogin = () => this.props.navigation.navigate(PV.RouteNames.AuthScreen)
+  _onPressLogin = () => {
+    this.props.navigation.goBack(null)
+    this.props.navigation.navigate(PV.RouteNames.AuthScreen)
+  }
 
   render() {
     const { isLoading, isLoadingMore, showNoInternetConnectionMessage } = this.state
