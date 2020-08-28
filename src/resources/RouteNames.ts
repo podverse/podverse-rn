@@ -8,7 +8,6 @@ export const RouteNames = {
   EditPlaylistScreen: 'EditPlaylistScreen',
   EditProfileScreen: 'EditProfileScreen',
   EmailVerificationScreen: 'EmailVerificationScreen',
-  EpisodePodcastScreen: 'EpisodePodcastScreen',
   EpisodeScreen: 'EpisodeScreen',
   EpisodesScreen: 'EpisodesScreen',
   FAQScreen: 'FAQScreen',
@@ -45,5 +44,6 @@ export const RouteNames = {
   SleepTimerScreen: 'SleepTimerScreen',
   TabNavigator: 'TabNavigator',
   TermsOfServiceScreen: 'TermsOfServiceScreen',
-  WebPageScreen: 'WebPageScreen'
+  WebPageScreen: 'WebPageScreen',
+  ScanQRCodeScreen: 'ScanQRCodeScreen'
 }

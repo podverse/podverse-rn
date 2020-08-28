@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { Text, View } from './'
 
@@ -16,7 +17,7 @@ export class ProfileTableCell extends React.PureComponent<Props> {
     return (
       <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
         <Text onPress={onPress} style={styles.name}>
-          {name || 'anonymous'}
+          {name || translate('anonymous')}
         </Text>
       </View>
     )

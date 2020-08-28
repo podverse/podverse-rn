@@ -2,6 +2,7 @@ import { Alert, StyleSheet } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import { ActivityIndicator, Divider, Icon, NavHeaderButtonText, Text, TextInput, View } from '../components'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -23,8 +24,8 @@ type State = {
 export class EditProfileScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Edit Profile',
-      headerRight: <NavHeaderButtonText handlePress={navigation.getParam('updateUser')} text='Save' />
+      title: translate('Edit Profile'),
+      headerRight: <NavHeaderButtonText handlePress={navigation.getParam('updateUser')} text={translate('Save')} />
     }
   }
 
@@ -103,34 +104,30 @@ export class EditProfileScreen extends React.Component<Props, State> {
     const { globalTheme } = this.global
     const { isLoading, name, selectedIsPublicKey } = this.state
     const selectedIsPublicOption = isPublicOptions.find((x) => x.value === selectedIsPublicKey) || selectPlaceholder
-    let privacySubtitleVerbTenseText = 'will be'
-
-    if (user.isPublic && user.isPublic === selectedIsPublicKey) {
-      privacySubtitleVerbTenseText = 'are'
-    } else if (!user.isPublic && user.isPublic === selectedIsPublicKey) {
-      privacySubtitleVerbTenseText = 'is'
-    }
+    const userIsPublic = user.isPublic && user.isPublic === selectedIsPublicKey
+    const userIsNotPublic = !user.isPublic && user.isPublic === selectedIsPublicKey
+    const willBeDifferent = user.isPublic !== selectedIsPublicKey
 
     return (
       <View style={styles.view} {...testProps('edit_profile_screen_view')}>
         {!isLoading ? (
           <View>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
-              Name
+              {translate('Name')}
             </Text>
             <TextInput
               autoCapitalize='none'
               autoCompleteType='off'
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               onChangeText={this._onChangeName}
-              placeholder='your name'
+              placeholder={translate('your name')}
               returnKeyType='done'
               style={[styles.textInput, globalTheme.textInput]}
               underlineColorAndroid='transparent'
               value={name}
             />
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
-              Profile Privacy
+              {translate('Profile Privacy')}
             </Text>
             <RNPickerSelect
               items={isPublicOptions}
@@ -148,16 +145,18 @@ export class EditProfileScreen extends React.Component<Props, State> {
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   style={[core.textInputSubTitle, globalTheme.textSecondary]}>
-                  {`Podcasts, clips, and playlists ${privacySubtitleVerbTenseText} visible on your profile page.`}
+                  {willBeDifferent
+                    ? translate('Podcasts clips and playlists will be visible')
+                    : translate('Podcasts clips and playlists are visible')}
                 </Text>
               )}
               {selectedIsPublicKey === false && (
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   style={[core.textInputSubTitle, globalTheme.textSecondary]}>
-                  {`Your profile page ${privacySubtitleVerbTenseText} hidden. Your clip and playlist links ${
-                    privacySubtitleVerbTenseText === 'is' ? 'are' : privacySubtitleVerbTenseText
-                  } still accessible to anyone with the links.`}
+                  {willBeDifferent
+                    ? translate('Your profile page will be hidden')
+                    : translate('Your profile page is hidden')}
                 </Text>
               )}
             </RNPickerSelect>
@@ -171,17 +170,17 @@ export class EditProfileScreen extends React.Component<Props, State> {
 }
 
 const selectPlaceholder = {
-  label: 'Select...',
+  label: translate('Select'),
   value: null
 }
 
 const isPublicOptions = [
   {
-    label: 'Public',
+    label: translate('Public'),
     value: true
   },
   {
-    label: 'Private',
+    label: translate('Private'),
     value: false
   }
 ]

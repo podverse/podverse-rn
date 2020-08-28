@@ -1,7 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
+import { NavigationEvents } from 'react-navigation'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
 import {
@@ -28,8 +30,8 @@ import {
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedEpisodes, removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import {
   decodeHTMLString,
   isOdd,
@@ -42,6 +44,7 @@ import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRefs } from '../services/mediaRef'
+import { getAddByRSSPodcastLocally } from '../services/parser'
 import { getPodcast } from '../services/podcast'
 import * as DownloadState from '../state/actions/downloads'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
@@ -83,12 +86,12 @@ export class PodcastScreen extends React.Component<Props, State> {
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
     return {
-      title: 'Podcast',
+      title: translate('Podcast'),
       headerRight: (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
-              endingText=' – shared using Podverse'
+              endingText={translate(' – shared using Podverse')}
               podcastTitle={podcastTitle}
               url={PV.URLs.podcast + podcastId}
             />
@@ -140,12 +143,18 @@ export class PodcastScreen extends React.Component<Props, State> {
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
 
-  async componentDidMount() {
+  handleDidMount = async () => {
     const { navigation } = this.props
-    const { podcast, podcastId } = this.state
-    const episodeId = navigation.getParam('navToEpisodeWithId')
-
+    const { podcastId } = this.state
+    let podcast = this.props.navigation.getParam('podcast')
+    const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
     const hasInternetConnection = await hasValidNetworkConnection()
+
+    // If passed the addByRSSPodcastFeedUrl in the navigation,
+    // use the podcast from local storage.
+    if (addByRSSPodcastFeedUrl) {
+      podcast = await getAddByRSSPodcastLocally(addByRSSPodcastFeedUrl)
+    }
 
     this.setState(
       {
@@ -153,16 +162,16 @@ export class PodcastScreen extends React.Component<Props, State> {
           ? {
               viewType: PV.Filters._downloadedKey
             }
-          : { viewType: this.state.viewType })
+          : { viewType: this.state.viewType }),
+        podcast
       },
       () => {
         this._initializePageData()
-        if (episodeId) {
-          navigation.navigate(PV.RouteNames.EpisodeScreen, { episodeId })
-        }
       }
     )
-    const pageTitle = podcast ? 'Podcasts Screen - ' + podcast.title : 'PodcastsScreen - ' + 'no info available'
+    const pageTitle = podcast
+      ? translate('Podcasts Screen - ') + podcast.title
+      : translate('PodcastsScreen - ') + translate('no info available')
     gaTrackPageView('/podcast/' + podcastId, pageTitle)
   }
 
@@ -200,7 +209,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             }
           }
 
-          newPodcast.description = newPodcast.description || 'No summary available.'
+          newPodcast.description = newPodcast.description || translate('No summary available')
 
           this.setState({
             ...newState,
@@ -409,7 +418,7 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text='Delete' />
+    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text={translate('Delete')} />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
@@ -482,7 +491,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     const { addByRSSPodcastFeedUrl } = podcast
 
     if (podcastId) {
-      const wasAlerted = await alertIfNoNetworkConnection('subscribe to podcast')
+      const wasAlerted = await alertIfNoNetworkConnection(translate('subscribe to podcast'))
       if (wasAlerted) return
 
       this.setState({ isSubscribing: true }, async () => {
@@ -591,10 +600,10 @@ export class PodcastScreen extends React.Component<Props, State> {
     }
 
     const resultsText =
-      (viewType === PV.Filters._downloadedKey && 'episodes') ||
-      (viewType === PV.Filters._episodesKey && 'episodes') ||
-      (viewType === PV.Filters._clipsKey && 'clips') ||
-      'results'
+      (viewType === PV.Filters._downloadedKey && translate('episodes')) ||
+      (viewType === PV.Filters._episodesKey && translate('episodes')) ||
+      (viewType === PV.Filters._clipsKey && translate('clips')) ||
+      translate('results')
 
     return (
       <View style={styles.view} {...testProps('podcast_screen_view')}>
@@ -615,39 +624,40 @@ export class PodcastScreen extends React.Component<Props, State> {
           <TableSectionSelectors
             handleSelectLeftItem={this.selectLeftItem}
             handleSelectRightItem={this.selectRightItem}
+            isAddByRSSPodcastFeedUrl={podcast && podcast.addByRSSPodcastFeedUrl}
             screenName='PodcastScreen'
             selectedLeftItemKey={viewType}
             selectedRightItemKey={querySort}
           />
         )}
-        {showSettings && <TableSectionHeader title='Settings' />}
+        {showSettings && <TableSectionHeader title={translate('Settings')} />}
         {showSettings && (
           <View style={styles.settingsView}>
             <SwitchWithText
               onValueChange={this._handleToggleLimitDownloads}
-              text={limitDownloadedEpisodes ? 'Download limit on' : 'Download limit off'}
+              text={limitDownloadedEpisodes ? translate('Download limit on') : translate('Download limit off')}
               value={limitDownloadedEpisodes}
             />
             <NumberSelectorWithText
               handleChangeText={this._handleChangeDownloadLimitText}
               selectedNumber={downloadedEpisodeLimit}
-              text='Download limit max'
+              text={translate('Download limit max')}
             />
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.settingsHelpText}>
-              Once the download limit is exceeded, the oldest episode will be auto deleted.
+              {translate('Once the download limit is exceeded the oldest episode will be auto deleted.')}
             </Text>
             <Divider style={styles.divider} />
             <Button
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
               wrapperStyles={styles.button}
-              text='Delete Downloaded Episodes'
+              text={translate('Delete Downloaded Episodes')}
             />
           </View>
         )}
         {!showSettings && (
           <View style={styles.view}>
             {isLoading && <ActivityIndicator />}
-            {!isLoading && viewType !== PV.Filters._aboutKey && flatListData && podcast && (
+            {!isLoading && viewType !== PV.Filters._aboutPodcastKey && flatListData && podcast && (
               <FlatList
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
@@ -669,10 +679,12 @@ export class PodcastScreen extends React.Component<Props, State> {
                 showNoInternetConnectionMessage={showNoInternetConnectionMessage}
               />
             )}
-            {!isLoading && viewType === PV.Filters._aboutKey && podcast && (
+            {!isLoading && viewType === PV.Filters._aboutPodcastKey && podcast && (
               <HTMLScrollView
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                html={podcast.description || (showNoInternetConnectionMessage ? 'No internet connection' : '')}
+                html={
+                  podcast.description || (showNoInternetConnectionMessage ? translate('No internet connection') : '')
+                }
                 navigation={navigation}
               />
             )}
@@ -691,13 +703,21 @@ export class PodcastScreen extends React.Component<Props, State> {
           </View>
         )}
         <Dialog.Container visible={showDeleteDownloadedEpisodesDialog}>
-          <Dialog.Title>Delete Downloaded Episodes</Dialog.Title>
+          <Dialog.Title>{translate('Delete Downloaded Episodes')}</Dialog.Title>
           <Dialog.Description>
-            Are you sure you want to delete all of your downloaded episodes from this podcast?
+            {translate('Are you sure you want to delete all of your downloaded episodes from this podcast?')}
           </Dialog.Description>
-          <Dialog.Button label='No' onPress={this._handleToggleDeleteDownloadedEpisodesDialog} />
-          <Dialog.Button label='Yes' onPress={this._handleDeleteDownloadedEpisodes} />
+          <Dialog.Button label={translate('No')} onPress={this._handleToggleDeleteDownloadedEpisodesDialog} />
+          <Dialog.Button label={translate('Yes')} onPress={this._handleDeleteDownloadedEpisodes} />
         </Dialog.Container>
+        <NavigationEvents
+          onWillFocus={() => {
+            const shouldReload = navigation.getParam('shouldReload')
+            if (shouldReload) {
+              this.handleDidMount()
+            }
+          }}
+        />
       </View>
     )
   }
@@ -736,7 +756,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     filterKey: string | null,
     queryOptions: { queryPage?: number; searchAllFieldsText?: string } = {}
   ) => {
-    const { flatListData, podcastId, querySort, viewType } = this.state
+    const { flatListData, podcast, podcastId, querySort, viewType } = this.state
     const newState = {
       isLoading: false,
       isLoadingMore: false,
@@ -748,7 +768,10 @@ export class PodcastScreen extends React.Component<Props, State> {
     newState.showNoInternetConnectionMessage = !hasInternetConnection && filterKey !== PV.Filters._downloadedKey
 
     try {
-      if (filterKey === PV.Filters._episodesKey) {
+      if (filterKey === PV.Filters._episodesKey && podcast && podcast.addByRSSPodcastFeedUrl) {
+        newState.flatListData = podcast.episodes || []
+        newState.flatListDataTotalCount = newState.flatListData.length
+      } else if (filterKey === PV.Filters._episodesKey) {
         const results = await this._queryEpisodes(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
@@ -770,7 +793,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (filterKey === PV.Filters._aboutKey) {
+      } else if (filterKey === PV.Filters._aboutPodcastKey) {
         if (podcastId && hasInternetConnection) {
           const newPodcast = await getPodcast(podcastId)
           newState.podcast = newPodcast

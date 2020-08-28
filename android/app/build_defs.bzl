@@ -1,3 +1,5 @@
+"""Helper definitions to glob .aar and .jar targets"""
+
 def create_aar_targets(aarfiles):
     for aarfile in aarfiles:
         name = "aars__" + aarfile[aarfile.rindex("/") + 1:aarfile.rindex(".aar")]
@@ -15,4 +17,3 @@ def create_jar_targets(jarfiles):
             name = name,
             binary_jar = jarfile,
         )
-   

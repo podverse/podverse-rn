@@ -1,4 +1,5 @@
 import debounce from 'lodash/debounce'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { Alert } from 'react-native'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
@@ -15,8 +16,8 @@ import {
 } from '../components'
 import { getDownloadedEpisodeIds } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
+import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { isOdd, safelyUnwrapNestedVariable, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -52,7 +53,7 @@ type State = {
 export class ClipsScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'Clips'
+      title: translate('Clips')
     }
   }
 
@@ -251,7 +252,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         podcastTitle={podcastTitle}
         startTime={item.startTime}
         testId={'clips_screen_clip_item_' + index}
-        title={title || 'untitled clip'}
+        title={title || translate('untitled clip')}
       />
     ) : (
       <></>
@@ -306,7 +307,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text='Delete' />
+    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text={translate('Delete')} />
   )
 
   _handleHiddenItemPress = (selectedId, rowMap) => {
@@ -445,16 +446,18 @@ export class ClipsScreen extends React.Component<Props, State> {
               navigation,
               this._handleCancelPress,
               this._handleDownloadPressed,
-              this._handleHiddenItemPress
+              this._handleHiddenItemPress,
+              false, // includeGoToPodcast
+              true // includeGoToEpisode
             )
           }}
           showModal={showActionSheet}
         />
         <Dialog.Container visible={showDeleteConfirmDialog}>
-          <Dialog.Title>Delete Clip</Dialog.Title>
-          <Dialog.Description>Are you sure?</Dialog.Description>
-          <Dialog.Button label='Cancel' onPress={this._cancelDeleteMediaRef} />
-          <Dialog.Button label='Delete' onPress={this._deleteMediaRef} />
+          <Dialog.Title>{translate('Delete Clip')}</Dialog.Title>
+          <Dialog.Description>{translate('Are you sure')}</Dialog.Description>
+          <Dialog.Button label={translate('Cancel')} onPress={this._cancelDeleteMediaRef} />
+          <Dialog.Button label={translate('Delete')} onPress={this._deleteMediaRef} />
         </Dialog.Container>
       </View>
     )

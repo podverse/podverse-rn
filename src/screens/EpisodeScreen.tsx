@@ -1,6 +1,7 @@
 import debounce from 'lodash/debounce'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
-import { NavigationStackOptions } from 'react-navigation-stack'
+import { HeaderBackButton, NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -17,14 +18,14 @@ import {
   View
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
+import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { formatTitleViewHtml, isOdd, replaceLinebreaksWithBrTags, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRefs } from '../services/mediaRef'
-import { core } from '../styles'
+import { core, darkTheme } from '../styles'
 
 type Props = {
   navigation?: any
@@ -36,7 +37,6 @@ type State = {
   episodeId?: any
   flatListData: any[]
   flatListDataTotalCount: number | null
-  includeGoToPodcast?: boolean
   isLoading: boolean
   isLoadingMore: boolean
   queryPage: number
@@ -56,12 +56,24 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
     return {
-      title: 'Episode',
+      title: translate('Episode'),
+      headerLeft: (
+        <HeaderBackButton
+          backTitleVisible={true}
+          tintColor={darkTheme.text.color}
+          title='Podcast'
+          onPress={() => {
+            navigation.navigate(PV.RouteNames.PodcastScreen, {
+              shouldReload: false
+            })
+          }}
+        />
+      ),
       headerRight: (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
-              endingText=' – shared using Podverse'
+              endingText={translate(' – shared using Podverse')}
               episodeTitle={episodeTitle}
               podcastTitle={podcastTitle}
               url={PV.URLs.episode + episodeId}
@@ -79,7 +91,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const viewType = this.props.navigation.getParam('viewType') || PV.Filters._showNotesKey
     const episode = this.props.navigation.getParam('episode')
     const episodeId = (episode && episode.id) || this.props.navigation.getParam('episodeId')
-    const includeGoToPodcast = this.props.navigation.getParam('includeGoToPodcast')
 
     if (episode && !episode.podcast) {
       episode.podcast = {
@@ -101,8 +112,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       episodeId,
       flatListData: [],
       flatListDataTotalCount: null,
-      includeGoToPodcast,
-      isLoading: viewType === PV.Filters._clipsKey,
+      isLoading: !episode || viewType === PV.Filters._clipsKey,
       isLoadingMore: false,
       queryPage: 1,
       querySort: PV.Filters._chronologicalKey,
@@ -119,8 +129,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
     this._initializePageData()
     const pageTitle =
       episode && episode.podcast
-        ? 'Episode Screen - ' + episode.podcast.title + ' - ' + episode.title
-        : 'Episode Screen - ' + 'no info available'
+        ? translate('Episode Screen - ') + episode.podcast.title + ' - ' + episode.title
+        : translate('Episode Screen - ') + translate('no info available')
     gaTrackPageView('/episode/' + episodeId, pageTitle)
   }
 
@@ -329,7 +339,6 @@ export class EpisodeScreen extends React.Component<Props, State> {
       episode,
       flatListData,
       flatListDataTotalCount,
-      includeGoToPodcast,
       isLoading,
       isLoadingMore,
       querySort,
@@ -340,7 +349,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     } = this.state
     const { downloadedEpisodeIds, downloadsActive } = this.global
 
-    episode.description = replaceLinebreaksWithBrTags(episode.description)
+    if (episode) episode.description = replaceLinebreaksWithBrTags(episode.description)
 
     return (
       <View style={styles.view} {...testProps('episode_screen_view')}>
@@ -367,7 +376,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           selectedLeftItemKey={viewType}
           selectedRightItemKey={querySort}
         />
-        {isLoading && viewType === PV.Filters._clipsKey && <ActivityIndicator />}
+        {isLoading && (!episode || viewType === PV.Filters._clipsKey) && <ActivityIndicator />}
         {!isLoading && viewType === PV.Filters._clipsKey && flatListData && (
           <FlatList
             data={flatListData}
@@ -397,8 +406,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
               navigation,
               this._handleCancelPress,
               this._handleDownloadPressed,
-              null,
-              includeGoToPodcast
+              null // handleDeleteClip
             )
           }
           showModal={showActionSheet}

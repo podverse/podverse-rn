@@ -1,5 +1,6 @@
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { readableDate, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { FastImage, IndicatorDownload, Text, View } from './'
@@ -27,7 +28,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       lastEpisodePubDate,
       onPress,
       podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
-      podcastTitle = 'untitled podcast',
+      podcastTitle = translate('untitled podcast'),
       showAutoDownload,
       showDownloadCount,
       testId
@@ -72,7 +73,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                   {showDownloadCount && (
                     <RNView style={styles.textWrapperRowLeft}>
                       <Text isSecondary={true} numberOfLines={1} style={styles.bottomText}>
-                        {`${downloadCount} downloaded`}
+                        {`${downloadCount} ${translate('downloaded')}`}
                       </Text>
                       {showAutoDownload && shouldAutoDownload && <IndicatorDownload style={styles.autoDownloadIcon} />}
                     </RNView>

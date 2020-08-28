@@ -1,6 +1,7 @@
 import { StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import { Button, NavDismissIcon, SafeAreaView, TimePicker, View } from '../components'
+import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { sleepTimerIsRunning } from '../services/sleepTimer'
@@ -21,7 +22,7 @@ type State = {}
 
 export class SleepTimerScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
-    title: 'Sleep Timer',
+    title: translate('Sleep Timer'),
     headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
     headerRight: <RNView />
   })
@@ -77,7 +78,7 @@ export class SleepTimerScreen extends React.Component<Props, State> {
             isSuccess={!isActive}
             isWarning={isActive}
             onPress={this._toggleSleepTimer}
-            text={isActive ? 'Stop Timer' : 'Start Timer'}
+            text={isActive ? translate('Stop Timer') : translate('Start Timer')}
             wrapperStyles={styles.button}
           />
         </View>

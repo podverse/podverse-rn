@@ -1,3 +1,4 @@
+import { NowPlayingItem } from 'podverse-shared'
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React, { getGlobal } from 'reactn'
 import {
@@ -15,7 +16,7 @@ import {
   TableSectionHeader,
   View
 } from '../components'
-import { NowPlayingItem } from '../lib/NowPlayingItem'
+import { translate } from '../lib/i18n'
 import { checkIfIdMatchesClipIdOrEpisodeId, isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -67,7 +68,7 @@ export class QueueScreen extends React.Component<Props, State> {
                   <NavHeaderButtonText
                     handlePress={navigation.getParam('_startEditing')}
                     style={styles.navHeaderTextButton}
-                    text='Edit'
+                    text={translate('Edit')}
                   />
                 </RNView>
               ) : (
@@ -75,7 +76,7 @@ export class QueueScreen extends React.Component<Props, State> {
                   <NavHeaderButtonText
                     handlePress={navigation.getParam('_stopEditing')}
                     style={styles.navHeaderTextButton}
-                    text='Done'
+                    text={translate('Done')}
                   />
                 </RNView>
               )}
@@ -86,13 +87,13 @@ export class QueueScreen extends React.Component<Props, State> {
                 <NavHeaderButtonText
                   handlePress={navigation.getParam('_startEditing')}
                   style={styles.navHeaderTextButton}
-                  text='Edit'
+                  text={translate('Edit')}
                 />
               ) : (
                 <NavHeaderButtonText
                   handlePress={navigation.getParam('_stopEditing')}
                   style={styles.navHeaderTextButton}
-                  text='Done'
+                  text={translate('Done')}
                 />
               )}
             </RNView>
@@ -309,7 +310,7 @@ export class QueueScreen extends React.Component<Props, State> {
           <View transparent={isTransparent}>
             {!!nowPlayingItem && (
               <View transparent={isTransparent}>
-                <TableSectionHeader containerStyles={styles.headerNowPlayingItem} title='Now Playing' />
+                <TableSectionHeader containerStyles={styles.headerNowPlayingItem} title={translate('Now Playing')} />
                 <QueueTableCell
                   clipEndTime={nowPlayingItem.clipEndTime}
                   clipStartTime={nowPlayingItem.clipStartTime}
@@ -322,7 +323,7 @@ export class QueueScreen extends React.Component<Props, State> {
                 />
               </View>
             )}
-            <TableSectionHeader title='Next Up' />
+            <TableSectionHeader title={translate('Next Up')} />
           </View>
         )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length > 0 && (
@@ -334,7 +335,7 @@ export class QueueScreen extends React.Component<Props, State> {
           />
         )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length < 1 && (
-          <MessageWithAction message='Your queue is empty' transparent={isTransparent} />
+          <MessageWithAction message={translate('Your queue is empty')} transparent={isTransparent} />
         )}
         {!isLoading && viewType === _historyKey && historyItems && historyItems.length > 0 && (
           <FlatList
@@ -349,7 +350,7 @@ export class QueueScreen extends React.Component<Props, State> {
           />
         )}
         {!isLoading && viewType === _historyKey && historyItems && historyItems.length < 1 && (
-          <MessageWithAction message='No history items found' />
+          <MessageWithAction message={translate('No history items found')} />
         )}
         {(isLoading || isRemoving) && <ActivityIndicator isOverlay={isRemoving} styles={styles.activityIndicator} />}
       </View>
@@ -368,17 +369,17 @@ const _historyKey = 'history'
 
 const headerTitleItems = [
   {
-    label: 'Queue',
+    label: translate('Queue'),
     value: _queueKey
   },
   {
-    label: 'History',
+    label: translate('History'),
     value: _historyKey
   }
 ]
 
 const headerTitleItemPlaceholder = {
-  label: 'Select...',
+  label: translate('Select'),
   value: false
 }
 

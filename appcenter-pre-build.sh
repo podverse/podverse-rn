@@ -14,12 +14,12 @@ set | egrep -e $ENV_WHITELIST | sed 's/^RN_//g' > .env
 printf "\n.env created with contents:\n\n"
 cat .env
 
-if [ "$APPCENTER_BRANCH" == "develop" ] ; then
-    RESET_DB=$(curl --location --request GET "https://us-central1-podverse-staging-tests.cloudfunctions.net/resetStageDatabase" --header "x-api-key: $FB_API_KEY")
+# if [ "$APPCENTER_BRANCH" == "develop" ] ; then
+#     RESET_DB=$(curl --location --request GET "https://us-central1-podverse-staging-tests.cloudfunctions.net/resetStageDatabase" --header "x-api-key: $FB_API_KEY")
 
-    if [ "$RESET_DB" == "Success" ]; then
-        echo "Stage DB Reset successfull!"
-    else
-        echo "Stage DB Reset Errored. $RESET_DB"
-    fi
-fi
+#     if [ "$RESET_DB" == "Success" ]; then
+#         echo "Stage DB Reset successfull!"
+#     else
+#         echo "Stage DB Reset Errored. $RESET_DB"
+#     fi
+# fi

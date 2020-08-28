@@ -64,8 +64,8 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
 
   _navToRequestPodcastForm = async () => {
     Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Cancel' },
-      { text: 'Yes', onPress: () => Linking.openURL(PV.URLs.requestPodcast) }
+      { text: translate('Cancel') },
+      { text: translate('Yes'), onPress: () => Linking.openURL(PV.URLs.requestPodcast) }
     ])
   }
 
@@ -89,7 +89,8 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
           const podcast = await getAddByRSSPodcastLocally(url)
           this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
             podcast,
-            addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
+            addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
+            shouldReload: true
           })
         } catch (error) {
           console.log('_handleSavePodcastByRSSURL', error)
@@ -117,14 +118,14 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
         {!isLoading && (
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
-              RSS Feed
+              {translate('RSS Feed')}
             </Text>
             <TextInput
               autoCapitalize='none'
               autoCompleteType='off'
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               onChangeText={this._handleChangeText}
-              placeholder='paste RSS feed link here'
+              placeholder={translate('paste RSS feed link here')}
               returnKeyType='done'
               style={[styles.textInput, globalTheme.textInput]}
               underlineColorAndroid='transparent'

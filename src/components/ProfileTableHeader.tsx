@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { button, core } from '../styles'
 import { ActivityIndicator, Icon, SubscribeButton, Text, View } from './'
@@ -24,7 +25,7 @@ export const ProfileTableHeader = (props: Props) => {
     isNotFound,
     isSubscribed,
     isSubscribing,
-    name = 'anonymous'
+    name = translate('anonymous')
   } = props
 
   return (
@@ -56,7 +57,7 @@ export const ProfileTableHeader = (props: Props) => {
       {!isLoading && isNotFound && (
         <View style={[styles.wrapper, core.view]}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.notFoundText}>
-            Playlist Not Found
+            {translate('Playlist Not Found')}
           </Text>
         </View>
       )}

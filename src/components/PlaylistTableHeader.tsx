@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
+import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button, core } from '../styles'
@@ -54,7 +55,8 @@ export const PlaylistTableHeader = (props: Props) => {
                   isSecondary={true}
                   numberOfLines={1}
                   style={styles.createdBy}>
-                  by: {createdBy}
+                  {translate('by: ')}
+                  {createdBy}
                 </Text>
               )}
               <View style={styles.row}>
@@ -85,7 +87,7 @@ export const PlaylistTableHeader = (props: Props) => {
         {!isLoading && isNotFound && (
           <View style={[styles.wrapper, core.view]}>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.notFoundText}>
-              Playlist Not Found
+              {translate('Playlist Not Found')}
             </Text>
           </View>
         )}

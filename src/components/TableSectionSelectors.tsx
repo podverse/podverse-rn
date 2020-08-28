@@ -14,6 +14,7 @@ type Props = {
   hidePickers?: boolean
   hideRightItemWhileLoading?: boolean
   includeChronological?: boolean
+  isAddByRSSPodcastFeedUrl?: boolean
   isBottomBar?: boolean
   isCategories?: boolean
   isTransparent?: boolean
@@ -35,6 +36,7 @@ export const TableSectionSelectors = (props: Props) => {
     hidePickers,
     hideRightItemWhileLoading,
     includeChronological = false,
+    isAddByRSSPodcastFeedUrl = false,
     isBottomBar = false,
     isCategories = false,
     isTransparent,
@@ -48,11 +50,13 @@ export const TableSectionSelectors = (props: Props) => {
     let rightItems = [] as any
 
     if (!isBottomBar) {
-      leftItems = PV.FilterOptions.typeItems.filter((type: string) => {
-        return PV.FilterOptions.screenFilters[screenName].type.includes(type.value)
+      leftItems = PV.FilterOptions.typeItems.filter((type: any) => {
+        return isAddByRSSPodcastFeedUrl
+          ? PV.FilterOptions.screenFilters[screenName].addByPodcastRSSFeedURLType.includes(type.value)
+          : PV.FilterOptions.screenFilters[screenName].type.includes(type.value)
       })
 
-      rightItems = PV.FilterOptions.sortItems.filter((sortKey: string) => {
+      rightItems = PV.FilterOptions.sortItems.filter((sortKey: any) => {
         return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
       })
     } else {
@@ -92,7 +96,7 @@ export const TableSectionSelectors = (props: Props) => {
     const screen = PV.FilterOptions.screenFilters[screenName]
     if (!screen.hideSort.includes(selectedLeftItemKey)) {
       if (!isBottomBar) {
-        rightItems = PV.FilterOptions.sortItems.filter((sortKey: string) => {
+        rightItems = PV.FilterOptions.sortItems.filter((sortKey: any) => {
           return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
         })
 
@@ -103,6 +107,8 @@ export const TableSectionSelectors = (props: Props) => {
         if (includeChronological) {
           rightItems.unshift(PV.FilterOptions.items.sortChronologicalItem)
         }
+
+        rightItems = convertFilterOptionsToI18N(rightItems)
       } else {
         if (leftItems.length > 0) {
           const selectedCategory = leftItems.find((category) => category.value === selectedLeftItemKey)
@@ -114,13 +120,19 @@ export const TableSectionSelectors = (props: Props) => {
                 ...subCat
               }
             })
+            rightItems.sort((a: any, b: any) => {
+              const textA = a.label.toUpperCase()
+              const textB = b.label.toUpperCase()
+              return textA < textB ? -1 : textA > textB ? 1 : 0
+            })
+
+            // Add the all-categories filter to the beginning
             rightItems.unshift(...PV.FilterOptions.screenFilters[screenName].sublist)
           }
         }
       }
     }
 
-    rightItems = convertFilterOptionsToI18N(rightItems)
     setRightItems(rightItems)
   }, [selectedLeftItemKey])
 

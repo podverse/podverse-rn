@@ -1,5 +1,7 @@
 import debounce from 'lodash/debounce'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet } from 'react-native'
+import Config from 'react-native-config'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -14,12 +16,13 @@ import {
 } from '../components'
 import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
+import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from '../lib/NowPlayingItem'
 import { isOdd, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
+import { getAddByRSSEpisodesLocally } from '../services/parser'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { core } from '../styles'
 
@@ -49,7 +52,7 @@ type State = {
 export class EpisodesScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'Episodes'
+      title: translate('Episodes')
     }
   }
 
@@ -115,6 +118,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
       sort = PV.Filters._topPastWeek
       hideRightItemWhileLoading = true
     } else if (selectedKey === PV.Filters._downloadedKey) {
+      sort = PV.Filters._mostRecentKey
+      hideRightItemWhileLoading = true
+    } else if (selectedKey === PV.Filters._addedByRSSKey) {
       sort = PV.Filters._mostRecentKey
       hideRightItemWhileLoading = true
     }
@@ -262,11 +268,11 @@ export class EpisodesScreen extends React.Component<Props, State> {
     return (
       <EpisodeTableCell
         description={description}
-        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.podcast))}
         handleNavigationPress={() =>
           this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
             episode: item,
-            includeGoToPodcast: true
+            includeGoToPodcastScreen: true
           })
         }
         hasZebraStripe={isOdd(index)}
@@ -286,7 +292,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text='Delete' />
+    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text={translate('Delete')} />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
@@ -367,7 +373,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
     } = this.state
 
     const { navigation } = this.props
-    const includeGoToPodcast = true
+    const includeGoToPodcastScreen = true
 
     return (
       <View style={styles.view} {...testProps('episodes_screen_view')}>
@@ -410,7 +416,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             onRefresh={this._onRefresh}
             renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderEpisodeItem}
-            resultsText='episodes'
+            resultsText={translate('episodes')}
             showNoInternetConnectionMessage={showNoInternetConnectionMessage}
           />
         )}
@@ -422,8 +428,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
               navigation,
               this._handleCancelPress,
               this._handleDownloadPressed,
-              null,
-              includeGoToPodcast
+              null, // handleDeleteEpisode
+              includeGoToPodcastScreen
             )
           }
           showModal={showActionSheet}
@@ -460,26 +466,39 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
+      const handleAddByRSSEpisodes = async () => {
+        const addByRSSEpisodes = await getAddByRSSEpisodesLocally()
+        newState.flatListData = [...addByRSSEpisodes]
+        newState.endOfResultsReached = true
+        newState.flatListDataTotalCount = addByRSSEpisodes.length
+      }
+
       if (filterKey === PV.Filters._subscribedKey) {
-        const results = await getEpisodes(
-          {
-            sort: querySort,
-            page: queryPage,
-            podcastId,
-            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-            subscribedOnly: true,
-            includePodcast: true
-          },
-          this.global.settings.nsfwMode
-        )
-        newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
-        newState.flatListDataTotalCount = results[1]
+        if (Config.DISABLE_API_SUBSCRIBED_PODCASTS) {
+          await handleAddByRSSEpisodes()
+        } else {
+          const results = await getEpisodes(
+            {
+              sort: querySort,
+              page: queryPage,
+              podcastId,
+              ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+              subscribedOnly: true,
+              includePodcast: true
+            },
+            this.global.settings.nsfwMode
+          )
+          newState.flatListData = [...flatListData, ...results[0]]
+          newState.endOfResultsReached = newState.flatListData.length >= results[1]
+          newState.flatListDataTotalCount = results[1]
+        }
       } else if (filterKey === PV.Filters._downloadedKey) {
         const downloadedEpisodes = await getDownloadedEpisodes()
         newState.flatListData = [...downloadedEpisodes]
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = downloadedEpisodes.length
+      } else if (filterKey === PV.Filters._addedByRSSKey) {
+        await handleAddByRSSEpisodes()
       } else if (filterKey === PV.Filters._allPodcastsKey) {
         const results = await this._queryAllEpisodes(querySort, queryPage)
         newState.flatListData = [...flatListData, ...results[0]]

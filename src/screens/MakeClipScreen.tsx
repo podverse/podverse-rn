@@ -24,6 +24,7 @@ import {
   TimeInput,
   View
 } from '../components'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -60,7 +61,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const globalTheme = navigation.getParam('globalTheme')
 
     return {
-      title: navigation.getParam('isEditing') ? 'Edit Clip' : 'Make Clip',
+      title: navigation.getParam('isEditing') ? translate('Edit Clip') : translate('Make Clip'),
       headerTransparent: true,
       headerStyle: {},
       headerTintColor: globalTheme.text.color,
@@ -69,7 +70,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
           <NavHeaderButtonText
             color={globalTheme.text.color}
             handlePress={navigation.getParam('_saveMediaRef')}
-            text='Save'
+            text={translate('Save')}
           />
         </RNView>
       )
@@ -193,10 +194,10 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { isLoggedIn } = session
 
     if (!isLoggedIn) {
-      Alert.alert('Login Needed', 'You need to login to make clips.', [
-        { text: 'OK' },
+      Alert.alert(translate('Login Needed'), translate('You need to login to make clips'), [
+        { text: translate('OK') },
         {
-          text: 'Go to Login',
+          text: translate('Go to Login'),
           onPress: () => {
             navigation.goBack(null)
             setTimeout(() => {
@@ -212,26 +213,30 @@ export class MakeClipScreen extends React.Component<Props, State> {
     if (wasAlerted) return
 
     if (endTime === 0) {
-      Alert.alert('Clip Error', 'End time cannot be equal to 0.', PV.Alerts.BUTTONS.OK)
+      Alert.alert(translate('Clip Error'), translate('End time cannot be equal to 0'), PV.Alerts.BUTTONS.OK)
       return
     }
 
     if (startTime === 0 && !endTime) {
       Alert.alert(
-        'Clip Error',
-        'The start time must be greater than 0 if no end time is provided.',
+        translate('Clip Error'),
+        translate('The start time must be greater than 0 if no end time is provided'),
         PV.Alerts.BUTTONS.OK
       )
       return
     }
 
     if (!startTime && startTime !== 0) {
-      Alert.alert('Clip Error', 'A start time must be provided.', PV.Alerts.BUTTONS.OK)
+      Alert.alert(translate('Clip Error'), translate('A start time must be provided'), PV.Alerts.BUTTONS.OK)
       return
     }
 
     if (endTime && startTime >= endTime) {
-      Alert.alert('Clip Error', 'The start time must be before the end time.', PV.Alerts.BUTTONS.OK)
+      Alert.alert(
+        translate('Clip Error'),
+        translate('The start time must be before the end time'),
+        PV.Alerts.BUTTONS.OK
+      )
       return
     }
 
@@ -264,21 +269,21 @@ export class MakeClipScreen extends React.Component<Props, State> {
         this.setState({ isSaving: false }, async () => {
           // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
           setTimeout(() => {
-            const alertText = isEditing ? 'Clip Updated' : 'Clip Created'
+            const alertText = isEditing ? translate('Clip Updated') : translate('Clip Created')
             Alert.alert(alertText, url, [
               {
-                text: 'Done',
+                text: translate('Done'),
                 onPress: () => {
                   navigation.goBack(null)
                 }
               },
               {
-                text: 'Share',
+                text: translate('Share'),
                 onPress: async () => {
                   const { nowPlayingItem = {} } = this.global.player
-                  const title = `${data.title || 'untitled clip'} – ${nowPlayingItem.podcastTitle} – ${
+                  const title = `${data.title || translate('untitled clip')} – ${nowPlayingItem.podcastTitle} – ${
                     nowPlayingItem.episodeTitle
-                  } – clip created using Podverse`
+                  }${translate(' – clip created using Podverse')}`
                   try {
                     await Share.open({
                       title,
@@ -333,19 +338,13 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   _showClipPrivacyNote = async () => {
-    Alert.alert(
-      'Clip Settings',
-      "Only with Link means only people who have your clip's" +
-        ' link can play it. These clips will not show up automatically in the Public list on Podverse.' +
-        ' A premium account is required to create Public clips.',
-      [
-        {
-          text: 'Premium Info',
-          onPress: () => this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
-        },
-        { text: 'Ok' }
-      ]
-    )
+    Alert.alert(translate('Clip Settings'), translate(`Only with Link means only people who`), [
+      {
+        text: translate('Premium Info'),
+        onPress: () => this.props.navigation.navigate(PV.RouteNames.MembershipScreen)
+      },
+      { text: translate('Ok') }
+    ])
   }
 
   render() {
@@ -375,7 +374,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
                   style={[core.textInputLabel, styles.loginMessage]}>
-                  You must be logged in to make clips.
+                  {translate('You must be logged in to make clips.')}
                 </Text>
                 <Divider style={styles.divider} />
               </RNView>
@@ -385,7 +384,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 numberOfLines={1}
                 style={[core.textInputLabel, styles.textInputLabel]}>
-                Clip Title
+                {translate('Clip Title')}
               </Text>
               <RNPickerSelect
                 items={privacyItems()}
@@ -410,7 +409,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               onChangeText={this._onChangeTitle}
               numberOfLines={3}
-              placeholder='optional'
+              placeholder={translate('optional')}
               returnKeyType='done'
               style={[styles.textInput, globalTheme.textInput]}
               underlineColorAndroid='transparent'
@@ -433,7 +432,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   }
                 }}
                 handleSetTime={this._setStartTime}
-                labelText='Start Time'
+                labelText={translate('Start Time')}
                 placeholder='--:--'
                 time={startTime}
                 wrapperStyle={styles.timeInput}
@@ -446,8 +445,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   }
                 }}
                 handleSetTime={this._setEndTime}
-                labelText='End Time'
-                placeholder='optional'
+                labelText={translate('End Time')}
+                placeholder={translate('optional')}
                 time={endTime}
                 wrapperStyle={styles.timeInput}
               />
@@ -498,7 +497,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     style={[styles.bottomRowTextMini, globalTheme.link]}>
-                    Clips FAQ
+                    {translate('Clips FAQ')}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -528,7 +527,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 onPress={() =>
                   navigation.navigate(PV.RouteNames.PlayerMyProfileScreen, {
                     user: userInfo,
-                    navigationTitle: 'My Profile',
+                    navigationTitle: translate('My Profile'),
                     isMyProfile: true,
                     initializeClips: true
                   })
@@ -537,7 +536,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     style={[styles.bottomRowTextMini, globalTheme.link]}>
-                    My Clips
+                    {translate('My Clips')}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -556,14 +555,16 @@ export class MakeClipScreen extends React.Component<Props, State> {
             <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
               <RNView style={[styles.modalInnerWrapper, globalTheme.modalInnerWrapper]}>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  ▸ Tap the Start and End Time inputs to set them with the current track time.
+                  {translate('Tap the Start and End Time inputs to set them with the current track time')}
                 </Text>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  ▸ If a podcast uses dynamically inserted ads, its clip start times will not stay 100% accurate.
+                  {translate(
+                    'If a podcast uses dynamically inserted ads, its clip start times will not stay 100% accurate'
+                  )}
                 </Text>
                 <TouchableOpacity onPress={this._hideHowTo}>
                   <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.modalButton}>
-                    Close
+                    {translate('Close')}
                   </Text>
                 </TouchableOpacity>
               </RNView>
@@ -579,18 +580,18 @@ const _publicKey = 'public'
 const _onlyWithLinkKey = 'onlyWithLink'
 
 const placeholderItem = {
-  label: 'Select...',
+  label: translate('Select'),
   value: null
 }
 
 const privacyItems = () => {
   const items = [
     {
-      label: 'Public',
+      label: translate('Public'),
       value: _publicKey
     },
     {
-      label: 'Only with link',
+      label: translate('Only with link'),
       value: _onlyWithLinkKey
     }
   ]

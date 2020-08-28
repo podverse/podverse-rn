@@ -1,5 +1,5 @@
+import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
-import { NowPlayingItem } from '../../lib/NowPlayingItem'
 import {
   addQueueItemLast as addQueueItemLastService,
   addQueueItemNext as addQueueItemNextService,

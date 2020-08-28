@@ -1,7 +1,9 @@
 import React from 'react'
 import { RefreshControl, StyleSheet } from 'react-native'
+import Config from 'react-native-config'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { ActivityIndicator, MessageWithAction, Text, TextLink, View } from './'
@@ -12,6 +14,7 @@ type Props = {
   disableLeftSwipe: boolean
   extraData?: any
   handleAddPodcastByRSSURLNavigation?: any
+  handleAddPodcastByRSSQRCodeNavigation?: any
   handleFilterInputChangeText?: any
   handleFilterInputClear?: any
   handleRequestPodcast?: any
@@ -31,6 +34,7 @@ type Props = {
   renderItem: any
   resultsText?: string
   showAddPodcastByRSS?: boolean
+  showAddPodcastByQR?: boolean
   showNoInternetConnectionMessage?: boolean
   showRequestPodcast?: boolean
   transparent?: boolean
@@ -46,6 +50,7 @@ export const PVFlatList = (props: Props) => {
     disableLeftSwipe = true,
     extraData,
     handleAddPodcastByRSSURLNavigation,
+    handleAddPodcastByRSSQRCodeNavigation,
     handleSearchNavigation,
     handleRequestPodcast,
     hideEndOfResults,
@@ -62,6 +67,7 @@ export const PVFlatList = (props: Props) => {
     renderItem,
     resultsText = 'results',
     showAddPodcastByRSS,
+    showAddPodcastByQR,
     showNoInternetConnectionMessage,
     showRequestPodcast,
     transparent
@@ -91,7 +97,7 @@ export const PVFlatList = (props: Props) => {
 
   const requestPodcastTextLink = (
     <TextLink fontSizeLargestScale={PV.Fonts.largeSizes.md} onPress={handleRequestPodcast} style={textLinkStyle}>
-      Request Podcast
+      {translate('Request Podcast')}
     </TextLink>
   )
 
@@ -100,24 +106,34 @@ export const PVFlatList = (props: Props) => {
       fontSizeLargestScale={PV.Fonts.largeSizes.md}
       onPress={handleAddPodcastByRSSURLNavigation}
       style={textLinkStyle}>
-      Add Podcast by RSS Feed
+      {translate('Add Podcast by RSS Feed')}
     </TextLink>
   )
+
+  const scanRSSCode = (
+    <TextLink
+      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+      onPress={handleAddPodcastByRSSQRCodeNavigation}
+      style={textLinkStyle}>
+      Scan RSS Feed QR Code
+    </TextLink>
+  )
+
   return (
     <View style={styles.view} transparent={transparent}>
-      {!noSubscribedPodcasts && ListHeaderComponent && <ListHeaderComponent />}
+      {!noSubscribedPodcasts && ListHeaderComponent && !Config.DISABLE_FILTER_TEXT_QUERY && <ListHeaderComponent />}
       {noSubscribedPodcasts && !showNoInternetConnectionMessage && !isLoadingMore && (
         <MessageWithAction
           topActionHandler={handleSearchNavigation}
-          topActionText='Search'
-          message='You have no subscribed podcasts'
+          topActionText={translate('Search')}
+          message={translate('You are not subscribed to any podcasts')}
         />
       )}
       {showNoInternetConnectionMessage && !dataTotalCount && !isLoadingMore && (
         <View style={styles.msgView} transparent={transparent}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            style={noResultsFoundTextStyle}>{`No internet connection`}</Text>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={noResultsFoundTextStyle}>{`${translate(
+            'No internet connection'
+          )}`}</Text>
         </View>
       )}
       {noResultsFound && !noSubscribedPodcasts && !isLoadingMore && !showNoInternetConnectionMessage && (
@@ -127,6 +143,7 @@ export const PVFlatList = (props: Props) => {
           </Text>
           {showRequestPodcast && requestPodcastTextLink}
           {showAddPodcastByRSS && addPodcastByRSSTextLink}
+          {showAddPodcastByQR && scanRSSCode}
         </View>
       )}
       {((!noSubscribedPodcasts && !noResultsFound) || isLoadingMore) && (

@@ -1,6 +1,6 @@
 {
-  "name": "podverse",
-  "version": "2.7.1",
+  "name": "podable",
+  "version": "1.0.0",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -8,7 +8,6 @@
     "Gary Johnson"
   ],
   "scripts": {
-    "build-assets": "webpack",
     "dev": "react-native start",
     "dev:android": "react-native run-android",
     "dev:ios": "react-native run-ios --simulator 'iPhone 11 Pro Max'",
@@ -17,6 +16,11 @@
     "format": "prettier --write src/**/*.ts*",
     "test:e2e:android": "export $(cat .env | xargs) && DEVICE_TYPE=Android BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./functions/tests/e2e/index.js",
     "test:e2e:ios": "export $(cat .env | xargs) && DEVICE_TYPE=iOS BROWSERSTACK_DEVICE='iPhone 11 Pro Max' BROWSERSTACK_OS_VERSION='13.0' node ./functions/tests/e2e/index.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -27,11 +31,6 @@
       "tslint",
       "git add"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "dependencies": {
     "@babel/helper-validator-identifier": "7.10.4",
@@ -49,18 +48,19 @@
     "axios": "0.19.0",
     "bad-words": "3.0.3",
     "bottleneck": "2.19.1",
-    "copy-webpack-plugin": "6.0.3",
     "eventemitter3": "4.0.0",
     "he": "1.2.0",
     "i18n-js": "3.7.1",
     "linkifyjs": "2.1.8",
     "lodash": "4.17.19",
     "lodash.memoize": "4.1.2",
+    "podverse-shared": "^1.0.3",
     "react": "16.12.0",
     "react-native": "0.61.5",
     "react-native-background-downloader": "2.3.4",
     "react-native-background-fetch": "2.7.1",
     "react-native-background-timer": "2.1.1",
+    "react-native-camera": "^3.30.0",
     "react-native-cheerio": "1.0.0-rc.4",
     "react-native-config": "1.0.0",
     "react-native-device-info": "5.5.3",
@@ -84,7 +84,7 @@
     "react-native-system-setting": "1.7.4",
     "react-native-track-player": "1.2.3",
     "react-native-vector-icons": "6.6.0",
-    "react-native-webview": "7.4.2",
+    "react-native-webview": "10.7.0",
     "react-navigation": "4.3.7",
     "react-navigation-drawer": "1.4.0",
     "react-navigation-stack": "1.7.3",
@@ -92,8 +92,7 @@
     "reactn": "2.2.4",
     "rss-parser": "3.7.3",
     "validator": "12.2.0",
-    "wd": "1.12.1",
-    "webpack": "4.44.1"
+    "wd": "1.12.1"
   },
   "devDependencies": {
     "@babel/core": "7.4.5",
@@ -125,8 +124,7 @@
     "tslint-config-standard": "8.0.1",
     "tslint-plugin-prettier": "2.1.0",
     "tslint-react": "3.6.0",
-    "typescript": "3.3.3333",
-    "webpack-cli": "3.3.12"
+    "typescript": "3.3.3333"
   },
   "isSwift": true
 }

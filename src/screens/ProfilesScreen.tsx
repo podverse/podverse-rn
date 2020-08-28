@@ -9,6 +9,7 @@ import {
   SwipeRowBack,
   View
 } from '../components'
+import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -32,7 +33,7 @@ type State = {
 export class ProfilesScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: 'Profiles'
+      title: translate('Profiles')
     }
   }
 
@@ -98,7 +99,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
         onPress={() =>
           this.props.navigation.navigate(PV.RouteNames.ProfileScreen, {
             user: item,
-            navigationTitle: 'Profile'
+            navigationTitle: translate('Profile')
           })
         }
       />
@@ -109,12 +110,12 @@ export class ProfilesScreen extends React.Component<Props, State> {
     <SwipeRowBack
       isLoading={this.state.isUnsubscribing}
       onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      text='Remove'
+      text={translate('Remove')}
     />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
-    const wasAlerted = await alertIfNoNetworkConnection('unsubscribe from this profile')
+    const wasAlerted = await alertIfNoNetworkConnection(translate('unsubscribe from this profile'))
     if (wasAlerted) return
 
     this.setState({ isUnsubscribing: true }, async () => {
@@ -154,7 +155,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
             />
           )}
           {!isLoading && flatListData && flatListData.length === 0 && (
-            <MessageWithAction message='You have no subscribed profiles' />
+            <MessageWithAction message={translate('You have no subscribed profiles')} />
           )}
         </View>
       </View>

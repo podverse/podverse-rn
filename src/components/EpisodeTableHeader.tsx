@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
+import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
@@ -49,9 +50,11 @@ export const EpisodeTableHeader = (props: Props) => {
               {title}
             </Text>
             <View style={styles.textWrapperBottomRow}>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.pubDate}>
-                {readableDate(pubDate)}
-              </Text>
+              {!!pubDate && (
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.pubDate}>
+                  {readableDate(pubDate)}
+                </Text>
+              )}
               {isDownloaded && <IndicatorDownload />}
             </View>
           </View>
@@ -64,7 +67,7 @@ export const EpisodeTableHeader = (props: Props) => {
             fontSizeLargerScale={PV.Fonts.largeSizes.md}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={styles.notFoundText}>
-            Episode Not Found
+            {translate('Episode Not Found')}
           </Text>
         </View>
       )}
