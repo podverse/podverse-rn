@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { Alert, AppState, Linking, Platform, StyleSheet, View as RNView } from 'react-native'
+import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
@@ -31,6 +32,7 @@ import {
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
+import { getAddByRSSPodcasts } from '../state/actions/parser'
 import {
   initializePlaybackSpeed,
   initializePlayerQueue,
@@ -582,6 +584,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
     } else if (queryFrom === PV.Filters._downloadedKey) {
       flatListData = this.global.downloadedPodcasts
       flatListDataTotalCount = this.global.downloadedPodcasts && this.global.downloadedPodcasts.length
+    } else if (queryFrom === PV.Filters._addedByRSSKey) {
+      flatListData = this.global.addByRSSPodcasts
+      flatListDataTotalCount = this.global.addByRSSPodcasts && this.global.addByRSSPodcasts.length
     } else {
       flatListData = this.state.flatListData
       flatListDataTotalCount = this.state.flatListDataTotalCount
@@ -721,8 +726,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const hasInternetConnection = await hasValidNetworkConnection()
 
       if (filterKey === PV.Filters._subscribedKey) {
-        await getAuthUserInfo() // get the latest subscribedPodcastIds first
-        await this._querySubscribedPodcasts()
+        if (Config.DISABLE_API_SUBSCRIBED_PODCASTS) {
+          await handleAddByRSSPodcasts()
+        } else {
+          await getAuthUserInfo() // get the latest subscribedPodcastIds first
+          await this._querySubscribedPodcasts()
+        }
       } else if (filterKey === PV.Filters._downloadedKey) {
         const podcasts = await getDownloadedPodcasts()
         newState.endOfResultsReached = true
@@ -755,6 +764,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
           newState.flatListDataTotalCount = podcastResults[1]
         }
+      } else if (filterKey === PV.Filters._addedByRSSKey) {
+        await getAddByRSSPodcasts()
       } else if (PV.FilterOptions.screenFilters.PodcastsScreen.sort.some((option) => option === filterKey)) {
         newState.showNoInternetConnectionMessage = !hasInternetConnection
 

@@ -75,6 +75,8 @@ export interface InitialState {
   downloadedPodcastEpisodeCounts: any
   downloadedEpisodeLimitCount: number
   downloadedEpisodeLimitDefault: number | null
+  downloadedPodcasts: any[]
+  addByRSSPodcasts: any[]
   censorNSFWText?: boolean
   offlineModeEnabled?: any
   overlayAlert: {

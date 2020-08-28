@@ -13,6 +13,8 @@ declare module 'reactn/default' {
     downloadedPodcastEpisodeCounts: any
     downloadedEpisodeLimitCount: number
     downloadedEpisodeLimitDefault: number | null
+    downloadedPodcasts: any[]
+    addByRSSPodcasts: any[]
     offlineModeEnabled: any
     overlayAlert: {
       shouldShowAlert: boolean

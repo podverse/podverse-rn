@@ -9,6 +9,16 @@ import {
 } from '../../services/parser'
 import { getSubscribedPodcastsLocally, sortPodcastArrayAlphabetically } from '../../services/podcast'
 
+export const getAddByRSSPodcasts = async () => {
+  try {
+    const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
+    setGlobal({ addByRSSPodcasts })
+  } catch (error) {
+    console.log('getAddByRSSPodcasts', error)
+    throw error
+  }
+}
+
 export const addAddByRSSPodcast = async (feedUrl: string) => {
   if (!feedUrl) return
 
