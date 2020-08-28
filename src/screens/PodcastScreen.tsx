@@ -151,6 +151,8 @@ export class PodcastScreen extends React.Component<Props, State> {
     // use the podcast from local storage.
     if (addByRSSPodcastFeedUrl) {
       podcast = await getAddByRSSPodcastLocally(addByRSSPodcastFeedUrl)
+    } else if (!hasInternetConnection && podcastId) {
+      podcast = await getPodcast(podcastId)
     }
 
     this.setState(
