@@ -42,5 +42,6 @@ export const RouteNames = {
   SleepTimerScreen: 'SleepTimerScreen',
   TabNavigator: 'TabNavigator',
   TermsOfServiceScreen: 'TermsOfServiceScreen',
-  WebPageScreen: 'WebPageScreen'
+  WebPageScreen: 'WebPageScreen',
+  ScanQRCodeScreen: 'ScanQRCodeScreen'
 }
