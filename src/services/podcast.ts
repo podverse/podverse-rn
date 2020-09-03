@@ -58,7 +58,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   }
   const isConnected = await hasValidNetworkConnection()
 
-  if (isConnected && !Config.DISABLE_API_SUBSCRIBED_PODCASTS) {
+  if (isConnected) {
     try {
       const date = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED)
       const dateObj = (date && new Date(date).toISOString()) || new Date().toISOString()

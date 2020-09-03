@@ -72,7 +72,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       queryFrom:
         subscribedPodcastIds && subscribedPodcastIds.length > 0
           ? PV.Filters._subscribedKey
-          : PV.Filters._allPodcastsKey,
+          : Config.DEFAULT_QUERY_EPISODES_SCREEN,
       queryPage: 1,
       querySort:
         subscribedPodcastIds && subscribedPodcastIds.length > 0 ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
@@ -487,24 +487,20 @@ export class EpisodesScreen extends React.Component<Props, State> {
       }
 
       if (filterKey === PV.Filters._subscribedKey) {
-        if (Config.DISABLE_API_SUBSCRIBED_PODCASTS) {
-          await handleAddByRSSEpisodes()
-        } else {
-          const results = await getEpisodes(
-            {
-              sort: querySort,
-              page: queryPage,
-              podcastId,
-              ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-              subscribedOnly: true,
-              includePodcast: true
-            },
-            this.global.settings.nsfwMode
-          )
-          newState.flatListData = [...flatListData, ...results[0]]
-          newState.endOfResultsReached = newState.flatListData.length >= results[1]
-          newState.flatListDataTotalCount = results[1]
-        }
+        const results = await getEpisodes(
+          {
+            sort: querySort,
+            page: queryPage,
+            podcastId,
+            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+            subscribedOnly: true,
+            includePodcast: true
+          },
+          this.global.settings.nsfwMode
+        )
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
       } else if (filterKey === PV.Filters._downloadedKey) {
         const downloadedEpisodes = await getDownloadedEpisodes()
         newState.flatListData = [...downloadedEpisodes]
