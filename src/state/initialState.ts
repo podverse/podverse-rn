@@ -47,7 +47,7 @@ const initialTheme: InitialState = {
   },
   purchase: {
     isLoading: true,
-    message: 'Updating the Podverse servers...',
+    message: 'Please wait while this process completes...',
     productId: '',
     purchaseToken: '',
     showContactSupportLink: false,

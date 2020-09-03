@@ -49,7 +49,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
       headerRight: (
         <RNView style={core.row}>
           <NavShareIcon
-            endingText=' – playlist shared using Podverse'
+            endingText={translate('shared using brandName')}
             playlistTitle={playlistTitle}
             url={PV.URLs.playlist + playlistId}
           />

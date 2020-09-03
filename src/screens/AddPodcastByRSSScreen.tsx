@@ -49,15 +49,9 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { navigation } = this.props
     this.props.navigation.setParams({
       _handleSavePodcastByRSSURL: this._handleSavePodcastByRSSURL
     })
-    const feedUrl = navigation.getParam('podverse-param')
-
-    if (feedUrl) {
-      this.setState({ url: feedUrl })
-    }
 
     gaTrackPageView('/add-podcast-by-rss', 'Add Podcast By RSS Screen')
   }

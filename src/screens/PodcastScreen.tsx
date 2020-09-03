@@ -89,7 +89,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
-              endingText={translate('shared using Podverse')}
+              endingText={translate('shared using brandName')}
               podcastTitle={podcastTitle}
               url={PV.URLs.podcast + podcastId}
             />

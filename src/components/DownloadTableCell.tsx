@@ -29,7 +29,7 @@ export class DownloadTableCell extends React.PureComponent<Props> {
       hasZebraStripe,
       onPress,
       percent,
-      podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
+      podcastImageUrl,
       podcastTitle = translate('untitled podcast'),
       status
     } = this.props
