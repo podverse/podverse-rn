@@ -24,7 +24,7 @@
 		00E356F21AD99517003FC87E /* podableTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = podableTests.m; sourceTree = "<group>"; };
 		0FB9198B9A98467296E5E232 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = ../assets/fonts/MaterialIcons.ttf; sourceTree = "<group>"; };
 		12E55D5FD70A6A02FF301CA0 /* Pods-podable-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-podable-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-podable-tvOS/Pods-podable-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* podable.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = podable.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Podable.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Podable.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = podable/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = podable/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = podable/Images.xcassets; sourceTree = "<group>"; };
@@ -187,7 +187,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* podable.app */,
+				13B07F961A680F5B00A75B9A /* Podable.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -213,7 +213,7 @@
 			);
 			name = podable;
 			productName = podable;
-			productReference = 13B07F961A680F5B00A75B9A /* podable.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Podable.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -403,7 +403,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.podable;
-				PRODUCT_NAME = podable;
+				PRODUCT_NAME = Podable;
 				SWIFT_OBJC_BRIDGING_HEADER = "podable-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "podable-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -432,7 +432,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.podable;
-				PRODUCT_NAME = podable;
+				PRODUCT_NAME = Podable;
 				SWIFT_OBJC_BRIDGING_HEADER = "podable-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "podable-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

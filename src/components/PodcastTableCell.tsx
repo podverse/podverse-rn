@@ -27,7 +27,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       id,
       lastEpisodePubDate,
       onPress,
-      podcastImageUrl = PV.Images.SQUARE_PLACEHOLDER,
+      podcastImageUrl,
       podcastTitle = translate('untitled podcast'),
       showAutoDownload,
       showDownloadCount,

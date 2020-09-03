@@ -1,5 +1,5 @@
 export const Colors = {
-  brandColor: '#2968B1',
+  brandColor: '#399ACA',
   white: '#ffffff',
   grayLightestZ: '#f7f7f7', // only used in zebra stripe cells
   grayLightest: '#eeeeee',
