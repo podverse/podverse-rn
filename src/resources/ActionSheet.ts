@@ -162,10 +162,10 @@ const mediaMoreButtons = (
             if (item.clipId) {
               url = PV.URLs.clip + item.clipId
               title = item.clipTitle ? item.clipTitle : translate('untitled clip –')
-              title += ` ${item.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using Podverse')}`
+              title += ` ${item.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
             } else if (item.episodeId) {
               url = PV.URLs.episode + item.episodeId
-              title += `${item.podcastTitle} – ${item.episodeTitle} – ${translate('shared using Podverse')}`
+              title += `${item.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
             }
             await Share.open({
               title,

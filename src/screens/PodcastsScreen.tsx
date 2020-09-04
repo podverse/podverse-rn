@@ -287,7 +287,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     if (subscribedPodcastIds && subscribedPodcastIds.length > 0) {
       this.selectLeftItem(PV.Filters._subscribedKey, PV.Filters._alphabeticalKey)
     } else {
-      this.selectLeftItem(PV.Filters._allPodcastsKey, PV.Filters._topPastWeek)
+      this.selectLeftItem(Config.DEFAULT_QUERY_PODCASTS_SCREEN, PV.Filters._topPastWeek)
     }
 
     await initDownloads()
@@ -730,12 +730,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       const hasInternetConnection = await hasValidNetworkConnection()
 
       if (filterKey === PV.Filters._subscribedKey) {
-        if (Config.DISABLE_API_SUBSCRIBED_PODCASTS) {
-          await getAddByRSSPodcasts()
-        } else {
-          await getAuthUserInfo() // get the latest subscribedPodcastIds first
-          await this._querySubscribedPodcasts()
-        }
+        await getAuthUserInfo() // get the latest subscribedPodcastIds first
+        await this._querySubscribedPodcasts()
       } else if (filterKey === PV.Filters._downloadedKey) {
         const podcasts = await getDownloadedPodcasts()
         newState.endOfResultsReached = true

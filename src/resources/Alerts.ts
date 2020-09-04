@@ -4,9 +4,7 @@ import { sendVerificationEmail } from '../services/auth'
 import { logoutUser } from '../state/actions/auth'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 
-const _expiredMessage = translate(
-  'To renew your membership please visit podversefm login then go to your Settings page'
-)
+const _expiredMessage = translate('To renew your membership please visit the Membership page')
 const _logoutButtonText = translate('Log Out')
 const _networkErrorTitle = translate('Network error')
 const _sendEmailText = translate('Send Email')
@@ -45,7 +43,7 @@ export const Alerts = {
   LEAVING_APP: {
     title: translate('Leaving App'),
     message: translate(
-      'You are about to be navigated to a website outside the app Are you sure you want to leave Podverse'
+      'You are about to be navigated to a website outside the app Are you sure you want to leave brandName'
     )
   },
   LOGIN_INVALID: {

@@ -40,12 +40,14 @@ export const getMediaRef = async (id: string) => {
 }
 
 export const getMediaRefs = async (query: any = {}, nsfwMode: boolean) => {
+  const searchAllFieldsText = query.searchAllFieldsText ? encodeURIComponent(query.searchAllFieldsText) : ''
+
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
     ...(query.podcastId ? { podcastId: query.podcastId } : {}),
     ...(query.episodeId ? { episodeId: query.episodeId } : {}),
-    ...(query.searchAllFieldsText ? { searchAllFieldsText: query.searchAllFieldsText } : {}),
+    ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
     ...(query.includeEpisode ? { includeEpisode: true } : {}),
     ...(query.includePodcast ? { includePodcast: true } : {})
   } as any

@@ -1,5 +1,7 @@
+import Config from 'react-native-config'
+
 export const DeepLinks = {
-  prefix: 'podverse://',
+  prefix: Config.DEEP_LINK_PREFIX,
   AddByRSSPodcastFeedUrl: {
     path: 'podcast-by-feed-url/add*',
     pathPrefix: 'podcast-by-feed-url',
