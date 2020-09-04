@@ -62,7 +62,7 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
             <Text
               onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}
               style={styles.copyLeftText}>
-              {translate('All Podverse software is provided free and open source under the AGPLv3 license')}
+              {translate('All brandName software is provided free and open source under the AGPLv3 license')}
             </Text>
           </RNView>
           <RNView style={styles.copyLeftWrapper}>

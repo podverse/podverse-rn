@@ -9,7 +9,7 @@ export const purchaseLoading = () => {
     purchase: {
       ...globalState.purchase,
       isLoading: true,
-      message: 'Updating the Podverse servers...',
+      message: 'Please wait while this process completes...',
       showContactSupportLink: false,
       showDismissLink: false,
       showRetryLink: false,

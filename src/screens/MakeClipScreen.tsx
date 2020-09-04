@@ -283,7 +283,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   const { nowPlayingItem = {} } = this.global.player
                   const title = `${data.title || translate('untitled clip')} – ${nowPlayingItem.podcastTitle} – ${
                     nowPlayingItem.episodeTitle
-                  }${translate('clip created using Podverse')}`
+                  }${translate('clip created using brandName')}`
                   try {
                     await Share.open({
                       title,

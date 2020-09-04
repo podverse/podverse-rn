@@ -441,15 +441,15 @@ export class PlayerScreen extends React.Component<Props, State> {
     let title = ''
     if (podcastId) {
       url = PV.URLs.podcast + podcastId
-      title = `${nowPlayingItem.podcastTitle}${translate('shared using Podverse')}`
+      title = `${nowPlayingItem.podcastTitle}${translate('shared using brandName')}`
     } else if (episodeId) {
       url = PV.URLs.episode + episodeId
-      title = `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate('shared using Podverse')}`
+      title = `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate('shared using brandName')}`
     } else {
       url = PV.URLs.clip + mediaRefId
       title = `${nowPlayingItem.clipTitle ? nowPlayingItem.clipTitle + ' – ' : translate('untitled clip – ')}`
       title += `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate(
-        'clip shared using Podverse'
+        'clip shared using brandName'
       )}`
     }
 
