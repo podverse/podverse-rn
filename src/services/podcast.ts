@@ -24,12 +24,15 @@ export const getPodcast = async (id: string) => {
 }
 
 export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
+  const searchAuthor = query.searchAuthor ? encodeURIComponent(query.searchAuthor) : ''
+  const searchTitle = query.searchTitle ? encodeURIComponent(query.searchTitle) : ''
+
   const filteredQuery = {
     ...(query.maxResults ? { maxResults: true } : {}),
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' }),
-    ...(query.searchAuthor ? { searchAuthor: query.searchAuthor } : {}),
-    ...(query.searchTitle ? { searchTitle: query.searchTitle } : {})
+    ...(searchAuthor ? { searchAuthor } : {}),
+    ...(searchTitle ? { searchTitle } : {})
   } as any
 
   if (query.categories && query.categories !== PV.Filters._allCategoriesKey) {
