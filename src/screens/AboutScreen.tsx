@@ -45,9 +45,8 @@ export class AboutScreen extends React.Component<Props, State> {
               ' to make our technologies as cross-compatible and convenient for people as possible.'}
           </Text>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {'All Podverse software is provided free and open source (FOSS)' +
-              ' but features that require updating our servers' +
-              ' are available only with a Premium membership.' +
+            {'All Podverse software is provided under a free and open source (FOSS) licence.' +
+              ' Features that use our servers are available only with a Premium membership.' +
               ' Sign up today and get 1 year of Premium for free!'}
           </Text>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
