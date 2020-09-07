@@ -387,7 +387,8 @@ export class ClipsScreen extends React.Component<Props, State> {
       showNoInternetConnectionMessage
     } = this.state
     const { offlineModeEnabled, session } = this.global
-    const { subscribedPodcastIds } = this.global.session.userInfo
+    const subscribedPodcastIds = safelyUnwrapNestedVariable(() => session.userInfo.subscribedPodcastIds, '')
+    const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
 
     const noSubscribedPodcasts =
       queryFrom === PV.Filters._subscribedKey &&
@@ -401,6 +402,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
+          isLoggedIn={isLoggedIn}
           screenName='ClipsScreen'
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort}
@@ -469,6 +471,17 @@ export class ClipsScreen extends React.Component<Props, State> {
           <Dialog.Button label={translate('Delete')} onPress={this._deleteMediaRef} />
         </Dialog.Container>
       </View>
+    )
+  }
+
+  _getLoggedInUserMediaRefs = async (queryPage?: number, newSortFilter?: string) => {
+    return getLoggedInUserMediaRefs(
+      {
+        sort: newSortFilter ? newSortFilter : PV.Filters._mostRecentKey,
+        page: queryPage ? queryPage : 1,
+        includePodcast: true
+      },
+      this.global.settings.nsfwMode
     )
   }
 
@@ -541,14 +554,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === PV.Filters._myClipsKey) {
-        const results = await getLoggedInUserMediaRefs(
-          {
-            sort: PV.Filters._mostRecentKey,
-            page: queryPage,
-            includePodcast: true
-          },
-          this.global.settings.nsfwMode
-        )
+        const results = await this._getLoggedInUserMediaRefs(queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
@@ -571,17 +577,23 @@ export class ClipsScreen extends React.Component<Props, State> {
           newState.flatListDataTotalCount = podcastResults[1]
         }
       } else if (PV.FilterOptions.screenFilters.ClipsScreen.sort.some((option) => option === filterKey)) {
-        const results = await getMediaRefs(
-          {
-            ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedSubCategory),
-            ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
-            sort: filterKey,
-            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-            subscribedOnly: queryFrom === PV.Filters._subscribedKey,
-            includePodcast: true
-          },
-          nsfwMode
-        )
+        let results = []
+        if (queryFrom === PV.Filters._myClipsKey) {
+          results = await this._getLoggedInUserMediaRefs(queryPage, filterKey)
+        } else {
+          results = await getMediaRefs(
+            {
+              ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedSubCategory),
+              ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
+              sort: filterKey,
+              ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+              subscribedOnly: queryFrom === PV.Filters._subscribedKey,
+              includePodcast: true
+            },
+            nsfwMode
+          )
+        }
+
         newState.flatListData = results[0]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
