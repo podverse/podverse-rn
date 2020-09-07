@@ -205,7 +205,12 @@ const comparisonData = [
     column2: true
   },
   {
-    text: translate('create sharable clips'),
+    text: translate('light / dark mode'),
+    column1: true,
+    column2: true
+  },
+  {
+    text: translate('create and share clips'),
     column1: false,
     column2: true
   },
