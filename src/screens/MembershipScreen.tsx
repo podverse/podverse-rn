@@ -190,11 +190,6 @@ const comparisonData = [
     column2: true
   },
   {
-    text: translate('play clips and episodes'),
-    column1: true,
-    column2: true
-  },
-  {
     text: translate('download episodes'),
     column1: true,
     column2: true
@@ -205,13 +200,13 @@ const comparisonData = [
     column2: true
   },
   {
-    text: translate('create sharable clips of any length'),
+    text: translate('sleep timer'),
     column1: true,
     column2: true
   },
   {
-    text: translate('sleep timer'),
-    column1: true,
+    text: translate('create sharable clips'),
+    column1: false,
     column2: true
   },
   {
@@ -226,16 +221,6 @@ const comparisonData = [
   },
   {
     text: translate('create playlists'),
-    column1: false,
-    column2: true
-  },
-  {
-    text: translate('edit your clips'),
-    column1: false,
-    column2: true
-  },
-  {
-    text: translate('share your user profile'),
     column1: false,
     column2: true
   },

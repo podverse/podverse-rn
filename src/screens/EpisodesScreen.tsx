@@ -271,7 +271,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.podcast))}
         handleNavigationPress={() =>
           this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
-            episode: item
+            episode: item,
+            includeGoToPodcast: true
           })
         }
         hasZebraStripe={isOdd(index)}
@@ -437,8 +438,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
               this._handleCancelPress,
               this._handleDownloadPressed,
               null, // handleDeleteEpisode
-              true, // includeGoToPodcast
-              true // includeGoToEpisode
+              false, // includeGoToPodcast
+              false // includeGoToEpisode
             )
           }
           showModal={showActionSheet}

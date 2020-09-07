@@ -241,11 +241,6 @@ const allMoreFeatures = [
     testId: 'more_screen_my_profile_cell'
   },
   {
-    title: translate('My Clips'),
-    key: _myClipsKey,
-    testId: 'more_screen_my_clips_cell'
-  },
-  {
     title: translate('Log out'),
     key: _logoutKey,
     testId: 'more_screen_log_out_cell'
