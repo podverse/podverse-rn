@@ -19,7 +19,7 @@ import {
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { getAppUserAgent, isOdd, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { getAppUserAgent, isOdd, setAppUserAgent, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
@@ -103,6 +103,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
   async componentDidMount() {
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
+
+    await setAppUserAgent()
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
