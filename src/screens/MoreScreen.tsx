@@ -35,6 +35,7 @@ export class MoreScreen extends React.Component<Props, State> {
 
   _moreFeaturesOptions = (isLoggedIn: boolean) => {
     const moreFeaturesList = Config.NAV_STACK_MORE_FEATURES.split(',')
+    const loggedInFeatures = [_playlistsKey, _profilesKey, _myProfileKey, _logoutKey]
 
     return allMoreFeatures
       .filter((item: any) => {
@@ -44,7 +45,7 @@ export class MoreScreen extends React.Component<Props, State> {
         if (isLoggedIn) {
           return item.key !== _loginKey
         } else {
-          return item.key !== _logoutKey
+          return !loggedInFeatures.some((screenKey: any) => item.key === screenKey)
         }
       })
   }
