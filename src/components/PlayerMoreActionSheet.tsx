@@ -100,7 +100,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     }
   }
 
-  _handleOfficialHomePagePress = (podcast: any) => {
+  _handleOfficialPodcastPagePress = (podcast: any) => {
     const { handleDismiss } = this.props
     handleDismiss()
     Linking.openURL(podcast.linkUrl)
@@ -148,7 +148,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
           ''
         )}>
         <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>
-          {translate('Podcast Page')}
+          {translate('Go to Podcast')}
         </Text>
       </TouchableHighlight>
     ]
@@ -156,8 +156,8 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     if (podcast && podcast.linkUrl) {
       children.push(
         <TouchableHighlight
-          key='officialHomePage'
-          onPress={() => this._handleOfficialHomePagePress(podcast)}
+          key='officialPodcastPage'
+          onPress={() => this._handleOfficialPodcastPagePress(podcast)}
           style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
           underlayColor={safelyUnwrapNestedVariable(
             () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
