@@ -4,6 +4,7 @@ import Config from 'react-native-config'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
 import { translate } from '../lib/i18n'
+import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { ActionSheet, NavItemIcon, NavItemWrapper } from './'
 
@@ -47,7 +48,8 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
   }
 
   render() {
-    if (Config.DISABLE_ADD_TO_PLAYLIST) return null
+    const isLoggedIn = safelyUnwrapNestedVariable(() => this.global.session.isLoggedIn, false)
+    if (Config.DISABLE_ADD_TO_PLAYLIST || !isLoggedIn) return null
 
     const { getEpisodeId, getMediaRefId, navigation } = this.props
     const episodeId = getEpisodeId ? getEpisodeId() : null
