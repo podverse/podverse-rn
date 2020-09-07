@@ -543,7 +543,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       } else if (filterKey === PV.Filters._myClipsKey) {
         const results = await getLoggedInUserMediaRefs(
           {
-            sort: querySort,
+            sort: PV.Filters._mostRecentKey,
             page: queryPage,
             includePodcast: true
           },
