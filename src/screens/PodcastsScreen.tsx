@@ -104,7 +104,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
 
-    await setAppUserAgent()
+    // Don't await setAppUserAgent, because it may take a long time to complete,
+    // and we don't want it to block initializing the app.
+    setAppUserAgent()
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
