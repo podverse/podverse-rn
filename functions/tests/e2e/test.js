@@ -102,13 +102,11 @@ const runTests = async (customCapabilities) => {
 
     await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view', goBack)
 
-    await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', goBack)
+    // await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', goBack)
 
-    await elementByIdAndClickAndTest('more_screen_profiles_cell', 'profiles_screen_view', goBack)
+    // await elementByIdAndClickAndTest('more_screen_profiles_cell', 'profiles_screen_view', goBack)
 
-    await elementByIdAndClickAndTest('more_screen_my_profile_cell', 'profile_screen_view', goBack)
-
-    await elementByIdAndClickAndTest('more_screen_my_clips_cell', 'profile_screen_view', goBack)
+    // await elementByIdAndClickAndTest('more_screen_my_profile_cell', 'profile_screen_view', goBack)
 
     await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view', goBack)
 
