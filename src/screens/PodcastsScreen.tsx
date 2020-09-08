@@ -105,10 +105,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
 
-    // Don't await setAppUserAgent, because it may take a long time to complete,
-    // and we don't want it to block initializing the app.
-    setAppUserAgent()
-
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
       if (!appHasLaunched) {
@@ -277,7 +273,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
     await initPlayerState(this.global)
     await initializeSettings()
 
-    // Set the userAgent on the global state so it can be accessed synchronously
+    // Set the appUserAgent one time on initialization, then retrieve from a constant
+    // using the getAppUserAgent method, or from the global state (for synchronous access).
+    await setAppUserAgent()
     const userAgent = await getAppUserAgent()
     this.setGlobal({ userAgent })
 
