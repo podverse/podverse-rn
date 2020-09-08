@@ -43,21 +43,21 @@ export const MessageWithAction = (props: Props) => {
           {subMessage}
         </Text>
       )}
-      {!isLoading && !!topActionText && topActionHandler && (
+      {!isLoading && !!topActionText && !!topActionHandler && (
         <TouchableOpacity onPress={topActionHandler}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.button, globalTheme.text]}>
             {topActionText}
           </Text>
         </TouchableOpacity>
       )}
-      {!isLoading && !!middleActionText && middleActionHandler && (
+      {!isLoading && !!middleActionText && !!middleActionHandler && (
         <TouchableOpacity onPress={middleActionHandler}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.button, globalTheme.text]}>
             {middleActionText}
           </Text>
         </TouchableOpacity>
       )}
-      {!isLoading && !!bottomActionText && bottomActionHandler && (
+      {!isLoading && !!bottomActionText && !!bottomActionHandler && (
         <TouchableOpacity onPress={bottomActionHandler}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.button, globalTheme.text]}>
             {bottomActionText}
