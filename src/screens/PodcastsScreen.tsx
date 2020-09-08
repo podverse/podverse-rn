@@ -23,6 +23,7 @@ import { getAppUserAgent, isOdd, setAppUserAgent, setCategoryQueryProperty, test
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
+import { getAddByRSSPodcastsLocally } from '../services/parser'
 import {
   checkIdlePlayerState,
   getNowPlayingItemFromQueueOrHistoryByTrackId,
@@ -103,10 +104,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
   async componentDidMount() {
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
-
-    // Don't await setAppUserAgent, because it may take a long time to complete,
-    // and we don't want it to block initializing the app.
-    setAppUserAgent()
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
@@ -276,7 +273,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
     await initPlayerState(this.global)
     await initializeSettings()
 
-    // Set the userAgent on the global state so it can be accessed synchronously
+    // Set the appUserAgent one time on initialization, then retrieve from a constant
+    // using the getAppUserAgent method, or from the global state (for synchronous access).
+    await setAppUserAgent()
     const userAgent = await getAppUserAgent()
     this.setGlobal({ userAgent })
 
@@ -287,8 +286,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
       // If getAuthUserInfo fails, continue with the networkless version of the app
     }
 
-    const { subscribedPodcastIds } = this.global.session.userInfo
-    if (subscribedPodcastIds && subscribedPodcastIds.length > 0) {
+    const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
+    const { addByRSSPodcastFeedUrls, subscribedPodcastIds } = this.global.session.userInfo
+
+    /*
+     * If any podcasts are saved in local storage, or in the auth user object,
+     * then default to the Subscribed filter, else fallback to the All Podcasts filter.
+     */
+    if (
+      (subscribedPodcastIds && subscribedPodcastIds.length > 0) ||
+      (addByRSSPodcasts && addByRSSPodcasts.length > 0) ||
+      (addByRSSPodcastFeedUrls && addByRSSPodcastFeedUrls.length > 0)
+    ) {
       this.selectLeftItem(PV.Filters._subscribedKey, PV.Filters._alphabeticalKey)
     } else {
       this.selectLeftItem(Config.DEFAULT_QUERY_PODCASTS_SCREEN, PV.Filters._topPastWeek)
