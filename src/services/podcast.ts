@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import Config from 'react-native-config'
 import { setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedPodcast, removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
@@ -53,7 +52,15 @@ export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
 }
 
 export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
-  if (subscribedPodcastIds.length < 1) return []
+  const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
+
+  if (subscribedPodcastIds.length < 1 && addByRSSPodcasts.length < 1) return []
+
+  if (subscribedPodcastIds.length < 1 && addByRSSPodcasts.length > 0) {
+    const combinedPodcasts = await combineWithAddByRSSPodcasts()
+    return [combinedPodcasts, combinedPodcasts.length]
+  }
+
   const query = {
     podcastIds: subscribedPodcastIds,
     sort: 'alphabetical',
@@ -241,10 +248,16 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
 
 export const sortPodcastArrayAlphabetically = (podcasts: any[]) => {
   podcasts.sort((a, b) => {
-    let titleA = a.sortableTitle ? a.sortableTitle.toLowerCase().trim() : a.title.toLowerCase().trim()
-    let titleB = b.sortableTitle ? b.sortableTitle.toLowerCase().trim() : b.title.toLowerCase().trim()
-    titleA = titleA ? titleA.replace(/#/g, '') : ''
-    titleB = titleB ? titleB.replace(/#/g, '') : ''
+    let titleA = a.sortableTitle || a.title || ''
+    let titleB = b.sortableTitle || b.title || ''
+    titleA = titleA
+      .toLowerCase()
+      .trim()
+      .replace(/#/g, '')
+    titleB = titleB
+      .toLowerCase()
+      .trim()
+      .replace(/#/g, '')
     return titleA < titleB ? -1 : titleA > titleB ? 1 : 0
   })
 

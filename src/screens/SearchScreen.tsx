@@ -1,5 +1,6 @@
 import debounce from 'lodash/debounce'
 import { Alert, Linking, StyleSheet } from 'react-native'
+import Config from 'react-native-config'
 import React from 'reactn'
 import {
   ActionSheet,
@@ -159,6 +160,10 @@ export class SearchScreen extends React.Component<Props, State> {
     this.props.navigation.navigate(PV.RouteNames.AddPodcastByRSSScreen)
   }
 
+  _handleAddPodcastByRSSQRCodeNavigation = () => {
+    this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
+  }
+
   _renderPodcastItem = ({ item, index }) => (
     <PodcastTableCell
       hasZebraStripe={isOdd(index)}
@@ -248,14 +253,16 @@ export class SearchScreen extends React.Component<Props, State> {
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe={true}
             extraData={flatListData}
-            handleNoResultsBottomAction={this._handleAddPodcastByRSSURLNavigation}
-            handleNoResultsTopAction={this._navToRequestPodcastForm}
+            handleNoResultsBottomAction={this._navToRequestPodcastForm}
+            handleNoResultsMiddleAction={this._handleAddPodcastByRSSURLNavigation}
+            handleNoResultsTopAction={!Config.DISABLE_QR_SCANNER ? this._handleAddPodcastByRSSQRCodeNavigation : null}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.id}
-            noResultsBottomActionText={translate('Add by RSS')}
+            noResultsBottomActionText={translate('Request Podcast')}
             noResultsMessage={translate('No podcasts found')}
-            noResultsTopActionText={translate('Request Podcast')}
+            noResultsMiddleActionText={translate('Add by RSS')}
+            noResultsTopActionText={!Config.DISABLE_QR_SCANNER ? translate('Scan RSS Feed QR Code') : ''}
             onEndReached={this._onEndReached}
             renderItem={this._renderPodcastItem}
           />

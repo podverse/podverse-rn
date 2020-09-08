@@ -1,4 +1,5 @@
 import { getGlobal, setGlobal } from 'reactn'
+import { translate } from '../../lib/i18n'
 import { PV } from '../../resources'
 import { getAuthUserInfo } from './auth'
 
@@ -9,11 +10,11 @@ export const purchaseLoading = () => {
     purchase: {
       ...globalState.purchase,
       isLoading: true,
-      message: 'Please wait while this process completes...',
+      message: translate('Please wait while your transaction completes'),
       showContactSupportLink: false,
       showDismissLink: false,
       showRetryLink: false,
-      title: 'Processing Transaction'
+      title: translate('Processing')
     }
   } as any
 }

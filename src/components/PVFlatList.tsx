@@ -13,6 +13,7 @@ type Props = {
   disableLeftSwipe: boolean
   extraData?: any
   handleNoResultsBottomAction?: any
+  handleNoResultsMiddleAction?: any
   handleNoResultsTopAction?: any
   handleFilterInputChangeText?: any
   handleFilterInputClear?: any
@@ -24,6 +25,7 @@ type Props = {
   ListHeaderComponent?: any
   noResultsBottomActionText?: string
   noResultsMessage?: string
+  noResultsMiddleActionText?: string
   noResultsTopActionText?: string
   onEndReached?: any
   onEndReachedThreshold?: number
@@ -44,6 +46,7 @@ export const PVFlatList = (props: Props) => {
     disableLeftSwipe = true,
     extraData,
     handleNoResultsBottomAction,
+    handleNoResultsMiddleAction,
     handleNoResultsTopAction,
     isLoadingMore,
     isRefreshing = false,
@@ -52,6 +55,7 @@ export const PVFlatList = (props: Props) => {
     ListHeaderComponent,
     noResultsBottomActionText,
     noResultsMessage,
+    noResultsMiddleActionText,
     noResultsTopActionText,
     onEndReached,
     onEndReachedThreshold = 0.9,
@@ -74,6 +78,8 @@ export const PVFlatList = (props: Props) => {
         <MessageWithAction
           bottomActionHandler={handleNoResultsBottomAction}
           bottomActionText={noResultsBottomActionText}
+          middleActionHandler={handleNoResultsMiddleAction}
+          middleActionText={noResultsMiddleActionText}
           topActionHandler={handleNoResultsTopAction}
           topActionText={noResultsTopActionText}
           message={noResultsMessage}

@@ -23,6 +23,7 @@ import { getAppUserAgent, isOdd, setAppUserAgent, setCategoryQueryProperty, test
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
+import { getAddByRSSPodcastsLocally } from '../services/parser'
 import {
   checkIdlePlayerState,
   getNowPlayingItemFromQueueOrHistoryByTrackId,
@@ -287,8 +288,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
       // If getAuthUserInfo fails, continue with the networkless version of the app
     }
 
-    const { subscribedPodcastIds } = this.global.session.userInfo
-    if (subscribedPodcastIds && subscribedPodcastIds.length > 0) {
+    const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
+    const { addByRSSPodcastFeedUrls, subscribedPodcastIds } = this.global.session.userInfo
+
+    /*
+     * If any podcasts are saved in local storage, or in the auth user object,
+     * then default to the Subscribed filter, else fallback to the All Podcasts filter.
+     */
+    if (
+      (subscribedPodcastIds && subscribedPodcastIds.length > 0) ||
+      (addByRSSPodcasts && addByRSSPodcasts.length > 0) ||
+      (addByRSSPodcastFeedUrls && addByRSSPodcastFeedUrls.length > 0)
+    ) {
       this.selectLeftItem(PV.Filters._subscribedKey, PV.Filters._alphabeticalKey)
     } else {
       this.selectLeftItem(Config.DEFAULT_QUERY_PODCASTS_SCREEN, PV.Filters._topPastWeek)

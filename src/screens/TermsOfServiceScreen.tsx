@@ -34,17 +34,17 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
       <View style={styles.content} {...testProps('terms_of_service_screen_view')}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {translate('TermsOfServiceScreen.text1')}
+            {translate('TermsOfServiceScreenText1')}
             {'\n\n'}
-            {translate('TermsOfServiceScreen.text2')}
+            {translate('TermsOfServiceScreenText2')}
             {'\n\n'}
-            {translate('TermsOfServiceScreen.text3')}
+            {translate('TermsOfServiceScreenText3')}
             {'\n\n'}
-            {translate('TermsOfServiceScreen.text4')}
+            {translate('TermsOfServiceScreenText4')}
             {'\n\n'}
-            {translate('TermsOfServiceScreen.text5')}
+            {translate('TermsOfServiceScreenText5')}
             {'\n\n'}
-            {translate('TermsOfServiceScreen.text6')}
+            {translate('TermsOfServiceScreenText6')}
           </Text>
           <Divider style={styles.divider} />
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
