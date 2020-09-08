@@ -36,24 +36,12 @@ export class AboutScreen extends React.Component<Props, State> {
       <View style={styles.content} {...testProps('about_screen_view')}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {'Podverse is an open source podcast manager for Android, iOS, and web' +
-              ' with cross-platform syncing, clip and playlist sharing, an intuitive interface, and more!'}
+            {'Podverse is an open source podcast manager for iOS, Android, and web.'}
           </Text>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {'Our mission is to support the original independent spirit' +
-              ' of podcasting, and we would love to collaborate with all podcast apps' +
-              ' to make our technologies as cross-compatible and convenient for people as possible.'}
-          </Text>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {'All Podverse software is provided free and open source (FOSS)' +
-              ' but features that require updating our servers' +
-              ' are available only with a Premium membership.' +
+            {'All Podverse software is provided under a free and open source (FOSS) licence.' +
+              ' Features that require updating our servers are available only with a Premium membership.' +
               ' Sign up today and get 1 year of Premium for free!'}
-          </Text>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {'If you have any questions or would be interested in collaborating' +
-              ' please email contact@podverse.fm' +
-              ' or reach us through one of our social media channels.'}
           </Text>
           <Divider style={styles.divider} />
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>

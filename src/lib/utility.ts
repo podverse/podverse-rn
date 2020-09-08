@@ -7,8 +7,22 @@ import { PV } from '../resources'
 
 const cheerio = require('react-native-cheerio')
 
+let userAgent = ''
+
+/*
+ * getUserAgent sometimes crashes in the iOS simulator. This is apparently related
+ * to parallel process handling, so we are trying to only call the getUserAgent
+ * method once on app launch, then access that value in the userAgent constant.
+ */
+export const setAppUserAgent = async () => {
+  try {
+    userAgent = await getUserAgent()
+  } catch (e) {
+    console.log('setAppUserAgent', e)
+  }
+}
+
 export const getAppUserAgent = async () => {
-  const userAgent = await getUserAgent()
   return `${Config.USER_AGENT_PREFIX || 'Unknown App'}/${`${Config.USER_AGENT_APP_TYPE}` ||
     'Unknown App Type'}/${userAgent}`
 }

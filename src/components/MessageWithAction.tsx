@@ -8,6 +8,8 @@ type Props = {
   bottomActionText?: string
   isLoading?: boolean
   message?: string
+  middleActionHandler?: any
+  middleActionText?: string
   subMessage?: string
   topActionHandler?: any
   topActionText?: string
@@ -20,6 +22,8 @@ export const MessageWithAction = (props: Props) => {
     bottomActionText,
     isLoading,
     message,
+    middleActionHandler,
+    middleActionText,
     subMessage,
     topActionHandler,
     topActionText,
@@ -43,6 +47,13 @@ export const MessageWithAction = (props: Props) => {
         <TouchableOpacity onPress={topActionHandler}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.button, globalTheme.text]}>
             {topActionText}
+          </Text>
+        </TouchableOpacity>
+      )}
+      {!isLoading && !!middleActionText && middleActionHandler && (
+        <TouchableOpacity onPress={middleActionHandler}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.button, globalTheme.text]}>
+            {middleActionText}
           </Text>
         </TouchableOpacity>
       )}

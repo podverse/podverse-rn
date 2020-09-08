@@ -37,6 +37,7 @@ type State = {
   episodeId?: any
   flatListData: any[]
   flatListDataTotalCount: number | null
+  includeGoToPodcast: boolean
   isLoading: boolean
   isLoadingMore: boolean
   queryPage: number
@@ -79,6 +80,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const viewType = this.props.navigation.getParam('viewType') || PV.Filters._showNotesKey
     const episode = this.props.navigation.getParam('episode')
     const episodeId = (episode && episode.id) || this.props.navigation.getParam('episodeId')
+    const includeGoToPodcast = this.props.navigation.getParam('includeGoToPodcast')
 
     if (episode && !episode.podcast) {
       episode.podcast = {
@@ -100,6 +102,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       episodeId,
       flatListData: [],
       flatListDataTotalCount: null,
+      includeGoToPodcast,
       isLoading: !episode || viewType === PV.Filters._clipsKey,
       isLoadingMore: false,
       queryPage: 1,
@@ -327,6 +330,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       episode,
       flatListData,
       flatListDataTotalCount,
+      includeGoToPodcast,
       isLoading,
       isLoadingMore,
       querySort,
@@ -398,7 +402,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
               this._handleCancelPress,
               this._handleDownloadPressed,
               null, // handleDeleteClip
-              true, // includeGoToPodcast
+              includeGoToPodcast,
               false // includeGoToEpisode
             )
           }

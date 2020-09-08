@@ -176,3 +176,24 @@ export const updateUserQueueItems = async (queueItems: any) => {
 
   return response && response.data
 }
+
+export const saveSpecialUserInfo = async (userInfo: any) => {
+  if (userInfo) {
+    const jsonData = JSON.stringify(userInfo)
+    await AsyncStorage.setItem('SPECIAL_USER_INFO', jsonData)
+  }
+}
+
+export const getSpecialUserInfo = async () => {
+  const specialInfoString = await AsyncStorage.getItem('SPECIAL_USER_INFO')
+  if (specialInfoString) {
+    const specialInfo = JSON.parse(specialInfoString)
+    return specialInfo
+  }
+
+  return null
+}
+
+export const clearSpecialUserInfo = async () => {
+  await AsyncStorage.removeItem('SPECIAL_USER_INFO')
+}

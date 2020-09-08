@@ -176,7 +176,8 @@ export const FilterOptions = {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _myClipsKey],
       sort: [_mostRecentKey, ..._top],
       sublist: [{ label: 'All', value: _allCategoriesKey }],
-      hideSort: []
+      hideSort: [],
+      hideIfNotLoggedIn: [_myClipsKey]
     },
     EpisodeScreen: {
       type: [_clipsKey, _showNotesKey, _titleKey],
