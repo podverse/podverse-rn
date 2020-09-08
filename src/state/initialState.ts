@@ -47,13 +47,13 @@ const initialTheme: InitialState = {
   },
   purchase: {
     isLoading: true,
-    message: 'Please wait while this process completes...',
+    message: '',
     productId: '',
     purchaseToken: '',
     showContactSupportLink: false,
     showDismissLink: false,
     showRetryLink: false,
-    title: 'Processing Transaction',
+    title: '',
     transactionId: '',
     transactionReceipt: ''
   },

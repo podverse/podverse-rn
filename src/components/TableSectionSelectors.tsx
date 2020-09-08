@@ -17,6 +17,7 @@ type Props = {
   isAddByRSSPodcastFeedUrl?: boolean
   isBottomBar?: boolean
   isCategories?: boolean
+  isLoggedIn?: boolean
   isTransparent?: boolean
   selectedLeftItemKey: string | null
   selectedRightItemKey?: string | null
@@ -39,13 +40,14 @@ export const TableSectionSelectors = (props: Props) => {
     isAddByRSSPodcastFeedUrl = false,
     isBottomBar = false,
     isCategories = false,
+    isLoggedIn,
     isTransparent,
     selectedLeftItemKey,
     selectedRightItemKey,
     screenName
   } = props
 
-  useEffect(() => {
+  const handleInitialRender = () => {
     let leftItems = [] as any
     let rightItems = [] as any
 
@@ -55,6 +57,12 @@ export const TableSectionSelectors = (props: Props) => {
           ? PV.FilterOptions.screenFilters[screenName].addByPodcastRSSFeedURLType.includes(type.value)
           : PV.FilterOptions.screenFilters[screenName].type.includes(type.value)
       })
+
+      if (PV.FilterOptions.screenFilters[screenName].hideIfNotLoggedIn && !isLoggedIn) {
+        leftItems = leftItems.filter((type: any) => {
+          return !PV.FilterOptions.screenFilters[screenName].hideIfNotLoggedIn.includes(type.value)
+        })
+      }
 
       rightItems = PV.FilterOptions.sortItems.filter((sortKey: any) => {
         return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
@@ -89,7 +97,18 @@ export const TableSectionSelectors = (props: Props) => {
 
     setLeftItems(leftItems)
     setRightItems(rightItems)
+  }
+
+  useEffect(() => {
+    handleInitialRender()
   }, [])
+
+  useEffect(() => {
+    if (selectedLeftItemKey === PV.Filters._myClipsKey && !isLoggedIn) {
+      handleSelectLeftItem(PV.Filters._subscribedKey)
+    }
+    handleInitialRender()
+  }, [isLoggedIn])
 
   useEffect(() => {
     let rightItems = []

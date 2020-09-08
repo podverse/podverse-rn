@@ -215,6 +215,14 @@ PODS:
     - React
   - react-native-background-timer (2.1.1):
     - React
+  - react-native-camera (3.38.0):
+    - React
+    - react-native-camera/RCT (= 3.38.0)
+    - react-native-camera/RN (= 3.38.0)
+  - react-native-camera/RCT (3.38.0):
+    - React
+  - react-native-camera/RN (3.38.0):
+    - React
   - react-native-config (1.0.0):
     - React
   - react-native-netinfo (4.4.0):
@@ -266,7 +274,7 @@ PODS:
     - React
   - RNCMaskedView (0.1.9):
     - React
-  - RNDeviceInfo (5.5.3):
+  - RNDeviceInfo (6.0.2):
     - React
   - RNFastImage (7.0.2):
     - React
@@ -321,6 +329,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-background-downloader (from `../node_modules/react-native-background-downloader`)
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
+  - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-config (from `../node_modules/react-native-config`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -403,6 +412,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-background-downloader"
   react-native-background-timer:
     :path: "../node_modules/react-native-background-timer"
+  react-native-camera:
+    :path: "../node_modules/react-native-camera"
   react-native-config:
     :path: "../node_modules/react-native-config"
   react-native-netinfo:
@@ -489,6 +500,7 @@ SPEC CHECKSUMS:
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-background-downloader: 4a034cf39a3b00fac57364984e360a4f180a5efb
   react-native-background-timer: 1b6e6b4e10f1b74c367a1fdc3c72b67c619b222b
+  react-native-camera: 74f48f9b6e198c77e2187b10aca39126971080b2
   react-native-config: 7db9b96479164dfd7b2be68eb9079e08279511c4
   react-native-netinfo: 6bb847e64f45a2d69c6173741111cfd95c669301
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
@@ -507,7 +519,7 @@ SPEC CHECKSUMS:
   RNBackgroundFetch: 8d8d66b47eafcb9e772b2eb95057939038b3ef95
   RNCAsyncStorage: 60a80e72d95bf02a01cace55d3697d9724f0d77f
   RNCMaskedView: 71fc32d971f03b7f03d6ab6b86b730c4ee64f5b6
-  RNDeviceInfo: 310c1f43d418d950a193c7650de2f9559c906048
+  RNDeviceInfo: bdd61e8b070d13a1dd9d022091981075ed4cde16
   RNFastImage: 9b0c22643872bb7494c8d87bbbb66cc4c0d9e7a2
   RNFS: 54da03c2b7d862c42ea3ca8c7f86f892760a535a
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
