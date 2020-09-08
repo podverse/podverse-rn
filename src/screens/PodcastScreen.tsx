@@ -696,7 +696,7 @@ export class PodcastScreen extends React.Component<Props, State> {
                   this._handleDownloadPressed,
                   null, // handleDeleteClip
                   false, // includeGoToPodcast
-                  'isPodcastsStack' // includeGoToEpisode
+                  false // includeGoToEpisode
                 )
               }
               showModal={showActionSheet}

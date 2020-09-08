@@ -1,22 +1,9 @@
 import { NavigationActions, StackActions } from 'react-navigation'
 import { PV } from '../resources'
 
-const navigateToEpisodeScreenParams = (item: any) => ({
-  episodeId: item.episodeId,
-  episode: {
-    id: item.episodeId,
-    title: item.episodeTitle,
-    podcast: {
-      imageUrl: item.podcastImageUrl,
-      title: item.podcastTitle
-    }
-  }
-})
-
-export const navigateToPodcastsEpisodeScreenWithItem = (navigation: any, item: any) => {
-  navigation.navigate(PV.RouteNames.EpisodeScreen, navigateToEpisodeScreenParams(item))
-}
-
+/*
+  Navigate to the EpisodeScreen located within the EpisodesStackNavigator.
+ */
 export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
   const resetAction = StackActions.reset({
     index: 1,
@@ -24,7 +11,18 @@ export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
       NavigationActions.navigate({ routeName: PV.RouteNames.EpisodesScreen }),
       NavigationActions.navigate({
         routeName: PV.RouteNames.EpisodeScreen,
-        params: navigateToEpisodeScreenParams(item)
+        params: {
+          episodeId: item.episodeId,
+          episode: {
+            id: item.episodeId,
+            title: item.episodeTitle,
+            podcast: {
+              imageUrl: item.podcastImageUrl,
+              title: item.podcastTitle
+            }
+          },
+          includeGoToPodcast: true
+        }
       })
     ],
     key: 'Episodes'
@@ -33,6 +31,10 @@ export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
   navigation.dispatch(resetAction)
 }
 
+/*
+  Navigate to the PodcastScreen located within the PodcastsStackNavigator,
+  and populate it with podcast data from an object of type NowPlayingItem.
+ */
 export const navigateToPodcastScreenWithItem = (navigation: any, item: any) => {
   const resetAction = StackActions.reset({
     index: 1,
@@ -57,6 +59,10 @@ export const navigateToPodcastScreenWithItem = (navigation: any, item: any) => {
   navigation.dispatch(resetAction)
 }
 
+/*
+  Navigate to the PodcastScreen located within the PodcastsStackNavigator,
+  and populate it with podcast data from an object of type podcast.
+ */
 export const navigateToPodcastScreenWithPodcast = (navigation: any, podcast: any, viewType: string) => {
   navigation.dismiss()
 

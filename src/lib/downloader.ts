@@ -16,8 +16,7 @@ import {
 export const BackgroundDownloader = async () => {
   const userAgent = await getAppUserAgent()
   RNBackgroundDownloader.setHeaders({
-    'user-agent': userAgent,
-    whatupppppp: userAgent
+    'user-agent': userAgent
   })
 
   return RNBackgroundDownloader
