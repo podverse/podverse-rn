@@ -1,6 +1,6 @@
-import React from 'react'
 import { View } from 'react-native'
 import Config from 'react-native-config'
+import React from 'reactn'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
 import { translate } from '../lib/i18n'
