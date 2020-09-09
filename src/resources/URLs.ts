@@ -9,19 +9,18 @@ export const URLs = {
   // tslint:disable-next-line: max-line-length
   baseUrl: Config.API_DOMAIN || 'https://api.stage.podverse.fm/api/v1',
   clip: `${root}/clip/`,
-  contact: 'https://docs.google.com/forms/d/e/1FAIpQLSe-1_1qmv5Z21ZLc37KWke3cXFluItnzmstjqGwm9_BT7BGRg/viewform',
   episode: `${root}/episode/`,
   playlist: `${root}/playlist/`,
   podcast: `${root}/podcast/`,
   profile: `${root}/profile/`,
   // tslint:disable-next-line: max-line-length
-  requestPodcast: `https://docs.google.com/forms/d/e/1FAIpQLSdewKP-YrE8zGjDPrkmoJEwCxPl_gizEkmzAlTYsiWAuAk1Ng/viewform?usp=sf_link`,
+  requestPodcast: Config.URL_EXTERNAL_REQUEST_PODCAST || '',
   terms: `${root}/terms`,
   social: {
-    facebook: 'https://facebook.com/podverse',
-    github: 'https://github.com/podverse',
-    linkedin: 'https://www.linkedin.com/company/podverse/',
-    reddit: 'https://reddit.com/r/podverse',
-    twitter: 'https://twitter.com/podverse'
+    facebook: Config.URL_SOCIAL_FACEBOOK || '',
+    github: Config.URL_SOCIAL_GITHUB || '',
+    linkedin: Config.URL_SOCIAL_LINKEDIN || '',
+    reddit: Config.URL_SOCIAL_REDDIT || '',
+    twitter: Config.URL_SOCIAL_TWITTER || ''
   }
 }

@@ -205,7 +205,7 @@ const comparisonData = [
     column2: true
   },
   {
-    text: translate('light / dark mode'),
+    text: translate('light - dark mode'),
     column1: true,
     column2: true
   },

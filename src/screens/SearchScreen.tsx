@@ -253,13 +253,13 @@ export class SearchScreen extends React.Component<Props, State> {
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe={true}
             extraData={flatListData}
-            handleNoResultsBottomAction={this._navToRequestPodcastForm}
+            handleNoResultsBottomAction={PV.URLs.requestPodcast ? this._navToRequestPodcastForm : null}
             handleNoResultsMiddleAction={this._handleAddPodcastByRSSURLNavigation}
             handleNoResultsTopAction={!Config.DISABLE_QR_SCANNER ? this._handleAddPodcastByRSSQRCodeNavigation : null}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.id}
-            noResultsBottomActionText={translate('Request Podcast')}
+            noResultsBottomActionText={PV.URLs.requestPodcast ? translate('Request Podcast') : ''}
             noResultsMessage={translate('No podcasts found')}
             noResultsMiddleActionText={translate('Add by RSS')}
             noResultsTopActionText={!Config.DISABLE_QR_SCANNER ? translate('Scan RSS Feed QR Code') : ''}
