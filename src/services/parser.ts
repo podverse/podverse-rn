@@ -16,7 +16,7 @@ addByRSSPodcast: object {
 }
 */
 
-export const getAddByRSSEpisodesLocally = async () => {
+export const getAddByRSSEpisodesLocally = async (earliestDate: Date, latestDate: Date) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
   const combinedEpisodes = [] as any[]
   for (const addByRSSPodcast of addByRSSPodcasts) {
@@ -26,13 +26,16 @@ export const getAddByRSSEpisodesLocally = async () => {
     }
   }
 
-  const sortedEpisodes = combinedEpisodes.sort((a: any, b: any) => {
-    const dateA = new Date(a.pubDate) as any
-    const dateB = new Date(b.pubDate) as any
-    return dateB - dateA
-  })
+  return combinedEpisodes.filter((episode) => {
+    if (!episode.pubDate) {
+      return false
+    }
 
-  return sortedEpisodes
+    return (
+      new Date(episode.pubDate).valueOf() >= earliestDate.valueOf() &&
+      new Date(episode.pubDate).valueOf() <= latestDate.valueOf()
+    )
+  })
 }
 
 export const getAddByRSSPodcastLocally = async (feedUrl: string) => {
@@ -118,13 +121,13 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
 
       podcast.addByRSSPodcastFeedUrl = feedUrl
       podcast.description = rss.description && rss.description.trim()
-      podcast.feedLastUpdated = rss.lastUpdated || rss.lastPublished
+      podcast.feedLastUpdated = rss.lastUpdated || rss.lastPublished || new Date(0).toString()
       podcast.imageUrl = (rss.image && rss.image.url) || (rss.itunes && rss.itunes.image)
       podcast.isExplicit = rss.itunes && rss.itunes.explicit
       podcast.language = rss.language
 
       if (rss.items && rss.items.length > 0) {
-        podcast.lastEpisodePubDate = rss.items[0].published
+        podcast.lastEpisodePubDate = rss.items[0].published || new Date(0).toString()
         podcast.lastEpisodeTitle = rss.items[0].title && rss.items[0].title.trim()
       }
 
@@ -148,7 +151,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
           episode.mediaFilesize = enclosure.length
           episode.mediaType = enclosure.mimeType
           episode.mediaUrl = convertURLToSecureProtocol(enclosure.url)
-          episode.pubDate = item.published
+          episode.pubDate = item.published || new Date(0).toString()
           episode.title = item.title && item.title.trim()
           episodes.push(episode)
         }

@@ -480,12 +480,12 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
-      const handleAddByRSSEpisodes = async () => {
-        const addByRSSEpisodes = await getAddByRSSEpisodesLocally()
-        newState.flatListData = [...addByRSSEpisodes]
-        newState.endOfResultsReached = true
-        newState.flatListDataTotalCount = addByRSSEpisodes.length
-      }
+      // const handleAddByRSSEpisodes = async () => {
+      //   const addByRSSEpisodes = await getAddByRSSEpisodesLocally()
+      //   newState.flatListData = [...addByRSSEpisodes]
+      //   newState.endOfResultsReached = true
+      //   newState.flatListDataTotalCount = addByRSSEpisodes.length
+      // }
 
       if (filterKey === PV.Filters._subscribedKey) {
         const results = await getEpisodes(
@@ -499,7 +499,35 @@ export class EpisodesScreen extends React.Component<Props, State> {
           },
           this.global.settings.nsfwMode
         )
-        newState.flatListData = [...flatListData, ...results[0]]
+
+        let mostRecentDate = new Date().toString()
+        let oldestDate = new Date(0).toString()
+
+        if (results[0].length > 0) {
+          let recentIdx = 0
+          mostRecentDate = results[0][recentIdx].pubDate
+          while (!mostRecentDate || recentIdx <= results[0].length) {
+            recentIdx++
+            mostRecentDate = results[0][recentIdx].pubDate
+          }
+
+          let oldestIdx = results[0].length - 1
+          oldestDate = results[0][oldestIdx].pubDate
+          while (!oldestDate || oldestIdx >= 0) {
+            oldestIdx--
+            oldestDate = results[0][oldestIdx].pubDate
+          }
+        }
+
+        const addByRSSEpisodes = await getAddByRSSEpisodesLocally(new Date(mostRecentDate), new Date(oldestDate))
+
+        const allEpisodes = [...results[0], ...addByRSSEpisodes].sort((a: any, b: any) => {
+          const dateA = new Date(a.pubDate) as any
+          const dateB = new Date(b.pubDate) as any
+          return dateB - dateA
+        })
+
+        newState.flatListData = [...flatListData, ...allEpisodes]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === PV.Filters._downloadedKey) {
@@ -507,8 +535,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.flatListData = [...downloadedEpisodes]
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = downloadedEpisodes.length
-      } else if (filterKey === PV.Filters._addedByRSSKey) {
-        await handleAddByRSSEpisodes()
       } else if (filterKey === PV.Filters._allPodcastsKey) {
         const results = await this._queryAllEpisodes(querySort, queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
