@@ -601,8 +601,6 @@ export class PodcastScreen extends React.Component<Props, State> {
       (viewType === PV.Filters._episodesKey && translate('No episodes found')) ||
       (viewType === PV.Filters._clipsKey && translate('No clips found'))
 
-    const showOfflineMessage = offlineModeEnabled && queryFrom !== PV.Filters._downloadedKey
-
     return (
       <View style={styles.view} {...testProps('podcast_screen_view')}>
         <PodcastTableHeader

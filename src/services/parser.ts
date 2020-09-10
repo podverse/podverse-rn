@@ -156,6 +156,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
 
       podcast.episodes = episodes
 
+      await addAddByRSSPodcastFeedUrlLocally(feedUrl)
       await addParsedAddByRSSPodcastLocally(podcast)
 
       return podcast
@@ -188,6 +189,14 @@ export const addAddByRSSPodcastFeedUrlOnServer = async (addByRSSPodcastFeedUrl: 
   })
 
   return response && response.data
+}
+
+const addAddByRSSPodcastFeedUrlLocally = async (feedUrl: string) => {
+  const feedUrls = await getAddByRSSPodcastFeedUrlsLocally()
+  if (!feedUrls.some((x: string) => x === feedUrl)) {
+    feedUrls.push(feedUrl)
+    await setAddByRSSPodcastFeedUrlsLocally(feedUrls)
+  }
 }
 
 export const removeAddByRSSPodcast = async (feedUrl: string) => {

@@ -68,13 +68,18 @@ export const PodcastTableHeader = (props: Props) => {
                   <SettingsButton handleToggleSettings={handleToggleSettings} showCheckmark={true} />
                 )}
               </View>
-              <View style={styles.textWrapperBottomRight}>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} isSecondary={true} style={styles.autoDownloadText}>
-                  {translate('Auto')}
-                </Text>
-                <IndicatorDownload style={styles.autoDownloadIcon} />
-                <Switch onValueChange={handleToggleAutoDownload} value={autoDownloadOn} />
-              </View>
+              {isSubscribed && (
+                <View style={styles.textWrapperBottomRight}>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                    isSecondary={true}
+                    style={styles.autoDownloadText}>
+                    {translate('Auto')}
+                  </Text>
+                  <IndicatorDownload style={styles.autoDownloadIcon} />
+                  <Switch onValueChange={handleToggleAutoDownload} value={autoDownloadOn} />
+                </View>
+              )}
             </View>
           </View>
         </View>
