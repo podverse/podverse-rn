@@ -15,7 +15,6 @@ const {
   _topPastYear,
   _chronologicalKey,
   _oldestKey,
-  _addedByRSSKey,
   _myClipsKey,
   _allEpisodesKey,
   _podcastsKey,
@@ -59,10 +58,6 @@ const allFilterTypeItems = [
   {
     label: 'Category',
     value: _categoryKey
-  },
-  {
-    label: 'Added By RSS',
-    value: _addedByRSSKey
   },
   {
     label: 'My Clips',
@@ -187,7 +182,7 @@ export const FilterOptions = {
       hideSort: [_showNotesKey, _titleKey]
     },
     EpisodesScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _addedByRSSKey],
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
       sort: [_mostRecentKey, ..._top],
       sublist: [{ label: 'All', value: _allCategoriesKey }],
       hideSort: []
@@ -213,10 +208,10 @@ export const FilterOptions = {
       hideSort: [_downloadedKey, _aboutPodcastKey]
     },
     PodcastsScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _addedByRSSKey],
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
       sort: [..._top],
       sublist: [{ label: 'All', value: _allCategoriesKey }],
-      hideSort: [_subscribedKey, _downloadedKey, _addedByRSSKey]
+      hideSort: [_subscribedKey, _downloadedKey]
     },
     ProfileScreen: {
       type: [_podcastsKey, _clipsKey, _playlistsKey],

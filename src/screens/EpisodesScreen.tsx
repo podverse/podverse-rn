@@ -22,7 +22,7 @@ import { getUniqueArrayByKey, isOdd, setCategoryQueryProperty, testProps } from 
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
-import { getAddByRSSEpisodesLocally } from '../services/parser'
+import { combineEpisodesWithAddByRSSEpisodesLocally } from '../services/parser'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { core } from '../styles'
 
@@ -118,9 +118,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
       sort = PV.Filters._topPastWeek
       hideRightItemWhileLoading = true
     } else if (selectedKey === PV.Filters._downloadedKey) {
-      sort = PV.Filters._mostRecentKey
-      hideRightItemWhileLoading = true
-    } else if (selectedKey === PV.Filters._addedByRSSKey) {
       sort = PV.Filters._mostRecentKey
       hideRightItemWhileLoading = true
     }
@@ -480,52 +477,24 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
-      // const handleAddByRSSEpisodes = async () => {
-      //   const addByRSSEpisodes = await getAddByRSSEpisodesLocally()
-      //   newState.flatListData = [...addByRSSEpisodes]
-      //   newState.endOfResultsReached = true
-      //   newState.flatListDataTotalCount = addByRSSEpisodes.length
-      // }
-
       if (filterKey === PV.Filters._subscribedKey) {
-        const results = await getEpisodes(
-          {
-            sort: querySort,
-            page: queryPage,
-            podcastId,
-            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-            subscribedOnly: true,
-            includePodcast: true
-          },
-          this.global.settings.nsfwMode
-        )
+        let results = []
 
-        let mostRecentDate = new Date().toString()
-        let oldestDate = new Date(0).toString()
-
-        if (results[0].length > 0) {
-          let recentIdx = 0
-          mostRecentDate = results[0][recentIdx].pubDate
-          while (!mostRecentDate || recentIdx <= results[0].length) {
-            recentIdx++
-            mostRecentDate = results[0][recentIdx].pubDate
-          }
-
-          let oldestIdx = results[0].length - 1
-          oldestDate = results[0][oldestIdx].pubDate
-          while (!oldestDate || oldestIdx >= 0) {
-            oldestIdx--
-            oldestDate = results[0][oldestIdx].pubDate
-          }
+        if (podcastId) {
+          results = await getEpisodes(
+            {
+              sort: querySort,
+              page: queryPage,
+              podcastId,
+              ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+              subscribedOnly: true,
+              includePodcast: true
+            },
+            this.global.settings.nsfwMode
+          )
         }
 
-        const addByRSSEpisodes = await getAddByRSSEpisodesLocally(new Date(mostRecentDate), new Date(oldestDate))
-
-        const allEpisodes = [...results[0], ...addByRSSEpisodes].sort((a: any, b: any) => {
-          const dateA = new Date(a.pubDate) as any
-          const dateB = new Date(b.pubDate) as any
-          return dateB - dateA
-        })
+        const allEpisodes = await combineEpisodesWithAddByRSSEpisodesLocally(results)
 
         newState.flatListData = [...flatListData, ...allEpisodes]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
