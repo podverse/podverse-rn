@@ -18,11 +18,11 @@ import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { isOdd, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { getUniqueArrayByKey, isOdd, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
-import { getAddByRSSEpisodesLocally } from '../services/parser'
+import { combineEpisodesWithAddByRSSEpisodesLocally } from '../services/parser'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { core } from '../styles'
 
@@ -118,9 +118,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
       sort = PV.Filters._topPastWeek
       hideRightItemWhileLoading = true
     } else if (selectedKey === PV.Filters._downloadedKey) {
-      sort = PV.Filters._mostRecentKey
-      hideRightItemWhileLoading = true
-    } else if (selectedKey === PV.Filters._addedByRSSKey) {
       sort = PV.Filters._mostRecentKey
       hideRightItemWhileLoading = true
     }
@@ -480,26 +477,26 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
-      const handleAddByRSSEpisodes = async () => {
-        const addByRSSEpisodes = await getAddByRSSEpisodesLocally()
-        newState.flatListData = [...addByRSSEpisodes]
-        newState.endOfResultsReached = true
-        newState.flatListDataTotalCount = addByRSSEpisodes.length
-      }
-
       if (filterKey === PV.Filters._subscribedKey) {
-        const results = await getEpisodes(
-          {
-            sort: querySort,
-            page: queryPage,
-            podcastId,
-            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-            subscribedOnly: true,
-            includePodcast: true
-          },
-          this.global.settings.nsfwMode
-        )
-        newState.flatListData = [...flatListData, ...results[0]]
+        let results = []
+
+        if (podcastId) {
+          results = await getEpisodes(
+            {
+              sort: querySort,
+              page: queryPage,
+              podcastId,
+              ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+              subscribedOnly: true,
+              includePodcast: true
+            },
+            this.global.settings.nsfwMode
+          )
+        }
+
+        const allEpisodes = await combineEpisodesWithAddByRSSEpisodesLocally(results)
+
+        newState.flatListData = [...flatListData, ...allEpisodes]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === PV.Filters._downloadedKey) {
@@ -507,8 +504,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.flatListData = [...downloadedEpisodes]
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = downloadedEpisodes.length
-      } else if (filterKey === PV.Filters._addedByRSSKey) {
-        await handleAddByRSSEpisodes()
       } else if (filterKey === PV.Filters._allPodcastsKey) {
         const results = await this._queryAllEpisodes(querySort, queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
@@ -565,6 +560,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
+
+      newState.flatListData = getUniqueArrayByKey(newState.flatListData, 'id')
 
       return newState
     } catch (error) {

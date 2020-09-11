@@ -531,3 +531,7 @@ export const isValidUrl = (str?: string) => {
 export const testProps = (id: string) => {
   return { testID: id, accessibilityLabel: id }
 }
+
+export const getUniqueArrayByKey = (arr: any[], key: string) => {
+  return [...new Map(arr.map((item: any) => [item[key], item])).values()]
+}
