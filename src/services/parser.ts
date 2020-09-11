@@ -16,7 +16,39 @@ addByRSSPodcast: object {
 }
 */
 
-export const getAddByRSSEpisodesLocally = async () => {
+export const combineEpisodesWithAddByRSSEpisodesLocally = async (results: any[]) => {
+  let mostRecentDate = ''
+  let oldestDate = ''
+
+  if (results[0].length > 0) {
+    let recentIdx = 0
+    mostRecentDate = results[0][recentIdx].pubDate
+    while (!mostRecentDate && recentIdx <= results[0].length) {
+      recentIdx++
+      mostRecentDate = results[0][recentIdx].pubDate
+    }
+
+    let oldestIdx = results[0].length - 1
+    oldestDate = results[0][oldestIdx].pubDate
+    while (!oldestDate && oldestIdx >= 0) {
+      oldestIdx--
+      oldestDate = results[0][oldestIdx].pubDate
+    }
+  }
+
+  mostRecentDate = mostRecentDate ? mostRecentDate : new Date().toString()
+  oldestDate = oldestDate ? oldestDate : new Date(0).toString()
+
+  const addByRSSEpisodes = await getAddByRSSEpisodesLocally(new Date(mostRecentDate), new Date(oldestDate))
+
+  return [...results[0], ...addByRSSEpisodes].sort((a: any, b: any) => {
+    const dateA = new Date(a.pubDate) as any
+    const dateB = new Date(b.pubDate) as any
+    return dateB - dateA
+  })
+}
+
+export const getAddByRSSEpisodesLocally = async (mostRecentDate: Date, oldestDate: Date) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
   const combinedEpisodes = [] as any[]
   for (const addByRSSPodcast of addByRSSPodcasts) {
@@ -26,13 +58,16 @@ export const getAddByRSSEpisodesLocally = async () => {
     }
   }
 
-  const sortedEpisodes = combinedEpisodes.sort((a: any, b: any) => {
-    const dateA = new Date(a.pubDate) as any
-    const dateB = new Date(b.pubDate) as any
-    return dateB - dateA
-  })
+  return combinedEpisodes.filter((episode) => {
+    if (!episode.pubDate) {
+      return false
+    }
 
-  return sortedEpisodes
+    return (
+      new Date(episode.pubDate).valueOf() <= mostRecentDate.valueOf() &&
+      new Date(episode.pubDate).valueOf() >= oldestDate.valueOf()
+    )
+  })
 }
 
 export const getAddByRSSPodcastLocally = async (feedUrl: string) => {
@@ -118,13 +153,13 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
 
       podcast.addByRSSPodcastFeedUrl = feedUrl
       podcast.description = rss.description && rss.description.trim()
-      podcast.feedLastUpdated = rss.lastUpdated || rss.lastPublished
+      podcast.feedLastUpdated = rss.lastUpdated || rss.lastPublished || new Date(0).toString()
       podcast.imageUrl = (rss.image && rss.image.url) || (rss.itunes && rss.itunes.image)
       podcast.isExplicit = rss.itunes && rss.itunes.explicit
       podcast.language = rss.language
 
       if (rss.items && rss.items.length > 0) {
-        podcast.lastEpisodePubDate = rss.items[0].published
+        podcast.lastEpisodePubDate = rss.items[0].published || new Date(0).toString()
         podcast.lastEpisodeTitle = rss.items[0].title && rss.items[0].title.trim()
       }
 
@@ -148,7 +183,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
           episode.mediaFilesize = enclosure.length
           episode.mediaType = enclosure.mimeType
           episode.mediaUrl = convertURLToSecureProtocol(enclosure.url)
-          episode.pubDate = item.published
+          episode.pubDate = item.published || new Date(0).toString()
           episode.title = item.title && item.title.trim()
           episodes.push(episode)
         }
