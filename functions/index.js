@@ -78,7 +78,7 @@ exports.resetStageDatabase = functions.runWith({ timeoutSeconds: 540 }).https.on
     const pg_pass = functions.config().pg.password
     const ip = functions.config().pg.ip
 
-    const resetDB = `docker stop podverse_db_stage; docker rm podverse_db_stage; docker-compose -f ./podverse-ops/docker-compose.stage.yml up -d podverse_db; sleep 10; PGPASSWORD='${pg_pass}' psql -h localhost -U postgres -d postgres -f ./podverse-ops/sample-database/qa-database.sql;`
+    const resetDB = `cd podverse-ops; git pull; cd ..; docker stop podverse_db_stage; docker rm podverse_db_stage; docker-compose -f ./podverse-ops/docker-compose.stage.yml up -d podverse_db; sleep 10; PGPASSWORD='${pg_pass}' psql -h localhost -U postgres -d postgres -f ./podverse-ops/sample-database/qa-database.sql;`
     const conn = new Client()
     conn
       .on('ready', function() {
