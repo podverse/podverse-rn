@@ -54,7 +54,7 @@ export const getPodcasts = async (query: any = {}, nsfwMode?: boolean) => {
 export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
 
-  if (subscribedPodcastIds.length < 1 && addByRSSPodcasts.length < 1) return []
+  if (subscribedPodcastIds.length < 1 && addByRSSPodcasts.length < 1) return [[], 0]
 
   if (subscribedPodcastIds.length < 1 && addByRSSPodcasts.length > 0) {
     const combinedPodcasts = await combineWithAddByRSSPodcasts()
@@ -76,7 +76,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
       const autoDownloadSettingsString = await AsyncStorage.getItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS)
       const autoDownloadSettings = autoDownloadSettingsString ? JSON.parse(autoDownloadSettingsString) : {}
       const data = await getPodcasts(query, true)
-      const subscribedPodcasts = data[0]
+      const subscribedPodcasts = data[0] || []
       const podcastIds = Object.keys(autoDownloadSettings).filter((key: string) => autoDownloadSettings[key] === true)
 
       const autoDownloadEpisodes = await getAutoDownloadEpisodes(dateObj, podcastIds)
