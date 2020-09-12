@@ -14,8 +14,8 @@ import { updateDownloadedPodcasts } from './downloads'
 
 export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   const data = await getSubscribedPodcastsService(subscribedPodcastIds)
-  const subscribedPodcasts = data[0]
-  const subscribedPodcastsTotalCount = data[1]
+  const subscribedPodcasts = data[0] || []
+  const subscribedPodcastsTotalCount = data[1] || 0
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
 
   setGlobal({
@@ -33,6 +33,7 @@ export const toggleSubscribeToPodcast = async (id: string) => {
     const subscribedPodcast = await getPodcastService(id)
     let { subscribedPodcasts = [] } = globalState
     subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast)
+    const subscribedPodcastsTotalCount = subscribedPodcasts ? subscribedPodcasts.length : 0
 
     setGlobal(
       {
@@ -43,7 +44,8 @@ export const toggleSubscribeToPodcast = async (id: string) => {
             subscribedPodcastIds
           }
         },
-        subscribedPodcasts
+        subscribedPodcasts,
+        subscribedPodcastsTotalCount
       },
       async () => {
         await updateDownloadedPodcasts()
