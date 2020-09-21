@@ -1,5 +1,6 @@
+import { Picker } from '@react-native-community/picker'
 import React from 'react'
-import { Picker, Platform, StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { getHHMMSSArray } from '../lib/utility'
