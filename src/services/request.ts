@@ -24,9 +24,10 @@ export const request = async (req: PVRequest, nsfwMode?: boolean) => {
     .join('&')
 
   const userAgent = await getAppUserAgent()
+  const apiUrls = await PV.URLs.api()
 
   const axiosRequest = {
-    url: `${PV.URLs.baseUrl}${endpoint}?${queryString}`,
+    url: `${apiUrls.baseUrl}${endpoint}?${queryString}`,
     headers: {
       ...headers,
       'User-Agent': userAgent
