@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
 import { Alert, StyleSheet } from 'react-native'
+import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
@@ -24,14 +25,19 @@ import {
 import { removeAllDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { refreshDownloads } from '../lib/downloader'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
+import { isValidUrl, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { deleteLoggedInUser } from '../services/user'
 import { logoutUser } from '../state/actions/auth'
 import * as DownloadState from '../state/actions/downloads'
 import { clearHistoryItems } from '../state/actions/history'
-import { setCensorNSFWText, setOfflineModeEnabled } from '../state/actions/settings'
+import {
+  setCensorNSFWText,
+  setCustomAPIDomain,
+  setCustomWebDomain,
+  setOfflineModeEnabled
+} from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {
@@ -40,6 +46,8 @@ type Props = {
 
 type State = {
   autoDeleteEpisodeOnEnd?: boolean
+  customAPIDomainLocal?: string
+  customWebDomainLocal?: string
   deleteAccountDialogText: string
   deleteAccountDialogConfirmed?: boolean
   downloadedEpisodeLimitCount: any
@@ -49,6 +57,8 @@ type State = {
   isLoading?: boolean
   maximumSpeedOptionSelected?: any
   offlineModeEnabled: any
+  showCustomAPIDomainDialog?: boolean
+  showCustomWebDomainDialog?: boolean
   showDeleteAccountDialog?: boolean
   showDeleteDownloadedEpisodesDialog?: boolean
   showSetAllDownloadDialog?: boolean
@@ -188,6 +198,64 @@ export class SettingsScreen extends React.Component<Props, State> {
     this.setGlobal({ offlineModeEnabled: value })
   }
 
+  _handleCustomAPIDomainToggle = async () => {
+    const { customAPIDomain } = this.global
+
+    if (customAPIDomain) {
+      await setCustomAPIDomain() // Clears the custom API domain
+    } else {
+      this._handleCustomAPIDomainDialogShow()
+    }
+  }
+
+  _handleCustomAPIDomainDialogShow = () => {
+    const { customAPIDomain } = this.global
+
+    this.setState({
+      customAPIDomainLocal: customAPIDomain,
+      showCustomAPIDomainDialog: true
+    })
+  }
+
+  _handleCustomAPIDomainDialogDismiss = () => this.setState({ showCustomAPIDomainDialog: false })
+
+  _handleCustomAPIDomainDialogTextChange = (text: string) => this.setState({ customAPIDomainLocal: text })
+
+  _handleCustomAPIDomainDialogSave = async () => {
+    const { customAPIDomainLocal } = this.state
+    await setCustomAPIDomain(customAPIDomainLocal)
+    this._handleCustomAPIDomainDialogDismiss()
+  }
+
+  _handleCustomWebDomainToggle = async () => {
+    const { customWebDomain } = this.global
+
+    if (customWebDomain) {
+      await setCustomWebDomain() // Clears the custom API domain
+    } else {
+      this._handleCustomWebDomainDialogShow()
+    }
+  }
+
+  _handleCustomWebDomainDialogShow = () => {
+    const { customWebDomain } = this.global
+
+    this.setState({
+      customWebDomainLocal: customWebDomain,
+      showCustomWebDomainDialog: true
+    })
+  }
+
+  _handleCustomWebDomainDialogDismiss = () => this.setState({ showCustomWebDomainDialog: false })
+
+  _handleCustomWebDomainDialogTextChange = (text: string) => this.setState({ customWebDomainLocal: text })
+
+  _handleCustomWebDomainDialogSave = async () => {
+    const { customWebDomainLocal } = this.state
+    await setCustomWebDomain(customWebDomainLocal)
+    this._handleCustomWebDomainDialogDismiss()
+  }
+
   _handleClearHistory = () => {
     Alert.alert(translate('Clear History'), translate('Are you sure you want to clear your history'), [
       {
@@ -281,6 +349,8 @@ export class SettingsScreen extends React.Component<Props, State> {
 
   render() {
     const {
+      customAPIDomainLocal,
+      customWebDomainLocal,
       deleteAccountDialogConfirmed,
       deleteAccountDialogText,
       downloadedEpisodeLimitCount,
@@ -292,9 +362,11 @@ export class SettingsScreen extends React.Component<Props, State> {
       showDeleteAccountDialog,
       showSetAllDownloadDialog,
       showSetAllDownloadDialogIsCount,
+      showCustomAPIDomainDialog,
+      showCustomWebDomainDialog,
       showDeleteDownloadedEpisodesDialog
     } = this.state
-    const { censorNSFWText, globalTheme, session } = this.global
+    const { censorNSFWText, customAPIDomain, customWebDomain, globalTheme, session } = this.global
     const { isLoggedIn } = session
 
     const isDarkMode = globalTheme === darkTheme
@@ -331,7 +403,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             />
             <SwitchWithText
               onValueChange={this._handleToggleNSFWText}
-              text={translate('Censor NSFW language')}
+              text={translate('Censor NSFW text')}
               value={!!censorNSFWText}
             />
             <RNPickerSelect
@@ -361,6 +433,21 @@ export class SettingsScreen extends React.Component<Props, State> {
               text={translate('Offline Mode')}
               value={!!offlineModeEnabled}
             />
+            {!Config.DISABLE_CUSTOM_DOMAINS && (
+              <View>
+                <SwitchWithText
+                  onValueChange={this._handleCustomAPIDomainToggle}
+                  text={translate('Use custom API domain')}
+                  value={!!customAPIDomain || !!showCustomAPIDomainDialog}
+                />
+                <SwitchWithText
+                  onValueChange={this._handleCustomWebDomainToggle}
+                  subText={translate('Custom Web Domain subtext')}
+                  text={translate('Use custom web domain')}
+                  value={!!customWebDomain || !!showCustomWebDomainDialog}
+                />
+              </View>
+            )}
             <Divider style={styles.divider} />
             <Button
               onPress={this._handleClearHistory}
@@ -423,6 +510,36 @@ export class SettingsScreen extends React.Component<Props, State> {
             disabled={!deleteAccountDialogConfirmed}
             label={translate('Delete')}
             onPress={this._handleDeleteAccount}
+          />
+        </Dialog.Container>
+        <Dialog.Container visible={showCustomAPIDomainDialog}>
+          <Dialog.Title>{translate('Custom API Domain')}</Dialog.Title>
+          <Dialog.Description>{translate('Custom API Domain description')}</Dialog.Description>
+          <Dialog.Input
+            onChangeText={this._handleCustomAPIDomainDialogTextChange}
+            placeholder={PV.URLs.api.baseUrl}
+            value={customAPIDomainLocal}
+          />
+          <Dialog.Button label={translate('Cancel')} onPress={this._handleCustomAPIDomainDialogDismiss} />
+          <Dialog.Button
+            disabled={!isValidUrl(customAPIDomainLocal)}
+            label={translate('Save')}
+            onPress={this._handleCustomAPIDomainDialogSave}
+          />
+        </Dialog.Container>
+        <Dialog.Container visible={showCustomWebDomainDialog}>
+          <Dialog.Title>{translate('Custom Web Domain')}</Dialog.Title>
+          <Dialog.Description>{translate('Custom Web Domain description')}</Dialog.Description>
+          <Dialog.Input
+            onChangeText={this._handleCustomWebDomainDialogTextChange}
+            placeholder={PV.URLs.web().baseUrl}
+            value={customWebDomainLocal}
+          />
+          <Dialog.Button label={translate('Cancel')} onPress={this._handleCustomWebDomainDialogDismiss} />
+          <Dialog.Button
+            disabled={!isValidUrl(customWebDomainLocal)}
+            label={translate('Save')}
+            onPress={this._handleCustomWebDomainDialogSave}
           />
         </Dialog.Container>
       </ScrollView>

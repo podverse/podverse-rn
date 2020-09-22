@@ -70,17 +70,18 @@ type State = {
 }
 
 export class ProfileScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = async ({ navigation }) => {
     const userId = navigation.getParam('userId')
     const userIsPublic = navigation.getParam('userIsPublic')
     const userName = navigation.getParam('userName')
     const isMyProfile = navigation.getParam('isMyProfile')
+    const webUrls = await PV.URLs.web()
 
     return {
       title: isMyProfile ? translate('My Profile') : translate('Profile'),
       headerRight: (
         <RNView style={core.row}>
-          {userIsPublic && userId && <NavShareIcon profileName={userName} url={PV.URLs.profile + userId} />}
+          {userIsPublic && userId && <NavShareIcon profileName={userName} url={webUrls.profile + userId} />}
           <NavSearchIcon navigation={navigation} />
         </RNView>
       )

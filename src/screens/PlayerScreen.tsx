@@ -439,14 +439,15 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { nowPlayingItem } = this.global.player
     let url = ''
     let title = ''
+    const webUrls = await PV.URLs.web()
     if (podcastId) {
-      url = PV.URLs.podcast + podcastId
+      url = webUrls.podcast + podcastId
       title = `${nowPlayingItem.podcastTitle}${translate('shared using brandName')}`
     } else if (episodeId) {
-      url = PV.URLs.episode + episodeId
+      url = webUrls.episode + episodeId
       title = `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate('shared using brandName')}`
     } else {
-      url = PV.URLs.clip + mediaRefId
+      url = webUrls.clip + mediaRefId
       title = `${nowPlayingItem.clipTitle ? nowPlayingItem.clipTitle + ' – ' : translate('untitled clip – ')}`
       title += `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate(
         'clip shared using brandName'

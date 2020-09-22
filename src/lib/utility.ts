@@ -516,16 +516,8 @@ export const setCategoryQueryProperty = (queryFrom?: any, selectedCategory?: any
 }
 
 export const isValidUrl = (str?: string) => {
-  if (!str) return false
-
-  try {
-    // tslint:disable-next-line:no-unused-expression
-    new URL(str)
-  } catch (_) {
-    return false
-  }
-
-  return true
+  const regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/
+  return str ? regex.test(str) : false
 }
 
 export const testProps = (id: string) => {

@@ -15,6 +15,8 @@ const initialTheme: InitialState = {
   downloadedPodcasts: [],
   addByRSSPodcasts: [],
   censorNSFWText: true,
+  customAPIDomain: '',
+  customWebDomain: '',
   offlineModeEnabled: false,
   overlayAlert: {
     shouldShowAlert: false
