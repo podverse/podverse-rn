@@ -7,7 +7,7 @@ import { Text } from './'
 
 type Props = {
   onValueChange: any
-  subText: string
+  subText?: string
   text: string
   value: boolean
 }

@@ -87,6 +87,8 @@ declare module 'reactn/default' {
     subscribedPodcasts: []
     subscribedPodcastsTotalCount: number
     censorNSFWText: boolean
+    customAPIDomain?: string
+    customWebDomain?: string
     userAgent?: string
   }
 }
