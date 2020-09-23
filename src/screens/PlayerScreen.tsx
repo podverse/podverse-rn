@@ -31,7 +31,7 @@ import {
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
-import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
+import { hasValidNetworkConnection } from '../lib/network'
 import {
   decodeHTMLString,
   formatTitleViewHtml,
@@ -59,6 +59,16 @@ type Props = {
 type State = {}
 
 let eventListenerPlayerNewEpisodeLoaded: any
+
+/* 
+  The shouldQueryAgain variable is used to tell the PlayerScreen whether to refresh its data
+  on componentDidMount or not. We need to call this._selectViewType in componentDidMount the
+  first time an item loads in the player, but we don't need to on returning visits to the PlayerScreen,
+  unless a new episode has loaded since the last visit to the PlayerScreen. This avoids unnecessary
+  loading spinners when returning to the PlayerScreen after you visited it already for this.
+  It may be necessary for returning to the PlayerScreen from the background as well.
+  shouldQueryAgain is set to true when the PLAYER_NEW_EPISODE_LOADED event is emitted.
+*/
 let shouldQueryAgain = false
 
 export class PlayerScreen extends React.Component<Props, State> {
@@ -138,18 +148,6 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _initializeScreenData = () => {
-    // NOTE: Commenting this out...but unsure if it is still necessary to address playback issues.
-    // // This is difficult for me to reproduce in local testing, but upon returning to the player screen
-    // // from the lock screen, it appears that componentDidMount is called again, causing the player
-    // // to visibly load, as the player fires up from an "idle" or "none" state.
-    // // Ensure this only happens once in initializeScreenData.
-    // // Updating the PlayerScreen when returning from the background is handled in
-    // // PodcastsScreen _handleAppStateChange.
-    // if (!initializedOnce) {
-    //   initializedOnce = true
-    //   return
-    // }
-
     setGlobal(
       {
         screenPlayer: {
