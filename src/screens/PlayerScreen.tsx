@@ -135,13 +135,20 @@ export class PlayerScreen extends React.Component<Props, State> {
     if (!eventListenerPlayerNewEpisodeLoaded) {
       eventListenerPlayerNewEpisodeLoaded = PlayerEventEmitter.on(
         PV.Events.PLAYER_NEW_EPISODE_LOADED,
-        this._setShouldQueryAgain
+        this._handleNewEpisodeLoaded
       )
     }
 
     gaTrackPageView('/player', 'Player Screen')
 
     await this._handleUpdateFullEpisode()
+  }
+
+  _handleNewEpisodeLoaded = async () => {
+    shouldQueryAgain = true
+    setTimeout(() => {
+      this._handleUpdateFullEpisode()
+    }, 5000)
   }
 
   _handleUpdateFullEpisode = async () => {
@@ -162,10 +169,6 @@ export class PlayerScreen extends React.Component<Props, State> {
         // do nothing
       }
     }
-  }
-
-  _setShouldQueryAgain = () => {
-    shouldQueryAgain = true
   }
 
   _initializeScreenData = () => {
