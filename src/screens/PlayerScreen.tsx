@@ -39,10 +39,11 @@ import {
   readableDate,
   removeHTMLFromString,
   replaceLinebreaksWithBrTags,
+  safelyUnwrapNestedVariable,
   testProps
 } from '../lib/utility'
 import { PV } from '../resources'
-import { getEpisodes } from '../services/episode'
+import { getEpisode, getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getAddByRSSPodcastLocally } from '../services/parser'
@@ -61,12 +62,10 @@ type State = {}
 let eventListenerPlayerNewEpisodeLoaded: any
 
 /* 
-  The shouldQueryAgain variable is used to tell the PlayerScreen whether to refresh its data
-  on componentDidMount or not. We need to call this._selectViewType in componentDidMount the
-  first time an item loads in the player, but we don't need to on returning visits to the PlayerScreen,
-  unless a new episode has loaded since the last visit to the PlayerScreen. This avoids unnecessary
-  loading spinners when returning to the PlayerScreen after you visited it already for this.
-  It may be necessary for returning to the PlayerScreen from the background as well.
+  The shouldQueryAgain variable is used to determine if the PlayerScreen should reload its data
+  on componentDidMount. This is (*I think*) intended to handle the condition where the app is returning
+  to the foreground from the background, which will trigger another componentDidMount, we will want
+  to refresh the screen's data.
   shouldQueryAgain is set to true when the PLAYER_NEW_EPISODE_LOADED event is emitted.
 */
 let shouldQueryAgain = false
@@ -141,6 +140,28 @@ export class PlayerScreen extends React.Component<Props, State> {
     }
 
     gaTrackPageView('/player', 'Player Screen')
+
+    await this._handleUpdateFullEpisode()
+  }
+
+  _handleUpdateFullEpisode = async () => {
+    const hasInternetConnection = await hasValidNetworkConnection()
+    const episode = safelyUnwrapNestedVariable(() => this.global.player.episode, {})
+    if (hasInternetConnection && episode && episode.id) {
+      try {
+        const fullEpisode = await getEpisode(episode.id)
+        if (fullEpisode && fullEpisode.description) {
+          setGlobal({
+            player: {
+              ...this.global.player,
+              episode: fullEpisode
+            }
+          })
+        }
+      } catch (error) {
+        // do nothing
+      }
+    }
   }
 
   _setShouldQueryAgain = () => {
@@ -560,7 +581,9 @@ export class PlayerScreen extends React.Component<Props, State> {
     const episodeId = episode ? episode.id : null
     const mediaRefId = mediaRef ? mediaRef.id : null
 
-    episode.description = replaceLinebreaksWithBrTags(episode.description)
+    if (episode && episode.description) {
+      episode.description = replaceLinebreaksWithBrTags(episode.description)
+    }
 
     const noResultsMessage =
       viewType === PV.Filters._clipsKey ? translate('No clips found') : translate('No episodes found')
@@ -639,7 +662,10 @@ export class PlayerScreen extends React.Component<Props, State> {
                   />
                 )}
               {!isLoading && viewType === PV.Filters._showNotesKey && episode && (
-                <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={episode.description} />
+                <HTMLScrollView
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  html={episode.description ? episode.description : ''}
+                />
               )}
               {!isLoading && viewType === PV.Filters._titleKey && episode && (
                 <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={formatTitleViewHtml(episode)} />
