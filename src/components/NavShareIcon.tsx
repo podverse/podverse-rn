@@ -55,7 +55,7 @@ export const NavShareIcon = (props: Props) => {
   }
 
   return (
-    <NavItemWrapper handlePress={handlePress ? handlePress : onShare} testId='nav_share_icon'>
+    <NavItemWrapper handlePress={handlePress ? handlePress : onShare} testID='nav_share_icon'>
       <NavItemIcon name='share' color={color} />
     </NavItemWrapper>
   )

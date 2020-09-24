@@ -465,7 +465,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         podcastTitle={item.title}
         showAutoDownload={true}
         showDownloadCount={true}
-        testId={'podcasts_screen_podcast_item_' + index}
+        testID={'podcasts_screen_podcast_item_' + index}
       />
     )
   }

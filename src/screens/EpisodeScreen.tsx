@@ -265,7 +265,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         hasZebraStripe={isOdd(index)}
         hideImage={true}
         startTime={item.startTime}
-        testId={'episode_screen_clip_item_' + index}
+        testID={'episode_screen_clip_item_' + index}
         title={item.title}
       />
     )
