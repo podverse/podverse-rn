@@ -2,16 +2,18 @@ import React from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { ActivityIndicator } from '.'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 
 type Props = {
   handleShowMore: any
   height: number
   isLoading?: boolean
+  testID?: string
 }
 
 export const MoreButton = (props: Props) => {
-  const { handleShowMore, height, isLoading } = props
+  const { handleShowMore, height, isLoading, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   const heightStyle = { height }
@@ -24,7 +26,8 @@ export const MoreButton = (props: Props) => {
         right: 8,
         top: 4
       }}
-      onPress={handleShowMore}>
+      onPress={handleShowMore}
+      {...(testID ? testProps(testID) : {})}>
       {!isLoading ? (
         <View style={[styles.outerWrapper, heightStyle]}>
           <View style={styles.innerWrapper}>
