@@ -32,9 +32,7 @@ const elementByIdAndClickAndTest = async (id, waitForElement, back) => {
     const element = await driver.elementByAccessibilityId(id)
     await element.click()
     await driver.waitForElementByAccessibilityId(waitForElement, 10000)
-    if (back) {
-        await driver.back()
-    }
+    if (back) await driver.back()
     logPerformance(id, 'END')
 }
 
@@ -46,12 +44,12 @@ const getCenterCoordinates = (offsetX = 0, offsetY = 0) => {
 }
 
 const performScrollDown = async () => {
-    const action = new wd.TouchAction(driver)
-    action.press(getCenterCoordinates())
-    action.wait(1000)
-    action.moveTo(getCenterCoordinates(0, -500))
-    action.release()
-    await action.perform()
+  const action = new wd.TouchAction(driver)
+  action.press(getCenterCoordinates())
+  action.wait(1000)
+  action.moveTo(getCenterCoordinates(0, -500))
+  action.release()
+  await action.perform()
 }
 
 const logPerformance = (subject, stage, notes = '') => {
@@ -59,9 +57,11 @@ const logPerformance = (subject, stage, notes = '') => {
 }
 
 const postSlackNotification = async (text, opts) => {
-  return request.post(opts.webhook || process.env.SLACK_WEBHOOK, {
-    json: { text: `${text} - ${opts.device_type || process.env.DEVICE_TYPE}` }
-  })
+  if (process.env.SLACK_WEBHOOK) {
+    return request.post(opts.webhook || process.env.SLACK_WEBHOOK, {
+      json: { text: `${text} - ${opts.device_type || process.env.DEVICE_TYPE}` }
+    })
+  }
 }
 
 const goBack = true
