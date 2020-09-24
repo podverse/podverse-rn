@@ -9,6 +9,7 @@ export const RouteNames = {
   EditProfileScreen: 'EditProfileScreen',
   EmailVerificationScreen: 'EmailVerificationScreen',
   EpisodeScreen: 'EpisodeScreen',
+  EpisodesEpisodeScreen: 'EpisodesEpisodeScreen',
   EpisodesScreen: 'EpisodesScreen',
   FAQScreen: 'FAQScreen',
   MainApp: 'MainApp',

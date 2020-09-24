@@ -92,7 +92,12 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             innerTopView
           )}
           {handleMorePress && PV.Fonts.fontScale.largest !== fontScaleMode && (
-            <MoreButton handleShowMore={handleMorePress} height={hideImage ? 46 : 64} isLoading={isDownloading} />
+            <MoreButton
+              handleShowMore={handleMorePress}
+              height={hideImage ? 46 : 64}
+              isLoading={isDownloading}
+              {...(testID ? testProps(testID) : {})}
+            />
           )}
         </RNView>
         {!!description && handleNavigationPress && (
