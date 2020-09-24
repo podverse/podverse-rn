@@ -19,7 +19,7 @@ type Props = {
   podcastImageUrl?: string
   podcastTitle?: string
   startTime: number
-  testId?: string
+  testID: string
   title?: string
   transparent?: boolean
   zebraStripeIndex?: number
@@ -39,7 +39,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       podcastImageUrl,
       podcastTitle,
       startTime,
-      testId,
+      testID,
       title = translate('untitled clip'),
       transparent
     } = this.props
@@ -51,7 +51,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
     const innerTopView = (
       <RNView style={styles.innerTopView}>
-        <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testId ? testProps(testId) : {})}>
+        <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testID ? testProps(testID) : {})}>
           <RNView style={{ flex: 1, flexDirection: 'row' }}>
             {!!podcastImageUrl && <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />}
             <RNView style={styles.textWrapper}>
@@ -108,7 +108,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent}>
         {!!showEpisodeInfo && <RNView style={styles.wrapperTop}>{innerTopView}</RNView>}
         {handleNavigationPress ? (
-          <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testId ? testProps(testId) : {})}>
+          <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testID ? testProps(testID) : {})}>
             {bottomText}
           </TouchableWithoutFeedback>
         ) : (

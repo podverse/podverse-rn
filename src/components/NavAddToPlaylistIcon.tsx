@@ -61,7 +61,7 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
     }
     return (
       <View>
-        <NavItemWrapper handlePress={this._handleIconPress} testId='nav_add_to_playlist_icon'>
+        <NavItemWrapper handlePress={this._handleIconPress} testID='nav_add_to_playlist_icon'>
           <NavItemIcon name='plus' color={color} />
         </NavItemWrapper>
         <ActionSheet

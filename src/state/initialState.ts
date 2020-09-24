@@ -16,7 +16,9 @@ const initialTheme: InitialState = {
   addByRSSPodcasts: [],
   censorNSFWText: true,
   customAPIDomain: '',
+  customAPIDomainEnabled: false,
   customWebDomain: '',
+  customWebDomainEnabled: false,
   offlineModeEnabled: false,
   overlayAlert: {
     shouldShowAlert: false

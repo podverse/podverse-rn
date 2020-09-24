@@ -282,7 +282,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         }
         podcastTitle={podcastTitle}
         pubDate={item.pubDate}
-        testId={'episodes_screen_episode_item_' + index}
+        testID={'episodes_screen_episode_item_' + index}
         title={title}
       />
     )

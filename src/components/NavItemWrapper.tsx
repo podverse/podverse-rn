@@ -6,11 +6,11 @@ import { navHeader } from '../styles'
 type Props = {
   children: any
   handlePress: any
-  testId?: string
+  testID: string
 }
 
 export const NavItemWrapper = (props: Props) => {
-  const { children, handlePress, testId } = props
+  const { children, handlePress, testID } = props
 
   return (
     <View style={navHeader.buttonWrapper}>
@@ -22,7 +22,7 @@ export const NavItemWrapper = (props: Props) => {
           top: 12
         }}
         onPress={handlePress}
-        {...(testId ? testProps(testId) : {})}>
+        {...(testID ? testProps(testID) : {})}>
         {children}
       </TouchableOpacity>
     </View>

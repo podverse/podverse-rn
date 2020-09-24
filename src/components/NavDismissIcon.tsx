@@ -16,7 +16,7 @@ export const NavDismissIcon = (props: Props) => {
     color = props.globalTheme?.text?.color
   }
   return (
-    <NavItemWrapper handlePress={handlePress} testId='nav_dismiss_icon'>
+    <NavItemWrapper handlePress={handlePress} testID='nav_dismiss_icon'>
       <NavItemIcon name='chevron-down' color={color} />
     </NavItemWrapper>
   )

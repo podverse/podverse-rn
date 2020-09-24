@@ -15,7 +15,7 @@ type Props = {
   podcastImageUrl?: string
   podcastTitle?: string
   pubDate?: string
-  testId?: string
+  testID: string
   title?: string
   transparent?: boolean
 }
@@ -31,7 +31,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       hideImage,
       podcastImageUrl,
       podcastTitle,
-      testId,
+      testID,
       transparent
     } = this.props
     let { description = '', title } = this.props
@@ -85,7 +85,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent}>
         <RNView style={styles.wrapperTop}>
           {handleNavigationPress ? (
-            <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testId ? testProps(testId) : {})}>
+            <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testID ? testProps(testID) : {})}>
               {innerTopView}
             </TouchableWithoutFeedback>
           ) : (
@@ -96,7 +96,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           )}
         </RNView>
         {!!description && handleNavigationPress && (
-          <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testId ? testProps(testId) : {})}>
+          <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testID ? testProps(testID) : {})}>
             <RNView>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</RNView>
           </TouchableWithoutFeedback>
         )}

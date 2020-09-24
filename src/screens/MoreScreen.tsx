@@ -56,36 +56,36 @@ export class MoreScreen extends React.Component<Props, State> {
         title: membershipStatus,
         key: _membershipKey,
         routeName: PV.RouteNames.MembershipScreen,
-        testId: 'more_screen_membership_cell'
+        testID: 'more_screen_membership_cell'
       },
       {
         title: translate('Add Podcast by RSS'),
         key: _addPodcastByRSSKey,
         routeName: PV.RouteNames.AddPodcastByRSSScreen,
-        testId: 'more_screen_add_podcast_by_rss_cell'
+        testID: 'more_screen_add_podcast_by_rss_cell'
       },
       {
         title: translate('Contact Us'),
         key: _contactKey,
-        testId: 'more_screen_contact_us_cell'
+        testID: 'more_screen_contact_us_cell'
       },
       {
         title: 'FAQ',
         key: _faqKey,
         routeName: PV.RouteNames.FAQScreen,
-        testId: 'more_screen_faq_cell'
+        testID: 'more_screen_faq_cell'
       },
       {
         title: translate('About'),
         key: _aboutKey,
         routeName: PV.RouteNames.AboutScreen,
-        testId: 'more_screen_about_cell'
+        testID: 'more_screen_about_cell'
       },
       {
         title: translate('Terms of Service'),
         key: _termsOfServiceKey,
         routeName: PV.RouteNames.TermsOfServiceScreen,
-        testId: 'more_screen_terms_of_service_cell'
+        testID: 'more_screen_terms_of_service_cell'
       }
     ]
 
@@ -144,7 +144,7 @@ export class MoreScreen extends React.Component<Props, State> {
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
-            <TouchableWithoutFeedback onPress={() => this._onPress(item)} {...testProps(item.testId)}>
+            <TouchableWithoutFeedback onPress={() => this._onPress(item)} {...testProps(item.testID)}>
               <RNView style={[core.row, table.cellWrapper]}>
                 {item.key === _membershipKey && (
                   <RNView style={[core.row, table.cellWrapper]}>
@@ -222,40 +222,40 @@ const allMoreFeatures = [
     title: translate('Downloads'),
     key: _downloadsKey,
     routeName: PV.RouteNames.DownloadsScreen,
-    testId: 'more_screen_downloads_cell'
+    testID: 'more_screen_downloads_cell'
   },
   {
     title: translate('Playlists'),
     key: _playlistsKey,
     routeName: PV.RouteNames.PlaylistsScreen,
-    testId: 'more_screen_playlists_cell'
+    testID: 'more_screen_playlists_cell'
   },
   {
     title: translate('Profiles'),
     key: _profilesKey,
     routeName: PV.RouteNames.ProfilesScreen,
-    testId: 'more_screen_profiles_cell'
+    testID: 'more_screen_profiles_cell'
   },
   {
     title: translate('My Profile'),
     key: _myProfileKey,
-    testId: 'more_screen_my_profile_cell'
+    testID: 'more_screen_my_profile_cell'
   },
   {
     title: translate('Log out'),
     key: _logoutKey,
-    testId: 'more_screen_log_out_cell'
+    testID: 'more_screen_log_out_cell'
   },
   {
     title: translate('Login'),
     key: _loginKey,
     routeName: PV.RouteNames.AuthNavigator,
-    testId: 'more_screen_login_cell'
+    testID: 'more_screen_login_cell'
   },
   {
     title: translate('Settings'),
     key: _settingsKey,
     routeName: PV.RouteNames.SettingsScreen,
-    testId: 'more_screen_settings_cell'
+    testID: 'more_screen_settings_cell'
   }
 ]

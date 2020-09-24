@@ -7,6 +7,7 @@ import { core } from '../styles'
 type Props = {
   autoCapitalize?: any
   autoCompleteType?: any
+  autoCorrect?: boolean
   editable?: boolean
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
@@ -30,6 +31,7 @@ export const PVTextInput = (props: Props) => {
   const {
     autoCapitalize,
     autoCompleteType,
+    autoCorrect,
     editable = true,
     fontSizeLargerScale,
     fontSizeLargestScale,
@@ -65,6 +67,7 @@ export const PVTextInput = (props: Props) => {
     <TextInput
       autoCapitalize={autoCapitalize}
       autoCompleteType={autoCompleteType}
+      autoCorrect={autoCorrect}
       blurOnSubmit={returnKeyType === 'done'}
       editable={editable}
       keyboardType={keyboardType}

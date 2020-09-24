@@ -50,7 +50,7 @@
   "Custom API Domain description": "Enter a valid base URL for a custom Podverse API instance.",
   "Custom Web Domain": "Custom Web Domain",
   "Custom Web Domain description": "Enter a valid base URL for a custom Podverse Web instance.",
-  "Custom Web Domain subtext": "Set custom domains if you would like to use an alternate server for podcast API data and web site links. Contact us if you would like help setting up your own server.",
+  "Custom Web Domain subtext": "Set custom domains if you would like to use an alternate server for app server API data and website links. Please contact us if you would like help setting up your own server!",
   "Dark Mode": "Dark Mode",
   "Default downloaded episode limit for each podcast": "Default downloaded episode limit for each podcast",
   "Delete Account": "Delete Account",

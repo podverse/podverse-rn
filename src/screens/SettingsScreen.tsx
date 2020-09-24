@@ -25,7 +25,7 @@ import {
 import { removeAllDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { refreshDownloads } from '../lib/downloader'
 import { translate } from '../lib/i18n'
-import { isValidUrl, testProps } from '../lib/utility'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { deleteLoggedInUser } from '../services/user'
@@ -33,9 +33,13 @@ import { logoutUser } from '../state/actions/auth'
 import * as DownloadState from '../state/actions/downloads'
 import { clearHistoryItems } from '../state/actions/history'
 import {
+  resetCustomAPIDomain,
+  resetCustomWebDomain,
+  saveCustomAPIDomain,
+  saveCustomWebDomain,
   setCensorNSFWText,
-  setCustomAPIDomain,
-  setCustomWebDomain,
+  setCustomAPIDomainEnabled,
+  setCustomWebDomainEnabled,
   setOfflineModeEnabled
 } from '../state/actions/settings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
@@ -46,8 +50,6 @@ type Props = {
 
 type State = {
   autoDeleteEpisodeOnEnd?: boolean
-  customAPIDomainLocal?: string
-  customWebDomainLocal?: string
   deleteAccountDialogText: string
   deleteAccountDialogConfirmed?: boolean
   downloadedEpisodeLimitCount: any
@@ -57,8 +59,6 @@ type State = {
   isLoading?: boolean
   maximumSpeedOptionSelected?: any
   offlineModeEnabled: any
-  showCustomAPIDomainDialog?: boolean
-  showCustomWebDomainDialog?: boolean
   showDeleteAccountDialog?: boolean
   showDeleteDownloadedEpisodesDialog?: boolean
   showSetAllDownloadDialog?: boolean
@@ -199,61 +199,27 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   _handleCustomAPIDomainToggle = async () => {
-    const { customAPIDomain } = this.global
-
-    if (customAPIDomain) {
-      await setCustomAPIDomain() // Clears the custom API domain
-    } else {
-      this._handleCustomAPIDomainDialogShow()
-    }
+    const { customAPIDomain, customAPIDomainEnabled } = this.global
+    if (!customAPIDomain) await resetCustomAPIDomain()
+    await setCustomAPIDomainEnabled(!customAPIDomainEnabled)
   }
-
-  _handleCustomAPIDomainDialogShow = () => {
-    const { customAPIDomain } = this.global
-
-    this.setState({
-      customAPIDomainLocal: customAPIDomain,
-      showCustomAPIDomainDialog: true
-    })
-  }
-
-  _handleCustomAPIDomainDialogDismiss = () => this.setState({ showCustomAPIDomainDialog: false })
-
-  _handleCustomAPIDomainDialogTextChange = (text: string) => this.setState({ customAPIDomainLocal: text })
 
   _handleCustomAPIDomainDialogSave = async () => {
-    const { customAPIDomainLocal } = this.state
-    await setCustomAPIDomain(customAPIDomainLocal)
-    this._handleCustomAPIDomainDialogDismiss()
+    const { customAPIDomain } = this.global
+    await saveCustomAPIDomain(customAPIDomain)
   }
 
   _handleCustomWebDomainToggle = async () => {
-    const { customWebDomain } = this.global
-
-    if (customWebDomain) {
-      await setCustomWebDomain() // Clears the custom API domain
-    } else {
-      this._handleCustomWebDomainDialogShow()
-    }
+    const { customWebDomain, customWebDomainEnabled } = this.global
+    if (!customWebDomain) await resetCustomWebDomain()
+    await setCustomWebDomainEnabled(!customWebDomainEnabled)
   }
 
-  _handleCustomWebDomainDialogShow = () => {
-    const { customWebDomain } = this.global
-
-    this.setState({
-      customWebDomainLocal: customWebDomain,
-      showCustomWebDomainDialog: true
-    })
-  }
-
-  _handleCustomWebDomainDialogDismiss = () => this.setState({ showCustomWebDomainDialog: false })
-
-  _handleCustomWebDomainDialogTextChange = (text: string) => this.setState({ customWebDomainLocal: text })
+  _handleCustomWebDomainDialogTextChange = async (text: string) => this.setGlobal({ customWebDomain: text })
 
   _handleCustomWebDomainDialogSave = async () => {
-    const { customWebDomainLocal } = this.state
-    await setCustomWebDomain(customWebDomainLocal)
-    this._handleCustomWebDomainDialogDismiss()
+    const { customWebDomain } = this.global
+    await saveCustomWebDomain(customWebDomain)
   }
 
   _handleClearHistory = () => {
@@ -349,8 +315,6 @@ export class SettingsScreen extends React.Component<Props, State> {
 
   render() {
     const {
-      customAPIDomainLocal,
-      customWebDomainLocal,
       deleteAccountDialogConfirmed,
       deleteAccountDialogText,
       downloadedEpisodeLimitCount,
@@ -362,11 +326,17 @@ export class SettingsScreen extends React.Component<Props, State> {
       showDeleteAccountDialog,
       showSetAllDownloadDialog,
       showSetAllDownloadDialogIsCount,
-      showCustomAPIDomainDialog,
-      showCustomWebDomainDialog,
       showDeleteDownloadedEpisodesDialog
     } = this.state
-    const { censorNSFWText, customAPIDomain, customWebDomain, globalTheme, session } = this.global
+    const {
+      censorNSFWText,
+      customAPIDomain,
+      customAPIDomainEnabled,
+      customWebDomain,
+      customWebDomainEnabled,
+      globalTheme,
+      session
+    } = this.global
     const { isLoggedIn } = session
 
     const isDarkMode = globalTheme === darkTheme
@@ -435,16 +405,33 @@ export class SettingsScreen extends React.Component<Props, State> {
             />
             {!Config.DISABLE_CUSTOM_DOMAINS && (
               <View>
+                <Divider style={styles.divider} />
                 <SwitchWithText
+                  inputAutoCorrect={false}
+                  inputEditable={customAPIDomainEnabled}
+                  inputHandleBlur={this._handleCustomAPIDomainDialogSave}
+                  inputHandleSubmit={this._handleCustomAPIDomainDialogSave}
+                  inputHandleTextChange={(text?: string) => this.setGlobal({ customAPIDomain: text })}
+                  inputPlaceholder={PV.URLs.apiDefaultBaseUrl}
+                  inputShow={customAPIDomainEnabled}
+                  inputText={customAPIDomain}
                   onValueChange={this._handleCustomAPIDomainToggle}
                   text={translate('Use custom API domain')}
-                  value={!!customAPIDomain || !!showCustomAPIDomainDialog}
+                  value={!!customAPIDomainEnabled}
                 />
                 <SwitchWithText
+                  inputAutoCorrect={false}
+                  inputEditable={customWebDomainEnabled}
+                  inputHandleBlur={this._handleCustomWebDomainDialogSave}
+                  inputHandleSubmit={this._handleCustomWebDomainDialogSave}
+                  inputHandleTextChange={(text?: string) => this.setGlobal({ customWebDomain: text })}
+                  inputPlaceholder={PV.URLs.webDefaultBaseUrl}
+                  inputShow={customWebDomainEnabled}
+                  inputText={customWebDomain}
                   onValueChange={this._handleCustomWebDomainToggle}
                   subText={translate('Custom Web Domain subtext')}
                   text={translate('Use custom web domain')}
-                  value={!!customWebDomain || !!showCustomWebDomainDialog}
+                  value={!!customWebDomainEnabled}
                 />
               </View>
             )}
@@ -510,36 +497,6 @@ export class SettingsScreen extends React.Component<Props, State> {
             disabled={!deleteAccountDialogConfirmed}
             label={translate('Delete')}
             onPress={this._handleDeleteAccount}
-          />
-        </Dialog.Container>
-        <Dialog.Container visible={showCustomAPIDomainDialog}>
-          <Dialog.Title>{translate('Custom API Domain')}</Dialog.Title>
-          <Dialog.Description>{translate('Custom API Domain description')}</Dialog.Description>
-          <Dialog.Input
-            onChangeText={this._handleCustomAPIDomainDialogTextChange}
-            placeholder={PV.URLs.api.baseUrl}
-            value={customAPIDomainLocal}
-          />
-          <Dialog.Button label={translate('Cancel')} onPress={this._handleCustomAPIDomainDialogDismiss} />
-          <Dialog.Button
-            disabled={!isValidUrl(customAPIDomainLocal)}
-            label={translate('Save')}
-            onPress={this._handleCustomAPIDomainDialogSave}
-          />
-        </Dialog.Container>
-        <Dialog.Container visible={showCustomWebDomainDialog}>
-          <Dialog.Title>{translate('Custom Web Domain')}</Dialog.Title>
-          <Dialog.Description>{translate('Custom Web Domain description')}</Dialog.Description>
-          <Dialog.Input
-            onChangeText={this._handleCustomWebDomainDialogTextChange}
-            placeholder={PV.URLs.web().baseUrl}
-            value={customWebDomainLocal}
-          />
-          <Dialog.Button label={translate('Cancel')} onPress={this._handleCustomWebDomainDialogDismiss} />
-          <Dialog.Button
-            disabled={!isValidUrl(customWebDomainLocal)}
-            label={translate('Save')}
-            onPress={this._handleCustomWebDomainDialogSave}
           />
         </Dialog.Container>
       </ScrollView>
