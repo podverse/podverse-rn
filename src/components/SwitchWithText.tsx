@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Switch, View } from 'react-native'
 import { useGlobal } from 'reactn'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { Text, TextInput } from './'
@@ -16,6 +17,7 @@ type Props = {
   inputText?: string
   onValueChange: any
   subText?: string
+  testID?: string
   text: string
   value: boolean
 }
@@ -32,6 +34,7 @@ export const SwitchWithText = (props: Props) => {
     inputText,
     onValueChange,
     subText,
+    testID,
     text,
     value
   } = props
@@ -40,8 +43,11 @@ export const SwitchWithText = (props: Props) => {
   return (
     <View>
       <View style={styles.switchWrapper}>
-        <Switch onValueChange={onValueChange} value={value} />
-        <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
+        <Switch onValueChange={onValueChange} value={value} {...(testID ? testProps(`${testID}_switch`) : {})} />
+        <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          style={styles.text}
+          {...(testID ? testProps(`${testID}_text`) : {})}>
           {text}
         </Text>
       </View>
@@ -58,6 +64,7 @@ export const SwitchWithText = (props: Props) => {
           placeholder={inputPlaceholder}
           returnKeyType='done'
           style={[globalTheme.textInput, styles.textInput]}
+          {...(testID ? testProps(`${testID}_text_input`) : {})}
           underlineColorAndroid='transparent'
           value={inputText}
         />
@@ -65,7 +72,8 @@ export const SwitchWithText = (props: Props) => {
       {subText && (
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-          style={[core.textInputSubTitle, globalTheme.textSecondary, styles.subText]}>
+          style={[core.textInputSubTitle, globalTheme.textSecondary, styles.subText]}
+          {...(testID ? testProps(`${testID}_sub_text`) : {})}>
           {subText}
         </Text>
       )}

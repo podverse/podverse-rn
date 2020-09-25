@@ -3,6 +3,7 @@ import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { TextInput } from '.'
 import { translate } from '../lib/i18n'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 
 type Props = {
@@ -15,6 +16,8 @@ type State = {
   email: string
   submitIsDisabled: boolean
 }
+
+const testIDPrefix = 'reset_password'
 
 export class ResetPassword extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -64,11 +67,13 @@ export class ResetPassword extends React.Component<Props, State> {
           returnKeyType='done'
           style={styles.textField}
           value={this.state.email}
+          testID={`${testIDPrefix}_email`}
         />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
           disabled={submitIsDisabled || isLoading}
-          onPress={this._resetPassword}>
+          onPress={this._resetPassword}
+          {...testProps(`${testIDPrefix}_submit`)}>
           {isLoading ? (
             <ActivityIndicator animating={true} color={PV.Colors.gray} size='small' />
           ) : (

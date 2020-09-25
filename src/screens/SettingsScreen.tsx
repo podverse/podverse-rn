@@ -63,6 +63,8 @@ type State = {
   showSetAllDownloadDialogIsCount?: boolean
 }
 
+const testIDPrefix = 'settings_screen'
+
 export class SettingsScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
@@ -344,11 +346,13 @@ export class SettingsScreen extends React.Component<Props, State> {
           <View>
             <SwitchWithText
               onValueChange={this._toggleTheme}
+              testID={`${testIDPrefix}_dark_mode`}
               text={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}
               value={globalTheme === darkTheme}
             />
             <SwitchWithText
               onValueChange={this._toggleDownloadingWifiOnly}
+              testID={`${testIDPrefix}_only_allow_downloading_when_connected_to_wifi`}
               text={translate('Only allow downloading when connected to Wifi')}
               value={!!downloadingWifiOnly}
             />
@@ -358,6 +362,7 @@ export class SettingsScreen extends React.Component<Props, State> {
               value={!!autoDeleteEpisodeOnEnd} /> */}
             <SwitchWithText
               onValueChange={this._handleSelectDownloadedEpisodeLimitDefault}
+              testID={`${testIDPrefix}_limit_the_number_of_downloaded_episodes`}
               text={translate('Limit the number of downloaded episodes for each podcast by default')}
               value={!!downloadedEpisodeLimitDefault}
             />
@@ -365,10 +370,12 @@ export class SettingsScreen extends React.Component<Props, State> {
               handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
               handleSubmitEditing={this._handleSetGlobalDownloadedEpisodeLimitCount}
               selectedNumber={downloadedEpisodeLimitCount}
+              testID={`${testIDPrefix}_default_downloaded_episode_limit`}
               text={translate('Default downloaded episode limit for each podcast')}
             />
             <SwitchWithText
               onValueChange={this._handleToggleNSFWText}
+              testID={`${testIDPrefix}_censor_nsfw_text`}
               text={translate('Censor NSFW text')}
               value={!!censorNSFWText}
             />
@@ -396,6 +403,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             <SwitchWithText
               onValueChange={this._handleToggleOfflineMode}
               subText={translate('Offline mode can save battery life and improve performance')}
+              testID={`${testIDPrefix}_offline_mode`}
               text={translate('Offline Mode')}
               value={!!offlineModeEnabled}
             />
@@ -413,6 +421,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                   inputText={customAPIDomain}
                   onValueChange={this._handleCustomAPIDomainToggle}
                   text={translate('Use custom API domain')}
+                  testID={`${testIDPrefix}_custom_api_domain`}
                   value={!!customAPIDomainEnabled}
                 />
                 <SwitchWithText
@@ -426,6 +435,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                   inputText={customWebDomain}
                   onValueChange={this._handleCustomWebDomainToggle}
                   subText={translate('Custom Web Domain subtext')}
+                  testID={`${testIDPrefix}_custom_web_domain`}
                   text={translate('Use custom web domain')}
                   value={!!customWebDomainEnabled}
                 />
@@ -434,18 +444,21 @@ export class SettingsScreen extends React.Component<Props, State> {
             <Divider style={styles.divider} />
             <Button
               onPress={this._handleClearHistory}
-              wrapperStyles={styles.button}
+              testID={`${testIDPrefix}_clear_history`}
               text={translate('Clear History')}
+              wrapperStyles={styles.button}
             />
             <Button
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
-              wrapperStyles={styles.button}
+              testID={`${testIDPrefix}_delete_downloaded_episodes`}
               text={translate('Delete Downloaded Episodes')}
+              wrapperStyles={styles.button}
             />
             {isLoggedIn && (
               <Button
                 isWarning={true}
                 onPress={this._handleToggleDeleteAccountDialog}
+                testID={`${testIDPrefix}_delete_account`}
                 text={translate('Delete Account')}
                 wrapperStyles={styles.button}
               />
@@ -457,7 +470,11 @@ export class SettingsScreen extends React.Component<Props, State> {
           <Dialog.Description>
             {translate('Do you want to update the download limit for all of your currently subscribed podcasts')}
           </Dialog.Description>
-          <Dialog.Button label={translate('No')} onPress={this._handleToggleSetAllDownloadDialog} />
+          <Dialog.Button
+            label={translate('No')}
+            onPress={this._handleToggleSetAllDownloadDialog}
+            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_update_download_limit_no_button`) : {})}
+          />
           <Dialog.Button
             label={translate('Yes')}
             onPress={
@@ -465,6 +482,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                 ? this._handleUpdateAllDownloadedEpiosdeLimitCount
                 : this._handleUpdateAllDownloadedEpiosdeLimitDefault
             }
+            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_update_download_limit_yes_button`) : {})}
           />
         </Dialog.Container>
 
@@ -473,8 +491,16 @@ export class SettingsScreen extends React.Component<Props, State> {
           <Dialog.Description>
             {translate('Are you sure you want to delete all of your downloaded episodes')}
           </Dialog.Description>
-          <Dialog.Button label={translate('No')} onPress={this._handleToggleDeleteDownloadedEpisodesDialog} />
-          <Dialog.Button label={translate('Yes')} onPress={this._handleDeleteDownloadedEpisodes} />
+          <Dialog.Button
+            label={translate('No')}
+            onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
+            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_downloaded_episodes_no`) : {})}
+          />
+          <Dialog.Button
+            label={translate('Yes')}
+            onPress={this._handleDeleteDownloadedEpisodes}
+            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_downloaded_episodes_yes`) : {})}
+          />
         </Dialog.Container>
 
         <Dialog.Container visible={showDeleteAccountDialog}>
@@ -484,15 +510,21 @@ export class SettingsScreen extends React.Component<Props, State> {
           <Dialog.Input
             onChangeText={this._handleDeleteAccountDialogTextChange}
             placeholder=''
+            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_account_input`) : {})}
             value={deleteAccountDialogText}
           />
-          <Dialog.Button label={translate('Cancel')} onPress={this._handleToggleDeleteAccountDialog} />
+          <Dialog.Button
+            label={translate('Cancel')}
+            onPress={this._handleToggleDeleteAccountDialog}
+            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_account_cancel`) : {})}
+          />
           <Dialog.Button
             bold={deleteAccountDialogConfirmed}
             color={deleteAccountDialogConfirmed ? PV.Colors.redDarker : PV.Colors.grayDark}
             disabled={!deleteAccountDialogConfirmed}
             label={translate('Delete')}
             onPress={this._handleDeleteAccount}
+            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_account_delete`) : {})}
           />
         </Dialog.Container>
       </ScrollView>

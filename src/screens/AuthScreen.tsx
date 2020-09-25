@@ -119,7 +119,6 @@ export class AuthScreen extends React.Component<Props, State> {
           email: credentials.email
         })
       } catch (error) {
-        console.log('attemptSignUp', error)
         if (error.response && error.response.data && error.response.data.message) {
           Alert.alert(PV.Alerts.SIGN_UP_ERROR.title, error.response.data.message, PV.Alerts.BUTTONS.OK)
         }
@@ -139,7 +138,6 @@ export class AuthScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { navigation } = this.props
     const { isLoadingLogin, isLoadingResetPassword, isLoadingSignUp, screenType } = this.state
     const { fontScaleMode } = this.global
     let bottomButtons
@@ -151,19 +149,28 @@ export class AuthScreen extends React.Component<Props, State> {
 
     if (screenType === _login) {
       bottomButtons = [
-        <Text key='reset' onPress={this._showResetPassword} style={switchOptionTextStyle}>
+        <Text
+          key='reset'
+          onPress={this._showResetPassword}
+          style={switchOptionTextStyle}
+          {...testProps('auth_screen_reset_password_button')}>
           {translate('Reset Password')}
         </Text>,
         <Text
           key='moreInfo'
           onPress={this._showMembership}
-          style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}>
+          style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}
+          {...testProps('auth_screen_sign_up_button')}>
           {translate('Sign Up')}
         </Text>
       ]
     } else if (screenType === _resetPassword) {
       bottomButtons = [
-        <Text key='membership' onPress={this._showMembership} style={styles.switchOptionText}>
+        <Text
+          key='membership'
+          onPress={this._showMembership}
+          style={styles.switchOptionText}
+          {...testProps('auth_screen_login_button')}>
           {translate('Login')}
         </Text>
       ]
