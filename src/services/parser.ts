@@ -16,6 +16,11 @@ addByRSSPodcast: object {
 }
 */
 
+export const hasAddByRSSEpisodesLocally = async () => {
+  const results = await getAddByRSSEpisodesLocally(new Date(), new Date(0))
+  return results.length > 0
+}
+
 export const combineEpisodesWithAddByRSSEpisodesLocally = async (results: any[]) => {
   let mostRecentDate = ''
   let oldestDate = ''
@@ -41,16 +46,21 @@ export const combineEpisodesWithAddByRSSEpisodesLocally = async (results: any[])
 
   const addByRSSEpisodes = await getAddByRSSEpisodesLocally(new Date(mostRecentDate), new Date(oldestDate))
 
-  return [...results[0], ...addByRSSEpisodes].sort((a: any, b: any) => {
+  const sortedResults = [...results[0], ...addByRSSEpisodes].sort((a: any, b: any) => {
     const dateA = new Date(a.pubDate) as any
     const dateB = new Date(b.pubDate) as any
     return dateB - dateA
   })
+
+  const newCount = results[1] + addByRSSEpisodes.length
+
+  return [sortedResults, newCount]
 }
 
 export const getAddByRSSEpisodesLocally = async (mostRecentDate: Date, oldestDate: Date) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
   const combinedEpisodes = [] as any[]
+
   for (const addByRSSPodcast of addByRSSPodcasts) {
     for (const episode of addByRSSPodcast.episodes) {
       episode.podcast = addByRSSPodcast

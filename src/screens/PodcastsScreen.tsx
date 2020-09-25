@@ -33,7 +33,6 @@ import {
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
-import { getAddByRSSPodcasts } from '../state/actions/parser'
 import {
   initializePlaybackSpeed,
   initializePlayerQueue,
