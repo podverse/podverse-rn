@@ -16,7 +16,9 @@ const initialTheme: InitialState = {
   addByRSSPodcasts: [],
   censorNSFWText: true,
   customAPIDomain: '',
+  customAPIDomainEnabled: false,
   customWebDomain: '',
+  customWebDomainEnabled: false,
   offlineModeEnabled: false,
   overlayAlert: {
     shouldShowAlert: false
@@ -104,6 +106,8 @@ const initialTheme: InitialState = {
   },
   subscribedPodcasts: [],
   subscribedPodcastsTotalCount: 0,
+  urlsAPI: null,
+  urlsWeb: null,
   userAgent: ''
 }
 

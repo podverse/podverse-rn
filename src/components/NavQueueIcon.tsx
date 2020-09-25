@@ -30,7 +30,7 @@ export const NavQueueIcon = (props: Props) => {
   }
 
   return (
-    <NavItemWrapper handlePress={handlePress} testId='nav_queue_icon'>
+    <NavItemWrapper handlePress={handlePress} testID='nav_queue_icon'>
       <NavItemIcon name='list' color={color} />
       {/*<Image
         source={PV.Images.QUEUE}

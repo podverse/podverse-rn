@@ -33,7 +33,6 @@ import {
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
-import { getAddByRSSPodcasts } from '../state/actions/parser'
 import {
   initializePlaybackSpeed,
   initializePlayerQueue,
@@ -465,7 +464,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         podcastTitle={item.title}
         showAutoDownload={true}
         showDownloadCount={true}
-        testId={'podcasts_screen_podcast_item_' + index}
+        testID={'podcasts_screen_podcast_item_' + index}
       />
     )
   }

@@ -1,12 +1,14 @@
 import React from 'react'
 import { TextInput } from 'react-native'
 import { useGlobal } from 'reactn'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
 
 type Props = {
   autoCapitalize?: any
   autoCompleteType?: any
+  autoCorrect?: boolean
   editable?: boolean
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
@@ -22,6 +24,7 @@ type Props = {
   returnKeyType?: any
   secureTextEntry?: boolean
   style?: any
+  testID?: string
   underlineColorAndroid?: any
   value?: string
 }
@@ -30,6 +33,7 @@ export const PVTextInput = (props: Props) => {
   const {
     autoCapitalize,
     autoCompleteType,
+    autoCorrect,
     editable = true,
     fontSizeLargerScale,
     fontSizeLargestScale,
@@ -46,6 +50,7 @@ export const PVTextInput = (props: Props) => {
     secureTextEntry,
     style,
     underlineColorAndroid,
+    testID,
     value
   } = props
   const [globalTheme] = useGlobal('globalTheme')
@@ -65,6 +70,7 @@ export const PVTextInput = (props: Props) => {
     <TextInput
       autoCapitalize={autoCapitalize}
       autoCompleteType={autoCompleteType}
+      autoCorrect={autoCorrect}
       blurOnSubmit={returnKeyType === 'done'}
       editable={editable}
       keyboardType={keyboardType}
@@ -81,6 +87,7 @@ export const PVTextInput = (props: Props) => {
       secureTextEntry={secureTextEntry}
       style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
       underlineColorAndroid={underlineColorAndroid}
+      {...(testID ? testProps(`${testID}_text_input`) : {})}
       value={value}
     />
   )

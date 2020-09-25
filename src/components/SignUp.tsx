@@ -17,7 +17,8 @@ import {
   hasLowercase as hasLowercaseLib,
   hasMatchingStrings,
   hasNumber as hasNumberLib,
-  hasUppercase as hasUppercaseLib
+  hasUppercase as hasUppercaseLib,
+  testProps
 } from '../lib/utility'
 import { PV } from '../resources'
 
@@ -41,6 +42,8 @@ type State = {
   passwordVerification: string
   submitIsDisabled: boolean
 }
+
+const testIDPrefix = 'sign_up'
 
 export class SignUp extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -168,6 +171,7 @@ export class SignUp extends React.Component<Props, State> {
           placeholderTextColor={PV.Colors.gray}
           returnKeyType='next'
           style={styles.textField}
+          testID={`${testIDPrefix}_email`}
           value={this.state.email}
         />
         <TextInput
@@ -185,6 +189,7 @@ export class SignUp extends React.Component<Props, State> {
           returnKeyType='next'
           secureTextEntry={true}
           style={styles.textField}
+          testID={`${testIDPrefix}_password`}
           underlineColorAndroid='transparent'
           value={this.state.password}
         />
@@ -203,6 +208,7 @@ export class SignUp extends React.Component<Props, State> {
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
           secureTextEntry={true}
           style={[styles.textField, passwordMismatch ? errorStyle : null]}
+          testID={`${testIDPrefix}_verify_password`}
           underlineColorAndroid='transparent'
           value={this.state.passwordVerification}
         />
@@ -218,7 +224,8 @@ export class SignUp extends React.Component<Props, State> {
             <TouchableOpacity
               style={[styles.signInButton, checkIfSubmitIsDisabledStyle]}
               disabled={submitIsDisabled || isLoading}
-              onPress={this.signUp}>
+              onPress={this.signUp}
+              {...testProps(`${testIDPrefix}_submit`)}>
               {isLoading ? (
                 <ActivityIndicator animating={true} color={PV.Colors.white} size='small' />
               ) : (

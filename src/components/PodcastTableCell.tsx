@@ -17,7 +17,7 @@ type Props = {
   podcastTitle: string
   showAutoDownload?: boolean
   showDownloadCount?: boolean
-  testId?: string
+  testID: string
 }
 
 export class PodcastTableCell extends React.PureComponent<Props> {
@@ -31,7 +31,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       podcastTitle = translate('untitled podcast'),
       showAutoDownload,
       showDownloadCount,
-      testId
+      testID
     } = this.props
     const { autoDownloadSettings, downloadedPodcastEpisodeCounts, fontScaleMode } = this.global
 
@@ -49,7 +49,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       PV.Fonts.fontScale.largest === fontScaleMode ? [styles.titleWrapper, { flex: 1 }] : [styles.titleWraper]
 
     return (
-      <TouchableWithoutFeedback onPress={onPress} {...(testId ? testProps(testId) : {})}>
+      <TouchableWithoutFeedback onPress={onPress} {...(testID ? testProps(testID) : {})}>
         <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>

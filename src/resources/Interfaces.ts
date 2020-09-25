@@ -79,7 +79,11 @@ export interface InitialState {
   addByRSSPodcasts: any[]
   censorNSFWText?: boolean
   customAPIDomain?: string
+  customAPIDomainEnabled?: boolean
   customWebDomain?: string
+  customWebDomainEnabled?: boolean
+  urlsAPI?: any
+  urlsWeb?: any
   offlineModeEnabled?: any
   overlayAlert: {
     shouldShowAlert: boolean

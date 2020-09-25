@@ -31,7 +31,7 @@ import {
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
-import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
+import { hasValidNetworkConnection } from '../lib/network'
 import {
   decodeHTMLString,
   formatTitleViewHtml,
@@ -39,10 +39,11 @@ import {
   readableDate,
   removeHTMLFromString,
   replaceLinebreaksWithBrTags,
+  safelyUnwrapNestedVariable,
   testProps
 } from '../lib/utility'
 import { PV } from '../resources'
-import { getEpisodes } from '../services/episode'
+import { getEpisode, getEpisodes } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getAddByRSSPodcastLocally } from '../services/parser'
@@ -59,6 +60,14 @@ type Props = {
 type State = {}
 
 let eventListenerPlayerNewEpisodeLoaded: any
+
+/* 
+  The shouldQueryAgain variable is used to determine if the PlayerScreen should reload its data
+  on componentDidMount. This is (*I think*) intended to handle the condition where the app is returning
+  to the foreground from the background, which will trigger another componentDidMount, we will want
+  to refresh the screen's data.
+  shouldQueryAgain is set to true when the PLAYER_NEW_EPISODE_LOADED event is emitted.
+*/
 let shouldQueryAgain = false
 
 export class PlayerScreen extends React.Component<Props, State> {
@@ -126,30 +135,43 @@ export class PlayerScreen extends React.Component<Props, State> {
     if (!eventListenerPlayerNewEpisodeLoaded) {
       eventListenerPlayerNewEpisodeLoaded = PlayerEventEmitter.on(
         PV.Events.PLAYER_NEW_EPISODE_LOADED,
-        this._setShouldQueryAgain
+        this._handleNewEpisodeLoaded
       )
     }
 
     gaTrackPageView('/player', 'Player Screen')
+
+    await this._handleUpdateFullEpisode()
   }
 
-  _setShouldQueryAgain = () => {
+  _handleNewEpisodeLoaded = async () => {
     shouldQueryAgain = true
+    setTimeout(() => {
+      this._handleUpdateFullEpisode()
+    }, 5000)
+  }
+
+  _handleUpdateFullEpisode = async () => {
+    const hasInternetConnection = await hasValidNetworkConnection()
+    const episode = safelyUnwrapNestedVariable(() => this.global.player.episode, {})
+    if (hasInternetConnection && episode && episode.id) {
+      try {
+        const fullEpisode = await getEpisode(episode.id)
+        if (fullEpisode && fullEpisode.description) {
+          setGlobal({
+            player: {
+              ...this.global.player,
+              episode: fullEpisode
+            }
+          })
+        }
+      } catch (error) {
+        // do nothing
+      }
+    }
   }
 
   _initializeScreenData = () => {
-    // NOTE: Commenting this out...but unsure if it is still necessary to address playback issues.
-    // // This is difficult for me to reproduce in local testing, but upon returning to the player screen
-    // // from the lock screen, it appears that componentDidMount is called again, causing the player
-    // // to visibly load, as the player fires up from an "idle" or "none" state.
-    // // Ensure this only happens once in initializeScreenData.
-    // // Updating the PlayerScreen when returning from the background is handled in
-    // // PodcastsScreen _handleAppStateChange.
-    // if (!initializedOnce) {
-    //   initializedOnce = true
-    //   return
-    // }
-
     setGlobal(
       {
         screenPlayer: {
@@ -439,15 +461,15 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { nowPlayingItem } = this.global.player
     let url = ''
     let title = ''
-    const webUrls = await PV.URLs.web()
+
     if (podcastId) {
-      url = webUrls.podcast + podcastId
+      url = this.global.urlsWeb.podcast + podcastId
       title = `${nowPlayingItem.podcastTitle}${translate('shared using brandName')}`
     } else if (episodeId) {
-      url = webUrls.episode + episodeId
+      url = this.global.urlsWeb.episode + episodeId
       title = `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate('shared using brandName')}`
     } else {
-      url = webUrls.clip + mediaRefId
+      url = this.global.urlsWeb.clip + mediaRefId
       title = `${nowPlayingItem.clipTitle ? nowPlayingItem.clipTitle + ' – ' : translate('untitled clip – ')}`
       title += `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate(
         'clip shared using brandName'
@@ -562,7 +584,9 @@ export class PlayerScreen extends React.Component<Props, State> {
     const episodeId = episode ? episode.id : null
     const mediaRefId = mediaRef ? mediaRef.id : null
 
-    episode.description = replaceLinebreaksWithBrTags(episode.description)
+    if (episode && episode.description) {
+      episode.description = replaceLinebreaksWithBrTags(episode.description)
+    }
 
     const noResultsMessage =
       viewType === PV.Filters._clipsKey ? translate('No clips found') : translate('No episodes found')
@@ -641,7 +665,10 @@ export class PlayerScreen extends React.Component<Props, State> {
                   />
                 )}
               {!isLoading && viewType === PV.Filters._showNotesKey && episode && (
-                <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={episode.description} />
+                <HTMLScrollView
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  html={episode.description ? episode.description : ''}
+                />
               )}
               {!isLoading && viewType === PV.Filters._titleKey && episode && (
                 <HTMLScrollView fontSizeLargestScale={PV.Fonts.largeSizes.md} html={formatTitleViewHtml(episode)} />

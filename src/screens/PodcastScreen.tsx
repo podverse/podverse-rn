@@ -91,7 +91,8 @@ export class PodcastScreen extends React.Component<Props, State> {
             <NavShareIcon
               endingText={translate('shared using brandName')}
               podcastTitle={podcastTitle}
-              url={PV.URLs.podcast + podcastId}
+              urlId={podcastId}
+              urlPath={PV.URLs.webPaths.podcast}
             />
           )}
           <NavSearchIcon navigation={navigation} />
@@ -368,7 +369,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           hideImage={true}
           id={item.id}
           pubDate={item.pubDate}
-          testId={'podcast_screen_episode_downloaded_item_' + index}
+          testID={'podcast_screen_episode_downloaded_item_' + index}
           title={item.title}
         />
       )
@@ -389,7 +390,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           hideImage={true}
           id={item.id}
           pubDate={item.pubDate}
-          testId={'podcast_screen_episode_item_' + index}
+          testID={'podcast_screen_episode_item_' + index}
           title={item.title}
         />
       )
@@ -404,7 +405,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           hasZebraStripe={isOdd(index)}
           hideImage={true}
           startTime={item.startTime}
-          testId={'podcast_screen_clip_item_' + index}
+          testID={'podcast_screen_clip_item_' + index}
           title={item.title}
         />
       ) : (

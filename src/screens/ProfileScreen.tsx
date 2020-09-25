@@ -2,7 +2,7 @@ import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podvers
 import { Alert, StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
-import React, { setGlobal } from 'reactn'
+import React, { setGlobal, useGlobal } from 'reactn'
 import {
   ActionSheet,
   ActivityIndicator,
@@ -70,18 +70,19 @@ type State = {
 }
 
 export class ProfileScreen extends React.Component<Props, State> {
-  static navigationOptions = async ({ navigation }) => {
+  static navigationOptions = ({ navigation }) => {
     const userId = navigation.getParam('userId')
     const userIsPublic = navigation.getParam('userIsPublic')
     const userName = navigation.getParam('userName')
     const isMyProfile = navigation.getParam('isMyProfile')
-    const webUrls = await PV.URLs.web()
 
     return {
       title: isMyProfile ? translate('My Profile') : translate('Profile'),
       headerRight: (
         <RNView style={core.row}>
-          {userIsPublic && userId && <NavShareIcon profileName={userName} url={webUrls.profile + userId} />}
+          {userIsPublic && userId && (
+            <NavShareIcon profileName={userName} urlId={userId} urlPath={PV.URLs.webPaths.profile} />
+          )}
           <NavSearchIcon navigation={navigation} />
         </RNView>
       )

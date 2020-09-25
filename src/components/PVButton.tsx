@@ -2,6 +2,7 @@ import React from 'react'
 import { ActivityIndicator, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
 import { Text } from '.'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
 
@@ -11,12 +12,13 @@ type Props = {
   isSuccess?: boolean
   isWarning?: boolean
   onPress: any
+  testID?: string
   text: string
   wrapperStyles: any
 }
 
 export const PVButton = (props: Props) => {
-  const { disabled, isLoading, isSuccess, isWarning, onPress, text, wrapperStyles } = props
+  const { disabled, isLoading, isSuccess, isWarning, onPress, testID, text, wrapperStyles } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   const disabledStyle = disabled ? globalTheme.buttonDisabledWrapper : null
@@ -37,7 +39,8 @@ export const PVButton = (props: Props) => {
         wrapperStyles
       ]}
       disabled={disabled || isLoading}
-      onPress={onPress}>
+      onPress={onPress}
+      {...(testID ? testProps(`${testID}_button`) : {})}>
       {isLoading ? (
         <ActivityIndicator animating={true} color={globalTheme.buttonPrimaryText.color} size='small' />
       ) : (

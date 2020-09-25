@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, TextInput } from './'
 
@@ -9,11 +10,12 @@ type Props = {
   handleSubmitEditing?: any
   isSmallText?: boolean
   selectedNumber?: number | string
+  testID?: string
   text: string
 }
 
 export const NumberSelectorWithText = (props: Props) => {
-  const { handleChangeText, handleSubmitEditing, isSmallText, selectedNumber, text } = props
+  const { handleChangeText, handleSubmitEditing, isSmallText, selectedNumber = 0, testID, text } = props
   const [globalTheme] = useGlobal('globalTheme')
   const strNum = Number.isInteger(selectedNumber) ? selectedNumber.toString() : selectedNumber
   return (
@@ -27,6 +29,7 @@ export const NumberSelectorWithText = (props: Props) => {
         placeholderTextColor={globalTheme.placeholderText.color}
         returnKeyType='done'
         style={[globalTheme.textInput, styles.textInput]}
+        {...(testID ? testProps(`${testID}_text_input`) : {})}
         value={strNum}
       />
       <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={isSmallText ? styles.smallText : styles.text}>
