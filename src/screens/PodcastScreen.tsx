@@ -91,7 +91,8 @@ export class PodcastScreen extends React.Component<Props, State> {
             <NavShareIcon
               endingText={translate('shared using brandName')}
               podcastTitle={podcastTitle}
-              url={PV.URLs.podcast + podcastId}
+              urlId={podcastId}
+              urlPath={PV.URLs.webPaths.podcast}
             />
           )}
           <NavSearchIcon navigation={navigation} />

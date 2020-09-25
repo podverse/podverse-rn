@@ -106,6 +106,8 @@ const initialTheme: InitialState = {
   },
   subscribedPodcasts: [],
   subscribedPodcastsTotalCount: 0,
+  urlsAPI: null,
+  urlsWeb: null,
   userAgent: ''
 }
 

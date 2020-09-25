@@ -1,6 +1,7 @@
 import React from 'react'
 import Config from 'react-native-config'
 import Share from 'react-native-share'
+import { getGlobal } from 'reactn'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
 import { translate } from '../lib/i18n'
@@ -15,18 +16,29 @@ type Props = {
   playlistTitle?: string
   podcastTitle?: string
   profileName?: string
-  url?: string
+  urlId?: string
+  urlPath?: string
   globalTheme?: GlobalTheme
 }
 
 export const NavShareIcon = (props: Props) => {
   if (Config.DISABLE_SHARE) return null
 
-  const { clipTitle, endingText, episodeTitle, getUrl, handlePress, playlistTitle, podcastTitle, profileName } = props
-  let { url = '' } = props
+  const {
+    clipTitle,
+    endingText,
+    episodeTitle,
+    handlePress,
+    playlistTitle,
+    podcastTitle,
+    profileName,
+    urlId,
+    urlPath
+  } = props
 
   const onShare = async () => {
-    if (getUrl) url = getUrl()
+    const { urlsWeb } = getGlobal()
+    const url = `${urlsWeb.baseUrl}${urlPath}${urlId ? `${urlId}` : ''}`
 
     let title = ''
     if (playlistTitle) title = playlistTitle

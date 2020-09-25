@@ -9,8 +9,15 @@ const root = protocol + domain
 const apiDefaultBaseUrl = Config.API_DOMAIN || 'https://api.stage.podverse.fm/api/v1'
 const webDefaultBaseUrl = root
 
+const webPaths = {
+  clip: `/clip/`,
+  episode: `/episode/`,
+  playlist: `/playlist/`,
+  podcast: `/podcast/`,
+  profile: `/profile/`
+}
+
 export const URLs = {
-  apiDefaultBaseUrl,
   api: async () => {
     const isEnabled = await AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN_ENABLED)
     const baseUrlOverride = await AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN)
@@ -18,6 +25,7 @@ export const URLs = {
       baseUrl: (isEnabled && baseUrlOverride) || apiDefaultBaseUrl
     }
   },
+  apiDefaultBaseUrl,
   requestPodcast: Config.URL_EXTERNAL_REQUEST_PODCAST || '',
   social: {
     facebook: Config.URL_SOCIAL_FACEBOOK || '',
@@ -32,12 +40,13 @@ export const URLs = {
     const base = isEnabled && baseUrlOverride ? baseUrlOverride : webDefaultBaseUrl
     return {
       baseUrl: base,
-      clip: `${base}/clip/`,
-      episode: `${base}/episode/`,
-      playlist: `${base}/playlist/`,
-      podcast: `${base}/podcast/`,
-      profile: `${base}/profile/`
+      clip: `${base}${webPaths.clip}`,
+      episode: `${base}${webPaths.episode}`,
+      playlist: `${base}${webPaths.playlist}`,
+      podcast: `${base}${webPaths.podcast}`,
+      profile: `${base}${webPaths.profile}`
     }
   },
-  webDefaultBaseUrl
+  webDefaultBaseUrl,
+  webPaths
 }

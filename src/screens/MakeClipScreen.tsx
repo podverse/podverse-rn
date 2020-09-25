@@ -254,8 +254,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
       try {
         const mediaRef = isEditing ? await updateMediaRef(data) : await createMediaRef(data)
-        const webUrls = await PV.URLs.web()
-        const url = webUrls.clip + mediaRef.id
+        const url = this.global.urlsWeb.clip + mediaRef.id
 
         if (isEditing) {
           const newItem = {

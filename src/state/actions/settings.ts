@@ -9,6 +9,8 @@ export const initializeSettings = async () => {
   const customAPIDomainEnabled = await AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN_ENABLED)
   const customWebDomain = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN)
   const customWebDomainEnabled = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED)
+  const urlsAPI = await PV.URLs.api()
+  const urlsWeb = await PV.URLs.web()
 
   setGlobal({
     censorNSFWText,
@@ -16,7 +18,9 @@ export const initializeSettings = async () => {
     customAPIDomainEnabled,
     customWebDomain: customWebDomain ? customWebDomain : PV.URLs.webDefaultBaseUrl,
     customWebDomainEnabled,
-    offlineModeEnabled
+    offlineModeEnabled,
+    urlsAPI,
+    urlsWeb
   })
 }
 
@@ -28,16 +32,19 @@ export const setCensorNSFWText = async (value: boolean) => {
   })
 }
 
-export const resetCustomAPIDomain = async () => {
-  setGlobal({ customAPIDomain: PV.URLs.apiDefaultBaseUrl }, async () => {
-    await AsyncStorage.setItem(PV.Keys.CUSTOM_API_DOMAIN, PV.URLs.apiDefaultBaseUrl)
-  })
-}
-
 export const saveCustomAPIDomain = async (value?: string) => {
-  value
-    ? await AsyncStorage.setItem(PV.Keys.CUSTOM_API_DOMAIN, value)
-    : await AsyncStorage.removeItem(PV.Keys.CUSTOM_API_DOMAIN)
+  // Call setItem before PV.URLs.api(), because api() reads from PV.Keys.CUSTOM_API_DOMAIN
+  if (value) {
+    await AsyncStorage.setItem(PV.Keys.CUSTOM_API_DOMAIN, value)
+    const urlsAPI = await PV.URLs.api()
+    setGlobal({ urlsAPI })
+  } else {
+    setGlobal({ customWebDomain: PV.URLs.apiDefaultBaseUrl }, async () => {
+      await AsyncStorage.setItem(PV.Keys.CUSTOM_API_DOMAIN, PV.URLs.apiDefaultBaseUrl)
+      const urlsAPI = await PV.URLs.api()
+      setGlobal({ urlsAPI })
+    })
+  }
 }
 
 export const setCustomAPIDomainEnabled = async (value?: boolean) => {
@@ -48,16 +55,19 @@ export const setCustomAPIDomainEnabled = async (value?: boolean) => {
   })
 }
 
-export const resetCustomWebDomain = async () => {
-  setGlobal({ customWebDomain: PV.URLs.webDefaultBaseUrl }, async () => {
-    await AsyncStorage.setItem(PV.Keys.CUSTOM_WEB_DOMAIN, PV.URLs.webDefaultBaseUrl)
-  })
-}
-
 export const saveCustomWebDomain = async (value?: string) => {
-  value
-    ? await AsyncStorage.setItem(PV.Keys.CUSTOM_WEB_DOMAIN, value)
-    : await AsyncStorage.removeItem(PV.Keys.CUSTOM_WEB_DOMAIN)
+  // Call setItem before PV.URLs.web(), because web() reads from PV.Keys.CUSTOM_WEB_DOMAIN
+  if (value) {
+    await AsyncStorage.setItem(PV.Keys.CUSTOM_WEB_DOMAIN, value)
+    const urlsWeb = await PV.URLs.web()
+    setGlobal({ urlsWeb })
+  } else {
+    setGlobal({ customWebDomain: PV.URLs.webDefaultBaseUrl }, async () => {
+      await AsyncStorage.setItem(PV.Keys.CUSTOM_WEB_DOMAIN, PV.URLs.webDefaultBaseUrl)
+      const urlsWeb = await PV.URLs.web()
+      setGlobal({ urlsWeb })
+    })
+  }
 }
 
 export const setCustomWebDomainEnabled = async (value?: boolean) => {

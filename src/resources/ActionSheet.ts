@@ -33,6 +33,7 @@ const mediaMoreButtons = (
   const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session.userInfo.id, '')
   const isLoggedIn = safelyUnwrapNestedVariable(() => globalState.session.isLoggedIn, '')
   const globalTheme = safelyUnwrapNestedVariable(() => globalState.globalTheme, {})
+  const urlsWeb = safelyUnwrapNestedVariable(() => globalState.urlsWeb, {})
 
   if (item.ownerId && item.ownerId === loggedInUserId) {
     buttons.push(
@@ -155,13 +156,13 @@ const mediaMoreButtons = (
           try {
             let url = ''
             let title = ''
-            const webUrls = await PV.URLs.web()
+
             if (item.clipId) {
-              url = webUrls.clip + item.clipId
+              url = urlsWeb.clip + item.clipId
               title = item.clipTitle ? item.clipTitle : translate('untitled clip –')
               title += ` ${item.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
             } else if (item.episodeId) {
-              url = webUrls.episode + item.episodeId
+              url = urlsWeb.episode + item.episodeId
               title += `${item.podcastTitle} – ${item.episodeTitle} – ${translate('shared using brandName')}`
             }
             await Share.open({

@@ -40,10 +40,9 @@ type State = {
 }
 
 export class PlaylistScreen extends React.Component<Props, State> {
-  static navigationOptions = async ({ navigation }) => {
+  static navigationOptions = ({ navigation }) => {
     const playlistId = navigation.getParam('playlistId')
     const playlistTitle = navigation.getParam('playlistTitle')
-    const webUrls = await PV.URLs.web()
 
     return {
       title: translate('Playlist'),
@@ -52,7 +51,8 @@ export class PlaylistScreen extends React.Component<Props, State> {
           <NavShareIcon
             endingText={translate('shared using brandName')}
             playlistTitle={playlistTitle}
-            url={webUrls.playlist + playlistId}
+            urlId={playlistId}
+            urlPath={PV.URLs.webPaths.playlist}
           />
           <NavSearchIcon navigation={navigation} />
         </RNView>

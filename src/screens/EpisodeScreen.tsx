@@ -2,7 +2,7 @@ import debounce from 'lodash/debounce'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationStackOptions } from 'react-navigation-stack'
-import React from 'reactn'
+import React, { useGlobal } from 'reactn'
 import {
   ActionSheet,
   ActivityIndicator,
@@ -50,12 +50,11 @@ type State = {
 }
 
 export class EpisodeScreen extends React.Component<Props, State> {
-  static navigationOptions = async ({ navigation }) => {
+  static navigationOptions = ({ navigation }) => {
     const episodeId = navigation.getParam('episodeId')
     const episodeTitle = navigation.getParam('episodeTitle')
     const podcastTitle = navigation.getParam('podcastTitle')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
-    const webUrls = await PV.URLs.web()
 
     return {
       title: translate('Episode'),
@@ -66,7 +65,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
               endingText={translate('shared using brandName')}
               episodeTitle={episodeTitle}
               podcastTitle={podcastTitle}
-              url={webUrls.episode + episodeId}
+              urlId={episodeId}
+              urlPath={PV.URLs.webPaths.episode}
             />
           )}
           <NavSearchIcon navigation={navigation} />

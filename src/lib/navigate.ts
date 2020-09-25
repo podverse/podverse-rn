@@ -10,7 +10,7 @@ export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
     actions: [
       NavigationActions.navigate({ routeName: PV.RouteNames.EpisodesScreen }),
       NavigationActions.navigate({
-        routeName: PV.RouteNames.EpisodesEpisodeScreen,
+        routeName: PV.RouteNames.EpisodeScreen,
         params: {
           episodeId: item.episodeId,
           episode: {

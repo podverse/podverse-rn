@@ -33,8 +33,6 @@ import { logoutUser } from '../state/actions/auth'
 import * as DownloadState from '../state/actions/downloads'
 import { clearHistoryItems } from '../state/actions/history'
 import {
-  resetCustomAPIDomain,
-  resetCustomWebDomain,
   saveCustomAPIDomain,
   saveCustomWebDomain,
   setCensorNSFWText,
@@ -199,8 +197,7 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   _handleCustomAPIDomainToggle = async () => {
-    const { customAPIDomain, customAPIDomainEnabled } = this.global
-    if (!customAPIDomain) await resetCustomAPIDomain()
+    const { customAPIDomainEnabled } = this.global
     await setCustomAPIDomainEnabled(!customAPIDomainEnabled)
   }
 
@@ -210,8 +207,7 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   _handleCustomWebDomainToggle = async () => {
-    const { customWebDomain, customWebDomainEnabled } = this.global
-    if (!customWebDomain) await resetCustomWebDomain()
+    const { customWebDomainEnabled } = this.global
     await setCustomWebDomainEnabled(!customWebDomainEnabled)
   }
 
