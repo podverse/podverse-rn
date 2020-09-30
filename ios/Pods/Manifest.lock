@@ -47,7 +47,7 @@ PODS:
     - libwebp/demux
   - libwebp/webp (1.1.0)
   - RCTRequired (0.63.2)
-  - RCTSystemSetting (1.7.4):
+  - RCTSystemSetting (1.7.5):
     - React
   - RCTTypeSafety (0.63.2):
     - FBLazyVector (= 0.63.2)
@@ -300,12 +300,12 @@ PODS:
     - React
   - RNCAsyncStorage (1.6.2):
     - React
-  - RNCMaskedView (0.1.9):
+  - RNCMaskedView (0.1.10):
     - React
   - RNCPicker (1.8.0):
     - React-Core
-  - RNDeviceInfo (6.0.2):
-    - React
+  - RNDeviceInfo (6.0.4):
+    - React-Core
   - RNFastImage (7.0.2):
     - React
     - SDWebImage (~> 5.0)
@@ -524,7 +524,7 @@ SPEC CHECKSUMS:
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
   RCTRequired: f13f25e7b12f925f1f6a6a8c69d929a03c0129fe
-  RCTSystemSetting: f3123e7de51bf918bc4243167ba2885a72bf09ec
+  RCTSystemSetting: f1273cd074d852c98fc5490e7a1d21b3eb91b948
   RCTTypeSafety: 44982c5c8e43ff4141eb519a8ddc88059acd1f3a
   React: e1c65dd41cb9db13b99f24608e47dd595f28ca9a
   React-callinvoker: 552a6a6bc8b3bb794cf108ad59e5a9e2e3b4fc98
@@ -554,9 +554,9 @@ SPEC CHECKSUMS:
   ReactCommon: a0a1edbebcac5e91338371b72ffc66aa822792ce
   RNBackgroundFetch: 8d8d66b47eafcb9e772b2eb95057939038b3ef95
   RNCAsyncStorage: 60a80e72d95bf02a01cace55d3697d9724f0d77f
-  RNCMaskedView: 71fc32d971f03b7f03d6ab6b86b730c4ee64f5b6
+  RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNCPicker: a724b3aa22b182697c190a8fd7b060b66119e136
-  RNDeviceInfo: bdd61e8b070d13a1dd9d022091981075ed4cde16
+  RNDeviceInfo: 5eb11f4aef9395cca403c0c92dff458252fc0b2c
   RNFastImage: 9b0c22643872bb7494c8d87bbbb66cc4c0d9e7a2
   RNFS: 54da03c2b7d862c42ea3ca8c7f86f892760a535a
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
