@@ -72,7 +72,7 @@ export const PVTextInput = (props: Props) => {
       autoCompleteType={autoCompleteType}
       autoCorrect={autoCorrect}
       blurOnSubmit={returnKeyType === 'done'}
-      editable={editable}
+      editable={!!editable}
       keyboardType={keyboardType}
       multiline={numberOfLines > 1}
       numberOfLines={numberOfLines}

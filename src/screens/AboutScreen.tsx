@@ -16,7 +16,7 @@ type State = {}
 export class AboutScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      title: translate('About')
+      title: translate('About brandName')
     }
   }
 

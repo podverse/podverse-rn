@@ -55,7 +55,7 @@ export const SwitchWithText = (props: Props) => {
         <TextInput
           autoCapitalize='none'
           autoCorrect={inputAutoCorrect}
-          editable={inputEditable}
+          editable={!!inputEditable}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
           onBlur={inputHandleBlur}

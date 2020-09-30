@@ -15,9 +15,9 @@ export const initializeSettings = async () => {
   setGlobal({
     censorNSFWText,
     customAPIDomain: customAPIDomain ? customAPIDomain : PV.URLs.apiDefaultBaseUrl,
-    customAPIDomainEnabled,
+    customAPIDomainEnabled: customAPIDomainEnabled === 'TRUE',
     customWebDomain: customWebDomain ? customWebDomain : PV.URLs.webDefaultBaseUrl,
-    customWebDomainEnabled,
+    customWebDomainEnabled: customWebDomainEnabled === 'TRUE',
     offlineModeEnabled,
     urlsAPI,
     urlsWeb
