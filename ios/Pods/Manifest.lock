@@ -228,13 +228,13 @@ PODS:
     - React-Core
   - react-native-config (1.0.0):
     - React
-  - react-native-netinfo (4.4.0):
+  - react-native-netinfo (4.7.0):
     - React
   - react-native-safe-area-context (0.7.3):
     - React
   - react-native-track-player (1.2.3):
     - React
-  - react-native-webview (7.4.2):
+  - react-native-webview (7.6.0):
     - React
   - React-RCTActionSheet (0.63.3):
     - React-Core/RCTActionSheetHeaders (= 0.63.3)
@@ -296,7 +296,7 @@ PODS:
     - React-Core (= 0.63.3)
     - React-cxxreact (= 0.63.3)
     - React-jsi (= 0.63.3)
-  - RNBackgroundFetch (2.7.1):
+  - RNBackgroundFetch (2.8.0):
     - React
   - RNCAsyncStorage (1.12.0):
     - React
@@ -324,9 +324,9 @@ PODS:
     - React
   - RNSecureKeyStore (1.0.0):
     - React
-  - RNShare (3.1.2):
-    - React
-  - RNVectorIcons (6.6.0):
+  - RNShare (3.8.5):
+    - React-Core
+  - RNVectorIcons (6.7.0):
     - React
   - SDWebImage (5.9.1):
     - SDWebImage/Core (= 5.9.1)
@@ -334,6 +334,8 @@ PODS:
   - SDWebImageWebPCoder (0.2.5):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.0)
+  - toolbar-android (0.1.0-rc.2):
+    - React
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -391,6 +393,7 @@ DEPENDENCIES:
   - RNSecureKeyStore (from `../node_modules/react-native-secure-key-store/ios`)
   - RNShare (from `../node_modules/react-native-share`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - "toolbar-android (from `../node_modules/@react-native-community/toolbar-android`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -507,6 +510,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-share"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  toolbar-android:
+    :path: "../node_modules/@react-native-community/toolbar-android"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -538,10 +543,10 @@ SPEC CHECKSUMS:
   react-native-background-timer: 029c606b3fd6dd476b153e177c518b6ade4c169f
   react-native-camera: 35854c4f764a4a6cf61c1c3525888b92f0fe4b31
   react-native-config: 7db9b96479164dfd7b2be68eb9079e08279511c4
-  react-native-netinfo: 6bb847e64f45a2d69c6173741111cfd95c669301
+  react-native-netinfo: ddaca8bbb9e6e914b1a23787ccb879bc642931c9
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   react-native-track-player: 28b96dd6404dea3eee80e67b74507679235a8dfb
-  react-native-webview: 5c7578eb1ee5daf16e4c84a500becaa2038db828
+  react-native-webview: db4682f1698ab4b17a5e88f951031d203ff8aea8
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa
   React-RCTAnimation: 1befece0b5183c22ae01b966f5583f42e69a83c2
   React-RCTBlob: 0b284339cbe4b15705a05e2313a51c6d8b51fa40
@@ -552,7 +557,7 @@ SPEC CHECKSUMS:
   React-RCTText: 65a6de06a7389098ce24340d1d3556015c38f746
   React-RCTVibration: 8e9fb25724a0805107fc1acc9075e26f814df454
   ReactCommon: 4167844018c9ed375cc01a843e9ee564399e53c3
-  RNBackgroundFetch: 8d8d66b47eafcb9e772b2eb95057939038b3ef95
+  RNBackgroundFetch: 8de4251d9c0b47e18b6d78052ade58c68bec6fd5
   RNCAsyncStorage: 2a692bcb9b69b76a2f1a95f33db057129700af64
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNCPicker: a724b3aa22b182697c190a8fd7b060b66119e136
@@ -565,10 +570,11 @@ SPEC CHECKSUMS:
   RNReanimated: dd8c286ab5dd4ba36d3a7fef8bff7e08711b5476
   RNScreens: 0e91da98ab26d5d04c7b59a9b6bd694124caf88c
   RNSecureKeyStore: f1ad870e53806453039f650720d2845c678d89c8
-  RNShare: c19dbe4a7224098cd3cfc4d3b92c886ca817b3f0
-  RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
+  RNShare: 7e22ba3bf66294ff7c122a1f2da8a8ec642091a0
+  RNVectorIcons: 368d6d8b8301224e5ffb6254191f4f8876c2be0d
   SDWebImage: a990c053fff71e388a10f3357edb0be17929c9c5
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
+  toolbar-android: 85f3ef4d691469f2d304e7dee4bca013aa1ba1ff
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
 
 PODFILE CHECKSUM: af0fc747e686af110e0bf840ac798659a6550528
