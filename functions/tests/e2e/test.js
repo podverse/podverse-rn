@@ -27,11 +27,12 @@ driver = wd.promiseRemote("http://hub-cloud.browserstack.com/wd/hub");
 
 let windowSize
 
-const elementByIdAndClickAndTest = async (id, waitForElement, back) => {
+const elementByIdAndClickAndTest = async (id, waitForElementId, back) => {
     logPerformance(id, 'START')
+    await driver.waitForElementByAccessibilityId(id, 10000)
     const element = await driver.elementByAccessibilityId(id)
     await element.click()
-    await driver.waitForElementByAccessibilityId(waitForElement, 10000)
+    await driver.waitForElementByAccessibilityId(waitForElementId, 10000)
     if (back) await driver.back()
     logPerformance(id, 'END')
 }
@@ -51,6 +52,20 @@ const performScrollDown = async () => {
   action.release()
   await action.perform()
 }
+
+/*
+All test IDs should be present via one of these options
+testID=
+testProps(
+
+  Add a test to go to EpisodesScreen > EpisodeScreen
+  Add a test to go to MoreScreen > LoginScreen
+  Send keys to the username and password input on LoginScreen
+  Press submit button on LoginScreen
+  Come up with an invalid username/password test
+  Test that the Sign Up page shows
+  Test that the Reset Password page shows
+*/
 
 const logPerformance = (subject, stage, notes = '') => {
     console.log(subject + ',' + stage + ',' + Math.ceil(performance.now()).toString() + 'ms' + (notes ? ',' + notes + ',' : ''))
@@ -88,8 +103,14 @@ const runTests = async (customCapabilities) => {
 
     await driver.waitForElementByAccessibilityId('alert_yes_allow_data')
     await elementByIdAndClickAndTest('alert_yes_allow_data', 'podcasts_screen_view')
+    await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_view', goBack)
+
+    await elementByIdAndClickAndTest('podcasts_screen_podcast_item_1', 'podcast_screen_view')
+    await elementByIdAndClickAndTest('podcast_screen_episode_item_0', 'episode_screen_view', goBack)
+    await driver.back()
 
     await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
+    await elementByIdAndClickAndTest('episodes_screen_episode_item_0', 'episode_screen_view', goBack)
 
     await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
 

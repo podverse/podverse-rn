@@ -62,4 +62,6 @@ buck-out/
 
 truffle.log
 
+stage_ssh_key
+
 main.js
