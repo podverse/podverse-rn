@@ -76,7 +76,7 @@
     "react-native-render-html": "4.2.4",
     "react-native-rss-parser": "1.5.0",
     "react-native-safe-area-context": "0.7.3",
-    "react-native-screens": "2.5.0",
+    "react-native-screens": "2.11.0",
     "react-native-secure-key-store": "2.0.9",
     "react-native-share": "3.1.2",
     "react-native-sortable-list": "0.0.24",
@@ -85,14 +85,14 @@
     "react-native-track-player": "1.2.3",
     "react-native-vector-icons": "6.6.0",
     "react-native-webview": "7.4.2",
-    "react-navigation": "4.3.7",
+    "react-navigation": "4.4.1",
     "react-navigation-drawer": "1.4.0",
     "react-navigation-stack": "1.7.3",
     "react-navigation-tabs": "1.2.0",
     "reactn": "2.2.7",
-    "rss-parser": "3.7.3",
+    "rss-parser": "3.9.0",
     "validator": "12.2.0",
-    "wd": "1.12.1"
+    "wd": "1.13.0"
   },
   "devDependencies": {
     "@babel/core": "7.11.6",
@@ -124,7 +124,7 @@
     "tslint": "5.14.0",
     "tslint-config-prettier": "1.18.0",
     "tslint-config-standard": "8.0.1",
-    "tslint-plugin-prettier": "2.1.0",
+    "tslint-plugin-prettier": "2.3.0",
     "tslint-react": "3.6.0",
     "typescript": "3.3.3333"
   },
