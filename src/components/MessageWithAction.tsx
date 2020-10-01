@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { ActivityIndicator, Text, View } from './'
+import { ActivityIndicator, Button, Text, View } from './'
 
 type Props = {
   bottomActionHandler?: any
@@ -44,25 +44,13 @@ export const MessageWithAction = (props: Props) => {
         </Text>
       )}
       {!isLoading && !!topActionText && !!topActionHandler && (
-        <TouchableOpacity onPress={topActionHandler}>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.button, globalTheme.text]}>
-            {topActionText}
-          </Text>
-        </TouchableOpacity>
+        <Button text={topActionText} onPress={topActionHandler} wrapperStyles={styles.button} />
       )}
       {!isLoading && !!middleActionText && !!middleActionHandler && (
-        <TouchableOpacity onPress={middleActionHandler}>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.button, globalTheme.text]}>
-            {middleActionText}
-          </Text>
-        </TouchableOpacity>
+        <Button text={middleActionText} onPress={middleActionHandler} wrapperStyles={styles.button} />
       )}
       {!isLoading && !!bottomActionText && !!bottomActionHandler && (
-        <TouchableOpacity onPress={bottomActionHandler}>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.button, globalTheme.text]}>
-            {bottomActionText}
-          </Text>
-        </TouchableOpacity>
+        <Button text={bottomActionText} onPress={bottomActionHandler} wrapperStyles={styles.button} />
       )}
       {isLoading && <ActivityIndicator />}
     </View>
@@ -75,7 +63,9 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold,
     marginHorizontal: 16,
     marginTop: 24,
-    minHeight: 44
+    minHeight: 44,
+    paddingVertical: 16,
+    width: '80%'
   },
   message: {
     fontSize: PV.Fonts.sizes.xl,

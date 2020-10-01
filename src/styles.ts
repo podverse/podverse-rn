@@ -459,10 +459,15 @@ export const lightTheme = StyleSheet.create({
 })
 
 export const tabbar = StyleSheet.create({
-  label: {
+  labelLight: {
     fontSize: PV.Fonts.sizes.tiny,
     textAlign: 'center',
     color: PV.Colors.white
+  },
+  labelDark: {
+    fontSize: PV.Fonts.sizes.tiny,
+    textAlign: 'center',
+    color: PV.Colors.black
   }
 })
 

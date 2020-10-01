@@ -28,6 +28,7 @@ import {
   PlaylistsScreen,
   PodcastScreen,
   PodcastsScreen,
+  PrivacyPolicyScreen,
   ProfileScreen,
   ProfilesScreen,
   PurchasingScreen,
@@ -57,6 +58,7 @@ const defaultNavigationOptions = ({ navigation }) => {
 
   return {
     headerStyle: { backgroundColor: PV.Colors.grayDarkest },
+    title: PV.Tabs.Podcasts.title,
     headerTintColor: darkTheme.text.color,
     headerTitleStyle: {
       fontSize,
@@ -97,7 +99,7 @@ const PodcastsNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }) => (
         <Image source={PV.Tabs.Podcasts.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
-      tabBarLabel: () => <TabBarLabel title={PV.Tabs.Podcasts.title} />,
+      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Podcasts.title} />,
       ...tabTestProps('tab_podcasts_screen')
     }
   }
@@ -114,7 +116,7 @@ const EpisodesNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }) => (
         <Image source={PV.Tabs.Episodes.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
-      tabBarLabel: () => <TabBarLabel title={PV.Tabs.Episodes.title} />,
+      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Episodes.title} />,
       ...tabTestProps('tab_episodes_screen')
     }
   }
@@ -128,7 +130,7 @@ const ClipsNavigator = createStackNavigator(
     defaultNavigationOptions,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => <Image source={PV.Tabs.Clips.icon} style={{ tintColor }} resizeMode={'contain'} />,
-      tabBarLabel: () => <TabBarLabel title={PV.Tabs.Clips.title} />,
+      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Clips.title} />,
       ...tabTestProps('tab_clips_screen')
     }
   }
@@ -177,6 +179,7 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.MembershipScreen]: MembershipScreen,
     [PV.RouteNames.AboutScreen]: AboutScreen,
     [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen,
+    [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
     [PV.RouteNames.FAQScreen]: FAQScreen,
     [PV.RouteNames.QueueScreen]: QueueScreen
   },
@@ -191,7 +194,7 @@ const MoreNavigator = createStackNavigator(
           </View>
         )
       },
-      tabBarLabel: () => <TabBarLabel title='More' />,
+      tabBarLabel: (props) => <TabBarLabel {...props} title='More' />,
       ...tabTestProps('tab_more_screen')
     }
   }
@@ -223,7 +226,7 @@ const QueueNavigator = createStackNavigator(
           </View>
         )
       },
-      tabBarLabel: () => <TabBarLabel title={PV.Tabs.Queue.title} />,
+      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Queue.title} />,
       ...tabTestProps('tab_queue_screen')
     },
     initialRouteParams: { showMoreNavButton: true }

@@ -682,7 +682,6 @@ export class PodcastScreen extends React.Component<Props, State> {
                 html={
                   podcast.description || (showNoInternetConnectionMessage ? translate('No internet connection') : '')
                 }
-                navigation={navigation}
               />
             )}
             <ActionSheet
