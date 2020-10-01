@@ -11,6 +11,7 @@ import { Filters } from './Filters'
 import { FlatList } from './FlatList'
 import { Fonts } from './Fonts'
 import { Google } from './Google'
+import { HTML } from './HTML'
 import { Icons } from './Icons'
 import { Images } from './Images'
 import { Keys } from './Keys'
@@ -40,6 +41,7 @@ export const PV = {
   FlatList,
   Fonts,
   Google,
+  HTML,
   Icons,
   Images,
   Keys,

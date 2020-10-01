@@ -86,6 +86,12 @@ export class MoreScreen extends React.Component<Props, State> {
         key: _termsOfServiceKey,
         routeName: PV.RouteNames.TermsOfServiceScreen,
         testID: 'more_screen_terms_of_service_cell'
+      },
+      {
+        title: translate('Privacy Policy'),
+        key: _privacyPolicyKey,
+        routeName: PV.RouteNames.PrivacyPolicyScreen,
+        testID: 'more_screen_privacy_policy_cell'
       }
     ]
 
@@ -217,6 +223,7 @@ const _membershipKey = 'Membership'
 const _myClipsKey = 'MyClips'
 const _myProfileKey = 'MyProfile'
 const _playlistsKey = 'Playlists'
+const _privacyPolicyKey = 'PrivacyPolicy'
 const _profilesKey = 'Profiles'
 const _settingsKey = 'Settings'
 const _termsOfServiceKey = 'TermsOfService'

@@ -414,9 +414,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             keyExtractor={(item: any) => item.id}
             ListHeaderComponent={queryFrom !== PV.Filters._downloadedKey ? this._ListHeaderComponent : null}
             noResultsMessage={
-              noSubscribedPodcasts
-                ? translate('You are not subscribed to any podcasts')
-                : translate('No episodes found')
+              noSubscribedPodcasts ? translate("You don't have any podcasts yet") : translate('No episodes found')
             }
             noResultsTopActionText={noSubscribedPodcasts ? translate('Search') : ''}
             onEndReached={this._onEndReached}
