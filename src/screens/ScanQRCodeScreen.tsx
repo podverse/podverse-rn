@@ -1,8 +1,9 @@
 // @flow
 
 import React, { useState } from 'react'
-import { Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import { RNCamera } from 'react-native-camera'
+import { Button } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
@@ -16,8 +17,12 @@ export const ScanQRCodeScreen = (props: Props) => {
   const { navigate, dismiss } = props.navigation
 
   const parsePayload = (qrData = '') => {
-    if (!qrData || !qrData.startsWith('https://')) {
+    if (!qrData) {
       throw new Error(translate('Invalid or missing QR data'))
+    }
+
+    if (qrData.startsWith('http://')) {
+      qrData = qrData.replace('http://', 'https://')
     }
 
     const parsedData = qrData.split('?')
@@ -98,9 +103,7 @@ export const ScanQRCodeScreen = (props: Props) => {
               {scanned ? translate('Processing') : translate('Scan a valid QR code')}
             </Text>
             {!scanned && (
-              <TouchableOpacity style={styles.dismissButton} onPress={() => dismiss()}>
-                <Text style={styles.dismissButtonText}>{translate('CANCEL')}</Text>
-              </TouchableOpacity>
+              <Button text={translate('CANCEL')} onPress={() => dismiss()} wrapperStyles={styles.dismissButton} />
             )}
           </View>
         </View>
@@ -116,8 +119,7 @@ ScanQRCodeScreen.navigationOptions = () => ({
 
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
-    backgroundColor: PV.Colors.black
+    flex: 1
   },
   preview: {
     ...StyleSheet.absoluteFillObject,
