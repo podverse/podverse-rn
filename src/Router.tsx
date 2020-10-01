@@ -28,6 +28,7 @@ import {
   PlaylistsScreen,
   PodcastScreen,
   PodcastsScreen,
+  PrivacyPolicyScreen,
   ProfileScreen,
   ProfilesScreen,
   PurchasingScreen,
@@ -177,6 +178,7 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.MembershipScreen]: MembershipScreen,
     [PV.RouteNames.AboutScreen]: AboutScreen,
     [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen,
+    [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
     [PV.RouteNames.FAQScreen]: FAQScreen,
     [PV.RouteNames.QueueScreen]: QueueScreen
   },
