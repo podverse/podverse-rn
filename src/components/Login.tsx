@@ -1,5 +1,6 @@
 import { ActivityIndicator, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'reactn'
+import { testProps } from 'src/lib/utility'
 import isEmail from 'validator/lib/isEmail'
 import { TextInput } from '.'
 import { translate } from '../lib/i18n'
@@ -17,6 +18,8 @@ type State = {
   password: string
   submitIsDisabled: boolean
 }
+
+const testIDPrefix = 'login'
 
 export class Login extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -79,6 +82,7 @@ export class Login extends React.Component<Props, State> {
           placeholderTextColor={PV.Colors.gray}
           returnKeyType='next'
           style={styles.textField}
+          testID={`${testIDPrefix}_email`}
           value={email}
         />
         <TextInput
@@ -94,6 +98,7 @@ export class Login extends React.Component<Props, State> {
           returnKeyType='done'
           secureTextEntry={true}
           style={styles.textField}
+          testID={`${testIDPrefix}_password`}
           value={password}
           underlineColorAndroid='transparent'
         />
@@ -102,7 +107,8 @@ export class Login extends React.Component<Props, State> {
             <TouchableOpacity
               style={[styles.signInButton, disabledStyle]}
               disabled={submitIsDisabled || isLoading}
-              onPress={this.login}>
+              onPress={this.login}
+              {...testProps(`${testIDPrefix}_submit`)}>
               {isLoading ? (
                 <ActivityIndicator animating={true} color={PV.Colors.gray} size='small' />
               ) : (
