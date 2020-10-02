@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo, { NetInfoState, NetInfoSubscription } from '@react-native-community/netinfo'
 import React, { Component } from 'react'
 import { Image, Platform, StatusBar, View, YellowBox } from 'react-native'
+import Config from 'react-native-config'
 import { getFontScale } from 'react-native-device-info'
 import 'react-native-gesture-handler'
 import TrackPlayer from 'react-native-track-player'
@@ -47,9 +48,16 @@ class App extends Component<Props, State> {
 
   async componentDidMount() {
     TrackPlayer.registerPlaybackService(() => require('./src/services/playerEvents'))
-    const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
     StatusBar.setBarStyle('light-content')
-    await this.setupGlobalState(darkModeEnabled === 'TRUE' || darkModeEnabled === null ? darkTheme : lightTheme)
+    const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
+    let globalTheme = darkTheme
+    if (darkModeEnabled === null) {
+      globalTheme = Config.DEFAULT_THEME_DARK ? darkTheme : lightTheme
+    } else if (darkModeEnabled === 'FALSE') {
+      globalTheme = lightTheme
+    }
+
+    await this.setupGlobalState(globalTheme)
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
     await gaInitialize()
   }

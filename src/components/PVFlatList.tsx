@@ -74,7 +74,7 @@ export const PVFlatList = (props: Props) => {
   return (
     <View style={styles.view} transparent={transparent}>
       {!noResultsMessage && ListHeaderComponent && !Config.DISABLE_FILTER_TEXT_QUERY && <ListHeaderComponent />}
-      {!isLoadingMore && !showNoInternetConnectionMessage && noResultsFound && noResultsMessage && (
+      {!isLoadingMore && !showNoInternetConnectionMessage && noResultsFound && (
         <MessageWithAction
           bottomActionHandler={handleNoResultsBottomAction}
           bottomActionText={noResultsBottomActionText}

@@ -650,9 +650,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               }
               noResultsTopActionText={noSubscribedPodcasts ? translate('Search') : ''}
               noResultsMessage={
-                noSubscribedPodcasts
-                  ? translate('You are not subscribed to any podcasts')
-                  : translate('No podcasts found')
+                noSubscribedPodcasts ? translate("You don't have any podcasts yet") : translate('No podcasts found')
               }
               onEndReached={this._onEndReached}
               onRefresh={queryFrom === PV.Filters._subscribedKey ? this._onRefresh : null}
