@@ -1,9 +1,9 @@
 import { ActivityIndicator, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { testProps } from 'src/lib/utility'
 import isEmail from 'validator/lib/isEmail'
 import { TextInput } from '.'
 import { translate } from '../lib/i18n'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 
 type Props = {
