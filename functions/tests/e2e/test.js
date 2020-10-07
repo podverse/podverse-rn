@@ -3,6 +3,7 @@ const assert = require('assert');
 const { performance } = require('perf_hooks')
 const asserters = wd.asserters;
 const request = require('request');
+require('dotenv').config()
 
 const capabilities = process.env.DEVICE_TYPE === 'Android' ?
   {
@@ -37,6 +38,23 @@ const elementByIdAndClickAndTest = async (id, waitForElementId, back) => {
     logPerformance(id, 'END')
 }
 
+const elementbyIdClick = async (id) => {
+    logPerformance(id, 'START')
+    await driver.waitForElementByAccessibilityId(id, 10000)
+    const element = await driver.elementByAccessibilityId(id)
+    await element.click()
+    logPerformance(id, 'END')
+
+}
+
+const sendKeysToElementByID = async (id, textString) => {
+    logPerformance(id, 'START')
+    await driver.waitForElementByAccessibilityId(id, 10000)
+    const element = await driver.elementByAccessibilityId(id);
+    await element.sendKeys(textString)
+    logPerformance(id, 'END')
+}
+
 const getCenterCoordinates = (offsetX = 0, offsetY = 0) => {
     return {
         x: (windowSize.width / 2) + offsetX,
@@ -58,13 +76,12 @@ All test IDs should be present via one of these options
 testID=
 testProps(
 
-  Add a test to go to EpisodesScreen > EpisodeScreen
-  Add a test to go to MoreScreen > LoginScreen
   Send keys to the username and password input on LoginScreen
   Press submit button on LoginScreen
   Come up with an invalid username/password test
   Test that the Sign Up page shows
   Test that the Reset Password page shows
+  Test More button on individual items (clips, podcasts)
 */
 
 const logPerformance = (subject, stage, notes = '') => {
@@ -117,6 +134,17 @@ const runTests = async (customCapabilities) => {
     await elementByIdAndClickAndTest('tab_queue_screen', 'queue_screen_view')
 
     await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
+    await sendKeysToElementByID('login_email_text_input', 'TestEmail@ThisIsATest.com')
+    await sendKeysToElementByID('login_password_text_input', 'testPASS1!')
+
+    // await elementbyIdClick('login_submit')
+
+    await elementByIdAndClickAndTest('auth_screen_sign_up_button', 'membership_screen_view', goBack)
+
+
+    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
+    await elementByIdAndClickAndTest('auth_screen_reset_password_button', 'reset_password_submit', goBack)
 
     await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
     await elementByIdAndClickAndTest('nav_dismiss_icon', 'more_screen_view')
