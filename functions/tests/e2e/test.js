@@ -82,12 +82,6 @@ const confirmAndroidAlert = async () => {
 All test IDs should be present via one of these options
 testID=
 testProps(
-
-  Send keys to the username and password input on LoginScreen
-  Press submit button on LoginScreen
-  Come up with an invalid username/password test
-  Test that the Sign Up page shows
-  Test that the Reset Password page shows
   Test More button on individual items (clips, podcasts)
 */
 
