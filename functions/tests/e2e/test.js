@@ -47,7 +47,7 @@ const elementbyIdClick = async (id) => {
 
 }
 
-const sendKeysToElementByID = async (id, textString) => {
+const sendKeysToElementById = async (id, textString) => {
     logPerformance(id, 'START')
     await driver.waitForElementByAccessibilityId(id, 10000)
     const element = await driver.elementByAccessibilityId(id);
@@ -69,6 +69,13 @@ const performScrollDown = async () => {
   action.moveTo(getCenterCoordinates(0, -500))
   action.release()
   await action.perform()
+}
+
+const confirmAndroidAlert = async () => {
+  logPerformance('confirm_android_alert', 'START')
+  const el = await driver.element('id', 'android:id/button1')
+  await el.click()
+  logPerformance('confirm_android_alert', 'END')
 }
 
 /*
@@ -114,6 +121,7 @@ const runTests = async (customCapabilities) => {
     
     await driver.init(capabilities)
 
+
     windowSize = await driver.getWindowSize()
 
     await driver.sleep(3000)
@@ -135,16 +143,19 @@ const runTests = async (customCapabilities) => {
 
     await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
     await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    await sendKeysToElementByID('login_email_text_input', 'TestEmail@ThisIsATest.com')
-    await sendKeysToElementByID('login_password_text_input', 'testPASS1!')
+    await sendKeysToElementById('login_email_text_input', 'TestEmail@ThisIsATest.com')
+    await sendKeysToElementById('login_password_text_input', 'testPASS1!')
 
-    // await elementbyIdClick('login_submit')
+    await elementbyIdClick('login_submit')
+    await confirmAndroidAlert() 
 
     await elementByIdAndClickAndTest('auth_screen_sign_up_button', 'membership_screen_view', goBack)
 
-
     await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    await elementByIdAndClickAndTest('auth_screen_reset_password_button', 'reset_password_submit', goBack)
+    await elementByIdAndClickAndTest('auth_screen_reset_password_button', 'reset_password_submit')
+    await sendKeysToElementById('reset_password_email_text_input', 'TestEmail@ThisIsATest.com')
+    await elementbyIdClick('reset_password_submit')
+    await confirmAndroidAlert()
 
     await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
     await elementByIdAndClickAndTest('nav_dismiss_icon', 'more_screen_view')
