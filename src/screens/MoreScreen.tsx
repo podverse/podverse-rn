@@ -125,10 +125,6 @@ export class MoreScreen extends React.Component<Props, State> {
         isMyProfile: true,
         initializeClips: true
       })
-    } else if (item.key === _aboutKey) {
-      Config.URL_SELF_HOSTED_ABOUT_PAGE
-        ? Linking.openURL(Config.URL_SELF_HOSTED_ABOUT_PAGE)
-        : navigation.navigate(item.routeName)
     } else {
       navigation.navigate(item.routeName)
     }
