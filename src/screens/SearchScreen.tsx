@@ -294,7 +294,8 @@ export class SearchScreen extends React.Component<Props, State> {
         {
           page,
           ...(searchType === _podcastByTitle ? { searchTitle: searchBarText } : {}),
-          ...(searchType === _podcastByHost ? { searchAuthor: searchBarText } : {})
+          ...(searchType === _podcastByHost ? { searchAuthor: searchBarText } : {}),
+          sort: 'alphabetical'
         },
         this.global.settings.nsfwMode
       )
