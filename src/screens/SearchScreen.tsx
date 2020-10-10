@@ -199,7 +199,7 @@ export class SearchScreen extends React.Component<Props, State> {
       },
       {
         key: 'about',
-        text: translate('About'),
+        text: translate('About brandName'),
         onPress: () => this._handleNavigationPress(selectedPodcast, _aboutPodcastKey)
       }
     ]
