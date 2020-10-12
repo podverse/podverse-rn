@@ -1,27 +1,18 @@
-<p>Podverse is the ultimate open source podcast manager for Android, iOS and web.</p>
+Podverse is a feature-rich, cross-platform podcast manager for Android, iOS and web.
 
-<p>
-    All Podverse software is provided under a free and open source (FOSS) licence. Features that require updating our servers are available only with a Premium membership. Sign up today and get 1 year of Premium for free!
-</p>
+<b>Free features:</b>
+* Subscribe to podcasts
+* Auto-download episodes
+* Drag-and-drop queue
+* Sleep timer
+* Light / Dark mode
 
-<label>Free features:</label>
-<ul>
-    <li>Subscribe to podcasts</li>
-    <li>Auto-download episodes</li>
-    <li>Drag-and-drop queue</li>
-    <li>Sleep timer</li>
-    <li>Light / Dark mode</li>
-</ul>
-
-<label>Premium features:</label>
-<ul>
-    <li>Create and share podcast clips</li>
-    <li>Switch devices and play from where you left off</li>
-    <li>Sync your subscriptions across devices</li>
-    <li>Sync your queue across devices</li>
-    <li>Create and share playlists</li>
-    <li>Subscribe to playlists</li>
-    <li>Create and share a profile</li>
-    <li>Subscribe to profiles</li>
-</ul>
-
+<b>Premium features:</b>
+* Create and share podcast clips
+* Switch devices and play from where you left off
+* Sync your subscriptions across devices
+* Sync your queue across devices
+* Create and share playlists
+* Subscribe to playlists
+* Create and share a profile
+* Subscribe to profiles
