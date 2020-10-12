@@ -16,3 +16,7 @@ Podverse is a feature-rich, cross-platform podcast manager for Android, iOS and 
 * Subscribe to playlists
 * Create and share a profile
 * Subscribe to profiles
+
+For the web version of the app please visit <a href="https://podverse.fm">podverse.fm</a>.
+
+The complete front and back-end infrastructure for Podverse can be found in our <a href="https://github.com/podverse">Github organization</a>.
