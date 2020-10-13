@@ -1,13 +1,13 @@
-Podverse is a feature-rich, cross-platform podcast app for Android, iOS and web.
+Podverse is a feature-rich, cross-platform podcast app for Android, iOS, F-Droid, and web.
 
-<b>Free features:</b>
+Free features:
 * Subscribe to podcasts
 * Auto-download episodes
 * Drag-and-drop queue
 * Sleep timer
 * Light / Dark mode
 
-<b>Premium features:</b>
+Premium features:
 * Create and share podcast clips
 * Switch devices and play from where you left off
 * Sync your subscriptions across devices
@@ -17,6 +17,4 @@ Podverse is a feature-rich, cross-platform podcast app for Android, iOS and web.
 * Create and share a profile
 * Subscribe to profiles
 
-For the web version of the app please visit <a href="https://podverse.fm">podverse.fm</a>.
-
-The complete front and back-end infrastructure for Podverse can be found in our <a href="https://github.com/podverse">Github organization</a>.
+All Podverse software is provided under a free and open source license (AGPLv3). Anyone can download, modify, and use Podverse software for any purpose for free, as long as they also share their changes to the code.
