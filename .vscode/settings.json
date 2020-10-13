@@ -1,6 +1,10 @@
 {
     "javascript.validate.enable": false,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "react-native.ios.runArguments.simulator": [
+        "--simulator",
+        "iPhone 11 Pro Max"
+    ],
     "javascript.preferences.quoteStyle": "single",
     "prettier.jsxSingleQuote": true,
     "prettier.singleQuote": true,

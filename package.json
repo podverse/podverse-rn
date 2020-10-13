@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "2.9.4",
+  "version": "2.10.0",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -109,12 +109,7 @@
     "@types/react-native-sortable-list": "0.0.9",
     "@types/react-native-vector-icons": "6.4.6",
     "@types/react-navigation": "3.4.0",
-    "babel-eslint": "10.1.0",
     "dotenv": "8.2.0",
-    "eslint": "7.10.0",
-    "eslint-plugin-flowtype": "5.2.0",
-    "eslint-plugin-react": "7.21.2",
-    "eslint-plugin-react-native": "3.10.0",
     "husky": "3.1.0",
     "lint-staged": "9.5.0",
     "metro-react-native-babel-preset": "0.63.0",

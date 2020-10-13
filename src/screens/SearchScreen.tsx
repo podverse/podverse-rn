@@ -199,7 +199,7 @@ export class SearchScreen extends React.Component<Props, State> {
       },
       {
         key: 'about',
-        text: translate('About'),
+        text: translate('About brandName'),
         onPress: () => this._handleNavigationPress(selectedPodcast, _aboutPodcastKey)
       }
     ]
@@ -294,7 +294,8 @@ export class SearchScreen extends React.Component<Props, State> {
         {
           page,
           ...(searchType === _podcastByTitle ? { searchTitle: searchBarText } : {}),
-          ...(searchType === _podcastByHost ? { searchAuthor: searchBarText } : {})
+          ...(searchType === _podcastByHost ? { searchAuthor: searchBarText } : {}),
+          sort: 'alphabetical'
         },
         this.global.settings.nsfwMode
       )

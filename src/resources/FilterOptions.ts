@@ -84,7 +84,7 @@ const allFilterTypeItems = [
     value: _playlistsKey
   },
   {
-    label: 'About',
+    label: 'About brandName',
     value: _aboutPodcastKey
   },
   {
