@@ -194,17 +194,25 @@ module.exports = async () => {
     PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_STOP)
   })
 
-  PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
+  PVTrackPlayer.addEventListener('remote-duck', async (x: any) => {
     const { paused, permanent } = x
 
     // This remote-duck behavior for some Android users was causing playback to resume
     // after receiving any notification, even when the player was paused.
     if (Platform.OS === 'ios') {
-      if (permanent) {
+      // iOS triggers remote-duck with permanent: true when the player app returns to foreground,
+      // but only in case the track was paused before app going to background,
+      // so we need to check if the track is playing before making it stop or pause
+      // as a result of remote-duck.
+      // Thanks to nesinervink and bakkerjoeri for help resolving this issue:
+      // https://github.com/react-native-kit/react-native-track-player/issues/687#issuecomment-660149163
+      const currentState = await PVTrackPlayer.getState()
+      const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
+      if (permanent && isPlaying) {
         PVTrackPlayer.stop()
       } else if (paused) {
         PVTrackPlayer.pause()
-      } else {
+      } else if (!permanent) {
         PVTrackPlayer.play()
       }
     }
