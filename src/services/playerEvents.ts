@@ -212,7 +212,7 @@ module.exports = async () => {
         PVTrackPlayer.stop()
       } else if (paused) {
         PVTrackPlayer.pause()
-      } else {
+      } else if (!permanent) {
         PVTrackPlayer.play()
       }
     }
