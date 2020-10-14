@@ -1,5 +1,5 @@
 export const Colors = {
-  brandColor: '#2968B1',
+  brandColor: '#197BB1',
   white: '#ffffff',
   grayLightestZ: '#f7f7f7', // only used in zebra stripe cells
   grayLightest: '#eeeeee',
@@ -14,9 +14,9 @@ export const Colors = {
   grayDarkestZ: '#181818', // only used in zebra stripe cells
   black: '#000000',
   blueLighter: '#4f83bf',
-  blue: '#2968B1',
-  blueDarker: '#225691',
-  redLighter: '#c43745',
+  blue: '#197BB1',
+  blueDarker: '#11567b',
+  redLighter: '#5ea2c8',
   red: '#bd2130',
   redDarker: '#aa1e2b',
   greenLighter: '#69c890',
