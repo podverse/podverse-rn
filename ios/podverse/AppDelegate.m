@@ -35,7 +35,7 @@
   
   UIView *loadingView = rootViewController.view;
   rootView.loadingView = loadingView;
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:37.0/255.0f green:105.0/255.0f blue:178.0/255.0f alpha:1];
+  rootView.backgroundColor = [[UIColor alloc] initWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:1];
   
   rootViewController.view = rootView;
   
