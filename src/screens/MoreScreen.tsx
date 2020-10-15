@@ -35,7 +35,7 @@ export class MoreScreen extends React.Component<Props, State> {
 
   _moreFeaturesOptions = (isLoggedIn: boolean) => {
     const moreFeaturesList = Config.NAV_STACK_MORE_FEATURES.split(',')
-    const loggedInFeatures = [_playlistsKey, _profilesKey, _myProfileKey, _logoutKey]
+    const loggedInFeatures = [_playlistsKey, _profilesKey, _myProfileKey, _myClipsKey, _logoutKey]
 
     return allMoreFeatures
       .filter((item: any) => {
@@ -206,7 +206,6 @@ const _aboutKey = 'About'
 const _addPodcastByRSSKey = 'AddPodcastByRSS'
 const _contactKey = 'Contact'
 const _downloadsKey = 'Downloads'
-const _faqKey = 'FAQ'
 const _loginKey = 'Login'
 const _logoutKey = 'Logout'
 const _membershipKey = 'Membership'
@@ -241,6 +240,11 @@ const allMoreFeatures = [
     title: translate('My Profile'),
     key: _myProfileKey,
     testID: 'more_screen_my_profile_cell'
+  },
+  {
+    title: 'My Clips',
+    key: _myClipsKey,
+    testId: 'more_screen_my_clips_cell'
   },
   {
     title: translate('Log out'),
