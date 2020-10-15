@@ -235,10 +235,9 @@ const comparisonData = [
     column2: true
   },
   {
-    text: translate('support open source software'),
+    text: translate('support free and open source software'),
     column1: true,
-    column2: true,
-    isSmile: true
+    column2: true
   }
 ]
 
