@@ -247,6 +247,12 @@ const allMoreFeatures = [
     testId: 'more_screen_my_clips_cell'
   },
   {
+    title: translate('Settings'),
+    key: _settingsKey,
+    routeName: PV.RouteNames.SettingsScreen,
+    testID: 'more_screen_settings_cell'
+  },
+  {
     title: translate('Log out'),
     key: _logoutKey,
     testID: 'more_screen_log_out_cell'
@@ -256,11 +262,5 @@ const allMoreFeatures = [
     key: _loginKey,
     routeName: PV.RouteNames.AuthNavigator,
     testID: 'more_screen_login_cell'
-  },
-  {
-    title: translate('Settings'),
-    key: _settingsKey,
-    routeName: PV.RouteNames.SettingsScreen,
-    testID: 'more_screen_settings_cell'
   }
 ]
