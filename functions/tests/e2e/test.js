@@ -47,6 +47,17 @@ const elementbyIdClick = async (id) => {
 
 }
 
+const elementbyIdToggle = async (id) => {
+  logPerformance(id, 'START')
+  await driver.waitForElementByAccessibilityId(id, 10000)
+  const element = await driver.elementByAccessibilityId(id)
+  await element.click()
+  await driver.sleep(1000)
+  await element.click()
+  logPerformance(id, 'END')
+
+}
+
 const sendKeysToElementById = async (id, textString) => {
     logPerformance(id, 'START')
     await driver.waitForElementByAccessibilityId(id, 10000)
@@ -162,7 +173,31 @@ const runTests = async (customCapabilities) => {
 
     // await elementByIdAndClickAndTest('more_screen_my_profile_cell', 'profile_screen_view', goBack)
 
-    await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view', goBack)
+    await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view')
+    await elementbyIdToggle('settings_screen_dark_mode_switch')
+    await elementbyIdToggle('settings_screen_only_allow_downloading_when_connected_to_wifi_switch')
+    await elementbyIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')
+    await elementbyIdClick('settings_screen_dialog_update_download_limit_yes_button')
+    await elementbyIdToggle('settings_screen_censor_nsfw_text_switch')
+    await elementbyIdToggle('settings_screen_offline_mode_switch')
+    // await elementbyIdToggleTest('settings_screen_custom_api_domain_switch')
+    // https://api.stage.podverse.fm
+    // await elementbyIdToggleTest('settings_screen_custom_web_domain_switch')
+    // https://stage.podverse.fm
+    await elementbyIdClick('settings_screen_clear_history_button')
+    await confirmAndroidAlert()
+
+    await performScrollDown()
+
+    await elementbyIdClick('settings_screen_delete_downloaded_episodes_button')
+    await elementbyIdClick('settings_screen_dialog_delete_downloaded_episodes_yes')
+    // await elementbyIdToggleTest('settings_screen_delete_account_switch')
+
+
+
+
+
+    await driver.back()
 
     await elementByIdAndClickAndTest('more_screen_membership_cell', 'membership_screen_view', goBack)
 
