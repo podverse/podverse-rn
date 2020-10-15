@@ -8,10 +8,10 @@ type Props = {
 }
 
 export const TabBarLabel = (props: Props) => {
-  const { focused, title } = props
+  const { title } = props
 
   return (
-    <Text allowFontScaling={false} numberOfLines={1} style={focused ? tabbar.labelDark : tabbar.labelLight}>
+    <Text allowFontScaling={false} numberOfLines={1} style={tabbar.labelLight}>
       {title}
     </Text>
   )

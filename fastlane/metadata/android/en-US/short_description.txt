@@ -1,1 +1,1 @@
-Podcast app with clip-sharing, playlists, cross-platform syncing, and more!
+Podcast app with clips, playlists, profiles, and cross-platform syncing.
