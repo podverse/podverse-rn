@@ -53,27 +53,21 @@ export class MoreScreen extends React.Component<Props, State> {
   _moreOtherOptions = (membershipStatus?: string) => {
     const allMoreOtherOptions = [
       {
-        title: membershipStatus,
-        key: _membershipKey,
-        routeName: PV.RouteNames.MembershipScreen,
-        testID: 'more_screen_membership_cell'
-      },
-      {
         title: translate('Add Podcast by RSS'),
         key: _addPodcastByRSSKey,
         routeName: PV.RouteNames.AddPodcastByRSSScreen,
         testID: 'more_screen_add_podcast_by_rss_cell'
       },
       {
+        title: membershipStatus,
+        key: _membershipKey,
+        routeName: PV.RouteNames.MembershipScreen,
+        testID: 'more_screen_membership_cell'
+      },
+      {
         title: translate('Contact Us'),
         key: _contactKey,
         testID: 'more_screen_contact_us_cell'
-      },
-      {
-        title: 'FAQ',
-        key: _faqKey,
-        routeName: PV.RouteNames.FAQScreen,
-        testID: 'more_screen_faq_cell'
       },
       {
         title: translate('About brandName'),
