@@ -5271,12 +5271,12 @@ react-native-render-html@4.2.4:
     html-entities "^1.2.0"
     htmlparser2 "3.10.1"
 
-react-native-rss-parser@1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/react-native-rss-parser/-/react-native-rss-parser-1.5.0.tgz#baa3ec5ade2d857361cc47065a4cb087a1c28ef9"
-  integrity sha512-mdhGFwdr1z62r5FyDb0bwB9QmGmBJCclijtzWweVb7Zm0HpDFbwO5mAGVXgEKYMUg8lYa4SnVAraYoc8I8s7+A==
+react-native-rss-parser@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-rss-parser/-/react-native-rss-parser-1.4.0.tgz#5a96879b817e316fe95040868267e42c49c2cd26"
+  integrity sha512-WzzzGjKE1ZTShd6V6zuO/54SqAnA/dglWV5KnxFV1deDt4xL0WBN8pWu0K8d4UhV0wUHEC9DMw250V+4qwiyHw==
   dependencies:
-    xmldom "^0.3.0"
+    xmldom "^0.1.27"
 
 react-native-safe-area-context@0.7.3:
   version "0.7.3"
@@ -6824,15 +6824,10 @@ xmldoc@^1.1.2:
   dependencies:
     sax "^1.2.1"
 
-xmldom@0.1.x:
+xmldom@0.1.x, xmldom@^0.1.27:
   version "0.1.31"
   resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.31.tgz#b76c9a1bd9f0a9737e5a72dc37231cf38375e2ff"
   integrity sha512-yS2uJflVQs6n+CyjHoaBmVSqIDevTAWrzMmjG1Gc7h1qQ7uVozNhEPJAwZXWyGQ/Gafo3fCwrcaokezLPupVyQ==
-
-xmldom@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.3.0.tgz#e625457f4300b5df9c2e1ecb776147ece47f3e5a"
-  integrity sha512-z9s6k3wxE+aZHgXYxSTpGDo7BYOUfJsIRyoZiX6HTjwpwfS2wpQBQKa2fD+ShLyPkqDYo5ud7KitmLZ2Cd6r0g==
 
 xpipe@^1.0.5:
   version "1.0.5"
