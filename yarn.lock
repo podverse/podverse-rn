@@ -1091,6 +1091,11 @@
     "@types/react-native" "*"
     react-native-modal ">=9.0.0"
 
+"@types/react-native-rss-parser@1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@types/react-native-rss-parser/-/react-native-rss-parser-1.4.0.tgz#a9150fe136fb0fd2304b6383c947f2e3a7fb3e66"
+  integrity sha512-5zs5MPBrMLZJ8tvtLaadVxVsO14jQuHnubQe2Dmf8Fa0wxsEBXRD43AbzLAGfXyuJQjhjtMTXxESWUDEgbqBcw==
+
 "@types/react-native-share@3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@types/react-native-share/-/react-native-share-3.3.0.tgz#dc264315c28177e0262a13d5b957e0940cf715c4"
@@ -5295,10 +5300,10 @@ react-native-render-html@4.2.4:
     html-entities "^1.2.0"
     htmlparser2 "3.10.1"
 
-react-native-rss-parser@1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/react-native-rss-parser/-/react-native-rss-parser-1.3.0.tgz#9f203d811b44620bb748758dd4570af4fa31b87f"
-  integrity sha512-mKfGguzk+X3OYBFC+mWIRImaj902GTcaqLH5npXBMiAVnQGT9HOFz26QCWYQdK6XvEX3qpoDMRa4G3DFYhp6Xg==
+react-native-rss-parser@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-rss-parser/-/react-native-rss-parser-1.4.0.tgz#5a96879b817e316fe95040868267e42c49c2cd26"
+  integrity sha512-WzzzGjKE1ZTShd6V6zuO/54SqAnA/dglWV5KnxFV1deDt4xL0WBN8pWu0K8d4UhV0wUHEC9DMw250V+4qwiyHw==
   dependencies:
     xmldom "^0.1.27"
 
