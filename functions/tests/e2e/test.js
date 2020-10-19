@@ -28,42 +28,55 @@ driver = wd.promiseRemote("http://hub-cloud.browserstack.com/wd/hub");
 
 let windowSize
 
-const elementByIdAndClickAndTest = async (id, waitForElementId, back) => {
-    logPerformance(id, 'START')
+const logPerformance = (subject, stage) => {
+  return `${subject}, ${stage ? `${stage}, ` : ''}${Math.ceil(performance.now()).toString()}ms`
+}
+
+const logTestInfo = (isStart, id, testLabel) => {
+  let phase = isStart ? 'START' : 'END'
+  if (id && testLabel == null) {
+    logPerformance(id, phase)
+  } else if (testLabel) {
+    logPerformance(testLabel, phase)
+  }
+}
+
+const elementByIdAndClickAndTest = async (id, waitForElementId, testLabel, back) => {
+    logTestInfo(true, id, testLabel)
     await driver.waitForElementByAccessibilityId(id, 10000)
     const element = await driver.elementByAccessibilityId(id)
     await element.click()
     await driver.waitForElementByAccessibilityId(waitForElementId, 10000)
     if (back) await driver.back()
-    logPerformance(id, 'END')
+    logTestInfo(false, id, testLabel)
 }
 
-const elementbyIdClick = async (id) => {
-    logPerformance(id, 'START')
-    await driver.waitForElementByAccessibilityId(id, 10000)
-    const element = await driver.elementByAccessibilityId(id)
-    await element.click()
-    logPerformance(id, 'END')
+const elementbyIdClick = async (id, testLabel) => {
+  logTestInfo(true, id, testLabel)
+  await driver.waitForElementByAccessibilityId(id, 10000)
+  const element = await driver.elementByAccessibilityId(id)
+  await element.click()
+  logTestInfo(false, id, testLabel)
 
 }
 
-const elementbyIdToggle = async (id) => {
-  logPerformance(id, 'START')
+const elementbyIdToggle = async (id, testLabel) => {
+  logTestInfo(true, id, testLabel)
   await driver.waitForElementByAccessibilityId(id, 10000)
   const element = await driver.elementByAccessibilityId(id)
   await element.click()
   await driver.sleep(1000)
   await element.click()
-  logPerformance(id, 'END')
+  logTestInfo(false, id, testLabel)
 
 }
 
-const sendKeysToElementById = async (id, textString) => {
-    logPerformance(id, 'START')
-    await driver.waitForElementByAccessibilityId(id, 10000)
-    const element = await driver.elementByAccessibilityId(id);
-    await element.sendKeys(textString)
-    logPerformance(id, 'END')
+const sendKeysToElementById = async (id, textString, testLabel) => {
+  logTestInfo(true, id, testLabel)
+  await driver.waitForElementByAccessibilityId(id, 10000)
+  const element = await driver.elementByAccessibilityId(id);
+  await element.sendKeys(textString)
+  logTestInfo(false, id, testLabel)
 }
 
 const getCenterCoordinates = (offsetX = 0, offsetY = 0) => {
@@ -80,13 +93,14 @@ const performScrollDown = async () => {
   action.moveTo(getCenterCoordinates(0, -500))
   action.release()
   await action.perform()
+  logPerformance('Scrolldown performed')
 }
 
-const confirmAndroidAlert = async () => {
-  logPerformance('confirm_android_alert', 'START')
+const confirmAndroidAlert = async (testLabel) => {
+  logTestInfo(true, null, 'Confirm Android Alert')
   const el = await driver.element('id', 'android:id/button1')
   await el.click()
-  logPerformance('confirm_android_alert', 'END')
+  logTestInfo(false, null, 'Confirm Android Alert')
 }
 
 /*
@@ -95,10 +109,6 @@ testID=
 testProps(
   Test More button on individual items (clips, podcasts)
 */
-
-const logPerformance = (subject, stage, notes = '') => {
-    console.log(subject + ',' + stage + ',' + Math.ceil(performance.now()).toString() + 'ms' + (notes ? ',' + notes + ',' : ''))
-}
 
 const postSlackNotification = async (text, opts) => {
   if (process.env.SLACK_WEBHOOK) {
@@ -133,14 +143,14 @@ const runTests = async (customCapabilities) => {
 
     await driver.waitForElementByAccessibilityId('alert_yes_allow_data')
     await elementByIdAndClickAndTest('alert_yes_allow_data', 'podcasts_screen_view')
-    await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_view', goBack)
+    await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_view', null, goBack)
 
     await elementByIdAndClickAndTest('podcasts_screen_podcast_item_1', 'podcast_screen_view')
-    await elementByIdAndClickAndTest('podcast_screen_episode_item_0', 'episode_screen_view', goBack)
+    await elementByIdAndClickAndTest('podcast_screen_episode_item_0', 'episode_screen_view', null, goBack)
     await driver.back()
 
     await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
-    await elementByIdAndClickAndTest('episodes_screen_episode_item_0', 'episode_screen_view', goBack)
+    await elementByIdAndClickAndTest('episodes_screen_episode_item_0', 'episode_screen_view', null, goBack)
 
     await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
 
@@ -148,13 +158,13 @@ const runTests = async (customCapabilities) => {
 
     await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
     await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    await sendKeysToElementById('login_email_text_input', 'TestEmail@ThisIsATest.com')
-    await sendKeysToElementById('login_password_text_input', 'testPASS1!')
+    await sendKeysToElementById('login_email_text_input', 'TestEmail@ThisIsATest.com', 'Invalid Login Email Input')
+    await sendKeysToElementById('login_password_text_input', 'testPASS1!', 'Invalid Login Password Input')
 
     await elementbyIdClick('login_submit')
     await confirmAndroidAlert() 
 
-    await elementByIdAndClickAndTest('auth_screen_sign_up_button', 'membership_screen_view', goBack)
+    await elementByIdAndClickAndTest('auth_screen_sign_up_button', 'membership_screen_view', null, goBack)
 
     await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
     await elementByIdAndClickAndTest('auth_screen_reset_password_button', 'reset_password_submit')
@@ -165,13 +175,13 @@ const runTests = async (customCapabilities) => {
     await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
     await elementByIdAndClickAndTest('nav_dismiss_icon', 'more_screen_view')
 
-    await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view', goBack)
+    await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view', null, goBack)
 
-    // await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', goBack)
+    // await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', null, goBack)
 
-    // await elementByIdAndClickAndTest('more_screen_profiles_cell', 'profiles_screen_view', goBack)
+    // await elementByIdAndClickAndTest('more_screen_profiles_cell', 'profiles_screen_view', null, goBack)
 
-    // await elementByIdAndClickAndTest('more_screen_my_profile_cell', 'profile_screen_view', goBack)
+    // await elementByIdAndClickAndTest('more_screen_my_profile_cell', 'profile_screen_view', null, goBack)
 
     await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view')
     await elementbyIdToggle('settings_screen_dark_mode_switch')
@@ -187,32 +197,34 @@ const runTests = async (customCapabilities) => {
     await elementbyIdClick('settings_screen_clear_history_button')
     await confirmAndroidAlert()
 
-    await performScrollDown()
-
-    await elementbyIdClick('settings_screen_delete_downloaded_episodes_button')
-    await elementbyIdClick('settings_screen_dialog_delete_downloaded_episodes_yes')
+    // await elementbyIdClick('settings_screen_delete_downloaded_episodes_button')
+    // await elementbyIdClick('settings_screen_dialog_delete_downloaded_episodes_yes')
     // await elementbyIdToggleTest('settings_screen_delete_account_switch')
-
-
-
-
 
     await driver.back()
 
-    await elementByIdAndClickAndTest('more_screen_membership_cell', 'membership_screen_view', goBack)
+    await elementByIdAndClickAndTest('more_screen_membership_cell', 'membership_screen_view', null, goBack)
 
     await elementByIdAndClickAndTest('more_screen_add_podcast_by_rss_cell', 'add_podcast_by_rss_screen_view')
     await elementByIdAndClickAndTest('nav_dismiss_icon', 'more_screen_view')
 
     await performScrollDown()
-
-    await elementByIdAndClickAndTest('more_screen_faq_cell', 'faq_screen_view', goBack)
-
-    await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', goBack)
-
-    await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', goBack)
+    
+    await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', null, goBack)
+    
+    await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', null, goBack)
 
     await driver.sleep(3000)
+
+    // Logged in user tests
+
+    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
+    await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
+    await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
+    await elementbyIdClick('login_submit')
+
+
+
 
     await postSlackNotification('SUCCESS: End e2e tests', slackOpts)
   } catch (error) {
