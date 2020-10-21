@@ -467,6 +467,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             )
           }}
           showModal={showActionSheet}
+          testID={testIDPrefix}
         />
         <Dialog.Container visible={showDeleteConfirmDialog}>
           <Dialog.Title>{translate('Delete Clip')}</Dialog.Title>
