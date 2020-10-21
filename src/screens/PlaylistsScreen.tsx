@@ -30,6 +30,8 @@ type State = {
   showNoInternetConnectionMessage?: boolean
 }
 
+const testIDPrefix = 'playlists_screen'
+
 export class PlaylistsScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
@@ -158,6 +160,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
             handleSelectLeftItem={this.selectLeftItem}
             screenName='PlaylistsScreen'
             selectedLeftItemKey={queryFrom}
+            testID={testIDPrefix}
           />
           {isLoading && <ActivityIndicator />}
           {!isLoading && this.global.session.isLoggedIn && (

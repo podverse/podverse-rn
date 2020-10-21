@@ -390,6 +390,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           screenName='EpisodesScreen'
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort}
+          testID={testIDPrefix}
         />
         {queryFrom === PV.Filters._categoryKey && (
           <TableSectionSelectors
@@ -400,6 +401,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             screenName='EpisodesScreen'
             selectedLeftItemKey={selectedCategory}
             selectedRightItemKey={selectedSubCategory}
+            testID={`${testIDPrefix}_sub`}
           />
         )}
         {isLoading && <ActivityIndicator />}

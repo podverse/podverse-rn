@@ -373,6 +373,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           screenName='EpisodeScreen'
           selectedLeftItemKey={viewType}
           selectedRightItemKey={querySort}
+          testID={testIDPrefix}
         />
         {isLoading && (!episode || viewType === PV.Filters._clipsKey) && <ActivityIndicator />}
         {!isLoading && viewType === PV.Filters._clipsKey && flatListData && (

@@ -66,6 +66,8 @@ type State = {
   showNoInternetConnectionMessage?: boolean
 }
 
+const testIDPrefix = 'podcasts_screen'
+
 // isInitialLoad is used to prevent rendering the PodcastsScreen components until
 // it knows which table header dropdown selectors to render (after the first query completes).
 let isInitialLoad = true
@@ -464,7 +466,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         podcastTitle={item.title}
         showAutoDownload={true}
         showDownloadCount={true}
-        testID={'podcasts_screen_podcast_item_' + index}
+        testID={`${testIDPrefix}_podcast_item_${index}`}
       />
     )
   }
@@ -609,7 +611,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       offlineModeEnabled && queryFrom !== PV.Filters._downloadedKey && queryFrom !== PV.Filters._subscribedKey
 
     return (
-      <View style={styles.view} {...testProps('podcasts_screen_view')}>
+      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
         <RNView style={{ flex: 1 }}>
           <PlayerEvents />
           <TableSectionSelectors
@@ -619,6 +621,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             selectedLeftItemKey={queryFrom}
             selectedRightItemKey={querySort}
             screenName='PodcastsScreen'
+            testID={testIDPrefix}
           />
           {queryFrom === PV.Filters._categoryKey && (
             <TableSectionSelectors
@@ -629,6 +632,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               isBottomBar={true}
               isCategories={true}
               screenName='PodcastsScreen'
+              testID={`${testIDPrefix}_sub`}
             />
           )}
           {isLoading && <ActivityIndicator />}
