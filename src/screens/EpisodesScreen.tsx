@@ -49,6 +49,8 @@ type State = {
   showNoInternetConnectionMessage?: boolean
 }
 
+const testIDPrefix = 'episodes_screen'
+
 export class EpisodesScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
@@ -281,7 +283,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         }
         podcastTitle={podcastTitle}
         pubDate={item.pubDate}
-        testID={'episodes_screen_episode_item_' + index}
+        testID={`${testIDPrefix}_episode_item_${index}`}
         title={title}
       />
     )

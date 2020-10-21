@@ -51,7 +51,9 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
     const innerTopView = (
       <RNView style={styles.innerTopView}>
-        <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testID ? testProps(testID) : {})}>
+        <TouchableWithoutFeedback
+          onPress={handleNavigationPress}
+          {...(testID ? testProps(`${testID}_top_view_nav`) : {})}>
           <RNView style={{ flex: 1, flexDirection: 'row' }}>
             {!!podcastImageUrl && <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />}
             <RNView style={styles.textWrapper}>
@@ -108,7 +110,9 @@ export class ClipTableCell extends React.PureComponent<Props> {
       <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent}>
         {!!showEpisodeInfo && <RNView style={styles.wrapperTop}>{innerTopView}</RNView>}
         {handleNavigationPress ? (
-          <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testID ? testProps(testID) : {})}>
+          <TouchableWithoutFeedback
+            onPress={handleNavigationPress}
+            {...(testID ? testProps(`${testID}_bottom_view_nav`) : {})}>
             {bottomText}
           </TouchableWithoutFeedback>
         ) : (

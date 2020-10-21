@@ -85,7 +85,9 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent}>
         <RNView style={styles.wrapperTop}>
           {handleNavigationPress ? (
-            <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testID ? testProps(testID) : {})}>
+            <TouchableWithoutFeedback
+              onPress={handleNavigationPress}
+              {...(testID ? testProps(`${testID}_top_view_nav`) : {})}>
               {innerTopView}
             </TouchableWithoutFeedback>
           ) : (
@@ -101,7 +103,9 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           )}
         </RNView>
         {!!description && handleNavigationPress && (
-          <TouchableWithoutFeedback onPress={handleNavigationPress} {...(testID ? testProps(testID) : {})}>
+          <TouchableWithoutFeedback
+            onPress={handleNavigationPress}
+            {...(testID ? testProps(`${testID}_bottom_view_nav`) : {})}>
             <RNView>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</RNView>
           </TouchableWithoutFeedback>
         )}
