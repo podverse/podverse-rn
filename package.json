@@ -16,7 +16,9 @@
     "format": "prettier --write src/**/*.ts*",
     "stage:resetDatabase": "node ./scripts/_resetDatabase.js",
     "test:e2e:android": "export $(cat .env | xargs) && DEVICE_TYPE=Android BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./functions/tests/e2e/index.js",
-    "test:w:e2e:android": "node ./functions/tests/e2e/index.js",
+    "test:w:e2e:android": "DEVICE_TYPE='Android' node ./functions/tests/e2e/index.js",
+    "test:e2e:fdroid": "export $(cat .env | xargs) && DEVICE_TYPE=F-Droid BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./functions/tests/e2e/index.js",
+    "test:w:e2e:fdroid": "DEVICE_TYPE='F-Droid' node ./functions/tests/e2e/index.js",
     "test:e2e:ios": "export $(cat .env | xargs) && DEVICE_TYPE=iOS BROWSERSTACK_DEVICE='iPhone 11 Pro Max' BROWSERSTACK_OS_VERSION='13.0' node ./functions/tests/e2e/index.js"
   },
   "husky": {
@@ -76,7 +78,7 @@
     "react-native-picker-select": "6.6.0",
     "react-native-reanimated": "1.13.1",
     "react-native-render-html": "4.2.4",
-    "react-native-rss-parser": "1.5.0",
+    "react-native-rss-parser": "1.4.0",
     "react-native-safe-area-context": "0.7.3",
     "react-native-screens": "2.11.0",
     "react-native-secure-key-store": "2.0.9",
@@ -92,7 +94,6 @@
     "react-navigation-stack": "1.7.3",
     "react-navigation-tabs": "1.2.0",
     "reactn": "2.2.7",
-    "rss-parser": "3.9.0",
     "validator": "12.2.0",
     "wd": "1.13.0"
   },

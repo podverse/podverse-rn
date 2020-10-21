@@ -5,7 +5,7 @@ const asserters = wd.asserters;
 const request = require('request');
 require('dotenv').config()
 
-const capabilities = process.env.DEVICE_TYPE === 'Android' ?
+const capabilities = process.env.DEVICE_TYPE === 'Android' || process.env.DEVICE_TYPE === 'F-Droid' ?
   {
     'device': 'Google Pixel 3',
     'os_version': '9.0'
