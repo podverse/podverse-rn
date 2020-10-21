@@ -435,7 +435,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
               this._handleCancelPress,
               this._handleDownloadPressed,
               null, // handleDeleteEpisode
-              false, // includeGoToPodcast
+              true, // includeGoToPodcast
               false // includeGoToEpisode
             )
           }
