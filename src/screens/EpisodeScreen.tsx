@@ -2,7 +2,7 @@ import debounce from 'lodash/debounce'
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import { NavigationStackOptions } from 'react-navigation-stack'
-import React, { useGlobal } from 'reactn'
+import React from 'reactn'
 import {
   ActionSheet,
   ActivityIndicator,
@@ -48,6 +48,8 @@ type State = {
   showNoInternetConnectionMessage?: boolean
   viewType: string | null
 }
+
+const testIDPrefix = 'episode_screen'
 
 export class EpisodeScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
@@ -265,7 +267,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         hasZebraStripe={isOdd(index)}
         hideImage={true}
         startTime={item.startTime}
-        testID={'episode_screen_clip_item_' + index}
+        testID={`${testIDPrefix}_clip_item_${index}`}
         title={item.title}
       />
     )
@@ -362,6 +364,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
               (episode.podcast && episode.podcast.imageUrl))
           }
           pubDate={episode && episode.pubDate}
+          testID={testIDPrefix}
           title={episode && episode.title}
         />
         <TableSectionSelectors
@@ -370,6 +373,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           screenName='EpisodeScreen'
           selectedLeftItemKey={viewType}
           selectedRightItemKey={querySort}
+          testID={testIDPrefix}
         />
         {isLoading && (!episode || viewType === PV.Filters._clipsKey) && <ActivityIndicator />}
         {!isLoading && viewType === PV.Filters._clipsKey && flatListData && (

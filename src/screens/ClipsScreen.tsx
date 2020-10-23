@@ -50,6 +50,8 @@ type State = {
   showNoInternetConnectionMessage?: boolean
 }
 
+const testIDPrefix = 'clips_screen'
+
 export class ClipsScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
@@ -251,7 +253,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
         podcastTitle={podcastTitle}
         startTime={item.startTime}
-        testID={'clips_screen_clip_item_' + index}
+        testID={`${testIDPrefix}_clip_item_${index}`}
         title={title || translate('untitled clip')}
       />
     ) : (
@@ -398,7 +400,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     const showOfflineMessage = offlineModeEnabled
 
     return (
-      <View style={styles.view} {...testProps('clips_screen_view')}>
+      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
@@ -406,6 +408,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           screenName='ClipsScreen'
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort}
+          testID={testIDPrefix}
         />
         {queryFrom === PV.Filters._categoryKey && (
           <TableSectionSelectors
@@ -416,6 +419,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             screenName='ClipsScreen'
             selectedLeftItemKey={selectedCategory}
             selectedRightItemKey={selectedSubCategory}
+            testID={`${testIDPrefix}_sub`}
           />
         )}
         {isLoading && <ActivityIndicator />}
@@ -463,6 +467,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             )
           }}
           showModal={showActionSheet}
+          testID={testIDPrefix}
         />
         <Dialog.Container visible={showDeleteConfirmDialog}>
           <Dialog.Title>{translate('Delete Clip')}</Dialog.Title>

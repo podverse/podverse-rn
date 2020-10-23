@@ -15,13 +15,34 @@ const capabilities = process.env.DEVICE_TYPE === 'Android' || process.env.DEVICE
     'os_version': '13.0'
   }
 
+let bsApp = ''
+const isAndroid = process.env.DEVICE_TYPE === 'Android'
+const isFDroid = process.env.DEVICE_TYPE === 'F-Droid'
+const isIOS = process.env.DEVICE_TYPE === 'iOS'
+
+if (isAndroid) {
+  console.log('Testing Android')
+  bsApp = process.env.BROWSERSTACK_APP_ANDROID
+} else if (isFDroid) {
+  console.log('Testing F-Droid')
+  bsApp = process.env.BROWSERSTACK_APP_FDROID
+} else if (isIOS) {
+  console.log('Testing iOS')
+  bsApp = process.env.BROWSERSTACK_APP_IOS
+} else {
+  console.log('A DEVICE_TYPE must be provided.')
+  return
+}
+
+
+
 Object.assign(capabilities, {
     'browserstack.user': process.env.BROWSERSTACK_USER,
     'browserstack.key': process.env.BROWSERSTACK_KEY,
     'project': `Mobile App - ${process.env.DEVICE_TYPE}`,
     'build': `${process.env.DEVICE_TYPE}`,
     'name': `${process.env.DEVICE_TYPE}`,
-    'app': process.env.BROWSERSTACK_APP
+    'app': bsApp
 });
 
 driver = wd.promiseRemote("http://hub-cloud.browserstack.com/wd/hub");
@@ -29,7 +50,7 @@ driver = wd.promiseRemote("http://hub-cloud.browserstack.com/wd/hub");
 let windowSize
 
 const logPerformance = (subject, stage) => {
-  return `${subject}, ${stage ? `${stage}, ` : ''}${Math.ceil(performance.now()).toString()}ms`
+  console.log(`${subject}, ${stage ? `${stage}, ` : ''}${Math.ceil(performance.now()).toString()}ms`)
 }
 
 const logTestInfo = (isStart, id, testLabel) => {
@@ -68,7 +89,6 @@ const elementbyIdToggle = async (id, testLabel) => {
   await driver.sleep(1000)
   await element.click()
   logTestInfo(false, id, testLabel)
-
 }
 
 const sendKeysToElementById = async (id, textString, testLabel) => {
@@ -146,11 +166,14 @@ const runTests = async (customCapabilities) => {
     await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_view', null, goBack)
 
     await elementByIdAndClickAndTest('podcasts_screen_podcast_item_1', 'podcast_screen_view')
-    await elementByIdAndClickAndTest('podcast_screen_episode_item_0', 'episode_screen_view', null, goBack)
+    await driver.sleep(5000)
+    await elementByIdAndClickAndTest('podcast_screen_episode_item_0_top_view_nav', 'episode_screen_view', null, goBack)
+    await elementByIdAndClickAndTest('podcast_screen_episode_item_0_bottom_view_nav', 'episode_screen_view', null, goBack)
     await driver.back()
 
     await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
-    await elementByIdAndClickAndTest('episodes_screen_episode_item_0', 'episode_screen_view', null, goBack)
+    await elementByIdAndClickAndTest('episodes_screen_episode_item_0_top_view_nav', 'episode_screen_view', null, goBack)
+    await elementByIdAndClickAndTest('episodes_screen_episode_item_0_bottom_view_nav', 'episode_screen_view', null, goBack)
 
     await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
 
@@ -172,16 +195,21 @@ const runTests = async (customCapabilities) => {
     await elementbyIdClick('reset_password_submit')
     await confirmAndroidAlert()
 
+    await elementbyIdClick('login_submit')
+    await confirmAndroidAlert() 
+
+    await elementByIdAndClickAndTest('auth_screen_sign_up_button', 'membership_screen_view', null, goBack)
+
+    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
+    await elementByIdAndClickAndTest('auth_screen_reset_password_button', 'reset_password_submit')
+    await sendKeysToElementById('reset_password_email_text_input', 'TestEmail@ThisIsATest.com')
+    await elementbyIdClick('reset_password_submit')
+    await confirmAndroidAlert()
+
     await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
     await elementByIdAndClickAndTest('nav_dismiss_icon', 'more_screen_view')
 
     await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view', null, goBack)
-
-    // await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', null, goBack)
-
-    // await elementByIdAndClickAndTest('more_screen_profiles_cell', 'profiles_screen_view', null, goBack)
-
-    // await elementByIdAndClickAndTest('more_screen_my_profile_cell', 'profile_screen_view', null, goBack)
 
     await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view')
     await elementbyIdToggle('settings_screen_dark_mode_switch')
@@ -190,16 +218,21 @@ const runTests = async (customCapabilities) => {
     await elementbyIdClick('settings_screen_dialog_update_download_limit_yes_button')
     await elementbyIdToggle('settings_screen_censor_nsfw_text_switch')
     await elementbyIdToggle('settings_screen_offline_mode_switch')
-    // await elementbyIdToggleTest('settings_screen_custom_api_domain_switch')
-    // https://api.stage.podverse.fm
-    // await elementbyIdToggleTest('settings_screen_custom_web_domain_switch')
-    // https://stage.podverse.fm
+
+
+    if (isFDroid) {
+      await performScrollDown()
+      await elementbyIdClick('settings_screen_custom_api_domain_switch')
+      // await elementbyIdClick('settings_screen_custom_api_domain_text_input')
+      // await sendKeysToElementById('settings_screen_custom_api_domain_text_input', 'https://api.stage.podverse.fm')
+      await elementbyIdClick('settings_screen_custom_web_domain_switch')
+      // await elementbyIdClick('settings_screen_custom_web_domain_text_input')
+      // await sendKeysToElementById('settings_screen_custom_web_domain_text_input', 'https://stage.podverse.fm')
+      await performScrollDown()
+    }
+
     await elementbyIdClick('settings_screen_clear_history_button')
     await confirmAndroidAlert()
-
-    // await elementbyIdClick('settings_screen_delete_downloaded_episodes_button')
-    // await elementbyIdClick('settings_screen_dialog_delete_downloaded_episodes_yes')
-    // await elementbyIdToggleTest('settings_screen_delete_account_switch')
 
     await driver.back()
 
@@ -207,7 +240,27 @@ const runTests = async (customCapabilities) => {
 
     await elementByIdAndClickAndTest('more_screen_add_podcast_by_rss_cell', 'add_podcast_by_rss_screen_view')
     await elementByIdAndClickAndTest('nav_dismiss_icon', 'more_screen_view')
+    
+    await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', null, goBack)
+    
+    await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', null, goBack)
 
+    // Logged in user tests
+
+    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
+    await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
+    await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
+    await elementbyIdClick('login_submit')
+    await driver.sleep(2000)
+
+    await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', null, goBack)
+
+    await elementByIdAndClickAndTest('more_screen_profiles_cell', 'profiles_screen_view', null, goBack)
+
+    await elementByIdAndClickAndTest('more_screen_my_profile_cell', 'profile_screen_view', null, goBack)
+
+    await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view')
+    await driver.sleep(1000)
     await performScrollDown()
     
     await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', null, goBack)
@@ -222,6 +275,10 @@ const runTests = async (customCapabilities) => {
     await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
     await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
     await elementbyIdClick('login_submit')
+    await driver.sleep(1000)
+    await elementbyIdClick('settings_screen_delete_downloaded_episodes_button')
+    await elementbyIdClick('settings_screen_dialog_delete_downloaded_episodes_yes')
+
 
 
 
