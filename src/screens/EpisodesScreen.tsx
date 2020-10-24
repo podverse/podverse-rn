@@ -49,6 +49,8 @@ type State = {
   showNoInternetConnectionMessage?: boolean
 }
 
+const testIDPrefix = 'episodes_screen'
+
 export class EpisodesScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
@@ -281,7 +283,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         }
         podcastTitle={podcastTitle}
         pubDate={item.pubDate}
-        testID={'episodes_screen_episode_item_' + index}
+        testID={`${testIDPrefix}_episode_item_${index}`}
         title={title}
       />
     )
@@ -388,6 +390,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           screenName='EpisodesScreen'
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort}
+          testID={testIDPrefix}
         />
         {queryFrom === PV.Filters._categoryKey && (
           <TableSectionSelectors
@@ -398,6 +401,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             screenName='EpisodesScreen'
             selectedLeftItemKey={selectedCategory}
             selectedRightItemKey={selectedSubCategory}
+            testID={`${testIDPrefix}_sub`}
           />
         )}
         {isLoading && <ActivityIndicator />}
@@ -433,7 +437,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
               this._handleCancelPress,
               this._handleDownloadPressed,
               null, // handleDeleteEpisode
-              false, // includeGoToPodcast
+              true, // includeGoToPodcast
               false // includeGoToEpisode
             )
           }

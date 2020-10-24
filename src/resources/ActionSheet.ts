@@ -38,7 +38,7 @@ const mediaMoreButtons = (
   if (item.ownerId && item.ownerId === loggedInUserId) {
     buttons.push(
       {
-        key: 'editClip',
+        key: PV.Keys.edit_clip,
         text: translate('Edit Clip'),
         onPress: async () => {
           const { darkTheme } = require('../styles')
@@ -60,7 +60,7 @@ const mediaMoreButtons = (
         }
       },
       {
-        key: 'deleteClip',
+        key: PV.Keys.delete_clip,
         text: translate('Delete Clip'),
         onPress: async () => {
           await handleDismiss()
@@ -72,7 +72,7 @@ const mediaMoreButtons = (
 
   if (isDownloaded) {
     buttons.push({
-      key: 'play',
+      key: PV.Keys.play,
       text: translate('Play'),
       onPress: async () => {
         await handleDismiss()
@@ -82,7 +82,7 @@ const mediaMoreButtons = (
     })
   } else {
     buttons.push({
-      key: 'stream',
+      key: PV.Keys.stream,
       text: translate('Stream'),
       onPress: async () => {
         const showAlert = await hasTriedStreamingWithoutWifiAlert(handleDismiss, navigation, false)
@@ -96,7 +96,7 @@ const mediaMoreButtons = (
 
     if (handleDownload) {
       buttons.push({
-        key: 'download',
+        key: PV.Keys.download,
         text: downloadingText,
         isDownloading,
         onPress: async () => {
@@ -117,7 +117,7 @@ const mediaMoreButtons = (
 
   buttons.push(
     {
-      key: 'queueNext',
+      key: PV.Keys.queue_next,
       text: translate('Queue Next'),
       onPress: async () => {
         await addQueueItemNext(item)
@@ -125,7 +125,7 @@ const mediaMoreButtons = (
       }
     },
     {
-      key: 'queueLast',
+      key: PV.Keys.queue_last,
       text: translate('Queue Last'),
       onPress: async () => {
         await addQueueItemLast(item)
@@ -137,7 +137,7 @@ const mediaMoreButtons = (
   if (!item.addByRSSPodcastFeedUrl) {
     if (!Config.DISABLE_ADD_TO_PLAYLIST && isLoggedIn) {
       buttons.push({
-        key: 'addToPlaylist',
+        key: PV.Keys.add_to_playlist,
         text: translate('Add to Playlist'),
         onPress: async () => {
           await handleDismiss()
@@ -150,7 +150,7 @@ const mediaMoreButtons = (
 
     if (!Config.DISABLE_SHARE) {
       buttons.push({
-        key: 'share',
+        key: PV.Keys.share,
         text: translate('Share'),
         onPress: async () => {
           try {
@@ -181,7 +181,7 @@ const mediaMoreButtons = (
 
   if (isDownloaded) {
     buttons.push({
-      key: 'deleteEpisode',
+      key: PV.Keys.delete_episode,
       text: translate('Delete Episode'),
       onPress: async () => {
         removeDownloadedPodcastEpisode(item.episodeId)
@@ -192,7 +192,7 @@ const mediaMoreButtons = (
 
   if (includeGoToPodcast) {
     buttons.push({
-      key: 'goToPodcast',
+      key: PV.Keys.go_to_podcast,
       text: translate('Go to Podcast'),
       onPress: async () => {
         await handleDismiss()
@@ -203,7 +203,7 @@ const mediaMoreButtons = (
 
   if (includeGoToEpisode) {
     buttons.push({
-      key: 'goToEpisode',
+      key: PV.Keys.go_to_episode,
       text: translate('Go to Episode'),
       onPress: async () => {
         await handleDismiss()

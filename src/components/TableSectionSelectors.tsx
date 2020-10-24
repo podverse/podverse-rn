@@ -22,6 +22,7 @@ type Props = {
   selectedLeftItemKey: string | null
   selectedRightItemKey?: string | null
   screenName: string
+  testID: string
 }
 
 export const TableSectionSelectors = (props: Props) => {
@@ -44,7 +45,8 @@ export const TableSectionSelectors = (props: Props) => {
     isTransparent,
     selectedLeftItemKey,
     selectedRightItemKey,
-    screenName
+    screenName,
+    testID
   } = props
 
   const handleInitialRender = () => {
@@ -177,6 +179,7 @@ export const TableSectionSelectors = (props: Props) => {
               placeholder={defaultPlaceholder}
               style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
               useNativeAndroidPickerStyle={false}
+              touchableWrapperProps={{ testID: `${testID}_picker_select_left` }}
               value={selectedLeftItemKey}>
               <View style={styles.tableSectionHeaderButton}>
                 <Text
@@ -198,6 +201,7 @@ export const TableSectionSelectors = (props: Props) => {
                 onValueChange={handleSelectRightItem}
                 placeholder={defaultPlaceholder}
                 style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
+                touchableWrapperProps={{ testID: `${testID}_picker_select_right` }}
                 useNativeAndroidPickerStyle={false}
                 value={selectedRightItemKey}>
                 <View style={styles.tableSectionHeaderButton}>

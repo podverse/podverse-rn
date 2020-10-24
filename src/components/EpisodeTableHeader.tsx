@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
-import { readableDate } from '../lib/utility'
+import { readableDate, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { ActivityIndicator, FastImage, IndicatorDownload, MoreButton, Text, View } from './'
@@ -16,6 +16,7 @@ type Props = {
   isNotFound?: boolean
   podcastImageUrl?: string
   pubDate?: string
+  testID: string
   title: string
 }
 
@@ -29,6 +30,7 @@ export const EpisodeTableHeader = (props: Props) => {
     isNotFound,
     podcastImageUrl,
     pubDate = '',
+    testID,
     title
   } = props
 
@@ -58,7 +60,14 @@ export const EpisodeTableHeader = (props: Props) => {
               {isDownloaded && <IndicatorDownload />}
             </View>
           </View>
-          {handleMorePress && <MoreButton handleShowMore={handleMorePress} height={92} isLoading={isDownloading} />}
+          {handleMorePress && (
+            <MoreButton
+              handleShowMore={handleMorePress}
+              height={92}
+              isLoading={isDownloading}
+              {...(testID ? testProps(testID) : {})}
+            />
+          )}
         </View>
       )}
       {!isLoading && isNotFound && (

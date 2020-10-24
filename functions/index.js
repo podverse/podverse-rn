@@ -24,7 +24,8 @@ exports.runTests = functions.runWith({ timeoutSeconds: 540 }).https.onRequest((r
 
     if (
       request.query['DEVICE_TYPE'].toLowerCase() !== 'ios' &&
-      request.query['DEVICE_TYPE'].toLowerCase() !== 'android'
+      request.query['DEVICE_TYPE'].toLowerCase() !== 'android' &&
+      request.query['DEVICE_TYPE'].toLowerCase() !== 'f-droid'
     ) {
       response.status(400).json({
         code: 400,
@@ -41,11 +42,17 @@ exports.runTests = functions.runWith({ timeoutSeconds: 540 }).https.onRequest((r
     }
 
     if (request.query['DEVICE_TYPE'].toLowerCase() === 'ios') {
-      capabilities.device = request.query['DEVICE_MODEL'] || 'iPhone 11 Pro Max'
+      capabilities.device = request.query['DEVICE_MODEL'] || 'iPhone 12 Pro Max'
       capabilities.os_version = request.query['OS_VERSION'] || '13.0'
       capabilities.project = `Mobile App - iOS`
       capabilities.build = 'iOS'
       capabilities.name = 'iOS'
+    } else if (request.query['DEVICE_TYPE'].toLowerCase() === 'f-droid') {
+      capabilities.device = request.query['DEVICE_MODEL'] || 'Google Pixel 3'
+      capabilities.os_version = request.query['OS_VERSION'] || '9.0'
+      capabilities.project = `Mobile App - F-Droid`
+      capabilities.build = 'F-Droid'
+      capabilities.name = 'F-Droid'
     } else {
       capabilities.device = request.query['DEVICE_MODEL'] || 'Google Pixel 3'
       capabilities.os_version = request.query['OS_VERSION'] || '9.0'
