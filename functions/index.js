@@ -42,7 +42,7 @@ exports.runTests = functions.runWith({ timeoutSeconds: 540 }).https.onRequest((r
     }
 
     if (request.query['DEVICE_TYPE'].toLowerCase() === 'ios') {
-      capabilities.device = request.query['DEVICE_MODEL'] || 'iPhone 11 Pro Max'
+      capabilities.device = request.query['DEVICE_MODEL'] || 'iPhone 12 Pro Max'
       capabilities.os_version = request.query['OS_VERSION'] || '13.0'
       capabilities.project = `Mobile App - iOS`
       capabilities.build = 'iOS'

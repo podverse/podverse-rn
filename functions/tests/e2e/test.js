@@ -11,7 +11,7 @@ const capabilities = process.env.DEVICE_TYPE === 'Android' || process.env.DEVICE
     'os_version': '9.0'
   } :
   {
-    'device': 'iPhone 11 Pro Max',
+    'device': 'iPhone 12 Pro Max',
     'os_version': '13.0'
   }
 
