@@ -116,6 +116,16 @@ const performScrollDown = async () => {
   logPerformance('Scrolldown performed')
 }
 
+const performScrollUp = async () => {
+  const action = new wd.TouchAction(driver)
+  action.press(getCenterCoordinates())
+  action.wait(1000)
+  action.moveTo(getCenterCoordinates(0, 500))
+  action.release()
+  await action.perform()
+  logPerformance('Scrollup performed')
+}
+
 const confirmAndroidAlert = async (testLabel) => {
   logTestInfo(true, null, 'Confirm Android Alert')
   const el = await driver.element('id', 'android:id/button1')
@@ -195,17 +205,6 @@ const runTests = async (customCapabilities) => {
     await elementbyIdClick('reset_password_submit')
     await confirmAndroidAlert()
 
-    await elementbyIdClick('login_submit')
-    await confirmAndroidAlert() 
-
-    await elementByIdAndClickAndTest('auth_screen_sign_up_button', 'membership_screen_view', null, goBack)
-
-    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    await elementByIdAndClickAndTest('auth_screen_reset_password_button', 'reset_password_submit')
-    await sendKeysToElementById('reset_password_email_text_input', 'TestEmail@ThisIsATest.com')
-    await elementbyIdClick('reset_password_submit')
-    await confirmAndroidAlert()
-
     await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
     await elementByIdAndClickAndTest('nav_dismiss_icon', 'more_screen_view')
 
@@ -258,28 +257,6 @@ const runTests = async (customCapabilities) => {
     await elementByIdAndClickAndTest('more_screen_profiles_cell', 'profiles_screen_view', null, goBack)
 
     await elementByIdAndClickAndTest('more_screen_my_profile_cell', 'profile_screen_view', null, goBack)
-
-    await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view')
-    await driver.sleep(1000)
-    await performScrollDown()
-    
-    await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', null, goBack)
-    
-    await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', null, goBack)
-
-    await driver.sleep(3000)
-
-    // Logged in user tests
-
-    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
-    await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
-    await elementbyIdClick('login_submit')
-    await driver.sleep(1000)
-    await elementbyIdClick('settings_screen_delete_downloaded_episodes_button')
-    await elementbyIdClick('settings_screen_dialog_delete_downloaded_episodes_yes')
-
-
 
 
 
