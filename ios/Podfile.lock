@@ -230,8 +230,8 @@ PODS:
     - React
   - react-native-netinfo (4.7.0):
     - React
-  - react-native-safe-area-context (0.7.3):
-    - React
+  - react-native-safe-area-context (3.1.8):
+    - React-Core
   - react-native-track-player (1.2.3):
     - React
   - react-native-webview (7.6.0):
@@ -544,7 +544,7 @@ SPEC CHECKSUMS:
   react-native-camera: 35854c4f764a4a6cf61c1c3525888b92f0fe4b31
   react-native-config: 7db9b96479164dfd7b2be68eb9079e08279511c4
   react-native-netinfo: ddaca8bbb9e6e914b1a23787ccb879bc642931c9
-  react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
+  react-native-safe-area-context: 79fea126c6830c85f65947c223a5e3058a666937
   react-native-track-player: 28b96dd6404dea3eee80e67b74507679235a8dfb
   react-native-webview: db4682f1698ab4b17a5e88f951031d203ff8aea8
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa

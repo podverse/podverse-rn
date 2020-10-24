@@ -79,7 +79,8 @@
     "react-native-reanimated": "1.13.1",
     "react-native-render-html": "4.2.4",
     "react-native-rss-parser": "1.4.0",
-    "react-native-safe-area-context": "0.7.3",
+    "react-native-safe-area-context": "3.1.8",
+    "react-native-safe-area-view": "^2.0.0",
     "react-native-screens": "2.11.0",
     "react-native-secure-key-store": "2.0.9",
     "react-native-share": "3.8.5",
@@ -125,6 +126,9 @@
     "tslint-plugin-prettier": "2.3.0",
     "tslint-react": "3.6.0",
     "typescript": "3.9.7"
+  },
+  "resolutions": {
+    "react-native-safe-area-view": "^2.0.0"
   },
   "isSwift": true
 }
