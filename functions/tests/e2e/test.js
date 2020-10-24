@@ -3,7 +3,12 @@ const assert = require('assert');
 const { performance } = require('perf_hooks')
 const asserters = wd.asserters;
 const request = require('request');
-require('dotenv').config()
+
+// Only load dotenv module during local development.
+// During deployment testing, env vars are provided by the Firebase config.
+if (process.env.BROWSERSTACK_TEST_ENV === 'local') {
+  require('dotenv').config()
+}
 
 const capabilities = process.env.DEVICE_TYPE === 'Android' || process.env.DEVICE_TYPE === 'F-Droid' ?
   {
