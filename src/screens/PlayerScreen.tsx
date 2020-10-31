@@ -715,20 +715,17 @@ export class PlayerScreen extends React.Component<Props, State> {
     const sort = this._validSort()
 
     if (nowPlayingItem && !nowPlayingItem.addByRSSPodcastFeedUrl) {
-      const results = await getMediaRefs(
-        {
-          sort,
-          page: queryPage,
-          ...(queryFrom === PV.Filters._fromThisEpisodeKey && nowPlayingItem
-            ? { episodeId: nowPlayingItem.episodeId }
-            : {}),
-          ...(queryFrom === PV.Filters._fromThisPodcastKey && nowPlayingItem
-            ? { podcastId: nowPlayingItem.podcastId }
-            : {}),
-          includeEpisode: queryFrom === PV.Filters._fromThisPodcastKey
-        },
-        this.global.settings.nsfwMode
-      )
+      const results = await getMediaRefs({
+        sort,
+        page: queryPage,
+        ...(queryFrom === PV.Filters._fromThisEpisodeKey && nowPlayingItem
+          ? { episodeId: nowPlayingItem.episodeId }
+          : {}),
+        ...(queryFrom === PV.Filters._fromThisPodcastKey && nowPlayingItem
+          ? { podcastId: nowPlayingItem.podcastId }
+          : {}),
+        includeEpisode: queryFrom === PV.Filters._fromThisPodcastKey
+      })
 
       return results
     } else {
@@ -750,14 +747,11 @@ export class PlayerScreen extends React.Component<Props, State> {
         return [[], 0]
       }
     } else {
-      const results = await getEpisodes(
-        {
-          sort: !querySort || querySort === PV.Filters._chronologicalKey ? PV.Filters._mostRecentKey : querySort,
-          page: page || queryPage,
-          podcastId: nowPlayingItem && nowPlayingItem.podcastId
-        },
-        this.global.settings.nsfwMode
-      )
+      const results = await getEpisodes({
+        sort: !querySort || querySort === PV.Filters._chronologicalKey ? PV.Filters._mostRecentKey : querySort,
+        page: page || queryPage,
+        podcastId: nowPlayingItem && nowPlayingItem.podcastId
+      })
       return results
     }
   }

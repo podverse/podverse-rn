@@ -290,15 +290,12 @@ export class SearchScreen extends React.Component<Props, State> {
     if (wasAlerted) return newState
 
     try {
-      const results = await getPodcasts(
-        {
-          page,
-          ...(searchType === _podcastByTitle ? { searchTitle: searchBarText } : {}),
-          ...(searchType === _podcastByHost ? { searchAuthor: searchBarText } : {}),
-          sort: 'alphabetical'
-        },
-        this.global.settings.nsfwMode
-      )
+      const results = await getPodcasts({
+        page,
+        ...(searchType === _podcastByTitle ? { searchTitle: searchBarText } : {}),
+        ...(searchType === _podcastByHost ? { searchAuthor: searchBarText } : {}),
+        sort: 'alphabetical'
+      })
 
       const newFlatListData = [...flatListData, ...results[0]]
 

@@ -583,7 +583,7 @@ export class ProfileScreen extends React.Component<Props, State> {
 
       let results = [[], 0]
       if (this.global.profile.user.subscribedPodcastIds.length > 0) {
-        results = await getPodcasts(query, this.global.settings.nsfwMode)
+        results = await getPodcasts(query)
       }
 
       setGlobal(
@@ -606,8 +606,6 @@ export class ProfileScreen extends React.Component<Props, State> {
   _queryMediaRefs = async (newState: any, page: number = 1, sort?: string | null) => {
     return new Promise(async (resolve, reject) => {
       const { flatListData, userId } = this.state
-      const { settings } = this.global
-      const { nsfwMode } = settings
       const query = { page }
       const { id } = this.global.session.userInfo
       const isLoggedInUserProfile = userId === id
@@ -617,7 +615,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       if (isLoggedInUserProfile) {
         results = await getLoggedInUserMediaRefs(query)
       } else {
-        results = await getUserMediaRefs(this.global.profile.user.id, query, nsfwMode)
+        results = await getUserMediaRefs(this.global.profile.user.id, query)
       }
 
       setGlobal(

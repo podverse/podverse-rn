@@ -77,9 +77,6 @@ declare module 'reactn/default' {
       flatListDataTotalCount: number | null
       playlist?: any
     }
-    settings: {
-      nsfwMode: boolean
-    }
     session: {
       isLoggedIn: boolean
       userInfo: UserInfo

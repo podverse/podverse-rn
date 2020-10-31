@@ -146,9 +146,6 @@ export interface InitialState {
     flatListDataTotalCount: number | null
     playlist?: any
   }
-  settings: {
-    nsfwMode: boolean
-  }
   session: {
     isLoggedIn: boolean
     userInfo: UserInfo

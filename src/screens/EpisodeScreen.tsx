@@ -440,15 +440,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     try {
       if (PV.FilterOptions.screenFilters.EpisodeScreen.sort.some((option) => option.value === filterKey)) {
-        const results = await getMediaRefs(
-          {
-            sort: filterKey,
-            page: queryOptions.queryPage,
-            episodeId: episode.id,
-            ...(searchAllFieldsText ? { searchAllFieldsText } : {})
-          },
-          this.global.settings.nsfwMode
-        )
+        const results = await getMediaRefs({
+          sort: filterKey,
+          page: queryOptions.queryPage,
+          episodeId: episode.id,
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+        })
 
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
@@ -458,15 +455,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = null
       } else {
-        const results = await getMediaRefs(
-          {
-            sort: querySort,
-            page: queryOptions.queryPage,
-            episodeId: episode.id,
-            ...(searchAllFieldsText ? { searchAllFieldsText } : {})
-          },
-          this.global.settings.nsfwMode
-        )
+        const results = await getMediaRefs({
+          sort: querySort,
+          page: queryOptions.queryPage,
+          episodeId: episode.id,
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+        })
 
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
