@@ -1,6 +1,7 @@
 import React from 'react'
 import { SearchBar } from 'react-native-elements'
 import { useGlobal } from 'reactn'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 
 type Props = {
@@ -9,11 +10,12 @@ type Props = {
   onChangeText: any
   onClear: any
   placeholder?: string
+  testID: string
   value?: string
 }
 
 export const PVSearchBar = (props: Props) => {
-  const { containerStyle, inputContainerStyle, onChangeText, onClear, placeholder, value } = props
+  const { containerStyle, inputContainerStyle, onChangeText, onClear, placeholder, testID, value } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   return (
@@ -29,6 +31,7 @@ export const PVSearchBar = (props: Props) => {
       returnKeyType='done'
       searchIcon={{ size: 24 }}
       style={globalTheme.textInput}
+      {...(testID ? testProps(`${testID}_search_bar`) : {})}
       value={value}
     />
   )

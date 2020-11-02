@@ -17,7 +17,7 @@ type Props = {
   inputText?: string
   onValueChange: any
   subText?: string
-  testID?: string
+  testID: string
   text: string
   value: boolean
 }

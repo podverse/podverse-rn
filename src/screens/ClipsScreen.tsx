@@ -480,14 +480,11 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _getLoggedInUserMediaRefs = async (queryPage?: number, newSortFilter?: string) => {
-    return getLoggedInUserMediaRefs(
-      {
-        sort: newSortFilter ? newSortFilter : PV.Filters._mostRecentKey,
-        page: queryPage ? queryPage : 1,
-        includePodcast: true
-      },
-      this.global.settings.nsfwMode
-    )
+    return getLoggedInUserMediaRefs({
+      sort: newSortFilter ? newSortFilter : PV.Filters._mostRecentKey,
+      page: queryPage ? queryPage : 1,
+      includePodcast: true
+    })
   }
 
   _queryData = async (
@@ -516,40 +513,33 @@ export class ClipsScreen extends React.Component<Props, State> {
       let { flatListData } = this.state
       const { queryFrom, querySort, selectedCategory, selectedSubCategory } = this.state
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
-      const nsfwMode = this.global.settings.nsfwMode
       const { queryPage, searchAllFieldsText } = queryOptions
 
       flatListData = queryOptions && queryOptions.queryPage === 1 ? [] : flatListData
 
       if (filterKey === PV.Filters._subscribedKey) {
-        const results = await getMediaRefs(
-          {
-            sort: querySort,
-            page: queryPage,
-            podcastId,
-            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-            subscribedOnly: true,
-            includePodcast: true
-          },
-          this.global.settings.nsfwMode
-        )
+        const results = await getMediaRefs({
+          sort: querySort,
+          page: queryPage,
+          podcastId,
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          subscribedOnly: true,
+          includePodcast: true
+        })
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === PV.Filters._downloadedKey) {
         const downloadedEpisodeIdsObj = await getDownloadedEpisodeIds()
         const downloadedEpisodeIds = Object.keys(downloadedEpisodeIdsObj)
-        const results = await getMediaRefs(
-          {
-            sort: querySort,
-            page: queryPage,
-            episodeId: downloadedEpisodeIds,
-            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-            subscribedOnly: true,
-            includePodcast: true
-          },
-          this.global.settings.nsfwMode
-        )
+        const results = await getMediaRefs({
+          sort: querySort,
+          page: queryPage,
+          episodeId: downloadedEpisodeIds,
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          subscribedOnly: true,
+          includePodcast: true
+        })
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
@@ -586,17 +576,14 @@ export class ClipsScreen extends React.Component<Props, State> {
         if (queryFrom === PV.Filters._myClipsKey) {
           results = await this._getLoggedInUserMediaRefs(queryPage, filterKey)
         } else {
-          results = await getMediaRefs(
-            {
-              ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedSubCategory),
-              ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
-              sort: filterKey,
-              ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-              subscribedOnly: queryFrom === PV.Filters._subscribedKey,
-              includePodcast: true
-            },
-            nsfwMode
-          )
+          results = await getMediaRefs({
+            ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedSubCategory),
+            ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
+            sort: filterKey,
+            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+            subscribedOnly: queryFrom === PV.Filters._subscribedKey,
+            includePodcast: true
+          })
         }
 
         newState.flatListData = results[0]
@@ -629,31 +616,25 @@ export class ClipsScreen extends React.Component<Props, State> {
 
   _queryAllMediaRefs = async (sort: string | null, page: number = 1) => {
     const { searchBarText: searchAllFieldsText } = this.state
-    const results = await getMediaRefs(
-      {
-        sort,
-        page,
-        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-        includePodcast: true
-      },
-      this.global.settings.nsfwMode
-    )
+    const results = await getMediaRefs({
+      sort,
+      page,
+      ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+      includePodcast: true
+    })
 
     return results
   }
 
   _queryMediaRefsByCategory = async (categoryId?: string | null, sort?: string | null, page: number = 1) => {
     const { searchBarText: searchAllFieldsText } = this.state
-    const results = await getMediaRefs(
-      {
-        categories: categoryId,
-        sort,
-        page,
-        ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-        includePodcast: true
-      },
-      this.global.settings.nsfwMode
-    )
+    const results = await getMediaRefs({
+      categories: categoryId,
+      sort,
+      page,
+      ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+      includePodcast: true
+    })
     return results
   }
 }

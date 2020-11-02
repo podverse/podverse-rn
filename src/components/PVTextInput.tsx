@@ -24,7 +24,7 @@ type Props = {
   returnKeyType?: any
   secureTextEntry?: boolean
   style?: any
-  testID?: string
+  testID: string
   underlineColorAndroid?: any
   value?: string
 }

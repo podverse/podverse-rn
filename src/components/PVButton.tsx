@@ -12,7 +12,7 @@ type Props = {
   isSuccess?: boolean
   isWarning?: boolean
   onPress: any
-  testID?: string
+  testID: string
   text: string
   wrapperStyles: any
 }

@@ -1,7 +1,7 @@
 import { PV } from '../resources'
 import { request } from './request'
 
-export const getEpisodes = async (query: any = {}, nsfwMode: boolean) => {
+export const getEpisodes = async (query: any = {}) => {
   const searchAllFieldsText = query.searchAllFieldsText ? encodeURIComponent(query.searchAllFieldsText) : ''
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
@@ -20,13 +20,10 @@ export const getEpisodes = async (query: any = {}, nsfwMode: boolean) => {
     return [[], 0]
   }
 
-  const response = await request(
-    {
-      endpoint: '/episode',
-      query: filteredQuery
-    },
-    nsfwMode
-  )
+  const response = await request({
+    endpoint: '/episode',
+    query: filteredQuery
+  })
 
   return response && response.data
 }

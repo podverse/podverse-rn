@@ -701,6 +701,7 @@ export class PodcastScreen extends React.Component<Props, State> {
                 )
               }
               showModal={showActionSheet}
+              testID={testIDPrefix}
             />
           </View>
         )}
@@ -718,31 +719,25 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _queryEpisodes = async (sort: string | null, page: number = 1) => {
     const { podcastId, searchBarText: searchAllFieldsText } = this.state
-    const results = await getEpisodes(
-      {
-        sort,
-        page,
-        podcastId,
-        ...(searchAllFieldsText ? { searchAllFieldsText } : {})
-      },
-      this.global.settings.nsfwMode
-    )
+    const results = await getEpisodes({
+      sort,
+      page,
+      podcastId,
+      ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+    })
 
     return results
   }
 
   _queryClips = async (sort: string | null, page: number = 1) => {
     const { podcastId, searchBarText: searchAllFieldsText } = this.state
-    const results = await getMediaRefs(
-      {
-        sort,
-        page,
-        podcastId,
-        includeEpisode: true,
-        ...(searchAllFieldsText ? { searchAllFieldsText } : {})
-      },
-      this.global.settings.nsfwMode
-    )
+    const results = await getMediaRefs({
+      sort,
+      page,
+      podcastId,
+      includeEpisode: true,
+      ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+    })
     return results
   }
 

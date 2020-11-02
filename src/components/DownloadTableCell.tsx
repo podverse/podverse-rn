@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import { Slider } from 'react-native-elements'
 import { translate } from '../lib/i18n'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getDownloadStatusText } from '../state/actions/downloads'
 import { FastImage, Text, View } from './'
@@ -17,6 +18,7 @@ type Props = {
   podcastImageUrl?: string
   podcastTitle: string
   status?: string
+  testID: string
 }
 
 export class DownloadTableCell extends React.PureComponent<Props> {
@@ -31,25 +33,31 @@ export class DownloadTableCell extends React.PureComponent<Props> {
       percent,
       podcastImageUrl,
       podcastTitle = translate('untitled podcast'),
-      status
+      status,
+      testID
     } = this.props
     const per = completed ? 1 : percent
     const statusText = getDownloadStatusText(status)
 
     return (
-      <TouchableWithoutFeedback onPress={onPress}>
+      <TouchableWithoutFeedback onPress={onPress} {...(testID ? testProps(testID) : {})}>
         <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>
             <RNView style={styles.textWrapperTop}>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.episodeTitle}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                numberOfLines={1}
+                style={styles.episodeTitle}
+                testID={`${testID}_episode_title`}>
                 {episodeTitle}
               </Text>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 isSecondary={true}
                 numberOfLines={1}
-                style={styles.podcastTitle}>
+                style={styles.podcastTitle}
+                testID={`${testID}_podcast_title`}>
                 {podcastTitle}
               </Text>
             </RNView>
@@ -63,11 +71,17 @@ export class DownloadTableCell extends React.PureComponent<Props> {
                 value={per}
               />
               <RNView style={styles.textWrapperBottomText}>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs}>{statusText}</Text>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} testID={`${testID}_status_text`}>
+                  {statusText}
+                </Text>
                 {completed ? (
-                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs}>{bytesTotal}</Text>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} testID={`${testID}_bytes_total`}>
+                    {bytesTotal}
+                  </Text>
                 ) : (
-                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs}>{`${bytesWritten} / ${bytesTotal}`}</Text>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                    testID={`${testID}_bytes_written`}>{`${bytesWritten} / ${bytesTotal}`}</Text>
                 )}
               </RNView>
             </RNView>

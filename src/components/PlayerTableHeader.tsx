@@ -1,6 +1,6 @@
 import { Platform, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import React, { useGlobal } from 'reactn'
-import { readableDate } from '../lib/utility'
+import { readableDate, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { ActivityIndicator, FastImage, Text, View } from './'
@@ -9,10 +9,11 @@ type Props = {
   isLoading?: boolean
   nowPlayingItem: any
   onPress?: any
+  testID: string
 }
 
 export const PlayerTableHeader = (props: Props) => {
-  const { isLoading, nowPlayingItem, onPress } = props
+  const { isLoading, nowPlayingItem, onPress, testID } = props
   const [fontScaleMode] = useGlobal('fontScaleMode')
 
   const episodeTitleNumberOfLines = PV.Fonts.fontScale.largest === fontScaleMode ? 1 : 2
@@ -28,7 +29,7 @@ export const PlayerTableHeader = (props: Props) => {
       : styles.episodePubDate
 
   return (
-    <TouchableWithoutFeedback onPress={onPress}>
+    <TouchableWithoutFeedback onPress={onPress} {...(testID ? testProps(testID) : {})}>
       <View style={styles.wrapper} transparent={true}>
         {isLoading && (
           <View style={core.row}>
@@ -48,21 +49,24 @@ export const PlayerTableHeader = (props: Props) => {
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
                   numberOfLines={1}
-                  style={styles.podcastTitle}>
+                  style={styles.podcastTitle}
+                  testID={`${testID}_header_podcast_title`}>
                   {nowPlayingItem.podcastTitle}
                 </Text>
               )}
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 numberOfLines={episodeTitleNumberOfLines}
-                style={styles.episodeTitle}>
+                style={styles.episodeTitle}
+                testID={`${testID}_header_episode_title`}>
                 {nowPlayingItem.episodeTitle}
               </Text>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 isSecondary={true}
                 numberOfLines={1}
-                style={episodePubDateStyle}>
+                style={episodePubDateStyle}
+                testID={`${testID}_header_episode_pub_date`}>
                 {readableDate(nowPlayingItem.episodePubDate)}
               </Text>
             </View>

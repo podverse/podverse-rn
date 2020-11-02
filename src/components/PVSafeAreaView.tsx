@@ -6,7 +6,7 @@ type Props = {
   accessibilityLabel?: string
   children: any
   style?: any
-  testID?: string
+  testID: string
 }
 
 export const PVSafeAreaView = (props: Props) => {

@@ -101,9 +101,6 @@ const initialTheme: InitialState = {
     },
     isLoggedIn: false
   },
-  settings: {
-    nsfwMode: true
-  },
   subscribedPodcasts: [],
   subscribedPodcastsTotalCount: 0,
   urlsAPI: null,

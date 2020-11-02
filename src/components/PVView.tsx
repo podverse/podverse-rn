@@ -1,8 +1,10 @@
 import React from 'react'
 import { View } from 'react-native'
 import { useGlobal } from 'reactn'
+import { testProps } from '../lib/utility'
 
 export const PVView = (props: any) => {
+  const { children, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const styles = [globalTheme.view]
 
@@ -17,8 +19,8 @@ export const PVView = (props: any) => {
   styles.push(props.style)
 
   return (
-    <View {...props} style={styles}>
-      {props.children}
+    <View {...props} style={styles} {...(testID ? testProps(testID) : {})}>
+      {children}
     </View>
   )
 }

@@ -9,7 +9,7 @@ type Props = {
   handleShowMore: any
   height: number
   isLoading?: boolean
-  testID?: string
+  testID: string
 }
 
 export const MoreButton = (props: Props) => {

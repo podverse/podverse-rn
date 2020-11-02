@@ -11,19 +11,16 @@ export const getPublicUser = async (id: string) => {
   return response && response.data
 }
 
-export const getUserMediaRefs = async (userId: string, query: any = {}, nsfwMode: boolean) => {
+export const getUserMediaRefs = async (userId: string, query: any = {}) => {
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'most-recent' })
   }
 
-  const response = await request(
-    {
-      endpoint: `/user/${userId}/mediaRefs`,
-      query: filteredQuery
-    },
-    nsfwMode
-  )
+  const response = await request({
+    endpoint: `/user/${userId}/mediaRefs`,
+    query: filteredQuery
+  })
 
   return response && response.data
 }
@@ -89,34 +86,28 @@ const toggleSubscribeToUserOnServer = async (id: string) => {
   return response && response.data
 }
 
-export const getLoggedInUserMediaRefs = async (query: any = {}, nsfwMode?: boolean) => {
+export const getLoggedInUserMediaRefs = async (query: any = {}) => {
   const filteredQuery = {
     ...(query.page ? { page: query.page } : { page: 1 }),
     ...(query.sort ? { sort: query.sort } : { sort: 'top-past-week' })
   } as any
 
   const bearerToken = await getBearerToken()
-  const response = await request(
-    {
-      endpoint: '/user/mediaRefs',
-      query: filteredQuery,
-      headers: { Authorization: bearerToken }
-    },
-    nsfwMode
-  )
+  const response = await request({
+    endpoint: '/user/mediaRefs',
+    query: filteredQuery,
+    headers: { Authorization: bearerToken }
+  })
 
   return response && response.data
 }
 
-export const getLoggedInUserPlaylists = async (nsfwMode?: boolean) => {
+export const getLoggedInUserPlaylists = async () => {
   const bearerToken = await getBearerToken()
-  const response = await request(
-    {
-      endpoint: '/user/playlists',
-      headers: { Authorization: bearerToken }
-    },
-    nsfwMode
-  )
+  const response = await request({
+    endpoint: '/user/playlists',
+    headers: { Authorization: bearerToken }
+  })
 
   return response && response.data
 }
