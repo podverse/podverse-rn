@@ -10,7 +10,7 @@ type Props = {
   disabled?: boolean
   handlePress: any
   style?: any
-  testID?: string
+  testID: string
   text: string
 }
 
@@ -31,7 +31,9 @@ export const NavHeaderButtonText = (props: Props) => {
 
   return (
     <TouchableOpacity accessibilityLabel={accessibilityLabel} disabled={disabled} onPress={handlePress} testID={testID}>
-      <Text style={buttonTextStyle}>{props.text}</Text>
+      <Text style={buttonTextStyle} testID={`${testID}_text`}>
+        {props.text}
+      </Text>
     </TouchableOpacity>
   )
 }

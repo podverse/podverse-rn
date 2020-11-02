@@ -599,7 +599,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     return (
       <OpaqueBackground nowPlayingItem={nowPlayingItem}>
         <View style={styles.view} transparent={true} {...testProps('player_screen_view')}>
-          <PlayerTableHeader nowPlayingItem={nowPlayingItem} />
+          <PlayerTableHeader nowPlayingItem={nowPlayingItem} testID={testIDPrefix} />
           {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
             <ClipInfoView
               createdAt={mediaRef.createdAt}
@@ -694,12 +694,14 @@ export class PlayerScreen extends React.Component<Props, State> {
               )
             }
             showModal={showMoreActionSheet}
+            testID={`${testIDPrefix}_more`}
           />
           <ActionSheet
             handleCancelPress={this._dismissShareActionSheet}
             items={shareActionSheetButtons(podcastId, episodeId, mediaRefId, this._handleShare)}
             message={translate('What link do you want to share?')}
             showModal={showShareActionSheet}
+            testID={`${testIDPrefix}_share`}
             title={translate('Share')}
           />
         </View>

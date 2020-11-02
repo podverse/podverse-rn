@@ -32,6 +32,8 @@ type State = {
   showNewPlaylistDialog?: boolean
 }
 
+const testIDPrefix = 'playlists_add_to_screen'
+
 export class PlaylistsAddToScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -141,6 +143,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
             this.setState({ isSavingId: '' })
           }
         }}
+        testID={`${testIDPrefix}_playlist_item_${index}`}
         title={item.title}
       />
     )

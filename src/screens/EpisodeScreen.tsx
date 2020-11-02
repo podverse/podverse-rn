@@ -412,6 +412,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
             )
           }
           showModal={showActionSheet}
+          testID={testIDPrefix}
         />
       </View>
     )

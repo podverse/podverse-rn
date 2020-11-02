@@ -63,7 +63,8 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                     ? 1
                     : 2
                 }
-                style={styles.title}>
+                style={styles.title}
+                testID={`${testID}_title`}>
                 {podcastTitle}
               </Text>
             </RNView>
@@ -72,7 +73,11 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                 <RNView style={styles.textWrapperRow}>
                   {showDownloadCount && (
                     <RNView style={styles.textWrapperRowLeft}>
-                      <Text isSecondary={true} numberOfLines={1} style={styles.bottomText}>
+                      <Text
+                        isSecondary={true}
+                        numberOfLines={1}
+                        style={styles.bottomText}
+                        testID={`${testID}_downloaded`}>
                         {`${downloadCount} ${translate('downloaded')}`}
                       </Text>
                       {showAutoDownload && shouldAutoDownload && <IndicatorDownload style={styles.autoDownloadIcon} />}
@@ -80,7 +85,11 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                   )}
                   {!!lastEpisodePubDate && (
                     <RNView style={styles.textWrapperRowRight}>
-                      <Text isSecondary={true} numberOfLines={1} style={styles.bottomText}>
+                      <Text
+                        isSecondary={true}
+                        numberOfLines={1}
+                        style={styles.bottomText}
+                        testID={`${testID}_last_pub_date`}>
                         {readableDate(lastEpisodePubDate)}
                       </Text>
                     </RNView>

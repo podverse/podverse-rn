@@ -105,6 +105,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
             navigationTitle: queryFrom === PV.Filters._myPlaylistsKey ? translate('My Playlist') : translate('Playlist')
           })
         }
+        testID={`${testIDPrefix}_playlist_item_${index}`}
         title={item.title}
       />
     )

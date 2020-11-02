@@ -10,7 +10,7 @@ type Props = {
   handleSubmitEditing?: any
   isSmallText?: boolean
   selectedNumber?: number | string
-  testID?: string
+  testID: string
   text: string
 }
 

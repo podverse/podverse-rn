@@ -21,14 +21,7 @@ import {
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import {
-  generateAuthorsText,
-  generateCategoriesText,
-  isOdd,
-  readableDate,
-  safelyUnwrapNestedVariable,
-  testProps
-} from '../lib/utility'
+import { isOdd, readableDate, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { deleteMediaRef } from '../services/mediaRef'
@@ -417,10 +410,9 @@ export class ProfileScreen extends React.Component<Props, State> {
           id={item.id}
           lastEpisodePubDate={item.lastEpisodePubDate}
           onPress={() => this._handlePodcastPress(item)}
-          podcastAuthors={generateAuthorsText(item.authors)}
-          podcastCategories={generateCategoriesText(item.categories)}
           podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
           podcastTitle={item.title}
+          testID={`${testIDPrefix}_podcast_item_${index}`}
         />
       )
     } else if (queryFrom === PV.Filters._clipsKey) {
@@ -436,6 +428,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
           startTime={item.startTime}
+          testID={`${testIDPrefix}_clip_item_${index}`}
           title={item.title}
         />
       ) : (
@@ -447,6 +440,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           hasZebraStripe={isOdd(index)}
           itemCount={item.itemCount}
           onPress={() => this._handlePlaylistPress(item)}
+          testID={`${testIDPrefix}_profile_item_${index}`}
           title={item.title}
         />
       )
@@ -559,6 +553,7 @@ export class ProfileScreen extends React.Component<Props, State> {
                 }
               }}
               showModal={showActionSheet}
+              testID={testIDPrefix}
             />
             <Dialog.Container visible={showDeleteConfirmDialog}>
               <Dialog.Title>Delete Clip</Dialog.Title>

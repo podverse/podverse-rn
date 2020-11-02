@@ -18,6 +18,7 @@ type Props = {
   initialVolume?: number
   navigation: any
   showModal?: boolean
+  testID: string
 }
 
 type State = {
@@ -191,14 +192,14 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
   }
 
   render() {
-    const { handleDismiss, showModal } = this.props
+    const { handleDismiss, showModal, testID } = this.props
     const { volume } = this.state
     const { globalTheme, player } = this.global
     const { nowPlayingItem = {} } = player
     const items = this._headerActionSheetButtons()
 
     return (
-      <ActionSheet showModal={showModal} title={(nowPlayingItem && nowPlayingItem.podcastTitle) || ''}>
+      <ActionSheet showModal={showModal} testID={testID} title={(nowPlayingItem && nowPlayingItem.podcastTitle) || ''}>
         {items}
         <View
           key='volume'

@@ -39,6 +39,8 @@ type State = {
   showActionSheet: boolean
 }
 
+const testIDPrefix = 'playlist_screen'
+
 export class PlaylistScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const playlistId = navigation.getParam('playlistId')
@@ -146,6 +148,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           podcastTitle={item.episode.podcast.title}
           startTime={item.startTime}
+          testID={`${testIDPrefix}_clip_item_${index}`}
           title={item.title}
         />
       ) : (
@@ -165,6 +168,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           podcastImageUrl={(item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl)) || ''}
           podcastTitle={(item.podcast && item.podcast.title) || ''}
           pubDate={item.pubDate}
+          testID={`${testIDPrefix}_episode_item_${index}`}
           title={item.title}
         />
       )
@@ -275,6 +279,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
             )
           }
           showModal={showActionSheet}
+          testID={testIDPrefix}
         />
       </View>
     )

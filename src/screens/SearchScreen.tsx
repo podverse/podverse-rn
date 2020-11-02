@@ -16,7 +16,7 @@ import {
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { generateAuthorsText, isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getPodcasts } from '../services/podcast'
@@ -41,6 +41,8 @@ type State = {
   selectedPodcast?: any
   showActionSheet: boolean
 }
+
+const testIDPrefix = 'search_screen'
 
 export class SearchScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
@@ -170,9 +172,9 @@ export class SearchScreen extends React.Component<Props, State> {
       id={item.id}
       lastEpisodePubDate={item.lastEpisodePubDate}
       onPress={() => this._handleMorePress(item)}
-      podcastAuthors={generateAuthorsText(item.authors)}
       podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
       podcastTitle={item.title}
+      testID={`${testIDPrefix}_podcast_item_${index}`}
     />
   )
 
@@ -244,6 +246,7 @@ export class SearchScreen extends React.Component<Props, State> {
           onChangeText={this._handleSearchBarTextChange}
           onClear={this._handleSearchBarClear}
           placeholder={translate('search')}
+          testID={testIDPrefix}
           value={searchBarText}
         />
         <Divider />
@@ -272,6 +275,7 @@ export class SearchScreen extends React.Component<Props, State> {
           handleCancelPress={this._handleCancelPress}
           items={this._moreButtons()}
           showModal={showActionSheet}
+          testID={testIDPrefix}
         />
       </View>
     )

@@ -56,15 +56,24 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               isSecondary={true}
               numberOfLines={1}
-              style={styles.podcastTitle}>
+              style={styles.podcastTitle}
+              testID={`${testID}_podcast_title`}>
               {podcastTitle}
             </Text>
           )}
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={4} style={titleStyle}>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            numberOfLines={4}
+            style={titleStyle}
+            testID={`${testID}_title`}>
             {title}
           </Text>
           <RNView style={styles.textWrapperBottomRow}>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.pubDate}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              isSecondary={true}
+              style={styles.pubDate}
+              testID={`${testID}_pub_date`}>
               {readableDate(pubDate)}
             </Text>
             {isDownloaded && <IndicatorDownload />}
@@ -76,7 +85,12 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const descriptionStyle = hideImage ? [styles.description, { paddingLeft: 0 }] : styles.description
 
     const bottomText = (
-      <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} isSecondary={true} numberOfLines={4} style={descriptionStyle}>
+      <Text
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
+        isSecondary={true}
+        numberOfLines={4}
+        style={descriptionStyle}
+        testID={`${testID}_description`}>
         {description}
       </Text>
     )
@@ -98,7 +112,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               handleShowMore={handleMorePress}
               height={hideImage ? 46 : 64}
               isLoading={isDownloading}
-              {...(testID ? testProps(testID) : {})}
+              testID={testID}
             />
           )}
         </RNView>

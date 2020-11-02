@@ -38,6 +38,8 @@ type State = {
   viewType?: string
 }
 
+const testIDPrefix = 'queue_screen'
+
 export class QueueScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const { globalTheme } = getGlobal()
@@ -68,6 +70,7 @@ export class QueueScreen extends React.Component<Props, State> {
                   <NavHeaderButtonText
                     handlePress={navigation.getParam('_startEditing')}
                     style={styles.navHeaderTextButton}
+                    testID={`${testIDPrefix}_header_edit`}
                     text={translate('Edit')}
                   />
                 </RNView>
@@ -76,6 +79,7 @@ export class QueueScreen extends React.Component<Props, State> {
                   <NavHeaderButtonText
                     handlePress={navigation.getParam('_stopEditing')}
                     style={styles.navHeaderTextButton}
+                    testID={`${testIDPrefix}_header_done`}
                     text={translate('Done')}
                   />
                 </RNView>
@@ -87,12 +91,14 @@ export class QueueScreen extends React.Component<Props, State> {
                 <NavHeaderButtonText
                   handlePress={navigation.getParam('_startEditing')}
                   style={styles.navHeaderTextButton}
+                  testID={`${testIDPrefix}_header_edit`}
                   text={translate('Edit')}
                 />
               ) : (
                 <NavHeaderButtonText
                   handlePress={navigation.getParam('_stopEditing')}
                   style={styles.navHeaderTextButton}
+                  testID={`${testIDPrefix}_header_done`}
                   text={translate('Done')}
                 />
               )}

@@ -61,12 +61,7 @@ export const EpisodeTableHeader = (props: Props) => {
             </View>
           </View>
           {handleMorePress && (
-            <MoreButton
-              handleShowMore={handleMorePress}
-              height={92}
-              isLoading={isDownloading}
-              {...(testID ? testProps(testID) : {})}
-            />
+            <MoreButton handleShowMore={handleMorePress} height={92} isLoading={isDownloading} testID={testID} />
           )}
         </View>
       )}

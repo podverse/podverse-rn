@@ -19,6 +19,7 @@ type Props = {
   podcastTitle?: string
   showMoveButton?: boolean
   showRemoveButton?: boolean
+  testID: string
   transparent?: boolean
 }
 
@@ -37,11 +38,12 @@ export class QueueTableCell extends React.PureComponent<Props> {
       podcastTitle,
       showMoveButton,
       showRemoveButton,
+      testID,
       transparent
     } = this.props
 
     return (
-      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent}>
+      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent} testID={testID}>
         <RNView style={styles.wrapperTop}>
           <FastImage isSmall={true} key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>
@@ -49,10 +51,15 @@ export class QueueTableCell extends React.PureComponent<Props> {
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               isSecondary={true}
               numberOfLines={1}
-              style={styles.podcastTitle}>
+              style={styles.podcastTitle}
+              testID={`${testID}_podcast_title`}>
               {podcastTitle || translate('untitled podcast')}
             </Text>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.episodeTitle}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              numberOfLines={1}
+              style={styles.episodeTitle}
+              testID={`${testID}_episode_title`}>
               {episodeTitle || translate('untitled episode')}
             </Text>
             {!!episodePubDate && (
@@ -60,23 +67,37 @@ export class QueueTableCell extends React.PureComponent<Props> {
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 isSecondary={true}
                 numberOfLines={1}
-                style={styles.episodePubDate}>
+                style={styles.episodePubDate}
+                testID={`${testID}_episode_pub_date`}>
                 {readableDate(episodePubDate)}
               </Text>
             )}
           </RNView>
           {showMoveButton && <Icon isSecondary={true} name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />}
           {showRemoveButton && handleRemovePress && (
-            <Icon name='times' onPress={handleRemovePress} size={28} style={button.iconOnlyMedium} />
+            <Icon
+              name='times'
+              onPress={handleRemovePress}
+              size={28}
+              style={button.iconOnlyMedium}
+              testID={`${testID}_remove_button`}
+            />
           )}
         </RNView>
         {!hideBottomRow && (
           <RNView style={styles.wrapperBottom}>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} numberOfLines={1} style={styles.clipTitle}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              numberOfLines={1}
+              style={styles.clipTitle}
+              testID={`${testID}_bottom_text`}>
               {clipStartTime ? clipTitle || translate('untitled clip') : translate('Full Episode')}
             </Text>
             {!!clipStartTime && (
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.clipTime}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                style={styles.clipTime}
+                testID={`${testID}_clip_time`}>
                 {readableClipTime(clipStartTime, clipEndTime)}
               </Text>
             )}

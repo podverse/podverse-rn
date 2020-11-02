@@ -1,6 +1,7 @@
 import React from 'react'
 import { Text } from 'react-native'
 import { useGlobal } from 'reactn'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 
 type Props = {
@@ -11,10 +12,11 @@ type Props = {
   numberOfLines?: number
   onPress?: any
   style?: any
+  testID: string
 }
 
 export const PVText = (props: Props) => {
-  const { fontSizeLargerScale, fontSizeLargestScale, isSecondary } = props
+  const { fontSizeLargerScale, fontSizeLargestScale, isSecondary, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const [censorNSFWText] = useGlobal('censorNSFWText')
@@ -29,7 +31,7 @@ export const PVText = (props: Props) => {
   }
 
   return (
-    <Text {...props} style={textStyle}>
+    <Text {...props} style={textStyle} {...(testID ? testProps(testID) : {})}>
       {typeof props.children === 'string' ? props.children?.sanitize(censorNSFWText) : props.children}
     </Text>
   )

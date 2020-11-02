@@ -8,15 +8,16 @@ type Props = {
   hasZebraStripe?: boolean
   name?: string
   onPress?: any
+  testID: string
 }
 
 export class ProfileTableCell extends React.PureComponent<Props> {
   render() {
-    const { hasZebraStripe, name, onPress } = this.props
+    const { hasZebraStripe, name, onPress, testID } = this.props
 
     return (
       <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
-        <Text onPress={onPress} style={styles.name}>
+        <Text onPress={onPress} style={styles.name} testID={testID}>
           {name || translate('anonymous')}
         </Text>
       </View>

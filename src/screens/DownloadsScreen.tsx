@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActionSheet, Divider, DownloadTableCell, FlatList, MessageWithAction, SwipeRowBack, View } from '../components'
+import { ActionSheet, Divider, DownloadTableCell, FlatList, SwipeRowBack, View } from '../components'
 import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { isOdd, testProps } from '../lib/utility'
@@ -16,6 +16,8 @@ type State = {
   selectedItem: any
   showActionSheet: boolean
 }
+
+const testIDPrefix = 'downloads_screen'
 
 export class DownloadsScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
@@ -79,6 +81,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
         podcastImageUrl={item.podcastImageUrl}
         podcastTitle={item.podcastTitle}
         status={item.status}
+        testID={`${testIDPrefix}_download_item_${index}`}
       />
     )
   }
@@ -116,6 +119,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
             handleCancelPress={this._handleCancelPress}
             items={() => PV.ActionSheet.media.moreButtons(selectedItem, navigation, this._handleCancelPress, null)}
             showModal={showActionSheet}
+            testID={testIDPrefix}
           />
         )}
       </View>

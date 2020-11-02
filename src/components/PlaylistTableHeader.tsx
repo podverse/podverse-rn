@@ -17,6 +17,7 @@ type Props = {
   isSubscribing?: boolean
   itemCount: number
   lastUpdated: string
+  testID: string
   title: string
 }
 
@@ -32,6 +33,7 @@ export const PlaylistTableHeader = (props: Props) => {
     isSubscribing,
     itemCount,
     lastUpdated,
+    testID,
     title
   } = props
 
@@ -46,7 +48,11 @@ export const PlaylistTableHeader = (props: Props) => {
         {!isLoading && !isNotFound && (
           <View style={[styles.wrapper, core.view]}>
             <View style={styles.textWrapper}>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.title}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                numberOfLines={1}
+                style={styles.title}
+                testID={`${testID}_title`}>
                 {title}
               </Text>
               {!!createdBy && (
@@ -54,7 +60,8 @@ export const PlaylistTableHeader = (props: Props) => {
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
                   numberOfLines={1}
-                  style={styles.createdBy}>
+                  style={styles.createdBy}
+                  testID={`${testID}_created_by`}>
                   {translate('by')} {createdBy}
                 </Text>
               )}
@@ -63,16 +70,27 @@ export const PlaylistTableHeader = (props: Props) => {
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
                   numberOfLines={1}
-                  style={styles.itemCount}>
+                  style={styles.itemCount}
+                  testID={`${testID}_item_count`}>
                   {translate('items')} {itemCount}
                 </Text>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.lastUpdated}>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  isSecondary={true}
+                  style={styles.lastUpdated}
+                  testID={`${testID}_last_updated`}>
                   {readableDate(lastUpdated)}
                 </Text>
               </View>
             </View>
             {handleEditPress && (
-              <Icon name='pencil-alt' onPress={() => handleEditPress(id)} size={26} style={button.iconOnlyMedium} />
+              <Icon
+                name='pencil-alt'
+                onPress={() => handleEditPress(id)}
+                size={26}
+                style={button.iconOnlyMedium}
+                testID={`${testID}_edit`}
+              />
             )}
             {handleToggleSubscribe && (
               <SubscribeButton

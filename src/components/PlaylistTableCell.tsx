@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import { translate } from '../lib/i18n'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { ActivityIndicator, Text, View } from './'
 
@@ -10,6 +11,7 @@ type Props = {
   isSaving?: boolean
   itemCount?: number
   onPress?: any
+  testID: string
   title?: string
 }
 
@@ -21,6 +23,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
       isSaving,
       itemCount = 0,
       onPress,
+      testID,
       title = translate('untitled playlist')
     } = this.props
 
@@ -28,23 +31,35 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
     if (createdBy) wrapperTopStyles.push(styles.wrapperTopWithCreatedBy)
 
     return (
-      <TouchableWithoutFeedback onPress={onPress}>
+      <TouchableWithoutFeedback onPress={onPress} {...(testID ? testProps(testID) : {})}>
         <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
           <RNView style={wrapperTopStyles}>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.title}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              numberOfLines={1}
+              style={styles.title}
+              testID={`${testID}_title`}>
               {title}
             </Text>
             {isSaving ? (
               <ActivityIndicator styles={styles.activityIndicator} />
             ) : (
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.itemCount}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                isSecondary={true}
+                style={styles.itemCount}
+                testID={`${testID}_item_count`}>
                 {translate('items')} {itemCount}
               </Text>
             )}
           </RNView>
           {!!createdBy && (
             <RNView style={styles.wrapperBottom}>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.createdBy}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                isSecondary={true}
+                style={styles.createdBy}
+                testID={`${testID}_created_by`}>
                 {translate('by')} {createdBy}
               </Text>
             </RNView>

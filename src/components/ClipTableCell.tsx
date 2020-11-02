@@ -62,12 +62,13 @@ export class ClipTableCell extends React.PureComponent<Props> {
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
                   numberOfLines={1}
-                  style={styles.podcastTitle}>
+                  style={styles.podcastTitle}
+                  testID={`${testID}_podcast_title`}>
                   {podcastTitle}
                 </Text>
               )}
               {!!episodeTitle && PV.Fonts.fontScale.largest !== fontScaleMode && (
-                <Text numberOfLines={1} style={styles.episodeTitle}>
+                <Text numberOfLines={1} style={styles.episodeTitle} testID={`${testID}_episode_title`}>
                   {episodeTitle}
                 </Text>
               )}
@@ -76,7 +77,8 @@ export class ClipTableCell extends React.PureComponent<Props> {
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}
                   numberOfLines={1}
-                  style={styles.episodePubDate}>
+                  style={styles.episodePubDate}
+                  testID={`${testID}_episode_pub_date`}>
                   {readableDate(episodePubDate)}
                 </Text>
                 {isDownloaded && <IndicatorDownload />}
@@ -84,25 +86,37 @@ export class ClipTableCell extends React.PureComponent<Props> {
             </RNView>
           </RNView>
         </TouchableWithoutFeedback>
-        <MoreButton handleShowMore={handleMorePress} height={hideImage ? 44 : 64} isLoading={isDownloading} />
+        <MoreButton
+          handleShowMore={handleMorePress}
+          height={hideImage ? 44 : 64}
+          isLoading={isDownloading}
+          testID={testID}
+        />
       </RNView>
     )
 
     const bottomText = (
       <RNView style={styles.wrapperBottom}>
         <RNView style={styles.wrapperBottomTextWrapper}>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={4} style={styles.title}>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            numberOfLines={4}
+            style={styles.title}
+            testID={`${testID}_title`}>
             {title}
           </Text>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.sm}
             isSecondary={true}
             numberOfLines={1}
-            style={styles.clipTime}>
+            style={styles.clipTime}
+            testID={`${testID}_time`}>
             {clipTime}
           </Text>
         </RNView>
-        {!showEpisodeInfo && handleMorePress && <MoreButton handleShowMore={handleMorePress} height={44} />}
+        {!showEpisodeInfo && handleMorePress && (
+          <MoreButton handleShowMore={handleMorePress} height={44} testID={testID} />
+        )}
       </RNView>
     )
 
