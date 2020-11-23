@@ -1,3 +1,4 @@
+// tslint:disable:no-string-literal
 import linkifyHtml from 'linkifyjs/html'
 
 String.prototype.linkifyHtml = function() {
@@ -5,8 +6,8 @@ String.prototype.linkifyHtml = function() {
 }
 
 const badWordsRegexObj = require('badwords-list').object
-delete badWordsRegexObj.God
-badWordsRegexObj.dicks = 1
+delete badWordsRegexObj['God']
+badWordsRegexObj['dicks'] = 1
 const badWordsRegex = new RegExp(`\b${Object.keys(badWordsRegexObj).join('|')}\b`, 'gi')
 String.prototype.sanitize = function(nsfw: boolean) {
   return nsfw && this
