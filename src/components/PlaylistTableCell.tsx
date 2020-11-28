@@ -39,7 +39,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
               numberOfLines={1}
               style={styles.title}
               testID={`${testID}_title`}>
-              {title}
+              {title.trim()}
             </Text>
             {isSaving ? (
               <ActivityIndicator styles={styles.activityIndicator} />

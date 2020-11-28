@@ -65,7 +65,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                 }
                 style={styles.title}
                 testID={`${testID}_title`}>
-                {podcastTitle}
+                {podcastTitle.trim()}
               </Text>
             </RNView>
             {fontScaleMode !== PV.Fonts.fontScale.largest && (

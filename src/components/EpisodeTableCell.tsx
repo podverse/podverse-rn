@@ -30,11 +30,11 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       hasZebraStripe,
       hideImage,
       podcastImageUrl,
-      podcastTitle,
+      podcastTitle = '',
       testID,
       transparent
     } = this.props
-    let { description = '', title } = this.props
+    let { description = '', title = '' } = this.props
     description = removeHTMLFromString(description)
     description = decodeHTMLString(description)
 
@@ -58,7 +58,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               numberOfLines={1}
               style={styles.podcastTitle}
               testID={`${testID}_podcast_title`}>
-              {podcastTitle}
+              {podcastTitle.trim()}
             </Text>
           )}
           <Text
@@ -66,7 +66,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             numberOfLines={4}
             style={titleStyle}
             testID={`${testID}_title`}>
-            {title}
+            {title.trim()}
           </Text>
           <RNView style={styles.textWrapperBottomRow}>
             <Text
@@ -91,7 +91,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         numberOfLines={4}
         style={descriptionStyle}
         testID={`${testID}_description`}>
-        {description}
+        {description.trim()}
       </Text>
     )
 

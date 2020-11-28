@@ -28,14 +28,14 @@ export class QueueTableCell extends React.PureComponent<Props> {
     const {
       clipEndTime,
       clipStartTime,
-      clipTitle,
+      clipTitle = '',
       episodePubDate,
-      episodeTitle,
+      episodeTitle = '',
       handleRemovePress,
       hasZebraStripe,
       hideBottomRow,
       podcastImageUrl,
-      podcastTitle,
+      podcastTitle = '',
       showMoveButton,
       showRemoveButton,
       testID,
@@ -53,14 +53,14 @@ export class QueueTableCell extends React.PureComponent<Props> {
               numberOfLines={1}
               style={styles.podcastTitle}
               testID={`${testID}_podcast_title`}>
-              {podcastTitle || translate('untitled podcast')}
+              {podcastTitle.trim() || translate('untitled podcast')}
             </Text>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               numberOfLines={1}
               style={styles.episodeTitle}
               testID={`${testID}_episode_title`}>
-              {episodeTitle || translate('untitled episode')}
+              {episodeTitle.trim() || translate('untitled episode')}
             </Text>
             {!!episodePubDate && (
               <Text
@@ -91,7 +91,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
               numberOfLines={1}
               style={styles.clipTitle}
               testID={`${testID}_bottom_text`}>
-              {clipStartTime ? clipTitle || translate('untitled clip') : translate('Full Episode')}
+              {clipStartTime ? clipTitle.trim() || translate('untitled clip') : translate('Full Episode')}
             </Text>
             {!!clipStartTime && (
               <Text

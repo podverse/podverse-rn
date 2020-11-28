@@ -31,13 +31,13 @@ export class ClipTableCell extends React.PureComponent<Props> {
       endTime,
       episodeId,
       episodePubDate = '',
-      episodeTitle,
+      episodeTitle = '',
       handleMorePress,
       handleNavigationPress,
       hasZebraStripe,
       hideImage,
       podcastImageUrl,
-      podcastTitle,
+      podcastTitle = '',
       startTime,
       testID,
       title = translate('untitled clip'),
@@ -64,12 +64,12 @@ export class ClipTableCell extends React.PureComponent<Props> {
                   numberOfLines={1}
                   style={styles.podcastTitle}
                   testID={`${testID}_podcast_title`}>
-                  {podcastTitle}
+                  {podcastTitle.trim()}
                 </Text>
               )}
               {!!episodeTitle && PV.Fonts.fontScale.largest !== fontScaleMode && (
                 <Text numberOfLines={1} style={styles.episodeTitle} testID={`${testID}_episode_title`}>
-                  {episodeTitle}
+                  {episodeTitle.trim()}
                 </Text>
               )}
               <RNView style={styles.textWrapperBottomRow}>
