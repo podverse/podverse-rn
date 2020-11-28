@@ -8,7 +8,9 @@ String.prototype.linkifyHtml = function() {
 const badWordsRegexObj = require('badwords-list').object
 delete badWordsRegexObj['God']
 badWordsRegexObj['dicks'] = 1
-const badWordsRegex = new RegExp(`\b${Object.keys(badWordsRegexObj).join('|')}\b`, 'gi')
+const badWordsRegexString = `\\b(${Object.keys(badWordsRegexObj).join('|')})\\b`
+const badWordsRegex = new RegExp(badWordsRegexString, 'gi')
+
 String.prototype.sanitize = function(nsfw: boolean) {
   return nsfw && this
     ? this.replace(badWordsRegex, function(a) {
