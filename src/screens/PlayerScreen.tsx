@@ -521,7 +521,8 @@ export class PlayerScreen extends React.Component<Props, State> {
           hasZebraStripe={isOdd(index)}
           hideImage={true}
           pubDate={item.pubDate}
-          title={item.title || translate('untitled episode')}
+          testID={`${testIDPrefix}_episode_item_${index}`}
+          {...(item.title ? { title: item.title } : {})}
           transparent={true}
         />
       )
@@ -547,7 +548,8 @@ export class PlayerScreen extends React.Component<Props, State> {
           handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, podcast))}
           hideImage={true}
           startTime={item.startTime}
-          title={item.title || translate('untitled clip')}
+          testID={`${testIDPrefix}_clip_item_${index}`}
+          {...(item.title ? { title: item.title } : {})}
           transparent={true}
         />
       ) : (
@@ -726,7 +728,8 @@ export class PlayerScreen extends React.Component<Props, State> {
         ...(queryFrom === PV.Filters._fromThisPodcastKey && nowPlayingItem
           ? { podcastId: nowPlayingItem.podcastId }
           : {}),
-        includeEpisode: queryFrom === PV.Filters._fromThisPodcastKey
+        includeEpisode: queryFrom === PV.Filters._fromThisPodcastKey,
+        allowUntitled: true
       })
 
       return results

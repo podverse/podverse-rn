@@ -268,7 +268,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         hideImage={true}
         startTime={item.startTime}
         testID={`${testIDPrefix}_clip_item_${index}`}
-        title={item.title}
+        {...(item.title ? { title: item.title } : {})}
       />
     )
   }
@@ -445,7 +445,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
           sort: filterKey,
           page: queryOptions.queryPage,
           episodeId: episode.id,
-          ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          allowUntitled: true
         })
 
         newState.flatListData = [...flatListData, ...results[0]]
@@ -460,7 +461,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
           sort: querySort,
           page: queryOptions.queryPage,
           episodeId: episode.id,
-          ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          allowUntitled: true
         })
 
         newState.flatListData = [...flatListData, ...results[0]]

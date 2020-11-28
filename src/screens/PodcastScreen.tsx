@@ -402,13 +402,13 @@ export class PodcastScreen extends React.Component<Props, State> {
           endTime={item.endTime}
           episodeId={item.episode.id}
           episodePubDate={readableDate(item.episode.pubDate)}
-          episodeTitle={item.episode.title}
+          {...(item.episodeTitle ? { episodeTitle: item.episode.title } : {})}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           hasZebraStripe={isOdd(index)}
           hideImage={true}
           startTime={item.startTime}
           testID={`${testIDPrefix}_clip_item_${index}`}
-          title={item.title}
+          {...(item.title ? { title: item.title } : {})}
         />
       ) : (
         <></>
@@ -736,7 +736,8 @@ export class PodcastScreen extends React.Component<Props, State> {
       page,
       podcastId,
       includeEpisode: true,
-      ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+      ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+      allowUntitled: true
     })
     return results
   }

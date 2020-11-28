@@ -142,14 +142,14 @@ export class PlaylistScreen extends React.Component<Props, State> {
           endTime={item.endTime}
           episodeId={item.episode.id}
           episodePubDate={item.episode.pubDate}
-          episodeTitle={item.episode.title}
+          {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           hasZebraStripe={isOdd(index)}
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
-          podcastTitle={item.episode.podcast.title}
+          {...(item.episode.podcast.title ? { podcastTitle: item.episode.podcast.title } : {})}
           startTime={item.startTime}
           testID={`${testIDPrefix}_clip_item_${index}`}
-          title={item.title}
+          {...(item.title ? { title: item.title } : {})}
         />
       ) : (
         <></>

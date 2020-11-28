@@ -246,15 +246,15 @@ export class ClipsScreen extends React.Component<Props, State> {
         endTime={item.endTime}
         episodeId={item.episode.id}
         episodePubDate={item.episode.pubDate}
-        episodeTitle={episodeTitle}
+        {...(episodeTitle ? { episodeTitle } : {})}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
         handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, null))}
         hasZebraStripe={isOdd(index)}
         podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
-        podcastTitle={podcastTitle}
+        {...(podcastTitle ? { podcastTitle } : {})}
         startTime={item.startTime}
         testID={`${testIDPrefix}_clip_item_${index}`}
-        title={title || translate('untitled clip')}
+        {...(title ? { title } : {})}
       />
     ) : (
       <></>
