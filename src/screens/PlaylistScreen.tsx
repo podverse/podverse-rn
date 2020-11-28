@@ -147,6 +147,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           hasZebraStripe={isOdd(index)}
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           {...(item.episode.podcast.title ? { podcastTitle: item.episode.podcast.title } : {})}
+          showPodcastTitle={true}
           startTime={item.startTime}
           testID={`${testIDPrefix}_clip_item_${index}`}
           {...(item.title ? { title: item.title } : {})}
@@ -166,10 +167,11 @@ export class PlaylistScreen extends React.Component<Props, State> {
           hasZebraStripe={isOdd(index)}
           id={item.id}
           podcastImageUrl={(item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl)) || ''}
-          podcastTitle={(item.podcast && item.podcast.title) || ''}
+          {...(item.podcast && item.podcast.title ? { podcastTitle: item.podcast.title } : {})}
           pubDate={item.pubDate}
+          showPodcastTitle={true}
           testID={`${testIDPrefix}_episode_item_${index}`}
-          title={item.title}
+          {...(item.title ? { title: item.title } : {})}
         />
       )
     }

@@ -15,6 +15,7 @@ type Props = {
   podcastImageUrl?: string
   podcastTitle?: string
   pubDate?: string
+  showPodcastTitle?: boolean
   testID: string
   title?: string
   transparent?: boolean
@@ -24,13 +25,14 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
   render() {
     const {
       id,
-      pubDate = '',
       handleMorePress,
       handleNavigationPress,
       hasZebraStripe,
       hideImage,
       podcastImageUrl,
-      podcastTitle = '',
+      podcastTitle = translate('untitled podcast'),
+      pubDate = '',
+      showPodcastTitle,
       testID,
       transparent
     } = this.props
@@ -51,7 +53,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <RNView style={styles.innerTopView}>
         {!!podcastImageUrl && <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />}
         <RNView style={styles.textWrapper}>
-          {!!podcastTitle && (
+          {showPodcastTitle && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               isSecondary={true}

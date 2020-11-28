@@ -18,6 +18,7 @@ type Props = {
   hideImage?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
+  showPodcastTitle?: boolean
   startTime: number
   testID: string
   title?: string
@@ -31,13 +32,14 @@ export class ClipTableCell extends React.PureComponent<Props> {
       endTime,
       episodeId,
       episodePubDate = '',
-      episodeTitle = '',
+      episodeTitle = translate('untitled episode'),
       handleMorePress,
       handleNavigationPress,
       hasZebraStripe,
       hideImage,
       podcastImageUrl,
-      podcastTitle = '',
+      podcastTitle = translate('untitled podcast'),
+      showPodcastTitle,
       startTime,
       testID,
       title = translate('untitled clip'),
@@ -57,7 +59,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
           <RNView style={{ flex: 1, flexDirection: 'row' }}>
             {!!podcastImageUrl && <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />}
             <RNView style={styles.textWrapper}>
-              {!!podcastTitle && (
+              {showPodcastTitle && (
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary={true}

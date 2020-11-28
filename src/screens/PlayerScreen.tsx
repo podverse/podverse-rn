@@ -609,13 +609,15 @@ export class PlayerScreen extends React.Component<Props, State> {
               handleClosePress={this._toggleShowFullClipInfo}
               hideDynamicAdsWarning={nowPlayingItem.podcastHideDynamicAdsWarning}
               isLoading={isLoading}
+              isOfficialChapter={mediaRef.isOfficialChapter}
+              isOfficialSoundBite={mediaRef.isOfficialSoundBite}
               isPublic={mediaRef.isPublic}
               navigation={navigation}
               {...(mediaRef.owner ? { ownerId: mediaRef.owner.id } : {})}
               {...(mediaRef.owner ? { ownerIsPublic: mediaRef.owner.isPublic } : {})}
               {...(mediaRef.owner ? { ownerName: mediaRef.owner.name } : {})}
               startTime={mediaRef.startTime}
-              title={mediaRef.title}
+              {...(mediaRef.title ? { title: mediaRef.title } : {})}
             />
           )}
           {!showFullClipInfo && (

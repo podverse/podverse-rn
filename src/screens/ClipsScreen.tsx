@@ -237,9 +237,9 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _renderClipItem = ({ item, index }) => {
-    const title = item?.title || ''
-    const episodeTitle = item?.episode?.title || ''
-    const podcastTitle = item?.episode?.podcast?.title || ''
+    const title = item?.title?.trim() || ''
+    const episodeTitle = item?.episode?.title?.trim() || ''
+    const podcastTitle = item?.episode?.podcast?.title?.trim() || ''
 
     return item && item.episode && item.episode.id ? (
       <ClipTableCell
@@ -252,6 +252,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         hasZebraStripe={isOdd(index)}
         podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
         {...(podcastTitle ? { podcastTitle } : {})}
+        showPodcastTitle={true}
         startTime={item.startTime}
         testID={`${testIDPrefix}_clip_item_${index}`}
         {...(title ? { title } : {})}
