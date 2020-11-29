@@ -78,11 +78,12 @@ export const PVFlatList = (props: Props) => {
         <MessageWithAction
           bottomActionHandler={handleNoResultsBottomAction}
           bottomActionText={noResultsBottomActionText}
+          message={noResultsMessage}
           middleActionHandler={handleNoResultsMiddleAction}
           middleActionText={noResultsMiddleActionText}
           topActionHandler={handleNoResultsTopAction}
           topActionText={noResultsTopActionText}
-          message={noResultsMessage}
+          transparent={transparent}
         />
       )}
       {showNoInternetConnectionMessage && <MessageWithAction message={translate('No internet connection')} />}

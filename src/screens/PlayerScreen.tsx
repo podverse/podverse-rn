@@ -43,7 +43,7 @@ import {
   testProps
 } from '../lib/utility'
 import { PV } from '../resources'
-import { getEpisode, getEpisodes } from '../services/episode'
+import { getEpisode, getEpisodes, retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getAddByRSSPodcastLocally } from '../services/parser'
@@ -272,7 +272,11 @@ export class PlayerScreen extends React.Component<Props, State> {
         }
       },
       async () => {
-        if (selectedKey === PV.Filters._clipsKey || selectedKey === PV.Filters._episodesKey) {
+        if (
+          selectedKey === PV.Filters._chaptersKey ||
+          selectedKey === PV.Filters._clipsKey ||
+          selectedKey === PV.Filters._episodesKey
+        ) {
           const newState = await this._queryData()
           setGlobal({
             screenPlayer: {
@@ -547,6 +551,8 @@ export class PlayerScreen extends React.Component<Props, State> {
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, podcast))}
           hideImage={true}
+          showEpisodeInfo={queryFrom !== PV.Filters._fromThisEpisodeKey}
+          showPodcastTitle={false}
           startTime={item.startTime}
           testID={`${testIDPrefix}_clip_item_${index}`}
           {...(item.title ? { title: item.title } : {})}
@@ -592,8 +598,12 @@ export class PlayerScreen extends React.Component<Props, State> {
       episode.description = replaceLinebreaksWithBrTags(episode.description)
     }
 
-    const noResultsMessage =
-      viewType === PV.Filters._clipsKey ? translate('No clips found') : translate('No episodes found')
+    let noResultsMessage = translate('No episodes found')
+    if (viewType === PV.Filters._chaptersKey) {
+      noResultsMessage = translate('No chapters found')
+    } else if (viewType === PV.Filters._clipsKey) {
+      noResultsMessage = translate('No clips found')
+    }
 
     const showOfflineMessage =
       offlineModeEnabled && queryFrom !== PV.Filters._showNotesKey && queryFrom !== PV.Filters._titleKey
@@ -713,6 +723,17 @@ export class PlayerScreen extends React.Component<Props, State> {
     )
   }
 
+  _queryChapters = async () => {
+    const { player } = this.global
+    const { nowPlayingItem } = player
+
+    if (nowPlayingItem && !nowPlayingItem.addByRSSPodcastFeedUrl) {
+      return retrieveLatestChaptersForEpisodeId(nowPlayingItem.episodeId)
+    } else {
+      return [[], 0]
+    }
+  }
+
   _queryClips = async () => {
     const { player, screenPlayer } = this.global
     const { nowPlayingItem } = player
@@ -798,6 +819,11 @@ export class PlayerScreen extends React.Component<Props, State> {
         newState.flatListDataTotalCount = results[1]
       } else if (viewType === PV.Filters._clipsKey) {
         const results = await this._queryClips()
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = newState.flatListData.length >= results[1]
+        newState.flatListDataTotalCount = results[1]
+      } else if (viewType === PV.Filters._chaptersKey) {
+        const results = await this._queryChapters()
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
