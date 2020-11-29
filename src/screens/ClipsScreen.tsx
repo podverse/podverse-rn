@@ -237,24 +237,26 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _renderClipItem = ({ item, index }) => {
-    const title = item?.title || ''
-    const episodeTitle = item?.episode?.title || ''
-    const podcastTitle = item?.episode?.podcast?.title || ''
+    const title = item?.title?.trim() || ''
+    const episodeTitle = item?.episode?.title?.trim() || ''
+    const podcastTitle = item?.episode?.podcast?.title?.trim() || ''
 
     return item && item.episode && item.episode.id ? (
       <ClipTableCell
         endTime={item.endTime}
         episodeId={item.episode.id}
-        episodePubDate={item.episode.pubDate}
-        episodeTitle={episodeTitle}
+        {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
+        {...(episodeTitle ? { episodeTitle } : {})}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
         handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, null))}
         hasZebraStripe={isOdd(index)}
         podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
-        podcastTitle={podcastTitle}
+        {...(podcastTitle ? { podcastTitle } : {})}
+        showEpisodeInfo={true}
+        showPodcastTitle={true}
         startTime={item.startTime}
         testID={`${testIDPrefix}_clip_item_${index}`}
-        title={title || translate('untitled clip')}
+        {...(title ? { title } : {})}
       />
     ) : (
       <></>

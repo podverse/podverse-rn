@@ -18,6 +18,8 @@ type Props = {
   hideImage?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
+  showEpisodeInfo?: boolean
+  showPodcastTitle?: boolean
   startTime: number
   testID: string
   title?: string
@@ -31,13 +33,15 @@ export class ClipTableCell extends React.PureComponent<Props> {
       endTime,
       episodeId,
       episodePubDate = '',
-      episodeTitle,
+      episodeTitle = translate('untitled episode'),
       handleMorePress,
       handleNavigationPress,
       hasZebraStripe,
       hideImage,
       podcastImageUrl,
-      podcastTitle,
+      podcastTitle = translate('untitled podcast'),
+      showEpisodeInfo,
+      showPodcastTitle,
       startTime,
       testID,
       title = translate('untitled clip'),
@@ -47,52 +51,55 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const { downloadedEpisodeIds, downloadsActive, fontScaleMode } = this.global
     const isDownloading = downloadsActive[episodeId]
     const isDownloaded = downloadedEpisodeIds[episodeId]
-    const showEpisodeInfo = !!episodePubDate || !!episodeTitle
 
     const innerTopView = (
-      <RNView style={styles.innerTopView}>
-        <TouchableWithoutFeedback
-          onPress={handleNavigationPress}
-          {...(testID ? testProps(`${testID}_top_view_nav`) : {})}>
-          <RNView style={{ flex: 1, flexDirection: 'row' }}>
-            {!!podcastImageUrl && <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />}
-            <RNView style={styles.textWrapper}>
-              {!!podcastTitle && (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  isSecondary={true}
-                  numberOfLines={1}
-                  style={styles.podcastTitle}
-                  testID={`${testID}_podcast_title`}>
-                  {podcastTitle}
-                </Text>
-              )}
-              {!!episodeTitle && PV.Fonts.fontScale.largest !== fontScaleMode && (
-                <Text numberOfLines={1} style={styles.episodeTitle} testID={`${testID}_episode_title`}>
-                  {episodeTitle}
-                </Text>
-              )}
-              <RNView style={styles.textWrapperBottomRow}>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  isSecondary={true}
-                  numberOfLines={1}
-                  style={styles.episodePubDate}
-                  testID={`${testID}_episode_pub_date`}>
-                  {readableDate(episodePubDate)}
-                </Text>
-                {isDownloaded && <IndicatorDownload />}
+      <React.Fragment>
+        {(showEpisodeInfo || showPodcastTitle) && (
+          <RNView style={styles.innerTopView}>
+            <TouchableWithoutFeedback
+              onPress={handleNavigationPress}
+              {...(testID ? testProps(`${testID}_top_view_nav`) : {})}>
+              <RNView style={{ flex: 1, flexDirection: 'row' }}>
+                {!!podcastImageUrl && <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />}
+                <RNView style={styles.textWrapper}>
+                  {showPodcastTitle && podcastTitle && (
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                      isSecondary={true}
+                      numberOfLines={1}
+                      style={styles.podcastTitle}
+                      testID={`${testID}_podcast_title`}>
+                      {podcastTitle.trim()}
+                    </Text>
+                  )}
+                  {PV.Fonts.fontScale.largest !== fontScaleMode && episodeTitle && (
+                    <Text numberOfLines={1} style={styles.episodeTitle} testID={`${testID}_episode_title`}>
+                      {episodeTitle.trim()}
+                    </Text>
+                  )}
+                  <RNView style={styles.textWrapperBottomRow}>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                      isSecondary={true}
+                      numberOfLines={1}
+                      style={styles.episodePubDate}
+                      testID={`${testID}_episode_pub_date`}>
+                      {readableDate(episodePubDate)}
+                    </Text>
+                    {isDownloaded && <IndicatorDownload />}
+                  </RNView>
+                </RNView>
               </RNView>
-            </RNView>
+            </TouchableWithoutFeedback>
+            <MoreButton
+              handleShowMore={handleMorePress}
+              height={hideImage ? 44 : 64}
+              isLoading={isDownloading}
+              testID={testID}
+            />
           </RNView>
-        </TouchableWithoutFeedback>
-        <MoreButton
-          handleShowMore={handleMorePress}
-          height={hideImage ? 44 : 64}
-          isLoading={isDownloading}
-          testID={testID}
-        />
-      </RNView>
+        )}
+      </React.Fragment>
     )
 
     const bottomText = (
@@ -122,7 +129,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
     return (
       <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent}>
-        {!!showEpisodeInfo && <RNView style={styles.wrapperTop}>{innerTopView}</RNView>}
+        {showEpisodeInfo && <RNView style={styles.wrapperTop}>{innerTopView}</RNView>}
         {handleNavigationPress ? (
           <TouchableWithoutFeedback
             onPress={handleNavigationPress}

@@ -463,7 +463,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           })
         }
         podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
-        podcastTitle={item.title}
+        {...(item.title ? { podcastTitle: item.title } : {})}
         showAutoDownload={true}
         showDownloadCount={true}
         testID={`${testIDPrefix}_podcast_item_${index}`}

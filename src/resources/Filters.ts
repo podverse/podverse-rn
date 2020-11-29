@@ -23,6 +23,7 @@ export const Filters: IFilters = {
   _podcastsKey: 'podcasts',
   _episodesKey: 'episodes',
   _clipsKey: 'clips',
+  _chaptersKey: 'chapters',
   _playlistsKey: 'playlists',
   _aboutPodcastKey: 'about-podcast',
   _showNotesKey: 'show-notes',

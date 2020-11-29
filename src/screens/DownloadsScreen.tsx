@@ -74,12 +74,12 @@ export class DownloadsScreen extends React.Component<Props, State> {
         bytesTotal={item.bytesTotal}
         bytesWritten={item.bytesWritten}
         completed={item.completed}
-        episodeTitle={item.episodeTitle}
+        {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
         hasZebraStripe={isOdd(index)}
         onPress={() => this._handleItemPress(item)}
         percent={item.percent}
         podcastImageUrl={item.podcastImageUrl}
-        podcastTitle={item.podcastTitle}
+        {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
         status={item.status}
         testID={`${testIDPrefix}_download_item_${index}`}
       />

@@ -173,7 +173,7 @@ export class SearchScreen extends React.Component<Props, State> {
       lastEpisodePubDate={item.lastEpisodePubDate}
       onPress={() => this._handleMorePress(item)}
       podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
-      podcastTitle={item.title}
+      {...(item.title ? { podcastTitle: item.title } : {})}
       testID={`${testIDPrefix}_podcast_item_${index}`}
     />
   )

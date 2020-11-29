@@ -281,10 +281,11 @@ export class EpisodesScreen extends React.Component<Props, State> {
           item.podcast_imageUrl ||
           (item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl))
         }
-        podcastTitle={podcastTitle}
+        {...(podcastTitle ? { podcastTitle } : {})}
         pubDate={item.pubDate}
+        showPodcastTitle={true}
         testID={`${testIDPrefix}_episode_item_${index}`}
-        title={title}
+        {...(title ? { title } : {})}
       />
     )
   }

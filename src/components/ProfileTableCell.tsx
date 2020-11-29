@@ -13,12 +13,12 @@ type Props = {
 
 export class ProfileTableCell extends React.PureComponent<Props> {
   render() {
-    const { hasZebraStripe, name, onPress, testID } = this.props
+    const { hasZebraStripe, name = '', onPress, testID } = this.props
 
     return (
       <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
         <Text onPress={onPress} style={styles.name} testID={testID}>
-          {name || translate('anonymous')}
+          {name.trim() || translate('anonymous')}
         </Text>
       </View>
     )
