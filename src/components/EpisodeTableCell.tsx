@@ -53,7 +53,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <RNView style={styles.innerTopView}>
         {!!podcastImageUrl && <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />}
         <RNView style={styles.textWrapper}>
-          {showPodcastTitle && (
+          {showPodcastTitle && podcastTitle && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               isSecondary={true}

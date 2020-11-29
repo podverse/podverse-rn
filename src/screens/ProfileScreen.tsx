@@ -411,7 +411,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           lastEpisodePubDate={item.lastEpisodePubDate}
           onPress={() => this._handlePodcastPress(item)}
           podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
-          podcastTitle={item.title}
+          {...(item.title ? { podcastTitle: item.title } : {})}
           testID={`${testIDPrefix}_podcast_item_${index}`}
         />
       )
@@ -420,7 +420,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         <ClipTableCell
           endTime={item.endTime}
           episodeId={item.episode.id}
-          episodePubDate={readableDate(item.episode.pubDate)}
+          {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
           {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, null))}

@@ -245,7 +245,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       <ClipTableCell
         endTime={item.endTime}
         episodeId={item.episode.id}
-        episodePubDate={item.episode.pubDate}
+        {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
         {...(episodeTitle ? { episodeTitle } : {})}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
         handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, null))}
