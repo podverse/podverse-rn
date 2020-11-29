@@ -26,6 +26,7 @@ type Props = {
   noResultsBottomActionText?: string
   noResultsMessage?: string
   noResultsMiddleActionText?: string
+  noResultsSubMessage?: string
   noResultsTopActionText?: string
   onEndReached?: any
   onEndReachedThreshold?: number
@@ -56,6 +57,7 @@ export const PVFlatList = (props: Props) => {
     noResultsBottomActionText,
     noResultsMessage,
     noResultsMiddleActionText,
+    noResultsSubMessage,
     noResultsTopActionText,
     onEndReached,
     onEndReachedThreshold = 0.9,
@@ -81,6 +83,7 @@ export const PVFlatList = (props: Props) => {
           message={noResultsMessage}
           middleActionHandler={handleNoResultsMiddleAction}
           middleActionText={noResultsMiddleActionText}
+          subMessage={noResultsSubMessage}
           topActionHandler={handleNoResultsTopAction}
           topActionText={noResultsTopActionText}
           transparent={transparent}

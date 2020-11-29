@@ -358,8 +358,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     const showOfflineMessage = offlineModeEnabled && viewType === PV.Filters._clipsKey
 
-    const noResultsMessage =
-      viewType === PV.Filters._chaptersKey ? translate('No chapters found') : translate('No clips found')
+    let noResultsMessage = translate('No clips found')
+    let noResultsSubMessage = ''
+    if (viewType === PV.Filters._chaptersKey) {
+      noResultsMessage = translate('No chapters found')
+      noResultsSubMessage = translate('Chapters are created by the podcaster')
+    }
 
     return (
       <View style={styles.view} {...testProps('episode_screen_view')}>

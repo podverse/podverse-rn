@@ -599,8 +599,10 @@ export class PlayerScreen extends React.Component<Props, State> {
     }
 
     let noResultsMessage = translate('No episodes found')
+    let noResultsSubMessage = ''
     if (viewType === PV.Filters._chaptersKey) {
       noResultsMessage = translate('No chapters found')
+      noResultsSubMessage = translate('Chapters are created by the podcaster')
     } else if (viewType === PV.Filters._clipsKey) {
       noResultsMessage = translate('No clips found')
     }
@@ -676,6 +678,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                     ItemSeparatorComponent={this._ItemSeparatorComponent}
                     keyExtractor={(item: any) => item.id}
                     noResultsMessage={noResultsMessage}
+                    noResultsSubMessage={noResultsSubMessage}
                     onEndReached={this._onEndReached}
                     renderItem={this._renderItem}
                     showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
