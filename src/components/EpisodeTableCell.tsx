@@ -63,13 +63,15 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               {podcastTitle.trim()}
             </Text>
           )}
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            numberOfLines={4}
-            style={titleStyle}
-            testID={`${testID}_title`}>
-            {title.trim()}
-          </Text>
+          {title && (
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              numberOfLines={4}
+              style={titleStyle}
+              testID={`${testID}_title`}>
+              {title.trim()}
+            </Text>
+          )}
           <RNView style={styles.textWrapperBottomRow}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
