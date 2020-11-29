@@ -252,6 +252,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         hasZebraStripe={isOdd(index)}
         podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
         {...(podcastTitle ? { podcastTitle } : {})}
+        showEpisodeInfo={true}
         showPodcastTitle={true}
         startTime={item.startTime}
         testID={`${testIDPrefix}_clip_item_${index}`}
