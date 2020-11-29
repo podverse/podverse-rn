@@ -427,6 +427,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           hasZebraStripe={isOdd(index)}
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           {...(item.episode.podcast.title ? { podcastTitle: item.episode.podcast.title } : {})}
+          showEpisodeInfo={true}
           showPodcastTitle={true}
           startTime={item.startTime}
           testID={`${testIDPrefix}_clip_item_${index}`}

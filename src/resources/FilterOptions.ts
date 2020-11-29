@@ -20,6 +20,7 @@ const {
   _podcastsKey,
   _episodesKey,
   _clipsKey,
+  _chaptersKey,
   _playlistsKey,
   _aboutPodcastKey,
   _showNotesKey,
@@ -74,6 +75,10 @@ const allFilterTypeItems = [
   {
     label: 'Episodes',
     value: _episodesKey
+  },
+  {
+    label: 'Chapters',
+    value: _chaptersKey
   },
   {
     label: 'Clips',
@@ -175,11 +180,11 @@ export const FilterOptions = {
       hideIfNotLoggedIn: [_myClipsKey]
     },
     EpisodeScreen: {
-      type: [_clipsKey, _showNotesKey, _titleKey],
+      type: [_chaptersKey, _clipsKey, _showNotesKey, _titleKey],
       addByPodcastRSSFeedURLType: [_showNotesKey, _titleKey],
       sort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey],
       sublist: [],
-      hideSort: [_showNotesKey, _titleKey]
+      hideSort: [_chaptersKey, _showNotesKey, _titleKey]
     },
     EpisodesScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
@@ -188,11 +193,11 @@ export const FilterOptions = {
       hideSort: []
     },
     PlayerScreen: {
-      type: [_episodesKey, _clipsKey, _showNotesKey, _titleKey],
-      addByPodcastRSSFeedURLType: [_episodesKey, _showNotesKey, _titleKey],
+      type: [_chaptersKey, _clipsKey, _showNotesKey, _titleKey],
+      addByPodcastRSSFeedURLType: [_showNotesKey, _titleKey],
       sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
       sublist: fromItems,
-      hideSort: [_showNotesKey, _titleKey]
+      hideSort: [_chaptersKey, _showNotesKey, _titleKey]
     },
     PlaylistsScreen: {
       type: [_myPlaylistsKey, _subscribedKey],

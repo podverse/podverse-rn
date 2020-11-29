@@ -406,6 +406,8 @@ export class PodcastScreen extends React.Component<Props, State> {
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           hasZebraStripe={isOdd(index)}
           hideImage={true}
+          showEpisodeInfo={true}
+          showPodcastTitle={false}
           startTime={item.startTime}
           testID={`${testIDPrefix}_clip_item_${index}`}
           {...(item.title ? { title: item.title } : {})}
