@@ -25,6 +25,13 @@ type Props = {
   testID: string
 }
 
+const filterAddByRSSRightItems = (screenName: string, isAddByRSSPodcastFeedUrl: boolean) =>
+  PV.FilterOptions.sortItems.filter((sortKey: any) => {
+    return isAddByRSSPodcastFeedUrl
+      ? PV.FilterOptions.screenFilters[screenName].addByPodcastRSSFeedURLSort.includes(sortKey.value)
+      : PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
+  })
+
 export const TableSectionSelectors = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
@@ -66,9 +73,7 @@ export const TableSectionSelectors = (props: Props) => {
         })
       }
 
-      rightItems = PV.FilterOptions.sortItems.filter((sortKey: any) => {
-        return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
-      })
+      rightItems = filterAddByRSSRightItems(screenName, !!isAddByRSSPodcastFeedUrl)
     } else {
       // Bottom bar
       const newleftItems = PV.FilterOptions.screenFilters[screenName].sublist
@@ -117,9 +122,7 @@ export const TableSectionSelectors = (props: Props) => {
     const screen = PV.FilterOptions.screenFilters[screenName]
     if (!screen.hideSort.includes(selectedLeftItemKey)) {
       if (!isBottomBar) {
-        rightItems = PV.FilterOptions.sortItems.filter((sortKey: any) => {
-          return PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
-        })
+        rightItems = filterAddByRSSRightItems(screenName, !!isAddByRSSPodcastFeedUrl)
 
         if (screen.includeAlphabetical && screen.includeAlphabetical.includes(selectedLeftItemKey)) {
           rightItems.unshift(PV.FilterOptions.items.sortAlphabeticalItem)

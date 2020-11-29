@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@babel/helper-validator-identifier": "7.10.4",
+    "@podverse/podcast-feed-parser": "^1.0.11",
     "@react-native-community/async-storage": "1.12.0",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/netinfo": "4.7.0",
@@ -78,7 +79,6 @@
     "react-native-picker-select": "6.6.0",
     "react-native-reanimated": "1.13.1",
     "react-native-render-html": "4.2.4",
-    "react-native-rss-parser": "1.4.0",
     "react-native-safe-area-context": "3.1.8",
     "react-native-safe-area-view": "^2.0.0",
     "react-native-screens": "2.11.0",
@@ -95,6 +95,8 @@
     "react-navigation-stack": "1.7.3",
     "react-navigation-tabs": "1.2.0",
     "reactn": "2.2.7",
+    "stream": "^0.0.2",
+    "timers": "^0.1.1",
     "validator": "12.2.0",
     "wd": "1.13.0"
   },
