@@ -1,14 +1,14 @@
+// tslint:disable:no-string-literal
 import linkifyHtml from 'linkifyjs/html'
 
 String.prototype.linkifyHtml = function() {
   return this ? linkifyHtml(this) : ''
 }
 
-let badWordsRegexString = require('badwords-list').regex.toString()
-// replace double first character
-badWordsRegexString = badWordsRegexString.replace('/\\b', '\\b')
-// append additional words to the blacklist here
-badWordsRegexString = badWordsRegexString.replace(')\\b/gi', '|dicks)\\b')
+const badWordsRegexObj = require('badwords-list').object
+delete badWordsRegexObj['God']
+badWordsRegexObj['dicks'] = 1
+const badWordsRegexString = `\\b(${Object.keys(badWordsRegexObj).join('|')})\\b`
 const badWordsRegex = new RegExp(badWordsRegexString, 'gi')
 
 String.prototype.sanitize = function(nsfw: boolean) {

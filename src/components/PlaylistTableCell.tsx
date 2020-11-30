@@ -34,13 +34,15 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
       <TouchableWithoutFeedback onPress={onPress} {...(testID ? testProps(testID) : {})}>
         <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
           <RNView style={wrapperTopStyles}>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              numberOfLines={1}
-              style={styles.title}
-              testID={`${testID}_title`}>
-              {title}
-            </Text>
+            {title && (
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                numberOfLines={1}
+                style={styles.title}
+                testID={`${testID}_title`}>
+                {title.trim()}
+              </Text>
+            )}
             {isSaving ? (
               <ActivityIndicator styles={styles.activityIndicator} />
             ) : (

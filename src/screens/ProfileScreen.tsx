@@ -411,7 +411,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           lastEpisodePubDate={item.lastEpisodePubDate}
           onPress={() => this._handlePodcastPress(item)}
           podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
-          podcastTitle={item.title}
+          {...(item.title ? { podcastTitle: item.title } : {})}
           testID={`${testIDPrefix}_podcast_item_${index}`}
         />
       )
@@ -420,16 +420,18 @@ export class ProfileScreen extends React.Component<Props, State> {
         <ClipTableCell
           endTime={item.endTime}
           episodeId={item.episode.id}
-          episodePubDate={readableDate(item.episode.pubDate)}
-          episodeTitle={item.episode.title}
+          {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
+          {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, null))}
           hasZebraStripe={isOdd(index)}
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
-          podcastTitle={item.episode.podcast.title}
+          {...(item.episode.podcast.title ? { podcastTitle: item.episode.podcast.title } : {})}
+          showEpisodeInfo={true}
+          showPodcastTitle={true}
           startTime={item.startTime}
           testID={`${testIDPrefix}_clip_item_${index}`}
-          title={item.title}
+          {...(item.title ? { title: item.title } : {})}
         />
       ) : (
         <></>

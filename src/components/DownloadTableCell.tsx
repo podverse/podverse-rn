@@ -11,12 +11,12 @@ type Props = {
   bytesTotal: string
   bytesWritten: string
   completed?: boolean
-  episodeTitle: string
+  episodeTitle?: string
   hasZebraStripe?: boolean
   onPress?: any
   percent: number
   podcastImageUrl?: string
-  podcastTitle: string
+  podcastTitle?: string
   status?: string
   testID: string
 }
@@ -45,21 +45,25 @@ export class DownloadTableCell extends React.PureComponent<Props> {
           <FastImage source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>
             <RNView style={styles.textWrapperTop}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                numberOfLines={1}
-                style={styles.episodeTitle}
-                testID={`${testID}_episode_title`}>
-                {episodeTitle}
-              </Text>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                isSecondary={true}
-                numberOfLines={1}
-                style={styles.podcastTitle}
-                testID={`${testID}_podcast_title`}>
-                {podcastTitle}
-              </Text>
+              {episodeTitle && (
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  numberOfLines={1}
+                  style={styles.episodeTitle}
+                  testID={`${testID}_episode_title`}>
+                  {episodeTitle.trim()}
+                </Text>
+              )}
+              {podcastTitle && (
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  isSecondary={true}
+                  numberOfLines={1}
+                  style={styles.podcastTitle}
+                  testID={`${testID}_podcast_title`}>
+                  {podcastTitle.trim()}
+                </Text>
+              )}
             </RNView>
             <RNView style={styles.textWrapperBottom}>
               <Slider

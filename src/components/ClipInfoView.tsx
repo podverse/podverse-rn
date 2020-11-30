@@ -13,6 +13,8 @@ type Props = {
   handleClosePress: any
   hideDynamicAdsWarning?: boolean
   isLoading?: boolean
+  isOfficialChapter?: boolean
+  isOfficialSoundBite?: boolean
   isPublic?: boolean
   navigation: any
   ownerId?: string
@@ -59,11 +61,13 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
       handleClosePress,
       hideDynamicAdsWarning,
       isLoading,
+      isOfficialChapter,
+      isOfficialSoundBite,
       ownerIsPublic,
       ownerId,
       ownerName = translate('anonymous'),
       startTime,
-      title
+      title = translate('untitled clip')
     } = this.props
     const { session } = this.global
     const userId = session.userInfo.id
@@ -96,23 +100,25 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                 )}
               </View>
               <View style={styles.bottomTextWrapper}>
-                <View style={core.row}>
-                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.inlineText}>
-                    By:{' '}
-                  </Text>
-                  {ownerIsPublic ? (
-                    <TextLink
-                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                      onPress={this._navToProfileScreen}
-                      style={styles.link}>
-                      {ownerName || translate('anonymous')}
-                    </TextLink>
-                  ) : (
+                {!isOfficialChapter && !isOfficialSoundBite && (
+                  <View style={core.row}>
                     <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.inlineText}>
-                      {translate('anonymous')}
+                      By:{' '}
                     </Text>
-                  )}
-                </View>
+                    {ownerIsPublic ? (
+                      <TextLink
+                        fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                        onPress={this._navToProfileScreen}
+                        style={styles.link}>
+                        {ownerName || translate('anonymous')}
+                      </TextLink>
+                    ) : (
+                      <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.inlineText}>
+                        {translate('anonymous')}
+                      </Text>
+                    )}
+                  </View>
+                )}
                 {!hideDynamicAdsWarning && (
                   <View style={styles.bottomTextWrapper}>
                     <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.dynamicAdsWarning}>

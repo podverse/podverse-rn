@@ -164,12 +164,12 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           <QueueTableCell
             clipEndTime={data.endTime}
             clipStartTime={data.startTime}
-            clipTitle={data.title}
-            episodePubDate={data.episode.pubDate}
-            episodeTitle={data.episode.title}
+            {...(data.title ? { clipTitle: data.title } : {})}
+            {...(data.episode.pubDate ? { episodePubDate: data.episode.pubDate } : {})}
+            {...(data.episode.title ? { episodeTitle: data.episode.title } : {})}
             handleRemovePress={() => this._handleRemovePlaylistItemPress(data)}
             podcastImageUrl={data.episode.podcast.shrunkImageUrl || data.episode.podcast.imageUrl}
-            podcastTitle={data.episode.podcast.title}
+            {...(data.episode.podcast.title ? { podcastTitle: data.episode.podcast.title } : {})}
             showMoveButton={!isEditing}
             showRemoveButton={isEditing}
           />
@@ -180,11 +180,11 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
       cell = (
         <View>
           <QueueTableCell
-            episodePubDate={data.pubDate}
-            episodeTitle={data.title}
+            {...(data.pubDate ? { episodePubDate: data.pubDate } : {})}
+            {...(data.title ? { episodeTitle: data.title } : {})}
             handleRemovePress={() => this._handleRemovePlaylistItemPress(data)}
             podcastImageUrl={(data.podcast && (data.podcast.shrunkImageUrl || data.podcast.imageUrl)) || ''}
-            podcastTitle={(data.podcast && data.podcast.title) || ''}
+            {...(data.podcast && data.podcast.title ? { podcastTitle: data.podcast.title } : {})}
             showMoveButton={!isEditing}
             showRemoveButton={isEditing}
           />

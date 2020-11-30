@@ -239,17 +239,18 @@ export const combineAndSortPlaylistItems = (episodes: [any], mediaRefs: [any], i
     const isSortedItem = Array.isArray(itemsOrder) && itemsOrder.some((id) => x.id === id)
     if (!isSortedItem) {
       return x
-    } else {
+    } else if (x) {
       remainingPlaylistItems.push(x)
     }
   })
 
-  const sortedItems = itemsOrder.map((id: string) => {
+  const sortedItems = itemsOrder.reduce((results: any[], id: string) => {
     const items = remainingPlaylistItems.filter((x: any) => x.id === id)
     if (items.length > 0) {
-      return items[0]
+      results.push(items[0])
     }
-  })
+    return results
+  }, [])
 
   return [...sortedItems, ...unsortedItems]
 }
@@ -514,6 +515,8 @@ export const setCategoryQueryProperty = (queryFrom?: any, selectedCategory?: any
     return {}
   }
 }
+
+export const isValidDate = (date: any) => date instanceof Date && !isNaN(date as any)
 
 export const isValidUrl = (str?: string) => {
   const regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/

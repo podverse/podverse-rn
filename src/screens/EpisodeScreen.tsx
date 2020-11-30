@@ -22,7 +22,7 @@ import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { formatTitleViewHtml, isOdd, replaceLinebreaksWithBrTags, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { getEpisode } from '../services/episode'
+import { getEpisode, retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRefs } from '../services/mediaRef'
 import { core } from '../styles'
@@ -50,6 +50,9 @@ type State = {
 }
 
 const testIDPrefix = 'episode_screen'
+
+const viewTypeClipsOrChapters = (viewType: any) =>
+  viewType === PV.Filters._clipsKey || viewType === PV.Filters._chaptersKey
 
 export class EpisodeScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
@@ -148,10 +151,15 @@ export class EpisodeScreen extends React.Component<Props, State> {
         try {
           if (episode && episode.podcast && episode.podcast.addByRSSPodcastFeedUrl) {
             newEpisode = episode
+            if (viewType === PV.Filters._chaptersKey) {
+              newState = await this._queryData(PV.Filters._chaptersKey)
+            }
           } else {
             newEpisode = await getEpisode(episodeId)
             if (viewType === PV.Filters._clipsKey) {
               newState = await this._queryData(PV.Filters._clipsKey)
+            } else if (viewType === PV.Filters._chaptersKey) {
+              newState = await this._queryData(PV.Filters._chaptersKey)
             }
           }
 
@@ -179,16 +187,16 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     this.setState(
       {
-        endOfResultsReached: selectedKey !== PV.Filters._clipsKey,
+        endOfResultsReached: selectedKey !== PV.Filters._clipsKey && selectedKey !== PV.Filters._chaptersKey,
         flatListData: [],
         flatListDataTotalCount: null,
-        isLoading: selectedKey === PV.Filters._clipsKey,
+        isLoading: viewTypeClipsOrChapters(selectedKey),
         queryPage: 1,
         searchBarText: '',
         viewType: selectedKey
       },
       async () => {
-        if (selectedKey === PV.Filters._clipsKey) {
+        if (viewTypeClipsOrChapters(selectedKey)) {
           const newState = await this._queryData(selectedKey)
           this.setState(newState)
         }
@@ -266,9 +274,11 @@ export class EpisodeScreen extends React.Component<Props, State> {
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
         hasZebraStripe={isOdd(index)}
         hideImage={true}
+        showEpisodeInfo={false}
+        showPodcastTitle={false}
         startTime={item.startTime}
         testID={`${testIDPrefix}_clip_item_${index}`}
-        title={item.title}
+        {...(item.title ? { title: item.title } : {})}
       />
     )
   }
@@ -348,6 +358,13 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     const showOfflineMessage = offlineModeEnabled && viewType === PV.Filters._clipsKey
 
+    let noResultsMessage = translate('No clips found')
+    let noResultsSubMessage = ''
+    if (viewType === PV.Filters._chaptersKey) {
+      noResultsMessage = translate('No chapters found')
+      noResultsSubMessage = translate('Chapters are created by the podcaster')
+    }
+
     return (
       <View style={styles.view} {...testProps('episode_screen_view')}>
         <EpisodeTableHeader
@@ -375,8 +392,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
           selectedRightItemKey={querySort}
           testID={testIDPrefix}
         />
-        {isLoading && (!episode || viewType === PV.Filters._clipsKey) && <ActivityIndicator />}
-        {!isLoading && viewType === PV.Filters._clipsKey && flatListData && (
+        {isLoading && (!episode || viewTypeClipsOrChapters(viewType)) && <ActivityIndicator />}
+        {!isLoading && viewTypeClipsOrChapters(viewType) && flatListData && (
           <FlatList
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
@@ -386,7 +403,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.id}
             {...(viewType === PV.Filters._clipsKey ? { ListHeaderComponent: this._ListHeaderComponent } : {})}
-            noResultsMessage={translate('No clips found')}
+            noResultsMessage={noResultsMessage}
             onEndReached={this._onEndReached}
             renderItem={this._renderItem}
             showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
@@ -434,7 +451,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     const hasInternetConnection = await hasValidNetworkConnection()
 
-    if (!hasInternetConnection && filterKey === PV.Filters._clipsKey) {
+    if (!hasInternetConnection && viewTypeClipsOrChapters(filterKey)) {
       newState.showNoInternetConnectionMessage = true
       return newState
     }
@@ -445,7 +462,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
           sort: filterKey,
           page: queryOptions.queryPage,
           episodeId: episode.id,
-          ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          allowUntitled: true
         })
 
         newState.flatListData = [...flatListData, ...results[0]]
@@ -455,12 +473,18 @@ export class EpisodeScreen extends React.Component<Props, State> {
         newState.flatListData = []
         newState.endOfResultsReached = true
         newState.flatListDataTotalCount = null
+      } else if (filterKey === PV.Filters._chaptersKey) {
+        const results = await retrieveLatestChaptersForEpisodeId(episode.id)
+        newState.flatListData = [...flatListData, ...results[0]]
+        newState.endOfResultsReached = true
+        newState.flatListDataTotalCount = results[1]
       } else {
         const results = await getMediaRefs({
           sort: querySort,
           page: queryOptions.queryPage,
           episodeId: episode.id,
-          ...(searchAllFieldsText ? { searchAllFieldsText } : {})
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          allowUntitled: true
         })
 
         newState.flatListData = [...flatListData, ...results[0]]

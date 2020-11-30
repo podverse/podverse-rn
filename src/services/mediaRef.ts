@@ -49,7 +49,8 @@ export const getMediaRefs = async (query: any = {}) => {
     ...(query.episodeId ? { episodeId: query.episodeId } : {}),
     ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
     ...(query.includeEpisode ? { includeEpisode: true } : {}),
-    ...(query.includePodcast ? { includePodcast: true } : {})
+    ...(query.includePodcast ? { includePodcast: true } : {}),
+    ...(query.allowUntitled ? { allowUntitled: true } : {})
   } as any
 
   if (query.categories && query.categories !== PV.Filters._allCategoriesKey) {
