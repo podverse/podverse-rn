@@ -77,11 +77,19 @@ const elementByIdAndClickAndTest = async (id, waitForElementId, testLabel, back)
     logTestInfo(false, id, testLabel)
 }
 
-const elementbyIdClick = async (id, testLabel) => {
+const elementByIdClick = async (id, testLabel, back) => {
   logTestInfo(true, id, testLabel)
   await driver.waitForElementByAccessibilityId(id, 10000)
   const element = await driver.elementByAccessibilityId(id)
   await element.click()
+  if (back) await driver.back()
+  logTestInfo(false, id, testLabel)
+
+}
+
+const elementWaitFor = async (id, testLabel) => {
+  logTestInfo(true, id, testLabel)
+  await driver.waitForElementByAccessibilityId(id, 10000)
   logTestInfo(false, id, testLabel)
 
 }
@@ -199,7 +207,7 @@ const runTests = async (customCapabilities) => {
     // await sendKeysToElementById('login_email_text_input', 'TestEmail@ThisIsATest.com', 'Invalid Login Email Input')
     // await sendKeysToElementById('login_password_text_input', 'testPASS1!', 'Invalid Login Password Input')
 
-    // await elementbyIdClick('login_submit')
+    // await elementByIdClick('login_submit')
     // await confirmAndroidAlert() 
 
     // await elementByIdAndClickAndTest('auth_screen_sign_up_button', 'membership_screen_view', null, goBack)
@@ -207,7 +215,7 @@ const runTests = async (customCapabilities) => {
     // await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
     // await elementByIdAndClickAndTest('auth_screen_reset_password_button', 'reset_password_submit')
     // await sendKeysToElementById('reset_password_email_text_input', 'TestEmail@ThisIsATest.com')
-    // await elementbyIdClick('reset_password_submit')
+    // await elementByIdClick('reset_password_submit')
     // await confirmAndroidAlert()
 
     // await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
@@ -218,24 +226,24 @@ const runTests = async (customCapabilities) => {
     // await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view')
     // await elementbyIdToggle('settings_screen_dark_mode_switch')
     // await elementbyIdToggle('settings_screen_only_allow_downloading_when_connected_to_wifi_switch')
-    // await elementbyIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')
-    // await elementbyIdClick('settings_screen_dialog_update_download_limit_yes_button')
+    // await elementByIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')
+    // await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
     // await elementbyIdToggle('settings_screen_censor_nsfw_text_switch')
     // await elementbyIdToggle('settings_screen_offline_mode_switch')
 
 
     // if (isFDroid) {
     //   await performScrollDown()
-    //   await elementbyIdClick('settings_screen_custom_api_domain_switch')
-    //   // await elementbyIdClick('settings_screen_custom_api_domain_text_input')
+    //   await elementByIdClick('settings_screen_custom_api_domain_switch')
+    //   // await elementByIdClick('settings_screen_custom_api_domain_text_input')
     //   // await sendKeysToElementById('settings_screen_custom_api_domain_text_input', 'https://api.stage.podverse.fm')
-    //   await elementbyIdClick('settings_screen_custom_web_domain_switch')
-    //   // await elementbyIdClick('settings_screen_custom_web_domain_text_input')
+    //   await elementByIdClick('settings_screen_custom_web_domain_switch')
+    //   // await elementByIdClick('settings_screen_custom_web_domain_text_input')
     //   // await sendKeysToElementById('settings_screen_custom_web_domain_text_input', 'https://stage.podverse.fm')
     //   await performScrollDown()
     // }
 
-    // await elementbyIdClick('settings_screen_clear_history_button')
+    // await elementByIdClick('settings_screen_clear_history_button')
     // await confirmAndroidAlert()
 
     // await driver.back()
@@ -260,7 +268,7 @@ const runTests = async (customCapabilities) => {
     await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
     await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
     await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
-    await elementbyIdClick('login_submit')
+    await elementByIdClick('login_submit')
     await driver.sleep(2000)
 
     // await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', null, goBack)
@@ -272,10 +280,11 @@ const runTests = async (customCapabilities) => {
     await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
     //Song Exploder - 01
     await elementByIdAndClickAndTest('podcasts_screen_podcast_item_1', 'podcast_screen_view')
-    // await performScrollDown()
-    // await elementbyIdClick('podcast_screen_episode_item_3_more_button')
-    // // await elementbyIdClick('podcast_screen_action_sheet_queue_next_button')
-    await driver.back()
+    await performScrollDown()
+    await elementByIdClick('podcast_screen_episode_item_3_more_button')
+    await elementByIdClick('podcast_screen_action_sheet_queue_next_button')
+    await elementWaitFor('mini_player')
+    
 
     await performScrollDown()
     await performScrollDown()
@@ -286,16 +295,16 @@ const runTests = async (customCapabilities) => {
     await performScrollDown()
     await performScrollDown()
     await performScrollDown()
-    //Joe Rogan - 23
+    // //Joe Rogan - 23
     await elementByIdAndClickAndTest('podcasts_screen_podcast_item_23', 'podcast_screen_view', null, goBack)
     await performScrollDown()
-    await performScrollDown()
-    await performScrollDown()
-    await performScrollDown()
-    await performScrollDown()
-    await performScrollDown()
-    //Very Bad Wizards - 37
-    await elementByIdAndClickAndTest('podcasts_screen_podcast_item_37', 'podcast_screen_view', null, goBack)
+    // await performScrollDown()
+    // await performScrollDown()
+    // await performScrollDown()
+    // await performScrollDown()
+    // await performScrollDown()
+    // //Very Bad Wizards - 37
+    // await elementByIdAndClickAndTest('podcasts_screen_podcast_item_37', 'podcast_screen_view', null, goBack)
 
 
     await postSlackNotification('SUCCESS: End e2e tests', slackOpts)
