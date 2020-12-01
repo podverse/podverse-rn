@@ -3,7 +3,7 @@ import { MessageWithAction } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { sendVerificationEmail } from '../services/auth'
-import { gaTrackPageView } from '../services/googleAnalytics'
+import { trackPageView } from '../services/tracking'
 
 type Props = {
   navigation: any
@@ -32,7 +32,7 @@ export class EmailVerificationScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    gaTrackPageView('/email-verification', 'Email Verification Screen')
+    trackPageView('/email-verification', 'Email Verification Screen')
   }
 
   _navToLogin = async () => {

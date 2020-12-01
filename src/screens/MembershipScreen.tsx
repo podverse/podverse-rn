@@ -5,8 +5,8 @@ import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { getMembershipExpiration, getMembershipStatus, readableDate, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
 import { buy1YearPremium } from '../services/purchaseShared'
+import { trackPageView } from '../services/tracking'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { androidHandleStatusCheck } from '../state/actions/purchase.android'
 import { iosHandlePurchaseStatusCheck } from '../state/actions/purchase.ios'
@@ -52,7 +52,7 @@ export class MembershipScreen extends React.Component<Props, State> {
       showNoInternetConnectionMessage: !hasInternetConnection
     })
 
-    gaTrackPageView('/membership', 'Membership Screen')
+    trackPageView('/membership', 'Membership Screen')
   }
 
   handleRenewPress = async () => {

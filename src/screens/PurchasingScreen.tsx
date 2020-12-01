@@ -4,7 +4,7 @@ import { ActivityIndicator, SafeAreaView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { createEmailLinkUrl, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
+import { trackPageView } from '../services/tracking'
 import { androidHandleStatusCheck } from '../state/actions/purchase.android'
 import { iosHandlePurchaseStatusCheck } from '../state/actions/purchase.ios'
 
@@ -27,7 +27,7 @@ export class PurchasingScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    gaTrackPageView('/purchasing', 'Purchasing Screen')
+    trackPageView('/purchasing', 'Purchasing Screen')
   }
 
   _handleContactSupportPress = async () => {

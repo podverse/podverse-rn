@@ -15,7 +15,7 @@ import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { combineAndSortPlaylistItems, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
+import { trackPageView } from '../services/tracking'
 import { addOrRemovePlaylistItem, getPlaylist, updatePlaylist } from '../state/actions/playlist'
 import { core } from '../styles'
 
@@ -87,7 +87,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
       this.setState({ isLoading: false })
     }
 
-    gaTrackPageView('/edit-playlist', 'Edit Playlist Screen')
+    trackPageView('/edit-playlist', 'Edit Playlist Screen')
   }
 
   _startEditing = () => {
