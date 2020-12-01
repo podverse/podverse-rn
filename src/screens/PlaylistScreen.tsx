@@ -19,7 +19,7 @@ import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
+import { trackPageView } from '../services/tracking'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { core } from '../styles'
 
@@ -99,7 +99,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const { playlistId } = this.state
     this._initializePageData()
-    gaTrackPageView('/playlist/' + playlistId, 'Playlist Screen')
+    trackPageView('/playlist/' + playlistId, 'Playlist Screen')
   }
 
   async _initializePageData() {

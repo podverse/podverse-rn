@@ -14,8 +14,8 @@ import {
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
 import { getAddByRSSPodcastLocally } from '../services/parser'
+import { trackPageView } from '../services/tracking'
 import { addAddByRSSPodcast } from '../state/actions/parser'
 import { core } from '../styles'
 
@@ -53,7 +53,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
       _handleSavePodcastByRSSURL: this._handleSavePodcastByRSSURL
     })
 
-    gaTrackPageView('/add-podcast-by-rss', 'Add Podcast By RSS Screen')
+    trackPageView('/add-podcast-by-rss', 'Add Podcast By RSS Screen')
   }
 
   _navToRequestPodcastForm = async () => {

@@ -22,7 +22,6 @@ import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/ne
 import { getAppUserAgent, isOdd, setAppUserAgent, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
-import { gaTrackPageView } from '../services/googleAnalytics'
 import { getAddByRSSPodcastsLocally } from '../services/parser'
 import {
   checkIdlePlayerState,
@@ -31,6 +30,7 @@ import {
   updateUserPlaybackPosition
 } from '../services/player'
 import { getPodcast, getPodcasts } from '../services/podcast'
+import { trackPageView } from '../services/tracking'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
 import {
@@ -127,8 +127,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
     }
-
-    gaTrackPageView('/podcasts', 'Podcasts Screen')
   }
 
   componentWillUnmount() {
@@ -307,6 +305,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     await initDownloads()
     await initializePlayerQueue()
     await initializePlaybackSpeed()
+    trackPageView('/podcasts', 'Podcasts Screen')
   }
 
   // querySortOverride is only used in _initializeScreenData, and it determines

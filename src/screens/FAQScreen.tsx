@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, View, WebViewStaticHTML } from '../components'
 import { testProps } from '../lib/utility'
-import { gaTrackPageView } from '../services/googleAnalytics'
+import { trackPageView } from '../services/tracking'
 
 type Props = {}
 
@@ -26,7 +26,7 @@ export class FAQScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    gaTrackPageView('/faq', 'FAQ Screen')
+    trackPageView('/faq', 'FAQ Screen')
 
     setTimeout(() => {
       this.setState({ isLoading: false })

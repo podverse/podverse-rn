@@ -3,8 +3,8 @@ import React from 'reactn'
 import { Button, NavDismissIcon, SafeAreaView, TimePicker, View } from '../components'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
-import { gaTrackPageView } from '../services/googleAnalytics'
 import { sleepTimerIsRunning } from '../services/sleepTimer'
+import { trackPageView } from '../services/tracking'
 import {
   pauseSleepTimerStateUpdates,
   resumeSleepTimerStateUpdates,
@@ -40,7 +40,7 @@ export class SleepTimerScreen extends React.Component<Props, State> {
       resumeSleepTimerStateUpdates()
     }
 
-    gaTrackPageView('/sleep-timer', 'Sleep Timer Screen')
+    trackPageView('/sleep-timer', 'Sleep Timer Screen')
   }
 
   async componentWillUnmount() {

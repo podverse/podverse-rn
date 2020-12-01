@@ -14,6 +14,7 @@ import {
   togglePlay as togglePlayService
 } from '../../services/player'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
+import { trackPlayerScreenPageView } from '../../services/tracking'
 import { getQueueItems } from '../../state/actions/queue'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
@@ -94,8 +95,13 @@ export const initPlayerState = async (globalState: any) => {
 }
 
 export const playNextFromQueue = async () => {
-  await playNextFromQueueService()
+  const item = await playNextFromQueueService()
   await getQueueItems()
+
+  if (item) {
+    const globalState = getGlobal()
+    trackPlayerScreenPageView(item, globalState)
+  }
 }
 
 export const loadItemAndPlayTrack = async (
@@ -109,12 +115,18 @@ export const loadItemAndPlayTrack = async (
   }
 
   const globalState = getGlobal()
-  setGlobal({
-    screenPlayer: {
-      ...globalState.screenPlayer,
-      isLoading: false
+  setGlobal(
+    {
+      screenPlayer: {
+        ...globalState.screenPlayer,
+        isLoading: false
+      }
+    },
+    async () => {
+      const globalState = getGlobal()
+      trackPlayerScreenPageView(item, globalState)
     }
-  })
+  )
 }
 
 export const setPlaybackSpeed = async (rate: number) => {

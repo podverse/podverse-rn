@@ -18,8 +18,8 @@ import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
 import { getPodcasts } from '../services/podcast'
+import { trackPageView } from '../services/tracking'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { core } from '../styles'
 
@@ -72,7 +72,7 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    gaTrackPageView('/search', 'Search Screen')
+    trackPageView('/search', 'Search Screen')
   }
 
   _handleSearchBarClear = (text: string) => {
@@ -212,7 +212,7 @@ export class SearchScreen extends React.Component<Props, State> {
     if (wasAlerted) return
 
     try {
-      await toggleSubscribeToPodcast(id, this.global)
+      await toggleSubscribeToPodcast(id)
     } catch (error) {
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
     }

@@ -249,24 +249,6 @@ export const initializePlayerQueue = async () => {
   }
 }
 
-const sendPlayerScreenGoogleAnalyticsPageView = (item: any) => {
-  if (item.clipId) {
-    gaTrackPageView(
-      '/clip/' + item.clipId,
-      'Player Screen - Clip - ' + item.podcastTitle + ' - ' + item.episodeTitle + ' - ' + item.clipTitle
-    )
-  }
-  if (item.episodeId) {
-    gaTrackPageView(
-      '/episode/' + item.episodeId,
-      'Player Screen - Episode - ' + item.podcastTitle + ' - ' + item.episodeTitle
-    )
-  }
-  if (item.podcastId) {
-    gaTrackPageView('/podcast/' + item.podcastId, 'Player Screen - Podcast - ' + item.podcastTitle)
-  }
-}
-
 export const loadItemAndPlayTrack = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
@@ -304,8 +286,6 @@ export const loadItemAndPlayTrack = async (
   if (lastPlayingItem && lastPlayingItem.episodeId && lastPlayingItem.episodeId !== item.episodeId) {
     PlayerEventEmitter.emit(PV.Events.PLAYER_NEW_EPISODE_LOADED)
   }
-
-  sendPlayerScreenGoogleAnalyticsPageView(item)
 }
 
 export const playNextFromQueue = async () => {
@@ -318,8 +298,8 @@ export const playNextFromQueue = async () => {
     if (item) {
       await addOrUpdateHistoryItem(item)
       await removeQueueItem(item)
+      return item
     }
-    sendPlayerScreenGoogleAnalyticsPageView(item)
   }
 }
 

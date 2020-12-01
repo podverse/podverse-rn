@@ -19,8 +19,8 @@ import {
 import { translate } from '../lib/i18n'
 import { checkIfIdMatchesClipIdOrEpisodeId, isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
 import { movePlayerItemToNewPosition } from '../services/player'
+import { trackPageView } from '../services/tracking'
 import { getHistoryItems, removeHistoryItem } from '../state/actions/history'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
@@ -139,7 +139,7 @@ export class QueueScreen extends React.Component<Props, State> {
       this.setState({ isLoading: false })
     }
 
-    gaTrackPageView('/queue', 'Queue Screen')
+    trackPageView('/queue', 'Queue Screen')
   }
 
   _startEditing = () => {

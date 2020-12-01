@@ -18,28 +18,21 @@ export const gaInitialize = async () => {
 
 const collectEndpoint = 'https://www.google-analytics.com/collect'
 
-export const gaTrackPageView = async (path: string, title: string) => {
+export const gaTrackPageView = async (path: string, title: string, queryObj: any) => {
   const isConnected = await hasValidNetworkConnection()
   if (!isConnected) return
-  let titlePrefix = ''
-  if (Platform.OS === 'ios') {
-    titlePrefix = 'iOS - '
-  } else if (Platform.OS === 'android') {
-    titlePrefix = 'Android - '
-  } else {
-    titlePrefix = 'Other app - '
-  }
-  title = titlePrefix + title
 
   const cid = await AsyncStorage.getItem(PV.Keys.GOOGLE_ANALYTICS_CLIENT_ID)
 
   const query = {
     v, // GA API version
     tid: PV.Google.analytics.trackingId, // tracking id
+    t: 'screenview', // hit type
+    ds: Platform.OS,
+    dt: title, // title
     cid, // anonymous client id
-    t: 'pageview', // hit type
     dp: path, // page
-    dt: title // title
+    ...queryObj
   }
 
   const userAgent = await getAppUserAgent()

@@ -28,7 +28,6 @@ import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
 import { createMediaRef, updateMediaRef } from '../services/mediaRef'
 import {
   playerJumpBackward,
@@ -37,6 +36,7 @@ import {
   playerPreviewStartTime,
   PVTrackPlayer
 } from '../services/player'
+import { trackPageView } from '../services/tracking'
 import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, playerStyles } from '../styles'
 
@@ -130,7 +130,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       }
     )
 
-    gaTrackPageView('/make-clip', 'Make Clip Screen')
+    trackPageView('/make-clip', 'Make Clip Screen')
   }
 
   componentWillUnmount() {
