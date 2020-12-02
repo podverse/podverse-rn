@@ -7,7 +7,7 @@ import { Button } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
-import { saveSpecialUserInfo } from '../services/user'
+import { saveSpecialUserInfoForPodcast } from '../services/user'
 import { addAddByRSSPodcast } from '../state/actions/parser'
 
 type Props = {}
@@ -53,12 +53,12 @@ export const ScanQRCodeScreen = (props: Props) => {
     try {
       const parsedData = parsePayload(scannedData)
 
-      if (parsedData.userInfo) {
-        await saveSpecialUserInfo(parsedData.userInfo)
-      }
-
       await addAddByRSSPodcast(parsedData.feedUrl)
       const podcast = await getAddByRSSPodcastLocally(parsedData.feedUrl)
+
+      if (parsedData.userInfo && podcast && podcast.id) {
+        await saveSpecialUserInfoForPodcast(parsedData.userInfo, podcast.id)
+      }
 
       navigate(PV.RouteNames.PodcastScreen, {
         podcast,
