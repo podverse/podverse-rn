@@ -29,6 +29,7 @@ type State = {
 }
 
 const testIDPrefix = 'add_podcast_by_rss_screen'
+
 export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -38,6 +39,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
         <NavHeaderButtonText
           disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
           handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}
+          testID={`${testIDPrefix}_save`}
           text={translate('Save')}
         />
       )
