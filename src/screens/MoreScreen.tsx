@@ -6,7 +6,7 @@ import { Divider, TableSectionHeader, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { createEmailLinkUrl, getMembershipStatus, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
+import { trackPageView } from '../services/tracking'
 import { logoutUser } from '../state/actions/auth'
 import { core, getMembershipTextStyle, table } from '../styles'
 
@@ -30,7 +30,7 @@ export class MoreScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    gaTrackPageView('/more', 'More Screen')
+    trackPageView('/more', 'More Screen')
   }
 
   _moreFeaturesOptions = (isLoggedIn: boolean) => {

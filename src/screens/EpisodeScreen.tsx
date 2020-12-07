@@ -23,8 +23,8 @@ import { hasValidNetworkConnection } from '../lib/network'
 import { formatTitleViewHtml, isOdd, replaceLinebreaksWithBrTags, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode, retrieveLatestChaptersForEpisodeId } from '../services/episode'
-import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRefs } from '../services/mediaRef'
+import { trackPageView } from '../services/tracking'
 import { core } from '../styles'
 
 type Props = {
@@ -128,7 +128,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       episode && episode.podcast
         ? translate('Episode Screen - ') + episode.podcast.title + ' - ' + episode.title
         : translate('Episode Screen - ') + translate('no info available')
-    gaTrackPageView('/episode/' + episodeId, pageTitle)
+    trackPageView('/episode/' + episodeId, pageTitle)
   }
 
   async _initializePageData() {

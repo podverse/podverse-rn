@@ -2,7 +2,7 @@ import React from 'react'
 import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
+import { trackPageView } from '../services/tracking'
 
 type Props = {
   loginUser: ({}) => Promise<any>
@@ -20,7 +20,7 @@ export class OnboardingScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    gaTrackPageView('/onboarding', 'Onboarding Screen')
+    trackPageView('/onboarding', 'Onboarding Screen')
   }
 
   dismissOnboarding = () => {

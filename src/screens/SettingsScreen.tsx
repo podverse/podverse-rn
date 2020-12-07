@@ -27,7 +27,7 @@ import { refreshDownloads } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
+import { trackPageView } from '../services/tracking'
 import { deleteLoggedInUser } from '../services/user'
 import { logoutUser } from '../state/actions/auth'
 import * as DownloadState from '../state/actions/downloads'
@@ -108,7 +108,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       () => this.setState({ hasLoaded: true })
     )
 
-    gaTrackPageView('/settings', 'Settings Screen')
+    trackPageView('/settings', 'Settings Screen')
   }
 
   _toggleTheme = (value: boolean) => {

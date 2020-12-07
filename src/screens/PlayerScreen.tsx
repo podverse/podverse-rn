@@ -39,11 +39,11 @@ import {
 } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode, retrieveLatestChaptersForEpisodeId } from '../services/episode'
-import { gaTrackPageView } from '../services/googleAnalytics'
 import { getMediaRef, getMediaRefs } from '../services/mediaRef'
 import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
+import { trackPageView } from '../services/tracking'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { core } from '../styles'
 
@@ -135,7 +135,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       )
     }
 
-    gaTrackPageView('/player', 'Player Screen')
+    trackPageView('/player', 'Player Screen')
 
     await this._handleUpdateFullEpisode()
   }

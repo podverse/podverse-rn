@@ -15,7 +15,7 @@ import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
+import { trackPageView } from '../services/tracking'
 import { addOrRemovePlaylistItem, createPlaylist } from '../state/actions/playlist'
 import { getLoggedInUserPlaylists } from '../state/actions/user'
 
@@ -73,7 +73,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
       //
     }
     this.setState({ isLoading: false })
-    gaTrackPageView('/playlists-add-to', 'Playlists Add To Screen')
+    trackPageView('/playlists-add-to', 'Playlists Add To Screen')
   }
 
   _saveNewPlaylist = async () => {

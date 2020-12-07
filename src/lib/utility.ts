@@ -530,3 +530,11 @@ export const testProps = (id: string) => {
 export const getUniqueArrayByKey = (arr: any[], key: string) => {
   return [...new Map(arr.map((item: any) => [item[key], item])).values()]
 }
+
+export const generateQueryParams = (query: any) => {
+  return Object.keys(query)
+    .map((key) => {
+      return `${key}=${query[key]}`
+    })
+    .join('&')
+}

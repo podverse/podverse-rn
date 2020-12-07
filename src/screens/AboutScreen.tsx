@@ -6,7 +6,7 @@ import { Divider, Icon, ScrollView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
+import { trackPageView } from '../services/tracking'
 import { button } from '../styles'
 
 type Props = {}
@@ -21,7 +21,7 @@ export class AboutScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    gaTrackPageView('/about', 'About Screen')
+    trackPageView('/about', 'About Screen')
   }
 
   handleFollowLink = (url: string) => {

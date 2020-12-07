@@ -20,8 +20,8 @@ import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { isOdd, safelyUnwrapNestedVariable, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
+import { trackPageView } from '../services/tracking'
 import { getLoggedInUserMediaRefs } from '../services/user'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { core } from '../styles'
@@ -91,7 +91,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     const { queryFrom } = this.state
     const newState = await this._queryData(queryFrom)
     this.setState(newState)
-    gaTrackPageView('/clips', 'Clips Screen')
+    trackPageView('/clips', 'Clips Screen')
   }
 
   selectLeftItem = async (selectedKey: string) => {

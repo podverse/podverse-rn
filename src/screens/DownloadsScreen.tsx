@@ -5,7 +5,7 @@ import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from '../services/googleAnalytics'
+import { trackPageView } from '../services/tracking'
 import { pauseDownloadingEpisode, removeDownloadingEpisode, resumeDownloadingEpisode } from '../state/actions/downloads'
 
 type Props = {
@@ -35,7 +35,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    gaTrackPageView('/downloads', 'Downloads Screen')
+    trackPageView('/downloads', 'Downloads Screen')
   }
 
   _ItemSeparatorComponent = () => {
