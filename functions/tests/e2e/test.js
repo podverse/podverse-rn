@@ -119,18 +119,25 @@ const getCenterCoordinates = (offsetX = 0, offsetY = 0) => {
     }
 }
 
-const performScrollDown = async () => {
-  const action = new wd.TouchAction(driver)
-  action.press(getCenterCoordinates())
-  action.wait(1000)
-  action.moveTo(getCenterCoordinates(0, -500))
-  action.release()
-  await action.perform()
+const performScrollDown = async (numberOfScrolls = 1) => {
+  
+  console.log(numberOfScrolls)
+  var i;
+  for (i = 0; i < numberOfScrolls; i++) {
+    const action = new wd.TouchAction(driver)
+    action.press(getCenterCoordinates())
+    action.wait(1000)
+    action.moveTo(getCenterCoordinates(0, -500))
+    action.release()
+    await action.perform()
+  }
+
   logPerformance('Scrolldown performed')
 }
 
 const performScrollUp = async () => {
   const action = new wd.TouchAction(driver)
+  
   action.press(getCenterCoordinates())
   action.wait(1000)
   action.moveTo(getCenterCoordinates(0, 500))
@@ -178,7 +185,6 @@ const runTests = async (customCapabilities) => {
     console.log('init testing')
     
     await driver.init(capabilities)
-
 
     windowSize = await driver.getWindowSize()
 
@@ -257,54 +263,59 @@ const runTests = async (customCapabilities) => {
     
     // await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', null, goBack)
 
-    // Logged in user tests
 
-    //TEMP
+
+
+
+
+
+
+    // // Logged in user tests
+
+    //TEMP - ALERT YES
     await driver.waitForElementByAccessibilityId('alert_yes_allow_data')
     await elementByIdAndClickAndTest('alert_yes_allow_data', 'podcasts_screen_view')
-    await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-    //TEMP
 
-    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
-    await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
-    await elementByIdClick('login_submit')
-    await driver.sleep(2000)
 
-    // await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', null, goBack)
+    // //TEMP - LOG IN - PREMIUM VALID
 
-    // await elementByIdAndClickAndTest('more_screen_profiles_cell', 'profiles_screen_view', null, goBack)
+    // await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+    // await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
+    // await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
+    // await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
+    // await elementByIdClick('login_submit')
+    // await driver.sleep(2000)
 
-    // await elementByIdAndClickAndTest('more_screen_my_profile_cell', 'profile_screen_view', null, goBack)
+    // // await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', null, goBack)
 
-    await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
+    // // await elementByIdAndClickAndTest('more_screen_profiles_cell', 'profiles_screen_view', null, goBack)
+
+    // // await elementByIdAndClickAndTest('more_screen_my_profile_cell', 'profile_screen_view', null, goBack)
+
+    // await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
+
+    
     //Song Exploder - 01
     await elementByIdAndClickAndTest('podcasts_screen_podcast_item_1', 'podcast_screen_view')
     await performScrollDown()
     await elementByIdClick('podcast_screen_episode_item_3_more_button')
     await elementByIdClick('podcast_screen_action_sheet_queue_next_button')
     await elementWaitFor('mini_player')
-    
+    await driver.back()
 
-    await performScrollDown()
-    await performScrollDown()
-    await performScrollDown()
-    await performScrollDown()
-    await performScrollDown()
-    await performScrollDown()
-    await performScrollDown()
-    await performScrollDown()
-    await performScrollDown()
+    await performScrollDown(9)
+
+
     // //Joe Rogan - 23
     await elementByIdAndClickAndTest('podcasts_screen_podcast_item_23', 'podcast_screen_view', null, goBack)
-    await performScrollDown()
     // await performScrollDown()
-    // await performScrollDown()
-    // await performScrollDown()
-    // await performScrollDown()
-    // await performScrollDown()
-    // //Very Bad Wizards - 37
-    // await elementByIdAndClickAndTest('podcasts_screen_podcast_item_37', 'podcast_screen_view', null, goBack)
+    // // await performScrollDown()
+    // // await performScrollDown()
+    // // await performScrollDown()
+    // // await performScrollDown()
+    // // await performScrollDown()
+    // // //Very Bad Wizards - 37
+    // // await elementByIdAndClickAndTest('podcasts_screen_podcast_item_37', 'podcast_screen_view', null, goBack)
 
 
     await postSlackNotification('SUCCESS: End e2e tests', slackOpts)
