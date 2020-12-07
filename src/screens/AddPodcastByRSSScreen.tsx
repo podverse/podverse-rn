@@ -28,6 +28,7 @@ type State = {
   url?: string
 }
 
+const testIDPrefix = 'add_podcast_by_rss_screen'
 export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -121,6 +122,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
               placeholder={translate('paste RSS feed link here')}
               returnKeyType='done'
               style={[styles.textInput, globalTheme.textInput]}
+              testID={testIDPrefix}
               underlineColorAndroid='transparent'
               value={url}
             />
