@@ -64,9 +64,14 @@ export class MakeClipScreen extends React.Component<Props, State> {
       title: navigation.getParam('isEditing') ? translate('Edit Clip') : translate('Make Clip'),
       headerTransparent: true,
       headerStyle: {},
+      headerTintColor: globalTheme.text.color,
       headerRight: (
         <RNView style={styles.navHeaderButtonWrapper}>
-          <NavHeaderButtonText handlePress={navigation.getParam('_saveMediaRef')} text={translate('Save')} />
+          <NavHeaderButtonText
+            color={globalTheme.text.color}
+            handlePress={navigation.getParam('_saveMediaRef')}
+            text={translate('Save')}
+          />
         </RNView>
       )
     }
