@@ -6,7 +6,6 @@ import TrackPlayer, { Track } from 'react-native-track-player'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeId, convertURLToSecureProtocol, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from './googleAnalytics'
 import {
   addOrUpdateHistoryItem,
   getHistoryItem,
