@@ -49,7 +49,7 @@ export const initializePlayerQueue = async () => {
 
   const nowPlayingItem = await initializePlayerQueueService()
   if (nowPlayingItem) {
-    await showMiniPlayer()
+    showMiniPlayer()
     await updatePlayerState(nowPlayingItem)
   }
 
@@ -89,7 +89,7 @@ export const hideMiniPlayer = async () => {
   })
 }
 
-const showMiniPlayer = async () => {
+const showMiniPlayer = () => {
   const globalState = getGlobal()
 
   setGlobal({
@@ -133,7 +133,7 @@ export const loadItemAndPlayTrack = async (
   skipAddOrUpdateHistory?: boolean
 ) => {
   if (item) {
-    await showMiniPlayer()
+    showMiniPlayer()
     await updatePlayerState(item)
     await loadItemAndPlayTrackService(item, shouldPlay, skipAddOrUpdateHistory)
   }
@@ -166,7 +166,7 @@ export const setPlaybackSpeed = async (rate: number) => {
 }
 
 export const togglePlay = async () => {
-  await showMiniPlayer()
+  showMiniPlayer()
   // If somewhere a play button is pressed, but nothing is currently loaded in the player,
   // then load the last time from memory by re-initializing the player.
   const trackId = await PVTrackPlayer.getCurrentTrack()
