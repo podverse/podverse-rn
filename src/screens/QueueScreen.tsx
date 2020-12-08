@@ -50,8 +50,7 @@ export class QueueScreen extends React.Component<Props, State> {
         ? {}
         : {
             headerTransparent: true,
-            headerStyle: {},
-            headerTintColor: globalTheme.text.color
+            headerStyle: {}
           }),
       headerTitle: (
         <HeaderTitleSelector
