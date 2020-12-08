@@ -297,8 +297,7 @@ export class SearchScreen extends React.Component<Props, State> {
       const results = await getPodcasts({
         page,
         ...(searchType === _podcastByTitle ? { searchTitle: searchBarText } : {}),
-        ...(searchType === _podcastByHost ? { searchAuthor: searchBarText } : {}),
-        sort: 'alphabetical'
+        ...(searchType === _podcastByHost ? { searchAuthor: searchBarText } : {})
       })
 
       const newFlatListData = [...flatListData, ...results[0]]

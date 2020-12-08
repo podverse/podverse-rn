@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import { RNCamera } from 'react-native-camera'
-import { Button } from '../components'
+import { Button, NavDismissIcon } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
@@ -112,10 +112,13 @@ export const ScanQRCodeScreen = (props: Props) => {
   )
 }
 
-ScanQRCodeScreen.navigationOptions = () => ({
-  title: translate('QR Reader'),
-  headerRight: null
-})
+ScanQRCodeScreen.navigationOptions = ({ navigation }) => {
+  return {
+    title: translate('QR Reader'),
+    headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
+    headerRight: null
+  }
+}
 
 const styles = StyleSheet.create({
   view: {

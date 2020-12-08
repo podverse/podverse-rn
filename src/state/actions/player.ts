@@ -30,8 +30,7 @@ export const updatePlayerState = async (item: NowPlayingItem) => {
       ...globalState.player,
       episode,
       ...(!item.clipId ? { mediaRef } : { mediaRef: null }),
-      nowPlayingItem: item,
-      showMiniPlayer: true
+      nowPlayingItem: item
     }
   } as any
 
@@ -47,8 +46,10 @@ export const updatePlayerState = async (item: NowPlayingItem) => {
 
 export const initializePlayerQueue = async () => {
   const globalState = getGlobal()
+
   const nowPlayingItem = await initializePlayerQueueService()
   if (nowPlayingItem) {
+    showMiniPlayer()
     await updatePlayerState(nowPlayingItem)
   }
 
@@ -73,6 +74,28 @@ export const clearNowPlayingItem = async () => {
     screenPlayer: {
       ...globalState.screenPlayer,
       showFullClipInfo: false
+    }
+  })
+}
+
+export const hideMiniPlayer = async () => {
+  const globalState = getGlobal()
+
+  setGlobal({
+    player: {
+      ...globalState.player,
+      showMiniPlayer: false
+    }
+  })
+}
+
+const showMiniPlayer = () => {
+  const globalState = getGlobal()
+
+  setGlobal({
+    player: {
+      ...globalState.player,
+      showMiniPlayer: true
     }
   })
 }
@@ -110,6 +133,7 @@ export const loadItemAndPlayTrack = async (
   skipAddOrUpdateHistory?: boolean
 ) => {
   if (item) {
+    showMiniPlayer()
     await updatePlayerState(item)
     await loadItemAndPlayTrackService(item, shouldPlay, skipAddOrUpdateHistory)
   }
@@ -142,6 +166,7 @@ export const setPlaybackSpeed = async (rate: number) => {
 }
 
 export const togglePlay = async () => {
+  showMiniPlayer()
   // If somewhere a play button is pressed, but nothing is currently loaded in the player,
   // then load the last time from memory by re-initializing the player.
   const trackId = await PVTrackPlayer.getCurrentTrack()

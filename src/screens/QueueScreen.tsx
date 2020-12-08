@@ -44,6 +44,7 @@ export class QueueScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const { globalTheme } = getGlobal()
     const isTransparent = !!navigation.getParam('isTransparent')
+    const textColor = isTransparent ? globalTheme.text.color : ''
 
     return {
       ...(!isTransparent
@@ -55,6 +56,7 @@ export class QueueScreen extends React.Component<Props, State> {
           }),
       headerTitle: (
         <HeaderTitleSelector
+          color={textColor}
           items={headerTitleItems}
           onValueChange={navigation.getParam('_onViewTypeSelect')}
           placeholder={headerTitleItemPlaceholder}
@@ -68,6 +70,7 @@ export class QueueScreen extends React.Component<Props, State> {
               {!navigation.getParam('isEditing') ? (
                 <RNView style={styles.headerButtonWrapper}>
                   <NavHeaderButtonText
+                    color={textColor}
                     handlePress={navigation.getParam('_startEditing')}
                     style={styles.navHeaderTextButton}
                     testID={`${testIDPrefix}_header_edit`}
@@ -77,6 +80,7 @@ export class QueueScreen extends React.Component<Props, State> {
               ) : (
                 <RNView style={styles.headerButtonWrapper}>
                   <NavHeaderButtonText
+                    color={textColor}
                     handlePress={navigation.getParam('_stopEditing')}
                     style={styles.navHeaderTextButton}
                     testID={`${testIDPrefix}_header_done`}
@@ -89,6 +93,7 @@ export class QueueScreen extends React.Component<Props, State> {
             <RNView>
               {!navigation.getParam('isEditing') ? (
                 <NavHeaderButtonText
+                  color={textColor}
                   handlePress={navigation.getParam('_startEditing')}
                   style={styles.navHeaderTextButton}
                   testID={`${testIDPrefix}_header_edit`}
@@ -96,6 +101,7 @@ export class QueueScreen extends React.Component<Props, State> {
                 />
               ) : (
                 <NavHeaderButtonText
+                  color={textColor}
                   handlePress={navigation.getParam('_stopEditing')}
                   style={styles.navHeaderTextButton}
                   testID={`${testIDPrefix}_header_done`}
