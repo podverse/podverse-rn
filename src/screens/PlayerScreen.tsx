@@ -44,7 +44,7 @@ import { getNowPlayingItem, PVTrackPlayer } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
 import { trackPageView } from '../services/tracking'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { clearNowPlayingItem, loadItemAndPlayTrack } from '../state/actions/player'
 import { core } from '../styles'
 
 type Props = {
@@ -138,6 +138,13 @@ export class PlayerScreen extends React.Component<Props, State> {
     trackPageView('/player', 'Player Screen')
 
     await this._handleUpdateFullEpisode()
+  }
+
+  componentWillUnmount() {
+    const { showMiniPlayer } = this.global.player
+    if (!showMiniPlayer) {
+      clearNowPlayingItem()
+    }
   }
 
   _handleNewEpisodeLoaded = async () => {

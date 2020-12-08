@@ -46,6 +46,7 @@ export const updatePlayerState = async (item: NowPlayingItem) => {
 
 export const initializePlayerQueue = async () => {
   const globalState = getGlobal()
+
   const nowPlayingItem = await initializePlayerQueueService()
   if (nowPlayingItem) {
     await showMiniPlayer()
@@ -80,16 +81,12 @@ export const clearNowPlayingItem = async () => {
 export const hideMiniPlayer = async () => {
   const globalState = getGlobal()
 
-  // NOTE: I'm not sure why this setTimeout is needed but hideMiniPlayer
-  // was not working when called in handleQueueEnded without it.
-  setTimeout(() => {
-    setGlobal({
-      player: {
-        ...globalState.player,
-        showMiniPlayer: false
-      }
-    })
-  }, 0)
+  setGlobal({
+    player: {
+      ...globalState.player,
+      showMiniPlayer: false
+    }
+  })
 }
 
 const showMiniPlayer = async () => {

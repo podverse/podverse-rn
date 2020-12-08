@@ -101,8 +101,10 @@ const syncNowPlayingItemWithTrack = async () => {
 }
 
 const handleQueueEnded = async () => {
-  await setPlaybackPosition(0)
-  await hideMiniPlayer()
+  setTimeout(async () => {
+    await setPlaybackPosition(0)
+    hideMiniPlayer()
+  }, 0)
 }
 
 module.exports = async () => {
