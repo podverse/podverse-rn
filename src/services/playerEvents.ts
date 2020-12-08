@@ -3,7 +3,7 @@ import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import { PV } from '../resources'
-import { setNowPlayingItem } from '../state/actions/player'
+import { clearNowPlayingItem, hideMiniPlayer, setNowPlayingItem } from '../state/actions/player'
 import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'
 import {
   getClipHasEnded,
@@ -15,6 +15,7 @@ import {
   playerJumpForward,
   PVTrackPlayer,
   setClipHasEnded,
+  setPlaybackPosition,
   setPlaybackPositionWhenDurationIsAvailable,
   updateUserPlaybackPosition
 } from './player'
@@ -63,6 +64,7 @@ const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
 
 const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem) => {
   if (!currentNowPlayingItem) return
+
   await setNowPlayingItem(currentNowPlayingItem)
 
   if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
@@ -98,12 +100,18 @@ const syncNowPlayingItemWithTrack = async () => {
   setTimeout(sync, 1000)
 }
 
+const handleQueueEnded = async () => {
+  await setPlaybackPosition(0)
+  await hideMiniPlayer()
+}
+
 module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
 
   PVTrackPlayer.addEventListener('playback-queue-ended', async (x) => {
     console.log('playback-queue-ended', x)
     syncNowPlayingItemWithTrack()
+    handleQueueEnded()
   })
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {
