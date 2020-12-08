@@ -14,6 +14,8 @@ export const Keys = {
   CUSTOM_WEB_DOMAIN: 'CUSTOM_WEB_DOMAIN',
   CUSTOM_WEB_DOMAIN_ENABLED: 'CUSTOM_WEB_DOMAIN_ENABLED',
   DARK_MODE_ENABLED: 'DARK_MODE_ENABLED',
+  DEFAULT_ACTION_BUTTON_SCAN_QR_CODE: 'scanQRCode',
+  DEFAULT_ACTION_BUTTON_SEARCH: 'search',
   delete_clip: 'delete_clip',
   delete_episode: 'delete_episode',
   download: 'download',
