@@ -382,6 +382,11 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
     const showOfflineMessage = offlineModeEnabled && queryFrom !== PV.Filters._downloadedKey
 
+    const defaultNoSubscribedPodcastsMessage =
+      Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE
+        ? translate('Scan QR Code')
+        : translate('Search')
+
     return (
       <View style={styles.view} {...testProps('episodes_screen_view')}>
         <TableSectionSelectors
@@ -421,7 +426,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             noResultsMessage={
               noSubscribedPodcasts ? translate("You don't have any podcasts yet") : translate('No episodes found')
             }
-            noResultsTopActionText={noSubscribedPodcasts ? translate('Search') : ''}
+            noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
             onEndReached={this._onEndReached}
             onRefresh={this._onRefresh}
             renderHiddenItem={this._renderHiddenItem}

@@ -568,7 +568,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleNoResultsTopAction = () => {
-    if (Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS_SCREEN === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE) {
+    if (Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE) {
       this._handleScanQRCodeNavigation()
     } else {
       this._handleSearchNavigation()
@@ -622,7 +622,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       offlineModeEnabled && queryFrom !== PV.Filters._downloadedKey && queryFrom !== PV.Filters._subscribedKey
 
     const defaultNoSubscribedPodcastsMessage =
-      Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS_SCREEN === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE
+      Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE
         ? translate('Scan QR Code')
         : translate('Search')
 
