@@ -144,6 +144,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { showMiniPlayer } = this.global.player
     if (!showMiniPlayer) {
       clearNowPlayingItem()
+      PVTrackPlayer.reset()
     }
   }
 
