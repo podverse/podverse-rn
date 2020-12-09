@@ -20,11 +20,11 @@ import { getQueueItems } from '../../state/actions/queue'
 export const updatePlayerState = async (item: NowPlayingItem) => {
   if (!item) return
 
-  const globalState = getGlobal()
   const episode = convertNowPlayingItemToEpisode(item)
   episode.description = episode.description || 'No show notes available'
   const mediaRef = convertNowPlayingItemToMediaRef(item)
   const backupDuration = await PVTrackPlayer.getDuration()
+  const globalState = getGlobal()
 
   const newState = {
     player: {
@@ -47,14 +47,13 @@ export const updatePlayerState = async (item: NowPlayingItem) => {
 }
 
 export const initializePlayerQueue = async () => {
-  const globalState = getGlobal()
-
   const nowPlayingItem = await initializePlayerQueueService()
   if (nowPlayingItem) {
-    showMiniPlayer()
     await updatePlayerState(nowPlayingItem)
+    showMiniPlayer()
   }
 
+  const globalState = getGlobal()
   setGlobal({
     screenPlayer: {
       ...globalState.screenPlayer,
@@ -64,8 +63,9 @@ export const initializePlayerQueue = async () => {
 }
 
 export const clearNowPlayingItem = async () => {
-  const globalState = getGlobal()
   await clearNowPlayingItemService()
+
+  const globalState = getGlobal()
   setGlobal({
     player: {
       ...globalState.player,
@@ -82,7 +82,6 @@ export const clearNowPlayingItem = async () => {
 
 export const hideMiniPlayer = async () => {
   const globalState = getGlobal()
-
   setGlobal({
     player: {
       ...globalState.player,
@@ -93,7 +92,6 @@ export const hideMiniPlayer = async () => {
 
 const showMiniPlayer = () => {
   const globalState = getGlobal()
-
   setGlobal({
     player: {
       ...globalState.player,
@@ -135,9 +133,9 @@ export const loadItemAndPlayTrack = async (
   skipAddOrUpdateHistory?: boolean
 ) => {
   if (item) {
-    showMiniPlayer()
     await updatePlayerState(item)
     await loadItemAndPlayTrackService(item, shouldPlay, skipAddOrUpdateHistory)
+    showMiniPlayer()
   }
 
   const globalState = getGlobal()
@@ -156,9 +154,9 @@ export const loadItemAndPlayTrack = async (
 }
 
 export const setPlaybackSpeed = async (rate: number) => {
-  const globalState = getGlobal()
   await setPlaybackSpeedService(rate)
 
+  const globalState = getGlobal()
   setGlobal({
     player: {
       ...globalState.player,
@@ -168,7 +166,6 @@ export const setPlaybackSpeed = async (rate: number) => {
 }
 
 export const togglePlay = async () => {
-  showMiniPlayer()
   // If somewhere a play button is pressed, but nothing is currently loaded in the player,
   // then load the last time from memory by re-initializing the player.
   const trackId = await PVTrackPlayer.getCurrentTrack()
@@ -177,14 +174,16 @@ export const togglePlay = async () => {
   }
 
   await togglePlayService()
+
+  showMiniPlayer()
 }
 
 export const updatePlaybackState = async (state?: any) => {
-  const globalState = getGlobal()
   let playbackState = state
 
   if (!playbackState) playbackState = await PVTrackPlayer.getState()
 
+  const globalState = getGlobal()
   setGlobal({
     player: {
       ...globalState.player,
@@ -203,13 +202,13 @@ export const setNowPlayingItem = async (item: NowPlayingItem | null) => {
 }
 
 export const initializePlaybackSpeed = async () => {
-  const globalState = getGlobal()
   const playbackSpeedString = await AsyncStorage.getItem(PV.Keys.PLAYER_PLAYBACK_SPEED)
   let playbackSpeed = 1
   if (playbackSpeedString) {
     playbackSpeed = JSON.parse(playbackSpeedString)
   }
 
+  const globalState = getGlobal()
   setGlobal({
     player: {
       ...globalState.player,
