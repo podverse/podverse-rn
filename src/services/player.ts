@@ -185,7 +185,6 @@ const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
 export const updateUserPlaybackPosition = async (itemOverride?: any) => {
   try {
     let item = itemOverride
-
     if (!item) {
       const currentTrackId = await PVTrackPlayer.getCurrentTrack()
       item = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentTrackId)
@@ -271,10 +270,25 @@ export const loadItemAndPlayTrack = async (
     await addOrUpdateHistoryItem(item)
   }
 
-  await TrackPlayer.reset()
-  const track = (await createTrack(item)) as Track
-  await TrackPlayer.add(track)
-  await syncPlayerWithQueue()
+  if (Platform.OS === 'ios') {
+    await TrackPlayer.reset()
+    const track = (await createTrack(item)) as Track
+    await TrackPlayer.add(track)
+    await syncPlayerWithQueue()
+  } else {
+    const currentId = await TrackPlayer.getCurrentTrack()
+    if (currentId) {
+      await TrackPlayer.removeUpcomingTracks()
+      const track = (await createTrack(item)) as Track
+      await TrackPlayer.add(track)
+      await TrackPlayer.skipToNext()
+      await syncPlayerWithQueue()
+    } else {
+      const track = (await createTrack(item)) as Track
+      await TrackPlayer.add(track)
+      await syncPlayerWithQueue()
+    }
+  }
 
   if (shouldPlay) {
     if (item && !item.clipId) {
@@ -395,7 +409,8 @@ export const movePlayerItemToNewPosition = async (id: string, insertBeforeId: st
 }
 
 export const setPlaybackPosition = async (position?: number) => {
-  if (position || position === 0 || (position && position > 0)) {
+  const currentId = await PVTrackPlayer.getCurrentTrack()
+  if (currentId && (position || position === 0 || (position && position > 0))) {
     await TrackPlayer.seekTo(position)
   }
 }
