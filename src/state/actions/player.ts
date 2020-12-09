@@ -23,7 +23,6 @@ export const updatePlayerState = async (item: NowPlayingItem) => {
   const episode = convertNowPlayingItemToEpisode(item)
   episode.description = episode.description || 'No show notes available'
   const mediaRef = convertNowPlayingItemToMediaRef(item)
-  const backupDuration = await PVTrackPlayer.getDuration()
   const globalState = getGlobal()
 
   const newState = {
@@ -31,8 +30,7 @@ export const updatePlayerState = async (item: NowPlayingItem) => {
       ...globalState.player,
       episode,
       ...(!item.clipId ? { mediaRef } : { mediaRef: null }),
-      nowPlayingItem: item,
-      backupDuration
+      nowPlayingItem: item
     }
   } as any
 
@@ -183,11 +181,14 @@ export const updatePlaybackState = async (state?: any) => {
 
   if (!playbackState) playbackState = await PVTrackPlayer.getState()
 
+  const backupDuration = await PVTrackPlayer.getDuration()
+
   const globalState = getGlobal()
   setGlobal({
     player: {
       ...globalState.player,
-      playbackState
+      playbackState,
+      ...(backupDuration ? { backupDuration } : {})
     }
   })
 }

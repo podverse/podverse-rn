@@ -159,7 +159,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       // I don't think this issue is happening on Android, so we're not using this workaround on Android.
       const isIdle = await checkIdlePlayerState()
       if (Platform.OS === 'ios' && isIdle) {
-        await initializePlayerQueue()
+        const skipRestoreItem = true
+        await initializePlayerQueue(skipRestoreItem)
       }
     }
 
