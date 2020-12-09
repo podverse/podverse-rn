@@ -104,6 +104,7 @@ const handleQueueEnded = async () => {
   setTimeout(async () => {
     await setPlaybackPosition(0)
     hideMiniPlayer()
+    PVTrackPlayer.reset()
   }, 0)
 }
 
