@@ -37,6 +37,7 @@ import {
   initializePlaybackSpeed,
   initializePlayerQueue,
   initPlayerState,
+  showMiniPlayer,
   updatePlaybackState,
   updatePlayerState
 } from '../state/actions/player'
@@ -145,6 +146,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         if (!lastItem || (lastItem && currentItem && currentItem.episodeId !== lastItem.episodeId)) {
           await updatePlayerState(currentItem)
           updateUserPlaybackPosition()
+          showMiniPlayer()
         }
       }
 
