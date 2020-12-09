@@ -24,13 +24,15 @@ export const updatePlayerState = async (item: NowPlayingItem) => {
   const episode = convertNowPlayingItemToEpisode(item)
   episode.description = episode.description || 'No show notes available'
   const mediaRef = convertNowPlayingItemToMediaRef(item)
+  const backupDuration = await PVTrackPlayer.getDuration()
 
   const newState = {
     player: {
       ...globalState.player,
       episode,
       ...(!item.clipId ? { mediaRef } : { mediaRef: null }),
-      nowPlayingItem: item
+      nowPlayingItem: item,
+      backupDuration
     }
   } as any
 
@@ -172,7 +174,6 @@ export const togglePlay = async () => {
   const trackId = await PVTrackPlayer.getCurrentTrack()
   if (!trackId) {
     await initializePlayerQueue()
-    return
   }
 
   await togglePlayService()

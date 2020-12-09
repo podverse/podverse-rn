@@ -8,6 +8,7 @@ import { sliderStyles } from '../styles'
 import { Text } from './'
 
 type Props = {
+  backupDuration?: number | null
   clipEndTime?: number | null
   clipStartTime?: number | null
   globalTheme: any
@@ -50,8 +51,14 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
   }
 
   render() {
-    const { clipEndTime, clipStartTime, globalTheme, isLoading } = this.props
-    const { duration, position, slidingPosition } = this.state
+    const { backupDuration, clipEndTime, clipStartTime, globalTheme, isLoading } = this.props
+    const { position, slidingPosition } = this.state
+
+    // If no item is currently in the TrackPlayer, fallback to use the
+    // last loaded item's duration (backupDuration).
+    let { duration } = this.state
+    duration = duration > 0 ? duration : backupDuration
+
     const pos = slidingPosition || position
     const value = duration > 0 ? pos / duration : 0
 

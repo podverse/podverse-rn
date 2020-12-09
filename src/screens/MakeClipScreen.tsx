@@ -351,7 +351,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { globalTheme, player, session } = this.global
     const isDarkMode = globalTheme === darkTheme
-    const { nowPlayingItem, playbackRate, playbackState } = player
+    const { backupDuration, nowPlayingItem, playbackRate, playbackState } = player
     const { userInfo } = session
     const {
       endTime,
@@ -453,6 +453,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
             </View>
             <View style={styles.progressWrapper} transparent={true}>
               <PlayerProgressBar
+                backupDuration={backupDuration}
                 clipEndTime={endTime}
                 clipStartTime={startTime}
                 globalTheme={globalTheme}
