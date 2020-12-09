@@ -37,6 +37,7 @@ import {
   initializePlaybackSpeed,
   initializePlayerQueue,
   initPlayerState,
+  showMiniPlayer,
   updatePlaybackState,
   updatePlayerState
 } from '../state/actions/player'
@@ -145,6 +146,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         if (!lastItem || (lastItem && currentItem && currentItem.episodeId !== lastItem.episodeId)) {
           await updatePlayerState(currentItem)
           updateUserPlaybackPosition()
+          showMiniPlayer()
         }
       }
 
@@ -157,7 +159,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       // I don't think this issue is happening on Android, so we're not using this workaround on Android.
       const isIdle = await checkIdlePlayerState()
       if (Platform.OS === 'ios' && isIdle) {
-        await initializePlayerQueue()
+        const skipRestoreItem = true
+        await initializePlayerQueue(skipRestoreItem)
       }
     }
 
@@ -563,6 +566,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.props.navigation.navigate(PV.RouteNames.SearchScreen)
   }
 
+  _handleScanQRCodeNavigation = () => {
+    this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
+  }
+
+  _handleNoResultsTopAction = () => {
+    if (Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE) {
+      this._handleScanQRCodeNavigation()
+    } else {
+      this._handleSearchNavigation()
+    }
+  }
+
   _handleDataSettingsWifiOnly = () => {
     AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
     this.setState({ showDataSettingsConfirmDialog: false })
@@ -609,6 +624,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const showOfflineMessage =
       offlineModeEnabled && queryFrom !== PV.Filters._downloadedKey && queryFrom !== PV.Filters._subscribedKey
 
+    const defaultNoSubscribedPodcastsMessage =
+      Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE
+        ? translate('Scan QR Code')
+        : translate('Search')
+
     return (
       <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
         <RNView style={{ flex: 1 }}>
@@ -641,7 +661,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               dataTotalCount={flatListDataTotalCount}
               disableLeftSwipe={queryFrom !== PV.Filters._subscribedKey && queryFrom !== PV.Filters._downloadedKey}
               extraData={flatListData}
-              handleNoResultsTopAction={this._handleSearchNavigation}
+              handleNoResultsTopAction={this._handleNoResultsTopAction}
               keyExtractor={(item: any) => item.id}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
@@ -651,7 +671,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
                   ? this._ListHeaderComponent
                   : null
               }
-              noResultsTopActionText={noSubscribedPodcasts ? translate('Search') : ''}
+              noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
               noResultsMessage={
                 noSubscribedPodcasts ? translate("You don't have any podcasts yet") : translate('No podcasts found')
               }

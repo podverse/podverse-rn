@@ -6,7 +6,7 @@ import TrackPlayer, { Track } from 'react-native-track-player'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeId, convertURLToSecureProtocol, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
-import { gaTrackPageView } from './googleAnalytics'
+import { checkIfShouldUseServerData } from './auth'
 import {
   addOrUpdateHistoryItem,
   getHistoryItem,
@@ -208,7 +208,7 @@ export const updateUserPlaybackPosition = async (itemOverride?: any) => {
   }
 }
 
-export const initializePlayerQueue = async () => {
+export const initializePlayerQueue = async (skipRestoreItem?: bool) => {
   try {
     const queueItems = await getQueueItems()
     let filteredItems = [] as any
@@ -217,27 +217,30 @@ export const initializePlayerQueue = async () => {
     const historyItems = await getHistoryItems()
     let item = null
     let isNowPlayingItem = false
+    const isLoggedIn = await checkIfShouldUseServerData()
 
-    if (historyItems[0]) {
-      item = historyItems[0]
-    } else {
-      const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
-      if (nowPlayingItemString) {
-        item = JSON.parse(nowPlayingItemString)
-      }
-      isNowPlayingItem = true
-    }
-
-    if (item) {
-      filteredItems = filterItemFromQueueItems(queueItems, item)
-      const id = item.clipId ? item.clipId : item.episodeId
-      if (isNowPlayingItem) {
-        const historyItem = await getHistoryItem(id)
-        if (historyItem) {
-          item.userPlaybackPosition = historyItem.userPlaybackPosition
+    if (!skipRestoreItem) {
+      if (isLoggedIn && historyItems[0]) {
+        item = historyItems[0]
+      } else {
+        const nowPlayingItemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
+        if (nowPlayingItemString) {
+          item = JSON.parse(nowPlayingItemString)
         }
+        isNowPlayingItem = true
       }
-      filteredItems.unshift(item)
+
+      if (item) {
+        filteredItems = filterItemFromQueueItems(queueItems, item)
+        const id = item.clipId ? item.clipId : item.episodeId
+        if (isNowPlayingItem) {
+          const historyItem = await getHistoryItem(id)
+          if (historyItem) {
+            item.userPlaybackPosition = historyItem.userPlaybackPosition
+          }
+        }
+        filteredItems.unshift(item)
+      }
     }
 
     const tracks = await createTracks(filteredItems)
