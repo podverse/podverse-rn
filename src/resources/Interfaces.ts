@@ -173,6 +173,7 @@ export interface IFilters {
   _topPastWeek: string
   _topPastMonth: string
   _topPastYear: string
+  _topAllTime: string
   _chronologicalKey: string
   _oldestKey: string
   _myClipsKey: string

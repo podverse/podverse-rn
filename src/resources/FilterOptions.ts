@@ -13,6 +13,7 @@ const {
   _topPastWeek,
   _topPastMonth,
   _topPastYear,
+  _topAllTime,
   _chronologicalKey,
   _oldestKey,
   _myClipsKey,
@@ -31,7 +32,7 @@ const {
   _allCategoriesKey
 } = Filters
 
-const _top = [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear]
+const _top = [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear, _topAllTime]
 
 const sortAlphabeticalItem = {
   label: 'alphabetical',
@@ -138,6 +139,10 @@ const allSortItems = [
   {
     label: 'top - past year',
     value: _topPastYear
+  },
+  {
+    label: 'top - all time',
+    value: _topAllTime
   },
   {
     label: 'random',

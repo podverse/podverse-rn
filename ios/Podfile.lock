@@ -234,8 +234,8 @@ PODS:
     - React-Core
   - react-native-track-player (1.2.3):
     - React
-  - react-native-webview (7.6.0):
-    - React
+  - react-native-webview (11.0.0):
+    - React-Core
   - React-RCTActionSheet (0.63.3):
     - React-Core/RCTActionSheetHeaders (= 0.63.3)
   - React-RCTAnimation (0.63.3):
@@ -546,7 +546,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: ddaca8bbb9e6e914b1a23787ccb879bc642931c9
   react-native-safe-area-context: 79fea126c6830c85f65947c223a5e3058a666937
   react-native-track-player: 28b96dd6404dea3eee80e67b74507679235a8dfb
-  react-native-webview: db4682f1698ab4b17a5e88f951031d203ff8aea8
+  react-native-webview: 6b7950628616679d81bdd75747e50cf6de9b5a5f
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa
   React-RCTAnimation: 1befece0b5183c22ae01b966f5583f42e69a83c2
   React-RCTBlob: 0b284339cbe4b15705a05e2313a51c6d8b51fa40
