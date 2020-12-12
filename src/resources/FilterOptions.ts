@@ -194,6 +194,7 @@ export const FilterOptions = {
     EpisodesScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
       sort: [_mostRecentKey, ..._top],
+      sortLimitQueries: [..._top],
       sublist: [{ label: 'All', value: _allCategoriesKey }],
       hideSort: []
     },
