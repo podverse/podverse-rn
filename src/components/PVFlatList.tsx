@@ -18,6 +18,7 @@ type Props = {
   handleFilterInputChangeText?: any
   handleFilterInputClear?: any
   initialScrollIndex?: number
+  isCompleteData?: boolean
   isLoadingMore?: boolean
   isRefreshing?: boolean
   ItemSeparatorComponent?: any
@@ -46,6 +47,7 @@ export const PVFlatList = (props: Props) => {
     dataTotalCount,
     disableLeftSwipe = true,
     extraData,
+    isCompleteData,
     handleNoResultsBottomAction,
     handleNoResultsMiddleAction,
     handleNoResultsTopAction,
@@ -97,17 +99,18 @@ export const PVFlatList = (props: Props) => {
           data={data}
           disableLeftSwipe={disableLeftSwipe}
           disableRightSwipe={true}
-          extraData={extraData}
           ItemSeparatorComponent={ItemSeparatorComponent}
           keyExtractor={keyExtractor}
           ListFooterComponent={() => {
-            if (isLoadingMore) {
+            if (isLoadingMore && !isEndOfResults) {
               return (
                 <View style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]} transparent={transparent}>
                   <ActivityIndicator />
                 </View>
               )
-            } else if (isEndOfResults) {
+            } else if (!isLoadingMore && !isEndOfResults) {
+              return <View style={[styles.isLoadingMoreCell]} transparent={transparent} />
+            } else if (isEndOfResults && !isCompleteData) {
               return (
                 <View style={[styles.lastCell, globalTheme.tableCellBorder]} transparent={transparent}>
                   <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.lastCellText]}>
@@ -116,6 +119,7 @@ export const PVFlatList = (props: Props) => {
                 </View>
               )
             }
+
             return null
           }}
           onEndReached={onEndReached}
