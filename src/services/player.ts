@@ -348,10 +348,14 @@ export const createTrack = async (item: NowPlayingItem) => {
     episodeMediaUrl = '',
     episodeTitle = 'untitled episode',
     podcastImageUrl,
+    podcastShrunkImageUrl,
     podcastTitle = 'untitled podcast'
   } = item
   const id = clipId || episodeId
   let track = null
+
+  const imageUrl = podcastShrunkImageUrl ? podcastShrunkImageUrl : podcastImageUrl
+
   if (id && episodeId) {
     const isDownloadedFile = await checkIfFileIsDownloaded(episodeId, episodeMediaUrl)
     const filePath = await getDownloadedFilePath(episodeId, episodeMediaUrl)
@@ -362,7 +366,7 @@ export const createTrack = async (item: NowPlayingItem) => {
         url: `file://${filePath}`,
         title: episodeTitle,
         artist: podcastTitle,
-        ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
+        ...(imageUrl ? { artwork: imageUrl } : {})
       }
     } else {
       track = {
@@ -370,7 +374,7 @@ export const createTrack = async (item: NowPlayingItem) => {
         url: convertURLToSecureProtocol(episodeMediaUrl),
         title: episodeTitle,
         artist: podcastTitle,
-        ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
+        ...(imageUrl ? { artwork: imageUrl } : {})
       }
     }
   }
