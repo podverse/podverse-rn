@@ -78,6 +78,8 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   if (!isPlayingFromHistory && currentNowPlayingItem) {
     handleAddOrUpdateRequestInterval(currentNowPlayingItem)
   }
+
+  PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
 }
 
 const syncNowPlayingItemWithTrack = async () => {
