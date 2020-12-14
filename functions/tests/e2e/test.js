@@ -153,6 +153,13 @@ const confirmAndroidAlert = async (testLabel) => {
   logTestInfo(false, null, 'Confirm Android Alert')
 }
 
+const cancelAndroidAlert = async (testLabel) => {
+  logTestInfo(true, null, 'Cancel Android Alert')
+  const el = await driver.element('id', 'android:id/button2')
+  await el.click()
+  logTestInfo(false, null, 'Cancel Android Alert')
+}
+
 /*
 All test IDs should be present via one of these options
 testID=
@@ -297,7 +304,7 @@ const runTests = async (customCapabilities) => {
     await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
     await elementByIdClick('login_submit')
     await driver.sleep(2000)
-    await confirmAndroidAlert()
+    await cancelAndroidAlert()
 
     // // await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', null, goBack)
 
@@ -310,7 +317,12 @@ const runTests = async (customCapabilities) => {
     await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
     
     //Song Exploder - 01
+    await logPerformance('Podcast - Song Exploder')
     await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_view')
+    await elementWaitFor('podcast_screen_is_not_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_not_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_subscribed_icon_button')
     await performScrollDown()
     await elementByIdClick('podcast_screen_episode_item_3_more_button')
     await elementByIdClick('podcast_screen_action_sheet_queue_next_button')
@@ -322,7 +334,11 @@ const runTests = async (customCapabilities) => {
     await driver.back()
 
     //Joe Rogan - 02
+    await logPerformance('Podcast - Joe Rogan')
     await elementByIdAndClickAndTest('podcasts_screen_podcast_item_1', 'podcast_screen_view')
+    await elementWaitFor('podcast_screen_is_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_not_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_subscribed_icon_button')
     await performScrollDown(19)
     await elementByIdClick('podcast_screen_episode_item_27_more_button')
     await elementByIdClick('podcast_screen_action_sheet_queue_last_button')
@@ -337,7 +353,11 @@ const runTests = async (customCapabilities) => {
     await driver.back()
     
     //Very Bad Wizards - 03
+    await logPerformance('Podcast - Very Bad Wizards')
     await elementByIdAndClickAndTest('podcasts_screen_podcast_item_2', 'podcast_screen_view')
+    await elementWaitFor('podcast_screen_is_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_not_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_subscribed_icon_button')
     await performScrollDown(4)
     await elementByIdClick('podcast_screen_episode_item_6_more_button')
     await elementByIdClick('podcast_screen_action_sheet_add_to_playlist_button')
