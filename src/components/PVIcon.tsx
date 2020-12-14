@@ -2,6 +2,7 @@ import React from 'react'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
+import { testProps } from '../lib/utility'
 import { darkTheme, iconStyles } from '../styles'
 
 type Props = {
