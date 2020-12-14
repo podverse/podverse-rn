@@ -14,6 +14,7 @@ type Props = {
   isSubscribed?: boolean
   isSubscribing?: boolean
   name: string
+  testID: string
 }
 
 export const ProfileTableHeader = (props: Props) => {
@@ -25,7 +26,8 @@ export const ProfileTableHeader = (props: Props) => {
     isNotFound,
     isSubscribed,
     isSubscribing,
-    name = translate('anonymous')
+    name = translate('anonymous'),
+    testID
   } = props
 
   return (
@@ -50,6 +52,7 @@ export const ProfileTableHeader = (props: Props) => {
               handleToggleSubscribe={handleToggleSubscribe}
               isSubscribed={isSubscribed}
               isSubscribing={isSubscribing}
+              testID={testID}
             />
           )}
         </View>

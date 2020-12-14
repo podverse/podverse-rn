@@ -4,7 +4,7 @@ import { Platform } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import { PV } from '../resources'
 import { clearNowPlayingItem, hideMiniPlayer, setNowPlayingItem } from '../state/actions/player'
-import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'
+import { addOrUpdateHistoryItem, checkIfPlayingFromHistory, updateHistoryItemPlaybackPosition } from './history'
 import {
   getClipHasEnded,
   getNowPlayingItem,
@@ -78,6 +78,8 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   if (!isPlayingFromHistory && currentNowPlayingItem) {
     handleAddOrUpdateRequestInterval(currentNowPlayingItem)
   }
+
+  PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
 }
 
 const syncNowPlayingItemWithTrack = async () => {
@@ -100,21 +102,34 @@ const syncNowPlayingItemWithTrack = async () => {
   setTimeout(sync, 1000)
 }
 
-const handleQueueEnded = async () => {
+const handleQueueEnded = async (x) => {
   setTimeout(async () => {
-    await setPlaybackPosition(0)
     hideMiniPlayer()
-    PVTrackPlayer.reset()
+
+    if (x && x.track) {
+      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(x.track)
+      if (currentNowPlayingItem) {
+        currentNowPlayingItem.userPlaybackPosition = 0
+        await updateHistoryItemPlaybackPosition(currentNowPlayingItem)
+      }
+    }
+
+    // Don't call reset on Android because it triggers the playback-queue-ended event
+    // and will cause an infinite loop
+    if (Platform.OS === 'ios') {
+      PVTrackPlayer.reset()
+    }
   }, 0)
 }
 
 module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
 
+  // NOTE: TrackPlayer.reset will call the playback-queue-ended event on Android!!!
   PVTrackPlayer.addEventListener('playback-queue-ended', async (x) => {
     console.log('playback-queue-ended', x)
     await syncNowPlayingItemWithTrack()
-    handleQueueEnded()
+    handleQueueEnded(x)
   })
 
   PVTrackPlayer.addEventListener('playback-state', async (x) => {

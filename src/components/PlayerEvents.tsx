@@ -5,7 +5,8 @@ import { refreshDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
 import { getNowPlayingItem } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { clearNowPlayingItem, updatePlaybackState, updatePlayerState } from '../state/actions/player'
+import { clearNowPlayingItem, showMiniPlayer, updatePlaybackState, updatePlayerState } from '../state/actions/player'
+import { getQueueItems } from '../state/actions/queue'
 
 type Props = {}
 
@@ -58,11 +59,13 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
 
     if (nowPlayingItem) {
       await updatePlayerState(nowPlayingItem)
+      showMiniPlayer()
     } else {
       await clearNowPlayingItem()
     }
 
     await updatePlaybackState()
+    await getQueueItems()
   }
 
   render() {

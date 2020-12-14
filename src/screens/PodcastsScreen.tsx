@@ -663,6 +663,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               extraData={flatListData}
               handleNoResultsTopAction={this._handleNoResultsTopAction}
               keyExtractor={(item: any) => item.id}
+              isCompleteData={queryFrom === PV.Filters._subscribedKey || queryFrom === PV.Filters._downloadedKey}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
