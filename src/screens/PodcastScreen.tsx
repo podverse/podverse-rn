@@ -614,6 +614,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           podcastImageUrl={podcast && (podcast.shrunkImageUrl || podcast.imageUrl)}
           podcastTitle={podcast && podcast.title}
           showSettings={showSettings}
+          testID={testIDPrefix}
         />
         {!showSettings && (
           <TableSectionSelectors

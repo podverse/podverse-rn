@@ -97,6 +97,7 @@ export const PlaylistTableHeader = (props: Props) => {
                 handleToggleSubscribe={handleToggleSubscribe}
                 isSubscribed={isSubscribed}
                 isSubscribing={isSubscribing}
+                testID={testID}
               />
             )}
           </View>

@@ -17,6 +17,7 @@ type Props = {
   podcastImageUrl?: string
   podcastTitle: string
   showSettings?: boolean
+  testID: string
 }
 
 export const PodcastTableHeader = (props: Props) => {
@@ -31,7 +32,8 @@ export const PodcastTableHeader = (props: Props) => {
     isSubscribing,
     podcastImageUrl,
     podcastTitle = translate('untitled podcast'),
-    showSettings
+    showSettings,
+    testID
   } = props
   const [fontScaleMode] = useGlobal('fontScaleMode')
 
@@ -59,6 +61,7 @@ export const PodcastTableHeader = (props: Props) => {
                 handleToggleSubscribe={handleToggleSubscribe}
                 isSubscribed={isSubscribed}
                 isSubscribing={isSubscribing}
+                testID={testID}
               />
             </View>
             <View style={styles.textWrapperBottom}>

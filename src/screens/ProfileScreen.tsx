@@ -511,6 +511,7 @@ export class ProfileScreen extends React.Component<Props, State> {
               isSubscribed={isSubscribed}
               isSubscribing={isSubscribing}
               name={(user && user.name) || translate('anonymous')}
+              testID={testIDPrefix}
             />
             <TableSectionSelectors
               handleSelectLeftItem={this.selectLeftItem}
