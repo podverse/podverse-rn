@@ -37,7 +37,7 @@ export const PVIcon = (props: Props) => {
         top: 8
       }}
       onPress={onPress}
-      testID={testID}>
+      {...(testID ? testProps(`${testID}_icon_button`) : {})}>
       <Icon
         {...(brand ? { brand } : {})}
         color={colorOverride || color}
