@@ -473,7 +473,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderHiddenItem = ({ item }, rowMap) => {
+  _renderHiddenItem = ({ item, index }, rowMap) => {
     const { queryFrom } = this.state
     const buttonText = queryFrom === PV.Filters._downloadedKey ? translate('Delete') : translate('Unsubscribe')
 

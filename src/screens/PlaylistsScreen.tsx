@@ -111,7 +111,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderHiddenItem = ({ item }, rowMap) => {
+  _renderHiddenItem = ({ item, index }, rowMap) => {
     const { isRemoving, queryFrom } = this.state
     const text = queryFrom === PV.Filters._myPlaylistsKey ? translate('Delete') : translate('Unsubscribe')
     return (

@@ -290,7 +290,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderHiddenItem = ({ item }, rowMap) => (
+  _renderHiddenItem = ({ item, index }, rowMap) => (
     <SwipeRowBack
       onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
       testID={`${testIDPrefix}_episode_item_${index}`}
