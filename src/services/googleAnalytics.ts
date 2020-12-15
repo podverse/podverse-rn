@@ -27,7 +27,7 @@ export const gaTrackPageView = async (path: string, title: string, queryObj: any
   const query = {
     v, // GA API version
     tid: PV.Google.analytics.trackingId, // tracking id
-    t: 'screenview', // hit type
+    t: 'pageview', // hit type
     ds: Platform.OS,
     dt: title, // title
     cid, // anonymous client id
