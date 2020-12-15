@@ -4,7 +4,8 @@ import { gaTrackPageView } from './googleAnalytics'
 export const trackPageView = async (path: string, title: string) => {
   const global = getGlobal()
   const { player } = global
-  const { nowPlayingItem = {} } = player
+  const nowPlayingItem = player.nowPlayingItem || {}
+
   const { clipId, clipTitle, episodeId, episodeTitle, podcastId, podcastTitle } = nowPlayingItem
 
   const queryObj = {
