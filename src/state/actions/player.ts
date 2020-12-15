@@ -88,7 +88,7 @@ export const hideMiniPlayer = async () => {
   })
 }
 
-const showMiniPlayer = () => {
+export const showMiniPlayer = () => {
   const globalState = getGlobal()
   setGlobal({
     player: {

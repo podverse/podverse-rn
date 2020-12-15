@@ -252,6 +252,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           isSubscribing={isSubscribing}
           itemCount={playlist && playlist.itemCount}
           lastUpdated={playlist && playlist.updatedAt}
+          testID={testIDPrefix}
           title={playlist && playlist.title}
         />
         {isLoading && <ActivityIndicator />}

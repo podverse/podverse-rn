@@ -13,6 +13,7 @@ const {
   _topPastWeek,
   _topPastMonth,
   _topPastYear,
+  _topAllTime,
   _chronologicalKey,
   _oldestKey,
   _myClipsKey,
@@ -31,7 +32,7 @@ const {
   _allCategoriesKey
 } = Filters
 
-const _top = [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear]
+const _top = [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear, _topAllTime]
 
 const sortAlphabeticalItem = {
   label: 'alphabetical',
@@ -140,6 +141,10 @@ const allSortItems = [
     value: _topPastYear
   },
   {
+    label: 'top - all time',
+    value: _topAllTime
+  },
+  {
     label: 'random',
     value: _randomKey
   }
@@ -189,6 +194,7 @@ export const FilterOptions = {
     EpisodesScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
       sort: [_mostRecentKey, ..._top],
+      sortLimitQueries: [..._top],
       sublist: [{ label: 'All', value: _allCategoriesKey }],
       hideSort: []
     },

@@ -22,6 +22,8 @@ type State = {
   showNoInternetConnectionMessage?: boolean
 }
 
+const testIDPrefix = 'membership_screen'
+
 export class MembershipScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
@@ -139,7 +141,8 @@ export class MembershipScreen extends React.Component<Props, State> {
                 disabled={disableButton}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={this.handleRenewPress}
-                style={styles.subText}>
+                style={styles.subText}
+                {...testProps(`${testIDPrefix}_renew_membership`)}>
                 {translate('Renew Membership')}
               </TextLink>
             </View>
@@ -162,7 +165,8 @@ export class MembershipScreen extends React.Component<Props, State> {
                 disabled={disableButton}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={this.handleSignUpPress}
-                style={styles.subText}>
+                style={styles.subText}
+                {...testProps(`${testIDPrefix}_sign_up`)}>
                 {translate('Sign Up')}
               </TextLink>
             </View>

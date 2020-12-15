@@ -16,6 +16,7 @@ export const Filters: IFilters = {
   _topPastWeek: 'top-past-week',
   _topPastMonth: 'top-past-month',
   _topPastYear: 'top-past-year',
+  _topAllTime: 'top-all-time',
   _chronologicalKey: 'chronological',
   _oldestKey: 'oldest',
   _myClipsKey: 'my-clips',

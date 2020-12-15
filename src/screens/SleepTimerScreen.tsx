@@ -20,10 +20,12 @@ type Props = {
 
 type State = {}
 
+const testIDPrefix = 'sleep_timer_screen'
+
 export class SleepTimerScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
     title: translate('Sleep Timer'),
-    headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
+    headerLeft: <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
     headerRight: <RNView />
   })
 
@@ -78,6 +80,7 @@ export class SleepTimerScreen extends React.Component<Props, State> {
             isSuccess={!isActive}
             isWarning={isActive}
             onPress={this._toggleSleepTimer}
+            testID={`${testIDPrefix}_toggle_timer`}
             text={isActive ? translate('Stop Timer') : translate('Start Timer')}
             wrapperStyles={styles.button}
           />

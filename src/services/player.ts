@@ -260,6 +260,8 @@ export const loadItemAndPlayTrack = async (
 
   if (!item) return
 
+  TrackPlayer.stop()
+
   const lastPlayingItem = await getNowPlayingItem()
 
   // Episodes and clips must be already loaded in history
@@ -271,7 +273,7 @@ export const loadItemAndPlayTrack = async (
   }
 
   if (Platform.OS === 'ios') {
-    await TrackPlayer.reset()
+    TrackPlayer.reset()
     const track = (await createTrack(item)) as Track
     await TrackPlayer.add(track)
     await syncPlayerWithQueue()
@@ -348,10 +350,14 @@ export const createTrack = async (item: NowPlayingItem) => {
     episodeMediaUrl = '',
     episodeTitle = 'untitled episode',
     podcastImageUrl,
+    podcastShrunkImageUrl,
     podcastTitle = 'untitled podcast'
   } = item
   const id = clipId || episodeId
   let track = null
+
+  const imageUrl = podcastShrunkImageUrl ? podcastShrunkImageUrl : podcastImageUrl
+
   if (id && episodeId) {
     const isDownloadedFile = await checkIfFileIsDownloaded(episodeId, episodeMediaUrl)
     const filePath = await getDownloadedFilePath(episodeId, episodeMediaUrl)
@@ -362,7 +368,7 @@ export const createTrack = async (item: NowPlayingItem) => {
         url: `file://${filePath}`,
         title: episodeTitle,
         artist: podcastTitle,
-        ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
+        ...(imageUrl ? { artwork: imageUrl } : {})
       }
     } else {
       track = {
@@ -370,7 +376,7 @@ export const createTrack = async (item: NowPlayingItem) => {
         url: convertURLToSecureProtocol(episodeMediaUrl),
         title: episodeTitle,
         artist: podcastTitle,
-        ...(podcastImageUrl ? { artwork: podcastImageUrl } : {})
+        ...(imageUrl ? { artwork: imageUrl } : {})
       }
     }
   }

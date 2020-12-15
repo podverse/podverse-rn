@@ -412,8 +412,12 @@ export class PodcastScreen extends React.Component<Props, State> {
     }
   }
 
-  _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text={translate('Delete')} />
+  _renderHiddenItem = ({ item, index }, rowMap) => (
+    <SwipeRowBack
+      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
+      testID={`${testIDPrefix}_clip_item_${index}`}
+      text={translate('Delete')}
+    />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
@@ -614,6 +618,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           podcastImageUrl={podcast && (podcast.shrunkImageUrl || podcast.imageUrl)}
           podcastTitle={podcast && podcast.title}
           showSettings={showSettings}
+          testID={testIDPrefix}
         />
         {!showSettings && (
           <TableSectionSelectors
@@ -631,12 +636,14 @@ export class PodcastScreen extends React.Component<Props, State> {
           <View style={styles.settingsView}>
             <SwitchWithText
               onValueChange={this._handleToggleLimitDownloads}
+              testID={`${testIDPrefix}_toggle_download_limit`}
               text={limitDownloadedEpisodes ? translate('Download limit on') : translate('Download limit off')}
               value={limitDownloadedEpisodes}
             />
             <NumberSelectorWithText
               handleChangeText={this._handleChangeDownloadLimitText}
               selectedNumber={downloadedEpisodeLimit}
+              testID={`${testIDPrefix}_downloaded_episode_limit_count`}
               text={translate('Download limit max')}
             />
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.settingsHelpText}>
@@ -646,6 +653,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             <Button
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
               wrapperStyles={styles.button}
+              testID={`${testIDPrefix}_delete_downloaded_episodes`}
               text={translate('Delete Downloaded Episodes')}
             />
           </View>
@@ -706,8 +714,16 @@ export class PodcastScreen extends React.Component<Props, State> {
           <Dialog.Description>
             {translate('Are you sure you want to delete all of your downloaded episodes from this podcast')}
           </Dialog.Description>
-          <Dialog.Button label={translate('No')} onPress={this._handleToggleDeleteDownloadedEpisodesDialog} />
-          <Dialog.Button label={translate('Yes')} onPress={this._handleDeleteDownloadedEpisodes} />
+          <Dialog.Button
+            label={translate('No')}
+            onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
+            {...testProps('dialog_delete_downloaded_episodes_no')}
+          />
+          <Dialog.Button
+            label={translate('Yes')}
+            onPress={this._handleDeleteDownloadedEpisodes}
+            {...testProps('dialog_delete_downloaded_episodes_yes')}
+          />
         </Dialog.Container>
       </View>
     )

@@ -11,6 +11,7 @@ type Props = {
   middleActionHandler?: any
   middleActionText?: string
   subMessage?: string
+  testID: string
   topActionHandler?: any
   topActionText?: string
   transparent?: boolean
@@ -25,6 +26,7 @@ export const MessageWithAction = (props: Props) => {
     middleActionHandler,
     middleActionText,
     subMessage,
+    testID,
     topActionHandler,
     topActionText,
     transparent
@@ -44,13 +46,28 @@ export const MessageWithAction = (props: Props) => {
         </Text>
       )}
       {!isLoading && !!topActionText && !!topActionHandler && (
-        <Button text={topActionText} onPress={topActionHandler} wrapperStyles={styles.button} />
+        <Button
+          onPress={topActionHandler}
+          testID={`${testID}_top_action`}
+          text={topActionText}
+          wrapperStyles={styles.button}
+        />
       )}
       {!isLoading && !!middleActionText && !!middleActionHandler && (
-        <Button text={middleActionText} onPress={middleActionHandler} wrapperStyles={styles.button} />
+        <Button
+          onPress={middleActionHandler}
+          testID={`${testID}_middle_action`}
+          text={middleActionText}
+          wrapperStyles={styles.button}
+        />
       )}
       {!isLoading && !!bottomActionText && !!bottomActionHandler && (
-        <Button text={bottomActionText} onPress={bottomActionHandler} wrapperStyles={styles.button} />
+        <Button
+          onPress={bottomActionHandler}
+          testID={`${testID}_bottom_action`}
+          text={bottomActionText}
+          wrapperStyles={styles.button}
+        />
       )}
       {isLoading && <ActivityIndicator />}
     </View>

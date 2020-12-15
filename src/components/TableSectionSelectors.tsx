@@ -15,6 +15,7 @@ type Props = {
   hideRightItemWhileLoading?: boolean
   includeChronological?: boolean
   isAddByRSSPodcastFeedUrl?: boolean
+  isSortLimitQueries?: boolean
   isBottomBar?: boolean
   isCategories?: boolean
   isLoggedIn?: boolean
@@ -25,10 +26,12 @@ type Props = {
   testID: string
 }
 
-const filterAddByRSSRightItems = (screenName: string, isAddByRSSPodcastFeedUrl: boolean) =>
+const filterAddByRSSRightItems = (screenName: string, isAddByRSSPodcastFeedUrl: boolean, isSortLimitQueries: boolean) =>
   PV.FilterOptions.sortItems.filter((sortKey: any) => {
     return isAddByRSSPodcastFeedUrl
       ? PV.FilterOptions.screenFilters[screenName].addByPodcastRSSFeedURLSort.includes(sortKey.value)
+      : isSortLimitQueries
+      ? PV.FilterOptions.screenFilters[screenName].sortLimitQueries.includes(sortKey.value)
       : PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
   })
 
@@ -46,6 +49,7 @@ export const TableSectionSelectors = (props: Props) => {
     hideRightItemWhileLoading,
     includeChronological = false,
     isAddByRSSPodcastFeedUrl = false,
+    isSortLimitQueries = false,
     isBottomBar = false,
     isCategories = false,
     isLoggedIn,
@@ -73,7 +77,7 @@ export const TableSectionSelectors = (props: Props) => {
         })
       }
 
-      rightItems = filterAddByRSSRightItems(screenName, !!isAddByRSSPodcastFeedUrl)
+      rightItems = filterAddByRSSRightItems(screenName, !!isAddByRSSPodcastFeedUrl, isSortLimitQueries)
     } else {
       // Bottom bar
       const newleftItems = PV.FilterOptions.screenFilters[screenName].sublist
@@ -122,7 +126,7 @@ export const TableSectionSelectors = (props: Props) => {
     const screen = PV.FilterOptions.screenFilters[screenName]
     if (!screen.hideSort.includes(selectedLeftItemKey)) {
       if (!isBottomBar) {
-        rightItems = filterAddByRSSRightItems(screenName, !!isAddByRSSPodcastFeedUrl)
+        rightItems = filterAddByRSSRightItems(screenName, !!isAddByRSSPodcastFeedUrl, isSortLimitQueries)
 
         if (screen.includeAlphabetical && screen.includeAlphabetical.includes(selectedLeftItemKey)) {
           rightItems.unshift(PV.FilterOptions.items.sortAlphabeticalItem)

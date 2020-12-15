@@ -511,6 +511,7 @@ export class ProfileScreen extends React.Component<Props, State> {
               isSubscribed={isSubscribed}
               isSubscribing={isSubscribing}
               name={(user && user.name) || translate('anonymous')}
+              testID={testIDPrefix}
             />
             <TableSectionSelectors
               handleSelectLeftItem={this.selectLeftItem}
@@ -560,8 +561,16 @@ export class ProfileScreen extends React.Component<Props, State> {
             <Dialog.Container visible={showDeleteConfirmDialog}>
               <Dialog.Title>Delete Clip</Dialog.Title>
               <Dialog.Description>Are you sure?</Dialog.Description>
-              <Dialog.Button label={translate('Cancel')} onPress={this._cancelDeleteMediaRef} />
-              <Dialog.Button label={translate('Delete')} onPress={this._deleteMediaRef} />
+              <Dialog.Button
+                label={translate('Cancel')}
+                onPress={this._cancelDeleteMediaRef}
+                {...testProps('dialog_delete_clip_cancel')}
+              />
+              <Dialog.Button
+                label={translate('Delete')}
+                onPress={this._deleteMediaRef}
+                {...testProps('dialog_delete_clip_delete')}
+              />
             </Dialog.Container>
           </View>
         )}

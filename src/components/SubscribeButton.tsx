@@ -1,6 +1,7 @@
 import React from 'react'
 import { ActivityIndicator, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import { useGlobal } from 'reactn'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { Icon } from './'
 
@@ -24,7 +25,7 @@ export const SubscribeButton = (props: Props) => {
         top: 4
       }}
       onPress={handleToggleSubscribe}
-      testID={`${testID}_subscribe`}>
+      {...(testID ? testProps(`${testID}_subscribe_button`) : {})}>
       <View style={styles.buttonView}>
         {isSubscribing && (
           <View style={styles.activityIndicator}>

@@ -290,8 +290,12 @@ export class EpisodesScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text={translate('Delete')} />
+  _renderHiddenItem = ({ item, index }, rowMap) => (
+    <SwipeRowBack
+      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
+      testID={`${testIDPrefix}_episode_item_${index}`}
+      text={translate('Delete')}
+    />
   )
 
   _handleHiddenItemPress = async (selectedId, rowMap) => {
@@ -387,12 +391,15 @@ export class EpisodesScreen extends React.Component<Props, State> {
         ? translate('Scan QR Code')
         : translate('Search')
 
+    const isSortLimitQueries = queryFrom === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._categoryKey
+
     return (
       <View style={styles.view} {...testProps('episodes_screen_view')}>
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
           handleSelectRightItem={this.selectRightItem}
           hideRightItemWhileLoading={hideRightItemWhileLoading}
+          isSortLimitQueries={isSortLimitQueries}
           screenName='EpisodesScreen'
           selectedLeftItemKey={queryFrom}
           selectedRightItemKey={querySort}
@@ -404,6 +411,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             handleSelectRightItem={(x: string) => this._selectCategory(x, true)}
             isBottomBar={true}
             isCategories={true}
+            isSortLimitQueries={isSortLimitQueries}
             screenName='EpisodesScreen'
             selectedLeftItemKey={selectedCategory}
             selectedRightItemKey={selectedSubCategory}
@@ -583,9 +591,11 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
   _queryAllEpisodes = async (sort: string | null, page: number = 1) => {
     const { searchBarText: searchAllFieldsText } = this.state
+    const cleanedSort =
+      sort === PV.Filters._mostRecentKey || sort === PV.Filters._randomKey ? PV.Filters._topPastWeek : sort
 
     const results = await getEpisodes({
-      sort,
+      sort: cleanedSort,
       page,
       ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
       includePodcast: true
@@ -596,9 +606,12 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
   _queryEpisodesByCategory = async (categoryId?: string | null, sort?: string | null, page: number = 1) => {
     const { searchBarText: searchAllFieldsText } = this.state
+    const cleanedSort =
+      sort === PV.Filters._mostRecentKey || sort === PV.Filters._randomKey ? PV.Filters._topPastWeek : sort
+
     const results = await getEpisodes({
       categories: categoryId,
-      sort,
+      sort: cleanedSort,
       page,
       ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
       includePodcast: true

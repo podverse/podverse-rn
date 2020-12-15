@@ -218,7 +218,8 @@ export class QueueScreen extends React.Component<Props, State> {
           if (!isEditing) {
             this._handlePlayItem(item)
           }
-        }}>
+        }}
+        {...testProps(`${testIDPrefix}_history_item_${index}`)}>
         <View transparent={isTransparent}>
           <QueueTableCell
             clipEndTime={item.clipEndTime}
@@ -231,6 +232,7 @@ export class QueueScreen extends React.Component<Props, State> {
             podcastImageUrl={item.podcastImageUrl}
             {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
             showRemoveButton={isEditing}
+            testID={`${testIDPrefix}_history_item_${index}`}
             transparent={isTransparent}
           />
         </View>
@@ -255,6 +257,7 @@ export class QueueScreen extends React.Component<Props, State> {
           {...(data.podcastTitle ? { podcastTitle: data.podcastTitle } : {})}
           showMoveButton={!isEditing}
           showRemoveButton={isEditing}
+          testID={`${testIDPrefix}_queue_item_${index}`}
           transparent={isTransparent}
         />
         <Divider style={styles.tableCellDivider} />
@@ -317,7 +320,7 @@ export class QueueScreen extends React.Component<Props, State> {
     const { isEditing, isLoading, isRemoving, isTransparent, viewType } = this.state
 
     const view = (
-      <View style={styles.view} transparent={isTransparent} {...testProps('queue_screen_view')}>
+      <View style={styles.view} transparent={isTransparent} {...testProps(`${testIDPrefix}_view`)}>
         {!isLoading && viewType === _queueKey && ((queueItems && queueItems.length > 0) || nowPlayingItem) && (
           <View transparent={isTransparent}>
             {!!nowPlayingItem && (
@@ -331,6 +334,7 @@ export class QueueScreen extends React.Component<Props, State> {
                   {...(nowPlayingItem.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}
                   podcastImageUrl={nowPlayingItem.podcastImageUrl}
                   {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
+                  {...testProps(`${testIDPrefix}_now_playing_header`)}
                   transparent={isTransparent}
                 />
               </View>
