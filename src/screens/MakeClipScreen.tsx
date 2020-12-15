@@ -394,7 +394,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 onValueChange={this._handleSelectPrivacy}
                 placeholder={placeholderItem}
                 style={[hidePickerIconOnAndroidTransparent(isDarkMode), { backgroundColor: 'transparent' }]}
-                touchableWrapperProps={{ testID: `${testID}_picker_select_privacy` }}
+                touchableWrapperProps={{ testID: `${testIDPrefix}_picker_select_privacy` }}
                 useNativeAndroidPickerStyle={false}
                 value={isPublicItemSelected.value}>
                 <View style={core.selectorWrapper} transparent={true}>

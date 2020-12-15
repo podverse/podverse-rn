@@ -140,7 +140,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
               items={isPublicOptions}
               onValueChange={this._onChangeIsPublic}
               placeholder={selectPlaceholder}
-              touchableWrapperProps={{ testID: `${testID}_picker_select_privacy` }}
+              touchableWrapperProps={{ testID: `${testIDPrefix}_picker_select_privacy` }}
               value={selectedIsPublicKey}>
               <View style={[core.selectorWrapper, globalTheme.textInput]}>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.selectorText}>
