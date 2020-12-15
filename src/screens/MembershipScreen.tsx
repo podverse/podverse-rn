@@ -167,7 +167,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                 onPress={this.handleSignUpPress}
                 style={styles.subText}
                 {...testProps(`${testIDPrefix}_sign_up`)}>
-                >{translate('Sign Up')}
+                {translate('Sign Up')}
               </TextLink>
             </View>
           </View>
