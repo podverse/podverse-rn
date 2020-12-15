@@ -256,11 +256,11 @@ export const loadItemAndPlayTrack = async (
   shouldPlay: boolean,
   skipAddOrUpdateHistory?: boolean
 ) => {
+  TrackPlayer.pause()
+
   await updateUserPlaybackPosition()
 
   if (!item) return
-
-  TrackPlayer.stop()
 
   const lastPlayingItem = await getNowPlayingItem()
 
