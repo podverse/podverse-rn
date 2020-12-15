@@ -80,23 +80,23 @@ export class PlayerScreen extends React.Component<Props, State> {
       title: '',
       headerTransparent: true,
       headerStyle: {},
-      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} globalTheme={globalTheme} />,
+      headerLeft: <NavDismissIcon globalTheme={globalTheme} handlePress={navigation.dismiss} testID={testIDPrefix} />,
       headerRight: (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
             <RNView style={core.row}>
               <NavMakeClipIcon
                 getInitialProgressValue={_getInitialProgressValue}
-                navigation={navigation}
                 globalTheme={globalTheme}
+                navigation={navigation}
               />
               <NavAddToPlaylistIcon
                 getEpisodeId={_getEpisodeId}
                 getMediaRefId={_getMediaRefId}
-                navigation={navigation}
                 globalTheme={globalTheme}
+                navigation={navigation}
               />
-              <NavShareIcon handlePress={_showShareActionSheet} globalTheme={globalTheme} />
+              <NavShareIcon globalTheme={globalTheme} handlePress={_showShareActionSheet} />
             </RNView>
           )}
           <NavQueueIcon globalTheme={globalTheme} isTransparent={true} navigation={navigation} showBackButton={true} />

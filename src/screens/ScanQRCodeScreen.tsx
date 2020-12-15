@@ -12,6 +12,8 @@ import { addAddByRSSPodcast } from '../state/actions/parser'
 
 type Props = {}
 
+const testIDPrefix = 'scan_qr_code_screen'
+
 export const ScanQRCodeScreen = (props: Props) => {
   const [scanned, setScanned] = useState(false)
   const { navigate, dismiss } = props.navigation
@@ -103,7 +105,12 @@ export const ScanQRCodeScreen = (props: Props) => {
               {scanned ? translate('Processing') : translate('Scan a valid QR code')}
             </Text>
             {!scanned && (
-              <Button text={translate('CANCEL')} onPress={() => dismiss()} wrapperStyles={styles.dismissButton} />
+              <Button
+                onPress={() => dismiss()}
+                testID={`${testIDPrefix}_cancel`}
+                text={translate('CANCEL')}
+                wrapperStyles={styles.dismissButton}
+              />
             )}
           </View>
         </View>

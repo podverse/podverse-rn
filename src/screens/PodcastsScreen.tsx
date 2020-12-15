@@ -481,6 +481,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       <SwipeRowBack
         isLoading={this.state.isUnsubscribing}
         onPress={() => this._handleHiddenItemPress(item.id, item.addByRSSPodcastFeedUrl, rowMap)}
+        testID={`${testIDPrefix}_podcast_item_${index}`}
         text={buttonText}
       />
     )
@@ -687,7 +688,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
         <Dialog.Container visible={showDataSettingsConfirmDialog}>
           <Dialog.Title>Data Settings</Dialog.Title>
           <Dialog.Description>Do you want to allow downloading episodes with your data plan?</Dialog.Description>
-          <Dialog.Button label={translate('No Wifi Only')} onPress={this._handleDataSettingsWifiOnly} />
+          <Dialog.Button
+            label={translate('No Wifi Only')}
+            onPress={this._handleDataSettingsWifiOnly}
+            {...testProps('alert_no_wifi_only')}
+          />
           <Dialog.Button
             label={translate('Yes Allow Data')}
             onPress={this._handleDataSettingsAllowData}

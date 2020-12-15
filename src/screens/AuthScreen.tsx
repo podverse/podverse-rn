@@ -25,12 +25,14 @@ const _login = 'login'
 const _resetPassword = 'resetPassword'
 const _signup = 'signup'
 
+const testIDPrefix = 'auth_screen'
+
 export class AuthScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const title = navigation.getParam('title') || translate('Login')
     return {
       title,
-      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
+      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
       headerRight: null,
       headerStyle: {
         borderBottomWidth: 0,

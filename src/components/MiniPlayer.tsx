@@ -54,12 +54,16 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
                   {nowPlayingItem.episodeTitle}
                 </Text>
               </View>
-              <TouchableOpacity onPress={() => togglePlay(this.global)} style={playerStyles.icon}>
+              <TouchableOpacity
+                onPress={() => togglePlay(this.global)}
+                style={playerStyles.icon}
+                {...testProps('mini_player_toggle_play_button')}>
                 {!hasErrored && (
                   <Icon
                     color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
                     name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
                     size={30}
+                    testID={`mini_player_${playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}`}
                   />
                 )}
                 {hasErrored && (
@@ -67,6 +71,7 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
                     color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
                     name={'exclamation-triangle'}
                     size={26}
+                    testID='mini_player_error'
                   />
                 )}
               </TouchableOpacity>

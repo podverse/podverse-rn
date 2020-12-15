@@ -22,6 +22,8 @@ type State = {
   showNoInternetConnectionMessage?: boolean
 }
 
+const testIDPrefix = 'profiles_screen'
+
 export class ProfilesScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
@@ -94,6 +96,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
             navigationTitle: translate('Profile')
           })
         }
+        testID={`${testIDPrefix}_profile_${index}`}
       />
     )
   }
@@ -102,6 +105,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
     <SwipeRowBack
       isLoading={this.state.isUnsubscribing}
       onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
+      testID={`${testIDPrefix}_profile_${index}`}
       text={translate('Remove')}
     />
   )

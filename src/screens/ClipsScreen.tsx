@@ -311,7 +311,11 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _renderHiddenItem = ({ item }, rowMap) => (
-    <SwipeRowBack onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text={translate('Delete')} />
+    <SwipeRowBack
+      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
+      testID={`${testIDPrefix}_clip_item_${index}`}
+      text={translate('Delete')}
+    />
   )
 
   _handleHiddenItemPress = (selectedId, rowMap) => {
@@ -474,8 +478,16 @@ export class ClipsScreen extends React.Component<Props, State> {
         <Dialog.Container visible={showDeleteConfirmDialog}>
           <Dialog.Title>{translate('Delete Clip')}</Dialog.Title>
           <Dialog.Description>{translate('Are you sure')}</Dialog.Description>
-          <Dialog.Button label={translate('Cancel')} onPress={this._cancelDeleteMediaRef} />
-          <Dialog.Button label={translate('Delete')} onPress={this._deleteMediaRef} />
+          <Dialog.Button
+            label={translate('Cancel')}
+            onPress={this._cancelDeleteMediaRef}
+            {...testProps(`${testID}_delete_clip_cancel`)}
+          />
+          <Dialog.Button
+            label={translate('Delete')}
+            onPress={this._deleteMediaRef}
+            {...testProps(`${testID}_delete_clip_delete`)}
+          />
         </Dialog.Container>
       </View>
     )
