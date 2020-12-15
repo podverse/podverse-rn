@@ -260,6 +260,8 @@ export const loadItemAndPlayTrack = async (
 
   if (!item) return
 
+  TrackPlayer.stop()
+
   const lastPlayingItem = await getNowPlayingItem()
 
   // Episodes and clips must be already loaded in history
@@ -271,7 +273,7 @@ export const loadItemAndPlayTrack = async (
   }
 
   if (Platform.OS === 'ios') {
-    await TrackPlayer.reset()
+    TrackPlayer.reset()
     const track = (await createTrack(item)) as Track
     await TrackPlayer.add(track)
     await syncPlayerWithQueue()
