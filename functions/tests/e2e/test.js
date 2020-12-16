@@ -303,7 +303,7 @@ const runTests = async (customCapabilities) => {
     await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
     await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
     await elementByIdClick('login_submit')
-    await driver.sleep(2000)
+    await driver.sleep(5000)
     await cancelAndroidAlert()
 
     // // await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', null, goBack)
@@ -318,27 +318,33 @@ const runTests = async (customCapabilities) => {
     
     //Song Exploder - 01
     await logPerformance('Podcast - Song Exploder')
+    await driver.sleep(1000)
     await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_view')
     await elementWaitFor('podcast_screen_is_not_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_not_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_not_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed_icon_button')
     await performScrollDown()
     await elementByIdClick('podcast_screen_episode_item_3_more_button')
     await elementByIdClick('podcast_screen_action_sheet_queue_next_button')
+    await elementWaitFor('mini_player')
     await elementByIdClick('podcast_screen_episode_item_3_more_button')
     await elementByIdClick('podcast_screen_action_sheet_add_to_playlist_button')
+    await elementByIdClick('playlists_add_to_screen_new_nav_header_button_text')
+    await sendKeysToElementById('new_playlist_title_input', 'Automated Test')
+    await elementByIdClick('new_playlist_title_save')
     await elementByIdClick('playlists_add_to_screen_playlist_item_0')
     await driver.back()
-    // await elementWaitFor('mini_player')
+    await driver.sleep(1000)
     await driver.back()
 
     //Joe Rogan - 02
     await logPerformance('Podcast - Joe Rogan')
+    await driver.sleep(1000)
     await elementByIdAndClickAndTest('podcasts_screen_podcast_item_1', 'podcast_screen_view')
     await elementWaitFor('podcast_screen_is_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_not_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_not_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed_icon_button')
     await performScrollDown(19)
     await elementByIdClick('podcast_screen_episode_item_27_more_button')
     await elementByIdClick('podcast_screen_action_sheet_queue_last_button')
@@ -350,48 +356,47 @@ const runTests = async (customCapabilities) => {
     await elementByIdClick('episode_screen_more_button')
     await elementByIdClick('episode_screen_action_sheet_queue_last_button')
     await driver.back()
+    await driver.sleep(1000)
     await driver.back()
     
     //Very Bad Wizards - 03
     await logPerformance('Podcast - Very Bad Wizards')
+    await driver.sleep(1000)
     await elementByIdAndClickAndTest('podcasts_screen_podcast_item_2', 'podcast_screen_view')
     await elementWaitFor('podcast_screen_is_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_not_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe', 'podcast_screen_is_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_not_subscribed_icon_button')
+    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed_icon_button')
     await performScrollDown(4)
     await elementByIdClick('podcast_screen_episode_item_6_more_button')
     await elementByIdClick('podcast_screen_action_sheet_add_to_playlist_button')
     await elementByIdClick('playlists_add_to_screen_playlist_item_0')
     await driver.back()
-    await elementByIdClick('podcast_screen_episode_item_6_top_view_nav')
-    await driver.back()
+    await driver.sleep(1000)
     await driver.back()
 
+    //Playlists
 
     await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
     await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view')
     await elementByIdAndClickAndTest('playlists_screen_playlist_item_0', 'playlist_screen_view')
-    await driver.sleep(1000)
     await elementByIdClick('playlist_screen_episode_item_0_more_button')
     await elementByIdClick('playlist_screen_action_sheet_download_button')
-    await driver.sleep(1000)
+    await driver.sleep(200)
+    await elementByIdClick('playlist_screen_episode_item_1_more_button')
+    await elementByIdClick('playlist_screen_action_sheet_download_button')
+    await driver.sleep(200)
+    await elementByIdClick('playlist_screen_episode_item_2_more_button')
+    await elementByIdClick('playlist_screen_action_sheet_download_button')
+    await driver.sleep(200)
     await driver.back()
     await driver.back()
+    await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
     await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view')
+    await driver.sleep(5000)
+    await driver.back()
+
+
     await driver.sleep(10000)
-
-
-
-
-
-
-
-
-
-
-
-    
-
 
 
 
