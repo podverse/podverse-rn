@@ -242,8 +242,8 @@ const toggleSubscribeToPodcastOnServer = async (id: string) => {
 
 export const sortPodcastArrayAlphabetically = (podcasts: any[]) => {
   podcasts.sort((a, b) => {
-    let titleA = a.sortableTitle || a.title || ''
-    let titleB = b.sortableTitle || b.title || ''
+    let titleA = (a && (a.sortableTitle || a.title)) || ''
+    let titleB = (b && (b.sortableTitle || b.title)) || ''
     titleA = titleA
       .toLowerCase()
       .trim()
