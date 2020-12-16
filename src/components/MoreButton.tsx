@@ -27,7 +27,7 @@ export const MoreButton = (props: Props) => {
         top: 4
       }}
       onPress={handleShowMore}
-      {...(testID ? testProps(`${testID}_more_button`) : {})}>
+      {...testProps(`${testID}_more_button`)}>
       {!isLoading ? (
         <View style={[styles.outerWrapper, heightStyle]}>
           <View style={styles.innerWrapper}>

@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
-import { convertSecToHHMMSS } from '../lib/utility'
+import { convertSecToHHMMSS, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core, darkTheme, iconStyles } from '../styles'
 import { Text } from './'
@@ -13,12 +13,13 @@ type Props = {
   handleSetTime: any
   labelText: string
   placeholder?: string
+  testID: string
   time?: number | null
   wrapperStyle?: any
 }
 
 export const TimeInput = (props: Props) => {
-  const { handleClearTime, handlePreview, handleSetTime, labelText, placeholder, time, wrapperStyle } = props
+  const { handleClearTime, handlePreview, handleSetTime, labelText, placeholder, testID, time, wrapperStyle } = props
   const [globalTheme] = useGlobal('globalTheme')
   const isDarkMode = globalTheme === darkTheme
 
@@ -36,14 +37,15 @@ export const TimeInput = (props: Props) => {
               right: 4,
               top: 4
             }}
-            onPress={handlePreview}>
+            onPress={handlePreview}
+            {...testProps(`${testID}_time_input_preview_button`)}>
             <Icon color={globalTheme.link.color} name='play' size={16} style={styles.previewIcon} />
           </TouchableOpacity>
         )}
       </View>
       <View style={[core.row, styles.row]}>
         <View style={styles.timeInputWrapper}>
-          <TouchableWithoutFeedback onPress={handleSetTime}>
+          <TouchableWithoutFeedback onPress={handleSetTime} {...testProps(`${testID}_time_input_set_button`)}>
             <View style={[styles.timeInputTouchable, globalTheme.textInput]}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -65,7 +67,8 @@ export const TimeInput = (props: Props) => {
               right: 8,
               top: 4
             }}
-            onPress={handleClearTime}>
+            onPress={handleClearTime}
+            {...testProps(`${testID}_time_input_clear_button`)}>
             <View style={styles.timeInputTouchableDelete}>
               <Icon color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color} name='times' size={24} />
             </View>

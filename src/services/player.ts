@@ -256,6 +256,8 @@ export const loadItemAndPlayTrack = async (
   shouldPlay: boolean,
   skipAddOrUpdateHistory?: boolean
 ) => {
+  TrackPlayer.pause()
+
   await updateUserPlaybackPosition()
 
   if (!item) return
@@ -271,7 +273,7 @@ export const loadItemAndPlayTrack = async (
   }
 
   if (Platform.OS === 'ios') {
-    await TrackPlayer.reset()
+    TrackPlayer.reset()
     const track = (await createTrack(item)) as Track
     await TrackPlayer.add(track)
     await syncPlayerWithQueue()

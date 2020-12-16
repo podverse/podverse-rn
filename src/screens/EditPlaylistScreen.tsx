@@ -34,6 +34,8 @@ type State = {
   sortableListData: any[]
 }
 
+const testIDPrefix = 'edit_playlist_screen'
+
 export class EditPlaylistScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const isEditing = !!navigation.getParam('isEditing')
@@ -44,7 +46,12 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
       title: translate('Edit Playlist'),
       headerRight: (
         <RNView style={styles.headerButtonWrapper}>
-          <NavHeaderButtonText handlePress={handlePress} style={styles.navHeaderTextButton} text={text} />
+          <NavHeaderButtonText
+            handlePress={handlePress}
+            style={styles.navHeaderTextButton}
+            testID={testIDPrefix}
+            text={text}
+          />
         </RNView>
       )
     }
@@ -172,6 +179,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
             {...(data.episode.podcast.title ? { podcastTitle: data.episode.podcast.title } : {})}
             showMoveButton={!isEditing}
             showRemoveButton={isEditing}
+            testID={`${testIDPrefix}_queue_item_${index}`}
           />
           <Divider style={styles.tableCellDivider} />
         </View>
@@ -187,6 +195,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
             {...(data.podcast && data.podcast.title ? { podcastTitle: data.podcast.title } : {})}
             showMoveButton={!isEditing}
             showRemoveButton={isEditing}
+            testID={`${testIDPrefix}_queue_item_${index}`}
           />
           <Divider style={styles.tableCellDivider} />
         </View>
@@ -242,6 +251,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
             placeholder={translate('playlist title')}
             returnKeyType='done'
             style={styles.textInput}
+            testID={`${testIDPrefix}_title`}
             underlineColorAndroid='transparent'
             value={newTitle}
           />

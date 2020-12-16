@@ -111,11 +111,16 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderHiddenItem = ({ item }, rowMap) => {
+  _renderHiddenItem = ({ item, index }, rowMap) => {
     const { isRemoving, queryFrom } = this.state
     const text = queryFrom === PV.Filters._myPlaylistsKey ? translate('Delete') : translate('Unsubscribe')
     return (
-      <SwipeRowBack isLoading={isRemoving} onPress={() => this._handleHiddenItemPress(item.id, rowMap)} text={text} />
+      <SwipeRowBack
+        isLoading={isRemoving}
+        onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
+        testID={`${testIDPrefix}_playlist_item_${index}`}
+        text={text}
+      />
     )
   }
 
@@ -181,9 +186,10 @@ export class PlaylistsScreen extends React.Component<Props, State> {
           )}
           {!isLoading && !this.global.session.isLoggedIn && (
             <MessageWithAction
+              message={translate('Login to view your playlists')}
+              testID={testIDPrefix}
               topActionHandler={this._onPressLogin}
               topActionText={translate('Login')}
-              message={translate('Login to view your playlists')}
             />
           )}
         </View>

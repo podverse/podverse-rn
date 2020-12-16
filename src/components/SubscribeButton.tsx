@@ -25,7 +25,7 @@ export const SubscribeButton = (props: Props) => {
         top: 4
       }}
       onPress={handleToggleSubscribe}
-      {...(testID ? testProps(`${testID}_subscribe`) : {})}>
+      {...(testID ? testProps(`${testID}_subscribe_button`) : {})}>
       <View style={styles.buttonView}>
         {isSubscribing && (
           <View style={styles.activityIndicator}>

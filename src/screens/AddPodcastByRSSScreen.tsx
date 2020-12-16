@@ -34,7 +34,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: translate('Add by RSS'),
-      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
+      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
       headerRight: (
         <NavHeaderButtonText
           disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
@@ -145,7 +145,8 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
               <TextLink
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 onPress={this._navToRequestPodcastForm}
-                style={styles.textLink}>
+                style={styles.textLink}
+                {...testProps(`${testIDPrefix}_request_podcast`)}>
                 {translate('Request Podcast')}
               </TextLink>
             )}
