@@ -7,7 +7,7 @@ import { PV } from '../resources'
 export const DownloadsActiveBadge = () => {
   const [downloadsActive] = useGlobal('downloadsActive')
   const [fontScaleMode] = useGlobal('fontScaleMode')
-  let downloadsActiveCount = 1
+  let downloadsActiveCount = 0
   for (const id of Object.keys(downloadsActive)) {
     if (downloadsActive[id]) downloadsActiveCount++
   }
