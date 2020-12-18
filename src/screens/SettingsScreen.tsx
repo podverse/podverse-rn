@@ -344,12 +344,14 @@ export class SettingsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator styles={styles.activityIndicator} />}
         {!isLoading && (
           <View>
-            <SwitchWithText
-              onValueChange={this._toggleTheme}
-              testID={`${testIDPrefix}_dark_mode`}
-              text={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}
-              value={globalTheme === darkTheme}
-            />
+            {!Config.DISABLE_THEME_SWITCH && (
+              <SwitchWithText
+                onValueChange={this._toggleTheme}
+                testID={`${testIDPrefix}_dark_mode`}
+                text={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}
+                value={globalTheme === darkTheme}
+              />
+            )}
             <SwitchWithText
               onValueChange={this._toggleDownloadingWifiOnly}
               testID={`${testIDPrefix}_only_allow_downloading_when_connected_to_wifi`}

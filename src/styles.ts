@@ -100,7 +100,7 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.grayDark
   },
   flatList: {
-    backgroundColor: PV.Colors.black
+    backgroundColor: PV.Colors.Ink
   },
   inputContainerText: {
     backgroundColor: PV.Colors.black,
@@ -156,11 +156,11 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   swipeRowBack: {
-    backgroundColor: PV.Colors.gray,
+    backgroundColor: PV.Colors.skyLight,
     color: PV.Colors.white
   },
   tabbar: {
-    backgroundColor: PV.Colors.black,
+    backgroundColor: PV.Colors.Ink,
     borderTopWidth: 1,
     borderTopColor: PV.Colors.grayDarker
   },
@@ -180,7 +180,7 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   tableSectionHeader: {
-    backgroundColor: PV.Colors.grayDarker
+    backgroundColor: PV.Colors.Ink
   },
   tableSectionHeaderTransparent: {
     backgroundColor: PV.Colors.grayDarkerTransparent
@@ -203,7 +203,7 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   textInputWrapper: {
-    backgroundColor: PV.Colors.black,
+    backgroundColor: PV.Colors.Ink,
     borderColor: PV.Colors.grayDarker,
     borderTopColor: PV.Colors.grayDarker, // override native styles
     borderBottomColor: PV.Colors.grayDarker // override native style
@@ -212,7 +212,7 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.grayLightest
   },
   view: {
-    backgroundColor: PV.Colors.black
+    backgroundColor: PV.Colors.Ink
   },
   viewWithZebraStripe: {
     backgroundColor: PV.Colors.grayDarkestZ
@@ -383,7 +383,7 @@ export const lightTheme = StyleSheet.create({
     color: PV.Colors.black
   },
   swipeRowBack: {
-    backgroundColor: PV.Colors.gray,
+    backgroundColor: PV.Colors.skyLight,
     color: PV.Colors.black
   },
   tabbar: {

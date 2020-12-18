@@ -14,7 +14,7 @@ type Props = {
   size: number
   solid?: boolean
   style?: any
-  testID: string
+  testID?: string
 }
 
 export const PVIcon = (props: Props) => {
