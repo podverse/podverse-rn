@@ -25,6 +25,7 @@ const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsA
   trailing: false
 })
 
+// NOTE: Disabled the interval handling below because it caused async loading problems...
 // NOTE: Sometimes when there is poor internet connectivity, the addOrUpdateHistoryItem request will fail.
 // This will result in the current item mising from the user's history, and the next time they open
 // the app, it will load with an old history item instead of the last one they were listening to.
@@ -40,18 +41,26 @@ const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsA
 // This seems to be a limitation that cannot be worked around, aside from a geolocation API based work-around...
 let addOrUpdateHistoryItemSucceeded = false
 let addOrUpdateInterval = null as any
+let intervalCount = 0
 const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
   if (addOrUpdateInterval) clearInterval(addOrUpdateInterval)
   if (!nowPlayingItem) return
 
   const attemptAddOrUpdateHistoryItem = async () => {
-    if (!addOrUpdateHistoryItemSucceeded) {
+    intervalCount = intervalCount + 1
+    if (intervalCount >= 5) {
+      clearInterval(addOrUpdateInterval)
+      addOrUpdateHistoryItemSucceeded = false
+      intervalCount = 0
+    } else if (!addOrUpdateHistoryItemSucceeded) {
       try {
+        addOrUpdateHistoryItemSucceeded = true
         await addOrUpdateHistoryItem(nowPlayingItem)
         await updateUserPlaybackPosition(nowPlayingItem)
-        addOrUpdateHistoryItemSucceeded = true
         clearInterval(addOrUpdateInterval)
+        intervalCount = 0
       } catch (error) {
+        addOrUpdateHistoryItemSucceeded = false
         console.log(error)
       }
     }
