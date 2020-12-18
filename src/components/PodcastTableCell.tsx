@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Dimensions, StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableDate, testProps } from '../lib/utility'
@@ -23,7 +23,6 @@ type Props = {
 export class PodcastTableCell extends React.PureComponent<Props> {
   render() {
     const {
-      hasZebraStripe,
       id,
       lastEpisodePubDate,
       onPress,
@@ -45,59 +44,41 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       shouldAutoDownload = autoDownloadSettings[id]
     }
 
-    const titleWrapperStyle =
-      PV.Fonts.fontScale.largest === fontScaleMode ? [styles.titleWrapper, { flex: 1 }] : [styles.titleWraper]
-
     return (
       <TouchableWithoutFeedback onPress={onPress} {...(testID ? testProps(testID) : {})}>
-        <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
-          <FastImage source={podcastImageUrl} styles={styles.image} />
+        <View style={styles.wrapper}>
+          <FastImage source={podcastImageUrl} styles={PV.Table.cells.podcast.image} />
           <RNView style={styles.textWrapper}>
-            {podcastTitle && (
-              <RNView style={titleWrapperStyle}>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={
-                    [PV.Fonts.fontScale.large, PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(
-                      fontScaleMode
-                    )
-                      ? 1
-                      : 2
-                  }
-                  style={styles.title}
-                  testID={`${testID}_title`}>
-                  {podcastTitle.trim()}
-                </Text>
-              </RNView>
+            {!!lastEpisodePubDate && (
+              <Text
+                isSecondary={true}
+                numberOfLines={1}
+                style={styles.latestEpisode}
+                testID={`${testID}_last_pub_date`}>
+                {'Latest episode: '}
+                {readableDate(lastEpisodePubDate)}
+              </Text>
             )}
-            {fontScaleMode !== PV.Fonts.fontScale.largest && (
-              <>
-                <RNView style={styles.textWrapperRow}>
-                  {showDownloadCount && (
-                    <RNView style={styles.textWrapperRowLeft}>
-                      <Text
-                        isSecondary={true}
-                        numberOfLines={1}
-                        style={styles.bottomText}
-                        testID={`${testID}_downloaded`}>
-                        {`${downloadCount} ${translate('downloaded')}`}
-                      </Text>
-                      {showAutoDownload && shouldAutoDownload && <IndicatorDownload style={styles.autoDownloadIcon} />}
-                    </RNView>
-                  )}
-                  {!!lastEpisodePubDate && (
-                    <RNView style={styles.textWrapperRowRight}>
-                      <Text
-                        isSecondary={true}
-                        numberOfLines={1}
-                        style={styles.bottomText}
-                        testID={`${testID}_last_pub_date`}>
-                        {readableDate(lastEpisodePubDate)}
-                      </Text>
-                    </RNView>
-                  )}
-                </RNView>
-              </>
+            {podcastTitle && (
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                numberOfLines={1}
+                style={styles.title}
+                testID={`${testID}_title`}>
+                {podcastTitle.trim()}
+              </Text>
+            )}
+            {fontScaleMode !== PV.Fonts.fontScale.largest && showDownloadCount && (
+              <RNView style={styles.downloadContainer}>
+                <Text
+                  isSecondary={true}
+                  numberOfLines={1}
+                  style={styles.downloadedItems}
+                  testID={`${testID}_downloaded`}>
+                  {`${downloadCount} ${translate('downloaded')}`}
+                </Text>
+                {showAutoDownload && shouldAutoDownload && <IndicatorDownload style={styles.autoDownloadIcon} />}
+              </RNView>
             )}
           </RNView>
         </View>
@@ -108,48 +89,32 @@ export class PodcastTableCell extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   autoDownloadIcon: {
-    flex: 0,
-    marginBottom: 4,
-    marginTop: 0
+    marginLeft: 5,
+    marginBottom: 2
   },
-  bottomText: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.md
+  latestEpisode: {
+    fontSize: PV.Fonts.sizes.xs,
+    color: PV.Colors.skyLight,
+    fontWeight: PV.Fonts.weights.bold
   },
-  image: {
-    flex: 0,
-    height: PV.Table.cells.podcast.image.height,
-    marginRight: 12,
-    width: PV.Table.cells.podcast.image.width
+  downloadedItems: {
+    fontSize: PV.Fonts.sizes.xs,
+    color: PV.Colors.grayLighter
   },
-  textWrapperRow: {
-    flex: 1,
-    flexDirection: 'row'
-  },
-  textWrapperRowLeft: {
-    alignItems: 'flex-end',
-    flex: 1,
-    flexDirection: 'row'
-  },
-  textWrapperRowRight: {
-    alignItems: 'flex-end',
-    flex: 1,
+  downloadContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginLeft: 4
+    alignItems: 'center'
   },
   textWrapper: {
-    flex: 1,
-    paddingRight: 8,
-    paddingVertical: 4
+    justifyContent: 'center',
+    maxWidth:
+      Dimensions.get('screen').width -
+      (PV.Table.cells.podcast.image.width + PV.Table.cells.podcast.image.margin * 2) -
+      10
   },
   title: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold
-  },
-  titleWrapper: {
-    justifyContent: 'center',
-    flex: 0
+    marginVertical: 5
   },
   wrapper: {
     flexDirection: 'row'

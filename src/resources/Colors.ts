@@ -28,5 +28,11 @@ export const Colors = {
   yellow: '#ffc107',
   opacity: 0.1,
   whiteOpaque: 'rgba(255, 255, 255, 0.85)',
-  blackOpaque: 'rgba(0, 0, 0, 0.7625)'
+  blackOpaque: 'rgba(0, 0, 0, 0.7625)',
+  skyLight: '#74A8DC',
+  skyDark: '#6394C6',
+  brandBlueLight: '#3D9DFE',
+  brandBlueDark: '#1E80E3',
+  Velvet: '#0F1235',
+  Ink: '#010318'
 }

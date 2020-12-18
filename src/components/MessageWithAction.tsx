@@ -82,7 +82,11 @@ const styles = StyleSheet.create({
     marginTop: 24,
     minHeight: 44,
     paddingVertical: 16,
-    width: '80%'
+    width: '80%',
+    backgroundColor: 'transparent',
+    borderColor: PV.Colors.white,
+    borderWidth: 1,
+    borderRadius: 8
   },
   message: {
     fontSize: PV.Fonts.sizes.xl,

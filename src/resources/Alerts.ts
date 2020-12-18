@@ -89,7 +89,9 @@ export const Alerts = {
   RESET_PASSWORD_SUCCESS: {
     message:
       // tslint:disable-next-line
-      `${translate('Please check your inbox If this address exists in our system you should receive a reset password email shortly')}
+      `${translate(
+        'Please check your inbox If this address exists in our system you should receive a reset password email shortly'
+      )}
        ${translate('The email may go to your Spam folder')}`,
     title: translate('Reset Password Sent')
   },
