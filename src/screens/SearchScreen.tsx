@@ -84,39 +84,33 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   _handleSearchBarTextChange = (text: string) => {
-    const { isLoading } = this.state
-
+    const shouldSearch = !!text && text.length > 1
     this.setState(
       {
-        ...(!isLoading && text ? { isLoading: true } : {}),
-        searchBarText: text
+        searchBarText: text,
+        isLoading: shouldSearch
       },
-      async () => {
+      () => {
         this._handleSearchBarTextQuery()
       }
     )
   }
 
   _handleSearchBarTextQuery = async (nextPage?: boolean) => {
-    if (!this.state.searchBarText) {
-      this.setState({
-        flatListData: [],
-        flatListDataTotalCount: null,
-        isLoading: false,
-        queryPage: 1
-      })
-      return
-    }
+    const shouldSearch = !!this.state.searchBarText && this.state.searchBarText.length > 1
 
     this.setState(
       {
         flatListData: [],
         flatListDataTotalCount: null,
-        queryPage: 1
+        queryPage: 1,
+        isLoading: shouldSearch
       },
       async () => {
-        const state = await this._queryData(nextPage)
-        this.setState(state)
+        if (shouldSearch) {
+          const state = await this._queryData(nextPage)
+          this.setState(state)
+        }
       }
     )
   }
@@ -263,7 +257,7 @@ export class SearchScreen extends React.Component<Props, State> {
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.id}
             noResultsBottomActionText={PV.URLs.requestPodcast ? translate('Request Podcast') : ''}
-            noResultsMessage={translate('No podcasts found')}
+            noResultsMessage={searchBarText.length > 1 && translate('No podcasts found')}
             noResultsMiddleActionText={translate('Add by RSS')}
             noResultsTopActionText={!Config.DISABLE_QR_SCANNER ? translate('Scan RSS Feed QR Code') : ''}
             onEndReached={this._onEndReached}
