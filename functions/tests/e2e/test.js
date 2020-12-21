@@ -197,90 +197,90 @@ const runTests = async (customCapabilities) => {
 
     await driver.sleep(3000)
 
-    // await driver.waitForElementByAccessibilityId('alert_yes_allow_data')
-    // await elementByIdAndClickAndTest('alert_yes_allow_data', 'podcasts_screen_view')
-    // await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_view', null, goBack)
+    await driver.waitForElementByAccessibilityId('alert_yes_allow_data')
+    await elementByIdAndClickAndTest('alert_yes_allow_data', 'podcasts_screen_view')
+    await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_view', null, goBack)
 
-    // await elementByIdAndClickAndTest('podcasts_screen_podcast_item_1', 'podcast_screen_view')
-    // await driver.sleep(5000)
-    // await elementByIdAndClickAndTest('podcast_screen_episode_item_0_top_view_nav', 'episode_screen_view', null, goBack)
-    // await elementByIdAndClickAndTest('podcast_screen_episode_item_0_bottom_view_nav', 'episode_screen_view', null, goBack)
-    // await driver.back()
+    await elementByIdAndClickAndTest('podcasts_screen_podcast_item_1', 'podcast_screen_view')
+    await driver.sleep(5000)
+    await elementByIdAndClickAndTest('podcast_screen_episode_item_0_top_view_nav', 'episode_screen_view', null, goBack)
+    await elementByIdAndClickAndTest('podcast_screen_episode_item_0_bottom_view_nav', 'episode_screen_view', null, goBack)
+    await driver.back()
 
-    // await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
-    // await elementByIdAndClickAndTest('episodes_screen_episode_item_0_top_view_nav', 'episode_screen_view', null, goBack)
-    // await elementByIdAndClickAndTest('episodes_screen_episode_item_0_bottom_view_nav', 'episode_screen_view', null, goBack)
+    await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
+    await elementByIdAndClickAndTest('episodes_screen_episode_item_0_top_view_nav', 'episode_screen_view', null, goBack)
+    await elementByIdAndClickAndTest('episodes_screen_episode_item_0_bottom_view_nav', 'episode_screen_view', null, goBack)
 
-    // await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
+    await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
 
-    // await elementByIdAndClickAndTest('tab_queue_screen', 'queue_screen_view')
+    await elementByIdAndClickAndTest('tab_queue_screen', 'queue_screen_view')
 
-    // await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-    // await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    // await sendKeysToElementById('login_email_text_input', 'TestEmail@ThisIsATest.com', 'Invalid Login Email Input')
-    // await sendKeysToElementById('login_password_text_input', 'testPASS1!', 'Invalid Login Password Input')
+    await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
+    await sendKeysToElementById('login_email_text_input', 'TestEmail@ThisIsATest.com', 'Invalid Login Email Input')
+    await sendKeysToElementById('login_password_text_input', 'testPASS1!', 'Invalid Login Password Input')
 
-    // await elementByIdClick('login_submit')
-    // await confirmAndroidAlert() 
+    await elementByIdClick('login_submit')
+    await confirmAndroidAlert() 
 
-    // await elementByIdAndClickAndTest('auth_screen_sign_up_button', 'membership_screen_view', null, goBack)
+    await elementByIdAndClickAndTest('auth_screen_sign_up_button', 'membership_screen_view', null, goBack)
 
-    // await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    // await elementByIdAndClickAndTest('auth_screen_reset_password_button', 'reset_password_submit')
-    // await sendKeysToElementById('reset_password_email_text_input', 'TestEmail@ThisIsATest.com')
-    // await elementByIdClick('reset_password_submit')
-    // await confirmAndroidAlert()
+    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
+    await elementByIdAndClickAndTest('auth_screen_reset_password_button', 'reset_password_submit')
+    await sendKeysToElementById('reset_password_email_text_input', 'TestEmail@ThisIsATest.com')
+    await elementByIdClick('reset_password_submit')
+    await confirmAndroidAlert()
 
-    // // Login - Premium Valid
+    // Login - Premium Valid
 
-    // await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    // await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
-    // await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
-    // await elementByIdClick('login_submit')
-    // await driver.sleep(2000)
-    // await confirmAndroidAlert()
-    // //
+    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
+    await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
+    await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
+    await elementByIdClick('login_submit')
+    await driver.sleep(4000)
+    await cancelAndroidAlert()
 
     // await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
-    // await elementByIdAndClickAndTest('nav_dismiss_icon', 'more_screen_view')
-
-    // await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view', null, goBack)
-
-    // await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view')
-    // await elementbyIdToggle('settings_screen_dark_mode_switch')
-    // await elementbyIdToggle('settings_screen_only_allow_downloading_when_connected_to_wifi_switch')
-    // await elementByIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')
-    // await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
-    // await elementbyIdToggle('settings_screen_censor_nsfw_text_switch')
-    // await elementbyIdToggle('settings_screen_offline_mode_switch')
+    // await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'more_screen_view')
 
 
-    // // if (isFDroid) {
-    // //   await performScrollDown()
-    // //   await elementByIdClick('settings_screen_custom_api_domain_switch')
-    // //   // await elementByIdClick('settings_screen_custom_api_domain_text_input')
-    // //   // await sendKeysToElementById('settings_screen_custom_api_domain_text_input', 'https://api.stage.podverse.fm')
-    // //   await elementByIdClick('settings_screen_custom_web_domain_switch')
-    // //   // await elementByIdClick('settings_screen_custom_web_domain_text_input')
-    // //   // await sendKeysToElementById('settings_screen_custom_web_domain_text_input', 'https://stage.podverse.fm')
-    // //   await performScrollDown()
-    // // }
+    await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view', null, goBack)
 
-    // await elementByIdClick('settings_screen_clear_history_button')
-    // await confirmAndroidAlert()
+    await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view')
+    await elementbyIdToggle('settings_screen_dark_mode_switch')
+    await elementbyIdToggle('settings_screen_only_allow_downloading_when_connected_to_wifi_switch')
+    await elementByIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')
+    await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
+    await elementbyIdToggle('settings_screen_censor_nsfw_text_switch')
+    await elementbyIdToggle('settings_screen_offline_mode_switch')
 
-    // await driver.back()
 
-    // await elementByIdAndClickAndTest('more_screen_membership_cell', 'membership_screen_view', null, goBack)
+    // if (isFDroid) {
+    //   await performScrollDown()
+    //   await elementByIdClick('settings_screen_custom_api_domain_switch')
+    //   // await elementByIdClick('settings_screen_custom_api_domain_text_input')
+    //   // await sendKeysToElementById('settings_screen_custom_api_domain_text_input', 'https://api.stage.podverse.fm')
+    //   await elementByIdClick('settings_screen_custom_web_domain_switch')
+    //   // await elementByIdClick('settings_screen_custom_web_domain_text_input')
+    //   // await sendKeysToElementById('settings_screen_custom_web_domain_text_input', 'https://stage.podverse.fm')
+    //   await performScrollDown()
+    // }
 
-    // await elementByIdAndClickAndTest('more_screen_add_podcast_by_rss_cell', 'add_podcast_by_rss_screen_view')
-    // await elementByIdAndClickAndTest('nav_dismiss_icon', 'more_screen_view')
+    await elementByIdClick('settings_screen_clear_history_button')
+    await confirmAndroidAlert()
 
-    // await performScrollDown()
+    await driver.back()
+
+    await elementByIdAndClickAndTest('more_screen_membership_cell', 'membership_screen_view', null, goBack)
+
+    await elementByIdAndClickAndTest('more_screen_add_podcast_by_rss_cell', 'add_podcast_by_rss_screen_view')
+    await elementByIdAndClickAndTest('add_podcast_by_rss_screen_nav_dismiss_icon', 'more_screen_view')
+
+    await performScrollDown()
     
-    // await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', null, goBack)
+    await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', null, goBack)
     
-    // await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', null, goBack)
+    await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', null, goBack)
 
 
 
@@ -291,20 +291,20 @@ const runTests = async (customCapabilities) => {
 
     // Logged in user tests
 
-    //TEMP - Alert > Yes
-    await driver.waitForElementByAccessibilityId('alert_yes_allow_data')
-    await elementByIdAndClickAndTest('alert_yes_allow_data', 'podcasts_screen_view')
+    // //TEMP - Alert > Yes
+    // await driver.waitForElementByAccessibilityId('alert_yes_allow_data')
+    // await elementByIdAndClickAndTest('alert_yes_allow_data', 'podcasts_screen_view')
 
 
-    //TEMP - Login - Premium Valid
+    // //TEMP - Login - Premium Valid
 
-    await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
-    await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
-    await elementByIdClick('login_submit')
-    await driver.sleep(5000)
-    await cancelAndroidAlert()
+    // await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+    // await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
+    // await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
+    // await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
+    // await elementByIdClick('login_submit')
+    // await driver.sleep(5000)
+    // await cancelAndroidAlert()
 
     // // await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', null, goBack)
 
@@ -385,29 +385,30 @@ const runTests = async (customCapabilities) => {
     await elementByIdClick('podcast_screen_action_sheet_add_to_playlist_button')
     await elementByIdClick('playlists_add_to_screen_playlist_item_0')
     await driver.back()
-    await driver.sleep(1000)
-    await driver.back()
 
     //Playlists
 
-    await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-    await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view')
-    await elementByIdAndClickAndTest('playlists_screen_playlist_item_0', 'playlist_screen_view')
-    await elementByIdClick('playlist_screen_episode_item_0_more_button')
-    await elementByIdClick('playlist_screen_action_sheet_download_button')
-    await elementByIdClick('playlist_screen_episode_item_1_more_button')
-    await elementByIdClick('playlist_screen_action_sheet_download_button')
-    await elementByIdClick('playlist_screen_episode_item_2_more_button')
-    await elementByIdClick('playlist_screen_action_sheet_download_button')
-    await driver.back()
-    await driver.back()
-    await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-    await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view')
-    await elementByIdClick('downloads_screen_download_item_2_swipe_row_back')
-    await elementByIdClick('downloads_screen_action_sheet_delete_episode_button')
-    await driver.back()
-    await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view')
-    await driver.back()
+    // await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+    // await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view')
+    // await elementByIdAndClickAndTest('playlists_screen_playlist_item_0', 'playlist_screen_view')
+    // await elementByIdClick('playlist_screen_episode_item_0_more_button')
+    // await elementByIdClick('playlist_screen_action_sheet_download_button')
+    // await elementByIdClick('playlist_screen_episode_item_1_more_button')
+    // await elementByIdClick('playlist_screen_action_sheet_download_button')
+    // await elementByIdClick('playlist_screen_episode_item_2_more_button')
+    // await elementByIdClick('playlist_screen_action_sheet_download_button')
+    // await driver.back()
+    // await driver.back()
+    // await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+    // await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view')
+    // await elementByIdClick('downloads_screen_download_item_2_swipe_row_back')
+    // await elementByIdClick('downloads_screen_action_sheet_delete_episode_button')
+    // await driver.back()
+    // await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view')
+    // await driver.back()
+
+
+
     await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
 
 
