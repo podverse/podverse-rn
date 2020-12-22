@@ -350,6 +350,18 @@ export class EpisodesScreen extends React.Component<Props, State> {
     this.props.navigation.navigate(PV.RouteNames.SearchScreen)
   }
 
+  _handleScanQRCodeNavigation = () => {
+    this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
+  }
+
+  _handleNoResultsTopAction = () => {
+    if (Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE) {
+      this._handleScanQRCodeNavigation()
+    } else {
+      this._handleSearchNavigation()
+    }
+  }
+
   _handleDownloadPressed = () => {
     if (this.state.selectedItem) {
       const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
@@ -425,7 +437,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             dataTotalCount={flatListDataTotalCount}
             disableLeftSwipe={queryFrom !== PV.Filters._downloadedKey}
             extraData={flatListData}
-            handleNoResultsTopAction={this._handleSearchNavigation}
+            handleNoResultsTopAction={this._handleNoResultsTopAction}
             isLoadingMore={isLoadingMore}
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
