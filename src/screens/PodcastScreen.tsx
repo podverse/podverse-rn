@@ -343,17 +343,46 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _renderItem = ({ item, index }) => {
     const { podcast, viewType } = this.state
-    const episode = {
-      ...item,
-      podcast
-    }
 
-    if (viewType === PV.Filters._downloadedKey) {
+    if (viewType === PV.Filters._clipsKey) {
+      return (
+        item &&
+        item.episode &&
+        item.episode.id && (
+          <ClipTableCell
+            endTime={item.endTime}
+            episodeId={item.episode.id}
+            {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
+            {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
+            handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
+            hasZebraStripe={isOdd(index)}
+            hideImage={true}
+            showEpisodeInfo={true}
+            showPodcastTitle={false}
+            startTime={item.startTime}
+            testID={`${testIDPrefix}_clip_item_${index}`}
+            {...(item.title ? { title: item.title } : {})}
+          />
+        )
+      )
+    } else {
       let description = removeHTMLFromString(item.description)
       description = decodeHTMLString(description)
+      const episode = {
+        ...item,
+        podcast
+      }
+
+      let testId = ''
+      if (viewType === PV.Filters._downloadedKey) {
+        testId = `${testIDPrefix}_episode_downloaded_item_${index}`
+      } else if (viewType === PV.Filters._episodesKey) {
+        testId = `${testIDPrefix}_episode_item_${index}`
+      }
+
       return (
         <EpisodeTableCell
-          description={description}
+          item={episode}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => {
             this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
@@ -361,53 +390,9 @@ export class PodcastScreen extends React.Component<Props, State> {
               addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
             })
           }}
-          hasZebraStripe={isOdd(index)}
           hideImage={true}
-          id={item.id}
-          pubDate={item.pubDate}
-          testID={`${testIDPrefix}_episode_downloaded_item_${index}`}
-          title={item.title}
+          testID={testId}
         />
-      )
-    } else if (viewType === PV.Filters._episodesKey) {
-      let description = removeHTMLFromString(item.description)
-      description = decodeHTMLString(description)
-      return (
-        <EpisodeTableCell
-          description={description}
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
-          handleNavigationPress={() =>
-            this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
-              episode,
-              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
-            })
-          }
-          hasZebraStripe={isOdd(index)}
-          hideImage={true}
-          id={item.id}
-          pubDate={item.pubDate}
-          testID={`${testIDPrefix}_episode_item_${index}`}
-          title={item.title}
-        />
-      )
-    } else {
-      return item && item.episode && item.episode.id ? (
-        <ClipTableCell
-          endTime={item.endTime}
-          episodeId={item.episode.id}
-          {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
-          {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
-          hasZebraStripe={isOdd(index)}
-          hideImage={true}
-          showEpisodeInfo={true}
-          showPodcastTitle={false}
-          startTime={item.startTime}
-          testID={`${testIDPrefix}_clip_item_${index}`}
-          {...(item.title ? { title: item.title } : {})}
-        />
-      ) : (
-        <></>
       )
     }
   }

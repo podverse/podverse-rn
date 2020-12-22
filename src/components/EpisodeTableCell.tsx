@@ -4,39 +4,34 @@ import { translate } from '../lib/i18n'
 import { decodeHTMLString, readableDate, removeHTMLFromString, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { FastImage, IndicatorDownload, MoreButton, Text, View } from './'
+import { TimeRemainingWidget } from './TimeRemainingWidget'
 
 type Props = {
-  description?: string
   handleMorePress?: any
   handleNavigationPress?: any
   hasZebraStripe?: boolean
   hideImage?: boolean
-  id: string
-  podcastImageUrl?: string
-  podcastTitle?: string
-  pubDate?: string
   showPodcastTitle?: boolean
   testID: string
-  title?: string
   transparent?: boolean
+  item?: any
 }
 
 export class EpisodeTableCell extends React.PureComponent<Props> {
   render() {
     const {
-      id,
       handleMorePress,
       handleNavigationPress,
       hasZebraStripe,
       hideImage,
-      podcastImageUrl,
-      podcastTitle = translate('untitled podcast'),
-      pubDate = '',
       showPodcastTitle,
       testID,
-      transparent
+      transparent,
+      item
     } = this.props
-    let { description = '', title = '' } = this.props
+    const { id, description = '', title = '', pubDate = '', podcast = {} } = item
+    const { podcastImageUrl = '' } = podcast
+    const podcastTitle = podcast.title || translate('untitled podcast')
     description = removeHTMLFromString(description)
     description = decodeHTMLString(description)
 
@@ -66,7 +61,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           {title && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              numberOfLines={4}
+              numberOfLines={1}
               style={titleStyle}
               testID={`${testID}_title`}>
               {title.trim()}
@@ -92,7 +87,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <Text
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         isSecondary={true}
-        numberOfLines={4}
+        numberOfLines={2}
         style={descriptionStyle}
         testID={`${testID}_description`}>
         {description.trim()}
@@ -112,12 +107,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             innerTopView
           )}
           {handleMorePress && PV.Fonts.fontScale.largest !== fontScaleMode && (
-            <MoreButton
-              handleShowMore={handleMorePress}
-              height={hideImage ? 46 : 64}
-              isLoading={isDownloading}
-              testID={testID}
-            />
+            <MoreButton handleShowMore={handleMorePress} isLoading={isDownloading} testID={testID} />
           )}
         </RNView>
         {!!description && handleNavigationPress && (
@@ -128,6 +118,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           </TouchableWithoutFeedback>
         )}
         {!!description && !handleNavigationPress && bottomText}
+        <TimeRemainingWidget handleShowMore={handleMorePress} item={item} />
       </View>
     )
   }

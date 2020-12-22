@@ -260,13 +260,13 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
   _renderEpisodeItem = ({ item, index }) => {
     const description = item.description ? item.description.substr(0, 300) : ''
-    const title = item.title || ''
+    const title = item?.title || ''
     const podcastTitle = item?.podcast_title || item?.podcast?.title || ''
 
     return (
       <EpisodeTableCell
         description={description}
-        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.podcast))}
+        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item?.podcast))}
         handleNavigationPress={() =>
           this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
             episode: item,
