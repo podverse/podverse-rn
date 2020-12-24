@@ -31,7 +31,6 @@ import { trackPageView } from '../services/tracking'
 import { deleteLoggedInUser } from '../services/user'
 import { logoutUser } from '../state/actions/auth'
 import * as DownloadState from '../state/actions/downloads'
-import { clearHistoryItems } from '../state/actions/history'
 import {
   saveCustomAPIDomain,
   saveCustomWebDomain,
@@ -40,6 +39,7 @@ import {
   setCustomWebDomainEnabled,
   setOfflineModeEnabled
 } from '../state/actions/settings'
+import { clearHistoryItems } from '../state/actions/userHistoryItem'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {

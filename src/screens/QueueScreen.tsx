@@ -21,9 +21,9 @@ import { checkIfIdMatchesClipIdOrEpisodeId, isOdd, testProps } from '../lib/util
 import { PV } from '../resources'
 import { movePlayerItemToNewPosition } from '../services/player'
 import { trackPageView } from '../services/tracking'
-import { getHistoryItems, removeHistoryItem } from '../state/actions/history'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
+import { getHistoryItems, removeHistoryItem } from '../state/actions/userHistoryItem'
 import { core, darkTheme } from '../styles'
 
 type Props = {

@@ -4,7 +4,6 @@ import { Platform } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import { PV } from '../resources'
 import { hideMiniPlayer, setNowPlayingItem } from '../state/actions/player'
-import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'
 import {
   getClipHasEnded,
   getNowPlayingItem,
@@ -19,6 +18,8 @@ import {
   updateUserPlaybackPosition
 } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
+import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './userHistoryItem'
+
 const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1000, {
   leading: true,
   trailing: false

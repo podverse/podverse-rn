@@ -4,10 +4,10 @@ import { getGlobal, setGlobal } from 'reactn'
 import { safelyUnwrapNestedVariable, shouldShowMembershipAlert } from '../../lib/utility'
 import { PV } from '../../resources'
 import { getAuthenticatedUserInfo, getAuthenticatedUserInfoLocally, login, signUp } from '../../services/auth'
-import { setAllHistoryItemsLocally } from '../../services/history'
 import { setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
 import { getNowPlayingItem } from '../../services/player'
 import { setAllQueueItemsLocally } from '../../services/queue'
+import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
 import { getSubscribedPodcasts } from './podcast'
 
 export type Credentials = {

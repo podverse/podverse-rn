@@ -5,7 +5,7 @@ import {
   filterItemFromHistoryItems,
   getHistoryItems as getHistoryItemsService,
   removeHistoryItem as removeHistoryItemService
-} from '../../services/history'
+} from '../../services/userHistoryItem'
 
 export const clearHistoryItems = async () => {
   const globalState = getGlobal()

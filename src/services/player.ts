@@ -7,7 +7,6 @@ import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeId, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData } from './auth'
-import { addOrUpdateHistoryItem, getHistoryItem, getHistoryItems, getHistoryItemsLocally } from './history'
 import PlayerEventEmitter from './playerEventEmitter'
 import {
   addQueueItemLast,
@@ -17,6 +16,7 @@ import {
   getQueueItemsLocally,
   removeQueueItem
 } from './queue'
+import { addOrUpdateHistoryItem, getHistoryItem, getHistoryItems, getHistoryItemsLocally } from './userHistoryItem'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
 TrackPlayer.setupPlayer({
@@ -199,7 +199,7 @@ export const updateUserPlaybackPosition = async (itemOverride?: any) => {
   }
 }
 
-export const initializePlayerQueue = async (skipRestoreItem?: bool) => {
+export const initializePlayerQueue = async (skipRestoreItem?: boolean) => {
   try {
     const queueItems = await getQueueItems()
     let filteredItems = [] as any
