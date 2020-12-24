@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { convertToSortableTitle, convertURLToSecureProtocol, getAppUserAgent, isValidDate } from '../lib/utility'
+import { convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { combineWithAddByRSSPodcasts } from './podcast'
