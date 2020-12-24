@@ -45,6 +45,7 @@ export class QueueScreen extends React.Component<Props, State> {
     const { globalTheme } = getGlobal()
     const isTransparent = !!navigation.getParam('isTransparent')
     const textColor = isTransparent ? globalTheme.text.color : ''
+    const allowViewTypeChange = navigation.getParam('allowViewTypeChange')
 
     return {
       ...(!isTransparent
@@ -54,7 +55,7 @@ export class QueueScreen extends React.Component<Props, State> {
             headerStyle: {},
             headerTintColor: globalTheme.text.color
           }),
-      headerTitle: (
+      headerTitle: allowViewTypeChange ? (
         <HeaderTitleSelector
           color={textColor}
           items={headerTitleItems}
@@ -62,6 +63,8 @@ export class QueueScreen extends React.Component<Props, State> {
           placeholder={headerTitleItemPlaceholder}
           selectedItemKey={navigation.getParam('viewType') || navigation.getParam('viewType') === false || _queueKey}
         />
+      ) : (
+        translate('Queue')
       ),
       headerRight: (
         <RNView style={[core.row]}>

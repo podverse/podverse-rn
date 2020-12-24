@@ -11,6 +11,7 @@ export const RouteNames = {
   EpisodeScreen: 'EpisodeScreen',
   EpisodesScreen: 'EpisodesScreen',
   FAQScreen: 'FAQScreen',
+  HistoryScreen: 'HistoryScreen',
   MainApp: 'MainApp',
   MakeClipScreen: 'MakeClipScreen',
   MembershipScreen: 'MembershipScreen',
@@ -19,7 +20,6 @@ export const RouteNames = {
   MorePlaylistScreen: 'MorePlaylistScreen',
   MorePodcastScreen: 'MorePodcastScreen',
   MyProfileScreen: 'MyProfileScreen',
-  MyProfileClipsScreen: 'MyProfileClipsScreen',
   Onboarding: 'Onboarding',
   OnboardingScreen: 'OnboardingScreen',
   PlayerMembershipScreen: 'PlayerMembershipScreen',
@@ -44,5 +44,6 @@ export const RouteNames = {
   SleepTimerScreen: 'SleepTimerScreen',
   TabNavigator: 'TabNavigator',
   TermsOfServiceScreen: 'TermsOfServiceScreen',
-  WebPageScreen: 'WebPageScreen'
+  WebPageScreen: 'WebPageScreen',
+  MyLibraryScreen: 'MyLibraryScreen'
 }
