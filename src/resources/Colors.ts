@@ -19,6 +19,7 @@ export const Colors = {
   redLighter: '#c43745',
   red: '#bd2130',
   redDarker: '#aa1e2b',
+  redBadge: '#ff4548',
   orangeLighter: '#f6b472',
   orange: '#f4a24f',
   orangeDarker: '#c3813f',
