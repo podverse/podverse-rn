@@ -1,12 +1,11 @@
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome5'
 import React from 'reactn'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer } from '../services/player'
 import { togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
-import { FastImage, Text } from './'
+import { FastImage, Icon, Text } from './'
 
 type Props = {
   navigation: any
