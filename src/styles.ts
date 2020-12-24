@@ -45,7 +45,7 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.grayDarker
   },
   activityIndicator: {
-    color: PV.Colors.grayLighter
+    color: PV.Colors.brandBlueLight
   },
   activityIndicatorAlternate: {
     color: PV.Colors.grayDarkest

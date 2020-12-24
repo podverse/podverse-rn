@@ -9,7 +9,8 @@ const sizes =
         sm: 14,
         md: 16,
         lg: 17,
-        xl: 18
+        xl: 18,
+        xxl: 20
       }
     : {
         tiny: 13,
@@ -17,7 +18,8 @@ const sizes =
         sm: 15,
         md: 17,
         lg: 18,
-        xl: 19
+        xl: 19,
+        xxl: 21
       }
 
 const largeSizes = {

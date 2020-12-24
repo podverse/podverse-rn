@@ -29,7 +29,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       transparent,
       item
     } = this.props
-    const { id, description = '', title = '', pubDate = '', podcast = {} } = item
+    const { id, pubDate = '', podcast = {} } = item
+    let { description = '', title = '' } = item
     const { podcastImageUrl = '' } = podcast
     const podcastTitle = podcast.title || translate('untitled podcast')
     description = removeHTMLFromString(description)
