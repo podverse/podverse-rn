@@ -4,7 +4,7 @@ import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 import TrackPlayer, { Track } from 'react-native-track-player'
 import { BackgroundDownloader } from '../lib/downloader'
-import { checkIfIdMatchesClipIdOrEpisodeId, convertURLToSecureProtocol, getExtensionFromUrl } from '../lib/utility'
+import { checkIfIdMatchesClipIdOrEpisodeId, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData } from './auth'
 import {
@@ -373,7 +373,7 @@ export const createTrack = async (item: NowPlayingItem) => {
     } else {
       track = {
         id,
-        url: convertURLToSecureProtocol(episodeMediaUrl),
+        url: episodeMediaUrl,
         title: episodeTitle,
         artist: podcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {})

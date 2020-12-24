@@ -7,7 +7,6 @@ import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode
 import { hasValidDownloadingConnection } from './network'
 import {
   convertBytesToHumanReadableString,
-  convertURLToSecureProtocol,
   getAppUserAgent,
   getExtensionFromUrl,
   safelyUnwrapNestedVariable
@@ -57,9 +56,10 @@ const addDLTask = async (episode: any, podcast: any) =>
   DownloadState.addDownloadTask({
     addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
     episodeDescription: episode.description,
+    episodeDuration: episode.duration,
     episodeId: episode.id,
     episodeImageUrl: episode.imageUrl,
-    episodeMediaUrl: convertURLToSecureProtocol(episode.mediaUrl),
+    episodeMediaUrl: episode.mediaUrl,
     episodePubDate: episode.pubDate,
     episodeTitle: episode.title,
     podcastId: podcast.id,
@@ -122,7 +122,7 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
     const task = downloader
       .download({
         id: episode.id,
-        url: convertURLToSecureProtocol(episode.mediaUrl),
+        url: episode.mediaUrl,
         destination
       })
       .begin(() => {
