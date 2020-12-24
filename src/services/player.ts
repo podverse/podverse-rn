@@ -7,13 +7,7 @@ import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeId, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData } from './auth'
-import {
-  addOrUpdateHistoryItem,
-  getHistoryItem,
-  getHistoryItems,
-  getHistoryItemsLocally,
-  updateHistoryItemPlaybackPosition
-} from './history'
+import { addOrUpdateHistoryItem, getHistoryItem, getHistoryItems, getHistoryItemsLocally } from './history'
 import PlayerEventEmitter from './playerEventEmitter'
 import {
   addQueueItemLast,
@@ -195,11 +189,9 @@ export const updateUserPlaybackPosition = async (itemOverride?: any) => {
       const lastPosition = await TrackPlayer.getPosition()
       const duration = await TrackPlayer.getDuration()
       if (duration > 0 && lastPosition >= duration - 10) {
-        item.userPlaybackPosition = 0
-        updateHistoryItemPlaybackPosition(item)
+        addOrUpdateHistoryItem(item, 0)
       } else if (lastPosition > 0) {
-        item.userPlaybackPosition = lastPosition
-        updateHistoryItemPlaybackPosition(item)
+        addOrUpdateHistoryItem(item, lastPosition)
       }
     }
   } catch (error) {

@@ -4,7 +4,7 @@ import { Platform } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import { PV } from '../resources'
 import { hideMiniPlayer, setNowPlayingItem } from '../state/actions/player'
-import { addOrUpdateHistoryItem, checkIfPlayingFromHistory, updateHistoryItemPlaybackPosition } from './history'
+import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './history'
 import {
   getClipHasEnded,
   getNowPlayingItem,
@@ -117,8 +117,7 @@ const handleQueueEnded = async (x) => {
     if (x && x.track) {
       const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(x.track)
       if (currentNowPlayingItem) {
-        currentNowPlayingItem.userPlaybackPosition = 0
-        await updateHistoryItemPlaybackPosition(currentNowPlayingItem)
+        await addOrUpdateHistoryItem(currentNowPlayingItem, 0)
       }
     }
 
