@@ -3,7 +3,7 @@ import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import { PV } from '../resources'
-import { clearNowPlayingItem, hideMiniPlayer, setNowPlayingItem } from '../state/actions/player'
+import { hideMiniPlayer, setNowPlayingItem } from '../state/actions/player'
 import { addOrUpdateHistoryItem, checkIfPlayingFromHistory, updateHistoryItemPlaybackPosition } from './history'
 import {
   getClipHasEnded,
@@ -15,7 +15,6 @@ import {
   playerJumpForward,
   PVTrackPlayer,
   setClipHasEnded,
-  setPlaybackPosition,
   setPlaybackPositionWhenDurationIsAvailable,
   updateUserPlaybackPosition
 } from './player'
