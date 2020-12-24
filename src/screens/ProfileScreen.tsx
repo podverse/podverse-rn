@@ -544,15 +544,13 @@ export class ProfileScreen extends React.Component<Props, State> {
                 if (selectedItem) {
                   const loggedInUserId = safelyUnwrapNestedVariable(() => session.userInfo.id, '')
                   selectedItem.ownerId = loggedInUserId
-                  return PV.ActionSheet.media.moreButtons(
-                    selectedItem,
-                    navigation,
-                    this._handleCancelPress,
-                    this._handleDownloadPressed,
-                    this._showDeleteConfirmDialog,
-                    true, // includeGoToPodcast
-                    true // includeGoToEpisode
-                  )
+                  return PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
+                    handleDismiss: this._handleCancelPress,
+                    handleDownload: this._handleDownloadPressed,
+                    handleDeleteClip: this._showDeleteConfirmDialog,
+                    includeGoToPodcast: true,
+                    includeGoToEpisode: true
+                  })
                 }
               }}
               showModal={showActionSheet}

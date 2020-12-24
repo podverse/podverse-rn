@@ -9,7 +9,7 @@ type Props = {
   handleChangeText: any
   handleSubmitEditing?: any
   isSmallText?: boolean
-  selectedNumber?: number | string
+  selectedNumber?: number | strin
   testID: string
   text: string
 }
@@ -55,7 +55,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 44,
     textAlign: 'center',
-    width: 51
+    width: 51,
+    borderColor: PV.Colors.white,
+    borderWidth: 1,
+    backgroundColor: 'transparent'
   },
   wrapper: {
     alignItems: 'center',

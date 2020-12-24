@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem, NowPlayingItem } from 'podverse-shared'
 import { View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
@@ -325,7 +325,7 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _ItemSeparatorComponent = () => {
-    return <Divider />
+    return <Divider style={{ marginHorizontal: 10 }} />
   }
 
   _handleCancelPress = () => {
@@ -384,6 +384,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           item={episode}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
+          handleDownloadPress={this._handleDownloadPressed}
           handleNavigationPress={() => {
             this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,
@@ -500,9 +501,13 @@ export class PodcastScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleDownloadPressed = () => {
-    if (this.state.selectedItem) {
-      const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
+  _handleDownloadPressed = (selectedItem: NowPlayingItem) => {
+    if (!selectedItem) {
+      selectedItem = this.state.selectedItem
+    }
+
+    if (selectedItem) {
+      const episode = convertNowPlayingItemToEpisode(selectedItem)
       downloadEpisode(episode, episode.podcast)
     }
   }
@@ -622,18 +627,22 @@ export class PodcastScreen extends React.Component<Props, State> {
             <SwitchWithText
               onValueChange={this._handleToggleLimitDownloads}
               testID={`${testIDPrefix}_toggle_download_limit`}
-              text={limitDownloadedEpisodes ? translate('Download limit on') : translate('Download limit off')}
+              text={translate('Download limit')}
               value={limitDownloadedEpisodes}
             />
-            <NumberSelectorWithText
-              handleChangeText={this._handleChangeDownloadLimitText}
-              selectedNumber={downloadedEpisodeLimit}
-              testID={`${testIDPrefix}_downloaded_episode_limit_count`}
-              text={translate('Download limit max')}
-            />
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.settingsHelpText}>
-              {translate('Once the download limit is exceeded the oldest episode will be auto deleted')}
-            </Text>
+            {limitDownloadedEpisodes && (
+              <NumberSelectorWithText
+                handleChangeText={this._handleChangeDownloadLimitText}
+                selectedNumber={downloadedEpisodeLimit}
+                testID={`${testIDPrefix}_downloaded_episode_limit_count`}
+                text={translate('Download limit max')}
+              />
+            )}
+            {limitDownloadedEpisodes && (
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.settingsHelpText}>
+                {translate('Once the download limit is exceeded the oldest episode will be auto deleted')}
+              </Text>
+            )}
             <Divider style={styles.divider} />
             <Button
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
@@ -679,15 +688,9 @@ export class PodcastScreen extends React.Component<Props, State> {
             <ActionSheet
               handleCancelPress={this._handleCancelPress}
               items={() =>
-                PV.ActionSheet.media.moreButtons(
-                  selectedItem,
-                  navigation,
-                  this._handleCancelPress,
-                  this._handleDownloadPressed,
-                  null, // handleDeleteClip
-                  false, // includeGoToPodcast
-                  false // includeGoToEpisode
-                )
+                PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
+                  handleDismiss: this._handleCancelPress
+                })
               }
               showModal={showActionSheet}
               testID={testIDPrefix}

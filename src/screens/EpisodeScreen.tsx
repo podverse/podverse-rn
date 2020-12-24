@@ -418,15 +418,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={() =>
-            PV.ActionSheet.media.moreButtons(
-              selectedItem,
-              navigation,
-              this._handleCancelPress,
-              this._handleDownloadPressed,
-              null, // handleDeleteClip
+            PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
+              handleDismiss: this._handleCancelPress,
+              handleDownload: this._handleDownloadPressed,
               includeGoToPodcast,
-              false // includeGoToEpisode
-            )
+              includeGoToEpisode: true
+            })
           }
           showModal={showActionSheet}
           testID={testIDPrefix}

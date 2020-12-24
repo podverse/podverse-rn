@@ -670,12 +670,10 @@ export class PlayerScreen extends React.Component<Props, State> {
           <ActionSheet
             handleCancelPress={this._handleMoreCancelPress}
             items={() =>
-              PV.ActionSheet.media.moreButtons(
-                selectedItem,
-                navigation,
-                this._handleMoreCancelPress,
-                this._handleDownloadPressed
-              )
+              PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
+                handleDismiss: this._handleMoreCancelPress,
+                handleDownload: this._handleDownloadPressed
+              })
             }
             showModal={showMoreActionSheet}
             testID={`${testIDPrefix}_more`}

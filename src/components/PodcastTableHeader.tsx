@@ -57,10 +57,13 @@ export const PodcastTableHeader = (props: Props) => {
                 style={styles.title}>
                 {podcastTitle}
               </Text>
+              {isSubscribed && (
+                <SettingsButton handleToggleSettings={handleToggleSettings} showCheckmark={showSettings} />
+              )}
             </View>
             <View style={styles.contentWrapperBottom}>
               {isSubscribed && (
-                <View style={[styles.contentWrapperBottomRow, { marginBottom: 5 }]}>
+                <View style={[styles.contentWrapperBottomRow, { marginTop: 15 }]}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.xs}
                     isSecondary={true}
@@ -83,9 +86,6 @@ export const PodcastTableHeader = (props: Props) => {
                   testID={testID}
                   style={{ marginTop: 5 }}
                 />
-                {isSubscribed && (
-                  <SettingsButton handleToggleSettings={handleToggleSettings} showCheckmark={showSettings} />
-                )}
               </View>
             </View>
           </View>
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     minHeight: PV.Table.cells.podcast.wrapper.height,
     paddingHorizontal: 10,
     paddingVertical: 15,
-    backgroundColor: PV.Colors.Velvet
+    backgroundColor: PV.Colors.velvet
   },
   autoDownloadText: {
     fontSize: PV.Fonts.sizes.xs,

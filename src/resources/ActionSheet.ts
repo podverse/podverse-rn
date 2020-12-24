@@ -17,14 +17,19 @@ import { PV } from './PV'
 const mediaMoreButtons = (
   item: any = {},
   navigation: any,
-  handleDismiss: any,
-  handleDownload: any,
-  handleDeleteClip: any,
-  includeGoToPodcast?: boolean,
-  includeGoToEpisode?: boolean | string
+  config: {
+    handlePlayItem: any
+    handleDismiss: any
+    handleDownload: any
+    handleDeleteClip: any
+    includeGoToPodcast?: boolean
+    includeGoToEpisode?: boolean | string
+  }
 ) => {
   if (!item || !item.episodeId) return
 
+  const { handlePlayItem, handleDismiss, handleDownload, handleDeleteClip, includeGoToPodcast, includeGoToEpisode } =
+    config || {}
   const globalState = getGlobal()
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
   const downloadingText = isDownloading ? translate('Downloading') : translate('Download')
@@ -71,28 +76,32 @@ const mediaMoreButtons = (
   }
 
   if (isDownloaded) {
-    buttons.push({
-      key: PV.Keys.play,
-      text: translate('Play'),
-      onPress: async () => {
-        await handleDismiss()
-        const shouldPlay = true
-        await loadItemAndPlayTrack(item, shouldPlay)
-      }
-    })
+    if (handlePlayItem) {
+      buttons.push({
+        key: PV.Keys.play,
+        text: translate('Play'),
+        onPress: async () => {
+          await handleDismiss()
+          const shouldPlay = true
+          await loadItemAndPlayTrack(item, shouldPlay)
+        }
+      })
+    }
   } else {
-    buttons.push({
-      key: PV.Keys.stream,
-      text: translate('Stream'),
-      onPress: async () => {
-        const showAlert = await hasTriedStreamingWithoutWifiAlert(handleDismiss, navigation, false)
-        if (showAlert) return
+    if (handlePlayItem) {
+      buttons.push({
+        key: PV.Keys.stream,
+        text: translate('Stream'),
+        onPress: async () => {
+          const showAlert = await hasTriedStreamingWithoutWifiAlert(handleDismiss, navigation, false)
+          if (showAlert) return
 
-        await handleDismiss()
-        const shouldPlay = true
-        await loadItemAndPlayTrack(item, shouldPlay)
-      }
-    })
+          await handleDismiss()
+          const shouldPlay = true
+          await loadItemAndPlayTrack(item, shouldPlay)
+        }
+      })
+    }
 
     if (handleDownload) {
       buttons.push({

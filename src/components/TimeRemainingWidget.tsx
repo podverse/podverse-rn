@@ -9,6 +9,7 @@ import { Icon, MoreButton, Text, View } from './'
 type Props = {
   handleShowMore?: any
   item: any
+  style?: any
 }
 
 type BarProps = {
@@ -47,7 +48,7 @@ const MiniProgressBar = (props: BarProps) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { handleShowMore, item } = props
+  const { handleShowMore, item, style } = props
   const { podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, null, podcast)
 
@@ -66,7 +67,7 @@ export const TimeRemainingWidget = (props: Props) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <TouchableOpacity onPress={playItem} style={styles.playButton}>
         <Icon name={'play'} size={13} />
       </TouchableOpacity>
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 40,
     width: 40,
-    marginHorizontal: 10,
+    marginRight: 10,
     paddingLeft: 4
   }
 })
