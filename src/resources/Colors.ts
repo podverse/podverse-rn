@@ -34,6 +34,6 @@ export const Colors = {
   skyDark: '#6394C6',
   brandBlueLight: '#3D9DFE',
   brandBlueDark: '#1E80E3',
-  Velvet: '#0F1235',
-  Ink: '#010318'
+  velvet: '#0F1235',
+  ink: '#010318'
 }
