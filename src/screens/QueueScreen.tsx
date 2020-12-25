@@ -19,10 +19,11 @@ import {
 import { translate } from '../lib/i18n'
 import { checkIfIdMatchesClipIdOrEpisodeId, isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
+import { checkIfShouldUseServerData } from '../services/auth'
 import { movePlayerItemToNewPosition } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import { loadItemAndPlayTrack } from '../state/actions/player'
-import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
+import { addQueueItemToServer, getQueueItems, removeQueueItem, setAllQueueItemsLocally } from '../state/actions/queue'
 import { getHistoryItems, removeHistoryItem } from '../state/actions/userHistoryItem'
 import { core, darkTheme } from '../styles'
 
@@ -292,17 +293,23 @@ export class QueueScreen extends React.Component<Props, State> {
   _onReleaseRow = async (key: number, currentOrder: [string]) => {
     try {
       const { queueItems = [] } = this.global.session.userInfo
-      const item = queueItems[key]
+      const item = queueItems[key] as any
       const id = item.clipId || item.episodeId
       const sortedItems = currentOrder.map((index: string) => queueItems[index])
 
-      const newItems = await updateQueueItems(sortedItems)
+      let newItems = (await setAllQueueItemsLocally(sortedItems)) as any
+
       const newQueueItemIndex = newItems.findIndex((x: any) =>
         checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId)
       )
 
-      if (queueItems.length >= newQueueItemIndex) {
-        const nextItem = queueItems[newQueueItemIndex]
+      const useServerData = await checkIfShouldUseServerData()
+      if (useServerData && newQueueItemIndex > -1) {
+        newItems = addQueueItemToServer(item, newQueueItemIndex)
+      }
+
+      if (item && queueItems.length >= newQueueItemIndex) {
+        const nextItem = queueItems[newQueueItemIndex] as any
         await movePlayerItemToNewPosition(item.clipId || item.episodeId, nextItem.clipId || nextItem.episodeId)
       }
     } catch (error) {

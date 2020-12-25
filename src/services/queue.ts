@@ -1,45 +1,21 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from 'podverse-shared'
-import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
-import { checkIfShouldUseServerData, getAuthenticatedUserInfo } from './auth'
-import { PVTrackPlayer, syncPlayerWithQueue } from './player'
-import { updateUserQueueItems } from './user'
+import { checkIfShouldUseServerData, getBearerToken } from './auth'
+import { syncPlayerWithQueue } from './player'
+import { request } from './request'
 
 export const addQueueItemLast = async (item: NowPlayingItem) => {
-  let results = []
   const useServerData = await checkIfShouldUseServerData()
-
-  if (useServerData) {
-    results = await addQueueItemLastOnServer(item)
-  } else {
-    results = await addQueueItemLastLocally(item)
-  }
-
+  const results = useServerData ? await addQueueItemLastOnServer(item) : await addQueueItemLastLocally(item)
   await syncPlayerWithQueue()
-
   return results
 }
 
 export const addQueueItemNext = async (item: NowPlayingItem) => {
-  let results = []
-
-  const currentTrackId = await PVTrackPlayer.getCurrentTrack()
-  // Don't add track to queue if it's currently playing
-  if (checkIfIdMatchesClipIdOrEpisodeId(currentTrackId, item.clipId, item.episodeId)) {
-    return
-  }
-
   const useServerData = await checkIfShouldUseServerData()
-
-  if (useServerData) {
-    results = await addQueueItemNextOnServer(item)
-  } else {
-    results = await addQueueItemNextLocally(item)
-  }
-
+  const results = useServerData ? await addQueueItemNextOnServer(item) : await addQueueItemNextLocally(item)
   await syncPlayerWithQueue()
-
   return results
 }
 
@@ -50,10 +26,16 @@ export const getQueueItems = async () => {
 
 export const getNextFromQueue = async () => {
   const useServerData = await checkIfShouldUseServerData()
-  const item = await getNextFromQueueLocally()
-  if (useServerData) getNextFromQueueFromServer()
+  let item = await getNextFromQueueLocally()
 
-  if (item) {
+  if (useServerData) {
+    const data = await getNextFromQueueFromServer()
+    if (data) {
+      const { nextItem, userQueueItems } = data
+      item = nextItem
+      await setAllQueueItemsLocally(userQueueItems)
+    }
+  } else if (item) {
     removeQueueItem(item)
   }
 
@@ -76,13 +58,8 @@ export const removeQueueItem = async (item: NowPlayingItem) => {
 }
 
 export const setAllQueueItems = async (items: NowPlayingItem[]) => {
-  const useServerData = await checkIfShouldUseServerData()
-
   await setAllQueueItemsLocally(items)
-  if (useServerData) await setAllQueueItemsOnServer(items)
-
   await syncPlayerWithQueue()
-
   return items
 }
 
@@ -94,11 +71,7 @@ const addQueueItemLastLocally = async (item: NowPlayingItem) => {
 }
 
 const addQueueItemLastOnServer = async (item: NowPlayingItem) => {
-  const items = await getQueueItemsFromServer()
-  const filteredItems = filterItemFromQueueItems(items, item)
-  filteredItems.push(item)
-  await setAllQueueItemsLocally(filteredItems)
-  return setAllQueueItemsOnServer(filteredItems)
+  return addQueueItemToServer(item, 100000)
 }
 
 const addQueueItemNextLocally = async (item: NowPlayingItem) => {
@@ -109,11 +82,42 @@ const addQueueItemNextLocally = async (item: NowPlayingItem) => {
 }
 
 const addQueueItemNextOnServer = async (item: NowPlayingItem) => {
-  const items = await getQueueItemsFromServer()
-  const filteredItems = filterItemFromQueueItems(items, item)
-  filteredItems.unshift(item)
-  await setAllQueueItemsLocally(filteredItems)
-  return setAllQueueItemsOnServer(filteredItems)
+  return addQueueItemToServer(item, 0)
+}
+
+export const addQueueItemToServer = async (item: NowPlayingItem, newPosition: number) => {
+  const { clipId, episodeId } = item
+
+  if (!clipId && !episodeId) {
+    throw new Error('A clipId or episodeId must be provided.')
+  }
+
+  const bearerToken = await getBearerToken()
+  const body = {
+    episodeId: (!clipId && episodeId) || null,
+    mediaRefId: clipId || null,
+    queuePosition: newPosition
+  }
+
+  const response = await request({
+    endpoint: '/user-queue-item',
+    method: 'PATCH',
+    headers: {
+      Authorization: bearerToken,
+      'Content-Type': 'application/json'
+    },
+    body,
+    opts: { credentials: 'include' }
+  })
+
+  const { userQueueItems } = response.data
+  if (userQueueItems) {
+    await setAllQueueItemsLocally(userQueueItems)
+  }
+
+  await syncPlayerWithQueue()
+
+  return userQueueItems
 }
 
 export const filterItemFromQueueItems = (items: NowPlayingItem[] = [], item: NowPlayingItem) => {
@@ -137,9 +141,15 @@ const getNextFromQueueLocally = async () => {
 }
 
 const getNextFromQueueFromServer = async () => {
-  const items = await getQueueItemsFromServer()
-  const item = items.shift()
-  return item
+  const bearerToken = await getBearerToken()
+  const response = await request({
+    endpoint: '/user-queue-item/pop-next',
+    method: 'GET',
+    headers: { Authorization: bearerToken },
+    opts: { credentials: 'include' }
+  })
+
+  return response && response.data
 }
 
 export const getQueueItemsLocally = async () => {
@@ -152,11 +162,17 @@ export const getQueueItemsLocally = async () => {
 }
 
 const getQueueItemsFromServer = async () => {
-  const response = await getAuthenticatedUserInfo()
-  const user = response[0]
-  const { queueItems = [] } = user
-  await setAllQueueItemsLocally(queueItems)
-  return queueItems
+  const bearerToken = await getBearerToken()
+  const response = await request({
+    endpoint: '/user-queue-item',
+    method: 'GET',
+    headers: { Authorization: bearerToken },
+    opts: { credentials: 'include' }
+  })
+
+  const userQueueItems = response && response.data && response.data.userQueueItems
+  await setAllQueueItemsLocally(userQueueItems)
+  return userQueueItems
 }
 
 const removeQueueItemLocally = async (item: NowPlayingItem) => {
@@ -166,10 +182,29 @@ const removeQueueItemLocally = async (item: NowPlayingItem) => {
 }
 
 const removeQueueItemOnServer = async (item: NowPlayingItem) => {
+  const { clipId, episodeId } = item
   await removeQueueItemLocally(item)
-  const items = await getQueueItemsFromServer()
-  const filteredItems = filterItemFromQueueItems(items, item)
-  return setAllQueueItemsOnServer(filteredItems)
+  const bearerToken = await getBearerToken()
+
+  if (clipId) {
+    const response = await request({
+      endpoint: `/user-queue-item/mediaRef/${clipId}`,
+      method: 'DELETE',
+      headers: { Authorization: bearerToken },
+      opts: { credentials: 'include' }
+    })
+    return response && response.data && response.data.userQueueItems
+  } else if (episodeId) {
+    const response = await request({
+      endpoint: `/user-queue-item/episode/${episodeId}`,
+      method: 'DELETE',
+      headers: { Authorization: bearerToken },
+      opts: { credentials: 'include' }
+    })
+    return response && response.data && response.data.userQueueItems
+  }
+
+  throw new Error('Must provide a clipId or episodeId.')
 }
 
 export const setAllQueueItemsLocally = async (items: NowPlayingItem[]) => {
@@ -177,9 +212,4 @@ export const setAllQueueItemsLocally = async (items: NowPlayingItem[]) => {
     await AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(items))
   }
   return items
-}
-
-const setAllQueueItemsOnServer = async (items: NowPlayingItem[]) => {
-  await setAllQueueItemsLocally(items)
-  return updateUserQueueItems(items)
 }

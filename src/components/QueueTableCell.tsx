@@ -47,7 +47,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
         <RNView style={styles.wrapperTop}>
           <FastImage isSmall={true} key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>
-            {podcastTitle && (
+            {!!podcastTitle && (
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 isSecondary={true}
@@ -57,7 +57,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                 {podcastTitle.trim()}
               </Text>
             )}
-            {episodeTitle && (
+            {!!episodeTitle && (
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 numberOfLines={1}
@@ -66,7 +66,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                 {episodeTitle.trim()}
               </Text>
             )}
-            {episodePubDate && (
+            {!!episodePubDate && (
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 isSecondary={true}
@@ -77,8 +77,8 @@ export class QueueTableCell extends React.PureComponent<Props> {
               </Text>
             )}
           </RNView>
-          {showMoveButton && <Icon isSecondary={true} name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />}
-          {showRemoveButton && handleRemovePress && (
+          {!!showMoveButton && <Icon isSecondary={true} name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />}
+          {!!showRemoveButton && !!handleRemovePress && (
             <Icon
               name='times'
               onPress={handleRemovePress}
@@ -95,7 +95,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
               numberOfLines={1}
               style={styles.clipTitle}
               testID={`${testID}_bottom_text`}>
-              {clipStartTime && clipTitle ? clipTitle.trim() : translate('Full Episode')}
+              {!!clipStartTime && !!clipTitle ? clipTitle.trim() : translate('Full Episode')}
             </Text>
             {!!clipStartTime && (
               <Text

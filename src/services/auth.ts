@@ -3,6 +3,7 @@ import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { Credentials } from '../state/actions/auth'
+import { getQueueItems } from './queue'
 import { request } from './request'
 
 export const getBearerToken = async () => {
@@ -91,14 +92,9 @@ export const getAuthenticatedUserInfoLocally = async () => {
   }
 
   try {
-    const queueItemsJSON = await AsyncStorage.getItem(PV.Keys.QUEUE_ITEMS)
-    if (queueItemsJSON) {
-      queueItems = JSON.parse(queueItemsJSON)
-    }
+    queueItems = await getQueueItems()
   } catch (error) {
-    if (Array.isArray(queueItems)) {
-      await AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(queueItems))
-    }
+    // do nothing
   }
 
   try {
@@ -138,8 +134,11 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
     }
   })
 
-  const data = (response && response.data) || []
+  const data = (response && response.data) || {}
   const { addByRSSPodcastFeedUrls, subscribedPodcastIds = [] } = data
+
+  const queueItems = await getQueueItems()
+  data.queueItems = queueItems
 
   if (Array.isArray(addByRSSPodcastFeedUrls)) {
     await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))

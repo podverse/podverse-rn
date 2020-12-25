@@ -3,6 +3,7 @@ import { getGlobal, setGlobal } from 'reactn'
 import {
   addQueueItemLast as addQueueItemLastService,
   addQueueItemNext as addQueueItemNextService,
+  addQueueItemToServer as addQueueItemToServerService,
   getQueueItems as getQueueItemsService,
   removeQueueItem as removeQueueItemService,
   setAllQueueItems as setAllQueueItemsService
@@ -76,7 +77,24 @@ export const removeQueueItem = async (queueItem: NowPlayingItem) => {
   return results
 }
 
-export const updateQueueItems = async (queueItems: NowPlayingItem[]) => {
+export const addQueueItemToServer = async (item: NowPlayingItem, newPosition: number) => {
+  const globalState = getGlobal()
+  const results = await addQueueItemToServerService(item, newPosition)
+
+  setGlobal({
+    session: {
+      ...globalState.session,
+      userInfo: {
+        ...globalState.session.userInfo,
+        queueItems: results
+      }
+    }
+  })
+
+  return results
+}
+
+export const setAllQueueItemsLocally = async (queueItems: NowPlayingItem[]) => {
   const globalState = getGlobal()
   const results = await setAllQueueItemsService(queueItems)
 
