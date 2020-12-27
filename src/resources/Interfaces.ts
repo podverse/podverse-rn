@@ -54,6 +54,7 @@ export interface UserInfo {
   email?: string
   freeTrialExpiration?: string
   historyItems?: []
+  historyItemsIndex: any
   id?: string
   membershipExpiration?: string | null
   name?: string

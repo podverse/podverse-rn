@@ -2,7 +2,6 @@ import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import {
   clearHistoryItems as clearHistoryItemsService,
-  filterItemFromHistoryItems,
   getHistoryItems as getHistoryItemsService,
   removeHistoryItem as removeHistoryItemService
 } from '../../services/userHistoryItem'
@@ -15,7 +14,8 @@ export const clearHistoryItems = async () => {
       ...globalState.session,
       userInfo: {
         ...globalState.session.userInfo,
-        historyItems: []
+        historyItems: [],
+        historyItemsIndex: {}
       }
     }
   })
@@ -24,13 +24,14 @@ export const clearHistoryItems = async () => {
 
 export const getHistoryItems = async () => {
   const globalState = getGlobal()
-  const historyItems = await getHistoryItemsService()
+  const { historyItems, historyItemsIndex } = await getHistoryItemsService()
   setGlobal({
     session: {
       ...globalState.session,
       userInfo: {
         ...globalState.session.userInfo,
-        historyItems
+        historyItems,
+        historyItemsIndex
       }
     }
   })
@@ -39,16 +40,18 @@ export const getHistoryItems = async () => {
 
 export const removeHistoryItem = async (item: NowPlayingItem) => {
   const globalState = getGlobal()
-  await removeHistoryItemService(item)
-  const results = filterItemFromHistoryItems(globalState.session.userInfo.historyItems, item)
+  const { historyItems, historyItemsIndex } = await removeHistoryItemService(item)
+
   setGlobal({
     session: {
       ...globalState.session,
       userInfo: {
         ...globalState.session.userInfo,
-        historyItems: results
+        historyItems,
+        historyItemsIndex
       }
     }
   })
-  return results
+
+  return historyItems
 }

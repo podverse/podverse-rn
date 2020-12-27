@@ -3,10 +3,9 @@ import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import { PV } from '../resources'
-import { hideMiniPlayer, setNowPlayingItem } from '../state/actions/player'
+import { hideMiniPlayer } from '../state/actions/player'
 import {
   getClipHasEnded,
-  getNowPlayingItem,
   getNowPlayingItemFromQueueOrHistoryByTrackId,
   getPlaybackSpeed,
   handleResumeAfterClipHasEnded,
@@ -18,7 +17,8 @@ import {
   updateUserPlaybackPosition
 } from './player'
 import PlayerEventEmitter from './playerEventEmitter'
-import { addOrUpdateHistoryItem, checkIfPlayingFromHistory } from './userHistoryItem'
+import { addOrUpdateHistoryItem } from './userHistoryItem'
+import { getNowPlayingItemLocally, setNowPlayingItemLocally } from './userNowPlayingItem'
 
 const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1000, {
   leading: true,
@@ -48,6 +48,7 @@ const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
 
   const attemptAddOrUpdateHistoryItem = async () => {
     intervalCount = intervalCount + 1
+
     if (intervalCount >= 5) {
       clearInterval(addOrUpdateInterval)
       addOrUpdateHistoryItemSucceeded = false
@@ -55,8 +56,8 @@ const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
     } else if (!addOrUpdateHistoryItemSucceeded) {
       try {
         addOrUpdateHistoryItemSucceeded = true
-        await addOrUpdateHistoryItem(nowPlayingItem)
-        await updateUserPlaybackPosition(nowPlayingItem)
+        const playbackPosition = await PVTrackPlayer.getPosition()
+        await addOrUpdateHistoryItem(nowPlayingItem, playbackPosition)
         clearInterval(addOrUpdateInterval)
         intervalCount = 0
       } catch (error) {
@@ -73,18 +74,17 @@ const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
 
 const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem) => {
   if (!currentNowPlayingItem) return
-
-  await setNowPlayingItem(currentNowPlayingItem)
+  await setNowPlayingItemLocally(currentNowPlayingItem, currentNowPlayingItem.userPlaybackPosition || 0)
 
   if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
     PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   }
+
   if (!currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
     debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
   }
 
-  const isPlayingFromHistory = await checkIfPlayingFromHistory()
-  if (!isPlayingFromHistory && currentNowPlayingItem) {
+  if (currentNowPlayingItem) {
     handleAddOrUpdateRequestInterval(currentNowPlayingItem)
   }
 
@@ -111,7 +111,7 @@ const syncNowPlayingItemWithTrack = async () => {
   setTimeout(sync, 1000)
 }
 
-const handleQueueEnded = async (x) => {
+const handleQueueEnded = async (x: any) => {
   setTimeout(async () => {
     hideMiniPlayer()
 
@@ -146,7 +146,7 @@ module.exports = async () => {
     PlayerEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
     const clipHasEnded = await getClipHasEnded()
-    const nowPlayingItem = await getNowPlayingItem()
+    const nowPlayingItem = await getNowPlayingItemLocally()
 
     if (nowPlayingItem) {
       const { clipEndTime } = nowPlayingItem
@@ -159,10 +159,7 @@ module.exports = async () => {
       }
 
       if (Platform.OS === 'ios') {
-        if (x.state === 'paused') {
-          await updateUserPlaybackPosition(nowPlayingItem)
-        } else if (x.state === 'playing') {
-          await updateUserPlaybackPosition(nowPlayingItem)
+        if (x.state === 'playing') {
           const rate = await getPlaybackSpeed()
           PVTrackPlayer.setRate(rate)
         }
@@ -178,9 +175,6 @@ module.exports = async () => {
           buffering 6
           ???       8
         */
-        if ((x.state === 2 && currentPosition > 3) || x.state === 3) {
-          await updateUserPlaybackPosition(nowPlayingItem)
-        }
 
         if (x.state === 3) {
           const rate = await getPlaybackSpeed()
@@ -205,16 +199,12 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('remote-jump-forward', () => playerJumpForward(PV.Player.jumpSeconds))
 
-  PVTrackPlayer.addEventListener('remote-pause', async () => {
-    PVTrackPlayer.pause()
-    PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PAUSE)
-    await updateUserPlaybackPosition()
+  PVTrackPlayer.addEventListener('remote-pause', () => {
+    updateUserPlaybackPosition()
   })
 
   PVTrackPlayer.addEventListener('remote-play', async () => {
-    PVTrackPlayer.play()
-    PlayerEventEmitter.emit(PV.Events.PLAYER_REMOTE_PLAY)
-    await updateUserPlaybackPosition()
+    updateUserPlaybackPosition()
   })
 
   PVTrackPlayer.addEventListener('remote-seek', async (data) => {
@@ -271,7 +261,8 @@ const handlePlayerClipLoaded = async () => {
 
   await stopHandleClipEndInterval()
 
-  const nowPlayingItem = await getNowPlayingItem()
+  const nowPlayingItem = await getNowPlayingItemLocally()
+
   if (nowPlayingItem) {
     const { clipEndTime, clipId } = nowPlayingItem
 

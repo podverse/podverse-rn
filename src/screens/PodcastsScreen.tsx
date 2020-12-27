@@ -23,14 +23,10 @@ import { getAppUserAgent, isOdd, setAppUserAgent, setCategoryQueryProperty, test
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { getAddByRSSPodcastsLocally } from '../services/parser'
-import {
-  checkIdlePlayerState,
-  getNowPlayingItemFromQueueOrHistoryByTrackId,
-  PVTrackPlayer,
-  updateUserPlaybackPosition
-} from '../services/player'
+import { checkIdlePlayerState, PVTrackPlayer, updateUserPlaybackPosition } from '../services/player'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { trackPageView } from '../services/tracking'
+import { getNowPlayingItem } from '../services/userNowPlayingItem'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
 import {
@@ -138,16 +134,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _handleAppStateChange = async (nextAppState: any) => {
     if (nextAppState === 'active' && !isInitialLoad) {
       const { nowPlayingItem: lastItem } = this.global.player
-      const trackId = await PVTrackPlayer.getCurrentTrack()
+      const currentItem = await getNowPlayingItem()
 
-      if (trackId) {
-        const currentItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(trackId)
-
-        if (!lastItem || (lastItem && currentItem && currentItem.episodeId !== lastItem.episodeId)) {
-          await updatePlayerState(currentItem)
-          updateUserPlaybackPosition()
-          showMiniPlayer()
-        }
+      if (!lastItem || (lastItem && currentItem && currentItem.episodeId !== lastItem.episodeId)) {
+        await updatePlayerState(currentItem)
+        await updateUserPlaybackPosition()
+        showMiniPlayer()
       }
 
       await updatePlaybackState()
@@ -159,8 +151,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       // I don't think this issue is happening on Android, so we're not using this workaround on Android.
       const isIdle = await checkIdlePlayerState()
       if (Platform.OS === 'ios' && isIdle) {
-        const skipRestoreItem = true
-        await initializePlayerQueue(skipRestoreItem)
+        await initializePlayerQueue()
       }
     }
 
@@ -171,7 +162,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       // This will also prevent the history from being updated when a user closes the app on Device A,
       // then reloads it to make it load with last history item (currently playing item) on Device B.
       if (currentState === PVTrackPlayer.STATE_PLAYING) {
-        updateUserPlaybackPosition()
+        await updateUserPlaybackPosition()
       }
     }
   }

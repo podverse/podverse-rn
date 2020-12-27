@@ -5,6 +5,7 @@ import { PV } from '../resources'
 import { Credentials } from '../state/actions/auth'
 import { getQueueItems } from './queue'
 import { request } from './request'
+import { getHistoryItems, getHistoryItemsIndex } from './userHistoryItem'
 
 export const getBearerToken = async () => {
   let bearerToken = ''
@@ -137,8 +138,9 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
   const data = (response && response.data) || {}
   const { addByRSSPodcastFeedUrls, subscribedPodcastIds = [] } = data
 
-  const queueItems = await getQueueItems()
-  data.queueItems = queueItems
+  data.historyItems = await getHistoryItems()
+  data.historyItemsIndex = await getHistoryItemsIndex()
+  data.queueItems = await getQueueItems()
 
   if (Array.isArray(addByRSSPodcastFeedUrls)) {
     await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))

@@ -236,10 +236,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             async () => {
               try {
                 await clearHistoryItems()
-                this.setState({
-                  historyItems: [],
-                  isLoading: false
-                })
+                this.setState({ isLoading: false })
               } catch (error) {
                 this.setState({ isLoading: false })
               }

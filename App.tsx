@@ -16,8 +16,6 @@ import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
 import { downloadCategoriesList } from './src/services/category'
 import { gaInitialize } from './src/services/googleAnalytics'
-import { getNowPlayingItem, updateUserPlaybackPosition } from './src/services/player'
-import { addOrUpdateHistoryItem } from './src/services/userHistoryItem'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 
@@ -79,21 +77,11 @@ class App extends Component<Props, State> {
       return
     }
 
-    const nowPlayingItem = await getNowPlayingItem()
-
     if (state.type === 'wifi') {
       refreshDownloads()
-      if (nowPlayingItem) {
-        await addOrUpdateHistoryItem(nowPlayingItem)
-        await updateUserPlaybackPosition()
-      }
     } else if (state.type === 'cellular') {
       const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
       if (!downloadingWifiOnly) refreshDownloads()
-      if (nowPlayingItem) {
-        await addOrUpdateHistoryItem(nowPlayingItem)
-        await updateUserPlaybackPosition()
-      }
     }
   }
 

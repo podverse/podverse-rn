@@ -2,12 +2,14 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from 'podverse-shared'
 import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
-import { getAuthUserInfo } from '../state/actions/auth'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
-import { getNowPlayingItem } from './player'
 import { request } from './request'
+import { setNowPlayingItem } from './userNowPlayingItem'
 
 export const addOrUpdateHistoryItem = async (item: NowPlayingItem, playbackPosition: number) => {
+  // Always set the userNowPlayingItem when a userHistoryItem is added or updated
+  await setNowPlayingItem(item, playbackPosition)
+
   const useServerData = await checkIfShouldUseServerData()
   return useServerData
     ? addOrUpdateHistoryItemOnServer(item, playbackPosition)
@@ -33,25 +35,33 @@ export const getHistoryItems = async () => {
   return useServerData ? getHistoryItemsFromServer() : getHistoryItemsLocally()
 }
 
+export const getHistoryItemsIndex = async () => {
+  const useServerData = await checkIfShouldUseServerData()
+  return useServerData ? getHistoryItemsIndexFromServer() : getHistoryItemsIndexLocally()
+}
+
 export const removeHistoryItem = async (item: NowPlayingItem) => {
   const useServerData = await checkIfShouldUseServerData()
   return useServerData ? removeHistoryItemOnServer(item.episodeId, item.clipId) : removeHistoryItemLocally(item)
 }
 
 export const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem, playbackPosition: number) => {
+  playbackPosition = Math.floor(playbackPosition) || 0
   const items = await getHistoryItemsLocally()
   const filteredItems = filterItemFromHistoryItems(items, item)
-  item.userPlaybackPosition = playbackPosition || 0
+  item.userPlaybackPosition = playbackPosition
   filteredItems.unshift(item)
-  return setAllHistoryItemsLocally(filteredItems)
+  await setAllHistoryItemsLocally(filteredItems)
 }
 
 const addOrUpdateHistoryItemOnServer = async (nowPlayingItem: NowPlayingItem, playbackPosition: number) => {
+  playbackPosition = Math.floor(playbackPosition) || 0
   await addOrUpdateHistoryItemLocally(nowPlayingItem, playbackPosition)
+
   const bearerToken = await getBearerToken()
   const { clipId, episodeId } = nowPlayingItem
 
-  return request({
+  await request({
     endpoint: '/user-history-item',
     method: 'PATCH',
     headers: {
@@ -59,9 +69,9 @@ const addOrUpdateHistoryItemOnServer = async (nowPlayingItem: NowPlayingItem, pl
       'Content-Type': 'application/json'
     },
     body: {
-      episodeId,
-      userPlaybackPosition: playbackPosition,
-      mediaRefId: clipId
+      episodeId: clipId ? null : episodeId,
+      mediaRefId: clipId,
+      userPlaybackPosition: playbackPosition
     },
     opts: { credentials: 'include' }
   })
@@ -107,10 +117,59 @@ export const getHistoryItemsLocally = async () => {
 }
 
 const getHistoryItemsFromServer = async () => {
-  const user = await getAuthUserInfo()
-  const { historyItems } = user
-  setAllHistoryItemsLocally(historyItems)
-  return historyItems
+  const bearerToken = await getBearerToken()
+
+  const response = await request({
+    endpoint: '/user-history-item',
+    method: 'GET',
+    headers: {
+      Authorization: bearerToken,
+      'Content-Type': 'application/json'
+    },
+    opts: { credentials: 'include' }
+  })
+
+  const { userHistoryItems } = response.data
+  await setAllHistoryItemsLocally(userHistoryItems)
+
+  return userHistoryItems
+}
+
+const generateHistoryItemsIndex = (historyItems: any[]) => {
+  const historyItemsIndex = {
+    episodes: {},
+    mediaRefs: {}
+  }
+
+  for (const historyItem of historyItems) {
+    if (historyItem.mediaRefId) {
+      historyItemsIndex.mediaRefs[historyItem.mediaRefId] = historyItem.userPlaybackPosition
+    } else if (historyItem.episodeId) {
+      historyItemsIndex.episodes[historyItem.episodeId] = historyItem.userPlaybackPosition
+    }
+  }
+
+  return historyItemsIndex
+}
+
+export const getHistoryItemsIndexLocally = async () => {
+  const historyItems = await getHistoryItemsLocally()
+  return generateHistoryItemsIndex(historyItems)
+}
+
+const getHistoryItemsIndexFromServer = async () => {
+  const bearerToken = await getBearerToken()
+  const response = (await request({
+    endpoint: '/user-history-item/metadata',
+    method: 'GET',
+    headers: {
+      Authorization: bearerToken,
+      'Content-Type': 'application/json'
+    }
+  })) as any
+
+  const { userHistoryItems } = response.data
+  return generateHistoryItemsIndex(userHistoryItems)
 }
 
 const removeHistoryItemLocally = async (item: NowPlayingItem) => {
@@ -141,30 +200,4 @@ export const setAllHistoryItemsLocally = async (items: NowPlayingItem[]) => {
     await AsyncStorage.setItem(PV.Keys.HISTORY_ITEMS, JSON.stringify(items))
   }
   return items
-}
-
-// If the currently playing item is not the most recent item in historyItems,
-// then assume the user is playing from their history.
-export const checkIfPlayingFromHistory = async () => {
-  try {
-    const nowPlayingItem = await getNowPlayingItem()
-    const historyItems = await getHistoryItemsLocally()
-    const id = nowPlayingItem.clipId || nowPlayingItem.episodeId
-
-    if (
-      !Array.isArray(historyItems) ||
-      !historyItems.some((x: any) => checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId))
-    ) {
-      return false
-    }
-
-    const mostRecentHistoryItem = historyItems[0]
-    return (
-      mostRecentHistoryItem &&
-      !checkIfIdMatchesClipIdOrEpisodeId(id, mostRecentHistoryItem.clipId, mostRecentHistoryItem.episodeId)
-    )
-  } catch (error) {
-    console.log('Check if playing from history error: ', error)
-    return false
-  }
 }
