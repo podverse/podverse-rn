@@ -15,8 +15,8 @@ import { translate } from '../lib/i18n'
 import { isOdd, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
-import { getHistoryItems, removeHistoryItem } from '../state/actions/history'
 import { loadItemAndPlayTrack } from '../state/actions/player'
+import { getHistoryItems, removeHistoryItem } from '../state/actions/userHistoryItem'
 import { core, darkTheme } from '../styles'
 
 type Props = {
