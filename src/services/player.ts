@@ -186,7 +186,11 @@ export const initializePlayerQueue = async () => {
   }
 }
 
-export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boolean) => {
+export const loadItemAndPlayTrack = async (
+  item: NowPlayingItem,
+  shouldPlay: boolean,
+  forceUpdateOrderDate?: boolean
+) => {
   await updateUserPlaybackPosition()
 
   TrackPlayer.pause()
@@ -201,7 +205,7 @@ export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boo
     item.userPlaybackPosition = historyItemsIndex.episodes[episodeId] || 0
   }
 
-  await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0)
+  await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, forceUpdateOrderDate)
 
   if (Platform.OS === 'ios') {
     TrackPlayer.reset()

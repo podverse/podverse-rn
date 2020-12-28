@@ -1,18 +1,21 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from 'podverse-shared'
-import { checkIfIdMatchesClipIdOrEpisodeId } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
 import { request } from './request'
 import { setNowPlayingItem } from './userNowPlayingItem'
 
-export const addOrUpdateHistoryItem = async (item: NowPlayingItem, playbackPosition: number) => {
+export const addOrUpdateHistoryItem = async (
+  item: NowPlayingItem,
+  playbackPosition: number,
+  forceUpdateOrderDate?: boolean
+) => {
   // Always set the userNowPlayingItem when a userHistoryItem is added or updated
   await setNowPlayingItem(item, playbackPosition)
 
   const useServerData = await checkIfShouldUseServerData()
   return useServerData
-    ? addOrUpdateHistoryItemOnServer(item, playbackPosition)
+    ? addOrUpdateHistoryItemOnServer(item, playbackPosition, forceUpdateOrderDate)
     : addOrUpdateHistoryItemLocally(item, playbackPosition)
 }
 
@@ -46,7 +49,11 @@ export const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem, playba
   await setAllHistoryItemsLocally(filteredItems)
 }
 
-const addOrUpdateHistoryItemOnServer = async (nowPlayingItem: NowPlayingItem, playbackPosition: number) => {
+const addOrUpdateHistoryItemOnServer = async (
+  nowPlayingItem: NowPlayingItem,
+  playbackPosition: number,
+  forceUpdateOrderDate?: boolean
+) => {
   playbackPosition = Math.floor(playbackPosition) || 0
   await addOrUpdateHistoryItemLocally(nowPlayingItem, playbackPosition)
 
@@ -63,7 +70,8 @@ const addOrUpdateHistoryItemOnServer = async (nowPlayingItem: NowPlayingItem, pl
     body: {
       episodeId: clipId ? null : episodeId,
       mediaRefId: clipId,
-      userPlaybackPosition: playbackPosition
+      userPlaybackPosition: playbackPosition,
+      forceUpdateOrderDate: forceUpdateOrderDate === false ? false : true
     },
     opts: { credentials: 'include' }
   })

@@ -45,7 +45,7 @@ import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
 import { trackPageView } from '../services/tracking'
 import { getNowPlayingItem } from '../services/userNowPlayingItem'
-import { clearNowPlayingItem, loadItemAndPlayTrack } from '../state/actions/player'
+import { loadItemAndPlayTrack } from '../state/actions/player'
 import { core } from '../styles'
 
 type Props = {

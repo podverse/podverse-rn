@@ -125,10 +125,14 @@ export const playNextFromQueue = async () => {
   }
 }
 
-export const loadItemAndPlayTrack = async (item: NowPlayingItem, shouldPlay: boolean) => {
+export const loadItemAndPlayTrack = async (
+  item: NowPlayingItem,
+  shouldPlay: boolean,
+  forceUpdateOrderDate?: boolean
+) => {
   if (item) {
     await updatePlayerState(item)
-    await loadItemAndPlayTrackService(item, shouldPlay)
+    await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate)
     showMiniPlayer()
   }
 
