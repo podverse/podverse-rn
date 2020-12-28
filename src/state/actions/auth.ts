@@ -67,16 +67,19 @@ const askToSyncWithNowPlayingItem = async () => {
   const localNowPlayingItem = await getNowPlayingItemLocally()
   const serverNowPlayingItem = await getNowPlayingItemOnServer()
 
-  if (
-    (localNowPlayingItem.clipId && localNowPlayingItem.clipId !== serverNowPlayingItem.clipId) ||
-    (!localNowPlayingItem.clipId && localNowPlayingItem.episodeId !== serverNowPlayingItem.episodeId)
-  ) {
-    const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(serverNowPlayingItem)
-    Alert.alert(
-      askToSyncWithLastHistoryItem.title,
-      askToSyncWithLastHistoryItem.message,
-      askToSyncWithLastHistoryItem.buttons
-    )
+  if (serverNowPlayingItem) {
+    if (
+      !localNowPlayingItem ||
+      (localNowPlayingItem.clipId && localNowPlayingItem.clipId !== serverNowPlayingItem.clipId) ||
+      (!localNowPlayingItem.clipId && localNowPlayingItem.episodeId !== serverNowPlayingItem.episodeId)
+    ) {
+      const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(serverNowPlayingItem)
+      Alert.alert(
+        askToSyncWithLastHistoryItem.title,
+        askToSyncWithLastHistoryItem.message,
+        askToSyncWithLastHistoryItem.buttons
+      )
+    }
   }
 }
 
