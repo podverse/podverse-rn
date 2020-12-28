@@ -15,12 +15,7 @@ import {
   getQueueItemsLocally,
   removeQueueItem
 } from './queue'
-import {
-  addOrUpdateHistoryItem,
-  getHistoryItem,
-  getHistoryItemsIndexLocally,
-  getHistoryItemsLocally
-} from './userHistoryItem'
+import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally, getHistoryItemsLocally } from './userHistoryItem'
 import { getNowPlayingItem, getNowPlayingItemLocally, setNowPlayingItem } from './userNowPlayingItem'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
@@ -177,21 +172,13 @@ export const initializePlayerQueue = async () => {
     let filteredItems = [] as any
 
     const item = await getNowPlayingItem()
+    filteredItems = filterItemFromQueueItems(queueItems, item)
+    filteredItems.unshift(item)
 
-    if (item) {
-      filteredItems = filterItemFromQueueItems(queueItems, item)
-      const id = item.clipId ? item.clipId : item.episodeId
-      if (item) {
-        const historyItem = await getHistoryItem(id)
-        if (historyItem) {
-          item.userPlaybackPosition = historyItem.userPlaybackPosition
-        }
-      }
-      filteredItems.unshift(item)
+    if (filteredItems.length > 0) {
+      const tracks = await createTracks(filteredItems)
+      PVTrackPlayer.add(tracks)
     }
-
-    const tracks = await createTracks(filteredItems)
-    PVTrackPlayer.add(tracks)
 
     return item
   } catch (error) {
@@ -447,8 +434,9 @@ export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: stri
   if (currentNowPlayingItem) removeQueueItem(currentNowPlayingItem)
 
   if (!currentNowPlayingItem) {
-    const historyItems = await getHistoryItemsLocally()
-    currentNowPlayingItem = historyItems.find((x: any) =>
+    const results = await getHistoryItemsLocally()
+    const { userHistoryItems } = results
+    currentNowPlayingItem = userHistoryItems.find((x: any) =>
       checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId, x.addByRSSPodcastFeedUrl)
     )
   }

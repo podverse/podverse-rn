@@ -21,18 +21,9 @@ export const clearHistoryItems = async () => {
   return useServerData ? clearHistoryItemsOnServer() : clearHistoryItemsLocally()
 }
 
-export const getHistoryItem = async (id: string) => {
-  const historyItems = await getHistoryItems()
-  const historyItem = historyItems.find((x: NowPlayingItem) => {
-    return checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId)
-  })
-
-  return historyItem
-}
-
-export const getHistoryItems = async () => {
+export const getHistoryItems = async (query?: any) => {
   const useServerData = await checkIfShouldUseServerData()
-  return useServerData ? getHistoryItemsFromServer() : getHistoryItemsLocally()
+  return useServerData ? getHistoryItemsFromServer(query) : getHistoryItemsLocally()
 }
 
 export const getHistoryItemsIndex = async () => {
@@ -47,8 +38,9 @@ export const removeHistoryItem = async (item: NowPlayingItem) => {
 
 export const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem, playbackPosition: number) => {
   playbackPosition = Math.floor(playbackPosition) || 0
-  const items = await getHistoryItemsLocally()
-  const filteredItems = filterItemFromHistoryItems(items, item)
+  const results = await getHistoryItemsLocally()
+  const { userHistoryItems } = results
+  const filteredItems = filterItemFromHistoryItems(userHistoryItems, item)
   item.userPlaybackPosition = playbackPosition
   filteredItems.unshift(item)
   await setAllHistoryItemsLocally(filteredItems)
@@ -110,29 +102,33 @@ export const filterItemFromHistoryItems = (items: NowPlayingItem[] = [], item: N
 export const getHistoryItemsLocally = async () => {
   try {
     const itemsString = await AsyncStorage.getItem(PV.Keys.HISTORY_ITEMS)
-    return itemsString ? JSON.parse(itemsString) : []
+    const userHistoryItems = itemsString ? JSON.parse(itemsString) : []
+    return {
+      userHistoryItems,
+      userHistoryItemsCount: userHistoryItems.length
+    }
   } catch (error) {
-    return []
+    return {}
   }
 }
 
-const getHistoryItemsFromServer = async () => {
+const getHistoryItemsFromServer = async (page: number) => {
   const bearerToken = await getBearerToken()
 
   const response = await request({
     endpoint: '/user-history-item',
     method: 'GET',
-    headers: {
-      Authorization: bearerToken,
-      'Content-Type': 'application/json'
+    headers: { Authorization: bearerToken },
+    query: {
+      page
     },
     opts: { credentials: 'include' }
   })
 
-  const { userHistoryItems } = response.data
+  const { userHistoryItems, userHistoryItemsCount } = response.data
   await setAllHistoryItemsLocally(userHistoryItems)
 
-  return userHistoryItems
+  return { userHistoryItems, userHistoryItemsCount }
 }
 
 const generateHistoryItemsIndex = (historyItems: any[]) => {
@@ -153,8 +149,9 @@ const generateHistoryItemsIndex = (historyItems: any[]) => {
 }
 
 export const getHistoryItemsIndexLocally = async () => {
-  const historyItems = await getHistoryItemsLocally()
-  return generateHistoryItemsIndex(historyItems)
+  const results = await getHistoryItemsLocally()
+  const { userHistoryItems } = results
+  return generateHistoryItemsIndex(userHistoryItems)
 }
 
 const getHistoryItemsIndexFromServer = async () => {
@@ -173,8 +170,9 @@ const getHistoryItemsIndexFromServer = async () => {
 }
 
 const removeHistoryItemLocally = async (item: NowPlayingItem) => {
-  const items = await getHistoryItemsLocally()
-  const filteredItems = filterItemFromHistoryItems(items, item)
+  const results = await getHistoryItemsLocally()
+  const { userHistoryItems } = results
+  const filteredItems = filterItemFromHistoryItems(userHistoryItems, item)
   return setAllHistoryItemsLocally(filteredItems)
 }
 

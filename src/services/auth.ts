@@ -137,9 +137,12 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
 
   const data = (response && response.data) || {}
   const { addByRSSPodcastFeedUrls, subscribedPodcastIds = [] } = data
-
-  data.historyItems = await getHistoryItems()
+  const page = 1
+  const { userHistoryItems, userHistoryItemsCount } = await getHistoryItems(page)
+  data.historyItems = userHistoryItems
+  data.historyItemsCount = userHistoryItemsCount
   data.historyItemsIndex = await getHistoryItemsIndex()
+  data.historyQueryPage = page
   data.queueItems = await getQueueItems()
 
   if (Array.isArray(addByRSSPodcastFeedUrls)) {
