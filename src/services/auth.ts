@@ -95,7 +95,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
   try {
     queueItems = await getQueueItems()
   } catch (error) {
-    // do nothing
+    console.log('getAuthenticatedUserInfoLocally error', error)
   }
 
   try {
@@ -139,6 +139,7 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
   const { addByRSSPodcastFeedUrls, subscribedPodcastIds = [] } = data
   const page = 1
   const { userHistoryItems, userHistoryItemsCount } = await getHistoryItems(page)
+  // Add history and queue properities to response to be added to the global state
   data.historyItems = userHistoryItems
   data.historyItemsCount = userHistoryItemsCount
   data.historyItemsIndex = await getHistoryItemsIndex()

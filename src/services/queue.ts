@@ -71,7 +71,8 @@ const addQueueItemLastLocally = async (item: NowPlayingItem) => {
 }
 
 const addQueueItemLastOnServer = async (item: NowPlayingItem) => {
-  return addQueueItemToServer(item, 100000)
+  const maxQueuePosition = 100000
+  return addQueueItemToServer(item, maxQueuePosition)
 }
 
 const addQueueItemNextLocally = async (item: NowPlayingItem) => {

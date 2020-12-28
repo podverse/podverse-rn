@@ -5,6 +5,7 @@ import {
   addQueueItemNext as addQueueItemNextService,
   addQueueItemToServer as addQueueItemToServerService,
   getQueueItems as getQueueItemsService,
+  getQueueItemsLocally,
   removeQueueItem as removeQueueItemService,
   setAllQueueItems as setAllQueueItemsService
 } from '../../services/queue'
@@ -62,7 +63,8 @@ export const getQueueItems = async () => {
 
 export const removeQueueItem = async (queueItem: NowPlayingItem) => {
   const globalState = getGlobal()
-  const results = await removeQueueItemService(queueItem)
+  await removeQueueItemService(queueItem)
+  const results = await getQueueItemsLocally()
 
   setGlobal({
     session: {

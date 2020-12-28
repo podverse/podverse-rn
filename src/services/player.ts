@@ -162,7 +162,7 @@ export const updateUserPlaybackPosition = async () => {
       }
     }
   } catch (error) {
-    //
+    console.log('updateUserPlaybackPosition error', error)
   }
 }
 

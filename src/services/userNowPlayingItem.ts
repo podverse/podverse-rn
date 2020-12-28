@@ -26,13 +26,14 @@ export const getNowPlayingItemLocally = async () => {
     const itemString = await AsyncStorage.getItem(PV.Keys.NOW_PLAYING_ITEM)
     return itemString ? JSON.parse(itemString) : null
   } catch (error) {
+    console.log('getNowPlayingItemLocally', error)
     return null
   }
 }
 
 export const getNowPlayingItemOnServer = async () => {
   const bearerToken = await getBearerToken()
-
+  let item = null
   try {
     const response = (await request({
       endpoint: '/user-now-playing-item',
@@ -47,20 +48,22 @@ export const getNowPlayingItemOnServer = async () => {
     const { episode, mediaRef } = response.data
 
     if (!episode && !mediaRef) {
-      return null
+      throw new Error('Response data missing both episode and mediaRef')
     }
 
-    const item = convertToNowPlayingItem(mediaRef || episode)
+    item = convertToNowPlayingItem(mediaRef || episode) || {}
 
     if (item.clipId || item.episodeId) {
       await setNowPlayingItemLocally(response, item.userPlaybackPosition || 0)
-      return item
+    } else {
+      throw new Error('Now Playing Item missing both clipId and episodeId.')
     }
-
-    return null
   } catch (error) {
-    return null
+    console.log('Error in getNowPlayingItemOnServer: ', error)
+    item = null
   }
+
+  return item
 }
 
 export const setNowPlayingItemLocally = async (item: NowPlayingItem | null, playbackPosition: number) => {
@@ -101,9 +104,9 @@ export const setNowPlayingItemOnServer = async (item: NowPlayingItem | null, pla
 
 export const clearNowPlayingItemLocally = async () => {
   try {
-    AsyncStorage.removeItem(PV.Keys.NOW_PLAYING_ITEM)
+    await AsyncStorage.removeItem(PV.Keys.NOW_PLAYING_ITEM)
   } catch (error) {
-    //
+    console.log('clearNowPlayingItemLocally', error)
   }
 }
 
