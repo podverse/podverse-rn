@@ -106,6 +106,21 @@ export const convertSecToHHMMSS = (sec: number) => {
   return result
 }
 
+export const convertSecToHhoursMMinutes = (sec: number) => {
+  let totalSec = Math.floor(sec)
+  const hours = Math.floor(totalSec / 3600)
+  totalSec %= 3600
+  const minutes = Math.floor(totalSec / 60)
+
+  let result = `${minutes} min`
+
+  if (hours >= 1) {
+    result = `${hours} hr ` + result
+  }
+
+  return result
+}
+
 export const readableClipTime = (startTime: number, endTime?: number) => {
   const s = convertSecToHHMMSS(startTime)
   if ((startTime || startTime === 0) && endTime) {

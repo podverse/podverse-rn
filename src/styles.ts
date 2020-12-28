@@ -45,7 +45,7 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.grayDarker
   },
   activityIndicator: {
-    color: PV.Colors.grayLighter
+    color: PV.Colors.brandBlueLight
   },
   activityIndicatorAlternate: {
     color: PV.Colors.grayDarkest
@@ -85,7 +85,9 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   buttonPrimaryWrapper: {
-    backgroundColor: PV.Colors.grayDarker
+    backgroundColor: PV.Colors.ink,
+    borderColor: PV.Colors.white,
+    borderWidth: 1
   },
   buttonDisabledWrapper: {
     backgroundColor: PV.Colors.grayLighter

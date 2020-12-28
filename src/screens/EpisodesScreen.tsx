@@ -242,7 +242,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _ItemSeparatorComponent = () => {
-    return <Divider />
+    return <Divider style={{ marginHorizontal: 10 }} />
   }
 
   _handleCancelPress = () => {
@@ -259,33 +259,19 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _renderEpisodeItem = ({ item, index }) => {
-    const description = item.description ? item.description.substr(0, 300) : ''
-    const title = item.title || ''
-    const podcastTitle = item?.podcast_title || item?.podcast?.title || ''
-
     return (
       <EpisodeTableCell
-        description={description}
-        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.podcast))}
-        handleNavigationPress={() =>
+        item={item}
+        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item?.podcast))}
+        handleDownloadPress={this._handleDownloadPressed}
+        handleNavigationPress={() => {
           this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
             episode: item,
             includeGoToPodcast: true
           })
-        }
-        hasZebraStripe={isOdd(index)}
-        hideImage={false}
-        id={item.id}
-        podcastImageUrl={
-          item.podcast_shrunkImageUrl ||
-          item.podcast_imageUrl ||
-          (item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl))
-        }
-        {...(podcastTitle ? { podcastTitle } : {})}
-        pubDate={item.pubDate}
+        }}
         showPodcastTitle={true}
         testID={`${testIDPrefix}_episode_item_${index}`}
-        {...(title ? { title } : {})}
       />
     )
   }
@@ -457,15 +443,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={() =>
-            PV.ActionSheet.media.moreButtons(
-              selectedItem,
-              navigation,
-              this._handleCancelPress,
-              this._handleDownloadPressed,
-              null, // handleDeleteEpisode
-              true, // includeGoToPodcast
-              false // includeGoToEpisode
-            )
+            PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
+              handleDismiss: this._handleCancelPress,
+              includeGoToPodcast: true
+            })
           }
           showModal={showActionSheet}
           testID={testIDPrefix}
