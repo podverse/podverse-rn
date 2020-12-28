@@ -4,6 +4,7 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { ActivityIndicator, FastImage, SettingsButton, SubscribeButton, Text, View } from './'
+import { IndicatorDownload } from './IndicatorDownload'
 
 type Props = {
   autoDownloadOn?: boolean
@@ -62,31 +63,29 @@ export const PodcastTableHeader = (props: Props) => {
               )}
             </View>
             <View style={styles.contentWrapperBottom}>
+              <SubscribeButton
+                handleToggleSubscribe={handleToggleSubscribe}
+                isSubscribed={isSubscribed}
+                isSubscribing={isSubscribing}
+                testID={testID}
+              />
               {isSubscribed && (
-                <View style={[styles.contentWrapperBottomRow, { marginTop: 15 }]}>
+                <View style={styles.autoDownloadContainer}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.xs}
                     isSecondary={true}
                     style={styles.autoDownloadText}>
-                    {translate('Auto download episodes')}
+                    {translate('Auto')}
                   </Text>
+                  <IndicatorDownload style={{ marginLeft: 6 }} />
                   <Switch
                     onValueChange={handleToggleAutoDownload}
                     value={autoDownloadOn}
-                    style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] }}
+                    style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }], marginLeft: 5 }}
                     trackColor={{ true: PV.Colors.brandBlueLight, false: PV.Colors.grayLightest }}
                   />
                 </View>
               )}
-              <View style={[styles.contentWrapperBottomRow, { marginRight: 12 }]}>
-                <SubscribeButton
-                  handleToggleSubscribe={handleToggleSubscribe}
-                  isSubscribed={isSubscribed}
-                  isSubscribing={isSubscribing}
-                  testID={testID}
-                  style={{ marginTop: 5 }}
-                />
-              </View>
             </View>
           </View>
         </View>
@@ -111,11 +110,15 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     backgroundColor: PV.Colors.velvet
   },
+  autoDownloadContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'transparent'
+  },
   autoDownloadText: {
     fontSize: PV.Fonts.sizes.xs,
     color: PV.Colors.grayLight,
-    flex: 1,
-    alignSelf: 'center'
+    textAlign: 'right'
   },
   image: {
     height: PV.Table.cells.podcast.image.height,
@@ -128,16 +131,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   contentWrapperBottom: {
-    backgroundColor: 'transparent'
-  },
-  contentWrapperBottomRow: {
     backgroundColor: 'transparent',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    marginTop: 5
   },
   contentWrapperTop: {
-    marginBottom: 15,
     flexDirection: 'row',
     backgroundColor: 'transparent',
     justifyContent: 'space-between'

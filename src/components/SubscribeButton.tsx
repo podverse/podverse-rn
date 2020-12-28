@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
     borderColor: PV.Colors.brandBlueLight,
     borderWidth: 1,
     borderRadius: 15,
-    width: 120
+    width: 120,
+    minHeight: 32
   },
   buttonText: {
     color: PV.Colors.brandBlueLight,

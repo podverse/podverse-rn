@@ -99,7 +99,7 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.redDarker
   },
   divider: {
-    backgroundColor: PV.Colors.grayDark
+    backgroundColor: PV.Colors.grayDark + '80'
   },
   flatList: {
     backgroundColor: PV.Colors.ink
