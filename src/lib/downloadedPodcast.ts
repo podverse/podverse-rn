@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
-import { clearNowPlayingItem, getNowPlayingItem } from '../services/player'
 import { sortPodcastArrayAlphabetically } from '../services/podcast'
+import { clearNowPlayingItem, getNowPlayingItem } from '../services/userNowPlayingItem'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
 import { deleteDownloadedEpisode } from './downloader'
 

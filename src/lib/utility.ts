@@ -182,14 +182,6 @@ export const formatTitleViewHtml = (episode: any) => {
   }
 }
 
-export const convertURLToSecureProtocol = (url?: string) => {
-  if (url && url.indexOf('http://') > -1) {
-    return url.replace('http://', 'https://')
-  } else {
-    return url
-  }
-}
-
 export const generateAuthorsText = (authors: any) => {
   let authorText = ''
 

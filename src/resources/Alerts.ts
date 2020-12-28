@@ -23,7 +23,13 @@ export const Alerts = {
       title: `${translate('Most Recent ')}${type}`,
       buttons: [
         { text: translate('No') },
-        { text: translate('Yes'), onPress: () => loadItemAndPlayTrack(item, /* shouldPlay */ false, true) }
+        {
+          text: translate('Yes'),
+          onPress: () => {
+            const shouldPlay = false
+            loadItemAndPlayTrack(item, shouldPlay)
+          }
+        }
       ]
     }
   },

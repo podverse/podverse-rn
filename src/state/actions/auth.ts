@@ -4,10 +4,10 @@ import { getGlobal, setGlobal } from 'reactn'
 import { safelyUnwrapNestedVariable, shouldShowMembershipAlert } from '../../lib/utility'
 import { PV } from '../../resources'
 import { getAuthenticatedUserInfo, getAuthenticatedUserInfoLocally, login, signUp } from '../../services/auth'
-import { setAllHistoryItemsLocally } from '../../services/history'
 import { setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
-import { getNowPlayingItem } from '../../services/player'
 import { setAllQueueItemsLocally } from '../../services/queue'
+import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
+import { getNowPlayingItemLocally, getNowPlayingItemOnServer } from '../../services/userNowPlayingItem'
 import { getSubscribedPodcasts } from './podcast'
 
 export type Credentials = {
@@ -63,16 +63,17 @@ export const getAuthUserInfo = async () => {
   }
 }
 
-const askToSyncWithLastHistoryItem = async (historyItems: any) => {
-  let nowPlayingItem = await getNowPlayingItem()
-  nowPlayingItem = nowPlayingItem || {}
-  if (historyItems && historyItems.length > 0) {
-    const mostRecentHistoryItem = historyItems[0]
-    const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(mostRecentHistoryItem)
+const askToSyncWithNowPlayingItem = async () => {
+  const localNowPlayingItem = await getNowPlayingItemLocally()
+  const serverNowPlayingItem = await getNowPlayingItemOnServer()
+
+  if (serverNowPlayingItem) {
     if (
-      (mostRecentHistoryItem.clipId && mostRecentHistoryItem.clipId !== nowPlayingItem.clipId) ||
-      (mostRecentHistoryItem.episodeId && mostRecentHistoryItem.episodeId !== nowPlayingItem.episodeId)
+      !localNowPlayingItem ||
+      (localNowPlayingItem.clipId && localNowPlayingItem.clipId !== serverNowPlayingItem.clipId) ||
+      (!localNowPlayingItem.clipId && localNowPlayingItem.episodeId !== serverNowPlayingItem.episodeId)
     ) {
+      const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(serverNowPlayingItem)
       Alert.alert(
         askToSyncWithLastHistoryItem.title,
         askToSyncWithLastHistoryItem.message,
@@ -106,7 +107,7 @@ export const loginUser = async (credentials: Credentials) => {
     const userInfo = await login(credentials.email, credentials.password)
     await syncItemsWithLocalStorage(userInfo)
     await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
-    await askToSyncWithLastHistoryItem(userInfo.historyItems)
+    await askToSyncWithNowPlayingItem()
 
     setGlobal({ session: { userInfo, isLoggedIn: true } })
     return userInfo

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { convertToSortableTitle, convertURLToSecureProtocol, getAppUserAgent, isValidDate } from '../lib/utility'
+import { convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { combineWithAddByRSSPodcasts } from './podcast'
@@ -201,6 +201,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
 
       // A unique episode.id is needed for downloading episodes.
       episode.id = uuidv4()
+      episode.addedByRSS = true
 
       // TODO: add chapters support for podcasts added by RSS feed
       // if (parsedEpisode.chapters) {

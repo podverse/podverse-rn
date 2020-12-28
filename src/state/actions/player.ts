@@ -3,18 +3,19 @@ import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, NowPla
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import {
-  clearNowPlayingItem as clearNowPlayingItemService,
-  getContinuousPlaybackMode,
   initializePlayerQueue as initializePlayerQueueService,
   loadItemAndPlayTrack as loadItemAndPlayTrackService,
   playNextFromQueue as playNextFromQueueService,
   PVTrackPlayer,
-  setNowPlayingItem as setNowPlayingItemService,
   setPlaybackSpeed as setPlaybackSpeedService,
   togglePlay as togglePlayService
 } from '../../services/player'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 import { trackPlayerScreenPageView } from '../../services/tracking'
+import {
+  clearNowPlayingItem as clearNowPlayingItemService,
+  setNowPlayingItem as setNowPlayingItemService
+} from '../../services/userNowPlayingItem'
 import { getQueueItems } from '../../state/actions/queue'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
@@ -46,6 +47,7 @@ export const updatePlayerState = async (item: NowPlayingItem) => {
 
 export const initializePlayerQueue = async () => {
   const nowPlayingItem = await initializePlayerQueueService()
+
   if (nowPlayingItem) {
     await updatePlayerState(nowPlayingItem)
     showMiniPlayer()
@@ -99,13 +101,11 @@ export const showMiniPlayer = () => {
 }
 
 export const initPlayerState = async (globalState: any) => {
-  const shouldContinuouslyPlay = await getContinuousPlaybackMode()
   const sleepTimerDefaultTimeRemaining = await initSleepTimerDefaultTimeRemaining()
 
   setGlobal({
     player: {
       ...globalState.player,
-      shouldContinuouslyPlay,
       sleepTimer: {
         defaultTimeRemaining: sleepTimerDefaultTimeRemaining,
         isActive: false,
@@ -128,11 +128,11 @@ export const playNextFromQueue = async () => {
 export const loadItemAndPlayTrack = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
-  skipAddOrUpdateHistory?: boolean
+  forceUpdateOrderDate?: boolean
 ) => {
   if (item) {
     await updatePlayerState(item)
-    await loadItemAndPlayTrackService(item, shouldPlay, skipAddOrUpdateHistory)
+    await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate)
     showMiniPlayer()
   }
 
@@ -170,7 +170,6 @@ export const togglePlay = async () => {
   if (!trackId) {
     await initializePlayerQueue()
   }
-
   await togglePlayService()
 
   showMiniPlayer()
@@ -193,12 +192,10 @@ export const updatePlaybackState = async (state?: any) => {
   })
 }
 
-export const setNowPlayingItem = async (item: NowPlayingItem | null) => {
+export const setNowPlayingItem = async (item: NowPlayingItem | null, playbackPosition: number) => {
   if (item) {
-    await setNowPlayingItemService(item)
+    await setNowPlayingItemService(item, playbackPosition)
     await updatePlayerState(item)
-  } else {
-    await clearNowPlayingItem()
   }
 }
 
