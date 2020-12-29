@@ -229,7 +229,7 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   webViewStaticHTMLWrapper: {
-    backgroundColor: PV.Colors.black
+    backgroundColor: PV.Colors.ink
   }
 })
 

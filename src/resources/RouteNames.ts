@@ -41,6 +41,7 @@ export const RouteNames = {
   SearchScreen: 'SearchScreen',
   SearchSearchScreen: 'SearchSearchScreen',
   SettingsScreen: 'SettingsScreen',
+  EpisodeMediaRefScreen: 'EpisodeMediaRefScreen',
   SleepTimerScreen: 'SleepTimerScreen',
   TabNavigator: 'TabNavigator',
   TermsOfServiceScreen: 'TermsOfServiceScreen',

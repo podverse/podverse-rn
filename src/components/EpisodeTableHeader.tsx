@@ -32,8 +32,6 @@ export const EpisodeTableHeader = (props: Props) => {
 
   const titleNumberOfLines = [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ? 1 : 2
 
-  console.log('Episode: ', episode)
-
   return (
     <View style={styles.view}>
       {isLoading ? (
@@ -99,8 +97,8 @@ const styles = StyleSheet.create({
   },
   innerWrapper: {},
   image: {
-    height: 90,
-    width: 90
+    height: 110,
+    width: 110
   },
   notFoundText: {
     fontSize: PV.Fonts.sizes.xl,
