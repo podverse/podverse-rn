@@ -59,7 +59,7 @@ const defaultNavigationOptions = ({ navigation }) => {
   }
 
   return {
-    headerStyle: { backgroundColor: PV.Colors.ink },
+    headerStyle: { backgroundColor: PV.Colors.ink, shadowColor: 'transparent' },
     title: PV.Tabs.Podcasts.title,
     headerTintColor: darkTheme.text.color,
     headerTitleStyle: {

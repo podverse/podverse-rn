@@ -365,24 +365,18 @@ export class EpisodeScreen extends React.Component<Props, State> {
       noResultsSubMessage = translate('Chapters are created by the podcaster')
     }
 
+    const episodeDownloaded = episode && !!downloadedEpisodeIds[episode.id]
+    const episodeDownloading = episode && !!downloadsActive[episode.id]
+
     return (
       <View style={styles.view} {...testProps('episode_screen_view')}>
         <EpisodeTableHeader
-          downloadedEpisodeIds={downloadedEpisodeIds}
-          downloadsActive={downloadsActive}
+          episodeDownloaded={episodeDownloaded}
+          episodeDownloading={episodeDownloading}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast))}
-          id={episode && episode.id}
-          isLoading={isLoading && !episode}
-          isNotFound={!isLoading && !episode}
-          podcastImageUrl={
-            episode &&
-            ((episode.podcast && episode.podcast.shrunkImageUrl) ||
-              episode.podcast_shrunkImageUrl ||
-              (episode.podcast && episode.podcast.imageUrl))
-          }
-          pubDate={episode && episode.pubDate}
+          episode={episode}
+          isLoading={isLoading}
           testID={testIDPrefix}
-          title={episode && episode.title}
         />
         <TableSectionSelectors
           handleSelectLeftItem={this.selectLeftItem}
@@ -420,9 +414,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
           items={() =>
             PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
               handleDismiss: this._handleCancelPress,
-              handleDownload: this._handleDownloadPressed,
-              includeGoToPodcast,
-              includeGoToEpisode: true
+              handleDownload: episodeDownloading ? null : this._handleDownloadPressed,
+              includeGoToPodcast
             })
           }
           showModal={showActionSheet}
