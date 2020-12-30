@@ -115,26 +115,26 @@ const mediaMoreButtons = (
     }
   }
 
-  buttons.push(
-    {
-      key: PV.Keys.queue_next,
-      text: translate('Queue Next'),
-      onPress: async () => {
-        await addQueueItemNext(item)
-        await handleDismiss()
-      }
-    },
-    {
-      key: PV.Keys.queue_last,
-      text: translate('Queue Last'),
-      onPress: async () => {
-        await addQueueItemLast(item)
-        await handleDismiss()
-      }
-    }
-  )
-
   if (!item.addByRSSPodcastFeedUrl) {
+    buttons.push(
+      {
+        key: PV.Keys.queue_next,
+        text: translate('Queue Next'),
+        onPress: async () => {
+          await addQueueItemNext(item)
+          await handleDismiss()
+        }
+      },
+      {
+        key: PV.Keys.queue_last,
+        text: translate('Queue Last'),
+        onPress: async () => {
+          await addQueueItemLast(item)
+          await handleDismiss()
+        }
+      }
+    )
+
     if (!Config.DISABLE_ADD_TO_PLAYLIST && isLoggedIn) {
       buttons.push({
         key: PV.Keys.add_to_playlist,
