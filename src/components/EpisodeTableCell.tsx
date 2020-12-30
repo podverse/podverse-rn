@@ -30,7 +30,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       testID,
       transparent
     } = this.props
-    const { id, pubDate = '', podcast = {} } = item
+    const { id, mediaUrl, pubDate = '', podcast = {} } = item
     let { description = '', title = '' } = item
     const { imageUrl = '' } = podcast
     const podcastTitle = podcast.title || translate('untitled podcast')
@@ -40,7 +40,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const { downloadedEpisodeIds, downloadsActive, fontScaleMode } = this.global
 
     const isDownloading = downloadsActive[id]
-    const isDownloaded = downloadedEpisodeIds[id]
+    const isDownloaded = item.addByRSSPodcastFeedUrl ? downloadedEpisodeIds[mediaUrl] : downloadedEpisodeIds[id]
 
     if (!title) title = translate('untitled episode')
 
