@@ -18,7 +18,7 @@ export const PVScrollView = (props: Props) => {
   }
 
   return (
-    <ScrollView {...props} style={styles}>
+    <ScrollView {...props} style={styles} showsVerticalScrollIndicator={false}>
       {props.children}
     </ScrollView>
   )

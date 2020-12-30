@@ -1,78 +1,84 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
-import { readableDate, testProps } from '../lib/utility'
+import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { core } from '../styles'
-import { ActivityIndicator, FastImage, IndicatorDownload, MoreButton, Text, View } from './'
+import { ActivityIndicator, FastImage, IndicatorDownload, Text } from './'
+import { TimeRemainingWidget } from './TimeRemainingWidget'
 
 type Props = {
-  downloadedEpisodeIds?: any
-  downloadsActive?: any
+  episode: any | null
   handleMorePress?: any
-  id: string
+  episodeDownloaded?: boolean
   isLoading?: boolean
-  isNotFound?: boolean
-  podcastImageUrl?: string
-  pubDate?: string
   testID: string
-  title: string
 }
 
 export const EpisodeTableHeader = (props: Props) => {
-  const {
-    downloadedEpisodeIds = {},
-    downloadsActive = {},
-    handleMorePress,
-    id,
-    isLoading,
-    isNotFound,
-    podcastImageUrl,
-    pubDate = '',
-    testID,
-    title
-  } = props
+  const { episodeDownloaded = false, handleMorePress, testID, episode, isLoading } = props
 
-  const isDownloading = downloadsActive[id]
-  const isDownloaded = downloadedEpisodeIds[id]
+  const isNotFound = !isLoading && !episode
+  const podcastImageUrl =
+    episode &&
+    ((episode.podcast && episode.podcast.shrunkImageUrl) ||
+      episode.podcast_shrunkImageUrl ||
+      (episode.podcast && episode.podcast.imageUrl))
+  const pubDate = episode && episode.pubDate
+  const title = episode && episode.title
+  const isDownloaded = episodeDownloaded
 
   const [fontScaleMode] = useGlobal('fontScaleMode')
 
   const titleNumberOfLines = [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ? 1 : 2
 
   return (
-    <View style={styles.wrapper}>
-      {isLoading && <ActivityIndicator />}
-      {!isLoading && !isNotFound && (
-        <View style={styles.innerWrapper}>
-          <FastImage source={podcastImageUrl} styles={styles.image} />
-          <View style={styles.textWrapper}>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={titleNumberOfLines} style={styles.title}>
-              {title}
-            </Text>
-            <View style={styles.textWrapperBottomRow}>
-              {!!pubDate && (
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} isSecondary={true} style={styles.pubDate}>
-                  {readableDate(pubDate)}
-                </Text>
-              )}
-              {isDownloaded && <IndicatorDownload />}
+    <View style={styles.view}>
+      {isLoading ? (
+        <ActivityIndicator styles={{ margin: 25 }} />
+      ) : (
+        <View style={styles.wrapper}>
+          {isNotFound ? (
+            <View style={styles.textWrapper}>
+              <Text
+                fontSizeLargerScale={PV.Fonts.largeSizes.md}
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={styles.notFoundText}
+                testID={testID}>
+                {translate('Episode Not Found')}
+              </Text>
             </View>
-          </View>
-          {handleMorePress && (
-            <MoreButton handleShowMore={handleMorePress} height={92} isLoading={isDownloading} testID={testID} />
+          ) : (
+            <View style={styles.innerWrapper}>
+              <FastImage source={podcastImageUrl} styles={styles.image} />
+              <View style={styles.textWrapper}>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  isSecondary={true}
+                  style={styles.pubDate}
+                  testID={testID}>
+                  {!!pubDate && readableDate(pubDate)}
+                  {isDownloaded && <IndicatorDownload style={{ paddingLeft: 10 }} />}
+                </Text>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  numberOfLines={titleNumberOfLines}
+                  style={styles.title}
+                  testID={testID}>
+                  {title}
+                </Text>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.podcastTitle} testID={testID}>
+                  {!!episode.podcast && episode.podcast.title}
+                </Text>
+              </View>
+              <TimeRemainingWidget
+                item={episode}
+                handleShowMore={handleMorePress}
+                testID={testID}
+                style={{ marginVertical: 20 }}
+              />
+            </View>
           )}
-        </View>
-      )}
-      {!isLoading && isNotFound && (
-        <View style={core.view}>
-          <Text
-            fontSizeLargerScale={PV.Fonts.largeSizes.md}
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            style={styles.notFoundText}>
-            {translate('Episode Not Found')}
-          </Text>
         </View>
       )}
     </View>
@@ -80,47 +86,43 @@ export const EpisodeTableHeader = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
+  view: {
+    marginHorizontal: 15,
+    marginTop: 20
+  },
+  wrapper: {},
   buttonView: {
-    flex: 0,
     marginLeft: 8,
     marginRight: 8
   },
+  innerWrapper: {},
   image: {
-    flex: 0,
-    height: PV.Table.cells.podcast.image.height,
-    marginRight: 12,
-    width: PV.Table.cells.podcast.image.width
-  },
-  innerWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    marginRight: 8
+    height: 110,
+    width: 110
   },
   notFoundText: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold
   },
   pubDate: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
-    marginTop: 3
+    fontSize: PV.Fonts.sizes.xs,
+    color: PV.Colors.skyLight
   },
   textWrapper: {
-    flex: 1,
-    marginRight: 4,
-    paddingTop: 2
+    paddingTop: 15
   },
   textWrapperBottomRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start'
   },
   title: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold
+    fontSize: PV.Fonts.sizes.huge,
+    fontWeight: PV.Fonts.weights.thin,
+    flexWrap: 'wrap'
   },
-  wrapper: {
-    flexDirection: 'row',
-    minHeight: PV.Table.cells.podcast.wrapper.height
+  podcastTitle: {
+    marginTop: 5,
+    fontSize: PV.Fonts.sizes.xs,
+    color: PV.Colors.brandBlueLight
   }
 })
