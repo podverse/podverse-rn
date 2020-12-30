@@ -73,7 +73,7 @@ export const TimeRemainingWidget = (props: Props) => {
       </TouchableOpacity>
       {hasStartedItem && <MiniProgressBar playedTime={30} totalTime={120} />}
       <Text style={styles.text}>{timeLabel}</Text>
-      <MoreButton handleShowMore={handleShowMore} />
+      {!!handleShowMore && <MoreButton handleShowMore={handleShowMore} />}
     </View>
   )
 }

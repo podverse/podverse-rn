@@ -1,8 +1,13 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { convertNowPlayingItemClipToNowPlayingItemEpisode, NowPlayingItem } from 'podverse-shared'
+import {
+  convertNowPlayingItemClipToNowPlayingItemEpisode,
+  convertToNowPlayingItem,
+  NowPlayingItem
+} from 'podverse-shared'
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 import TrackPlayer, { Track } from 'react-native-track-player'
+import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeId, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
@@ -145,19 +150,21 @@ const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
   return isDownloadedFile
 }
 
-export const updateUserPlaybackPosition = async () => {
+export const updateUserPlaybackPosition = async (skipSetNowPlaying?: boolean) => {
   try {
     const currentTrackId = await PVTrackPlayer.getCurrentTrack()
-    const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentTrackId)
+    const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentTrackId)
 
     if (currentNowPlayingItem) {
       const lastPosition = await TrackPlayer.getPosition()
       const duration = await TrackPlayer.getDuration()
+      const forceUpdateOrderDate = false
+
       if (duration > 0 && lastPosition >= duration - 10) {
-        await addOrUpdateHistoryItem(currentNowPlayingItem, 0)
+        await addOrUpdateHistoryItem(currentNowPlayingItem, 0, forceUpdateOrderDate, skipSetNowPlaying)
       } else if (lastPosition > 0) {
-        await addOrUpdateHistoryItem(currentNowPlayingItem, lastPosition)
-      } else {
+        await addOrUpdateHistoryItem(currentNowPlayingItem, lastPosition, forceUpdateOrderDate, skipSetNowPlaying)
+      } else if (!skipSetNowPlaying) {
         await setNowPlayingItem(currentNowPlayingItem, 0)
       }
     }
@@ -171,7 +178,7 @@ export const initializePlayerQueue = async () => {
     const queueItems = await getQueueItems()
     let filteredItems = [] as any
 
-    const item = await getNowPlayingItem()
+    const item = await getNowPlayingItemLocally()
     filteredItems = filterItemFromQueueItems(queueItems, item)
     filteredItems.unshift(item)
 
@@ -191,7 +198,8 @@ export const loadItemAndPlayTrack = async (
   shouldPlay: boolean,
   forceUpdateOrderDate?: boolean
 ) => {
-  await updateUserPlaybackPosition()
+  const skipSetNowPlaying = true
+  await updateUserPlaybackPosition(skipSetNowPlaying)
 
   TrackPlayer.pause()
 
@@ -247,7 +255,7 @@ export const playNextFromQueue = async () => {
   if (queueItems && queueItems.length > 1) {
     await PVTrackPlayer.skipToNext()
     const currentId = await PVTrackPlayer.getCurrentTrack()
-    const item = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentId)
+    const item = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentId)
     if (item) {
       await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0)
       await removeQueueItem(item)
@@ -429,7 +437,7 @@ export const getPlaybackSpeed = async () => {
   }
 }
 
-export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: string) => {
+export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (trackId: string) => {
   const queueItems = await getQueueItemsLocally()
   const queueItemIndex = queueItems.findIndex((x: any) =>
     checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId, x.addByRSSPodcastFeedUrl)
@@ -443,6 +451,11 @@ export const getNowPlayingItemFromQueueOrHistoryByTrackId = async (trackId: stri
     currentNowPlayingItem = userHistoryItems.find((x: any) =>
       checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId, x.addByRSSPodcastFeedUrl)
     )
+  }
+
+  if (!currentNowPlayingItem) {
+    currentNowPlayingItem = await getDownloadedEpisode(trackId)
+    currentNowPlayingItem = convertToNowPlayingItem(currentNowPlayingItem)
   }
 
   return currentNowPlayingItem

@@ -341,6 +341,13 @@ export class PodcastScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleDownloadPressed = (selectedItem: any) => {
+    const { podcast } = this.state
+    if (selectedItem) {
+      downloadEpisode(selectedItem, podcast)
+    }
+  }
+
   _renderItem = ({ item, index }) => {
     const { podcast, viewType } = this.state
 
@@ -384,7 +391,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           item={episode}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
-          handleDownloadPress={this._handleDownloadPressed}
+          handleDownloadPress={() => this._handleDownloadPressed(item)}
           handleNavigationPress={() => {
             this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,
@@ -498,17 +505,6 @@ export class PodcastScreen extends React.Component<Props, State> {
           limitDownloadedEpisodes: downloadedEpisodeLimit && downloadedEpisodeLimit > 0
         })
       })
-    }
-  }
-
-  _handleDownloadPressed = (selectedItem: NowPlayingItem) => {
-    if (!selectedItem) {
-      selectedItem = this.state.selectedItem
-    }
-
-    if (selectedItem) {
-      const episode = convertNowPlayingItemToEpisode(selectedItem)
-      downloadEpisode(episode, episode.podcast)
     }
   }
 

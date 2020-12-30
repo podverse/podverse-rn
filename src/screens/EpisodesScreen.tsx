@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
+import { convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
@@ -18,7 +18,7 @@ import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { getUniqueArrayByKey, isOdd, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { getUniqueArrayByKey, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { combineEpisodesWithAddByRSSEpisodesLocally, hasAddByRSSEpisodesLocally } from '../services/parser'
@@ -258,6 +258,12 @@ export class EpisodesScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleDownloadPressed = (selectedItem: any) => {
+    if (selectedItem) {
+      downloadEpisode(selectedItem, selectedItem.podcast)
+    }
+  }
+
   _renderEpisodeItem = ({ item, index }) => {
     return (
       <EpisodeTableCell
@@ -345,13 +351,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
       this._handleScanQRCodeNavigation()
     } else {
       this._handleSearchNavigation()
-    }
-  }
-
-  _handleDownloadPressed = () => {
-    if (this.state.selectedItem) {
-      const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
-      downloadEpisode(episode, episode.podcast)
     }
   }
 

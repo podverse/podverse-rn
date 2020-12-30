@@ -8,10 +8,12 @@ import { setNowPlayingItem } from './userNowPlayingItem'
 export const addOrUpdateHistoryItem = async (
   item: NowPlayingItem,
   playbackPosition: number,
-  forceUpdateOrderDate?: boolean
+  forceUpdateOrderDate?: boolean,
+  skipSetNowPlaying?: boolean
 ) => {
-  // Always set the userNowPlayingItem when a userHistoryItem is added or updated
-  await setNowPlayingItem(item, playbackPosition)
+  if (!skipSetNowPlaying) {
+    await setNowPlayingItem(item, playbackPosition)
+  }
 
   const useServerData = await checkIfShouldUseServerData()
   return useServerData
@@ -56,6 +58,11 @@ const addOrUpdateHistoryItemOnServer = async (
 ) => {
   playbackPosition = Math.floor(playbackPosition) || 0
   await addOrUpdateHistoryItemLocally(nowPlayingItem, playbackPosition)
+
+  // Don't try to add the addByRSS episodes to the server
+  if (nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
+    return
+  }
 
   const bearerToken = await getBearerToken()
   const { clipId, episodeId } = nowPlayingItem

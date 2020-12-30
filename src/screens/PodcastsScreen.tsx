@@ -27,7 +27,7 @@ import { checkIdlePlayerState, PVTrackPlayer, updateUserPlaybackPosition } from 
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { trackPageView } from '../services/tracking'
 import { getNowPlayingItem } from '../services/userNowPlayingItem'
-import { getAuthUserInfo } from '../state/actions/auth'
+import { askToSyncWithNowPlayingItem, getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
 import {
   initializePlaybackSpeed,
@@ -273,6 +273,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.setGlobal({ userAgent })
 
     try {
+      await askToSyncWithNowPlayingItem()
       await getAuthUserInfo()
     } catch (error) {
       console.log('initializeScreenData getAuthUserInfo', error)
@@ -491,11 +492,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const { flatListData } = this.state
 
         if (queryFrom === PV.Filters._subscribedKey) {
-          if (selectedId) {
-            await toggleSubscribeToPodcast(selectedId)
-          } else {
-            await removeAddByRSSPodcast(addByRSSPodcastFeedUrl)
-          }
+          addByRSSPodcastFeedUrl
+            ? await removeAddByRSSPodcast(addByRSSPodcastFeedUrl)
+            : await toggleSubscribeToPodcast(selectedId)
           await removeDownloadedPodcast(selectedId || addByRSSPodcastFeedUrl)
         } else if (queryFrom === PV.Filters._downloadedKey) {
           await removeDownloadedPodcast(selectedId || addByRSSPodcastFeedUrl)
