@@ -152,10 +152,15 @@ export const downloadEpisode = async (episode: any, podcast: any, restart?: bool
       })
       .done(async () => {
         await progressLimiter.stop()
-        DownloadState.updateDownloadComplete(episode.id)
-        removeDownloadingEpisode(episode.id)
         await addDownloadedPodcastEpisode(episode, podcast)
-        DownloadState.updateDownloadedPodcasts()
+
+        // Call updateDownloadComplete after updateDownloadedPodcasts
+        // to prevent the download icon from flashing in the EpisodeTableCell
+        // right after download finishes.
+        DownloadState.updateDownloadedPodcasts(() => {
+          DownloadState.updateDownloadComplete(episode.id)
+          removeDownloadingEpisode(episode.id)
+        })
       })
       .error((error: string) => {
         DownloadState.updateDownloadError(episode.id)

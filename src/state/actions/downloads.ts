@@ -102,16 +102,21 @@ export const updateAutoDownloadSettings = async (podcastId: string, autoDownload
   )
 }
 
-export const updateDownloadedPodcasts = async () => {
+export const updateDownloadedPodcasts = async (cb: any) => {
   const downloadedEpisodeIds = await getDownloadedEpisodeIdsService()
   const downloadedPodcastEpisodeCounts = await getDownloadedPodcastEpisodeCountsService()
   const downloadedPodcasts = await getDownloadedPodcastsService()
 
-  setGlobal({
-    downloadedEpisodeIds,
-    downloadedPodcastEpisodeCounts,
-    downloadedPodcasts
-  })
+  setGlobal(
+    {
+      downloadedEpisodeIds,
+      downloadedPodcastEpisodeCounts,
+      downloadedPodcasts
+    },
+    () => {
+      if (cb) cb()
+    }
+  )
 }
 
 export const addDownloadTask = async (downloadTask: DownloadTaskState) => {
