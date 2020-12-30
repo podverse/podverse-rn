@@ -12,10 +12,10 @@ type Props = {
   handleNavigationPress?: any
   handleDownloadPress?: any
   hideImage?: boolean
+  item?: any
   showPodcastTitle?: boolean
   testID: string
   transparent?: boolean
-  item?: any
 }
 
 export class EpisodeTableCell extends React.PureComponent<Props> {
@@ -25,10 +25,10 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       handleNavigationPress,
       handleDownloadPress,
       hideImage,
+      item,
       showPodcastTitle,
       testID,
-      transparent,
-      item
+      transparent
     } = this.props
     const { id, pubDate = '', podcast = {} } = item
     let { description = '', title = '' } = item
@@ -96,6 +96,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       </Text>
     )
 
+    const includeShowMore = !item.addByRSSPodcastFeedUrl && !isDownloaded
+
     return (
       <View style={styles.wrapper} transparent={transparent}>
         <RNView style={styles.wrapperTop}>
@@ -121,7 +123,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         ) : (
           bottomText
         )}
-        <TimeRemainingWidget handleShowMore={handleMorePress} item={item} />
+        <TimeRemainingWidget {...(includeShowMore ? { handleMorePress } : {})} item={item} />
       </View>
     )
   }
