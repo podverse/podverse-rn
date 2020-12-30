@@ -492,11 +492,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const { flatListData } = this.state
 
         if (queryFrom === PV.Filters._subscribedKey) {
-          if (selectedId) {
-            await toggleSubscribeToPodcast(selectedId)
-          } else {
-            await removeAddByRSSPodcast(addByRSSPodcastFeedUrl)
-          }
+          addByRSSPodcastFeedUrl
+            ? await removeAddByRSSPodcast(addByRSSPodcastFeedUrl)
+            : await toggleSubscribeToPodcast(selectedId)
           await removeDownloadedPodcast(selectedId || addByRSSPodcastFeedUrl)
         } else if (queryFrom === PV.Filters._downloadedKey) {
           await removeDownloadedPodcast(selectedId || addByRSSPodcastFeedUrl)
