@@ -11,7 +11,7 @@ export const getNowPlayingItem = async () => {
 
 export const setNowPlayingItem = async (item: NowPlayingItem | null, playbackPosition: number) => {
   const useServerData = await checkIfShouldUseServerData()
-  return useServerData
+  return useServerData && !item?.addByRSSPodcastFeedUrl
     ? setNowPlayingItemOnServer(item, playbackPosition)
     : setNowPlayingItemLocally(item, playbackPosition)
 }
@@ -52,12 +52,6 @@ export const getNowPlayingItemOnServer = async () => {
     }
 
     item = convertToNowPlayingItem(mediaRef || episode) || {}
-
-    if (item.clipId || item.episodeId) {
-      await setNowPlayingItemLocally(response, item.userPlaybackPosition || 0)
-    } else {
-      throw new Error('Now Playing Item missing both clipId and episodeId.')
-    }
   } catch (error) {
     console.log('Error in getNowPlayingItemOnServer: ', error)
     item = null
@@ -74,7 +68,7 @@ export const setNowPlayingItemLocally = async (item: NowPlayingItem | null, play
 }
 
 export const setNowPlayingItemOnServer = async (item: NowPlayingItem | null, playbackPosition: number) => {
-  if (!item || (!item.clipId && !item.episodeId)) {
+  if (!item || (!item.clipId && !item.episodeId) || item.addByRSSPodcastFeedUrl) {
     return
   }
 

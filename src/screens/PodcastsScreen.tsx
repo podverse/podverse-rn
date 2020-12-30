@@ -27,7 +27,7 @@ import { checkIdlePlayerState, PVTrackPlayer, updateUserPlaybackPosition } from 
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { trackPageView } from '../services/tracking'
 import { getNowPlayingItem } from '../services/userNowPlayingItem'
-import { getAuthUserInfo } from '../state/actions/auth'
+import { askToSyncWithNowPlayingItem, getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
 import {
   initializePlaybackSpeed,
@@ -273,6 +273,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.setGlobal({ userAgent })
 
     try {
+      await askToSyncWithNowPlayingItem()
       await getAuthUserInfo()
     } catch (error) {
       console.log('initializeScreenData getAuthUserInfo', error)

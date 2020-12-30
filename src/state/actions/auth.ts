@@ -63,7 +63,7 @@ export const getAuthUserInfo = async () => {
   }
 }
 
-const askToSyncWithNowPlayingItem = async () => {
+export const askToSyncWithNowPlayingItem = async () => {
   const localNowPlayingItem = await getNowPlayingItemLocally()
   const serverNowPlayingItem = await getNowPlayingItemOnServer()
 

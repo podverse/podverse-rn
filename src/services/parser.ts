@@ -5,7 +5,6 @@ import { checkIfLoggedIn, getBearerToken } from './auth'
 import { combineWithAddByRSSPodcasts } from './podcast'
 import { request } from './request'
 const podcastFeedParser = require('@podverse/podcast-feed-parser')
-const uuidv4 = require('uuid/v4')
 
 /*
 addByRSSPodcasts: [addByRSSPodcast]
@@ -170,6 +169,10 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
   const podcast = {} as any
 
   podcast.addByRSSPodcastFeedUrl = feedUrl
+  // The podcast.id must be set to the addByRSSPodcastFeedUrl for
+  // addDownloadedPodcastEpisode to work properly.
+  podcast.id = feedUrl
+
   podcast.description = meta.description && meta.description.trim()
 
   const feedLastUpdated = new Date(meta.lastBuildDate || meta.pubDate)

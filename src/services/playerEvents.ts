@@ -6,7 +6,7 @@ import { PV } from '../resources'
 import { hideMiniPlayer } from '../state/actions/player'
 import {
   getClipHasEnded,
-  getNowPlayingItemFromQueueOrHistoryByTrackId,
+  getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId,
   getPlaybackSpeed,
   handleResumeAfterClipHasEnded,
   playerJumpBackward,
@@ -99,10 +99,10 @@ const syncNowPlayingItemWithTrack = async () => {
   // NOTE: This timeout will lead to a delay before every clip starts, where it starts playing from the episode start
   // before playing from the clip start. Hopefully we can iron this out sometime...
   // - The second timeout is called in case something was out of sync previously from getCurrentTrack
-  // or getNowPlayingItemFromQueueOrHistoryByTrackId...
+  // or getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId...
   async function sync() {
     const currentTrackId = await PVTrackPlayer.getCurrentTrack()
-    const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(currentTrackId)
+    const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentTrackId)
     if (currentNowPlayingItem) {
       await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
     }
@@ -116,7 +116,7 @@ const handleQueueEnded = async (x: any) => {
     hideMiniPlayer()
 
     if (x && x.track) {
-      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryByTrackId(x.track)
+      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(x.track)
       if (currentNowPlayingItem) {
         await addOrUpdateHistoryItem(currentNowPlayingItem, 0)
       }

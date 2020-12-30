@@ -342,8 +342,9 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _handleDownloadPressed = (selectedItem: any) => {
+    const { podcast } = this.state
     if (selectedItem) {
-      downloadEpisode(selectedItem, selectedItem.podcast)
+      downloadEpisode(selectedItem, podcast)
     }
   }
 
@@ -390,7 +391,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           item={episode}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
-          handleDownloadPress={this._handleDownloadPressed}
+          handleDownloadPress={() => this._handleDownloadPressed(item)}
           handleNavigationPress={() => {
             this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,

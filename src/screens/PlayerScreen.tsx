@@ -151,7 +151,9 @@ export class PlayerScreen extends React.Component<Props, State> {
   _handleUpdateFullEpisode = async () => {
     const hasInternetConnection = await hasValidNetworkConnection()
     const episode = safelyUnwrapNestedVariable(() => this.global.player.episode, {})
-    if (hasInternetConnection && episode && episode.id) {
+    const podcast = safelyUnwrapNestedVariable(() => this.global.player.episode.podcast, {})
+
+    if (hasInternetConnection && episode && episode.id && !podcast.addByRSSPodcastFeedUrl) {
       try {
         const fullEpisode = await getEpisode(episode.id)
         if (fullEpisode && fullEpisode.description) {
