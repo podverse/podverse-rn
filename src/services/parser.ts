@@ -73,6 +73,10 @@ export const getAddByRSSEpisodesLocally = async (mostRecentDate: Date, oldestDat
       return false
     }
 
+    if (new Date(episode.pubDate).valueOf() > mostRecentDate.valueOf()) {
+      return true
+    }
+
     return (
       new Date(episode.pubDate).valueOf() <= mostRecentDate.valueOf() &&
       new Date(episode.pubDate).valueOf() >= oldestDate.valueOf()
