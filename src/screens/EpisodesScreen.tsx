@@ -258,6 +258,12 @@ export class EpisodesScreen extends React.Component<Props, State> {
     })
   }
 
+  _handleDownloadPressed = (selectedItem: any) => {
+    if (selectedItem) {
+      downloadEpisode(selectedItem, selectedItem.podcast)
+    }
+  }
+
   _renderEpisodeItem = ({ item, index }) => {
     return (
       <EpisodeTableCell
@@ -345,13 +351,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
       this._handleScanQRCodeNavigation()
     } else {
       this._handleSearchNavigation()
-    }
-  }
-
-  _handleDownloadPressed = () => {
-    if (this.state.selectedItem) {
-      const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
-      downloadEpisode(episode, episode.podcast)
     }
   }
 
