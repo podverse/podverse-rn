@@ -266,7 +266,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
             clipStartTime: mediaRef.startTime,
             clipTitle: mediaRef.title
           }
-          await setNowPlayingItem(newItem)
+          const position = await PVTrackPlayer.getPosition()
+          await setNowPlayingItem(newItem, position || 0)
         }
 
         this.setState({ isSaving: false }, async () => {

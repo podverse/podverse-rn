@@ -152,22 +152,6 @@ export const downloadLoggedInUserData = async (id: string) => {
   return response && response.data
 }
 
-export const updateUserQueueItems = async (queueItems: any) => {
-  const bearerToken = await getBearerToken()
-  const response = await request({
-    endpoint: '/user/update-queue',
-    method: 'PATCH',
-    headers: {
-      Authorization: bearerToken,
-      'Content-Type': 'application/json'
-    },
-    body: { queueItems },
-    opts: { credentials: 'include' }
-  })
-
-  return response && response.data
-}
-
 export const saveSpecialUserInfo = async (userInfo: any) => {
   if (userInfo) {
     const jsonData = JSON.stringify(userInfo)

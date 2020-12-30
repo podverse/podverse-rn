@@ -19,7 +19,8 @@ export const NavQueueIcon = (props: Props) => {
       routeName: PV.RouteNames.QueueScreen,
       params: {
         isTransparent,
-        showBackButton
+        showBackButton,
+        allowViewTypeChange: true
       }
     })
   }

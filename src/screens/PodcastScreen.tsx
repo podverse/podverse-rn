@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem, NowPlayingItem } from 'podverse-shared'
 import { View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
@@ -325,7 +325,7 @@ export class PodcastScreen extends React.Component<Props, State> {
   }
 
   _ItemSeparatorComponent = () => {
-    return <Divider />
+    return <Divider style={{ marginHorizontal: 10 }} />
   }
 
   _handleCancelPress = () => {
@@ -343,71 +343,57 @@ export class PodcastScreen extends React.Component<Props, State> {
 
   _renderItem = ({ item, index }) => {
     const { podcast, viewType } = this.state
-    const episode = {
-      ...item,
-      podcast
-    }
 
-    if (viewType === PV.Filters._downloadedKey) {
+    if (viewType === PV.Filters._clipsKey) {
+      return (
+        item &&
+        item.episode &&
+        item.episode.id && (
+          <ClipTableCell
+            endTime={item.endTime}
+            episodeId={item.episode.id}
+            {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
+            {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
+            handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
+            hasZebraStripe={isOdd(index)}
+            hideImage={true}
+            showEpisodeInfo={true}
+            showPodcastTitle={false}
+            startTime={item.startTime}
+            testID={`${testIDPrefix}_clip_item_${index}`}
+            {...(item.title ? { title: item.title } : {})}
+          />
+        )
+      )
+    } else {
       let description = removeHTMLFromString(item.description)
       description = decodeHTMLString(description)
+      const episode = {
+        ...item,
+        podcast
+      }
+
+      let testId = ''
+      if (viewType === PV.Filters._downloadedKey) {
+        testId = `${testIDPrefix}_episode_downloaded_item_${index}`
+      } else if (viewType === PV.Filters._episodesKey) {
+        testId = `${testIDPrefix}_episode_item_${index}`
+      }
+
       return (
         <EpisodeTableCell
-          description={description}
+          item={episode}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
+          handleDownloadPress={this._handleDownloadPressed}
           handleNavigationPress={() => {
             this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,
               addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
             })
           }}
-          hasZebraStripe={isOdd(index)}
           hideImage={true}
-          id={item.id}
-          pubDate={item.pubDate}
-          testID={`${testIDPrefix}_episode_downloaded_item_${index}`}
-          title={item.title}
+          testID={testId}
         />
-      )
-    } else if (viewType === PV.Filters._episodesKey) {
-      let description = removeHTMLFromString(item.description)
-      description = decodeHTMLString(description)
-      return (
-        <EpisodeTableCell
-          description={description}
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
-          handleNavigationPress={() =>
-            this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
-              episode,
-              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
-            })
-          }
-          hasZebraStripe={isOdd(index)}
-          hideImage={true}
-          id={item.id}
-          pubDate={item.pubDate}
-          testID={`${testIDPrefix}_episode_item_${index}`}
-          title={item.title}
-        />
-      )
-    } else {
-      return item && item.episode && item.episode.id ? (
-        <ClipTableCell
-          endTime={item.endTime}
-          episodeId={item.episode.id}
-          {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
-          {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
-          hasZebraStripe={isOdd(index)}
-          hideImage={true}
-          showEpisodeInfo={true}
-          showPodcastTitle={false}
-          startTime={item.startTime}
-          testID={`${testIDPrefix}_clip_item_${index}`}
-          {...(item.title ? { title: item.title } : {})}
-        />
-      ) : (
-        <></>
       )
     }
   }
@@ -515,9 +501,13 @@ export class PodcastScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleDownloadPressed = () => {
-    if (this.state.selectedItem) {
-      const episode = convertNowPlayingItemToEpisode(this.state.selectedItem)
+  _handleDownloadPressed = (selectedItem: NowPlayingItem) => {
+    if (!selectedItem) {
+      selectedItem = this.state.selectedItem
+    }
+
+    if (selectedItem) {
+      const episode = convertNowPlayingItemToEpisode(selectedItem)
       downloadEpisode(episode, episode.podcast)
     }
   }
@@ -637,18 +627,22 @@ export class PodcastScreen extends React.Component<Props, State> {
             <SwitchWithText
               onValueChange={this._handleToggleLimitDownloads}
               testID={`${testIDPrefix}_toggle_download_limit`}
-              text={limitDownloadedEpisodes ? translate('Download limit on') : translate('Download limit off')}
+              text={translate('Download limit')}
               value={limitDownloadedEpisodes}
             />
-            <NumberSelectorWithText
-              handleChangeText={this._handleChangeDownloadLimitText}
-              selectedNumber={downloadedEpisodeLimit}
-              testID={`${testIDPrefix}_downloaded_episode_limit_count`}
-              text={translate('Download limit max')}
-            />
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.settingsHelpText}>
-              {translate('Once the download limit is exceeded the oldest episode will be auto deleted')}
-            </Text>
+            {limitDownloadedEpisodes && (
+              <NumberSelectorWithText
+                handleChangeText={this._handleChangeDownloadLimitText}
+                selectedNumber={downloadedEpisodeLimit}
+                testID={`${testIDPrefix}_downloaded_episode_limit_count`}
+                text={translate('Download limit max')}
+              />
+            )}
+            {limitDownloadedEpisodes && (
+              <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.settingsHelpText}>
+                {translate('Once the download limit is exceeded the oldest episode will be auto deleted')}
+              </Text>
+            )}
             <Divider style={styles.divider} />
             <Button
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
@@ -694,15 +688,9 @@ export class PodcastScreen extends React.Component<Props, State> {
             <ActionSheet
               handleCancelPress={this._handleCancelPress}
               items={() =>
-                PV.ActionSheet.media.moreButtons(
-                  selectedItem,
-                  navigation,
-                  this._handleCancelPress,
-                  this._handleDownloadPressed,
-                  null, // handleDeleteClip
-                  false, // includeGoToPodcast
-                  false // includeGoToEpisode
-                )
+                PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
+                  handleDismiss: this._handleCancelPress
+                })
               }
               showModal={showActionSheet}
               testID={testIDPrefix}

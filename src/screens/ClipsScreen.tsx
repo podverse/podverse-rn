@@ -462,15 +462,12 @@ export class ClipsScreen extends React.Component<Props, State> {
               selectedItem.ownerId = loggedInUserId
             }
 
-            return PV.ActionSheet.media.moreButtons(
-              selectedItem,
-              navigation,
-              this._handleCancelPress,
-              this._handleDownloadPressed,
-              this._handleHiddenItemPress,
-              false, // includeGoToPodcast
-              true // includeGoToEpisode
-            )
+            return PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
+              handleDismiss: this._handleCancelPress,
+              handleDownload: this._handleDownloadPressed,
+              handleDeleteClip: this._handleHiddenItemPress,
+              includeGoToEpisode: true
+            })
           }}
           showModal={showActionSheet}
           testID={testIDPrefix}

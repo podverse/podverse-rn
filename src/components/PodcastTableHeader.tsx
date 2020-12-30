@@ -3,7 +3,8 @@ import React, { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { core } from '../styles'
-import { ActivityIndicator, FastImage, IndicatorDownload, SettingsButton, SubscribeButton, Text, View } from './'
+import { ActivityIndicator, FastImage, SettingsButton, SubscribeButton, Text, View } from './'
+import { IndicatorDownload } from './IndicatorDownload'
 
 type Props = {
   autoDownloadOn?: boolean
@@ -49,38 +50,40 @@ export const PodcastTableHeader = (props: Props) => {
       {!isLoading && !isNotFound && (
         <View style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={styles.image} />
-          <View style={styles.textWrapper}>
-            <View style={styles.textWrapperTop}>
+          <View style={styles.contentWrapper}>
+            <View style={styles.contentWrapperTop}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 numberOfLines={titleNumberOfLines}
                 style={styles.title}>
                 {podcastTitle}
               </Text>
+              {isSubscribed && (
+                <SettingsButton handleToggleSettings={handleToggleSettings} showCheckmark={showSettings} />
+              )}
+            </View>
+            <View style={styles.contentWrapperBottom}>
               <SubscribeButton
                 handleToggleSubscribe={handleToggleSubscribe}
                 isSubscribed={isSubscribed}
                 isSubscribing={isSubscribing}
                 testID={testID}
               />
-            </View>
-            <View style={styles.textWrapperBottom}>
-              <View style={styles.textWrapperBottomLeft}>
-                {isSubscribed && !showSettings && <SettingsButton handleToggleSettings={handleToggleSettings} />}
-                {isSubscribed && showSettings && (
-                  <SettingsButton handleToggleSettings={handleToggleSettings} showCheckmark={true} />
-                )}
-              </View>
               {isSubscribed && (
-                <View style={styles.textWrapperBottomRight}>
+                <View style={styles.autoDownloadContainer}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.xs}
                     isSecondary={true}
                     style={styles.autoDownloadText}>
                     {translate('Auto')}
                   </Text>
-                  <IndicatorDownload style={styles.autoDownloadIcon} />
-                  <Switch onValueChange={handleToggleAutoDownload} value={autoDownloadOn} />
+                  <IndicatorDownload style={{ marginLeft: 6 }} />
+                  <Switch
+                    onValueChange={handleToggleAutoDownload}
+                    value={autoDownloadOn}
+                    style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }], marginLeft: 5 }}
+                    trackColor={{ true: PV.Colors.brandBlueLight, false: PV.Colors.grayLightest }}
+                  />
                 </View>
               )}
             </View>
@@ -89,7 +92,7 @@ export const PodcastTableHeader = (props: Props) => {
       )}
       {!isLoading && isNotFound && (
         <View style={[styles.wrapper, core.view]}>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.notFoundText}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>
             {translate('Podcast Not Found')}
           </Text>
         </View>
@@ -99,66 +102,50 @@ export const PodcastTableHeader = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
-  autoDownloadIcon: {
-    marginLeft: 0,
-    marginRight: 8,
-    marginTop: 0
-  },
-  autoDownloadText: {
-    fontSize: PV.Fonts.sizes.sm,
-    fontWeight: PV.Fonts.weights.semibold,
-    marginRight: 6,
-    marginTop: 2
-  },
-  buttonView: {
-    alignItems: 'center',
-    flex: 0,
-    justifyContent: 'center',
-    marginLeft: 8
-  },
-  image: {
-    flex: 0,
-    height: PV.Table.cells.podcast.image.height,
-    marginRight: 12,
-    width: PV.Table.cells.podcast.image.width
-  },
-  notFoundText: {
-    fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.bold
-  },
-  textWrapper: {
-    flex: 1,
-    paddingBottom: 4,
-    paddingRight: 8,
-    paddingTop: 2
-  },
-  textWrapperBottom: {
-    alignItems: 'flex-end',
-    flex: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  textWrapperBottomLeft: {
-    flexDirection: 'row'
-  },
-  textWrapperBottomRight: {
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
-  textWrapperTop: {
-    alignItems: 'flex-start',
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  title: {
-    flex: 1,
-    fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold
-  },
   wrapper: {
     flex: 1,
     flexDirection: 'row',
-    minHeight: PV.Table.cells.podcast.wrapper.height
+    minHeight: PV.Table.cells.podcast.wrapper.height,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    backgroundColor: PV.Colors.velvet
+  },
+  autoDownloadContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'transparent'
+  },
+  autoDownloadText: {
+    fontSize: PV.Fonts.sizes.xs,
+    color: PV.Colors.grayLight,
+    textAlign: 'right'
+  },
+  image: {
+    height: PV.Table.cells.podcast.image.height,
+    width: PV.Table.cells.podcast.image.width,
+    marginRight: 16
+  },
+  contentWrapper: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    justifyContent: 'space-between'
+  },
+  contentWrapperBottom: {
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 5
+  },
+  contentWrapperTop: {
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    justifyContent: 'space-between'
+  },
+  title: {
+    flexWrap: 'wrap',
+    fontSize: PV.Fonts.sizes.xxl,
+    fontWeight: PV.Fonts.weights.bold,
+    maxWidth: 250
   }
 })

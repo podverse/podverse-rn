@@ -110,15 +110,16 @@ export const PVFlatList = (props: Props) => {
               )
             } else if (!isLoadingMore && !isEndOfResults) {
               return <View style={[styles.isLoadingMoreCell]} transparent={transparent} />
-            } else if (isEndOfResults && !isCompleteData) {
-              return (
-                <View style={[styles.lastCell, globalTheme.tableCellBorder]} transparent={transparent}>
-                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.lastCellText]}>
-                    {translate('End of results')}
-                  </Text>
-                </View>
-              )
             }
+            // else if (isEndOfResults && !isCompleteData) {
+            //   return (
+            //     <View style={[styles.lastCell, globalTheme.tableCellBorder]} transparent={transparent}>
+            //       <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.lastCellText]}>
+            //         {translate('End of results')}
+            //       </Text>
+            //     </View>
+            //   )
+            // }
 
             return null
           }}

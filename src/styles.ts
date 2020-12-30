@@ -45,7 +45,7 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.grayDarker
   },
   activityIndicator: {
-    color: PV.Colors.grayLighter
+    color: PV.Colors.brandBlueLight
   },
   activityIndicatorAlternate: {
     color: PV.Colors.grayDarkest
@@ -57,13 +57,13 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.red
   },
   buttonGroup: {
-    backgroundColor: PV.Colors.grayDarkest
+    backgroundColor: PV.Colors.velvet
   },
   buttonGroupSelected: {
-    backgroundColor: PV.Colors.grayDark
+    backgroundColor: PV.Colors.skyDark
   },
   buttonGroupText: {
-    color: PV.Colors.grayLighter
+    color: PV.Colors.white
   },
   buttonGroupTextSelected: {
     color: PV.Colors.white
@@ -85,7 +85,9 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   buttonPrimaryWrapper: {
-    backgroundColor: PV.Colors.grayDarker
+    backgroundColor: PV.Colors.ink,
+    borderColor: PV.Colors.white,
+    borderWidth: 1
   },
   buttonDisabledWrapper: {
     backgroundColor: PV.Colors.grayLighter
@@ -97,10 +99,10 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.redDarker
   },
   divider: {
-    backgroundColor: PV.Colors.grayDark
+    backgroundColor: PV.Colors.grayDark + '80'
   },
   flatList: {
-    backgroundColor: PV.Colors.black
+    backgroundColor: PV.Colors.ink
   },
   inputContainerText: {
     backgroundColor: PV.Colors.black,
@@ -156,11 +158,11 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   swipeRowBack: {
-    backgroundColor: PV.Colors.gray,
+    backgroundColor: PV.Colors.skyLight,
     color: PV.Colors.white
   },
   tabbar: {
-    backgroundColor: PV.Colors.black,
+    backgroundColor: PV.Colors.ink,
     borderTopWidth: 1,
     borderTopColor: PV.Colors.grayDarker
   },
@@ -180,7 +182,7 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   tableSectionHeader: {
-    backgroundColor: PV.Colors.grayDarker
+    backgroundColor: PV.Colors.ink
   },
   tableSectionHeaderTransparent: {
     backgroundColor: PV.Colors.grayDarkerTransparent
@@ -203,7 +205,7 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   textInputWrapper: {
-    backgroundColor: PV.Colors.black,
+    backgroundColor: PV.Colors.ink,
     borderColor: PV.Colors.grayDarker,
     borderTopColor: PV.Colors.grayDarker, // override native styles
     borderBottomColor: PV.Colors.grayDarker // override native style
@@ -212,7 +214,7 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.grayLightest
   },
   view: {
-    backgroundColor: PV.Colors.black
+    backgroundColor: PV.Colors.ink
   },
   viewWithZebraStripe: {
     backgroundColor: PV.Colors.grayDarkestZ
@@ -227,7 +229,7 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   webViewStaticHTMLWrapper: {
-    backgroundColor: PV.Colors.black
+    backgroundColor: PV.Colors.ink
   }
 })
 
@@ -383,7 +385,7 @@ export const lightTheme = StyleSheet.create({
     color: PV.Colors.black
   },
   swipeRowBack: {
-    backgroundColor: PV.Colors.gray,
+    backgroundColor: PV.Colors.skyLight,
     color: PV.Colors.black
   },
   tabbar: {

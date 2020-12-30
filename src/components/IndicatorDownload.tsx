@@ -20,16 +20,8 @@ export const IndicatorDownload = (props: Props) => {
   }
 
   return (
-    <View style={[styles.downloadedIcon, style]}>
+    <View style={style}>
       <Icon isSecondary={true} name='download' size={size} />
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  downloadedIcon: {
-    flex: 0,
-    marginLeft: 9,
-    marginTop: 6
-  }
-})

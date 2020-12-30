@@ -7,36 +7,33 @@ import { PV } from '../resources'
 
 type Props = {
   handleShowMore: any
-  height: number
   isLoading?: boolean
   testID: string
 }
 
 export const MoreButton = (props: Props) => {
-  const { handleShowMore, height, isLoading, testID } = props
+  const { handleShowMore, isLoading, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
-
-  const heightStyle = { height }
 
   return (
     <TouchableOpacity
       hitSlop={{
-        bottom: 4,
-        left: 8,
-        right: 8,
-        top: 4
+        bottom: 10,
+        left: 10,
+        right: 10,
+        top: 10
       }}
       onPress={handleShowMore}
       {...testProps(`${testID}_more_button`)}>
       {!isLoading ? (
-        <View style={[styles.outerWrapper, heightStyle]}>
+        <View style={[styles.outerWrapper]}>
           <View style={styles.innerWrapper}>
             <Image resizeMode='contain' source={PV.Images.MORE} style={[styles.image, globalTheme.buttonImage]} />
           </View>
         </View>
       ) : (
-        <View style={[styles.activityWrapper, heightStyle]}>
-          <ActivityIndicator onPress={handleShowMore} styles={[styles.activityIndicator, heightStyle]} />
+        <View style={[styles.activityWrapper]}>
+          <ActivityIndicator onPress={handleShowMore} styles={[styles.activityIndicator]} />
         </View>
       )}
     </TouchableOpacity>
@@ -46,13 +43,13 @@ export const MoreButton = (props: Props) => {
 const styles = StyleSheet.create({
   activityIndicator: {
     flex: 0,
-    height: 64,
-    lineHeight: 64,
+    height: 50,
+    width: 44,
+    lineHeight: 50,
     marginBottom: 0,
     marginLeft: 0,
     marginRight: 0,
-    marginTop: 0,
-    width: 44
+    marginTop: 0
   },
   activityWrapper: {
     alignItems: 'center',
@@ -61,23 +58,20 @@ const styles = StyleSheet.create({
     width: 44
   },
   image: {
-    height: 36,
-    marginLeft: 3,
-    marginTop: 3,
-    tintColor: 'white',
-    width: 36
+    height: 30,
+    width: 30,
+    tintColor: 'white'
   },
   innerWrapper: {
-    borderColor: PV.Colors.gray,
-    borderRadius: 44,
-    borderWidth: 1,
     height: 44,
+    width: 44,
     tintColor: 'white',
-    width: 44
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   outerWrapper: {
     alignItems: 'center',
-    height: 64,
+    height: 50,
     justifyContent: 'center',
     width: 44
   }

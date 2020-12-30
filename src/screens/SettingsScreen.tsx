@@ -31,7 +31,6 @@ import { trackPageView } from '../services/tracking'
 import { deleteLoggedInUser } from '../services/user'
 import { logoutUser } from '../state/actions/auth'
 import * as DownloadState from '../state/actions/downloads'
-import { clearHistoryItems } from '../state/actions/history'
 import {
   saveCustomAPIDomain,
   saveCustomWebDomain,
@@ -40,6 +39,7 @@ import {
   setCustomWebDomainEnabled,
   setOfflineModeEnabled
 } from '../state/actions/settings'
+import { clearHistoryItems } from '../state/actions/userHistoryItem'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {
@@ -236,10 +236,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             async () => {
               try {
                 await clearHistoryItems()
-                this.setState({
-                  historyItems: [],
-                  isLoading: false
-                })
+                this.setState({ isLoading: false })
               } catch (error) {
                 this.setState({ isLoading: false })
               }
@@ -344,12 +341,14 @@ export class SettingsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator styles={styles.activityIndicator} />}
         {!isLoading && (
           <View>
-            <SwitchWithText
-              onValueChange={this._toggleTheme}
-              testID={`${testIDPrefix}_dark_mode`}
-              text={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}
-              value={globalTheme === darkTheme}
-            />
+            {!Config.DISABLE_THEME_SWITCH && (
+              <SwitchWithText
+                onValueChange={this._toggleTheme}
+                testID={`${testIDPrefix}_dark_mode`}
+                text={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}
+                value={globalTheme === darkTheme}
+              />
+            )}
             <SwitchWithText
               onValueChange={this._toggleDownloadingWifiOnly}
               testID={`${testIDPrefix}_only_allow_downloading_when_connected_to_wifi`}

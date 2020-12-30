@@ -9,6 +9,7 @@ type Props = {
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
   html: string
+  disableScrolling?: boolean
 }
 
 export const HTMLScrollView = (props: Props) => {
@@ -34,7 +35,7 @@ export const HTMLScrollView = (props: Props) => {
   }
 
   return (
-    <ScrollView style={styles.scrollView}>
+    <ScrollView style={styles.scrollView} scrollEnabled={!props.disableScrolling}>
       <HTML
         baseFontStyle={baseFontStyle}
         containerStyle={styles.html}

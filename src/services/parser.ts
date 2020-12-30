@@ -201,6 +201,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
 
       // A unique episode.id is needed for downloading episodes.
       episode.id = uuidv4()
+      episode.addedByRSS = true
 
       // TODO: add chapters support for podcasts added by RSS feed
       // if (parsedEpisode.chapters) {
