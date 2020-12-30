@@ -41,7 +41,7 @@ export class PVActionSheet extends React.Component<Props, State> {
     const { fontScaleMode, globalTheme } = this.global
     const buttons = []
 
-    if (items && items.length > 0) {
+    if (items && items.length >= 0) {
       items.forEach((item, index) => {
         const buttonStyle = [actionSheetStyles.button]
 
