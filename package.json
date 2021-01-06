@@ -51,7 +51,7 @@
     "appcenter": "3.1.2",
     "appcenter-analytics": "3.1.2",
     "appcenter-crashes": "3.1.2",
-    "axios": "0.20.0",
+    "axios": "0.21.1",
     "bad-words": "3.0.3",
     "bottleneck": "2.19.5",
     "eventemitter3": "4.0.7",
