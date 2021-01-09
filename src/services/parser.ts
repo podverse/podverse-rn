@@ -168,6 +168,9 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
   }
   const podcast = {} as any
 
+  // A unique podcast.id is needed for specialUserInfoForPodcast
+  podcast.id = uuidv4()
+
   podcast.addByRSSPodcastFeedUrl = feedUrl
   // The podcast.id must be set to the addByRSSPodcastFeedUrl for
   // addDownloadedPodcastEpisode to work properly.
