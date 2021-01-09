@@ -30,7 +30,7 @@ export const PlayerTableHeader = (props: Props) => {
 
   return (
     <TouchableWithoutFeedback onPress={onPress} {...(testID ? testProps(testID) : {})}>
-      <View style={styles.wrapper} transparent={true}>
+      <View transparent={true}>
         {isLoading && (
           <View style={core.row}>
             <ActivityIndicator />
@@ -99,8 +99,5 @@ const styles = StyleSheet.create({
   textWrapper: {
     flex: 1,
     marginHorizontal: 8
-  },
-  wrapper: {
-    minHeight: PV.Table.cells.podcast.wrapper.height
   }
 })

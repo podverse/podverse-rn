@@ -3,13 +3,25 @@ import { ScrollView } from 'react-native'
 import { useGlobal } from 'reactn'
 
 type Props = {
+  bounces?: boolean
   children: any
   contentContainerStyle?: any
-  style: any
+  decelerationRate?: string
+  horizontal?: boolean
+  onMomentumScrollEnd?: any
+  onScrollEndDrag?: any
+  pagingEnabled?: boolean
+  scrollViewRef?: any
+  showsHorizontalScrollIndicator?: boolean
+  snapToInterval?: number
+  snapToOffsets?: number
+  snapToStart?: boolean
+  style?: any
   transparent?: boolean
 }
 
 export const PVScrollView = (props: Props) => {
+  const { scrollViewRef } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   const styles = [props.style, globalTheme.view]
@@ -18,7 +30,7 @@ export const PVScrollView = (props: Props) => {
   }
 
   return (
-    <ScrollView {...props} style={styles} showsVerticalScrollIndicator={false}>
+    <ScrollView {...props} ref={scrollViewRef} style={styles} showsVerticalScrollIndicator={false}>
       {props.children}
     </ScrollView>
   )
