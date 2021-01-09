@@ -265,6 +265,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _renderEpisodeItem = ({ item, index }) => {
+    const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]
     return (
       <EpisodeTableCell
         item={item}
@@ -278,6 +279,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         }}
         showPodcastTitle={true}
         testID={`${testIDPrefix}_episode_item_${index}`}
+        userPlaybackPosition={userPlaybackPosition}
       />
     )
   }

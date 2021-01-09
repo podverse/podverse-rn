@@ -157,6 +157,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <></>
       )
     } else {
+      const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]
       return (
         <EpisodeTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
@@ -173,6 +174,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           showPodcastTitle={true}
           testID={`${testIDPrefix}_episode_item_${index}`}
           {...(item.title ? { title: item.title } : {})}
+          userPlaybackPosition={userPlaybackPosition}
         />
       )
     }

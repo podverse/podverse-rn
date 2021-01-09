@@ -16,6 +16,8 @@ type Props = {
   showPodcastTitle?: boolean
   testID: string
   transparent?: boolean
+  userPlaybackPosition?: number
+  pubDate?: any
 }
 
 export class EpisodeTableCell extends React.PureComponent<Props> {
@@ -28,7 +30,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       item,
       showPodcastTitle,
       testID,
-      transparent
+      transparent,
+      userPlaybackPosition
     } = this.props
     const { id, mediaUrl, pubDate = '', podcast = {} } = item
     let { description = '', title = '' } = item
@@ -123,7 +126,11 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         ) : (
           bottomText
         )}
-        <TimeRemainingWidget {...(includeShowMore ? { handleMorePress } : {})} item={item} />
+        <TimeRemainingWidget
+          {...(includeShowMore ? { handleMorePress } : {})}
+          item={item}
+          userPlaybackPosition={userPlaybackPosition}
+        />
       </View>
     )
   }

@@ -152,6 +152,10 @@ const generateHistoryItemsIndex = (historyItems: any[]) => {
     mediaRefs: {}
   }
 
+  if (!historyItems) {
+    historyItems = []
+  }
+
   for (const historyItem of historyItems) {
     if (historyItem.mediaRefId) {
       historyItemsIndex.mediaRefs[historyItem.mediaRefId] = historyItem.userPlaybackPosition
