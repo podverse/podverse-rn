@@ -57,9 +57,12 @@ export const TimeRemainingWidget = (props: Props) => {
   const totalTime = playingItem.episodeDuration || 0
   const playedTime = userPlaybackPosition || 0
 
-  let timeLabel = convertSecToHhoursMMinutes(totalTime)
-  if (hasStartedItem) {
-    timeLabel = convertSecToHhoursMMinutes(totalTime - playedTime) + ' left'
+  let timeLabel = ''
+  if (totalTime) {
+    timeLabel = convertSecToHhoursMMinutes(totalTime)
+    if (hasStartedItem) {
+      timeLabel = convertSecToHhoursMMinutes(totalTime - playedTime) + ' left'
+    }
   }
 
   const playItem = () => {
