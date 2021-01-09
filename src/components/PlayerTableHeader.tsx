@@ -3,7 +3,7 @@ import React, { useGlobal } from 'reactn'
 import { readableDate, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
-import { ActivityIndicator, FastImage, Text, View } from './'
+import { ActivityIndicator, Text, View } from './'
 
 type Props = {
   isLoading?: boolean
@@ -38,11 +38,6 @@ export const PlayerTableHeader = (props: Props) => {
         )}
         {!isLoading && !!nowPlayingItem && (
           <View style={core.row} transparent={true}>
-            <FastImage
-              key={nowPlayingItem.podcastImageUrl}
-              source={nowPlayingItem.podcastImageUrl}
-              styles={styles.image}
-            />
             <View style={textWrapperStyle} transparent={true}>
               {fontScaleMode !== PV.Fonts.fontScale.largest && (
                 <Text
@@ -85,11 +80,6 @@ const styles = StyleSheet.create({
   episodeTitle: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold
-  },
-  image: {
-    flex: 0,
-    height: PV.Table.cells.podcast.image.height,
-    width: PV.Table.cells.podcast.image.width
   },
   podcastTitle: {
     flex: 0,

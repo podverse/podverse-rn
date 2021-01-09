@@ -302,9 +302,6 @@ export class PlayerScreen extends React.Component<Props, State> {
                 {...(mediaRef.title ? { title: mediaRef.title } : {})}
               />
             )}
-            {nowPlayingItem && nowPlayingItem.clipId && (
-              <PlayerClipInfoBar handleOnPress={this._toggleShowFullClipInfo} nowPlayingItem={nowPlayingItem} />
-            )}
             <PlayerControls navigation={navigation} />
             <ActionSheet
               handleCancelPress={this._dismissShareActionSheet}
