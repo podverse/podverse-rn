@@ -8,6 +8,7 @@ import { Icon, MoreButton, Text, View } from './'
 
 type Props = {
   handleShowMore?: any
+  userPlaybackPosition?: number | undefined
   item: any
   style?: any
 }
@@ -48,18 +49,20 @@ const MiniProgressBar = (props: BarProps) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { handleShowMore, item, style } = props
+  const { handleShowMore, item, style, userPlaybackPosition } = props
   const { podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, null, podcast)
 
-  // TODO: Look up id on global.user.historyItems[item.id] to set playbacktime if it exists
-  const hasStartedItem = false
+  const hasStartedItem = !!userPlaybackPosition
   const totalTime = playingItem.episodeDuration || 0
-  const playedTime = 0
+  const playedTime = userPlaybackPosition || 0
 
-  let timeLabel = convertSecToHhoursMMinutes(totalTime)
-  if (hasStartedItem) {
-    timeLabel = convertSecToHhoursMMinutes(totalTime - playedTime) + ' left'
+  let timeLabel = ''
+  if (totalTime) {
+    timeLabel = convertSecToHhoursMMinutes(totalTime)
+    if (hasStartedItem) {
+      timeLabel = convertSecToHhoursMMinutes(totalTime - playedTime) + ' left'
+    }
   }
 
   const playItem = () => {
@@ -71,7 +74,7 @@ export const TimeRemainingWidget = (props: Props) => {
       <TouchableOpacity onPress={playItem} style={styles.playButton}>
         <Icon name={'play'} size={13} />
       </TouchableOpacity>
-      {hasStartedItem && <MiniProgressBar playedTime={30} totalTime={120} />}
+      {hasStartedItem && <MiniProgressBar playedTime={playedTime} totalTime={totalTime} />}
       <Text style={styles.text}>{timeLabel}</Text>
       {!!handleShowMore && <MoreButton handleShowMore={handleShowMore} />}
     </View>
