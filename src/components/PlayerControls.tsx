@@ -204,6 +204,7 @@ const styles = StyleSheet.create({
     paddingTop: 5
   },
   wrapper: {
-    borderTopWidth: 1
+    borderTopWidth: 1,
+    height: PV.Player.playerControls.height
   }
 })

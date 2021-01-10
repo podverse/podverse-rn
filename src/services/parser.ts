@@ -5,6 +5,7 @@ import { checkIfLoggedIn, getBearerToken } from './auth'
 import { combineWithAddByRSSPodcasts } from './podcast'
 import { request } from './request'
 const podcastFeedParser = require('@podverse/podcast-feed-parser')
+const uuidv4 = require('uuid/v4')
 
 /*
 addByRSSPodcasts: [addByRSSPodcast]

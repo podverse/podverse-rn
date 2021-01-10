@@ -81,5 +81,17 @@ export const Player = {
     bottomRow: {
       height: 54
     }
+  },
+  carouselTextBottomWrapper: {
+    height: 52
+  },
+  carouselTextTopWrapper: {
+    height: 48
+  },
+  playerControls: {
+    height: 202
+  },
+  pagination: {
+    height: 32
   }
 }

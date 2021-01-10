@@ -1,7 +1,7 @@
-import { StyleSheet } from 'react-native'
+import { Dimensions, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
+import { navHeader } from '../styles'
 import { ActivityIndicator, FastImage, Text, View } from './'
 
 type Props = {
@@ -10,6 +10,19 @@ type Props = {
 }
 
 type State = {}
+
+const screenHeight = Dimensions.get('screen').height
+const screenWidth = Dimensions.get('screen').width
+
+const scrollHeight =
+  screenHeight - (navHeader.headerHeight.paddingTop + PV.Player.playerControls.height + PV.Player.pagination.height)
+
+const scrollHeightMinusText =
+  scrollHeight - (PV.Player.carouselTextBottomWrapper.height + PV.Player.carouselTextTopWrapper.height)
+
+const imagePadding = 64
+const imageHeightAvailable =
+  scrollHeightMinusText < screenWidth - imagePadding ? scrollHeightMinusText - imagePadding : screenWidth - imagePadding
 
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State> {
   constructor(props) {
@@ -22,19 +35,15 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
     const { player, screenPlayer } = this.global
     const { nowPlayingItem } = player
     const { isLoading } = screenPlayer
-    const { clipEndTime, clipId, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem
+    const { clipId, clipTitle, podcastImageUrl } = nowPlayingItem
 
     return (
       <View style={[styles.outerWrapper, { width }]} transparent={true}>
         <View style={styles.innerWrapper} transparent={true}>
-          <View transparent={true}>
-            {isLoading && (
-              <View style={styles.headerWrapper} transparent={true}>
-                <ActivityIndicator />
-              </View>
-            )}
+          <View style={styles.carouselTextBottomWrapper} transparent={true}>
+            {isLoading && <ActivityIndicator />}
             {!isLoading && !!nowPlayingItem && (
-              <View style={styles.headerWrapper} transparent={true}>
+              <React.Fragment>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
@@ -50,17 +59,17 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
                   testID='media_player_carousel_viewer_podcast_title'>
                   {nowPlayingItem.podcastTitle}
                 </Text>
-              </View>
+              </React.Fragment>
             )}
           </View>
           <View style={styles.imageWrapper} transparent={true}>
             <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
           </View>
-          <View style={styles.textWrapper} transparent={true}>
+          <View style={styles.carouselTextBottomWrapper} transparent={true}>
             {clipId && (
               <View style={styles.clipWrapper} transparent={true}>
                 <Text
-                  numberOfLines={1}
+                  numberOfLines={2}
                   style={styles.clipTitle}
                   testID='media_player_carousel_viewer_title'>{`${clipTitle}`}</Text>
               </View>
@@ -73,49 +82,49 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
 }
 
 const styles = StyleSheet.create({
-  clipTime: {
-    color: PV.Colors.skyLight,
-    fontSize: PV.Fonts.sizes.xs,
-    marginTop: 4
+  carouselTextBottomWrapper: {
+    flex: 0,
+    height: PV.Player.carouselTextBottomWrapper.height
+  },
+  carouselTextToprapper: {
+    flex: 0,
+    height: PV.Player.carouselTextTopWrapper.height
   },
   clipTitle: {
-    fontSize: PV.Fonts.sizes.lg,
-    paddingBottom: 4
+    fontSize: PV.Fonts.sizes.xl,
+    paddingBottom: 4,
+    textAlign: 'center'
   },
   clipWrapper: {},
-  image: {
-    height: '100%',
-    width: '100%'
-  },
   episodeTitle: {
-    fontSize: PV.Fonts.sizes.xxl
+    fontSize: PV.Fonts.sizes.xxl,
+    textAlign: 'center'
   },
-  headerWrapper: {
+  image: {
     flex: 0,
-    height: 48
+    height: imageHeightAvailable,
+    width: imageHeightAvailable
   },
   imageWrapper: {
-    flex: 1,
     alignItems: 'center',
+    flex: 0,
     justifyContent: 'center',
-    paddingBottom: 14,
-    paddingTop: 18
+    padding: 16
   },
   innerWrapper: {
     flex: 1,
+    justifyContent: 'center',
     marginHorizontal: 8
   },
   outerWrapper: {
-    flex: 1
+    flex: 0
   },
   podcastTitle: {
+    color: PV.Colors.skyDark,
     flex: 0,
-    fontSize: PV.Fonts.sizes.sm,
+    fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold,
-    marginTop: 4
-  },
-  textWrapper: {
-    flex: 0,
-    height: 26
+    marginTop: 2,
+    textAlign: 'center'
   }
 })
