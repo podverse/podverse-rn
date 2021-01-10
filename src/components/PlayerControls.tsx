@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   progressWrapper: {
+    marginTop: 8,
     marginBottom: 8
   },
   speed: {

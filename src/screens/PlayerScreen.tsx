@@ -12,9 +12,7 @@ import {
   NavQueueIcon,
   NavShareIcon,
   OpaqueBackground,
-  PlayerClipInfoBar,
   PlayerControls,
-  PlayerTableHeader,
   View
 } from '../components'
 import { translate } from '../lib/i18n'
@@ -263,7 +261,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { player, screenPlayer } = this.global
     const { episode, nowPlayingItem } = player
-    const { isLoading, showFullClipInfo, showShareActionSheet, viewType } = screenPlayer
+    const { isLoading, showFullClipInfo, showShareActionSheet } = screenPlayer
     let { mediaRef } = player
 
     if (nowPlayingItem && nowPlayingItem.clipId) {
@@ -282,7 +280,6 @@ export class PlayerScreen extends React.Component<Props, State> {
       <React.Fragment>
         <OpaqueBackground nowPlayingItem={nowPlayingItem}>
           <View style={styles.view} transparent={true} {...testProps('player_screen_view')}>
-            <PlayerTableHeader nowPlayingItem={nowPlayingItem} testID={testIDPrefix} />
             {!showFullClipInfo && <MediaPlayerCarousel />}
             {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
               <ClipInfoView

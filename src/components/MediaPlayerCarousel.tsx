@@ -1,7 +1,8 @@
-import { Dimensions, StyleSheet, View } from 'react-native'
+import { Dimensions, StyleSheet } from 'react-native'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
-import { MediaPlayerCarouselClips, MediaPlayerCarouselShowNotes, MediaPlayerCarouselViewer, ScrollView } from '.'
+import { MediaPlayerCarouselClips, MediaPlayerCarouselShowNotes, MediaPlayerCarouselViewer, ScrollView, View } from '.'
+import { PV } from '../resources'
 
 type Props = {}
 
@@ -49,16 +50,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const itemCount = hasChapters ? 4 : 3
 
     return (
-      <View style={styles.wrapper}>
-        <Dots
-          active={activeIndex}
-          activeDotHeight={12}
-          activeDotWidth={12}
-          length={itemCount}
-          paddingVertical={16}
-          passiveDotHeight={8}
-          passiveDotWidth={8}
-        />
+      <View style={styles.wrapper} transparent={true}>
         <ScrollView
           bounces={false}
           decelerationRate='fast'
@@ -68,12 +60,24 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           scrollViewRef={(ref: any) => (this.scrollView = ref)}
           showsHorizontalScrollIndicator={false}
           snapToInterval={screenWidth}
-          snapToStart={true}>
+          snapToStart={true}
+          transparent={true}>
           {hasChapters && <MediaPlayerCarouselClips isChapters={true} width={screenWidth} />}
           <MediaPlayerCarouselClips isChapters={false} width={screenWidth} />
           <MediaPlayerCarouselViewer width={screenWidth} />
           <MediaPlayerCarouselShowNotes width={screenWidth} />
         </ScrollView>
+        <Dots
+          active={activeIndex}
+          activeColor={PV.Colors.skyDark}
+          activeDotHeight={9}
+          activeDotWidth={9}
+          length={itemCount}
+          paddingVertical={12}
+          passiveColor={PV.Colors.grayLighter}
+          passiveDotHeight={8}
+          passiveDotWidth={8}
+        />
       </View>
     )
   }
