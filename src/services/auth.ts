@@ -5,7 +5,7 @@ import { PV } from '../resources'
 import { Credentials } from '../state/actions/auth'
 import { getQueueItems } from './queue'
 import { request } from './request'
-import { getHistoryItems, getHistoryItemsIndex } from './userHistoryItem'
+import { getHistoryItems, getHistoryItemsIndex, getHistoryItemsIndexLocally } from './userHistoryItem'
 
 export const getBearerToken = async () => {
   let bearerToken = ''
@@ -46,6 +46,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
   let subscribedUserIds = []
   let queueItems = []
   let historyItems = []
+  let historyItemsIndex = {}
   let isLoggedIn = false
 
   try {
@@ -109,6 +110,8 @@ export const getAuthenticatedUserInfoLocally = async () => {
     }
   }
 
+  historyItemsIndex = await getHistoryItemsIndexLocally()
+
   const bearerToken = await getBearerToken()
   isLoggedIn = !!bearerToken
 
@@ -119,7 +122,8 @@ export const getAuthenticatedUserInfoLocally = async () => {
       subscribedPodcastIds,
       subscribedUserIds,
       queueItems,
-      historyItems
+      historyItems,
+      historyItemsIndex
     },
     isLoggedIn
   ]
