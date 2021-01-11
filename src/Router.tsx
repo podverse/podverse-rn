@@ -19,6 +19,7 @@ import {
   EpisodeScreen,
   EpisodesScreen,
   FAQScreen,
+  FilterScreen,
   HistoryScreen,
   MakeClipScreen,
   MembershipScreen,
@@ -148,6 +149,15 @@ const ClipsNavigator = createStackNavigator(
 const SearchNavigator = createStackNavigator(
   {
     [PV.RouteNames.SearchScreen]: { screen: SearchScreen, path: '' }
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
+const FilterNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.FilterScreen]: { screen: FilterScreen, path: '' }
   },
   {
     defaultNavigationOptions
@@ -373,6 +383,7 @@ const MainApp = createStackNavigator(
     [PV.RouteNames.PlayerNavigator]: { screen: PlayerNavigator, path: '' },
     PlaylistsAddToNavigator,
     SearchNavigator,
+    FilterNavigator,
     SleepTimerNavigator,
     WebPageNavigator,
     EmailVerificationNavigator,
