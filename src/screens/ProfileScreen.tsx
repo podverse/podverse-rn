@@ -514,12 +514,12 @@ export class ProfileScreen extends React.Component<Props, State> {
               testID={testIDPrefix}
             />
             <TableSectionSelectors
-              handleSelectLeftItem={this.selectLeftItem}
-              handleSelectRightItem={this.selectRightItem}
+              handleSelectFilterItem={this.selectLeftItem}
+              handleSelectSortItem={this.selectRightItem}
               hideRightItemWhileLoading={hideRightItemWhileLoading}
               screenName='ProfileScreen'
-              selectedLeftItemKey={queryFrom}
-              selectedRightItemKey={querySort}
+              selectedFilterItemKey={queryFrom}
+              selectedSortItemKey={querySort}
               testID={testIDPrefix}
             />
             {isLoading && <ActivityIndicator />}

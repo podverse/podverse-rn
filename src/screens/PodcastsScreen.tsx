@@ -624,26 +624,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
         <RNView style={{ flex: 1 }}>
           <PlayerEvents />
           <TableSectionSelectors
-            handleSelectLeftItem={(selectedKey: string) => this.selectLeftItem(selectedKey)}
-            handleSelectRightItem={(selectedKey: string) => this.selectRightItem(selectedKey)}
-            hidePickers={isInitialLoad}
-            selectedLeftItemKey={queryFrom}
-            selectedRightItemKey={querySort}
+            handleSelectFilterItem={(selectedKey: string) => this.selectLeftItem(selectedKey)}
+            handleSelectSortItem={(selectedKey: string) => this.selectRightItem(selectedKey)}
+            selectedFilterItemKey={queryFrom}
+            selectedSortItemKey={querySort}
             screenName='PodcastsScreen'
             testID={testIDPrefix}
           />
-          {queryFrom === PV.Filters._categoryKey && (
-            <TableSectionSelectors
-              handleSelectLeftItem={(x: string) => this._selectCategory(x)}
-              handleSelectRightItem={(x: string) => this._selectCategory(x, true)}
-              selectedLeftItemKey={selectedCategory}
-              selectedRightItemKey={selectedSubCategory}
-              isBottomBar={true}
-              isCategories={true}
-              screenName='PodcastsScreen'
-              testID={`${testIDPrefix}_sub`}
-            />
-          )}
           {isLoading && <ActivityIndicator />}
           {!isLoading && queryFrom && (
             <FlatList

@@ -163,9 +163,9 @@ export class PlaylistsScreen extends React.Component<Props, State> {
       <View style={styles.view} {...testProps('playlists_screen_view')}>
         <View style={styles.view}>
           <TableSectionSelectors
-            handleSelectLeftItem={this.selectLeftItem}
+            handleSelectFilterItem={this.selectLeftItem}
             screenName='PlaylistsScreen'
-            selectedLeftItemKey={queryFrom}
+            selectedFilterItemKey={queryFrom}
             testID={testIDPrefix}
           />
           {isLoading && <ActivityIndicator />}

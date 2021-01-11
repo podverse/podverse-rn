@@ -395,25 +395,25 @@ export class EpisodesScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view} {...testProps('episodes_screen_view')}>
         <TableSectionSelectors
-          handleSelectLeftItem={this.selectLeftItem}
-          handleSelectRightItem={this.selectRightItem}
+          handleSelectFilterItem={this.selectLeftItem}
+          handleSelectSortItem={this.selectRightItem}
           hideRightItemWhileLoading={hideRightItemWhileLoading}
           isSortLimitQueries={isSortLimitQueries}
           screenName='EpisodesScreen'
-          selectedLeftItemKey={queryFrom}
-          selectedRightItemKey={querySort}
+          selectedFilterItemKey={queryFrom}
+          selectedSortItemKey={querySort}
           testID={testIDPrefix}
         />
         {queryFrom === PV.Filters._categoryKey && (
           <TableSectionSelectors
-            handleSelectLeftItem={(x: string) => this._selectCategory(x)}
-            handleSelectRightItem={(x: string) => this._selectCategory(x, true)}
+            handleSelectFilterItem={(x: string) => this._selectCategory(x)}
+            handleSelectSortItem={(x: string) => this._selectCategory(x, true)}
             isBottomBar={true}
             isCategories={true}
             isSortLimitQueries={isSortLimitQueries}
             screenName='EpisodesScreen'
-            selectedLeftItemKey={selectedCategory}
-            selectedRightItemKey={selectedSubCategory}
+            selectedFilterItemKey={selectedCategory}
+            selectedSortItemKey={selectedSubCategory}
             testID={`${testIDPrefix}_sub`}
           />
         )}

@@ -313,23 +313,23 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
     return (
       <View style={[styles.wrapper, { width }]} transparent={true}>
         <TableSectionSelectors
-          handleSelectLeftItem={this._selectViewType}
-          handleSelectRightItem={this._selectQuerySort}
+          handleSelectFilterItem={this._selectViewType}
+          handleSelectSortItem={this._selectQuerySort}
           hideRightItemWhileLoading={hideRightItemWhileLoading}
           includeChronological={viewType === PV.Filters._clipsKey && queryFrom === PV.Filters._fromThisEpisodeKey}
           isTransparent={true}
           screenName='PlayerScreen'
-          selectedLeftItemKey={viewType}
-          selectedRightItemKey={querySort}
+          selectedFilterItemKey={viewType}
+          selectedSortItemKey={querySort}
           testID={testID}
         />
         {viewType === PV.Filters._clipsKey && (
           <TableSectionSelectors
-            handleSelectLeftItem={this._selectQueryFrom}
+            handleSelectFilterItem={this._selectQueryFrom}
             isBottomBar={true}
             isTransparent={true}
             screenName='PlayerScreen'
-            selectedLeftItemKey={queryFrom}
+            selectedFilterItemKey={queryFrom}
             testID={`${testID}_sub`}
           />
         )}

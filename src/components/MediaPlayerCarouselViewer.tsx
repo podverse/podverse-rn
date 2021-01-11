@@ -49,6 +49,7 @@ const scrollHeightAvailable =
 const imagePadding = 64
 let imageHeightAvailable = scrollHeightAvailable - imagePadding
 imageHeightAvailable = imageHeightAvailable > 340 ? 340 : imageHeightAvailable
+
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State> {
   constructor(props) {
     super(props)
