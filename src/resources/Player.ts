@@ -85,6 +85,10 @@ export const Player = {
   carouselTextBottomWrapper: {
     height: 52
   },
+  carouselTextSubBottomWrapper: {
+    height: 20,
+    marginTop: 4
+  },
   carouselTextTopWrapper: {
     height: 48
   },
