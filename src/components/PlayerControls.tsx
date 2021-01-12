@@ -77,6 +77,12 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     const { backupDuration, nowPlayingItem, playbackRate, playbackState } = player
     const { isLoading } = screenPlayer
     const hasErrored = playbackState === PV.Player.errorState
+    const hitSlop = {
+      bottom: 8,
+      left: 8,
+      right: 8,
+      top: 8
+    }
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
@@ -91,64 +97,52 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           />
         </View>
         <View style={styles.middleRow}>
-          <TouchableOpacity onPress={this._returnToBeginningOfTrack} style={playerStyles.icon}>
-            <Icon name='step-backward' size={36} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
-            <Icon name='undo-alt' size={36} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => togglePlay(this.global)} style={playerStyles.iconLarge}>
-            {hasErrored && (
-              <Icon
-                color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
-                name={'exclamation-triangle'}
-                size={34}
-              />
-            )}
-            {!hasErrored && (
-              <Icon name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause-circle' : 'play-circle'} size={52} />
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
-            <Icon name='redo-alt' size={36} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={playNextFromQueue} style={playerStyles.icon}>
-            <Icon name='step-forward' size={36} />
-          </TouchableOpacity>
+          <View style={styles.middleRowTop}>
+            <TouchableOpacity
+              onPress={this._returnToBeginningOfTrack}
+              style={[playerStyles.icon, { flexDirection: 'row' }]}>
+              <Icon name='step-backward' size={35} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
+              <Icon name='undo-alt' size={35} />
+              {/* <View style={styles.skipTimeTextWrapper}>
+                <Text style={styles.skipTimeText}>30</Text>
+              </View> */}
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => togglePlay(this.global)} style={playerStyles.playButton}>
+              {hasErrored ? (
+                <Icon
+                  color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
+                  name={'exclamation-triangle'}
+                  size={35}
+                />
+              ) : (
+                <Icon name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'} size={20} />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
+              <Icon name='redo-alt' size={35} />
+              {/* <View style={styles.skipTimeTextWrapper}>
+                <Text style={styles.skipTimeText}>30</Text>
+              </View> */}
+            </TouchableOpacity>
+            <TouchableOpacity onPress={playNextFromQueue} style={[playerStyles.icon, { flexDirection: 'row' }]}>
+              <Icon name='step-forward' size={35} />
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.bottomRow}>
-          <TouchableOpacity
-            hitSlop={{
-              bottom: 4,
-              left: 4,
-              right: 4,
-              top: 4
-            }}
-            onPress={this._navToStopWatchScreen}>
+          <TouchableOpacity hitSlop={hitSlop} onPress={this._navToStopWatchScreen}>
             <View style={styles.bottomButton}>
-              <Icon name='stopwatch' size={20} />
+              <Icon name='moon' size={20} solid={true} />
             </View>
           </TouchableOpacity>
-          <TouchableWithoutFeedback
-            hitSlop={{
-              bottom: 4,
-              left: 4,
-              right: 4,
-              top: 4
-            }}
-            onPress={this._adjustSpeed}>
+          <TouchableWithoutFeedback hitSlop={hitSlop} onPress={this._adjustSpeed}>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.bottomButton, styles.bottomRowText]}>
               {`${playbackRate}X`}
             </Text>
           </TouchableWithoutFeedback>
-          <TouchableOpacity
-            hitSlop={{
-              bottom: 4,
-              left: 4,
-              right: 4,
-              top: 4
-            }}
-            onPress={this._showPlayerMoreActionSheet}>
+          <TouchableOpacity hitSlop={hitSlop} onPress={this._showPlayerMoreActionSheet}>
             <View style={styles.bottomButton}>
               <Icon name='ellipsis-h' size={24} />
             </View>
@@ -176,23 +170,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     minHeight: PV.Player.styles.bottomRow.height,
-    justifyContent: 'space-around'
+    justifyContent: 'space-evenly',
+    marginHorizontal: 15,
+    marginTop: 10
   },
   bottomRowText: {
-    fontSize: PV.Fonts.sizes.xl,
+    fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold
   },
   middleRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    minHeight: 60,
-    justifyContent: 'space-around',
-    marginBottom: 4,
     marginTop: 2
   },
+  middleRowTop: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginTop: 2
+  },
+  skipButtonText: {
+    fontSize: 12,
+    width: '100%',
+    position: 'absolute',
+    bottom: -5,
+    textAlign: 'center'
+  },
   progressWrapper: {
-    marginTop: 8,
-    marginBottom: 8
+    marginTop: 5
   },
   speed: {
     alignItems: 'center',
@@ -204,7 +207,16 @@ const styles = StyleSheet.create({
     paddingTop: 5
   },
   wrapper: {
-    borderTopWidth: 1,
-    height: PV.Player.playerControls.height
+    borderTopWidth: 1
+  },
+  skipTimeTextWrapper: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  skipTimeText: {
+    fontSize: 11
   }
 })

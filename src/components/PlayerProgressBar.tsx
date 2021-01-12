@@ -87,6 +87,8 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
         <Slider
           minimumValue={0}
           maximumValue={isLoading ? 0 : 1}
+          minimumTrackTintColor={PV.Colors.skyDark}
+          maximumTrackTintColor={PV.Colors.gray}
           onSlidingComplete={(value) => {
             const position = value * duration
             setPlaybackPosition(position)
@@ -101,10 +103,10 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
             })
           }
           thumbStyle={sliderStyles.thumbStyle}
-          thumbTintColor={PV.Colors.brandColor}
+          thumbTintColor={PV.Colors.white}
           value={isLoading ? 0 : value}
         />
-        {!isLoading && (
+        {!isLoading ? (
           <View style={sliderStyles.timeRow}>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
@@ -119,8 +121,7 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
               {duration > 0 ? convertSecToHHMMSS(duration) : '--:--'}
             </Text>
           </View>
-        )}
-        {isLoading && (
+        ) : (
           <View style={sliderStyles.timeRow}>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
