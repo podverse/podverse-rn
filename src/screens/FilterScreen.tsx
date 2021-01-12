@@ -1,9 +1,8 @@
-import AsyncStorage from '@react-native-community/async-storage'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import React from 'reactn'
-import { NavDismissIcon, Text, View } from '../components'
-import { convertFilterOptionsToI18N, translate } from '../lib/i18n'
-import { safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { FlatList, Icon, NavDismissIcon, Text, View } from '../components'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 
@@ -12,26 +11,31 @@ type Props = {
 }
 
 type State = {
-  categoryItems: any[]
-  filterItems: any[]
-  sortItems: any[]
+  categoryItems?: any
+  sections?: any
+  selectedCategoryItemKey?: string
+  selectedCategorySubItemKey?: string
+  selectedFilterItemKey?: string
+  selectedSortItemKey?: string
 }
 
 const testIDPrefix = 'filter_screen'
 
-const filterAddByRSSSortItems = (screenName: string, isAddByRSSPodcastFeedUrl: boolean, isSortLimitQueries: boolean) =>
-  PV.FilterOptions.sortItems.filter((sortKey: any) => {
-    return isAddByRSSPodcastFeedUrl
-      ? PV.FilterOptions.screenFilters[screenName].addByPodcastRSSFeedURLSort.includes(sortKey.value)
-      : isSortLimitQueries
-      ? PV.FilterOptions.screenFilters[screenName].sortLimitQueries.includes(sortKey.value)
-      : PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
-  })
+const sectionsWithCategory = (filterItems: any, categoryItems: any, sortItems: any) => [
+  { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
+  { title: translate('Category'), data: categoryItems, value: PV.Filters._sectionCategoryKey },
+  { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+]
+
+const sectionsWithoutCategory = (filterItems: any, sortItems: any) => [
+  { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
+  { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+]
 
 export class FilterScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: translate('Filter'),
+      title: '',
       headerLeft: <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
       headerRight: null
     }
@@ -39,97 +43,216 @@ export class FilterScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    const { navigation } = props
 
-    this.state = {}
+    const { navigation } = props
+    const selectedCategoryItemKey = navigation.getParam('selectedCategoryItemKey')
+    const selectedCategorySubItemKey = navigation.getParam('selectedCategorySubItemKey')
+    const selectedFilterItemKey = navigation.getParam('selectedFilterItemKey')
+    const selectedSortItemKey = navigation.getParam('selectedSortItemKey')
+    const filterItems = navigation.getParam('filterItems') || []
+    const categoryItems = navigation.getParam('categoryItems') || []
+    const sortItems = navigation.getParam('sortItems') || []
+
+    const flatCategoryItems = []
+    for (const categoryItem of categoryItems) {
+      flatCategoryItems.push(categoryItem)
+      const subCategoryItems = categoryItem.categories
+      for (const subCategoryItem of subCategoryItems) {
+        subCategoryItem.parentId = categoryItem.id
+        flatCategoryItems.push(subCategoryItem)
+      }
+    }
+
+    const sections =
+      selectedFilterItemKey.value === PV.Filters._categoryKey
+        ? sectionsWithCategory(filterItems, flatCategoryItems, sortItems)
+        : sectionsWithoutCategory(filterItems, sortItems)
+
+    this.state = {
+      categoryItems: flatCategoryItems,
+      sections,
+      selectedCategoryItemKey,
+      selectedCategorySubItemKey,
+      selectedFilterItemKey,
+      selectedSortItemKey
+    }
   }
 
   async componentDidMount() {
-    const categoryItems = await this.getCategoryItems()
-    const filterItems = await this.getFilterItems()
-    const sortItems = await this.getSortItems()
-
-    this.setState({
-      categoryItems,
-      filterItems,
-      sortItems
-    })
-
     trackPageView('/filter', 'Filter Screen')
   }
 
-  getCategoryItems = async () => {
-    try {
-      const categoryItemsString = await AsyncStorage.getItem('CATEGORIES_LIST')
-      let categoryItems = []
-      if (categoryItemsString) {
-        categoryItems = JSON.parse(categoryItemsString).map((category: any) => {
-          return {
-            label: category.title,
-            value: category.id,
-            ...category
-          }
+  handleStateUpdate = (section: any, item: any) => {
+    const { navigation } = this.props
+    const { categoryItems } = this.state
+    const value = item.value || item.id
+    const filterItems = navigation.getParam('filterItems') || []
+    const sortItems = navigation.getParam('sortItems') || []
+
+    if (section.value === PV.Filters._sectionFilterKey) {
+      const sections =
+        item.value === PV.Filters._categoryKey
+          ? sectionsWithCategory(filterItems, categoryItems, sortItems)
+          : sectionsWithoutCategory(filterItems, sortItems)
+      if (value === PV.Filters._categoryKey) {
+        this.setState({
+          sections,
+          selectedCategoryItemKey: categoryItems[0].value,
+          selectedCategorySubItemKey: '',
+          selectedFilterItemKey: value
+        })
+      } else {
+        this.setState({
+          sections,
+          selectedCategoryItemKey: '',
+          selectedCategorySubItemKey: '',
+          selectedFilterItemKey: value
         })
       }
-      return categoryItems
-    } catch (err) {
-      console.log('Bottom Selection Bar error: ', err)
-    }
-  }
-
-  getFilterItems = async () => {
-    const { navigation } = this.props
-    const isAddByRSSPodcastFeedUrl = navigation.getParam('isAddByRSSPodcastFeedUrl')
-    const screenName = navigation.getParam('screenName')
-    const isLoggedIn = safelyUnwrapNestedVariable(() => this.global.session.isLoggedIn, '')
-
-    let filterItems = [] as any
-
-    filterItems = PV.FilterOptions.typeItems.filter((type: any) => {
-      return isAddByRSSPodcastFeedUrl
-        ? PV.FilterOptions.screenFilters[screenName].addByPodcastRSSFeedURLType.includes(type.value)
-        : PV.FilterOptions.screenFilters[screenName].type.includes(type.value)
-    })
-
-    if (PV.FilterOptions.screenFilters[screenName].hideIfNotLoggedIn && !isLoggedIn) {
-      filterItems = filterItems.filter((type: any) => {
-        return !PV.FilterOptions.screenFilters[screenName].hideIfNotLoggedIn.includes(type.value)
+    } else if (section.value === PV.Filters._sectionCategoryKey) {
+      if (item.parentId) {
+        this.setState({
+          selectedCategorySubItemKey: value
+        })
+      } else {
+        this.setState({
+          selectedCategoryItemKey: value,
+          selectedCategorySubItemKey: ''
+        })
+      }
+    } else if (section.value === PV.Filters._sectionSortKey) {
+      this.setState({
+        selectedSortItemKey: value
       })
     }
-
-    filterItems = convertFilterOptionsToI18N(filterItems)
-
-    return filterItems
   }
 
-  getSortItems = async () => {
+  getSelectHandler = (section: any, item: any) => {
     const { navigation } = this.props
-    const isAddByRSSPodcastFeedUrl = navigation.getParam('isAddByRSSPodcastFeedUrl')
-    const isSortLimitQueries = navigation.getParam('isSortLimitQueries')
-    const screenName = navigation.getParam('screenName')
-    let sortItems = [] as any
-    sortItems = filterAddByRSSSortItems(screenName, !!isAddByRSSPodcastFeedUrl, isSortLimitQueries)
-    return convertFilterOptionsToI18N(sortItems)
+    let handleSelect: any
+    if (section.value === PV.Filters._sectionFilterKey) {
+      handleSelect = navigation.getParam('handleSelectFilterItem')
+    } else if (section.value === PV.Filters._sectionCategoryKey) {
+      if (item.value && !item.parentId) {
+        handleSelect = navigation.getParam('handleSelectCategoryItem')
+      } else {
+        handleSelect = navigation.getParam('handleSelectCategorySubItem')
+      }
+    } else if (section.value === PV.Filters._sectionSortKey) {
+      handleSelect = navigation.getParam('handleSelectSortItem')
+    }
+    return handleSelect
+  }
+
+  renderItem = ({ item, section }) => {
+    const {
+      selectedCategoryItemKey,
+      selectedCategorySubItemKey,
+      selectedFilterItemKey,
+      selectedSortItemKey
+    } = this.state
+
+    const value = item.value || item.id
+
+    /* Do not render category cells unless the category filter is active. */
+    if (
+      section.value === PV.Filters._sectionCategoryKey &&
+      selectedFilterItemKey === PV.Filters._categoryKey &&
+      selectedCategoryItemKey &&
+      item.parentId &&
+      selectedCategoryItemKey !== item.parentId
+    ) {
+      return <RNView />
+    }
+
+    let isActive = false
+    if (section.value === PV.Filters._sectionCategoryKey) {
+      if (selectedCategorySubItemKey) {
+        if (item.parentId && item.id === selectedCategorySubItemKey) {
+          isActive = true
+        }
+      } else if (item.value && item.value === selectedCategoryItemKey) {
+        isActive = true
+      }
+    } else {
+      isActive = [selectedFilterItemKey, selectedSortItemKey].includes(value)
+    }
+
+    const isSubCategory = item.parentId
+    const itemTextStyle = isSubCategory ? [styles.itemSubText] : [styles.itemText]
+
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => {
+          const selectHandler = this.getSelectHandler(section, item)
+          const stateKey = this.handleStateUpdate(section, item) as any
+          this.setState({ [stateKey]: value }, () => {
+            selectHandler(value)
+          })
+        }}>
+        <View style={styles.itemWrapper}>
+          <Text style={itemTextStyle}>{item.label || item.title}</Text>
+          {isActive && <Icon style={styles.itemIcon} name='check' size={24} />}
+        </View>
+      </TouchableWithoutFeedback>
+    )
   }
 
   render() {
-    const { navigation } = this.props
-    const screenName = navigation.getParam('screenName')
-    const selectedCategoryItem = navigation.getParam('selectedCategoryItem')
-    const selectedFilterItem = navigation.getParam('selectedFilterItem')
-    const selectedSortItem = navigation.getParam('selectedSortItem')
+    const { sections } = this.state
 
     return (
-      <View style={styles.view} {...testProps('filter_screen_view')}>
-        <Text>hello world</Text>
-      </View>
+      <FlatList
+        disableLeftSwipe={true}
+        disableNoResultsMessage={true}
+        keyExtractor={(item: any) => item.value || item.id}
+        renderSectionHeader={({ section }) => {
+          return (
+            <View style={styles.sectionItemWrapper}>
+              <Text style={styles.sectionItemText}>{section.title}</Text>
+            </View>
+          )
+        }}
+        renderItem={this.renderItem}
+        sections={sections}
+      />
     )
   }
 }
 
 const styles = StyleSheet.create({
+  hideItem: {
+    height: 0
+  },
+  itemIcon: {
+    marginTop: 4
+  },
+  itemSubText: {
+    fontSize: PV.Fonts.sizes.xxxl,
+    fontWeight: PV.Fonts.weights.semibold,
+    paddingLeft: 64,
+    paddingRight: 36
+  },
+  itemText: {
+    fontSize: PV.Fonts.sizes.xxxl,
+    fontWeight: PV.Fonts.weights.semibold,
+    paddingHorizontal: 36
+  },
+  itemWrapper: {
+    flexDirection: 'row',
+    marginBottom: 20
+  },
+  sectionItemText: {
+    fontSize: PV.Fonts.sizes.xxxl,
+    fontWeight: PV.Fonts.weights.bold,
+    paddingHorizontal: 16
+  },
+  sectionItemWrapper: {
+    marginBottom: 20,
+    marginTop: 28
+  },
   view: {
-    flex: 1,
-    justifyContent: 'flex-start'
+    backgroundColor: 'blue',
+    flex: 1
   }
 })

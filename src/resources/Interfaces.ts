@@ -193,6 +193,9 @@ export interface IFilters {
   _fromThisPodcastKey: string
   _fromThisEpisodeKey: string
   _allCategoriesKey: string
+  _sectionCategoryKey: string
+  _sectionFilterKey: string
+  _sectionSortKey: string
 }
 
 interface IFontLargeSizes {

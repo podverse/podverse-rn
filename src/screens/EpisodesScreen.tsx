@@ -390,33 +390,21 @@ export class EpisodesScreen extends React.Component<Props, State> {
         ? translate('Scan QR Code')
         : translate('Search')
 
-    const isSortLimitQueries = queryFrom === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._categoryKey
+    const shouldQueryIndexedData = queryFrom === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._categoryKey
 
     return (
       <View style={styles.view} {...testProps('episodes_screen_view')}>
         <TableSectionSelectors
+          handleSelectCategoryItem={this._selectCategory}
           handleSelectFilterItem={this.selectLeftItem}
           handleSelectSortItem={this.selectRightItem}
           hideRightItemWhileLoading={hideRightItemWhileLoading}
-          isSortLimitQueries={isSortLimitQueries}
+          shouldQueryIndexedData={shouldQueryIndexedData}
           screenName='EpisodesScreen'
           selectedFilterItemKey={queryFrom}
           selectedSortItemKey={querySort}
           testID={testIDPrefix}
         />
-        {queryFrom === PV.Filters._categoryKey && (
-          <TableSectionSelectors
-            handleSelectFilterItem={(x: string) => this._selectCategory(x)}
-            handleSelectSortItem={(x: string) => this._selectCategory(x, true)}
-            isBottomBar={true}
-            isCategories={true}
-            isSortLimitQueries={isSortLimitQueries}
-            screenName='EpisodesScreen'
-            selectedFilterItemKey={selectedCategory}
-            selectedSortItemKey={selectedSubCategory}
-            testID={`${testIDPrefix}_sub`}
-          />
-        )}
         {isLoading && <ActivityIndicator />}
         {!isLoading && queryFrom && (
           <FlatList

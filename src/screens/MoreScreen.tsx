@@ -161,7 +161,7 @@ export class MoreScreen extends React.Component<Props, State> {
               </RNView>
             </TouchableWithoutFeedback>
           )}
-          renderSectionHeader={({ section: { title } }) => <TableSectionHeader title={title} />}
+          renderSectionHeader={({ section }) => <TableSectionHeader title={section.title} />}
           sections={[
             { title: translate('Features'), data: featureOptions },
             { title: translate('Other'), data: otherOptions }

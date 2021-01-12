@@ -32,5 +32,8 @@ export const Filters: IFilters = {
   _myPlaylistsKey: 'my-playlists',
   _fromThisPodcastKey: 'from-this-podcast',
   _fromThisEpisodeKey: 'from-this-episode',
-  _allCategoriesKey: 'all-categories'
+  _allCategoriesKey: '', // treat as an empty value
+  _sectionCategoryKey: 'section-category',
+  _sectionFilterKey: 'section-filter',
+  _sectionSortKey: 'section-sort'
 }

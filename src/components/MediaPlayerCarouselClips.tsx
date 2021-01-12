@@ -316,7 +316,6 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
           handleSelectFilterItem={this._selectViewType}
           handleSelectSortItem={this._selectQuerySort}
           hideRightItemWhileLoading={hideRightItemWhileLoading}
-          includeChronological={viewType === PV.Filters._clipsKey && queryFrom === PV.Filters._fromThisEpisodeKey}
           isTransparent={true}
           screenName='PlayerScreen'
           selectedFilterItemKey={viewType}

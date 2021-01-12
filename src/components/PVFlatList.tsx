@@ -5,12 +5,13 @@ import { SwipeListView } from 'react-native-swipe-list-view'
 import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { ActivityIndicator, MessageWithAction, Text, View } from './'
+import { ActivityIndicator, MessageWithAction, View } from './'
 
 type Props = {
   data?: any
   dataTotalCount: number | null
   disableLeftSwipe: boolean
+  disableNoResultsMessage?: boolean
   extraData?: any
   handleNoResultsBottomAction?: any
   handleNoResultsMiddleAction?: any
@@ -18,7 +19,6 @@ type Props = {
   handleFilterInputChangeText?: any
   handleFilterInputClear?: any
   initialScrollIndex?: number
-  isCompleteData?: boolean
   isLoadingMore?: boolean
   isRefreshing?: boolean
   ItemSeparatorComponent?: any
@@ -33,8 +33,11 @@ type Props = {
   onEndReachedThreshold?: number
   onRefresh?: any
   renderHiddenItem?: any
+  renderSectionHeader?: any
   renderItem: any
+  sections: any
   showNoInternetConnectionMessage?: boolean
+  stickySectionHeadersEnabled?: boolean
   transparent?: boolean
 }
 
@@ -46,8 +49,8 @@ export const PVFlatList = (props: Props) => {
     data,
     dataTotalCount,
     disableLeftSwipe = true,
+    disableNoResultsMessage,
     extraData,
-    isCompleteData,
     handleNoResultsBottomAction,
     handleNoResultsMiddleAction,
     handleNoResultsTopAction,
@@ -66,19 +69,23 @@ export const PVFlatList = (props: Props) => {
     onRefresh,
     renderHiddenItem,
     renderItem,
+    renderSectionHeader,
+    sections,
     showNoInternetConnectionMessage,
+    stickySectionHeadersEnabled,
     transparent
   } = props
 
   const [globalTheme] = useGlobal('globalTheme')
   const noResultsFound = !dataTotalCount
   const isEndOfResults = !isLoadingMore && data && dataTotalCount && dataTotalCount > 0 && data.length >= dataTotalCount
-  const shouldShowResults = !noResultsFound && !showNoInternetConnectionMessage
+  const useSectionList = Array.isArray(sections) && sections.length > 0
+  const shouldShowResults = (!noResultsFound && !showNoInternetConnectionMessage) || useSectionList
 
   return (
     <View style={styles.view} transparent={transparent}>
       {!noResultsMessage && ListHeaderComponent && !Config.DISABLE_FILTER_TEXT_QUERY && <ListHeaderComponent />}
-      {!isLoadingMore && !showNoInternetConnectionMessage && noResultsFound && (
+      {!disableNoResultsMessage && !isLoadingMore && !showNoInternetConnectionMessage && noResultsFound && (
         <MessageWithAction
           bottomActionHandler={handleNoResultsBottomAction}
           bottomActionText={noResultsBottomActionText}
@@ -94,11 +101,11 @@ export const PVFlatList = (props: Props) => {
       {showNoInternetConnectionMessage && <MessageWithAction message={translate('No internet connection')} />}
       {shouldShowResults && (
         <SwipeListView
-          useFlatList={true}
           closeOnRowPress={true}
-          data={data}
+          // data={data}
           disableLeftSwipe={disableLeftSwipe}
           disableRightSwipe={true}
+          extraData={extraData}
           ItemSeparatorComponent={ItemSeparatorComponent}
           keyExtractor={keyExtractor}
           ListFooterComponent={() => {
@@ -131,9 +138,14 @@ export const PVFlatList = (props: Props) => {
               }
             : {})}
           renderHiddenItem={renderHiddenItem || _renderHiddenItem}
+          renderSectionHeader={renderSectionHeader}
           renderItem={renderItem}
           rightOpenValue={-100}
+          sections={sections}
+          stickySectionHeadersEnabled={!!stickySectionHeadersEnabled}
           style={[globalTheme.flatList, transparent ? { backgroundColor: 'transparent' } : {}]}
+          useFlatList={!useSectionList}
+          useSectionList={useSectionList}
         />
       )}
     </View>
@@ -154,11 +166,6 @@ const styles = StyleSheet.create({
   lastCellText: {
     fontSize: PV.Fonts.sizes.xl,
     textAlign: 'center'
-  },
-  msgView: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center'
   },
   noResultsFoundText: {
     fontSize: PV.Fonts.sizes.xl,
