@@ -32,6 +32,31 @@ const sectionsWithoutCategory = (filterItems: any, sortItems: any) => [
   { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
 ]
 
+const generateSections = (props: Props, state: State) => {
+  const { params } = props.navigation.state
+  const { selectedFilterItemKey } = state
+  const filterItems = params.filterItems || []
+  const categoryItems = params.categoryItems || []
+  const sortItems = params.sortItems || []
+
+  const flatCategoryItems = []
+  for (const categoryItem of categoryItems) {
+    flatCategoryItems.push(categoryItem)
+    const subCategoryItems = categoryItem.categories
+    for (const subCategoryItem of subCategoryItems) {
+      subCategoryItem.parentId = categoryItem.id
+      flatCategoryItems.push(subCategoryItem)
+    }
+  }
+
+  const sections =
+    selectedFilterItemKey === PV.Filters._categoryKey
+      ? sectionsWithCategory(filterItems, flatCategoryItems, sortItems)
+      : sectionsWithoutCategory(filterItems, sortItems)
+
+  return { flatCategoryItems, sections }
+}
+
 export class FilterScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -49,24 +74,7 @@ export class FilterScreen extends React.Component<Props, State> {
     const selectedCategorySubItemKey = navigation.getParam('selectedCategorySubItemKey')
     const selectedFilterItemKey = navigation.getParam('selectedFilterItemKey')
     const selectedSortItemKey = navigation.getParam('selectedSortItemKey')
-    const filterItems = navigation.getParam('filterItems') || []
-    const categoryItems = navigation.getParam('categoryItems') || []
-    const sortItems = navigation.getParam('sortItems') || []
-
-    const flatCategoryItems = []
-    for (const categoryItem of categoryItems) {
-      flatCategoryItems.push(categoryItem)
-      const subCategoryItems = categoryItem.categories
-      for (const subCategoryItem of subCategoryItems) {
-        subCategoryItem.parentId = categoryItem.id
-        flatCategoryItems.push(subCategoryItem)
-      }
-    }
-
-    const sections =
-      selectedFilterItemKey.value === PV.Filters._categoryKey
-        ? sectionsWithCategory(filterItems, flatCategoryItems, sortItems)
-        : sectionsWithoutCategory(filterItems, sortItems)
+    const { flatCategoryItems, sections } = generateSections(props, {})
 
     this.state = {
       categoryItems: flatCategoryItems,
@@ -89,7 +97,9 @@ export class FilterScreen extends React.Component<Props, State> {
     const filterItems = navigation.getParam('filterItems') || []
     const sortItems = navigation.getParam('sortItems') || []
 
+    let stateKey
     if (section.value === PV.Filters._sectionFilterKey) {
+      stateKey = 'selectedFilterItemKey'
       const sections =
         item.value === PV.Filters._categoryKey
           ? sectionsWithCategory(filterItems, categoryItems, sortItems)
@@ -111,20 +121,25 @@ export class FilterScreen extends React.Component<Props, State> {
       }
     } else if (section.value === PV.Filters._sectionCategoryKey) {
       if (item.parentId) {
+        stateKey = 'selectedCategorySubItemKey'
         this.setState({
           selectedCategorySubItemKey: value
         })
       } else {
+        stateKey = 'selectedCategoryItemKey'
         this.setState({
           selectedCategoryItemKey: value,
           selectedCategorySubItemKey: ''
         })
       }
     } else if (section.value === PV.Filters._sectionSortKey) {
+      stateKey = 'selectedSortItemKey'
       this.setState({
         selectedSortItemKey: value
       })
     }
+
+    return stateKey
   }
 
   getSelectHandler = (section: any, item: any) => {
@@ -202,20 +217,22 @@ export class FilterScreen extends React.Component<Props, State> {
     const { sections } = this.state
 
     return (
-      <FlatList
-        disableLeftSwipe={true}
-        disableNoResultsMessage={true}
-        keyExtractor={(item: any) => item.value || item.id}
-        renderSectionHeader={({ section }) => {
-          return (
-            <View style={styles.sectionItemWrapper}>
-              <Text style={styles.sectionItemText}>{section.title}</Text>
-            </View>
-          )
-        }}
-        renderItem={this.renderItem}
-        sections={sections}
-      />
+      <View style={styles.view}>
+        <FlatList
+          disableLeftSwipe={true}
+          disableNoResultsMessage={true}
+          keyExtractor={(item: any) => item.value || item.id}
+          renderSectionHeader={({ section }) => {
+            return (
+              <View style={styles.sectionItemWrapper}>
+                <Text style={styles.sectionItemText}>{section.title}</Text>
+              </View>
+            )
+          }}
+          renderItem={this.renderItem}
+          sections={sections}
+        />
+      </View>
     )
   }
 }
