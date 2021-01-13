@@ -218,7 +218,8 @@ export const FilterOptions = {
     PodcastsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
       sort: [..._top],
-      hideSort: [_subscribedKey, _downloadedKey]
+      hideSort: [_subscribedKey, _downloadedKey],
+      includeAlphabetical: [_subscribedKey]
     },
     ProfileScreen: {
       type: [_podcastsKey, _clipsKey, _playlistsKey],
