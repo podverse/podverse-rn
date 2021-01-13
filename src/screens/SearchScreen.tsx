@@ -258,7 +258,7 @@ export class SearchScreen extends React.Component<Props, State> {
             keyExtractor={(item: any) => item.id}
             noResultsBottomActionText={PV.URLs.requestPodcast ? translate('Request Podcast') : ''}
             noResultsMessage={searchBarText.length > 1 && translate('No podcasts found')}
-            noResultsMiddleActionText={translate('Add by RSS')}
+            noResultsMiddleActionText={translate('Add Custom RSS Feed')}
             noResultsTopActionText={!Config.DISABLE_QR_SCANNER ? translate('Scan RSS Feed QR Code') : ''}
             onEndReached={this._onEndReached}
             renderItem={this._renderPodcastItem}

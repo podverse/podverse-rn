@@ -33,7 +33,7 @@ const testIDPrefix = 'add_podcast_by_rss_screen'
 export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: translate('Add by RSS'),
+      title: translate('Add Custom RSS Feed'),
       headerLeft: <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
       headerRight: (
         <NavHeaderButtonText
@@ -56,7 +56,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
       _handleSavePodcastByRSSURL: this._handleSavePodcastByRSSURL
     })
 
-    trackPageView('/add-podcast-by-rss', 'Add Podcast By RSS Screen')
+    trackPageView('/add-custom-rss-feed', 'Add Custom RSS Feed Screen')
   }
 
   _navToRequestPodcastForm = async () => {

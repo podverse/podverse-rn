@@ -660,54 +660,41 @@ export const playerStyles = StyleSheet.create({
     justifyContent: 'center',
     width: 60
   },
-  iconDisabled: {
+  playButton: {
+    borderRadius: 35,
+    height: 70,
+    width: 70,
+    borderColor: PV.Colors.skyDark,
+    backgroundColor: PV.Colors.skyLight + '33',
+    borderWidth: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    opacity: 0.5,
-    paddingHorizontal: 12,
-    paddingVertical: 4
-  },
-  iconLarge: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    width: 80
+    justifyContent: 'center'
   }
 })
 
 export const sliderStyles = StyleSheet.create({
-  clipEndTimeFlag: {
-    height: 36,
-    left: 0,
+  clipBarStyle: {
+    height: 16,
     position: 'absolute',
-    top: 2,
-    width: 2
-  },
-  clipStartTimeFlag: {
-    height: 36,
-    left: 0,
-    position: 'absolute',
-    top: 2,
-    width: 2
+    marginVertical: 12,
+    zIndex: -1
   },
   thumbStyle: {
-    borderRadius: 0,
-    height: 24,
-    width: 7
+    borderRadius: 6,
+    height: 12,
+    width: 12
   },
   time: {
     fontSize: PV.Fonts.sizes.xs,
-    marginHorizontal: 12
+    color: PV.Colors.skyLight
   },
   timeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
   wrapper: {
-    minHeight: 56,
-    marginBottom: 8,
-    position: 'relative'
+    minHeight: 50,
+    marginHorizontal: 15
   }
 })
 

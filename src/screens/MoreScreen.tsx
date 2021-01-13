@@ -52,7 +52,7 @@ export class MoreScreen extends React.Component<Props, State> {
   _moreOtherOptions = (membershipStatus?: string) => {
     const allMoreOtherOptions = [
       {
-        title: translate('Add Podcast by RSS'),
+        title: translate('Add Custom RSS Feed'),
         key: _addPodcastByRSSKey,
         routeName: PV.RouteNames.AddPodcastByRSSScreen,
         testID: 'more_screen_add_podcast_by_rss_cell'

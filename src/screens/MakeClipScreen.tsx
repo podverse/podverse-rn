@@ -483,11 +483,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => togglePlay()}
-                style={[playerStyles.iconLarge, styles.playButton]}
+                style={[playerStyles.playButton, styles.playButton]}
                 {...testProps(`${testIDPrefix}_toggle_play`)}>
                 {playbackState !== PVTrackPlayer.STATE_BUFFERING && (
                   <Icon
-                    name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause-circle' : 'play-circle'}
+                    name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
                     size={48}
                     testID={`${testIDPrefix}_${playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}`}
                   />
