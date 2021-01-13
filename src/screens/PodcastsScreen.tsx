@@ -292,9 +292,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
       (addByRSSPodcasts && addByRSSPodcasts.length > 0) ||
       (addByRSSPodcastFeedUrls && addByRSSPodcastFeedUrls.length > 0)
     ) {
-      this.selectLeftItem(PV.Filters._subscribedKey, PV.Filters._alphabeticalKey)
+      this.handleSelectFilterItem(PV.Filters._subscribedKey, PV.Filters._alphabeticalKey)
     } else {
-      this.selectLeftItem(Config.DEFAULT_QUERY_PODCASTS_SCREEN, PV.Filters._topPastWeek)
+      this.handleSelectFilterItem(Config.DEFAULT_QUERY_PODCASTS_SCREEN, PV.Filters._topPastWeek)
     }
 
     await initDownloads()
@@ -305,7 +305,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   // querySortOverride is only used in _initializeScreenData, and it determines
   // what sort filter to use for the first query after launch.
-  selectLeftItem = async (selectedKey: string, querySortOverride?: string) => {
+  handleSelectFilterItem = async (selectedKey: string, querySortOverride?: string) => {
     if (!selectedKey) {
       this.setState({ queryFrom: null })
       return
@@ -340,7 +340,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  selectRightItem = async (selectedKey: string) => {
+  handleSelectSortItem = async (selectedKey: string) => {
     if (!selectedKey) {
       this.setState({ querySort: null })
       return
@@ -624,10 +624,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
         <RNView style={{ flex: 1 }}>
           <PlayerEvents />
           <TableSectionSelectors
-            handleSelectCategoryItem={(x) => this._selectCategory(x)}
-            handleSelectCategorySubItem={(x) => this._selectCategory(x, true)}
-            handleSelectFilterItem={this.selectLeftItem}
-            handleSelectSortItem={this.selectRightItem}
+            handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
+            handleSelectCategorySubItem={(x: any) => this._selectCategory(x, true)}
+            handleSelectFilterItem={this.handleSelectFilterItem}
+            handleSelectSortItem={this.handleSelectSortItem}
             navigation={navigation}
             selectedCategoryItemKey={selectedCategory}
             selectedCategorySubItemKey={selectedSubCategory}
@@ -645,7 +645,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
               extraData={flatListData}
               handleNoResultsTopAction={this._handleNoResultsTopAction}
               keyExtractor={(item: any) => item.id}
-              isCompleteData={queryFrom === PV.Filters._subscribedKey || queryFrom === PV.Filters._downloadedKey}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
@@ -735,7 +734,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         selectedCategory,
         selectedSubCategory
       } = prevState
-      const { settings } = this.global
 
       const hasInternetConnection = await hasValidNetworkConnection()
 
