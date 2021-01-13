@@ -673,19 +673,11 @@ export const playerStyles = StyleSheet.create({
 })
 
 export const sliderStyles = StyleSheet.create({
-  clipEndTimeFlag: {
-    height: 36,
-    left: 0,
+  clipBarStyle: {
+    height: 16,
     position: 'absolute',
-    top: 2,
-    width: 2
-  },
-  clipStartTimeFlag: {
-    height: 36,
-    left: 0,
-    position: 'absolute',
-    top: 2,
-    width: 2
+    marginVertical: 12,
+    zIndex: -1
   },
   thumbStyle: {
     borderRadius: 6,
