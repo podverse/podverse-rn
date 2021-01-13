@@ -40,7 +40,6 @@ const filterAddByRSSSortItems = (
       ? PV.FilterOptions.screenFilters[screenName].sortLimitQueries.includes(sortKey.value)
       : PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
   })
-
 export class TableSectionSelectors extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
@@ -49,8 +48,8 @@ export class TableSectionSelectors extends React.Component<Props, State> {
 
   async componentDidMount() {
     const categoryItems = await this.getCategoryItems()
-    const filterItems = await this.getFilterItems()
-    const sortItems = await this.getSortItems()
+    const filterItems = this.getFilterItems()
+    const sortItems = this.getSortItems()
 
     this.setState({
       categoryItems,
@@ -78,7 +77,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
     }
   }
 
-  getSubCategoriesForCategory = async () => {
+  getSubCategoriesForCategory = () => {
     const { selectedCategoryItemKey } = this.props
     const { categoryItems } = this.state
 
@@ -103,7 +102,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
     }
   }
 
-  getFilterItems = async () => {
+  getFilterItems = () => {
     const { isAddByRSSPodcastFeedUrl, screenName } = this.props
     const isLoggedIn = safelyUnwrapNestedVariable(() => this.global.session.isLoggedIn, '')
 
@@ -126,10 +125,11 @@ export class TableSectionSelectors extends React.Component<Props, State> {
     return filterItems
   }
 
-  getSortItems = async () => {
-    const { isAddByRSSPodcastFeedUrl, screenName, selectedFilterItemKey, shouldQueryIndexedData } = this.props
+  getSortItems = (selectedFilterItemKeyOverride?: string) => {
+    const { isAddByRSSPodcastFeedUrl, screenName, shouldQueryIndexedData } = this.props
+    let { selectedFilterItemKey } = this.props
     const screen = PV.FilterOptions.screenFilters[screenName]
-
+    selectedFilterItemKey = selectedFilterItemKeyOverride ? selectedFilterItemKeyOverride : selectedFilterItemKey
     let sortItems = [] as any
     sortItems = filterAddByRSSSortItems(screenName, !!isAddByRSSPodcastFeedUrl, shouldQueryIndexedData)
 
