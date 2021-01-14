@@ -1,55 +1,17 @@
-import { Dimensions, StyleSheet } from 'react-native'
-import { Header } from 'react-navigation-stack'
+import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
-import { navHeader } from '../styles'
 import { ActivityIndicator, FastImage, Text, View } from './'
 
 type Props = {
+  imageHeight: number
+  imageWidth: number
   navigation?: any
   width: number
 }
 
 type State = {}
-
-const screenHeight = Dimensions.get('screen').height
-
-/*
-  carouselTextBottomWrapper: {
-    height: 52
-  },
-  carouselTextTopWrapper: {
-    height: 48
-  },
-  playerControls: {
-    height: 202
-  },
-  pagination: {
-    height: 32
-  }
-
-  console.log('screenHeight', screenHeight)
-  console.log('header height', Header.HEIGHT)
-  console.log('scrollHeight', scrollHeight)
-  console.log('scrollHeightAvailable', scrollHeightAvailable)
-  console.log('imageHeightAvailable', imageHeightAvailable)
-
-*/
-
-const scrollHeight =
-  screenHeight -
-  (navHeader.headerHeight.paddingTop + Header.HEIGHT + PV.Player.pagination.height + PV.Player.playerControls.height)
-const subBottomHeight = PV.Player.carouselTextSubBottomWrapper.height + PV.Player.carouselTextSubBottomWrapper.marginTop
-const scrollHeightAvailable =
-  scrollHeight -
-  (PV.Player.carouselTextBottomWrapper.height + PV.Player.carouselTextTopWrapper.height + subBottomHeight)
-
-// not sure why I need to do 64 when the padding is 16 on each side...
-const imagePadding = 64
-let imageHeightAvailable = scrollHeightAvailable - imagePadding
-imageHeightAvailable = imageHeightAvailable > 340 ? 340 : imageHeightAvailable
-
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State> {
   constructor(props) {
     super(props)
@@ -57,11 +19,12 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
   }
 
   render() {
-    const { width } = this.props
+    const { imageHeight, imageWidth, width } = this.props
     const { player, screenPlayer } = this.global
     const { nowPlayingItem } = player
     const { isLoading } = screenPlayer
     const { clipId, clipEndTime, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem
+    const imageStyle = [styles.image, { height: imageHeight, width: imageWidth }]
 
     return (
       <View style={[styles.outerWrapper, { width }]} transparent={true}>
@@ -89,7 +52,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
             )}
           </View>
           <View style={styles.imageWrapper} transparent={true}>
-            <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
+            <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyle} />
           </View>
           <View style={styles.carouselTextBottomWrapper} transparent={true}>
             {clipId && (
@@ -137,9 +100,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   image: {
-    flex: 0,
-    height: imageHeightAvailable,
-    width: imageHeightAvailable
+    flex: 0
   },
   imageWrapper: {
     alignItems: 'center',

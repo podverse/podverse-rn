@@ -1,6 +1,7 @@
 import { convertNowPlayingItemToMediaRef, convertToNowPlayingItem } from 'podverse-shared'
-import { StyleSheet, View as RNView } from 'react-native'
+import { Dimensions, StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
+import { Header } from 'react-navigation-stack'
 import React, { getGlobal, setGlobal } from 'reactn'
 import {
   ActionSheet,
@@ -27,7 +28,7 @@ import { addQueueItemNext } from '../services/queue'
 import { trackPageView } from '../services/tracking'
 import { getNowPlayingItem } from '../services/userNowPlayingItem'
 import { loadItemAndPlayTrack } from '../state/actions/player'
-import { core } from '../styles'
+import { core, navHeader } from '../styles'
 
 type Props = {
   navigation?: any
@@ -38,6 +39,42 @@ type State = {}
 const testIDPrefix = 'player_screen'
 
 let eventListenerPlayerNewEpisodeLoaded: any
+
+const screenHeight = Dimensions.get('screen').height
+
+/*
+  carouselTextBottomWrapper: {
+    height: 52
+  },
+  carouselTextTopWrapper: {
+    height: 48
+  },
+  playerControls: {
+    height: 202
+  },
+  pagination: {
+    height: 32
+  }
+
+  console.log('screenHeight', screenHeight)
+  console.log('header height', Header.HEIGHT)
+  console.log('scrollHeight', scrollHeight)
+  console.log('scrollHeightAvailable', scrollHeightAvailable)
+  console.log('imageHeightAvailable', imageHeightAvailable)
+*/
+
+const scrollHeight =
+  screenHeight -
+  (navHeader.headerHeight.paddingTop + Header.HEIGHT + PV.Player.pagination.height + PV.Player.playerControls.height)
+const subBottomHeight = PV.Player.carouselTextSubBottomWrapper.height + PV.Player.carouselTextSubBottomWrapper.marginTop
+const scrollHeightAvailable =
+  scrollHeight -
+  (PV.Player.carouselTextBottomWrapper.height + PV.Player.carouselTextTopWrapper.height + subBottomHeight)
+
+// not sure why I need to do 64 when the padding is 16 on each side...
+const imagePadding = 64
+let imageHeightAvailable = scrollHeightAvailable - imagePadding
+imageHeightAvailable = imageHeightAvailable > 340 ? 340 : imageHeightAvailable
 
 export class PlayerScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
@@ -61,6 +98,8 @@ export class PlayerScreen extends React.Component<Props, State> {
               <NavMakeClipIcon
                 getInitialProgressValue={_getInitialProgressValue}
                 globalTheme={globalTheme}
+                imageHeight={imageHeightAvailable}
+                imageWidth={imageHeightAvailable}
                 navigation={navigation}
               />
               <NavAddToPlaylistIcon
@@ -280,7 +319,9 @@ export class PlayerScreen extends React.Component<Props, State> {
       <React.Fragment>
         <OpaqueBackground nowPlayingItem={nowPlayingItem}>
           <View style={styles.view} transparent={true} {...testProps('player_screen_view')}>
-            {!showFullClipInfo && <MediaPlayerCarousel />}
+            {!showFullClipInfo && (
+              <MediaPlayerCarousel imageHeight={imageHeightAvailable} imageWidth={imageHeightAvailable} />
+            )}
             {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
               <ClipInfoView
                 createdAt={mediaRef.createdAt}

@@ -240,7 +240,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view} {...testProps('edit_playlist_screen_view')}>
         <View style={styles.topWrapper}>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
+          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputEyeBrow}>
             Title
           </Text>
           <TextInput

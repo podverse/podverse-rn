@@ -118,7 +118,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
       <View style={styles.view} {...testProps('edit_profile_screen_view')}>
         {!isLoading ? (
           <View>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputEyeBrow}>
               {translate('Name')}
             </Text>
             <TextInput
@@ -133,7 +133,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
               testID={`${testIDPrefix}_name`}
               value={name}
             />
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputEyeBrow}>
               {translate('Profile Privacy')}
             </Text>
             <RNPickerSelect

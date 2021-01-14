@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { TouchableWithoutFeedback, View } from 'react-native'
+import { View } from 'react-native'
 import React from 'reactn'
-import { convertFilterOptionsToI18N, translate } from '../lib/i18n'
+import { convertFilterOptionsToI18N } from '../lib/i18n'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
-import { Icon, Text } from './'
+import { DropdownButton, Text } from './'
 
 type Props = {
   handleSelectCategoryItem?: any
@@ -174,8 +174,8 @@ export class TableSectionSelectors extends React.Component<Props, State> {
             </Text>
           )}
         </View>
-        <TouchableWithoutFeedback
-          onPress={() =>
+        <DropdownButton
+          onPress={() => {
             this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
               categoryItems,
               filterItems,
@@ -191,21 +191,8 @@ export class TableSectionSelectors extends React.Component<Props, State> {
               selectedSortItemKey,
               sortItems
             })
-          }>
-          <View style={styles.tableSectionHeaderButton}>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              numberOfLines={1}
-              style={[styles.tableSectionHeaderFilterText, globalTheme.tableSectionHeaderText]}>
-              {translate('Filter')}
-            </Text>
-            <Icon
-              name='angle-down'
-              size={14}
-              style={[styles.tableSectionHeaderFilterIcon, globalTheme.tableSectionHeaderIcon]}
-            />
-          </View>
-        </TouchableWithoutFeedback>
+          }}
+        />
       </View>
     )
   }
@@ -220,26 +207,6 @@ const styles = {
     marginTop: 12,
     minHeight: PV.Table.sectionHeader.height,
     paddingHorizontal: 8
-  },
-  tableSectionHeaderButton: {
-    alignItems: 'center',
-    borderColor: PV.Colors.brandBlueLight,
-    borderRadius: 100,
-    borderWidth: 2,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    height: PV.Table.sectionHeader.height - 6,
-    paddingHorizontal: 16
-  },
-  tableSectionHeaderFilterIcon: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.xl
-  },
-  tableSectionHeaderFilterText: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.bold,
-    paddingRight: 16
   },
   tableSectionHeaderTitleText: {
     flex: 0,

@@ -8,12 +8,12 @@ import {
   TouchableWithoutFeedback,
   View as RNView
 } from 'react-native'
-import RNPickerSelect from 'react-native-picker-select'
 import Share from 'react-native-share'
 import React from 'reactn'
 import {
   ActivityIndicator,
   Divider,
+  DropdownButtonSelect,
   FastImage,
   Icon,
   NavHeaderButtonText,
@@ -38,7 +38,7 @@ import {
 } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
-import { core, darkTheme, hidePickerIconOnAndroidTransparent, playerStyles } from '../styles'
+import { core, darkTheme, iconStyles, playerStyles } from '../styles'
 
 type Props = {
   navigation?: any
@@ -353,10 +353,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { globalTheme, player, session } = this.global
-    const isDarkMode = globalTheme === darkTheme
+    const { globalTheme, player } = this.global
     const { backupDuration, nowPlayingItem, playbackRate, playbackState } = player
-    const { userInfo } = session
     const {
       endTime,
       isLoggedIn,
@@ -367,6 +365,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
       startTime,
       title
     } = this.state
+    const imageHeight = navigation.getParam('imageHeight')
+    const imageWidth = navigation.getParam('imageWidth')
+    const imageStyle = [styles.image, { height: imageHeight, width: imageWidth }]
 
     return (
       <OpaqueBackground nowPlayingItem={nowPlayingItem}>
@@ -377,44 +378,18 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
-                  style={[core.textInputLabel, styles.loginMessage]}>
+                  style={[core.textInputEyeBrow, styles.loginMessage]}>
                   {translate('You must be logged in to make clips')}
                 </Text>
                 <Divider style={styles.divider} />
               </RNView>
             )}
-            <View style={[core.row, styles.row]} transparent={true}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                numberOfLines={1}
-                style={[core.textInputLabel, styles.textInputLabel]}>
-                {translate('Clip Title')}
-              </Text>
-              <RNPickerSelect
-                items={privacyItems()}
-                onValueChange={this._handleSelectPrivacy}
-                placeholder={placeholderItem}
-                style={[hidePickerIconOnAndroidTransparent(isDarkMode), { backgroundColor: 'transparent' }]}
-                touchableWrapperProps={{ testID: `${testIDPrefix}_picker_select_privacy` }}
-                useNativeAndroidPickerStyle={false}
-                value={isPublicItemSelected.value}>
-                <View style={core.selectorWrapper} transparent={true}>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    numberOfLines={1}
-                    style={[styles.isPublicText, globalTheme.text]}>
-                    {isPublicItemSelected.label}
-                  </Text>
-                  <Icon name='angle-down' size={14} style={[styles.isPublicTextIcon, globalTheme.text]} />
-                </View>
-              </RNPickerSelect>
-            </View>
             <TextInput
               autoCapitalize='none'
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               onChangeText={this._onChangeTitle}
               numberOfLines={3}
-              placeholder={translate('optional')}
+              placeholder={translate('Clip name')}
               returnKeyType='done'
               style={[styles.textInput, globalTheme.textInput]}
               underlineColorAndroid='transparent'
@@ -422,15 +397,28 @@ export class MakeClipScreen extends React.Component<Props, State> {
               value={title}
             />
           </View>
-          <View style={styles.wrapperMiddle} transparent={true}>
+          <View style={styles.privacyWrapper}>
+            <Text numberOfLines={3} style={styles.privacyHelpText}>
+              Tip: Naming your clips helps with searching and overall organization
+            </Text>
+            <DropdownButtonSelect
+              items={privacyItems()}
+              label={isPublicItemSelected.label}
+              onValueChange={this._handleSelectPrivacy}
+              placeholder={placeholderItem}
+              testID={testIDPrefix}
+              value={isPublicItemSelected.value}
+            />
+          </View>
+          <View style={styles.imageWrapper} transparent={true}>
             <FastImage
               resizeMode='contain'
               source={nowPlayingItem && nowPlayingItem.podcastImageUrl}
-              styles={styles.image}
+              styles={imageStyle}
             />
           </View>
           <View style={styles.wrapperBottom} transparent={true}>
-            <View style={core.row} transparent={true}>
+            <View style={styles.wrapperBottomInside} transparent={true}>
               <TimeInput
                 handlePreview={() => {
                   if (startTime) {
@@ -438,12 +426,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   }
                 }}
                 handleSetTime={this._setStartTime}
-                labelText={translate('Start Time')}
+                labelText={translate('Start time')}
                 placeholder='--:--'
                 testID={`${testIDPrefix}_start`}
                 time={startTime}
-                wrapperStyle={styles.timeInput}
               />
+              <View style={styles.wrapperBottomInsideSpacer} transparent={true} />
               <TimeInput
                 handleClearTime={endTime ? this._clearEndTime : null}
                 handlePreview={() => {
@@ -452,12 +440,27 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   }
                 }}
                 handleSetTime={this._setEndTime}
-                labelText={translate('End Time')}
+                labelText={translate('End time')}
                 placeholder={translate('optional')}
                 testID={`${testIDPrefix}_end`}
                 time={endTime}
-                wrapperStyle={styles.timeInput}
               />
+            </View>
+            <View style={styles.clearEndTimeWrapper} transparent={true}>
+              <View style={styles.clearEndTimeTextSpacer} />
+              {endTime && (
+                <TouchableWithoutFeedback
+                  hitSlop={{
+                    bottom: 0,
+                    left: 2,
+                    right: 8,
+                    top: 4
+                  }}
+                  onPress={this._clearEndTime}
+                  {...testProps(`${testIDPrefix}_time_input_clear_button`)}>
+                  <Text style={styles.clearEndTimeText}>Remove end time</Text>
+                </TouchableWithoutFeedback>
+              )}
             </View>
             <View style={styles.progressWrapper} transparent={true}>
               <PlayerProgressBar
@@ -522,7 +525,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <View transparent={true}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    style={[styles.bottomRowTextMini, globalTheme.link]}>
+                    style={[styles.bottomRowTextMini, globalTheme.textSecondary]}>
                     {translate('How To')}
                   </Text>
                 </View>
@@ -539,7 +542,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <View transparent={true}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    style={[styles.bottomButton, styles.bottomRowText]}
+                    style={[styles.bottomButton, styles.bottomRowText, globalTheme.textSecondary]}
                     testID={`${testIDPrefix}_adjust_speed_label`}>
                     {`${playbackRate}X`}
                   </Text>
@@ -557,7 +560,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <View transparent={true}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    style={[styles.bottomRowTextMini, globalTheme.link]}>
+                    style={[styles.bottomRowTextMini, globalTheme.textSecondary]}>
                     FAQ
                   </Text>
                 </View>
@@ -648,6 +651,20 @@ const styles = StyleSheet.create({
   bottomRowText: {
     fontSize: PV.Fonts.sizes.md
   },
+  clearEndTimeText: {
+    color: PV.Colors.skyLight,
+    flex: 1,
+    fontSize: PV.Fonts.sizes.sm,
+    paddingTop: 10,
+    textAlign: 'center'
+  },
+  clearEndTimeTextSpacer: {
+    flex: 1
+  },
+  clearEndTimeWrapper: {
+    minHeight: 28,
+    flexDirection: 'row'
+  },
   divider: {
     marginBottom: 8,
     marginTop: 10
@@ -659,6 +676,12 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     marginVertical: 8
+  },
+  imageWrapper: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 16
   },
   isPublicText: {
     fontSize: PV.Fonts.sizes.xl,
@@ -705,6 +728,21 @@ const styles = StyleSheet.create({
   playButton: {
     marginHorizontal: 'auto'
   },
+  privacyHelpText: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.tiny,
+    maxWidth: '60%',
+    flexWrap: 'wrap'
+  },
+  privacyWrapper: {
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 16,
+    minHeight: PV.Table.sectionHeader.height,
+    paddingHorizontal: 8
+  },
   progressWrapper: {
     marginVertical: 8
   },
@@ -712,36 +750,26 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   textInput: {
-    minHeight: PV.TextInputs.multiline.height,
     paddingHorizontal: 8,
     paddingVertical: 6
   },
-  textInputLabel: {
+  textInputEyeBrow: {
     alignItems: 'center',
     flex: 1
-  },
-  timeInput: {
-    flex: 1,
-    marginHorizontal: 8
-  },
-  timeInputTouchable: {
-    flex: 1
-  },
-  timeInputTouchableDelete: {
-    flex: 0,
-    width: 44
   },
   view: {
     flex: 1
   },
   wrapperBottom: {
-    flex: 0
+    flex: 0,
+    paddingHorizontal: 8
   },
-  wrapperMiddle: {
-    flex: 1,
-    marginBottom: 8,
-    marginHorizontal: 8,
-    marginTop: 12
+  wrapperBottomInside: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  wrapperBottomInsideSpacer: {
+    width: 16
   },
   wrapperTop: {
     flex: 0,

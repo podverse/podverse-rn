@@ -4,7 +4,10 @@ import React from 'reactn'
 import { MediaPlayerCarouselClips, MediaPlayerCarouselShowNotes, MediaPlayerCarouselViewer, ScrollView, View } from '.'
 import { PV } from '../resources'
 
-type Props = {}
+type Props = {
+  imageHeight: number
+  imageWidth: number
+}
 
 type State = {
   activeIndex: number
@@ -43,6 +46,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   render() {
+    const { imageHeight, imageWidth } = this.props
     const { activeIndex } = this.state
     const { player } = this.global
     const { episode } = player
@@ -64,7 +68,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           transparent={true}>
           {hasChapters && <MediaPlayerCarouselClips isChapters={true} width={screenWidth} />}
           <MediaPlayerCarouselClips isChapters={false} width={screenWidth} />
-          <MediaPlayerCarouselViewer width={screenWidth} />
+          <MediaPlayerCarouselViewer imageHeight={imageHeight} imageWidth={imageWidth} width={screenWidth} />
           <MediaPlayerCarouselShowNotes width={screenWidth} />
         </ScrollView>
         <Dots

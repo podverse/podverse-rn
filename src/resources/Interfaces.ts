@@ -19,6 +19,8 @@ export interface GlobalTheme {
   buttonPrimaryWrapper?: any
   buttonDisabledWrapper?: any
   divider?: any
+  dropdownButtonIcon?: any
+  dropdownButtonText?: any
   flatList?: any
   inputContainerText?: any
   link?: any
@@ -45,6 +47,8 @@ export interface GlobalTheme {
   text?: any
   textInput?: any
   textInputIcon?: any
+  textInputEyeBrow?: any
+  textInputPreLabel?: any
   textInputWrapper?: any
   view?: any
 }

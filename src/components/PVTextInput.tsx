@@ -1,6 +1,8 @@
 import React from 'react'
 import { TextInput } from 'react-native'
 import { useGlobal } from 'reactn'
+import { Text, View } from '.'
+import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
@@ -66,29 +68,42 @@ export const PVTextInput = (props: Props) => {
     textInputStyle.push({ textAlignVertical: 'top' })
   }
 
+  if (!value) {
+    textInputStyle.push({ flex: 0, justifyContent: 'center', minHeight: 47, paddingTop: 11, paddingBottom: 0 })
+  }
+
+  const hasText = !!value && value.length
+
   return (
-    <TextInput
-      autoCapitalize={autoCapitalize}
-      autoCompleteType={autoCompleteType}
-      autoCorrect={autoCorrect}
-      blurOnSubmit={returnKeyType === 'done'}
-      editable={!!editable}
-      keyboardType={keyboardType}
-      multiline={numberOfLines > 1}
-      numberOfLines={numberOfLines}
-      onBlur={onBlur}
-      onChange={onChange}
-      onChangeText={onChangeText}
-      onSubmitEditing={onSubmitEditing}
-      placeholder={placeholder}
-      placeholderTextColor={placeholderTextColor || globalTheme.placeholderText.color}
-      ref={inputRef}
-      returnKeyType={returnKeyType}
-      secureTextEntry={secureTextEntry}
-      style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
-      underlineColorAndroid={underlineColorAndroid}
-      {...(testID ? testProps(`${testID}_text_input`) : {})}
-      value={value}
-    />
+    <View style={[globalTheme.textInputWrapper, core.textInputWrapper]}>
+      {hasText && (
+        <Text style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]} testID={`${testID}_text_input_eyebrow`}>
+          {translate('Clip name')}
+        </Text>
+      )}
+      <TextInput
+        autoCapitalize={autoCapitalize}
+        autoCompleteType={autoCompleteType}
+        autoCorrect={autoCorrect}
+        blurOnSubmit={returnKeyType === 'done'}
+        editable={!!editable}
+        keyboardType={keyboardType}
+        multiline={numberOfLines > 1}
+        numberOfLines={hasText ? numberOfLines : 1}
+        onBlur={onBlur}
+        onChange={onChange}
+        onChangeText={onChangeText}
+        onSubmitEditing={onSubmitEditing}
+        placeholder={placeholder}
+        placeholderTextColor={placeholderTextColor || globalTheme.placeholderText.color}
+        ref={inputRef}
+        returnKeyType={returnKeyType}
+        secureTextEntry={secureTextEntry}
+        style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
+        underlineColorAndroid={underlineColorAndroid}
+        {...(testID ? testProps(`${testID}_text_input`) : {})}
+        value={value}
+      />
+    </View>
   )
 }
