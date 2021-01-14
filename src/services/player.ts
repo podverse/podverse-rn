@@ -421,7 +421,13 @@ export const restartNowPlayingItemClip = async () => {
 
 export const setPlaybackSpeed = async (rate: number) => {
   await AsyncStorage.setItem(PV.Keys.PLAYER_PLAYBACK_SPEED, JSON.stringify(rate))
-  await TrackPlayer.setRate(rate)
+
+  const currentState = await PVTrackPlayer.getState()
+  const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
+
+  if (isPlaying) {
+    await TrackPlayer.setRate(rate)
+  }
 }
 
 export const getPlaybackSpeed = async () => {
