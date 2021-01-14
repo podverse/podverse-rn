@@ -1,4 +1,4 @@
-import { Dimensions, View } from 'react-native'
+import { Animated, Dimensions, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import React from 'reactn'
 import { convertSecToHHMMSS } from '../lib/utility'
@@ -21,6 +21,7 @@ type State = {
   duration: number
   position: number
   slidingPosition: number | null
+  clipColorAnimation: any
 }
 
 let lastPropsValue = ''
@@ -46,47 +47,64 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
       bufferedPosition: 0,
       duration: 0,
       position: 0,
-      slidingPosition: null
+      slidingPosition: null,
+      clipColorAnimation: new Animated.Value(0)
     }
   }
 
+  _handleAnimation = () => {
+    Animated.timing(this.state.clipColorAnimation, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: false
+    }).start(() => {
+      Animated.timing(this.state.clipColorAnimation, {
+        toValue: 0,
+        duration: 2000,
+        useNativeDriver: false
+      }).start(() => {
+        this._handleAnimation()
+      })
+    })
+  }
+
   render() {
-    const { backupDuration, clipEndTime, clipStartTime, globalTheme, isLoading } = this.props
+    const { backupDuration, clipEndTime, clipStartTime, isLoading } = this.props
     const { position, slidingPosition } = this.state
+
+    const backgroundColorInterpolator = this.state.clipColorAnimation.interpolate({
+      inputRange: [0, 1],
+      outputRange: [PV.Colors.skyLight + '99', PV.Colors.yellow + '99']
+    })
 
     // If no item is currently in the TrackPlayer, fallback to use the
     // last loaded item's duration (backupDuration).
     let { duration } = this.state
-    duration = duration > 0 ? duration : backupDuration
+    duration = duration > 0 ? duration : backupDuration || 0
 
     const pos = slidingPosition || position
     const value = duration > 0 ? pos / duration : 0
 
-    const clipStartTimePosition = { left: 0 }
-    const clipEndTimePosition = { left: 0 }
-    const screenWidth = Dimensions.get('window').width
+    let clipStartTimePosition = 0
+    const sliderWidth = Dimensions.get('screen').width - sliderStyles.wrapper.marginHorizontal * 2
 
-    if (clipStartTime && duration > 0) {
-      const leftPosition = screenWidth * (clipStartTime / duration)
-      clipStartTimePosition.left = leftPosition
+    if (duration && clipStartTime) {
+      clipStartTimePosition = sliderWidth * (clipStartTime / duration)
     }
 
-    if (clipEndTime && duration > 0) {
-      const leftPosition = screenWidth * (clipEndTime / duration)
-      clipEndTimePosition.left = leftPosition
+    let clipWidthBar = sliderWidth - clipStartTimePosition
+    if (duration && clipEndTime) {
+      const endPosition = sliderWidth * (clipEndTime / duration)
+      clipWidthBar = endPosition - clipStartTimePosition
     }
 
     return (
       <View style={sliderStyles.wrapper}>
-        {duration > 0 && (clipStartTime || clipStartTime === 0) && (
-          <View style={[sliderStyles.clipStartTimeFlag, globalTheme.playerClipTimeFlag, clipStartTimePosition]} />
-        )}
-        {duration > 0 && clipEndTime && (
-          <View style={[sliderStyles.clipEndTimeFlag, globalTheme.playerClipTimeFlag, clipEndTimePosition]} />
-        )}
         <Slider
           minimumValue={0}
           maximumValue={isLoading ? 0 : 1}
+          minimumTrackTintColor={PV.Colors.skyDark}
+          maximumTrackTintColor={PV.Colors.gray}
           onSlidingComplete={(value) => {
             const position = value * duration
             setPlaybackPosition(position)
@@ -101,10 +119,10 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
             })
           }
           thumbStyle={sliderStyles.thumbStyle}
-          thumbTintColor={PV.Colors.brandColor}
+          thumbTintColor={PV.Colors.white}
           value={isLoading ? 0 : value}
         />
-        {!isLoading && (
+        {!isLoading ? (
           <View style={sliderStyles.timeRow}>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
@@ -119,8 +137,7 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
               {duration > 0 ? convertSecToHHMMSS(duration) : '--:--'}
             </Text>
           </View>
-        )}
-        {isLoading && (
+        ) : (
           <View style={sliderStyles.timeRow}>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
@@ -135,6 +152,21 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
               {'--:--'}
             </Text>
           </View>
+        )}
+        {!!clipStartTimePosition && (
+          <Animated.View
+            style={[
+              sliderStyles.clipBarStyle,
+              {
+                backgroundColor: backgroundColorInterpolator,
+                width: clipWidthBar,
+                left: clipStartTimePosition
+              }
+            ]}
+            onLayout={() => {
+              this._handleAnimation()
+            }}
+          />
         )}
       </View>
     )
