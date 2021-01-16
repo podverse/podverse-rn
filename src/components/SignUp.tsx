@@ -141,7 +141,7 @@ export class SignUp extends React.Component<Props, State> {
     } = this.state
     const checkIfSubmitIsDisabledStyle = submitIsDisabled ? { backgroundColor: PV.Colors.grayDark } : null
     const checkIfSubmitIsDisabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
-    const { fontScaleMode } = this.global
+    const { fontScaleMode, globalTheme } = this.global
 
     const passwordMismatch = passwordVerification.length > 0 && passwordVerification !== password
     const errorStyle = {
@@ -170,7 +170,6 @@ export class SignUp extends React.Component<Props, State> {
           placeholder={translate('Email')}
           placeholderTextColor={PV.Colors.gray}
           returnKeyType='next'
-          style={styles.textField}
           testID={`${testIDPrefix}_email`}
           value={this.state.email}
         />
@@ -188,7 +187,6 @@ export class SignUp extends React.Component<Props, State> {
           placeholderTextColor={PV.Colors.gray}
           returnKeyType='next'
           secureTextEntry={true}
-          style={styles.textField}
           testID={`${testIDPrefix}_password`}
           underlineColorAndroid='transparent'
           value={this.state.password}
@@ -207,7 +205,7 @@ export class SignUp extends React.Component<Props, State> {
           placeholderTextColor={PV.Colors.gray}
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
           secureTextEntry={true}
-          style={[styles.textField, passwordMismatch ? errorStyle : null]}
+          style={passwordMismatch ? errorStyle : null}
           testID={`${testIDPrefix}_verify_password`}
           underlineColorAndroid='transparent'
           value={this.state.passwordVerification}

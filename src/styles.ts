@@ -622,6 +622,7 @@ export const core = StyleSheet.create({
     marginVertical: 8
   },
   textInputWrapper: {
+    marginBottom: 20,
     paddingHorizontal: 16,
     paddingVertical: 12
   },

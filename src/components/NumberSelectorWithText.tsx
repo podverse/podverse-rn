@@ -28,7 +28,7 @@ export const NumberSelectorWithText = (props: Props) => {
         onSubmitEditing={handleSubmitEditing}
         placeholderTextColor={globalTheme.placeholderText.color}
         returnKeyType='done'
-        style={[globalTheme.textInput, styles.textInput]}
+        style={styles.textInput}
         {...(testID ? testProps(`${testID}_text_input`) : {})}
         value={strNum}
       />

@@ -1,10 +1,11 @@
-import { ActivityIndicator, Dimensions, Platform, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { TextInput } from '.'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
+import { core } from '../styles'
 
 type Props = {
   bottomButtons: any
@@ -80,10 +81,9 @@ export class Login extends React.Component<Props, State> {
           }}
           placeholder={translate('Email')}
           returnKeyType='next'
-          style={globalTheme.textInput}
           testID={`${testIDPrefix}_email`}
           value={email}
-          wrapperStyle={styles.textInputWrapper}
+          wrapperStyle={core.textInputWrapper}
         />
         <TextInput
           autoCapitalize='none'
@@ -96,11 +96,10 @@ export class Login extends React.Component<Props, State> {
           }}
           returnKeyType='done'
           secureTextEntry={true}
-          style={[styles.textInput, globalTheme.textInput]}
           testID={`${testIDPrefix}_password`}
           value={password}
           underlineColorAndroid='transparent'
-          wrapperStyle={styles.textInputWrapper}
+          wrapperStyle={core.textInputWrapper}
         />
         <TouchableOpacity activeOpacity={1}>
           <>
@@ -143,12 +142,5 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     paddingHorizontal: 20,
     maxWidth: deviceWidth
-  },
-  textInputWrapper: {
-    marginBottom: 20
-  },
-  textInput: {
-    flex: 0,
-    justifyContent: 'center'
   }
 })

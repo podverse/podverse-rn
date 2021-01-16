@@ -66,9 +66,9 @@ export const PVTextInput = (props: Props) => {
     textInputStyle.push({ fontSize: fontSizeLargestScale })
   }
 
-  if (!value && numberOfLines > 1) {
-    textInputStyle.push({ flex: 0, justifyContent: 'center', minHeight: 59, paddingTop: 11, paddingBottom: 0 })
-  } else if (!value && numberOfLines === 1) {
+  if (!value && numberOfLines > 1 && placeholder) {
+    textInputStyle.push({ flex: 0, justifyContent: 'center', minHeight: 59, paddingTop: 16, paddingBottom: 0 })
+  } else if (!value && numberOfLines === 1 && placeholder) {
     textInputStyle.push({ flex: 0, justifyContent: 'center', minHeight: 59, paddingTop: 0, paddingBottom: 0 })
   }
 
@@ -76,7 +76,7 @@ export const PVTextInput = (props: Props) => {
 
   return (
     <View style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
-      {hasText && (
+      {hasText && !!placeholder && (
         <Text style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]} testID={`${testID}_text_input_eyebrow`}>
           {placeholder}
         </Text>
