@@ -74,7 +74,6 @@ export const TimeRemainingWidget = (props: Props) => {
   }
 
   const playItem = () => {
-    const isPlaying = playbackState === PVTrackPlayer.STATE_PLAYING
     const isNowPlayingItem = checkIfNowPlayingItem(item, nowPlayingItem)
 
     if (isNowPlayingItem) {
@@ -86,8 +85,7 @@ export const TimeRemainingWidget = (props: Props) => {
 
   const isInvalidDuration = totalTime <= 0
   const isPlaying = playbackState === PVTrackPlayer.STATE_PLAYING
-  const isNowPlayingItem =
-    isPlaying && item && nowPlayingItem && (nowPlayingItem.clipId === item.id || nowPlayingItem.episodeId === item.id)
+  const isNowPlayingItem = isPlaying && checkIfNowPlayingItem(item, nowPlayingItem)
 
   return (
     <View style={[styles.container, style]}>
