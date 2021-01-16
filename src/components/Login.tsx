@@ -1,4 +1,4 @@
-import { ActivityIndicator, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, Dimensions, Platform, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { TextInput } from '.'
@@ -58,7 +58,7 @@ export class Login extends React.Component<Props, State> {
   render() {
     const { bottomButtons, isLoading } = this.props
     const { email, password, submitIsDisabled } = this.state
-    const { fontScaleMode } = this.global
+    const { fontScaleMode, globalTheme } = this.global
     const disabledStyle = submitIsDisabled ? { backgroundColor: PV.Colors.gray } : null
     const disabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
 
@@ -79,11 +79,11 @@ export class Login extends React.Component<Props, State> {
             this.secondTextInput.focus()
           }}
           placeholder={translate('Email')}
-          placeholderTextColor={PV.Colors.gray}
           returnKeyType='next'
-          style={styles.textField}
+          style={globalTheme.textInput}
           testID={`${testIDPrefix}_email`}
           value={email}
+          wrapperStyle={styles.textInputWrapper}
         />
         <TextInput
           autoCapitalize='none'
@@ -91,16 +91,16 @@ export class Login extends React.Component<Props, State> {
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           onChangeText={this.passwordChanged}
           placeholder={translate('Password')}
-          placeholderTextColor={PV.Colors.gray}
           inputRef={(input) => {
             this.secondTextInput = input
           }}
           returnKeyType='done'
           secureTextEntry={true}
-          style={styles.textField}
+          style={[styles.textInput, globalTheme.textInput]}
           testID={`${testIDPrefix}_password`}
           value={password}
           underlineColorAndroid='transparent'
+          wrapperStyle={styles.textInputWrapper}
         />
         <TouchableOpacity activeOpacity={1}>
           <>
@@ -137,19 +137,18 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.md,
     fontWeight: 'bold'
   },
-  textField: {
-    backgroundColor: PV.Colors.white,
-    color: PV.Colors.black,
-    fontSize: PV.Fonts.sizes.lg,
-    height: 50,
-    marginBottom: 30,
-    paddingHorizontal: 8
-  },
   scrollView: {
     width: '100%'
   },
   scrollViewContent: {
     paddingHorizontal: 20,
     maxWidth: deviceWidth
+  },
+  textInputWrapper: {
+    marginBottom: 20
+  },
+  textInput: {
+    flex: 0,
+    justifyContent: 'center'
   }
 })

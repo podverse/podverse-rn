@@ -609,10 +609,8 @@ export const core = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xxl,
     justifyContent: 'center',
     minHeight: 'auto',
-    paddingBottom: 0,
-    paddingLeft: 0,
-    paddingRight: 0,
-    paddingTop: 0
+    paddingHorizontal: 8,
+    paddingVertical: 6
   },
   textInputEyeBrow: {
     fontSize: PV.Fonts.sizes.sm,

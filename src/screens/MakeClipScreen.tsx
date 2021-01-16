@@ -391,7 +391,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               numberOfLines={3}
               placeholder={translate('Clip name')}
               returnKeyType='done'
-              style={[styles.textInput, globalTheme.textInput]}
+              style={globalTheme.textInput}
               underlineColorAndroid='transparent'
               testID={`${testIDPrefix}_title`}
               value={title}
@@ -469,6 +469,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   clipEndTime={endTime}
                   clipStartTime={startTime}
                   globalTheme={globalTheme}
+                  isMakeClipScreen={true}
                   {...(progressValue || progressValue === 0 ? { value: progressValue } : {})}
                 />
               </View>
@@ -760,10 +761,6 @@ const styles = StyleSheet.create({
   },
   progressWrapper: {
     marginTop: 5
-  },
-  textInput: {
-    paddingHorizontal: 8,
-    paddingVertical: 6
   },
   textInputEyeBrow: {
     alignItems: 'center',

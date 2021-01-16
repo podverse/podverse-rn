@@ -29,6 +29,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
           <HTMLScrollView
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             html={episode.description ? episode.description : ''}
+            style={{ paddingVertical: 16 }}
           />
         )}
       </View>

@@ -13,6 +13,7 @@ type Props = {
   clipStartTime?: number | null
   globalTheme: any
   isLoading?: boolean
+  isMakeClipScreen?: boolean
   value: number
 }
 
@@ -69,7 +70,7 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
   }
 
   render() {
-    const { backupDuration, clipEndTime, clipStartTime, isLoading } = this.props
+    const { backupDuration, clipEndTime, clipStartTime, isLoading, isMakeClipScreen } = this.props
     const { position, slidingPosition } = this.state
 
     const backgroundColorInterpolator = this.state.clipColorAnimation.interpolate({
@@ -93,7 +94,9 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
     }
 
     let clipWidthBar = sliderWidth - clipStartTimePosition
-    if (duration && clipEndTime) {
+    if (isMakeClipScreen && !clipEndTime) {
+      clipWidthBar = 0
+    } else if (duration && clipEndTime) {
       const endPosition = sliderWidth * (clipEndTime / duration)
       clipWidthBar = endPosition - clipStartTimePosition
     }

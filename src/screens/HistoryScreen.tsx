@@ -99,7 +99,7 @@ export class HistoryScreen extends React.Component<Props, State> {
     })
 
     try {
-      await getHistoryItems()
+      await getHistoryItems(1, [])
       this.setState({
         isLoading: false
       })

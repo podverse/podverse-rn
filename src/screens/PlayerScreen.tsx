@@ -22,12 +22,13 @@ import { replaceLinebreaksWithBrTags, safelyUnwrapNestedVariable, testProps } fr
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { getMediaRef } from '../services/mediaRef'
-import { PVTrackPlayer } from '../services/player'
+import { PVTrackPlayer, updateUserPlaybackPosition } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
 import { trackPageView } from '../services/tracking'
 import { getNowPlayingItem } from '../services/userNowPlayingItem'
 import { loadItemAndPlayTrack } from '../state/actions/player'
+import { getHistoryItems } from '../state/actions/userHistoryItem'
 import { core, navHeader } from '../styles'
 
 type Props = {
@@ -74,7 +75,7 @@ const scrollHeightAvailable =
 // not sure why I need to do 64 when the padding is 16 on each side...
 const imagePadding = 64
 let imageHeightAvailable = scrollHeightAvailable - imagePadding
-imageHeightAvailable = imageHeightAvailable > 340 ? 340 : imageHeightAvailable
+imageHeightAvailable = imageHeightAvailable > 372 ? 372 : imageHeightAvailable
 
 export class PlayerScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
@@ -145,6 +146,15 @@ export class PlayerScreen extends React.Component<Props, State> {
     trackPageView('/player', 'Player Screen')
 
     await this._handleUpdateFullEpisode()
+  }
+
+  async componentWillUnmount() {
+    try {
+      await updateUserPlaybackPosition()
+      await getHistoryItems(1, [])
+    } catch (e) {
+      console.log('PlayerScreen componentWillUnmount', e)
+    }
   }
 
   _handleNewEpisodeLoaded = async () => {
