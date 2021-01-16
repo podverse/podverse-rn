@@ -20,6 +20,8 @@ declare module 'reactn/default' {
       shouldShowAlert: boolean
     }
     player: {
+      currentChapter: any
+      currentChapters: any
       hasErrored: boolean
       isPlaying: boolean
       nowPlayingItem: any

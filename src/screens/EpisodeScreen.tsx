@@ -16,9 +16,9 @@ import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { replaceLinebreaksWithBrTags, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { trackPageView } from '../services/tracking'
+import { retriveNowPlayingItemChapters } from '../state/actions/player'
 import { core } from '../styles'
 
 type Props = {
@@ -125,13 +125,14 @@ export class EpisodeScreen extends React.Component<Props, State> {
         includeEpisode: false,
         includePodcasts: false
       })
-      const [chapters, totalChapters] = await retrieveLatestChaptersForEpisodeId(episode.id)
+
+      const chapters = await retriveNowPlayingItemChapters(episode.id)
 
       this.setState({
         chapters,
         clips,
         totalClips,
-        totalChapters,
+        totalChapters: chapters && chapters.length,
         hasInternetConnection
       })
     }

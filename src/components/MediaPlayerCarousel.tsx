@@ -5,6 +5,7 @@ import { MediaPlayerCarouselClips, MediaPlayerCarouselShowNotes, MediaPlayerCaro
 import { PV } from '../resources'
 
 type Props = {
+  hasChapters: boolean
   imageHeight: number
   imageWidth: number
 }
@@ -30,9 +31,10 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     setTimeout(() => {
+      const { activeIndex } = this.state
       this.scrollView &&
         this.scrollView.scrollTo({
-          x: screenWidth,
+          x: screenWidth * activeIndex,
           y: 0,
           animated: false
         })

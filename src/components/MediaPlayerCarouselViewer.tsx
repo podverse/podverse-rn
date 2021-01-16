@@ -21,10 +21,23 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
   render() {
     const { imageHeight, imageWidth, width } = this.props
     const { player, screenPlayer } = this.global
-    const { nowPlayingItem } = player
+    const { currentChapter, nowPlayingItem } = player
     const { isLoading } = screenPlayer
-    const { clipId, clipEndTime, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem
+    let { clipId, clipEndTime, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem
     const imageStyle = [styles.image, { height: imageHeight, width: imageWidth }]
+    let clipUrl = ''
+
+    // If a clip is currently playing, then load the clip info.
+    // Else if a chapter is currently playing, then load the chapter info.
+    // Else just load the episode info.
+    if (!clipId && currentChapter) {
+      clipId = currentChapter.id
+      clipEndTime = currentChapter.endTime
+      clipUrl = currentChapter.linkUrl
+      clipStartTime = currentChapter.startTime
+      clipTitle = currentChapter.title
+      podcastImageUrl = currentChapter.imageUrl || podcastImageUrl
+    }
 
     return (
       <View style={[styles.outerWrapper, { width }]} transparent={true}>

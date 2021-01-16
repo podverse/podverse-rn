@@ -24,6 +24,8 @@ const initialTheme: InitialState = {
     shouldShowAlert: false
   },
   player: {
+    currentChapter: null,
+    currentChapters: [],
     hasErrored: false,
     isPlaying: false,
     nowPlayingItem: null,

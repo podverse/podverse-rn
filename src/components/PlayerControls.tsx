@@ -96,8 +96,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             value={progressValue}
           />
         </View>
-        <View style={styles.middleRow}>
-          <View style={styles.middleRowTop}>
+        <View style={styles.playerControlsMiddleRow}>
+          <View style={styles.playerControlsMiddleRowTop}>
             <TouchableOpacity
               onPress={this._returnToBeginningOfTrack}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
@@ -131,19 +131,21 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.bottomRow}>
+        <View style={styles.playerControlsBottomRow}>
           <TouchableOpacity hitSlop={hitSlop} onPress={this._navToStopWatchScreen}>
-            <View style={styles.bottomButton}>
+            <View style={styles.playerControlsBottomButton}>
               <Icon name='moon' size={20} solid={true} />
             </View>
           </TouchableOpacity>
           <TouchableWithoutFeedback hitSlop={hitSlop} onPress={this._adjustSpeed}>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.bottomButton, styles.bottomRowText]}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              style={[styles.playerControlsBottomButton, styles.playerControlsBottomRowText]}>
               {`${playbackRate}X`}
             </Text>
           </TouchableWithoutFeedback>
           <TouchableOpacity hitSlop={hitSlop} onPress={this._showPlayerMoreActionSheet}>
-            <View style={styles.bottomButton}>
+            <View style={styles.playerControlsBottomButton}>
               <Icon name='ellipsis-h' size={24} />
             </View>
           </TouchableOpacity>
@@ -159,14 +161,14 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 }
 
 const styles = StyleSheet.create({
-  bottomButton: {
+  playerControlsBottomButton: {
     alignItems: 'center',
     minHeight: 32,
     paddingVertical: 4,
     textAlign: 'center',
     minWidth: 54
   },
-  bottomRow: {
+  playerControlsBottomRow: {
     alignItems: 'center',
     flexDirection: 'row',
     minHeight: PV.Player.styles.bottomRow.height,
@@ -174,18 +176,21 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     marginTop: 10
   },
-  bottomRowText: {
+  playerControlsBottomRowText: {
     fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold
   },
-  middleRow: {
+  playerControlsMiddleRow: {
     marginTop: 2
   },
-  middleRowTop: {
+  playerControlsMiddleRowTop: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     marginTop: 2
+  },
+  progressWrapper: {
+    marginTop: 5
   },
   skipButtonText: {
     fontSize: 12,
@@ -194,8 +199,15 @@ const styles = StyleSheet.create({
     bottom: -5,
     textAlign: 'center'
   },
-  progressWrapper: {
-    marginTop: 5
+  skipTimeTextWrapper: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  skipTimeText: {
+    fontSize: 11
   },
   speed: {
     alignItems: 'center',
@@ -208,15 +220,5 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     borderTopWidth: 1
-  },
-  skipTimeTextWrapper: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  skipTimeText: {
-    fontSize: 11
   }
 })

@@ -1,16 +1,18 @@
 import { convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
+import { useGlobal } from 'reactn'
 import { convertSecToHhoursMMinutes } from '../lib/utility'
 import { PV } from '../resources'
-import { loadItemAndPlayTrack } from '../state/actions/player'
+import { PVTrackPlayer } from '../services/player'
+import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
 import { Icon, MoreButton, Text, View } from './'
 
 type Props = {
   handleShowMore?: any
-  userPlaybackPosition?: number | undefined
   item: any
   style?: any
+  userPlaybackPosition?: number | undefined
 }
 
 type BarProps = {
@@ -48,10 +50,16 @@ const MiniProgressBar = (props: BarProps) => {
   )
 }
 
+const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
+  return item && nowPlayingItem && (nowPlayingItem.clipId === item.id || nowPlayingItem.episodeId === item.id)
+}
+
 export const TimeRemainingWidget = (props: Props) => {
   const { handleShowMore, item, style, userPlaybackPosition } = props
   const { podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, null, podcast)
+  const [player] = useGlobal('player')
+  const { nowPlayingItem, playbackState } = player
 
   const hasStartedItem = !!userPlaybackPosition
   const totalTime = playingItem.episodeDuration || 0
@@ -66,15 +74,27 @@ export const TimeRemainingWidget = (props: Props) => {
   }
 
   const playItem = () => {
-    loadItemAndPlayTrack(playingItem, true)
+    const isPlaying = playbackState === PVTrackPlayer.STATE_PLAYING
+    const isNowPlayingItem = checkIfNowPlayingItem(item, nowPlayingItem)
+
+    if (isNowPlayingItem) {
+      togglePlay()
+    } else {
+      loadItemAndPlayTrack(playingItem, true)
+    }
   }
+
+  const isInvalidDuration = totalTime <= 0
+  const isPlaying = playbackState === PVTrackPlayer.STATE_PLAYING
+  const isNowPlayingItem =
+    isPlaying && item && nowPlayingItem && (nowPlayingItem.clipId === item.id || nowPlayingItem.episodeId === item.id)
 
   return (
     <View style={[styles.container, style]}>
       <TouchableOpacity onPress={playItem} style={styles.playButton}>
-        <Icon name={'play'} size={13} />
+        {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
       </TouchableOpacity>
-      {hasStartedItem && <MiniProgressBar playedTime={playedTime} totalTime={totalTime} />}
+      {hasStartedItem && !isInvalidDuration && <MiniProgressBar playedTime={playedTime} totalTime={totalTime} />}
       <Text style={styles.text}>{timeLabel}</Text>
       {!!handleShowMore && <MoreButton handleShowMore={handleShowMore} />}
     </View>

@@ -96,6 +96,8 @@ export interface InitialState {
     shouldShowAlert: boolean
   }
   player: {
+    currentChapter: any
+    currentChapters: any
     hasErrored: boolean
     isPlaying: boolean
     nowPlayingItem: any

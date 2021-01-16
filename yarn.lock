@@ -6577,10 +6577,10 @@ plugin-error@^0.1.2:
     arr-union "^2.0.1"
     extend-shallow "^1.1.2"
 
-podverse-shared@^1.0.12:
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-1.0.12.tgz#8c79e635a7185184fb4d254931c0823f215b6ef1"
-  integrity sha512-8ghp54QuqthWDlQ5tI8QXNtfqNH5EWqkjk2vqePFTOTr0W3YG8hCvfSQ976I9FcgWe1sRwNPGK9JGOpqXsGafA==
+podverse-shared@^1.0.15:
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-1.0.13.tgz#c17ebf1d14cf73e8596da50a59f7bc57bf163273"
+  integrity sha512-aZZA5/Uv/r3b8xEj6f28YyHWNA1qCsUU7ybMiDWcDoLLIL6NiipuqpjDdE+6M6C6yv0UXm78AgBASH9C2+7ZLg==
   dependencies:
     typescript "3.7.2"
 

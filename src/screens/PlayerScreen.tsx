@@ -315,12 +315,18 @@ export class PlayerScreen extends React.Component<Props, State> {
       episode.description = replaceLinebreaksWithBrTags(episode.description)
     }
 
+    const hasChapters = episode && episode.chaptersUrl
+
     return (
       <React.Fragment>
         <OpaqueBackground nowPlayingItem={nowPlayingItem}>
           <View style={styles.view} transparent={true} {...testProps('player_screen_view')}>
             {!showFullClipInfo && (
-              <MediaPlayerCarousel imageHeight={imageHeightAvailable} imageWidth={imageHeightAvailable} />
+              <MediaPlayerCarousel
+                hasChapters={hasChapters}
+                imageHeight={imageHeightAvailable}
+                imageWidth={imageHeightAvailable}
+              />
             )}
             {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
               <ClipInfoView
