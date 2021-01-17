@@ -117,7 +117,6 @@ export class EditProfileScreen extends React.Component<Props, State> {
 
   render() {
     const user = this.props.navigation.getParam('user')
-    const { globalTheme } = this.global
     const { isLoading, name, selectedIsPublicKey } = this.state
     const selectedIsPublicOption = isPublicOptions.find((x) => x.value === selectedIsPublicKey) || selectPlaceholder
     const willBeDifferent = user.isPublic !== selectedIsPublicKey
@@ -127,7 +126,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
       helpText = willBeDifferent
         ? translate('Podcasts clips and playlists will be visible')
         : translate('Podcasts clips and playlists are visible')
-    } else {
+    } else if (selectedIsPublicKey === false) {
       helpText = willBeDifferent
         ? translate('Your profile page will be hidden')
         : translate('Your profile page is hidden')
