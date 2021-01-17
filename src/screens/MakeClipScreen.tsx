@@ -395,6 +395,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               underlineColorAndroid='transparent'
               testID={`${testIDPrefix}_title`}
               value={title}
+              wrapperStyle={styles.textInputTitleWrapper}
             />
           </View>
           <View style={styles.privacyWrapper} transparent={true}>
@@ -765,6 +766,9 @@ const styles = StyleSheet.create({
   textInputEyeBrow: {
     alignItems: 'center',
     flex: 1
+  },
+  textInputTitleWrapper: {
+    marginBottom: 0
   },
   view: {
     flex: 1
