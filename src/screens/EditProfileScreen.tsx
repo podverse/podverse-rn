@@ -118,17 +118,14 @@ export class EditProfileScreen extends React.Component<Props, State> {
       <View style={styles.view} {...testProps('edit_profile_screen_view')}>
         {!isLoading ? (
           <View>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputEyeBrow}>
-              {translate('Name')}
-            </Text>
             <TextInput
               autoCapitalize='none'
               autoCompleteType='off'
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               onChangeText={this._onChangeName}
-              placeholder={translate('your name')}
+              placeholder={translate('Name')}
               returnKeyType='done'
-              style={[styles.textInput, globalTheme.textInput]}
+              style={styles.textInput}
               underlineColorAndroid='transparent'
               testID={`${testIDPrefix}_name`}
               value={name}
@@ -190,10 +187,7 @@ const isPublicOptions = [
 ]
 
 const styles = StyleSheet.create({
-  textInput: {
-    fontSize: PV.Fonts.sizes.xl,
-    marginBottom: 16
-  },
+  textInput: {},
   view: {
     flex: 1,
     paddingHorizontal: 8,
