@@ -276,9 +276,7 @@ const styles = StyleSheet.create({
   tableCellDivider: {
     marginBottom: 2
   },
-  textInput: {
-    fontSize: PV.Fonts.sizes.xxl
-  },
+  textInput: {},
   topWrapper: {
     marginHorizontal: 8,
     marginVertical: 16
