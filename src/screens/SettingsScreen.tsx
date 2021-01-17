@@ -337,7 +337,10 @@ export class SettingsScreen extends React.Component<Props, State> {
     const isDarkMode = globalTheme === darkTheme
 
     return (
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} style={styles.wrapper} {...testProps('settings_screen_view')}>
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContentContainer}
+        style={styles.wrapper}
+        {...testProps('settings_screen_view')}>
         {isLoading && <ActivityIndicator styles={styles.activityIndicator} />}
         {!isLoading && (
           <View>
@@ -559,8 +562,8 @@ const styles = StyleSheet.create({
   },
   button: {
     marginHorizontal: 12,
-    marginBottom: 16,
-    marginTop: 8
+    marginBottom: 24,
+    marginTop: 0
   },
   divider: {
     marginBottom: 24
@@ -578,9 +581,12 @@ const styles = StyleSheet.create({
     flex: 0,
     paddingHorizontal: 4
   },
+  scrollViewContentContainer: {
+    paddingBottom: 48
+  },
   wrapper: {
     flex: 1,
-    paddingVertical: 24,
+    paddingTop: 24,
     paddingHorizontal: 12
   }
 })
