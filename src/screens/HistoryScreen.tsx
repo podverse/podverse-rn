@@ -24,10 +24,13 @@ type Props = {
 }
 
 type State = {
+  endOfResultsReached?: boolean
   isEditing?: boolean
   isLoading?: boolean
+  isLoadingMore?: boolean
   isRemoving?: boolean
   isTransparent?: boolean
+  queryPage?: number
   viewType?: string
 }
 
@@ -83,9 +86,12 @@ export class HistoryScreen extends React.Component<Props, State> {
     super(props)
 
     this.state = {
+      endOfResultsReached: false,
       isLoading: true,
+      isLoadingMore: false,
       isRemoving: false,
       isTransparent: !!props.navigation.getParam('isTransparent'),
+      queryPage: 1,
       viewType: props.navigation.getParam('viewType')
     }
   }
@@ -178,10 +184,28 @@ export class HistoryScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
+  _onEndReached = ({ distanceFromEnd }) => {
+    const { endOfResultsReached, isLoadingMore, queryPage = 1 } = this.state
+    if (!endOfResultsReached && !isLoadingMore) {
+      if (distanceFromEnd > -1) {
+        this.setState(
+          {
+            isLoadingMore: true
+          },
+          async () => {
+            const nextPage = queryPage + 1
+            const newState = await this._queryData(nextPage)
+            this.setState(newState)
+          }
+        )
+      }
+    }
+  }
+
   render() {
     const { historyItems = [] } = this.global.session.userInfo
     const { nowPlayingItem } = this.global.player
-    const { isLoading, isRemoving, isTransparent } = this.state
+    const { isLoading, isLoadingMore, isRemoving, isTransparent } = this.state
 
     const view = (
       <View style={styles.view} transparent={isTransparent} {...testProps(`${testIDPrefix}_view`)}>
@@ -191,9 +215,11 @@ export class HistoryScreen extends React.Component<Props, State> {
             dataTotalCount={historyItems.length}
             disableLeftSwipe={true}
             extraData={historyItems}
+            isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.clipId || item.episodeId}
             noResultsMessage={translate('No history items found')}
+            onEndReached={this._onEndReached}
             renderItem={this._renderHistoryItem}
             transparent={isTransparent}
           />
@@ -206,6 +232,23 @@ export class HistoryScreen extends React.Component<Props, State> {
       return <OpaqueBackground nowPlayingItem={nowPlayingItem}>{view}</OpaqueBackground>
     } else {
       return view
+    }
+  }
+
+  _queryData = async (page: number = 1) => {
+    const { historyItemsCount, historyItems = [] } = this.global.session.userInfo
+    const newState = {
+      isLoading: false,
+      isLoadingMore: false
+    } as State
+
+    try {
+      const newHistoryItems = await getHistoryItems(page || 1, historyItems)
+      newState.endOfResultsReached = newHistoryItems.length >= historyItemsCount
+      newState.queryPage = page
+      return newState
+    } catch (error) {
+      return newState
     }
   }
 }
