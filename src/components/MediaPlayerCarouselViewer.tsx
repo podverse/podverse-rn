@@ -43,7 +43,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
       <View style={[styles.outerWrapper, { width }]} transparent={true}>
         <View style={styles.innerWrapper} transparent={true}>
           <View style={styles.carouselTextTopWrapper} transparent={true}>
-            {isLoading && <ActivityIndicator />}
+            {isLoading && <ActivityIndicator fillSpace={true} />}
             {!isLoading && !!nowPlayingItem && (
               <React.Fragment>
                 <Text

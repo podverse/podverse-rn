@@ -522,7 +522,7 @@ export class ProfileScreen extends React.Component<Props, State> {
               selectedSortItemKey={querySort}
               testID={testIDPrefix}
             />
-            {isLoading && <ActivityIndicator />}
+            {isLoading && <ActivityIndicator fillSpace={true} />}
             {!isLoading && queryFrom && flatListData && (
               <FlatList
                 data={flatListData}

@@ -341,7 +341,7 @@ export class SettingsScreen extends React.Component<Props, State> {
         contentContainerStyle={styles.scrollViewContentContainer}
         style={styles.wrapper}
         {...testProps('settings_screen_view')}>
-        {isLoading && <ActivityIndicator styles={styles.activityIndicator} />}
+        {isLoading && <ActivityIndicator fillSpace={true} />}
         {!isLoading && (
           <View>
             <View style={styles.itemWrapper}>

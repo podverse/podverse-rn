@@ -332,7 +332,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
             testID={`${testID}_sub`}
           />
         )}
-        {isLoading || (isQuerying && <ActivityIndicator />)}
+        {isLoading || (isQuerying && <ActivityIndicator fillSpace={true} />)}
         {!isLoading &&
           !isQuerying &&
           viewType &&

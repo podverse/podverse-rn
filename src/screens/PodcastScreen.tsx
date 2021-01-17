@@ -653,7 +653,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         )}
         {!showSettings && (
           <View style={styles.view}>
-            {isLoading && <ActivityIndicator />}
+            {isLoading && <ActivityIndicator fillSpace={true} />}
             {!isLoading && viewType !== PV.Filters._aboutPodcastKey && flatListData && podcast && (
               <FlatList
                 data={flatListData}

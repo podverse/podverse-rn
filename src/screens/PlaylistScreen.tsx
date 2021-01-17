@@ -257,7 +257,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           testID={testIDPrefix}
           title={playlist && playlist.title}
         />
-        {isLoading && <ActivityIndicator />}
+        {isLoading && <ActivityIndicator fillSpace={true} />}
         {!isLoading && flatListData && (
           <FlatList
             data={flatListData}

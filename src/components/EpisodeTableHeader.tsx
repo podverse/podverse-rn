@@ -35,7 +35,7 @@ export const EpisodeTableHeader = (props: Props) => {
   return (
     <View style={styles.view}>
       {isLoading ? (
-        <ActivityIndicator styles={{ margin: 25 }} />
+        <ActivityIndicator fillSpace={true} />
       ) : (
         <View style={styles.wrapper}>
           {isNotFound ? (

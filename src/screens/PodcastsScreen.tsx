@@ -636,7 +636,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             screenName='PodcastsScreen'
             testID={testIDPrefix}
           />
-          {isLoading && <ActivityIndicator />}
+          {isLoading && <ActivityIndicator fillSpace={true} />}
           {!isLoading && queryFrom && (
             <FlatList
               data={flatListData}

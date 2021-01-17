@@ -140,7 +140,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view} {...testProps('profiles_screen_view')}>
         <View style={styles.view}>
-          {isLoading && <ActivityIndicator />}
+          {isLoading && <ActivityIndicator fillSpace={true} />}
           {!isLoading && (
             <FlatList
               data={flatListData}

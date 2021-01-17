@@ -499,9 +499,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                         testID={`${testIDPrefix}_${playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}`}
                       />
                     )}
-                    {playbackState === PVTrackPlayer.STATE_BUFFERING && (
-                      <ActivityIndicator styles={styles.activityIndicator} />
-                    )}
+                    {playbackState === PVTrackPlayer.STATE_BUFFERING && <ActivityIndicator />}
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={this._playerMiniJumpForward}
@@ -589,7 +587,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         {isSaving && (
           <Modal transparent={true} visible={true}>
             <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
-              <ActivityIndicator styles={styles.activityIndicator} />
+              <ActivityIndicator isOverlay={true} />
             </RNView>
           </Modal>
         )}
@@ -647,9 +645,6 @@ const privacyItems = () => {
 }
 
 const styles = StyleSheet.create({
-  activityIndicator: {
-    backgroundColor: 'transparent'
-  },
   playerControlsBottomButton: {
     alignItems: 'center',
     minHeight: 32,

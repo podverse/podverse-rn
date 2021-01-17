@@ -428,7 +428,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             testID={`${testIDPrefix}_sub`}
           />
         )}
-        {isLoading && <ActivityIndicator />}
+        {isLoading && <ActivityIndicator fillSpace={true} />}
         {!isLoading && queryFrom && (
           <FlatList
             data={flatListData}

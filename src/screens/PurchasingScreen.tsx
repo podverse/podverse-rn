@@ -81,8 +81,6 @@ export class PurchasingScreen extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   activityIndicator: {
-    backgroundColor: 'transparent',
-    flex: 0,
     marginVertical: 16
   },
   button: {

@@ -267,7 +267,7 @@ export class SearchScreen extends React.Component<Props, State> {
             renderItem={this._renderPodcastItem}
           />
         )}
-        {isLoading && <ActivityIndicator />}
+        {isLoading && <ActivityIndicator fillSpace={true} />}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={this._moreButtons()}

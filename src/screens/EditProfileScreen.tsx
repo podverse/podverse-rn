@@ -166,7 +166,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
             </RNPickerSelect>
           </View>
         ) : (
-          <ActivityIndicator />
+          <ActivityIndicator fillSpace={true} />
         )}
       </View>
     )

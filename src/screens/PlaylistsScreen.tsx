@@ -168,7 +168,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
             selectedFilterItemKey={queryFrom}
             testID={testIDPrefix}
           />
-          {isLoading && <ActivityIndicator />}
+          {isLoading && <ActivityIndicator fillSpace={true} />}
           {!isLoading && this.global.session.isLoggedIn && (
             <FlatList
               data={flatListData}
