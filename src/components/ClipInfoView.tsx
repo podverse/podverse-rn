@@ -108,7 +108,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                   <TextLink
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     onPress={this._navToProfileScreen}
-                    style={styles.link}>
+                    style={styles.inlineText}>
                     {ownerName || translate('anonymous')}
                   </TextLink>
                 ) : (
