@@ -51,6 +51,6 @@ const styles = StyleSheet.create({
   },
   transparent: {
     backgroundColor: 'transparent',
-    flex: 0
+    flex: 1
   }
 })
