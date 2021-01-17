@@ -200,10 +200,12 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('remote-jump-forward', () => playerJumpForward(PV.Player.jumpSeconds))
 
   PVTrackPlayer.addEventListener('remote-pause', () => {
+    PVTrackPlayer.pause()
     updateUserPlaybackPosition()
   })
 
   PVTrackPlayer.addEventListener('remote-play', async () => {
+    PVTrackPlayer.play()
     updateUserPlaybackPosition()
   })
 
