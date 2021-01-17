@@ -34,7 +34,7 @@ export class MoreScreen extends React.Component<Props, State> {
 
   _moreFeaturesOptions = (isLoggedIn: boolean) => {
     const moreFeaturesList = Config.NAV_STACK_MORE_FEATURES.split(',')
-    const loggedInFeatures = [_profilesKey, _myProfileKey, _logoutKey]
+    const loggedInFeatures = [_myProfileKey, _logoutKey]
 
     return allMoreFeatures
       .filter((item: any) => {
@@ -51,12 +51,6 @@ export class MoreScreen extends React.Component<Props, State> {
 
   _moreOtherOptions = (membershipStatus?: string) => {
     const allMoreOtherOptions = [
-      {
-        title: translate('Add Custom RSS Feed'),
-        key: _addPodcastByRSSKey,
-        routeName: PV.RouteNames.AddPodcastByRSSScreen,
-        testID: 'more_screen_add_podcast_by_rss_cell'
-      },
       {
         title: membershipStatus,
         key: _membershipKey,
@@ -116,13 +110,8 @@ export class MoreScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { downloadsActive, fontScaleMode, globalTheme, session } = this.global
+    const { globalTheme, session } = this.global
     const { isLoggedIn = false, userInfo } = session
-
-    let downloadsActiveCount = 0
-    for (const id of Object.keys(downloadsActive)) {
-      if (downloadsActive[id]) downloadsActiveCount++
-    }
 
     const featureOptions = this._moreFeaturesOptions(isLoggedIn)
 
@@ -163,7 +152,7 @@ export class MoreScreen extends React.Component<Props, State> {
           )}
           renderSectionHeader={({ section }) => <TableSectionHeader title={section.title} />}
           sections={[
-            { title: translate('Features'), data: featureOptions },
+            { title: translate('My Account'), data: featureOptions },
             { title: translate('Other'), data: otherOptions }
           ]}
         />
@@ -180,16 +169,15 @@ const _logoutKey = 'Logout'
 const _membershipKey = 'Membership'
 const _myProfileKey = 'MyProfile'
 const _privacyPolicyKey = 'PrivacyPolicy'
-const _profilesKey = 'Profiles'
 const _settingsKey = 'Settings'
 const _termsOfServiceKey = 'TermsOfService'
 
 const allMoreFeatures = [
   {
-    title: translate('Profiles'),
-    key: _profilesKey,
-    routeName: PV.RouteNames.ProfilesScreen,
-    testID: 'more_screen_profiles_cell'
+    title: translate('Add Custom RSS Feed'),
+    key: _addPodcastByRSSKey,
+    routeName: PV.RouteNames.AddPodcastByRSSScreen,
+    testID: 'more_screen_add_podcast_by_rss_cell'
   },
   {
     title: translate('My Profile'),

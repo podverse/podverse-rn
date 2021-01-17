@@ -32,7 +32,7 @@ export class MyLibraryScreen extends React.Component<Props, State> {
   }
 
   _myLibraryOptions = (isLoggedIn: boolean) => {
-    const loggedInFeatures = [_playlistsKey, _myClipsKey]
+    const loggedInFeatures = [_myClipsKey, _playlistsKey, _profilesKey]
 
     return allMyLibraryFeatures.filter((item = { key: '', title: '' }) => {
       if (!isLoggedIn) {
@@ -118,6 +118,7 @@ const _queueKey = 'Queue'
 const _historyKey = 'History'
 const _myClipsKey = 'MyClips'
 const _playlistsKey = 'Playlists'
+const _profilesKey = 'Profiles'
 
 const allMyLibraryFeatures = [
   {
@@ -149,5 +150,11 @@ const allMyLibraryFeatures = [
     key: _playlistsKey,
     routeName: PV.RouteNames.PlaylistsScreen,
     testID: 'my_library_screen_playlists_cell'
+  },
+  {
+    title: translate('Profiles'),
+    key: _playlistsKey,
+    routeName: PV.RouteNames.ProfilesScreen,
+    testID: 'my_library_screen_profiles_cell'
   }
 ]
