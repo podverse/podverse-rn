@@ -225,8 +225,8 @@ const mediaMoreButtons = (
 }
 
 const hasTriedStreamingWithoutWifiAlert = async (handleDismiss: any, navigation: any, download: boolean) => {
-  const shouldDownloadWithoutWifi = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-  if (shouldDownloadWithoutWifi !== 'TRUE') {
+  const shouldDownloadWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
+  if (shouldDownloadWifiOnly !== 'TRUE') {
     return false
   }
 
