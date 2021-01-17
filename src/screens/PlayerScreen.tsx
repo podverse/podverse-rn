@@ -248,15 +248,6 @@ export class PlayerScreen extends React.Component<Props, State> {
     }
   }
 
-  _toggleShowFullClipInfo = () => {
-    setGlobal({
-      screenPlayer: {
-        ...this.global.screenPlayer,
-        showFullClipInfo: !this.global.screenPlayer.showFullClipInfo
-      }
-    })
-  }
-
   _showShareActionSheet = () => {
     setGlobal({
       screenPlayer: {
@@ -310,7 +301,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { player, screenPlayer } = this.global
     const { episode, nowPlayingItem } = player
-    const { isLoading, showFullClipInfo, showShareActionSheet } = screenPlayer
+    const { showShareActionSheet } = screenPlayer
     let { mediaRef } = player
 
     if (nowPlayingItem && nowPlayingItem.clipId) {
@@ -331,14 +322,12 @@ export class PlayerScreen extends React.Component<Props, State> {
       <React.Fragment>
         <OpaqueBackground nowPlayingItem={nowPlayingItem}>
           <View style={styles.view} transparent={true} {...testProps('player_screen_view')}>
-            {!showFullClipInfo && (
-              <MediaPlayerCarousel
-                hasChapters={hasChapters}
-                imageHeight={imageHeightAvailable}
-                imageWidth={imageHeightAvailable}
-              />
-            )}
-            {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
+            <MediaPlayerCarousel
+              hasChapters={hasChapters}
+              imageHeight={imageHeightAvailable}
+              imageWidth={imageHeightAvailable}
+            />
+            {/* {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
               <ClipInfoView
                 createdAt={mediaRef.createdAt}
                 endTime={mediaRef.endTime}
@@ -355,7 +344,7 @@ export class PlayerScreen extends React.Component<Props, State> {
                 startTime={mediaRef.startTime}
                 {...(mediaRef.title ? { title: mediaRef.title } : {})}
               />
-            )}
+            )} */}
             <PlayerControls navigation={navigation} />
             <ActionSheet
               handleCancelPress={this._dismissShareActionSheet}

@@ -1,10 +1,12 @@
 import { StyleSheet } from 'react-native'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import React from 'reactn'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { ActivityIndicator, FastImage, Text, View } from './'
 
 type Props = {
+  handlePressClipInfo: any
   imageHeight: number
   imageWidth: number
   navigation?: any
@@ -19,7 +21,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
   }
 
   render() {
-    const { imageHeight, imageWidth, width } = this.props
+    const { handlePressClipInfo, imageHeight, imageWidth, width } = this.props
     const { player, screenPlayer } = this.global
     const { currentChapter, nowPlayingItem } = player
     const { isLoading } = screenPlayer
@@ -67,19 +69,21 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
           <View style={styles.imageWrapper} transparent={true}>
             <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyle} />
           </View>
-          <View style={styles.carouselTextBottomWrapper} transparent={true}>
-            {clipId && (
-              <View style={styles.clipWrapper} transparent={true}>
-                <Text
-                  numberOfLines={2}
-                  style={styles.clipTitle}
-                  testID='media_player_carousel_viewer_title'>{`${clipTitle}`}</Text>
-                <Text style={styles.clipTime} testID='media_player_carousel_viewer_time'>
-                  {readableClipTime(clipStartTime, clipEndTime)}
-                </Text>
-              </View>
-            )}
-          </View>
+          <TouchableWithoutFeedback onPress={handlePressClipInfo}>
+            <View style={styles.carouselTextBottomWrapper} transparent={true}>
+              {clipId && (
+                <View style={styles.clipWrapper} transparent={true}>
+                  <Text
+                    numberOfLines={2}
+                    style={styles.clipTitle}
+                    testID='media_player_carousel_viewer_title'>{`${clipTitle}`}</Text>
+                  <Text style={styles.clipTime} testID='media_player_carousel_viewer_time'>
+                    {readableClipTime(clipStartTime, clipEndTime)}
+                  </Text>
+                </View>
+              )}
+            </View>
+          </TouchableWithoutFeedback>
         </View>
       </View>
     )

@@ -19,6 +19,7 @@ const screenWidth = Dimensions.get('screen').width
 export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   carousel: any
   scrollView: any
+  handlePressClipInfo: any
 
   constructor(props) {
     super(props)
@@ -30,14 +31,20 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
+    const { activeIndex } = this.state
+    const animated = false
+    this.scrollToActiveIndex(activeIndex, animated)
+  }
+
+  scrollToActiveIndex = (activeIndex: number, animated: boolean) => {
     setTimeout(() => {
-      const { activeIndex } = this.state
       this.scrollView &&
         this.scrollView.scrollTo({
           x: screenWidth * activeIndex,
           y: 0,
-          animated: false
+          animated
         })
+      this.setState({ activeIndex })
     }, 0)
   }
 
@@ -45,6 +52,13 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { contentOffset } = nativeEvent
     const activeIndex = contentOffset.x / screenWidth
     this.setState({ activeIndex })
+  }
+
+  _handlePressClipInfo = () => {
+    const { hasChapters } = this.props
+    const lastActiveIndex = hasChapters ? 3 : 2
+    const animated = true
+    this.scrollToActiveIndex(lastActiveIndex, animated)
   }
 
   render() {
@@ -70,7 +84,12 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           transparent={true}>
           {hasChapters && <MediaPlayerCarouselClips isChapters={true} width={screenWidth} />}
           <MediaPlayerCarouselClips isChapters={false} width={screenWidth} />
-          <MediaPlayerCarouselViewer imageHeight={imageHeight} imageWidth={imageWidth} width={screenWidth} />
+          <MediaPlayerCarouselViewer
+            handlePressClipInfo={this._handlePressClipInfo}
+            imageHeight={imageHeight}
+            imageWidth={imageWidth}
+            width={screenWidth}
+          />
           <MediaPlayerCarouselShowNotes width={screenWidth} />
         </ScrollView>
         <Dots
