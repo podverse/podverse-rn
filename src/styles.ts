@@ -213,7 +213,8 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.velvet,
     borderColor: PV.Colors.grayDarker,
     borderTopColor: PV.Colors.grayDarker, // override native styles
-    borderBottomColor: PV.Colors.grayDarker // override native style
+    borderBottomColor: PV.Colors.grayDarker, // override native style,
+    marginBottom: 24
   },
   textSecondary: {
     color: PV.Colors.grayLightest
