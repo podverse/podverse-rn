@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width
   },
   transparent: {
-    backgroundColor: 'transparent',
-    flex: 1
+    backgroundColor: 'transparent'
   }
 })
