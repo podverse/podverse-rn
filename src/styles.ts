@@ -110,10 +110,6 @@ export const darkTheme = StyleSheet.create({
   flatList: {
     backgroundColor: PV.Colors.ink
   },
-  inputContainerText: {
-    backgroundColor: PV.Colors.black,
-    borderColor: PV.Colors.grayDarker
-  },
   link: {
     color: PV.Colors.blueLighter
   },
@@ -347,10 +343,6 @@ export const lightTheme = StyleSheet.create({
   flatList: {
     backgroundColor: PV.Colors.white
   },
-  inputContainerText: {
-    backgroundColor: PV.Colors.white,
-    borderColor: PV.Colors.grayLighter
-  },
   link: {
     color: PV.Colors.blueDarker
   },
@@ -571,10 +563,6 @@ export const core = StyleSheet.create({
     backgroundColor: 'transparent',
     flexDirection: 'row'
   },
-  searchBar: {
-    borderBottomWidth: 1,
-    borderWidth: 1
-  },
   selectorIcon: {
     flex: 0,
     paddingLeft: 4,
@@ -617,12 +605,7 @@ export const core = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold,
     marginBottom: 4
   },
-  textInputSubTitle: {
-    fontSize: PV.Fonts.sizes.md,
-    marginVertical: 8
-  },
   textInputWrapper: {
-    marginBottom: 20,
     paddingHorizontal: 16,
     paddingVertical: 12
   },

@@ -113,18 +113,15 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator />}
         {!isLoading && (
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputEyeBrow}>
-              {translate('RSS Feed')}
-            </Text>
             <TextInput
               autoCapitalize='none'
               autoCompleteType='off'
+              eyebrowTitle={translate('RSS feed link')}
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               onChangeText={this._handleChangeText}
               placeholder={translate('paste RSS feed link here')}
               returnKeyType='done'
-              style={[styles.textInput, globalTheme.textInput]}
-              testID={testIDPrefix}
+              testID={`${testIDPrefix}_rss_feed`}
               underlineColorAndroid='transparent'
               value={url}
             />
@@ -134,12 +131,6 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             </Text>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
               {translate('AddPodcastByRSSScreenText2')}
-            </Text>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
-              {translate('AddPodcastByRSSScreenText3')}
-            </Text>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
-              {translate('AddPodcastByRSSScreenText4')}
             </Text>
             {!!PV.URLs.requestPodcast && (
               <TextLink
@@ -175,7 +166,7 @@ const styles = StyleSheet.create({
     marginVertical: 30
   },
   text: {
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.lg,
     marginVertical: 12,
     textAlign: 'left'
   },

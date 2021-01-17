@@ -11,6 +11,7 @@ type Props = {
   autoCompleteType?: any
   autoCorrect?: boolean
   editable?: boolean
+  eyebrowTitle?: string
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
   inputRef?: any
@@ -37,6 +38,7 @@ export const PVTextInput = (props: Props) => {
     autoCompleteType,
     autoCorrect,
     editable = true,
+    eyebrowTitle,
     fontSizeLargerScale,
     fontSizeLargestScale,
     inputRef,
@@ -76,9 +78,9 @@ export const PVTextInput = (props: Props) => {
 
   return (
     <View style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
-      {hasText && !!placeholder && (
+      {hasText && (!!eyebrowTitle || !!placeholder) && (
         <Text style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]} testID={`${testID}_text_input_eyebrow`}>
-          {placeholder}
+          {eyebrowTitle || placeholder}
         </Text>
       )}
       <TextInput

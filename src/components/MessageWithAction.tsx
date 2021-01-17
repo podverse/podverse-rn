@@ -1,7 +1,7 @@
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { ActivityIndicator, Button, Text, View } from './'
+import { ActivityIndicator, Button, SafeAreaView, Text } from './'
 
 type Props = {
   bottomActionHandler?: any
@@ -34,7 +34,7 @@ export const MessageWithAction = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
-    <View style={styles.view} transparent={transparent}>
+    <SafeAreaView style={styles.view} transparent={transparent}>
       {!!message && (
         <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[globalTheme.text, styles.message]}>
           {message}
@@ -66,39 +66,43 @@ export const MessageWithAction = (props: Props) => {
           onPress={bottomActionHandler}
           testID={`${testID}_bottom_action`}
           text={bottomActionText}
-          wrapperStyles={styles.button}
+          wrapperStyles={[styles.button, styles.bottomButton]}
         />
       )}
       {isLoading && <ActivityIndicator />}
-    </View>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  bottomButton: {
+    marginBottom: 0
+  },
   button: {
-    fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    marginHorizontal: 16,
-    marginTop: 24,
-    minHeight: 44,
-    paddingVertical: 16,
-    width: '80%',
     backgroundColor: 'transparent',
     borderColor: PV.Colors.white,
     borderWidth: 1,
-    borderRadius: 8
+    borderRadius: 8,
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.bold,
+    marginHorizontal: 16,
+    marginBottom: 24,
+    minHeight: 44,
+    paddingVertical: 16,
+    width: '80%'
   },
   message: {
     fontSize: PV.Fonts.sizes.xl,
+    marginBottom: 32,
     marginHorizontal: 16,
-    minHeight: 44,
+    marginTop: -55,
     textAlign: 'center'
   },
   subMessage: {
     fontSize: PV.Fonts.sizes.md,
     marginHorizontal: 16,
-    marginTop: 12,
-    minHeight: 44,
+    marginBottom: 32,
+    marginTop: -12,
     textAlign: 'center'
   },
   view: {

@@ -150,18 +150,14 @@ export class EditProfileScreen extends React.Component<Props, State> {
               </View>
 
               {selectedIsPublicKey && (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  style={[core.textInputSubTitle, globalTheme.textSecondary]}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={globalTheme.textSecondary}>
                   {willBeDifferent
                     ? translate('Podcasts clips and playlists will be visible')
                     : translate('Podcasts clips and playlists are visible')}
                 </Text>
               )}
               {selectedIsPublicKey === false && (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  style={[core.textInputSubTitle, globalTheme.textSecondary]}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={globalTheme.textSecondary}>
                   {willBeDifferent
                     ? translate('Your profile page will be hidden')
                     : translate('Your profile page is hidden')}
