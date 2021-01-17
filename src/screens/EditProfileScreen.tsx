@@ -1,7 +1,15 @@
 import { Alert, StyleSheet } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { ActivityIndicator, Divider, Icon, NavHeaderButtonText, Text, TextInput, View } from '../components'
+import {
+  ActivityIndicator,
+  Divider,
+  DropdownButtonSelect,
+  NavHeaderButtonText,
+  Text,
+  TextInput,
+  View
+} from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { testProps } from '../lib/utility'
@@ -114,6 +122,17 @@ export class EditProfileScreen extends React.Component<Props, State> {
     const selectedIsPublicOption = isPublicOptions.find((x) => x.value === selectedIsPublicKey) || selectPlaceholder
     const willBeDifferent = user.isPublic !== selectedIsPublicKey
 
+    let helpText = ''
+    if (selectedIsPublicKey) {
+      helpText = willBeDifferent
+        ? translate('Podcasts clips and playlists will be visible')
+        : translate('Podcasts clips and playlists are visible')
+    } else {
+      helpText = willBeDifferent
+        ? translate('Your profile page will be hidden')
+        : translate('Your profile page is hidden')
+    }
+
     return (
       <View style={styles.view} {...testProps('edit_profile_screen_view')}>
         {!isLoading ? (
@@ -130,37 +149,15 @@ export class EditProfileScreen extends React.Component<Props, State> {
               testID={`${testIDPrefix}_name`}
               value={name}
             />
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputEyeBrow}>
-              {translate('Profile Privacy')}
-            </Text>
-            <RNPickerSelect
+            <DropdownButtonSelect
+              helpText={helpText}
               items={isPublicOptions}
+              label={selectedIsPublicOption.label}
               onValueChange={this._onChangeIsPublic}
-              placeholder={selectPlaceholder}
-              touchableWrapperProps={{ testID: `${testIDPrefix}_picker_select_privacy` }}
-              value={selectedIsPublicKey}>
-              <View style={[core.selectorWrapper, globalTheme.textInput]}>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.selectorText}>
-                  {selectedIsPublicOption.label}
-                </Text>
-                <Icon name='angle-down' size={14} style={[core.selectorIcon, globalTheme.textInputIcon]} />
-              </View>
-
-              {selectedIsPublicKey && (
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={globalTheme.textSecondary}>
-                  {willBeDifferent
-                    ? translate('Podcasts clips and playlists will be visible')
-                    : translate('Podcasts clips and playlists are visible')}
-                </Text>
-              )}
-              {selectedIsPublicKey === false && (
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={globalTheme.textSecondary}>
-                  {willBeDifferent
-                    ? translate('Your profile page will be hidden')
-                    : translate('Your profile page is hidden')}
-                </Text>
-              )}
-            </RNPickerSelect>
+              testID={`${testIDPrefix}_picker_select_privacy`}
+              value={selectedIsPublicKey}
+              wrapperStyle={styles.dropdownButtonSelectWrapper}
+            />
           </View>
         ) : (
           <ActivityIndicator fillSpace={true} />
@@ -187,7 +184,11 @@ const isPublicOptions = [
 ]
 
 const styles = StyleSheet.create({
+  dropdownButtonSelectWrapper: {},
   textInput: {},
+  textInputSubtext: {
+    marginTop: 16
+  },
   view: {
     flex: 1,
     paddingHorizontal: 8,

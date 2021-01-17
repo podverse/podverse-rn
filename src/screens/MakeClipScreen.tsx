@@ -398,19 +398,16 @@ export class MakeClipScreen extends React.Component<Props, State> {
               wrapperStyle={styles.textInputTitleWrapper}
             />
           </View>
-          <View style={styles.privacyWrapper} transparent={true}>
-            <Text numberOfLines={3} style={styles.privacyHelpText}>
-              Tip: Naming your clips helps with searching and overall organization
-            </Text>
-            <DropdownButtonSelect
-              items={privacyItems()}
-              label={isPublicItemSelected.label}
-              onValueChange={this._handleSelectPrivacy}
-              placeholder={placeholderItem}
-              testID={testIDPrefix}
-              value={isPublicItemSelected.value}
-            />
-          </View>
+          <DropdownButtonSelect
+            helpText={translate('Tip: Naming your clips')}
+            items={privacyItems()}
+            label={isPublicItemSelected.label}
+            onValueChange={this._handleSelectPrivacy}
+            placeholder={placeholderItem}
+            testID={testIDPrefix}
+            value={isPublicItemSelected.value}
+            wrapperStyle={styles.dropdownButtonSelectWrapper}
+          />
           <View style={styles.imageWrapper} transparent={true}>
             <FastImage
               resizeMode='contain'
@@ -645,6 +642,9 @@ const privacyItems = () => {
 }
 
 const styles = StyleSheet.create({
+  dropdownButtonSelectWrapper: {
+    marginTop: 16
+  },
   playerControlsBottomButton: {
     alignItems: 'center',
     minHeight: 32,
@@ -740,20 +740,6 @@ const styles = StyleSheet.create({
   },
   navHeaderButtonWrapper: {
     flexDirection: 'row'
-  },
-  privacyHelpText: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.tiny,
-    maxWidth: '60%',
-    flexWrap: 'wrap'
-  },
-  privacyWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 16,
-    minHeight: PV.Table.sectionHeader.height,
-    paddingHorizontal: 8
   },
   progressWrapper: {
     marginTop: 5

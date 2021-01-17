@@ -5,33 +5,38 @@ import { Icon, Text, View } from '.'
 import { PV } from '../resources'
 
 export const DropdownButtonSelect = (props: any) => {
-  const { items, label, onValueChange, placeholder, testID, value } = props
+  const { helpText, items, label, onValueChange, placeholder, testID, value, wrapperStyle } = props
   const [globalTheme] = useGlobal('globalTheme')
   return (
-    <RNPickerSelect
-      items={items}
-      onValueChange={onValueChange}
-      placeholder={placeholder}
-      style={{ viewContainer: { alignSelf: 'center' } }}
-      touchableWrapperProps={{ testID: `${testID}_dropdown_button_select` }}
-      useNativeAndroidPickerStyle={false}
-      value={value}>
-      <View style={styles.dropdownButton}>
-        <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          numberOfLines={1}
-          style={[styles.dropdownButtonText, globalTheme.dropdownButtonText]}
-          testID={`${testID}_dropdown_button_select_text`}>
-          {label}
-        </Text>
-        <Icon
-          name='angle-down'
-          size={14}
-          style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]}
-          testID={`${testID}_dropdown_button_select`}
-        />
-      </View>
-    </RNPickerSelect>
+    <View style={[styles.dropdownWrapper, wrapperStyle]} transparent={true}>
+      <Text numberOfLines={3} style={styles.dropdownHelpText}>
+        {helpText}
+      </Text>
+      <RNPickerSelect
+        items={items}
+        onValueChange={onValueChange}
+        placeholder={placeholder}
+        style={{ viewContainer: { alignSelf: 'center' } }}
+        touchableWrapperProps={{ testID: `${testID}_dropdown_button_select` }}
+        useNativeAndroidPickerStyle={false}
+        value={value}>
+        <View style={styles.dropdownButton}>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            numberOfLines={1}
+            style={[styles.dropdownButtonText, globalTheme.dropdownButtonText]}
+            testID={`${testID}_dropdown_button_select_text`}>
+            {label}
+          </Text>
+          <Icon
+            name='angle-down'
+            size={14}
+            style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]}
+            testID={`${testID}_dropdown_button_select`}
+          />
+        </View>
+      </RNPickerSelect>
+    </View>
   )
 }
 
@@ -58,5 +63,18 @@ const styles = {
     fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold,
     paddingRight: 16
+  },
+  dropdownHelpText: {
+    flex: 0,
+    fontSize: PV.Fonts.sizes.tiny,
+    maxWidth: '60%',
+    flexWrap: 'wrap'
+  },
+  dropdownWrapper: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    minHeight: PV.Table.sectionHeader.height,
+    paddingHorizontal: 8
   }
 }
