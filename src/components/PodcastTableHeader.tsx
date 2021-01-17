@@ -32,7 +32,7 @@ export const PodcastTableHeader = (props: Props) => {
     isSubscribed,
     isSubscribing,
     podcastImageUrl,
-    podcastTitle = translate('untitled podcast'),
+    podcastTitle = translate('Untitled Podcast'),
     showSettings,
     testID
   } = props

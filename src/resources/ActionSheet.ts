@@ -168,7 +168,7 @@ const mediaMoreButtons = (
 
             if (item.clipId) {
               url = urlsWeb.clip + item.clipId
-              title = item.clipTitle ? item.clipTitle : translate('untitled clip –')
+              title = item.clipTitle ? item.clipTitle : translate('Untitled Clip –')
               title += ` ${item.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
             } else if (item.episodeId) {
               url = urlsWeb.episode + item.episodeId

@@ -1,7 +1,12 @@
 import { Dimensions, Linking, ScrollView, StyleSheet } from 'react-native'
 import HTML from 'react-native-render-html'
 import React, { useGlobal } from 'reactn'
-import { convertHHMMSSToAnchorTags, filterHTMLElementsFromString, removeHTMLAttributesFromString } from '../lib/utility'
+import {
+  convertHHMMSSToAnchorTags,
+  filterHTMLElementsFromString,
+  removeExtraInfoFromEpisodeDescription,
+  removeHTMLAttributesFromString
+} from '../lib/utility'
 import { PV } from '../resources'
 import { setPlaybackPosition } from '../services/player'
 
@@ -27,6 +32,7 @@ export const HTMLScrollView = (props: Props) => {
   let formattedHtml = html ? removeHTMLAttributesFromString(html.sanitize(censorNSFWText)) : ''
   formattedHtml = filterHTMLElementsFromString(formattedHtml)
   formattedHtml = convertHHMMSSToAnchorTags(formattedHtml)
+  formattedHtml = removeExtraInfoFromEpisodeDescription(formattedHtml)
   formattedHtml = formattedHtml.linkifyHtml()
 
   if (fontScaleMode === PV.Fonts.fontScale.larger) {

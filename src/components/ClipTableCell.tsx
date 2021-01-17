@@ -33,18 +33,18 @@ export class ClipTableCell extends React.PureComponent<Props> {
       endTime,
       episodeId,
       episodePubDate = '',
-      episodeTitle = translate('untitled episode'),
+      episodeTitle = translate('Untitled Episode'),
       handleMorePress,
       handleNavigationPress,
       hasZebraStripe,
       hideImage,
       podcastImageUrl,
-      podcastTitle = translate('untitled podcast'),
+      podcastTitle = translate('Untitled Podcast'),
       showEpisodeInfo,
       showPodcastTitle,
       startTime,
       testID,
-      title = translate('untitled clip'),
+      title = translate('Untitled Clip'),
       transparent
     } = this.props
     const clipTime = readableClipTime(startTime, endTime)

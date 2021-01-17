@@ -285,7 +285,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 text: translate('Share'),
                 onPress: async () => {
                   const { nowPlayingItem = {} } = this.global.player
-                  const title = `${data.title || translate('untitled clip')} – ${nowPlayingItem.podcastTitle} – ${
+                  const title = `${data.title || translate('Untitled Clip')} – ${nowPlayingItem.podcastTitle} – ${
                     nowPlayingItem.episodeTitle
                   }${translate('clip created using brandName')}`
                   try {
@@ -596,13 +596,10 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   {translate('Tap the Start and End Time inputs to set them with the current track time')}
                 </Text>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  {translate('Press the left or right caret symbols to adjust the time by one second')}
+                  {translate('Press the left or right caret symbols to adjust the current time by one second')}
                 </Text>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  {translate('Press the blue play button to preview the start or end time')}
-                </Text>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  {translate('If a podcast uses dynamically inserted ads its clip start times will not stay accurate')}
+                  {translate('If a podcast inserts dynamic ads the clip start time may not stay accurate')}
                 </Text>
                 <TouchableOpacity onPress={this._hideHowTo} {...testProps(`${testIDPrefix}_close`)}>
                   <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.modalButton}>

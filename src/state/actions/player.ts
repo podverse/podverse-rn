@@ -200,7 +200,8 @@ const setChapterOnGlobalState = (currentChapter: any) => {
   setGlobal({
     player: {
       ...globalState.player,
-      currentChapter
+      currentChapter,
+      mediaRef: currentChapter
     }
   })
 }

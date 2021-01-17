@@ -257,7 +257,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
           ? { episodePubDate: readableDate(item.episode.pubDate) }
           : {})}
         {...(queryFrom === PV.Filters._fromThisPodcastKey
-          ? { episodeTitle: item.episode.title || translate('untitled episode') }
+          ? { episodeTitle: item.episode.title || translate('Untitled Episode') }
           : {})}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
         handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, podcast))}

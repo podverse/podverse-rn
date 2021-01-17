@@ -279,7 +279,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       title = `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate('shared using brandName')}`
     } else {
       url = this.global.urlsWeb.clip + mediaRefId
-      title = `${nowPlayingItem.clipTitle ? nowPlayingItem.clipTitle + ' – ' : translate('untitled clip – ')}`
+      title = `${nowPlayingItem.clipTitle ? nowPlayingItem.clipTitle + ' – ' : translate('Untitled Clip – ')}`
       title += `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate(
         'clip shared using brandName'
       )}`
@@ -327,24 +327,6 @@ export class PlayerScreen extends React.Component<Props, State> {
               imageHeight={imageHeightAvailable}
               imageWidth={imageHeightAvailable}
             />
-            {/* {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
-              <ClipInfoView
-                createdAt={mediaRef.createdAt}
-                endTime={mediaRef.endTime}
-                handleClosePress={this._toggleShowFullClipInfo}
-                hideDynamicAdsWarning={nowPlayingItem.podcastHideDynamicAdsWarning}
-                isLoading={isLoading}
-                isOfficialChapter={mediaRef.isOfficialChapter}
-                isOfficialSoundBite={mediaRef.isOfficialSoundBite}
-                isPublic={mediaRef.isPublic}
-                navigation={navigation}
-                {...(mediaRef.owner ? { ownerId: mediaRef.owner.id } : {})}
-                {...(mediaRef.owner ? { ownerIsPublic: mediaRef.owner.isPublic } : {})}
-                {...(mediaRef.owner ? { ownerName: mediaRef.owner.name } : {})}
-                startTime={mediaRef.startTime}
-                {...(mediaRef.title ? { title: mediaRef.title } : {})}
-              />
-            )} */}
             <PlayerControls navigation={navigation} />
             <ActionSheet
               handleCancelPress={this._dismissShareActionSheet}
