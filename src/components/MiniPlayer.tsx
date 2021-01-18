@@ -21,13 +21,11 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
     const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
 
-    let playButtonIcon = <Icon name='pause' size={20} />
+    let playButtonIcon = <Icon name='pause' size={20} testID='mini_player_pause_button' />
     let playButtonAdjust = {}
     if (playbackState === PVTrackPlayer.STATE_PAUSED || playbackState === PVTrackPlayer.STATE_STOPPED) {
-      playButtonIcon = <Icon name='play' size={20} />
+      playButtonIcon = <Icon name='play' size={20} testID='mini_player_play_button' />
       playButtonAdjust = { paddingLeft: 2 }
-    } else if (playbackState === PVTrackPlayer.STATE_PLAYING) {
-      playButtonIcon = <Icon name='pause' size={20} />
     } else if (playbackState === PVTrackPlayer.STATE_BUFFERING) {
       playButtonIcon = <ActivityIndicator />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
