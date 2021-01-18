@@ -23,7 +23,7 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
 
     let playButtonIcon = <Icon name='play' size={20} testID='mini_player_play_button' />
     let playButtonAdjust = { paddingLeft: 2 } as any
-    if (playbackState === PVTrackPlayer.STATE_PAUSED || playbackState === PVTrackPlayer.STATE_STOPPED) {
+    if (playbackState === PVTrackPlayer.STATE_PLAYING) {
       playButtonIcon = <Icon name='pause' size={20} testID='mini_player_pause_button' />
       playButtonAdjust = {}
     } else if (playbackState === PVTrackPlayer.STATE_BUFFERING) {
