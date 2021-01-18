@@ -84,11 +84,11 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       top: 8
     }
 
-    let playButtonIcon = <Icon name='pause' size={20} testID='player_controls_pause_button' />
-    let playButtonAdjust = {}
-    if (playbackState === PVTrackPlayer.STATE_PAUSED || playbackState === PVTrackPlayer.STATE_STOPPED) {
-      playButtonIcon = <Icon name='play' size={20} testID='player_controls_play_button' />
-      playButtonAdjust = { paddingLeft: 2 }
+    let playButtonIcon = <Icon name='play' size={20} testID='player_controls_play_button' />
+    let playButtonAdjust = { paddingLeft: 2 } as any
+    if (playbackState === PVTrackPlayer.STATE_PLAYING) {
+      playButtonIcon = <Icon name='pause' size={20} testID='player_controls_pause_button' />
+      playButtonAdjust = {}
     } else if (playbackState === PVTrackPlayer.STATE_BUFFERING) {
       playButtonIcon = <ActivityIndicator />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
