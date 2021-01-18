@@ -4,7 +4,7 @@ import { PV } from '../resources'
 import { playerJumpBackward, playerJumpForward, PVTrackPlayer, setPlaybackPosition } from '../services/player'
 import { playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
-import { Icon, PlayerProgressBar, Text } from './'
+import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
 
 type Props = {
@@ -84,6 +84,18 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       top: 8
     }
 
+    let playButtonIcon = <Icon name='pause' size={20} />
+    let playButtonAdjust = {}
+    if (playbackState === PVTrackPlayer.STATE_PAUSED || playbackState === PVTrackPlayer.STATE_STOPPED) {
+      playButtonIcon = <Icon name='play' size={20} />
+      playButtonAdjust = { paddingLeft: 2 }
+    } else if (playbackState === PVTrackPlayer.STATE_PLAYING) {
+      playButtonIcon = <Icon name='pause' size={20} />
+    } else if (playbackState === PVTrackPlayer.STATE_BUFFERING) {
+      playButtonIcon = <ActivityIndicator />
+      playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
+    }
+
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
         <View style={styles.progressWrapper}>
@@ -109,7 +121,9 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 <Text style={styles.skipTimeText}>30</Text>
               </View> */}
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => togglePlay(this.global)} style={playerStyles.playButton}>
+            <TouchableOpacity
+              onPress={() => togglePlay(this.global)}
+              style={[playerStyles.playButton, playButtonAdjust]}>
               {hasErrored ? (
                 <Icon
                   color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
@@ -117,7 +131,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                   size={35}
                 />
               ) : (
-                <Icon name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'} size={20} />
+                playButtonIcon
               )}
             </TouchableOpacity>
             <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>

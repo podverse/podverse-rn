@@ -5,7 +5,6 @@ import { Header } from 'react-navigation-stack'
 import React, { getGlobal, setGlobal } from 'reactn'
 import {
   ActionSheet,
-  ClipInfoView,
   MediaPlayerCarousel,
   NavAddToPlaylistIcon,
   NavDismissIcon,
@@ -326,6 +325,7 @@ export class PlayerScreen extends React.Component<Props, State> {
               hasChapters={hasChapters}
               imageHeight={imageHeightAvailable}
               imageWidth={imageHeightAvailable}
+              navigation={navigation}
             />
             <PlayerControls navigation={navigation} />
             <ActionSheet

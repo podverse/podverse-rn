@@ -8,6 +8,7 @@ type Props = {
   hasChapters: boolean
   imageHeight: number
   imageWidth: number
+  navigation: any
 }
 
 type State = {
@@ -62,7 +63,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { imageHeight, imageWidth } = this.props
+    const { imageHeight, imageWidth, navigation } = this.props
     const { activeIndex } = this.state
     const { player } = this.global
     const { episode } = player
@@ -90,7 +91,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
             imageWidth={imageWidth}
             width={screenWidth}
           />
-          <MediaPlayerCarouselShowNotes width={screenWidth} />
+          <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
         </ScrollView>
         <Dots
           active={activeIndex}

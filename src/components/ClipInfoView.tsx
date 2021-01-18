@@ -101,18 +101,18 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
             </View>
             {!isOfficialChapter && !isOfficialSoundBite && (
               <View style={core.row}>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.inlineText}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.ownerName}>
                   By:{' '}
                 </Text>
                 {ownerIsPublic ? (
                   <TextLink
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     onPress={this._navToProfileScreen}
-                    style={styles.inlineText}>
+                    style={styles.ownerName}>
                     {ownerName || translate('anonymous')}
                   </TextLink>
                 ) : (
-                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.inlineText}>
+                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.ownerName}>
                     {translate('anonymous')}
                   </Text>
                 )}
@@ -135,10 +135,10 @@ const styles = StyleSheet.create({
   divider: {
     marginTop: 16
   },
-  inlineText: {
+  ownerName: {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
-    marginTop: 8
+    marginTop: 12
   },
   replayClip: {
     flex: 0,
@@ -163,7 +163,8 @@ const styles = StyleSheet.create({
   },
   topEditButtonWrapper: {
     flex: 0,
-    marginLeft: 4
+    marginLeft: 4,
+    marginTop: 12
   },
   topTextWrapper: {
     flex: 1
