@@ -84,13 +84,11 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       top: 8
     }
 
-    let playButtonIcon = <Icon name='pause' size={20} />
+    let playButtonIcon = <Icon name='pause' size={20} testID='player_controls_pause_button' />
     let playButtonAdjust = {}
     if (playbackState === PVTrackPlayer.STATE_PAUSED || playbackState === PVTrackPlayer.STATE_STOPPED) {
-      playButtonIcon = <Icon name='play' size={20} />
+      playButtonIcon = <Icon name='play' size={20} testID='player_controls_play_button' />
       playButtonAdjust = { paddingLeft: 2 }
-    } else if (playbackState === PVTrackPlayer.STATE_PLAYING) {
-      playButtonIcon = <Icon name='pause' size={20} />
     } else if (playbackState === PVTrackPlayer.STATE_BUFFERING) {
       playButtonIcon = <ActivityIndicator />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
@@ -113,10 +111,10 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             <TouchableOpacity
               onPress={this._returnToBeginningOfTrack}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
-              <Icon name='step-backward' size={35} />
+              <Icon name='step-backward' size={35} testID='player_controls_previous_track' />
             </TouchableOpacity>
             <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
-              <Icon name='undo-alt' size={35} />
+              <Icon name='undo-alt' size={35} testID='player_controls_jump_backward' />
               {/* <View style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>30</Text>
               </View> */}
@@ -129,38 +127,40 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                   color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
                   name={'exclamation-triangle'}
                   size={35}
+                  testID='player_controls_error'
                 />
               ) : (
                 playButtonIcon
               )}
             </TouchableOpacity>
             <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
-              <Icon name='redo-alt' size={35} />
+              <Icon name='redo-alt' size={35} testID='player_controls_step_forward' />
               {/* <View style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>30</Text>
               </View> */}
             </TouchableOpacity>
             <TouchableOpacity onPress={playNextFromQueue} style={[playerStyles.icon, { flexDirection: 'row' }]}>
-              <Icon name='step-forward' size={35} />
+              <Icon name='step-forward' size={35} testID='player_controls_skip_track' />
             </TouchableOpacity>
           </View>
         </View>
         <View style={styles.playerControlsBottomRow}>
           <TouchableOpacity hitSlop={hitSlop} onPress={this._navToStopWatchScreen}>
             <View style={styles.playerControlsBottomButton}>
-              <Icon name='moon' size={20} solid={true} />
+              <Icon name='moon' size={20} solid={true} testID='player_controls_sleep_timer' />
             </View>
           </TouchableOpacity>
           <TouchableWithoutFeedback hitSlop={hitSlop} onPress={this._adjustSpeed}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              style={[styles.playerControlsBottomButton, styles.playerControlsBottomRowText]}>
+              style={[styles.playerControlsBottomButton, styles.playerControlsBottomRowText]}
+              testID='player_controls_playback_rate'>
               {`${playbackRate}X`}
             </Text>
           </TouchableWithoutFeedback>
           <TouchableOpacity hitSlop={hitSlop} onPress={this._showPlayerMoreActionSheet}>
             <View style={styles.playerControlsBottomButton}>
-              <Icon name='ellipsis-h' size={24} />
+              <Icon name='ellipsis-h' size={24} testID='player_controls_more' />
             </View>
           </TouchableOpacity>
         </View>
