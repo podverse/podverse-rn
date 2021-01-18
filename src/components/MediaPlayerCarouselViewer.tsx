@@ -66,7 +66,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
               </React.Fragment>
             )}
           </View>
-          <View style={styles.imageWrapper} transparent={true}>
+          <View style={[styles.imageWrapper, { height: imageHeight, width: '100%' }]} transparent={true}>
             <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyle} />
           </View>
           <TouchableWithoutFeedback onPress={handlePressClipInfo}>
@@ -117,11 +117,10 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   image: {
-    flex: 0
+    flex: 1
   },
   imageWrapper: {
     alignItems: 'center',
-    flex: 0,
     justifyContent: 'center',
     padding: 16
   },
