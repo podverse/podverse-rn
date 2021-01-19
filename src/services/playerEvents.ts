@@ -159,9 +159,12 @@ module.exports = async () => {
       }
 
       if (Platform.OS === 'ios') {
-        if (x.state === 'playing') {
+        if (x.state === PVTrackPlayer.STATE_PLAYING) {
+          updateUserPlaybackPosition()
           const rate = await getPlaybackSpeed()
           PVTrackPlayer.setRate(rate)
+        } else if (x.state === PVTrackPlayer.STATE_PAUSED || PVTrackPlayer.STATE_STOPPED) {
+          updateUserPlaybackPosition()
         }
       } else if (Platform.OS === 'android') {
         /*
@@ -175,10 +178,14 @@ module.exports = async () => {
           buffering 6
           ???       8
         */
-
-        if (x.state === 3) {
+        const stopped = 1
+        const paused = 2
+        const playing = 3
+        if (x.state === playing) {
           const rate = await getPlaybackSpeed()
           PVTrackPlayer.setRate(rate)
+        } else if (x.state === paused || x.state === stopped) {
+          updateUserPlaybackPosition()
         }
       }
     }

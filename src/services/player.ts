@@ -469,7 +469,6 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (t
 
 export const togglePlay = async () => {
   const state = await TrackPlayer.getState()
-  updateUserPlaybackPosition()
 
   if (state === TrackPlayer.STATE_NONE) {
     TrackPlayer.play()
