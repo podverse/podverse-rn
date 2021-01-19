@@ -74,7 +74,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     const { navigation } = this.props
     const { progressValue, showPlayerMoreActionSheet } = this.state
     const { globalTheme, player, screenPlayer } = this.global
-    const { backupDuration, nowPlayingItem, playbackRate, playbackState } = player
+    const { backupDuration, currentChapter, nowPlayingItem, playbackRate, playbackState } = player
     const { isLoading } = screenPlayer
     const hasErrored = playbackState === PV.Player.errorState
     const hitSlop = {
@@ -94,13 +94,17 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
     }
 
+    const clipStartTime =
+      (nowPlayingItem && nowPlayingItem.clipStartTime) || (currentChapter && currentChapter.startTime)
+    const clipEndTime = (nowPlayingItem && nowPlayingItem.clipEndTime) || (currentChapter && currentChapter.endTime)
+
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
         <View style={styles.progressWrapper}>
           <PlayerProgressBar
             backupDuration={backupDuration}
-            {...(nowPlayingItem && nowPlayingItem.clipEndTime ? { clipEndTime: nowPlayingItem.clipEndTime } : {})}
-            {...(nowPlayingItem && nowPlayingItem.clipStartTime ? { clipStartTime: nowPlayingItem.clipStartTime } : {})}
+            clipEndTime={clipEndTime}
+            clipStartTime={clipStartTime}
             globalTheme={globalTheme}
             isLoading={isLoading}
             value={progressValue}
