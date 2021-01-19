@@ -293,9 +293,3 @@ const handlePlayerClipLoaded = async () => {
 const debouncedHandlePlayerClipLoaded = debounce(handlePlayerClipLoaded, 1000)
 
 PlayerEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, debouncedHandlePlayerClipLoaded)
-
-// Try to update the userPlaybackPosition every 3 minutes.
-const threeMinutes = 180000
-BackgroundTimer.runBackgroundTimer(() => {
-  updateUserPlaybackPosition()
-}, threeMinutes)
