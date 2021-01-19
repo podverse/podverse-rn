@@ -550,3 +550,11 @@ export const generateQueryParams = (query: any) => {
     })
     .join('&')
 }
+
+export const overrideImageUrlWithChapterImageUrl = (nowPlayingItem: any, currentChapter: any) => {
+  let imageUrl = nowPlayingItem ? nowPlayingItem.podcastImageUrl : ''
+  if (!nowPlayingItem.clipId && currentChapter && currentChapter.imageUrl) {
+    imageUrl = currentChapter.imageUrl
+  }
+  return imageUrl
+}

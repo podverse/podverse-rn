@@ -12,7 +12,7 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import { isOdd, testProps } from '../lib/utility'
+import { isOdd, overrideImageUrlWithChapterImageUrl, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { loadItemAndPlayTrack } from '../state/actions/player'
@@ -204,7 +204,7 @@ export class HistoryScreen extends React.Component<Props, State> {
 
   render() {
     const { historyItems = [] } = this.global.session.userInfo
-    const { nowPlayingItem } = this.global.player
+    const { currentChapter, nowPlayingItem } = this.global.player
     const { isLoading, isLoadingMore, isRemoving, isTransparent } = this.state
 
     const view = (
@@ -228,8 +228,10 @@ export class HistoryScreen extends React.Component<Props, State> {
       </View>
     )
 
+    const imageUrl = overrideImageUrlWithChapterImageUrl(nowPlayingItem, currentChapter)
+
     if (isTransparent) {
-      return <OpaqueBackground nowPlayingItem={nowPlayingItem}>{view}</OpaqueBackground>
+      return <OpaqueBackground imageUrl={imageUrl}>{view}</OpaqueBackground>
     } else {
       return view
     }

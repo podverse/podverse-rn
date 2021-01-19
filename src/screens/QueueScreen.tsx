@@ -17,7 +17,12 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import { checkIfIdMatchesClipIdOrEpisodeId, isOdd, testProps } from '../lib/utility'
+import {
+  checkIfIdMatchesClipIdOrEpisodeId,
+  isOdd,
+  overrideImageUrlWithChapterImageUrl,
+  testProps
+} from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData } from '../services/auth'
 import { movePlayerItemToNewPosition } from '../services/player'
@@ -338,7 +343,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
   render() {
     const { historyItems, historyItemsCount, queueItems } = this.global.session.userInfo
-    const { nowPlayingItem } = this.global.player
+    const { currentChapter, nowPlayingItem } = this.global.player
     const { isEditing, isLoading, isLoadingMore, isRemoving, isTransparent, viewType } = this.state
 
     const view = (
@@ -398,8 +403,10 @@ export class QueueScreen extends React.Component<Props, State> {
       </View>
     )
 
+    const imageUrl = overrideImageUrlWithChapterImageUrl(nowPlayingItem, currentChapter)
+
     if (isTransparent) {
-      return <OpaqueBackground nowPlayingItem={nowPlayingItem}>{view}</OpaqueBackground>
+      return <OpaqueBackground imageUrl={imageUrl}>{view}</OpaqueBackground>
     } else {
       return view
     }
