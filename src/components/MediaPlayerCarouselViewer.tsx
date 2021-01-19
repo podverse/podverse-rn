@@ -3,6 +3,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import React from 'reactn'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
+import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { ActivityIndicator, FastImage, Text, View } from './'
 
 type Props = {
@@ -15,9 +16,18 @@ type Props = {
 
 type State = {}
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State> {
+  chapterInterval: NodeJS.Timeout
   constructor(props) {
     super(props)
     this.state = {}
+  }
+
+  componentDidMount() {
+    this.chapterInterval = setInterval(loadChapterPlaybackInfo, 1000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.chapterInterval)
   }
 
   render() {

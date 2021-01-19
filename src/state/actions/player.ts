@@ -1,10 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, NowPlayingItem } from 'podverse-shared'
-import { Platform } from 'react-native'
-import BackgroundTimer from 'react-native-background-timer'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
-import { retrieveLatestChaptersForEpisodeId } from '../../services/episode'
 import {
   initializePlayerQueue as initializePlayerQueueService,
   loadItemAndPlayTrack as loadItemAndPlayTrackService,
@@ -20,6 +17,7 @@ import {
   setNowPlayingItem as setNowPlayingItemService
 } from '../../services/userNowPlayingItem'
 import { getQueueItems } from '../../state/actions/queue'
+import { clearChapterPlaybackInfo, retriveNowPlayingItemChapters, setChaptersOnGlobalState } from './playerChapters'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
   if (!item) return
@@ -127,93 +125,6 @@ export const playNextFromQueue = async () => {
     const globalState = getGlobal()
     trackPlayerScreenPageView(item, globalState)
   }
-}
-
-const clearChapterPlaybackInfo = () => {
-  return new Promise((resolve) => {
-    const globalState = getGlobal()
-    setGlobal(
-      {
-        player: {
-          ...globalState.player,
-          currentChapters: [],
-          currentChapter: null
-        }
-      },
-      () => {
-        resolve(null)
-      }
-    )
-  })
-}
-
-const loadChapterPlaybackInfo = async () => {
-  const globalState = getGlobal()
-  const { currentChapters } = globalState.player
-  const playerPosition = await PVTrackPlayer.getPosition()
-
-  if ((playerPosition || playerPosition === 0) && Array.isArray(currentChapters)) {
-    const currentChapter = currentChapters.find(
-      (chapter: any) => playerPosition >= chapter.startTime && playerPosition < chapter.endTime
-    )
-    if (currentChapter) {
-      setChapterOnGlobalState(currentChapter)
-    }
-  }
-}
-
-// NOTE: Every 3 seconds the BackgroundTimer is trying to load the chapterPlaybackInfo
-const runChapterPlaybackInfoInterval = async () => {
-  if (Platform.OS === 'android') {
-    BackgroundTimer.runBackgroundTimer(loadChapterPlaybackInfo, 3000)
-  } else {
-    await BackgroundTimer.start()
-    BackgroundTimer.setInterval(loadChapterPlaybackInfo, 3000)
-  }
-}
-runChapterPlaybackInfoInterval()
-
-export const retriveNowPlayingItemChapters = async (episodeId: string) => {
-  const [chapters] = await retrieveLatestChaptersForEpisodeId(episodeId)
-  return enrichChapterDataForPlayer(chapters)
-}
-
-const enrichChapterDataForPlayer = (chapters: any[]) => {
-  const enrichedChapters = []
-
-  if (Array.isArray(chapters) && chapters.length > 0) {
-    for (let i = 0; i < chapters.length; i++) {
-      const chapter = chapters[i]
-      const nextChapter = chapters[i + 1]
-      if (chapter && !chapter.endTime && nextChapter) {
-        chapter.endTime = nextChapter.startTime
-      }
-      enrichedChapters.push(chapter)
-    }
-  }
-
-  return enrichedChapters
-}
-
-const setChapterOnGlobalState = (currentChapter: any) => {
-  const globalState = getGlobal()
-  setGlobal({
-    player: {
-      ...globalState.player,
-      currentChapter,
-      mediaRef: currentChapter
-    }
-  })
-}
-
-const setChaptersOnGlobalState = (currentChapters: any[]) => {
-  const globalState = getGlobal()
-  setGlobal({
-    player: {
-      ...globalState.player,
-      currentChapters
-    }
-  })
 }
 
 export const loadItemAndPlayTrack = async (
