@@ -266,6 +266,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
 
   _renderEpisodeItem = ({ item, index }) => {
     const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]
+
     return (
       <EpisodeTableCell
         item={item}
@@ -390,34 +391,22 @@ export class EpisodesScreen extends React.Component<Props, State> {
         ? translate('Scan QR Code')
         : translate('Search')
 
-    const isSortLimitQueries = queryFrom === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._categoryKey
+    const shouldQueryIndexedData = queryFrom === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._categoryKey
 
     return (
       <View style={styles.view} {...testProps('episodes_screen_view')}>
         <TableSectionSelectors
-          handleSelectLeftItem={this.selectLeftItem}
-          handleSelectRightItem={this.selectRightItem}
+          handleSelectCategoryItem={this._selectCategory}
+          handleSelectFilterItem={this.selectLeftItem}
+          handleSelectSortItem={this.selectRightItem}
           hideRightItemWhileLoading={hideRightItemWhileLoading}
-          isSortLimitQueries={isSortLimitQueries}
+          shouldQueryIndexedData={shouldQueryIndexedData}
           screenName='EpisodesScreen'
-          selectedLeftItemKey={queryFrom}
-          selectedRightItemKey={querySort}
+          selectedFilterItemKey={queryFrom}
+          selectedSortItemKey={querySort}
           testID={testIDPrefix}
         />
-        {queryFrom === PV.Filters._categoryKey && (
-          <TableSectionSelectors
-            handleSelectLeftItem={(x: string) => this._selectCategory(x)}
-            handleSelectRightItem={(x: string) => this._selectCategory(x, true)}
-            isBottomBar={true}
-            isCategories={true}
-            isSortLimitQueries={isSortLimitQueries}
-            screenName='EpisodesScreen'
-            selectedLeftItemKey={selectedCategory}
-            selectedRightItemKey={selectedSubCategory}
-            testID={`${testIDPrefix}_sub`}
-          />
-        )}
-        {isLoading && <ActivityIndicator />}
+        {isLoading && <ActivityIndicator fillSpace={true} />}
         {!isLoading && queryFrom && (
           <FlatList
             data={flatListData}

@@ -27,12 +27,12 @@ export class DownloadTableCell extends React.PureComponent<Props> {
       bytesTotal = '---',
       bytesWritten = '---',
       completed,
-      episodeTitle = translate('untitled episode'),
+      episodeTitle = translate('Untitled Episode'),
       hasZebraStripe,
       onPress,
       percent,
       podcastImageUrl,
-      podcastTitle = translate('untitled podcast'),
+      podcastTitle = translate('Untitled Podcast'),
       status,
       testID
     } = this.props

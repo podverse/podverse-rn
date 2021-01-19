@@ -151,6 +151,13 @@ export const resumeDownloadingEpisode = (episodeId: string) => {
   })
 }
 
+export const pauseDownloadingEpisodesAll = () => {
+  const { downloadsArray } = getGlobal()
+  for (const task of downloadsArray) {
+    pauseDownloadingEpisode(task.episodeId)
+  }
+}
+
 export const pauseDownloadingEpisode = (episodeId: string) => {
   const { downloadsActive, downloadsArray } = getGlobal()
   pauseDownloadTask(episodeId)

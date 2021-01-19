@@ -1,10 +1,10 @@
 import { convertNowPlayingItemToMediaRef, convertToNowPlayingItem } from 'podverse-shared'
-import { StyleSheet, View as RNView } from 'react-native'
+import { Dimensions, StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
+import { Header } from 'react-navigation-stack'
 import React, { getGlobal, setGlobal } from 'reactn'
 import {
   ActionSheet,
-  ClipInfoView,
   MediaPlayerCarousel,
   NavAddToPlaylistIcon,
   NavDismissIcon,
@@ -21,13 +21,14 @@ import { replaceLinebreaksWithBrTags, safelyUnwrapNestedVariable, testProps } fr
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { getMediaRef } from '../services/mediaRef'
-import { PVTrackPlayer } from '../services/player'
+import { PVTrackPlayer, updateUserPlaybackPosition } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
 import { trackPageView } from '../services/tracking'
 import { getNowPlayingItem } from '../services/userNowPlayingItem'
 import { loadItemAndPlayTrack } from '../state/actions/player'
-import { core } from '../styles'
+import { getHistoryItems } from '../state/actions/userHistoryItem'
+import { core, navHeader } from '../styles'
 
 type Props = {
   navigation?: any
@@ -38,6 +39,42 @@ type State = {}
 const testIDPrefix = 'player_screen'
 
 let eventListenerPlayerNewEpisodeLoaded: any
+
+const screenHeight = Dimensions.get('screen').height
+
+/*
+  carouselTextBottomWrapper: {
+    height: 52
+  },
+  carouselTextTopWrapper: {
+    height: 48
+  },
+  playerControls: {
+    height: 202
+  },
+  pagination: {
+    height: 32
+  }
+
+  console.log('screenHeight', screenHeight)
+  console.log('header height', Header.HEIGHT)
+  console.log('scrollHeight', scrollHeight)
+  console.log('scrollHeightAvailable', scrollHeightAvailable)
+  console.log('imageHeightAvailable', imageHeightAvailable)
+*/
+
+const scrollHeight =
+  screenHeight -
+  (navHeader.headerHeight.paddingTop + Header.HEIGHT + PV.Player.pagination.height + PV.Player.playerControls.height)
+const subBottomHeight = PV.Player.carouselTextSubBottomWrapper.height + PV.Player.carouselTextSubBottomWrapper.marginTop
+const scrollHeightAvailable =
+  scrollHeight -
+  (PV.Player.carouselTextBottomWrapper.height + PV.Player.carouselTextTopWrapper.height + subBottomHeight)
+
+// not sure why I need to do 64 when the padding is 16 on each side...
+const imagePadding = 64
+let imageHeightAvailable = scrollHeightAvailable - imagePadding
+imageHeightAvailable = imageHeightAvailable > 372 ? 372 : imageHeightAvailable
 
 export class PlayerScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
@@ -61,6 +98,8 @@ export class PlayerScreen extends React.Component<Props, State> {
               <NavMakeClipIcon
                 getInitialProgressValue={_getInitialProgressValue}
                 globalTheme={globalTheme}
+                imageHeight={imageHeightAvailable}
+                imageWidth={imageHeightAvailable}
                 navigation={navigation}
               />
               <NavAddToPlaylistIcon
@@ -106,6 +145,15 @@ export class PlayerScreen extends React.Component<Props, State> {
     trackPageView('/player', 'Player Screen')
 
     await this._handleUpdateFullEpisode()
+  }
+
+  async componentWillUnmount() {
+    try {
+      await updateUserPlaybackPosition()
+      await getHistoryItems(1, [])
+    } catch (e) {
+      console.log('PlayerScreen componentWillUnmount', e)
+    }
   }
 
   _handleNewEpisodeLoaded = async () => {
@@ -199,15 +247,6 @@ export class PlayerScreen extends React.Component<Props, State> {
     }
   }
 
-  _toggleShowFullClipInfo = () => {
-    setGlobal({
-      screenPlayer: {
-        ...this.global.screenPlayer,
-        showFullClipInfo: !this.global.screenPlayer.showFullClipInfo
-      }
-    })
-  }
-
   _showShareActionSheet = () => {
     setGlobal({
       screenPlayer: {
@@ -239,7 +278,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       title = `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate('shared using brandName')}`
     } else {
       url = this.global.urlsWeb.clip + mediaRefId
-      title = `${nowPlayingItem.clipTitle ? nowPlayingItem.clipTitle + ' – ' : translate('untitled clip – ')}`
+      title = `${nowPlayingItem.clipTitle ? nowPlayingItem.clipTitle + ' – ' : translate('Untitled Clip – ')}`
       title += `${nowPlayingItem.podcastTitle} – ${nowPlayingItem.episodeTitle} ${translate(
         'clip shared using brandName'
       )}`
@@ -261,7 +300,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { player, screenPlayer } = this.global
     const { episode, nowPlayingItem } = player
-    const { isLoading, showFullClipInfo, showShareActionSheet } = screenPlayer
+    const { showShareActionSheet } = screenPlayer
     let { mediaRef } = player
 
     if (nowPlayingItem && nowPlayingItem.clipId) {
@@ -276,29 +315,18 @@ export class PlayerScreen extends React.Component<Props, State> {
       episode.description = replaceLinebreaksWithBrTags(episode.description)
     }
 
+    const hasChapters = episode && episode.chaptersUrl
+
     return (
       <React.Fragment>
         <OpaqueBackground nowPlayingItem={nowPlayingItem}>
           <View style={styles.view} transparent={true} {...testProps('player_screen_view')}>
-            {!showFullClipInfo && <MediaPlayerCarousel />}
-            {showFullClipInfo && (mediaRef || (nowPlayingItem && nowPlayingItem.clipId)) && (
-              <ClipInfoView
-                createdAt={mediaRef.createdAt}
-                endTime={mediaRef.endTime}
-                handleClosePress={this._toggleShowFullClipInfo}
-                hideDynamicAdsWarning={nowPlayingItem.podcastHideDynamicAdsWarning}
-                isLoading={isLoading}
-                isOfficialChapter={mediaRef.isOfficialChapter}
-                isOfficialSoundBite={mediaRef.isOfficialSoundBite}
-                isPublic={mediaRef.isPublic}
-                navigation={navigation}
-                {...(mediaRef.owner ? { ownerId: mediaRef.owner.id } : {})}
-                {...(mediaRef.owner ? { ownerIsPublic: mediaRef.owner.isPublic } : {})}
-                {...(mediaRef.owner ? { ownerName: mediaRef.owner.name } : {})}
-                startTime={mediaRef.startTime}
-                {...(mediaRef.title ? { title: mediaRef.title } : {})}
-              />
-            )}
+            <MediaPlayerCarousel
+              hasChapters={hasChapters}
+              imageHeight={imageHeightAvailable}
+              imageWidth={imageHeightAvailable}
+              navigation={navigation}
+            />
             <PlayerControls navigation={navigation} />
             <ActionSheet
               handleCancelPress={this._dismissShareActionSheet}

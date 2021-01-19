@@ -177,6 +177,11 @@ export const removeHTMLAttributesFromString = (html: string) => {
   return $.html()
 }
 
+export const removeExtraInfoFromEpisodeDescription = (html: string) => {
+  html = html.replace('<p>Show Notes</p>', '')
+  return html.replace(/<p>\s*<\/p>/, '')
+}
+
 export const filterHTMLElementsFromString = (html: string) => {
   if (html) {
     const finalHtml = html.replace(/<audio.*>.*?<\/audio>|<video.*>.*?<\/video>|<img.*>.*?<\/img>|<img.*>/gi, '')
@@ -193,7 +198,7 @@ export const formatTitleViewHtml = (episode: any) => {
   } else if (episode.title) {
     return `<p>${episode.title}</p>`
   } else {
-    return 'untitled episode'
+    return 'Untitled Episode'
   }
 }
 

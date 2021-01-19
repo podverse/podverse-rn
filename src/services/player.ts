@@ -290,10 +290,10 @@ export const createTrack = async (item: NowPlayingItem) => {
     clipId,
     episodeId,
     episodeMediaUrl = '',
-    episodeTitle = 'untitled episode',
+    episodeTitle = 'Untitled Episode',
     podcastImageUrl,
     podcastShrunkImageUrl,
-    podcastTitle = 'untitled podcast'
+    podcastTitle = 'Untitled Podcast'
   } = item
   const id = clipId || episodeId
   let track = null
@@ -421,7 +421,13 @@ export const restartNowPlayingItemClip = async () => {
 
 export const setPlaybackSpeed = async (rate: number) => {
   await AsyncStorage.setItem(PV.Keys.PLAYER_PLAYBACK_SPEED, JSON.stringify(rate))
-  await TrackPlayer.setRate(rate)
+
+  const currentState = await PVTrackPlayer.getState()
+  const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
+
+  if (isPlaying) {
+    await TrackPlayer.setRate(rate)
+  }
 }
 
 export const getPlaybackSpeed = async () => {
@@ -463,7 +469,6 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (t
 
 export const togglePlay = async () => {
   const state = await TrackPlayer.getState()
-  updateUserPlaybackPosition()
 
   if (state === TrackPlayer.STATE_NONE) {
     TrackPlayer.play()

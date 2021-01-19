@@ -16,6 +16,7 @@ import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
 import { downloadCategoriesList } from './src/services/category'
 import { gaInitialize } from './src/services/googleAnalytics'
+import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 
@@ -81,7 +82,11 @@ class App extends Component<Props, State> {
       refreshDownloads()
     } else if (state.type === 'cellular') {
       const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-      if (!downloadingWifiOnly) refreshDownloads()
+      if (downloadingWifiOnly) {
+        pauseDownloadingEpisodesAll()
+      } else {
+        refreshDownloads()
+      }
     }
   }
 

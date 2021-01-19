@@ -91,10 +91,10 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
   _ListHeaderComponent = () => {
     return (
       <TableSectionSelectors
-        handleSelectRightItem={this.selectRightItem}
+        handleSelectSortItem={this.selectRightItem}
         screenName='EpisodeScreen'
-        selectedLeftItemKey={PV.Filters._clipsKey}
-        selectedRightItemKey={this.state.querySort}
+        selectedFilterItemKey={PV.Filters._clipsKey}
+        selectedSortItemKey={this.state.querySort}
       />
     )
   }

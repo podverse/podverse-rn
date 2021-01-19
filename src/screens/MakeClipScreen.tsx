@@ -8,12 +8,12 @@ import {
   TouchableWithoutFeedback,
   View as RNView
 } from 'react-native'
-import RNPickerSelect from 'react-native-picker-select'
 import Share from 'react-native-share'
 import React from 'reactn'
 import {
   ActivityIndicator,
   Divider,
+  DropdownButtonSelect,
   FastImage,
   Icon,
   NavHeaderButtonText,
@@ -38,7 +38,7 @@ import {
 } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
-import { core, darkTheme, hidePickerIconOnAndroidTransparent, playerStyles } from '../styles'
+import { core, darkTheme, iconStyles, playerStyles } from '../styles'
 
 type Props = {
   navigation?: any
@@ -73,7 +73,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
             color={globalTheme.text.color}
             handlePress={navigation.getParam('_saveMediaRef')}
             testID={testIDPrefix}
-            text={translate('Save')}
+            text={translate('Save Clip')}
           />
         </RNView>
       )
@@ -285,7 +285,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 text: translate('Share'),
                 onPress: async () => {
                   const { nowPlayingItem = {} } = this.global.player
-                  const title = `${data.title || translate('untitled clip')} – ${nowPlayingItem.podcastTitle} – ${
+                  const title = `${data.title || translate('Untitled Clip')} – ${nowPlayingItem.podcastTitle} – ${
                     nowPlayingItem.episodeTitle
                   }${translate('clip created using brandName')}`
                   try {
@@ -353,10 +353,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { globalTheme, player, session } = this.global
-    const isDarkMode = globalTheme === darkTheme
+    const { globalTheme, player } = this.global
     const { backupDuration, nowPlayingItem, playbackRate, playbackState } = player
-    const { userInfo } = session
     const {
       endTime,
       isLoggedIn,
@@ -367,6 +365,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
       startTime,
       title
     } = this.state
+    const imageHeight = navigation.getParam('imageHeight')
+    const imageWidth = navigation.getParam('imageWidth')
+    const imageStyle = [styles.image, { height: imageHeight, width: imageWidth }]
 
     return (
       <OpaqueBackground nowPlayingItem={nowPlayingItem}>
@@ -377,60 +378,45 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={1}
-                  style={[core.textInputLabel, styles.loginMessage]}>
+                  style={[core.textInputEyeBrow, styles.loginMessage]}>
                   {translate('You must be logged in to make clips')}
                 </Text>
                 <Divider style={styles.divider} />
               </RNView>
             )}
-            <View style={[core.row, styles.row]} transparent={true}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                numberOfLines={1}
-                style={[core.textInputLabel, styles.textInputLabel]}>
-                {translate('Clip Title')}
-              </Text>
-              <RNPickerSelect
-                items={privacyItems()}
-                onValueChange={this._handleSelectPrivacy}
-                placeholder={placeholderItem}
-                style={[hidePickerIconOnAndroidTransparent(isDarkMode), { backgroundColor: 'transparent' }]}
-                touchableWrapperProps={{ testID: `${testIDPrefix}_picker_select_privacy` }}
-                useNativeAndroidPickerStyle={false}
-                value={isPublicItemSelected.value}>
-                <View style={core.selectorWrapper} transparent={true}>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    numberOfLines={1}
-                    style={[styles.isPublicText, globalTheme.text]}>
-                    {isPublicItemSelected.label}
-                  </Text>
-                  <Icon name='angle-down' size={14} style={[styles.isPublicTextIcon, globalTheme.text]} />
-                </View>
-              </RNPickerSelect>
-            </View>
             <TextInput
               autoCapitalize='none'
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               onChangeText={this._onChangeTitle}
               numberOfLines={3}
-              placeholder={translate('optional')}
+              placeholder={translate('Clip name')}
               returnKeyType='done'
-              style={[styles.textInput, globalTheme.textInput]}
+              style={globalTheme.textInput}
               underlineColorAndroid='transparent'
               testID={`${testIDPrefix}_title`}
               value={title}
+              wrapperStyle={styles.textInputTitleWrapper}
             />
           </View>
-          <View style={styles.wrapperMiddle} transparent={true}>
+          <DropdownButtonSelect
+            helpText={translate('Tip: Naming your clips')}
+            items={privacyItems()}
+            label={isPublicItemSelected.label}
+            onValueChange={this._handleSelectPrivacy}
+            placeholder={placeholderItem}
+            testID={testIDPrefix}
+            value={isPublicItemSelected.value}
+            wrapperStyle={styles.dropdownButtonSelectWrapper}
+          />
+          <View style={styles.imageWrapper} transparent={true}>
             <FastImage
               resizeMode='contain'
               source={nowPlayingItem && nowPlayingItem.podcastImageUrl}
-              styles={styles.image}
+              styles={imageStyle}
             />
           </View>
           <View style={styles.wrapperBottom} transparent={true}>
-            <View style={core.row} transparent={true}>
+            <View style={styles.wrapperBottomInside} transparent={true}>
               <TimeInput
                 handlePreview={() => {
                   if (startTime) {
@@ -438,12 +424,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   }
                 }}
                 handleSetTime={this._setStartTime}
-                labelText={translate('Start Time')}
+                labelText={translate('Start time')}
                 placeholder='--:--'
                 testID={`${testIDPrefix}_start`}
                 time={startTime}
-                wrapperStyle={styles.timeInput}
               />
+              <View style={styles.wrapperBottomInsideSpacer} transparent={true} />
               <TimeInput
                 handleClearTime={endTime ? this._clearEndTime : null}
                 handlePreview={() => {
@@ -452,123 +438,153 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   }
                 }}
                 handleSetTime={this._setEndTime}
-                labelText={translate('End Time')}
+                labelText={translate('End time')}
                 placeholder={translate('optional')}
                 testID={`${testIDPrefix}_end`}
                 time={endTime}
-                wrapperStyle={styles.timeInput}
               />
             </View>
-            <View style={styles.progressWrapper} transparent={true}>
-              <PlayerProgressBar
-                backupDuration={backupDuration}
-                clipEndTime={endTime}
-                clipStartTime={startTime}
-                globalTheme={globalTheme}
-                {...(progressValue || progressValue === 0 ? { value: progressValue } : {})}
-              />
+            <View style={styles.clearEndTimeWrapper} transparent={true}>
+              <View style={styles.clearEndTimeTextSpacer} transparent={true} />
+              {endTime && (
+                <TouchableWithoutFeedback
+                  hitSlop={{
+                    bottom: 0,
+                    left: 2,
+                    right: 8,
+                    top: 4
+                  }}
+                  onPress={this._clearEndTime}
+                  {...testProps(`${testIDPrefix}_time_input_clear_button`)}>
+                  <Text style={styles.clearEndTimeText}>Remove end time</Text>
+                </TouchableWithoutFeedback>
+              )}
             </View>
-            <RNView style={[styles.makeClipPlayerControls, globalTheme.makeClipPlayerControlsWrapper]}>
-              <TouchableOpacity
-                onPress={this._playerJumpBackward}
-                style={playerStyles.icon}
-                {...testProps(`${testIDPrefix}_jump_backward`)}>
-                <Icon name='undo-alt' size={32} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={this._playerMiniJumpBackward}
-                style={playerStyles.icon}
-                {...testProps(`${testIDPrefix}_mini_jump_backward`)}>
-                <Icon name='angle-left' size={24} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => togglePlay()}
-                style={[playerStyles.playButton, styles.playButton]}
-                {...testProps(`${testIDPrefix}_toggle_play`)}>
-                {playbackState !== PVTrackPlayer.STATE_BUFFERING && (
-                  <Icon
-                    name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
-                    size={48}
-                    testID={`${testIDPrefix}_${playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}`}
-                  />
-                )}
-                {playbackState === PVTrackPlayer.STATE_BUFFERING && (
-                  <ActivityIndicator styles={styles.activityIndicator} />
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={this._playerMiniJumpForward}
-                style={playerStyles.icon}
-                {...testProps(`${testIDPrefix}_mini_jump_forward`)}>
-                <Icon name='angle-right' size={24} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={this._playerJumpForward}
-                style={playerStyles.icon}
-                {...testProps(`${testIDPrefix}_jump_forward`)}>
-                <Icon name='redo-alt' size={32} />
-              </TouchableOpacity>
-            </RNView>
-            <View style={styles.bottomRow} transparent={true}>
-              <TouchableOpacity
-                hitSlop={{
-                  bottom: 4,
-                  left: 4,
-                  right: 4,
-                  top: 4
-                }}
-                onPress={() => this.setState({ showHowToModal: true })}
-                {...testProps(`${testIDPrefix}_show_how_to`)}>
-                <View transparent={true}>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    style={[styles.bottomRowTextMini, globalTheme.link]}>
-                    {translate('How To')}
-                  </Text>
+            <View style={[styles.wrapper, globalTheme.player]} transparent={true}>
+              <View style={styles.progressWrapper} transparent={true}>
+                <PlayerProgressBar
+                  backupDuration={backupDuration}
+                  clipEndTime={endTime}
+                  clipStartTime={startTime}
+                  globalTheme={globalTheme}
+                  isMakeClipScreen={true}
+                  {...(progressValue || progressValue === 0 ? { value: progressValue } : {})}
+                />
+              </View>
+              <View style={styles.playerControlsMiddleRow} transparent={true}>
+                <View style={styles.playerControlsMiddleRowTop} transparent={true}>
+                  <TouchableOpacity
+                    onPress={this._playerJumpBackward}
+                    style={playerStyles.icon}
+                    {...testProps(`${testIDPrefix}_jump_backward`)}>
+                    <Icon name='undo-alt' size={32} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={this._playerMiniJumpBackward}
+                    style={playerStyles.icon}
+                    {...testProps(`${testIDPrefix}_mini_jump_backward`)}>
+                    <Icon name='angle-left' size={24} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => togglePlay()}
+                    style={playerStyles.playButton}
+                    {...testProps(`${testIDPrefix}_toggle_play`)}>
+                    {playbackState !== PVTrackPlayer.STATE_BUFFERING && (
+                      <Icon
+                        name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
+                        size={20}
+                        testID={`${testIDPrefix}_${playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}`}
+                      />
+                    )}
+                    {playbackState === PVTrackPlayer.STATE_BUFFERING && <ActivityIndicator />}
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={this._playerMiniJumpForward}
+                    style={playerStyles.icon}
+                    {...testProps(`${testIDPrefix}_mini_jump_forward`)}>
+                    <Icon name='angle-right' size={24} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={this._playerJumpForward}
+                    style={playerStyles.icon}
+                    {...testProps(`${testIDPrefix}_jump_forward`)}>
+                    <Icon name='redo-alt' size={32} />
+                  </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
-              <TouchableWithoutFeedback
-                hitSlop={{
-                  bottom: 4,
-                  left: 4,
-                  right: 4,
-                  top: 4
-                }}
-                onPress={this._adjustSpeed}
-                {...testProps(`${testIDPrefix}_adjust_speed`)}>
-                <View transparent={true}>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    style={[styles.bottomButton, styles.bottomRowText]}
-                    testID={`${testIDPrefix}_adjust_speed_label`}>
-                    {`${playbackRate}X`}
-                  </Text>
-                </View>
-              </TouchableWithoutFeedback>
-              <TouchableOpacity
-                hitSlop={{
-                  bottom: 4,
-                  left: 4,
-                  right: 4,
-                  top: 4
-                }}
-                onPress={() => navigation.navigate(PV.RouteNames.PlayerFAQScreen)}
-                {...testProps(`${testIDPrefix}_show_faq`)}>
-                <View transparent={true}>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    style={[styles.bottomRowTextMini, globalTheme.link]}>
-                    FAQ
-                  </Text>
-                </View>
-              </TouchableOpacity>
+              </View>
+              <View style={styles.playerControlsBottomRow} transparent={true}>
+                <TouchableOpacity
+                  hitSlop={{
+                    bottom: 4,
+                    left: 4,
+                    right: 4,
+                    top: 4
+                  }}
+                  onPress={() => this.setState({ showHowToModal: true })}
+                  {...testProps(`${testIDPrefix}_show_how_to`)}>
+                  <View transparent={true}>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                      style={[
+                        styles.playerControlsBottomButton,
+                        styles.playerControlsBottomRowText,
+                        globalTheme.textSecondary
+                      ]}>
+                      {translate('How To')}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableWithoutFeedback
+                  hitSlop={{
+                    bottom: 4,
+                    left: 4,
+                    right: 4,
+                    top: 4
+                  }}
+                  onPress={this._adjustSpeed}
+                  {...testProps(`${testIDPrefix}_adjust_speed`)}>
+                  <View transparent={true}>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                      style={[
+                        styles.playerControlsBottomButton,
+                        styles.playerControlsBottomRowText,
+                        globalTheme.textSecondary
+                      ]}
+                      testID={`${testIDPrefix}_adjust_speed_label`}>
+                      {`${playbackRate}X`}
+                    </Text>
+                  </View>
+                </TouchableWithoutFeedback>
+                <TouchableOpacity
+                  hitSlop={{
+                    bottom: 4,
+                    left: 4,
+                    right: 4,
+                    top: 4
+                  }}
+                  onPress={() => navigation.navigate(PV.RouteNames.PlayerFAQScreen)}
+                  {...testProps(`${testIDPrefix}_show_faq`)}>
+                  <View transparent={true}>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                      style={[
+                        styles.playerControlsBottomButton,
+                        styles.playerControlsBottomRowText,
+                        globalTheme.textSecondary
+                      ]}>
+                      FAQ
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
         {isSaving && (
           <Modal transparent={true} visible={true}>
             <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
-              <ActivityIndicator styles={styles.activityIndicator} />
+              <ActivityIndicator isOverlay={true} />
             </RNView>
           </Modal>
         )}
@@ -580,13 +596,10 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   {translate('Tap the Start and End Time inputs to set them with the current track time')}
                 </Text>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  {translate('Press the left or right caret symbols to adjust the time by one second')}
+                  {translate('Press the left or right caret symbols to adjust the current time by one second')}
                 </Text>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  {translate('Press the blue play button to preview the start or end time')}
-                </Text>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  {translate('If a podcast uses dynamically inserted ads its clip start times will not stay accurate')}
+                  {translate('If a podcast inserts dynamic ads the clip start time may not stay accurate')}
                 </Text>
                 <TouchableOpacity onPress={this._hideHowTo} {...testProps(`${testIDPrefix}_close`)}>
                   <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.modalButton}>
@@ -626,27 +639,42 @@ const privacyItems = () => {
 }
 
 const styles = StyleSheet.create({
-  activityIndicator: {
-    backgroundColor: 'transparent'
+  dropdownButtonSelectWrapper: {
+    marginTop: 16
   },
-  bottomButton: {
+  playerControlsBottomButton: {
+    alignItems: 'center',
+    minHeight: 32,
     paddingVertical: 4,
     textAlign: 'center',
-    width: 60
+    minWidth: 54
   },
-  bottomRow: {
+  playerControlsBottomRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    height: PV.Player.styles.bottomRow.height,
-    justifyContent: 'space-around'
+    minHeight: PV.Player.styles.bottomRow.height,
+    justifyContent: 'space-evenly',
+    marginHorizontal: 15,
+    marginTop: 10
   },
-  bottomRowTextMini: {
+  playerControlsBottomRowText: {
+    fontSize: PV.Fonts.sizes.md,
+    fontWeight: PV.Fonts.weights.bold
+  },
+  clearEndTimeText: {
+    color: PV.Colors.skyLight,
+    flex: 1,
     fontSize: PV.Fonts.sizes.sm,
-    minWidth: 80,
+    paddingBottom: 14,
+    paddingTop: 8,
     textAlign: 'center'
   },
-  bottomRowText: {
-    fontSize: PV.Fonts.sizes.md
+  clearEndTimeTextSpacer: {
+    flex: 1
+  },
+  clearEndTimeWrapper: {
+    minHeight: 40,
+    flexDirection: 'row'
   },
   divider: {
     marginBottom: 8,
@@ -659,6 +687,12 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     marginVertical: 8
+  },
+  imageWrapper: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 16
   },
   isPublicText: {
     fontSize: PV.Fonts.sizes.xl,
@@ -673,12 +707,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 4
   },
-  makeClipPlayerControls: {
+  playerControlsMiddleRow: {
+    marginTop: 2
+  },
+  playerControlsMiddleRowTop: {
     alignItems: 'center',
     flexDirection: 'row',
-    minHeight: 60,
-    justifyContent: 'space-between',
-    marginHorizontal: 8
+    justifyContent: 'space-evenly',
+    marginTop: 2
   },
   modalBackdrop: {
     alignItems: 'center',
@@ -702,46 +738,33 @@ const styles = StyleSheet.create({
   navHeaderButtonWrapper: {
     flexDirection: 'row'
   },
-  playButton: {
-    marginHorizontal: 'auto'
-  },
   progressWrapper: {
-    marginVertical: 8
+    marginTop: 5
   },
-  row: {
-    alignItems: 'center'
-  },
-  textInput: {
-    minHeight: PV.TextInputs.multiline.height,
-    paddingHorizontal: 8,
-    paddingVertical: 6
-  },
-  textInputLabel: {
+  textInputEyeBrow: {
     alignItems: 'center',
     flex: 1
   },
-  timeInput: {
-    flex: 1,
-    marginHorizontal: 8
-  },
-  timeInputTouchable: {
-    flex: 1
-  },
-  timeInputTouchableDelete: {
-    flex: 0,
-    width: 44
+  textInputTitleWrapper: {
+    marginBottom: 0
   },
   view: {
     flex: 1
   },
-  wrapperBottom: {
-    flex: 0
+  wrapper: {
+    borderTopWidth: 1
   },
-  wrapperMiddle: {
-    flex: 1,
-    marginBottom: 8,
-    marginHorizontal: 8,
-    marginTop: 12
+  wrapperBottom: {
+    flex: 0,
+    paddingHorizontal: 0
+  },
+  wrapperBottomInside: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 8
+  },
+  wrapperBottomInsideSpacer: {
+    width: 16
   },
   wrapperTop: {
     flex: 0,

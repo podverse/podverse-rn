@@ -36,7 +36,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const { id, mediaUrl, pubDate = '', podcast = {} } = item
     let { description = '', title = '' } = item
     const { imageUrl = '' } = podcast
-    const podcastTitle = podcast.title || translate('untitled podcast')
+    const podcastTitle = podcast.title || translate('Untitled Podcast')
     description = removeHTMLFromString(description)
     description = decodeHTMLString(description)
 
@@ -45,7 +45,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const isDownloading = downloadsActive[id]
     const isDownloaded = item.addByRSSPodcastFeedUrl ? downloadedEpisodeIds[mediaUrl] : downloadedEpisodeIds[id]
 
-    if (!title) title = translate('untitled episode')
+    if (!title) title = translate('Untitled Episode')
 
     const titleStyle = (podcastTitle ? styles.title : [styles.title, { marginTop: 0 }]) as any
 

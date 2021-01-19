@@ -347,7 +347,7 @@ export class QueueScreen extends React.Component<Props, State> {
           <View transparent={isTransparent}>
             {!!nowPlayingItem && (
               <View transparent={isTransparent}>
-                <TableSectionHeader containerStyles={styles.headerNowPlayingItem} title={translate('Now Playing')} />
+                <TableSectionHeader includePadding={true} title={translate('Now Playing')} />
                 <QueueTableCell
                   clipEndTime={nowPlayingItem.clipEndTime}
                   clipStartTime={nowPlayingItem.clipStartTime}

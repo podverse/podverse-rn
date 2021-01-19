@@ -28,8 +28,7 @@ const {
   _titleKey,
   _myPlaylistsKey,
   _fromThisPodcastKey,
-  _fromThisEpisodeKey,
-  _allCategoriesKey
+  _fromThisEpisodeKey
 } = Filters
 
 const _top = [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear, _topAllTime]
@@ -180,7 +179,6 @@ export const FilterOptions = {
     ClipsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _myClipsKey],
       sort: [_mostRecentKey, ..._top],
-      sublist: [{ label: 'All', value: _allCategoriesKey }],
       hideSort: [],
       hideIfNotLoggedIn: [_myClipsKey]
     },
@@ -188,27 +186,26 @@ export const FilterOptions = {
       type: [_chaptersKey, _clipsKey, _showNotesKey, _titleKey],
       addByPodcastRSSFeedURLType: [_showNotesKey, _titleKey],
       sort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey],
-      sublist: [],
-      hideSort: [_chaptersKey, _showNotesKey, _titleKey]
+      hideSort: [_chaptersKey, _showNotesKey, _titleKey],
+      includeChronological: true
     },
     EpisodesScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
       sort: [_mostRecentKey, ..._top],
       sortLimitQueries: [..._top],
-      sublist: [{ label: 'All', value: _allCategoriesKey }],
       hideSort: []
     },
     PlayerScreen: {
       type: [_chaptersKey, _clipsKey, _showNotesKey, _titleKey],
       addByPodcastRSSFeedURLType: [_showNotesKey, _titleKey],
       sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
-      sublist: fromItems,
-      hideSort: [_chaptersKey, _showNotesKey, _titleKey]
+      hideSort: [_chaptersKey, _showNotesKey, _titleKey],
+      fromItems,
+      includeChronological: true
     },
     PlaylistsScreen: {
       type: [_myPlaylistsKey, _subscribedKey],
       sort: [],
-      sublist: [],
       hideSort: []
     },
     PodcastScreen: {
@@ -216,19 +213,17 @@ export const FilterOptions = {
       addByPodcastRSSFeedURLType: [_episodesKey, _aboutPodcastKey],
       addByPodcastRSSFeedURLSort: [_mostRecentKey],
       sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
-      sublist: [],
       hideSort: [_downloadedKey, _aboutPodcastKey]
     },
     PodcastsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
       sort: [..._top],
-      sublist: [{ label: 'All', value: _allCategoriesKey }],
-      hideSort: [_subscribedKey, _downloadedKey]
+      hideSort: [_subscribedKey, _downloadedKey],
+      includeAlphabetical: [_subscribedKey]
     },
     ProfileScreen: {
       type: [_podcastsKey, _clipsKey, _playlistsKey],
       sort: [_mostRecentKey, ..._top],
-      sublist: [],
       hideSort: [_playlistsKey],
       includeAlphabetical: [_podcastsKey]
     }

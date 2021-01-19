@@ -110,7 +110,7 @@ export class MembershipScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.wrapper} {...testProps('membership_screen_view')}>
-        {isLoading && isLoggedIn && <ActivityIndicator />}
+        {isLoading && isLoggedIn && <ActivityIndicator fillSpace={true} />}
         {!isLoading && showNoInternetConnectionMessage && (
           <View style={styles.textRowCentered}>
             <Text style={[styles.subText, { textAlign: 'center' }]}>

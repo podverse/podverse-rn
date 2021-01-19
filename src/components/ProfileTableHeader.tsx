@@ -34,7 +34,7 @@ export const ProfileTableHeader = (props: Props) => {
     <View>
       {isLoading && (
         <View style={styles.wrapper}>
-          <ActivityIndicator />
+          <ActivityIndicator fillSpace={true} />
         </View>
       )}
       {!isLoading && !isNotFound && (

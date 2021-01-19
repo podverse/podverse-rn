@@ -52,6 +52,7 @@ export class SearchScreen extends React.Component<Props, State> {
       headerRight: null
     }
   }
+  searchBarInput: any
 
   constructor(props: Props) {
     super(props)
@@ -72,10 +73,12 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    this.searchBarInput.focus()
+
     trackPageView('/search', 'Search Screen')
   }
 
-  _handleSearchBarClear = (text: string) => {
+  _handleSearchBarClear = () => {
     this.setState({
       flatListData: [],
       flatListDataTotalCount: null,
@@ -236,9 +239,9 @@ export class SearchScreen extends React.Component<Props, State> {
         <ButtonGroup buttons={buttons} onPress={this._handleSearchTypePress} selectedIndex={searchType} />
         <SearchBar
           containerStyle={styles.searchBarContainer}
-          inputContainerStyle={core.searchBar}
+          handleClear={this._handleSearchBarClear}
+          inputRef={(ref: any) => (this.searchBarInput = ref)}
           onChangeText={this._handleSearchBarTextChange}
-          onClear={this._handleSearchBarClear}
           placeholder={translate('search')}
           testID={testIDPrefix}
           value={searchBarText}
@@ -264,7 +267,7 @@ export class SearchScreen extends React.Component<Props, State> {
             renderItem={this._renderPodcastItem}
           />
         )}
-        {isLoading && <ActivityIndicator />}
+        {isLoading && <ActivityIndicator fillSpace={true} />}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={this._moreButtons()}
@@ -316,13 +319,7 @@ const buttons = [translate('Podcast'), translate('Host')]
 
 const styles = StyleSheet.create({
   searchBarContainer: {
-    borderBottomWidth: 0,
-    borderTopWidth: 0,
-    flex: 0,
-    justifyContent: 'center',
-    marginBottom: 16,
-    marginTop: 12,
-    minHeight: PV.FlatList.searchBar.height
+    marginVertical: 12
   },
   view: {
     flex: 1,

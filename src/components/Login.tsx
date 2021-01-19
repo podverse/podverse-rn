@@ -5,6 +5,7 @@ import { TextInput } from '.'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
+import { core } from '../styles'
 
 type Props = {
   bottomButtons: any
@@ -58,7 +59,7 @@ export class Login extends React.Component<Props, State> {
   render() {
     const { bottomButtons, isLoading } = this.props
     const { email, password, submitIsDisabled } = this.state
-    const { fontScaleMode } = this.global
+    const { fontScaleMode, globalTheme } = this.global
     const disabledStyle = submitIsDisabled ? { backgroundColor: PV.Colors.gray } : null
     const disabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
 
@@ -79,11 +80,10 @@ export class Login extends React.Component<Props, State> {
             this.secondTextInput.focus()
           }}
           placeholder={translate('Email')}
-          placeholderTextColor={PV.Colors.gray}
           returnKeyType='next'
-          style={styles.textField}
           testID={`${testIDPrefix}_email`}
           value={email}
+          wrapperStyle={core.textInputWrapper}
         />
         <TextInput
           autoCapitalize='none'
@@ -91,16 +91,15 @@ export class Login extends React.Component<Props, State> {
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           onChangeText={this.passwordChanged}
           placeholder={translate('Password')}
-          placeholderTextColor={PV.Colors.gray}
           inputRef={(input) => {
             this.secondTextInput = input
           }}
           returnKeyType='done'
           secureTextEntry={true}
-          style={styles.textField}
           testID={`${testIDPrefix}_password`}
           value={password}
           underlineColorAndroid='transparent'
+          wrapperStyle={core.textInputWrapper}
         />
         <TouchableOpacity activeOpacity={1}>
           <>
@@ -136,14 +135,6 @@ const styles = StyleSheet.create({
     color: PV.Colors.brandColor,
     fontSize: PV.Fonts.sizes.md,
     fontWeight: 'bold'
-  },
-  textField: {
-    backgroundColor: PV.Colors.white,
-    color: PV.Colors.black,
-    fontSize: PV.Fonts.sizes.lg,
-    height: 50,
-    marginBottom: 30,
-    paddingHorizontal: 8
   },
   scrollView: {
     width: '100%'

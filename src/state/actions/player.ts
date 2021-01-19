@@ -17,6 +17,7 @@ import {
   setNowPlayingItem as setNowPlayingItemService
 } from '../../services/userNowPlayingItem'
 import { getQueueItems } from '../../state/actions/queue'
+import { clearChapterPlaybackInfo, retriveNowPlayingItemChapters, setChaptersOnGlobalState } from './playerChapters'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
   if (!item) return
@@ -49,7 +50,8 @@ export const initializePlayerQueue = async () => {
   const nowPlayingItem = await initializePlayerQueueService()
 
   if (nowPlayingItem) {
-    await updatePlayerState(nowPlayingItem)
+    const shouldPlay = false
+    await loadItemAndPlayTrack(nowPlayingItem, shouldPlay)
     showMiniPlayer()
   }
 
@@ -130,6 +132,8 @@ export const loadItemAndPlayTrack = async (
   shouldPlay: boolean,
   forceUpdateOrderDate?: boolean
 ) => {
+  clearChapterPlaybackInfo()
+
   if (item) {
     await updatePlayerState(item)
     await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate)
@@ -147,6 +151,10 @@ export const loadItemAndPlayTrack = async (
     async () => {
       const globalState = getGlobal()
       trackPlayerScreenPageView(item, globalState)
+      if (item && item.episodeId) {
+        const currentChapters = await retriveNowPlayingItemChapters(item.episodeId)
+        setChaptersOnGlobalState(currentChapters)
+      }
     }
   )
 }

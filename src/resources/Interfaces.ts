@@ -19,6 +19,8 @@ export interface GlobalTheme {
   buttonPrimaryWrapper?: any
   buttonDisabledWrapper?: any
   divider?: any
+  dropdownButtonIcon?: any
+  dropdownButtonText?: any
   flatList?: any
   inputContainerText?: any
   link?: any
@@ -45,6 +47,8 @@ export interface GlobalTheme {
   text?: any
   textInput?: any
   textInputIcon?: any
+  textInputEyeBrow?: any
+  textInputPreLabel?: any
   textInputWrapper?: any
   view?: any
 }
@@ -92,6 +96,8 @@ export interface InitialState {
     shouldShowAlert: boolean
   }
   player: {
+    currentChapter: any
+    currentChapters: any
     hasErrored: boolean
     isPlaying: boolean
     nowPlayingItem: any
@@ -193,6 +199,9 @@ export interface IFilters {
   _fromThisPodcastKey: string
   _fromThisEpisodeKey: string
   _allCategoriesKey: string
+  _sectionCategoryKey: string
+  _sectionFilterKey: string
+  _sectionSortKey: string
 }
 
 interface IFontLargeSizes {

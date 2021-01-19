@@ -611,12 +611,12 @@ export class PodcastScreen extends React.Component<Props, State> {
         />
         {!showSettings && (
           <TableSectionSelectors
-            handleSelectLeftItem={this.selectLeftItem}
-            handleSelectRightItem={this.selectRightItem}
+            handleSelectFilterItem={this.selectLeftItem}
+            handleSelectSortItem={this.selectRightItem}
             isAddByRSSPodcastFeedUrl={podcast && podcast.addByRSSPodcastFeedUrl}
             screenName='PodcastScreen'
-            selectedLeftItemKey={viewType}
-            selectedRightItemKey={querySort}
+            selectedFilterItemKey={viewType}
+            selectedSortItemKey={querySort}
             testID={testIDPrefix}
           />
         )}
@@ -653,7 +653,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         )}
         {!showSettings && (
           <View style={styles.view}>
-            {isLoading && <ActivityIndicator />}
+            {isLoading && <ActivityIndicator fillSpace={true} />}
             {!isLoading && viewType !== PV.Filters._aboutPodcastKey && flatListData && podcast && (
               <FlatList
                 data={flatListData}

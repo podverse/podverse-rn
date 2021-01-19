@@ -257,7 +257,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
           ? { episodePubDate: readableDate(item.episode.pubDate) }
           : {})}
         {...(queryFrom === PV.Filters._fromThisPodcastKey
-          ? { episodeTitle: item.episode.title || translate('untitled episode') }
+          ? { episodeTitle: item.episode.title || translate('Untitled Episode') }
           : {})}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
         handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, podcast))}
@@ -313,27 +313,26 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
     return (
       <View style={[styles.wrapper, { width }]} transparent={true}>
         <TableSectionSelectors
-          handleSelectLeftItem={this._selectViewType}
-          handleSelectRightItem={this._selectQuerySort}
+          handleSelectFilterItem={this._selectViewType}
+          handleSelectSortItem={this._selectQuerySort}
           hideRightItemWhileLoading={hideRightItemWhileLoading}
-          includeChronological={viewType === PV.Filters._clipsKey && queryFrom === PV.Filters._fromThisEpisodeKey}
           isTransparent={true}
           screenName='PlayerScreen'
-          selectedLeftItemKey={viewType}
-          selectedRightItemKey={querySort}
+          selectedFilterItemKey={viewType}
+          selectedSortItemKey={querySort}
           testID={testID}
         />
         {viewType === PV.Filters._clipsKey && (
           <TableSectionSelectors
-            handleSelectLeftItem={this._selectQueryFrom}
+            handleSelectFilterItem={this._selectQueryFrom}
             isBottomBar={true}
             isTransparent={true}
             screenName='PlayerScreen'
-            selectedLeftItemKey={queryFrom}
+            selectedFilterItemKey={queryFrom}
             testID={`${testID}_sub`}
           />
         )}
-        {isLoading || (isQuerying && <ActivityIndicator />)}
+        {isLoading || (isQuerying && <ActivityIndicator fillSpace={true} />)}
         {!isLoading &&
           !isQuerying &&
           viewType &&

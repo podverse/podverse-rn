@@ -101,12 +101,14 @@ export const darkTheme = StyleSheet.create({
   divider: {
     backgroundColor: PV.Colors.grayDark + '80'
   },
+  dropdownButtonIcon: {
+    color: PV.Colors.white
+  },
+  dropdownButtonText: {
+    color: PV.Colors.white
+  },
   flatList: {
     backgroundColor: PV.Colors.ink
-  },
-  inputContainerText: {
-    backgroundColor: PV.Colors.black,
-    borderColor: PV.Colors.grayDarker
   },
   link: {
     color: PV.Colors.blueLighter
@@ -197,18 +199,22 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   textInput: {
-    backgroundColor: PV.Colors.grayDarker,
+    backgroundColor: 'transparent',
     color: PV.Colors.white
   },
   textInputIcon: {
     backgroundColor: PV.Colors.grayDarker,
     color: PV.Colors.white
   },
+  textInputEyeBrow: {
+    color: PV.Colors.skyLight
+  },
   textInputWrapper: {
-    backgroundColor: PV.Colors.ink,
+    backgroundColor: PV.Colors.velvet,
     borderColor: PV.Colors.grayDarker,
     borderTopColor: PV.Colors.grayDarker, // override native styles
-    borderBottomColor: PV.Colors.grayDarker // override native style
+    borderBottomColor: PV.Colors.grayDarker, // override native style,
+    marginBottom: 24
   },
   textSecondary: {
     color: PV.Colors.grayLightest
@@ -329,12 +335,14 @@ export const lightTheme = StyleSheet.create({
   divider: {
     backgroundColor: PV.Colors.grayLight
   },
+  dropdownButtonIcon: {
+    color: PV.Colors.black
+  },
+  dropdownButtonText: {
+    color: PV.Colors.black
+  },
   flatList: {
     backgroundColor: PV.Colors.white
-  },
-  inputContainerText: {
-    backgroundColor: PV.Colors.white,
-    borderColor: PV.Colors.grayLighter
   },
   link: {
     color: PV.Colors.blueDarker
@@ -424,15 +432,18 @@ export const lightTheme = StyleSheet.create({
     color: PV.Colors.black
   },
   textInput: {
-    backgroundColor: PV.Colors.grayLighter,
+    backgroundColor: 'transparent',
     color: PV.Colors.black
   },
   textInputIcon: {
     backgroundColor: PV.Colors.grayLighter,
     color: PV.Colors.black
   },
+  textInputEyeBrow: {
+    color: PV.Colors.skyDark
+  },
   textInputWrapper: {
-    backgroundColor: PV.Colors.white,
+    backgroundColor: PV.Colors.grayLighter,
     borderColor: PV.Colors.grayLighter,
     borderTopColor: PV.Colors.grayLighter, // override native styles
     borderBottomColor: PV.Colors.grayLighter // override native style
@@ -553,10 +564,6 @@ export const core = StyleSheet.create({
     backgroundColor: 'transparent',
     flexDirection: 'row'
   },
-  searchBar: {
-    borderBottomWidth: 1,
-    borderWidth: 1
-  },
   selectorIcon: {
     flex: 0,
     paddingLeft: 4,
@@ -588,19 +595,20 @@ export const core = StyleSheet.create({
     marginHorizontal: 12
   },
   textInput: {
-    fontSize: PV.Fonts.sizes.xl,
-    minHeight: 44,
+    fontSize: PV.Fonts.sizes.xxl,
     justifyContent: 'center',
-    paddingHorizontal: 8
+    minHeight: 'auto',
+    paddingHorizontal: 8,
+    paddingVertical: 6
   },
-  textInputLabel: {
-    fontSize: PV.Fonts.sizes.xl,
+  textInputEyeBrow: {
+    fontSize: PV.Fonts.sizes.sm,
     fontWeight: PV.Fonts.weights.bold,
     marginBottom: 4
   },
-  textInputSubTitle: {
-    fontSize: PV.Fonts.sizes.md,
-    marginVertical: 8
+  textInputWrapper: {
+    paddingHorizontal: 16,
+    paddingVertical: 12
   },
   view: {
     alignItems: 'center',

@@ -408,27 +408,27 @@ export class ClipsScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
         <TableSectionSelectors
-          handleSelectLeftItem={this.selectLeftItem}
-          handleSelectRightItem={this.selectRightItem}
+          handleSelectFilterItem={this.selectLeftItem}
+          handleSelectSortItem={this.selectRightItem}
           isLoggedIn={isLoggedIn}
           screenName='ClipsScreen'
-          selectedLeftItemKey={queryFrom}
-          selectedRightItemKey={querySort}
+          selectedFilterItemKey={queryFrom}
+          selectedSortItemKey={querySort}
           testID={testIDPrefix}
         />
         {queryFrom === PV.Filters._categoryKey && (
           <TableSectionSelectors
-            handleSelectLeftItem={(x: string) => this._selectCategory(x)}
-            handleSelectRightItem={(x: string) => this._selectCategory(x, true)}
+            handleSelectFilterItem={(x: string) => this._selectCategory(x)}
+            handleSelectSortItem={(x: string) => this._selectCategory(x, true)}
             isBottomBar={true}
             isCategories={true}
             screenName='ClipsScreen'
-            selectedLeftItemKey={selectedCategory}
-            selectedRightItemKey={selectedSubCategory}
+            selectedFilterItemKey={selectedCategory}
+            selectedSortItemKey={selectedSubCategory}
             testID={`${testIDPrefix}_sub`}
           />
         )}
-        {isLoading && <ActivityIndicator />}
+        {isLoading && <ActivityIndicator fillSpace={true} />}
         {!isLoading && queryFrom && (
           <FlatList
             data={flatListData}

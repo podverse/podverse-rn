@@ -32,7 +32,7 @@ export const PodcastTableHeader = (props: Props) => {
     isSubscribed,
     isSubscribing,
     podcastImageUrl,
-    podcastTitle = translate('untitled podcast'),
+    podcastTitle = translate('Untitled Podcast'),
     showSettings,
     testID
   } = props
@@ -44,7 +44,7 @@ export const PodcastTableHeader = (props: Props) => {
     <View style={core.row}>
       {isLoading && (
         <View style={[styles.wrapper, core.view]}>
-          <ActivityIndicator />
+          <ActivityIndicator fillSpace={true} />
         </View>
       )}
       {!isLoading && !isNotFound && (

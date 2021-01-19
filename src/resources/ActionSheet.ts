@@ -168,7 +168,7 @@ const mediaMoreButtons = (
 
             if (item.clipId) {
               url = urlsWeb.clip + item.clipId
-              title = item.clipTitle ? item.clipTitle : translate('untitled clip –')
+              title = item.clipTitle ? item.clipTitle : translate('Untitled Clip –')
               title += ` ${item.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
             } else if (item.episodeId) {
               url = urlsWeb.episode + item.episodeId
@@ -225,8 +225,8 @@ const mediaMoreButtons = (
 }
 
 const hasTriedStreamingWithoutWifiAlert = async (handleDismiss: any, navigation: any, download: boolean) => {
-  const shouldDownloadWithoutWifi = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-  if (shouldDownloadWithoutWifi !== 'TRUE') {
+  const shouldDownloadWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
+  if (shouldDownloadWifiOnly !== 'TRUE') {
     return false
   }
 

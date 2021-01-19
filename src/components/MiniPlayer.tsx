@@ -5,7 +5,7 @@ import { PV } from '../resources'
 import { PVTrackPlayer } from '../services/player'
 import { togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
-import { FastImage, Icon, Text } from './'
+import { ActivityIndicator, FastImage, Icon, Text } from './'
 
 type Props = {
   navigation: any
@@ -20,6 +20,16 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
     const { nowPlayingItem, playbackState } = player
     const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
+
+    let playButtonIcon = <Icon name='play' size={20} testID='mini_player_play_button' />
+    let playButtonAdjust = { paddingLeft: 2 } as any
+    if (playbackState === PVTrackPlayer.STATE_PLAYING) {
+      playButtonIcon = <Icon name='pause' size={20} testID='mini_player_pause_button' />
+      playButtonAdjust = {}
+    } else if (playbackState === PVTrackPlayer.STATE_BUFFERING) {
+      playButtonIcon = <ActivityIndicator />
+      playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
+    }
 
     return (
       <View>
@@ -55,16 +65,9 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
               </View>
               <TouchableOpacity
                 onPress={() => togglePlay(this.global)}
-                style={playerStyles.icon}
+                style={[playerStyles.icon, playButtonAdjust]}
                 {...testProps('mini_player_toggle_play_button')}>
-                {!hasErrored && (
-                  <Icon
-                    color={isDarkMode ? iconStyles.dark.color : iconStyles.light.color}
-                    name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
-                    size={30}
-                    testID={`mini_player_${playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}`}
-                  />
-                )}
+                {!hasErrored && playButtonIcon}
                 {hasErrored && (
                   <Icon
                     color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}

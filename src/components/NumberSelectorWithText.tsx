@@ -28,9 +28,10 @@ export const NumberSelectorWithText = (props: Props) => {
         onSubmitEditing={handleSubmitEditing}
         placeholderTextColor={globalTheme.placeholderText.color}
         returnKeyType='done'
-        style={[globalTheme.textInput, styles.textInput]}
+        style={styles.textInput}
         {...(testID ? testProps(`${testID}_text_input`) : {})}
         value={strNum}
+        wrapperStyle={{ marginBottom: 0 }}
       />
       <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={isSmallText ? styles.smallText : styles.text}>
         {text}
@@ -51,18 +52,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 12
   },
   textInput: {
-    fontSize: PV.Fonts.sizes.xl,
+    fontSize: PV.Fonts.sizes.xxl,
     justifyContent: 'center',
-    minHeight: 44,
     textAlign: 'center',
-    width: 51,
-    borderColor: PV.Colors.white,
-    borderWidth: 1,
-    backgroundColor: 'transparent'
+    width: 44,
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    paddingVertical: 0,
+    paddingHorizontal: 0
   },
   wrapper: {
     alignItems: 'center',
-    flexDirection: 'row',
-    marginVertical: 12
+    flexDirection: 'row'
   }
 })

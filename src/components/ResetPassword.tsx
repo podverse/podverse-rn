@@ -65,9 +65,8 @@ export class ResetPassword extends React.Component<Props, State> {
           onChangeText={this._emailChanged}
           placeholder={translate('Email')}
           returnKeyType='done'
-          style={styles.textField}
-          value={this.state.email}
           testID={`${testIDPrefix}_email`}
+          value={this.state.email}
         />
         <TouchableOpacity
           style={[styles.signInButton, disabledStyle]}
@@ -102,14 +101,6 @@ const styles = StyleSheet.create({
     color: PV.Colors.brandColor,
     fontSize: PV.Fonts.sizes.md,
     fontWeight: 'bold'
-  },
-  textField: {
-    backgroundColor: PV.Colors.white,
-    color: PV.Colors.black,
-    fontSize: PV.Fonts.sizes.lg,
-    marginBottom: 40,
-    minHeight: 50,
-    paddingLeft: 20
   },
   view: {
     paddingHorizontal: 20,

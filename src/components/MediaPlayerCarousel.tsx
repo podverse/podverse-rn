@@ -4,7 +4,12 @@ import React from 'reactn'
 import { MediaPlayerCarouselClips, MediaPlayerCarouselShowNotes, MediaPlayerCarouselViewer, ScrollView, View } from '.'
 import { PV } from '../resources'
 
-type Props = {}
+type Props = {
+  hasChapters: boolean
+  imageHeight: number
+  imageWidth: number
+  navigation: any
+}
 
 type State = {
   activeIndex: number
@@ -15,6 +20,7 @@ const screenWidth = Dimensions.get('screen').width
 export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   carousel: any
   scrollView: any
+  handlePressClipInfo: any
 
   constructor(props) {
     super(props)
@@ -26,13 +32,20 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
+    const { activeIndex } = this.state
+    const animated = false
+    this.scrollToActiveIndex(activeIndex, animated)
+  }
+
+  scrollToActiveIndex = (activeIndex: number, animated: boolean) => {
     setTimeout(() => {
       this.scrollView &&
         this.scrollView.scrollTo({
-          x: screenWidth,
+          x: screenWidth * activeIndex,
           y: 0,
-          animated: false
+          animated
         })
+      this.setState({ activeIndex })
     }, 0)
   }
 
@@ -42,7 +55,15 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     this.setState({ activeIndex })
   }
 
+  _handlePressClipInfo = () => {
+    const { hasChapters } = this.props
+    const lastActiveIndex = hasChapters ? 3 : 2
+    const animated = true
+    this.scrollToActiveIndex(lastActiveIndex, animated)
+  }
+
   render() {
+    const { imageHeight, imageWidth, navigation } = this.props
     const { activeIndex } = this.state
     const { player } = this.global
     const { episode } = player
@@ -64,8 +85,13 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           transparent={true}>
           {hasChapters && <MediaPlayerCarouselClips isChapters={true} width={screenWidth} />}
           <MediaPlayerCarouselClips isChapters={false} width={screenWidth} />
-          <MediaPlayerCarouselViewer width={screenWidth} />
-          <MediaPlayerCarouselShowNotes width={screenWidth} />
+          <MediaPlayerCarouselViewer
+            handlePressClipInfo={this._handlePressClipInfo}
+            imageHeight={imageHeight}
+            imageWidth={imageWidth}
+            width={screenWidth}
+          />
+          <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
         </ScrollView>
         <Dots
           active={activeIndex}

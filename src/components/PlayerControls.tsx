@@ -4,7 +4,7 @@ import { PV } from '../resources'
 import { playerJumpBackward, playerJumpForward, PVTrackPlayer, setPlaybackPosition } from '../services/player'
 import { playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
-import { Icon, PlayerProgressBar, Text } from './'
+import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
 
 type Props = {
@@ -84,6 +84,16 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       top: 8
     }
 
+    let playButtonIcon = <Icon name='play' size={20} testID='player_controls_play_button' />
+    let playButtonAdjust = { paddingLeft: 2 } as any
+    if (playbackState === PVTrackPlayer.STATE_PLAYING) {
+      playButtonIcon = <Icon name='pause' size={20} testID='player_controls_pause_button' />
+      playButtonAdjust = {}
+    } else if (playbackState === PVTrackPlayer.STATE_BUFFERING) {
+      playButtonIcon = <ActivityIndicator />
+      playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
+    }
+
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
         <View style={styles.progressWrapper}>
@@ -96,55 +106,61 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             value={progressValue}
           />
         </View>
-        <View style={styles.middleRow}>
-          <View style={styles.middleRowTop}>
+        <View style={styles.playerControlsMiddleRow}>
+          <View style={styles.playerControlsMiddleRowTop}>
             <TouchableOpacity
               onPress={this._returnToBeginningOfTrack}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
-              <Icon name='step-backward' size={35} />
+              <Icon name='step-backward' size={35} testID='player_controls_previous_track' />
             </TouchableOpacity>
             <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
-              <Icon name='undo-alt' size={35} />
+              <Icon name='undo-alt' size={35} testID='player_controls_jump_backward' />
               {/* <View style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>30</Text>
               </View> */}
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => togglePlay(this.global)} style={playerStyles.playButton}>
+            <TouchableOpacity
+              onPress={() => togglePlay(this.global)}
+              style={[playerStyles.playButton, playButtonAdjust]}>
               {hasErrored ? (
                 <Icon
                   color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
                   name={'exclamation-triangle'}
                   size={35}
+                  testID='player_controls_error'
                 />
               ) : (
-                <Icon name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'} size={20} />
+                playButtonIcon
               )}
             </TouchableOpacity>
             <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
-              <Icon name='redo-alt' size={35} />
+              <Icon name='redo-alt' size={35} testID='player_controls_step_forward' />
               {/* <View style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>30</Text>
               </View> */}
             </TouchableOpacity>
             <TouchableOpacity onPress={playNextFromQueue} style={[playerStyles.icon, { flexDirection: 'row' }]}>
-              <Icon name='step-forward' size={35} />
+              <Icon name='step-forward' size={35} testID='player_controls_skip_track' />
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.bottomRow}>
+        <View style={styles.playerControlsBottomRow}>
           <TouchableOpacity hitSlop={hitSlop} onPress={this._navToStopWatchScreen}>
-            <View style={styles.bottomButton}>
-              <Icon name='moon' size={20} solid={true} />
+            <View style={styles.playerControlsBottomButton}>
+              <Icon name='moon' size={20} solid={true} testID='player_controls_sleep_timer' />
             </View>
           </TouchableOpacity>
           <TouchableWithoutFeedback hitSlop={hitSlop} onPress={this._adjustSpeed}>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[styles.bottomButton, styles.bottomRowText]}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              style={[styles.playerControlsBottomButton, styles.playerControlsBottomRowText]}
+              testID='player_controls_playback_rate'>
               {`${playbackRate}X`}
             </Text>
           </TouchableWithoutFeedback>
           <TouchableOpacity hitSlop={hitSlop} onPress={this._showPlayerMoreActionSheet}>
-            <View style={styles.bottomButton}>
-              <Icon name='ellipsis-h' size={24} />
+            <View style={styles.playerControlsBottomButton}>
+              <Icon name='ellipsis-h' size={24} testID='player_controls_more' />
             </View>
           </TouchableOpacity>
         </View>
@@ -159,14 +175,14 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 }
 
 const styles = StyleSheet.create({
-  bottomButton: {
+  playerControlsBottomButton: {
     alignItems: 'center',
     minHeight: 32,
     paddingVertical: 4,
     textAlign: 'center',
     minWidth: 54
   },
-  bottomRow: {
+  playerControlsBottomRow: {
     alignItems: 'center',
     flexDirection: 'row',
     minHeight: PV.Player.styles.bottomRow.height,
@@ -174,18 +190,21 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     marginTop: 10
   },
-  bottomRowText: {
+  playerControlsBottomRowText: {
     fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold
   },
-  middleRow: {
+  playerControlsMiddleRow: {
     marginTop: 2
   },
-  middleRowTop: {
+  playerControlsMiddleRowTop: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     marginTop: 2
+  },
+  progressWrapper: {
+    marginTop: 5
   },
   skipButtonText: {
     fontSize: 12,
@@ -194,8 +213,15 @@ const styles = StyleSheet.create({
     bottom: -5,
     textAlign: 'center'
   },
-  progressWrapper: {
-    marginTop: 5
+  skipTimeTextWrapper: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  skipTimeText: {
+    fontSize: 11
   },
   speed: {
     alignItems: 'center',
@@ -208,15 +234,5 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     borderTopWidth: 1
-  },
-  skipTimeTextWrapper: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  skipTimeText: {
-    fontSize: 11
   }
 })

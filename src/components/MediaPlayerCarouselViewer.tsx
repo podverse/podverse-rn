@@ -1,72 +1,61 @@
-import { Dimensions, StyleSheet } from 'react-native'
-import { Header } from 'react-navigation-stack'
+import { StyleSheet } from 'react-native'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import React from 'reactn'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
-import { navHeader } from '../styles'
+import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { ActivityIndicator, FastImage, Text, View } from './'
 
 type Props = {
+  handlePressClipInfo: any
+  imageHeight: number
+  imageWidth: number
   navigation?: any
   width: number
 }
 
 type State = {}
-
-const screenHeight = Dimensions.get('screen').height
-
-/*
-  carouselTextBottomWrapper: {
-    height: 52
-  },
-  carouselTextTopWrapper: {
-    height: 48
-  },
-  playerControls: {
-    height: 202
-  },
-  pagination: {
-    height: 32
-  }
-
-  console.log('screenHeight', screenHeight)
-  console.log('header height', Header.HEIGHT)
-  console.log('scrollHeight', scrollHeight)
-  console.log('scrollHeightAvailable', scrollHeightAvailable)
-  console.log('imageHeightAvailable', imageHeightAvailable)
-
-*/
-
-const scrollHeight =
-  screenHeight -
-  (navHeader.headerHeight.paddingTop + Header.HEIGHT + PV.Player.pagination.height + PV.Player.playerControls.height)
-const subBottomHeight = PV.Player.carouselTextSubBottomWrapper.height + PV.Player.carouselTextSubBottomWrapper.marginTop
-const scrollHeightAvailable =
-  scrollHeight -
-  (PV.Player.carouselTextBottomWrapper.height + PV.Player.carouselTextTopWrapper.height + subBottomHeight)
-
-// not sure why I need to do 64 when the padding is 16 on each side...
-const imagePadding = 64
-let imageHeightAvailable = scrollHeightAvailable - imagePadding
-imageHeightAvailable = imageHeightAvailable > 340 ? 340 : imageHeightAvailable
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State> {
+  chapterInterval: NodeJS.Timeout
   constructor(props) {
     super(props)
     this.state = {}
   }
 
+  componentDidMount() {
+    this.chapterInterval = setInterval(loadChapterPlaybackInfo, 1000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.chapterInterval)
+  }
+
   render() {
-    const { width } = this.props
+    const { handlePressClipInfo, imageHeight, imageWidth, width } = this.props
     const { player, screenPlayer } = this.global
-    const { nowPlayingItem } = player
+    const { currentChapter, nowPlayingItem } = player
     const { isLoading } = screenPlayer
-    const { clipId, clipEndTime, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem
+    let { clipId, clipEndTime, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem
+    const imageStyle = [styles.image, { height: imageHeight, width: imageWidth }]
+    let clipUrl = ''
+
+    // If a clip is currently playing, then load the clip info.
+    // Else if a chapter is currently playing, then load the chapter info.
+    // Else just load the episode info.
+    if (!clipId && currentChapter) {
+      clipId = currentChapter.id
+      clipEndTime = currentChapter.endTime
+      clipUrl = currentChapter.linkUrl
+      clipStartTime = currentChapter.startTime
+      clipTitle = currentChapter.title
+      podcastImageUrl = currentChapter.imageUrl || podcastImageUrl
+    }
 
     return (
       <View style={[styles.outerWrapper, { width }]} transparent={true}>
         <View style={styles.innerWrapper} transparent={true}>
           <View style={styles.carouselTextTopWrapper} transparent={true}>
-            {isLoading && <ActivityIndicator />}
+            {isLoading && <ActivityIndicator fillSpace={true} />}
             {!isLoading && !!nowPlayingItem && (
               <React.Fragment>
                 <Text
@@ -87,22 +76,24 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
               </React.Fragment>
             )}
           </View>
-          <View style={styles.imageWrapper} transparent={true}>
-            <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
+          <View style={[styles.imageWrapper, { height: imageHeight, width: '100%' }]} transparent={true}>
+            <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyle} />
           </View>
-          <View style={styles.carouselTextBottomWrapper} transparent={true}>
-            {clipId && (
-              <View style={styles.clipWrapper} transparent={true}>
-                <Text
-                  numberOfLines={2}
-                  style={styles.clipTitle}
-                  testID='media_player_carousel_viewer_title'>{`${clipTitle}`}</Text>
-                <Text style={styles.clipTime} testID='media_player_carousel_viewer_time'>
-                  {readableClipTime(clipStartTime, clipEndTime)}
-                </Text>
-              </View>
-            )}
-          </View>
+          <TouchableWithoutFeedback onPress={handlePressClipInfo}>
+            <View style={styles.carouselTextBottomWrapper} transparent={true}>
+              {clipId && (
+                <View style={styles.clipWrapper} transparent={true}>
+                  <Text
+                    numberOfLines={2}
+                    style={styles.clipTitle}
+                    testID='media_player_carousel_viewer_title'>{`${clipTitle}`}</Text>
+                  <Text style={styles.clipTime} testID='media_player_carousel_viewer_time'>
+                    {readableClipTime(clipStartTime, clipEndTime)}
+                  </Text>
+                </View>
+              )}
+            </View>
+          </TouchableWithoutFeedback>
         </View>
       </View>
     )
@@ -136,13 +127,10 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   image: {
-    flex: 0,
-    height: imageHeightAvailable,
-    width: imageHeightAvailable
+    flex: 1
   },
   imageWrapper: {
     alignItems: 'center',
-    flex: 0,
     justifyContent: 'center',
     padding: 16
   },

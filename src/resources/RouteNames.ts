@@ -11,6 +11,7 @@ export const RouteNames = {
   EpisodeScreen: 'EpisodeScreen',
   EpisodesScreen: 'EpisodesScreen',
   FAQScreen: 'FAQScreen',
+  FilterScreen: 'FilterScreen',
   HistoryScreen: 'HistoryScreen',
   MainApp: 'MainApp',
   MakeClipScreen: 'MakeClipScreen',
