@@ -353,6 +353,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                 value={!!offlineModeEnabled}
               />
             </View>
+            <Divider style={styles.divider} />
             {/* {!Config.DISABLE_THEME_SWITCH && (
               <View style={styles.itemWrapper}>
                 <SwitchWithText
@@ -371,7 +372,6 @@ export class SettingsScreen extends React.Component<Props, State> {
                 value={!!downloadingWifiOnly}
               />
             </View>
-            <Divider style={styles.divider} />
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 onValueChange={this._handleToggleNSFWText}
@@ -380,7 +380,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                 value={!!censorNSFWText}
               />
             </View>
-            <View style={styles.itemWrapper}>
+            <View style={styles.itemWrapperReducedHeight}>
               <RNPickerSelect
                 items={PV.Player.maximumSpeedSelectOptions}
                 onValueChange={this._setMaximumSpeed}
@@ -403,7 +403,6 @@ export class SettingsScreen extends React.Component<Props, State> {
                 </View>
               </RNPickerSelect>
             </View>
-            <Divider style={styles.divider} />
             {/* <SwitchWithText
               onValueChange={this._toggleAutoDeleteEpisodeOnEnd}
               text='Delete downloaded episodes after end is reached'
@@ -570,6 +569,10 @@ const styles = StyleSheet.create({
   },
   itemWrapper: {
     marginBottom: 24
+  },
+  itemWrapperReducedHeight: {
+    marginTop: -4,
+    marginBottom: 16
   },
   pickerSelect: {
     flex: 0,
