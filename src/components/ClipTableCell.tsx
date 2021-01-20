@@ -92,7 +92,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
               </RNView>
             </TouchableWithoutFeedback>
             <MoreButton
-              handleShowMore={handleMorePress}
+              handleMorePress={handleMorePress}
               height={hideImage ? 44 : 64}
               isLoading={isDownloading}
               testID={testID}
@@ -122,7 +122,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
           </Text>
         </RNView>
         {!showEpisodeInfo && handleMorePress && (
-          <MoreButton handleShowMore={handleMorePress} height={44} testID={testID} />
+          <MoreButton handleMorePress={handleMorePress} height={44} testID={testID} />
         )}
       </RNView>
     )

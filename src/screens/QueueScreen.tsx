@@ -17,7 +17,12 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import { checkIfIdMatchesClipIdOrEpisodeId, isOdd, testProps } from '../lib/utility'
+import {
+  checkIfIdMatchesClipIdOrEpisodeId,
+  isOdd,
+  overrideImageUrlWithChapterImageUrl,
+  testProps
+} from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData } from '../services/auth'
 import { movePlayerItemToNewPosition } from '../services/player'
@@ -264,7 +269,7 @@ export class QueueScreen extends React.Component<Props, State> {
           testID={`${testIDPrefix}_queue_item_${index}`}
           transparent={isTransparent}
         />
-        <Divider style={styles.tableCellDivider} />
+        <Divider style={styles.queueCellDivider} />
       </View>
     )
 
@@ -333,12 +338,12 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   _ItemSeparatorComponent = () => {
-    return <Divider />
+    return <Divider style={styles.queueCellDivider} />
   }
 
   render() {
     const { historyItems, historyItemsCount, queueItems } = this.global.session.userInfo
-    const { nowPlayingItem } = this.global.player
+    const { currentChapter, nowPlayingItem } = this.global.player
     const { isEditing, isLoading, isLoadingMore, isRemoving, isTransparent, viewType } = this.state
 
     const view = (
@@ -347,21 +352,24 @@ export class QueueScreen extends React.Component<Props, State> {
           <View transparent={isTransparent}>
             {!!nowPlayingItem && (
               <View transparent={isTransparent}>
-                <TableSectionHeader includePadding={true} title={translate('Now Playing')} />
-                <QueueTableCell
-                  clipEndTime={nowPlayingItem.clipEndTime}
-                  clipStartTime={nowPlayingItem.clipStartTime}
-                  {...(nowPlayingItem.clipTitle ? { clipTitle: nowPlayingItem.clipTitle } : {})}
-                  {...(nowPlayingItem.episodePubDate ? { episodePubDate: nowPlayingItem.episodePubDate } : {})}
-                  {...(nowPlayingItem.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}
-                  podcastImageUrl={nowPlayingItem.podcastImageUrl}
-                  {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
-                  {...testProps(`${testIDPrefix}_now_playing_header`)}
-                  transparent={isTransparent}
-                />
+                <View style={styles.headerNowPlayingItemWrapper} transparent={isTransparent}>
+                  <TableSectionHeader includePadding={true} title={translate('Now Playing')} />
+                  <QueueTableCell
+                    clipEndTime={nowPlayingItem.clipEndTime}
+                    clipStartTime={nowPlayingItem.clipStartTime}
+                    {...(nowPlayingItem.clipTitle ? { clipTitle: nowPlayingItem.clipTitle } : {})}
+                    {...(nowPlayingItem.episodePubDate ? { episodePubDate: nowPlayingItem.episodePubDate } : {})}
+                    {...(nowPlayingItem.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}
+                    podcastImageUrl={nowPlayingItem.podcastImageUrl}
+                    {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
+                    {...testProps(`${testIDPrefix}_now_playing_header`)}
+                    transparent={isTransparent}
+                  />
+                </View>
+                <Divider style={styles.headerNowPlayingItemDivider} />
               </View>
             )}
-            <TableSectionHeader title={translate('Next Up')} />
+            <TableSectionHeader includePadding={true} title={translate('Next Up')} />
           </View>
         )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length > 0 && (
@@ -398,8 +406,10 @@ export class QueueScreen extends React.Component<Props, State> {
       </View>
     )
 
+    const imageUrl = overrideImageUrlWithChapterImageUrl(nowPlayingItem, currentChapter)
+
     if (isTransparent) {
-      return <OpaqueBackground nowPlayingItem={nowPlayingItem}>{view}</OpaqueBackground>
+      return <OpaqueBackground imageUrl={imageUrl}>{view}</OpaqueBackground>
     } else {
       return view
     }
@@ -454,9 +464,11 @@ const styles = StyleSheet.create({
   headerButtonWrapper: {
     flexDirection: 'row'
   },
-  headerNowPlayingItem: {
-    marginBottom: 2
+  headerNowPlayingItemDivider: {
+    marginBottom: 4,
+    marginTop: 10
   },
+  headerNowPlayingItemWrapper: {},
   navHeaderSpacer: {
     width: 36
   },
@@ -465,9 +477,8 @@ const styles = StyleSheet.create({
     marginRight: 8,
     textAlign: 'center'
   },
-  tableCellDivider: {
-    marginBottom: 2
-  },
+  nextUpTableSectionHeader: {},
+  queueCellDivider: {},
   view: {
     flex: 1
   }

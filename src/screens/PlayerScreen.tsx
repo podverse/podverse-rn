@@ -17,7 +17,12 @@ import {
 } from '../components'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { replaceLinebreaksWithBrTags, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import {
+  overrideImageUrlWithChapterImageUrl,
+  replaceLinebreaksWithBrTags,
+  safelyUnwrapNestedVariable,
+  testProps
+} from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
 import { getMediaRef } from '../services/mediaRef'
@@ -299,7 +304,7 @@ export class PlayerScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const { player, screenPlayer } = this.global
-    const { episode, nowPlayingItem } = player
+    const { currentChapter, episode, nowPlayingItem } = player
     const { showShareActionSheet } = screenPlayer
     let { mediaRef } = player
 
@@ -317,9 +322,11 @@ export class PlayerScreen extends React.Component<Props, State> {
 
     const hasChapters = episode && episode.chaptersUrl
 
+    const imageUrl = overrideImageUrlWithChapterImageUrl(nowPlayingItem, currentChapter)
+
     return (
       <React.Fragment>
-        <OpaqueBackground nowPlayingItem={nowPlayingItem}>
+        <OpaqueBackground imageUrl={imageUrl}>
           <View style={styles.view} transparent={true} {...testProps('player_screen_view')}>
             <MediaPlayerCarousel
               hasChapters={hasChapters}

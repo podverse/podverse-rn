@@ -392,8 +392,8 @@ export class PodcastScreen extends React.Component<Props, State> {
       return (
         <EpisodeTableCell
           item={episode}
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleDownloadPress={() => this._handleDownloadPressed(item)}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => {
             this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,
@@ -620,7 +620,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             testID={testIDPrefix}
           />
         )}
-        {showSettings && <TableSectionHeader title={translate('Settings')} />}
+        {showSettings && <TableSectionHeader includePadding={true} title={translate('Settings')} />}
         {showSettings && (
           <View style={styles.settingsView}>
             <SwitchWithText
@@ -628,19 +628,16 @@ export class PodcastScreen extends React.Component<Props, State> {
               testID={`${testIDPrefix}_toggle_download_limit`}
               text={translate('Download limit')}
               value={limitDownloadedEpisodes}
+              wrapperStyle={styles.toggleLimitDownloadsSwitchWrapper}
             />
             {limitDownloadedEpisodes && (
               <NumberSelectorWithText
                 handleChangeText={this._handleChangeDownloadLimitText}
                 selectedNumber={downloadedEpisodeLimit}
+                subText={translate('Once the download limit is exceeded the oldest episode will be auto deleted')}
                 testID={`${testIDPrefix}_downloaded_episode_limit_count`}
                 text={translate('Download limit max')}
               />
-            )}
-            {limitDownloadedEpisodes && (
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.settingsHelpText}>
-                {translate('Once the download limit is exceeded the oldest episode will be auto deleted')}
-              </Text>
             )}
             <Divider style={styles.divider} />
             <Button
@@ -812,18 +809,22 @@ const styles = {
     marginVertical: 8
   },
   divider: {
-    marginVertical: 16
+    marginVertical: 24
   },
   settingsHelpText: {
     fontSize: PV.Fonts.sizes.md
   },
   settingsView: {
     flex: 1,
-    padding: 8
+    paddingHorizontal: 8,
+    paddingVertical: 16
   },
   swipeRowBack: {
     marginBottom: 8,
     marginTop: 8
+  },
+  toggleLimitDownloadsSwitchWrapper: {
+    marginBottom: 16
   },
   view: {
     flex: 1

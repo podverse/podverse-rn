@@ -9,7 +9,7 @@ import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
 import { Icon, MoreButton, Text, View } from './'
 
 type Props = {
-  handleShowMore?: any
+  handleMorePress?: any
   item: any
   style?: any
   userPlaybackPosition?: number | undefined
@@ -55,7 +55,7 @@ const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { handleShowMore, item, style, userPlaybackPosition } = props
+  const { handleMorePress, item, style, userPlaybackPosition } = props
   const { podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, null, podcast)
   const [player] = useGlobal('player')
@@ -94,7 +94,7 @@ export const TimeRemainingWidget = (props: Props) => {
       </TouchableOpacity>
       {hasStartedItem && !isInvalidDuration && <MiniProgressBar playedTime={playedTime} totalTime={totalTime} />}
       <Text style={styles.text}>{timeLabel}</Text>
-      {!!handleShowMore && <MoreButton handleShowMore={handleShowMore} />}
+      {!!handleMorePress && <MoreButton handleMorePress={handleMorePress} />}
     </View>
   )
 }

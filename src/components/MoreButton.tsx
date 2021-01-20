@@ -6,13 +6,13 @@ import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 
 type Props = {
-  handleShowMore: any
+  handleMorePress: any
   isLoading?: boolean
   testID: string
 }
 
 export const MoreButton = (props: Props) => {
-  const { handleShowMore, isLoading, testID } = props
+  const { handleMorePress, isLoading, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
@@ -23,7 +23,7 @@ export const MoreButton = (props: Props) => {
         right: 10,
         top: 10
       }}
-      onPress={handleShowMore}
+      onPress={handleMorePress}
       {...testProps(`${testID}_more_button`)}>
       {!isLoading ? (
         <View style={[styles.outerWrapper]}>
@@ -33,7 +33,7 @@ export const MoreButton = (props: Props) => {
         </View>
       ) : (
         <View style={[styles.activityWrapper]}>
-          <ActivityIndicator onPress={handleShowMore} styles={[styles.activityIndicator]} />
+          <ActivityIndicator onPress={handleMorePress} styles={[styles.activityIndicator]} />
         </View>
       )}
     </TouchableOpacity>

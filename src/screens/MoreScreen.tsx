@@ -150,11 +150,15 @@ export class MoreScreen extends React.Component<Props, State> {
               </RNView>
             </TouchableWithoutFeedback>
           )}
-          renderSectionHeader={({ section }) => <TableSectionHeader title={section.title} />}
+          renderSectionHeader={({ section }) => {
+            const style = section.title === translate('Other') ? { marginTop: 32 } : {}
+            return <TableSectionHeader containerStyles={style} includePadding={true} title={section.title} />
+          }}
           sections={[
             { title: translate('My Account'), data: featureOptions },
             { title: translate('Other'), data: otherOptions }
           ]}
+          stickySectionHeadersEnabled={false}
         />
       </View>
     )
