@@ -49,7 +49,11 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
           />
         )}
         <View style={styles.showNotesWrapper} transparent={true}>
-          <TableSectionHeader includePadding={true} title={translate('Show Notes')} />
+          <TableSectionHeader
+            containerStyles={styles.showNotesTableSectionHeader}
+            includePadding={true}
+            title={translate('Show Notes')}
+          />
           {!isLoading && episode && (
             <HTMLScrollView
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -68,6 +72,9 @@ const styles = StyleSheet.create({
   clipTitle: {},
   headerText: {},
   htmlScrollView: {},
+  showNotesTableSectionHeader: {
+    marginBottom: 0
+  },
   showNotesWrapper: {
     flex: 1,
     marginTop: 12

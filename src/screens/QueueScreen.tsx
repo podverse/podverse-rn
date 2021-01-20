@@ -269,7 +269,7 @@ export class QueueScreen extends React.Component<Props, State> {
           testID={`${testIDPrefix}_queue_item_${index}`}
           transparent={isTransparent}
         />
-        <Divider style={styles.tableCellDivider} />
+        <Divider style={styles.queueCellDivider} />
       </View>
     )
 
@@ -338,7 +338,7 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   _ItemSeparatorComponent = () => {
-    return <Divider />
+    return <Divider style={styles.queueCellDivider} />
   }
 
   render() {
@@ -351,7 +351,7 @@ export class QueueScreen extends React.Component<Props, State> {
         {!isLoading && viewType === _queueKey && ((queueItems && queueItems.length > 0) || nowPlayingItem) && (
           <View transparent={isTransparent}>
             {!!nowPlayingItem && (
-              <View>
+              <View transparent={isTransparent}>
                 <View style={styles.headerNowPlayingItemWrapper} transparent={isTransparent}>
                   <TableSectionHeader includePadding={true} title={translate('Now Playing')} />
                   <QueueTableCell
@@ -369,11 +369,7 @@ export class QueueScreen extends React.Component<Props, State> {
                 <Divider style={styles.headerNowPlayingItemDivider} />
               </View>
             )}
-            <TableSectionHeader
-              containerStyles={styles.nextUpTableSectionHeader}
-              includePadding={true}
-              title={translate('Next Up')}
-            />
+            <TableSectionHeader includePadding={true} title={translate('Next Up')} />
           </View>
         )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length > 0 && (
@@ -468,11 +464,11 @@ const styles = StyleSheet.create({
   headerButtonWrapper: {
     flexDirection: 'row'
   },
-  headerNowPlayingItemDivider: {},
-  headerNowPlayingItemWrapper: {
-    marginBottom: 12,
-    marginTop: 12
+  headerNowPlayingItemDivider: {
+    marginBottom: 4,
+    marginTop: 10
   },
+  headerNowPlayingItemWrapper: {},
   navHeaderSpacer: {
     width: 36
   },
@@ -481,13 +477,8 @@ const styles = StyleSheet.create({
     marginRight: 8,
     textAlign: 'center'
   },
-  nextUpTableSectionHeader: {
-    paddingBottom: 8,
-    marginTop: 16
-  },
-  tableCellDivider: {
-    marginBottom: 2
-  },
+  nextUpTableSectionHeader: {},
+  queueCellDivider: {},
   view: {
     flex: 1
   }

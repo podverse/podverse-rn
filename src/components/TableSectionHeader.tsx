@@ -44,6 +44,9 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    minHeight: PV.Table.sectionHeader.height,
+    marginVertical: 4
   }
 })
