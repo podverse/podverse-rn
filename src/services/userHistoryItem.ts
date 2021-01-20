@@ -146,6 +146,17 @@ const getHistoryItemsFromServer = async (page: number) => {
   return { userHistoryItems, userHistoryItemsCount }
 }
 
+export const filterItemFromHistoryItemsIndex = (historyItemsIndex: any, item: any) => {
+  if (historyItemsIndex && historyItemsIndex.mediaRefs && historyItemsIndex.episodes > 0 && item) {
+    if (item.clipId && historyItemsIndex.mediaRefs) {
+      delete historyItemsIndex.mediaRefs[item.clipId]
+    } else {
+      delete historyItemsIndex.episodes[item.episodeId]
+    }
+  }
+  return historyItemsIndex
+}
+
 const generateHistoryItemsIndex = (historyItems: any[]) => {
   const historyItemsIndex = {
     episodes: {},

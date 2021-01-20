@@ -2,6 +2,8 @@ import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import {
   clearHistoryItems as clearHistoryItemsService,
+  filterItemFromHistoryItems,
+  filterItemFromHistoryItemsIndex,
   getHistoryItems as getHistoryItemsService,
   getHistoryItemsIndexLocally,
   removeHistoryItem as removeHistoryItemService
@@ -55,15 +57,19 @@ export const getHistoryItems = async (page: number, existingItems: any[]) => {
 
 export const removeHistoryItem = async (item: NowPlayingItem) => {
   const globalState = getGlobal()
-  const { historyItems, historyItemsIndex } = await removeHistoryItemService(item)
+  const { historyItems, historyItemsIndex } = globalState.session.userInfo
+  await removeHistoryItemService(item)
+
+  const remainingHistoryItems = filterItemFromHistoryItems(historyItems, item)
+  const remainingHistoryItemsIndex = filterItemFromHistoryItemsIndex(historyItemsIndex, item)
 
   setGlobal({
     session: {
       ...globalState.session,
       userInfo: {
         ...globalState.session.userInfo,
-        historyItems,
-        historyItemsIndex
+        historyItems: remainingHistoryItems,
+        historyItemsIndex: remainingHistoryItemsIndex
       }
     }
   })
