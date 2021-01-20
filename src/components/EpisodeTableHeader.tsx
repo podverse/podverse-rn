@@ -73,7 +73,7 @@ export const EpisodeTableHeader = (props: Props) => {
               </View>
               <TimeRemainingWidget
                 item={episode}
-                handleShowMore={handleMorePress}
+                handleMorePress={handleMorePress}
                 testID={testID}
                 style={{ marginVertical: 20 }}
               />

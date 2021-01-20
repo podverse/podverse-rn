@@ -99,7 +99,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       </Text>
     )
 
-    const includeShowMore = !item.addByRSSPodcastFeedUrl && !isDownloaded
+    const includeShowMore = !item.addByRSSPodcastFeedUrl
 
     return (
       <View style={styles.wrapper} transparent={transparent}>

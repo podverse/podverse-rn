@@ -392,8 +392,8 @@ export class PodcastScreen extends React.Component<Props, State> {
       return (
         <EpisodeTableCell
           item={episode}
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleDownloadPress={() => this._handleDownloadPressed(item)}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
           handleNavigationPress={() => {
             this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,

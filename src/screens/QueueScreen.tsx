@@ -351,22 +351,29 @@ export class QueueScreen extends React.Component<Props, State> {
         {!isLoading && viewType === _queueKey && ((queueItems && queueItems.length > 0) || nowPlayingItem) && (
           <View transparent={isTransparent}>
             {!!nowPlayingItem && (
-              <View transparent={isTransparent}>
-                <TableSectionHeader includePadding={true} title={translate('Now Playing')} />
-                <QueueTableCell
-                  clipEndTime={nowPlayingItem.clipEndTime}
-                  clipStartTime={nowPlayingItem.clipStartTime}
-                  {...(nowPlayingItem.clipTitle ? { clipTitle: nowPlayingItem.clipTitle } : {})}
-                  {...(nowPlayingItem.episodePubDate ? { episodePubDate: nowPlayingItem.episodePubDate } : {})}
-                  {...(nowPlayingItem.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}
-                  podcastImageUrl={nowPlayingItem.podcastImageUrl}
-                  {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
-                  {...testProps(`${testIDPrefix}_now_playing_header`)}
-                  transparent={isTransparent}
-                />
+              <View>
+                <View style={styles.headerNowPlayingItemWrapper} transparent={isTransparent}>
+                  <TableSectionHeader includePadding={true} title={translate('Now Playing')} />
+                  <QueueTableCell
+                    clipEndTime={nowPlayingItem.clipEndTime}
+                    clipStartTime={nowPlayingItem.clipStartTime}
+                    {...(nowPlayingItem.clipTitle ? { clipTitle: nowPlayingItem.clipTitle } : {})}
+                    {...(nowPlayingItem.episodePubDate ? { episodePubDate: nowPlayingItem.episodePubDate } : {})}
+                    {...(nowPlayingItem.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}
+                    podcastImageUrl={nowPlayingItem.podcastImageUrl}
+                    {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
+                    {...testProps(`${testIDPrefix}_now_playing_header`)}
+                    transparent={isTransparent}
+                  />
+                </View>
+                <Divider style={styles.headerNowPlayingItemDivider} />
               </View>
             )}
-            <TableSectionHeader title={translate('Next Up')} />
+            <TableSectionHeader
+              containerStyles={styles.nextUpTableSectionHeader}
+              includePadding={true}
+              title={translate('Next Up')}
+            />
           </View>
         )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length > 0 && (
@@ -461,8 +468,10 @@ const styles = StyleSheet.create({
   headerButtonWrapper: {
     flexDirection: 'row'
   },
-  headerNowPlayingItem: {
-    marginBottom: 2
+  headerNowPlayingItemDivider: {},
+  headerNowPlayingItemWrapper: {
+    marginBottom: 12,
+    marginTop: 12
   },
   navHeaderSpacer: {
     width: 36
@@ -471,6 +480,10 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.lg,
     marginRight: 8,
     textAlign: 'center'
+  },
+  nextUpTableSectionHeader: {
+    paddingBottom: 8,
+    marginTop: 16
   },
   tableCellDivider: {
     marginBottom: 2
