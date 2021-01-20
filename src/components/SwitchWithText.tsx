@@ -3,7 +3,6 @@ import { StyleSheet, Switch, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { core } from '../styles'
 import { Text, TextInput } from './'
 
 type Props = {
@@ -21,6 +20,7 @@ type Props = {
   testID: string
   text: string
   value: boolean
+  wrapperStyle: any
 }
 
 export const SwitchWithText = (props: Props) => {
@@ -38,12 +38,13 @@ export const SwitchWithText = (props: Props) => {
     subText,
     testID,
     text,
-    value
+    value,
+    wrapperStyle
   } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
-    <View>
+    <View style={wrapperStyle}>
       <View style={styles.switchWrapper}>
         <Switch onValueChange={onValueChange} value={value} {...(testID ? testProps(`${testID}_switch`) : {})} />
         <Text
