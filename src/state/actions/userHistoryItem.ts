@@ -5,6 +5,7 @@ import {
   filterItemFromHistoryItems,
   filterItemFromHistoryItemsIndex,
   getHistoryItems as getHistoryItemsService,
+  getHistoryItemsIndex,
   getHistoryItemsIndexLocally,
   removeHistoryItem as removeHistoryItemService
 } from '../../services/userHistoryItem'
@@ -12,6 +13,8 @@ import {
 export const clearHistoryItems = async () => {
   const globalState = getGlobal()
   await clearHistoryItemsService()
+  const historyItemsIndex = await getHistoryItemsIndex()
+
   setGlobal({
     session: {
       ...globalState.session,
@@ -19,7 +22,7 @@ export const clearHistoryItems = async () => {
         ...globalState.session.userInfo,
         historyItems: [],
         historyItemsCount: 0,
-        historyItemsIndex: {},
+        historyItemsIndex,
         historyQueryPage: 1
       }
     }
