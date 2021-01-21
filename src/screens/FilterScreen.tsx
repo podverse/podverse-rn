@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet, View as RNView } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import React from 'reactn'
@@ -17,11 +18,13 @@ type State = {
   selectedCategorySubItemKey?: string
   selectedFilterItemKey?: string
   selectedSortItemKey?: string
+  screenName: string
+  allCategories: []
 }
 
 const testIDPrefix = 'filter_screen'
 
-const sectionsWithCategory = (filterItems: any, categoryItems: any, sortItems: any) => [
+const sectionsWithCategory = (filterItems: any[], categoryItems: any[], sortItems: string[]) => [
   { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
   { title: translate('Category'), data: categoryItems, value: PV.Filters._sectionCategoryKey },
   { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
@@ -32,15 +35,38 @@ const sectionsWithoutCategory = (filterItems: any, sortItems: any) => [
   { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
 ]
 
-const generateSections = (props: Props, state: State) => {
-  const { params } = props.navigation.state
-  const { selectedFilterItemKey } = state
-  const filterItems = params.filterItems || []
-  const categoryItems = params.categoryItems || []
-  const sortItems = params.sortItems || []
+const generateSections = (options: {}) => {
+  let sortItems: any[] = PV.FilterOptions.sortItems
+  const allCategories = options.allCategories
+  let filterItems: any[] = []
+
+  switch (options.screenName) {
+    case PV.RouteNames.PodcastsScreen:
+      if (options.selectedFilterItemKey === PV.Filters._downloadedKey) {
+        sortItems = sortItems.filter((item) => item.value === PV.Filters._alphabeticalKey)
+      } else if (options.selectedFilterItemKey === PV.Filters._subscribedKey) {
+        sortItems = sortItems.filter(
+          (item) =>
+            PV.FilterOptions.screenFilters.PodcastsScreen.sort.includes(item.value) ||
+            item.value === PV.Filters._alphabeticalKey
+        )
+      } else {
+        sortItems = sortItems = sortItems.filter((item) =>
+          PV.FilterOptions.screenFilters.PodcastsScreen.sort.includes(item.value)
+        )
+      }
+
+      filterItems = PV.FilterOptions.typeItems.filter((item) =>
+        PV.FilterOptions.screenFilters.PodcastsScreen.type.includes(item.value)
+      )
+
+      break
+    default:
+      break
+  }
 
   const flatCategoryItems = []
-  for (const categoryItem of categoryItems) {
+  for (const categoryItem of allCategories) {
     flatCategoryItems.push(categoryItem)
     const subCategoryItems = categoryItem.categories
     for (const subCategoryItem of subCategoryItems) {
@@ -50,7 +76,7 @@ const generateSections = (props: Props, state: State) => {
   }
 
   const sections =
-    selectedFilterItemKey === PV.Filters._categoryKey
+    options.selectedFilterItemKey === PV.Filters._categoryKey
       ? sectionsWithCategory(filterItems, flatCategoryItems, sortItems)
       : sectionsWithoutCategory(filterItems, sortItems)
 
@@ -69,28 +95,47 @@ export class FilterScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    const { navigation } = props
-    const selectedCategoryItemKey = navigation.getParam('selectedCategoryItemKey')
-    const selectedCategorySubItemKey = navigation.getParam('selectedCategorySubItemKey')
-    const selectedFilterItemKey = navigation.getParam('selectedFilterItemKey')
-    const selectedSortItemKey = navigation.getParam('selectedSortItemKey')
-    const { flatCategoryItems, sections } = generateSections(props, {})
-
     this.state = {
-      categoryItems: flatCategoryItems,
-      sections,
-      selectedCategoryItemKey,
-      selectedCategorySubItemKey,
-      selectedFilterItemKey,
-      selectedSortItemKey
+      categoryItems: [],
+      sections: [],
+      selectedCategoryItemKey: '',
+      selectedCategorySubItemKey: '',
+      selectedFilterItemKey: '',
+      selectedSortItemKey: '',
+      screenName: '',
+      allCategories: props.navigation.getParam('allCategories')
     }
   }
 
   async componentDidMount() {
     trackPageView('/filter', 'Filter Screen')
+    const { navigation } = this.props
+    const selectedCategoryItemKey = navigation.getParam('selectedCategoryItemKey')
+    const selectedCategorySubItemKey = navigation.getParam('selectedCategorySubItemKey')
+    const selectedFilterItemKey = navigation.getParam('selectedFilterItemKey')
+    const selectedSortItemKey = navigation.getParam('selectedSortItemKey')
+    const screenName = navigation.getParam('screenName')
+    const { flatCategoryItems, sections } = generateSections({
+      selectedCategoryItemKey,
+      selectedCategorySubItemKey,
+      selectedFilterItemKey,
+      selectedSortItemKey,
+      screenName,
+      allCategories: this.state.allCategories
+    })
+
+    this.setState({
+      categoryItems: flatCategoryItems,
+      sections,
+      selectedCategoryItemKey,
+      selectedCategorySubItemKey,
+      selectedFilterItemKey,
+      selectedSortItemKey,
+      screenName
+    })
   }
 
-  handleStateUpdate = (section: any, item: any) => {
+  getNewLocalState = (section: any, item: any) => {
     const { navigation } = this.props
     const { categoryItems } = this.state
     const value = item.value || item.id
@@ -200,9 +245,18 @@ export class FilterScreen extends React.Component<Props, State> {
       <TouchableWithoutFeedback
         onPress={() => {
           const selectHandler = this.getSelectHandler(section, item)
-          const stateKey = this.handleStateUpdate(section, item) as any
-          this.setState({ [stateKey]: value }, () => {
+          // TODO: Don't call setState in below function
+          const stateKey = this.getNewLocalState(section, item) as any
+          this.setState({ [stateKey]: value }, async () => {
             selectHandler(value)
+            const { flatCategoryItems, sections } = generateSections({
+              ...this.state
+            })
+
+            this.setState({
+              categoryItems: flatCategoryItems,
+              sections
+            })
           })
         }}>
         <View style={styles.itemWrapper}>
