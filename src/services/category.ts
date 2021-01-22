@@ -27,3 +27,46 @@ export const downloadCategoriesList = async () => {
     console.log('Category download error: ', err)
   }
 }
+
+const generateFlatCategoryItems = (allCategories: any[]) => {
+  const flatCategoryItems = []
+  for (const categoryItem of allCategories) {
+    flatCategoryItems.push(categoryItem)
+    const subCategoryItems = categoryItem.categories
+    for (const subCategoryItem of subCategoryItems) {
+      subCategoryItem.parentId = categoryItem.id
+      flatCategoryItems.push(subCategoryItem)
+    }
+  }
+  return flatCategoryItems
+}
+
+const getCategoryItems = async () => {
+  try {
+    const categoryItemsString = await AsyncStorage.getItem('CATEGORIES_LIST')
+    let categoryItems = []
+    if (categoryItemsString) {
+      categoryItems = JSON.parse(categoryItemsString).map((category: any) => {
+        return {
+          label: category.title,
+          value: category.id,
+          ...category
+        }
+      })
+    }
+    return categoryItems
+  } catch (err) {
+    console.log('Bottom Selection Bar error: ', err)
+  }
+}
+
+export const getFlatCategoryItems = async () => {
+  const categoryItems = await getCategoryItems()
+  return generateFlatCategoryItems(categoryItems)
+}
+
+export const getDefaultCategory = async () => {
+  const flatCategoryItems = await getFlatCategoryItems()
+  const defaultItem = flatCategoryItems[0]
+  return defaultItem
+}

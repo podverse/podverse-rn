@@ -1,10 +1,10 @@
-import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet, View as RNView } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import React from 'reactn'
 import { FlatList, Icon, NavDismissIcon, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
+import { getDefaultCategory } from '../services/category'
 import { trackPageView } from '../services/tracking'
 
 type Props = {
@@ -12,21 +12,20 @@ type Props = {
 }
 
 type State = {
-  categoryItems?: any
+  flatCategoryItems?: any[]
   sections?: any
   selectedCategoryItemKey?: string
   selectedCategorySubItemKey?: string
   selectedFilterItemKey?: string
   selectedSortItemKey?: string
   screenName: string
-  allCategories: []
 }
 
 const testIDPrefix = 'filter_screen'
 
-const sectionsWithCategory = (filterItems: any[], categoryItems: any[], sortItems: string[]) => [
+const sectionsWithCategory = (filterItems: any[], flatCategoryItems: any[], sortItems: string[]) => [
   { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-  { title: translate('Category'), data: categoryItems, value: PV.Filters._sectionCategoryKey },
+  { title: translate('Category'), data: flatCategoryItems, value: PV.Filters._sectionCategoryKey },
   { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
 ]
 
@@ -35,22 +34,54 @@ const sectionsWithoutCategory = (filterItems: any, sortItems: any) => [
   { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
 ]
 
-const generateSections = (options: {}) => {
-  let sortItems: any[] = PV.FilterOptions.sortItems
-  const allCategories = options.allCategories
-  let filterItems: any[] = []
-
-  switch (options.screenName) {
+export const getDefaultSortForFilter = (options: any) => {
+  const { screenName, selectedFilterItemKey, selectedSortItemKey } = options
+  let newSelectedSortItemKey = selectedSortItemKey
+  switch (screenName) {
     case PV.RouteNames.PodcastsScreen:
-      if (options.selectedFilterItemKey === PV.Filters._downloadedKey) {
-        sortItems = sortItems.filter((item) => item.value === PV.Filters._alphabeticalKey)
-      } else if (options.selectedFilterItemKey === PV.Filters._subscribedKey) {
-        sortItems = sortItems.filter(
-          (item) =>
-            PV.FilterOptions.screenFilters.PodcastsScreen.sort.includes(item.value) ||
-            item.value === PV.Filters._alphabeticalKey
-        )
+      if (selectedFilterItemKey === PV.Filters._downloadedKey || selectedFilterItemKey === PV.Filters._subscribedKey) {
+        newSelectedSortItemKey = PV.Filters._alphabeticalKey
       } else {
+        newSelectedSortItemKey = !PV.FilterOptions.screenFilters.PodcastsScreen.sort.includes(newSelectedSortItemKey)
+          ? PV.Filters._topPastWeek
+          : newSelectedSortItemKey
+      }
+      break
+    default:
+      break
+  }
+
+  return newSelectedSortItemKey
+}
+
+const generateSections = (options: any) => {
+  let sortItems: any[] = PV.FilterOptions.sortItems
+  const {
+    flatCategoryItems,
+    screenName,
+    selectedCategoryItemKey,
+    selectedCategorySubItemKey,
+    selectedFilterItemKey,
+    selectedSortItemKey
+  } = options
+  let filterItems: any[] = []
+  let newSelectedCategoryItemKey = selectedCategoryItemKey
+  let newSelectedCategorySubItemKey = selectedCategorySubItemKey
+  const newSelectedFilterItemKey = selectedFilterItemKey
+  let newSelectedSortItemKey = selectedSortItemKey
+
+  switch (screenName) {
+    case PV.RouteNames.PodcastsScreen:
+      newSelectedSortItemKey = getDefaultSortForFilter(options)
+      if (selectedFilterItemKey === PV.Filters._downloadedKey || selectedFilterItemKey === PV.Filters._subscribedKey) {
+        newSelectedCategoryItemKey = ''
+        newSelectedCategorySubItemKey = ''
+        sortItems = sortItems.filter((item) => item.value === PV.Filters._alphabeticalKey)
+      } else {
+        if (selectedFilterItemKey === PV.Filters._allPodcastsKey) {
+          newSelectedCategoryItemKey = ''
+          newSelectedCategorySubItemKey = ''
+        }
         sortItems = sortItems = sortItems.filter((item) =>
           PV.FilterOptions.screenFilters.PodcastsScreen.sort.includes(item.value)
         )
@@ -65,22 +96,22 @@ const generateSections = (options: {}) => {
       break
   }
 
-  const flatCategoryItems = []
-  for (const categoryItem of allCategories) {
-    flatCategoryItems.push(categoryItem)
-    const subCategoryItems = categoryItem.categories
-    for (const subCategoryItem of subCategoryItems) {
-      subCategoryItem.parentId = categoryItem.id
-      flatCategoryItems.push(subCategoryItem)
-    }
+  /* If the key does not match any filter type, assume it is a category id. */
+  const includeCategories =
+    selectedFilterItemKey === PV.Filters._categoryKey ||
+    !PV.FilterOptions.screenFilters[screenName].type.includes(selectedFilterItemKey)
+
+  const sections = includeCategories
+    ? sectionsWithCategory(filterItems, flatCategoryItems, sortItems)
+    : sectionsWithoutCategory(filterItems, sortItems)
+
+  return {
+    newSelectedCategoryItemKey,
+    newSelectedCategorySubItemKey,
+    newSelectedFilterItemKey,
+    newSelectedSortItemKey,
+    sections
   }
-
-  const sections =
-    options.selectedFilterItemKey === PV.Filters._categoryKey
-      ? sectionsWithCategory(filterItems, flatCategoryItems, sortItems)
-      : sectionsWithoutCategory(filterItems, sortItems)
-
-  return { flatCategoryItems, sections }
 }
 
 export class FilterScreen extends React.Component<Props, State> {
@@ -95,103 +126,106 @@ export class FilterScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
+    const flatCategoryItems = this.props.navigation.getParam('flatCategoryItems') || []
+
     this.state = {
-      categoryItems: [],
+      flatCategoryItems,
+      screenName: '',
       sections: [],
       selectedCategoryItemKey: '',
       selectedCategorySubItemKey: '',
       selectedFilterItemKey: '',
-      selectedSortItemKey: '',
-      screenName: '',
-      allCategories: props.navigation.getParam('allCategories')
+      selectedSortItemKey: ''
     }
   }
 
   async componentDidMount() {
     trackPageView('/filter', 'Filter Screen')
     const { navigation } = this.props
+    const { flatCategoryItems } = this.state
+    const screenName = navigation.getParam('screenName')
     const selectedCategoryItemKey = navigation.getParam('selectedCategoryItemKey')
     const selectedCategorySubItemKey = navigation.getParam('selectedCategorySubItemKey')
     const selectedFilterItemKey = navigation.getParam('selectedFilterItemKey')
     const selectedSortItemKey = navigation.getParam('selectedSortItemKey')
-    const screenName = navigation.getParam('screenName')
-    const { flatCategoryItems, sections } = generateSections({
-      selectedCategoryItemKey,
-      selectedCategorySubItemKey,
-      selectedFilterItemKey,
-      selectedSortItemKey,
-      screenName,
-      allCategories: this.state.allCategories
-    })
 
-    this.setState({
-      categoryItems: flatCategoryItems,
-      sections,
+    const { newSelectedSortItemKey, sections } = generateSections({
+      flatCategoryItems,
       selectedCategoryItemKey,
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedSortItemKey,
       screenName
     })
+
+    this.setState({
+      sections,
+      selectedCategoryItemKey,
+      selectedCategorySubItemKey,
+      selectedFilterItemKey,
+      selectedSortItemKey: newSelectedSortItemKey,
+      screenName
+    })
   }
 
-  getNewLocalState = (section: any, item: any) => {
-    const { navigation } = this.props
-    const { categoryItems } = this.state
-    const value = item.value || item.id
-    const filterItems = navigation.getParam('filterItems') || []
-    const sortItems = navigation.getParam('sortItems') || []
+  getNewLocalState = async (section: any, item: any) => {
+    const { flatCategoryItems, screenName, selectedFilterItemKey } = this.state
+    const options = { flatCategoryItems, screenName } as any
 
     let stateKey
     if (section.value === PV.Filters._sectionFilterKey) {
       stateKey = 'selectedFilterItemKey'
-      const sections =
-        item.value === PV.Filters._categoryKey
-          ? sectionsWithCategory(filterItems, categoryItems, sortItems)
-          : sectionsWithoutCategory(filterItems, sortItems)
-      if (value === PV.Filters._categoryKey) {
-        this.setState({
-          sections,
-          selectedCategoryItemKey: categoryItems[0].value,
-          selectedCategorySubItemKey: '',
-          selectedFilterItemKey: value
-        })
-      } else {
-        this.setState({
-          sections,
-          selectedCategoryItemKey: '',
-          selectedCategorySubItemKey: '',
-          selectedFilterItemKey: value
-        })
+      options.selectedFilterItemKey = item.value
+      if (item.value === PV.Filters._categoryKey) {
+        const defaultCategory = await getDefaultCategory()
+        options.selectedCategoryItemKey = defaultCategory.id
       }
     } else if (section.value === PV.Filters._sectionCategoryKey) {
       if (item.parentId) {
         stateKey = 'selectedCategorySubItemKey'
-        this.setState({
-          selectedCategorySubItemKey: value
-        })
+        options.selectedCategorySubItemKey = item.value || item.id
+        options.selectedCategoryItemKey = item.parentId
       } else {
         stateKey = 'selectedCategoryItemKey'
-        this.setState({
-          selectedCategoryItemKey: value,
-          selectedCategorySubItemKey: ''
-        })
+        options.selectedCategoryItemKey = item.value || item.id
       }
+      options.selectedFilterItemKey = selectedFilterItemKey
     } else if (section.value === PV.Filters._sectionSortKey) {
       stateKey = 'selectedSortItemKey'
-      this.setState({
-        selectedSortItemKey: value
-      })
+      options.selectedSortItemKey = item.value
+      options.selectedFilterItemKey = selectedFilterItemKey
     }
 
-    return stateKey
+    const {
+      newSelectedCategoryItemKey,
+      newSelectedCategorySubItemKey,
+      newSelectedFilterItemKey,
+      newSelectedSortItemKey,
+      sections
+    } = generateSections(options)
+
+    return {
+      selectedCategoryItemKey: newSelectedCategoryItemKey,
+      selectedCategorySubItemKey: newSelectedCategorySubItemKey,
+      selectedFilterItemKey: newSelectedFilterItemKey,
+      selectedSortItemKey: newSelectedSortItemKey,
+      sections,
+      stateKey
+    }
   }
 
-  getSelectHandler = (section: any, item: any) => {
+  getSelectHandler = async (section: any, item: any) => {
     const { navigation } = this.props
     let handleSelect: any
+    let categoryValueOverride: string = ''
     if (section.value === PV.Filters._sectionFilterKey) {
-      handleSelect = navigation.getParam('handleSelectFilterItem')
+      if (item.value === PV.Filters._categoryKey) {
+        handleSelect = navigation.getParam('handleSelectCategoryItem')
+        const defaultCategory = await getDefaultCategory()
+        categoryValueOverride = defaultCategory.id
+      } else {
+        handleSelect = navigation.getParam('handleSelectFilterItem')
+      }
     } else if (section.value === PV.Filters._sectionCategoryKey) {
       if (item.value && !item.parentId) {
         handleSelect = navigation.getParam('handleSelectCategoryItem')
@@ -201,7 +235,7 @@ export class FilterScreen extends React.Component<Props, State> {
     } else if (section.value === PV.Filters._sectionSortKey) {
       handleSelect = navigation.getParam('handleSelectSortItem')
     }
-    return handleSelect
+    return { categoryValueOverride, handleSelect }
   }
 
   renderItem = ({ item, section }) => {
@@ -243,20 +277,12 @@ export class FilterScreen extends React.Component<Props, State> {
 
     return (
       <TouchableWithoutFeedback
-        onPress={() => {
-          const selectHandler = this.getSelectHandler(section, item)
-          // TODO: Don't call setState in below function
-          const stateKey = this.getNewLocalState(section, item) as any
-          this.setState({ [stateKey]: value }, async () => {
-            selectHandler(value)
-            const { flatCategoryItems, sections } = generateSections({
-              ...this.state
-            })
+        onPress={async () => {
+          const { categoryValueOverride, handleSelect } = await this.getSelectHandler(section, item)
+          const newState = (await this.getNewLocalState(section, item)) as any
 
-            this.setState({
-              categoryItems: flatCategoryItems,
-              sections
-            })
+          this.setState(newState, async () => {
+            handleSelect(categoryValueOverride || value)
           })
         }}>
         <View style={styles.itemWrapper}>

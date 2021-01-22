@@ -1,9 +1,7 @@
-import AsyncStorage from '@react-native-community/async-storage'
 import { View } from 'react-native'
 import React from 'reactn'
-import { convertFilterOptionsToI18N } from '../lib/i18n'
-import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import { getFlatCategoryItems } from '../services/category'
 import { DropdownButton, Text } from './'
 
 type Props = {
@@ -23,7 +21,7 @@ type Props = {
 }
 
 type State = {
-  allCategories: any[]
+  flatCategoryItems: any[]
 }
 
 const filterAddByRSSSortItems = (
@@ -41,34 +39,15 @@ const filterAddByRSSSortItems = (
 export class TableSectionSelectors extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    this.state = { allCategories: [] }
+
+    this.state = {
+      flatCategoryItems: []
+    }
   }
 
   async componentDidMount() {
-    const allCategories = await this.getCategoryItems()
-
-    this.setState({
-      allCategories
-    })
-  }
-
-  getCategoryItems = async () => {
-    try {
-      const categoryItemsString = await AsyncStorage.getItem('CATEGORIES_LIST')
-      let categoryItems = []
-      if (categoryItemsString) {
-        categoryItems = JSON.parse(categoryItemsString).map((category: any) => {
-          return {
-            label: category.title,
-            value: category.id,
-            ...category
-          }
-        })
-      }
-      return categoryItems
-    } catch (err) {
-      console.log('Bottom Selection Bar error: ', err)
-    }
+    const flatCategoryItems = await getFlatCategoryItems()
+    this.setState({ flatCategoryItems })
   }
 
   render() {
@@ -84,18 +63,31 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       selectedFilterItemKey,
       selectedSortItemKey
     } = this.props
+    const { flatCategoryItems } = this.state
     const { globalTheme } = this.global
-    const selectedFilterItem = PV.FilterOptions.typeItems.find((item) => item.value === selectedFilterItemKey)
+
+    let selectedFilterLabel
+    if (!selectedCategoryItemKey && !selectedCategorySubItemKey) {
+      selectedFilterLabel = PV.FilterOptions.typeItems.find((item) => item.value === selectedFilterItemKey)
+    } else if (selectedCategorySubItemKey) {
+      selectedFilterLabel = flatCategoryItems.find(
+        (item) => item.value === selectedCategorySubItemKey || item.id === selectedCategorySubItemKey
+      )
+    } else if (selectedCategoryItemKey) {
+      selectedFilterLabel = flatCategoryItems.find(
+        (item) => item.value === selectedCategoryItemKey || item.id === selectedCategoryItemKey
+      )
+    }
 
     return (
       <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
         <View style={styles.tableSectionHeaderTitleWrapper}>
-          {selectedFilterItem && selectedFilterItem.label && (
+          {!!selectedFilterLabel && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               numberOfLines={1}
               style={[styles.tableSectionHeaderTitleText, globalTheme.tableSectionHeaderText]}>
-              {selectedFilterItem.label}
+              {selectedFilterLabel.label || selectedFilterLabel.title}
             </Text>
           )}
         </View>
@@ -103,11 +95,11 @@ export class TableSectionSelectors extends React.Component<Props, State> {
           onPress={() => {
             this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
               screenName,
+              flatCategoryItems,
               selectedCategoryItemKey,
               selectedCategorySubItemKey,
               selectedSortItemKey,
               selectedFilterItemKey,
-              allCategories: this.state.allCategories,
               handleSelectCategoryItem,
               handleSelectCategorySubItem,
               handleSelectFilterItem,
