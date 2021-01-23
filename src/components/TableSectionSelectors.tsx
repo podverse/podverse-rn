@@ -15,6 +15,7 @@ type Props = {
   selectedCategoryItemKey: string | null
   selectedCategorySubItemKey: string | null
   selectedFilterItemKey: string | null
+  selectedFilterLabel?: string | null
   selectedSortItemKey?: string | null
   shouldQueryIndexedData?: boolean
   testID: string
@@ -61,23 +62,11 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       selectedCategoryItemKey,
       selectedCategorySubItemKey,
       selectedFilterItemKey,
+      selectedFilterLabel,
       selectedSortItemKey
     } = this.props
     const { flatCategoryItems } = this.state
     const { globalTheme } = this.global
-
-    let selectedFilterLabel
-    if (!selectedCategoryItemKey && !selectedCategorySubItemKey) {
-      selectedFilterLabel = PV.FilterOptions.typeItems.find((item) => item.value === selectedFilterItemKey)
-    } else if (selectedCategorySubItemKey) {
-      selectedFilterLabel = flatCategoryItems.find(
-        (item) => item.value === selectedCategorySubItemKey || item.id === selectedCategorySubItemKey
-      )
-    } else if (selectedCategoryItemKey) {
-      selectedFilterLabel = flatCategoryItems.find(
-        (item) => item.value === selectedCategoryItemKey || item.id === selectedCategoryItemKey
-      )
-    }
 
     return (
       <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
@@ -87,7 +76,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               numberOfLines={1}
               style={[styles.tableSectionHeaderTitleText, globalTheme.tableSectionHeaderText]}>
-              {selectedFilterLabel.label || selectedFilterLabel.title}
+              {selectedFilterLabel}
             </Text>
           )}
         </View>

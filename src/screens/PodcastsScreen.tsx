@@ -17,6 +17,7 @@ import {
   View
 } from '../components'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
+import { getDefaultSortForFilter, getSelectedFilterLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { getAppUserAgent, setAppUserAgent, setCategoryQueryProperty, testProps } from '../lib/utility'
@@ -40,7 +41,6 @@ import {
 import { getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { initializeSettings } from '../state/actions/settings'
 import { core, darkTheme } from '../styles'
-import { getDefaultSortForFilter } from './FilterScreen'
 
 type Props = {
   navigation?: any
@@ -60,6 +60,7 @@ type State = {
   searchBarText: string
   selectedCategory: string | null
   selectedCategorySub: string | null
+  selectedFilterLabel?: string | null
   showDataSettingsConfirmDialog: boolean
   showNoInternetConnectionMessage?: boolean
 }
@@ -591,6 +592,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       querySort,
       selectedCategory,
       selectedCategorySub,
+      selectedFilterLabel,
       showDataSettingsConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
@@ -634,6 +636,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             selectedCategoryItemKey={selectedCategory}
             selectedCategorySubItemKey={selectedCategorySub}
             selectedFilterItemKey={queryFrom}
+            selectedFilterLabel={selectedFilterLabel}
             selectedSortItemKey={querySort}
             screenName='PodcastsScreen'
             testID={testIDPrefix}
@@ -772,6 +775,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         if (isSubCategory) {
           newState.selectedCategorySub = filterKey
         } else {
+          newState.selectedSubCategory = ''
           newState.selectedCategory = filterKey
         }
         const results = await this._queryPodcastsByCategory(categories, querySort, newState.queryPage)
@@ -780,6 +784,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
+
+      newState.selectedFilterLabel = await getSelectedFilterLabel(
+        queryFrom,
+        newState.selectedCategory,
+        newState.selectedSubCategory
+      )
 
       return newState
     } catch (error) {
