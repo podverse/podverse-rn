@@ -177,10 +177,9 @@ export const FilterOptions = {
   sortItems,
   screenFilters: {
     ClipsScreen: {
-      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey, _myClipsKey],
+      type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
       sort: [_mostRecentKey, ..._top],
-      hideSort: [],
-      hideIfNotLoggedIn: [_myClipsKey]
+      hideSort: []
     },
     EpisodeScreen: {
       type: [_chaptersKey, _clipsKey, _showNotesKey, _titleKey],
