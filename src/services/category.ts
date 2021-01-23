@@ -42,9 +42,9 @@ const generateFlatCategoryItems = (allCategories: any[]) => {
 }
 
 const getCategoryItems = async () => {
+  let categoryItems = []
   try {
     const categoryItemsString = await AsyncStorage.getItem('CATEGORIES_LIST')
-    let categoryItems = []
     if (categoryItemsString) {
       categoryItems = JSON.parse(categoryItemsString).map((category: any) => {
         return {
@@ -68,5 +68,5 @@ export const getFlatCategoryItems = async () => {
 export const getDefaultCategory = async () => {
   const flatCategoryItems = await getFlatCategoryItems()
   const defaultItem = flatCategoryItems[0]
-  return defaultItem
+  return defaultItem || {}
 }

@@ -177,7 +177,6 @@ export const initializePlayerQueue = async () => {
   try {
     const queueItems = await getQueueItems()
     let filteredItems = [] as any
-
     const item = await getNowPlayingItemLocally()
     filteredItems = filterItemFromQueueItems(queueItems, item)
     filteredItems.unshift(item)
@@ -286,6 +285,8 @@ export const syncPlayerWithQueue = async () => {
 }
 
 export const createTrack = async (item: NowPlayingItem) => {
+  if (!item) return
+
   const {
     clipId,
     episodeId,
