@@ -19,7 +19,8 @@ export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
             podcast: {
               imageUrl: item.podcastImageUrl,
               title: item.podcastTitle
-            }
+            },
+            pubDate: item.episodePubDate
           },
           includeGoToPodcast: true
         }
