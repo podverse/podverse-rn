@@ -17,6 +17,19 @@ export const getDefaultSortForFilter = (options: any) => {
   const { screenName, selectedFilterItemKey, selectedSortItemKey } = options
   let newSelectedSortItemKey = selectedSortItemKey
   switch (screenName) {
+    case PV.RouteNames.EpisodesScreen:
+      if (selectedFilterItemKey === PV.Filters._subscribedKey) {
+        newSelectedSortItemKey = newSelectedSortItemKey
+      } else if (selectedFilterItemKey === PV.Filters._downloadedKey) {
+        newSelectedSortItemKey = PV.Filters._mostRecentKey
+      } else if (selectedFilterItemKey === PV.Filters._allPodcastsKey) {
+        newSelectedSortItemKey =
+          newSelectedSortItemKey === PV.Filters._mostRecentKey ? PV.Filters._topPastWeek : newSelectedSortItemKey
+      } else if (selectedFilterItemKey === PV.Filters._categoryKey) {
+        newSelectedSortItemKey =
+          newSelectedSortItemKey === PV.Filters._mostRecentKey ? PV.Filters._topPastWeek : newSelectedSortItemKey
+      }
+      break
     case PV.RouteNames.PodcastsScreen:
       if (selectedFilterItemKey === PV.Filters._downloadedKey || selectedFilterItemKey === PV.Filters._subscribedKey) {
         newSelectedSortItemKey = PV.Filters._alphabeticalKey
@@ -50,6 +63,37 @@ export const generateSections = (options: any) => {
   let newSelectedSortItemKey = selectedSortItemKey
 
   switch (screenName) {
+    case PV.RouteNames.EpisodesScreen:
+      newSelectedSortItemKey = getDefaultSortForFilter(options)
+      if (selectedFilterItemKey === PV.Filters._downloadedKey) {
+        newSelectedCategoryItemKey = ''
+        newSelectedCategorySubItemKey = ''
+        sortItems = sortItems.filter((item) => item.value === PV.Filters._mostRecentKey)
+      } else if (selectedFilterItemKey === PV.Filters._subscribedKey) {
+        sortItems = sortItems = sortItems.filter((item) =>
+          PV.FilterOptions.screenFilters.EpisodesScreen.sort.includes(item.value)
+        )
+      } else if (selectedFilterItemKey === PV.Filters._categoryKey) {
+        sortItems = sortItems = sortItems.filter(
+          (item) =>
+            PV.FilterOptions.screenFilters.EpisodesScreen.sort.includes(item.value) &&
+            item.value !== PV.Filters._mostRecentKey
+        )
+      } else if (selectedFilterItemKey === PV.Filters._allPodcastsKey) {
+        newSelectedCategoryItemKey = ''
+        newSelectedCategorySubItemKey = ''
+        sortItems = sortItems = sortItems.filter(
+          (item) =>
+            PV.FilterOptions.screenFilters.EpisodesScreen.sort.includes(item.value) &&
+            item.value !== PV.Filters._mostRecentKey
+        )
+      }
+
+      filterItems = PV.FilterOptions.typeItems.filter((item) =>
+        PV.FilterOptions.screenFilters.EpisodesScreen.type.includes(item.value)
+      )
+
+      break
     case PV.RouteNames.PodcastsScreen:
       newSelectedSortItemKey = getDefaultSortForFilter(options)
       if (selectedFilterItemKey === PV.Filters._downloadedKey || selectedFilterItemKey === PV.Filters._subscribedKey) {

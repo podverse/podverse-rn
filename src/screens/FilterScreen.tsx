@@ -78,11 +78,19 @@ export class FilterScreen extends React.Component<Props, State> {
   }
 
   getNewLocalState = async (section: any, item: any) => {
-    const { flatCategoryItems, screenName, selectedFilterItemKey } = this.state
+    const {
+      flatCategoryItems,
+      screenName,
+      selectedCategoryItemKey,
+      selectedCategorySubItemKey,
+      selectedFilterItemKey,
+      selectedSortItemKey
+    } = this.state
     const options = { flatCategoryItems, screenName } as any
 
     if (section.value === PV.Filters._sectionFilterKey) {
       options.selectedFilterItemKey = item.value
+      options.selectedSortItemKey = selectedSortItemKey
       if (item.value === PV.Filters._categoryKey) {
         const defaultCategory = await getDefaultCategory()
         options.selectedCategoryItemKey = defaultCategory.id
@@ -95,11 +103,13 @@ export class FilterScreen extends React.Component<Props, State> {
         options.selectedCategoryItemKey = item.value || item.id
       }
       options.selectedFilterItemKey = selectedFilterItemKey
+      options.selectedSortItemKey = selectedSortItemKey
     } else if (section.value === PV.Filters._sectionSortKey) {
       options.selectedSortItemKey = item.value
       options.selectedFilterItemKey = selectedFilterItemKey
+      options.selectedCategoryItemKey = selectedCategoryItemKey
+      options.selectedCategorySubItemKey = selectedCategorySubItemKey
     }
-
     const {
       newSelectedCategoryItemKey,
       newSelectedCategorySubItemKey,

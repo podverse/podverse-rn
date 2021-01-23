@@ -16,10 +16,12 @@ import {
 } from '../components'
 import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
+import { getSelectedFilterLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { getUniqueArrayByKey, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
+import { assignCategoryQueryToState, assignCategoryToStateForSortSelect } from '../services/category'
 import { getEpisodes } from '../services/episode'
 import { combineEpisodesWithAddByRSSEpisodesLocally, hasAddByRSSEpisodesLocally } from '../services/parser'
 import { trackPageView } from '../services/tracking'
@@ -44,6 +46,7 @@ type State = {
   selectedItem?: any
   selectedCategory: string | null
   selectedCategorySub: string | null
+  selectedFilterLabel?: string | null
   showActionSheet: boolean
   showNoInternetConnectionMessage?: boolean
 }
@@ -156,7 +159,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
     )
   }
 
-  _selectCategory = async (selectedKey: string, isSubCategory?: boolean) => {
+  _selectCategory = async (selectedKey: string, isCategorySub?: boolean) => {
     if (!selectedKey) {
       return
     }
@@ -165,13 +168,13 @@ export class EpisodesScreen extends React.Component<Props, State> {
       {
         endOfResultsReached: false,
         isLoading: true,
-        ...((isSubCategory ? { selectedCategorySub: selectedKey } : { selectedCategory: selectedKey }) as any),
+        ...((isCategorySub ? { selectedCategorySub: selectedKey } : { selectedCategory: selectedKey }) as any),
         flatListData: [],
         flatListDataTotalCount: null,
         queryPage: 1
       },
       async () => {
-        const newState = await this._queryData(selectedKey, { isSubCategory })
+        const newState = await this._queryData(selectedKey, { isCategorySub })
         this.setState(newState)
       }
     )
@@ -356,8 +359,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
       queryFrom,
       querySort,
       searchBarText,
-      selectedCategoryItem,
-      selectedCategorySubItem,
+      selectedCategory,
+      selectedCategorySub,
+      selectedFilterLabel,
       selectedItem,
       showActionSheet,
       showNoInternetConnectionMessage
@@ -390,9 +394,10 @@ export class EpisodesScreen extends React.Component<Props, State> {
           handleSelectSortItem={this.handleSelectSortItem}
           navigation={navigation}
           screenName='EpisodesScreen'
-          selectedCategoryItemKey={selectedCategoryItem}
-          selectedCategorySubItemKey={selectedCategorySubItem}
+          selectedCategoryItemKey={selectedCategory}
+          selectedCategorySubItemKey={selectedCategorySub}
           selectedFilterItemKey={queryFrom}
+          selectedFilterLabel={selectedFilterLabel}
           selectedSortItemKey={querySort}
           shouldQueryIndexedData={shouldQueryIndexedData}
           testID={testIDPrefix}
@@ -437,14 +442,14 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _queryData = async (
-    filterKey: string | null,
+    filterKey: any,
     queryOptions: {
-      isSubCategory?: boolean
+      isCategorySub?: boolean
       queryPage?: number
       searchAllFieldsText?: string
     } = {}
   ) => {
-    const newState = {
+    let newState = {
       isLoading: false,
       isLoadingMore: false,
       isRefreshing: false,
@@ -452,7 +457,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
     } as State
 
     const hasInternetConnection = await hasValidNetworkConnection()
-
     if (!hasInternetConnection && filterKey !== PV.Filters._downloadedKey) {
       newState.showNoInternetConnectionMessage = true
       return newState
@@ -498,19 +502,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (filterKey === PV.Filters._categoryKey) {
-        if (selectedCategorySub) {
-          const results = await this._queryEpisodesByCategory(selectedCategorySub, querySort, queryPage)
-          newState.flatListData = [...flatListData, ...results[0]]
-          newState.endOfResultsReached = newState.flatListData.length >= results[1]
-          newState.flatListDataTotalCount = results[1]
-          newState.selectedCategorySub = selectedCategorySub
-        } else {
-          const podcastResults = await this._queryAllEpisodes(querySort, queryPage)
-          newState.flatListData = [...flatListData, ...podcastResults[0]]
-          newState.endOfResultsReached = newState.flatListData.length >= podcastResults[1]
-          newState.flatListDataTotalCount = podcastResults[1]
-        }
       } else if (PV.FilterOptions.screenFilters.EpisodesScreen.sort.some((option) => option === filterKey)) {
         let results = await getEpisodes({
           ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedCategorySub),
@@ -529,21 +520,30 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.flatListData = results[0]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
+        newState = assignCategoryToStateForSortSelect(newState, selectedCategory, selectedCategorySub)
       } else {
-        const { isSubCategory } = queryOptions
-        let categories
-        if (isSubCategory) {
-          categories = filterKey
-        } else {
-          categories = filterKey
-          newState.selectedCategory = filterKey
-        }
+        const assignedCategoryData = assignCategoryQueryToState(
+          filterKey,
+          newState,
+          queryOptions,
+          selectedCategory,
+          selectedCategorySub
+        )
+        const categories = assignedCategoryData.categories
+        filterKey = assignedCategoryData.newFilterKey
+        newState = assignedCategoryData.newState
 
         const results = await this._queryEpisodesByCategory(categories, querySort, queryPage)
         newState.flatListData = results[0]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
+
+      newState.selectedFilterLabel = await getSelectedFilterLabel(
+        queryFrom,
+        newState.selectedCategory,
+        newState.selectedCategorySub
+      )
 
       newState.flatListData = getUniqueArrayByKey(newState.flatListData, 'id')
 

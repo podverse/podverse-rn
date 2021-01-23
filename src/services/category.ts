@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { PV } from '../resources'
 import { request } from './request'
 
 export const getTopLevelCategories = async () => {
@@ -69,4 +70,45 @@ export const getDefaultCategory = async () => {
   const flatCategoryItems = await getFlatCategoryItems()
   const defaultItem = flatCategoryItems[0]
   return defaultItem || {}
+}
+
+export const getCategoryKey = (
+  filterKey?: string | null,
+  selectedCategory?: string | null,
+  selectedCategorySub?: string | null
+) => (filterKey = filterKey === PV.Filters._categoryKey ? selectedCategorySub || selectedCategory : filterKey)
+
+export const assignCategoryQueryToState = (
+  filterKey: any,
+  newState: any,
+  queryOptions: any,
+  selectedCategory: any,
+  selectedCategorySub: any
+) => {
+  const newFilterKey = getCategoryKey(filterKey, selectedCategory, selectedCategorySub)
+  const { isCategorySub } = queryOptions
+  const categories = filterKey
+  if (isCategorySub) {
+    newState.selectedCategorySub = filterKey
+  } else {
+    newState.selectedCategorySub = ''
+    newState.selectedCategory = filterKey
+  }
+
+  newState.queryFrom = PV.Filters._categoryKey
+
+  return {
+    categories,
+    newFilterKey,
+    newState
+  }
+}
+
+export const assignCategoryToStateForSortSelect = (newState: any, selectedCategory: any, selectedCategorySub: any) => {
+  if (selectedCategorySub) {
+    newState.selectedCategorySub = selectedCategorySub
+  } else if (selectedCategory) {
+    newState.selectedCategory = selectedCategory
+  }
+  return newState
 }
