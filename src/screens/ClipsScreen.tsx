@@ -18,7 +18,7 @@ import { getDownloadedEpisodeIds } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { isOdd, safelyUnwrapNestedVariable, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { safelyUnwrapNestedVariable, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { trackPageView } from '../services/tracking'
@@ -237,30 +237,15 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _renderClipItem = ({ item, index }) => {
-    const title = item?.title?.trim() || ''
-    const episodeTitle = item?.episode?.title?.trim() || ''
-    const podcastTitle = item?.episode?.podcast?.title?.trim() || ''
-
     return item && item.episode && item.episode.id ? (
       <ClipTableCell
-        endTime={item.endTime}
-        episodeId={item.episode.id}
-        {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
-        {...(episodeTitle ? { episodeTitle } : {})}
-        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
-        handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, null))}
-        hasZebraStripe={isOdd(index)}
-        podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
-        {...(podcastTitle ? { podcastTitle } : {})}
+        item={item}
+        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.episode.podcast))}
         showEpisodeInfo={true}
         showPodcastTitle={true}
-        startTime={item.startTime}
         testID={`${testIDPrefix}_clip_item_${index}`}
-        {...(title ? { title } : {})}
       />
-    ) : (
-      <></>
-    )
+    ) : null
   }
 
   _handleSearchBarClear = (text: string) => {

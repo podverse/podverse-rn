@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
+import { convertNowPlayingItemToEpisode } from 'podverse-shared'
 import { Alert } from 'react-native'
 import Config from 'react-native-config'
 import Share from 'react-native-share'
@@ -32,7 +33,7 @@ const mediaMoreButtons = (
     config || {}
   const globalState = getGlobal()
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
-  const downloadingText = isDownloading ? translate('Downloading') : translate('Download')
+  const downloadingText = isDownloading ? translate('Downloading Episode') : translate('Download Episode')
   const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
   const buttons = []
   const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session.userInfo.id, '')

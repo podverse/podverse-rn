@@ -13,6 +13,7 @@ type Props = {
   item: any
   style?: any
   userPlaybackPosition?: number | undefined
+  clipTime?: string
 }
 
 type BarProps = {
@@ -55,7 +56,7 @@ const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { handleMorePress, item, style, userPlaybackPosition } = props
+  const { handleMorePress, item, style, userPlaybackPosition, clipTime } = props
   const { podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, null, podcast)
   const [player] = useGlobal('player')
@@ -71,6 +72,10 @@ export const TimeRemainingWidget = (props: Props) => {
     if (hasStartedItem) {
       timeLabel = convertSecToHhoursMMinutes(totalTime - playedTime) + ' left'
     }
+  }
+
+  if (clipTime) {
+    timeLabel = clipTime
   }
 
   const playItem = () => {
