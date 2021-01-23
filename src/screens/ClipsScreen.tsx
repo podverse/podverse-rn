@@ -84,6 +84,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       searchBarText: '',
       selectedCategory: null,
       selectedCategorySub: null,
+      selectedFilterLabel: translate('Subscribed'),
       showActionSheet: false
     }
 
@@ -403,7 +404,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       !searchBarText
 
     const showOfflineMessage = offlineModeEnabled
-    console.log('wtf', selectedFilterLabel)
+
     return (
       <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
         <TableSectionSelectors
@@ -448,11 +449,6 @@ export class ClipsScreen extends React.Component<Props, State> {
           handleCancelPress={this._handleCancelPress}
           items={() => {
             if (!selectedItem) return []
-
-            if (queryFrom === PV.Filters._myClipsKey) {
-              const loggedInUserId = safelyUnwrapNestedVariable(() => session.userInfo.id, '')
-              selectedItem.ownerId = loggedInUserId
-            }
 
             return PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
               handleDismiss: this._handleCancelPress,
@@ -551,25 +547,16 @@ export class ClipsScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (filterKey === PV.Filters._myClipsKey) {
-        const results = await this._getLoggedInUserMediaRefs(queryPage)
-        newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
-        newState.flatListDataTotalCount = results[1]
       } else if (PV.FilterOptions.screenFilters.ClipsScreen.sort.some((option) => option === filterKey)) {
         let results = []
-        if (queryFrom === PV.Filters._myClipsKey) {
-          results = await this._getLoggedInUserMediaRefs(queryPage, filterKey)
-        } else {
-          results = await getMediaRefs({
-            ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedCategorySub),
-            ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
-            sort: filterKey,
-            ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
-            subscribedOnly: queryFrom === PV.Filters._subscribedKey,
-            includePodcast: true
-          })
-        }
+        results = await getMediaRefs({
+          ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedCategorySub),
+          ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
+          sort: filterKey,
+          ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
+          subscribedOnly: queryFrom === PV.Filters._subscribedKey,
+          includePodcast: true
+        })
 
         newState.flatListData = results[0]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]

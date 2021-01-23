@@ -81,6 +81,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       searchBarText: '',
       selectedCategory: null,
       selectedCategorySub: null,
+      selectedFilterLabel: translate('Subscribed'),
       showActionSheet: false
     }
 

@@ -96,6 +96,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       searchBarText: '',
       selectedCategory: null,
       selectedCategorySub: null,
+      selectedFilterLabel: translate('Subscribed'),
       showDataSettingsConfirmDialog: false
     }
 
@@ -283,22 +284,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       // If getAuthUserInfo fails, continue with the networkless version of the app
     }
 
-    const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
-    const { addByRSSPodcastFeedUrls, subscribedPodcastIds } = this.global.session.userInfo
-
-    /*
-     * If any podcasts are saved in local storage, or in the auth user object,
-     * then default to the Subscribed filter, else fallback to the All Podcasts filter.
-     */
-    if (
-      (subscribedPodcastIds && subscribedPodcastIds.length > 0) ||
-      (addByRSSPodcasts && addByRSSPodcasts.length > 0) ||
-      (addByRSSPodcastFeedUrls && addByRSSPodcastFeedUrls.length > 0)
-    ) {
-      this.handleSelectFilterItem(PV.Filters._subscribedKey)
-    } else {
-      this.handleSelectFilterItem(Config.DEFAULT_QUERY_PODCASTS_SCREEN)
-    }
+    this.handleSelectFilterItem(PV.Filters._subscribedKey)
 
     await initDownloads()
     await initializePlayerQueue()

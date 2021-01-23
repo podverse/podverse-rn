@@ -12,8 +12,8 @@ type Props = {
   isAddByRSSPodcastFeedUrl?: boolean
   navigation: any
   screenName: string
-  selectedCategoryItemKey: string | null
-  selectedCategorySubItemKey: string | null
+  selectedCategoryItemKey?: string | null
+  selectedCategorySubItemKey?: string | null
   selectedFilterItemKey: string | null
   selectedFilterLabel?: string | null
   selectedSortItemKey?: string | null
