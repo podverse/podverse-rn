@@ -11,11 +11,11 @@ type Props = {
   handleSelectSortItem?: any
   isAddByRSSPodcastFeedUrl?: boolean
   navigation: any
+  screenName: string
   selectedCategoryItemKey: string | null
   selectedCategorySubItemKey: string | null
   selectedFilterItemKey: string | null
   selectedSortItemKey?: string | null
-  screenName: string
   shouldQueryIndexedData?: boolean
   testID: string
 }

@@ -59,7 +59,7 @@ type State = {
   querySort: string | null
   searchBarText: string
   selectedCategory: string | null
-  selectedSubCategory: string | null
+  selectedCategorySub: string | null
   showDataSettingsConfirmDialog: boolean
   showNoInternetConnectionMessage?: boolean
 }
@@ -93,7 +93,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       querySort: null,
       searchBarText: '',
       selectedCategory: null,
-      selectedSubCategory: null,
+      selectedCategorySub: null,
       showDataSettingsConfirmDialog: false
     }
 
@@ -329,7 +329,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         querySort: sort,
         searchBarText: '',
         selectedCategory: null,
-        selectedSubCategory: null
+        selectedCategorySub: null
       },
       async () => {
         const newState = await this._queryData(selectedKey, this.state)
@@ -376,7 +376,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       {
         endOfResultsReached: false,
         isLoading: true,
-        ...((isSubCategory ? { selectedSubCategory: selectedKey } : { selectedCategory: selectedKey }) as any),
+        ...((isSubCategory ? { selectedCategorySub: selectedKey } : { selectedCategory: selectedKey }) as any),
         flatListData: [],
         flatListDataTotalCount: null,
         queryPage: 1,
@@ -590,7 +590,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       queryFrom,
       querySort,
       selectedCategory,
-      selectedSubCategory,
+      selectedCategorySub,
       showDataSettingsConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
@@ -632,7 +632,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             handleSelectSortItem={this.handleSelectSortItem}
             navigation={navigation}
             selectedCategoryItemKey={selectedCategory}
-            selectedCategorySubItemKey={selectedSubCategory}
+            selectedCategorySubItemKey={selectedCategorySub}
             selectedFilterItemKey={queryFrom}
             selectedSortItemKey={querySort}
             screenName='PodcastsScreen'
@@ -734,7 +734,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         queryFrom,
         querySort,
         selectedCategory,
-        selectedSubCategory
+        selectedCategorySub
       } = prevState
 
       const hasInternetConnection = await hasValidNetworkConnection()
@@ -756,7 +756,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.showNoInternetConnectionMessage = !hasInternetConnection
 
         const results = await getPodcasts({
-          ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedSubCategory),
+          ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedCategorySub),
           sort: filterKey,
           ...(searchTitle ? { searchTitle } : {})
         })
@@ -765,12 +765,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.flatListDataTotalCount = results[1]
       } else {
         newState.showNoInternetConnectionMessage = !hasInternetConnection
-        filterKey = filterKey === PV.Filters._categoryKey ? selectedSubCategory || selectedCategory : filterKey
+        filterKey = filterKey === PV.Filters._categoryKey ? selectedCategorySub || selectedCategory : filterKey
 
         const { isSubCategory } = queryOptions
         const categories = filterKey
         if (isSubCategory) {
-          newState.selectedSubCategory = filterKey
+          newState.selectedCategorySub = filterKey
         } else {
           newState.selectedCategory = filterKey
         }

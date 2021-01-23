@@ -140,8 +140,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: PV.Fonts.sizes.sm,
     color: PV.Colors.grayLighter,
-    marginVertical: 15,
-    paddingLeft: 76
+    marginVertical: 15
   },
   image: {
     flex: 0,

@@ -198,7 +198,6 @@ export interface IFilters {
   _myPlaylistsKey: string
   _fromThisPodcastKey: string
   _fromThisEpisodeKey: string
-  _allCategoriesKey: string
   _sectionCategoryKey: string
   _sectionFilterKey: string
   _sectionSortKey: string

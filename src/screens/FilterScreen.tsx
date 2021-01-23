@@ -38,6 +38,16 @@ export const getDefaultSortForFilter = (options: any) => {
   const { screenName, selectedFilterItemKey, selectedSortItemKey } = options
   let newSelectedSortItemKey = selectedSortItemKey
   switch (screenName) {
+    // case PV.RouteNames.EpisodesScreen:
+    //   if (selectedFilterItemKey === PV.Filters._downloadedKey
+    // || selectedFilterItemKey === PV.Filters._subscribedKey) {
+    //     newSelectedSortItemKey = PV.Filters._alphabeticalKey
+    //   } else {
+    //     newSelectedSortItemKey = !PV.FilterOptions.screenFilters.PodcastsScreen.sort.includes(newSelectedSortItemKey)
+    //       ? PV.Filters._topPastWeek
+    //       : newSelectedSortItemKey
+    //   }
+    //   break
     case PV.RouteNames.PodcastsScreen:
       if (selectedFilterItemKey === PV.Filters._downloadedKey || selectedFilterItemKey === PV.Filters._subscribedKey) {
         newSelectedSortItemKey = PV.Filters._alphabeticalKey

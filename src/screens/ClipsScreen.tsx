@@ -44,7 +44,7 @@ type State = {
   searchBarText: string
   selectedCategory: string | null
   selectedItem?: any
-  selectedSubCategory: string | null
+  selectedCategorySub: string | null
   showActionSheet: boolean
   showDeleteConfirmDialog?: boolean
   showNoInternetConnectionMessage?: boolean
@@ -79,8 +79,8 @@ export class ClipsScreen extends React.Component<Props, State> {
       querySort:
         subscribedPodcastIds && subscribedPodcastIds.length > 0 ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
       searchBarText: '',
-      selectedCategory: PV.Filters._allCategoriesKey,
-      selectedSubCategory: PV.Filters._allCategoriesKey,
+      selectedCategory: null,
+      selectedCategorySub: null,
       showActionSheet: false
     }
 
@@ -145,7 +145,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   _selectCategory = async (selectedKey: string, isSubCategory?: boolean) => {
     if (!selectedKey) {
       this.setState({
-        ...((isSubCategory ? { selectedSubCategory: null } : { selectedCategory: null }) as any)
+        ...((isSubCategory ? { selectedCategorySub: null } : { selectedCategory: null }) as any)
       })
       return
     }
@@ -154,7 +154,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       {
         endOfResultsReached: false,
         isLoading: true,
-        ...((isSubCategory ? { selectedSubCategory: selectedKey } : { selectedCategory: selectedKey }) as any),
+        ...((isSubCategory ? { selectedCategorySub: selectedKey } : { selectedCategory: selectedKey }) as any),
         flatListData: [],
         flatListDataTotalCount: null,
         queryPage: 1
@@ -389,7 +389,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       searchBarText,
       selectedCategory,
       selectedItem,
-      selectedSubCategory,
+      selectedCategorySub,
       showActionSheet,
       showDeleteConfirmDialog,
       showNoInternetConnectionMessage
@@ -424,7 +424,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             isCategories={true}
             screenName='ClipsScreen'
             selectedFilterItemKey={selectedCategory}
-            selectedSortItemKey={selectedSubCategory}
+            selectedSortItemKey={selectedCategorySub}
             testID={`${testIDPrefix}_sub`}
           />
         )}
@@ -522,7 +522,7 @@ export class ClipsScreen extends React.Component<Props, State> {
 
     try {
       let { flatListData } = this.state
-      const { queryFrom, querySort, selectedCategory, selectedSubCategory } = this.state
+      const { queryFrom, querySort, selectedCategory, selectedCategorySub } = this.state
       const podcastId = this.global.session.userInfo.subscribedPodcastIds
       const { queryPage, searchAllFieldsText } = queryOptions
 
@@ -565,17 +565,12 @@ export class ClipsScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === PV.Filters._categoryKey) {
-        if (selectedCategory && selectedSubCategory === PV.Filters._allCategoriesKey) {
-          const results = await this._queryMediaRefsByCategory(selectedCategory, querySort, queryPage)
+        if (selectedCategorySub) {
+          const results = await this._queryMediaRefsByCategory(selectedCategorySub, querySort, queryPage)
           newState.flatListData = [...flatListData, ...results[0]]
           newState.endOfResultsReached = newState.flatListData.length >= results[1]
           newState.flatListDataTotalCount = results[1]
-        } else if (selectedSubCategory) {
-          const results = await this._queryMediaRefsByCategory(selectedSubCategory, querySort, queryPage)
-          newState.flatListData = [...flatListData, ...results[0]]
-          newState.endOfResultsReached = newState.flatListData.length >= results[1]
-          newState.flatListDataTotalCount = results[1]
-          newState.selectedSubCategory = selectedSubCategory || PV.Filters._allCategoriesKey
+          newState.selectedCategorySub = selectedCategorySub
         } else {
           const podcastResults = await this._queryAllMediaRefs(querySort, queryPage)
           newState.flatListData = [...flatListData, ...podcastResults[0]]
@@ -588,7 +583,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           results = await this._getLoggedInUserMediaRefs(queryPage, filterKey)
         } else {
           results = await getMediaRefs({
-            ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedSubCategory),
+            ...setCategoryQueryProperty(queryFrom, selectedCategory, selectedCategorySub),
             ...(queryFrom === PV.Filters._subscribedKey ? { podcastId } : {}),
             sort: filterKey,
             ...(searchAllFieldsText ? { searchAllFieldsText } : {}),
@@ -604,12 +599,9 @@ export class ClipsScreen extends React.Component<Props, State> {
         const { isSubCategory } = queryOptions
         let categories
         if (isSubCategory) {
-          categories = filterKey === PV.Filters._allCategoriesKey ? selectedCategory : filterKey
-        } else if (filterKey === PV.Filters._allCategoriesKey) {
-          newState.selectedCategory = PV.Filters._allCategoriesKey
+          categories = filterKey
         } else {
           categories = filterKey
-          newState.selectedSubCategory = PV.Filters._allCategoriesKey
           newState.selectedCategory = filterKey
         }
 
