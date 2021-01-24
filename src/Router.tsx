@@ -178,8 +178,6 @@ const MoreNavigator = createStackNavigator(
     },
     [PV.RouteNames.PlaylistsEpisodeScreen]: EpisodeScreen,
     [PV.RouteNames.PlaylistsPodcastScreen]: PodcastScreen,
-    [PV.RouteNames.EditPlaylistScreen]: EditPlaylistScreen,
-    [PV.RouteNames.EditProfileScreen]: EditProfileScreen,
     [PV.RouteNames.ProfileScreen]: {
       screen: ProfileScreen,
       path: PV.DeepLinks.Profile.path
@@ -237,6 +235,7 @@ const MyLibraryNavigator = createStackNavigator(
     [PV.RouteNames.PlaylistsEpisodeScreen]: EpisodeScreen,
     [PV.RouteNames.PlaylistsPodcastScreen]: PodcastScreen,
     [PV.RouteNames.EditPlaylistScreen]: EditPlaylistScreen,
+    [PV.RouteNames.EditProfileScreen]: EditProfileScreen,
     [PV.RouteNames.MyProfileScreen]: ProfileScreen,
     [PV.RouteNames.EpisodeMediaRefScreen]: {
       screen: EpisodeMediaRefScreen
