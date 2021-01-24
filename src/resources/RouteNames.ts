@@ -10,6 +10,7 @@ export const RouteNames = {
   EmailVerificationScreen: 'EmailVerificationScreen',
   EpisodeScreen: 'EpisodeScreen',
   EpisodesScreen: 'EpisodesScreen',
+  EpisodeMediaRefScreen: 'EpisodeMediaRefScreen',
   FAQScreen: 'FAQScreen',
   FilterScreen: 'FilterScreen',
   HistoryScreen: 'HistoryScreen',

@@ -200,6 +200,7 @@ export interface IFilters {
   _fromThisEpisodeKey: string
   _sectionCategoryKey: string
   _sectionFilterKey: string
+  _sectionFromKey: string
   _sectionSortKey: string
 }
 

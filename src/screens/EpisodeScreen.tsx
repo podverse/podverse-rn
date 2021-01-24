@@ -120,10 +120,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
       })
     } else {
       const { episode } = this.state
+
       const [clips, totalClips] = await getMediaRefs({
         episodeId: episode.id,
         includeEpisode: false,
-        includePodcasts: false
+        includePodcasts: false,
+        sort: PV.Filters._chronologicalKey
       })
 
       const chapters = await retriveNowPlayingItemChapters(episode.id)

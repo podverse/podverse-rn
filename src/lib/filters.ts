@@ -2,17 +2,6 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { getFlatCategoryItems } from '../services/category'
 
-export const sectionsWithCategory = (filterItems: any[], flatCategoryItems: any[], sortItems: string[]) => [
-  { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-  { title: translate('Category'), data: flatCategoryItems, value: PV.Filters._sectionCategoryKey },
-  { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
-]
-
-export const sectionsWithoutCategory = (filterItems: any, sortItems: any) => [
-  { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-  { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
-]
-
 export const getDefaultSortForFilter = (options: any) => {
   const { addByRSSPodcastFeedUrl, screenName, selectedFilterItemKey, selectedSortItemKey } = options
   let newSelectedSortItemKey = selectedSortItemKey
@@ -61,14 +50,24 @@ export const generateSections = (options: any) => {
     screenName,
     selectedCategoryItemKey,
     selectedCategorySubItemKey,
-    selectedFilterItemKey
+    selectedFilterItemKey,
+    selectedFromItemKey
   } = options
 
   let filterItems: any[] = []
+  let fromItems: any[] = []
+  let sections: any[] = []
   let newSelectedCategoryItemKey = selectedCategoryItemKey
   let newSelectedCategorySubItemKey = selectedCategorySubItemKey
   const newSelectedFilterItemKey = selectedFilterItemKey
   const newSelectedSortItemKey = getDefaultSortForFilter(options)
+  const newSelectedFromItemKey = selectedFromItemKey
+
+  /* If the key does not match any filter type, assume it is a category id. */
+  const includeCategories =
+    selectedFilterItemKey === PV.Filters._categoryKey ||
+    (PV.FilterOptions.screenFilters[screenName].type &&
+      !PV.FilterOptions.screenFilters[screenName].type.includes(selectedFilterItemKey))
 
   switch (screenName) {
     case PV.RouteNames.ClipsScreen:
@@ -89,6 +88,29 @@ export const generateSections = (options: any) => {
       filterItems = PV.FilterOptions.typeItems.filter((item) =>
         PV.FilterOptions.screenFilters.ClipsScreen.type.includes(item.value)
       )
+
+      sections = includeCategories
+        ? [
+            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
+            { title: translate('Category'), data: flatCategoryItems, value: PV.Filters._sectionCategoryKey },
+            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+          ]
+        : [
+            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
+            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+          ]
+
+      break
+    case PV.RouteNames.EpisodeMediaRefScreen:
+      fromItems = PV.FilterOptions.fromItems.filter((item) =>
+        PV.FilterOptions.screenFilters.EpisodeMediaRefScreen.from.includes(item.value)
+      )
+
+      sortItems = sortItems.filter((item) =>
+        PV.FilterOptions.screenFilters.EpisodeMediaRefScreen.sort.includes(item.value)
+      )
+
+      sections = [{ title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }]
 
       break
     case PV.RouteNames.EpisodesScreen:
@@ -118,6 +140,17 @@ export const generateSections = (options: any) => {
         PV.FilterOptions.screenFilters.EpisodesScreen.type.includes(item.value)
       )
 
+      sections = includeCategories
+        ? [
+            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
+            { title: translate('Category'), data: flatCategoryItems, value: PV.Filters._sectionCategoryKey },
+            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+          ]
+        : [
+            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
+            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+          ]
+
       break
     case PV.RouteNames.PodcastScreen:
       if (addByRSSPodcastFeedUrl) {
@@ -144,6 +177,11 @@ export const generateSections = (options: any) => {
         sortItems = sortItems.filter((item) => PV.FilterOptions.screenFilters.PodcastScreen.sort.includes(item.value))
       }
 
+      sections = [
+        { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
+        { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+      ]
+
       break
     case PV.RouteNames.PodcastsScreen:
       if (selectedFilterItemKey === PV.Filters._downloadedKey || selectedFilterItemKey === PV.Filters._subscribedKey) {
@@ -162,28 +200,37 @@ export const generateSections = (options: any) => {
         PV.FilterOptions.screenFilters.PodcastsScreen.type.includes(item.value)
       )
 
+      sections = includeCategories
+        ? [
+            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
+            { title: translate('Category'), data: flatCategoryItems, value: PV.Filters._sectionCategoryKey },
+            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+          ]
+        : [
+            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
+            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+          ]
+
       break
     default:
       break
   }
-
-  /* If the key does not match any filter type, assume it is a category id. */
-  const includeCategories =
-    selectedFilterItemKey === PV.Filters._categoryKey ||
-    !PV.FilterOptions.screenFilters[screenName].type.includes(selectedFilterItemKey)
-
-  const sections = includeCategories
-    ? sectionsWithCategory(filterItems, flatCategoryItems, sortItems)
-    : sectionsWithoutCategory(filterItems, sortItems)
 
   return {
     newAddByRSSPodcastFeedUrl: addByRSSPodcastFeedUrl,
     newSelectedCategoryItemKey,
     newSelectedCategorySubItemKey,
     newSelectedFilterItemKey,
+    newSelectedFromItemKey,
     newSelectedSortItemKey,
     sections
   }
+}
+
+export const getSelectedFromLabel = async (screenName: string, selectedFromItemKey?: string | null) => {
+  return PV.FilterOptions.screenFilters[screenName].find((item: any) => {
+    return item.value === selectedFromItemKey
+  })
 }
 
 export const getSelectedFilterLabel = async (

@@ -173,6 +173,7 @@ const fromItems = allFromListItems.filter((item: any) => {
 })
 
 export const FilterOptions = {
+  fromItems,
   typeItems,
   sortItems,
   screenFilters: {
@@ -181,12 +182,9 @@ export const FilterOptions = {
       sort: [_mostRecentKey, ..._top],
       hideSort: []
     },
-    EpisodeScreen: {
-      type: [_chaptersKey, _clipsKey, _showNotesKey, _titleKey],
-      addByPodcastRSSFeedURLType: [_showNotesKey, _titleKey],
-      sort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey],
-      hideSort: [_chaptersKey, _showNotesKey, _titleKey],
-      includeChronological: true
+    EpisodeMediaRefScreen: {
+      from: [_fromThisEpisodeKey],
+      sort: [_chronologicalKey, _mostRecentKey, ..._top, _randomKey]
     },
     EpisodesScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],

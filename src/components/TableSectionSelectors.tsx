@@ -10,11 +10,12 @@ type Props = {
   handleSelectCategorySubItem?: any
   handleSelectFilterItem?: any
   handleSelectSortItem?: any
+  hideFilter?: boolean
   navigation: any
   screenName: string
   selectedCategoryItemKey?: string | null
   selectedCategorySubItemKey?: string | null
-  selectedFilterItemKey: string | null
+  selectedFilterItemKey?: string | null
   selectedFilterLabel?: string | null
   selectedSortItemKey?: string | null
   testID: string
@@ -45,6 +46,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       handleSelectCategorySubItem,
       handleSelectFilterItem,
       handleSelectSortItem,
+      hideFilter,
       screenName,
       selectedCategoryItemKey,
       selectedCategorySubItemKey,
@@ -67,23 +69,25 @@ export class TableSectionSelectors extends React.Component<Props, State> {
             </Text>
           )}
         </View>
-        <DropdownButton
-          onPress={() => {
-            this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
-              addByRSSPodcastFeedUrl,
-              flatCategoryItems,
-              handleSelectCategoryItem,
-              handleSelectCategorySubItem,
-              handleSelectFilterItem,
-              handleSelectSortItem,
-              screenName,
-              selectedCategoryItemKey,
-              selectedCategorySubItemKey,
-              selectedSortItemKey,
-              selectedFilterItemKey
-            })
-          }}
-        />
+        {!hideFilter && (
+          <DropdownButton
+            onPress={() => {
+              this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
+                addByRSSPodcastFeedUrl,
+                flatCategoryItems,
+                handleSelectCategoryItem,
+                handleSelectCategorySubItem,
+                handleSelectFilterItem,
+                handleSelectSortItem,
+                screenName,
+                selectedCategoryItemKey,
+                selectedCategorySubItemKey,
+                selectedSortItemKey,
+                selectedFilterItemKey
+              })
+            }}
+          />
+        )}
       </View>
     )
   }

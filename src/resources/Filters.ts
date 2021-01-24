@@ -34,5 +34,6 @@ export const Filters: IFilters = {
   _fromThisEpisodeKey: 'from-this-episode',
   _sectionCategoryKey: 'section-category',
   _sectionFilterKey: 'section-filter',
+  _sectionFromKey: 'section-from',
   _sectionSortKey: 'section-sort'
 }
