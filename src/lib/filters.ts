@@ -35,6 +35,23 @@ export const getDefaultSortForFilter = (options: any) => {
           : newSelectedSortItemKey
       }
       break
+    case PV.RouteNames.ProfileScreen:
+      if (selectedFilterItemKey === PV.Filters._podcastsKey) {
+        newSelectedSortItemKey = !PV.FilterOptions.screenFilters.ProfileScreen.sortPodcasts.includes(
+          newSelectedSortItemKey
+        )
+          ? PV.Filters._alphabeticalKey
+          : newSelectedSortItemKey
+      } else if (selectedFilterItemKey === PV.Filters._clipsKey) {
+        newSelectedSortItemKey = !PV.FilterOptions.screenFilters.ProfileScreen.sortClips.includes(
+          newSelectedSortItemKey
+        )
+          ? PV.Filters._mostRecentKey
+          : newSelectedSortItemKey
+      } else if (selectedFilterItemKey === PV.Filters._playlistsKey) {
+        newSelectedSortItemKey = PV.Filters._alphabeticalKey
+      }
+      break
     default:
       break
   }
@@ -210,6 +227,36 @@ export const generateSections = (options: any) => {
             { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
             { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
           ]
+
+      break
+    case PV.RouteNames.ProfileScreen:
+      if (selectedFilterItemKey === PV.Filters._podcastsKey) {
+        filterItems = PV.FilterOptions.typeItems.filter((item) =>
+          PV.FilterOptions.screenFilters.ProfileScreen.type.includes(item.value)
+        )
+        sortItems = sortItems.filter((item) =>
+          PV.FilterOptions.screenFilters.ProfileScreen.sortPodcasts.includes(item.value)
+        )
+      } else if (selectedFilterItemKey === PV.Filters._clipsKey) {
+        filterItems = PV.FilterOptions.typeItems.filter((item) =>
+          PV.FilterOptions.screenFilters.ProfileScreen.type.includes(item.value)
+        )
+        sortItems = sortItems.filter((item) =>
+          PV.FilterOptions.screenFilters.ProfileScreen.sortClips.includes(item.value)
+        )
+      } else if (selectedFilterItemKey === PV.Filters._playlistsKey) {
+        filterItems = PV.FilterOptions.typeItems.filter((item) =>
+          PV.FilterOptions.screenFilters.ProfileScreen.type.includes(item.value)
+        )
+        sortItems = sortItems.filter((item) =>
+          PV.FilterOptions.screenFilters.ProfileScreen.sortPlaylists.includes(item.value)
+        )
+      }
+
+      sections = [
+        { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
+        { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+      ]
 
       break
     default:

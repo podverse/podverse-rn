@@ -195,7 +195,9 @@ export const FilterOptions = {
     },
     ProfileScreen: {
       type: [_podcastsKey, _clipsKey, _playlistsKey],
-      sort: [_alphabeticalKey, _mostRecentKey, ..._top]
+      sortClips: [_mostRecentKey, ..._top],
+      sortPlaylists: [_alphabeticalKey],
+      sortPodcasts: [_alphabeticalKey, _mostRecentKey, ..._top]
     }
   },
   items: {
