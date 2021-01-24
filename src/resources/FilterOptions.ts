@@ -180,9 +180,6 @@ export const FilterOptions = {
       sort: [_chronologicalKey, _mostRecentKey, _oldestKey, ..._top, _randomKey],
       fromItems
     },
-    PlaylistsScreen: {
-      type: [_myPlaylistsKey, _subscribedKey]
-    },
     PodcastScreen: {
       type: [_downloadedKey, _episodesKey, _clipsKey],
       sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
