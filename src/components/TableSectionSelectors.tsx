@@ -5,11 +5,11 @@ import { getFlatCategoryItems } from '../services/category'
 import { DropdownButton, Text } from './'
 
 type Props = {
+  addByRSSPodcastFeedUrl?: string
   handleSelectCategoryItem?: any
   handleSelectCategorySubItem?: any
   handleSelectFilterItem?: any
   handleSelectSortItem?: any
-  isAddByRSSPodcastFeedUrl?: boolean
   navigation: any
   screenName: string
   selectedCategoryItemKey?: string | null
@@ -17,7 +17,6 @@ type Props = {
   selectedFilterItemKey: string | null
   selectedFilterLabel?: string | null
   selectedSortItemKey?: string | null
-  shouldQueryIndexedData?: boolean
   testID: string
 }
 
@@ -25,18 +24,6 @@ type State = {
   flatCategoryItems: any[]
 }
 
-const filterAddByRSSSortItems = (
-  screenName: string,
-  isAddByRSSPodcastFeedUrl: boolean,
-  shouldQueryIndexedData?: boolean
-) =>
-  PV.FilterOptions.sortItems.filter((sortKey: any) => {
-    return isAddByRSSPodcastFeedUrl
-      ? PV.FilterOptions.screenFilters[screenName].addByPodcastRSSFeedURLSort.includes(sortKey.value)
-      : shouldQueryIndexedData
-      ? PV.FilterOptions.screenFilters[screenName].sortLimitQueries.includes(sortKey.value)
-      : PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
-  })
 export class TableSectionSelectors extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
@@ -53,11 +40,11 @@ export class TableSectionSelectors extends React.Component<Props, State> {
 
   render() {
     const {
+      addByRSSPodcastFeedUrl,
       handleSelectCategoryItem,
       handleSelectCategorySubItem,
       handleSelectFilterItem,
       handleSelectSortItem,
-      isAddByRSSPodcastFeedUrl = false,
       screenName,
       selectedCategoryItemKey,
       selectedCategorySubItemKey,
@@ -83,17 +70,17 @@ export class TableSectionSelectors extends React.Component<Props, State> {
         <DropdownButton
           onPress={() => {
             this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
-              screenName,
+              addByRSSPodcastFeedUrl,
               flatCategoryItems,
-              selectedCategoryItemKey,
-              selectedCategorySubItemKey,
-              selectedSortItemKey,
-              selectedFilterItemKey,
               handleSelectCategoryItem,
               handleSelectCategorySubItem,
               handleSelectFilterItem,
               handleSelectSortItem,
-              isAddByRSSPodcastFeedUrl
+              screenName,
+              selectedCategoryItemKey,
+              selectedCategorySubItemKey,
+              selectedSortItemKey,
+              selectedFilterItemKey
             })
           }}
         />

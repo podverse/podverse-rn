@@ -52,6 +52,7 @@ export class FilterScreen extends React.Component<Props, State> {
     trackPageView('/filter', 'Filter Screen')
     const { navigation } = this.props
     const { flatCategoryItems } = this.state
+    const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
     const screenName = navigation.getParam('screenName')
     const selectedCategoryItemKey = navigation.getParam('selectedCategoryItemKey')
     const selectedCategorySubItemKey = navigation.getParam('selectedCategorySubItemKey')
@@ -59,21 +60,22 @@ export class FilterScreen extends React.Component<Props, State> {
     const selectedSortItemKey = navigation.getParam('selectedSortItemKey')
 
     const { newSelectedSortItemKey, sections } = generateSections({
+      addByRSSPodcastFeedUrl,
       flatCategoryItems,
+      screenName,
       selectedCategoryItemKey,
       selectedCategorySubItemKey,
       selectedFilterItemKey,
-      selectedSortItemKey,
-      screenName
+      selectedSortItemKey
     })
 
     this.setState({
+      screenName,
       sections,
       selectedCategoryItemKey,
       selectedCategorySubItemKey,
       selectedFilterItemKey,
-      selectedSortItemKey: newSelectedSortItemKey,
-      screenName
+      selectedSortItemKey: newSelectedSortItemKey
     })
   }
 
@@ -86,7 +88,8 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedFilterItemKey,
       selectedSortItemKey
     } = this.state
-    const options = { flatCategoryItems, screenName } as any
+    const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
+    const options = { addByRSSPodcastFeedUrl, flatCategoryItems, screenName } as any
 
     if (section.value === PV.Filters._sectionFilterKey) {
       options.selectedFilterItemKey = item.value

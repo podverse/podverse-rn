@@ -87,9 +87,11 @@ export const TimeRemainingWidget = (props: Props) => {
   const isPlaying = playbackState === PVTrackPlayer.STATE_PLAYING
   const isNowPlayingItem = isPlaying && checkIfNowPlayingItem(item, nowPlayingItem)
 
+  const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]
+
   return (
     <View style={[styles.container, style]}>
-      <TouchableOpacity onPress={playItem} style={styles.playButton}>
+      <TouchableOpacity onPress={playItem} style={iconStyle}>
         {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
       </TouchableOpacity>
       {hasStartedItem && !isInvalidDuration && <MiniProgressBar playedTime={playedTime} totalTime={totalTime} />}
@@ -118,7 +120,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 40,
     width: 40,
-    marginRight: 10,
-    paddingLeft: 4
+    marginRight: 10
   }
 })

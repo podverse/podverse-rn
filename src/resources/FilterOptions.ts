@@ -191,8 +191,7 @@ export const FilterOptions = {
     EpisodesScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
       sort: [_mostRecentKey, ..._top],
-      sortLimitQueries: [..._top],
-      hideSort: []
+      sortLimitQueries: [..._top]
     },
     PlayerScreen: {
       type: [_chaptersKey, _clipsKey, _showNotesKey, _titleKey],
@@ -208,17 +207,14 @@ export const FilterOptions = {
       hideSort: []
     },
     PodcastScreen: {
-      type: [_downloadedKey, _episodesKey, _clipsKey, _aboutPodcastKey],
-      addByPodcastRSSFeedURLType: [_episodesKey, _aboutPodcastKey],
-      addByPodcastRSSFeedURLSort: [_mostRecentKey],
+      type: [_downloadedKey, _episodesKey, _clipsKey],
       sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
-      hideSort: [_downloadedKey, _aboutPodcastKey]
+      addByPodcastRSSFeedURLType: [_downloadedKey, _episodesKey],
+      addByPodcastRSSFeedURLSort: [_mostRecentKey]
     },
     PodcastsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
-      sort: [..._top],
-      hideSort: [_subscribedKey, _downloadedKey],
-      includeAlphabetical: [_subscribedKey]
+      sort: [..._top]
     },
     ProfileScreen: {
       type: [_podcastsKey, _clipsKey, _playlistsKey],

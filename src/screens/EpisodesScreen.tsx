@@ -384,8 +384,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
         ? translate('Scan QR Code')
         : translate('Search')
 
-    const shouldQueryIndexedData = queryFrom === PV.Filters._allPodcastsKey || queryFrom === PV.Filters._categoryKey
-
     return (
       <View style={styles.view} {...testProps('episodes_screen_view')}>
         <TableSectionSelectors
@@ -400,7 +398,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
           selectedFilterItemKey={queryFrom}
           selectedFilterLabel={selectedFilterLabel}
           selectedSortItemKey={querySort}
-          shouldQueryIndexedData={shouldQueryIndexedData}
           testID={testIDPrefix}
         />
         {isLoading && <ActivityIndicator fillSpace={true} />}

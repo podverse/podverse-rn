@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem, NowPlayingItem } from 'podverse-shared'
+import { convertToNowPlayingItem } from 'podverse-shared'
 import { View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
@@ -23,12 +23,12 @@ import {
   SwitchWithText,
   TableSectionHeader,
   TableSectionSelectors,
-  Text,
   View
 } from '../components'
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedEpisodes, removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
+import { getSelectedFilterLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { decodeHTMLString, isOdd, removeHTMLFromString, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
@@ -62,6 +62,7 @@ type State = {
   queryPage: number
   querySort: string | null
   searchBarText: string
+  selectedFilterLabel?: string | null
   selectedItem?: any
   showActionSheet: boolean
   showDeleteDownloadedEpisodesDialog?: boolean
@@ -129,6 +130,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       queryPage: 1,
       querySort: PV.Filters._mostRecentKey,
       searchBarText: '',
+      selectedFilterLabel: translate('Episodes'),
       showActionSheet: false,
       showSettings: false,
       viewType
@@ -224,7 +226,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     )
   }
 
-  selectLeftItem = async (selectedKey: string) => {
+  handleSelectFilterItem = async (selectedKey: string) => {
     if (!selectedKey) {
       this.setState({ viewType: null })
       return
@@ -247,7 +249,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     )
   }
 
-  selectRightItem = async (selectedKey: string) => {
+  handleSelectSortItem = async (selectedKey: string) => {
     if (!selectedKey) {
       this.setState({ querySort: null })
       return
@@ -556,6 +558,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       podcast,
       podcastId,
       querySort,
+      selectedFilterLabel,
       selectedItem,
       showActionSheet,
       showDeleteDownloadedEpisodesDialog,
@@ -565,6 +568,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     } = this.state
     const { offlineModeEnabled } = this.global
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedPodcastIds, [])
+    const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
 
     let isSubscribed = subscribedPodcastIds.some((x: string) => x === podcastId)
     if (!isSubscribed) {
@@ -611,11 +615,13 @@ export class PodcastScreen extends React.Component<Props, State> {
         />
         {!showSettings && (
           <TableSectionSelectors
-            handleSelectFilterItem={this.selectLeftItem}
-            handleSelectSortItem={this.selectRightItem}
-            isAddByRSSPodcastFeedUrl={podcast && podcast.addByRSSPodcastFeedUrl}
+            addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
+            handleSelectFilterItem={this.handleSelectFilterItem}
+            handleSelectSortItem={this.handleSelectSortItem}
+            navigation={navigation}
             screenName='PodcastScreen'
             selectedFilterItemKey={viewType}
+            selectedFilterLabel={selectedFilterLabel}
             selectedSortItemKey={querySort}
             testID={testIDPrefix}
           />
@@ -742,7 +748,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     filterKey: string | null,
     queryOptions: { queryPage?: number; searchAllFieldsText?: string } = {}
   ) => {
-    const { flatListData, podcast, podcastId, querySort, viewType } = this.state
+    const { flatListData, podcast, querySort, viewType } = this.state
     const newState = {
       isLoading: false,
       isLoadingMore: false,
@@ -783,13 +789,11 @@ export class PodcastScreen extends React.Component<Props, State> {
         newState.flatListData = [...flatListData, ...results[0]]
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
-      } else if (filterKey === PV.Filters._aboutPodcastKey) {
-        if (podcastId && hasInternetConnection) {
-          const newPodcast = await getPodcast(podcastId)
-          newState.podcast = newPodcast
-        }
       }
       newState.queryPage = queryOptions.queryPage || 1
+
+      newState.selectedFilterLabel = await getSelectedFilterLabel(viewType)
+
       return newState
     } catch (error) {
       console.log(error)

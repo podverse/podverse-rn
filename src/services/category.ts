@@ -87,10 +87,16 @@ export const assignCategoryQueryToState = (
 ) => {
   const newFilterKey = getCategoryKey(filterKey, selectedCategory, selectedCategorySub)
   const { isCategorySub } = queryOptions
-  const categories = filterKey
-  if (isCategorySub) {
+  let categories
+  if (filterKey === PV.Filters._categoryKey) {
+    categories = selectedCategorySub ? selectedCategorySub : selectedCategory
+    newState.selectedCategory = selectedCategory
+    newState.selectedCategorySub = selectedCategorySub
+  } else if (isCategorySub) {
+    categories = filterKey
     newState.selectedCategorySub = filterKey
   } else {
+    categories = filterKey
     newState.selectedCategorySub = ''
     newState.selectedCategory = filterKey
   }
