@@ -123,14 +123,16 @@ export const addQueueItemToServer = async (item: NowPlayingItem, newPosition: nu
 
 export const filterItemFromQueueItems = (items: NowPlayingItem[] = [], item: NowPlayingItem) => {
   let itemsArray = Array.isArray(items) ? items : []
-  itemsArray = itemsArray.filter((x) => {
-    if (item.clipId && x.clipId === item.clipId) {
-      return false
-    } else if (!item.clipId && !x.clipId && x.episodeId === item.episodeId) {
-      return false
-    }
-    return true
-  })
+  if (item) {
+    itemsArray = itemsArray.filter((x) => {
+      if (item.clipId && x.clipId === item.clipId) {
+        return false
+      } else if (!item.clipId && !x.clipId && x.episodeId === item.episodeId) {
+        return false
+      }
+      return true
+    })
+  }
 
   return itemsArray
 }

@@ -1,9 +1,7 @@
-import AsyncStorage from '@react-native-community/async-storage'
 import { View } from 'react-native'
 import React from 'reactn'
-import { convertFilterOptionsToI18N } from '../lib/i18n'
-import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
+import { getFlatCategoryItems } from '../services/category'
 import { DropdownButton, Text } from './'
 
 type Props = {
@@ -13,19 +11,18 @@ type Props = {
   handleSelectSortItem?: any
   isAddByRSSPodcastFeedUrl?: boolean
   navigation: any
+  screenName: string
   selectedCategoryItemKey: string | null
   selectedCategorySubItemKey: string | null
   selectedFilterItemKey: string | null
+  selectedFilterLabel?: string | null
   selectedSortItemKey?: string | null
-  screenName: string
   shouldQueryIndexedData?: boolean
   testID: string
 }
 
 type State = {
-  categoryItems: any[]
-  filterItems: any[]
-  sortItems: any[]
+  flatCategoryItems: any[]
 }
 
 const filterAddByRSSSortItems = (
@@ -43,105 +40,15 @@ const filterAddByRSSSortItems = (
 export class TableSectionSelectors extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    this.state = {}
+
+    this.state = {
+      flatCategoryItems: []
+    }
   }
 
   async componentDidMount() {
-    const categoryItems = await this.getCategoryItems()
-    const filterItems = this.getFilterItems()
-    const sortItems = this.getSortItems()
-
-    this.setState({
-      categoryItems,
-      filterItems,
-      sortItems
-    })
-  }
-
-  getCategoryItems = async () => {
-    try {
-      const categoryItemsString = await AsyncStorage.getItem('CATEGORIES_LIST')
-      let categoryItems = []
-      if (categoryItemsString) {
-        categoryItems = JSON.parse(categoryItemsString).map((category: any) => {
-          return {
-            label: category.title,
-            value: category.id,
-            ...category
-          }
-        })
-      }
-      return categoryItems
-    } catch (err) {
-      console.log('Bottom Selection Bar error: ', err)
-    }
-  }
-
-  getSubCategoriesForCategory = () => {
-    const { selectedCategoryItemKey } = this.props
-    const { categoryItems } = this.state
-
-    if (selectedCategoryItemKey) {
-      const selectedCategory = categoryItems.find((category) => category.value === selectedCategoryItemKey)
-      let subCategoryItems = []
-      if (selectedCategory && selectedCategory.categories) {
-        subCategoryItems = selectedCategory.categories.map((subCat: any) => {
-          return {
-            label: subCat.title,
-            value: subCat.id,
-            ...subCat
-          }
-        })
-        subCategoryItems.sort((a: any, b: any) => {
-          const textA = a.label.toUpperCase()
-          const textB = b.label.toUpperCase()
-          return textA < textB ? -1 : textA > textB ? 1 : 0
-        })
-      }
-      return subCategoryItems
-    }
-  }
-
-  getFilterItems = () => {
-    const { isAddByRSSPodcastFeedUrl, screenName } = this.props
-    const isLoggedIn = safelyUnwrapNestedVariable(() => this.global.session.isLoggedIn, '')
-
-    let filterItems = [] as any
-
-    filterItems = PV.FilterOptions.typeItems.filter((type: any) => {
-      return isAddByRSSPodcastFeedUrl
-        ? PV.FilterOptions.screenFilters[screenName].addByPodcastRSSFeedURLType.includes(type.value)
-        : PV.FilterOptions.screenFilters[screenName].type.includes(type.value)
-    })
-
-    if (PV.FilterOptions.screenFilters[screenName].hideIfNotLoggedIn && !isLoggedIn) {
-      filterItems = filterItems.filter((type: any) => {
-        return !PV.FilterOptions.screenFilters[screenName].hideIfNotLoggedIn.includes(type.value)
-      })
-    }
-
-    filterItems = convertFilterOptionsToI18N(filterItems)
-
-    return filterItems
-  }
-
-  getSortItems = (selectedFilterItemKeyOverride?: string) => {
-    const { isAddByRSSPodcastFeedUrl, screenName, shouldQueryIndexedData } = this.props
-    let { selectedFilterItemKey } = this.props
-    const screen = PV.FilterOptions.screenFilters[screenName]
-    selectedFilterItemKey = selectedFilterItemKeyOverride ? selectedFilterItemKeyOverride : selectedFilterItemKey
-    let sortItems = [] as any
-    sortItems = filterAddByRSSSortItems(screenName, !!isAddByRSSPodcastFeedUrl, shouldQueryIndexedData)
-
-    if (screen.includeAlphabetical && screen.includeAlphabetical.includes(selectedFilterItemKey)) {
-      sortItems.unshift(PV.FilterOptions.items.sortAlphabeticalItem)
-    }
-
-    if (screen.includeChronological && screen.includeChronological.includes(selectedFilterItemKey)) {
-      sortItems.unshift(PV.FilterOptions.items.sortChronologicalItem)
-    }
-
-    return convertFilterOptionsToI18N(sortItems)
+    const flatCategoryItems = await getFlatCategoryItems()
+    this.setState({ flatCategoryItems })
   }
 
   render() {
@@ -155,41 +62,38 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       selectedCategoryItemKey,
       selectedCategorySubItemKey,
       selectedFilterItemKey,
+      selectedFilterLabel,
       selectedSortItemKey
     } = this.props
+    const { flatCategoryItems } = this.state
     const { globalTheme } = this.global
-    const { categoryItems = [], filterItems = [], sortItems = [] } = this.state
-    const selectedFilterItem = filterItems.find((x) => x.value === selectedFilterItemKey) || {}
-    // const selectedSortItem = sortItems.find((x) => x.value === selectedSortItemKey) || {}
 
     return (
       <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
         <View style={styles.tableSectionHeaderTitleWrapper}>
-          {selectedFilterItem && selectedFilterItem.label && (
+          {!!selectedFilterLabel && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               numberOfLines={1}
               style={[styles.tableSectionHeaderTitleText, globalTheme.tableSectionHeaderText]}>
-              {selectedFilterItem.label}
+              {selectedFilterLabel}
             </Text>
           )}
         </View>
         <DropdownButton
           onPress={() => {
             this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
-              categoryItems,
-              filterItems,
+              screenName,
+              flatCategoryItems,
+              selectedCategoryItemKey,
+              selectedCategorySubItemKey,
+              selectedSortItemKey,
+              selectedFilterItemKey,
               handleSelectCategoryItem,
               handleSelectCategorySubItem,
               handleSelectFilterItem,
               handleSelectSortItem,
-              isAddByRSSPodcastFeedUrl,
-              screenName,
-              selectedCategoryItemKey,
-              selectedCategorySubItemKey,
-              selectedFilterItemKey,
-              selectedSortItemKey,
-              sortItems
+              isAddByRSSPodcastFeedUrl
             })
           }}
         />
