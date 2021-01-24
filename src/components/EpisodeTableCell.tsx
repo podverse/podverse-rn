@@ -13,11 +13,11 @@ type Props = {
   handleDownloadPress?: any
   hideImage?: boolean
   item?: any
+  pubDate?: any
   showPodcastTitle?: boolean
   testID: string
   transparent?: boolean
   userPlaybackPosition?: number
-  pubDate?: any
 }
 
 export class EpisodeTableCell extends React.PureComponent<Props> {
@@ -33,6 +33,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       transparent,
       userPlaybackPosition
     } = this.props
+
     const { id, mediaUrl, pubDate = '', podcast = {} } = item
     let { description = '', title = '' } = item
     const { imageUrl = '' } = podcast
