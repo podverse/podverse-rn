@@ -684,7 +684,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         newState = await (this._queryMediaRefs(newState, page, PV.Filters._mostRecentKey) as any)
       } else if (filterKey === PV.Filters._playlistsKey) {
         newState = await (this._queryPlaylists(newState, page, querySort) as any)
-      } else if (PV.FilterOptions.screenFilters.ProfileScreen.sort.some((option) => option === filterKey)) {
+      } else {
         if (viewType === PV.Filters._podcastsKey) {
           newState = await (this._queryPodcasts(newState, page, filterKey) as any)
         } else if (viewType === PV.Filters._clipsKey) {
