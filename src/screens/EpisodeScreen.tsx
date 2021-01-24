@@ -18,7 +18,7 @@ import { replaceLinebreaksWithBrTags, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
 import { trackPageView } from '../services/tracking'
-import { retriveNowPlayingItemChapters } from '../state/actions/player'
+import { retriveNowPlayingItemChapters } from '../state/actions/playerChapters'
 import { core } from '../styles'
 
 type Props = {
