@@ -24,7 +24,6 @@ import { getAppUserAgent, setAppUserAgent, setCategoryQueryProperty, testProps }
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect } from '../services/category'
 import { getEpisode } from '../services/episode'
-import { getAddByRSSPodcastsLocally } from '../services/parser'
 import { checkIdlePlayerState, PVTrackPlayer, updateUserPlaybackPosition } from '../services/player'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { trackPageView } from '../services/tracking'

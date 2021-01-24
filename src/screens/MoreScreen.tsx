@@ -34,7 +34,7 @@ export class MoreScreen extends React.Component<Props, State> {
 
   _moreFeaturesOptions = (isLoggedIn: boolean) => {
     const moreFeaturesList = Config.NAV_STACK_MORE_FEATURES.split(',')
-    const loggedInFeatures = [_myProfileKey, _logoutKey]
+    const loggedInFeatures = [_logoutKey]
 
     return allMoreFeatures
       .filter((item: any) => {
@@ -97,13 +97,6 @@ export class MoreScreen extends React.Component<Props, State> {
       Linking.openURL(createEmailLinkUrl(PV.Emails.CONTACT_US))
     } else if (item.key === _logoutKey) {
       logoutUser()
-    } else if (item.key === _myProfileKey) {
-      const user = this.global.session.userInfo
-      navigation.navigate(PV.RouteNames.ProfileScreen, {
-        user,
-        navigationTitle: translate('My Profile'),
-        isMyProfile: true
-      })
     } else {
       navigation.navigate(item.routeName)
     }
@@ -155,7 +148,7 @@ export class MoreScreen extends React.Component<Props, State> {
             return <TableSectionHeader containerStyles={style} includePadding={true} title={section.title} />
           }}
           sections={[
-            { title: translate('My Account'), data: featureOptions },
+            { title: translate('Features'), data: featureOptions },
             { title: translate('Other'), data: otherOptions }
           ]}
           stickySectionHeadersEnabled={false}
@@ -171,7 +164,6 @@ const _contactKey = 'Contact'
 const _loginKey = 'Login'
 const _logoutKey = 'Logout'
 const _membershipKey = 'Membership'
-const _myProfileKey = 'MyProfile'
 const _privacyPolicyKey = 'PrivacyPolicy'
 const _settingsKey = 'Settings'
 const _termsOfServiceKey = 'TermsOfService'
@@ -182,11 +174,6 @@ const allMoreFeatures = [
     key: _addPodcastByRSSKey,
     routeName: PV.RouteNames.AddPodcastByRSSScreen,
     testID: 'more_screen_add_podcast_by_rss_cell'
-  },
-  {
-    title: translate('My Profile'),
-    key: _myProfileKey,
-    testID: 'more_screen_my_profile_cell'
   },
   {
     title: translate('Settings'),

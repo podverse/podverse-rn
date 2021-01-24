@@ -59,7 +59,6 @@ declare module 'reactn/default' {
       endOfResultsReached: boolean
       flatListData: any[]
       flatListDataTotalCount: number | null
-      hideRightItemWhileLoading?: boolean
       isLoading: boolean
       isLoadingMore: boolean
       isQuerying: boolean

@@ -45,10 +45,9 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
     }
 
     let sort = PV.Filters._topPastWeek
-    let hideRightItemWhileLoading = false
+
     if (selectedKey === PV.Filters._clipsKey) {
       sort = PV.Filters._chronologicalKey
-      hideRightItemWhileLoading = true
     }
 
     setGlobal(
@@ -58,7 +57,6 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
           endOfResultsReached: false,
           flatListData: [],
           flatListDataTotalCount: null,
-          hideRightItemWhileLoading,
           isQuerying: true,
           queryFrom: PV.Filters._fromThisEpisodeKey,
           querySort: sort,
@@ -133,10 +131,8 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
     }
 
     let sort = PV.Filters._topPastWeek
-    let hideRightItemWhileLoading = false
     if (selectedKey === PV.Filters._fromThisEpisodeKey) {
       sort = PV.Filters._chronologicalKey
-      hideRightItemWhileLoading = true
     }
 
     setGlobal(
@@ -146,7 +142,6 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
           endOfResultsReached: false,
           flatListData: [],
           flatListDataTotalCount: null,
-          hideRightItemWhileLoading,
           isQuerying: true,
           queryFrom: selectedKey,
           queryPage: 1,
@@ -167,13 +162,8 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
 
   _onEndReached = ({ distanceFromEnd }) => {
     const { screenPlayer } = this.global
-    const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = screenPlayer
-    if (
-      viewType !== PV.Filters._showNotesKey &&
-      viewType !== PV.Filters._titleKey &&
-      !endOfResultsReached &&
-      !isLoadingMore
-    ) {
+    const { endOfResultsReached, isLoadingMore, queryPage = 1 } = screenPlayer
+    if (!endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
         setGlobal(
           {
@@ -284,7 +274,6 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
     const {
       flatListData,
       flatListDataTotalCount,
-      hideRightItemWhileLoading,
       isLoading,
       isLoadingMore,
       isQuerying,
@@ -305,8 +294,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
       noResultsMessage = translate('No clips found')
     }
 
-    const showOfflineMessage =
-      offlineModeEnabled && queryFrom !== PV.Filters._showNotesKey && queryFrom !== PV.Filters._titleKey
+    const showOfflineMessage = offlineModeEnabled && queryFrom !== PV.Filters._titleKey
 
     const testID = getTestID(isChapters)
 
@@ -315,7 +303,6 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
         <TableSectionSelectors
           handleSelectFilterItem={this._selectViewType}
           handleSelectSortItem={this._selectQuerySort}
-          hideRightItemWhileLoading={hideRightItemWhileLoading}
           isTransparent={true}
           screenName='PlayerScreen'
           selectedFilterItemKey={viewType}
@@ -333,28 +320,23 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
           />
         )}
         {isLoading || (isQuerying && <ActivityIndicator fillSpace={true} />)}
-        {!isLoading &&
-          !isQuerying &&
-          viewType &&
-          viewType !== PV.Filters._showNotesKey &&
-          viewType !== PV.Filters._titleKey &&
-          flatListData && (
-            <FlatList
-              data={flatListData}
-              dataTotalCount={flatListDataTotalCount}
-              disableLeftSwipe={true}
-              extraData={flatListData}
-              isLoadingMore={isLoadingMore}
-              ItemSeparatorComponent={this._ItemSeparatorComponent}
-              keyExtractor={(item: any) => item.id}
-              noResultsMessage={noResultsMessage}
-              noResultsSubMessage={noResultsSubMessage}
-              onEndReached={this._onEndReached}
-              renderItem={this._renderItem}
-              showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
-              transparent={true}
-            />
-          )}
+        {!isLoading && !isQuerying && viewType && flatListData && (
+          <FlatList
+            data={flatListData}
+            dataTotalCount={flatListDataTotalCount}
+            disableLeftSwipe={true}
+            extraData={flatListData}
+            isLoadingMore={isLoadingMore}
+            ItemSeparatorComponent={this._ItemSeparatorComponent}
+            keyExtractor={(item: any) => item.id}
+            noResultsMessage={noResultsMessage}
+            noResultsSubMessage={noResultsSubMessage}
+            onEndReached={this._onEndReached}
+            renderItem={this._renderItem}
+            showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
+            transparent={true}
+          />
+        )}
         <ActionSheet
           handleCancelPress={this._handleMoreCancelPress}
           items={() =>
@@ -422,7 +404,6 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
     const { screenPlayer } = this.global
     const { flatListData } = screenPlayer
     const newState = {
-      hideRightItemWhileLoading: false,
       isLoading: false,
       isLoadingMore: false,
       isQuerying: false,

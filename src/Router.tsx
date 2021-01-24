@@ -168,7 +168,6 @@ const MoreNavigator = createStackNavigator(
   {
     [PV.RouteNames.MoreScreen]: MoreScreen,
     [PV.RouteNames.DownloadsScreen]: DownloadsScreen,
-    [PV.RouteNames.MyProfileScreen]: ProfileScreen,
     [PV.RouteNames.PlaylistScreen]: {
       screen: PlaylistScreen,
       path: PV.DeepLinks.Playlist.path

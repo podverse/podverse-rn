@@ -135,7 +135,6 @@ export interface InitialState {
     endOfResultsReached: boolean
     flatListData: any[]
     flatListDataTotalCount: number | null
-    hideRightItemWhileLoading: boolean
     isLoading: boolean
     isLoadingMore: boolean
     isQuerying: boolean
@@ -192,9 +191,6 @@ export interface IFilters {
   _clipsKey: string
   _chaptersKey: string
   _playlistsKey: string
-  _aboutPodcastKey: string
-  _showNotesKey: string
-  _titleKey: string
   _myPlaylistsKey: string
   _fromThisPodcastKey: string
   _fromThisEpisodeKey: string

@@ -23,9 +23,6 @@ const {
   _clipsKey,
   _chaptersKey,
   _playlistsKey,
-  _aboutPodcastKey,
-  _showNotesKey,
-  _titleKey,
   _myPlaylistsKey,
   _fromThisPodcastKey,
   _fromThisEpisodeKey
@@ -87,18 +84,6 @@ const allFilterTypeItems = [
   {
     label: 'Playlists',
     value: _playlistsKey
-  },
-  {
-    label: 'About',
-    value: _aboutPodcastKey
-  },
-  {
-    label: 'Show Notes',
-    value: _showNotesKey
-  },
-  {
-    label: 'Title',
-    value: _titleKey
   },
   {
     label: 'My Playlists',
@@ -179,8 +164,7 @@ export const FilterOptions = {
   screenFilters: {
     ClipsScreen: {
       type: [_subscribedKey, _downloadedKey, _allPodcastsKey, _categoryKey],
-      sort: [_mostRecentKey, ..._top],
-      hideSort: []
+      sort: [_mostRecentKey, ..._top]
     },
     EpisodeMediaRefScreen: {
       from: [_fromThisEpisodeKey],
@@ -192,17 +176,12 @@ export const FilterOptions = {
       sortLimitQueries: [..._top]
     },
     PlayerScreen: {
-      type: [_chaptersKey, _clipsKey, _showNotesKey, _titleKey],
-      addByPodcastRSSFeedURLType: [_showNotesKey, _titleKey],
-      sort: [_mostRecentKey, _oldestKey, ..._top, _randomKey],
-      hideSort: [_chaptersKey, _showNotesKey, _titleKey],
-      fromItems,
-      includeChronological: true
+      type: [_chaptersKey, _clipsKey],
+      sort: [_chronologicalKey, _mostRecentKey, _oldestKey, ..._top, _randomKey],
+      fromItems
     },
     PlaylistsScreen: {
-      type: [_myPlaylistsKey, _subscribedKey],
-      sort: [],
-      hideSort: []
+      type: [_myPlaylistsKey, _subscribedKey]
     },
     PodcastScreen: {
       type: [_downloadedKey, _episodesKey, _clipsKey],
@@ -216,9 +195,7 @@ export const FilterOptions = {
     },
     ProfileScreen: {
       type: [_podcastsKey, _clipsKey, _playlistsKey],
-      sort: [_mostRecentKey, ..._top],
-      hideSort: [_playlistsKey],
-      includeAlphabetical: [_podcastsKey]
+      sort: [_alphabeticalKey, _mostRecentKey, ..._top]
     }
   },
   items: {

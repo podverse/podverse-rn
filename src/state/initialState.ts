@@ -67,7 +67,6 @@ const initialTheme: InitialState = {
     endOfResultsReached: false,
     flatListData: [],
     flatListDataTotalCount: null,
-    hideRightItemWhileLoading: false,
     isLoading: false,
     isLoadingMore: false,
     isQuerying: false,
@@ -78,8 +77,7 @@ const initialTheme: InitialState = {
     showHeaderActionSheet: false,
     showMoreActionSheet: false,
     showNoInternetConnectionMessage: false,
-    showShareActionSheet: false,
-    viewType: PV.Filters._showNotesKey
+    showShareActionSheet: false
   },
   screenPlaylist: {
     flatListData: [],

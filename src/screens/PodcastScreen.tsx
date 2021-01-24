@@ -13,7 +13,6 @@ import {
   Divider,
   EpisodeTableCell,
   FlatList,
-  HTMLScrollView,
   NavSearchIcon,
   NavShareIcon,
   NumberSelectorWithText,
@@ -657,7 +656,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         {!showSettings && (
           <View style={styles.view}>
             {isLoading && <ActivityIndicator fillSpace={true} />}
-            {!isLoading && viewType !== PV.Filters._aboutPodcastKey && flatListData && podcast && (
+            {!isLoading && flatListData && podcast && (
               <FlatList
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
@@ -677,14 +676,6 @@ export class PodcastScreen extends React.Component<Props, State> {
                 renderHiddenItem={this._renderHiddenItem}
                 renderItem={this._renderItem}
                 showNoInternetConnectionMessage={offlineModeEnabled || showNoInternetConnectionMessage}
-              />
-            )}
-            {!isLoading && viewType === PV.Filters._aboutPodcastKey && podcast && (
-              <HTMLScrollView
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                html={
-                  podcast.description || (showNoInternetConnectionMessage ? translate('No internet connection') : '')
-                }
               />
             )}
             <ActionSheet
