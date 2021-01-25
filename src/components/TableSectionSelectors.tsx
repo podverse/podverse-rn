@@ -12,8 +12,10 @@ type Props = {
   handleSelectFromItem?: any
   handleSelectSortItem?: any
   hideFilter?: boolean
-  navigation: any
-  screenName: string
+  includePadding?: boolean
+  navigation?: any
+  reducedHeight?: boolean
+  screenName?: string
   selectedCategoryItemKey?: string | null
   selectedCategorySubItemKey?: string | null
   selectedFilterItemKey?: string | null
@@ -22,7 +24,7 @@ type Props = {
   selectedFromLabel?: string | null
   selectedSortItemKey?: string | null
   selectedSortLabel?: string | null
-  testID: string
+  testID?: string
 }
 
 type State = {
@@ -52,6 +54,8 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       handleSelectFromItem,
       handleSelectSortItem,
       hideFilter,
+      includePadding,
+      reducedHeight,
       screenName,
       selectedCategoryItemKey,
       selectedCategorySubItemKey,
@@ -64,9 +68,10 @@ export class TableSectionSelectors extends React.Component<Props, State> {
     } = this.props
     const { flatCategoryItems } = this.state
     const { globalTheme } = this.global
+    const wrapperStyle = includePadding ? { marginHorizontal: 8 } : {}
 
     return (
-      <View style={styles.tableSectionHeaderWrapper}>
+      <View style={[styles.tableSectionHeaderWrapper, wrapperStyle]}>
         <View style={styles.tableSectionHeaderTopWrapper}>
           <View style={styles.tableSectionHeaderTitleWrapper}>
             {!!selectedFilterLabel && (
@@ -78,46 +83,47 @@ export class TableSectionSelectors extends React.Component<Props, State> {
               </Text>
             )}
           </View>
-          {!hideFilter && (
-            <DropdownButton
-              onPress={() => {
-                this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
-                  addByRSSPodcastFeedUrl,
-                  flatCategoryItems,
-                  handleSelectCategoryItem,
-                  handleSelectCategorySubItem,
-                  handleSelectFilterItem,
-                  handleSelectFromItem,
-                  handleSelectSortItem,
-                  screenName,
-                  selectedCategoryItemKey,
-                  selectedCategorySubItemKey,
-                  selectedSortItemKey,
-                  selectedFilterItemKey,
-                  selectedFromItemKey
-                })
-              }}
-            />
-          )}
+          <DropdownButton
+            hideFilter={hideFilter}
+            onPress={() => {
+              this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
+                addByRSSPodcastFeedUrl,
+                flatCategoryItems,
+                handleSelectCategoryItem,
+                handleSelectCategorySubItem,
+                handleSelectFilterItem,
+                handleSelectFromItem,
+                handleSelectSortItem,
+                screenName,
+                selectedCategoryItemKey,
+                selectedCategorySubItemKey,
+                selectedSortItemKey,
+                selectedFilterItemKey,
+                selectedFromItemKey
+              })
+            }}
+          />
         </View>
-        <View style={styles.tableSectionHeaderBottomWrapper}>
-          {!!selectedFromLabel && (
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              numberOfLines={1}
-              style={[styles.tableSectionHeaderTitleTextSub, globalTheme.tableSectionHeaderText]}>
-              {selectedFromLabel}
-            </Text>
-          )}
-          {!!selectedSortLabel && (
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              numberOfLines={1}
-              style={[styles.tableSectionHeaderTitleTextSub, globalTheme.tableSectionHeaderText]}>
-              {selectedSortLabel}
-            </Text>
-          )}
-        </View>
+        {!reducedHeight && (
+          <View style={styles.tableSectionHeaderBottomWrapper}>
+            {!!selectedFromLabel && (
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                numberOfLines={1}
+                style={[styles.tableSectionHeaderTitleTextSub, globalTheme.tableSectionHeaderText]}>
+                {selectedFromLabel}
+              </Text>
+            )}
+            {!!selectedSortLabel && (
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                numberOfLines={1}
+                style={[styles.tableSectionHeaderTitleTextSub, globalTheme.tableSectionHeaderText]}>
+                {selectedSortLabel}
+              </Text>
+            )}
+          </View>
+        )}
       </View>
     )
   }
@@ -126,7 +132,6 @@ export class TableSectionSelectors extends React.Component<Props, State> {
 const styles = {
   tableSectionHeaderWrapper: {
     paddingBottom: 2,
-    paddingHorizontal: 8,
     paddingTop: 16
   },
   tableSectionHeaderBottomWrapper: {

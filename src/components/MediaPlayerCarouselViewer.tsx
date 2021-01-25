@@ -117,8 +117,8 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   clipTitle: {
-    fontSize: PV.Fonts.sizes.xl,
-    paddingBottom: 4,
+    fontSize: PV.Fonts.sizes.xxl,
+    paddingBottom: 2,
     textAlign: 'center'
   },
   clipWrapper: {},

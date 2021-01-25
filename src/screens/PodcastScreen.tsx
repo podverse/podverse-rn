@@ -20,7 +20,6 @@ import {
   SearchBar,
   SwipeRowBack,
   SwitchWithText,
-  TableSectionHeader,
   TableSectionSelectors,
   View
 } from '../components'
@@ -617,6 +616,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
             handleSelectFilterItem={this.handleSelectFilterItem}
             handleSelectSortItem={this.handleSelectSortItem}
+            includePadding={true}
             navigation={navigation}
             screenName='PodcastScreen'
             selectedFilterItemKey={viewType}
@@ -625,7 +625,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             testID={testIDPrefix}
           />
         )}
-        {showSettings && <TableSectionHeader includePadding={true} title={translate('Settings')} />}
+        {showSettings && <TableSectionSelectors includePadding={true} selectedFilterLabel={translate('Settings')} />}
         {showSettings && (
           <View style={styles.settingsView}>
             <SwitchWithText

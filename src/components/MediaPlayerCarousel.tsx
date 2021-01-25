@@ -90,7 +90,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           snapToInterval={screenWidth}
           snapToStart={true}
           transparent={true}>
-          {hasChapters && <MediaPlayerCarouselChapters width={screenWidth} />}
+          {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
           <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
           <MediaPlayerCarouselViewer
             handlePressClipInfo={this._handlePressClipInfo}

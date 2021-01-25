@@ -6,11 +6,13 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 
 export const DropdownButton = (props: any) => {
-  const { onPress } = props
+  const { hideFilter, onPress } = props
   const [globalTheme] = useGlobal('globalTheme')
+  const dropdownStyle = hideFilter ? { opacity: 0.0 } : {}
+
   return (
-    <TouchableWithoutFeedback onPress={onPress}>
-      <View style={styles.dropdownButton}>
+    <TouchableWithoutFeedback disabled={hideFilter} onPress={onPress}>
+      <View style={[styles.dropdownButton, dropdownStyle]}>
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}

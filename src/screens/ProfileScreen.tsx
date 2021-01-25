@@ -516,6 +516,7 @@ export class ProfileScreen extends React.Component<Props, State> {
             <TableSectionSelectors
               handleSelectFilterItem={this.handleSelectFilterItem}
               handleSelectSortItem={this.handleSelectSortItem}
+              includePadding={true}
               navigation={navigation}
               screenName='ProfileScreen'
               selectedFilterItemKey={viewType}

@@ -618,6 +618,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             handleSelectCategorySubItem={(x: any) => this._selectCategory(x, true)}
             handleSelectFilterItem={this.handleSelectFilterItem}
             handleSelectSortItem={this.handleSelectSortItem}
+            includePadding={true}
             navigation={navigation}
             screenName='PodcastsScreen'
             selectedCategoryItemKey={selectedCategory}

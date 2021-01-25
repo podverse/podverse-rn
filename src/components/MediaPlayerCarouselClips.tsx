@@ -227,6 +227,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
         <TableSectionSelectors
           handleSelectFromItem={this._selectQueryFrom}
           handleSelectSortItem={this._selectQuerySort}
+          includePadding={true}
           navigation={navigation}
           screenName='PlayerScreen'
           selectedFilterItemKey={PV.Filters._clipsKey}
