@@ -9,7 +9,7 @@ import { ActivityIndicator, MessageWithAction, View } from './'
 
 type Props = {
   data?: any
-  dataTotalCount: number | null
+  dataTotalCount?: number | null
   disableLeftSwipe: boolean
   disableNoResultsMessage?: boolean
   extraData?: any
@@ -77,7 +77,16 @@ export const PVFlatList = (props: Props) => {
   } = props
 
   const [globalTheme] = useGlobal('globalTheme')
-  const noResultsFound = !dataTotalCount
+  let noResultsFound = !dataTotalCount
+  if (sections) {
+    noResultsFound = true
+    for (const section of sections) {
+      const { data } = section
+      if (data && data.length > 0) {
+        noResultsFound = false
+      }
+    }
+  }
   const isEndOfResults = !isLoadingMore && data && dataTotalCount && dataTotalCount > 0 && data.length >= dataTotalCount
   const useSectionList = Array.isArray(sections) && sections.length > 0
   const shouldShowResults = (!noResultsFound && !showNoInternetConnectionMessage) || useSectionList

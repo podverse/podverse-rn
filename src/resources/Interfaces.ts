@@ -197,7 +197,9 @@ export interface IFilters {
   _sectionCategoryKey: string
   _sectionFilterKey: string
   _sectionFromKey: string
+  _sectionMyPlaylistsKey: string
   _sectionSortKey: string
+  _sectionSubscribedPlaylistsKey: string
 }
 
 interface IFontLargeSizes {
