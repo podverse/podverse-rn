@@ -98,7 +98,8 @@ export class FilterScreen extends React.Component<Props, State> {
     const options = { addByRSSPodcastFeedUrl, flatCategoryItems, screenName } as any
 
     if (section.value === PV.Filters._sectionFromKey) {
-      options.selectedFilterItemKey = item.value
+      options.selectedFromItemKey = item.value
+      options.selectedFilterItemKey = selectedFilterItemKey
       options.selectedSortItemKey = selectedSortItemKey
     } else if (section.value === PV.Filters._sectionFilterKey) {
       options.selectedFilterItemKey = item.value
@@ -174,6 +175,7 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedCategoryItemKey,
       selectedCategorySubItemKey,
       selectedFilterItemKey,
+      selectedFromItemKey,
       selectedSortItemKey
     } = this.state
 
@@ -200,7 +202,7 @@ export class FilterScreen extends React.Component<Props, State> {
         isActive = true
       }
     } else {
-      isActive = [selectedFilterItemKey, selectedSortItemKey].includes(value)
+      isActive = [selectedFilterItemKey, selectedFromItemKey, selectedSortItemKey].includes(value)
     }
 
     const isSubCategory = item.parentId
@@ -217,7 +219,7 @@ export class FilterScreen extends React.Component<Props, State> {
           })
         }}>
         <View style={styles.itemWrapper}>
-          <Text style={itemTextStyle}>{item.label || item.title}</Text>
+          <Text style={itemTextStyle}>{item.labelShort || item.label || item.title}</Text>
           {isActive && <Icon style={styles.itemIcon} name='check' size={24} />}
         </View>
       </TouchableWithoutFeedback>

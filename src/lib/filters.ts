@@ -3,7 +3,13 @@ import { PV } from '../resources'
 import { getFlatCategoryItems } from '../services/category'
 
 export const getDefaultSortForFilter = (options: any) => {
-  const { addByRSSPodcastFeedUrl, screenName, selectedFilterItemKey, selectedSortItemKey } = options
+  const {
+    addByRSSPodcastFeedUrl,
+    screenName,
+    selectedFilterItemKey,
+    selectedFromItemKey,
+    selectedSortItemKey
+  } = options
   let newSelectedSortItemKey = selectedSortItemKey
   switch (screenName) {
     case PV.RouteNames.ClipsScreen:
@@ -19,6 +25,14 @@ export const getDefaultSortForFilter = (options: any) => {
       } else if (selectedFilterItemKey === PV.Filters._categoryKey) {
         newSelectedSortItemKey =
           newSelectedSortItemKey === PV.Filters._mostRecentKey ? PV.Filters._topPastWeek : newSelectedSortItemKey
+      }
+      break
+    case PV.RouteNames.PlayerScreen:
+      if (
+        selectedFromItemKey === PV.Filters._fromThisPodcastKey &&
+        selectedSortItemKey === PV.Filters._chronologicalKey
+      ) {
+        newSelectedSortItemKey = PV.Filters._topPastWeek
       }
       break
     case PV.RouteNames.PodcastScreen:
@@ -169,6 +183,27 @@ export const generateSections = (options: any) => {
           ]
 
       break
+    case PV.RouteNames.PlayerScreen:
+      fromItems = PV.FilterOptions.fromItems.filter((item) =>
+        PV.FilterOptions.screenFilters.PlayerScreen.clipsFrom.includes(item.value)
+      )
+
+      if (selectedFromItemKey === PV.Filters._fromThisEpisodeKey) {
+        sortItems = sortItems.filter((item) =>
+          PV.FilterOptions.screenFilters.PlayerScreen.clipsFromEpisodeSort.includes(item.value)
+        )
+      } else if (selectedFromItemKey === PV.Filters._fromThisPodcastKey) {
+        sortItems = sortItems.filter((item) =>
+          PV.FilterOptions.screenFilters.PlayerScreen.clipsFromPodcastSort.includes(item.value)
+        )
+      }
+
+      sections = [
+        { title: translate('From'), data: fromItems, value: PV.Filters._sectionFromKey },
+        { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+      ]
+
+      break
     case PV.RouteNames.PodcastScreen:
       if (addByRSSPodcastFeedUrl) {
         filterItems = PV.FilterOptions.typeItems.filter((item) =>
@@ -274,10 +309,16 @@ export const generateSections = (options: any) => {
   }
 }
 
-export const getSelectedFromLabel = async (screenName: string, selectedFromItemKey?: string | null) => {
-  return PV.FilterOptions.screenFilters[screenName].find((item: any) => {
-    return item.value === selectedFromItemKey
-  })
+export const getSelectedSortLabel = (selectedSortItemKey?: string | null) => {
+  const selectedSortItem = PV.FilterOptions.sortItems.find((item) => item.value === selectedSortItemKey)
+  const selectedSortLabel = selectedSortItem && selectedSortItem.label
+  return selectedSortLabel || ''
+}
+
+export const getSelectedFromLabel = (selectedFromItemKey?: string | null) => {
+  const selectedFilterItem = PV.FilterOptions.fromItems.find((item) => item.value === selectedFromItemKey)
+  const selectedFilterLabel = selectedFilterItem && selectedFilterItem.label
+  return selectedFilterLabel || ''
 }
 
 export const getSelectedFilterLabel = async (

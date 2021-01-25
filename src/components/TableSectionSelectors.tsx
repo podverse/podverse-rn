@@ -9,6 +9,7 @@ type Props = {
   handleSelectCategoryItem?: any
   handleSelectCategorySubItem?: any
   handleSelectFilterItem?: any
+  handleSelectFromItem?: any
   handleSelectSortItem?: any
   hideFilter?: boolean
   navigation: any
@@ -17,7 +18,10 @@ type Props = {
   selectedCategorySubItemKey?: string | null
   selectedFilterItemKey?: string | null
   selectedFilterLabel?: string | null
+  selectedFromItemKey?: string | null
+  selectedFromLabel?: string | null
   selectedSortItemKey?: string | null
+  selectedSortLabel?: string | null
   testID: string
 }
 
@@ -45,6 +49,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       handleSelectCategoryItem,
       handleSelectCategorySubItem,
       handleSelectFilterItem,
+      handleSelectFromItem,
       handleSelectSortItem,
       hideFilter,
       screenName,
@@ -52,69 +57,97 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFilterLabel,
-      selectedSortItemKey
+      selectedFromItemKey,
+      selectedFromLabel,
+      selectedSortItemKey,
+      selectedSortLabel
     } = this.props
     const { flatCategoryItems } = this.state
     const { globalTheme } = this.global
 
     return (
-      <View style={[styles.tableSectionHeader, globalTheme.tableSectionHeader]}>
-        <View style={styles.tableSectionHeaderTitleWrapper}>
-          {!!selectedFilterLabel && (
+      <View style={styles.tableSectionHeaderWrapper}>
+        <View style={styles.tableSectionHeaderTopWrapper}>
+          <View style={styles.tableSectionHeaderTitleWrapper}>
+            {!!selectedFilterLabel && (
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                numberOfLines={1}
+                style={[styles.tableSectionHeaderTitleText, globalTheme.tableSectionHeaderText]}>
+                {selectedFilterLabel}
+              </Text>
+            )}
+          </View>
+          {!hideFilter && (
+            <DropdownButton
+              onPress={() => {
+                this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
+                  addByRSSPodcastFeedUrl,
+                  flatCategoryItems,
+                  handleSelectCategoryItem,
+                  handleSelectCategorySubItem,
+                  handleSelectFilterItem,
+                  handleSelectFromItem,
+                  handleSelectSortItem,
+                  screenName,
+                  selectedCategoryItemKey,
+                  selectedCategorySubItemKey,
+                  selectedSortItemKey,
+                  selectedFilterItemKey,
+                  selectedFromItemKey
+                })
+              }}
+            />
+          )}
+        </View>
+        <View style={styles.tableSectionHeaderBottomWrapper}>
+          {!!selectedFromLabel && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               numberOfLines={1}
-              style={[styles.tableSectionHeaderTitleText, globalTheme.tableSectionHeaderText]}>
-              {selectedFilterLabel}
+              style={[styles.tableSectionHeaderTitleTextSub, globalTheme.tableSectionHeaderText]}>
+              {selectedFromLabel}
+            </Text>
+          )}
+          {!!selectedSortLabel && (
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              numberOfLines={1}
+              style={[styles.tableSectionHeaderTitleTextSub, globalTheme.tableSectionHeaderText]}>
+              {selectedSortLabel}
             </Text>
           )}
         </View>
-        {!hideFilter && (
-          <DropdownButton
-            onPress={() => {
-              this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
-                addByRSSPodcastFeedUrl,
-                flatCategoryItems,
-                handleSelectCategoryItem,
-                handleSelectCategorySubItem,
-                handleSelectFilterItem,
-                handleSelectSortItem,
-                screenName,
-                selectedCategoryItemKey,
-                selectedCategorySubItemKey,
-                selectedSortItemKey,
-                selectedFilterItemKey
-              })
-            }}
-          />
-        )}
       </View>
     )
   }
 }
 
 const styles = {
-  tableSectionHeader: {
-    alignItems: 'center',
+  tableSectionHeaderWrapper: {
+    paddingBottom: 2,
+    paddingHorizontal: 8,
+    paddingTop: 16
+  },
+  tableSectionHeaderBottomWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
-    marginTop: 12,
-    minHeight: PV.Table.sectionHeader.height,
-    paddingHorizontal: 8
+    minHeight: 20
   },
   tableSectionHeaderTitleText: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.bold
   },
-  tableSectionHeaderTitleWrapper: {
-    justifyContent: 'center',
-    minHeight: PV.Table.sectionHeader.height
-  },
-  tableSectionHeaderSortTitleText: {
+  tableSectionHeaderTitleTextSub: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.md
+    fontSize: PV.Fonts.sizes.sm,
+    marginTop: 2
   },
-  tableSectionHeaderSortTitleWrapper: {}
+  tableSectionHeaderTitleWrapper: {},
+  tableSectionHeaderTopWrapper: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  }
 }

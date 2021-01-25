@@ -143,10 +143,12 @@ const sortItems = allSortItems.filter((item: any) => {
 const allFromListItems = [
   {
     label: 'From this podcast',
+    labelShort: 'Podcast',
     value: _fromThisPodcastKey
   },
   {
     label: 'From this episode',
+    labelShort: 'Episode',
     value: _fromThisEpisodeKey
   }
 ]
@@ -176,9 +178,9 @@ export const FilterOptions = {
       sortLimitQueries: [..._top]
     },
     PlayerScreen: {
-      type: [_chaptersKey, _clipsKey],
-      sort: [_chronologicalKey, _mostRecentKey, _oldestKey, ..._top, _randomKey],
-      fromItems
+      clipsFrom: [_fromThisEpisodeKey, _fromThisPodcastKey],
+      clipsFromEpisodeSort: [_chronologicalKey, _mostRecentKey, ..._top],
+      clipsFromPodcastSort: [_mostRecentKey, ..._top]
     },
     PodcastScreen: {
       type: [_downloadedKey, _episodesKey, _clipsKey],

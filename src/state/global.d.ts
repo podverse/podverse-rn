@@ -65,7 +65,9 @@ declare module 'reactn/default' {
       queryFrom: string | null
       queryPage: number
       querySort: string | null
+      selectedFromLabel?: string | null
       selectedItem?: any
+      selectedSortLabel?: string | null
       showFullClipInfo: boolean
       showHeaderActionSheet: boolean
       showMoreActionSheet: boolean

@@ -73,6 +73,7 @@ const initialTheme: InitialState = {
     queryFrom: PV.Filters._fromThisEpisodeKey,
     queryPage: 1,
     querySort: PV.Filters._topPastWeek,
+    selectedFromLabel: '',
     showFullClipInfo: false,
     showHeaderActionSheet: false,
     showMoreActionSheet: false,
