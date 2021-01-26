@@ -72,58 +72,37 @@ export class TableSectionSelectors extends React.Component<Props, State> {
 
     return (
       <View style={[styles.tableSectionHeaderWrapper, wrapperStyle]}>
-        <View style={styles.tableSectionHeaderTopWrapper}>
-          <View style={styles.tableSectionHeaderTitleWrapper}>
-            {!!selectedFilterLabel && (
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                numberOfLines={1}
-                style={[styles.tableSectionHeaderTitleText, globalTheme.tableSectionHeaderText]}>
-                {selectedFilterLabel}
-              </Text>
-            )}
-          </View>
-          <DropdownButton
-            hideFilter={hideFilter}
-            onPress={() => {
-              this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
-                addByRSSPodcastFeedUrl,
-                flatCategoryItems,
-                handleSelectCategoryItem,
-                handleSelectCategorySubItem,
-                handleSelectFilterItem,
-                handleSelectFromItem,
-                handleSelectSortItem,
-                screenName,
-                selectedCategoryItemKey,
-                selectedCategorySubItemKey,
-                selectedSortItemKey,
-                selectedFilterItemKey,
-                selectedFromItemKey
-              })
-            }}
-          />
+        <View style={styles.tableSectionHeaderTitleWrapper}>
+          {!!selectedFilterLabel && (
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              numberOfLines={1}
+              style={[styles.tableSectionHeaderTitleText, globalTheme.tableSectionHeaderText]}>
+              {selectedFilterLabel}
+            </Text>
+          )}
         </View>
-        {!reducedHeight && (
-          <View style={styles.tableSectionHeaderBottomWrapper}>
-            {!!selectedFromLabel && (
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                numberOfLines={1}
-                style={[styles.tableSectionHeaderTitleTextSub, globalTheme.tableSectionHeaderText]}>
-                {selectedFromLabel}
-              </Text>
-            )}
-            {!!selectedSortLabel && (
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                numberOfLines={1}
-                style={[styles.tableSectionHeaderTitleTextSub, globalTheme.tableSectionHeaderText]}>
-                {selectedSortLabel}
-              </Text>
-            )}
-          </View>
-        )}
+        <DropdownButton
+          hideFilter={hideFilter}
+          onPress={() => {
+            this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
+              addByRSSPodcastFeedUrl,
+              flatCategoryItems,
+              handleSelectCategoryItem,
+              handleSelectCategorySubItem,
+              handleSelectFilterItem,
+              handleSelectFromItem,
+              handleSelectSortItem,
+              screenName,
+              selectedCategoryItemKey,
+              selectedCategorySubItemKey,
+              selectedSortItemKey,
+              selectedFilterItemKey,
+              selectedFromItemKey
+            })
+          }}
+          sortLabel={selectedSortLabel}
+        />
       </View>
     )
   }
@@ -131,28 +110,26 @@ export class TableSectionSelectors extends React.Component<Props, State> {
 
 const styles = {
   tableSectionHeaderWrapper: {
-    paddingBottom: 2,
-    paddingTop: 16
-  },
-  tableSectionHeaderBottomWrapper: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    minHeight: 20
+    paddingVertical: 12
   },
   tableSectionHeaderTitleText: {
     flex: 0,
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.bold
   },
-  tableSectionHeaderTitleTextSub: {
+  tableSectionHeaderTitleTextSubFrom: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
     marginTop: 2
   },
-  tableSectionHeaderTitleWrapper: {},
-  tableSectionHeaderTopWrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  }
+  tableSectionHeaderTitleTextSubSort: {
+    textAlign: 'right',
+    flex: 1,
+    fontSize: PV.Fonts.sizes.sm,
+    marginTop: 2
+  },
+  tableSectionHeaderTitleWrapper: {}
 }

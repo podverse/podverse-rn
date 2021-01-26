@@ -1,4 +1,4 @@
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem, NowPlayingItem } from 'podverse-shared'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet } from 'react-native'
 import React, { setGlobal } from 'reactn'
 import { downloadEpisode } from '../lib/downloader'
@@ -214,7 +214,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
       querySort,
       selectedFromLabel = translate('From this episode'),
       selectedItem,
-      selectedSortLabel = translate('top - past week'),
+      selectedSortLabel = translate('top - week'),
       showMoreActionSheet,
       showNoInternetConnectionMessage
     } = screenPlayer

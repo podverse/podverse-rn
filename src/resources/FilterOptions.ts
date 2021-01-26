@@ -31,12 +31,12 @@ const {
 const _top = [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear, _topAllTime]
 
 const sortAlphabeticalItem = {
-  label: 'alphabetical',
+  label: 'A-Z',
   value: _alphabeticalKey
 }
 
 const sortChronologicalItem = {
-  label: 'chronological',
+  label: 'Start Time',
   value: _chronologicalKey
 }
 
@@ -101,27 +101,27 @@ const allSortItems = [
   sortChronologicalItem,
   sortAlphabeticalItem,
   {
-    label: 'most recent',
+    label: 'Most Recent',
     value: _mostRecentKey
   },
   {
-    label: 'oldest',
+    label: 'Oldest',
     value: _oldestKey
   },
   {
-    label: 'top - past day',
+    label: 'top - day',
     value: _topPastDay
   },
   {
-    label: 'top - past week',
+    label: 'top - week',
     value: _topPastWeek
   },
   {
-    label: 'top - past month',
+    label: 'top - month',
     value: _topPastMonth
   },
   {
-    label: 'top - past year',
+    label: 'top - year',
     value: _topPastYear
   },
   {

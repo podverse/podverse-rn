@@ -78,6 +78,12 @@ export const getCategoryKey = (
   selectedCategorySub?: string | null
 ) => (filterKey = filterKey === PV.Filters._categoryKey ? selectedCategorySub || selectedCategory : filterKey)
 
+export const getCategoryLabel = async (id: string) => {
+  const flatCategoryItems = await getFlatCategoryItems()
+  const item = flatCategoryItems.find((x: any) => id === x.value || id === x.id)
+  return item && item.label
+}
+
 export const assignCategoryQueryToState = (
   filterKey: any,
   newState: any,

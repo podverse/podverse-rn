@@ -17,12 +17,12 @@ import {
   View
 } from '../components'
 import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
-import { getDefaultSortForFilter, getSelectedFilterLabel } from '../lib/filters'
+import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { getAppUserAgent, setAppUserAgent, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { assignCategoryQueryToState, assignCategoryToStateForSortSelect } from '../services/category'
+import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisode } from '../services/episode'
 import { checkIdlePlayerState, PVTrackPlayer, updateUserPlaybackPosition } from '../services/player'
 import { getPodcast, getPodcasts } from '../services/podcast'
@@ -61,6 +61,7 @@ type State = {
   selectedCategory: string | null
   selectedCategorySub: string | null
   selectedFilterLabel?: string | null
+  selectedSortLabel?: string | null
   showDataSettingsConfirmDialog: boolean
   showNoInternetConnectionMessage?: boolean
 }
@@ -96,7 +97,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       selectedCategory: null,
       selectedCategorySub: null,
       selectedFilterLabel: translate('Subscribed'),
-      showDataSettingsConfirmDialog: false
+      showDataSettingsConfirmDialog: false,
+      selectedSortLabel: translate('A-Z')
     }
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
@@ -303,6 +305,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
       selectedSortItemKey: querySort
     })
 
+    const selectedFilterLabel = await getSelectedFilterLabel(selectedKey)
+    const selectedSortLabel = getSelectedSortLabel(sort)
+
     isInitialLoad = false
 
     this.setState(
@@ -316,7 +321,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         querySort: sort,
         searchBarText: '',
         selectedCategory: null,
-        selectedCategorySub: null
+        selectedCategorySub: null,
+        selectedFilterLabel,
+        selectedSortLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey, this.state)
@@ -330,6 +337,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       return
     }
 
+    const selectedSortLabel = getSelectedSortLabel(selectedKey)
+
     this.setState(
       {
         endOfResultsReached: false,
@@ -337,7 +346,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
         flatListDataTotalCount: null,
         isLoading: true,
         queryPage: 1,
-        querySort: selectedKey
+        querySort: selectedKey,
+        selectedSortLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey, this.state)
@@ -359,6 +369,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
       selectedSortItemKey: querySort
     })
 
+    const selectedFilterLabel = await getCategoryLabel(selectedKey)
+    const selectedSortLabel = getSelectedSortLabel(sort)
+
     this.setState(
       {
         endOfResultsReached: false,
@@ -367,7 +380,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         flatListData: [],
         flatListDataTotalCount: null,
         queryPage: 1,
-        querySort: sort
+        querySort: sort,
+        selectedFilterLabel,
+        selectedSortLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey, this.state, {}, { isCategorySub })
@@ -579,6 +594,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
       selectedCategory,
       selectedCategorySub,
       selectedFilterLabel,
+      selectedSortLabel,
       showDataSettingsConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
@@ -626,6 +642,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             selectedFilterItemKey={queryFrom}
             selectedFilterLabel={selectedFilterLabel}
             selectedSortItemKey={querySort}
+            selectedSortLabel={selectedSortLabel}
             testID={testIDPrefix}
           />
           {isLoading && <ActivityIndicator fillSpace={true} />}
@@ -773,12 +790,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
-
-      newState.selectedFilterLabel = await getSelectedFilterLabel(
-        queryFrom,
-        newState.selectedCategory,
-        newState.selectedCategorySub
-      )
 
       return newState
     } catch (error) {
