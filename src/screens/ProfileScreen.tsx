@@ -19,7 +19,7 @@ import {
   View
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
-import { getSelectedFilterLabel } from '../lib/filters'
+import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
@@ -55,6 +55,7 @@ type State = {
   queryPage: number
   querySort?: string | null
   selectedFilterLabel?: string | null
+  selectedSortLabel?: string | null
   selectedItem?: any
   showActionSheet: boolean
   showDeleteConfirmDialog?: boolean
@@ -115,6 +116,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       queryPage: 1,
       querySort: initializeClips ? PV.Filters._mostRecentKey : PV.Filters._alphabeticalKey,
       selectedFilterLabel: initializeClips ? translate('Clips') : translate('Podcasts'),
+      selectedSortLabel: initializeClips ? translate('recent') : translate('A-Z'),
       showActionSheet: false,
       userId,
       viewType: initializeClips ? PV.Filters._clipsKey : PV.Filters._podcastsKey
@@ -210,18 +212,17 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   handleSelectFilterItem = async (selectedKey: string) => {
+    if (!selectedKey) return
+
     const { querySort } = this.state
-    if (!selectedKey) {
-      return
-    }
+    const sort = getDefaultSortForFilter({
+      screenName: PV.RouteNames.ProfileScreen,
+      selectedFilterItemKey: selectedKey,
+      selectedSortItemKey: querySort
+    })
 
-    let sort = querySort
-
-    if (selectedKey === PV.Filters._clipsKey && querySort === PV.Filters._alphabeticalKey) {
-      sort = PV.Filters._mostRecentKey
-    } else if (selectedKey === PV.Filters._playlistsKey) {
-      sort = PV.Filters._alphabeticalKey
-    }
+    const selectedFilterLabel = await getSelectedFilterLabel(selectedKey)
+    const selectedSortLabel = getSelectedSortLabel(sort)
 
     this.setState(
       {
@@ -232,7 +233,9 @@ export class ProfileScreen extends React.Component<Props, State> {
         preventSortQuery: true,
         viewType: selectedKey,
         queryPage: 1,
-        querySort: sort
+        querySort: sort,
+        selectedFilterLabel,
+        selectedSortLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey, 1)
@@ -248,10 +251,9 @@ export class ProfileScreen extends React.Component<Props, State> {
       return
     }
 
-    if (!selectedKey) {
-      this.setState({ querySort: null })
-      return
-    }
+    if (!selectedKey) return
+
+    const selectedSortLabel = getSelectedSortLabel(selectedKey)
 
     this.setState(
       {
@@ -260,7 +262,8 @@ export class ProfileScreen extends React.Component<Props, State> {
         flatListDataTotalCount: null,
         isLoading: true,
         queryPage: 1,
-        querySort: selectedKey
+        querySort: selectedKey,
+        selectedSortLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey, 1)
@@ -462,6 +465,7 @@ export class ProfileScreen extends React.Component<Props, State> {
       isSubscribing,
       querySort,
       selectedFilterLabel,
+      selectedSortLabel,
       selectedItem,
       showActionSheet,
       showDeleteConfirmDialog,
@@ -514,6 +518,7 @@ export class ProfileScreen extends React.Component<Props, State> {
               testID={testIDPrefix}
             />
             <TableSectionSelectors
+              filterScreenTitle={translate('Profile')}
               handleSelectFilterItem={this.handleSelectFilterItem}
               handleSelectSortItem={this.handleSelectSortItem}
               includePadding={true}
@@ -522,6 +527,7 @@ export class ProfileScreen extends React.Component<Props, State> {
               selectedFilterItemKey={viewType}
               selectedFilterLabel={selectedFilterLabel}
               selectedSortItemKey={querySort}
+              selectedSortLabel={selectedSortLabel}
               testID={testIDPrefix}
             />
             {isLoading && <ActivityIndicator fillSpace={true} />}

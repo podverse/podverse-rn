@@ -630,6 +630,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         <RNView style={{ flex: 1 }}>
           <PlayerEvents />
           <TableSectionSelectors
+            filterScreenTitle={translate('Podcasts')}
             handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
             handleSelectCategorySubItem={(x: any) => this._selectCategory(x, true)}
             handleSelectFilterItem={this.handleSelectFilterItem}

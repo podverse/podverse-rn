@@ -42,6 +42,9 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
       sort = PV.Filters._chronologicalKey
     }
 
+    const selectedFromLabel = getSelectedFromLabel(selectedKey)
+    const selectedSortLabel = getSelectedSortLabel(querySort)
+
     setGlobal(
       {
         screenPlayer: {
@@ -52,7 +55,9 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
           isQuerying: true,
           queryFrom: selectedKey,
           queryPage: 1,
-          querySort: sort
+          querySort: sort,
+          selectedFromLabel,
+          selectedSortLabel
         }
       },
       async () => {
@@ -70,6 +75,8 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
   _selectQuerySort = async (selectedKey: string) => {
     if (!selectedKey) return
 
+    const selectedSortLabel = getSelectedSortLabel(selectedKey)
+
     setGlobal(
       {
         screenPlayer: {
@@ -79,7 +86,8 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
           flatListDataTotalCount: null,
           isQuerying: true,
           queryPage: 1,
-          querySort: selectedKey
+          querySort: selectedKey,
+          selectedSortLabel
         }
       },
       async () => {
@@ -212,7 +220,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
       isQuerying,
       queryFrom,
       querySort,
-      selectedFromLabel = translate('From this episode'),
+      selectedFromLabel = translate('Episode Clips'),
       selectedItem,
       selectedSortLabel = translate('top - week'),
       showMoreActionSheet,
@@ -225,15 +233,14 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
     return (
       <View style={[styles.wrapper, { width }]} transparent={true}>
         <TableSectionSelectors
+          filterScreenTitle={translate('Clips')}
           handleSelectFromItem={this._selectQueryFrom}
           handleSelectSortItem={this._selectQuerySort}
           includePadding={true}
           navigation={navigation}
           screenName='PlayerScreen'
-          selectedFilterItemKey={PV.Filters._clipsKey}
-          selectedFilterLabel={translate('Clips')}
+          selectedFilterLabel={selectedFromLabel}
           selectedFromItemKey={queryFrom}
-          selectedFromLabel={selectedFromLabel}
           selectedSortItemKey={querySort}
           selectedSortLabel={selectedSortLabel}
           testID={testID}
@@ -308,7 +315,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
 
   _queryData = async () => {
     const { screenPlayer } = this.global
-    const { flatListData, queryFrom, querySort } = screenPlayer
+    const { flatListData } = screenPlayer
     const newState = {
       isLoading: false,
       isLoadingMore: false,
@@ -329,8 +336,6 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
       newState.flatListDataTotalCount = results[1]
       newState.querySort = this._validSort()
-      newState.selectedFromLabel = getSelectedFromLabel(queryFrom)
-      newState.selectedSortLabel = getSelectedSortLabel(querySort)
 
       return newState
     } catch (error) {

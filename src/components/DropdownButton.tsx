@@ -48,6 +48,6 @@ const styles = {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold,
-    paddingRight: 16
+    paddingRight: 12
   }
 }

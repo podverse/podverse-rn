@@ -1,8 +1,9 @@
 import { StyleSheet, View as RNView } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import React from 'reactn'
-import { FlatList, Icon, NavDismissIcon, Text, View } from '../components'
+import { FlatList, Icon, NavHeaderButtonText, Text, View } from '../components'
 import { generateSections } from '../lib/filters'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { getDefaultCategory } from '../services/category'
 import { trackPageView } from '../services/tracking'
@@ -26,10 +27,14 @@ const testIDPrefix = 'filter_screen'
 
 export class FilterScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
+    const filterScreenTitle = navigation.getParam('filterScreenTitle')
+
     return {
-      title: '',
-      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-      headerRight: null
+      title: filterScreenTitle || '',
+      headerLeft: null,
+      headerRight: (
+        <NavHeaderButtonText handlePress={navigation.dismiss} testID={testIDPrefix} text={translate('Done')} />
+      )
     }
   }
 

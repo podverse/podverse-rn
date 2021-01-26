@@ -1,4 +1,5 @@
 import Config from 'react-native-config'
+import { translate } from '../lib/i18n'
 import { Filters } from './Filters'
 
 const {
@@ -31,62 +32,62 @@ const {
 const _top = [_topPastDay, _topPastWeek, _topPastMonth, _topPastYear, _topAllTime]
 
 const sortAlphabeticalItem = {
-  label: 'A-Z',
+  label: translate('A-Z'),
   value: _alphabeticalKey
 }
 
 const sortChronologicalItem = {
-  label: 'Start Time',
+  label: translate('start time'),
   value: _chronologicalKey
 }
 
 const allFilterTypeItems = [
   {
-    label: 'Subscribed',
+    label: translate('Subscribed'),
     value: _subscribedKey
   },
   {
-    label: 'Downloaded',
+    label: translate('Downloaded'),
     value: _downloadedKey
   },
   {
-    label: 'All Podcasts',
+    label: translate('All Podcasts'),
     value: _allPodcastsKey
   },
   {
-    label: 'Category',
+    label: translate('Category'),
     value: _categoryKey
   },
   {
-    label: 'My Clips',
+    label: translate('My Clips'),
     value: _myClipsKey
   },
   {
-    label: 'All Episodes',
+    label: translate('All Episodes'),
     value: _allEpisodesKey
   },
   {
-    label: 'Podcasts',
+    label: translate('Podcasts'),
     value: _podcastsKey
   },
   {
-    label: 'Episodes',
+    label: translate('Episodes'),
     value: _episodesKey
   },
   {
-    label: 'Chapters',
+    label: translate('Chapters'),
     value: _chaptersKey
   },
   {
-    label: 'Clips',
+    label: translate('Clips'),
     value: _clipsKey
   },
   {
-    label: 'Playlists',
+    label: translate('Playlists'),
     value: _playlistsKey
   },
   {
-    label: 'My Playlists',
+    label: translate('My Playlists'),
     value: _myPlaylistsKey
   }
 ]
@@ -101,35 +102,35 @@ const allSortItems = [
   sortChronologicalItem,
   sortAlphabeticalItem,
   {
-    label: 'Most Recent',
+    label: translate('recent'),
     value: _mostRecentKey
   },
   {
-    label: 'Oldest',
+    label: translate('oldest'),
     value: _oldestKey
   },
   {
-    label: 'top - day',
+    label: translate('top - day'),
     value: _topPastDay
   },
   {
-    label: 'top - week',
+    label: translate('top - week'),
     value: _topPastWeek
   },
   {
-    label: 'top - month',
+    label: translate('top - month'),
     value: _topPastMonth
   },
   {
-    label: 'top - year',
+    label: translate('top - year'),
     value: _topPastYear
   },
   {
-    label: 'top - all time',
+    label: translate('top - all time'),
     value: _topAllTime
   },
   {
-    label: 'random',
+    label: translate('random'),
     value: _randomKey
   }
 ]
@@ -142,13 +143,13 @@ const sortItems = allSortItems.filter((item: any) => {
 
 const allFromListItems = [
   {
-    label: 'From this podcast',
-    labelShort: 'Podcast',
+    label: translate('Podcast Clips'),
+    labelShort: translate('Podcast'),
     value: _fromThisPodcastKey
   },
   {
-    label: 'From this episode',
-    labelShort: 'Episode',
+    label: translate('Episode Clips'),
+    labelShort: translate('Episode'),
     value: _fromThisEpisodeKey
   }
 ]

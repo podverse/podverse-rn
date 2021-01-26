@@ -53,7 +53,6 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
           <TableSectionSelectors
             hideFilter={true}
             includePadding={true}
-            reducedHeight={true}
             selectedFilterLabel={translate('Show Notes')}
           />
           {!isLoading && episode && (

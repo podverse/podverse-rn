@@ -122,12 +122,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
 
     return (
       <View style={[styles.wrapper, { width }]} transparent={true}>
-        <TableSectionSelectors
-          hideFilter={true}
-          includePadding={true}
-          selectedFilterLabel={translate('Chapters')}
-          selectedFromLabel={translate('From this episode')}
-        />
+        <TableSectionSelectors hideFilter={true} includePadding={true} selectedFilterLabel={translate('Chapters')} />
         {isLoading || (isQuerying && <ActivityIndicator fillSpace={true} />)}
         {!isLoading && !isQuerying && flatListData && (
           <FlatList

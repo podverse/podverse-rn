@@ -356,7 +356,6 @@ export class QueueScreen extends React.Component<Props, State> {
                   <TableSectionSelectors
                     hideFilter={true}
                     includePadding={true}
-                    reducedHeight={true}
                     selectedFilterLabel={translate('Now Playing')}
                   />
                   <QueueTableCell
@@ -374,12 +373,7 @@ export class QueueScreen extends React.Component<Props, State> {
                 <Divider style={styles.headerNowPlayingItemDivider} />
               </View>
             )}
-            <TableSectionSelectors
-              hideFilter={true}
-              includePadding={true}
-              reducedHeight={true}
-              selectedFilterLabel={translate('Next Up')}
-            />
+            <TableSectionSelectors hideFilter={true} includePadding={true} selectedFilterLabel={translate('Next Up')} />
           </View>
         )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length > 0 && (

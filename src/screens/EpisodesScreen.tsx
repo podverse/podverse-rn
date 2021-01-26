@@ -16,12 +16,12 @@ import {
 } from '../components'
 import { getDownloadedEpisodes } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
-import { getSelectedFilterLabel } from '../lib/filters'
+import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { getUniqueArrayByKey, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { assignCategoryQueryToState, assignCategoryToStateForSortSelect } from '../services/category'
+import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisodes } from '../services/episode'
 import { combineEpisodesWithAddByRSSEpisodesLocally, hasAddByRSSEpisodesLocally } from '../services/parser'
 import { trackPageView } from '../services/tracking'
@@ -47,6 +47,7 @@ type State = {
   selectedCategory: string | null
   selectedCategorySub: string | null
   selectedFilterLabel?: string | null
+  selectedSortLabel?: string | null
   showActionSheet: boolean
   showNoInternetConnectionMessage?: boolean
 }
@@ -64,6 +65,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
     super(props)
     const { subscribedPodcasts } = this.global
 
+    const hasSubscribedPodcasts = subscribedPodcasts && subscribedPodcasts.length > 0
+
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
@@ -71,17 +74,14 @@ export class EpisodesScreen extends React.Component<Props, State> {
       isLoading: true,
       isLoadingMore: false,
       isRefreshing: false,
-      queryFrom:
-        subscribedPodcasts && subscribedPodcasts.length > 0
-          ? PV.Filters._subscribedKey
-          : Config.DEFAULT_QUERY_EPISODES_SCREEN,
+      queryFrom: hasSubscribedPodcasts ? PV.Filters._subscribedKey : Config.DEFAULT_QUERY_EPISODES_SCREEN,
       queryPage: 1,
-      querySort:
-        subscribedPodcasts && subscribedPodcasts.length > 0 ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
+      querySort: hasSubscribedPodcasts ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
       searchBarText: '',
       selectedCategory: null,
       selectedCategorySub: null,
       selectedFilterLabel: translate('Subscribed'),
+      selectedSortLabel: hasSubscribedPodcasts ? translate('recent') : translate('top - week'),
       showActionSheet: false
     }
 
@@ -110,16 +110,14 @@ export class EpisodesScreen extends React.Component<Props, State> {
     }
 
     const { querySort } = this.state
+    const sort = getDefaultSortForFilter({
+      screenName: PV.RouteNames.EpisodesScreen,
+      selectedFilterItemKey: selectedKey,
+      selectedSortItemKey: querySort
+    })
 
-    let sort = querySort
-    if (
-      (selectedKey === PV.Filters._allPodcastsKey || selectedKey === PV.Filters._categoryKey) &&
-      (querySort === PV.Filters._mostRecentKey || querySort === PV.Filters._randomKey)
-    ) {
-      sort = PV.Filters._topPastWeek
-    } else if (selectedKey === PV.Filters._downloadedKey) {
-      sort = PV.Filters._mostRecentKey
-    }
+    const selectedFilterLabel = await getSelectedFilterLabel(selectedKey)
+    const selectedSortLabel = await getSelectedSortLabel(sort)
 
     this.setState(
       {
@@ -130,7 +128,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
         queryFrom: selectedKey,
         queryPage: 1,
         querySort: sort,
-        searchBarText: ''
+        searchBarText: '',
+        selectedFilterLabel,
+        selectedSortLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey)
@@ -144,6 +144,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
       return
     }
 
+    const selectedSortLabel = await getSelectedSortLabel(selectedKey)
+
     this.setState(
       {
         endOfResultsReached: false,
@@ -151,7 +153,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
         flatListDataTotalCount: null,
         isLoading: true,
         queryPage: 1,
-        querySort: selectedKey
+        querySort: selectedKey,
+        selectedSortLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey)
@@ -165,6 +168,16 @@ export class EpisodesScreen extends React.Component<Props, State> {
       return
     }
 
+    const { querySort } = this.state
+
+    const selectedFilterLabel = await getCategoryLabel(selectedKey)
+    const sort = getDefaultSortForFilter({
+      screenName: PV.RouteNames.EpisodesScreen,
+      selectedFilterItemKey: selectedKey,
+      selectedSortItemKey: querySort
+    })
+    const selectedSortLabel = await getSelectedSortLabel(sort)
+
     this.setState(
       {
         endOfResultsReached: false,
@@ -172,7 +185,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
         ...((isCategorySub ? { selectedCategorySub: selectedKey } : { selectedCategory: selectedKey }) as any),
         flatListData: [],
         flatListDataTotalCount: null,
-        queryPage: 1
+        queryPage: 1,
+        selectedFilterLabel,
+        selectedSortLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey, { isCategorySub })
@@ -266,7 +281,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item?.podcast))}
         handleDownloadPress={this._handleDownloadPressed}
         handleNavigationPress={() => {
-          this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
+          this.props.navigation.navigate(PV.RouteNames.EpisodesScreen, {
             episode: item,
             includeGoToPodcast: true
           })
@@ -364,6 +379,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       selectedCategorySub,
       selectedFilterLabel,
       selectedItem,
+      selectedSortLabel,
       showActionSheet,
       showNoInternetConnectionMessage
     } = this.state
@@ -387,6 +403,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view} {...testProps('episodes_screen_view')}>
         <TableSectionSelectors
+          filterScreenTitle={translate('Episodes')}
           handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
           handleSelectCategorySubItem={(x: any) => this._selectCategory(x, true)}
           handleSelectFilterItem={this.handleSelectFilterItem}
@@ -399,6 +416,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           selectedFilterItemKey={queryFrom}
           selectedFilterLabel={selectedFilterLabel}
           selectedSortItemKey={querySort}
+          selectedSortLabel={selectedSortLabel}
           testID={testIDPrefix}
         />
         {isLoading && <ActivityIndicator fillSpace={true} />}
@@ -537,12 +555,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
-
-      newState.selectedFilterLabel = await getSelectedFilterLabel(
-        queryFrom,
-        newState.selectedCategory,
-        newState.selectedCategorySub
-      )
 
       newState.flatListData = getUniqueArrayByKey(newState.flatListData, 'id')
 

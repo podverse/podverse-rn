@@ -16,12 +16,12 @@ import {
 } from '../components'
 import { getDownloadedEpisodeIds } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
-import { getSelectedFilterLabel } from '../lib/filters'
+import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { isOdd, safelyUnwrapNestedVariable, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { assignCategoryQueryToState, assignCategoryToStateForSortSelect } from '../services/category'
+import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { trackPageView } from '../services/tracking'
 import { getLoggedInUserMediaRefs } from '../services/user'
@@ -47,6 +47,7 @@ type State = {
   selectedCategory: string | null
   selectedCategorySub: string | null
   selectedFilterLabel?: string | null
+  selectedSortLabel?: string | null
   selectedItem?: any
   showActionSheet: boolean
   showDeleteConfirmDialog?: boolean
@@ -67,6 +68,8 @@ export class ClipsScreen extends React.Component<Props, State> {
 
     const { subscribedPodcastIds } = this.global.session.userInfo
 
+    const hasSubscribedPodcasts = subscribedPodcastIds && subscribedPodcastIds.length > 0
+
     this.state = {
       endOfResultsReached: false,
       flatListData: [],
@@ -74,17 +77,14 @@ export class ClipsScreen extends React.Component<Props, State> {
       isLoading: true,
       isLoadingMore: false,
       isRefreshing: false,
-      queryFrom:
-        subscribedPodcastIds && subscribedPodcastIds.length > 0
-          ? PV.Filters._subscribedKey
-          : PV.Filters._allPodcastsKey,
+      queryFrom: hasSubscribedPodcasts ? PV.Filters._subscribedKey : PV.Filters._allPodcastsKey,
       queryPage: 1,
-      querySort:
-        subscribedPodcastIds && subscribedPodcastIds.length > 0 ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
+      querySort: hasSubscribedPodcasts ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
       searchBarText: '',
       selectedCategory: null,
       selectedCategorySub: null,
       selectedFilterLabel: translate('Subscribed'),
+      selectedSortLabel: hasSubscribedPodcasts ? translate('recent') : translate('top - week'),
       showActionSheet: false
     }
 
@@ -104,6 +104,8 @@ export class ClipsScreen extends React.Component<Props, State> {
     }
 
     const { querySort } = this.state
+    const selectedFilterLabel = await getSelectedFilterLabel(selectedKey)
+    const selectedSortLabel = await getSelectedSortLabel(querySort)
 
     this.setState(
       {
@@ -114,7 +116,9 @@ export class ClipsScreen extends React.Component<Props, State> {
         queryFrom: selectedKey,
         queryPage: 1,
         querySort,
-        searchBarText: ''
+        searchBarText: '',
+        selectedFilterLabel,
+        selectedSortLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey)
@@ -128,6 +132,8 @@ export class ClipsScreen extends React.Component<Props, State> {
       return
     }
 
+    const selectedSortLabel = await getSelectedSortLabel(selectedKey)
+
     this.setState(
       {
         endOfResultsReached: false,
@@ -135,7 +141,8 @@ export class ClipsScreen extends React.Component<Props, State> {
         flatListDataTotalCount: null,
         isLoading: true,
         queryPage: 1,
-        querySort: selectedKey
+        querySort: selectedKey,
+        selectedSortLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey)
@@ -149,6 +156,8 @@ export class ClipsScreen extends React.Component<Props, State> {
       return
     }
 
+    const selectedFilterLabel = await getCategoryLabel(selectedKey)
+
     this.setState(
       {
         endOfResultsReached: false,
@@ -156,7 +165,8 @@ export class ClipsScreen extends React.Component<Props, State> {
         ...((isSubCategory ? { selectedCategorySub: selectedKey } : { selectedCategory: selectedKey }) as any),
         flatListData: [],
         flatListDataTotalCount: null,
-        queryPage: 1
+        queryPage: 1,
+        selectedFilterLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey, { isSubCategory })
@@ -389,6 +399,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       selectedCategory,
       selectedCategorySub,
       selectedFilterLabel,
+      selectedSortLabel,
       selectedItem,
       showActionSheet,
       showDeleteConfirmDialog,
@@ -396,7 +407,6 @@ export class ClipsScreen extends React.Component<Props, State> {
     } = this.state
     const { offlineModeEnabled, session } = this.global
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => session.userInfo.subscribedPodcastIds, '')
-    const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
 
     const noSubscribedPodcasts =
       queryFrom === PV.Filters._subscribedKey &&
@@ -408,6 +418,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
         <TableSectionSelectors
+          filterScreenTitle={translate('Clips')}
           handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
           handleSelectCategorySubItem={(x: any) => this._selectCategory(x, true)}
           handleSelectFilterItem={this.handleSelectFilterItem}
@@ -420,6 +431,7 @@ export class ClipsScreen extends React.Component<Props, State> {
           selectedFilterItemKey={queryFrom}
           selectedFilterLabel={selectedFilterLabel}
           selectedSortItemKey={querySort}
+          selectedSortLabel={selectedSortLabel}
           testID={testIDPrefix}
         />
         {isLoading && <ActivityIndicator fillSpace={true} />}
@@ -580,12 +592,6 @@ export class ClipsScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
-
-      newState.selectedFilterLabel = await getSelectedFilterLabel(
-        queryFrom,
-        newState.selectedCategory,
-        newState.selectedCategorySub
-      )
 
       return newState
     } catch (error) {

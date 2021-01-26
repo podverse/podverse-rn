@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from '../components'
+import { getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
@@ -21,6 +22,7 @@ type State = {
   queryPage: number
   querySort: string
   selectedFilterLabel: string
+  selectedSortLabel: string
   viewType: string
 }
 
@@ -49,6 +51,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
       queryPage: 1,
       querySort: PV.Filters._chronologicalKey,
       selectedFilterLabel: translate('From this episode'),
+      selectedSortLabel: translate('top - week'),
       viewType
     }
   }
@@ -116,20 +119,21 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
 
   _ListHeaderComponent = () => {
     const { navigation } = this.props
-    const { selectedFilterLabel, viewType } = this.state
+    const { selectedFilterLabel, selectedSortLabel, viewType } = this.state
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl') || {}
 
     return (
       <TableSectionSelectors
         addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
+        filterScreenTitle={viewType === PV.Filters._clipsKey ? translate('Clips') : ''}
         handleSelectSortItem={this.handleSelectSortItem}
         hideFilter={viewType === PV.Filters._chaptersKey}
         includePadding={true}
         navigation={navigation}
-        reducedHeight={viewType === PV.Filters._chaptersKey}
         screenName='EpisodeMediaRefScreen'
         selectedFilterLabel={selectedFilterLabel}
         selectedSortItemKey={this.state.querySort}
+        selectedSortLabel={selectedSortLabel}
         testID={testIDPrefix}
       />
     )
@@ -140,6 +144,8 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
       return
     }
 
+    const selectedSortLabel = getSelectedSortLabel(selectedKey)
+
     this.setState(
       {
         endOfResultsReached: false,
@@ -147,7 +153,8 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
         flatListDataTotalCount: null,
         isLoading: true,
         queryPage: 1,
-        querySort: selectedKey
+        querySort: selectedKey,
+        selectedSortLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey)
@@ -192,7 +199,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, flatListDataTotalCount, isLoadingMore, viewType } = this.state
+    const { flatListData, flatListDataTotalCount, isLoadingMore } = this.state
 
     return (
       <View style={styles.view}>

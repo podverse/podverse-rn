@@ -6,6 +6,7 @@ import { DropdownButton, Text } from './'
 
 type Props = {
   addByRSSPodcastFeedUrl?: string
+  filterScreenTitle?: string
   handleSelectCategoryItem?: any
   handleSelectCategorySubItem?: any
   handleSelectFilterItem?: any
@@ -14,14 +15,12 @@ type Props = {
   hideFilter?: boolean
   includePadding?: boolean
   navigation?: any
-  reducedHeight?: boolean
   screenName?: string
   selectedCategoryItemKey?: string | null
   selectedCategorySubItemKey?: string | null
   selectedFilterItemKey?: string | null
   selectedFilterLabel?: string | null
   selectedFromItemKey?: string | null
-  selectedFromLabel?: string | null
   selectedSortItemKey?: string | null
   selectedSortLabel?: string | null
   testID?: string
@@ -48,6 +47,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
   render() {
     const {
       addByRSSPodcastFeedUrl,
+      filterScreenTitle,
       handleSelectCategoryItem,
       handleSelectCategorySubItem,
       handleSelectFilterItem,
@@ -55,14 +55,12 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       handleSelectSortItem,
       hideFilter,
       includePadding,
-      reducedHeight,
       screenName,
       selectedCategoryItemKey,
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFilterLabel,
       selectedFromItemKey,
-      selectedFromLabel,
       selectedSortItemKey,
       selectedSortLabel
     } = this.props
@@ -87,6 +85,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
           onPress={() => {
             this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
               addByRSSPodcastFeedUrl,
+              filterScreenTitle,
               flatCategoryItems,
               handleSelectCategoryItem,
               handleSelectCategorySubItem,

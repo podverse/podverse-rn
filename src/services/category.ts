@@ -81,7 +81,7 @@ export const getCategoryKey = (
 export const getCategoryLabel = async (id: string) => {
   const flatCategoryItems = await getFlatCategoryItems()
   const item = flatCategoryItems.find((x: any) => id === x.value || id === x.id)
-  return item && item.label
+  return item && (item.label || item.title)
 }
 
 export const assignCategoryQueryToState = (
