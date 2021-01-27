@@ -224,7 +224,10 @@ export class FilterScreen extends React.Component<Props, State> {
           })
         }}>
         <View style={styles.itemWrapper}>
-          <Text style={itemTextStyle}>{item.labelShort || item.label || item.title}</Text>
+          <Text
+            style={[itemTextStyle, isActive ? { fontWeight: PV.Fonts.weights.extraBold, color: PV.Colors.white } : {}]}>
+            {item.labelShort || item.label || item.title}
+          </Text>
           {isActive && <Icon style={styles.itemIcon} name='check' size={24} />}
         </View>
       </TouchableWithoutFeedback>
@@ -260,21 +263,26 @@ const styles = StyleSheet.create({
     height: 0
   },
   itemIcon: {
-    marginTop: 4
+    marginTop: 4,
+    marginRight: 36,
+    color: PV.Colors.brandBlueLight
   },
   itemSubText: {
     fontSize: PV.Fonts.sizes.xxxl,
-    fontWeight: PV.Fonts.weights.semibold,
+    fontWeight: PV.Fonts.weights.thin,
     paddingLeft: 64,
-    paddingRight: 36
+    paddingRight: 36,
+    color: PV.Colors.grayLighter
   },
   itemText: {
     fontSize: PV.Fonts.sizes.xxxl,
-    fontWeight: PV.Fonts.weights.semibold,
-    paddingHorizontal: 36
+    fontWeight: PV.Fonts.weights.thin,
+    paddingHorizontal: 36,
+    color: PV.Colors.grayLighter
   },
   itemWrapper: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 20
   },
   sectionItemText: {

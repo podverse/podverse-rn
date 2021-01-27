@@ -21,6 +21,7 @@ import {
   SwipeRowBack,
   SwitchWithText,
   TableSectionSelectors,
+  Text,
   View
 } from '../components'
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
@@ -29,7 +30,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { decodeHTMLString, isOdd, removeHTMLFromString, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { decodeHTMLString, removeHTMLFromString, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
@@ -611,7 +612,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           showSettings={showSettings}
           testID={testIDPrefix}
         />
-        {!showSettings && (
+        {!showSettings ? (
           <TableSectionSelectors
             addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
             filterScreenTitle={viewType === PV.Filters._clipsKey ? translate('Clips') : translate('Episodes')}
@@ -626,10 +627,9 @@ export class PodcastScreen extends React.Component<Props, State> {
             selectedSortLabel={selectedSortLabel}
             testID={testIDPrefix}
           />
-        )}
-        {showSettings && <TableSectionSelectors includePadding={true} selectedFilterLabel={translate('Settings')} />}
-        {showSettings && (
+        ) : (
           <View style={styles.settingsView}>
+            <Text style={styles.settingsTitle}>{translate('Settings')}</Text>
             <SwitchWithText
               onValueChange={this._handleToggleLimitDownloads}
               testID={`${testIDPrefix}_toggle_download_limit`}
@@ -649,7 +649,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             <Divider style={styles.divider} />
             <Button
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
-              wrapperStyles={styles.button}
+              wrapperStyles={styles.settingsDeletebutton}
               testID={`${testIDPrefix}_delete_downloaded_episodes`}
               text={translate('Delete Downloaded Episodes')}
             />
@@ -802,14 +802,21 @@ const styles = {
   aboutViewText: {
     fontSize: PV.Fonts.sizes.lg
   },
-  button: {
-    marginVertical: 8
+  settingsDeletebutton: {
+    margin: 8,
+    borderRadius: 8
   },
   divider: {
-    marginVertical: 24
+    marginBottom: 24,
+    marginTop: 12
   },
   settingsHelpText: {
     fontSize: PV.Fonts.sizes.md
+  },
+  settingsTitle: {
+    fontSize: PV.Fonts.sizes.xxl,
+    fontWeight: PV.Fonts.weights.bold,
+    marginBottom: 16
   },
   settingsView: {
     flex: 1,

@@ -3,7 +3,6 @@ import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-nati
 import React, { getGlobal } from 'reactn'
 import {
   ActivityIndicator,
-  Divider,
   FlatList,
   NavHeaderButtonText,
   NavSearchIcon,
@@ -12,7 +11,7 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import { isOdd, overrideImageUrlWithChapterImageUrl, testProps } from '../lib/utility'
+import { overrideImageUrlWithChapterImageUrl, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { loadItemAndPlayTrack } from '../state/actions/player'
@@ -276,6 +275,7 @@ const styles = StyleSheet.create({
     marginBottom: 2
   },
   view: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'center'
   }
 })
