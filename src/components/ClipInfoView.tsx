@@ -88,7 +88,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                   {readableClipTime(startTime, endTime)}
                 </Text>
               </View>
-              {userId === ownerId && (
+              {userId && userId === ownerId && (
                 <View style={styles.topEditButtonWrapper}>
                   <Icon
                     name='pencil-alt'

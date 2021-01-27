@@ -273,7 +273,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _renderEpisodeItem = ({ item, index }) => {
+    const mediaFileDuration = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]?.mediaFileDuration
     const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]
+      ?.userPlaybackPosition
 
     return (
       <EpisodeTableCell
@@ -286,6 +288,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             includeGoToPodcast: true
           })
         }}
+        mediaFileDuration={mediaFileDuration}
         showPodcastTitle={true}
         testID={`${testIDPrefix}_episode_item_${index}`}
         userPlaybackPosition={userPlaybackPosition}

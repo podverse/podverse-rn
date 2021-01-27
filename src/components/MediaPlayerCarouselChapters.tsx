@@ -103,10 +103,9 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
 
   render() {
     const { navigation, width } = this.props
-    const { offlineModeEnabled, screenPlayer } = this.global
+    const { offlineModeEnabled, player, screenPlayer } = this.global
+    const { currentChapters } = player
     const {
-      flatListData,
-      flatListDataTotalCount,
       isLoading,
       isLoadingMore,
       isQuerying,
@@ -124,12 +123,12 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
       <View style={[styles.wrapper, { width }]} transparent={true}>
         <TableSectionSelectors hideFilter={true} includePadding={true} selectedFilterLabel={translate('Chapters')} />
         {isLoading || (isQuerying && <ActivityIndicator fillSpace={true} />)}
-        {!isLoading && !isQuerying && flatListData && (
+        {!isLoading && !isQuerying && currentChapters && (
           <FlatList
-            data={flatListData}
-            dataTotalCount={flatListDataTotalCount}
+            data={currentChapters}
+            dataTotalCount={currentChapters.length}
             disableLeftSwipe={true}
-            extraData={flatListData}
+            extraData={currentChapters}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.id}

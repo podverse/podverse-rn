@@ -9,9 +9,15 @@ export const DropdownButton = (props: any) => {
   const [globalTheme] = useGlobal('globalTheme')
   const dropdownStyle = hideFilter ? { opacity: 0.0 } : {}
 
+  const extraStyles = []
+
+  if (props.transparent) {
+    extraStyles.push({ backgroundColor: 'transparent' })
+  }
+
   return (
     <TouchableWithoutFeedback disabled={hideFilter} onPress={onPress}>
-      <View style={[styles.dropdownButton, dropdownStyle]}>
+      <View style={[styles.dropdownButton, dropdownStyle, extraStyles]}>
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}

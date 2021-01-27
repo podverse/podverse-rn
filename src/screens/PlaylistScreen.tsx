@@ -157,7 +157,9 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <></>
       )
     } else {
+      const mediaFileDuration = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]?.mediaFileDuration
       const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]
+        ?.userPlaybackPosition
 
       return (
         <EpisodeTableCell
@@ -168,6 +170,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
             })
           }
           item={item}
+          mediaFileDuration={mediaFileDuration}
           showPodcastTitle={true}
           testID={`${testIDPrefix}_episode_item_${index}`}
           userPlaybackPosition={userPlaybackPosition}

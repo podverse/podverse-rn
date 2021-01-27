@@ -244,6 +244,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
           selectedSortItemKey={querySort}
           selectedSortLabel={selectedSortLabel}
           testID={testID}
+          transparentDropdownButton={true}
         />
         {isLoading || (isQuerying && <ActivityIndicator fillSpace={true} />)}
         {!isLoading && !isQuerying && flatListData && (

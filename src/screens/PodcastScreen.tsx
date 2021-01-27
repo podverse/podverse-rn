@@ -389,7 +389,9 @@ export class PodcastScreen extends React.Component<Props, State> {
         testId = `${testIDPrefix}_episode_item_${index}`
       }
 
+      const mediaFileDuration = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]?.mediaFileDuration
       const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]
+        ?.userPlaybackPosition
 
       return (
         <EpisodeTableCell
@@ -403,6 +405,7 @@ export class PodcastScreen extends React.Component<Props, State> {
             })
           }}
           hideImage={true}
+          mediaFileDuration={mediaFileDuration}
           testID={testId}
           userPlaybackPosition={userPlaybackPosition}
         />
