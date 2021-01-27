@@ -128,7 +128,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           bottomText
         )}
         <TimeRemainingWidget
-          {...(includeShowMore ? { handleMorePress } : {})}
+          handleMorePress={handleMorePress}
           item={item}
           mediaFileDuration={mediaFileDuration}
           userPlaybackPosition={userPlaybackPosition}
