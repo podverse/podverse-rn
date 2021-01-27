@@ -80,7 +80,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
       searchBarText: '',
       selectedCategory: null,
       selectedCategorySub: null,
-      selectedFilterLabel: translate('Subscribed'),
+      selectedFilterLabel: hasSubscribedPodcasts ? translate('Subscribed') : translate('All Podcasts'),
       selectedSortLabel: hasSubscribedPodcasts ? translate('recent') : translate('top - week'),
       showActionSheet: false
     }
@@ -289,7 +289,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           })
         }}
         mediaFileDuration={mediaFileDuration}
-        showPodcastTitle={true}
+        showPodcastInfo={true}
         testID={`${testIDPrefix}_episode_item_${index}`}
         userPlaybackPosition={userPlaybackPosition}
       />

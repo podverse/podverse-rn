@@ -19,7 +19,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { isOdd, safelyUnwrapNestedVariable, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { safelyUnwrapNestedVariable, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
@@ -83,7 +83,7 @@ export class ClipsScreen extends React.Component<Props, State> {
       searchBarText: '',
       selectedCategory: null,
       selectedCategorySub: null,
-      selectedFilterLabel: translate('Subscribed'),
+      selectedFilterLabel: hasSubscribedPodcasts ? translate('Subscribed') : translate('All Podcasts'),
       selectedSortLabel: hasSubscribedPodcasts ? translate('recent') : translate('top - week'),
       showActionSheet: false
     }
@@ -246,30 +246,15 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   _renderClipItem = ({ item, index }) => {
-    const title = item?.title?.trim() || ''
-    const episodeTitle = item?.episode?.title?.trim() || ''
-    const podcastTitle = item?.episode?.podcast?.title?.trim() || ''
-
     return item && item.episode && item.episode.id ? (
       <ClipTableCell
-        endTime={item.endTime}
-        episodeId={item.episode.id}
-        {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
-        {...(episodeTitle ? { episodeTitle } : {})}
-        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
-        handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, null))}
-        hasZebraStripe={isOdd(index)}
-        podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
-        {...(podcastTitle ? { podcastTitle } : {})}
+        item={item}
+        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.episode.podcast))}
         showEpisodeInfo={true}
-        showPodcastTitle={true}
-        startTime={item.startTime}
+        showPodcastInfo={true}
         testID={`${testIDPrefix}_clip_item_${index}`}
-        {...(title ? { title } : {})}
       />
-    ) : (
-      <></>
-    )
+    ) : null
   }
 
   _handleSearchBarClear = (text: string) => {

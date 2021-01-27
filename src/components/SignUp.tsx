@@ -253,15 +253,15 @@ const styles = StyleSheet.create({
   },
   signInButton: {
     alignItems: 'center',
-    borderColor: PV.Colors.white,
     borderWidth: 1,
     marginTop: 6,
     marginBottom: 200,
-    padding: 16
+    padding: 16,
+    borderRadius: 8
   },
   signInButtonText: {
     color: PV.Colors.white,
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.lg,
     fontWeight: 'bold'
   },
   textField: {

@@ -81,15 +81,11 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
 
     return item && item.episode && item.episode.id ? (
       <ClipTableCell
-        endTime={item.endTime}
-        episodeId={item.episode.id}
+        item={item}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
-        handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, podcast))}
-        hideImage={true}
-        showPodcastTitle={false}
-        startTime={item.startTime}
+        showPodcastInfo={false}
         testID={`${testID}_item_${index}`}
-        {...(item.title ? { title: item.title } : {})}
+        hideImage={true}
         transparent={true}
       />
     ) : (

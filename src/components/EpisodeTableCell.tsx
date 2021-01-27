@@ -15,7 +15,7 @@ type Props = {
   item?: any
   mediaFileDuration?: number
   pubDate?: any
-  showPodcastTitle?: boolean
+  showPodcastInfo?: boolean
   testID: string
   transparent?: boolean
   userPlaybackPosition?: number
@@ -30,7 +30,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       hideImage,
       item,
       mediaFileDuration,
-      showPodcastTitle,
+      showPodcastInfo,
       testID,
       transparent,
       userPlaybackPosition
@@ -56,7 +56,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <RNView style={styles.innerTopView}>
         {!!imageUrl && !hideImage && <FastImage isSmall={true} source={imageUrl} styles={styles.image} />}
         <RNView style={styles.textWrapper}>
-          {showPodcastTitle && podcastTitle && (
+          {showPodcastInfo && podcastTitle && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               isSecondary={true}
@@ -102,8 +102,6 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       </Text>
     )
 
-    const includeShowMore = !item.addByRSSPodcastFeedUrl
-
     return (
       <View style={styles.wrapper} transparent={transparent}>
         <RNView style={styles.wrapperTop}>
@@ -130,7 +128,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           bottomText
         )}
         <TimeRemainingWidget
-          {...(includeShowMore ? { handleMorePress } : {})}
+          handleMorePress={handleMorePress}
           item={item}
           mediaFileDuration={mediaFileDuration}
           userPlaybackPosition={userPlaybackPosition}

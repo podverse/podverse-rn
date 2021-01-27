@@ -139,6 +139,11 @@ export class AuthScreen extends React.Component<Props, State> {
     this.setState({ screenType: _resetPassword })
   }
 
+  _showLogin = () => {
+    this.props.navigation.setParams({ title: translate('Login') })
+    this.setState({ screenType: _login })
+  }
+
   render() {
     const { isLoadingLogin, isLoadingResetPassword, isLoadingSignUp, screenType } = this.state
     const { fontScaleMode } = this.global
@@ -169,11 +174,11 @@ export class AuthScreen extends React.Component<Props, State> {
     } else if (screenType === _resetPassword) {
       bottomButtons = [
         <Text
-          key='membership'
-          onPress={this._showMembership}
+          key='login'
+          onPress={this._showLogin}
           style={styles.switchOptionText}
           {...testProps('auth_screen_login_button')}>
-          {translate('Login')}
+          {translate('Back To Login')}
         </Text>
       ]
     }
@@ -188,7 +193,11 @@ export class AuthScreen extends React.Component<Props, State> {
                 <Login bottomButtons={bottomButtons} isLoading={isLoadingLogin} onLoginPressed={this.attemptLogin} />
               )}
               {screenType === _resetPassword && (
-                <ResetPassword isLoading={isLoadingResetPassword} onResetPasswordPressed={this.attemptResetPassword} />
+                <ResetPassword
+                  bottomButtons={bottomButtons}
+                  isLoading={isLoadingResetPassword}
+                  onResetPasswordPressed={this.attemptResetPassword}
+                />
               )}
               {screenType === _signup && (
                 <SignUp
@@ -229,7 +238,7 @@ const styles = StyleSheet.create({
     backgroundColor: PV.Colors.black
   },
   switchOptionText: {
-    color: PV.Colors.white,
+    color: PV.Colors.skyLight,
     fontSize: PV.Fonts.sizes.xl,
     marginTop: 16,
     padding: 16,

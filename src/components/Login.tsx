@@ -129,11 +129,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: PV.Colors.white,
     marginBottom: 16,
-    padding: 16
+    padding: 16,
+    borderRadius: 8
   },
   signInButtonText: {
     color: PV.Colors.brandColor,
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.lg,
     fontWeight: 'bold'
   },
   scrollView: {

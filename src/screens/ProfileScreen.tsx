@@ -421,20 +421,11 @@ export class ProfileScreen extends React.Component<Props, State> {
     } else if (viewType === PV.Filters._clipsKey) {
       return item && item.episode && item.episode.id && item.episode.podcast ? (
         <ClipTableCell
-          endTime={item.endTime}
-          episodeId={item.episode.id}
-          {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
-          {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
-          handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, null))}
-          hasZebraStripe={isOdd(index)}
-          podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
-          {...(item.episode.podcast.title ? { podcastTitle: item.episode.podcast.title } : {})}
           showEpisodeInfo={true}
-          showPodcastTitle={true}
-          startTime={item.startTime}
+          showPodcastInfo={true}
           testID={`${testIDPrefix}_clip_item_${index}`}
-          {...(item.title ? { title: item.title } : {})}
+          item={item}
         />
       ) : (
         <></>

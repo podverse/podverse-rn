@@ -14,6 +14,8 @@ type Props = {
   mediaFileDuration?: number | undefined
   style?: any
   userPlaybackPosition?: number | undefined
+  clipTime?: string
+  transparent?: boolean
 }
 
 type BarProps = {
@@ -64,7 +66,7 @@ const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { handleMorePress, item, mediaFileDuration, style, userPlaybackPosition } = props
+  const { clipTime, handleMorePress, item, mediaFileDuration, style, transparent, userPlaybackPosition } = props
   const { podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, null, podcast)
   const [player] = useGlobal('player')
@@ -80,6 +82,10 @@ export const TimeRemainingWidget = (props: Props) => {
     if (hasStartedItem) {
       timeLabel = convertSecToHhoursMMinutes(totalTime - playedTime) + ' left'
     }
+  }
+
+  if (clipTime) {
+    timeLabel = clipTime
   }
 
   const playItem = () => {
@@ -99,11 +105,13 @@ export const TimeRemainingWidget = (props: Props) => {
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, style]} transparent={transparent}>
       <TouchableOpacity onPress={playItem} style={iconStyle}>
         {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
       </TouchableOpacity>
-      {hasStartedItem && !isInvalidDuration && <MiniProgressBar playedTime={playedTime || 0} totalTime={totalTime} />}
+      {hasStartedItem && !isInvalidDuration && (
+        <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
+      )}
       <Text style={styles.text}>{timeLabel}</Text>
       {!!handleMorePress && <MoreButton handleMorePress={handleMorePress} />}
     </View>
