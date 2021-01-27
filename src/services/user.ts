@@ -102,6 +102,16 @@ export const getLoggedInUserMediaRefs = async (query: any = {}) => {
   return response && response.data
 }
 
+export const getLoggedInUserPlaylistsCombined = async () => {
+  const bearerToken = await getBearerToken()
+  const response = await request({
+    endpoint: '/user/playlists/combined',
+    headers: { Authorization: bearerToken }
+  })
+
+  return response && response.data
+}
+
 export const getLoggedInUserPlaylists = async () => {
   const bearerToken = await getBearerToken()
   const response = await request({

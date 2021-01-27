@@ -26,14 +26,13 @@ export const Filters: IFilters = {
   _clipsKey: 'clips',
   _chaptersKey: 'chapters',
   _playlistsKey: 'playlists',
-  _aboutPodcastKey: 'about-podcast',
-  _showNotesKey: 'show-notes',
-  _titleKey: 'title',
   _myPlaylistsKey: 'my-playlists',
   _fromThisPodcastKey: 'from-this-podcast',
   _fromThisEpisodeKey: 'from-this-episode',
-  _allCategoriesKey: '', // treat as an empty value
   _sectionCategoryKey: 'section-category',
   _sectionFilterKey: 'section-filter',
-  _sectionSortKey: 'section-sort'
+  _sectionFromKey: 'section-from',
+  _sectionMyPlaylistsKey: 'section-my-playlists',
+  _sectionSortKey: 'section-sort',
+  _sectionSubscribedPlaylistsKey: 'section-subscribed-playlists'
 }

@@ -20,7 +20,7 @@ export const Alerts = {
 
     return {
       message: `${translate('Do you want to resume ')}${item.podcastTitle} - ${title}?`,
-      title: `${translate('Most Recent ')}${type}`,
+      title: `${translate('recent ')}${type}`,
       buttons: [
         { text: translate('No') },
         {

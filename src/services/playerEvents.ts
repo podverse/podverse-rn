@@ -57,7 +57,8 @@ const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
       try {
         addOrUpdateHistoryItemSucceeded = true
         const playbackPosition = await PVTrackPlayer.getPosition()
-        await addOrUpdateHistoryItem(nowPlayingItem, playbackPosition)
+        const mediaFileDuration = await PVTrackPlayer.getDuration()
+        await addOrUpdateHistoryItem(nowPlayingItem, playbackPosition, mediaFileDuration)
         clearInterval(addOrUpdateInterval)
         intervalCount = 0
       } catch (error) {
@@ -118,7 +119,7 @@ const handleQueueEnded = async (x: any) => {
     if (x && x.track) {
       const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(x.track)
       if (currentNowPlayingItem) {
-        await addOrUpdateHistoryItem(currentNowPlayingItem, 0)
+        await addOrUpdateHistoryItem(currentNowPlayingItem, 0, currentNowPlayingItem.mediaFileDuration || 0)
       }
     }
 

@@ -13,11 +13,12 @@ type Props = {
   handleDownloadPress?: any
   hideImage?: boolean
   item?: any
+  mediaFileDuration?: number
+  pubDate?: any
   showPodcastTitle?: boolean
   testID: string
   transparent?: boolean
   userPlaybackPosition?: number
-  pubDate?: any
 }
 
 export class EpisodeTableCell extends React.PureComponent<Props> {
@@ -28,11 +29,13 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       handleDownloadPress,
       hideImage,
       item,
+      mediaFileDuration,
       showPodcastTitle,
       testID,
       transparent,
       userPlaybackPosition
     } = this.props
+
     const { id, mediaUrl, pubDate = '', podcast = {} } = item
     let { description = '', title = '' } = item
     const { imageUrl = '' } = podcast
@@ -129,6 +132,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         <TimeRemainingWidget
           {...(includeShowMore ? { handleMorePress } : {})}
           item={item}
+          mediaFileDuration={mediaFileDuration}
           userPlaybackPosition={userPlaybackPosition}
         />
       </View>
@@ -140,8 +144,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: PV.Fonts.sizes.sm,
     color: PV.Colors.grayLighter,
-    marginVertical: 15,
-    paddingLeft: 76
+    marginVertical: 15
   },
   image: {
     flex: 0,

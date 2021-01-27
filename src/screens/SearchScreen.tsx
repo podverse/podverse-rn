@@ -21,9 +21,8 @@ import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
 import { trackPageView } from '../services/tracking'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
-import { core } from '../styles'
 
-const { _aboutPodcastKey, _episodesKey, _clipsKey } = PV.Filters
+const { _episodesKey, _clipsKey } = PV.Filters
 
 type Props = {
   navigation?: any
@@ -150,7 +149,7 @@ export class SearchScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleNavigationPress = (podcast: any, viewType: string) => {
+  _handleNavigationPress = (podcast: any, viewType?: string) => {
     this.setState({ showActionSheet: false })
     navigateToPodcastScreenWithPodcast(this.props.navigation, podcast, viewType)
   }
@@ -197,9 +196,9 @@ export class SearchScreen extends React.Component<Props, State> {
         onPress: () => this._handleNavigationPress(selectedPodcast, _clipsKey)
       },
       {
-        key: 'about',
-        text: translate('About brandName'),
-        onPress: () => this._handleNavigationPress(selectedPodcast, _aboutPodcastKey)
+        key: 'goToPodcast',
+        text: translate('Go to Podcast'),
+        onPress: () => this._handleNavigationPress(selectedPodcast)
       }
     ]
   }

@@ -5,7 +5,7 @@ import { readableClipTime, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer, restartNowPlayingItemClip } from '../services/player'
 import { button, core } from '../styles'
-import { ActivityIndicator, Divider, Icon, TableSectionHeader, Text, TextLink } from './'
+import { ActivityIndicator, Divider, Icon, TableSectionSelectors, Text, TextLink } from './'
 
 type Props = {
   createdAt: string
@@ -78,7 +78,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
         {isLoading && <ActivityIndicator />}
         {!isLoading && (
           <Fragment>
-            <TableSectionHeader title={sectionHeaderTitle} />
+            <TableSectionSelectors hideFilter={true} selectedFilterLabel={sectionHeaderTitle} />
             <View style={core.row}>
               <View style={styles.topTextWrapper}>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>
@@ -88,7 +88,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
                   {readableClipTime(startTime, endTime)}
                 </Text>
               </View>
-              {userId === ownerId && (
+              {userId && userId === ownerId && (
                 <View style={styles.topEditButtonWrapper}>
                   <Icon
                     name='pencil-alt'

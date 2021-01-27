@@ -1,4 +1,3 @@
-import { PV } from '../resources'
 import { request } from './request'
 
 export const getEpisodes = async (query: any = {}) => {
@@ -12,7 +11,7 @@ export const getEpisodes = async (query: any = {}) => {
     ...(query.sincePubDate ? { sincePubDate: query.sincePubDate } : {})
   } as any
 
-  if (query.categories && query.categories !== PV.Filters._allCategoriesKey) {
+  if (query.categories && query.categories) {
     filteredQuery.categories = query.categories
   }
 

@@ -34,7 +34,7 @@ export const getPodcasts = async (query: any = {}) => {
     ...(searchTitle ? { searchTitle } : {})
   } as any
 
-  if (query.categories && query.categories !== PV.Filters._allCategoriesKey) {
+  if (query.categories) {
     filteredQuery.categories = query.categories
   } else if (query.podcastIds) {
     filteredQuery.podcastId = query.podcastIds ? query.podcastIds.join(',') : ['no-results']
@@ -60,7 +60,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
 
   const query = {
     podcastIds: subscribedPodcastIds,
-    sort: 'alphabetical',
+    sort: PV.Filters._alphabeticalKey,
     maxResults: true
   }
   const isConnected = await hasValidNetworkConnection()
@@ -137,7 +137,7 @@ export const searchPodcasts = async (title?: string, author?: string) => {
   const response = await request({
     endpoint: '/podcast',
     query: {
-      sort: 'alphabetical',
+      sort: PV.Filters._alphabeticalKey,
       ...(title ? { title } : {}),
       ...(author ? { author } : {}),
       page: 1

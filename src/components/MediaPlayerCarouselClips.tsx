@@ -1,55 +1,49 @@
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem, NowPlayingItem } from 'podverse-shared'
+import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet } from 'react-native'
 import React, { setGlobal } from 'reactn'
 import { downloadEpisode } from '../lib/downloader'
+import { getSelectedFromLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from './'
 
 type Props = {
-  isChapters?: boolean
   navigation?: any
   width: number
 }
 
 type State = {}
 
-const getTestID = (isChapters?: boolean) => {
-  return isChapters ? 'media_player_carousel_chapters' : 'media_player_carousel_clips'
+const getTestID = () => {
+  return 'media_player_carousel_clips'
 }
 
 export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> {
   constructor(props) {
     super(props)
+
     this.state = {}
   }
 
   async componentDidMount() {
-    this._selectViewType(this.global.screenPlayer.viewType)
+    this._selectQueryFrom(PV.Filters._fromThisEpisodeKey)
   }
 
-  _selectViewType = async (selectedKey: string | null) => {
-    if (!selectedKey) {
-      setGlobal({
-        screenPlayer: {
-          ...this.global.screenPlayer,
-          viewType: null
-        }
-      })
-      return
-    }
+  _selectQueryFrom = async (selectedKey: string) => {
+    if (!selectedKey) return
 
+    const { querySort } = this.global.screenPlayer
     let sort = PV.Filters._topPastWeek
-    let hideRightItemWhileLoading = false
-    if (selectedKey === PV.Filters._clipsKey) {
+    if (selectedKey === PV.Filters._fromThisPodcastKey && querySort === PV.Filters._chronologicalKey) {
       sort = PV.Filters._chronologicalKey
-      hideRightItemWhileLoading = true
     }
+
+    const selectedFromLabel = getSelectedFromLabel(selectedKey)
+    const selectedSortLabel = getSelectedSortLabel(querySort)
 
     setGlobal(
       {
@@ -58,55 +52,12 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
           endOfResultsReached: false,
           flatListData: [],
           flatListDataTotalCount: null,
-          hideRightItemWhileLoading,
           isQuerying: true,
-          queryFrom: PV.Filters._fromThisEpisodeKey,
-          querySort: sort,
+          queryFrom: selectedKey,
           queryPage: 1,
-          viewType: selectedKey
-        }
-      },
-      async () => {
-        if (selectedKey === PV.Filters._chaptersKey || selectedKey === PV.Filters._clipsKey) {
-          const newState = await this._queryData()
-          setGlobal({
-            screenPlayer: {
-              ...this.global.screenPlayer,
-              ...newState
-            }
-          })
-        } else {
-          setGlobal({
-            screenPlayer: {
-              ...this.global.screenPlayer,
-              isQuerying: false
-            }
-          })
-        }
-      }
-    )
-  }
-
-  _selectQuerySort = async (selectedKey: string) => {
-    if (!selectedKey) {
-      setGlobal({
-        screenPlayer: {
-          ...this.global.screenPlayer,
-          querySort: null
-        }
-      })
-      return
-    }
-
-    setGlobal(
-      {
-        screenPlayer: {
-          ...this.global.screenPlayer,
-          endOfResultsReached: false,
-          flatListData: [],
-          flatListDataTotalCount: null,
-          isQuerying: true,
-          querySort: selectedKey
+          querySort: sort,
+          selectedFromLabel,
+          selectedSortLabel
         }
       },
       async () => {
@@ -121,23 +72,10 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
     )
   }
 
-  _selectQueryFrom = async (selectedKey: string) => {
-    if (!selectedKey) {
-      setGlobal({
-        screenPlayer: {
-          ...this.global.screenPlayer,
-          queryFrom: null
-        }
-      })
-      return
-    }
+  _selectQuerySort = async (selectedKey: string) => {
+    if (!selectedKey) return
 
-    let sort = PV.Filters._topPastWeek
-    let hideRightItemWhileLoading = false
-    if (selectedKey === PV.Filters._fromThisEpisodeKey) {
-      sort = PV.Filters._chronologicalKey
-      hideRightItemWhileLoading = true
-    }
+    const selectedSortLabel = getSelectedSortLabel(selectedKey)
 
     setGlobal(
       {
@@ -146,11 +84,10 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
           endOfResultsReached: false,
           flatListData: [],
           flatListDataTotalCount: null,
-          hideRightItemWhileLoading,
           isQuerying: true,
-          queryFrom: selectedKey,
           queryPage: 1,
-          querySort: sort
+          querySort: selectedKey,
+          selectedSortLabel
         }
       },
       async () => {
@@ -167,13 +104,8 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
 
   _onEndReached = ({ distanceFromEnd }) => {
     const { screenPlayer } = this.global
-    const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = screenPlayer
-    if (
-      viewType !== PV.Filters._showNotesKey &&
-      viewType !== PV.Filters._titleKey &&
-      !endOfResultsReached &&
-      !isLoadingMore
-    ) {
+    const { endOfResultsReached, isLoadingMore, queryPage = 1 } = screenPlayer
+    if (!endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
         setGlobal(
           {
@@ -235,12 +167,11 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
   }
 
   _renderItem = ({ item, index }) => {
-    const { isChapters } = this.props
     const { player, screenPlayer } = this.global
     const { episode } = player
     const podcast = (episode && episode.podcast) || {}
     const { queryFrom } = screenPlayer
-    const testID = getTestID(isChapters)
+    const testID = getTestID()
 
     if (queryFrom === PV.Filters._fromThisEpisodeKey) {
       item = {
@@ -279,82 +210,59 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
   }
 
   render() {
-    const { isChapters, navigation, width } = this.props
+    const { navigation, width } = this.props
     const { offlineModeEnabled, screenPlayer } = this.global
     const {
       flatListData,
       flatListDataTotalCount,
-      hideRightItemWhileLoading,
       isLoading,
       isLoadingMore,
       isQuerying,
       queryFrom,
       querySort,
+      selectedFromLabel = translate('Episode Clips'),
       selectedItem,
+      selectedSortLabel = translate('top - week'),
       showMoreActionSheet,
-      showNoInternetConnectionMessage,
-      viewType
+      showNoInternetConnectionMessage
     } = screenPlayer
 
-    let noResultsMessage = translate('No episodes found')
-    let noResultsSubMessage = ''
-    if (viewType === PV.Filters._chaptersKey) {
-      noResultsMessage = translate('No chapters found')
-      noResultsSubMessage = translate('Chapters are created by the podcaster')
-    } else if (viewType === PV.Filters._clipsKey) {
-      noResultsMessage = translate('No clips found')
-    }
-
-    const showOfflineMessage =
-      offlineModeEnabled && queryFrom !== PV.Filters._showNotesKey && queryFrom !== PV.Filters._titleKey
-
-    const testID = getTestID(isChapters)
+    const noResultsMessage = translate('No clips found')
+    const testID = getTestID()
 
     return (
       <View style={[styles.wrapper, { width }]} transparent={true}>
         <TableSectionSelectors
-          handleSelectFilterItem={this._selectViewType}
+          filterScreenTitle={translate('Clips')}
+          handleSelectFromItem={this._selectQueryFrom}
           handleSelectSortItem={this._selectQuerySort}
-          hideRightItemWhileLoading={hideRightItemWhileLoading}
-          isTransparent={true}
+          includePadding={true}
+          navigation={navigation}
           screenName='PlayerScreen'
-          selectedFilterItemKey={viewType}
+          selectedFilterLabel={selectedFromLabel}
+          selectedFromItemKey={queryFrom}
           selectedSortItemKey={querySort}
+          selectedSortLabel={selectedSortLabel}
           testID={testID}
+          transparentDropdownButton={true}
         />
-        {viewType === PV.Filters._clipsKey && (
-          <TableSectionSelectors
-            handleSelectFilterItem={this._selectQueryFrom}
-            isBottomBar={true}
-            isTransparent={true}
-            screenName='PlayerScreen'
-            selectedFilterItemKey={queryFrom}
-            testID={`${testID}_sub`}
+        {isLoading || (isQuerying && <ActivityIndicator fillSpace={true} />)}
+        {!isLoading && !isQuerying && flatListData && (
+          <FlatList
+            data={flatListData}
+            dataTotalCount={flatListDataTotalCount}
+            disableLeftSwipe={true}
+            extraData={flatListData}
+            isLoadingMore={isLoadingMore}
+            ItemSeparatorComponent={this._ItemSeparatorComponent}
+            keyExtractor={(item: any) => item.id}
+            noResultsMessage={noResultsMessage}
+            onEndReached={this._onEndReached}
+            renderItem={this._renderItem}
+            showNoInternetConnectionMessage={offlineModeEnabled || showNoInternetConnectionMessage}
+            transparent={true}
           />
         )}
-        {isLoading || (isQuerying && <ActivityIndicator fillSpace={true} />)}
-        {!isLoading &&
-          !isQuerying &&
-          viewType &&
-          viewType !== PV.Filters._showNotesKey &&
-          viewType !== PV.Filters._titleKey &&
-          flatListData && (
-            <FlatList
-              data={flatListData}
-              dataTotalCount={flatListDataTotalCount}
-              disableLeftSwipe={true}
-              extraData={flatListData}
-              isLoadingMore={isLoadingMore}
-              ItemSeparatorComponent={this._ItemSeparatorComponent}
-              keyExtractor={(item: any) => item.id}
-              noResultsMessage={noResultsMessage}
-              noResultsSubMessage={noResultsSubMessage}
-              onEndReached={this._onEndReached}
-              renderItem={this._renderItem}
-              showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
-              transparent={true}
-            />
-          )}
         <ActionSheet
           handleCancelPress={this._handleMoreCancelPress}
           items={() =>
@@ -368,17 +276,6 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
         />
       </View>
     )
-  }
-
-  _queryChapters = async () => {
-    const { player } = this.global
-    const { nowPlayingItem } = player
-
-    if (nowPlayingItem && !nowPlayingItem.addByRSSPodcastFeedUrl) {
-      return retrieveLatestChaptersForEpisodeId(nowPlayingItem.episodeId)
-    } else {
-      return [[], 0]
-    }
   }
 
   _validSort = () => {
@@ -417,12 +314,10 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
     }
   }
 
-  _queryData = async (item?: NowPlayingItem, page?: number) => {
-    const { isChapters } = this.props
+  _queryData = async () => {
     const { screenPlayer } = this.global
     const { flatListData } = screenPlayer
     const newState = {
-      hideRightItemWhileLoading: false,
       isLoading: false,
       isLoadingMore: false,
       isQuerying: false,
@@ -437,18 +332,10 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
     }
 
     try {
-      if (isChapters) {
-        const results = await this._queryChapters()
-        newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
-        newState.flatListDataTotalCount = results[1]
-      } else {
-        const results = await this._queryClips()
-        newState.flatListData = [...flatListData, ...results[0]]
-        newState.endOfResultsReached = newState.flatListData.length >= results[1]
-        newState.flatListDataTotalCount = results[1]
-      }
-
+      const results = await this._queryClips()
+      newState.flatListData = [...flatListData, ...results[0]]
+      newState.endOfResultsReached = newState.flatListData.length >= results[1]
+      newState.flatListDataTotalCount = results[1]
       newState.querySort = this._validSort()
 
       return newState

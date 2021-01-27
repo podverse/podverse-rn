@@ -53,6 +53,7 @@ const styles = {
   },
   inputStyle: {
     fontSize: PV.Fonts.sizes.xxl,
-    borderWidth: 0
+    borderWidth: 0,
+    marginLeft: 18
   }
 }
