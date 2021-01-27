@@ -84,7 +84,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
             <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyle} />
           </View>
           {clipId && (
-            <TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={handlePressClipInfo}>
               <View style={styles.carouselTextBottomWrapper} transparent={true}>
                 <View style={styles.clipWrapper} transparent={true}>
                   <Text
