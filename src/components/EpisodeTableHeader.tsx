@@ -12,11 +12,21 @@ type Props = {
   handleMorePress?: any
   episodeDownloaded?: boolean
   isLoading?: boolean
+  mediaFileDuration?: number
   testID: string
+  userPlaybackPosition?: number
 }
 
 export const EpisodeTableHeader = (props: Props) => {
-  const { episodeDownloaded = false, handleMorePress, testID, episode, isLoading } = props
+  const {
+    episode,
+    episodeDownloaded = false,
+    handleMorePress,
+    isLoading,
+    mediaFileDuration,
+    testID,
+    userPlaybackPosition
+  } = props
 
   const isNotFound = !isLoading && !episode
   const podcastImageUrl =
@@ -74,8 +84,9 @@ export const EpisodeTableHeader = (props: Props) => {
               <TimeRemainingWidget
                 item={episode}
                 handleMorePress={handleMorePress}
-                testID={testID}
                 style={{ marginVertical: 20 }}
+                mediaFileDuration={mediaFileDuration}
+                userPlaybackPosition={userPlaybackPosition}
               />
             </View>
           )}

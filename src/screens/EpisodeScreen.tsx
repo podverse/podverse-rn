@@ -176,6 +176,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
     } = this.state
     const { downloadedEpisodeIds, downloadsActive } = this.global
 
+    const episodeId = episode && episode.id
+
     if (episode) episode.description = replaceLinebreaksWithBrTags(episode.description)
 
     const episodeDownloaded = episode && !!downloadedEpisodeIds[episode.id]
@@ -184,6 +186,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const showClipsCell = hasInternetConnection && totalClips > 0
     const showChaptersCell = hasInternetConnection && totalChapters > 0
 
+    const mediaFileDuration = this.global.session?.userInfo?.historyItemsIndex?.episodes[episodeId]?.mediaFileDuration
+    const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[episodeId]
+      ?.userPlaybackPosition
+
     return (
       <ScrollView style={styles.view} {...testProps('episode_screen_view')}>
         <EpisodeTableHeader
@@ -191,7 +197,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast))}
           episode={episode}
           isLoading={isLoading}
+          mediaFileDuration={mediaFileDuration}
           testID={testIDPrefix}
+          userPlaybackPosition={userPlaybackPosition}
         />
         {showClipsCell && (
           <TouchableOpacity
