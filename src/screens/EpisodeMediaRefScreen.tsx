@@ -186,14 +186,11 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
     const episode = this.props.navigation.getParam('episode') || {}
     return (
       <ClipTableCell
-        episodeId={episode.id}
-        endTime={item.endTime}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
         hideImage={true}
         showEpisodeInfo={false}
         showPodcastTitle={false}
-        startTime={item.startTime}
-        {...(item.title ? { title: item.title } : {})}
+        item={item}
       />
     )
   }

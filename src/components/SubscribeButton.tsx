@@ -51,7 +51,8 @@ export const SubscribeButton = (props: Props) => {
 const styles = StyleSheet.create({
   activityIndicator: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: PV.Colors.velvet
   },
   buttonView: {
     alignItems: 'center',
@@ -61,10 +62,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 15,
     width: 120,
-    minHeight: 32
+    minHeight: 32,
+    backgroundColor: PV.Colors.velvet
   },
   buttonText: {
     color: PV.Colors.brandBlueLight,
-    fontSize: PV.Fonts.sizes.tiny
+    fontSize: PV.Fonts.sizes.tiny,
+    backgroundColor: PV.Colors.velvet
   }
 })

@@ -182,23 +182,12 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
 
     return item && item.episode && item.episode.id ? (
       <ClipTableCell
-        endTime={item.endTime}
-        episodeId={item.episode.id}
-        {...(queryFrom === PV.Filters._fromThisPodcastKey
-          ? { episodePubDate: readableDate(item.episode.pubDate) }
-          : {})}
-        {...(queryFrom === PV.Filters._fromThisPodcastKey
-          ? { episodeTitle: item.episode.title || translate('Untitled Episode') }
-          : {})}
+        item={item}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
-        handleNavigationPress={() => this._handleNavigationPress(convertToNowPlayingItem(item, null, podcast))}
-        hideImage={true}
         showEpisodeInfo={queryFrom !== PV.Filters._fromThisEpisodeKey}
         showPodcastTitle={false}
-        startTime={item.startTime}
         testID={`${testID}_item_${index}`}
-        {...(item.title ? { title: item.title } : {})}
-        transparent={true}
+        hideImage={true}
       />
     ) : (
       <></>

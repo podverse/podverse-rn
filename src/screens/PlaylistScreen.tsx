@@ -139,19 +139,11 @@ export class PlaylistScreen extends React.Component<Props, State> {
     if (item.startTime) {
       return item.episode && item.episode.podcast ? (
         <ClipTableCell
-          endTime={item.endTime}
-          episodeId={item.episode.id}
-          {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
-          {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
-          hasZebraStripe={isOdd(index)}
-          podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
-          {...(item.episode.podcast.title ? { podcastTitle: item.episode.podcast.title } : {})}
           showEpisodeInfo={true}
           showPodcastTitle={true}
-          startTime={item.startTime}
           testID={`${testIDPrefix}_clip_item_${index}`}
-          {...(item.title ? { title: item.title } : {})}
+          item={item}
         />
       ) : (
         <></>

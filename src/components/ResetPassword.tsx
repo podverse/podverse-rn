@@ -10,6 +10,7 @@ type Props = {
   isLoading: boolean
   onResetPasswordPressed?: any
   style?: any
+  bottomButtons: any
 }
 
 type State = {
@@ -44,7 +45,7 @@ export class ResetPassword extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, style } = this.props
+    const { isLoading, style, bottomButtons } = this.props
     const { submitIsDisabled } = this.state
     const disabledStyle = submitIsDisabled ? { backgroundColor: PV.Colors.gray } : null
     const disabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
@@ -79,6 +80,7 @@ export class ResetPassword extends React.Component<Props, State> {
             <Text style={[signInButtonTextStyle, disabledTextStyle]}>{translate('Send Reset')}</Text>
           )}
         </TouchableOpacity>
+        {bottomButtons}
       </View>
     )
   }
@@ -94,12 +96,13 @@ const styles = StyleSheet.create({
   signInButton: {
     alignItems: 'center',
     backgroundColor: PV.Colors.white,
-    marginBottom: 300,
-    padding: 16
+
+    padding: 16,
+    borderRadius: 8
   },
   signInButtonText: {
     color: PV.Colors.brandColor,
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.lg,
     fontWeight: 'bold'
   },
   view: {

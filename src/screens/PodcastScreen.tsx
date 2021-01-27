@@ -359,18 +359,12 @@ export class PodcastScreen extends React.Component<Props, State> {
         item.episode &&
         item.episode.id && (
           <ClipTableCell
-            endTime={item.endTime}
-            episodeId={item.episode.id}
-            {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
-            {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
             handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
-            hasZebraStripe={isOdd(index)}
-            hideImage={true}
             showEpisodeInfo={true}
             showPodcastTitle={false}
-            startTime={item.startTime}
             testID={`${testIDPrefix}_clip_item_${index}`}
-            {...(item.title ? { title: item.title } : {})}
+            item={item}
+            hideImage={true}
           />
         )
       )

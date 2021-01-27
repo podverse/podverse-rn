@@ -188,7 +188,6 @@ const generateHistoryItemsIndex = (historyItems: any[]) => {
       }
     }
   }
-  console.log('genereatae', historyItems, historyItemsIndex)
   return historyItemsIndex
 }
 

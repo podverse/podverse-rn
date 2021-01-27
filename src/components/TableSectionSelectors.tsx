@@ -25,6 +25,7 @@ type Props = {
   selectedSortLabel?: string | null
   testID?: string
   transparentDropdownButton?: boolean
+  textStyle?: any
 }
 
 type State = {
@@ -64,7 +65,8 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       selectedFromItemKey,
       selectedSortItemKey,
       selectedSortLabel,
-      transparentDropdownButton
+      transparentDropdownButton,
+      textStyle
     } = this.props
     const { flatCategoryItems } = this.state
     const { globalTheme } = this.global
@@ -77,7 +79,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               numberOfLines={1}
-              style={[styles.tableSectionHeaderTitleText, globalTheme.tableSectionHeaderText]}>
+              style={[styles.tableSectionHeaderTitleText, globalTheme.tableSectionHeaderText, textStyle]}>
               {selectedFilterLabel}
             </Text>
           )}
