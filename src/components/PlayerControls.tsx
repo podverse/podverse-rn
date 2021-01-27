@@ -1,7 +1,13 @@
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources'
-import { playerJumpBackward, playerJumpForward, PVTrackPlayer, setPlaybackPosition } from '../services/player'
+import {
+  checkIfStateIsBuffering,
+  playerJumpBackward,
+  playerJumpForward,
+  PVTrackPlayer,
+  setPlaybackPosition
+} from '../services/player'
 import { playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
@@ -89,7 +95,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     if (playbackState === PVTrackPlayer.STATE_PLAYING) {
       playButtonIcon = <Icon name='pause' size={20} testID='player_controls_pause_button' />
       playButtonAdjust = {}
-    } else if (playbackState === PVTrackPlayer.STATE_BUFFERING) {
+    } else if (checkIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
     }

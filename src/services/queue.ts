@@ -125,7 +125,9 @@ export const filterItemFromQueueItems = (items: NowPlayingItem[] = [], item: Now
   let itemsArray = Array.isArray(items) ? items : []
   if (item) {
     itemsArray = itemsArray.filter((x) => {
-      if (item.clipId && x.clipId === item.clipId) {
+      if (!item) {
+        return false
+      } else if (item.clipId && x.clipId === item.clipId) {
         return false
       } else if (!item.clipId && !x.clipId && x.episodeId === item.episodeId) {
         return false

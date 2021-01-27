@@ -64,6 +64,7 @@ const screenHeight = Dimensions.get('screen').height
   console.log('screenHeight', screenHeight)
   console.log('header height', Header.HEIGHT)
   console.log('scrollHeight', scrollHeight)
+  console.log('subBottomHeight', subBottomHeight)
   console.log('scrollHeightAvailable', scrollHeightAvailable)
   console.log('imageHeightAvailable', imageHeightAvailable)
 */
@@ -76,9 +77,7 @@ const scrollHeightAvailable =
   scrollHeight -
   (PV.Player.carouselTextBottomWrapper.height + PV.Player.carouselTextTopWrapper.height + subBottomHeight)
 
-// not sure why I need to do 64 when the padding is 16 on each side...
-const imagePadding = 64
-let imageHeightAvailable = scrollHeightAvailable - imagePadding
+let imageHeightAvailable = scrollHeightAvailable
 imageHeightAvailable = imageHeightAvailable > 372 ? 372 : imageHeightAvailable
 
 export class PlayerScreen extends React.Component<Props, State> {

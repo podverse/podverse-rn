@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 're
 import React from 'reactn'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { PVTrackPlayer } from '../services/player'
+import { checkIfStateIsBuffering, PVTrackPlayer } from '../services/player'
 import { togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { ActivityIndicator, FastImage, Icon, Text } from './'
@@ -26,7 +26,7 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
     if (playbackState === PVTrackPlayer.STATE_PLAYING) {
       playButtonIcon = <Icon name='pause' size={20} testID='mini_player_pause_button' />
       playButtonAdjust = {}
-    } else if (playbackState === PVTrackPlayer.STATE_BUFFERING) {
+    } else if (checkIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
     }

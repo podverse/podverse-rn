@@ -36,7 +36,8 @@ export const getAuthUserInfo = async () => {
         showAlert: shouldShowAlert
       }
     })
-    return userInfo
+
+    return isLoggedIn
   } catch (error) {
     console.log('getAuthUserInfo action', error)
 
@@ -57,6 +58,8 @@ export const getAuthUserInfo = async () => {
           showAlert: shouldShowAlert
         }
       })
+
+      return isLoggedIn
     } catch (error) {
       throw error
     }
