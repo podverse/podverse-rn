@@ -119,10 +119,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
         key='toggleSubscribe'
         onPress={this._handleToggleSubscribe}
         style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
-        underlayColor={safelyUnwrapNestedVariable(
-          () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
-          ''
-        )}>
+        underlayColor={safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonUnderlay.backgroundColor, '')}>
         <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>
           {isSubscribed ? translate('Unsubscribe') : translate('Subscribe')}
         </Text>
@@ -131,10 +128,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
         key='podcastPage'
         onPress={this._handlePodcastPagePress}
         style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
-        underlayColor={safelyUnwrapNestedVariable(
-          () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
-          ''
-        )}>
+        underlayColor={safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonUnderlay.backgroundColor, '')}>
         <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>
           {translate('Go to Podcast')}
         </Text>
