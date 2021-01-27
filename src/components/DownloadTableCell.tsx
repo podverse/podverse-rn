@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
 import { Slider } from 'react-native-elements'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
@@ -28,7 +28,6 @@ export class DownloadTableCell extends React.PureComponent<Props> {
       bytesWritten = '---',
       completed,
       episodeTitle = translate('Untitled Episode'),
-      hasZebraStripe,
       onPress,
       percent,
       podcastImageUrl,
@@ -40,8 +39,12 @@ export class DownloadTableCell extends React.PureComponent<Props> {
     const statusText = getDownloadStatusText(status)
 
     return (
-      <TouchableWithoutFeedback onPress={onPress} {...(testID ? testProps(testID) : {})}>
-        <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={onPress}
+        {...(testID ? testProps(testID) : {})}
+        style={styles.cellView}>
+        <View style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>
             <RNView style={styles.textWrapperTop}>
@@ -75,32 +78,42 @@ export class DownloadTableCell extends React.PureComponent<Props> {
                 value={per}
               />
               <RNView style={styles.textWrapperBottomText}>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} testID={`${testID}_status_text`}>
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                  testID={`${testID}_status_text`}
+                  style={styles.bottomText}>
                   {statusText}
                 </Text>
                 {completed ? (
-                  <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} testID={`${testID}_bytes_total`}>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                    testID={`${testID}_bytes_total`}
+                    style={styles.bottomText}>
                     {bytesTotal}
                   </Text>
                 ) : (
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.xs}
-                    testID={`${testID}_bytes_written`}>{`${bytesWritten} / ${bytesTotal}`}</Text>
+                    testID={`${testID}_bytes_written`}
+                    style={styles.bottomText}>{`${bytesWritten} / ${bytesTotal}`}</Text>
                 )}
               </RNView>
             </RNView>
           </RNView>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  cellView: {
+    backgroundColor: PV.Colors.ink
+  },
   episodeTitle: {
     flex: 1,
-    fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.semibold
+    fontSize: PV.Fonts.sizes.xxl,
+    fontWeight: PV.Fonts.weights.thin
   },
   image: {
     flex: 0,
@@ -109,12 +122,12 @@ const styles = StyleSheet.create({
     width: PV.Table.cells.podcast.image.width
   },
   podcastTitle: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.sm
+    fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.bold
   },
   slider: {
     height: 4,
-    marginTop: 4
+    marginTop: 8
   },
   textWrapper: {
     flex: 1,
@@ -138,6 +151,16 @@ const styles = StyleSheet.create({
     display: 'none'
   },
   wrapper: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginHorizontal: 8,
+    borderBottomColor: PV.Colors.gray,
+    borderBottomWidth: 1,
+    backgroundColor: PV.Colors.ink,
+    alignItems: 'center',
+    paddingBottom: 6
+  },
+  bottomText: {
+    color: PV.Colors.skyLight,
+    fontWeight: PV.Fonts.weights.bold
   }
 })

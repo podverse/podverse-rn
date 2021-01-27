@@ -75,7 +75,6 @@ export class DownloadsScreen extends React.Component<Props, State> {
         bytesWritten={item.bytesWritten}
         completed={item.completed}
         {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
-        hasZebraStripe={isOdd(index)}
         onPress={() => this._handleItemPress(item)}
         percent={item.percent}
         podcastImageUrl={item.podcastImageUrl}
@@ -91,6 +90,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
       onPress={() => this._handleHiddenItemPress(item.episodeId, rowMap)}
       testID={`${testIDPrefix}_download_item_${index}`}
       text='Remove'
+      styles={{ paddingVertical: 6 }}
     />
   )
 

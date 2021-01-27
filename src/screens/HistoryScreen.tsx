@@ -157,7 +157,6 @@ export class HistoryScreen extends React.Component<Props, State> {
             {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
             {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
             handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
-            hasZebraStripe={isOdd(index)}
             podcastImageUrl={item.podcastImageUrl}
             {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
             showRemoveButton={isEditing}
@@ -178,10 +177,6 @@ export class HistoryScreen extends React.Component<Props, State> {
       }
       this.setState({ isRemoving: false })
     })
-  }
-
-  _ItemSeparatorComponent = () => {
-    return <Divider />
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
@@ -216,7 +211,6 @@ export class HistoryScreen extends React.Component<Props, State> {
             disableLeftSwipe={true}
             extraData={historyItems}
             isLoadingMore={isLoadingMore}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.clipId || item.episodeId}
             noResultsMessage={translate('No history items found')}
             onEndReached={this._onEndReached}
