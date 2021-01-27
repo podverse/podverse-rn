@@ -641,7 +641,7 @@ export const navHeader = StyleSheet.create({
   },
   buttonText: {
     color: PV.Colors.white,
-    fontSize: PV.Fonts.sizes.lg,
+    fontSize: PV.Fonts.sizes.xl,
     height: Platform.OS === 'android' ? PV.Navigation.header.height.android - 4 : PV.Navigation.header.height.ios - 4,
     lineHeight:
       Platform.OS === 'android' ? PV.Navigation.header.height.android - 10 : PV.Navigation.header.height.ios - 4,

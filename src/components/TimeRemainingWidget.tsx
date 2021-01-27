@@ -11,20 +11,22 @@ import { Icon, MoreButton, Text, View } from './'
 type Props = {
   handleMorePress?: any
   item: any
+  mediaFileDuration?: number | undefined
   style?: any
   userPlaybackPosition?: number | undefined
   clipTime?: string
 }
 
 type BarProps = {
-  playedTime?: number
+  item: any
+  playedTime: number
   totalTime: number
 }
 
 const MiniProgressBar = (props: BarProps) => {
   const [fillerWidth, setFillerWidth] = useState(0)
-  const { playedTime, totalTime } = props
-  const percentage = playedTime ? playedTime * (100 / totalTime) : 0
+  const { item, playedTime, totalTime } = props
+  const percentage = playedTime ? (playedTime / totalTime) * 100 : 0
 
   const barWidth = '30%'
   const bar = {
@@ -40,12 +42,19 @@ const MiniProgressBar = (props: BarProps) => {
     width: fillerWidth
   }
 
+  const episodeId = item && item.episodeId
+
+  // Change key based on episodeId and playedTime so the cell calls onLayout again
+  // whenever playedTime changes.
+  const viewKey = `${episodeId}-${playedTime}`
+
   return (
     <View
-      style={bar}
+      key={viewKey}
       onLayout={(e) => {
         setFillerWidth(e.nativeEvent.layout.width * (percentage / 100))
-      }}>
+      }}
+      style={bar}>
       <View style={filler} />
     </View>
   )
@@ -56,14 +65,14 @@ const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { handleMorePress, item, style, userPlaybackPosition, clipTime } = props
+  const { handleMorePress, item, mediaFileDuration, style, userPlaybackPosition, clipTime } = props
   const { podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, null, podcast)
   const [player] = useGlobal('player')
   const { nowPlayingItem, playbackState } = player
 
   const hasStartedItem = !!userPlaybackPosition
-  const totalTime = playingItem.episodeDuration || 0
+  const totalTime = mediaFileDuration || playingItem.episodeDuration || 0
   const playedTime = userPlaybackPosition || 0
 
   let timeLabel = ''
@@ -92,12 +101,16 @@ export const TimeRemainingWidget = (props: Props) => {
   const isPlaying = playbackState === PVTrackPlayer.STATE_PLAYING
   const isNowPlayingItem = isPlaying && checkIfNowPlayingItem(item, nowPlayingItem)
 
+  const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]
+
   return (
     <View style={[styles.container, style]}>
-      <TouchableOpacity onPress={playItem} style={styles.playButton}>
+      <TouchableOpacity onPress={playItem} style={iconStyle}>
         {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
       </TouchableOpacity>
-      {hasStartedItem && !isInvalidDuration && <MiniProgressBar playedTime={playedTime} totalTime={totalTime} />}
+      {hasStartedItem && !isInvalidDuration && (
+        <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
+      )}
       <Text style={styles.text}>{timeLabel}</Text>
       {!!handleMorePress && <MoreButton handleMorePress={handleMorePress} />}
     </View>
@@ -123,7 +136,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 40,
     width: 40,
-    marginRight: 10,
-    paddingLeft: 4
+    marginRight: 10
   }
 })

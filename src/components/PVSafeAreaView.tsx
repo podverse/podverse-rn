@@ -6,15 +6,22 @@ type Props = {
   accessibilityLabel?: string
   children: any
   style?: any
+  transparent?: boolean
   testID: string
 }
 
 export const PVSafeAreaView = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
+  const extraStyles = []
+
+  if (props.transparent) {
+    extraStyles.push({ backgroundColor: 'transparent' })
+  }
+
   return (
     <SafeAreaView
       accessibilityLabel={props.accessibilityLabel}
-      style={[styles.safeAreaView, globalTheme.view, props.style]}
+      style={[styles.safeAreaView, globalTheme.view, props.style, extraStyles]}
       testID={props.testID}>
       {props.children}
     </SafeAreaView>

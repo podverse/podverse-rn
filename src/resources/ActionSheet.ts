@@ -77,32 +77,28 @@ const mediaMoreButtons = (
   }
 
   if (isDownloaded) {
-    if (handlePlayItem) {
-      buttons.push({
-        key: PV.Keys.play,
-        text: translate('Play'),
-        onPress: async () => {
-          await handleDismiss()
-          const shouldPlay = true
-          await loadItemAndPlayTrack(item, shouldPlay)
-        }
-      })
-    }
+    buttons.push({
+      key: PV.Keys.play,
+      text: translate('Play'),
+      onPress: async () => {
+        await handleDismiss()
+        const shouldPlay = true
+        await loadItemAndPlayTrack(item, shouldPlay)
+      }
+    })
   } else {
-    if (handlePlayItem) {
-      buttons.push({
-        key: PV.Keys.stream,
-        text: translate('Stream'),
-        onPress: async () => {
-          const showAlert = await hasTriedStreamingWithoutWifiAlert(handleDismiss, navigation, false)
-          if (showAlert) return
+    buttons.push({
+      key: PV.Keys.stream,
+      text: translate('Stream'),
+      onPress: async () => {
+        const showAlert = await hasTriedStreamingWithoutWifiAlert(handleDismiss, navigation, false)
+        if (showAlert) return
 
-          await handleDismiss()
-          const shouldPlay = true
-          await loadItemAndPlayTrack(item, shouldPlay)
-        }
-      })
-    }
+        await handleDismiss()
+        const shouldPlay = true
+        await loadItemAndPlayTrack(item, shouldPlay)
+      }
+    })
 
     if (handleDownload) {
       buttons.push({

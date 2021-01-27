@@ -18,7 +18,7 @@ import { replaceLinebreaksWithBrTags, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
 import { trackPageView } from '../services/tracking'
-import { retriveNowPlayingItemChapters } from '../state/actions/player'
+import { retriveNowPlayingItemChapters } from '../state/actions/playerChapters'
 import { core } from '../styles'
 
 type Props = {
@@ -120,10 +120,12 @@ export class EpisodeScreen extends React.Component<Props, State> {
       })
     } else {
       const { episode } = this.state
+
       const [clips, totalClips] = await getMediaRefs({
         episodeId: episode.id,
         includeEpisode: false,
-        includePodcasts: false
+        includePodcasts: false,
+        sort: PV.Filters._chronologicalKey
       })
 
       const chapters = await retriveNowPlayingItemChapters(episode.id)
@@ -174,6 +176,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
     } = this.state
     const { downloadedEpisodeIds, downloadsActive } = this.global
 
+    const episodeId = episode && episode.id
+
     if (episode) episode.description = replaceLinebreaksWithBrTags(episode.description)
 
     const episodeDownloaded = episode && !!downloadedEpisodeIds[episode.id]
@@ -182,6 +186,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const showClipsCell = hasInternetConnection && totalClips > 0
     const showChaptersCell = hasInternetConnection && totalChapters > 0
 
+    const mediaFileDuration = this.global.session?.userInfo?.historyItemsIndex?.episodes[episodeId]?.mediaFileDuration
+    const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[episodeId]
+      ?.userPlaybackPosition
+
     return (
       <ScrollView style={styles.view} {...testProps('episode_screen_view')}>
         <EpisodeTableHeader
@@ -189,7 +197,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast))}
           episode={episode}
           isLoading={isLoading}
+          mediaFileDuration={mediaFileDuration}
           testID={testIDPrefix}
+          userPlaybackPosition={userPlaybackPosition}
         />
         {showClipsCell && (
           <TouchableOpacity

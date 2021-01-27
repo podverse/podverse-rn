@@ -64,23 +64,16 @@ export const navigateToPodcastScreenWithItem = (navigation: any, item: any) => {
   Navigate to the PodcastScreen located within the PodcastsStackNavigator,
   and populate it with podcast data from an object of type podcast.
  */
-export const navigateToPodcastScreenWithPodcast = (navigation: any, podcast: any, viewType: string) => {
+export const navigateToPodcastScreenWithPodcast = (navigation: any, podcast: any, viewType?: string) => {
   navigation.dismiss()
-
-  const resetAction = StackActions.reset({
-    index: 1,
-    actions: [
-      NavigationActions.navigate({ routeName: PV.RouteNames.PodcastsScreen }),
-      NavigationActions.navigate({
-        routeName: PV.RouteNames.PodcastScreen,
-        params: {
-          podcast,
-          viewType
-        }
-      })
-    ],
-    key: 'Podcasts'
-  })
-
-  navigation.dispatch(resetAction)
+  navigation.dispatch(NavigationActions.navigate({ routeName: PV.RouteNames.PodcastsScreen }))
+  navigation.dispatch(
+    NavigationActions.navigate({
+      routeName: PV.RouteNames.PodcastScreen,
+      params: {
+        podcast,
+        viewType
+      }
+    })
+  )
 }

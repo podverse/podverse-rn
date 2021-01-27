@@ -19,6 +19,7 @@ import {
   View
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
+import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
@@ -45,21 +46,22 @@ type State = {
   endOfResultsReached: boolean
   flatListData: any[]
   flatListDataTotalCount: number | null
-  hideRightItemWhileLoading: boolean
   initializeClips: boolean
   isLoading: boolean
   isLoadingMore: boolean
   isSubscribed: boolean
   isSubscribing: boolean
   preventSortQuery?: boolean
-  queryFrom: string | null
   queryPage: number
   querySort?: string | null
+  selectedFilterLabel?: string | null
+  selectedSortLabel?: string | null
   selectedItem?: any
   showActionSheet: boolean
   showDeleteConfirmDialog?: boolean
   showNoInternetConnectionMessage?: boolean
   userId?: string
+  viewType: string | null
 }
 
 const testIDPrefix = 'profile_screen'
@@ -106,17 +108,18 @@ export class ProfileScreen extends React.Component<Props, State> {
       endOfResultsReached: false,
       flatListData: [],
       flatListDataTotalCount: null,
-      hideRightItemWhileLoading: false,
       initializeClips,
       isLoading: true,
       isLoadingMore: false,
       isSubscribed,
       isSubscribing: false,
-      queryFrom: initializeClips ? PV.Filters._clipsKey : PV.Filters._podcastsKey,
       queryPage: 1,
       querySort: initializeClips ? PV.Filters._mostRecentKey : PV.Filters._alphabeticalKey,
+      selectedFilterLabel: initializeClips ? translate('Clips') : translate('Podcasts'),
+      selectedSortLabel: initializeClips ? translate('recent') : translate('A-Z'),
       showActionSheet: false,
-      userId
+      userId,
+      viewType: initializeClips ? PV.Filters._clipsKey : PV.Filters._podcastsKey
     }
 
     setGlobal({
@@ -135,7 +138,7 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   async _initializeScreenData() {
     const userId = this.props.navigation.getParam('userId') || this.state.userId
-    const { queryFrom } = this.state
+    const { viewType } = this.state
 
     const hasInternetConnection = await hasValidNetworkConnection()
     if (!hasInternetConnection) {
@@ -181,7 +184,7 @@ export class ProfileScreen extends React.Component<Props, State> {
                 }
               },
               async () => {
-                newState = await this._queryData(queryFrom, 1)
+                newState = await this._queryData(viewType, 1)
                 this.setState(newState)
               }
             )
@@ -198,7 +201,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           try {
             const { profileFlatListData } = await getPublicUser(userId)
             newState.flatListData = profileFlatListData
-            newState = await this._queryData(queryFrom, 1)
+            newState = await this._queryData(viewType, 1)
           } catch (error) {
             //
           }
@@ -208,31 +211,31 @@ export class ProfileScreen extends React.Component<Props, State> {
     )
   }
 
-  selectLeftItem = async (selectedKey: string) => {
-    const { querySort } = this.state
-    if (!selectedKey) {
-      this.setState({ queryFrom: null })
-      return
-    }
+  handleSelectFilterItem = async (selectedKey: string) => {
+    if (!selectedKey) return
 
-    let sort = querySort
-    let hideRightItemWhileLoading = false
-    if (querySort === PV.Filters._alphabeticalKey && selectedKey !== PV.Filters._podcastsKey) {
-      sort = PV.Filters._topPastWeek
-      hideRightItemWhileLoading = true
-    }
+    const { querySort } = this.state
+    const sort = getDefaultSortForFilter({
+      screenName: PV.RouteNames.ProfileScreen,
+      selectedFilterItemKey: selectedKey,
+      selectedSortItemKey: querySort
+    })
+
+    const selectedFilterLabel = await getSelectedFilterLabel(selectedKey)
+    const selectedSortLabel = getSelectedSortLabel(sort)
 
     this.setState(
       {
         endOfResultsReached: false,
         flatListData: [],
         flatListDataTotalCount: null,
-        hideRightItemWhileLoading,
         isLoading: true,
         preventSortQuery: true,
-        queryFrom: selectedKey,
+        viewType: selectedKey,
         queryPage: 1,
-        querySort: sort
+        querySort: sort,
+        selectedFilterLabel,
+        selectedSortLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey, 1)
@@ -242,16 +245,15 @@ export class ProfileScreen extends React.Component<Props, State> {
     )
   }
 
-  selectRightItem = async (selectedKey: string) => {
+  handleSelectSortItem = async (selectedKey: string) => {
     if (this.state.preventSortQuery) {
       this.setState({ preventSortQuery: false })
       return
     }
 
-    if (!selectedKey) {
-      this.setState({ querySort: null })
-      return
-    }
+    if (!selectedKey) return
+
+    const selectedSortLabel = getSelectedSortLabel(selectedKey)
 
     this.setState(
       {
@@ -260,7 +262,8 @@ export class ProfileScreen extends React.Component<Props, State> {
         flatListDataTotalCount: null,
         isLoading: true,
         queryPage: 1,
-        querySort: selectedKey
+        querySort: selectedKey,
+        selectedSortLabel
       },
       async () => {
         const newState = await this._queryData(selectedKey, 1)
@@ -270,7 +273,7 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
-    const { endOfResultsReached, isLoadingMore, queryFrom, queryPage = 1 } = this.state
+    const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = this.state
     if (!endOfResultsReached && !isLoadingMore) {
       if (distanceFromEnd > -1) {
         this.setState(
@@ -278,7 +281,7 @@ export class ProfileScreen extends React.Component<Props, State> {
             isLoadingMore: true
           },
           async () => {
-            const newState = await this._queryData(queryFrom, queryPage + 1)
+            const newState = await this._queryData(viewType, queryPage + 1)
             this.setState(newState)
           }
         )
@@ -401,9 +404,9 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _renderItem = ({ item, index }) => {
-    const { queryFrom } = this.state
+    const { viewType } = this.state
 
-    if (queryFrom === PV.Filters._podcastsKey) {
+    if (viewType === PV.Filters._podcastsKey) {
       return (
         <PodcastTableCell
           hasZebraStripe={isOdd(index)}
@@ -415,7 +418,7 @@ export class ProfileScreen extends React.Component<Props, State> {
           testID={`${testIDPrefix}_podcast_item_${index}`}
         />
       )
-    } else if (queryFrom === PV.Filters._clipsKey) {
+    } else if (viewType === PV.Filters._clipsKey) {
       return item && item.episode && item.episode.id && item.episode.podcast ? (
         <ClipTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
@@ -446,19 +449,20 @@ export class ProfileScreen extends React.Component<Props, State> {
     const {
       flatListData,
       flatListDataTotalCount,
-      hideRightItemWhileLoading,
       initializeClips,
       isLoading,
       isLoadingMore,
       isSubscribed,
       isSubscribing,
-      queryFrom,
       querySort,
+      selectedFilterLabel,
+      selectedSortLabel,
       selectedItem,
       showActionSheet,
       showDeleteConfirmDialog,
       showNoInternetConnectionMessage,
-      userId
+      userId,
+      viewType
     } = this.state
 
     const { offlineModeEnabled, profile, session } = this.global
@@ -469,9 +473,9 @@ export class ProfileScreen extends React.Component<Props, State> {
     const isLoggedInUserProfile = userId && id && userId === id
 
     let noResultsMessage = translate('No podcasts found')
-    if (queryFrom === PV.Filters._clipsKey) {
+    if (viewType === PV.Filters._clipsKey) {
       noResultsMessage = translate('No clips found')
-    } else if (queryFrom === PV.Filters._playlistsKey) {
+    } else if (viewType === PV.Filters._playlistsKey) {
       noResultsMessage = translate('No playlists found')
     }
 
@@ -505,16 +509,20 @@ export class ProfileScreen extends React.Component<Props, State> {
               testID={testIDPrefix}
             />
             <TableSectionSelectors
-              handleSelectFilterItem={this.selectLeftItem}
-              handleSelectSortItem={this.selectRightItem}
-              hideRightItemWhileLoading={hideRightItemWhileLoading}
+              filterScreenTitle={translate('Profile')}
+              handleSelectFilterItem={this.handleSelectFilterItem}
+              handleSelectSortItem={this.handleSelectSortItem}
+              includePadding={true}
+              navigation={navigation}
               screenName='ProfileScreen'
-              selectedFilterItemKey={queryFrom}
+              selectedFilterItemKey={viewType}
+              selectedFilterLabel={selectedFilterLabel}
               selectedSortItemKey={querySort}
+              selectedSortLabel={selectedSortLabel}
               testID={testIDPrefix}
             />
             {isLoading && <ActivityIndicator fillSpace={true} />}
-            {!isLoading && queryFrom && flatListData && (
+            {!isLoading && viewType && flatListData && (
               <FlatList
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
@@ -652,9 +660,8 @@ export class ProfileScreen extends React.Component<Props, State> {
   }
 
   _queryData = async (filterKey: string | null, page: number = 1) => {
-    const { queryFrom, querySort } = this.state
+    const { querySort, viewType } = this.state
     let newState = {
-      hideRightItemWhileLoading: false,
       isLoading: false,
       isLoadingMore: false,
       showNoInternetConnectionMessage: false
@@ -669,21 +676,23 @@ export class ProfileScreen extends React.Component<Props, State> {
 
     try {
       if (filterKey === PV.Filters._podcastsKey || filterKey === PV.Filters._alphabeticalKey) {
-        newState = await this._queryPodcasts(newState, page, querySort)
+        newState = await (this._queryPodcasts(newState, page, querySort) as any)
       } else if (filterKey === PV.Filters._clipsKey) {
         newState.querySort = PV.Filters._mostRecentKey
-        newState = await this._queryMediaRefs(newState, page, PV.Filters._mostRecentKey)
+        newState = await (this._queryMediaRefs(newState, page, PV.Filters._mostRecentKey) as any)
       } else if (filterKey === PV.Filters._playlistsKey) {
-        newState = await this._queryPlaylists(newState, page, querySort)
-      } else if (PV.FilterOptions.screenFilters.ProfileScreen.sort.some((option) => option === filterKey)) {
-        if (queryFrom === PV.Filters._podcastsKey) {
-          newState = await this._queryPodcasts(newState, page, filterKey)
-        } else if (queryFrom === PV.Filters._clipsKey) {
-          newState = await this._queryMediaRefs(newState, page, filterKey)
-        } else if (queryFrom === PV.Filters._playlistsKey) {
-          newState = await this._queryPlaylists(newState, page, filterKey)
+        newState = await (this._queryPlaylists(newState, page, querySort) as any)
+      } else {
+        if (viewType === PV.Filters._podcastsKey) {
+          newState = await (this._queryPodcasts(newState, page, filterKey) as any)
+        } else if (viewType === PV.Filters._clipsKey) {
+          newState = await (this._queryMediaRefs(newState, page, filterKey) as any)
+        } else if (viewType === PV.Filters._playlistsKey) {
+          newState = await (this._queryPlaylists(newState, page, filterKey) as any)
         }
       }
+
+      newState.selectedFilterLabel = await getSelectedFilterLabel(viewType)
 
       return newState
     } catch (error) {

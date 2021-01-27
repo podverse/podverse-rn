@@ -13,7 +13,7 @@ import {
   QueueTableCell,
   SortableList,
   SortableListRow,
-  TableSectionHeader,
+  TableSectionSelectors,
   View
 } from '../components'
 import { translate } from '../lib/i18n'
@@ -353,7 +353,11 @@ export class QueueScreen extends React.Component<Props, State> {
             {!!nowPlayingItem && (
               <View transparent={isTransparent}>
                 <View style={styles.headerNowPlayingItemWrapper} transparent={isTransparent}>
-                  <TableSectionHeader includePadding={true} title={translate('Now Playing')} />
+                  <TableSectionSelectors
+                    hideFilter={true}
+                    includePadding={true}
+                    selectedFilterLabel={translate('Now Playing')}
+                  />
                   <QueueTableCell
                     clipEndTime={nowPlayingItem.clipEndTime}
                     clipStartTime={nowPlayingItem.clipStartTime}
@@ -369,7 +373,7 @@ export class QueueScreen extends React.Component<Props, State> {
                 <Divider style={styles.headerNowPlayingItemDivider} />
               </View>
             )}
-            <TableSectionHeader includePadding={true} title={translate('Next Up')} />
+            <TableSectionSelectors hideFilter={true} includePadding={true} selectedFilterLabel={translate('Next Up')} />
           </View>
         )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length > 0 && (
@@ -465,7 +469,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   headerNowPlayingItemDivider: {
-    marginBottom: 4,
     marginTop: 10
   },
   headerNowPlayingItemWrapper: {},
@@ -477,7 +480,6 @@ const styles = StyleSheet.create({
     marginRight: 8,
     textAlign: 'center'
   },
-  nextUpTableSectionHeader: {},
   queueCellDivider: {},
   view: {
     flex: 1

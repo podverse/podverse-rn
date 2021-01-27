@@ -3,7 +3,8 @@ import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { ClipInfoView, HTMLScrollView, ScrollView, TableSectionHeader, View } from './'
+import { ClipInfoView, HTMLScrollView, ScrollView, View } from './'
+import { TableSectionSelectors } from './TableSectionSelectors'
 
 type Props = {
   navigation?: any
@@ -49,10 +50,10 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
           />
         )}
         <View style={styles.showNotesWrapper} transparent={true}>
-          <TableSectionHeader
-            containerStyles={styles.showNotesTableSectionHeader}
+          <TableSectionSelectors
+            hideFilter={true}
             includePadding={true}
-            title={translate('Show Notes')}
+            selectedFilterLabel={translate('Show Notes')}
           />
           {!isLoading && episode && (
             <HTMLScrollView
@@ -76,8 +77,7 @@ const styles = StyleSheet.create({
     marginBottom: 0
   },
   showNotesWrapper: {
-    flex: 1,
-    marginTop: 12
+    flex: 1
   },
   text: {
     color: 'black',

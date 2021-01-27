@@ -8,6 +8,7 @@ import { setNowPlayingItem } from './userNowPlayingItem'
 export const addOrUpdateHistoryItem = async (
   item: NowPlayingItem,
   playbackPosition: number,
+  mediaFileDuration: number,
   forceUpdateOrderDate?: boolean,
   skipSetNowPlaying?: boolean
 ) => {
@@ -17,8 +18,8 @@ export const addOrUpdateHistoryItem = async (
 
   const useServerData = await checkIfShouldUseServerData()
   return useServerData
-    ? addOrUpdateHistoryItemOnServer(item, playbackPosition, forceUpdateOrderDate)
-    : addOrUpdateHistoryItemLocally(item, playbackPosition)
+    ? addOrUpdateHistoryItemOnServer(item, playbackPosition, mediaFileDuration, forceUpdateOrderDate)
+    : addOrUpdateHistoryItemLocally(item, playbackPosition, mediaFileDuration)
 }
 
 export const clearHistoryItems = async () => {
@@ -41,11 +42,17 @@ export const removeHistoryItem = async (item: NowPlayingItem) => {
   return useServerData ? removeHistoryItemOnServer(item.episodeId, item.clipId) : removeHistoryItemLocally(item)
 }
 
-export const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem, playbackPosition: number) => {
+export const addOrUpdateHistoryItemLocally = async (
+  item: NowPlayingItem,
+  playbackPosition: number,
+  mediaFileDuration: number
+) => {
   playbackPosition = Math.floor(playbackPosition) || 0
+  mediaFileDuration = Math.floor(mediaFileDuration) || 0
   const results = await getHistoryItemsLocally()
   const { userHistoryItems } = results
   const filteredItems = filterItemFromHistoryItems(userHistoryItems, item)
+  item.episodeDuration = mediaFileDuration
   item.userPlaybackPosition = playbackPosition
   filteredItems.unshift(item)
   await setAllHistoryItemsLocally(filteredItems)
@@ -54,10 +61,11 @@ export const addOrUpdateHistoryItemLocally = async (item: NowPlayingItem, playba
 const addOrUpdateHistoryItemOnServer = async (
   nowPlayingItem: NowPlayingItem,
   playbackPosition: number,
+  mediaFileDuration: number,
   forceUpdateOrderDate?: boolean
 ) => {
   playbackPosition = Math.floor(playbackPosition) || 0
-  await addOrUpdateHistoryItemLocally(nowPlayingItem, playbackPosition)
+  await addOrUpdateHistoryItemLocally(nowPlayingItem, playbackPosition, mediaFileDuration)
 
   // Don't try to add the addByRSS episodes to the server
   if (nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
@@ -77,8 +85,9 @@ const addOrUpdateHistoryItemOnServer = async (
     body: {
       episodeId: clipId ? null : episodeId,
       mediaRefId: clipId,
-      userPlaybackPosition: playbackPosition,
-      forceUpdateOrderDate: forceUpdateOrderDate === false ? false : true
+      forceUpdateOrderDate: forceUpdateOrderDate === false ? false : true,
+      mediaFileDuration: Math.floor(mediaFileDuration) || 0,
+      userPlaybackPosition: playbackPosition
     },
     opts: { credentials: 'include' }
   })
@@ -166,15 +175,20 @@ const generateHistoryItemsIndex = (historyItems: any[]) => {
   if (!historyItems) {
     historyItems = []
   }
-
   for (const historyItem of historyItems) {
     if (historyItem.mediaRefId) {
-      historyItemsIndex.mediaRefs[historyItem.mediaRefId] = historyItem.userPlaybackPosition
+      historyItemsIndex.mediaRefs[historyItem.mediaRefId] = {
+        mediaFileDuration: historyItem.mediaFileDuration || historyItem.episodeDuration,
+        userPlaybackPosition: historyItem.userPlaybackPosition
+      }
     } else if (historyItem.episodeId) {
-      historyItemsIndex.episodes[historyItem.episodeId] = historyItem.userPlaybackPosition
+      historyItemsIndex.episodes[historyItem.episodeId] = {
+        mediaFileDuration: historyItem.mediaFileDuration || historyItem.episodeDuration,
+        userPlaybackPosition: historyItem.userPlaybackPosition
+      }
     }
   }
-
+  console.log('genereatae', historyItems, historyItemsIndex)
   return historyItemsIndex
 }
 

@@ -149,7 +149,10 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <></>
       )
     } else {
+      const mediaFileDuration = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]?.mediaFileDuration
       const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]
+        ?.userPlaybackPosition
+
       return (
         <EpisodeTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
@@ -158,14 +161,10 @@ export class PlaylistScreen extends React.Component<Props, State> {
               episode: item
             })
           }
-          hasZebraStripe={isOdd(index)}
-          id={item.id}
-          podcastImageUrl={(item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl)) || ''}
-          {...(item.podcast && item.podcast.title ? { podcastTitle: item.podcast.title } : {})}
-          pubDate={item.pubDate}
+          item={item}
+          mediaFileDuration={mediaFileDuration}
           showPodcastTitle={true}
           testID={`${testIDPrefix}_episode_item_${index}`}
-          {...(item.title ? { title: item.title } : {})}
           userPlaybackPosition={userPlaybackPosition}
         />
       )

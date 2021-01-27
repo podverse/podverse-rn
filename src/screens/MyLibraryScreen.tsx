@@ -32,7 +32,7 @@ export class MyLibraryScreen extends React.Component<Props, State> {
   }
 
   _myLibraryOptions = (isLoggedIn: boolean) => {
-    const loggedInFeatures = [_myClipsKey, _playlistsKey, _profilesKey]
+    const loggedInFeatures = [_myClipsKey, _myProfileKey, _playlistsKey, _profilesKey]
 
     return allMyLibraryFeatures.filter((item = { key: '', title: '' }) => {
       if (!isLoggedIn) {
@@ -54,6 +54,13 @@ export class MyLibraryScreen extends React.Component<Props, State> {
         navigationTitle: translate('My Profile'),
         isMyProfile: true,
         initializeClips: true
+      }
+    } else if (item.key === _myProfileKey) {
+      const user = this.global.session.userInfo
+      params = {
+        user,
+        navigationTitle: translate('My Profile'),
+        isMyProfile: true
       }
     }
 
@@ -117,6 +124,7 @@ const _downloadsKey = 'Downloads'
 const _queueKey = 'Queue'
 const _historyKey = 'History'
 const _myClipsKey = 'MyClips'
+const _myProfileKey = 'MyProfile'
 const _playlistsKey = 'Playlists'
 const _profilesKey = 'Profiles'
 
@@ -143,7 +151,13 @@ const allMyLibraryFeatures = [
     title: translate('My Clips'),
     routeName: PV.RouteNames.MyProfileScreen,
     key: _myClipsKey,
-    testId: 'my_library_screen_my_clips_cell'
+    testId: 'my_library_screen_my_profile_cell'
+  },
+  {
+    title: translate('My Profile'),
+    routeName: PV.RouteNames.MyProfileScreen,
+    key: _myProfileKey,
+    testId: 'my_library_screen_my_profile_cell'
   },
   {
     title: translate('Playlists'),

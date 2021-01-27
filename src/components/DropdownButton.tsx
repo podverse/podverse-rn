@@ -2,20 +2,27 @@ import React from 'react'
 import { TouchableWithoutFeedback, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { Icon, Text } from '.'
-import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 
 export const DropdownButton = (props: any) => {
-  const { onPress } = props
+  const { hideFilter, onPress, sortLabel } = props
   const [globalTheme] = useGlobal('globalTheme')
+  const dropdownStyle = hideFilter ? { opacity: 0.0 } : {}
+
+  const extraStyles = []
+
+  if (props.transparent) {
+    extraStyles.push({ backgroundColor: 'transparent' })
+  }
+
   return (
-    <TouchableWithoutFeedback onPress={onPress}>
-      <View style={styles.dropdownButton}>
+    <TouchableWithoutFeedback disabled={hideFilter} onPress={onPress}>
+      <View style={[styles.dropdownButton, dropdownStyle, extraStyles]}>
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
           style={[styles.dropdownButtonText, globalTheme.dropdownButtonText]}>
-          {translate('Filter')}
+          {sortLabel}
         </Text>
         <Icon name='angle-down' size={14} style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]} />
       </View>
@@ -47,6 +54,6 @@ const styles = {
     flex: 0,
     fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold,
-    paddingRight: 16
+    paddingRight: 12
   }
 }
