@@ -3,19 +3,19 @@ import { PV } from './resources'
 
 export const darkTheme = StyleSheet.create({
   actionSheetButton: {
-    backgroundColor: PV.Colors.grayDarkest,
-    borderColor: PV.Colors.grayDark
+    backgroundColor: PV.Colors.ink,
+    borderColor: PV.Colors.grayLighterTransparent
   },
   actionSheetButtonCancel: {
-    backgroundColor: PV.Colors.grayDarker,
-    borderColor: PV.Colors.grayDark
+    backgroundColor: PV.Colors.velvet,
+    borderColor: PV.Colors.grayLighterTransparent
   },
   actionSheetButtonDelete: {
-    backgroundColor: PV.Colors.grayDarkest,
-    borderColor: PV.Colors.grayDark
+    backgroundColor: PV.Colors.ink,
+    borderColor: PV.Colors.grayLighterTransparent
   },
   actionSheetButtonDisabled: {
-    backgroundColor: PV.Colors.grayDarkest
+    backgroundColor: PV.Colors.grayLight
   },
   actionSheetButtonText: {
     color: PV.Colors.white
@@ -33,16 +33,16 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.yellow
   },
   actionSheetButtonUnderlay: {
-    backgroundColor: PV.Colors.grayDarker
+    backgroundColor: PV.Colors.velvet
   },
   actionSheetButtonCancelUnderlay: {
-    backgroundColor: PV.Colors.grayDark
+    backgroundColor: PV.Colors.brandColor
   },
   actionSheetHeaderText: {
     color: PV.Colors.grayLighter
   },
   actionSheetView: {
-    backgroundColor: PV.Colors.grayDarker
+    backgroundColor: PV.Colors.ink
   },
   activityIndicator: {
     color: PV.Colors.brandBlueLight

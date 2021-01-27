@@ -24,7 +24,7 @@ export const TableSectionHeader = (props: Props) => {
 
   return (
     <View style={[styles.wrapper, paddingStyle, containerStyles]}>
-      <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={textStyle}>
+      <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[textStyle, styles.sectionHeaderText]}>
         {title}
       </Text>
       {handleClosePress && <Icon name='times' onPress={handleClosePress} size={24} style={styles.icon} />}
@@ -41,6 +41,9 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.bold
+  },
+  sectionHeaderText: {
+    color: PV.Colors.skyLight
   },
   wrapper: {
     alignItems: 'center',
