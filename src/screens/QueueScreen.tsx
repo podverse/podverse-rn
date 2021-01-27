@@ -237,7 +237,6 @@ export class QueueScreen extends React.Component<Props, State> {
             {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
             {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
             handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
-            hasZebraStripe={isOdd(index)}
             podcastImageUrl={item.podcastImageUrl}
             {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
             showRemoveButton={isEditing}
@@ -261,7 +260,6 @@ export class QueueScreen extends React.Component<Props, State> {
           {...(data.episodePubDate ? { episodePubDate: data.episodePubDate } : {})}
           {...(data.episodeTitle ? { episodeTitle: data.episodeTitle } : {})}
           handleRemovePress={() => this._handleRemoveQueueItemPress(data)}
-          hasZebraStripe={isOdd(index)}
           podcastImageUrl={data.podcastImageUrl}
           {...(data.podcastTitle ? { podcastTitle: data.podcastTitle } : {})}
           showMoveButton={!isEditing}
@@ -269,7 +267,6 @@ export class QueueScreen extends React.Component<Props, State> {
           testID={`${testIDPrefix}_queue_item_${index}`}
           transparent={isTransparent}
         />
-        <Divider style={styles.queueCellDivider} />
       </View>
     )
 
@@ -337,10 +334,6 @@ export class QueueScreen extends React.Component<Props, State> {
     }
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider style={styles.queueCellDivider} />
-  }
-
   render() {
     const { historyItems, historyItemsCount, queueItems } = this.global.session.userInfo
     const { currentChapter, nowPlayingItem } = this.global.player
@@ -357,6 +350,7 @@ export class QueueScreen extends React.Component<Props, State> {
                     hideFilter={true}
                     includePadding={true}
                     selectedFilterLabel={translate('Now Playing')}
+                    textStyle={styles.sectionHeaderText}
                   />
                   <QueueTableCell
                     clipEndTime={nowPlayingItem.clipEndTime}
@@ -368,12 +362,18 @@ export class QueueScreen extends React.Component<Props, State> {
                     {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
                     {...testProps(`${testIDPrefix}_now_playing_header`)}
                     transparent={isTransparent}
+                    hideDivider={true}
                   />
                 </View>
                 <Divider style={styles.headerNowPlayingItemDivider} />
               </View>
             )}
-            <TableSectionSelectors hideFilter={true} includePadding={true} selectedFilterLabel={translate('Next Up')} />
+            <TableSectionSelectors
+              hideFilter={true}
+              includePadding={true}
+              selectedFilterLabel={translate('Next Up')}
+              textStyle={styles.sectionHeaderText}
+            />
           </View>
         )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length > 0 && (
@@ -398,7 +398,6 @@ export class QueueScreen extends React.Component<Props, State> {
             disableLeftSwipe={true}
             extraData={historyItems}
             isLoadingMore={isLoadingMore}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.clipId || item.episodeId}
             noResultsMessage={translate('No history items found')}
             onEndReached={this._onEndReached}
@@ -469,7 +468,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   headerNowPlayingItemDivider: {
-    marginTop: 10
+    marginTop: 10,
+    height: 2
   },
   headerNowPlayingItemWrapper: {},
   navHeaderSpacer: {
@@ -483,5 +483,9 @@ const styles = StyleSheet.create({
   queueCellDivider: {},
   view: {
     flex: 1
+  },
+  sectionHeaderText: {
+    color: PV.Colors.skyDark,
+    fontSize: PV.Fonts.sizes.xxxl
   }
 })

@@ -13,7 +13,6 @@ type Props = {
   episodePubDate?: string
   episodeTitle?: string
   handleRemovePress?: any
-  hasZebraStripe?: boolean
   hideBottomRow?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
@@ -21,6 +20,7 @@ type Props = {
   showRemoveButton?: boolean
   testID: string
   transparent?: boolean
+  hideDivider?: boolean
 }
 
 export class QueueTableCell extends React.PureComponent<Props> {
@@ -32,18 +32,21 @@ export class QueueTableCell extends React.PureComponent<Props> {
       episodePubDate = '',
       episodeTitle = translate('Untitled Episode'),
       handleRemovePress,
-      hasZebraStripe,
       hideBottomRow,
       podcastImageUrl,
       podcastTitle = translate('Untitled Podcast'),
       showMoveButton,
       showRemoveButton,
       testID,
-      transparent
+      transparent,
+      hideDivider
     } = this.props
 
     return (
-      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent} testID={testID}>
+      <View
+        style={[styles.wrapper, hideDivider ? { borderBottomWidth: 0 } : {}]}
+        transparent={transparent}
+        testID={testID}>
         <RNView style={styles.wrapperTop}>
           <FastImage isSmall={true} key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>
@@ -114,23 +117,25 @@ export class QueueTableCell extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   clipTime: {
-    flex: 0,
     fontSize: PV.Fonts.sizes.md,
+    color: PV.Colors.skyLight,
     marginLeft: 4
   },
   clipTitle: {
     flex: 1,
-    fontSize: PV.Fonts.sizes.md
+    fontSize: PV.Fonts.sizes.md,
+    fontWeight: PV.Fonts.weights.bold
   },
   episodePubDate: {
-    flex: 0,
     fontSize: PV.Fonts.sizes.sm,
+    fontWeight: PV.Fonts.weights.semibold,
+    color: PV.Colors.skyLight,
     justifyContent: 'flex-end',
     marginTop: 3
   },
   episodeTitle: {
-    fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold
+    fontSize: PV.Fonts.sizes.xxl,
+    fontWeight: PV.Fonts.weights.thin
   },
   image: {
     flex: 0,
@@ -139,8 +144,8 @@ const styles = StyleSheet.create({
     width: 64
   },
   podcastTitle: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.bold,
     justifyContent: 'flex-start',
     marginTop: 1
   },
@@ -151,7 +156,10 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingBottom: 8,
     paddingHorizontal: 8,
-    paddingTop: 10
+    paddingTop: 10,
+    marginHorizontal: 8,
+    borderBottomColor: PV.Colors.gray,
+    borderBottomWidth: 1
   },
   wrapperBottom: {
     flexDirection: 'row',

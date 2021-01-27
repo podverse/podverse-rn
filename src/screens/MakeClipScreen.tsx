@@ -3,6 +3,7 @@ import {
   Alert,
   Modal,
   Platform,
+  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -17,7 +18,6 @@ import {
   FastImage,
   Icon,
   NavHeaderButtonText,
-  OpaqueBackground,
   PlayerProgressBar,
   Text,
   TextInput,
@@ -39,7 +39,7 @@ import {
 } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
-import { core, darkTheme, iconStyles, playerStyles } from '../styles'
+import { core, playerStyles } from '../styles'
 
 type Props = {
   navigation?: any
@@ -62,19 +62,19 @@ const testIDPrefix = 'make_clip_screen'
 export class MakeClipScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const globalTheme = navigation.getParam('globalTheme')
-
+    const isLoggedIn = navigation.getParam('isLoggedIn')
     return {
       title: navigation.getParam('isEditing') ? translate('Edit Clip') : translate('Make Clip'),
       headerTransparent: true,
       headerStyle: {},
       headerTintColor: globalTheme.text.color,
-      headerRight: (
+      headerRight: () => (
         <RNView style={styles.navHeaderButtonWrapper}>
           <NavHeaderButtonText
             color={globalTheme.text.color}
             handlePress={navigation.getParam('_saveMediaRef')}
             testID={testIDPrefix}
-            text={translate('Save Clip')}
+            text={isLoggedIn ? translate('Save Clip') : translate('Go to Login')}
           />
         </RNView>
       )
@@ -190,28 +190,26 @@ export class MakeClipScreen extends React.Component<Props, State> {
     this.setState({ endTime: null })
   }
 
+  _goToLogin = () => {
+    const { navigation } = this.props
+
+    navigation.goBack(null)
+    setTimeout(() => {
+      navigation.navigate(PV.RouteNames.AuthScreen)
+    }, 500)
+  }
+
   _saveMediaRef = async () => {
     const { navigation } = this.props
-    const { endTime, isPublicItemSelected, mediaRefId, startTime, title } = this.state
     const { player, session } = this.global
-    const { nowPlayingItem } = player
-    const { isLoggedIn } = session
 
-    if (!isLoggedIn) {
-      Alert.alert(translate('Login Needed'), translate('You need to login to make clips'), [
-        { text: translate('OK') },
-        {
-          text: translate('Go to Login'),
-          onPress: () => {
-            navigation.goBack(null)
-            setTimeout(() => {
-              navigation.navigate(PV.RouteNames.AuthScreen)
-            }, 1000)
-          }
-        }
-      ])
+    if (!session?.isLoggedIn) {
+      this._goToLogin()
       return
     }
+
+    const { nowPlayingItem } = player
+    const { endTime, isPublicItemSelected, mediaRefId, startTime, title } = this.state
 
     const wasAlerted = await alertIfNoNetworkConnection('save a clip')
     if (wasAlerted) return
@@ -369,218 +367,221 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const imageHeight = navigation.getParam('imageHeight')
     const imageWidth = navigation.getParam('imageWidth')
     const imageStyle = [styles.image, { height: imageHeight, width: imageWidth }]
-    const imageUrl = nowPlayingItem ? nowPlayingItem.podcastImageUrl : ''
 
     return (
-      <OpaqueBackground imageUrl={imageUrl}>
+      <SafeAreaView style={styles.viewContainer}>
         <View style={styles.view} transparent={true} {...testProps('make_clip_screen_view')}>
-          <View style={styles.wrapperTop} transparent={true}>
-            {!isLoggedIn && (
-              <RNView>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={1}
-                  style={[core.textInputEyeBrow, styles.loginMessage]}>
-                  {translate('You must be logged in to make clips')}
-                </Text>
-                <Divider style={styles.divider} />
-              </RNView>
-            )}
-            <TextInput
-              autoCapitalize='none'
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              onChangeText={this._onChangeTitle}
-              numberOfLines={3}
-              placeholder={translate('Clip name')}
-              returnKeyType='done'
-              style={globalTheme.textInput}
-              underlineColorAndroid='transparent'
-              testID={`${testIDPrefix}_title`}
-              value={title}
-              wrapperStyle={styles.textInputTitleWrapper}
-            />
-          </View>
-          <DropdownButtonSelect
-            helpText={translate('Tip: Naming your clips')}
-            items={privacyItems()}
-            label={isPublicItemSelected.label}
-            onValueChange={this._handleSelectPrivacy}
-            placeholder={placeholderItem}
-            testID={testIDPrefix}
-            value={isPublicItemSelected.value}
-            wrapperStyle={styles.dropdownButtonSelectWrapper}
-          />
-          <View style={styles.imageWrapper} transparent={true}>
-            <FastImage
-              resizeMode='contain'
-              source={nowPlayingItem && nowPlayingItem.podcastImageUrl}
-              styles={imageStyle}
-            />
-          </View>
-          <View style={styles.wrapperBottom} transparent={true}>
-            <View style={styles.wrapperBottomInside} transparent={true}>
-              <TimeInput
-                handlePreview={() => {
-                  if (startTime) {
-                    playerPreviewStartTime(startTime, endTime)
-                  }
-                }}
-                handleSetTime={this._setStartTime}
-                labelText={translate('Start time')}
-                placeholder='--:--'
-                testID={`${testIDPrefix}_start`}
-                time={startTime}
-              />
-              <View style={styles.wrapperBottomInsideSpacer} transparent={true} />
-              <TimeInput
-                handleClearTime={endTime ? this._clearEndTime : null}
-                handlePreview={() => {
-                  if (endTime) {
-                    playerPreviewEndTime(endTime)
-                  }
-                }}
-                handleSetTime={this._setEndTime}
-                labelText={translate('End time')}
-                placeholder={translate('optional')}
-                testID={`${testIDPrefix}_end`}
-                time={endTime}
+          <View style={styles.contentContainer}>
+            <View style={styles.wrapperTop} transparent={true}>
+              <TextInput
+                autoCapitalize='none'
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                onChangeText={this._onChangeTitle}
+                numberOfLines={3}
+                placeholder={translate('Clip name')}
+                returnKeyType='done'
+                style={globalTheme.textInput}
+                underlineColorAndroid='transparent'
+                testID={`${testIDPrefix}_title`}
+                value={title}
+                wrapperStyle={styles.textInputTitleWrapper}
               />
             </View>
-            <View style={styles.clearEndTimeWrapper} transparent={true}>
-              <View style={styles.clearEndTimeTextSpacer} transparent={true} />
-              {endTime && (
-                <TouchableWithoutFeedback
-                  hitSlop={{
-                    bottom: 0,
-                    left: 2,
-                    right: 8,
-                    top: 4
+            <DropdownButtonSelect
+              helpText={translate('Tip: Naming your clips')}
+              items={privacyItems()}
+              label={isPublicItemSelected.label}
+              onValueChange={this._handleSelectPrivacy}
+              placeholder={placeholderItem}
+              testID={testIDPrefix}
+              value={isPublicItemSelected.value}
+              wrapperStyle={styles.dropdownButtonSelectWrapper}
+            />
+            <View style={styles.imageWrapper} transparent={true}>
+              <FastImage
+                resizeMode='contain'
+                source={nowPlayingItem && nowPlayingItem.podcastImageUrl}
+                styles={imageStyle}
+              />
+            </View>
+            <View style={styles.wrapperBottom} transparent={true}>
+              <View style={styles.wrapperBottomInside} transparent={true}>
+                <TimeInput
+                  handlePreview={() => {
+                    if (startTime) {
+                      playerPreviewStartTime(startTime, endTime)
+                    }
                   }}
-                  onPress={this._clearEndTime}
-                  {...testProps(`${testIDPrefix}_time_input_clear_button`)}>
-                  <Text style={styles.clearEndTimeText}>Remove end time</Text>
-                </TouchableWithoutFeedback>
-              )}
-            </View>
-            <View style={[styles.wrapper, globalTheme.player]} transparent={true}>
-              <View style={styles.progressWrapper} transparent={true}>
-                <PlayerProgressBar
-                  backupDuration={backupDuration}
-                  clipEndTime={endTime}
-                  clipStartTime={startTime}
-                  globalTheme={globalTheme}
-                  isMakeClipScreen={true}
-                  {...(progressValue || progressValue === 0 ? { value: progressValue } : {})}
+                  handleSetTime={this._setStartTime}
+                  labelText={translate('Start time')}
+                  placeholder='--:--'
+                  testID={`${testIDPrefix}_start`}
+                  time={startTime}
+                />
+                <View style={styles.wrapperBottomInsideSpacer} transparent={true} />
+                <TimeInput
+                  handleClearTime={endTime ? this._clearEndTime : null}
+                  handlePreview={() => {
+                    if (endTime) {
+                      playerPreviewEndTime(endTime)
+                    }
+                  }}
+                  handleSetTime={this._setEndTime}
+                  labelText={translate('End time')}
+                  placeholder={translate('optional')}
+                  testID={`${testIDPrefix}_end`}
+                  time={endTime}
                 />
               </View>
-              <View style={styles.playerControlsMiddleRow} transparent={true}>
-                <View style={styles.playerControlsMiddleRowTop} transparent={true}>
+              <View style={styles.clearEndTimeWrapper} transparent={true}>
+                <View style={styles.clearEndTimeTextSpacer} transparent={true} />
+                {endTime && (
+                  <TouchableWithoutFeedback
+                    hitSlop={{
+                      bottom: 0,
+                      left: 2,
+                      right: 8,
+                      top: 4
+                    }}
+                    onPress={this._clearEndTime}
+                    {...testProps(`${testIDPrefix}_time_input_clear_button`)}>
+                    <Text style={styles.clearEndTimeText}>Remove end time</Text>
+                  </TouchableWithoutFeedback>
+                )}
+              </View>
+              <View style={[styles.wrapper, globalTheme.player]} transparent={true}>
+                <View style={styles.progressWrapper} transparent={true}>
+                  <PlayerProgressBar
+                    backupDuration={backupDuration}
+                    clipEndTime={endTime}
+                    clipStartTime={startTime}
+                    globalTheme={globalTheme}
+                    isMakeClipScreen={true}
+                    {...(progressValue || progressValue === 0 ? { value: progressValue } : {})}
+                  />
+                </View>
+                <View style={styles.playerControlsMiddleRow} transparent={true}>
+                  <View style={styles.playerControlsMiddleRowTop} transparent={true}>
+                    <TouchableOpacity
+                      onPress={this._playerJumpBackward}
+                      style={playerStyles.icon}
+                      {...testProps(`${testIDPrefix}_jump_backward`)}>
+                      <Icon name='undo-alt' size={32} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={this._playerMiniJumpBackward}
+                      style={playerStyles.icon}
+                      {...testProps(`${testIDPrefix}_mini_jump_backward`)}>
+                      <Icon name='angle-left' size={24} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => togglePlay()}
+                      style={playerStyles.playButton}
+                      {...testProps(`${testIDPrefix}_toggle_play`)}>
+                      {!checkIfStateIsBuffering(playbackState) && (
+                        <Icon
+                          name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
+                          size={20}
+                          testID={`${testIDPrefix}_${playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}`}
+                        />
+                      )}
+                      {checkIfStateIsBuffering(playbackState) && <ActivityIndicator />}
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={this._playerMiniJumpForward}
+                      style={playerStyles.icon}
+                      {...testProps(`${testIDPrefix}_mini_jump_forward`)}>
+                      <Icon name='angle-right' size={24} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={this._playerJumpForward}
+                      style={playerStyles.icon}
+                      {...testProps(`${testIDPrefix}_jump_forward`)}>
+                      <Icon name='redo-alt' size={32} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={styles.playerControlsBottomRow} transparent={true}>
                   <TouchableOpacity
-                    onPress={this._playerJumpBackward}
-                    style={playerStyles.icon}
-                    {...testProps(`${testIDPrefix}_jump_backward`)}>
-                    <Icon name='undo-alt' size={32} />
+                    hitSlop={{
+                      bottom: 4,
+                      left: 4,
+                      right: 4,
+                      top: 4
+                    }}
+                    onPress={() => this.setState({ showHowToModal: true })}
+                    {...testProps(`${testIDPrefix}_show_how_to`)}>
+                    <View transparent={true}>
+                      <Text
+                        fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                        style={[
+                          styles.playerControlsBottomButton,
+                          styles.playerControlsBottomRowText,
+                          globalTheme.textSecondary
+                        ]}>
+                        {translate('How To')}
+                      </Text>
+                    </View>
                   </TouchableOpacity>
+                  <TouchableWithoutFeedback
+                    hitSlop={{
+                      bottom: 4,
+                      left: 4,
+                      right: 4,
+                      top: 4
+                    }}
+                    onPress={this._adjustSpeed}
+                    {...testProps(`${testIDPrefix}_adjust_speed`)}>
+                    <View transparent={true}>
+                      <Text
+                        fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                        style={[
+                          styles.playerControlsBottomButton,
+                          styles.playerControlsBottomRowText,
+                          globalTheme.textSecondary
+                        ]}
+                        testID={`${testIDPrefix}_adjust_speed_label`}>
+                        {`${playbackRate}X`}
+                      </Text>
+                    </View>
+                  </TouchableWithoutFeedback>
                   <TouchableOpacity
-                    onPress={this._playerMiniJumpBackward}
-                    style={playerStyles.icon}
-                    {...testProps(`${testIDPrefix}_mini_jump_backward`)}>
-                    <Icon name='angle-left' size={24} />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => togglePlay()}
-                    style={playerStyles.playButton}
-                    {...testProps(`${testIDPrefix}_toggle_play`)}>
-                    {!checkIfStateIsBuffering(playbackState) && (
-                      <Icon
-                        name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
-                        size={20}
-                        testID={`${testIDPrefix}_${playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}`}
-                      />
-                    )}
-                    {checkIfStateIsBuffering(playbackState) && <ActivityIndicator />}
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={this._playerMiniJumpForward}
-                    style={playerStyles.icon}
-                    {...testProps(`${testIDPrefix}_mini_jump_forward`)}>
-                    <Icon name='angle-right' size={24} />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={this._playerJumpForward}
-                    style={playerStyles.icon}
-                    {...testProps(`${testIDPrefix}_jump_forward`)}>
-                    <Icon name='redo-alt' size={32} />
+                    hitSlop={{
+                      bottom: 4,
+                      left: 4,
+                      right: 4,
+                      top: 4
+                    }}
+                    onPress={() => navigation.navigate(PV.RouteNames.PlayerFAQScreen)}
+                    {...testProps(`${testIDPrefix}_show_faq`)}>
+                    <View transparent={true}>
+                      <Text
+                        fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                        style={[
+                          styles.playerControlsBottomButton,
+                          styles.playerControlsBottomRowText,
+                          globalTheme.textSecondary
+                        ]}>
+                        FAQ
+                      </Text>
+                    </View>
                   </TouchableOpacity>
                 </View>
               </View>
-              <View style={styles.playerControlsBottomRow} transparent={true}>
-                <TouchableOpacity
-                  hitSlop={{
-                    bottom: 4,
-                    left: 4,
-                    right: 4,
-                    top: 4
-                  }}
-                  onPress={() => this.setState({ showHowToModal: true })}
-                  {...testProps(`${testIDPrefix}_show_how_to`)}>
-                  <View transparent={true}>
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                      style={[
-                        styles.playerControlsBottomButton,
-                        styles.playerControlsBottomRowText,
-                        globalTheme.textSecondary
-                      ]}>
-                      {translate('How To')}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableWithoutFeedback
-                  hitSlop={{
-                    bottom: 4,
-                    left: 4,
-                    right: 4,
-                    top: 4
-                  }}
-                  onPress={this._adjustSpeed}
-                  {...testProps(`${testIDPrefix}_adjust_speed`)}>
-                  <View transparent={true}>
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                      style={[
-                        styles.playerControlsBottomButton,
-                        styles.playerControlsBottomRowText,
-                        globalTheme.textSecondary
-                      ]}
-                      testID={`${testIDPrefix}_adjust_speed_label`}>
-                      {`${playbackRate}X`}
-                    </Text>
-                  </View>
-                </TouchableWithoutFeedback>
-                <TouchableOpacity
-                  hitSlop={{
-                    bottom: 4,
-                    left: 4,
-                    right: 4,
-                    top: 4
-                  }}
-                  onPress={() => navigation.navigate(PV.RouteNames.PlayerFAQScreen)}
-                  {...testProps(`${testIDPrefix}_show_faq`)}>
-                  <View transparent={true}>
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                      style={[
-                        styles.playerControlsBottomButton,
-                        styles.playerControlsBottomRowText,
-                        globalTheme.textSecondary
-                      ]}>
-                      FAQ
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
             </View>
+            {!isLoggedIn && (
+              <RNView style={styles.loginBlockedView}>
+                <RNView>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    numberOfLines={1}
+                    style={[core.textInputEyeBrow, styles.loginMessage]}>
+                    {translate('You must be logged in to make clips')}
+                  </Text>
+                  <Divider style={styles.divider} />
+                </RNView>
+              </RNView>
+            )}
           </View>
         </View>
         {isSaving && (
@@ -605,14 +606,14 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 </Text>
                 <TouchableOpacity onPress={this._hideHowTo} {...testProps(`${testIDPrefix}_close`)}>
                   <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} numberOfLines={1} style={styles.modalButton}>
-                    {translate('Close')}
+                    {translate('Got It')}
                   </Text>
                 </TouchableOpacity>
               </RNView>
             </RNView>
           </Modal>
         )}
-      </OpaqueBackground>
+      </SafeAreaView>
     )
   }
 }
@@ -641,6 +642,14 @@ const privacyItems = () => {
 }
 
 const styles = StyleSheet.create({
+  viewContainer: {
+    flex: 1,
+    backgroundColor: PV.Colors.ink
+  },
+  contentContainer: {
+    flex: 1,
+    marginTop: Platform.OS === 'ios' ? 56 : 0
+  },
   dropdownButtonSelectWrapper: {
     marginTop: 16
   },
@@ -704,7 +713,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4
   },
   loginMessage: {
-    fontSize: PV.Fonts.sizes.xl,
+    fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.bold,
     textAlign: 'center',
     marginBottom: 4
@@ -727,7 +736,11 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
     marginTop: 16,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: PV.Colors.skyLight,
+    borderWidth: 1,
+    borderColor: PV.Colors.skyLight,
+    paddingVertical: 10
   },
   modalInnerWrapper: {
     marginHorizontal: 12,
@@ -757,7 +770,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1
   },
   wrapperBottom: {
-    flex: 0,
     paddingHorizontal: 0
   },
   wrapperBottomInside: {
@@ -769,8 +781,23 @@ const styles = StyleSheet.create({
     width: 16
   },
   wrapperTop: {
-    flex: 0,
-    marginHorizontal: 8,
-    marginTop: Platform.OS === 'ios' ? 16 : 0
+    marginHorizontal: 8
+  },
+  loginBlockedView: {
+    backgroundColor: PV.Colors.blackOpaque,
+    position: 'absolute',
+    ...StyleSheet.absoluteFill,
+    justifyContent: 'center'
+  },
+  loginButton: {
+    fontSize: PV.Fonts.sizes.xxxl,
+    fontWeight: PV.Fonts.weights.bold,
+    color: PV.Colors.white,
+    borderWidth: 2,
+    borderColor: PV.Colors.white,
+    textAlign: 'center',
+    borderRadius: 8,
+    paddingVertical: 10,
+    marginHorizontal: 40
   }
 })
