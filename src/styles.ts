@@ -36,7 +36,7 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: PV.Colors.velvet
   },
   actionSheetButtonCancelUnderlay: {
-    backgroundColor: PV.Colors.brandColor
+    backgroundColor: PV.Colors.blueDarker
   },
   actionSheetHeaderText: {
     color: PV.Colors.grayLighter
