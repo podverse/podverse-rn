@@ -189,7 +189,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
         hideImage={true}
         showEpisodeInfo={false}
-        showPodcastTitle={false}
+        showPodcastInfo={false}
         item={item}
       />
     )

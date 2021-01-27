@@ -289,7 +289,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           })
         }}
         mediaFileDuration={mediaFileDuration}
-        showPodcastTitle={true}
+        showPodcastInfo={true}
         testID={`${testIDPrefix}_episode_item_${index}`}
         userPlaybackPosition={userPlaybackPosition}
       />

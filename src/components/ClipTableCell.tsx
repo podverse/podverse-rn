@@ -12,7 +12,7 @@ type Props = {
   downloadsActive?: any
   handleMorePress: any
   showEpisodeInfo?: boolean
-  showPodcastTitle?: boolean
+  showPodcastInfo?: boolean
   testID: string
   transparent?: boolean
   item: any
@@ -21,7 +21,7 @@ type Props = {
 
 export class ClipTableCell extends React.PureComponent<Props> {
   render() {
-    const { handleMorePress, showEpisodeInfo, showPodcastTitle, testID, transparent, item, hideImage } = this.props
+    const { handleMorePress, showEpisodeInfo, showPodcastInfo, testID, transparent, item, hideImage } = this.props
 
     const episodePubDate = item?.episode?.pubDate || ''
     const episodeId = item?.episode?.id || ''
@@ -37,53 +37,64 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
     const innerTopView = (
       <RNView style={styles.innerTopView} {...(testID ? testProps(`${testID}_top_view_nav`) : {})}>
-        <RNView style={{ flex: 1, flexDirection: 'row' }}>
-          {!!podcastImageUrl && !hideImage && (
-            <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />
-          )}
-          <RNView style={styles.textWrapper}>
-            {showPodcastTitle && podcastTitle && (
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                isSecondary={true}
-                numberOfLines={1}
-                style={styles.podcastTitle}
-                testID={`${testID}_podcast_title`}>
-                {podcastTitle.trim()}
-              </Text>
-            )}
-            {PV.Fonts.fontScale.largest !== fontScaleMode && episodeTitle && (
-              <Text numberOfLines={1} style={styles.episodeTitle} testID={`${testID}_episode_title`}>
-                {episodeTitle.trim()}
-              </Text>
-            )}
-            <RNView style={styles.textWrapperBottomRow}>
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                isSecondary={true}
-                numberOfLines={1}
-                style={styles.episodePubDate}
-                testID={`${testID}_episode_pub_date`}>
-                {readableDate(episodePubDate)}
-              </Text>
-              {isDownloaded && <IndicatorDownload />}
+        <RNView style={{ flex: 1, flexDirection: 'column' }}>
+          {(showEpisodeInfo || showPodcastInfo) && (
+            <RNView style={{ flex: 1, flexDirection: 'row' }}>
+              {showPodcastInfo && !!podcastImageUrl && !hideImage && (
+                <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />
+              )}
+              <RNView style={styles.textWrapper}>
+                {showPodcastInfo && podcastTitle && (
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    isSecondary={true}
+                    numberOfLines={1}
+                    style={styles.podcastTitle}
+                    testID={`${testID}_podcast_title`}>
+                    {podcastTitle.trim()}
+                  </Text>
+                )}
+                {showEpisodeInfo && PV.Fonts.fontScale.largest !== fontScaleMode && episodeTitle && (
+                  <Text numberOfLines={1} style={styles.episodeTitle} testID={`${testID}_episode_title`}>
+                    {episodeTitle.trim()}
+                  </Text>
+                )}
+                {showEpisodeInfo && episodePubDate && (
+                  <RNView style={styles.textWrapperBottomRow}>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                      isSecondary={true}
+                      numberOfLines={1}
+                      style={styles.episodePubDate}
+                      testID={`${testID}_episode_pub_date`}>
+                      {readableDate(episodePubDate)}
+                    </Text>
+                    {isDownloaded && <IndicatorDownload />}
+                  </RNView>
+                )}
+              </RNView>
             </RNView>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              numberOfLines={4}
-              style={styles.title}
-              testID={`${testID}_title`}>
-              {title}
-            </Text>
-          </RNView>
+          )}
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            numberOfLines={4}
+            style={styles.title}
+            testID={`${testID}_title`}>
+            {title}
+          </Text>
         </RNView>
       </RNView>
     )
 
     return (
       <View style={styles.wrapper} transparent={transparent}>
-        {showEpisodeInfo && showPodcastTitle && <RNView style={styles.wrapperTop}>{innerTopView}</RNView>}
-        <TimeRemainingWidget handleMorePress={handleMorePress} clipTime={clipTime} item={item} />
+        <RNView style={styles.wrapperTop}>{innerTopView}</RNView>
+        <TimeRemainingWidget
+          handleMorePress={handleMorePress}
+          clipTime={clipTime}
+          item={item}
+          transparent={transparent}
+        />
       </View>
     )
   }

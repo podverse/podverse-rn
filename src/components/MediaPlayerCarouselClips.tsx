@@ -184,10 +184,11 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
       <ClipTableCell
         item={item}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
-        showEpisodeInfo={queryFrom !== PV.Filters._fromThisEpisodeKey}
-        showPodcastTitle={false}
-        testID={`${testID}_item_${index}`}
         hideImage={true}
+        showEpisodeInfo={queryFrom !== PV.Filters._fromThisEpisodeKey}
+        showPodcastInfo={false}
+        testID={`${testID}_item_${index}`}
+        transparent={true}
       />
     ) : (
       <></>

@@ -361,7 +361,7 @@ export class PodcastScreen extends React.Component<Props, State> {
           <ClipTableCell
             handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
             showEpisodeInfo={true}
-            showPodcastTitle={false}
+            showPodcastInfo={false}
             testID={`${testIDPrefix}_clip_item_${index}`}
             item={item}
             hideImage={true}

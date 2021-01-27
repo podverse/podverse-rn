@@ -423,7 +423,7 @@ export class ProfileScreen extends React.Component<Props, State> {
         <ClipTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           showEpisodeInfo={true}
-          showPodcastTitle={true}
+          showPodcastInfo={true}
           testID={`${testIDPrefix}_clip_item_${index}`}
           item={item}
         />

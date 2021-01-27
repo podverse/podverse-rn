@@ -15,6 +15,7 @@ type Props = {
   style?: any
   userPlaybackPosition?: number | undefined
   clipTime?: string
+  transparent?: boolean
 }
 
 type BarProps = {
@@ -65,7 +66,7 @@ const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { handleMorePress, item, mediaFileDuration, style, userPlaybackPosition, clipTime } = props
+  const { clipTime, handleMorePress, item, mediaFileDuration, style, transparent, userPlaybackPosition } = props
   const { podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, null, podcast)
   const [player] = useGlobal('player')
@@ -104,7 +105,7 @@ export const TimeRemainingWidget = (props: Props) => {
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, style]} transparent={transparent}>
       <TouchableOpacity onPress={playItem} style={iconStyle}>
         {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
       </TouchableOpacity>

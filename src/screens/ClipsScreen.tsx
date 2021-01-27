@@ -251,7 +251,7 @@ export class ClipsScreen extends React.Component<Props, State> {
         item={item}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.episode.podcast))}
         showEpisodeInfo={true}
-        showPodcastTitle={true}
+        showPodcastInfo={true}
         testID={`${testIDPrefix}_clip_item_${index}`}
       />
     ) : null
