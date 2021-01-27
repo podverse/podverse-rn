@@ -1,3 +1,4 @@
+import { convertNowPlayingItemToEpisode } from 'podverse-shared'
 import { NavigationActions, StackActions } from 'react-navigation'
 import { PV } from '../resources'
 
@@ -5,6 +6,8 @@ import { PV } from '../resources'
   Navigate to the EpisodeScreen located within the EpisodesStackNavigator.
  */
 export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
+  const episode = convertNowPlayingItemToEpisode(item)
+
   const resetAction = StackActions.reset({
     index: 1,
     actions: [
@@ -13,14 +16,7 @@ export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
         routeName: PV.RouteNames.EpisodeScreen,
         params: {
           episodeId: item.episodeId,
-          episode: {
-            id: item.episodeId,
-            title: item.episodeTitle,
-            podcast: {
-              imageUrl: item.podcastImageUrl,
-              title: item.podcastTitle
-            }
-          },
+          episode,
           includeGoToPodcast: true
         }
       })
