@@ -1,4 +1,4 @@
-import { Linking, SectionList, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Linking, SectionList, StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import { Divider, TableSectionSelectors, Text, View } from '../components'
@@ -144,7 +144,14 @@ export class MoreScreen extends React.Component<Props, State> {
             </TouchableWithoutFeedback>
           )}
           renderSectionHeader={({ section }) => {
-            return <TableSectionSelectors hideFilter={true} includePadding={true} selectedFilterLabel={section.title} />
+            return (
+              <TableSectionSelectors
+                hideFilter={true}
+                includePadding={true}
+                selectedFilterLabel={section.title}
+                textStyle={styles.headerText}
+              />
+            )
           }}
           sections={[
             { title: translate('Features'), data: featureOptions },
@@ -192,3 +199,10 @@ const allMoreFeatures = [
     testID: 'more_screen_login_cell'
   }
 ]
+
+const styles = StyleSheet.create({
+  headerText: {
+    color: PV.Colors.skyLight,
+    fontSize: PV.Fonts.sizes.xxxl
+  }
+})
