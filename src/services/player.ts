@@ -59,6 +59,24 @@ TrackPlayer.setupPlayer({
 
 export const PVTrackPlayer = TrackPlayer
 
+/*
+  state key for android
+  NOTE: ready and pause use the same number, so there is no true ready state for Android :[
+  none      0
+  stopped   1
+  paused    2
+  playing   3
+  ready     2
+  buffering 6
+  ???       8
+*/
+export const checkIfStateIsBuffering = (playbackState: any) =>
+  // for iOS
+  playbackState === PVTrackPlayer.STATE_BUFFERING ||
+  // for Android
+  playbackState === 6 ||
+  playbackState === 8
+
 export const getClipHasEnded = async () => {
   return AsyncStorage.getItem(PV.Keys.CLIP_HAS_ENDED)
 }
@@ -184,9 +202,12 @@ export const initializePlayerQueue = async () => {
   try {
     const queueItems = await getQueueItems()
     let filteredItems = [] as any
+
     const item = await getNowPlayingItemLocally()
-    filteredItems = filterItemFromQueueItems(queueItems, item)
-    filteredItems.unshift(item)
+    if (item) {
+      filteredItems = filterItemFromQueueItems(queueItems, item)
+      filteredItems.unshift(item)
+    }
 
     if (filteredItems.length > 0) {
       const tracks = await createTracks(filteredItems)

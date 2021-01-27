@@ -30,6 +30,7 @@ import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { createMediaRef, updateMediaRef } from '../services/mediaRef'
 import {
+  checkIfStateIsBuffering,
   playerJumpBackward,
   playerJumpForward,
   playerPreviewEndTime,
@@ -490,14 +491,14 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     onPress={() => togglePlay()}
                     style={playerStyles.playButton}
                     {...testProps(`${testIDPrefix}_toggle_play`)}>
-                    {playbackState !== PVTrackPlayer.STATE_BUFFERING && (
+                    {!checkIfStateIsBuffering(playbackState) && (
                       <Icon
                         name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
                         size={20}
                         testID={`${testIDPrefix}_${playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}`}
                       />
                     )}
-                    {playbackState === PVTrackPlayer.STATE_BUFFERING && <ActivityIndicator />}
+                    {checkIfStateIsBuffering(playbackState) && <ActivityIndicator />}
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={this._playerMiniJumpForward}

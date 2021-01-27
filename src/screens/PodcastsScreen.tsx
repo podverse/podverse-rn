@@ -278,8 +278,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     this.setGlobal({ userAgent })
 
     try {
-      await askToSyncWithNowPlayingItem()
-      await getAuthUserInfo()
+      const isLoggedIn = await getAuthUserInfo()
+      if (isLoggedIn) await askToSyncWithNowPlayingItem()
     } catch (error) {
       console.log('initializeScreenData getAuthUserInfo', error)
       // If getAuthUserInfo fails, continue with the networkless version of the app

@@ -51,6 +51,8 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
       podcastImageUrl = currentChapter.imageUrl || podcastImageUrl
     }
 
+    const imageWrapperStylePadding = clipId ? { padding: 16 } : { paddingHorizontal: 16, paddingTop: 16 }
+
     return (
       <View style={[styles.outerWrapper, { width }]} transparent={true}>
         <View style={styles.innerWrapper} transparent={true}>
@@ -76,12 +78,14 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
               </React.Fragment>
             )}
           </View>
-          <View style={[styles.imageWrapper, { height: imageHeight, width: '100%' }]} transparent={true}>
+          <View
+            style={[styles.imageWrapper, { height: imageHeight, width: '100%' }, imageWrapperStylePadding]}
+            transparent={true}>
             <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyle} />
           </View>
-          <TouchableWithoutFeedback onPress={handlePressClipInfo}>
-            <View style={styles.carouselTextBottomWrapper} transparent={true}>
-              {clipId && (
+          {clipId && (
+            <TouchableWithoutFeedback onPress={handlePressClipInfo}>
+              <View style={styles.carouselTextBottomWrapper} transparent={true}>
                 <View style={styles.clipWrapper} transparent={true}>
                   <Text
                     numberOfLines={2}
@@ -91,9 +95,9 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
                     {readableClipTime(clipStartTime, clipEndTime)}
                   </Text>
                 </View>
-              )}
-            </View>
-          </TouchableWithoutFeedback>
+              </View>
+            </TouchableWithoutFeedback>
+          )}
         </View>
       </View>
     )
@@ -132,7 +136,7 @@ const styles = StyleSheet.create({
   imageWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16
+    marginVertical: 2
   },
   innerWrapper: {
     flex: 1,
