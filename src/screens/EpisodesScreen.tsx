@@ -283,7 +283,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item?.podcast))}
         handleDownloadPress={this._handleDownloadPressed}
         handleNavigationPress={() => {
-          this.props.navigation.navigate(PV.RouteNames.EpisodesScreen, {
+          this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
+            addByRSSPodcastFeedUrl: item.podcast.addByRSSPodcastFeedUrl,
             episode: item,
             includeGoToPodcast: true
           })

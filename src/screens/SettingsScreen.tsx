@@ -562,7 +562,8 @@ const styles = StyleSheet.create({
   button: {
     marginHorizontal: 12,
     marginBottom: 24,
-    marginTop: 0
+    marginTop: 0,
+    borderRadius: 8
   },
   divider: {
     marginBottom: 24

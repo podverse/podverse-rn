@@ -137,6 +137,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 40,
     width: 40,
-    marginRight: 10
+    marginRight: 10,
+    backgroundColor: PV.Colors.brandBlueDark + '44'
   }
 })

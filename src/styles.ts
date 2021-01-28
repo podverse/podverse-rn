@@ -129,7 +129,7 @@ export const darkTheme = StyleSheet.create({
     backgroundColor: '#00000075'
   },
   modalInnerWrapper: {
-    backgroundColor: PV.Colors.grayDarkest
+    backgroundColor: PV.Colors.velvet
   },
   overlayAlertDanger: {
     backgroundColor: PV.Colors.redLighter,
@@ -363,7 +363,7 @@ export const lightTheme = StyleSheet.create({
     backgroundColor: '#00000075'
   },
   modalInnerWrapper: {
-    backgroundColor: PV.Colors.grayLightest
+    backgroundColor: PV.Colors.velvet
   },
   overlayAlertDanger: {
     backgroundColor: PV.Colors.redLighter,

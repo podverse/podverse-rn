@@ -208,11 +208,11 @@ const comparisonData = [
     column1: true,
     column2: true
   },
-  {
-    text: translate('light - dark mode'),
-    column1: true,
-    column2: true
-  },
+  // {
+  //   text: translate('light - dark mode'),
+  //   column1: true,
+  //   column2: true
+  // },
   {
     text: translate('create and share clips'),
     column1: false,

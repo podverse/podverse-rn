@@ -3,7 +3,6 @@ import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-nati
 import React, { getGlobal } from 'reactn'
 import {
   ActivityIndicator,
-  Divider,
   FlatList,
   NavHeaderButtonText,
   NavSearchIcon,
@@ -12,7 +11,7 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import { isOdd, overrideImageUrlWithChapterImageUrl, testProps } from '../lib/utility'
+import { overrideImageUrlWithChapterImageUrl, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { loadItemAndPlayTrack } from '../state/actions/player'
@@ -157,7 +156,6 @@ export class HistoryScreen extends React.Component<Props, State> {
             {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
             {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
             handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
-            hasZebraStripe={isOdd(index)}
             podcastImageUrl={item.podcastImageUrl}
             {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
             showRemoveButton={isEditing}
@@ -178,10 +176,6 @@ export class HistoryScreen extends React.Component<Props, State> {
       }
       this.setState({ isRemoving: false })
     })
-  }
-
-  _ItemSeparatorComponent = () => {
-    return <Divider />
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
@@ -216,7 +210,6 @@ export class HistoryScreen extends React.Component<Props, State> {
             disableLeftSwipe={true}
             extraData={historyItems}
             isLoadingMore={isLoadingMore}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any) => item.clipId || item.episodeId}
             noResultsMessage={translate('No history items found')}
             onEndReached={this._onEndReached}
@@ -282,6 +275,7 @@ const styles = StyleSheet.create({
     marginBottom: 2
   },
   view: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'center'
   }
 })
