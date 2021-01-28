@@ -35,7 +35,7 @@ type Props = {
   renderHiddenItem?: any
   renderSectionHeader?: any
   renderItem: any
-  sections: any
+  sections?: any
   showNoInternetConnectionMessage?: boolean
   stickySectionHeadersEnabled?: boolean
   transparent?: boolean

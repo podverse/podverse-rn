@@ -2,7 +2,7 @@ import { convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
-import { convertSecToHhoursMMinutes } from '../lib/utility'
+import { convertSecToHhoursMMinutes, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer } from '../services/player'
 import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
@@ -89,6 +89,7 @@ export const TimeRemainingWidget = (props: Props) => {
   }
 
   const playItem = () => {
+    requestAppStoreReviewForEpisodePlayed()
     const isNowPlayingItem = checkIfNowPlayingItem(item, nowPlayingItem)
 
     if (isNowPlayingItem) {

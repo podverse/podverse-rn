@@ -72,6 +72,8 @@ type State = {
   viewType: string | null
 }
 
+type RenderItemArg = { item: any; index: number }
+
 const testIDPrefix = 'podcast_screen'
 
 export class PodcastScreen extends React.Component<Props, State> {
@@ -192,7 +194,7 @@ export class PodcastScreen extends React.Component<Props, State> {
         queryPage: 1
       },
       async () => {
-        let newState = {}
+        let newState: State = {}
         let newPodcast: any
 
         try {
@@ -273,7 +275,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     )
   }
 
-  _onEndReached = ({ distanceFromEnd }) => {
+  _onEndReached = ({ distanceFromEnd }: { distanceFromEnd: number }) => {
     const { endOfResultsReached, isLoadingMore, podcast, queryPage = 1, viewType } = this.state
 
     if (
@@ -352,7 +354,7 @@ export class PodcastScreen extends React.Component<Props, State> {
     }
   }
 
-  _renderItem = ({ item, index }) => {
+  _renderItem = ({ item, index }: RenderItemArg) => {
     const { podcast, viewType } = this.state
 
     if (viewType === PV.Filters._clipsKey) {
@@ -409,15 +411,15 @@ export class PodcastScreen extends React.Component<Props, State> {
     }
   }
 
-  _renderHiddenItem = ({ item, index }, rowMap) => (
+  _renderHiddenItem = ({ item, index }: RenderItemArg) => (
     <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
+      onPress={() => this._handleHiddenItemPress(item.id)}
       testID={`${testIDPrefix}_clip_item_${index}`}
       text={translate('Delete')}
     />
   )
 
-  _handleHiddenItemPress = async (selectedId, rowMap) => {
+  _handleHiddenItemPress = async (selectedId: string) => {
     const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
     this.setState(
       {
@@ -444,7 +446,7 @@ export class PodcastScreen extends React.Component<Props, State> {
       } catch (error) {
         //
       }
-      DownloadState.updateDownloadedPodcasts()
+      DownloadState.updateDownloadedPodcasts(null)
     })
   }
 
