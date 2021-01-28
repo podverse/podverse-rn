@@ -1,7 +1,6 @@
-import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
+import { convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet } from 'react-native'
 import React, { setGlobal } from 'reactn'
-import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
@@ -58,14 +57,6 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
         resolve
       )
     })
-  }
-
-  _handleDownloadPressed = () => {
-    const { selectedItem } = this.global.screenPlayer
-    if (selectedItem) {
-      const episode = convertNowPlayingItemToEpisode(selectedItem)
-      downloadEpisode(episode, episode.podcast)
-    }
   }
 
   _renderItem = ({ item, index }) => {
@@ -139,8 +130,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
           handleCancelPress={this._handleMoreCancelPress}
           items={() =>
             PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
-              handleDismiss: this._handleMoreCancelPress,
-              handleDownload: this._handleDownloadPressed
+              handleDismiss: this._handleMoreCancelPress
             })
           }
           showModal={showMoreActionSheet}
