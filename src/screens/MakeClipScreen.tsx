@@ -1,5 +1,13 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { Alert, Modal, SafeAreaView, TouchableOpacity, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import {
+  Alert,
+  Modal,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View as RNView
+} from 'react-native'
 import Share from 'react-native-share'
 import React from 'reactn'
 import {

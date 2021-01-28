@@ -37,7 +37,7 @@ export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
 }
 
 export const readableDate = (date: string) => {
-  const dateObj = new Date(date)
+  const dateObj = date ? new Date(date) : new Date()
   const year = dateObj.getFullYear()
   const month = dateObj.getMonth() + 1
   const day = dateObj.getDate()
