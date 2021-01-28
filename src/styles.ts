@@ -654,10 +654,11 @@ export const navHeader = StyleSheet.create({
     paddingVertical: 8
   },
   headerHeight: {
-    paddingTop: Platform.select({
-      android: PV.Navigation.header.height.android,
-      ios: PV.Navigation.header.height.ios
-    })
+    paddingTop:
+      Platform.select({
+        android: PV.Navigation.header.height.android,
+        ios: PV.Navigation.header.height.ios
+      }) || 0
   }
 })
 

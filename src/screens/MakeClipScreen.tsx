@@ -372,7 +372,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const imageUrl = nowPlayingItem ? nowPlayingItem.podcastImageUrl : ''
 
     return (
-      <OpaqueBackground imageUrl={imageUrl}>
+      <OpaqueBackground>
         <View style={styles.view} transparent={true} {...testProps('make_clip_screen_view')}>
           <View style={styles.wrapperTop} transparent={true}>
             {!isLoggedIn && (

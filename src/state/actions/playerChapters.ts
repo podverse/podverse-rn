@@ -1,5 +1,3 @@
-import { Platform } from 'react-native'
-import BackgroundTimer from 'react-native-background-timer'
 import { getGlobal, setGlobal } from 'reactn'
 import { retrieveLatestChaptersForEpisodeId } from '../../services/episode'
 import { PVTrackPlayer } from '../../services/player'

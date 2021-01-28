@@ -14,7 +14,9 @@ type Props = {
   width: number
 }
 
-type State = {}
+type State = {
+  reduceBottomWrapperHeight?: boolean
+}
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State> {
   chapterInterval: NodeJS.Timeout
   constructor(props) {
@@ -23,7 +25,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
   }
 
   componentDidMount() {
-    this.chapterInterval = setInterval(loadChapterPlaybackInfo, 1000)
+    this.chapterInterval = setInterval(loadChapterPlaybackInfo, 3000)
   }
 
   componentWillUnmount() {
@@ -33,6 +35,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
   render() {
     const { handlePressClipInfo, imageHeight, imageWidth, width } = this.props
     const { player, screenPlayer } = this.global
+    const { reduceBottomWrapperHeight } = this.state
     const { currentChapter, nowPlayingItem } = player
     const { isLoading } = screenPlayer
     let { clipId, clipEndTime, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem
@@ -52,6 +55,9 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
     }
 
     const imageWrapperStylePadding = clipId ? { padding: 16 } : { paddingHorizontal: 16, paddingTop: 16 }
+    const reduceBottomWrapperStyle = reduceBottomWrapperHeight
+      ? { height: PV.Player.carouselTextBottomWrapper.height - 24 }
+      : { height: PV.Player.carouselTextBottomWrapper.height }
 
     return (
       <View style={[styles.outerWrapper, { width }]} transparent={true}>
@@ -85,10 +91,18 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
           </View>
           {clipId && (
             <TouchableWithoutFeedback onPress={handlePressClipInfo}>
-              <View style={styles.carouselTextBottomWrapper} transparent={true}>
+              <View style={[styles.carouselTextBottomWrapper, reduceBottomWrapperStyle]} transparent={true}>
                 <View style={styles.clipWrapper} transparent={true}>
                   <Text
                     numberOfLines={2}
+                    onTextLayout={(e) => {
+                      const { lines } = e.nativeEvent
+                      if (lines.length === 1) {
+                        this.setState({ reduceBottomWrapperHeight: true })
+                      } else {
+                        this.setState({ reduceBottomWrapperHeight: false })
+                      }
+                    }}
                     style={styles.clipTitle}
                     testID='media_player_carousel_viewer_title'>{`${clipTitle}`}</Text>
                   <Text style={styles.clipTime} testID='media_player_carousel_viewer_time'>
@@ -106,8 +120,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
 
 const styles = StyleSheet.create({
   carouselTextBottomWrapper: {
-    flex: 0,
-    height: PV.Player.carouselTextBottomWrapper.height
+    flex: 0
   },
   carouselTextTopWrapper: {
     flex: 0,

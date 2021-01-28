@@ -102,8 +102,9 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   wrapper: {
+    paddingBottom: 12,
     paddingHorizontal: 8,
-    paddingVertical: 16
+    paddingTop: 20
   },
   episodePubDate: {
     fontSize: PV.Fonts.sizes.sm,

@@ -61,23 +61,29 @@ const screenHeight = Dimensions.get('screen').height
     height: 32
   }
 
+  console.log('approxHeaderHeight', approxHeaderHeight)
   console.log('screenHeight', screenHeight)
-  console.log('header height', Header.HEIGHT)
   console.log('scrollHeight', scrollHeight)
   console.log('subBottomHeight', subBottomHeight)
   console.log('scrollHeightAvailable', scrollHeightAvailable)
   console.log('imageHeightAvailable', imageHeightAvailable)
 */
 
+const approxHeaderHeight = 44
 const scrollHeight =
   screenHeight -
-  (navHeader.headerHeight.paddingTop + Header.HEIGHT + PV.Player.pagination.height + PV.Player.playerControls.height)
+  (navHeader.headerHeight.paddingTop +
+    approxHeaderHeight +
+    PV.Player.pagination.height +
+    PV.Player.playerControls.height)
 const subBottomHeight = PV.Player.carouselTextSubBottomWrapper.height + PV.Player.carouselTextSubBottomWrapper.marginTop
 const scrollHeightAvailable =
   scrollHeight -
   (PV.Player.carouselTextBottomWrapper.height + PV.Player.carouselTextTopWrapper.height + subBottomHeight)
 
-let imageHeightAvailable = scrollHeightAvailable
+// 16 x 2 for vertical padding.
+const imagePadding = 32
+let imageHeightAvailable = scrollHeightAvailable + imagePadding
 imageHeightAvailable = imageHeightAvailable > 372 ? 372 : imageHeightAvailable
 
 export class PlayerScreen extends React.Component<Props, State> {

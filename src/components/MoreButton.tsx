@@ -26,10 +26,8 @@ export const MoreButton = (props: Props) => {
       onPress={handleMorePress}
       {...testProps(`${testID}_more_button`)}>
       {!isLoading ? (
-        <View style={[styles.outerWrapper]}>
-          <View style={styles.innerWrapper}>
-            <Image resizeMode='contain' source={PV.Images.MORE} style={[styles.image, globalTheme.buttonImage]} />
-          </View>
+        <View style={[styles.imageWrapper]}>
+          <Image resizeMode='contain' source={PV.Images.MORE} style={[styles.image, globalTheme.buttonImage]} />
         </View>
       ) : (
         <View style={[styles.activityWrapper]}>
@@ -62,14 +60,7 @@ const styles = StyleSheet.create({
     width: 30,
     tintColor: 'white'
   },
-  innerWrapper: {
-    height: 44,
-    width: 44,
-    tintColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  outerWrapper: {
+  imageWrapper: {
     alignItems: 'center',
     height: 50,
     justifyContent: 'center',
