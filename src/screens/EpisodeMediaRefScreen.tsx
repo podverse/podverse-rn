@@ -1,6 +1,7 @@
+import { convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from '../components'
+import { ActionSheet, ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from '../components'
 import { getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
@@ -22,7 +23,9 @@ type State = {
   queryPage: number
   querySort: string
   selectedFilterLabel: string
+  selectedItem: string
   selectedSortLabel: string
+  showActionSheet: boolean
   viewType: string
 }
 
@@ -51,7 +54,9 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
       queryPage: 1,
       querySort: PV.Filters._chronologicalKey,
       selectedFilterLabel: translate('From this episode'),
+      selectedItem: null,
       selectedSortLabel: translate('top - week'),
+      showActionSheet: false,
       viewType
     }
   }
@@ -182,8 +187,22 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
     }
   }
 
+  _handleMorePress = (selectedItem: any) => {
+    this.setState({
+      selectedItem,
+      showActionSheet: true
+    })
+  }
+
+  _handleCancelPress = () => {
+    return new Promise((resolve, reject) => {
+      this.setState({ showActionSheet: false }, resolve)
+    })
+  }
+
   _renderItem = ({ item }) => {
     const episode = this.props.navigation.getParam('episode') || {}
+
     return (
       <ClipTableCell
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
@@ -196,7 +215,8 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { flatListData, flatListDataTotalCount, isLoadingMore } = this.state
+    const { navigation } = this.props
+    const { flatListData, flatListDataTotalCount, isLoadingMore, selectedItem, showActionSheet } = this.state
 
     return (
       <View style={styles.view}>
@@ -211,6 +231,18 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
           ListHeaderComponent={this._ListHeaderComponent}
           onEndReached={this._onEndReached}
           renderItem={this._renderItem}
+        />
+        <ActionSheet
+          handleCancelPress={this._handleCancelPress}
+          items={() => {
+            if (!selectedItem) return []
+
+            return PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
+              handleDismiss: this._handleCancelPress
+            })
+          }}
+          showModal={showActionSheet}
+          testID={testIDPrefix}
         />
       </View>
     )

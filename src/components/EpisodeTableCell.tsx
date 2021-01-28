@@ -186,6 +186,7 @@ const styles = StyleSheet.create({
     paddingTop: 16
   },
   wrapperTop: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 })

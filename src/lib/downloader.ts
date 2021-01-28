@@ -1,4 +1,5 @@
 import Bottleneck from 'bottleneck'
+import { clone } from 'lodash'
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
 import * as DownloadState from '../state/actions/downloads'
@@ -72,7 +73,17 @@ const addDLTask = async (episode: any, podcast: any) =>
 // NOTE: I was unable to get BackgroundDownloader to successfully resume tasks that were
 // retrieved from checkForExistingDownloads, so as a workaround, I am forcing those existing tasks
 // to always be restarted instead of resumed.
-export const downloadEpisode = async (episode: any, podcast: any, restart?: boolean, waitToAddTask?: boolean) => {
+export const downloadEpisode = async (
+  origEpisode: any,
+  origPodcast: any,
+  restart?: boolean,
+  waitToAddTask?: boolean
+) => {
+  // Don't use the original episode/podcast so the object referenced is not updated
+  // in components (like the EpisodesScreen).
+  const episode = clone(origEpisode)
+  const podcast = clone(origPodcast)
+
   // Updates UI immediately
   if (!waitToAddTask) await addDLTask(episode, podcast)
 

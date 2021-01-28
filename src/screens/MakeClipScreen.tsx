@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-community/async-storage'
 import {
   Alert,
   Modal,
-  Platform,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,

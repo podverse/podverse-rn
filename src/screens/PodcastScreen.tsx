@@ -641,7 +641,9 @@ export class PodcastScreen extends React.Component<Props, State> {
               <NumberSelectorWithText
                 handleChangeText={this._handleChangeDownloadLimitText}
                 selectedNumber={downloadedEpisodeLimit}
-                subText={translate('Once the download limit is exceeded the oldest episode will be auto deleted')}
+                subText={translate(
+                  'Limit the number of downloaded episodes from this podcast on your device. Once the download limit is exceeded the oldest episode will be automatically deleted.'
+                )}
                 testID={`${testIDPrefix}_downloaded_episode_limit_count`}
                 text={translate('Download limit max')}
               />
