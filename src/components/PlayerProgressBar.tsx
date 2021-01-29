@@ -41,8 +41,12 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
     return prevState
   }
 
+  isAnimationRunning: boolean
+
   constructor(props: Props) {
     super(props)
+
+    this.isAnimationRunning = false
 
     this.state = {
       bufferedPosition: 0,
@@ -54,6 +58,9 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
   }
 
   _handleAnimation = () => {
+    if (this.isAnimationRunning) return
+    this.isAnimationRunning = true
+
     Animated.timing(this.state.clipColorAnimation, {
       toValue: 1,
       duration: 2000,
