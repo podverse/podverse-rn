@@ -59,7 +59,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                     {episodeTitle.trim()}
                   </Text>
                 )}
-                {showEpisodeInfo && episodePubDate && (
+                {showEpisodeInfo && !!episodePubDate && (
                   <RNView style={styles.textWrapperBottomRow}>
                     <Text
                       fontSizeLargestScale={PV.Fonts.largeSizes.sm}
