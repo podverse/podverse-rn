@@ -39,7 +39,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
       <RNView style={styles.innerTopView} {...(testID ? testProps(`${testID}_top_view_nav`) : {})}>
         <RNView style={{ flex: 1, flexDirection: 'column' }}>
           {(showEpisodeInfo || showPodcastInfo) && (
-            <RNView style={{ flex: 1, flexDirection: 'row' }}>
+            <RNView style={styles.imageAndTopRightTextWrapper}>
               {showPodcastInfo && !!podcastImageUrl && !hideImage && (
                 <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />
               )}
@@ -59,7 +59,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                     {episodeTitle.trim()}
                   </Text>
                 )}
-                {showEpisodeInfo && episodePubDate && (
+                {showEpisodeInfo && !!episodePubDate && (
                   <RNView style={styles.textWrapperBottomRow}>
                     <Text
                       fontSizeLargestScale={PV.Fonts.largeSizes.sm}
@@ -102,9 +102,8 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingBottom: 12,
     paddingHorizontal: 8,
-    paddingTop: 20
+    paddingVertical: 16
   },
   episodePubDate: {
     fontSize: PV.Fonts.sizes.sm,
@@ -121,6 +120,11 @@ const styles = StyleSheet.create({
     height: 64,
     marginRight: 12,
     width: 64
+  },
+  imageAndTopRightTextWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    marginBottom: 8
   },
   innerTopView: {
     flex: 1,
@@ -146,7 +150,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   title: {
-    marginTop: 8,
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.bold,
     color: PV.Colors.white
