@@ -683,9 +683,9 @@ export const playerStyles = StyleSheet.create({
 
 export const sliderStyles = StyleSheet.create({
   clipBarStyle: {
-    height: 24,
+    height: 28,
     position: 'absolute',
-    marginVertical: 8,
+    marginVertical: 6,
     zIndex: -1
   },
   thumbStyle: {
