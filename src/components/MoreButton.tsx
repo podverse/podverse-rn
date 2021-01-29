@@ -41,9 +41,9 @@ export const MoreButton = (props: Props) => {
 const styles = StyleSheet.create({
   activityIndicator: {
     flex: 0,
-    height: 50,
+    height: 44,
     width: 44,
-    lineHeight: 50,
+    lineHeight: 44,
     marginBottom: 0,
     marginLeft: 0,
     marginRight: 0,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     alignItems: 'center',
-    height: 50,
+    height: 44,
     justifyContent: 'center',
     width: 44
   }
