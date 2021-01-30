@@ -178,7 +178,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     const episodeId = episode && episode.id
 
-    if (episode) episode.description = replaceLinebreaksWithBrTags(episode.description)
+    if (episode && episode.description) episode.description = replaceLinebreaksWithBrTags(episode.description)
 
     const episodeDownloaded = episode && !!downloadedEpisodeIds[episode.id]
     const episodeDownloading = episode && !!downloadsActive[episode.id]
@@ -244,7 +244,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           </TouchableOpacity>
         )}
         <HTMLScrollView
-          html={episode.description || ''}
+          html={(episode && episode.description) || ''}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           disableScrolling={true}
         />
