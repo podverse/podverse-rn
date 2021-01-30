@@ -77,8 +77,12 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   if (!currentNowPlayingItem) return
   await setNowPlayingItemLocally(currentNowPlayingItem, currentNowPlayingItem.userPlaybackPosition || 0)
 
-  if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
+  if (currentNowPlayingItem && currentNowPlayingItem.clipId && !currentNowPlayingItem.clipIsOfficialChapter) {
     PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
+  }
+
+  if (currentNowPlayingItem && currentNowPlayingItem.clipId && currentNowPlayingItem.clipIsOfficialChapter) {
+    debouncedSetPlaybackPosition(currentNowPlayingItem.clipStartTime || 0)
   }
 
   if (!currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
@@ -159,9 +163,10 @@ module.exports = async () => {
         await handleResumeAfterClipHasEnded()
       }
 
+      // do not call updateUserPlaybackPosition during the 'playing' state,
+      // or it will cause async issues after calling handleResumeAfterClipHasEnded
       if (Platform.OS === 'ios') {
         if (x.state === PVTrackPlayer.STATE_PLAYING) {
-          updateUserPlaybackPosition()
           const rate = await getPlaybackSpeed()
           PVTrackPlayer.setRate(rate)
         } else if (x.state === PVTrackPlayer.STATE_PAUSED || PVTrackPlayer.STATE_STOPPED) {
