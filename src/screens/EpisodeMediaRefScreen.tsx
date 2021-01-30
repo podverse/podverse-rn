@@ -202,6 +202,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
 
   _renderItem = ({ item }) => {
     const episode = this.props.navigation.getParam('episode') || {}
+    item.episode = episode
 
     return (
       <ClipTableCell
