@@ -137,9 +137,18 @@ export const loadItemAndPlayTrack = async (
   if (item) {
     const { nowPlayingItem: lastNowPlayingItem } = globalState.player
     const shouldClearPlaybackInfo = !lastNowPlayingItem || lastNowPlayingItem.episodeId !== item.episodeId
+
     if (shouldClearPlaybackInfo) {
       clearChapterPlaybackInfo()
     }
+
+    // Remove the clipId from chapters so they are not handled like clips
+    // (clips automatically stop when the end time is reached)
+    const isChapter = !!item.episodeChaptersUrl
+    if (isChapter) {
+      item.clipId = ''
+    }
+
     await updatePlayerState(item)
     await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate)
     showMiniPlayer()

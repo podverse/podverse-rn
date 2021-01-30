@@ -17,12 +17,7 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import {
-  checkIfIdMatchesClipIdOrEpisodeId,
-  isOdd,
-  overrideImageUrlWithChapterImageUrl,
-  testProps
-} from '../lib/utility'
+import { checkIfIdMatchesClipIdOrEpisodeId, overrideImageUrlWithChapterImageUrl, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData } from '../services/auth'
 import { movePlayerItemToNewPosition } from '../services/player'
