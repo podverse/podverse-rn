@@ -163,10 +163,9 @@ module.exports = async () => {
         await handleResumeAfterClipHasEnded()
       }
 
-      // do not call updateUserPlaybackPosition during the 'playing' state,
-      // or it will cause async issues after calling handleResumeAfterClipHasEnded
       if (Platform.OS === 'ios') {
         if (x.state === PVTrackPlayer.STATE_PLAYING) {
+          updateUserPlaybackPosition()
           const rate = await getPlaybackSpeed()
           PVTrackPlayer.setRate(rate)
         } else if (x.state === PVTrackPlayer.STATE_PAUSED || PVTrackPlayer.STATE_STOPPED) {
