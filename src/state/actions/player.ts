@@ -132,15 +132,19 @@ export const loadItemAndPlayTrack = async (
   shouldPlay: boolean,
   forceUpdateOrderDate?: boolean
 ) => {
-  clearChapterPlaybackInfo()
+  const globalState = getGlobal()
 
   if (item) {
+    const { nowPlayingItem: lastNowPlayingItem } = globalState.player
+    const shouldClearPlaybackInfo = !lastNowPlayingItem || lastNowPlayingItem.episodeId !== item.episodeId
+    if (shouldClearPlaybackInfo) {
+      clearChapterPlaybackInfo()
+    }
     await updatePlayerState(item)
     await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate)
     showMiniPlayer()
   }
 
-  const globalState = getGlobal()
   setGlobal(
     {
       screenPlayer: {
