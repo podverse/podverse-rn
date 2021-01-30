@@ -7,6 +7,7 @@ import {
   loadItemAndPlayTrack as loadItemAndPlayTrackService,
   playNextFromQueue as playNextFromQueueService,
   PVTrackPlayer,
+  setPlaybackPosition,
   setPlaybackSpeed as setPlaybackSpeedService,
   togglePlay as togglePlayService
 } from '../../services/player'
@@ -17,7 +18,12 @@ import {
   setNowPlayingItem as setNowPlayingItemService
 } from '../../services/userNowPlayingItem'
 import { getQueueItems } from '../../state/actions/queue'
-import { clearChapterPlaybackInfo, retriveNowPlayingItemChapters, setChaptersOnGlobalState } from './playerChapters'
+import {
+  clearChapterPlaybackInfo,
+  loadChapterPlaybackInfo,
+  retriveNowPlayingItemChapters,
+  setChaptersOnGlobalState
+} from './playerChapters'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
   if (!item) return
@@ -136,17 +142,20 @@ export const loadItemAndPlayTrack = async (
 
   if (item) {
     const { nowPlayingItem: lastNowPlayingItem } = globalState.player
-    const shouldClearPlaybackInfo = !lastNowPlayingItem || lastNowPlayingItem.episodeId !== item.episodeId
+    const shouldClearPreviousPlaybackInfo = lastNowPlayingItem && lastNowPlayingItem.episodeId !== item.episodeId
 
-    if (shouldClearPlaybackInfo) {
-      clearChapterPlaybackInfo()
+    if (shouldClearPreviousPlaybackInfo) {
+      await clearChapterPlaybackInfo()
     }
 
-    // Remove the clipId from chapters so they are not handled like clips
-    // (clips automatically stop when the end time is reached)
-    const isChapter = !!item.episodeChaptersUrl
-    if (isChapter) {
-      item.clipId = ''
+    if (item.clipIsOfficialChapter) {
+      if (lastNowPlayingItem && item.episodeId === lastNowPlayingItem.epiosdeId) {
+        await setPlaybackPosition(item.clipStartTime)
+        await loadChapterPlaybackInfo()
+        return
+      } else {
+        await loadChapterPlaybackInfo()
+      }
     }
 
     await updatePlayerState(item)
