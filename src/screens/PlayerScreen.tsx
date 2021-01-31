@@ -1,7 +1,6 @@
 import { convertNowPlayingItemToMediaRef, convertToNowPlayingItem } from 'podverse-shared'
 import { Dimensions, StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
-import { Header } from 'react-navigation-stack'
 import React, { getGlobal, setGlobal } from 'reactn'
 import {
   ActionSheet,

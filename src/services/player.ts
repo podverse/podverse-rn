@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import {
   convertNowPlayingItemClipToNowPlayingItemEpisode,
+  convertNowPlayingItemToEpisode,
   convertToNowPlayingItem,
   NowPlayingItem
 } from 'podverse-shared'
@@ -9,7 +10,7 @@ import RNFS from 'react-native-fs'
 import TrackPlayer, { Track } from 'react-native-track-player'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
-import { checkIfIdMatchesClipIdOrEpisodeId, getExtensionFromUrl } from '../lib/utility'
+import { checkIfIdMatchesEpisodeIdOrAddByUrl, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from './playerEventEmitter'
 import {
@@ -189,8 +190,6 @@ export const updateUserPlaybackPosition = async (skipSetNowPlaying?: boolean) =>
           forceUpdateOrderDate,
           skipSetNowPlaying
         )
-      } else if (!skipSetNowPlaying) {
-        await setNowPlayingItem(currentNowPlayingItem, 0)
       }
     }
   } catch (error) {
@@ -225,23 +224,28 @@ export const loadItemAndPlayTrack = async (
   shouldPlay: boolean,
   forceUpdateOrderDate?: boolean
 ) => {
+  if (!item) return
+
   const skipSetNowPlaying = true
-  await updateUserPlaybackPosition(skipSetNowPlaying)
+  updateUserPlaybackPosition(skipSetNowPlaying)
+
+  // check if loading a chapter, and if the now playing item is the same episode.
+  // if it is, then call setPlaybackposition, and play if shouldPlay, then return.
+  // else, if a chapter, play like a normal episode, starting at the time stamp
 
   TrackPlayer.pause()
-
-  if (!item) return
 
   const lastPlayingItem = await getNowPlayingItemLocally()
   const historyItemsIndex = await getHistoryItemsIndexLocally()
 
-  const { clipId, episodeId } = item
+  const { clipId, clipIsOfficialChapter, episodeId } = item
   if (!clipId && episodeId) {
     item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
-    item.userPlaybackPosition = historyItemsIndex?.episodes[episodeId]?.userPlaybackPosition || 0
   }
 
-  await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
+  if (!clipIsOfficialChapter) {
+    addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
+  }
 
   if (Platform.OS === 'ios') {
     TrackPlayer.reset()
@@ -317,22 +321,20 @@ export const createTrack = async (item: NowPlayingItem) => {
   if (!item) return
 
   const {
-    clipId,
-    episodeId,
+    episodeId: id,
     episodeMediaUrl = '',
     episodeTitle = 'Untitled Episode',
     podcastImageUrl,
     podcastShrunkImageUrl,
     podcastTitle = 'Untitled Podcast'
   } = item
-  const id = clipId || episodeId
   let track = null
 
   const imageUrl = podcastShrunkImageUrl ? podcastShrunkImageUrl : podcastImageUrl
 
-  if (id && episodeId) {
-    const isDownloadedFile = await checkIfFileIsDownloaded(episodeId, episodeMediaUrl)
-    const filePath = await getDownloadedFilePath(episodeId, episodeMediaUrl)
+  if (id) {
+    const isDownloadedFile = await checkIfFileIsDownloaded(id, episodeMediaUrl)
+    const filePath = await getDownloadedFilePath(id, episodeMediaUrl)
 
     if (isDownloadedFile) {
       track = {
@@ -476,7 +478,7 @@ export const getPlaybackSpeed = async () => {
 export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (trackId: string) => {
   const queueItems = await getQueueItemsLocally()
   const queueItemIndex = queueItems.findIndex((x: any) =>
-    checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId, x.addByRSSPodcastFeedUrl)
+    checkIfIdMatchesEpisodeIdOrAddByUrl(trackId, x.episodeId, x.addByRSSPodcastFeedUrl)
   )
   let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
   if (currentNowPlayingItem) removeQueueItem(currentNowPlayingItem)
@@ -485,7 +487,7 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (t
     const results = await getHistoryItemsLocally()
     const { userHistoryItems } = results
     currentNowPlayingItem = userHistoryItems.find((x: any) =>
-      checkIfIdMatchesClipIdOrEpisodeId(trackId, x.clipId, x.episodeId, x.addByRSSPodcastFeedUrl)
+      checkIfIdMatchesEpisodeIdOrAddByUrl(trackId, x.episodeId, x.addByRSSPodcastFeedUrl)
     )
   }
 

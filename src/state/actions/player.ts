@@ -1,5 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, NowPlayingItem } from 'podverse-shared'
+import {
+  convertNowPlayingItemClipToNowPlayingItemEpisode,
+  convertNowPlayingItemToEpisode,
+  convertNowPlayingItemToMediaRef,
+  NowPlayingItem
+} from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import {
@@ -142,15 +147,18 @@ export const loadItemAndPlayTrack = async (
 
   if (item) {
     const { nowPlayingItem: lastNowPlayingItem } = globalState.player
-    const shouldClearPreviousPlaybackInfo = lastNowPlayingItem && lastNowPlayingItem.episodeId !== item.episodeId
 
+    const shouldClearPreviousPlaybackInfo = lastNowPlayingItem && lastNowPlayingItem.episodeId !== item.episodeId
     if (shouldClearPreviousPlaybackInfo) {
       await clearChapterPlaybackInfo()
     }
 
     if (item.clipIsOfficialChapter) {
-      if (lastNowPlayingItem && item.episodeId === lastNowPlayingItem.epiosdeId) {
+      if (lastNowPlayingItem && item.episodeId === lastNowPlayingItem.episodeId) {
         await setPlaybackPosition(item.clipStartTime)
+        const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(item)
+        await setNowPlayingItem(nowPlayingItemEpisode, item.clipStartTime || 0)
+        await PVTrackPlayer.play()
         await loadChapterPlaybackInfo()
         return
       } else {

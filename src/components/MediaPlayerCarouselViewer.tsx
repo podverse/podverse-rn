@@ -36,7 +36,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
     const { handlePressClipInfo, imageHeight, imageWidth, width } = this.props
     const { player, screenPlayer } = this.global
     const { reduceBottomWrapperHeight } = this.state
-    const { currentChapter, nowPlayingItem } = player
+    const { currentChapter, nowPlayingItem = {} } = player
     const { isLoading } = screenPlayer
     const { clipIsOfficialChapter } = nowPlayingItem
     let { clipId, clipEndTime, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem

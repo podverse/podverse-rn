@@ -101,11 +101,8 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     }
 
     const clipStartTime =
-      (nowPlayingItem && nowPlayingItem.clipStartTime && !nowPlayingItem.clipIsOfficialChapter) ||
-      (currentChapter && currentChapter.startTime)
-    const clipEndTime =
-      (nowPlayingItem && nowPlayingItem.clipEndTime && !nowPlayingItem.clipIsOfficialChapter) ||
-      (currentChapter && currentChapter.endTime)
+      (nowPlayingItem && nowPlayingItem.clipStartTime) || (currentChapter && currentChapter.startTime)
+    const clipEndTime = (nowPlayingItem && nowPlayingItem.clipEndTime) || (currentChapter && currentChapter.endTime)
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>

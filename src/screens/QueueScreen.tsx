@@ -17,7 +17,7 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import { checkIfIdMatchesClipIdOrEpisodeId, overrideImageUrlWithChapterImageUrl, testProps } from '../lib/utility'
+import { checkIfIdMatchesEpisodeIdOrAddByUrl, overrideImageUrlWithChapterImageUrl, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData } from '../services/auth'
 import { movePlayerItemToNewPosition } from '../services/player'
@@ -299,9 +299,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
       let newItems = (await setAllQueueItemsLocally(sortedItems)) as any
 
-      const newQueueItemIndex = newItems.findIndex((x: any) =>
-        checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId)
-      )
+      const newQueueItemIndex = newItems.findIndex((x: any) => checkIfIdMatchesEpisodeIdOrAddByUrl(id, x.episodeId))
 
       const useServerData = await checkIfShouldUseServerData()
       if (useServerData && newQueueItemIndex > -1) {
