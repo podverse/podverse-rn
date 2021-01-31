@@ -1,4 +1,4 @@
-import { convertNowPlayingItemToEpisode } from 'podverse-shared'
+import { convertNowPlayingItemToEpisode, NowPlayingItem } from 'podverse-shared'
 import { NavigationActions, StackActions } from 'react-navigation'
 import { PV } from '../resources'
 
@@ -31,28 +31,23 @@ export const navigateToEpisodeScreenWithItem = (navigation: any, item: any) => {
   Navigate to the PodcastScreen located within the PodcastsStackNavigator,
   and populate it with podcast data from an object of type NowPlayingItem.
  */
-export const navigateToPodcastScreenWithItem = (navigation: any, item: any) => {
-  const resetAction = StackActions.reset({
-    index: 1,
-    actions: [
-      NavigationActions.navigate({ routeName: PV.RouteNames.PodcastsScreen }),
-      NavigationActions.navigate({
-        routeName: PV.RouteNames.PodcastScreen,
-        params: {
-          addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
-          podcastId: item.podcastId,
-          podcast: {
-            id: item.podcastId,
-            title: item.podcastTitle,
-            imageUrl: item.podcastImageUrl
-          }
+export const navigateToPodcastScreenWithItem = (navigation: any, item: NowPlayingItem) => {
+  navigation.dismiss()
+  navigation.dispatch(NavigationActions.navigate({ routeName: PV.RouteNames.PodcastsScreen }))
+  navigation.dispatch(
+    NavigationActions.navigate({
+      routeName: PV.RouteNames.PodcastScreen,
+      params: {
+        addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl,
+        podcastId: item.podcastId,
+        podcast: {
+          id: item.podcastId,
+          title: item.podcastTitle,
+          imageUrl: item.podcastImageUrl
         }
-      })
-    ],
-    key: 'Podcasts'
-  })
-
-  navigation.dispatch(resetAction)
+      }
+    })
+  )
 }
 
 /*

@@ -18,7 +18,6 @@ const mediaMoreButtons = (
   item: any = {},
   navigation: any,
   config: {
-    handlePlayItem: any
     handleDismiss: any
     handleDownload: any
     handleDeleteClip: any
@@ -28,8 +27,7 @@ const mediaMoreButtons = (
 ) => {
   if (!item || !item.episodeId) return
 
-  const { handlePlayItem, handleDismiss, handleDownload, handleDeleteClip, includeGoToPodcast, includeGoToEpisode } =
-    config || {}
+  const { handleDismiss, handleDownload, handleDeleteClip, includeGoToPodcast, includeGoToEpisode } = config || {}
   const globalState = getGlobal()
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
   const downloadingText = isDownloading ? translate('Downloading Episode') : translate('Download Episode')
