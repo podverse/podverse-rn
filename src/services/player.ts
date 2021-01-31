@@ -486,9 +486,12 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (t
   if (!currentNowPlayingItem) {
     const results = await getHistoryItemsLocally()
     const { userHistoryItems } = results
-    currentNowPlayingItem = userHistoryItems.find((x: any) =>
-      checkIfIdMatchesEpisodeIdOrAddByUrl(trackId, x.episodeId, x.addByRSSPodcastFeedUrl)
-    )
+
+    currentNowPlayingItem = userHistoryItems.find((x: any) => {
+      if (!x.clipId && x.episodeId) {
+        return checkIfIdMatchesEpisodeIdOrAddByUrl(trackId, x.episodeId, x.addByRSSPodcastFeedUrl)
+      }
+    })
   }
 
   if (!currentNowPlayingItem) {

@@ -155,7 +155,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
       return (
         <EpisodeTableCell
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null, userPlaybackPosition))}
           handleNavigationPress={() =>
             this.props.navigation.navigate(PV.RouteNames.MoreEpisodeScreen, {
               episode: item

@@ -68,7 +68,7 @@ const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
 export const TimeRemainingWidget = (props: Props) => {
   const { clipTime, handleMorePress, item, mediaFileDuration, style, transparent, userPlaybackPosition } = props
   const { episode = {}, podcast = {} } = item
-  const playingItem = convertToNowPlayingItem(item, episode, podcast)
+  const playingItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
   const [player] = useGlobal('player')
   const { nowPlayingItem, playbackState } = player
 

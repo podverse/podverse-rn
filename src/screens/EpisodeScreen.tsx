@@ -194,7 +194,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
       <ScrollView style={styles.view} {...testProps('episode_screen_view')}>
         <EpisodeTableHeader
           episodeDownloaded={episodeDownloaded}
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast))}
+          handleMorePress={() =>
+            this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast, userPlaybackPosition))
+          }
           episode={episode}
           isLoading={isLoading}
           mediaFileDuration={mediaFileDuration}
