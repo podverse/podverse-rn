@@ -138,6 +138,14 @@ export const playNextFromQueue = async () => {
   }
 }
 
+const handleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem) => {
+  await setPlaybackPosition(item.clipStartTime)
+  const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(item)
+  await setNowPlayingItem(nowPlayingItemEpisode, item.clipStartTime || 0)
+  await PVTrackPlayer.play()
+  await loadChapterPlaybackInfo()
+}
+
 export const loadItemAndPlayTrack = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
@@ -155,11 +163,7 @@ export const loadItemAndPlayTrack = async (
 
     if (item.clipIsOfficialChapter) {
       if (lastNowPlayingItem && item.episodeId === lastNowPlayingItem.episodeId) {
-        await setPlaybackPosition(item.clipStartTime)
-        const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(item)
-        await setNowPlayingItem(nowPlayingItemEpisode, item.clipStartTime || 0)
-        await PVTrackPlayer.play()
-        await loadChapterPlaybackInfo()
+        await handleLoadChapterForNowPlayingEpisode(item)
         return
       } else {
         await loadChapterPlaybackInfo()
