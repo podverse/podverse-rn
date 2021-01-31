@@ -238,14 +238,12 @@ export const loadItemAndPlayTrack = async (
   const lastPlayingItem = await getNowPlayingItemLocally()
   const historyItemsIndex = await getHistoryItemsIndexLocally()
 
-  const { clipId, clipIsOfficialChapter, episodeId } = item
+  const { clipId, episodeId } = item
   if (!clipId && episodeId) {
     item.episodeDuration = historyItemsIndex?.episodes[episodeId]?.mediaFileDuration || 0
   }
 
-  if (!clipIsOfficialChapter) {
-    addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
-  }
+  addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
 
   if (Platform.OS === 'ios') {
     TrackPlayer.reset()
