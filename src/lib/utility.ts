@@ -390,8 +390,9 @@ export const removeArticles = (str: string) => {
   return str
 }
 
-export const checkIfIdMatchesEpisodeIdOrAddByUrl = (
+export const checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl = (
   id?: string,
+  clipId?: string,
   episodeId?: string,
   addByRSSPodcastFeedUrl?: string
 ) => {
@@ -399,6 +400,8 @@ export const checkIfIdMatchesEpisodeIdOrAddByUrl = (
 
   if (addByRSSPodcastFeedUrl) {
     matches = addByRSSPodcastFeedUrl === id
+  } else if (clipId) {
+    matches = clipId === id
   } else if (episodeId) {
     matches = episodeId === id
   }
