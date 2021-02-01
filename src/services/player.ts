@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import {
   convertNowPlayingItemClipToNowPlayingItemEpisode,
-  convertNowPlayingItemToEpisode,
   convertToNowPlayingItem,
   NowPlayingItem
 } from 'podverse-shared'
@@ -10,7 +9,7 @@ import RNFS from 'react-native-fs'
 import TrackPlayer, { Track } from 'react-native-track-player'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
-import { checkIfIdMatchesEpisodeIdOrAddByUrl, getExtensionFromUrl } from '../lib/utility'
+import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PlayerEventEmitter from './playerEventEmitter'
 import {
@@ -22,7 +21,7 @@ import {
   removeQueueItem
 } from './queue'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally, getHistoryItemsLocally } from './userHistoryItem'
-import { getNowPlayingItem, getNowPlayingItemLocally, setNowPlayingItem } from './userNowPlayingItem'
+import { getNowPlayingItem, getNowPlayingItemLocally } from './userNowPlayingItem'
 
 // TODO: setupPlayer is a promise, could this cause an async issue?
 TrackPlayer.setupPlayer({
@@ -83,6 +82,7 @@ export const getClipHasEnded = async () => {
 }
 
 export const handleResumeAfterClipHasEnded = async () => {
+  await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
   const nowPlayingItem = await getNowPlayingItemLocally()
   const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(nowPlayingItem)
   const playbackPosition = await PVTrackPlayer.getPosition()
@@ -285,7 +285,8 @@ export const playNextFromQueue = async () => {
   if (queueItems && queueItems.length > 1) {
     await PVTrackPlayer.skipToNext()
     const currentId = await PVTrackPlayer.getCurrentTrack()
-    const item = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentId)
+    const setPlayerClipIsLoadedIfClip = true
+    const item = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentId, setPlayerClipIsLoadedIfClip)
     if (item) {
       await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0)
       await removeQueueItem(item)
@@ -319,7 +320,8 @@ export const createTrack = async (item: NowPlayingItem) => {
   if (!item) return
 
   const {
-    episodeId: id,
+    clipId,
+    episodeId,
     episodeMediaUrl = '',
     episodeTitle = 'Untitled Episode',
     podcastImageUrl,
@@ -327,12 +329,13 @@ export const createTrack = async (item: NowPlayingItem) => {
     podcastTitle = 'Untitled Podcast'
   } = item
   let track = null
-
   const imageUrl = podcastShrunkImageUrl ? podcastShrunkImageUrl : podcastImageUrl
 
-  if (id) {
-    const isDownloadedFile = await checkIfFileIsDownloaded(id, episodeMediaUrl)
-    const filePath = await getDownloadedFilePath(id, episodeMediaUrl)
+  const id = clipId || episodeId
+
+  if (episodeId) {
+    const isDownloadedFile = await checkIfFileIsDownloaded(episodeId, episodeMediaUrl)
+    const filePath = await getDownloadedFilePath(episodeId, episodeMediaUrl)
 
     if (isDownloadedFile) {
       track = {
@@ -473,10 +476,13 @@ export const getPlaybackSpeed = async () => {
   }
 }
 
-export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (trackId: string) => {
+export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (
+  trackId: string,
+  setPlayerClipIsLoadedIfClip?: boolean
+) => {
   const queueItems = await getQueueItemsLocally()
   const queueItemIndex = queueItems.findIndex((x: any) =>
-    checkIfIdMatchesEpisodeIdOrAddByUrl(trackId, x.episodeId, x.addByRSSPodcastFeedUrl)
+    checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId, x.addByRSSPodcastFeedUrl)
   )
   let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
   if (currentNowPlayingItem) removeQueueItem(currentNowPlayingItem)
@@ -485,16 +491,23 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (t
     const results = await getHistoryItemsLocally()
     const { userHistoryItems } = results
 
-    currentNowPlayingItem = userHistoryItems.find((x: any) => {
-      if (!x.clipId && x.episodeId) {
-        return checkIfIdMatchesEpisodeIdOrAddByUrl(trackId, x.episodeId, x.addByRSSPodcastFeedUrl)
-      }
-    })
+    currentNowPlayingItem = userHistoryItems.find((x: any) =>
+      checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId, x.addByRSSPodcastFeedUrl)
+    )
   }
 
   if (!currentNowPlayingItem) {
     currentNowPlayingItem = await getDownloadedEpisode(trackId)
     currentNowPlayingItem = convertToNowPlayingItem(currentNowPlayingItem)
+  }
+
+  if (setPlayerClipIsLoadedIfClip && currentNowPlayingItem?.clipId) {
+    await AsyncStorage.setItem(PV.Keys.PLAYER_CLIP_IS_LOADED, 'TRUE')
+  }
+
+  const playerClipIsLoaded = await AsyncStorage.getItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
+  if (!playerClipIsLoaded && currentNowPlayingItem?.clipId) {
+    currentNowPlayingItem = convertNowPlayingItemClipToNowPlayingItemEpisode(currentNowPlayingItem)
   }
 
   return currentNowPlayingItem
