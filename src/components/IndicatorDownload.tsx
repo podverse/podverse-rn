@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import { getGlobal } from 'reactn'
 import { Icon } from '.'
 import { PV } from '../resources'

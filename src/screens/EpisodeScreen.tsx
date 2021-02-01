@@ -18,6 +18,7 @@ import { replaceLinebreaksWithBrTags, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
 import { trackPageView } from '../services/tracking'
+import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { retriveNowPlayingItemChapters } from '../state/actions/playerChapters'
 import { core } from '../styles'
 
@@ -186,9 +187,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const showClipsCell = hasInternetConnection && totalClips > 0
     const showChaptersCell = hasInternetConnection && totalChapters > 0
 
-    const mediaFileDuration = this.global.session?.userInfo?.historyItemsIndex?.episodes[episodeId]?.mediaFileDuration
-    const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[episodeId]
-      ?.userPlaybackPosition
+    const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(episodeId)
 
     return (
       <ScrollView style={styles.view} {...testProps('episode_screen_view')}>

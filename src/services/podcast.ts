@@ -87,7 +87,9 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
             imageUrl: episode.podcast_shrunkImageUrl || episode.podcast_imageUrl,
             title: episode.podcast_title
           }
-          await downloadEpisode(episode, podcast, false, true)
+          const restart = false
+          const waitToAddTask = true
+          await downloadEpisode(episode, podcast, restart, waitToAddTask)
         }
       }, 3000)
 

@@ -93,6 +93,7 @@ export const downloadEpisode = async (
     console.log('downloadEpisode: Does not have a valid downloading connection')
     return
   }
+
   const ext = getExtensionFromUrl(episode.mediaUrl)
 
   if (!restart) {
@@ -211,15 +212,23 @@ export const initDownloads = async () => {
 
     if (episode) {
       const bytesTotal = downloadTask.totalBytes ? convertBytesToHumanReadableString(downloadTask.totalBytes) : '---'
+      const podcast = episode.podcast || {}
 
       downloadTaskStates.push({
+        addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl || '',
         bytesTotal,
         bytesWritten: '0 KB',
-        episodeId: episode.id,
-        episodeTitle: episode.title,
+        episodeId: episode.id || '',
+        episodeImageUrl: episode.imageUrl || '',
+        episodeMediaUrl: episode.mediaUrl || '',
+        episodePubDate: episode.pubDate || '',
+        episodeTitle: episode.title || '',
         percent: 0,
-        podcastImageUrl: episode.podcast.shrunkImageUrl || episode.podcast.imageUrl,
-        podcastTitle: (episode.podcast && episode.podcast.title) || '',
+        podcastId: podcast.id || '',
+        podcastImageUrl: podcast.shrunkImageUrl || episode.podcast.imageUrl || '',
+        podcastIsExplicit: !!podcast.isExplicit,
+        podcastSortableTitle: podcast.sortableTitle || '',
+        podcastTitle: podcast.title || '',
         status: downloadTask.state
       } as DownloadState.DownloadTaskState)
     }
@@ -231,7 +240,8 @@ export const initDownloads = async () => {
       if (existingDownloadTasks.some((x: any) => x.id === filteredDownloadTask.episodeId)) {
         // Wait for task.stop() to complete
         setTimeout(() => {
-          downloadEpisode(episode, episode.podcast, true)
+          const restart = true
+          downloadEpisode(episode, episode.podcast, restart)
         }, timeout)
       }
     }
@@ -255,15 +265,23 @@ export const initDownloads = async () => {
   }
 }
 
-export const resumeDownloadTask = async (episodeId: string) => {
+export const resumeDownloadTask = async (downloadTaskState: DownloadState.DownloadTaskState) => {
+  const { episodeId } = downloadTaskState
   const task = downloadTasks.find((task) => task.id === episodeId)
+
   if (existingDownloadTasks.some((x: any) => x.id === episodeId)) {
     const downloadingEpisodes = await getDownloadingEpisodes()
     const episode = downloadingEpisodes.find((x: any) => x.id === episodeId)
-    await downloadEpisode(episode, episode.podcast, true)
+    const restart = true
+    await downloadEpisode(episode, episode.podcast, restart)
     existingDownloadTasks = existingDownloadTasks.filter((x: any) => x.id !== episodeId)
   } else if (task) {
     task.resume()
+  } else {
+    const podcast = DownloadState.convertDownloadTaskStateToPodcast(downloadTaskState)
+    const episode = DownloadState.convertDownloadTaskStateToEpisode(downloadTaskState)
+    const restart = true
+    await downloadEpisode(episode, podcast, restart)
   }
 }
 
@@ -276,7 +294,8 @@ export const refreshDownloads = async () => {
   })
 }
 
-export const pauseDownloadTask = (episodeId: string) => {
+export const pauseDownloadTask = (downloadTaskState: DownloadState.DownloadTaskState) => {
+  const { episodeId } = downloadTaskState
   const task = downloadTasks.find((task) => task.id === episodeId)
   if (task) task.pause()
 }
