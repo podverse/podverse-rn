@@ -4,6 +4,7 @@ import React from 'reactn'
 import { convertSecToHHMMSS } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer, setPlaybackPosition } from '../services/player'
+import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { sliderStyles } from '../styles'
 import { Text } from './'
 
@@ -115,13 +116,16 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
           maximumValue={isLoading ? 0 : 1}
           minimumTrackTintColor={PV.Colors.skyDark}
           maximumTrackTintColor={PV.Colors.gray}
-          onSlidingComplete={(value) => {
+          onSlidingComplete={async (value) => {
             const position = value * duration
-            setPlaybackPosition(position)
+
             this.setState({
               position,
               slidingPosition: null
             })
+
+            await setPlaybackPosition(position)
+            await loadChapterPlaybackInfo()
           }}
           onValueChange={(value) =>
             this.setState({ slidingPosition: value * duration }, () => {

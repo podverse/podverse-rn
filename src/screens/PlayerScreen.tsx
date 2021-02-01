@@ -320,7 +320,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const episodeId = episode ? episode.id : null
     const mediaRefId = mediaRef ? mediaRef.id : null
 
-    if (episode && episode.description) {
+    if (episode?.description) {
       episode.description = replaceLinebreaksWithBrTags(episode.description)
     }
 

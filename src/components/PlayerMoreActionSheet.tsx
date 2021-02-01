@@ -80,7 +80,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     const { navigation } = this.props
     const { player } = this.global
     const { episode, nowPlayingItem } = player
-    let podcast = (episode && episode.podcast) || {}
+    let podcast = episode?.podcast || {}
 
     if (nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
       podcast = await getAddByRSSPodcastLocally(nowPlayingItem.addByRSSPodcastFeedUrl)

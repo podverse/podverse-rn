@@ -139,11 +139,11 @@ export const playNextFromQueue = async () => {
 }
 
 const handleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem) => {
-  await setPlaybackPosition(item.clipStartTime)
+  setPlaybackPosition(item.clipStartTime)
   const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(item)
   await setNowPlayingItem(nowPlayingItemEpisode, item.clipStartTime || 0)
   await PVTrackPlayer.play()
-  await loadChapterPlaybackInfo()
+  loadChapterPlaybackInfo()
 }
 
 export const loadItemAndPlayTrack = async (

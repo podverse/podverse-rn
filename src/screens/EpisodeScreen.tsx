@@ -106,10 +106,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const { episode, episodeId } = this.state
     this._initializePageData()
-    const pageTitle =
-      episode && episode.podcast
-        ? translate('Episode Screen - ') + episode.podcast.title + ' - ' + episode.title
-        : translate('Episode Screen - ') + translate('no info available')
+    const pageTitle = episode?.podcast
+      ? translate('Episode Screen - ') + episode.podcast.title + ' - ' + episode.title
+      : translate('Episode Screen - ') + translate('no info available')
     trackPageView('/episode/' + episodeId, pageTitle)
   }
 
@@ -179,7 +178,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     const episodeId = episode && episode.id
 
-    if (episode && episode.description) episode.description = replaceLinebreaksWithBrTags(episode.description)
+    if (episode?.description) episode.description = replaceLinebreaksWithBrTags(episode.description)
 
     const episodeDownloaded = episode && !!downloadedEpisodeIds[episode.id]
     const episodeDownloading = episode && !!downloadsActive[episode.id]
@@ -245,7 +244,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           </TouchableOpacity>
         )}
         <HTMLScrollView
-          html={(episode && episode.description) || ''}
+          html={episode?.description || ''}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           disableScrolling={true}
         />

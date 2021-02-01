@@ -395,7 +395,15 @@ export const checkIfIdMatchesEpisodeIdOrAddByUrl = (
   episodeId?: string,
   addByRSSPodcastFeedUrl?: string
 ) => {
-  return (addByRSSPodcastFeedUrl && id === addByRSSPodcastFeedUrl) || (episodeId && id === episodeId)
+  let matches = false
+
+  if (addByRSSPodcastFeedUrl) {
+    matches = addByRSSPodcastFeedUrl === id
+  } else if (episodeId) {
+    matches = episodeId === id
+  }
+
+  return matches
 }
 
 export const createEmailLinkUrl = (obj: any) => {

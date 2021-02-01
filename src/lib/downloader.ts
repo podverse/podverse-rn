@@ -225,7 +225,7 @@ export const initDownloads = async () => {
         episodeTitle: episode.title || '',
         percent: 0,
         podcastId: podcast.id || '',
-        podcastImageUrl: podcast.shrunkImageUrl || episode.podcast.imageUrl || '',
+        podcastImageUrl: podcast.shrunkImageUrl || podcast.imageUrl || '',
         podcastIsExplicit: !!podcast.isExplicit,
         podcastSortableTitle: podcast.sortableTitle || '',
         podcastTitle: podcast.title || '',

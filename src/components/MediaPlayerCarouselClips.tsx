@@ -168,7 +168,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
   _renderItem = ({ item, index }) => {
     const { player, screenPlayer } = this.global
     const { episode } = player
-    const podcast = (episode && episode.podcast) || {}
+    const podcast = episode?.podcast || {}
     const { queryFrom } = screenPlayer
     const testID = getTestID()
 
