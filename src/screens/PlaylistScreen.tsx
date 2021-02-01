@@ -17,9 +17,10 @@ import {
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
+import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { core } from '../styles'
 
@@ -149,13 +150,11 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <></>
       )
     } else {
-      const mediaFileDuration = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]?.mediaFileDuration
-      const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]
-        ?.userPlaybackPosition
+      const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
 
       return (
         <EpisodeTableCell
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null, userPlaybackPosition))}
           handleNavigationPress={() =>
             this.props.navigation.navigate(PV.RouteNames.MoreEpisodeScreen, {
               episode: item

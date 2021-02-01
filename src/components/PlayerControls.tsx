@@ -1,3 +1,4 @@
+import debounce from 'lodash/debounce'
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources'
@@ -9,6 +10,7 @@ import {
   setPlaybackPosition
 } from '../services/player'
 import { playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
+import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
@@ -21,6 +23,16 @@ type State = {
   progressValue: number
   showPlayerMoreActionSheet: boolean
 }
+
+const debouncedPlayerJumpBackward = debounce(loadChapterPlaybackInfo, 500, {
+  leading: true,
+  trailing: true
+})
+
+const debouncedPlayerJumpForward = debounce(loadChapterPlaybackInfo, 500, {
+  leading: true,
+  trailing: true
+})
 
 export class PlayerControls extends React.PureComponent<Props, State> {
   constructor(props: Props) {
@@ -55,11 +67,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
   _playerJumpBackward = async () => {
     const progressValue = await playerJumpBackward(PV.Player.jumpSeconds)
     this.setState({ progressValue })
+    debouncedPlayerJumpBackward()
   }
 
   _playerJumpForward = async () => {
     const progressValue = await playerJumpForward(PV.Player.jumpSeconds)
     this.setState({ progressValue })
+    debouncedPlayerJumpForward()
   }
 
   _hidePlayerMoreActionSheet = async () => {

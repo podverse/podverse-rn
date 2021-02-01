@@ -1,9 +1,9 @@
 import { Alert, StyleSheet, TouchableHighlight, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import SystemSetting from 'react-native-system-setting'
-import { NavigationActions, StackActions } from 'react-navigation'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
+import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
@@ -77,28 +77,16 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
   }
 
   _handlePodcastPagePress = async () => {
-    const { handleDismiss, navigation } = this.props
+    const { navigation } = this.props
     const { player } = this.global
     const { episode, nowPlayingItem } = player
-    const podcast = (episode && episode.podcast) || {}
-    handleDismiss()
+    let podcast = episode?.podcast || {}
 
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: PV.RouteNames.TabNavigator })]
-    })
-    await navigation.dispatch(resetAction)
     if (nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
-      const podcast = await getAddByRSSPodcastLocally(nowPlayingItem.addByRSSPodcastFeedUrl)
-      navigation.navigate(PV.RouteNames.PodcastScreen, {
-        podcast,
-        addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl
-      })
-    } else {
-      navigation.navigate(PV.RouteNames.PodcastScreen, {
-        podcast
-      })
+      podcast = await getAddByRSSPodcastLocally(nowPlayingItem.addByRSSPodcastFeedUrl)
     }
+
+    await navigateToPodcastScreenWithPodcast(navigation, podcast)
   }
 
   _headerActionSheetButtons = () => {

@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
-import { convertNowPlayingItemToEpisode } from 'podverse-shared'
 import { Alert } from 'react-native'
 import Config from 'react-native-config'
 import Share from 'react-native-share'
@@ -19,7 +18,6 @@ const mediaMoreButtons = (
   item: any = {},
   navigation: any,
   config: {
-    handlePlayItem: any
     handleDismiss: any
     handleDownload: any
     handleDeleteClip: any
@@ -29,8 +27,7 @@ const mediaMoreButtons = (
 ) => {
   if (!item || !item.episodeId) return
 
-  const { handlePlayItem, handleDismiss, handleDownload, handleDeleteClip, includeGoToPodcast, includeGoToEpisode } =
-    config || {}
+  const { handleDismiss, handleDownload, handleDeleteClip, includeGoToPodcast, includeGoToEpisode } = config || {}
   const globalState = getGlobal()
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
   const downloadingText = isDownloading ? translate('Downloading Episode') : translate('Download Episode')

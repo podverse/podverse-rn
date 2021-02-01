@@ -62,7 +62,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
   _renderItem = ({ item, index }) => {
     const { player } = this.global
     const { episode } = player
-    const podcast = (episode && episode.podcast) || {}
+    const podcast = episode?.podcast || {}
     const testID = getTestID()
 
     item = {

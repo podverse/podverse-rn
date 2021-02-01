@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
@@ -25,68 +26,19 @@ const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsA
   trailing: false
 })
 
-// NOTE: Disabled the interval handling below because it caused async loading problems...
-// NOTE: Sometimes when there is poor internet connectivity, the addOrUpdateHistoryItem request will fail.
-// This will result in the current item mising from the user's history, and the next time they open
-// the app, it will load with an old history item instead of the last one they were listening to.
-// To prevent this, we are repeatedly calling the addOrUpdateHistoryItem method on an interval until
-// it succeeds. When a new item loads, it should clear out the previous interval.
-// addOrUpdateHistoryItem is also called in handleNetworkChange in App.jsx on connection to wifi and cellular,
-// since it is possible that this interval succeeds locally when their is no internet connection,
-// and never calls to sync with the server.
-// handleAddOrUpdateRequestInterval uses the BackgroundTimer so that the code will continue to be called
-// while the app is in the background.
-
-// NOTE: iOS does not run while the screen is locked and the display is off.
-// This seems to be a limitation that cannot be worked around, aside from a geolocation API based work-around...
-let addOrUpdateHistoryItemSucceeded = false
-let addOrUpdateInterval = null as any
-let intervalCount = 0
-const handleAddOrUpdateRequestInterval = (nowPlayingItem: any) => {
-  if (addOrUpdateInterval) clearInterval(addOrUpdateInterval)
-  if (!nowPlayingItem) return
-
-  const attemptAddOrUpdateHistoryItem = async () => {
-    intervalCount = intervalCount + 1
-
-    if (intervalCount >= 5) {
-      clearInterval(addOrUpdateInterval)
-      addOrUpdateHistoryItemSucceeded = false
-      intervalCount = 0
-    } else if (!addOrUpdateHistoryItemSucceeded) {
-      try {
-        addOrUpdateHistoryItemSucceeded = true
-        const playbackPosition = await PVTrackPlayer.getPosition()
-        const mediaFileDuration = await PVTrackPlayer.getDuration()
-        await addOrUpdateHistoryItem(nowPlayingItem, playbackPosition, mediaFileDuration)
-        clearInterval(addOrUpdateInterval)
-        intervalCount = 0
-      } catch (error) {
-        addOrUpdateHistoryItemSucceeded = false
-        console.log(error)
-      }
-    }
-  }
-
-  addOrUpdateInterval = setInterval(() => {
-    attemptAddOrUpdateHistoryItem()
-  }, 30000)
-}
-
 const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem) => {
   if (!currentNowPlayingItem) return
+
   await setNowPlayingItemLocally(currentNowPlayingItem, currentNowPlayingItem.userPlaybackPosition || 0)
 
-  if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
+  if (currentNowPlayingItem && currentNowPlayingItem.clipId && !currentNowPlayingItem.clipIsOfficialChapter) {
     PlayerEventEmitter.emit(PV.Events.PLAYER_CLIP_LOADED)
   }
 
-  if (!currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
+  if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
+    debouncedSetPlaybackPosition(currentNowPlayingItem.clipStartTime || 0)
+  } else if (!currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
     debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
-  }
-
-  if (currentNowPlayingItem) {
-    handleAddOrUpdateRequestInterval(currentNowPlayingItem)
   }
 
   PlayerEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
@@ -155,38 +107,39 @@ module.exports = async () => {
       const currentState = await PVTrackPlayer.getState()
       const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
 
-      if (clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying) {
+      const shouldHandleAfterClip = clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying
+      if (shouldHandleAfterClip) {
         await handleResumeAfterClipHasEnded()
-      }
-
-      if (Platform.OS === 'ios') {
-        if (x.state === PVTrackPlayer.STATE_PLAYING) {
-          updateUserPlaybackPosition()
-          const rate = await getPlaybackSpeed()
-          PVTrackPlayer.setRate(rate)
-        } else if (x.state === PVTrackPlayer.STATE_PAUSED || PVTrackPlayer.STATE_STOPPED) {
-          updateUserPlaybackPosition()
-        }
-      } else if (Platform.OS === 'android') {
-        /*
-          state key for android
-          NOTE: ready and pause use the same number, so there is no true ready state for Android :[
-          none      0
-          stopped   1
-          paused    2
-          playing   3
-          ready     2
-          buffering 6
-          ???       8
-        */
-        const stopped = 1
-        const paused = 2
-        const playing = 3
-        if (x.state === playing) {
-          const rate = await getPlaybackSpeed()
-          PVTrackPlayer.setRate(rate)
-        } else if (x.state === paused || x.state === stopped) {
-          updateUserPlaybackPosition()
+      } else {
+        if (Platform.OS === 'ios') {
+          if (x.state === PVTrackPlayer.STATE_PLAYING) {
+            updateUserPlaybackPosition()
+            const rate = await getPlaybackSpeed()
+            PVTrackPlayer.setRate(rate)
+          } else if (x.state === PVTrackPlayer.STATE_PAUSED || PVTrackPlayer.STATE_STOPPED) {
+            updateUserPlaybackPosition()
+          }
+        } else if (Platform.OS === 'android') {
+          /*
+            state key for android
+            NOTE: ready and pause use the same number, so there is no true ready state for Android :[
+            none      0
+            stopped   1
+            paused    2
+            playing   3
+            ready     2
+            buffering 6
+            ???       8
+          */
+          const stopped = 1
+          const paused = 2
+          const playing = 3
+          if (x.state === playing) {
+            const rate = await getPlaybackSpeed()
+            PVTrackPlayer.setRate(rate)
+          } else if (x.state === paused || x.state === stopped) {
+            updateUserPlaybackPosition()
+          }
         }
       }
     }

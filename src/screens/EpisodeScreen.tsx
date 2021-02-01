@@ -18,6 +18,7 @@ import { replaceLinebreaksWithBrTags, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
 import { trackPageView } from '../services/tracking'
+import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { retriveNowPlayingItemChapters } from '../state/actions/playerChapters'
 import { core } from '../styles'
 
@@ -105,10 +106,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const { episode, episodeId } = this.state
     this._initializePageData()
-    const pageTitle =
-      episode && episode.podcast
-        ? translate('Episode Screen - ') + episode.podcast.title + ' - ' + episode.title
-        : translate('Episode Screen - ') + translate('no info available')
+    const pageTitle = episode?.podcast
+      ? translate('Episode Screen - ') + episode.podcast.title + ' - ' + episode.title
+      : translate('Episode Screen - ') + translate('no info available')
     trackPageView('/episode/' + episodeId, pageTitle)
   }
 
@@ -178,7 +178,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     const episodeId = episode && episode.id
 
-    if (episode) episode.description = replaceLinebreaksWithBrTags(episode.description)
+    if (episode?.description) episode.description = replaceLinebreaksWithBrTags(episode.description)
 
     const episodeDownloaded = episode && !!downloadedEpisodeIds[episode.id]
     const episodeDownloading = episode && !!downloadsActive[episode.id]
@@ -186,15 +186,15 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const showClipsCell = hasInternetConnection && totalClips > 0
     const showChaptersCell = hasInternetConnection && totalChapters > 0
 
-    const mediaFileDuration = this.global.session?.userInfo?.historyItemsIndex?.episodes[episodeId]?.mediaFileDuration
-    const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[episodeId]
-      ?.userPlaybackPosition
+    const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(episodeId)
 
     return (
       <ScrollView style={styles.view} {...testProps('episode_screen_view')}>
         <EpisodeTableHeader
           episodeDownloaded={episodeDownloaded}
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast))}
+          handleMorePress={() =>
+            this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast, userPlaybackPosition))
+          }
           episode={episode}
           isLoading={isLoading}
           mediaFileDuration={mediaFileDuration}
@@ -244,7 +244,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           </TouchableOpacity>
         )}
         <HTMLScrollView
-          html={episode.description || ''}
+          html={episode?.description || ''}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           disableScrolling={true}
         />

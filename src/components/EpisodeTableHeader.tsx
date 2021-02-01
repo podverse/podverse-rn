@@ -37,10 +37,10 @@ export const EpisodeTableHeader = (props: Props) => {
   const pubDate = episode && episode.pubDate
   const isDownloaded = episodeDownloaded
 
-  let episodeTitle = episode && episode.title
+  let episodeTitle = episode?.title
   if (!episodeTitle) episodeTitle = translate('Untitled Episode')
 
-  const podcastTitle = episode && episode.podcast && episode.podcast.title
+  const podcastTitle = episode?.podcast?.title
   if (!podcastTitle) episodeTitle = translate('Untitled Podcast')
 
   const [fontScaleMode] = useGlobal('fontScaleMode')

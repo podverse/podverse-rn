@@ -1,7 +1,6 @@
 import { convertNowPlayingItemToMediaRef, convertToNowPlayingItem } from 'podverse-shared'
 import { Dimensions, StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
-import { Header } from 'react-navigation-stack'
 import React, { getGlobal, setGlobal } from 'reactn'
 import {
   ActionSheet,
@@ -321,7 +320,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const episodeId = episode ? episode.id : null
     const mediaRefId = mediaRef ? mediaRef.id : null
 
-    if (episode && episode.description) {
+    if (episode?.description) {
       episode.description = replaceLinebreaksWithBrTags(episode.description)
     }
 

@@ -25,6 +25,7 @@ import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCate
 import { getEpisodes } from '../services/episode'
 import { combineEpisodesWithAddByRSSEpisodesLocally, hasAddByRSSEpisodesLocally } from '../services/parser'
 import { trackPageView } from '../services/tracking'
+import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { removeDownloadedPodcastEpisode } from '../state/actions/downloads'
 import { core } from '../styles'
 
@@ -273,14 +274,14 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _renderEpisodeItem = ({ item, index }) => {
-    const mediaFileDuration = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]?.mediaFileDuration
-    const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]
-      ?.userPlaybackPosition
+    const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
 
     return (
       <EpisodeTableCell
         item={item}
-        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item?.podcast))}
+        handleMorePress={() =>
+          this._handleMorePress(convertToNowPlayingItem(item, null, item?.podcast, userPlaybackPosition))
+        }
         handleDownloadPress={this._handleDownloadPressed}
         handleNavigationPress={() => {
           this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {

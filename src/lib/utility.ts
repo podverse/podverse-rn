@@ -390,17 +390,20 @@ export const removeArticles = (str: string) => {
   return str
 }
 
-export const checkIfIdMatchesClipIdOrEpisodeId = (
+export const checkIfIdMatchesEpisodeIdOrAddByUrl = (
   id?: string,
-  clipId?: string,
   episodeId?: string,
   addByRSSPodcastFeedUrl?: string
 ) => {
-  return (
-    (clipId && id === clipId) ||
-    (!clipId && addByRSSPodcastFeedUrl && id === addByRSSPodcastFeedUrl) ||
-    (!clipId && episodeId && id === episodeId)
-  )
+  let matches = false
+
+  if (addByRSSPodcastFeedUrl) {
+    matches = addByRSSPodcastFeedUrl === id
+  } else if (episodeId) {
+    matches = episodeId === id
+  }
+
+  return matches
 }
 
 export const createEmailLinkUrl = (obj: any) => {

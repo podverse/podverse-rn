@@ -1,5 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { convertNowPlayingItemToEpisode, convertNowPlayingItemToMediaRef, NowPlayingItem } from 'podverse-shared'
+import {
+  convertNowPlayingItemClipToNowPlayingItemEpisode,
+  convertNowPlayingItemToEpisode,
+  convertNowPlayingItemToMediaRef,
+  NowPlayingItem
+} from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import {
@@ -7,6 +12,7 @@ import {
   loadItemAndPlayTrack as loadItemAndPlayTrackService,
   playNextFromQueue as playNextFromQueueService,
   PVTrackPlayer,
+  setPlaybackPosition,
   setPlaybackSpeed as setPlaybackSpeedService,
   togglePlay as togglePlayService
 } from '../../services/player'
@@ -17,7 +23,12 @@ import {
   setNowPlayingItem as setNowPlayingItemService
 } from '../../services/userNowPlayingItem'
 import { getQueueItems } from '../../state/actions/queue'
-import { clearChapterPlaybackInfo, retriveNowPlayingItemChapters, setChaptersOnGlobalState } from './playerChapters'
+import {
+  clearChapterPlaybackInfo,
+  loadChapterPlaybackInfo,
+  retriveNowPlayingItemChapters,
+  setChaptersOnGlobalState
+} from './playerChapters'
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
   if (!item) return
@@ -127,20 +138,43 @@ export const playNextFromQueue = async () => {
   }
 }
 
+const handleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem) => {
+  setPlaybackPosition(item.clipStartTime)
+  const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(item)
+  await setNowPlayingItem(nowPlayingItemEpisode, item.clipStartTime || 0)
+  await PVTrackPlayer.play()
+  loadChapterPlaybackInfo()
+}
+
 export const loadItemAndPlayTrack = async (
   item: NowPlayingItem,
   shouldPlay: boolean,
   forceUpdateOrderDate?: boolean
 ) => {
-  clearChapterPlaybackInfo()
+  const globalState = getGlobal()
 
   if (item) {
+    const { nowPlayingItem: lastNowPlayingItem } = globalState.player
+
+    const shouldClearPreviousPlaybackInfo = lastNowPlayingItem && lastNowPlayingItem.episodeId !== item.episodeId
+    if (shouldClearPreviousPlaybackInfo) {
+      await clearChapterPlaybackInfo()
+    }
+
+    if (item.clipIsOfficialChapter) {
+      if (lastNowPlayingItem && item.episodeId === lastNowPlayingItem.episodeId) {
+        await handleLoadChapterForNowPlayingEpisode(item)
+        return
+      } else {
+        await loadChapterPlaybackInfo()
+      }
+    }
+
     await updatePlayerState(item)
     await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate)
     showMiniPlayer()
   }
 
-  const globalState = getGlobal()
   setGlobal(
     {
       screenPlayer: {

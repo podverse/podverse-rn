@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem } from 'podverse-shared'
+import { getGlobal } from 'reactn'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData, getBearerToken } from './auth'
 import { request } from './request'
@@ -40,6 +41,18 @@ export const getHistoryItemsIndex = async () => {
 export const removeHistoryItem = async (item: NowPlayingItem) => {
   const useServerData = await checkIfShouldUseServerData()
   return useServerData ? removeHistoryItemOnServer(item.episodeId, item.clipId) : removeHistoryItemLocally(item)
+}
+
+export const getHistoryItemIndexInfoForEpisode = (episodeId: string) => {
+  const globalState = getGlobal()
+  const mediaFileDuration = globalState.session?.userInfo?.historyItemsIndex?.episodes[episodeId]?.mediaFileDuration
+  const userPlaybackPosition =
+    globalState.session?.userInfo?.historyItemsIndex?.episodes[episodeId]?.userPlaybackPosition
+
+  return {
+    mediaFileDuration,
+    userPlaybackPosition
+  }
 }
 
 export const addOrUpdateHistoryItemLocally = async (

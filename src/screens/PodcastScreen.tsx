@@ -37,6 +37,7 @@ import { getMediaRefs } from '../services/mediaRef'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { getPodcast } from '../services/podcast'
 import { trackPageView } from '../services/tracking'
+import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
@@ -384,15 +385,15 @@ export class PodcastScreen extends React.Component<Props, State> {
         testId = `${testIDPrefix}_episode_item_${index}`
       }
 
-      const mediaFileDuration = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]?.mediaFileDuration
-      const userPlaybackPosition = this.global.session?.userInfo?.historyItemsIndex?.episodes[item.id]
-        ?.userPlaybackPosition
+      const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
 
       return (
         <EpisodeTableCell
           item={episode}
           handleDownloadPress={() => this._handleDownloadPressed(item)}
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
+          handleMorePress={() =>
+            this._handleMorePress(convertToNowPlayingItem(item, null, podcast, userPlaybackPosition))
+          }
           handleNavigationPress={() => {
             this.props.navigation.navigate(PV.RouteNames.EpisodeScreen, {
               episode,

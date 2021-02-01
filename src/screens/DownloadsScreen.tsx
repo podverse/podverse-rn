@@ -3,10 +3,15 @@ import React from 'reactn'
 import { ActionSheet, Divider, DownloadTableCell, FlatList, SwipeRowBack, View } from '../components'
 import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
 import { translate } from '../lib/i18n'
-import { isOdd, testProps } from '../lib/utility'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
-import { pauseDownloadingEpisode, removeDownloadingEpisode, resumeDownloadingEpisode } from '../state/actions/downloads'
+import {
+  DownloadTaskState,
+  pauseDownloadingEpisode,
+  removeDownloadingEpisode,
+  resumeDownloadingEpisode
+} from '../state/actions/downloads'
 
 type Props = {
   navigation?: any
@@ -42,17 +47,17 @@ export class DownloadsScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
-  _handleItemPress = (downloadTask: any) => {
-    if (downloadTask.status === DownloadStatus.FINISHED) {
+  _handleItemPress = (downloadTaskState: DownloadTaskState) => {
+    if (downloadTaskState.status === DownloadStatus.FINISHED) {
       this.setState({
-        selectedItem: downloadTask,
+        selectedItem: downloadTaskState,
         showActionSheet: true
       })
       return
-    } else if (downloadTask.status === DownloadStatus.PAUSED) {
-      resumeDownloadingEpisode(downloadTask.episodeId)
+    } else if (downloadTaskState.status === DownloadStatus.PAUSED) {
+      resumeDownloadingEpisode(downloadTaskState)
     } else {
-      pauseDownloadingEpisode(downloadTask.episodeId)
+      pauseDownloadingEpisode(downloadTaskState)
     }
   }
 
