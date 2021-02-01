@@ -95,6 +95,11 @@ export interface InitialState {
   overlayAlert: {
     shouldShowAlert: boolean
   }
+  parser: {
+    addByRSSPodcastAuthModal: {
+      feedUrl: string
+    }
+  }
   player: {
     currentChapter: any
     currentChapters: any

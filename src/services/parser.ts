@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
@@ -126,9 +127,12 @@ export const parseAllAddByRSSPodcasts = async () => {
   const parsedPodcasts = []
   const finalParsedPodcasts = []
 
+  const allAddByRSSPodcastCredentials = await getAllAddByRSSPodcastCredentials()
+
   for (const url of urls) {
     try {
-      const parsedPodcast = await parseAddByRSSPodcast(url)
+      const credentials = allAddByRSSPodcastCredentials[url] || ''
+      const parsedPodcast = await parseAddByRSSPodcast(url, credentials)
       if (parsedPodcast) {
         parsedPodcasts.push(parsedPodcast)
       }
@@ -154,13 +158,60 @@ export const parseAllAddByRSSPodcasts = async () => {
   return finalParsedPodcasts
 }
 
-export const parseAddByRSSPodcast = async (feedUrl: string) => {
+const getAllAddByRSSPodcastCredentials = async () => {
+  let allCredentials = {}
+
+  try {
+    const allCredentialsString = await RNSecureKeyStore.get(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS)
+    allCredentials = allCredentialsString ? JSON.parse(allCredentialsString) : {}
+  } catch (error) {
+    console.log('getAllAddByRSSPodcastCredentials', error)
+
+    await RNSecureKeyStore.set(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, JSON.stringify({}), {
+      accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY
+    })
+  }
+
+  return allCredentials
+}
+
+// credentials are a string in format <username>:<password>
+const saveAddByRSSPodcastCredentials = async (feedUrl: string, credentials: string) => {
+  const allAddByRSSPodcastCredentials = await getAllAddByRSSPodcastCredentials()
+  allAddByRSSPodcastCredentials[feedUrl] = credentials
+
+  await RNSecureKeyStore.set(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, JSON.stringify(allAddByRSSPodcastCredentials), {
+    accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY
+  })
+}
+
+const removeAddByRSSPodcastCredentials = async (feedUrl: string) => {
+  const allAddByRSSPodcastCredentials = await getAllAddByRSSPodcastCredentials()
+  allAddByRSSPodcastCredentials[feedUrl] = ''
+
+  await RNSecureKeyStore.set(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, JSON.stringify(allAddByRSSPodcastCredentials), {
+    accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY
+  })
+}
+
+export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string) => {
   const userAgent = await getAppUserAgent()
+
+  const Authorization = credentials ? `Basic ${window.btoa(credentials)}` : ''
+
   const result = await podcastFeedParser.getPodcastFromURL({
     url: feedUrl,
-    headers: { 'User-Agent': userAgent },
+    headers: {
+      'User-Agent': userAgent,
+      ...(Authorization ? { Authorization } : {})
+    },
     timeout: 20000
   })
+
+  if (credentials) {
+    await saveAddByRSSPodcastCredentials(feedUrl, credentials)
+  }
+
   const { episodes: parsedEpisodes, meta } = result
 
   const title = meta.title && meta.title.trim()
@@ -295,6 +346,7 @@ export const removeAddByRSSPodcast = async (feedUrl: string) => {
   let podcasts = await getAddByRSSPodcastsLocally()
   podcasts = podcasts.filter((x: any) => x.addByRSSPodcastFeedUrl !== feedUrl)
   await setAddByRSSPodcastsLocally(podcasts)
+  await removeAddByRSSPodcastCredentials(feedUrl)
   let addByRSSPodcastFeedUrls = await getAddByRSSPodcastFeedUrlsLocally()
   addByRSSPodcastFeedUrls = addByRSSPodcastFeedUrls.filter((x: string) => x !== feedUrl)
   await setAddByRSSPodcastFeedUrlsLocally(addByRSSPodcastFeedUrls)
