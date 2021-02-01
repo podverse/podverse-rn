@@ -161,6 +161,10 @@ export const loadItemAndPlayTrack = async (
       await clearChapterPlaybackInfo()
     }
 
+    item.clipId
+      ? await AsyncStorage.setItem(PV.Keys.PLAYER_CLIP_IS_LOADED, 'TRUE')
+      : await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
+
     if (item.clipIsOfficialChapter) {
       if (lastNowPlayingItem && item.episodeId === lastNowPlayingItem.episodeId) {
         await handleLoadChapterForNowPlayingEpisode(item)
