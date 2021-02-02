@@ -17,7 +17,6 @@ import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { trackPageView } from '../services/tracking'
 import { addAddByRSSPodcast } from '../state/actions/parser'
-import { core } from '../styles'
 
 type Props = {
   navigation: any
@@ -78,23 +77,21 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
       this.props.navigation.setParams({ _savePodcastByRSSUrlIsLoading: true })
       this.setState({ isLoading: true }, async () => {
         try {
-          await addAddByRSSPodcast(url)
-          this.props.navigation.setParams({
-            _savePodcastByRSSUrlIsLoading: false
-          })
+          const addByRSSSucceeded = await addAddByRSSPodcast(url)
           this.setState({ isLoading: false })
-          const podcast = await getAddByRSSPodcastLocally(url)
-          this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
-            podcast,
-            addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
-          })
+
+          if (addByRSSSucceeded) {
+            this.props.navigation.setParams({
+              _savePodcastByRSSUrlIsLoading: false
+            })
+            const podcast = await getAddByRSSPodcastLocally(url)
+            this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
+              podcast,
+              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
+            })
+          }
         } catch (error) {
           console.log('_handleSavePodcastByRSSURL', error)
-          Alert.alert(
-            PV.Alerts.SOMETHING_WENT_WRONG.title,
-            PV.Alerts.SOMETHING_WENT_WRONG.message,
-            PV.Alerts.BUTTONS.OK
-          )
           this.props.navigation.setParams({
             _savePodcastByRSSUrlIsLoading: false
           })

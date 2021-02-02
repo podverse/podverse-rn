@@ -804,10 +804,10 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@podverse/podcast-feed-parser@^1.0.11":
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/@podverse/podcast-feed-parser/-/podcast-feed-parser-1.0.13.tgz#24ceb1cbaa0b0f538994d4862788a6dad42db438"
-  integrity sha512-Dwzw3CdWpP218R3TXGLUayLuNHEvaNHtlzZsd00iA70v/fz/XJQCUl4l8bPnVyxeP93Cbn2A0yR+s1KXecg8YQ==
+"@podverse/podcast-feed-parser@^1.0.14":
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/@podverse/podcast-feed-parser/-/podcast-feed-parser-1.0.14.tgz#17e637168cb325b8a686630d4646bab821faf002"
+  integrity sha512-Kt8FCSqBWkWWMAG/z3o7NxyYLnk80gTPR7452Cddm4AP4Llw6NHQIB4YpuSGaO8IuKjg+Z+jodOsFLjJCO8ppw==
   dependencies:
     abort-controller "^3.0.0"
     isomorphic-fetch "^3.0.0"
@@ -1010,6 +1010,11 @@
   integrity sha1-7CMA++fX3d1+udOr+HmZlkyvzkY=
   dependencies:
     axios "*"
+
+"@types/base-64@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@types/base-64/-/base-64-0.1.3.tgz#875320c0d019f576a179324124cdbd5031a411f5"
+  integrity sha512-DJpw7RKNMXygZ0j2xe6ROBqiJUy7JWEItkzOPBzrT35HUWS7VLYyW9XJX8yCCvE2xg8QD7wesvVyXFg8AVHTMA==
 
 "@types/glob@^7.1.1":
   version "7.1.3"
@@ -1739,6 +1744,11 @@ base-64@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
   integrity sha1-eAqZyE59YAJgNhURxId2E78k9rs=
+
+base-64@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/base-64/-/base-64-1.0.0.tgz#09d0f2084e32a3fd08c2475b973788eee6ae8f4a"
+  integrity sha512-kwDPIFCGx0NZHog36dj+tHiwP4QMzsZ3AgMViUBKI0+V5n4U0ufTCUMhnQ04diaRI8EX/QcPfql7zlhZ7j4zgg==
 
 base64-js@^1.0.2, base64-js@^1.1.2, base64-js@^1.2.0, base64-js@^1.2.3, base64-js@^1.3.1:
   version "1.5.1"
