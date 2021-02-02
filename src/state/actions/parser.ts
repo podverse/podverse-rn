@@ -19,15 +19,44 @@ export const getAddByRSSPodcasts = async () => {
   }
 }
 
-export const addAddByRSSPodcast = async (feedUrl: string) => {
-  if (!feedUrl) return
+export const clearAddByRSSPodcastAuthModalState = () => {
+  setGlobal({
+    parser: {
+      addByRSSPodcastAuthModal: {
+        feedUrl: ''
+      }
+    }
+  })
+}
+
+export const setAddByRSSPodcastAuthModalState = (feedUrl: string) => {
+  setGlobal({
+    parser: {
+      addByRSSPodcastAuthModal: {
+        feedUrl
+      }
+    }
+  })
+}
+
+export const addAddByRSSPodcast = async (feedUrl: string, credentials?: any) => {
+  let result = false
+
+  if (!feedUrl) return result
 
   try {
-    await handleAddOrRemoveByRSSPodcast(feedUrl, true)
+    const shouldAdd = true
+    await handleAddOrRemoveByRSSPodcast(feedUrl, shouldAdd, credentials)
+    result = true
   } catch (error) {
-    console.log('addAddByRSSPodcast add', error)
-    throw error
+    if (error.message === '401') {
+      setAddByRSSPodcastAuthModalState(feedUrl)
+    } else {
+      throw error
+    }
   }
+
+  return result
 }
 
 export const removeAddByRSSPodcast = async (feedUrl: string) => {
@@ -41,9 +70,9 @@ export const removeAddByRSSPodcast = async (feedUrl: string) => {
   }
 }
 
-const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean) => {
+const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean, credentials?: any) => {
   if (shouldAdd) {
-    const podcast = await parseAddByRSSPodcast(feedUrl)
+    const podcast = await parseAddByRSSPodcast(feedUrl, credentials)
     if (podcast) {
       const isLoggedIn = await checkIfLoggedIn()
       if (isLoggedIn) {
@@ -58,6 +87,7 @@ const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean
   const latestSubscribedPodcasts = await getSubscribedPodcastsLocally()
   const combinedPodcasts = parsedPodcasts.concat(latestSubscribedPodcasts[0])
   const alphabetizedPodcasts = sortPodcastArrayAlphabetically(combinedPodcasts)
+
   setGlobal({
     subscribedPodcasts: alphabetizedPodcasts,
     subscribedPodcastsTotalCount: alphabetizedPodcasts.length

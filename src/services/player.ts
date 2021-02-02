@@ -482,7 +482,7 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (
 ) => {
   const queueItems = await getQueueItemsLocally()
   const queueItemIndex = queueItems.findIndex((x: any) =>
-    checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId, x.addByRSSPodcastFeedUrl)
+    checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId)
   )
   let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
   if (currentNowPlayingItem) removeQueueItem(currentNowPlayingItem)
@@ -492,7 +492,7 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (
     const { userHistoryItems } = results
 
     currentNowPlayingItem = userHistoryItems.find((x: any) =>
-      checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId, x.addByRSSPodcastFeedUrl)
+      checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId)
     )
   }
 

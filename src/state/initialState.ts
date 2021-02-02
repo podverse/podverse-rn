@@ -23,6 +23,11 @@ const initialTheme: InitialState = {
   overlayAlert: {
     shouldShowAlert: false
   },
+  parser: {
+    addByRSSPodcastAuthModal: {
+      feedUrl: ''
+    }
+  },
   player: {
     currentChapter: null,
     currentChapters: [],
