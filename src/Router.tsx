@@ -15,12 +15,16 @@ import {
   EditPlaylistScreen,
   EditProfileScreen,
   EmailVerificationScreen,
+  EpisodeMediaRefScreen,
   EpisodeScreen,
   EpisodesScreen,
   FAQScreen,
+  FilterScreen,
+  HistoryScreen,
   MakeClipScreen,
   MembershipScreen,
   MoreScreen,
+  MyLibraryScreen,
   OnboardingScreen,
   PlayerScreen,
   PlaylistsAddToScreen,
@@ -57,7 +61,7 @@ const defaultNavigationOptions = ({ navigation }) => {
   }
 
   return {
-    headerStyle: { backgroundColor: PV.Colors.grayDarkest },
+    headerStyle: { backgroundColor: PV.Colors.ink, shadowColor: 'transparent' },
     title: PV.Tabs.Podcasts.title,
     headerTintColor: darkTheme.text.color,
     headerTitleStyle: {
@@ -90,6 +94,9 @@ const PodcastsNavigator = createStackNavigator(
     [PV.RouteNames.EpisodeScreen]: {
       screen: EpisodeScreen,
       path: PV.DeepLinks.Episode.path
+    },
+    [PV.RouteNames.EpisodeMediaRefScreen]: {
+      screen: EpisodeMediaRefScreen
     }
   },
   {
@@ -108,7 +115,10 @@ const PodcastsNavigator = createStackNavigator(
 const EpisodesNavigator = createStackNavigator(
   {
     [PV.RouteNames.EpisodesScreen]: EpisodesScreen,
-    [PV.RouteNames.EpisodeScreen]: EpisodeScreen
+    [PV.RouteNames.EpisodeScreen]: EpisodeScreen,
+    [PV.RouteNames.EpisodeMediaRefScreen]: {
+      screen: EpisodeMediaRefScreen
+    }
   },
   {
     defaultNavigationOptions,
@@ -145,11 +155,19 @@ const SearchNavigator = createStackNavigator(
   }
 )
 
+const FilterNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.FilterScreen]: { screen: FilterScreen, path: '' }
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
 const MoreNavigator = createStackNavigator(
   {
     [PV.RouteNames.MoreScreen]: MoreScreen,
     [PV.RouteNames.DownloadsScreen]: DownloadsScreen,
-    [PV.RouteNames.MyProfileScreen]: ProfileScreen,
     [PV.RouteNames.PlaylistScreen]: {
       screen: PlaylistScreen,
       path: PV.DeepLinks.Playlist.path
@@ -160,8 +178,6 @@ const MoreNavigator = createStackNavigator(
     },
     [PV.RouteNames.PlaylistsEpisodeScreen]: EpisodeScreen,
     [PV.RouteNames.PlaylistsPodcastScreen]: PodcastScreen,
-    [PV.RouteNames.EditPlaylistScreen]: EditPlaylistScreen,
-    [PV.RouteNames.EditProfileScreen]: EditProfileScreen,
     [PV.RouteNames.ProfileScreen]: {
       screen: ProfileScreen,
       path: PV.DeepLinks.Profile.path
@@ -181,7 +197,10 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen,
     [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
     [PV.RouteNames.FAQScreen]: FAQScreen,
-    [PV.RouteNames.QueueScreen]: QueueScreen
+    [PV.RouteNames.QueueScreen]: QueueScreen,
+    [PV.RouteNames.EpisodeMediaRefScreen]: {
+      screen: EpisodeMediaRefScreen
+    }
   },
   {
     defaultNavigationOptions,
@@ -190,12 +209,51 @@ const MoreNavigator = createStackNavigator(
         return (
           <View>
             <Image source={PV.Tabs.More.icon} style={{ tintColor }} resizeMode={'contain'} />
-            <DownloadsActiveBadge />
           </View>
         )
       },
       tabBarLabel: (props) => <TabBarLabel {...props} title='More' />,
       ...tabTestProps('tab_more_screen')
+    }
+  }
+)
+
+const MyLibraryNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.MyLibraryScreen]: MyLibraryScreen,
+    [PV.RouteNames.HistoryScreen]: HistoryScreen,
+    [PV.RouteNames.DownloadsScreen]: DownloadsScreen,
+    [PV.RouteNames.PlaylistScreen]: {
+      screen: PlaylistScreen,
+      path: PV.DeepLinks.Playlist.path
+    },
+    [PV.RouteNames.QueueScreen]: QueueScreen,
+    [PV.RouteNames.PlaylistsScreen]: {
+      screen: PlaylistsScreen,
+      path: PV.DeepLinks.Playlists.path
+    },
+    [PV.RouteNames.PlaylistsEpisodeScreen]: EpisodeScreen,
+    [PV.RouteNames.PlaylistsPodcastScreen]: PodcastScreen,
+    [PV.RouteNames.EditPlaylistScreen]: EditPlaylistScreen,
+    [PV.RouteNames.EditProfileScreen]: EditProfileScreen,
+    [PV.RouteNames.MyProfileScreen]: ProfileScreen,
+    [PV.RouteNames.EpisodeMediaRefScreen]: {
+      screen: EpisodeMediaRefScreen
+    }
+  },
+  {
+    initialRouteName: PV.RouteNames.MyLibraryScreen,
+    defaultNavigationOptions,
+    navigationOptions: {
+      tabBarIcon: ({ tintColor }) => {
+        return (
+          <View>
+            <Image source={PV.Tabs.Queue.icon} style={{ tintColor }} resizeMode={'contain'} />
+            <DownloadsActiveBadge />
+          </View>
+        )
+      },
+      tabBarLabel: (props) => <TabBarLabel {...props} title='My Library' />
     }
   }
 )
@@ -212,31 +270,10 @@ const OnboardingNavigator = createStackNavigator(
   }
 )
 
-const QueueNavigator = createStackNavigator(
-  {
-    [PV.RouteNames.QueueScreen]: QueueScreen
-  },
-  {
-    defaultNavigationOptions,
-    navigationOptions: {
-      tabBarIcon: ({ tintColor }) => {
-        return (
-          <View>
-            <Image source={PV.Tabs.Queue.icon} style={{ tintColor }} resizeMode={'contain'} />
-          </View>
-        )
-      },
-      tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Queue.title} />,
-      ...tabTestProps('tab_queue_screen')
-    },
-    initialRouteParams: { showMoreNavButton: true }
-  }
-)
-
 const allTabs = {
   Podcasts: { screen: PodcastsNavigator, path: '' },
   Episodes: EpisodesNavigator,
-  Queue: { screen: QueueNavigator, path: '' },
+  'My Library': { screen: MyLibraryNavigator, path: '' },
   Clips: ClipsNavigator,
   More: { screen: MoreNavigator, path: PV.DeepLinks.Search.path }
 }
@@ -344,6 +381,7 @@ const MainApp = createStackNavigator(
     [PV.RouteNames.PlayerNavigator]: { screen: PlayerNavigator, path: '' },
     PlaylistsAddToNavigator,
     SearchNavigator,
+    FilterNavigator,
     SleepTimerNavigator,
     WebPageNavigator,
     EmailVerificationNavigator,

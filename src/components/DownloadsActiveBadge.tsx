@@ -24,7 +24,7 @@ export const DownloadsActiveBadge = () => {
         fontScaleMode !== PV.Fonts.fontScale.larger &&
         fontScaleMode !== PV.Fonts.fontScale.largest && (
           <Badge
-            badgeStyle={{ borderWidth: 0 }}
+            badgeStyle={{ borderWidth: 0, backgroundColor: PV.Colors.redBadge }}
             textStyle={{ fontSize: PV.Fonts.sizes.sm }}
             status={'error'}
             value={downloadsActiveCount}

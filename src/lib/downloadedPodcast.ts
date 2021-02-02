@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { PV } from '../resources'
-import { clearNowPlayingItem, getNowPlayingItem } from '../services/player'
 import { sortPodcastArrayAlphabetically } from '../services/podcast'
+import { clearNowPlayingItem, getNowPlayingItem } from '../services/userNowPlayingItem'
 import { getDownloadedEpisodeLimits } from './downloadedEpisodeLimiter'
 import { deleteDownloadedEpisode } from './downloader'
 
@@ -72,14 +72,21 @@ export const getDownloadedPodcastEpisodeCounts = async () => {
 export const getDownloadedEpisodes = async () => {
   const episodes = []
   const downloadedPodcasts = await getDownloadedPodcasts()
+
   for (const podcast of downloadedPodcasts) {
     for (const episode of podcast.episodes) {
       episode.podcast = podcast
       episodes.push(episode)
     }
   }
+
   episodes.sort((a: any, b: any) => new Date(b.pubDate) - new Date(a.pubDate))
   return episodes
+}
+
+export const getDownloadedEpisode = async (episodeId: string) => {
+  const episodes = await getDownloadedEpisodes()
+  return episodes.find((x) => x.id === episodeId)
 }
 
 export const getDownloadedPodcast = async (podcastId: string) => {

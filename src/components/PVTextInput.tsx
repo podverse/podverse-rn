@@ -1,6 +1,7 @@
 import React from 'react'
 import { TextInput } from 'react-native'
 import { useGlobal } from 'reactn'
+import { Text, View } from '.'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
@@ -10,6 +11,7 @@ type Props = {
   autoCompleteType?: any
   autoCorrect?: boolean
   editable?: boolean
+  eyebrowTitle?: string
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
   inputRef?: any
@@ -27,6 +29,7 @@ type Props = {
   testID: string
   underlineColorAndroid?: any
   value?: string
+  wrapperStyle?: any
 }
 
 export const PVTextInput = (props: Props) => {
@@ -35,6 +38,7 @@ export const PVTextInput = (props: Props) => {
     autoCompleteType,
     autoCorrect,
     editable = true,
+    eyebrowTitle,
     fontSizeLargerScale,
     fontSizeLargestScale,
     inputRef,
@@ -51,7 +55,8 @@ export const PVTextInput = (props: Props) => {
     style,
     underlineColorAndroid,
     testID,
-    value
+    value,
+    wrapperStyle
   } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
@@ -62,33 +67,45 @@ export const PVTextInput = (props: Props) => {
   } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
     textInputStyle.push({ fontSize: fontSizeLargestScale })
   }
-  if (numberOfLines > 1) {
-    textInputStyle.push({ textAlignVertical: 'top' })
+
+  if (!value && numberOfLines > 1 && placeholder) {
+    textInputStyle.push({ flex: 0, justifyContent: 'center', minHeight: 59, paddingTop: 16, paddingBottom: 0 })
+  } else if (!value && numberOfLines === 1 && placeholder) {
+    textInputStyle.push({ flex: 0, justifyContent: 'center', minHeight: 59, paddingTop: 0, paddingBottom: 0 })
   }
 
+  const hasText = !!value && value.length
+
   return (
-    <TextInput
-      autoCapitalize={autoCapitalize}
-      autoCompleteType={autoCompleteType}
-      autoCorrect={autoCorrect}
-      blurOnSubmit={returnKeyType === 'done'}
-      editable={!!editable}
-      keyboardType={keyboardType}
-      multiline={numberOfLines > 1}
-      numberOfLines={numberOfLines}
-      onBlur={onBlur}
-      onChange={onChange}
-      onChangeText={onChangeText}
-      onSubmitEditing={onSubmitEditing}
-      placeholder={placeholder}
-      placeholderTextColor={placeholderTextColor || globalTheme.placeholderText.color}
-      ref={inputRef}
-      returnKeyType={returnKeyType}
-      secureTextEntry={secureTextEntry}
-      style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
-      underlineColorAndroid={underlineColorAndroid}
-      {...(testID ? testProps(`${testID}_text_input`) : {})}
-      value={value}
-    />
+    <View style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
+      {hasText && (!!eyebrowTitle || !!placeholder) && (
+        <Text style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]} testID={`${testID}_text_input_eyebrow`}>
+          {eyebrowTitle || placeholder}
+        </Text>
+      )}
+      <TextInput
+        autoCapitalize={autoCapitalize}
+        autoCompleteType={autoCompleteType}
+        autoCorrect={autoCorrect}
+        blurOnSubmit={returnKeyType === 'done'}
+        editable={!!editable}
+        keyboardType={keyboardType}
+        multiline={numberOfLines > 1}
+        numberOfLines={hasText ? numberOfLines : 1}
+        onBlur={onBlur}
+        onChange={onChange}
+        onChangeText={onChangeText}
+        onSubmitEditing={onSubmitEditing}
+        placeholder={placeholder}
+        placeholderTextColor={placeholderTextColor || globalTheme.placeholderText.color}
+        ref={inputRef}
+        returnKeyType={returnKeyType}
+        secureTextEntry={secureTextEntry}
+        style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
+        underlineColorAndroid={underlineColorAndroid}
+        {...(testID ? testProps(`${testID}_text_input`) : {})}
+        value={value}
+      />
+    </View>
   )
 }

@@ -3,7 +3,7 @@ import React from 'reactn'
 import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { getMembershipExpiration, getMembershipStatus, readableDate, testProps } from '../lib/utility'
+import { getMembershipExpiration, getMembershipStatus, readableTextDate, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { buy1YearPremium } from '../services/purchaseShared'
 import { trackPageView } from '../services/tracking'
@@ -110,7 +110,7 @@ export class MembershipScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.wrapper} {...testProps('membership_screen_view')}>
-        {isLoading && isLoggedIn && <ActivityIndicator />}
+        {isLoading && isLoggedIn && <ActivityIndicator fillSpace={true} />}
         {!isLoading && showNoInternetConnectionMessage && (
           <View style={styles.textRowCentered}>
             <Text style={[styles.subText, { textAlign: 'center' }]}>
@@ -133,7 +133,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                 {`Expires: `}
               </Text>
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-                {readableDate(expirationDate)}
+                {readableTextDate(expirationDate)}
               </Text>
             </View>
             <View style={styles.textRowCentered}>
@@ -208,11 +208,11 @@ const comparisonData = [
     column1: true,
     column2: true
   },
-  {
-    text: translate('light - dark mode'),
-    column1: true,
-    column2: true
-  },
+  // {
+  //   text: translate('light - dark mode'),
+  //   column1: true,
+  //   column2: true
+  // },
   {
     text: translate('create and share clips'),
     column1: false,

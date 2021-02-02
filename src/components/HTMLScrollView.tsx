@@ -1,18 +1,25 @@
 import { Dimensions, Linking, ScrollView, StyleSheet } from 'react-native'
 import HTML from 'react-native-render-html'
 import React, { useGlobal } from 'reactn'
-import { convertHHMMSSToAnchorTags, filterHTMLElementsFromString, removeHTMLAttributesFromString } from '../lib/utility'
+import {
+  convertHHMMSSToAnchorTags,
+  filterHTMLElementsFromString,
+  removeExtraInfoFromEpisodeDescription,
+  removeHTMLAttributesFromString
+} from '../lib/utility'
 import { PV } from '../resources'
 import { setPlaybackPosition } from '../services/player'
 
 type Props = {
+  disableScrolling?: boolean
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
   html: string
+  style: any
 }
 
 export const HTMLScrollView = (props: Props) => {
-  const { fontSizeLargerScale, fontSizeLargestScale, html } = props
+  const { disableScrolling, fontSizeLargerScale, fontSizeLargestScale, html, style } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const [censorNSFWText] = useGlobal('censorNSFWText')
@@ -25,6 +32,7 @@ export const HTMLScrollView = (props: Props) => {
   let formattedHtml = html ? removeHTMLAttributesFromString(html.sanitize(censorNSFWText)) : ''
   formattedHtml = filterHTMLElementsFromString(formattedHtml)
   formattedHtml = convertHHMMSSToAnchorTags(formattedHtml)
+  formattedHtml = removeExtraInfoFromEpisodeDescription(formattedHtml)
   formattedHtml = formattedHtml.linkifyHtml()
 
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
@@ -34,7 +42,7 @@ export const HTMLScrollView = (props: Props) => {
   }
 
   return (
-    <ScrollView style={styles.scrollView}>
+    <ScrollView style={[styles.scrollView, style]} scrollEnabled={!disableScrolling}>
       <HTML
         baseFontStyle={baseFontStyle}
         containerStyle={styles.html}

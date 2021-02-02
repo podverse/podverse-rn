@@ -9,40 +9,61 @@ type Props = {
   handleChangeText: any
   handleSubmitEditing?: any
   isSmallText?: boolean
-  selectedNumber?: number | string
+  selectedNumber?: number | string | null
+  subText?: string
   testID: string
   text: string
 }
 
 export const NumberSelectorWithText = (props: Props) => {
-  const { handleChangeText, handleSubmitEditing, isSmallText, selectedNumber = 0, testID, text } = props
+  const { handleChangeText, handleSubmitEditing, isSmallText, selectedNumber = 0, subText, testID, text } = props
   const [globalTheme] = useGlobal('globalTheme')
   const strNum = Number.isInteger(selectedNumber) ? selectedNumber.toString() : selectedNumber
   return (
-    <View style={styles.wrapper}>
-      <TextInput
-        autoCompleteType='off'
-        fontSizeLargestScale={PV.Fonts.largeSizes.md}
-        keyboardType='numeric'
-        onChangeText={handleChangeText}
-        onSubmitEditing={handleSubmitEditing}
-        placeholderTextColor={globalTheme.placeholderText.color}
-        returnKeyType='done'
-        style={[globalTheme.textInput, styles.textInput]}
-        {...(testID ? testProps(`${testID}_text_input`) : {})}
-        value={strNum}
-      />
-      <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={isSmallText ? styles.smallText : styles.text}>
-        {text}
-      </Text>
+    <View style={styles.outerWrapper}>
+      <View style={styles.innerWrapper}>
+        <TextInput
+          autoCompleteType='off'
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          keyboardType='numeric'
+          onChangeText={handleChangeText}
+          onSubmitEditing={handleSubmitEditing}
+          placeholderTextColor={globalTheme.placeholderText.color}
+          returnKeyType='done'
+          style={styles.textInput}
+          {...(testID ? testProps(`${testID}_text_input`) : {})}
+          value={strNum}
+          wrapperStyle={{ marginBottom: 0 }}
+        />
+        <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={isSmallText ? styles.smallText : styles.text}>
+          {text}
+        </Text>
+      </View>
+      {subText && (
+        <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          style={[globalTheme.textSecondary, styles.subText]}
+          {...(testID ? testProps(`${testID}_sub_text`) : {})}>
+          {subText}
+        </Text>
+      )}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  innerWrapper: {
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  outerWrapper: {},
   smallText: {
     flex: 1,
     marginHorizontal: 12
+  },
+  subText: {
+    marginTop: 12,
+    fontSize: PV.Fonts.sizes.md
   },
   text: {
     flex: 1,
@@ -51,15 +72,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 12
   },
   textInput: {
-    fontSize: PV.Fonts.sizes.xl,
+    fontSize: PV.Fonts.sizes.xxl,
     justifyContent: 'center',
-    minHeight: 44,
     textAlign: 'center',
-    width: 51
-  },
-  wrapper: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginVertical: 12
+    width: 44,
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    paddingVertical: 0,
+    paddingHorizontal: 0
   }
 })

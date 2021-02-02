@@ -3,57 +3,60 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { decodeHTMLString, readableDate, removeHTMLFromString, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { FastImage, IndicatorDownload, MoreButton, Text, View } from './'
+import { FastImage, IndicatorDownload, Text, View } from './'
+import { DownloadButton } from './DownloadButton'
+import { TimeRemainingWidget } from './TimeRemainingWidget'
 
 type Props = {
-  description?: string
   handleMorePress?: any
   handleNavigationPress?: any
-  hasZebraStripe?: boolean
+  handleDownloadPress?: any
   hideImage?: boolean
-  id: string
-  podcastImageUrl?: string
-  podcastTitle?: string
-  pubDate?: string
-  showPodcastTitle?: boolean
+  item?: any
+  mediaFileDuration?: number
+  pubDate?: any
+  showPodcastInfo?: boolean
   testID: string
-  title?: string
   transparent?: boolean
+  userPlaybackPosition?: number
 }
 
 export class EpisodeTableCell extends React.PureComponent<Props> {
   render() {
     const {
-      id,
       handleMorePress,
       handleNavigationPress,
-      hasZebraStripe,
+      handleDownloadPress,
       hideImage,
-      podcastImageUrl,
-      podcastTitle = translate('untitled podcast'),
-      pubDate = '',
-      showPodcastTitle,
+      item,
+      mediaFileDuration,
+      showPodcastInfo,
       testID,
-      transparent
+      transparent,
+      userPlaybackPosition
     } = this.props
-    let { description = '', title = '' } = this.props
+
+    const { id, mediaUrl, pubDate = '', podcast = {} } = item
+    let { description = '', title = '' } = item
+    const { imageUrl = '' } = podcast
+    const podcastTitle = podcast.title || translate('Untitled Podcast')
     description = removeHTMLFromString(description)
     description = decodeHTMLString(description)
 
     const { downloadedEpisodeIds, downloadsActive, fontScaleMode } = this.global
 
     const isDownloading = downloadsActive[id]
-    const isDownloaded = downloadedEpisodeIds[id]
+    const isDownloaded = item.addByRSSPodcastFeedUrl ? downloadedEpisodeIds[mediaUrl] : downloadedEpisodeIds[id]
 
-    if (!title) title = translate('untitled episode')
+    if (!title) title = translate('Untitled Episode')
 
     const titleStyle = (podcastTitle ? styles.title : [styles.title, { marginTop: 0 }]) as any
 
     const innerTopView = (
       <RNView style={styles.innerTopView}>
-        {!!podcastImageUrl && <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />}
+        {!!imageUrl && !hideImage && <FastImage isSmall={true} source={imageUrl} styles={styles.image} />}
         <RNView style={styles.textWrapper}>
-          {showPodcastTitle && podcastTitle && (
+          {showPodcastInfo && podcastTitle && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               isSecondary={true}
@@ -66,7 +69,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           {title && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              numberOfLines={4}
+              numberOfLines={1}
               style={titleStyle}
               testID={`${testID}_title`}>
               {title.trim()}
@@ -92,7 +95,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <Text
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         isSecondary={true}
-        numberOfLines={4}
+        numberOfLines={2}
         style={descriptionStyle}
         testID={`${testID}_description`}>
         {description.trim()}
@@ -100,7 +103,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     )
 
     return (
-      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper} transparent={transparent}>
+      <View style={styles.wrapper} transparent={transparent}>
         <RNView style={styles.wrapperTop}>
           {handleNavigationPress ? (
             <TouchableWithoutFeedback
@@ -111,23 +114,25 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           ) : (
             innerTopView
           )}
-          {handleMorePress && PV.Fonts.fontScale.largest !== fontScaleMode && (
-            <MoreButton
-              handleShowMore={handleMorePress}
-              height={hideImage ? 46 : 64}
-              isLoading={isDownloading}
-              testID={testID}
-            />
+          {!isDownloaded && PV.Fonts.fontScale.largest !== fontScaleMode && (
+            <DownloadButton testID={testID} isDownloading={isDownloading} onPress={() => handleDownloadPress(item)} />
           )}
         </RNView>
-        {!!description && handleNavigationPress && (
+        {handleNavigationPress ? (
           <TouchableWithoutFeedback
             onPress={handleNavigationPress}
             {...(testID ? testProps(`${testID}_bottom_view_nav`) : {})}>
             <RNView>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</RNView>
           </TouchableWithoutFeedback>
+        ) : (
+          bottomText
         )}
-        {!!description && !handleNavigationPress && bottomText}
+        <TimeRemainingWidget
+          handleMorePress={handleMorePress}
+          item={item}
+          mediaFileDuration={mediaFileDuration}
+          userPlaybackPosition={userPlaybackPosition}
+        />
       </View>
     )
   }
@@ -135,9 +140,9 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   description: {
-    fontSize: PV.Fonts.sizes.md,
-    marginTop: 8,
-    paddingLeft: 76
+    fontSize: PV.Fonts.sizes.sm,
+    color: PV.Colors.grayLighter,
+    marginVertical: 15
   },
   image: {
     flex: 0,
@@ -151,25 +156,29 @@ const styles = StyleSheet.create({
     marginRight: 4
   },
   podcastTitle: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.lg,
+    fontWeight: PV.Fonts.weights.bold,
     justifyContent: 'flex-start'
   },
   pubDate: {
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
-    marginTop: 3
+    fontWeight: PV.Fonts.weights.semibold,
+    color: PV.Colors.skyLight,
+    marginTop: 3,
+    marginRight: 10
   },
   textWrapper: {
     flex: 1
   },
   textWrapperBottomRow: {
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
   title: {
-    fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold
+    fontSize: PV.Fonts.sizes.xxl,
+    fontWeight: PV.Fonts.weights.thin
   },
   wrapper: {
     paddingBottom: 14,
@@ -177,6 +186,7 @@ const styles = StyleSheet.create({
     paddingTop: 16
   },
   wrapperTop: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 })

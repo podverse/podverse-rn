@@ -1,5 +1,6 @@
 import { View } from 'react-native'
 import FastImage from 'react-native-fast-image'
+import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
 import { Icon } from '.'
 import { isValidUrl } from '../lib/utility'
@@ -38,23 +39,30 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     const { offlineModeEnabled, userAgent } = this.global
     const cache = offlineModeEnabled ? 'cacheOnly' : 'web'
     const isValid = isValidUrl(source)
+    const isSvg = source && source.indexOf('.svg') > 0
+
+    const image = isSvg ? (
+      <SvgUri width='100%' height='100%' uri={source} style={styles} />
+    ) : (
+      <FastImage
+        key={uuid}
+        onError={this._handleError}
+        resizeMode={resizeMode}
+        source={{
+          uri: source,
+          cache,
+          headers: {
+            ...(userAgent ? { 'User-Agent': userAgent } : {})
+          }
+        }}
+        style={styles}
+      />
+    )
 
     return (
       <>
         {isValid && !hasError ? (
-          <FastImage
-            key={uuid}
-            onError={this._handleError}
-            resizeMode={resizeMode}
-            source={{
-              uri: source,
-              cache,
-              headers: {
-                ...(userAgent ? { 'User-Agent': userAgent } : {})
-              }
-            }}
-            style={styles}
-          />
+          image
         ) : (
           <View
             style={{

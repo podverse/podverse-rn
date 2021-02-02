@@ -19,6 +19,8 @@ export interface GlobalTheme {
   buttonPrimaryWrapper?: any
   buttonDisabledWrapper?: any
   divider?: any
+  dropdownButtonIcon?: any
+  dropdownButtonText?: any
   flatList?: any
   inputContainerText?: any
   link?: any
@@ -45,6 +47,8 @@ export interface GlobalTheme {
   text?: any
   textInput?: any
   textInputIcon?: any
+  textInputEyeBrow?: any
+  textInputPreLabel?: any
   textInputWrapper?: any
   view?: any
 }
@@ -54,6 +58,9 @@ export interface UserInfo {
   email?: string
   freeTrialExpiration?: string
   historyItems?: []
+  historyItemsCount: number
+  historyItemsIndex: any
+  historyQueryPage: number
   id?: string
   membershipExpiration?: string | null
   name?: string
@@ -89,6 +96,8 @@ export interface InitialState {
     shouldShowAlert: boolean
   }
   player: {
+    currentChapter: any
+    currentChapters: any
     hasErrored: boolean
     isPlaying: boolean
     nowPlayingItem: any
@@ -126,14 +135,15 @@ export interface InitialState {
     endOfResultsReached: boolean
     flatListData: any[]
     flatListDataTotalCount: number | null
-    hideRightItemWhileLoading: boolean
     isLoading: boolean
     isLoadingMore: boolean
     isQuerying: boolean
     queryFrom: string | null
     queryPage: number
     querySort: string | null
+    selectedFromLabel?: string | null
     selectedItem?: any
+    selectedSortLabel?: string | null
     showFullClipInfo: boolean
     showHeaderActionSheet: boolean
     showMoreActionSheet: boolean
@@ -183,13 +193,15 @@ export interface IFilters {
   _clipsKey: string
   _chaptersKey: string
   _playlistsKey: string
-  _aboutPodcastKey: string
-  _showNotesKey: string
-  _titleKey: string
   _myPlaylistsKey: string
   _fromThisPodcastKey: string
   _fromThisEpisodeKey: string
-  _allCategoriesKey: string
+  _sectionCategoryKey: string
+  _sectionFilterKey: string
+  _sectionFromKey: string
+  _sectionMyPlaylistsKey: string
+  _sectionSortKey: string
+  _sectionSubscribedPlaylistsKey: string
 }
 
 interface IFontLargeSizes {

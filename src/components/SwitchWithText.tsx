@@ -3,12 +3,12 @@ import { StyleSheet, Switch, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { core } from '../styles'
 import { Text, TextInput } from './'
 
 type Props = {
   inputAutoCorrect?: boolean
   inputEditable?: boolean
+  inputEyebrowTitle?: string
   inputHandleBlur?: any
   inputHandleSubmit?: any
   inputHandleTextChange?: any
@@ -20,12 +20,14 @@ type Props = {
   testID: string
   text: string
   value: boolean
+  wrapperStyle: any
 }
 
 export const SwitchWithText = (props: Props) => {
   const {
     inputAutoCorrect,
     inputEditable,
+    inputEyebrowTitle,
     inputHandleBlur,
     inputHandleSubmit,
     inputHandleTextChange,
@@ -36,12 +38,13 @@ export const SwitchWithText = (props: Props) => {
     subText,
     testID,
     text,
-    value
+    value,
+    wrapperStyle
   } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
-    <View>
+    <View style={wrapperStyle}>
       <View style={styles.switchWrapper}>
         <Switch onValueChange={onValueChange} value={value} {...(testID ? testProps(`${testID}_switch`) : {})} />
         <Text
@@ -56,6 +59,7 @@ export const SwitchWithText = (props: Props) => {
           autoCapitalize='none'
           autoCorrect={inputAutoCorrect}
           editable={!!inputEditable}
+          eyebrowTitle={inputEyebrowTitle}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
           onBlur={inputHandleBlur}
@@ -67,12 +71,13 @@ export const SwitchWithText = (props: Props) => {
           {...(testID ? testProps(`${testID}_text_input`) : {})}
           underlineColorAndroid='transparent'
           value={inputText}
+          wrapperStyle={styles.textInputWrapper}
         />
       )}
       {subText && (
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-          style={[core.textInputSubTitle, globalTheme.textSecondary, styles.subText]}
+          style={[globalTheme.textSecondary, styles.subText]}
           {...(testID ? testProps(`${testID}_sub_text`) : {})}>
           {subText}
         </Text>
@@ -83,12 +88,12 @@ export const SwitchWithText = (props: Props) => {
 
 const styles = StyleSheet.create({
   subText: {
-    marginTop: 8
+    marginTop: 16,
+    fontSize: PV.Fonts.sizes.lg
   },
   switchWrapper: {
     alignItems: 'center',
-    flexDirection: 'row',
-    marginVertical: 12
+    flexDirection: 'row'
   },
   text: {
     flex: 1,
@@ -97,10 +102,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 12
   },
   textInput: {
-    fontSize: PV.Fonts.sizes.xl,
-    justifyContent: 'center',
-    marginBottom: 12,
-    marginTop: 4,
-    minHeight: 44
+    fontSize: PV.Fonts.sizes.xxl,
+    justifyContent: 'center'
+  },
+  textInputWrapper: {
+    marginTop: 24
   }
 })

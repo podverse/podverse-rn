@@ -3,7 +3,9 @@ import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
 import { Credentials } from '../state/actions/auth'
+import { getQueueItems } from './queue'
 import { request } from './request'
+import { getHistoryItems, getHistoryItemsIndex, getHistoryItemsIndexLocally } from './userHistoryItem'
 
 export const getBearerToken = async () => {
   let bearerToken = ''
@@ -44,6 +46,7 @@ export const getAuthenticatedUserInfoLocally = async () => {
   let subscribedUserIds = []
   let queueItems = []
   let historyItems = []
+  let historyItemsIndex = {}
   let isLoggedIn = false
 
   try {
@@ -91,14 +94,9 @@ export const getAuthenticatedUserInfoLocally = async () => {
   }
 
   try {
-    const queueItemsJSON = await AsyncStorage.getItem(PV.Keys.QUEUE_ITEMS)
-    if (queueItemsJSON) {
-      queueItems = JSON.parse(queueItemsJSON)
-    }
+    queueItems = await getQueueItems()
   } catch (error) {
-    if (Array.isArray(queueItems)) {
-      await AsyncStorage.setItem(PV.Keys.QUEUE_ITEMS, JSON.stringify(queueItems))
-    }
+    console.log('getAuthenticatedUserInfoLocally error', error)
   }
 
   try {
@@ -112,6 +110,8 @@ export const getAuthenticatedUserInfoLocally = async () => {
     }
   }
 
+  historyItemsIndex = await getHistoryItemsIndexLocally()
+
   const bearerToken = await getBearerToken()
   isLoggedIn = !!bearerToken
 
@@ -122,7 +122,8 @@ export const getAuthenticatedUserInfoLocally = async () => {
       subscribedPodcastIds,
       subscribedUserIds,
       queueItems,
-      historyItems
+      historyItems,
+      historyItemsIndex
     },
     isLoggedIn
   ]
@@ -138,8 +139,16 @@ export const getAuthenticatedUserInfoFromServer = async (bearerToken: string) =>
     }
   })
 
-  const data = (response && response.data) || []
+  const data = (response && response.data) || {}
   const { addByRSSPodcastFeedUrls, subscribedPodcastIds = [] } = data
+  const page = 1
+  const { userHistoryItems, userHistoryItemsCount } = await getHistoryItems(page)
+  // Add history and queue properities to response to be added to the global state
+  data.historyItems = userHistoryItems
+  data.historyItemsCount = userHistoryItemsCount
+  data.historyItemsIndex = await getHistoryItemsIndex()
+  data.historyQueryPage = page
+  data.queueItems = await getQueueItems()
 
   if (Array.isArray(addByRSSPodcastFeedUrls)) {
     await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCAST_FEED_URLS, JSON.stringify(addByRSSPodcastFeedUrls))

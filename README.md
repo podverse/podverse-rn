@@ -21,9 +21,9 @@ All Podverse software is provided under a free and open source (FOSS) licence. F
 Available on the [App Store](https://apps.apple.com/us/app/podverse/id1390888454) and the [Google Play Store](https://play.google.com/store/apps/details?id=com.podverse).
 
 ## Team:
-- Mitch Downey – Programmer
-- Creon Creonopoulos - Programmer
-- Gary Johnson – Designer
+- Mitch Downey
+- Creon Creonopoulos
+- Gary Johnson
 
 ## Frequently Asked Questions:
 

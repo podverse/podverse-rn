@@ -7,7 +7,6 @@ import {
   QueueTableCell,
   SortableList,
   SortableListRow,
-  Text,
   TextInput,
   View
 } from '../components'
@@ -17,7 +16,6 @@ import { combineAndSortPlaylistItems, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { addOrRemovePlaylistItem, getPlaylist, updatePlaylist } from '../state/actions/playlist'
-import { core } from '../styles'
 
 type Props = {
   navigation?: any
@@ -161,7 +159,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     return <Divider />
   }
 
-  _renderRow = ({ active, data }) => {
+  _renderRow = ({ active, data, index }) => {
     const { isEditing } = this.state
     let cell
 
@@ -240,15 +238,12 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view} {...testProps('edit_playlist_screen_view')}>
         <View style={styles.topWrapper}>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
-            Title
-          </Text>
           <TextInput
             autoCapitalize='none'
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             onChangeText={this._onChangeTitle}
             onSubmitEditing={this._updatePlaylist}
-            placeholder={translate('playlist title')}
+            placeholder={translate('Playlist title')}
             returnKeyType='done'
             style={styles.textInput}
             testID={`${testIDPrefix}_title`}
@@ -281,9 +276,7 @@ const styles = StyleSheet.create({
   tableCellDivider: {
     marginBottom: 2
   },
-  textInput: {
-    fontSize: PV.Fonts.sizes.xl
-  },
+  textInput: {},
   topWrapper: {
     marginHorizontal: 8,
     marginVertical: 16

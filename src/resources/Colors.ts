@@ -19,6 +19,7 @@ export const Colors = {
   redLighter: '#c43745',
   red: '#bd2130',
   redDarker: '#aa1e2b',
+  redBadge: '#ff4548',
   orangeLighter: '#f6b472',
   orange: '#f4a24f',
   orangeDarker: '#c3813f',
@@ -28,5 +29,11 @@ export const Colors = {
   yellow: '#ffc107',
   opacity: 0.1,
   whiteOpaque: 'rgba(255, 255, 255, 0.85)',
-  blackOpaque: 'rgba(0, 0, 0, 0.7625)'
+  blackOpaque: 'rgba(0, 0, 0, 0.8)',
+  skyLight: '#74A8DC',
+  skyDark: '#6394C6',
+  brandBlueLight: '#3D9DFE',
+  brandBlueDark: '#1E80E3',
+  velvet: '#0F1235',
+  ink: '#010318'
 }

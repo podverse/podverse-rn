@@ -37,16 +37,39 @@ export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
 }
 
 export const readableDate = (date: string) => {
-  const dateObj = new Date(date)
+  const dateObj = date ? new Date(date) : new Date()
   const year = dateObj.getFullYear()
   const month = dateObj.getMonth() + 1
   const day = dateObj.getDate()
 
-  const today = new Date()
-  const yesterday = new Date(today)
-  yesterday.setDate(today.getDate() - 1)
-
   return month + '/' + day + '/' + year
+}
+
+const getMonthName = (date: any) => {
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ]
+  return monthNames[date.getMonth()]
+}
+
+export const readableTextDate = (date: string) => {
+  const dateObj = new Date(date)
+  const year = dateObj.getFullYear()
+  const month = getMonthName(dateObj)
+  const day = dateObj.getDate()
+
+  return `${month} ${day}, ${year}`
 }
 
 export const getHHMMSSArray = (sec: number) => {
@@ -101,6 +124,21 @@ export const convertSecToHHMMSS = (sec: number) => {
 
   if (result.length === 1) {
     result = '0:0' + result
+  }
+
+  return result
+}
+
+export const convertSecToHhoursMMinutes = (sec: number) => {
+  let totalSec = Math.floor(sec)
+  const hours = Math.floor(totalSec / 3600)
+  totalSec %= 3600
+  const minutes = Math.floor(totalSec / 60)
+
+  let result = `${minutes} min`
+
+  if (hours >= 1) {
+    result = `${hours} hr ` + result
   }
 
   return result
@@ -162,6 +200,11 @@ export const removeHTMLAttributesFromString = (html: string) => {
   return $.html()
 }
 
+export const removeExtraInfoFromEpisodeDescription = (html: string) => {
+  html = html.replace('<p>Show Notes</p>', '')
+  return html.replace(/<p>\s*<\/p>/, '')
+}
+
 export const filterHTMLElementsFromString = (html: string) => {
   if (html) {
     const finalHtml = html.replace(/<audio.*>.*?<\/audio>|<video.*>.*?<\/video>|<img.*>.*?<\/img>|<img.*>/gi, '')
@@ -178,15 +221,7 @@ export const formatTitleViewHtml = (episode: any) => {
   } else if (episode.title) {
     return `<p>${episode.title}</p>`
   } else {
-    return 'untitled episode'
-  }
-}
-
-export const convertURLToSecureProtocol = (url?: string) => {
-  if (url && url.indexOf('http://') > -1) {
-    return url.replace('http://', 'https://')
-  } else {
-    return url
+    return 'Untitled Episode'
   }
 }
 
@@ -355,17 +390,23 @@ export const removeArticles = (str: string) => {
   return str
 }
 
-export const checkIfIdMatchesClipIdOrEpisodeId = (
+export const checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl = (
   id?: string,
   clipId?: string,
   episodeId?: string,
   addByRSSPodcastFeedUrl?: string
 ) => {
-  return (
-    (clipId && id === clipId) ||
-    (!clipId && addByRSSPodcastFeedUrl && id === addByRSSPodcastFeedUrl) ||
-    (!clipId && episodeId && id === episodeId)
-  )
+  let matches = false
+
+  if (addByRSSPodcastFeedUrl) {
+    matches = addByRSSPodcastFeedUrl === id
+  } else if (clipId) {
+    matches = clipId === id
+  } else if (episodeId) {
+    matches = episodeId === id
+  }
+
+  return matches
 }
 
 export const createEmailLinkUrl = (obj: any) => {
@@ -502,15 +543,11 @@ export const getMakeClipIsPublic = async () => {
 
 export const isOdd = (num: number) => num % 2 === 1
 
-export const setCategoryQueryProperty = (queryFrom?: any, selectedCategory?: any, selectedSubCategory?: any) => {
+export const setCategoryQueryProperty = (queryFrom?: any, selectedCategory?: any, selectedCategorySub?: any) => {
   if (queryFrom === PV.Filters._categoryKey && selectedCategory) {
     return { categories: selectedCategory }
-  } else if (
-    queryFrom === PV.Filters._categoryKey &&
-    selectedSubCategory &&
-    selectedSubCategory !== PV.Filters._allCategoriesKey
-  ) {
-    return { categories: selectedSubCategory }
+  } else if (queryFrom === PV.Filters._categoryKey && selectedCategorySub) {
+    return { categories: selectedCategorySub }
   } else {
     return {}
   }
@@ -537,4 +574,12 @@ export const generateQueryParams = (query: any) => {
       return `${key}=${query[key]}`
     })
     .join('&')
+}
+
+export const overrideImageUrlWithChapterImageUrl = (nowPlayingItem: any, currentChapter: any) => {
+  let imageUrl = nowPlayingItem ? nowPlayingItem.podcastImageUrl : ''
+  if (nowPlayingItem && !nowPlayingItem.clipId && currentChapter && currentChapter.imageUrl) {
+    imageUrl = currentChapter.imageUrl
+  }
+  return imageUrl
 }

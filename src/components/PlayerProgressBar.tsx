@@ -1,9 +1,10 @@
-import { Dimensions, View } from 'react-native'
+import { Animated, Dimensions, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import React from 'reactn'
 import { convertSecToHHMMSS } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer, setPlaybackPosition } from '../services/player'
+import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { sliderStyles } from '../styles'
 import { Text } from './'
 
@@ -13,6 +14,7 @@ type Props = {
   clipStartTime?: number | null
   globalTheme: any
   isLoading?: boolean
+  isMakeClipScreen?: boolean
   value: number
 }
 
@@ -21,6 +23,7 @@ type State = {
   duration: number
   position: number
   slidingPosition: number | null
+  clipColorAnimation: any
 }
 
 let lastPropsValue = ''
@@ -39,61 +42,90 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
     return prevState
   }
 
+  isAnimationRunning: boolean
+
   constructor(props: Props) {
     super(props)
+
+    this.isAnimationRunning = false
 
     this.state = {
       bufferedPosition: 0,
       duration: 0,
       position: 0,
-      slidingPosition: null
+      slidingPosition: null,
+      clipColorAnimation: new Animated.Value(0)
     }
   }
 
+  _handleAnimation = () => {
+    if (this.isAnimationRunning) return
+    this.isAnimationRunning = true
+
+    Animated.timing(this.state.clipColorAnimation, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: false
+    }).start(() => {
+      Animated.timing(this.state.clipColorAnimation, {
+        toValue: 0,
+        duration: 2000,
+        useNativeDriver: false
+      }).start(() => {
+        this._handleAnimation()
+      })
+    })
+  }
+
   render() {
-    const { backupDuration, clipEndTime, clipStartTime, globalTheme, isLoading } = this.props
+    const { backupDuration, clipEndTime, clipStartTime, isLoading, isMakeClipScreen } = this.props
     const { position, slidingPosition } = this.state
+
+    const backgroundColorInterpolator = this.state.clipColorAnimation.interpolate({
+      inputRange: [0, 1],
+      outputRange: [PV.Colors.skyLight + '99', PV.Colors.yellow + '99']
+    })
 
     // If no item is currently in the TrackPlayer, fallback to use the
     // last loaded item's duration (backupDuration).
     let { duration } = this.state
-    duration = duration > 0 ? duration : backupDuration
+    duration = duration > 0 ? duration : backupDuration || 0
 
     const pos = slidingPosition || position
     const value = duration > 0 ? pos / duration : 0
 
-    const clipStartTimePosition = { left: 0 }
-    const clipEndTimePosition = { left: 0 }
-    const screenWidth = Dimensions.get('window').width
+    let clipStartTimePosition = 0
+    const sliderWidth = Dimensions.get('screen').width - sliderStyles.wrapper.marginHorizontal * 2
 
-    if (clipStartTime && duration > 0) {
-      const leftPosition = screenWidth * (clipStartTime / duration)
-      clipStartTimePosition.left = leftPosition
+    if (duration && clipStartTime) {
+      clipStartTimePosition = sliderWidth * (clipStartTime / duration)
     }
 
-    if (clipEndTime && duration > 0) {
-      const leftPosition = screenWidth * (clipEndTime / duration)
-      clipEndTimePosition.left = leftPosition
+    let clipWidthBar = sliderWidth - clipStartTimePosition
+    if (isMakeClipScreen && !clipEndTime) {
+      clipWidthBar = 0
+    } else if (duration && clipEndTime) {
+      const endPosition = sliderWidth * (clipEndTime / duration)
+      clipWidthBar = endPosition - clipStartTimePosition
     }
 
     return (
       <View style={sliderStyles.wrapper}>
-        {duration > 0 && (clipStartTime || clipStartTime === 0) && (
-          <View style={[sliderStyles.clipStartTimeFlag, globalTheme.playerClipTimeFlag, clipStartTimePosition]} />
-        )}
-        {duration > 0 && clipEndTime && (
-          <View style={[sliderStyles.clipEndTimeFlag, globalTheme.playerClipTimeFlag, clipEndTimePosition]} />
-        )}
         <Slider
           minimumValue={0}
           maximumValue={isLoading ? 0 : 1}
-          onSlidingComplete={(value) => {
+          minimumTrackTintColor={PV.Colors.skyDark}
+          maximumTrackTintColor={PV.Colors.gray}
+          onSlidingComplete={async (value) => {
             const position = value * duration
-            setPlaybackPosition(position)
+
             this.setState({
               position,
               slidingPosition: null
             })
+
+            await setPlaybackPosition(position)
+            await loadChapterPlaybackInfo()
           }}
           onValueChange={(value) =>
             this.setState({ slidingPosition: value * duration }, () => {
@@ -101,10 +133,10 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
             })
           }
           thumbStyle={sliderStyles.thumbStyle}
-          thumbTintColor={PV.Colors.brandColor}
+          thumbTintColor={PV.Colors.white}
           value={isLoading ? 0 : value}
         />
-        {!isLoading && (
+        {!isLoading ? (
           <View style={sliderStyles.timeRow}>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
@@ -119,8 +151,7 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
               {duration > 0 ? convertSecToHHMMSS(duration) : '--:--'}
             </Text>
           </View>
-        )}
-        {isLoading && (
+        ) : (
           <View style={sliderStyles.timeRow}>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
@@ -135,6 +166,21 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
               {'--:--'}
             </Text>
           </View>
+        )}
+        {!!clipStartTimePosition && (
+          <Animated.View
+            style={[
+              sliderStyles.clipBarStyle,
+              {
+                backgroundColor: backgroundColorInterpolator,
+                width: clipWidthBar,
+                left: clipStartTimePosition
+              }
+            ]}
+            onLayout={() => {
+              this._handleAnimation()
+            }}
+          />
         )}
       </View>
     )

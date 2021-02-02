@@ -20,6 +20,8 @@ declare module 'reactn/default' {
       shouldShowAlert: boolean
     }
     player: {
+      currentChapter: any
+      currentChapters: any
       hasErrored: boolean
       isPlaying: boolean
       nowPlayingItem: any
@@ -57,14 +59,15 @@ declare module 'reactn/default' {
       endOfResultsReached: boolean
       flatListData: any[]
       flatListDataTotalCount: number | null
-      hideRightItemWhileLoading?: boolean
       isLoading: boolean
       isLoadingMore: boolean
       isQuerying: boolean
       queryFrom: string | null
       queryPage: number
       querySort: string | null
+      selectedFromLabel?: string | null
       selectedItem?: any
+      selectedSortLabel?: string | null
       showFullClipInfo: boolean
       showHeaderActionSheet: boolean
       showMoreActionSheet: boolean
