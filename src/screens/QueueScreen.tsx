@@ -13,17 +13,22 @@ import {
   QueueTableCell,
   SortableList,
   SortableListRow,
-  TableSectionHeader,
+  TableSectionSelectors,
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import { checkIfIdMatchesClipIdOrEpisodeId, isOdd, testProps } from '../lib/utility'
+import {
+  checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
+  overrideImageUrlWithChapterImageUrl,
+  testProps
+} from '../lib/utility'
 import { PV } from '../resources'
+import { checkIfShouldUseServerData } from '../services/auth'
 import { movePlayerItemToNewPosition } from '../services/player'
 import { trackPageView } from '../services/tracking'
-import { getHistoryItems, removeHistoryItem } from '../state/actions/history'
 import { loadItemAndPlayTrack } from '../state/actions/player'
-import { getQueueItems, removeQueueItem, updateQueueItems } from '../state/actions/queue'
+import { addQueueItemToServer, getQueueItems, removeQueueItem, setAllQueueItemsLocally } from '../state/actions/queue'
+import { getHistoryItems, removeHistoryItem } from '../state/actions/userHistoryItem'
 import { core, darkTheme } from '../styles'
 
 type Props = {
@@ -31,8 +36,10 @@ type Props = {
 }
 
 type State = {
+  endOfResultsReached?: boolean
   isEditing?: boolean
   isLoading?: boolean
+  isLoadingMore?: boolean
   isRemoving?: boolean
   isTransparent?: boolean
   viewType?: string
@@ -45,6 +52,7 @@ export class QueueScreen extends React.Component<Props, State> {
     const { globalTheme } = getGlobal()
     const isTransparent = !!navigation.getParam('isTransparent')
     const textColor = isTransparent ? globalTheme.text.color : ''
+    const allowViewTypeChange = navigation.getParam('allowViewTypeChange')
 
     return {
       ...(!isTransparent
@@ -54,7 +62,7 @@ export class QueueScreen extends React.Component<Props, State> {
             headerStyle: {},
             headerTintColor: globalTheme.text.color
           }),
-      headerTitle: (
+      headerTitle: allowViewTypeChange ? (
         <HeaderTitleSelector
           color={textColor}
           items={headerTitleItems}
@@ -62,6 +70,8 @@ export class QueueScreen extends React.Component<Props, State> {
           placeholder={headerTitleItemPlaceholder}
           selectedItemKey={navigation.getParam('viewType') || navigation.getParam('viewType') === false || _queueKey}
         />
+      ) : (
+        translate('Queue')
       ),
       headerRight: (
         <RNView style={[core.row]}>
@@ -120,7 +130,9 @@ export class QueueScreen extends React.Component<Props, State> {
     super(props)
 
     this.state = {
+      endOfResultsReached: false,
       isLoading: true,
+      isLoadingMore: false,
       isRemoving: false,
       isTransparent: !!props.navigation.getParam('isTransparent'),
       viewType: props.navigation.getParam('viewType') || _queueKey
@@ -138,9 +150,7 @@ export class QueueScreen extends React.Component<Props, State> {
 
     try {
       await getQueueItems()
-      this.setState({
-        isLoading: false
-      })
+      this.setState({ isLoading: false })
     } catch (error) {
       this.setState({ isLoading: false })
     }
@@ -158,8 +168,10 @@ export class QueueScreen extends React.Component<Props, State> {
 
   _onViewTypeSelect = async (x: string) => {
     this.setState({
+      endOfResultsReached: false,
       isEditing: false,
       isLoading: true,
+      isLoadingMore: true,
       viewType: x
     })
     this.props.navigation.setParams({
@@ -170,15 +182,13 @@ export class QueueScreen extends React.Component<Props, State> {
     try {
       if (x === _queueKey) {
         await getQueueItems()
-        this.setState({
-          isLoading: false
-        })
+        this.setState({ isLoading: false, isLoadingMore: false })
       } else if (x === _historyKey) {
-        await getHistoryItems()
-        this.setState({ isLoading: false })
+        await getHistoryItems(1, [])
+        this.setState({ isLoading: false, isLoadingMore: false })
       }
     } catch (error) {
-      this.setState({ isLoading: false })
+      this.setState({ isLoading: false, isLoadingMore: false })
     }
   }
 
@@ -191,9 +201,7 @@ export class QueueScreen extends React.Component<Props, State> {
         const shouldPlay = true
         await loadItemAndPlayTrack(item, shouldPlay)
         await getQueueItems()
-        this.setState({
-          isLoading: false
-        })
+        this.setState({ isLoading: false })
       })
     } catch (error) {
       //
@@ -228,7 +236,6 @@ export class QueueScreen extends React.Component<Props, State> {
             {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
             {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
             handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
-            hasZebraStripe={isOdd(index)}
             podcastImageUrl={item.podcastImageUrl}
             {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
             showRemoveButton={isEditing}
@@ -252,7 +259,6 @@ export class QueueScreen extends React.Component<Props, State> {
           {...(data.episodePubDate ? { episodePubDate: data.episodePubDate } : {})}
           {...(data.episodeTitle ? { episodeTitle: data.episodeTitle } : {})}
           handleRemovePress={() => this._handleRemoveQueueItemPress(data)}
-          hasZebraStripe={isOdd(index)}
           podcastImageUrl={data.podcastImageUrl}
           {...(data.podcastTitle ? { podcastTitle: data.podcastTitle } : {})}
           showMoveButton={!isEditing}
@@ -260,7 +266,6 @@ export class QueueScreen extends React.Component<Props, State> {
           testID={`${testIDPrefix}_queue_item_${index}`}
           transparent={isTransparent}
         />
-        <Divider style={styles.tableCellDivider} />
       </View>
     )
 
@@ -292,17 +297,23 @@ export class QueueScreen extends React.Component<Props, State> {
   _onReleaseRow = async (key: number, currentOrder: [string]) => {
     try {
       const { queueItems = [] } = this.global.session.userInfo
-      const item = queueItems[key]
+      const item = queueItems[key] as any
       const id = item.clipId || item.episodeId
       const sortedItems = currentOrder.map((index: string) => queueItems[index])
 
-      const newItems = await updateQueueItems(sortedItems)
+      let newItems = (await setAllQueueItemsLocally(sortedItems)) as any
+
       const newQueueItemIndex = newItems.findIndex((x: any) =>
-        checkIfIdMatchesClipIdOrEpisodeId(id, x.clipId, x.episodeId)
+        checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(id, x.clipId, x.episodeId)
       )
 
-      if (queueItems.length >= newQueueItemIndex) {
-        const nextItem = queueItems[newQueueItemIndex]
+      const useServerData = await checkIfShouldUseServerData()
+      if (useServerData && newQueueItemIndex > -1) {
+        newItems = addQueueItemToServer(item, newQueueItemIndex)
+      }
+
+      if (item && queueItems.length >= newQueueItemIndex) {
+        const nextItem = queueItems[newQueueItemIndex] as any
         await movePlayerItemToNewPosition(item.clipId || item.episodeId, nextItem.clipId || nextItem.episodeId)
       }
     } catch (error) {
@@ -310,14 +321,22 @@ export class QueueScreen extends React.Component<Props, State> {
     }
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
+  _onEndReached = ({ distanceFromEnd }) => {
+    const { historyQueryPage } = this.global.session.userInfo
+    const queryPage = historyQueryPage || 1
+    const { endOfResultsReached, isLoadingMore } = this.state
+
+    if (!endOfResultsReached && !isLoadingMore && distanceFromEnd > -1) {
+      this.setState({ isLoadingMore: true }, async () => {
+        await this._queryHistoryData(queryPage)
+      })
+    }
   }
 
   render() {
-    const { historyItems, queueItems } = this.global.session.userInfo
-    const { nowPlayingItem } = this.global.player
-    const { isEditing, isLoading, isRemoving, isTransparent, viewType } = this.state
+    const { historyItems, historyItemsCount, queueItems } = this.global.session.userInfo
+    const { currentChapter, nowPlayingItem } = this.global.player
+    const { isEditing, isLoading, isLoadingMore, isRemoving, isTransparent, viewType } = this.state
 
     const view = (
       <View style={styles.view} transparent={isTransparent} {...testProps(`${testIDPrefix}_view`)}>
@@ -325,21 +344,35 @@ export class QueueScreen extends React.Component<Props, State> {
           <View transparent={isTransparent}>
             {!!nowPlayingItem && (
               <View transparent={isTransparent}>
-                <TableSectionHeader containerStyles={styles.headerNowPlayingItem} title={translate('Now Playing')} />
-                <QueueTableCell
-                  clipEndTime={nowPlayingItem.clipEndTime}
-                  clipStartTime={nowPlayingItem.clipStartTime}
-                  {...(nowPlayingItem.clipTitle ? { clipTitle: nowPlayingItem.clipTitle } : {})}
-                  {...(nowPlayingItem.episodePubDate ? { episodePubDate: nowPlayingItem.episodePubDate } : {})}
-                  {...(nowPlayingItem.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}
-                  podcastImageUrl={nowPlayingItem.podcastImageUrl}
-                  {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
-                  {...testProps(`${testIDPrefix}_now_playing_header`)}
-                  transparent={isTransparent}
-                />
+                <View style={styles.headerNowPlayingItemWrapper} transparent={isTransparent}>
+                  <TableSectionSelectors
+                    hideFilter={true}
+                    includePadding={true}
+                    selectedFilterLabel={translate('Now Playing')}
+                    textStyle={styles.sectionHeaderText}
+                  />
+                  <QueueTableCell
+                    clipEndTime={nowPlayingItem.clipEndTime}
+                    clipStartTime={nowPlayingItem.clipStartTime}
+                    {...(nowPlayingItem.clipTitle ? { clipTitle: nowPlayingItem.clipTitle } : {})}
+                    {...(nowPlayingItem.episodePubDate ? { episodePubDate: nowPlayingItem.episodePubDate } : {})}
+                    {...(nowPlayingItem.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}
+                    podcastImageUrl={nowPlayingItem.podcastImageUrl}
+                    {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
+                    {...testProps(`${testIDPrefix}_now_playing_header`)}
+                    transparent={isTransparent}
+                    hideDivider={true}
+                  />
+                </View>
+                <Divider style={styles.headerNowPlayingItemDivider} />
               </View>
             )}
-            <TableSectionHeader title={translate('Next Up')} />
+            <TableSectionSelectors
+              hideFilter={true}
+              includePadding={true}
+              selectedFilterLabel={translate('Next Up')}
+              textStyle={styles.sectionHeaderText}
+            />
           </View>
         )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length > 0 && (
@@ -351,17 +384,22 @@ export class QueueScreen extends React.Component<Props, State> {
           />
         )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length < 1 && (
-          <MessageWithAction message={translate('Your queue is empty')} transparent={isTransparent} />
+          <MessageWithAction
+            message={translate('Your queue is empty')}
+            transparent={isTransparent}
+            testID={testIDPrefix}
+          />
         )}
         {!isLoading && viewType === _historyKey && historyItems && (
           <FlatList
             data={historyItems}
-            dataTotalCount={historyItems.length}
+            dataTotalCount={historyItemsCount}
             disableLeftSwipe={true}
             extraData={historyItems}
-            ItemSeparatorComponent={this._ItemSeparatorComponent}
+            isLoadingMore={isLoadingMore}
             keyExtractor={(item: any) => item.clipId || item.episodeId}
             noResultsMessage={translate('No history items found')}
+            onEndReached={this._onEndReached}
             renderItem={this._renderHistoryItem}
             transparent={isTransparent}
           />
@@ -370,10 +408,29 @@ export class QueueScreen extends React.Component<Props, State> {
       </View>
     )
 
+    const imageUrl = overrideImageUrlWithChapterImageUrl(nowPlayingItem, currentChapter)
+
     if (isTransparent) {
-      return <OpaqueBackground nowPlayingItem={nowPlayingItem}>{view}</OpaqueBackground>
+      return <OpaqueBackground imageUrl={imageUrl}>{view}</OpaqueBackground>
     } else {
       return view
+    }
+  }
+
+  _queryHistoryData = async (queryPage: number = 1) => {
+    try {
+      const { historyItems, historyItemsCount } = this.global.session.userInfo
+      const endOfResultsReached = historyItems && historyItems.length <= historyItemsCount
+
+      if (endOfResultsReached) {
+        await getHistoryItems(queryPage + 1, historyItems || [])
+        const endOfResultsReached = historyItems && historyItems.length >= historyItemsCount
+        this.setState({ isLoading: false, isLoadingMore: false, endOfResultsReached })
+      } else {
+        this.setState({ isLoading: false, isLoadingMore: false, endOfResultsReached: true })
+      }
+    } catch (error) {
+      this.setState({ isLoading: false, isLoadingMore: false, endOfResultsReached: false })
     }
   }
 }
@@ -409,9 +466,11 @@ const styles = StyleSheet.create({
   headerButtonWrapper: {
     flexDirection: 'row'
   },
-  headerNowPlayingItem: {
-    marginBottom: 2
+  headerNowPlayingItemDivider: {
+    marginTop: 10,
+    height: 2
   },
+  headerNowPlayingItemWrapper: {},
   navHeaderSpacer: {
     width: 36
   },
@@ -420,10 +479,12 @@ const styles = StyleSheet.create({
     marginRight: 8,
     textAlign: 'center'
   },
-  tableCellDivider: {
-    marginBottom: 2
-  },
+  queueCellDivider: {},
   view: {
     flex: 1
+  },
+  sectionHeaderText: {
+    color: PV.Colors.skyDark,
+    fontSize: PV.Fonts.sizes.xxxl
   }
 })

@@ -29,6 +29,7 @@ export type DownloadTaskState = {
   bytesWritten?: string
   completed?: boolean
   episodeDescription?: string
+  episodeDuration?: number
   episodeId: string
   episodeImageUrl?: string
   episodeMediaUrl: string
@@ -41,6 +42,48 @@ export type DownloadTaskState = {
   podcastSortableTitle?: boolean
   podcastTitle?: string
   status?: DownloadStatus
+}
+
+export const convertDownloadTaskStateToPodcast = (downloadTaskState: any) => {
+  const {
+    addByRSSPodcastFeedUrl,
+    podcastId,
+    podcastImageUrl,
+    podcastIsExplicit,
+    podcastSortableTitle,
+    podcastTitle
+  } = downloadTaskState
+
+  return {
+    addByRSSPodcastFeedUrl,
+    id: podcastId,
+    imageUrl: podcastImageUrl,
+    isExplicit: podcastIsExplicit,
+    sortableTitle: podcastSortableTitle,
+    title: podcastTitle
+  }
+}
+
+export const convertDownloadTaskStateToEpisode = (downloadTaskState: any) => {
+  const {
+    episodeDescription,
+    episodeDuration,
+    episodeId,
+    episodeImageUrl,
+    episodeMediaUrl,
+    episodePubDate,
+    episodeTitle
+  } = downloadTaskState
+
+  return {
+    description: episodeDescription,
+    duration: episodeDuration,
+    id: episodeId,
+    imageUrl: episodeImageUrl,
+    mediaUrl: episodeMediaUrl,
+    pubDate: episodePubDate,
+    title: episodeTitle
+  }
 }
 
 export const getDownloadStatusText = (status?: string) => {
@@ -101,16 +144,21 @@ export const updateAutoDownloadSettings = async (podcastId: string, autoDownload
   )
 }
 
-export const updateDownloadedPodcasts = async () => {
+export const updateDownloadedPodcasts = async (cb: any) => {
   const downloadedEpisodeIds = await getDownloadedEpisodeIdsService()
   const downloadedPodcastEpisodeCounts = await getDownloadedPodcastEpisodeCountsService()
   const downloadedPodcasts = await getDownloadedPodcastsService()
 
-  setGlobal({
-    downloadedEpisodeIds,
-    downloadedPodcastEpisodeCounts,
-    downloadedPodcasts
-  })
+  setGlobal(
+    {
+      downloadedEpisodeIds,
+      downloadedPodcastEpisodeCounts,
+      downloadedPodcasts
+    },
+    () => {
+      if (cb) cb()
+    }
+  )
 }
 
 export const addDownloadTask = async (downloadTask: DownloadTaskState) => {
@@ -127,9 +175,10 @@ export const addDownloadTask = async (downloadTask: DownloadTaskState) => {
   }
 }
 
-export const resumeDownloadingEpisode = (episodeId: string) => {
+export const resumeDownloadingEpisode = (downloadTask: DownloadTaskState) => {
   const { downloadsActive, downloadsArray } = getGlobal()
-  resumeDownloadTask(episodeId)
+  const { episodeId } = downloadTask
+  resumeDownloadTask(downloadTask)
 
   for (const task of downloadsArray) {
     if (task.episodeId === episodeId) {
@@ -145,9 +194,17 @@ export const resumeDownloadingEpisode = (episodeId: string) => {
   })
 }
 
-export const pauseDownloadingEpisode = (episodeId: string) => {
+export const pauseDownloadingEpisodesAll = () => {
+  const { downloadsArray } = getGlobal()
+  for (const task of downloadsArray) {
+    pauseDownloadingEpisode(task)
+  }
+}
+
+export const pauseDownloadingEpisode = (downloadTask: DownloadTaskState) => {
   const { downloadsActive, downloadsArray } = getGlobal()
-  pauseDownloadTask(episodeId)
+  const { episodeId } = downloadTask
+  pauseDownloadTask(downloadTask)
 
   for (const task of downloadsArray) {
     if (task.episodeId === episodeId) {

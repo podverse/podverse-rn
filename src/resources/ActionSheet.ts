@@ -17,17 +17,20 @@ import { PV } from './PV'
 const mediaMoreButtons = (
   item: any = {},
   navigation: any,
-  handleDismiss: any,
-  handleDownload: any,
-  handleDeleteClip: any,
-  includeGoToPodcast?: boolean,
-  includeGoToEpisode?: boolean | string
+  config: {
+    handleDismiss: any
+    handleDownload: any
+    handleDeleteClip: any
+    includeGoToPodcast?: boolean
+    includeGoToEpisode?: boolean | string
+  }
 ) => {
   if (!item || !item.episodeId) return
 
+  const { handleDismiss, handleDownload, handleDeleteClip, includeGoToPodcast, includeGoToEpisode } = config || {}
   const globalState = getGlobal()
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
-  const downloadingText = isDownloading ? translate('Downloading') : translate('Download')
+  const downloadingText = isDownloading ? translate('Downloading Episode') : translate('Download Episode')
   const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
   const buttons = []
   const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session.userInfo.id, '')
@@ -115,26 +118,26 @@ const mediaMoreButtons = (
     }
   }
 
-  buttons.push(
-    {
-      key: PV.Keys.queue_next,
-      text: translate('Queue Next'),
-      onPress: async () => {
-        await addQueueItemNext(item)
-        await handleDismiss()
-      }
-    },
-    {
-      key: PV.Keys.queue_last,
-      text: translate('Queue Last'),
-      onPress: async () => {
-        await addQueueItemLast(item)
-        await handleDismiss()
-      }
-    }
-  )
-
   if (!item.addByRSSPodcastFeedUrl) {
+    buttons.push(
+      {
+        key: PV.Keys.queue_next,
+        text: translate('Queue Next'),
+        onPress: async () => {
+          await addQueueItemNext(item)
+          await handleDismiss()
+        }
+      },
+      {
+        key: PV.Keys.queue_last,
+        text: translate('Queue Last'),
+        onPress: async () => {
+          await addQueueItemLast(item)
+          await handleDismiss()
+        }
+      }
+    )
+
     if (!Config.DISABLE_ADD_TO_PLAYLIST && isLoggedIn) {
       buttons.push({
         key: PV.Keys.add_to_playlist,
@@ -159,7 +162,7 @@ const mediaMoreButtons = (
 
             if (item.clipId) {
               url = urlsWeb.clip + item.clipId
-              title = item.clipTitle ? item.clipTitle : translate('untitled clip –')
+              title = item.clipTitle ? item.clipTitle : translate('Untitled Clip –')
               title += ` ${item.podcastTitle} – ${item.episodeTitle} – ${translate('clip shared using brandName')}`
             } else if (item.episodeId) {
               url = urlsWeb.episode + item.episodeId
@@ -216,8 +219,8 @@ const mediaMoreButtons = (
 }
 
 const hasTriedStreamingWithoutWifiAlert = async (handleDismiss: any, navigation: any, download: boolean) => {
-  const shouldDownloadWithoutWifi = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-  if (shouldDownloadWithoutWifi !== 'TRUE') {
+  const shouldDownloadWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
+  if (shouldDownloadWifiOnly !== 'TRUE') {
     return false
   }
 

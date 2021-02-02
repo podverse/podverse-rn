@@ -173,7 +173,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
         )}
         {isLoggedIn && (
           <View style={styles.view}>
-            {isLoading && <ActivityIndicator />}
+            {isLoading && <ActivityIndicator fillSpace={true} />}
             {!isLoading && myPlaylists && (
               <FlatList
                 data={myPlaylists}

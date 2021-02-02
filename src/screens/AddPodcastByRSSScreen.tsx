@@ -33,7 +33,7 @@ const testIDPrefix = 'add_podcast_by_rss_screen'
 export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: translate('Add by RSS'),
+      title: translate('Add Custom RSS Feed'),
       headerLeft: <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
       headerRight: (
         <NavHeaderButtonText
@@ -56,7 +56,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
       _handleSavePodcastByRSSURL: this._handleSavePodcastByRSSURL
     })
 
-    trackPageView('/add-podcast-by-rss', 'Add Podcast By RSS Screen')
+    trackPageView('/add-custom-rss-feed', 'Add Custom RSS Feed Screen')
   }
 
   _navToRequestPodcastForm = async () => {
@@ -105,26 +105,22 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { globalTheme } = this.global
     const { isLoading, url } = this.state
 
     return (
       <View style={styles.content} {...testProps('add_podcast_by_rss_screen_view')}>
-        {isLoading && <ActivityIndicator />}
+        {isLoading && <ActivityIndicator fillSpace={true} />}
         {!isLoading && (
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
-              {translate('RSS Feed')}
-            </Text>
             <TextInput
               autoCapitalize='none'
               autoCompleteType='off'
+              eyebrowTitle={translate('RSS feed link')}
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               onChangeText={this._handleChangeText}
               placeholder={translate('paste RSS feed link here')}
               returnKeyType='done'
-              style={[styles.textInput, globalTheme.textInput]}
-              testID={testIDPrefix}
+              testID={`${testIDPrefix}_rss_feed`}
               underlineColorAndroid='transparent'
               value={url}
             />
@@ -134,12 +130,6 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             </Text>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
               {translate('AddPodcastByRSSScreenText2')}
-            </Text>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
-              {translate('AddPodcastByRSSScreenText3')}
-            </Text>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
-              {translate('AddPodcastByRSSScreenText4')}
             </Text>
             {!!PV.URLs.requestPodcast && (
               <TextLink
@@ -175,7 +165,7 @@ const styles = StyleSheet.create({
     marginVertical: 30
   },
   text: {
-    fontSize: PV.Fonts.sizes.md,
+    fontSize: PV.Fonts.sizes.lg,
     marginVertical: 12,
     textAlign: 'left'
   },

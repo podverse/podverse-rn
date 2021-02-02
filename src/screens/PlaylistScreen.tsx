@@ -17,9 +17,10 @@ import {
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
+import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { getPlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { core } from '../styles'
 
@@ -139,40 +140,31 @@ export class PlaylistScreen extends React.Component<Props, State> {
     if (item.startTime) {
       return item.episode && item.episode.podcast ? (
         <ClipTableCell
-          endTime={item.endTime}
-          episodeId={item.episode.id}
-          {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
-          {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
-          hasZebraStripe={isOdd(index)}
-          podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
-          {...(item.episode.podcast.title ? { podcastTitle: item.episode.podcast.title } : {})}
           showEpisodeInfo={true}
-          showPodcastTitle={true}
-          startTime={item.startTime}
+          showPodcastInfo={true}
           testID={`${testIDPrefix}_clip_item_${index}`}
-          {...(item.title ? { title: item.title } : {})}
+          item={item}
         />
       ) : (
         <></>
       )
     } else {
+      const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(item.id)
+
       return (
         <EpisodeTableCell
-          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null, userPlaybackPosition))}
           handleNavigationPress={() =>
             this.props.navigation.navigate(PV.RouteNames.MoreEpisodeScreen, {
               episode: item
             })
           }
-          hasZebraStripe={isOdd(index)}
-          id={item.id}
-          podcastImageUrl={(item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl)) || ''}
-          {...(item.podcast && item.podcast.title ? { podcastTitle: item.podcast.title } : {})}
-          pubDate={item.pubDate}
-          showPodcastTitle={true}
+          item={item}
+          mediaFileDuration={mediaFileDuration}
+          showPodcastInfo={true}
           testID={`${testIDPrefix}_episode_item_${index}`}
-          {...(item.title ? { title: item.title } : {})}
+          userPlaybackPosition={userPlaybackPosition}
         />
       )
     }
@@ -255,7 +247,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           testID={testIDPrefix}
           title={playlist && playlist.title}
         />
-        {isLoading && <ActivityIndicator />}
+        {isLoading && <ActivityIndicator fillSpace={true} />}
         {!isLoading && flatListData && (
           <FlatList
             data={flatListData}
@@ -272,15 +264,12 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={() =>
-            PV.ActionSheet.media.moreButtons(
-              selectedItem,
-              navigation,
-              this._handleCancelPress,
-              this._handleDownloadPressed,
-              null, // handleDeleteClip
-              true, // includeGoToPodcast
-              true // includeGoToEpisode
-            )
+            PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
+              handleDismiss: this._handleCancelPress,
+              handleDownload: this._handleDownloadPressed,
+              includeGoToPodcast: true,
+              includeGoToEpisode: true
+            })
           }
           showModal={showActionSheet}
           testID={testIDPrefix}

@@ -53,7 +53,7 @@ export const getMediaRefs = async (query: any = {}) => {
     ...(query.allowUntitled ? { allowUntitled: true } : {})
   } as any
 
-  if (query.categories && query.categories !== PV.Filters._allCategoriesKey) {
+  if (query.categories) {
     filteredQuery.categories = query.categories
   }
 

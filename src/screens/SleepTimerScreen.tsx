@@ -92,7 +92,8 @@ export class SleepTimerScreen extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   button: {
-    marginTop: 32
+    marginTop: 32,
+    borderRadius: 8
   },
   view: {
     flex: 1,

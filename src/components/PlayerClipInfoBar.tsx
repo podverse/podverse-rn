@@ -26,7 +26,7 @@ export class PlayerClipInfoBar extends React.PureComponent<Props, State> {
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={1}
             style={[styles.title, globalTheme.playerText]}>
-            {nowPlayingItem.clipTitle || translate('untitled clip')}
+            {nowPlayingItem.clipTitle || translate('Untitled Clip')}
           </Text>
           {!!clipStartTime && (
             <Text

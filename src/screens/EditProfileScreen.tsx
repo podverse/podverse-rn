@@ -1,7 +1,15 @@
 import { Alert, StyleSheet } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { ActivityIndicator, Divider, Icon, NavHeaderButtonText, Text, TextInput, View } from '../components'
+import {
+  ActivityIndicator,
+  Divider,
+  DropdownButtonSelect,
+  NavHeaderButtonText,
+  Text,
+  TextInput,
+  View
+} from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { testProps } from '../lib/utility'
@@ -109,68 +117,49 @@ export class EditProfileScreen extends React.Component<Props, State> {
 
   render() {
     const user = this.props.navigation.getParam('user')
-    const { globalTheme } = this.global
     const { isLoading, name, selectedIsPublicKey } = this.state
     const selectedIsPublicOption = isPublicOptions.find((x) => x.value === selectedIsPublicKey) || selectPlaceholder
     const willBeDifferent = user.isPublic !== selectedIsPublicKey
+
+    let helpText = ''
+    if (selectedIsPublicKey) {
+      helpText = willBeDifferent
+        ? translate('Podcasts clips and playlists will be visible')
+        : translate('Podcasts clips and playlists are visible')
+    } else if (selectedIsPublicKey === false) {
+      helpText = willBeDifferent
+        ? translate('Your profile page will be hidden')
+        : translate('Your profile page is hidden')
+    }
 
     return (
       <View style={styles.view} {...testProps('edit_profile_screen_view')}>
         {!isLoading ? (
           <View>
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
-              {translate('Name')}
-            </Text>
             <TextInput
               autoCapitalize='none'
               autoCompleteType='off'
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               onChangeText={this._onChangeName}
-              placeholder={translate('your name')}
+              placeholder={translate('Name')}
               returnKeyType='done'
-              style={[styles.textInput, globalTheme.textInput]}
+              style={styles.textInput}
               underlineColorAndroid='transparent'
               testID={`${testIDPrefix}_name`}
               value={name}
             />
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.textInputLabel}>
-              {translate('Profile Privacy')}
-            </Text>
-            <RNPickerSelect
+            <DropdownButtonSelect
+              helpText={helpText}
               items={isPublicOptions}
+              label={selectedIsPublicOption.label}
               onValueChange={this._onChangeIsPublic}
-              placeholder={selectPlaceholder}
-              touchableWrapperProps={{ testID: `${testIDPrefix}_picker_select_privacy` }}
-              value={selectedIsPublicKey}>
-              <View style={[core.selectorWrapper, globalTheme.textInput]}>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={core.selectorText}>
-                  {selectedIsPublicOption.label}
-                </Text>
-                <Icon name='angle-down' size={14} style={[core.selectorIcon, globalTheme.textInputIcon]} />
-              </View>
-
-              {selectedIsPublicKey && (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  style={[core.textInputSubTitle, globalTheme.textSecondary]}>
-                  {willBeDifferent
-                    ? translate('Podcasts clips and playlists will be visible')
-                    : translate('Podcasts clips and playlists are visible')}
-                </Text>
-              )}
-              {selectedIsPublicKey === false && (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  style={[core.textInputSubTitle, globalTheme.textSecondary]}>
-                  {willBeDifferent
-                    ? translate('Your profile page will be hidden')
-                    : translate('Your profile page is hidden')}
-                </Text>
-              )}
-            </RNPickerSelect>
+              testID={`${testIDPrefix}_picker_select_privacy`}
+              value={selectedIsPublicKey}
+              wrapperStyle={styles.dropdownButtonSelectWrapper}
+            />
           </View>
         ) : (
-          <ActivityIndicator />
+          <ActivityIndicator fillSpace={true} />
         )}
       </View>
     )
@@ -194,9 +183,10 @@ const isPublicOptions = [
 ]
 
 const styles = StyleSheet.create({
-  textInput: {
-    fontSize: PV.Fonts.sizes.xl,
-    marginBottom: 16
+  dropdownButtonSelectWrapper: {},
+  textInput: {},
+  textInputSubtext: {
+    marginTop: 16
   },
   view: {
     flex: 1,

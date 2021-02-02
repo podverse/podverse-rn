@@ -6,10 +6,11 @@ import { Icon } from './'
 type Props = {
   name: string
   color?: string
+  solid?: boolean
 }
 
 export const NavItemIcon = (props: Props) => {
-  const { name, color = PV.Colors.white } = props
+  const { name, color = PV.Colors.white, solid } = props
 
-  return <Icon color={color} name={name} size={PV.Icons.NAV} style={navHeader.buttonIcon} />
+  return <Icon color={color} name={name} size={PV.Icons.NAV} style={navHeader.buttonIcon} solid={solid} />
 }

@@ -102,6 +102,16 @@ export const getLoggedInUserMediaRefs = async (query: any = {}) => {
   return response && response.data
 }
 
+export const getLoggedInUserPlaylistsCombined = async () => {
+  const bearerToken = await getBearerToken()
+  const response = await request({
+    endpoint: '/user/playlists/combined',
+    headers: { Authorization: bearerToken }
+  })
+
+  return response && response.data
+}
+
 export const getLoggedInUserPlaylists = async () => {
   const bearerToken = await getBearerToken()
   const response = await request({
@@ -168,23 +178,29 @@ export const updateUserQueueItems = async (queueItems: any) => {
   return response && response.data
 }
 
-export const saveSpecialUserInfo = async (userInfo: any) => {
-  if (userInfo) {
-    const jsonData = JSON.stringify(userInfo)
+export const saveSpecialUserInfoForPodcast = async (userInfo: any, podcastId: string) => {
+  if (userInfo && podcastId) {
+    const jsonData = JSON.stringify({ [podcastId]: userInfo })
     await AsyncStorage.setItem('SPECIAL_USER_INFO', jsonData)
   }
 }
 
-export const getSpecialUserInfo = async () => {
+export const getSpecialUserInfoForPodcast = async (podcastId: string) => {
   const specialInfoString = await AsyncStorage.getItem('SPECIAL_USER_INFO')
   if (specialInfoString) {
     const specialInfo = JSON.parse(specialInfoString)
-    return specialInfo
+    return specialInfo[podcastId]
   }
 
   return null
 }
 
-export const clearSpecialUserInfo = async () => {
-  await AsyncStorage.removeItem('SPECIAL_USER_INFO')
+export const clearSpecialUserInfoForPodcast = async (podcastId: string) => {
+  let specialInfoString = await AsyncStorage.getItem('SPECIAL_USER_INFO')
+  if (specialInfoString) {
+    const specialInfo = JSON.parse(specialInfoString)
+    delete specialInfo[podcastId]
+    specialInfoString = JSON.stringify(specialInfo)
+    await AsyncStorage.setItem('SPECIAL_USER_INFO', specialInfoString)
+  }
 }

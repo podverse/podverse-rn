@@ -48,7 +48,7 @@ export class AboutScreen extends React.Component<Props, State> {
             {translate('Team')}
           </Text>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {'Mitch Downey – Programmer\n\nCreon Creonopoulos - Programmer\n\nGary Johnson – Designer'}
+            {'Mitch Downey\n\nCreon Creonopoulos\n\nGary Johnson'}
           </Text>
           <Divider style={styles.divider} />
           <Text

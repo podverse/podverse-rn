@@ -38,7 +38,7 @@ export class FAQScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.view} {...testProps('faq_screen_view')}>
-        {isLoading && <ActivityIndicator />}
+        {isLoading && <ActivityIndicator fillSpace={true} />}
         <WebViewStaticHTML html={html} isLoading={isLoading} />
       </View>
     )

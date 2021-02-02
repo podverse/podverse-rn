@@ -3,9 +3,9 @@ import { Alert, StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import { refreshDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
-import { getNowPlayingItem } from '../services/player'
 import PlayerEventEmitter from '../services/playerEventEmitter'
-import { clearNowPlayingItem, showMiniPlayer, updatePlaybackState, updatePlayerState } from '../state/actions/player'
+import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
+import { showMiniPlayer, updatePlaybackState, updatePlayerState } from '../state/actions/player'
 import { getQueueItems } from '../state/actions/queue'
 
 type Props = {}
@@ -16,14 +16,14 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    this._playerCannotStreamWithoutWifi = debounce(this._playerCannotStreamWithoutWifi, 3000)
+    this._playerCannotStreamWithoutWifi = debounce(this._playerCannotStreamWithoutWifi, 3000) as any
   }
 
   componentDidMount() {
     PlayerEventEmitter.on(PV.Events.PLAYER_CANNOT_STREAM_WITHOUT_WIFI, this._playerCannotStreamWithoutWifi)
     PlayerEventEmitter.on(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED, this._refreshNowPlayingItem)
     PlayerEventEmitter.on(PV.Events.PLAYER_STATE_CHANGED, this._playerStateUpdated)
-    PlayerEventEmitter.on(PV.Events.PLAYER_TRACK_CHANGED, this._handlePlayerTrackChanged)
+    PlayerEventEmitter.on(PV.Events.PLAYER_TRACK_CHANGED, this._refreshNowPlayingItem)
     PlayerEventEmitter.on(PV.Events.PLAYER_PLAYBACK_ERROR, this._handlePlayerPlaybackError)
   }
 
@@ -33,11 +33,6 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_STATE_CHANGED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_TRACK_CHANGED)
     PlayerEventEmitter.removeListener(PV.Events.PLAYER_PLAYBACK_ERROR)
-  }
-
-  _handlePlayerTrackChanged = async () => {
-    refreshDownloadedPodcasts()
-    this._refreshNowPlayingItem()
   }
 
   _playerCannotStreamWithoutWifi = async () => {
@@ -55,13 +50,12 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
   _playerStateUpdated = () => updatePlaybackState()
 
   _refreshNowPlayingItem = async () => {
-    const nowPlayingItem = await getNowPlayingItem()
+    refreshDownloadedPodcasts()
 
+    const nowPlayingItem = await getNowPlayingItemLocally()
     if (nowPlayingItem) {
       await updatePlayerState(nowPlayingItem)
       showMiniPlayer()
-    } else {
-      await clearNowPlayingItem()
     }
 
     await updatePlaybackState()

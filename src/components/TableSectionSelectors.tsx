@@ -1,290 +1,139 @@
-import AsyncStorage from '@react-native-community/async-storage'
-import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
-import RNPickerSelect from 'react-native-picker-select'
-import { useGlobal } from 'reactn'
-import { convertFilterOptionsToI18N } from '../lib/i18n'
+import React from 'reactn'
 import { PV } from '../resources'
-import { darkTheme, hidePickerIconOnAndroidSectionSelector } from '../styles'
-import { Icon, Text } from './'
+import { getFlatCategoryItems } from '../services/category'
+import { DropdownButton, Text } from './'
 
 type Props = {
-  handleSelectLeftItem?: any
-  handleSelectRightItem?: any
-  hidePickers?: boolean
-  hideRightItemWhileLoading?: boolean
-  includeChronological?: boolean
-  isAddByRSSPodcastFeedUrl?: boolean
-  isSortLimitQueries?: boolean
-  isBottomBar?: boolean
-  isCategories?: boolean
-  isLoggedIn?: boolean
-  isTransparent?: boolean
-  selectedLeftItemKey: string | null
-  selectedRightItemKey?: string | null
-  screenName: string
-  testID: string
+  addByRSSPodcastFeedUrl?: string
+  filterScreenTitle?: string
+  handleSelectCategoryItem?: any
+  handleSelectCategorySubItem?: any
+  handleSelectFilterItem?: any
+  handleSelectFromItem?: any
+  handleSelectSortItem?: any
+  hideFilter?: boolean
+  includePadding?: boolean
+  navigation?: any
+  screenName?: string
+  selectedCategoryItemKey?: string | null
+  selectedCategorySubItemKey?: string | null
+  selectedFilterItemKey?: string | null
+  selectedFilterLabel?: string | null
+  selectedFromItemKey?: string | null
+  selectedSortItemKey?: string | null
+  selectedSortLabel?: string | null
+  testID?: string
+  transparentDropdownButton?: boolean
+  textStyle?: any
 }
 
-const filterAddByRSSRightItems = (screenName: string, isAddByRSSPodcastFeedUrl: boolean, isSortLimitQueries: boolean) =>
-  PV.FilterOptions.sortItems.filter((sortKey: any) => {
-    return isAddByRSSPodcastFeedUrl
-      ? PV.FilterOptions.screenFilters[screenName].addByPodcastRSSFeedURLSort.includes(sortKey.value)
-      : isSortLimitQueries
-      ? PV.FilterOptions.screenFilters[screenName].sortLimitQueries.includes(sortKey.value)
-      : PV.FilterOptions.screenFilters[screenName].sort.includes(sortKey.value)
-  })
+type State = {
+  flatCategoryItems: any[]
+}
 
-export const TableSectionSelectors = (props: Props) => {
-  const [globalTheme] = useGlobal('globalTheme')
-  const [fontScaleMode] = useGlobal('fontScaleMode')
-  const isDarkMode = globalTheme === darkTheme
-  const [leftItems, setLeftItems] = useState([])
-  const [rightItems, setRightItems] = useState([])
+export class TableSectionSelectors extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props)
 
-  const {
-    handleSelectLeftItem,
-    handleSelectRightItem,
-    hidePickers,
-    hideRightItemWhileLoading,
-    includeChronological = false,
-    isAddByRSSPodcastFeedUrl = false,
-    isSortLimitQueries = false,
-    isBottomBar = false,
-    isCategories = false,
-    isLoggedIn,
-    isTransparent,
-    selectedLeftItemKey,
-    selectedRightItemKey,
-    screenName,
-    testID
-  } = props
-
-  const handleInitialRender = () => {
-    let leftItems = [] as any
-    let rightItems = [] as any
-
-    if (!isBottomBar) {
-      leftItems = PV.FilterOptions.typeItems.filter((type: any) => {
-        return isAddByRSSPodcastFeedUrl
-          ? PV.FilterOptions.screenFilters[screenName].addByPodcastRSSFeedURLType.includes(type.value)
-          : PV.FilterOptions.screenFilters[screenName].type.includes(type.value)
-      })
-
-      if (PV.FilterOptions.screenFilters[screenName].hideIfNotLoggedIn && !isLoggedIn) {
-        leftItems = leftItems.filter((type: any) => {
-          return !PV.FilterOptions.screenFilters[screenName].hideIfNotLoggedIn.includes(type.value)
-        })
-      }
-
-      rightItems = filterAddByRSSRightItems(screenName, !!isAddByRSSPodcastFeedUrl, isSortLimitQueries)
-    } else {
-      // Bottom bar
-      const newleftItems = PV.FilterOptions.screenFilters[screenName].sublist
-
-      if (isCategories) {
-        // add more categories
-        AsyncStorage.getItem('CATEGORIES_LIST')
-          .then((listString = '') => {
-            const categories = JSON.parse(listString).map((category) => {
-              return {
-                label: category.title,
-                value: category.id,
-                ...category
-              }
-            })
-            setLeftItems([...newleftItems, ...categories])
-          })
-          .catch((err) => {
-            console.log('Bottom Selection Bar error: ', err)
-          })
-      } else {
-        leftItems = newleftItems
-      }
+    this.state = {
+      flatCategoryItems: []
     }
-
-    leftItems = convertFilterOptionsToI18N(leftItems)
-    rightItems = convertFilterOptionsToI18N(rightItems)
-
-    setLeftItems(leftItems)
-    setRightItems(rightItems)
   }
 
-  useEffect(() => {
-    handleInitialRender()
-  }, [])
-
-  useEffect(() => {
-    if (selectedLeftItemKey === PV.Filters._myClipsKey && !isLoggedIn) {
-      handleSelectLeftItem(PV.Filters._subscribedKey)
-    }
-    handleInitialRender()
-  }, [isLoggedIn])
-
-  useEffect(() => {
-    let rightItems = []
-    const screen = PV.FilterOptions.screenFilters[screenName]
-    if (!screen.hideSort.includes(selectedLeftItemKey)) {
-      if (!isBottomBar) {
-        rightItems = filterAddByRSSRightItems(screenName, !!isAddByRSSPodcastFeedUrl, isSortLimitQueries)
-
-        if (screen.includeAlphabetical && screen.includeAlphabetical.includes(selectedLeftItemKey)) {
-          rightItems.unshift(PV.FilterOptions.items.sortAlphabeticalItem)
-        }
-
-        if (includeChronological) {
-          rightItems.unshift(PV.FilterOptions.items.sortChronologicalItem)
-        }
-
-        rightItems = convertFilterOptionsToI18N(rightItems)
-      } else {
-        if (leftItems.length > 0) {
-          const selectedCategory = leftItems.find((category) => category.value === selectedLeftItemKey)
-          if (selectedCategory && selectedCategory.categories) {
-            rightItems = selectedCategory.categories.map((subCat) => {
-              return {
-                label: subCat.title,
-                value: subCat.id,
-                ...subCat
-              }
-            })
-            rightItems.sort((a: any, b: any) => {
-              const textA = a.label.toUpperCase()
-              const textB = b.label.toUpperCase()
-              return textA < textB ? -1 : textA > textB ? 1 : 0
-            })
-
-            // Add the all-categories filter to the beginning
-            rightItems.unshift(...PV.FilterOptions.screenFilters[screenName].sublist)
-          }
-        }
-      }
-    }
-
-    setRightItems(rightItems)
-  }, [selectedLeftItemKey])
-
-  const selectedLeftItem = leftItems.find((x) => x.value === selectedLeftItemKey) || {}
-  const selectedRightItem = rightItems.find((x) => x.value === selectedRightItemKey) || {}
-  const wrapperStyle =
-    PV.Fonts.fontScale.largest === fontScaleMode
-      ? [styles.tableSectionHeaderInner, { flexDirection: 'column' }]
-      : [styles.tableSectionHeaderInner]
-  const headerStyle = [styles.tableSectionHeader, globalTheme.tableSectionHeader]
-  if (isTransparent) {
-    headerStyle.push(globalTheme.tableSectionHeaderTransparent)
+  async componentDidMount() {
+    const flatCategoryItems = await getFlatCategoryItems()
+    this.setState({ flatCategoryItems })
   }
 
-  return (
-    <View>
-      <View style={headerStyle}>
-        {!hidePickers && leftItems && leftItems.length > 0 && (
-          <View style={wrapperStyle}>
-            <RNPickerSelect
-              items={leftItems}
-              onValueChange={handleSelectLeftItem}
-              placeholder={defaultPlaceholder}
-              style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
-              useNativeAndroidPickerStyle={false}
-              touchableWrapperProps={{ testID: `${testID}_picker_select_left` }}
-              value={selectedLeftItemKey}>
-              <View style={styles.tableSectionHeaderButton}>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={1}
-                  style={[styles.tableSectionHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
-                  {selectedLeftItem.label}
-                </Text>
-                <Icon
-                  name='angle-down'
-                  size={14}
-                  style={[styles.tableSectionHeaderIconLeft, globalTheme.tableSectionHeaderIcon]}
-                />
-              </View>
-            </RNPickerSelect>
-            {!hideRightItemWhileLoading && selectedLeftItemKey && rightItems.length > 1 && (
-              <RNPickerSelect
-                items={rightItems}
-                onValueChange={handleSelectRightItem}
-                placeholder={defaultPlaceholder}
-                style={hidePickerIconOnAndroidSectionSelector(isDarkMode)}
-                touchableWrapperProps={{ testID: `${testID}_picker_select_right` }}
-                useNativeAndroidPickerStyle={false}
-                value={selectedRightItemKey}>
-                <View style={styles.tableSectionHeaderButton}>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    numberOfLines={1}
-                    style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                    {selectedRightItem.label}
-                  </Text>
-                  <Icon
-                    name='angle-down'
-                    size={14}
-                    style={[styles.tableSectionHeaderIconRight, globalTheme.tableSectionHeaderIcon]}
-                  />
-                </View>
-              </RNPickerSelect>
-            )}
-            {!hideRightItemWhileLoading &&
-              rightItems.length === 1 &&
-              selectedRightItemKey !== PV.Filters._allCategoriesKey && (
-                <View style={styles.tableSectionHeaderButton}>
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    numberOfLines={1}
-                    style={[styles.tableSectionHeaderTextRight, globalTheme.tableSectionHeaderText]}>
-                    {selectedRightItem.label}
-                  </Text>
-                </View>
-              )}
-          </View>
-        )}
+  render() {
+    const {
+      addByRSSPodcastFeedUrl,
+      filterScreenTitle,
+      handleSelectCategoryItem,
+      handleSelectCategorySubItem,
+      handleSelectFilterItem,
+      handleSelectFromItem,
+      handleSelectSortItem,
+      hideFilter,
+      includePadding,
+      screenName,
+      selectedCategoryItemKey,
+      selectedCategorySubItemKey,
+      selectedFilterItemKey,
+      selectedFilterLabel,
+      selectedFromItemKey,
+      selectedSortItemKey,
+      selectedSortLabel,
+      transparentDropdownButton,
+      textStyle
+    } = this.props
+    const { flatCategoryItems } = this.state
+    const { globalTheme } = this.global
+    const wrapperStyle = includePadding ? { marginHorizontal: 8 } : {}
+
+    return (
+      <View style={[styles.tableSectionHeaderWrapper, wrapperStyle]}>
+        <View style={styles.tableSectionHeaderTitleWrapper}>
+          {!!selectedFilterLabel && (
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              numberOfLines={1}
+              style={[styles.tableSectionHeaderTitleText, globalTheme.tableSectionHeaderText, textStyle]}>
+              {selectedFilterLabel}
+            </Text>
+          )}
+        </View>
+        <DropdownButton
+          hideFilter={hideFilter}
+          onPress={() => {
+            this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
+              addByRSSPodcastFeedUrl,
+              filterScreenTitle,
+              flatCategoryItems,
+              handleSelectCategoryItem,
+              handleSelectCategorySubItem,
+              handleSelectFilterItem,
+              handleSelectFromItem,
+              handleSelectSortItem,
+              screenName,
+              selectedCategoryItemKey,
+              selectedCategorySubItemKey,
+              selectedSortItemKey,
+              selectedFilterItemKey,
+              selectedFromItemKey
+            })
+          }}
+          sortLabel={selectedSortLabel}
+          transparent={transparentDropdownButton}
+        />
       </View>
-    </View>
-  )
-}
-
-const defaultPlaceholder = {
-  label: 'Select an item',
-  value: null
+    )
+  }
 }
 
 const styles = {
-  tableSectionHeader: {
-    minHeight: PV.Table.sectionHeader.height
-  },
-  tableSectionHeaderButton: {
+  tableSectionHeaderWrapper: {
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'center',
-    minHeight: PV.Table.sectionHeader.height
+    justifyContent: 'space-between',
+    paddingVertical: 12
   },
-  tableSectionHeaderIconLeft: {
+  tableSectionHeaderTitleText: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    paddingHorizontal: 8
+    fontSize: PV.Fonts.sizes.xxl,
+    fontWeight: PV.Fonts.weights.bold
   },
-  tableSectionHeaderIconRight: {
+  tableSectionHeaderTitleTextSubFrom: {
     flex: 0,
-    fontSize: PV.Fonts.sizes.xl,
-    paddingRight: 8
+    fontSize: PV.Fonts.sizes.sm,
+    marginTop: 2
   },
-  tableSectionHeaderInner: {
-    alignItems: 'stretch',
-    flexDirection: 'row',
-    justifyContent: 'space-between'
+  tableSectionHeaderTitleTextSubSort: {
+    textAlign: 'right',
+    flex: 1,
+    fontSize: PV.Fonts.sizes.sm,
+    marginTop: 2
   },
-  tableSectionHeaderTextLeft: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    paddingLeft: 8
-  },
-  tableSectionHeaderTextRight: {
-    flex: 0,
-    fontSize: PV.Fonts.sizes.xl,
-    paddingRight: 8
-  }
+  tableSectionHeaderTitleWrapper: {}
 }

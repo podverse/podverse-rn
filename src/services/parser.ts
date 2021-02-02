@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { convertToSortableTitle, convertURLToSecureProtocol, getAppUserAgent, isValidDate } from '../lib/utility'
+import { convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { combineWithAddByRSSPodcasts } from './podcast'
@@ -71,6 +71,10 @@ export const getAddByRSSEpisodesLocally = async (mostRecentDate: Date, oldestDat
   return combinedEpisodes.filter((episode) => {
     if (!episode.pubDate) {
       return false
+    }
+
+    if (new Date(episode.pubDate).valueOf() > mostRecentDate.valueOf()) {
+      return true
     }
 
     return (
@@ -165,7 +169,14 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
   }
   const podcast = {} as any
 
+  // A unique podcast.id is needed for specialUserInfoForPodcast
+  podcast.id = uuidv4()
+
   podcast.addByRSSPodcastFeedUrl = feedUrl
+  // The podcast.id must be set to the addByRSSPodcastFeedUrl for
+  // addDownloadedPodcastEpisode to work properly.
+  podcast.id = feedUrl
+
   podcast.description = meta.description && meta.description.trim()
 
   const feedLastUpdated = new Date(meta.lastBuildDate || meta.pubDate)
@@ -197,10 +208,12 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
       const enclosure = parsedEpisode.enclosure
       if (!enclosure || !enclosure.url) continue
 
-      episode.isPublic = true
+      episode.addedByRSS = true
 
-      // A unique episode.id is needed for downloading episodes.
-      episode.id = uuidv4()
+      // The episode.mediaUrl is used as the unique id by the downloads service,
+      // and as the unique key by the FlatList component.
+      episode.id = enclosure.url
+      episode.mediaUrl = enclosure.url
 
       // TODO: add chapters support for podcasts added by RSS feed
       // if (parsedEpisode.chapters) {
@@ -215,9 +228,9 @@ export const parseAddByRSSPodcast = async (feedUrl: string) => {
       episode.guid = parsedEpisode.guid
       episode.imageUrl = parsedEpisode.image
       episode.isExplicit = parsedEpisode.explicit
+      episode.isPublic = true
       episode.linkUrl = parsedEpisode.link
       episode.mediaType = enclosure.type
-      episode.mediaUrl = enclosure.url
 
       const pubDate = new Date(parsedEpisode.pubDate)
       episode.pubDate = isValidDate(pubDate) ? pubDate : new Date()
