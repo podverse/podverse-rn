@@ -95,14 +95,13 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
               </React.Fragment>
             )}
           </View>
-          <TouchableWithoutFeedback {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}>
-            <View
-              elevation={5}
-              style={[styles.imageWrapper, { height: imageHeight, width: '100%' }, imageWrapperStylePadding]}
-              transparent={true}>
+          <View
+            style={[styles.imageWrapper, { height: imageHeight, width: '100%' }, imageWrapperStylePadding]}
+            transparent={true}>
+            <TouchableWithoutFeedback {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}>
               <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyle} />
-            </View>
-          </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>
+          </View>
           {clipId && (
             <TouchableWithoutFeedback onPress={handlePressClipInfo}>
               <View style={[styles.carouselTextBottomWrapper, reduceBottomWrapperStyle]} transparent={true}>
