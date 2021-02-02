@@ -168,7 +168,7 @@ const getAllAddByRSSPodcastCredentials = async () => {
     console.log('getAllAddByRSSPodcastCredentials', error)
 
     await RNSecureKeyStore.set(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, JSON.stringify({}), {
-      accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY
+      accessible: ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
     })
   }
 
@@ -181,7 +181,7 @@ const saveAddByRSSPodcastCredentials = async (feedUrl: string, credentials: stri
   allAddByRSSPodcastCredentials[feedUrl] = credentials
 
   await RNSecureKeyStore.set(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, JSON.stringify(allAddByRSSPodcastCredentials), {
-    accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY
+    accessible: ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
   })
 }
 
@@ -190,7 +190,7 @@ const removeAddByRSSPodcastCredentials = async (feedUrl: string) => {
   allAddByRSSPodcastCredentials[feedUrl] = ''
 
   await RNSecureKeyStore.set(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, JSON.stringify(allAddByRSSPodcastCredentials), {
-    accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY
+    accessible: ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
   })
 }
 
