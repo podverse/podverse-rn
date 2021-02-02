@@ -1,6 +1,7 @@
-import { StyleSheet } from 'react-native'
+import { Alert, Linking, StyleSheet } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
@@ -32,6 +33,13 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
     clearInterval(this.chapterInterval)
   }
 
+  handleChapterLinkPress = (url: string) => {
+    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
+      { text: translate('Cancel') },
+      { text: translate('Yes'), onPress: () => Linking.openURL(url) }
+    ])
+  }
+
   render() {
     const { handlePressClipInfo, imageHeight, imageWidth, width } = this.props
     const { player, screenPlayer } = this.global
@@ -39,7 +47,6 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
     const { currentChapter, nowPlayingItem = {} } = player
     const { isLoading } = screenPlayer
     let { clipId, clipEndTime, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem
-    const imageStyle = [styles.image, { height: imageHeight, width: imageWidth }]
     let clipUrl = ''
 
     // If a clip is currently playing, then load the clip info.
@@ -51,6 +58,11 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
       clipStartTime = currentChapter.startTime
       clipTitle = currentChapter.title
       podcastImageUrl = currentChapter.imageUrl || podcastImageUrl
+    }
+
+    const imageStyle = [{ height: imageHeight, width: imageWidth }] as any
+    if (clipUrl) {
+      imageStyle.push(styles.imageBorder)
     }
 
     const imageWrapperStylePadding = clipId ? { padding: 16 } : { paddingHorizontal: 16, paddingTop: 16 }
@@ -83,11 +95,14 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
               </React.Fragment>
             )}
           </View>
-          <View
-            style={[styles.imageWrapper, { height: imageHeight, width: '100%' }, imageWrapperStylePadding]}
-            transparent={true}>
-            <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyle} />
-          </View>
+          <TouchableWithoutFeedback {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}>
+            <View
+              elevation={5}
+              style={[styles.imageWrapper, { height: imageHeight, width: '100%' }, imageWrapperStylePadding]}
+              transparent={true}>
+              <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyle} />
+            </View>
+          </TouchableWithoutFeedback>
           {clipId && (
             <TouchableWithoutFeedback onPress={handlePressClipInfo}>
               <View style={[styles.carouselTextBottomWrapper, reduceBottomWrapperStyle]} transparent={true}>
@@ -142,13 +157,14 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.xxl,
     textAlign: 'center'
   },
-  image: {
-    flex: 1
+  imageBorder: {
+    borderColor: PV.Colors.skyDark,
+    borderWidth: 5
   },
   imageWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 2
+    marginVertical: 10
   },
   innerWrapper: {
     flex: 1,
