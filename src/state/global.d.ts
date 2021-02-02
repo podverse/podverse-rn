@@ -19,6 +19,11 @@ declare module 'reactn/default' {
     overlayAlert: {
       shouldShowAlert: boolean
     }
+    parser: {
+      addByRSSPodcastAuthModal: {
+        feedUrl: string
+      }
+    }
     player: {
       currentChapter: any
       currentChapters: any
