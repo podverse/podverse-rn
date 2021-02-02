@@ -58,6 +58,7 @@ const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean
   const latestSubscribedPodcasts = await getSubscribedPodcastsLocally()
   const combinedPodcasts = parsedPodcasts.concat(latestSubscribedPodcasts[0])
   const alphabetizedPodcasts = sortPodcastArrayAlphabetically(combinedPodcasts)
+
   setGlobal({
     subscribedPodcasts: alphabetizedPodcasts,
     subscribedPodcastsTotalCount: alphabetizedPodcasts.length
