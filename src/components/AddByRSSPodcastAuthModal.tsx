@@ -1,22 +1,10 @@
-import {
-  ActivityIndicator,
-  Alert,
-  Dimensions,
-  KeyboardAvoidingView,
-  Modal,
-  StyleSheet,
-  TouchableOpacity
-} from 'react-native'
+import { ActivityIndicator, KeyboardAvoidingView, Modal, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { Text, TextInput, View } from '.'
+import { Text, TextInput, View } from '../components'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import {
-  addAddByRSSPodcast,
-  addAddByRSSPodcastWithCredentials,
-  clearAddByRSSPodcastAuthModalState
-} from '../state/actions/parser'
+import { addAddByRSSPodcastWithCredentials, clearAddByRSSPodcastAuthModalState } from '../state/actions/parser'
 import { core } from '../styles'
 
 type Props = {
