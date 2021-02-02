@@ -27,7 +27,7 @@ import { getEpisode } from '../services/episode'
 import { checkIdlePlayerState, PVTrackPlayer, updateUserPlaybackPosition } from '../services/player'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { trackPageView } from '../services/tracking'
-import { getNowPlayingItem } from '../services/userNowPlayingItem'
+import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { askToSyncWithNowPlayingItem, getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
 import {
@@ -139,7 +139,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _handleAppStateChange = async (nextAppState: any) => {
     if (nextAppState === 'active' && !isInitialLoad) {
       const { nowPlayingItem: lastItem } = this.global.player
-      const currentItem = await getNowPlayingItem()
+      const currentItem = await getNowPlayingItemLocally()
 
       if (!lastItem || (lastItem && currentItem && currentItem.episodeId !== lastItem.episodeId)) {
         await updatePlayerState(currentItem)
