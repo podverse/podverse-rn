@@ -1,6 +1,6 @@
-import { ActivityIndicator, Dimensions, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, Dimensions, KeyboardAvoidingView, Modal, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { Text, TextInput } from '.'
+import { Text, TextInput, View } from '.'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -73,55 +73,62 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
         : [styles.signInButtonText, disabledTextStyle]
 
     return (
-      <ScrollView contentContainerStyle={styles.scrollViewContent} style={styles.scrollView}>
-        <Text style={styles.headerText}>{translate('Login to Private Feed')}</Text>
-        <Text style={styles.feedUrlText}>{feedUrl}</Text>
-        <TextInput
-          autoCapitalize='none'
-          autoCompleteType='email'
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          onChangeText={this.usernameChanged}
-          onSubmitEditing={() => {
-            this.secondTextInput.focus()
-          }}
-          placeholder={translate('Username')}
-          returnKeyType='next'
-          testID={`${testIDPrefix}_username`}
-          value={username}
-          wrapperStyle={core.textInputWrapper}
-        />
-        <TextInput
-          autoCapitalize='none'
-          autoCompleteType='password'
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          onChangeText={this.passwordChanged}
-          placeholder={translate('Password')}
-          inputRef={(input) => {
-            this.secondTextInput = input
-          }}
-          returnKeyType='done'
-          secureTextEntry={true}
-          testID={`${testIDPrefix}_password`}
-          value={password}
-          underlineColorAndroid='transparent'
-          wrapperStyle={core.textInputWrapper}
-        />
-        <TouchableOpacity activeOpacity={1}>
-          <>
-            <TouchableOpacity
-              style={[styles.signInButton, disabledStyle]}
-              disabled={submitIsDisabled || isLoading}
-              onPress={this.login}
-              {...testProps(`${testIDPrefix}_submit`)}>
-              {isLoading ? (
-                <ActivityIndicator animating={true} color={PV.Colors.gray} size='small' />
-              ) : (
-                <Text style={signInButtonTextStyle}>{translate('Login')}</Text>
-              )}
+      <Modal transparent={true}>
+        <View style={styles.view}>
+          <KeyboardAvoidingView
+            behavior='position'
+            contentContainerStyle={styles.scrollViewContent}
+            style={styles.scrollView}>
+            <Text style={styles.headerText}>{translate('Login to Private Feed')}</Text>
+            <Text style={styles.feedUrlText}>{feedUrl}</Text>
+            <TextInput
+              autoCapitalize='none'
+              autoCompleteType='email'
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              onChangeText={this.usernameChanged}
+              onSubmitEditing={() => {
+                this.secondTextInput.focus()
+              }}
+              placeholder={translate('Username')}
+              returnKeyType='next'
+              testID={`${testIDPrefix}_username`}
+              value={username}
+              wrapperStyle={core.textInputWrapper}
+            />
+            <TextInput
+              autoCapitalize='none'
+              autoCompleteType='password'
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              onChangeText={this.passwordChanged}
+              placeholder={translate('Password')}
+              inputRef={(input) => {
+                this.secondTextInput = input
+              }}
+              returnKeyType='done'
+              secureTextEntry={true}
+              testID={`${testIDPrefix}_password`}
+              value={password}
+              underlineColorAndroid='transparent'
+              wrapperStyle={core.textInputWrapper}
+            />
+            <TouchableOpacity activeOpacity={1}>
+              <>
+                <TouchableOpacity
+                  style={[styles.signInButton, disabledStyle]}
+                  disabled={submitIsDisabled || isLoading}
+                  onPress={this.login}
+                  {...testProps(`${testIDPrefix}_submit`)}>
+                  {isLoading ? (
+                    <ActivityIndicator animating={true} color={PV.Colors.gray} size='small' />
+                  ) : (
+                    <Text style={signInButtonTextStyle}>{translate('Login')}</Text>
+                  )}
+                </TouchableOpacity>
+              </>
             </TouchableOpacity>
-          </>
-        </TouchableOpacity>
-      </ScrollView>
+          </KeyboardAvoidingView>
+        </View>
+      </Modal>
     )
   }
 }
@@ -129,6 +136,11 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
 const deviceWidth = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   feedUrlText: {
     fontStyle: 'italic',
     fontSize: PV.Fonts.sizes.xl,
@@ -152,18 +164,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   scrollView: {
-    width: '100%'
+    width: '90%'
   },
   scrollViewContent: {
-    flex: 1,
-    justifyContent: 'center',
-    maxWidth: deviceWidth,
-    paddingHorizontal: 20,
-    position: 'absolute',
-    zIndex: 10,
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0
+    justifyContent: 'center'
   }
 })
