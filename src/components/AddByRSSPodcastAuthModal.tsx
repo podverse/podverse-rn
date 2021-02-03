@@ -2,8 +2,10 @@ import { ActivityIndicator, KeyboardAvoidingView, Modal, StyleSheet, TouchableOp
 import React from 'reactn'
 import { Text, TextInput, View } from '../components'
 import { translate } from '../lib/i18n'
+import { navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
+import { getAddByRSSPodcastLocally } from '../services/parser'
 import { addAddByRSSPodcastWithCredentials, clearAddByRSSPodcastAuthModalState } from '../state/actions/parser'
 import { core } from '../styles'
 
@@ -49,6 +51,7 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
   login = async () => {
     this.setState({ isLoading: true }, async () => {
       try {
+        const { navigation } = this.props
         const { parser } = this.global
         const { feedUrl } = parser.addByRSSPodcastAuthModal
         const { password, username } = this.state
@@ -57,21 +60,19 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
         this.setState({ isLoading: false })
 
         if (addByRSSSucceeded) {
-          // this.props.navigation.setParams({
-          //   _savePodcastByRSSUrlIsLoading: false
-          // })
-          // const podcast = await getAddByRSSPodcastLocally(feedUrl)
-          // this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
-          //   podcast,
-          //   addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
-          // })
+          navigation.setParams({
+            _savePodcastByRSSUrlIsLoading: false
+          })
+          const podcast = await getAddByRSSPodcastLocally(feedUrl)
+          clearAddByRSSPodcastAuthModalState()
+          navigateToPodcastScreenWithItem(navigation, podcast)
         }
       } catch (error) {
         console.log('_handleSavePodcastByRSSURL', error)
 
-        // this.props.navigation.setParams({
-        //   _savePodcastByRSSUrlIsLoading: false
-        // })
+        this.props.navigation.setParams({
+          _savePodcastByRSSUrlIsLoading: false
+        })
         this.setState({ isLoading: false })
       }
     })
