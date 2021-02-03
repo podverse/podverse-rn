@@ -49,7 +49,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
 
     return {
       title: translate('Playlist'),
-      headerRight: (
+      headerRight: () => (
         <RNView style={core.row}>
           <NavShareIcon
             endingText={translate('shared using brandName')}

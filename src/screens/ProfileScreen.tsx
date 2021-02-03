@@ -75,7 +75,7 @@ export class ProfileScreen extends React.Component<Props, State> {
 
     return {
       title: isMyProfile ? translate('My Profile') : translate('Profile'),
-      headerRight: (
+      headerRight: () => (
         <RNView style={core.row}>
           {userIsPublic && userId && (
             <NavShareIcon profileName={userName} urlId={userId} urlPath={PV.URLs.webPaths.profile} />

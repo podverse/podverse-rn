@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo, { NetInfoState, NetInfoSubscription } from '@react-native-community/netinfo'
 import React, { Component } from 'react'
-import { Image, Platform, StatusBar, View, YellowBox } from 'react-native'
+import { Image, LogBox, Platform, StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
 import { getFontScale } from 'react-native-device-info'
 import 'react-native-gesture-handler'
@@ -20,9 +20,8 @@ import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 
-YellowBox.ignoreWarnings(['Warning: componentWillUpdate'])
-
-console.disableYellowBox = true
+LogBox.ignoreLogs(['Warning: componentWillUpdate'])
+LogBox.ignoreAllLogs(true)
 
 type Props = {}
 

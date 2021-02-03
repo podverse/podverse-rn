@@ -122,8 +122,8 @@ export const ScanQRCodeScreen = (props: Props) => {
 ScanQRCodeScreen.navigationOptions = ({ navigation }) => {
   return {
     title: translate('QR Reader'),
-    headerLeft: <NavDismissIcon handlePress={navigation.dismiss} />,
-    headerRight: null
+    headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} />,
+    headerRight: () => null
   }
 }
 
