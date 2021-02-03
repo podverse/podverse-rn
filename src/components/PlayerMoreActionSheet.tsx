@@ -9,7 +9,7 @@ import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
-import { toggleSubscribeToPodcast } from '../state/actions/podcast'
+import { checkIfSubscribedToPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { actionSheetStyles, sliderStyles } from '../styles'
 import { ActionSheet, Icon, Text } from './'
 
@@ -93,14 +93,11 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     const { globalTheme, player, session } = this.global
     const { nowPlayingItem } = player
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => session.userInfo.subscribedPodcastIds, [])
-    let isSubscribed = subscribedPodcastIds.some((x: string) => nowPlayingItem && nowPlayingItem.podcastId === x)
-
-    if (!isSubscribed && nowPlayingItem && nowPlayingItem.addByRSSPodcastFeedUrl) {
-      const subscribedPodcasts = safelyUnwrapNestedVariable(() => this.global.subscribedPodcasts, [])
-      isSubscribed = subscribedPodcasts.some(
-        (x: any) => x.addByRSSPodcastFeedUrl && x.addByRSSPodcastFeedUrl === nowPlayingItem.addByRSSPodcastFeedUrl
-      )
-    }
+    const isSubscribed = checkIfSubscribedToPodcast(
+      subscribedPodcastIds,
+      nowPlayingItem.podcastId,
+      nowPlayingItem.addByRSSPodcastFeedUrl
+    )
 
     const children = [
       <TouchableHighlight

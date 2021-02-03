@@ -6,6 +6,7 @@ import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
   ActivityIndicator,
+  AddByRSSPodcastAuthModal,
   Divider,
   FlatList,
   PlayerEvents,
@@ -504,7 +505,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
           await removeDownloadedPodcast(selectedId || addByRSSPodcastFeedUrl)
         }
         const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
-        rowMap[selectedId].closeRow()
+
+        const row = rowMap[selectedId] || rowMap[addByRSSPodcastFeedUrl]
+        row.closeRow()
+
         this.setState({
           flatListData: newFlatListData,
           flatListDataTotalCount: newFlatListData.length,
@@ -690,6 +694,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           />
         </Dialog.Container>
         <PurchaseListener navigation={navigation} />
+        <AddByRSSPodcastAuthModal navigation={navigation} />
       </View>
     )
   }

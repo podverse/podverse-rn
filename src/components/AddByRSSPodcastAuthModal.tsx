@@ -1,13 +1,17 @@
-import { ActivityIndicator, Dimensions, KeyboardAvoidingView, Modal, StyleSheet, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, KeyboardAvoidingView, Modal, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { Text, TextInput, View } from '.'
+import { Text, TextInput, View } from '../components'
 import { translate } from '../lib/i18n'
+import { navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { addAddByRSSPodcast } from '../state/actions/parser'
+import { getAddByRSSPodcastLocally } from '../services/parser'
+import { addAddByRSSPodcastWithCredentials, clearAddByRSSPodcastAuthModalState } from '../state/actions/parser'
 import { core } from '../styles'
 
-type Props = {}
+type Props = {
+  navigation: any
+}
 
 type State = {
   isLoading: boolean
@@ -34,14 +38,36 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
     this.setState({ submitIsDisabled })
   }
 
+  handleDismiss = () => {
+    this.setState({
+      isLoading: false,
+      password: '',
+      submitIsDisabled: true,
+      username: ''
+    })
+    clearAddByRSSPodcastAuthModalState()
+  }
+
   login = async () => {
     this.setState({ isLoading: true }, async () => {
-      const { parser } = this.global
-      const { feedUrl } = parser.addByRSSPodcastAuthModal
-      const { password, username } = this.state
-      const credentials = `${username}:${password}`
-      await addAddByRSSPodcast(feedUrl, credentials)
-      this.setState({ isLoading: false })
+      try {
+        const { navigation } = this.props
+        const { parser } = this.global
+        const { feedUrl } = parser.addByRSSPodcastAuthModal
+        const { password, username } = this.state
+        const credentials = `${username}:${password}`
+        const addByRSSSucceeded = await addAddByRSSPodcastWithCredentials(feedUrl, credentials)
+        this.setState({ isLoading: false })
+
+        if (addByRSSSucceeded) {
+          const podcast = await getAddByRSSPodcastLocally(feedUrl)
+          clearAddByRSSPodcastAuthModalState()
+          navigateToPodcastScreenWithItem(navigation, podcast)
+        }
+      } catch (error) {
+        console.log('_handleSavePodcastByRSSURL', error)
+        this.setState({ isLoading: false })
+      }
     })
   }
 
@@ -71,6 +97,11 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
       PV.Fonts.fontScale.largest === fontScaleMode
         ? [styles.signInButtonText, disabledTextStyle, { fontSize: PV.Fonts.largeSizes.md }]
         : [styles.signInButtonText, disabledTextStyle]
+
+    const switchOptionTextStyle =
+      PV.Fonts.fontScale.largest === fontScaleMode
+        ? [styles.switchOptionText, { fontSize: PV.Fonts.largeSizes.sm }]
+        : [styles.switchOptionText]
 
     return (
       <Modal transparent={true}>
@@ -126,14 +157,19 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
                 </TouchableOpacity>
               </>
             </TouchableOpacity>
+            <Text
+              key='cancel'
+              onPress={this.handleDismiss}
+              style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}
+              {...testProps(`${testIDPrefix}_cancel`)}>
+              {translate('Cancel')}
+            </Text>
           </KeyboardAvoidingView>
         </View>
       </Modal>
     )
   }
 }
-
-const deviceWidth = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
   view: {
@@ -168,5 +204,12 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     justifyContent: 'center'
+  },
+  switchOptionText: {
+    color: PV.Colors.skyLight,
+    fontSize: PV.Fonts.sizes.xl,
+    marginTop: 12,
+    padding: 12,
+    textAlign: 'center'
   }
 })

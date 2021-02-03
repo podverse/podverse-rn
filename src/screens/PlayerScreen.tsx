@@ -24,9 +24,9 @@ import {
 } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
+import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRef } from '../services/mediaRef'
 import { PVTrackPlayer, updateUserPlaybackPosition } from '../services/player'
-import PlayerEventEmitter from '../services/playerEventEmitter'
 import { addQueueItemNext } from '../services/queue'
 import { trackPageView } from '../services/tracking'
 import { getNowPlayingItem } from '../services/userNowPlayingItem'
@@ -145,7 +145,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     })
 
     if (!eventListenerPlayerNewEpisodeLoaded) {
-      eventListenerPlayerNewEpisodeLoaded = PlayerEventEmitter.on(
+      eventListenerPlayerNewEpisodeLoaded = PVEventEmitter.on(
         PV.Events.PLAYER_NEW_EPISODE_LOADED,
         this._handleNewEpisodeLoaded
       )
