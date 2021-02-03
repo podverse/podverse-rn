@@ -1,5 +1,7 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { safelyUnwrapNestedVariable } from '../../lib/utility'
+import { PV } from '../../resources'
+import PVEventEmitter from '../../services/eventEmitter'
 import {
   getAddByRSSPodcastsLocally,
   removeAddByRSSPodcast as removeAddByRSSPodcastService
@@ -27,33 +29,38 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
 }
 
 export const toggleSubscribeToPodcast = async (id: string) => {
-  try {
-    const globalState = getGlobal()
-    const subscribedPodcastIds = await toggleSubscribeToPodcastService(id)
-    const subscribedPodcast = await getPodcastService(id)
-    let { subscribedPodcasts = [] } = globalState
-    subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast)
-    const subscribedPodcastsTotalCount = subscribedPodcasts ? subscribedPodcasts.length : 0
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      const globalState = getGlobal()
+      const subscribedPodcastIds = await toggleSubscribeToPodcastService(id)
+      const subscribedPodcast = await getPodcastService(id)
+      let { subscribedPodcasts = [] } = globalState
+      subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast)
+      const subscribedPodcastsTotalCount = subscribedPodcasts ? subscribedPodcasts.length : 0
 
-    setGlobal(
-      {
-        session: {
-          ...globalState.session,
-          userInfo: {
-            ...globalState.session.userInfo,
-            subscribedPodcastIds
-          }
+      setGlobal(
+        {
+          session: {
+            ...globalState.session,
+            userInfo: {
+              ...globalState.session.userInfo,
+              subscribedPodcastIds
+            }
+          },
+          subscribedPodcasts,
+          subscribedPodcastsTotalCount
         },
-        subscribedPodcasts,
-        subscribedPodcastsTotalCount
-      },
-      async () => {
-        await updateDownloadedPodcasts()
-      }
-    )
-  } catch (error) {
-    console.log('toggleSubscribeToPodcast action', error)
-  }
+        async () => {
+          await updateDownloadedPodcasts()
+          PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
+          resolve()
+        }
+      )
+    } catch (error) {
+      console.log('toggleSubscribeToPodcast action', error)
+      reject()
+    }
+  })
 }
 
 export const removeAddByRSSPodcast = async (feedUrl: string) => {
@@ -61,4 +68,23 @@ export const removeAddByRSSPodcast = async (feedUrl: string) => {
   const globalState = getGlobal()
   const subscribedPodcastIds = safelyUnwrapNestedVariable(() => globalState.session.userInfo.subscribedPodcastIds, [])
   await getSubscribedPodcasts(subscribedPodcastIds)
+  PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
+}
+
+export const checkIfSubscribedToPodcast = (
+  subscribedPodcastIds: string[],
+  podcastId?: string,
+  addByRSSPodcastFeedUrl?: string
+) => {
+  const globalState = getGlobal()
+  let isSubscribed = subscribedPodcastIds.some((x: string) => podcastId && podcastId === x)
+
+  if (!isSubscribed && addByRSSPodcastFeedUrl) {
+    const subscribedPodcasts = safelyUnwrapNestedVariable(() => globalState.subscribedPodcasts, [])
+    isSubscribed = subscribedPodcasts.some(
+      (x: any) => x.addByRSSPodcastFeedUrl && x.addByRSSPodcastFeedUrl === addByRSSPodcastFeedUrl
+    )
+  }
+
+  return isSubscribed
 }

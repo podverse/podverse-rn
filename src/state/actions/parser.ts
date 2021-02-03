@@ -2,6 +2,7 @@ import { Alert } from 'react-native'
 import { setGlobal } from 'reactn'
 import { PV } from '../../resources'
 import { checkIfLoggedIn } from '../../services/auth'
+import PVEventEmitter from '../../services/eventEmitter'
 import {
   addAddByRSSPodcastFeedUrlOnServer,
   getAddByRSSPodcastFeedUrlsLocally,
@@ -73,6 +74,7 @@ export const addAddByRSSPodcast = async (feedUrl: string) => {
   try {
     const shouldAdd = true
     await handleAddOrRemoveByRSSPodcast(feedUrl, shouldAdd)
+    PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
     result = true
   } catch (error) {
     if (error.message === '401') {
@@ -82,6 +84,8 @@ export const addAddByRSSPodcast = async (feedUrl: string) => {
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
     }
   }
+
+  return result
 }
 
 export const addAddByRSSPodcastWithCredentials = async (feedUrl: string, credentials?: any) => {
@@ -111,6 +115,7 @@ export const removeAddByRSSPodcast = async (feedUrl: string) => {
   try {
     const shouldAdd = false
     await handleAddOrRemoveByRSSPodcast(feedUrl, shouldAdd)
+    PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
   } catch (error) {
     console.log('addAddByRSSPodcast remove', error)
     throw error

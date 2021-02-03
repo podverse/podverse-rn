@@ -11,7 +11,7 @@ import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
-import PlayerEventEmitter from './playerEventEmitter'
+import PVEventEmitter from './eventEmitter'
 import {
   addQueueItemLast,
   addQueueItemNext,
@@ -88,7 +88,7 @@ export const handleResumeAfterClipHasEnded = async () => {
   const playbackPosition = await PVTrackPlayer.getPosition()
   const mediaFileDuration = await PVTrackPlayer.getDuration()
   await addOrUpdateHistoryItem(nowPlayingItemEpisode, playbackPosition, mediaFileDuration)
-  PlayerEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
+  PVEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
 export const playerJumpBackward = async (seconds: number) => {
@@ -276,7 +276,7 @@ export const loadItemAndPlayTrack = async (
   }
 
   if (lastPlayingItem && lastPlayingItem.episodeId && lastPlayingItem.episodeId !== item.episodeId) {
-    PlayerEventEmitter.emit(PV.Events.PLAYER_NEW_EPISODE_LOADED)
+    PVEventEmitter.emit(PV.Events.PLAYER_NEW_EPISODE_LOADED)
   }
 }
 

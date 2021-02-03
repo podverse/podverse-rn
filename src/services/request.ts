@@ -24,8 +24,10 @@ export const request = async (req: PVRequest) => {
   const userAgent = await getAppUserAgent()
   const urlsApi = await PV.URLs.api()
 
+  const url = `${urlsApi.baseUrl}${endpoint}?${queryString}`
+
   const axiosRequest = {
-    url: `${urlsApi.baseUrl}${endpoint}?${queryString}`,
+    url,
     headers: {
       ...headers,
       'User-Agent': userAgent

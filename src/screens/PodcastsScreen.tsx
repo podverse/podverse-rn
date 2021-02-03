@@ -504,7 +504,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
           await removeDownloadedPodcast(selectedId || addByRSSPodcastFeedUrl)
         }
         const newFlatListData = flatListData.filter((x) => x.id !== selectedId)
-        rowMap[selectedId].closeRow()
+
+        const row = rowMap[selectedId] || rowMap[addByRSSPodcastFeedUrl]
+        row.closeRow()
+
         this.setState({
           flatListData: newFlatListData,
           flatListDataTotalCount: newFlatListData.length,
