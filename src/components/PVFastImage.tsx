@@ -37,7 +37,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     const { isSmall, resizeMode = 'contain', source, styles } = this.props
     const { hasError, uuid } = this.state
     const { offlineModeEnabled, userAgent } = this.global
-    const cache = offlineModeEnabled ? 'cacheOnly' : 'web'
+    const cache = offlineModeEnabled ? 'cacheOnly' : 'immutable'
     const isValid = isValidUrl(source)
     const isSvg = source && source.indexOf('.svg') > 0
 

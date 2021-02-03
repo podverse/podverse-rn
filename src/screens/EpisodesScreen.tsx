@@ -23,6 +23,7 @@ import { getUniqueArrayByKey, setCategoryQueryProperty, testProps } from '../lib
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisodes } from '../services/episode'
+import PVEventEmitter from '../services/eventEmitter'
 import { combineEpisodesWithAddByRSSEpisodesLocally, hasAddByRSSEpisodesLocally } from '../services/parser'
 import { trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
@@ -102,7 +103,19 @@ export class EpisodesScreen extends React.Component<Props, State> {
         this.setState(newState)
       }
     )
+
+    PVEventEmitter.on(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
+
     trackPageView('/episodes', 'Episodes Screen')
+  }
+
+  componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PODCAST_SUBSCRIBE_TOGGLED, this._handleToggleSubscribeEvent)
+  }
+
+  _handleToggleSubscribeEvent = () => {
+    const { queryFrom } = this.state
+    if (queryFrom) this.handleSelectFilterItem(queryFrom)
   }
 
   handleSelectFilterItem = async (selectedKey: string) => {

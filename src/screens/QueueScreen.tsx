@@ -73,7 +73,7 @@ export class QueueScreen extends React.Component<Props, State> {
       ) : (
         translate('Queue')
       ),
-      headerRight: (
+      headerRight: () => (
         <RNView style={[core.row]}>
           {navigation.getParam('viewType') === _historyKey ? (
             <RNView>

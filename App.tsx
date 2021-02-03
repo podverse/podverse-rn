@@ -1,14 +1,14 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo, { NetInfoState, NetInfoSubscription } from '@react-native-community/netinfo'
 import React, { Component } from 'react'
-import { Image, Platform, StatusBar, View, YellowBox } from 'react-native'
+import { Image, LogBox, Platform, StatusBar, View } from 'react-native'
 import Config from 'react-native-config'
 import { getFontScale } from 'react-native-device-info'
 import 'react-native-gesture-handler'
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context'
 import TrackPlayer from 'react-native-track-player'
 import { setGlobal } from 'reactn'
-import { AddByRSSPodcastAuthModal, OverlayAlert } from './src/components'
+import { OverlayAlert } from './src/components'
 import { refreshDownloads } from './src/lib/downloader'
 import { PV } from './src/resources'
 import { determineFontScaleMode } from './src/resources/Fonts'
@@ -20,9 +20,8 @@ import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
 
-YellowBox.ignoreWarnings(['Warning: componentWillUpdate'])
-
-console.disableYellowBox = true
+LogBox.ignoreLogs(['Warning: componentWillUpdate'])
+LogBox.ignoreAllLogs(true)
 
 type Props = {}
 
@@ -124,7 +123,6 @@ class App extends Component<Props, State> {
         <View style={{ flex: 1 }}>
           <Router />
           <OverlayAlert />
-          <AddByRSSPodcastAuthModal />
         </View>
       </SafeAreaProvider>
     ) : (

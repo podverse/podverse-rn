@@ -17,7 +17,6 @@ import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { trackPageView } from '../services/tracking'
 import { addAddByRSSPodcast } from '../state/actions/parser'
-import { core } from '../styles'
 
 type Props = {
   navigation: any
@@ -34,8 +33,8 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: translate('Add Custom RSS Feed'),
-      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-      headerRight: (
+      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
+      headerRight: () => (
         <NavHeaderButtonText
           disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
           handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}
@@ -93,11 +92,6 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
           }
         } catch (error) {
           console.log('_handleSavePodcastByRSSURL', error)
-          Alert.alert(
-            PV.Alerts.SOMETHING_WENT_WRONG.title,
-            PV.Alerts.SOMETHING_WENT_WRONG.message,
-            PV.Alerts.BUTTONS.OK
-          )
           this.props.navigation.setParams({
             _savePodcastByRSSUrlIsLoading: false
           })

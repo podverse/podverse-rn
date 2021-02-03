@@ -68,7 +68,7 @@ const defaultNavigationOptions = ({ navigation }) => {
       fontSize,
       fontWeight: 'bold'
     },
-    headerRight: <NavSearchIcon navigation={navigation} />
+    headerRight: () => <NavSearchIcon navigation={navigation} />
   } as NavigationStackOptions
 }
 

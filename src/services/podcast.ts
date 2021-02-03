@@ -48,6 +48,13 @@ export const getPodcasts = async (query: any = {}) => {
   return response && response.data
 }
 
+const setSubscribedPodcasts = async (subscribedPodcasts: any[]) => {
+  await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED, new Date().toISOString())
+  if (Array.isArray(subscribedPodcasts)) {
+    await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts))
+  }
+}
+
 export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
 
@@ -62,6 +69,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
 
   if (subscribedPodcastIds.length < 1 && addByRSSPodcasts.length > 0) {
     if (isConnected) await parseAllAddByRSSPodcasts()
+    await setSubscribedPodcasts([])
     const combinedPodcasts = await combineWithAddByRSSPodcasts()
     return [combinedPodcasts, combinedPodcasts.length]
   }
@@ -94,10 +102,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
         }
       }, 3000)
 
-      await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED, new Date().toISOString())
-      if (Array.isArray(subscribedPodcasts)) {
-        await AsyncStorage.setItem(PV.Keys.SUBSCRIBED_PODCASTS, JSON.stringify(subscribedPodcasts))
-      }
+      await setSubscribedPodcasts(subscribedPodcasts)
 
       await parseAllAddByRSSPodcasts()
 

@@ -42,7 +42,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
 
     return {
       title: translate('Edit Playlist'),
-      headerRight: (
+      headerRight: () => (
         <RNView style={styles.headerButtonWrapper}>
           <NavHeaderButtonText
             handlePress={handlePress}

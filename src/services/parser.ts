@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { encode as btoa } from 'base-64'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -18,7 +19,7 @@ addByRSSPodcast: object {
 */
 
 export const hasAddByRSSEpisodesLocally = async () => {
-  const results = await getAddByRSSEpisodesLocally(new Date(), new Date(0))
+  const results = await getAddByRSSEpisodesLocally()
   return results.length > 0
 }
 
@@ -45,7 +46,10 @@ export const combineEpisodesWithAddByRSSEpisodesLocally = async (results: any[])
   mostRecentDate = mostRecentDate ? mostRecentDate : new Date().toString()
   oldestDate = oldestDate ? oldestDate : new Date(0).toString()
 
-  const addByRSSEpisodes = await getAddByRSSEpisodesLocally(new Date(mostRecentDate), new Date(oldestDate))
+  const addByRSSEpisodes =
+    results.length > 0
+      ? await getAddByRSSEpisodesLocallyByDateRange(new Date(mostRecentDate), new Date(oldestDate))
+      : await getAddByRSSEpisodesLocally()
 
   const sortedResults = [...results[0], ...addByRSSEpisodes].sort((a: any, b: any) => {
     const dateA = new Date(a.pubDate) as any
@@ -58,7 +62,21 @@ export const combineEpisodesWithAddByRSSEpisodesLocally = async (results: any[])
   return [sortedResults, newCount]
 }
 
-export const getAddByRSSEpisodesLocally = async (mostRecentDate: Date, oldestDate: Date) => {
+export const getAddByRSSEpisodesLocally = async () => {
+  const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
+  const combinedEpisodes = [] as any[]
+
+  for (const addByRSSPodcast of addByRSSPodcasts) {
+    for (const episode of addByRSSPodcast.episodes) {
+      episode.podcast = addByRSSPodcast
+      combinedEpisodes.push(episode)
+    }
+  }
+
+  return combinedEpisodes
+}
+
+export const getAddByRSSEpisodesLocallyByDateRange = async (mostRecentDate: Date, oldestDate: Date) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
   const combinedEpisodes = [] as any[]
 
@@ -165,8 +183,6 @@ const getAllAddByRSSPodcastCredentials = async () => {
     const allCredentialsString = await RNSecureKeyStore.get(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS)
     allCredentials = allCredentialsString ? JSON.parse(allCredentialsString) : {}
   } catch (error) {
-    console.log('getAllAddByRSSPodcastCredentials', error)
-
     await RNSecureKeyStore.set(PV.Keys.ADD_BY_RSS_PODCASTS_CREDENTIALS, JSON.stringify({}), {
       accessible: ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
     })
@@ -197,7 +213,7 @@ const removeAddByRSSPodcastCredentials = async (feedUrl: string) => {
 export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string) => {
   const userAgent = await getAppUserAgent()
 
-  const Authorization = credentials ? `Basic ${window.btoa(credentials)}` : ''
+  const Authorization = credentials ? `Basic ${btoa(credentials)}` : ''
 
   const result = await podcastFeedParser.getPodcastFromURL({
     url: feedUrl,
@@ -239,13 +255,6 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
   podcast.isExplicit = meta.explicit
   podcast.language = meta.language
 
-  if (parsedEpisodes && parsedEpisodes.length > 0) {
-    const lastEpisodePubDate = new Date(parsedEpisodes[0].pubDate)
-    podcast.lastEpisodePubDate = isValidDate(lastEpisodePubDate) ? lastEpisodePubDate : new Date()
-    podcast.lastEpisodePubDate = parsedEpisodes[0].published || new Date()
-    podcast.lastEpisodeTitle = parsedEpisodes[0].title && parsedEpisodes[0].title.trim()
-  }
-
   podcast.linkUrl = meta.link
   podcast.sortableTitle = convertToSortableTitle(title)
   podcast.title = title
@@ -254,6 +263,15 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
 
   const episodes = [] as any[]
   if (parsedEpisodes && Array.isArray(parsedEpisodes)) {
+    parsedEpisodes.sort((a, b) => (new Date(b.pubDate) as any) - (new Date(a.pubDate) as any))
+
+    if (parsedEpisodes[0]) {
+      const lastEpisodePubDate = new Date(parsedEpisodes[0].pubDate)
+      podcast.lastEpisodePubDate = isValidDate(lastEpisodePubDate) && lastEpisodePubDate
+      podcast.lastEpisodePubDate = podcast.lastEpisodePubDate || parsedEpisodes[0].published || new Date()
+      podcast.lastEpisodeTitle = parsedEpisodes[0].title && parsedEpisodes[0].title.trim()
+    }
+
     for (const parsedEpisode of parsedEpisodes) {
       const episode = {} as any
       const enclosure = parsedEpisode.enclosure
