@@ -60,19 +60,12 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
         this.setState({ isLoading: false })
 
         if (addByRSSSucceeded) {
-          navigation.setParams({
-            _savePodcastByRSSUrlIsLoading: false
-          })
           const podcast = await getAddByRSSPodcastLocally(feedUrl)
           clearAddByRSSPodcastAuthModalState()
           navigateToPodcastScreenWithItem(navigation, podcast)
         }
       } catch (error) {
         console.log('_handleSavePodcastByRSSURL', error)
-
-        this.props.navigation.setParams({
-          _savePodcastByRSSUrlIsLoading: false
-        })
         this.setState({ isLoading: false })
       }
     })
