@@ -31,8 +31,8 @@ export class FilterScreen extends React.Component<Props, State> {
 
     return {
       title: filterScreenTitle || '',
-      headerLeft: null,
-      headerRight: (
+      headerLeft: () => null,
+      headerRight: () => (
         <NavHeaderButtonText handlePress={navigation.dismiss} testID={testIDPrefix} text={translate('Done')} />
       )
     }

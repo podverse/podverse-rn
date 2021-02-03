@@ -38,8 +38,8 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: translate('Add to Playlist'),
-      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-      headerRight: (
+      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
+      headerRight: () => (
         <RNView>
           {navigation.getParam('isLoggedIn') && (
             <NavHeaderButtonText

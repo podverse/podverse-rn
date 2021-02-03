@@ -35,7 +35,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: translate('Edit Profile'),
-      headerRight: (
+      headerRight: () => (
         <NavHeaderButtonText
           handlePress={navigation.getParam('updateUser')}
           testID={testIDPrefix}

@@ -33,8 +33,8 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
       title: translate('Add Custom RSS Feed'),
-      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-      headerRight: (
+      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
+      headerRight: () => (
         <NavHeaderButtonText
           disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
           handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}

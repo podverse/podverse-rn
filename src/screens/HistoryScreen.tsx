@@ -50,7 +50,7 @@ export class HistoryScreen extends React.Component<Props, State> {
             headerTintColor: globalTheme.text.color
           }),
       headerTitle: translate('History'),
-      headerRight: (
+      headerRight: () => (
         <RNView style={[core.row]}>
           <RNView>
             {!navigation.getParam('isEditing') ? (
@@ -210,7 +210,7 @@ export class HistoryScreen extends React.Component<Props, State> {
             disableLeftSwipe={true}
             extraData={historyItems}
             isLoadingMore={isLoadingMore}
-            keyExtractor={(item: any) => item.clipId || item.episodeId}
+            keyExtractor={(item: any, index: number) => index}
             noResultsMessage={translate('No history items found')}
             onEndReached={this._onEndReached}
             renderItem={this._renderHistoryItem}

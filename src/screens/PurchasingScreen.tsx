@@ -18,7 +18,7 @@ export class PurchasingScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
       title: translate('Processing'),
-      headerRight: null
+      headerRight: () => null
     }
   }
 

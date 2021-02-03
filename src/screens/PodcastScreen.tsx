@@ -82,7 +82,7 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     return {
       title: translate('Podcast'),
-      headerRight: (
+      headerRight: () => (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon
