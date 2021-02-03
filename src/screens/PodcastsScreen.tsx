@@ -6,6 +6,7 @@ import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
   ActivityIndicator,
+  AddByRSSPodcastAuthModal,
   Divider,
   FlatList,
   PlayerEvents,
@@ -693,6 +694,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           />
         </Dialog.Container>
         <PurchaseListener navigation={navigation} />
+        <AddByRSSPodcastAuthModal navigation={navigation} />
       </View>
     )
   }
