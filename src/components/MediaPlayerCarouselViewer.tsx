@@ -26,6 +26,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
   }
 
   componentDidMount() {
+    loadChapterPlaybackInfo()
     this.chapterInterval = setInterval(loadChapterPlaybackInfo, 4000)
   }
 
