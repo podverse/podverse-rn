@@ -36,40 +36,18 @@ export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
   }
 }
 
-export const readableDate = (date: string) => {
-  const dateObj = date ? new Date(date) : new Date()
-  const year = dateObj.getFullYear()
-  const month = dateObj.getMonth() + 1
-  const day = dateObj.getDate()
-
-  return month + '/' + day + '/' + year
-}
-
-const getMonthName = (date: any) => {
-  const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ]
+const getMonth = (date: any) => {
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   return monthNames[date.getMonth()]
 }
 
-export const readableTextDate = (date: string) => {
+export const readableDate = (date: string) => {
   const dateObj = new Date(date)
   const year = dateObj.getFullYear()
-  const month = getMonthName(dateObj)
+  const monthAbbreviation = getMonth(dateObj)
   const day = dateObj.getDate()
 
-  return `${month} ${day}, ${year}`
+  return `${monthAbbreviation} ${day}, ${year}`
 }
 
 export const getHHMMSSArray = (sec: number) => {
