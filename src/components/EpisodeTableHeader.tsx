@@ -109,7 +109,7 @@ export const EpisodeTableHeader = (props: Props) => {
 
 const styles = StyleSheet.create({
   view: {
-    marginHorizontal: 15,
+    marginHorizontal: 8,
     marginTop: 20
   },
   wrapper: {},
