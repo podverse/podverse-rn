@@ -108,7 +108,9 @@ const customHTMLTagStyles = {
     fontSize: PV.Fonts.sizes.lg
   },
   a: {
-    fontSize: PV.Fonts.sizes.lg
+    fontWeight: PV.Fonts.weights.bold,
+    fontSize: PV.Fonts.sizes.lg,
+    color: PV.Colors.skyLight
   },
   ul: {
     marginBottom: 0,
