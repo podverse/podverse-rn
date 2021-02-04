@@ -85,9 +85,7 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   buttonPrimaryWrapper: {
-    backgroundColor: PV.Colors.ink,
-    borderColor: PV.Colors.white,
-    borderWidth: 1
+    backgroundColor: PV.Colors.ink
   },
   buttonDisabledWrapper: {
     backgroundColor: PV.Colors.grayLighter
