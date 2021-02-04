@@ -31,6 +31,7 @@ import { addQueueItemNext } from '../services/queue'
 import { trackPageView } from '../services/tracking'
 import { getNowPlayingItem } from '../services/userNowPlayingItem'
 import { loadItemAndPlayTrack } from '../state/actions/player'
+import { loadChaptersForEpisode } from '../state/actions/playerChapters'
 import { getHistoryItems } from '../state/actions/userHistoryItem'
 import { core, navHeader } from '../styles'
 
@@ -176,7 +177,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const episode = safelyUnwrapNestedVariable(() => this.global.player.episode, {})
     const podcast = safelyUnwrapNestedVariable(() => this.global.player.episode.podcast, {})
 
-    if (hasInternetConnection && episode && episode.id && !podcast.addByRSSPodcastFeedUrl) {
+    if (hasInternetConnection && episode?.id && !podcast.addByRSSPodcastFeedUrl) {
       try {
         const fullEpisode = await getEpisode(episode.id)
         if (fullEpisode && fullEpisode.description) {
@@ -191,6 +192,8 @@ export class PlayerScreen extends React.Component<Props, State> {
         // do nothing
       }
     }
+
+    loadChaptersForEpisode(episode)
   }
 
   _initializeScreenData = () => {

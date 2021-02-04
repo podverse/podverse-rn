@@ -1,4 +1,4 @@
-import { NowPlayingItem } from 'podverse-shared'
+import { convertNowPlayingItemToEpisode, NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { retrieveLatestChaptersForEpisodeId } from '../../services/episode'
 import { PVTrackPlayer } from '../../services/player'
@@ -19,6 +19,13 @@ export const clearChapterPlaybackInfo = () => {
       }
     )
   })
+}
+
+export const loadChaptersForEpisode = async (episode?: any) => {
+  if (episode?.id) {
+    const currentChapters = await retriveNowPlayingItemChapters(episode.id)
+    setChaptersOnGlobalState(currentChapters)
+  }
 }
 
 export const loadChaptersForNowPlayingItem = async (item?: NowPlayingItem) => {
