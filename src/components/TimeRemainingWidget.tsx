@@ -70,6 +70,7 @@ export const TimeRemainingWidget = (props: Props) => {
   const { episode = {}, podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
   const [player] = useGlobal('player')
+  const [fontScaleMode] = useGlobal('fontScaleMode')
   const { nowPlayingItem, playbackState } = player
 
   const hasStartedItem = !!userPlaybackPosition
@@ -112,7 +113,12 @@ export const TimeRemainingWidget = (props: Props) => {
       {hasStartedItem && !isInvalidDuration && (
         <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
       )}
-      <Text style={styles.text}>{timeLabel}</Text>
+      <Text
+        fontSizeLargerScale={PV.Fonts.largeSizes.md}
+        fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+        style={styles.text}>
+        {timeLabel}
+      </Text>
       {!!handleMorePress && <MoreButton handleMorePress={handleMorePress} />}
     </View>
   )

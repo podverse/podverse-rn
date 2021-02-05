@@ -76,7 +76,7 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   buttonDisabledText: {
-    color: PV.Colors.gray
+    color: PV.Colors.white
   },
   buttonSuccessText: {
     color: PV.Colors.white
@@ -85,10 +85,10 @@ export const darkTheme = StyleSheet.create({
     color: PV.Colors.white
   },
   buttonPrimaryWrapper: {
-    backgroundColor: PV.Colors.ink
+    backgroundColor: PV.Colors.brandColor
   },
   buttonDisabledWrapper: {
-    backgroundColor: PV.Colors.grayLighter
+    backgroundColor: PV.Colors.gray
   },
   buttonSuccessWrapper: {
     backgroundColor: PV.Colors.greenDarker
@@ -532,7 +532,8 @@ export const core = StyleSheet.create({
   },
   button: {
     justifyContent: 'center',
-    minHeight: 56
+    minHeight: 56,
+    borderRadius: 8
   },
   buttonText: {
     fontSize: PV.Fonts.sizes.xl,
@@ -640,9 +641,6 @@ export const navHeader = StyleSheet.create({
   buttonText: {
     color: PV.Colors.white,
     fontSize: PV.Fonts.sizes.xl,
-    height: Platform.OS === 'android' ? PV.Navigation.header.height.android - 4 : PV.Navigation.header.height.ios - 4,
-    lineHeight:
-      Platform.OS === 'android' ? PV.Navigation.header.height.android - 10 : PV.Navigation.header.height.ios - 4,
     marginLeft: 16,
     marginRight: 16
   },

@@ -1,6 +1,6 @@
-import { Alert, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, Image, Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
-import { Login, NavDismissIcon, ResetPassword, SafeAreaView, SignUp } from '../components'
+import { Login, NavDismissIcon, ResetPassword, SafeAreaView, SignUp, Text } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { testProps } from '../lib/utility'
@@ -157,6 +157,7 @@ export class AuthScreen extends React.Component<Props, State> {
     if (screenType === _login) {
       bottomButtons = [
         <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           key='reset'
           onPress={this._showResetPassword}
           style={switchOptionTextStyle}
@@ -164,6 +165,7 @@ export class AuthScreen extends React.Component<Props, State> {
           {translate('Reset Password')}
         </Text>,
         <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           key='moreInfo'
           onPress={this._showMembership}
           style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}
@@ -174,6 +176,7 @@ export class AuthScreen extends React.Component<Props, State> {
     } else if (screenType === _resetPassword) {
       bottomButtons = [
         <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           key='login'
           onPress={this._showLogin}
           style={styles.switchOptionText}

@@ -1,7 +1,7 @@
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
-import { TextInput } from '.'
+import { Button, TextInput } from '.'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -47,14 +47,6 @@ export class ResetPassword extends React.Component<Props, State> {
   render() {
     const { isLoading, style, bottomButtons } = this.props
     const { submitIsDisabled } = this.state
-    const disabledStyle = submitIsDisabled ? { backgroundColor: PV.Colors.gray } : null
-    const disabledTextStyle = submitIsDisabled ? { color: PV.Colors.white } : null
-    const { fontScaleMode } = this.global
-
-    const signInButtonTextStyle =
-      PV.Fonts.fontScale.largest === fontScaleMode
-        ? [styles.signInButtonText, disabledTextStyle, { fontSize: PV.Fonts.largeSizes.md }]
-        : [styles.signInButtonText, disabledTextStyle]
 
     return (
       <View style={[styles.view, style]}>
@@ -70,14 +62,14 @@ export class ResetPassword extends React.Component<Props, State> {
           value={this.state.email}
         />
         <TouchableOpacity
-          style={[styles.signInButton, disabledStyle]}
+          style={styles.signInButton}
           disabled={submitIsDisabled || isLoading}
           onPress={this._resetPassword}
           {...testProps(`${testIDPrefix}_submit`)}>
           {isLoading ? (
             <ActivityIndicator animating={true} color={PV.Colors.gray} size='small' />
           ) : (
-            <Text style={[signInButtonTextStyle, disabledTextStyle]}>{translate('Send Reset')}</Text>
+            <Button disabled={submitIsDisabled} isPrimary={!submitIsDisabled} text={translate('Send Reset')} />
           )}
         </TouchableOpacity>
         {bottomButtons}
@@ -93,18 +85,8 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold,
     marginBottom: 20
   },
-  signInButton: {
-    alignItems: 'center',
-    backgroundColor: PV.Colors.white,
-
-    padding: 16,
-    borderRadius: 8
-  },
-  signInButtonText: {
-    color: PV.Colors.brandColor,
-    fontSize: PV.Fonts.sizes.lg,
-    fontWeight: 'bold'
-  },
+  signInButton: {},
+  signInButtonText: {},
   view: {
     paddingHorizontal: 20,
     justifyContent: 'center',
