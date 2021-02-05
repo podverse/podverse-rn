@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
-import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
@@ -43,10 +42,6 @@ export const EpisodeTableHeader = (props: Props) => {
   const podcastTitle = episode?.podcast?.title
   if (!podcastTitle) episodeTitle = translate('Untitled Podcast')
 
-  const [fontScaleMode] = useGlobal('fontScaleMode')
-
-  const titleNumberOfLines = [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ? 1 : 2
-
   return (
     <View style={styles.view}>
       {isLoading ? (
@@ -74,11 +69,7 @@ export const EpisodeTableHeader = (props: Props) => {
                   testID={`${testID}_podcast_title`}>
                   {podcastTitle.trim()}
                 </Text>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={titleNumberOfLines}
-                  style={styles.title}
-                  testID={`${testID}_title`}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title} testID={`${testID}_title`}>
                   {episodeTitle.trim()}
                 </Text>
                 <View style={styles.textWrapperBottomRow}>
@@ -109,7 +100,7 @@ export const EpisodeTableHeader = (props: Props) => {
 
 const styles = StyleSheet.create({
   view: {
-    marginHorizontal: 15,
+    marginHorizontal: 8,
     marginTop: 20
   },
   wrapper: {},

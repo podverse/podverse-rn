@@ -1,6 +1,6 @@
-import { Alert, Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, Image, Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'reactn'
-import { Login, NavDismissIcon, ResetPassword, SafeAreaView, SignUp } from '../components'
+import { Login, NavDismissIcon, ResetPassword, SafeAreaView, SignUp, Text } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { testProps } from '../lib/utility'
@@ -36,7 +36,7 @@ export class AuthScreen extends React.Component<Props, State> {
       headerRight: () => null,
       headerStyle: {
         borderBottomWidth: 0,
-        backgroundColor: PV.Colors.black
+        backgroundColor: PV.Colors.ink
       }
     }
   }
@@ -157,6 +157,7 @@ export class AuthScreen extends React.Component<Props, State> {
     if (screenType === _login) {
       bottomButtons = [
         <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           key='reset'
           onPress={this._showResetPassword}
           style={switchOptionTextStyle}
@@ -164,6 +165,7 @@ export class AuthScreen extends React.Component<Props, State> {
           {translate('Reset Password')}
         </Text>,
         <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           key='moreInfo'
           onPress={this._showMembership}
           style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}
@@ -174,6 +176,7 @@ export class AuthScreen extends React.Component<Props, State> {
     } else if (screenType === _resetPassword) {
       bottomButtons = [
         <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           key='login'
           onPress={this._showLogin}
           style={styles.switchOptionText}
@@ -235,7 +238,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   safeAreaView: {
-    backgroundColor: PV.Colors.black
+    backgroundColor: PV.Colors.ink
   },
   switchOptionText: {
     color: PV.Colors.skyLight,
@@ -247,14 +250,14 @@ const styles = StyleSheet.create({
   },
   view: {
     alignItems: 'center',
-    backgroundColor: PV.Colors.black,
+    backgroundColor: PV.Colors.ink,
     flex: 1,
     justifyContent: 'flex-start',
     paddingTop: 40
   },
   viewWithoutBanner: {
     alignItems: 'center',
-    backgroundColor: PV.Colors.black,
+    backgroundColor: PV.Colors.ink,
     flex: 1,
     justifyContent: 'flex-start',
     paddingTop: 40

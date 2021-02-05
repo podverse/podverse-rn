@@ -17,7 +17,7 @@ export const OpaqueBackground = (props: Props) => {
 
   const bgImageSource = imageUrl ? { uri: imageUrl } : {}
   const backdropColor =
-    globalTheme === darkTheme ? { backgroundColor: PV.Colors.blackOpaque } : { backgroundColor: PV.Colors.whiteOpaque }
+    globalTheme === darkTheme ? { backgroundColor: PV.Colors.ink } : { backgroundColor: PV.Colors.white }
 
   return (
     <ImageBackground blurRadius={65} source={bgImageSource} style={styles.imageBackground}>

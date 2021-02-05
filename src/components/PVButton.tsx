@@ -9,6 +9,7 @@ import { core } from '../styles'
 type Props = {
   disabled?: boolean
   isLoading?: boolean
+  isPrimary?: boolean
   isSuccess?: boolean
   isWarning?: boolean
   onPress: any
@@ -18,11 +19,13 @@ type Props = {
 }
 
 export const PVButton = (props: Props) => {
-  const { disabled, isLoading, isSuccess, isWarning, onPress, testID, text, wrapperStyles } = props
+  const { disabled, isLoading, isPrimary, isSuccess, isWarning, onPress, testID, text, wrapperStyles } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   const disabledStyle = disabled ? globalTheme.buttonDisabledWrapper : null
   const disabledTextStyle = disabled ? globalTheme.buttonDisabledText : null
+  const isPrimaryStyle = isPrimary ? globalTheme.buttonPrimaryWrapper : null
+  const isPrimaryTextStyle = isPrimary ? globalTheme.buttonPrimaryText : null
   const isSuccessStyle = isSuccess ? globalTheme.buttonSuccessWrapper : null
   const isSuccessTextStyle = isSuccess ? globalTheme.buttonSuccessText : null
   const isWarningStyle = isWarning ? globalTheme.buttonWarningWrapper : null
@@ -34,6 +37,7 @@ export const PVButton = (props: Props) => {
         core.button,
         globalTheme.buttonPrimaryWrapper,
         disabledStyle,
+        isPrimaryStyle,
         isSuccessStyle,
         isWarningStyle,
         wrapperStyles
@@ -50,6 +54,7 @@ export const PVButton = (props: Props) => {
             core.buttonText,
             globalTheme.buttonPrimaryText,
             disabledTextStyle,
+            isPrimaryTextStyle,
             isSuccessTextStyle,
             isWarningTextStyle
           ]}>

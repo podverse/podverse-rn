@@ -44,33 +44,41 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       shouldAutoDownload = autoDownloadSettings[id]
     }
 
+    let lastPubDate = ''
+    if (lastEpisodePubDate) {
+      lastPubDate = [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode)
+        ? `${translate('Latest')}: ${readableDate(lastEpisodePubDate)}`
+        : `${translate('Latest episode')}: ${readableDate(lastEpisodePubDate)}`
+    }
+
+    const lastPubDateNode = (
+      <Text
+        fontSizeLargerScale={PV.Fonts.largeSizes.md}
+        fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+        isSecondary={true}
+        numberOfLines={1}
+        style={styles.latestEpisode}
+        testID={`${testID}_last_pub_date`}>
+        {lastPubDate}
+      </Text>
+    )
+
     return (
       <TouchableWithoutFeedback onPress={onPress} {...(testID ? testProps(testID) : {})}>
         <View style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={PV.Table.cells.podcast.image} />
           <RNView style={styles.textWrapper}>
-            {!!lastEpisodePubDate && (
-              <Text
-                isSecondary={true}
-                numberOfLines={1}
-                style={styles.latestEpisode}
-                testID={`${testID}_last_pub_date`}>
-                {'Latest episode: '}
-                {readableDate(lastEpisodePubDate)}
-              </Text>
-            )}
+            {!!lastPubDate && fontScaleMode !== PV.Fonts.fontScale.largest && lastPubDateNode}
             {podcastTitle && (
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                numberOfLines={1}
-                style={styles.title}
-                testID={`${testID}_title`}>
+              <Text numberOfLines={1} style={styles.title} testID={`${testID}_title`}>
                 {podcastTitle.trim()}
               </Text>
             )}
+            {!!lastPubDate && fontScaleMode === PV.Fonts.fontScale.largest && lastPubDateNode}
             {fontScaleMode !== PV.Fonts.fontScale.largest && showDownloadCount && (
               <RNView style={styles.downloadContainer}>
                 <Text
+                  fontSizeLargerScale={PV.Fonts.largeSizes.md}
                   isSecondary={true}
                   numberOfLines={1}
                   style={styles.downloadedItems}
@@ -93,8 +101,8 @@ const styles = StyleSheet.create({
     marginBottom: 2
   },
   latestEpisode: {
-    fontSize: PV.Fonts.sizes.xs,
     color: PV.Colors.skyLight,
+    fontSize: PV.Fonts.sizes.xs,
     fontWeight: PV.Fonts.weights.bold
   },
   downloadedItems: {
@@ -117,6 +125,7 @@ const styles = StyleSheet.create({
     marginVertical: 5
   },
   wrapper: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 })

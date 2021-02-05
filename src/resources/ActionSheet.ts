@@ -30,7 +30,7 @@ const mediaMoreButtons = (
   const { handleDismiss, handleDownload, handleDeleteClip, includeGoToPodcast, includeGoToEpisode } = config || {}
   const globalState = getGlobal()
   const isDownloading = globalState.downloadsActive && globalState.downloadsActive[item.episodeId]
-  const downloadingText = isDownloading ? translate('Downloading Episode') : translate('Download Episode')
+  const downloadingText = isDownloading ? translate('Downloading Episode') : translate('Download')
   const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
   const buttons = []
   const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session.userInfo.id, '')

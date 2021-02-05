@@ -27,12 +27,13 @@ const sizes =
       }
 
 const largeSizes = {
-  tiny: 7,
+  tiny: 6,
   xs: 8,
   sm: 9,
   md: 11,
   lg: 12,
-  xl: 13
+  xl: 13,
+  xxl: 14
 }
 
 export const Fonts: IFonts = {
