@@ -61,17 +61,15 @@ export class ResetPassword extends React.Component<Props, State> {
           testID={`${testIDPrefix}_email`}
           value={this.state.email}
         />
-        <TouchableOpacity
-          style={styles.signInButton}
-          disabled={submitIsDisabled || isLoading}
+        <Button
+          disabled={submitIsDisabled}
+          isLoading={isLoading}
+          isPrimary={!submitIsDisabled}
           onPress={this._resetPassword}
-          {...testProps(`${testIDPrefix}_submit`)}>
-          {isLoading ? (
-            <ActivityIndicator animating={true} color={PV.Colors.gray} size='small' />
-          ) : (
-            <Button disabled={submitIsDisabled} isPrimary={!submitIsDisabled} text={translate('Send Reset')} />
-          )}
-        </TouchableOpacity>
+          testID={`${testIDPrefix}_submit`}
+          text={translate('Send Reset')}
+          wrapperStyles={styles.signInButton}
+        />
         {bottomButtons}
       </View>
     )

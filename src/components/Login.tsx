@@ -94,20 +94,16 @@ export class Login extends React.Component<Props, State> {
           wrapperStyle={core.textInputWrapper}
         />
         <TouchableOpacity activeOpacity={1}>
-          <>
-            <TouchableOpacity
-              style={styles.signInButton}
-              disabled={submitIsDisabled || isLoading}
-              onPress={this.login}
-              {...testProps(`${testIDPrefix}_submit`)}>
-              {isLoading ? (
-                <ActivityIndicator animating={true} color={PV.Colors.gray} size='small' />
-              ) : (
-                <Button disabled={submitIsDisabled} isPrimary={!submitIsDisabled} text={translate('Login')} />
-              )}
-            </TouchableOpacity>
-            {bottomButtons}
-          </>
+          <Button
+            disabled={submitIsDisabled}
+            isLoading={isLoading}
+            isPrimary={!submitIsDisabled}
+            onPress={this.login}
+            testID={`${testIDPrefix}_submit`}
+            text={translate('Login')}
+            wrapperStyles={styles.signInButton}
+          />
+          {bottomButtons}
         </TouchableOpacity>
       </ScrollView>
     )
