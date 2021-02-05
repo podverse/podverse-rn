@@ -167,14 +167,6 @@ testProps(
   Test More button on individual items (clips, podcasts)
 */
 
-const postSlackNotification = async (text, opts) => {
-  if (process.env.SLACK_WEBHOOK) {
-    return request.post(opts.webhook || process.env.SLACK_WEBHOOK, {
-      json: { text: `${text} - ${opts.device_type || process.env.DEVICE_TYPE}` }
-    })
-  }
-}
-
 const goBack = true
 
 const runTests = async (customCapabilities) => {
@@ -186,8 +178,6 @@ const runTests = async (customCapabilities) => {
   }
 
   try {
-
-    await postSlackNotification('Start e2e tests', slackOpts)
         
     console.log('init testing')
     
@@ -199,225 +189,33 @@ const runTests = async (customCapabilities) => {
 
     await driver.waitForElementByAccessibilityId('alert_yes_allow_data')
     await elementByIdAndClickAndTest('alert_yes_allow_data', 'podcasts_screen_view')
-    await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_view', null, goBack)
-
-    await elementByIdAndClickAndTest('podcasts_screen_podcast_item_1', 'podcast_screen_view')
-    await driver.sleep(5000)
-    await elementByIdAndClickAndTest('podcast_screen_episode_item_0_top_view_nav', 'episode_screen_view', null, goBack)
-    await elementByIdAndClickAndTest('podcast_screen_episode_item_0_bottom_view_nav', 'episode_screen_view', null, goBack)
-    await driver.back()
-
+//  ***Need ID for My Library tab***
+//  Select Podcast
+    // await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_view', null, goBack)
+//  Select Episode
+    // await driver.back()
+    // await driver.back()
     await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
-    await elementByIdAndClickAndTest('episodes_screen_episode_item_0_top_view_nav', 'episode_screen_view', null, goBack)
-    await elementByIdAndClickAndTest('episodes_screen_episode_item_0_bottom_view_nav', 'episode_screen_view', null, goBack)
-
+    // await elementByIdAndClickAndTest('episodes_screen_episode_item_0', 'episode_screen_view', null, goBack) // ***Failing?***
     await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
-
-    await elementByIdAndClickAndTest('tab_queue_screen', 'queue_screen_view')
-
+    // My Library > Downloads < Queue < History
     await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    await sendKeysToElementById('login_email_text_input', 'TestEmail@ThisIsATest.com', 'Invalid Login Email Input')
-    await sendKeysToElementById('login_password_text_input', 'testPASS1!', 'Invalid Login Password Input')
-
-    await elementByIdClick('login_submit')
-    await confirmAndroidAlert() 
-
-    await elementByIdAndClickAndTest('auth_screen_sign_up_button', 'membership_screen_view', null, goBack)
-
-    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    await elementByIdAndClickAndTest('auth_screen_reset_password_button', 'reset_password_submit')
-    await sendKeysToElementById('reset_password_email_text_input', 'TestEmail@ThisIsATest.com')
-    await elementByIdClick('reset_password_submit')
-    await confirmAndroidAlert()
-
-    // Login - Premium Valid
-
-    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
-    await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
-    await elementByIdClick('login_submit')
-    await driver.sleep(4000)
-    await cancelAndroidAlert()
-
-    // await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
-    // await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'more_screen_view')
-
-
-    await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view', null, goBack)
-
-    await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view')
-    await elementbyIdToggle('settings_screen_dark_mode_switch')
-    await elementbyIdToggle('settings_screen_only_allow_downloading_when_connected_to_wifi_switch')
-    await elementByIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')
-    await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
-    await elementbyIdToggle('settings_screen_censor_nsfw_text_switch')
-    await elementbyIdToggle('settings_screen_offline_mode_switch')
-
-
-    // if (isFDroid) {
-    //   await performScrollDown()
-    //   await elementByIdClick('settings_screen_custom_api_domain_switch')
-    //   // await elementByIdClick('settings_screen_custom_api_domain_text_input')
-    //   // await sendKeysToElementById('settings_screen_custom_api_domain_text_input', 'https://api.stage.podverse.fm')
-    //   await elementByIdClick('settings_screen_custom_web_domain_switch')
-    //   // await elementByIdClick('settings_screen_custom_web_domain_text_input')
-    //   // await sendKeysToElementById('settings_screen_custom_web_domain_text_input', 'https://stage.podverse.fm')
-    //   await performScrollDown()
-    // }
-
-    await elementByIdClick('settings_screen_clear_history_button')
-    await confirmAndroidAlert()
-
+    await elementByIdAndClickAndTest('more_screen_add_podcast_by_rss_cell', 'add_podcast_by_rss_screen_view', null, goBack)
+    await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view', null, goBack)
+    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_view')
+    await elementByIdClick('auth_screen_reset_password_button')
     await driver.back()
-
+    await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_view')
+    await elementByIdClick('auth_screen_sign_up_button')
+    await driver.back()
     await elementByIdAndClickAndTest('more_screen_membership_cell', 'membership_screen_view', null, goBack)
-
-    await elementByIdAndClickAndTest('more_screen_add_podcast_by_rss_cell', 'add_podcast_by_rss_screen_view')
-    await elementByIdAndClickAndTest('add_podcast_by_rss_screen_nav_dismiss_icon', 'more_screen_view')
-
-    await performScrollDown()
-    
-    await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', null, goBack)
-    
     await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', null, goBack)
+    await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', null, goBack)
+    await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
+    // Add Custom RSS Feed
 
-
-
-
-
-
-
-
-    // Logged in user tests
-
-    // //TEMP - Alert > Yes
-    // await driver.waitForElementByAccessibilityId('alert_yes_allow_data')
-    // await elementByIdAndClickAndTest('alert_yes_allow_data', 'podcasts_screen_view')
-
-
-    // //TEMP - Login - Premium Valid
-
-    // await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-    // await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
-    // await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
-    // await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
-    // await elementByIdClick('login_submit')
-    // await driver.sleep(5000)
-    // await cancelAndroidAlert()
-
-    // // await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view', null, goBack)
-
-    // // await elementByIdAndClickAndTest('more_screen_profiles_cell', 'profiles_screen_view', null, goBack)
-
-    // // await elementByIdAndClickAndTest('more_screen_my_profile_cell', 'profile_screen_view', null, goBack)
-
-
-
-    await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
-    
-    //Song Exploder - 01
-    await logPerformance('Podcast - Song Exploder')
-    await driver.sleep(1000)
-    await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_view')
-    await elementWaitFor('podcast_screen_is_not_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_not_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed_icon_button')
-    await performScrollDown()
-    await elementByIdClick('podcast_screen_episode_item_3_more_button')
-    await elementByIdClick('podcast_screen_action_sheet_queue_next_button')
-    await elementWaitFor('mini_player')
-    // await elementWaitFor('mini_player_play')
-    await elementByIdClick('mini_player_toggle_play_button')
-    // await elementWaitFor('mini_player_pause')
-    await elementByIdClick('mini_player_toggle_play_button')
-    // await elementWaitFor('mini_player_play')
-    await elementByIdClick('mini_player')
-    await elementByIdClick('nav_make_clip_icon')
-    await elementByIdClick('make_clip_screen_close')
-    await driver.back()
-    await elementByIdClick('nav_add_to_playlist_icon')
-    await driver.back()
-    await elementByIdClick('nav_share_icon')
-    await elementByIdClick('player_screen_share_action_sheet_cancel_button')
-    await elementByIdClick('player_screen_nav_dismiss_icon')
-    await elementByIdClick('podcast_screen_episode_item_3_more_button')
-    await elementByIdClick('podcast_screen_action_sheet_add_to_playlist_button')
-    await elementByIdClick('playlists_add_to_screen_new_nav_header_button_text')
-    await sendKeysToElementById('new_playlist_title_input', 'Automated Test')
-    await elementByIdClick('new_playlist_title_save')
-    await elementByIdClick('playlists_add_to_screen_playlist_item_0')
-    await driver.back()
-    await driver.sleep(1000)
-    await driver.back()
-
-    //Joe Rogan - 02
-    await logPerformance('Podcast - Joe Rogan')
-    await driver.sleep(1000)
-    await elementByIdAndClickAndTest('podcasts_screen_podcast_item_1', 'podcast_screen_view')
-    await elementWaitFor('podcast_screen_is_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_not_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed_icon_button')
-    await performScrollDown(19)
-    await elementByIdClick('podcast_screen_episode_item_27_more_button')
-    await elementByIdClick('podcast_screen_action_sheet_queue_last_button')
-    await elementByIdClick('podcast_screen_episode_item_27_more_button')
-    await elementByIdClick('podcast_screen_action_sheet_add_to_playlist_button')
-    await elementByIdClick('playlists_add_to_screen_playlist_item_0')
-    await driver.back()
-    await elementByIdClick('podcast_screen_episode_item_27_top_view_nav')
-    await elementByIdClick('episode_screen_more_button')
-    await elementByIdClick('episode_screen_action_sheet_queue_last_button')
-    await driver.back()
-    await driver.sleep(1000)
-    await driver.back()
-    
-    //Very Bad Wizards - 03
-    await logPerformance('Podcast - Very Bad Wizards')
-    await driver.sleep(1000)
-    await elementByIdAndClickAndTest('podcasts_screen_podcast_item_2', 'podcast_screen_view')
-    await elementWaitFor('podcast_screen_is_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_not_subscribed_icon_button')
-    await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed_icon_button')
-    await performScrollDown(4)
-    await elementByIdClick('podcast_screen_episode_item_6_more_button')
-    await elementByIdClick('podcast_screen_action_sheet_add_to_playlist_button')
-    await elementByIdClick('playlists_add_to_screen_playlist_item_0')
-    await driver.back()
-
-    //Playlists
-
-    // await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-    // await elementByIdAndClickAndTest('more_screen_playlists_cell', 'playlists_screen_view')
-    // await elementByIdAndClickAndTest('playlists_screen_playlist_item_0', 'playlist_screen_view')
-    // await elementByIdClick('playlist_screen_episode_item_0_more_button')
-    // await elementByIdClick('playlist_screen_action_sheet_download_button')
-    // await elementByIdClick('playlist_screen_episode_item_1_more_button')
-    // await elementByIdClick('playlist_screen_action_sheet_download_button')
-    // await elementByIdClick('playlist_screen_episode_item_2_more_button')
-    // await elementByIdClick('playlist_screen_action_sheet_download_button')
-    // await driver.back()
-    // await driver.back()
-    // await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-    // await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view')
-    // await elementByIdClick('downloads_screen_download_item_2_swipe_row_back')
-    // await elementByIdClick('downloads_screen_action_sheet_delete_episode_button')
-    // await driver.back()
-    // await elementByIdAndClickAndTest('more_screen_downloads_cell', 'downloads_screen_view')
-    // await driver.back()
-
-
-
-    await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
-
-
-
-
-    await postSlackNotification('SUCCESS: End e2e tests', slackOpts)
   } catch (error) {
     console.log('runTests error: ', error)
-    await postSlackNotification(`FAILURE: End e2e tests. Hint: ${error.message || error.data || error}`, slackOpts)
     throw error
   }
 
