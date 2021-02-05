@@ -51,7 +51,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     return {
       title: translate('Episode'),
-      headerRight: (
+      headerRight: () => (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
             <NavShareIcon

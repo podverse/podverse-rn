@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet } from 'react-native'
 import { ActivityIndicator, Icon, View } from '.'
 import { testProps } from '../lib/utility'
+import { PV } from '../resources'
 
 type Props = {
   onPress: any
@@ -24,6 +25,7 @@ export const DownloadButton = (props: Props) => {
         testID={`${testID}_download_button_icon`}
         name='download'
         onPress={onPress}
+        color={PV.Colors.white}
         style={[styles.image, style]}
         size={25}
       />
@@ -51,8 +53,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 0,
     height: 30,
-    width: 30,
-    tintColor: 'white'
+    width: 30
   },
   imageWrapper: {
     alignItems: 'center',

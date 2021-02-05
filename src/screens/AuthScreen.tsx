@@ -32,8 +32,8 @@ export class AuthScreen extends React.Component<Props, State> {
     const title = navigation.getParam('title') || translate('Login')
     return {
       title,
-      headerLeft: <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-      headerRight: null,
+      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
+      headerRight: () => null,
       headerStyle: {
         borderBottomWidth: 0,
         backgroundColor: PV.Colors.ink

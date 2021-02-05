@@ -100,8 +100,10 @@ export class PlayerScreen extends React.Component<Props, State> {
       title: '',
       headerTransparent: true,
       headerStyle: {},
-      headerLeft: <NavDismissIcon globalTheme={globalTheme} handlePress={navigation.dismiss} testID={testIDPrefix} />,
-      headerRight: (
+      headerLeft: () => (
+        <NavDismissIcon globalTheme={globalTheme} handlePress={navigation.dismiss} testID={testIDPrefix} />
+      ),
+      headerRight: () => (
         <RNView style={core.row}>
           {!addByRSSPodcastFeedUrl && (
             <RNView style={core.row}>
