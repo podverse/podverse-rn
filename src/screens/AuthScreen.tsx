@@ -36,7 +36,7 @@ export class AuthScreen extends React.Component<Props, State> {
       headerRight: null,
       headerStyle: {
         borderBottomWidth: 0,
-        backgroundColor: PV.Colors.black
+        backgroundColor: PV.Colors.ink
       }
     }
   }
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   safeAreaView: {
-    backgroundColor: PV.Colors.black
+    backgroundColor: PV.Colors.ink
   },
   switchOptionText: {
     color: PV.Colors.skyLight,
@@ -247,14 +247,14 @@ const styles = StyleSheet.create({
   },
   view: {
     alignItems: 'center',
-    backgroundColor: PV.Colors.black,
+    backgroundColor: PV.Colors.ink,
     flex: 1,
     justifyContent: 'flex-start',
     paddingTop: 40
   },
   viewWithoutBanner: {
     alignItems: 'center',
-    backgroundColor: PV.Colors.black,
+    backgroundColor: PV.Colors.ink,
     flex: 1,
     justifyContent: 'flex-start',
     paddingTop: 40

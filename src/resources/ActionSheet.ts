@@ -86,7 +86,7 @@ const mediaMoreButtons = (
   } else {
     buttons.push({
       key: PV.Keys.stream,
-      text: translate('Stream'),
+      text: translate('Stream Episode'),
       onPress: async () => {
         const showAlert = await hasTriedStreamingWithoutWifiAlert(handleDismiss, navigation, false)
         if (showAlert) return

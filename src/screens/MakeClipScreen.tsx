@@ -783,7 +783,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8
   },
   loginBlockedView: {
-    backgroundColor: PV.Colors.blackOpaque,
+    backgroundColor: PV.Colors.ink,
     position: 'absolute',
     ...StyleSheet.absoluteFill,
     justifyContent: 'center'

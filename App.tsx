@@ -112,7 +112,7 @@ class App extends Component<Props, State> {
     }
 
     return (
-      <View style={{ backgroundColor: PV.Colors.black, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ backgroundColor: PV.Colors.ink, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Image source={PV.Images.BANNER} resizeMode='contain' />
       </View>
     )
