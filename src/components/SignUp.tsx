@@ -210,17 +210,15 @@ export class SignUp extends React.Component<Props, State> {
               hasUppercase={hasUppercase}
               style={styles.passwordValidationInfo}
             />
-            <TouchableOpacity
-              style={styles.signInButton}
-              disabled={submitIsDisabled || isLoading}
+            <Button
+              disabled={submitIsDisabled}
+              isLoading={isLoading}
+              isPrimary={!submitIsDisabled}
               onPress={this.signUp}
-              {...testProps(`${testIDPrefix}_submit`)}>
-              {isLoading ? (
-                <ActivityIndicator animating={true} color={PV.Colors.white} size='small' />
-              ) : (
-                <Button disabled={submitIsDisabled} isPrimary={!submitIsDisabled} text={translate('Sign Up')} />
-              )}
-            </TouchableOpacity>
+              testID={`${testIDPrefix}_submit`}
+              text={translate('Sign Up')}
+              wrapperStyles={styles.signInButton}
+            />
             {bottomButtons}
           </>
         </TouchableOpacity>
