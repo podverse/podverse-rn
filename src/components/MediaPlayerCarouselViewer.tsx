@@ -101,7 +101,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
           </View>
           {clipId && (
             <TouchableWithoutFeedback onPress={handlePressClipInfo}>
-              <View style={[styles.carouselTextBottomWrapper, reduceBottomWrapperStyle]} transparent={true}>
+              <View style={styles.carouselTextBottomWrapper} transparent={true}>
                 <View style={styles.clipWrapper} transparent={true}>
                   <Text
                     numberOfLines={1}
