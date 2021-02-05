@@ -15,9 +15,7 @@ type Props = {
   width: number
 }
 
-type State = {
-  reduceBottomWrapperHeight?: boolean
-}
+type State = {}
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State> {
   chapterInterval: NodeJS.Timeout
   constructor(props) {
@@ -44,7 +42,6 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
   render() {
     const { handlePressClipInfo, imageHeight, imageWidth, width } = this.props
     const { fontScaleMode, player, screenPlayer } = this.global
-    const { reduceBottomWrapperHeight } = this.state
     const { currentChapter, nowPlayingItem = {} } = player
     const { isLoading } = screenPlayer
     let { clipId, clipEndTime, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem
@@ -67,13 +64,6 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
     }
 
     const imageWrapperStylePadding = clipId ? { padding: 16 } : { paddingHorizontal: 16, paddingTop: 16 }
-    const reduceBottomWrapperStyle = reduceBottomWrapperHeight
-      ? { height: PV.Player.carouselTextBottomWrapper.height - 24 }
-      : { height: PV.Player.carouselTextBottomWrapper.height }
-
-    const clipInfoNumberOfLines = [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode)
-      ? 1
-      : 2
 
     return (
       <View style={[styles.outerWrapper, { width }]} transparent={true}>
@@ -114,18 +104,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
               <View style={[styles.carouselTextBottomWrapper, reduceBottomWrapperStyle]} transparent={true}>
                 <View style={styles.clipWrapper} transparent={true}>
                   <Text
-                    numberOfLines={clipInfoNumberOfLines}
-                    onTextLayout={(e) => {
-                      const { lines } = e.nativeEvent
-                      if (
-                        lines.length === 1 ||
-                        [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode)
-                      ) {
-                        this.setState({ reduceBottomWrapperHeight: true })
-                      } else {
-                        this.setState({ reduceBottomWrapperHeight: false })
-                      }
-                    }}
+                    numberOfLines={1}
                     style={styles.clipTitle}
                     testID='media_player_carousel_viewer_title'>{`${clipTitle}`}</Text>
                   {fontScaleMode !== PV.Fonts.fontScale.largest && (
