@@ -62,6 +62,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                 {showEpisodeInfo && !!episodePubDate && (
                   <RNView style={styles.textWrapperBottomRow}>
                     <Text
+                      fontSizeLargerScale={PV.Fonts.largeSizes.md}
                       fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                       isSecondary={true}
                       numberOfLines={1}
@@ -124,7 +125,8 @@ const styles = StyleSheet.create({
   imageAndTopRightTextWrapper: {
     flex: 1,
     flexDirection: 'row',
-    marginBottom: 8
+    marginBottom: 8,
+    alignItems: 'center'
   },
   innerTopView: {
     flex: 1,

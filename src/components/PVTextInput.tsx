@@ -63,9 +63,9 @@ export const PVTextInput = (props: Props) => {
 
   const textInputStyle = []
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
-    textInputStyle.push({ fontSize: fontSizeLargerScale })
+    textInputStyle.push({ fontSize: PV.Fonts.largeSizes.xxl })
   } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
-    textInputStyle.push({ fontSize: fontSizeLargestScale })
+    textInputStyle.push({ fontSize: PV.Fonts.largeSizes.md })
   }
 
   if (!value && numberOfLines > 1 && placeholder) {

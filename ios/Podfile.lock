@@ -10,13 +10,13 @@ PODS:
     - AppCenter/Crashes
     - AppCenterReactNativeShared
     - React-Core
-  - AppCenter/Analytics (4.0.0):
+  - AppCenter/Analytics (4.1.0):
     - AppCenter/Core
-  - AppCenter/Core (4.0.0)
-  - AppCenter/Crashes (4.0.0):
+  - AppCenter/Core (4.1.0)
+  - AppCenter/Crashes (4.1.0):
     - AppCenter/Core
-  - AppCenterReactNativeShared (4.0.0):
-    - AppCenter/Core (= 4.0.0)
+  - AppCenterReactNativeShared (4.0.2):
+    - AppCenter/Core (= 4.1.0)
   - boost-for-react-native (1.63.0)
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.63.4)
@@ -308,10 +308,10 @@ PODS:
     - React-Core
   - RNDeviceInfo (7.3.1):
     - React-Core
-  - RNFastImage (7.0.2):
-    - React
-    - SDWebImage (~> 5.0)
-    - SDWebImageWebPCoder (~> 0.2.3)
+  - RNFastImage (8.3.4):
+    - React-Core
+    - SDWebImage (~> 5.8)
+    - SDWebImageWebPCoder (~> 0.6.1)
   - RNFS (2.16.6):
     - React
   - RNGestureHandler (1.8.0):
@@ -332,12 +332,12 @@ PODS:
     - React
   - RNVectorIcons (6.7.0):
     - React
-  - SDWebImage (5.10.0):
-    - SDWebImage/Core (= 5.10.0)
-  - SDWebImage/Core (5.10.0)
-  - SDWebImageWebPCoder (0.2.5):
+  - SDWebImage (5.10.4):
+    - SDWebImage/Core (= 5.10.4)
+  - SDWebImage/Core (5.10.4)
+  - SDWebImageWebPCoder (0.6.1):
     - libwebp (~> 1.0)
-    - SDWebImage/Core (~> 5.0)
+    - SDWebImage/Core (~> 5.7)
   - toolbar-android (0.1.0-rc.2):
     - React
   - Yoga (1.14.0)
@@ -523,11 +523,11 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AppCenter: 51351e0121e40ba75e28ecb7de5c2e69d480df5e
+  AppCenter: 8832b158d17e54845c3b88a91076218f0b07174d
   appcenter-analytics: 3e8bf76870877c5abdfb752e1dc014be2b2030e4
   appcenter-core: e7aa4513ee9173b82c4a4497d49abb0ec7ceb159
   appcenter-crashes: 0052b9ae5cc6b5c184238eb6c230ed5942d91f10
-  AppCenterReactNativeShared: 69aedc15c136e5f76a0cc9eb2ad84d3cefc6e64f
+  AppCenterReactNativeShared: e1db64e8c65dfdca495efd1a1f77892cbc21342b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   DoubleConversion: cde416483dac037923206447da6e1454df403714
   FBLazyVector: 3bb422f41b18121b71783a905c10e58606f7dc3e
@@ -569,7 +569,7 @@ SPEC CHECKSUMS:
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNCPicker: a724b3aa22b182697c190a8fd7b060b66119e136
   RNDeviceInfo: 6ecb1d1c87d20e4c62354be0348de23362824dcd
-  RNFastImage: 9b0c22643872bb7494c8d87bbbb66cc4c0d9e7a2
+  RNFastImage: d4870d58f5936111c56218dbd7fcfc18e65b58ff
   RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
   RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
   RNIap: 66b83af54a855b6314a243a200081a64d7f64c2e
@@ -580,8 +580,8 @@ SPEC CHECKSUMS:
   RNShare: 7e22ba3bf66294ff7c122a1f2da8a8ec642091a0
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: 368d6d8b8301224e5ffb6254191f4f8876c2be0d
-  SDWebImage: 9169792e9eec3e45bba2a0c02f74bf8bd922d1ee
-  SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
+  SDWebImage: c666b97e1fa9c64b4909816a903322018f0a9c84
+  SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
   toolbar-android: 85f3ef4d691469f2d304e7dee4bca013aa1ba1ff
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
 

@@ -21,7 +21,7 @@ export const NavHeaderButtonText = (props: Props) => {
 
   const buttonTextStyle = [navHeader.buttonText]
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
-    buttonTextStyle.push({ fontSize: PV.Fonts.largeSizes.xl })
+    buttonTextStyle.push({ fontSize: PV.Fonts.largeSizes.sm })
   } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
     buttonTextStyle.push({ fontSize: PV.Fonts.largeSizes.md })
   }

@@ -38,7 +38,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const { id, mediaUrl, pubDate = '', podcast = {} } = item
     let { description = '', title = '' } = item
-    const { imageUrl = '' } = podcast
+
     const podcastTitle = podcast.title || translate('Untitled Podcast')
     description = removeHTMLFromString(description)
     description = decodeHTMLString(description)
@@ -51,6 +51,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     if (!title) title = translate('Untitled Episode')
 
     const titleStyle = (podcastTitle ? styles.title : [styles.title, { marginTop: 0 }]) as any
+
+    const imageUrl = podcast.shrunkImageUrl || podcast.imageUrl
 
     const innerTopView = (
       <RNView style={styles.innerTopView}>
@@ -114,7 +116,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           ) : (
             innerTopView
           )}
-          {!isDownloaded && PV.Fonts.fontScale.largest !== fontScaleMode && (
+          {!isDownloaded && (
             <DownloadButton testID={testID} isDownloading={isDownloading} onPress={() => handleDownloadPress(item)} />
           )}
         </RNView>
@@ -127,12 +129,14 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         ) : (
           bottomText
         )}
-        <TimeRemainingWidget
-          handleMorePress={handleMorePress}
-          item={item}
-          mediaFileDuration={mediaFileDuration}
-          userPlaybackPosition={userPlaybackPosition}
-        />
+        <View style={styles.timeRemainingWrapper}>
+          <TimeRemainingWidget
+            handleMorePress={handleMorePress}
+            item={item}
+            mediaFileDuration={mediaFileDuration}
+            userPlaybackPosition={userPlaybackPosition}
+          />
+        </View>
       </View>
     )
   }
@@ -142,7 +146,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: PV.Fonts.sizes.sm,
     color: PV.Colors.grayLighter,
-    marginVertical: 15
+    marginTop: 15
   },
   image: {
     flex: 0,
@@ -161,20 +165,23 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start'
   },
   pubDate: {
+    color: PV.Colors.skyLight,
     flex: 0,
     fontSize: PV.Fonts.sizes.sm,
     fontWeight: PV.Fonts.weights.semibold,
-    color: PV.Colors.skyLight,
-    marginTop: 3,
-    marginRight: 10
+    marginRight: 10,
+    marginTop: 3
   },
   textWrapper: {
     flex: 1
   },
   textWrapperBottomRow: {
+    alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center'
+    justifyContent: 'flex-start'
+  },
+  timeRemainingWrapper: {
+    marginTop: 15
   },
   title: {
     fontSize: PV.Fonts.sizes.xxl,

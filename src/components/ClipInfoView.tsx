@@ -119,7 +119,10 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
               </View>
             )}
             {!isOfficialChapter && (
-              <TextLink onPress={restartNowPlayingItemClip} style={styles.replayClip}>
+              <TextLink
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                onPress={restartNowPlayingItemClip}
+                style={styles.replayClip}>
                 {translate('Replay Clip')}
               </TextLink>
             )}
@@ -153,6 +156,7 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.md
   },
   time: {
+    color: PV.Colors.skyLight,
     fontSize: PV.Fonts.sizes.md,
     marginTop: 8
   },

@@ -15,9 +15,7 @@ type Props = {
   width: number
 }
 
-type State = {
-  reduceBottomWrapperHeight?: boolean
-}
+type State = {}
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State> {
   chapterInterval: NodeJS.Timeout
   constructor(props) {
@@ -26,6 +24,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
   }
 
   componentDidMount() {
+    loadChapterPlaybackInfo()
     this.chapterInterval = setInterval(loadChapterPlaybackInfo, 4000)
   }
 
@@ -42,8 +41,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
 
   render() {
     const { handlePressClipInfo, imageHeight, imageWidth, width } = this.props
-    const { player, screenPlayer } = this.global
-    const { reduceBottomWrapperHeight } = this.state
+    const { fontScaleMode, player, screenPlayer } = this.global
     const { currentChapter, nowPlayingItem = {} } = player
     const { isLoading } = screenPlayer
     let { clipId, clipEndTime, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem
@@ -66,9 +64,6 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
     }
 
     const imageWrapperStylePadding = clipId ? { padding: 16 } : { paddingHorizontal: 16, paddingTop: 16 }
-    const reduceBottomWrapperStyle = reduceBottomWrapperHeight
-      ? { height: PV.Player.carouselTextBottomWrapper.height - 24 }
-      : { height: PV.Player.carouselTextBottomWrapper.height }
 
     return (
       <View style={[styles.outerWrapper, { width }]} transparent={true}>
@@ -78,20 +73,22 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
             {!isLoading && !!nowPlayingItem && (
               <React.Fragment>
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.xl}
                   numberOfLines={1}
                   style={styles.episodeTitle}
                   testID='media_player_carousel_viewer_episode_title'>
                   {nowPlayingItem.episodeTitle}
                 </Text>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  isSecondary={true}
-                  numberOfLines={1}
-                  style={styles.podcastTitle}
-                  testID='media_player_carousel_viewer_podcast_title'>
-                  {nowPlayingItem.podcastTitle}
-                </Text>
+                {fontScaleMode !== PV.Fonts.fontScale.largest && (
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    isSecondary={true}
+                    numberOfLines={1}
+                    style={styles.podcastTitle}
+                    testID='media_player_carousel_viewer_podcast_title'>
+                    {nowPlayingItem.podcastTitle}
+                  </Text>
+                )}
               </React.Fragment>
             )}
           </View>
@@ -107,20 +104,14 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
               <View style={[styles.carouselTextBottomWrapper, reduceBottomWrapperStyle]} transparent={true}>
                 <View style={styles.clipWrapper} transparent={true}>
                   <Text
-                    numberOfLines={2}
-                    onTextLayout={(e) => {
-                      const { lines } = e.nativeEvent
-                      if (lines.length === 1) {
-                        this.setState({ reduceBottomWrapperHeight: true })
-                      } else {
-                        this.setState({ reduceBottomWrapperHeight: false })
-                      }
-                    }}
+                    numberOfLines={1}
                     style={styles.clipTitle}
                     testID='media_player_carousel_viewer_title'>{`${clipTitle}`}</Text>
-                  <Text style={styles.clipTime} testID='media_player_carousel_viewer_time'>
-                    {readableClipTime(clipStartTime, clipEndTime)}
-                  </Text>
+                  {fontScaleMode !== PV.Fonts.fontScale.largest && (
+                    <Text style={styles.clipTime} testID='media_player_carousel_viewer_time'>
+                      {readableClipTime(clipStartTime, clipEndTime)}
+                    </Text>
+                  )}
                 </View>
               </View>
             </TouchableWithoutFeedback>
@@ -137,12 +128,13 @@ const styles = StyleSheet.create({
   },
   carouselTextTopWrapper: {
     flex: 0,
-    height: PV.Player.carouselTextTopWrapper.height
+    minHeight: PV.Player.carouselTextTopWrapper.height,
+    justifyContent: 'center'
   },
   clipTime: {
     color: PV.Colors.skyLight,
     fontSize: PV.Fonts.sizes.sm,
-    height: PV.Player.carouselTextSubBottomWrapper.height,
+    minHeight: PV.Player.carouselTextSubBottomWrapper.height,
     marginTop: PV.Player.carouselTextSubBottomWrapper.marginTop,
     textAlign: 'center'
   },

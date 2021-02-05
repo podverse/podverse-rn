@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   horizontalFiller: {
     width: '100%',
     height: 40,
-    backgroundColor: PV.Colors.black + 'CC'
+    backgroundColor: PV.Colors.ink + 'CC'
   },
   verticalFiller: {
     ...StyleSheet.absoluteFillObject,
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   horizontalRowFiller: {
     width: '5%',
     height: '100%',
-    backgroundColor: PV.Colors.black + 'CC'
+    backgroundColor: PV.Colors.ink + 'CC'
   },
   instructions: {
     textAlign: 'center',
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 10,
     justifyContent: 'space-around',
-    backgroundColor: PV.Colors.black + 'CC'
+    backgroundColor: PV.Colors.ink + 'CC'
   },
   dismissButton: {
     paddingVertical: 15,

@@ -55,9 +55,9 @@ const defaultNavigationOptions = ({ navigation }) => {
 
   let fontSize = PV.Fonts.sizes.xl
   if (fontScaleMode === PV.Fonts.fontScale.larger) {
-    fontSize = PV.Fonts.largeSizes.xl * fontScale
+    fontSize = PV.Fonts.largeSizes.sm * fontScale
   } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
-    fontSize = PV.Fonts.largeSizes.md * fontScale
+    fontSize = PV.Fonts.largeSizes.tiny * fontScale
   }
 
   return {

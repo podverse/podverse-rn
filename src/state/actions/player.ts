@@ -23,20 +23,28 @@ import {
   setNowPlayingItem as setNowPlayingItemService
 } from '../../services/userNowPlayingItem'
 import { getQueueItems } from '../../state/actions/queue'
-import {
-  clearChapterPlaybackInfo,
-  loadChapterPlaybackInfo,
-  retriveNowPlayingItemChapters,
-  setChaptersOnGlobalState
-} from './playerChapters'
+import { clearChapterPlaybackInfo, loadChapterPlaybackInfo, loadChaptersForNowPlayingItem } from './playerChapters'
+
+const clearChaptersIfNewEpisode = async (previousNowPlayingItem: NowPlayingItem, nowPlayingItem: NowPlayingItem) => {
+  const shouldClearPreviousPlaybackInfo =
+    previousNowPlayingItem && previousNowPlayingItem.episodeId !== nowPlayingItem.episodeId
+  if (shouldClearPreviousPlaybackInfo) {
+    await clearChapterPlaybackInfo()
+  }
+}
 
 export const updatePlayerState = async (item: NowPlayingItem) => {
   if (!item) return
 
+  const globalState = getGlobal()
+
+  const previousNowPlayingItem = globalState.player.nowPlayingItem || {}
+  await clearChaptersIfNewEpisode(previousNowPlayingItem, item)
+  loadChaptersForNowPlayingItem(item)
+
   const episode = convertNowPlayingItemToEpisode(item)
   episode.description = episode.description || 'No show notes available'
   const mediaRef = convertNowPlayingItemToMediaRef(item)
-  const globalState = getGlobal()
 
   const newState = {
     player: {
@@ -154,19 +162,16 @@ export const loadItemAndPlayTrack = async (
   const globalState = getGlobal()
 
   if (item) {
-    const { nowPlayingItem: lastNowPlayingItem } = globalState.player
+    const { nowPlayingItem: previousNowPlayingItem } = globalState.player
 
-    const shouldClearPreviousPlaybackInfo = lastNowPlayingItem && lastNowPlayingItem.episodeId !== item.episodeId
-    if (shouldClearPreviousPlaybackInfo) {
-      await clearChapterPlaybackInfo()
-    }
+    await clearChaptersIfNewEpisode(previousNowPlayingItem, item)
 
     item.clipId
       ? await AsyncStorage.setItem(PV.Keys.PLAYER_CLIP_IS_LOADED, 'TRUE')
       : await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
 
     if (item.clipIsOfficialChapter) {
-      if (lastNowPlayingItem && item.episodeId === lastNowPlayingItem.episodeId) {
+      if (previousNowPlayingItem && item.episodeId === previousNowPlayingItem.episodeId) {
         await handleLoadChapterForNowPlayingEpisode(item)
         return
       } else {
@@ -189,10 +194,7 @@ export const loadItemAndPlayTrack = async (
     async () => {
       const globalState = getGlobal()
       trackPlayerScreenPageView(item, globalState)
-      if (item && item.episodeId) {
-        const currentChapters = await retriveNowPlayingItemChapters(item.episodeId)
-        setChaptersOnGlobalState(currentChapters)
-      }
+      loadChaptersForNowPlayingItem(item)
     }
   )
 }
