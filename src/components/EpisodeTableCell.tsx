@@ -38,7 +38,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const { id, mediaUrl, pubDate = '', podcast = {} } = item
     let { description = '', title = '' } = item
-    const { imageUrl = '' } = podcast
+
     const podcastTitle = podcast.title || translate('Untitled Podcast')
     description = removeHTMLFromString(description)
     description = decodeHTMLString(description)
@@ -51,6 +51,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     if (!title) title = translate('Untitled Episode')
 
     const titleStyle = (podcastTitle ? styles.title : [styles.title, { marginTop: 0 }]) as any
+
+    const imageUrl = podcast.shrunkImageUrl || podcast.imageUrl
 
     const innerTopView = (
       <RNView style={styles.innerTopView}>
