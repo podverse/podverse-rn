@@ -237,6 +237,11 @@ const comparisonData = [
     text: translate('download a backup of your data'),
     column1: false,
     column2: true
+  },
+  {
+    text: translate('support free and open source software'),
+    column1: true,
+    column2: true
   }
 ]
 
