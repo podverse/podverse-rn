@@ -23,13 +23,13 @@ export const TimeInput = (props: Props) => {
 
   return (
     <View style={styles.timeInputWrapper}>
-      <View style={styles.timeInputTextWrapper}>
-        <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]}>
-          {labelText}
-        </Text>
-        <TouchableWithoutFeedback onPress={handleSetTime} {...testProps(`${testID}_time_input_set_button`)}>
+      <TouchableWithoutFeedback onPress={handleSetTime} {...testProps(`${testID}_time_input_set_button`)}>
+        <View style={styles.timeInputTextWrapper}>
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]}>
+            {labelText}
+          </Text>
           <View style={[styles.timeInputTouchable, globalTheme.textInput]}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -41,8 +41,8 @@ export const TimeInput = (props: Props) => {
               {time || time === 0 ? convertSecToHHMMSS(time) : placeholder}
             </Text>
           </View>
-        </TouchableWithoutFeedback>
-      </View>
+        </View>
+      </TouchableWithoutFeedback>
       {(time || time === 0) && (
         <TouchableOpacity
           hitSlop={{
