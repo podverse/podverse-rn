@@ -3,7 +3,7 @@ import React from 'reactn'
 import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { getMembershipExpiration, getMembershipStatus, readableTextDate, testProps } from '../lib/utility'
+import { getMembershipExpiration, getMembershipStatus, readableDate, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { buy1YearPremium } from '../services/purchaseShared'
 import { trackPageView } from '../services/tracking'
@@ -133,7 +133,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                 {`Expires: `}
               </Text>
               <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-                {readableTextDate(expirationDate)}
+                {readableDate(expirationDate)}
               </Text>
             </View>
             <View style={styles.textRowCentered}>
@@ -236,11 +236,6 @@ const comparisonData = [
   {
     text: translate('download a backup of your data'),
     column1: false,
-    column2: true
-  },
-  {
-    text: translate('support free and open source software'),
-    column1: true,
     column2: true
   }
 ]
