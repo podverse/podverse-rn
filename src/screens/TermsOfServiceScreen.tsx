@@ -45,6 +45,8 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
             {translate('TermsOfServiceScreenText5')}
             {'\n\n'}
             {translate('TermsOfServiceScreenText6')}
+            {'\n\n'}
+            {translate('TermsOfServicesScreenText7')}
           </Text>
           <Divider style={styles.divider} />
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
