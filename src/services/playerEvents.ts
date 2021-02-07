@@ -42,6 +42,9 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   }
 
   PVEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
+
+  // Call updateUserPlaybackPosition to make sure the current item is saved as the userNowPlayingItem
+  updateUserPlaybackPosition()
 }
 
 const syncNowPlayingItemWithTrack = async () => {
