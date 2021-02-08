@@ -92,9 +92,9 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
       setTimeout(async () => {
         for (const episode of autoDownloadEpisodes[0]) {
           const podcast = {
-            id: episode.podcast_id,
-            imageUrl: episode.podcast_shrunkImageUrl || episode.podcast_imageUrl,
-            title: episode.podcast_title
+            id: episode?.podcast?.id,
+            imageUrl: episode?.podcast?.shrunkImageUrl || episode?.podcast?.imageUrl,
+            title: episode?.podcast?.title
           }
           const restart = false
           const waitToAddTask = true
@@ -229,6 +229,8 @@ const toggleSubscribeToPodcastLocally = async (id: string) => {
 }
 
 const toggleSubscribeToPodcastOnServer = async (id: string) => {
+  await toggleSubscribeToPodcastLocally(id)
+
   const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: `/podcast/toggle-subscribe/${id}`,
