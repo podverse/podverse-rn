@@ -647,7 +647,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    marginTop: Platform.OS === 'ios' ? 56 : 0
+    marginTop: 56
   },
   dropdownButtonSelectWrapper: {
     marginTop: 16
