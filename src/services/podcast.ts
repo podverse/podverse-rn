@@ -229,6 +229,8 @@ const toggleSubscribeToPodcastLocally = async (id: string) => {
 }
 
 const toggleSubscribeToPodcastOnServer = async (id: string) => {
+  await toggleSubscribeToPodcastLocally(id)
+
   const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: `/podcast/toggle-subscribe/${id}`,
