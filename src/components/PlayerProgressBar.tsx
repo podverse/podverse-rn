@@ -116,8 +116,11 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
           maximumValue={isLoading ? 0 : 1}
           minimumTrackTintColor={PV.Colors.skyDark}
           maximumTrackTintColor={PV.Colors.gray}
-          onSlidingComplete={async (value) => {
-            const position = value * duration
+          onSlidingStart={(val) => {
+            this.setState({ slidingPosition: val * duration })
+          }}
+          onSlidingComplete={async (val) => {
+            const position = val * duration
 
             this.setState({
               position,
@@ -127,11 +130,11 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
             await setPlaybackPosition(position)
             await loadChapterPlaybackInfo()
           }}
-          onValueChange={(value) =>
-            this.setState({ slidingPosition: value * duration }, () => {
-              setTimeout(() => this.setState({ slidingPosition: null }), 500)
-            })
-          }
+          onValueChange={(value) => {
+            if (this.state.slidingPosition) {
+              this.setState({ slidingPosition: value * duration })
+            }
+          }}
           thumbStyle={sliderStyles.thumbStyle}
           thumbTintColor={PV.Colors.white}
           value={isLoading ? 0 : value}
