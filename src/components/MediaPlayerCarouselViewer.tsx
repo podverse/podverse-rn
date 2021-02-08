@@ -1,5 +1,4 @@
-import { Alert, Linking, StyleSheet } from 'react-native'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { Alert, Linking, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
@@ -9,8 +8,6 @@ import { ActivityIndicator, FastImage, Text, View } from './'
 
 type Props = {
   handlePressClipInfo: any
-  imageHeight: number
-  imageWidth: number
   navigation?: any
   width: number
 }
@@ -40,7 +37,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
   }
 
   render() {
-    const { handlePressClipInfo, imageHeight, imageWidth, width } = this.props
+    const { handlePressClipInfo, width } = this.props
     const { fontScaleMode, player, screenPlayer } = this.global
     const { currentChapter, nowPlayingItem = {} } = player
     const { isLoading } = screenPlayer
@@ -58,9 +55,9 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
       podcastImageUrl = currentChapter.imageUrl || podcastImageUrl
     }
 
-    const imageStyle = [{ height: imageHeight, width: imageWidth }] as any
+    const imageStyles = [styles.image] as any
     if (clipUrl) {
-      imageStyle.push(styles.imageBorder)
+      imageStyles.push(styles.imageBorder)
     }
 
     const imageWrapperStylePadding = clipId ? { padding: 16 } : { paddingHorizontal: 16, paddingTop: 16 }
@@ -93,13 +90,16 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
             )}
           </View>
           <View
-            style={[styles.imageWrapper, { height: imageHeight, width: '100%' }, imageWrapperStylePadding]}
+            style={[styles.carouselImageWrapper, { height: '70%', width: '100%' }, imageWrapperStylePadding]}
             transparent={true}>
-            <TouchableWithoutFeedback {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}>
-              <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyle} />
-            </TouchableWithoutFeedback>
+            <TouchableOpacity
+              activeOpacity={1}
+              {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
+              style={styles.image}>
+              <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyles} resizeMode='contain' />
+            </TouchableOpacity>
           </View>
-          {clipId && (
+          {!!clipId && (
             <TouchableWithoutFeedback onPress={handlePressClipInfo}>
               <View style={styles.carouselTextBottomWrapper} transparent={true}>
                 <View style={styles.clipWrapper} transparent={true}>
@@ -123,13 +123,17 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
 }
 
 const styles = StyleSheet.create({
-  carouselTextBottomWrapper: {
-    flex: 0
-  },
+  carouselTextBottomWrapper: {},
   carouselTextTopWrapper: {
-    flex: 0,
-    minHeight: PV.Player.carouselTextTopWrapper.height,
     justifyContent: 'center'
+  },
+  carouselImageWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  image: {
+    width: '100%',
+    height: '100%'
   },
   clipTime: {
     color: PV.Colors.skyLight,
@@ -152,14 +156,9 @@ const styles = StyleSheet.create({
     borderColor: PV.Colors.skyDark,
     borderWidth: 5
   },
-  imageWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 10
-  },
   innerWrapper: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     marginHorizontal: 8
   },
   outerWrapper: {
