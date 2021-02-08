@@ -1,4 +1,5 @@
 import { Alert, Linking, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import TextTicker from 'react-native-text-ticker'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
@@ -103,10 +104,13 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
             <TouchableWithoutFeedback onPress={handlePressClipInfo}>
               <View style={styles.carouselTextBottomWrapper} transparent={true}>
                 <View style={styles.clipWrapper} transparent={true}>
-                  <Text
-                    numberOfLines={1}
+                  <TextTicker
+                    duration={10000}
+                    loop={true}
+                    bounce={true}
                     style={styles.clipTitle}
-                    testID='media_player_carousel_viewer_title'>{`${clipTitle}`}</Text>
+                    repeatSpacer={50}
+                    testID='media_player_carousel_viewer_title'>{`${clipTitle}`}</TextTicker>
                   {fontScaleMode !== PV.Fonts.fontScale.largest && (
                     <Text style={styles.clipTime} testID='media_player_carousel_viewer_time'>
                       {readableClipTime(clipStartTime, clipEndTime)}
@@ -145,9 +149,11 @@ const styles = StyleSheet.create({
   clipTitle: {
     fontSize: PV.Fonts.sizes.xxl,
     paddingBottom: 2,
-    textAlign: 'center'
+    color: PV.Colors.white
   },
-  clipWrapper: {},
+  clipWrapper: {
+    alignItems: 'center'
+  },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.xxl,
     textAlign: 'center'
