@@ -4,14 +4,11 @@ import { getEpisodes } from './episode'
 
 export const getAutoDownloadEpisodes = async (sincePubDate: string, podcastIds: any[]) => {
   if (podcastIds && podcastIds.length > 0) {
-    return getEpisodes(
-      {
-        podcastId: podcastIds,
-        sincePubDate,
-        includePodcast: true
-      },
-      true
-    )
+    return getEpisodes({
+      podcastId: podcastIds,
+      sincePubDate,
+      includePodcast: true
+    })
   } else {
     return [[], null]
   }
