@@ -1,4 +1,5 @@
 import React from 'react'
+import { Image } from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import { useGlobal } from 'reactn'
 import { Icon } from '.'
@@ -33,7 +34,7 @@ export const PVSearchBar = (props: Props) => {
       placeholder={placeholder}
       ref={inputRef}
       returnKeyType='done'
-      searchIcon={<Icon name='search' size={20} />}
+      searchIcon={<Image source={PV.Images.SEARCH} resizeMode='contain' style={styles.imageStyle} />}
       {...(testID ? testProps(`${testID}_search_bar`) : {})}
       value={value}
     />
@@ -55,5 +56,10 @@ const styles = {
     fontSize: PV.Fonts.sizes.xxl,
     borderWidth: 0,
     marginLeft: 18
+  },
+  imageStyle: {
+    width: 28,
+    height: 28,
+    tintColor: 'white'
   }
 }
