@@ -210,7 +210,7 @@ export class HistoryScreen extends React.Component<Props, State> {
             disableLeftSwipe={true}
             extraData={historyItems}
             isLoadingMore={isLoadingMore}
-            keyExtractor={(item: any, index: number) => index}
+            keyExtractor={(item: any, index: number) => `${index}`}
             noResultsMessage={translate('No history items found')}
             onEndReached={this._onEndReached}
             renderItem={this._renderHistoryItem}
