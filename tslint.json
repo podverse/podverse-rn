@@ -7,7 +7,6 @@
     "tslint-plugin-prettier",
     "tslint-config-prettier"
   ],
-  "jsRules": {},
   "rules": {
     "interface-name": false,
     "interface-over-type-literal": false,
