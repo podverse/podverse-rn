@@ -7080,6 +7080,11 @@ react-native-tab-view@^2.15.2:
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-2.15.2.tgz#4bc7832d33a119306614efee667509672a7ee64e"
   integrity sha512-2hxLkBnZtEKFDyfvNO5EUywhy3f/EiLOBO8SWqKj4BMBTO0QwnybaPE5MVF00Fhz+VA4+h/iI40Dkrrtq70dGg==
 
+react-native-text-ticker@^1.11.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/react-native-text-ticker/-/react-native-text-ticker-1.11.0.tgz#d1711613b4cd6f0ffa0a7335f8de172f5e63190f"
+  integrity sha512-+lDX7HO4qTPjMhHDzLYU39YWMqqrud2rs3aBdXnJPqcsWbEpOabogNuYQB6XZ/oqe2kSgqOJlVEH4nbNd1+AwQ==
+
 react-native-track-player@1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-1.2.3.tgz#cd147b1fc93a229c49392abd7b37f087285e673a"
