@@ -12,7 +12,7 @@
     "dev:android": "react-native run-android",
     "dev:ios": "react-native run-ios --simulator 'iPhone 12 Pro Max'",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "lint": "tslint --fix 'src/**/*.{ts,tsx}'",
+    "lint": "eslint --fix 'src/**/*.{ts,tsx}'",
     "format": "prettier --write src/**/*.ts*",
     "stage:resetDatabase": "node ./scripts/_resetDatabase.js",
     "test:e2e:android": "export $(cat .env | xargs) && DEVICE_TYPE=Android BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./functions/tests/e2e/index.js",
@@ -28,15 +28,16 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "tslint --fix",
+      "eslint --fix",
       "git add"
     ],
     "src/**/*.{ts,tsx}": [
-      "tslint",
+      "eslint",
       "git add"
     ]
   },
   "dependencies": {
+    "@babel/eslint-parser": "^7.12.13",
     "@podverse/podcast-feed-parser": "^1.0.14",
     "@react-native-community/async-storage": "1.12.0",
     "@react-native-community/masked-view": "0.1.10",
@@ -93,6 +94,7 @@
     "react-navigation-stack": "2.10.2",
     "react-navigation-tabs": "2.10.1",
     "reactn": "2.2.7",
+    "standard": "^16.0.3",
     "stream": "^0.0.2",
     "timers": "^0.1.1",
     "validator": "12.2.0",
@@ -117,7 +119,19 @@
     "@types/react-native-vector-icons": "6.4.6",
     "@types/react-navigation": "3.4.0",
     "@types/validator": "12.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.15.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^4.15.0",
+    "@typescript-eslint/parser": "^4.15.0",
     "dotenv": "8.2.0",
+    "eslint": "^7.19.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsdoc": "^31.6.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-standard": "^5.0.0",
     "husky": "3.1.0",
     "lint-staged": "9.5.0",
     "metro-react-native-babel-preset": "0.63.0",
@@ -126,10 +140,6 @@
     "react-test-renderer": "16.13.1",
     "ssh2": "0.8.9",
     "tslint": "5.20.1",
-    "tslint-config-prettier": "1.18.0",
-    "tslint-config-standard": "8.0.1",
-    "tslint-plugin-prettier": "2.3.0",
-    "tslint-react": "3.6.0",
     "typescript": "3.9.7"
   },
   "resolutions": {
