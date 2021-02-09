@@ -1,5 +1,5 @@
 import { convertNowPlayingItemToMediaRef, convertToNowPlayingItem } from 'podverse-shared'
-import { Dimensions, StyleSheet, View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
 import React, { getGlobal, setGlobal } from 'reactn'
 import {
@@ -33,7 +33,7 @@ import { getNowPlayingItem } from '../services/userNowPlayingItem'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { loadChaptersForEpisode } from '../state/actions/playerChapters'
 import { getHistoryItems } from '../state/actions/userHistoryItem'
-import { core, navHeader } from '../styles'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
@@ -44,48 +44,6 @@ type State = {}
 const testIDPrefix = 'player_screen'
 
 let eventListenerPlayerNewEpisodeLoaded: any
-
-const screenHeight = Dimensions.get('screen').height
-
-/*
-  carouselTextBottomWrapper: {
-    height: 52
-  },
-  carouselTextTopWrapper: {
-    height: 48
-  },
-  playerControls: {
-    height: 202
-  },
-  pagination: {
-    height: 32
-  }
-
-  console.log('approxHeaderHeight', approxHeaderHeight)
-  console.log('screenHeight', screenHeight)
-  console.log('scrollHeight', scrollHeight)
-  console.log('subBottomHeight', subBottomHeight)
-  console.log('scrollHeightAvailable', scrollHeightAvailable)
-  console.log('imageHeightAvailable', imageHeightAvailable)
-*/
-
-const approxHeaderHeight = 44
-const scrollHeight =
-  screenHeight -
-  (navHeader.headerHeight.paddingTop +
-    approxHeaderHeight +
-    PV.Player.pagination.height +
-    PV.Player.playerControls.height)
-const subBottomHeight = PV.Player.carouselTextSubBottomWrapper.height + PV.Player.carouselTextSubBottomWrapper.marginTop
-const scrollHeightAvailable =
-  scrollHeight -
-  (PV.Player.carouselTextBottomWrapper.height + PV.Player.carouselTextTopWrapper.height + subBottomHeight)
-
-// 16 x 2 for vertical padding.
-const imagePadding = 32
-let imageHeightAvailable = scrollHeightAvailable + imagePadding
-imageHeightAvailable = imageHeightAvailable > 372 ? 372 : imageHeightAvailable
-
 export class PlayerScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const _getEpisodeId = navigation.getParam('_getEpisodeId')
@@ -110,8 +68,6 @@ export class PlayerScreen extends React.Component<Props, State> {
               <NavMakeClipIcon
                 getInitialProgressValue={_getInitialProgressValue}
                 globalTheme={globalTheme}
-                imageHeight={imageHeightAvailable}
-                imageWidth={imageHeightAvailable}
                 navigation={navigation}
               />
               <NavAddToPlaylistIcon
@@ -337,12 +293,7 @@ export class PlayerScreen extends React.Component<Props, State> {
       <React.Fragment>
         <OpaqueBackground imageUrl={imageUrl}>
           <View style={styles.view} transparent={true} {...testProps('player_screen_view')}>
-            <MediaPlayerCarousel
-              hasChapters={hasChapters}
-              imageHeight={imageHeightAvailable}
-              imageWidth={imageHeightAvailable}
-              navigation={navigation}
-            />
+            <MediaPlayerCarousel hasChapters={hasChapters} navigation={navigation} />
             <PlayerControls navigation={navigation} />
             <ActionSheet
               handleCancelPress={this._dismissShareActionSheet}
