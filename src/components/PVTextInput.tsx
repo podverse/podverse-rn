@@ -1,5 +1,5 @@
 import React from 'react'
-import { TextInput } from 'react-native'
+import { Platform, TextInput } from 'react-native'
 import { useGlobal } from 'reactn'
 import { Text, View } from '.'
 import { testProps } from '../lib/utility'
@@ -68,10 +68,12 @@ export const PVTextInput = (props: Props) => {
     textInputStyle.push({ fontSize: PV.Fonts.largeSizes.md })
   }
 
-  if (!value && numberOfLines > 1 && placeholder) {
-    textInputStyle.push({ flex: 0, justifyContent: 'center', minHeight: 59, paddingTop: 16, paddingBottom: 0 })
-  } else if (!value && numberOfLines === 1 && placeholder) {
-    textInputStyle.push({ flex: 0, justifyContent: 'center', minHeight: 59, paddingTop: 0, paddingBottom: 0 })
+  if (Platform.OS === 'ios') {
+    if (!value && numberOfLines > 1 && placeholder) {
+      textInputStyle.push({ flex: 0, justifyContent: 'center', minHeight: 59, paddingTop: 16, paddingBottom: 0 })
+    } else if (!value && numberOfLines === 1 && placeholder) {
+      textInputStyle.push({ flex: 0, justifyContent: 'center', minHeight: 59, paddingTop: 0, paddingBottom: 0 })
+    }
   }
 
   const hasText = !!value && value.length

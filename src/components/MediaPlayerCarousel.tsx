@@ -13,8 +13,6 @@ import { PV } from '../resources'
 
 type Props = {
   hasChapters: boolean
-  imageHeight: number
-  imageWidth: number
   navigation: any
 }
 
@@ -70,7 +68,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { imageHeight, imageWidth, navigation } = this.props
+    const { navigation } = this.props
     const { activeIndex } = this.state
     const { player } = this.global
     const { episode } = player
@@ -92,12 +90,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           transparent={true}>
           <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
           {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
-          <MediaPlayerCarouselViewer
-            handlePressClipInfo={this._handlePressClipInfo}
-            imageHeight={imageHeight}
-            imageWidth={imageWidth}
-            width={screenWidth}
-          />
+          <MediaPlayerCarouselViewer handlePressClipInfo={this._handlePressClipInfo} width={screenWidth} />
           <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
         </ScrollView>
         <Dots
