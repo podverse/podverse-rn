@@ -1,6 +1,7 @@
 import { Dimensions, StyleSheet } from 'react-native'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
+import { PV } from '../resources'
 import {
   MediaPlayerCarouselChapters,
   MediaPlayerCarouselClips,
@@ -9,7 +10,6 @@ import {
   ScrollView,
   View
 } from '.'
-import { PV } from '../resources'
 
 type Props = {
   hasChapters: boolean
@@ -76,18 +76,18 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const itemCount = hasChapters ? 4 : 3
 
     return (
-      <View style={styles.wrapper} transparent={true}>
+      <View style={styles.wrapper} transparent>
         <ScrollView
           bounces={false}
           decelerationRate='fast'
-          horizontal={true}
+          horizontal
           onMomentumScrollEnd={this.onScrollEnd}
           pagingEnabled={false}
           scrollViewRef={(ref: any) => (this.scrollView = ref)}
           showsHorizontalScrollIndicator={false}
           snapToInterval={screenWidth}
-          snapToStart={true}
-          transparent={true}>
+          snapToStart
+          transparent>
           <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
           {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
           <MediaPlayerCarouselViewer handlePressClipInfo={this._handlePressClipInfo} width={screenWidth} />

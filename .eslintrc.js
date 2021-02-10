@@ -78,7 +78,7 @@ module.exports = {
                 "accessibility": "explicit"
             }
         ],
-        "@typescript-eslint/explicit-module-boundary-types": "warn",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/indent": "off",
         "@typescript-eslint/member-delimiter-style": [
             "off",
@@ -106,7 +106,7 @@ module.exports = {
         "@typescript-eslint/no-implied-eval": "error",
         "@typescript-eslint/no-inferrable-types": "error",
         "@typescript-eslint/no-misused-new": "error",
-        "@typescript-eslint/no-misused-promises": "error",
+        "@typescript-eslint/no-misused-promises": "off",
         "@typescript-eslint/no-namespace": "error",
         "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
         "@typescript-eslint/no-non-null-assertion": "warn",
@@ -120,12 +120,12 @@ module.exports = {
         "@typescript-eslint/no-this-alias": "error",
         "@typescript-eslint/no-unnecessary-qualifier": "error",
         "@typescript-eslint/no-unnecessary-type-assertion": "error",
-        "@typescript-eslint/no-unsafe-assignment": "error",
-        "@typescript-eslint/no-unsafe-call": "error",
-        "@typescript-eslint/no-unsafe-member-access": "error",
-        "@typescript-eslint/no-unsafe-return": "error",
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
         "@typescript-eslint/no-unused-expressions": [
-            "error",
+            "off",
             {
                 "allowTaggedTemplates": true,
                 "allowShortCircuit": true
@@ -141,8 +141,8 @@ module.exports = {
         "@typescript-eslint/prefer-regexp-exec": "error",
         "@typescript-eslint/quotes": "off",
         "@typescript-eslint/require-await": "error",
-        "@typescript-eslint/restrict-plus-operands": "error",
-        "@typescript-eslint/restrict-template-expressions": "error",
+        "@typescript-eslint/restrict-plus-operands": "off",
+        "@typescript-eslint/restrict-template-expressions": "off",
         "@typescript-eslint/semi": [
             "off",
             null
@@ -177,7 +177,7 @@ module.exports = {
         "@typescript-eslint/type-annotation-spacing": "off",
         "@typescript-eslint/unbound-method": "error",
         "@typescript-eslint/unified-signatures": "error",
-        "arrow-body-style": "error",
+        "arrow-body-style": "off",
         "arrow-parens": [
             "off",
             "always"
@@ -212,7 +212,7 @@ module.exports = {
             "undefined"
         ],
         "id-match": "error",
-        "import/no-deprecated": "error",
+        "import/no-deprecated": "off",
         "import/order": "error",
         "jsdoc/check-alignment": "error",
         "jsdoc/check-indentation": "error",
@@ -256,7 +256,7 @@ module.exports = {
         "no-throw-literal": "error",
         "no-trailing-spaces": "off",
         "no-undef-init": "error",
-        "no-underscore-dangle": "error",
+        "no-underscore-dangle": "off",
         "no-unsafe-finally": "error",
         "no-unused-labels": "error",
         "no-unused-vars": "off",
@@ -270,7 +270,7 @@ module.exports = {
         "prefer-const": "error",
         "quote-props": "off",
         "radix": "error",
-        "react/display-name": "error",
+        "react/display-name": "off",
         "react/jsx-boolean-value": "error",
         "react/jsx-curly-spacing": "off",
         "react/jsx-equals-spacing": "off",
@@ -292,7 +292,7 @@ module.exports = {
         "react/jsx-wrap-multilines": "off",
         "react/no-children-prop": "error",
         "react/no-danger-with-children": "error",
-        "react/no-deprecated": "error",
+        "react/no-deprecated": "off",
         "react/no-direct-mutation-state": "error",
         "react/no-find-dom-node": "error",
         "react/no-is-mounted": "error",
@@ -331,18 +331,19 @@ module.exports = {
           'eslint:recommended'
         ],
         "parserOptions": {
-          "project": "tsconfig-tests.json"
+          "project": "tsconfig.json"
         },
         env: {
           node: true,
           amd: true
         },
         rules: {
+          "@typescript-eslint/await-thenable": "off",
           "@typescript-eslint/no-unsafe-assignment": "off",
           "@typescript-eslint/no-unsafe-call": "off",
           "@typescript-eslint/no-unsafe-member-access": "off",
           "@typescript-eslint/no-unsafe-return": "off",
-          "@typescript-eslint/restrict-template-expressions": "off",
+          "@typescript-eslint/restrict-template-expressions": "off"
         }
     }],
     ignorePatterns: ['.eslintrc.js']

@@ -12,25 +12,21 @@ type Props = {
   navigation?: any
 }
 
-type State = {}
-
-export class PurchasingScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
-      title: translate('Processing'),
-      headerRight: () => null
-    }
-  }
-
+export class PurchasingScreen extends React.Component<Props> {
   constructor(props: Props) {
     super(props)
   }
+
+  static navigationOptions = () => ({
+      title: translate('Processing'),
+      headerRight: () => null
+    })
 
   componentDidMount() {
     trackPageView('/purchasing', 'Purchasing Screen')
   }
 
-  _handleContactSupportPress = async () => {
+  _handleContactSupportPress = () => {
     Linking.openURL(createEmailLinkUrl(PV.Emails.CHECKOUT_ISSUE))
   }
 
@@ -44,7 +40,7 @@ export class PurchasingScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleDismiss = async () => {
+  _handleDismiss = () => {
     this.props.navigation.dismiss()
   }
 

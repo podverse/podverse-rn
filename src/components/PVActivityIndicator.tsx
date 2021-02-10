@@ -22,13 +22,13 @@ export const PVActivityIndicator = (props: Props) => {
     <Fragment>
       {isOverlay && (
         <View style={styles.activityOverlay}>
-          <ActivityIndicator animating={true} color={globalTheme.activityIndicator.color} size={size} />
+          <ActivityIndicator animating color={globalTheme.activityIndicator.color} size={size} />
         </View>
       )}
       {!isOverlay && (
         <TouchableWithoutFeedback onPress={onPress}>
           <View style={[core.view, styles.view, viewStyle, props.styles]}>
-            <ActivityIndicator animating={true} color={globalTheme.activityIndicator.color} size={size} />
+            <ActivityIndicator animating color={globalTheme.activityIndicator.color} size={size} />
           </View>
         </TouchableWithoutFeedback>
       )}

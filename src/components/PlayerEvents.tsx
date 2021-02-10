@@ -8,11 +8,9 @@ import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { showMiniPlayer, updatePlaybackState, updatePlayerState } from '../state/actions/player'
 import { getQueueItems } from '../state/actions/queue'
 
-type Props = {}
+type Props = any
 
-type State = {}
-
-export class PlayerEvents extends React.PureComponent<Props, State> {
+export class PlayerEvents extends React.PureComponent<Props> {
   constructor(props: Props) {
     super(props)
 
@@ -35,7 +33,7 @@ export class PlayerEvents extends React.PureComponent<Props, State> {
     PVEventEmitter.removeListener(PV.Events.PLAYER_PLAYBACK_ERROR)
   }
 
-  _playerCannotStreamWithoutWifi = async () => {
+  _playerCannotStreamWithoutWifi = () => {
     Alert.alert(
       PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.title,
       PV.Alerts.PLAYER_CANNOT_STREAM_WITHOUT_WIFI.message,

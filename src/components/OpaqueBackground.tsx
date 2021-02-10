@@ -21,7 +21,7 @@ export const OpaqueBackground = (props: Props) => {
 
   return (
     <ImageBackground blurRadius={65} source={bgImageSource} style={styles.imageBackground}>
-      <View style={[styles.viewBackdrop, backdropColor, navHeader.headerHeight]} transparent={true}>
+      <View style={[styles.viewBackdrop, backdropColor, navHeader.headerHeight]} transparent>
         <SafeAreaView
           forceInset={{ bottom: 'always', top: 'always' }}
           style={{

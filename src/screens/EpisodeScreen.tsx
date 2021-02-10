@@ -43,30 +43,6 @@ type State = {
 const testIDPrefix = 'episode_screen'
 
 export class EpisodeScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    const episodeId = navigation.getParam('episodeId')
-    const episodeTitle = navigation.getParam('episodeTitle')
-    const podcastTitle = navigation.getParam('podcastTitle')
-    const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
-
-    return {
-      title: translate('Episode'),
-      headerRight: () => (
-        <RNView style={core.row}>
-          {!addByRSSPodcastFeedUrl && (
-            <NavShareIcon
-              endingText={translate('shared using brandName')}
-              episodeTitle={episodeTitle}
-              podcastTitle={podcastTitle}
-              urlId={episodeId}
-              urlPath={PV.URLs.webPaths.episode}
-            />
-          )}
-          <NavSearchIcon navigation={navigation} />
-        </RNView>
-      )
-    }
-  }
 
   constructor(props: Props) {
     super(props)
@@ -103,7 +79,32 @@ export class EpisodeScreen extends React.Component<Props, State> {
     }
   }
 
-  async componentDidMount() {
+  static navigationOptions = ({ navigation }) => {
+    const episodeId = navigation.getParam('episodeId')
+    const episodeTitle = navigation.getParam('episodeTitle')
+    const podcastTitle = navigation.getParam('podcastTitle')
+    const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
+
+    return {
+      title: translate('Episode'),
+      headerRight: () => (
+        <RNView style={core.row}>
+          {!addByRSSPodcastFeedUrl && (
+            <NavShareIcon
+              endingText={translate('shared using brandName')}
+              episodeTitle={episodeTitle}
+              podcastTitle={podcastTitle}
+              urlId={episodeId}
+              urlPath={PV.URLs.webPaths.episode}
+            />
+          )}
+          <NavSearchIcon navigation={navigation} />
+        </RNView>
+      )
+    }
+  }
+
+  componentDidMount() {
     const { episode, episodeId } = this.state
     this._initializePageData()
     const pageTitle = episode?.podcast
@@ -140,11 +141,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleCancelPress = () => {
-    return new Promise((resolve, reject) => {
+  _handleCancelPress = () => new Promise((resolve) => {
       this.setState({ showActionSheet: false }, resolve)
     })
-  }
 
   _handleMorePress = (selectedItem: any) => {
     this.setState({
@@ -246,7 +245,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         <HTMLScrollView
           html={episode?.description || ''}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          disableScrolling={true}
+          disableScrolling
         />
         <ActionSheet
           handleCancelPress={this._handleCancelPress}

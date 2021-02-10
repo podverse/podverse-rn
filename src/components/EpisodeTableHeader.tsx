@@ -3,8 +3,8 @@ import { StyleSheet, View } from 'react-native'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { ActivityIndicator, FastImage, IndicatorDownload, Text } from './'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
+import { ActivityIndicator, FastImage, IndicatorDownload, Text } from './'
 
 type Props = {
   episode: any | null
@@ -45,7 +45,7 @@ export const EpisodeTableHeader = (props: Props) => {
   return (
     <View style={styles.view}>
       {isLoading ? (
-        <ActivityIndicator fillSpace={true} />
+        <ActivityIndicator fillSpace />
       ) : (
         <View style={styles.wrapper}>
           {isNotFound ? (
@@ -64,7 +64,7 @@ export const EpisodeTableHeader = (props: Props) => {
               <View style={styles.textWrapper}>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  isSecondary={true}
+                  isSecondary
                   style={styles.podcastTitle}
                   testID={`${testID}_podcast_title`}>
                   {podcastTitle.trim()}
@@ -75,7 +75,7 @@ export const EpisodeTableHeader = (props: Props) => {
                 <View style={styles.textWrapperBottomRow}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    isSecondary={true}
+                    isSecondary
                     style={styles.pubDate}
                     testID={`${testID}_pub_date`}>
                     {readableDate(pubDate)}

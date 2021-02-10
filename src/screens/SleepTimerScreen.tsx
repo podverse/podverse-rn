@@ -18,23 +18,21 @@ type Props = {
   navigation?: any
 }
 
-type State = {}
-
 const testIDPrefix = 'sleep_timer_screen'
 
-export class SleepTimerScreen extends React.Component<Props, State> {
+export class SleepTimerScreen extends React.Component<Props> {
+  constructor(props: Props) {
+    super(props)
+    this.state = {}
+  }
+
   static navigationOptions = ({ navigation }) => ({
     title: translate('Sleep Timer'),
     headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
     headerRight: () => <RNView />
   })
 
-  constructor(props: Props) {
-    super(props)
-    this.state = {}
-  }
-
-  async componentDidMount() {
+  componentDidMount() {
     const isActive = sleepTimerIsRunning()
     updateSleepTimerTimeRemaining()
 
@@ -45,7 +43,7 @@ export class SleepTimerScreen extends React.Component<Props, State> {
     trackPageView('/sleep-timer', 'Sleep Timer Screen')
   }
 
-  async componentWillUnmount() {
+  componentWillUnmount() {
     pauseSleepTimerStateUpdates()
   }
 

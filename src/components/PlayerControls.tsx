@@ -12,8 +12,8 @@ import {
 import { playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
-import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
+import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 
 type Props = {
   navigation: any
@@ -76,11 +76,11 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     debouncedPlayerJumpForward()
   }
 
-  _hidePlayerMoreActionSheet = async () => {
+  _hidePlayerMoreActionSheet = () => {
     this.setState({ showPlayerMoreActionSheet: false })
   }
 
-  _showPlayerMoreActionSheet = async () => {
+  _showPlayerMoreActionSheet = () => {
     this.setState({
       showPlayerMoreActionSheet: true
     })
@@ -178,7 +178,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         <View style={styles.playerControlsBottomRow}>
           <TouchableOpacity hitSlop={hitSlop} onPress={this._navToStopWatchScreen}>
             <View style={styles.playerControlsBottomButton}>
-              <Icon name='moon' size={20} solid={true} testID='player_controls_sleep_timer' />
+              <Icon name='moon' size={20} solid testID='player_controls_sleep_timer' />
             </View>
           </TouchableOpacity>
           <TouchableWithoutFeedback hitSlop={hitSlop} onPress={this._adjustSpeed}>

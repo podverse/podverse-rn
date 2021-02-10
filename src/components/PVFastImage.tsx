@@ -2,8 +2,8 @@ import { View } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
-import { Icon } from '.'
 import { isValidUrl } from '../lib/utility'
+import { Icon } from '.'
 const uuidv4 = require('uuid/v4')
 
 type Props = {
@@ -70,7 +70,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-            <Icon isSecondary={true} name='podcast' size={isSmall ? 32 : 36} />
+            <Icon isSecondary name='podcast' size={isSmall ? 32 : 36} />
           </View>
         )}
       </>

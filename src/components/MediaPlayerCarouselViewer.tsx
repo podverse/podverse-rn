@@ -13,8 +13,7 @@ type Props = {
   width: number
 }
 
-type State = {}
-export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State> {
+export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
   chapterInterval: NodeJS.Timeout
   constructor(props) {
     super(props)
@@ -64,10 +63,10 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
     const imageWrapperStylePadding = clipId ? { padding: 16 } : { paddingHorizontal: 16, paddingTop: 16 }
 
     return (
-      <View style={[styles.outerWrapper, { width }]} transparent={true}>
-        <View style={styles.innerWrapper} transparent={true}>
-          <View style={styles.carouselTextTopWrapper} transparent={true}>
-            {isLoading && <ActivityIndicator fillSpace={true} />}
+      <View style={[styles.outerWrapper, { width }]} transparent>
+        <View style={styles.innerWrapper} transparent>
+          <View style={styles.carouselTextTopWrapper} transparent>
+            {isLoading && <ActivityIndicator fillSpace />}
             {!isLoading && !!nowPlayingItem && (
               <React.Fragment>
                 <Text
@@ -80,7 +79,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
                 {fontScaleMode !== PV.Fonts.fontScale.largest && (
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    isSecondary={true}
+                    isSecondary
                     numberOfLines={1}
                     style={styles.podcastTitle}
                     testID='media_player_carousel_viewer_podcast_title'>
@@ -92,7 +91,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
           </View>
           <View
             style={[styles.carouselImageWrapper, { height: '70%', width: '100%' }, imageWrapperStylePadding]}
-            transparent={true}>
+            transparent>
             <TouchableOpacity
               activeOpacity={1}
               {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
@@ -102,12 +101,12 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
           </View>
           {!!clipId && (
             <TouchableWithoutFeedback onPress={handlePressClipInfo}>
-              <View style={styles.carouselTextBottomWrapper} transparent={true}>
-                <View style={styles.clipWrapper} transparent={true}>
+              <View style={styles.carouselTextBottomWrapper} transparent>
+                <View style={styles.clipWrapper} transparent>
                   <TextTicker
                     duration={10000}
-                    loop={true}
-                    bounce={true}
+                    loop
+                    bounce
                     style={styles.clipTitle}
                     repeatSpacer={50}
                     testID='media_player_carousel_viewer_title'>{`${clipTitle}`}</TextTicker>

@@ -23,7 +23,7 @@ import { darkTheme, lightTheme } from './src/styles'
 LogBox.ignoreLogs(['Warning: componentWillUpdate'])
 LogBox.ignoreAllLogs(true)
 
-type Props = {}
+type Props = any
 
 type State = {
   appReady: boolean

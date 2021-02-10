@@ -60,7 +60,7 @@ export class DownloadTableCell extends React.PureComponent<Props> {
               {podcastTitle && (
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  isSecondary={true}
+                  isSecondary
                   numberOfLines={1}
                   style={styles.podcastTitle}
                   testID={`${testID}_podcast_title`}>

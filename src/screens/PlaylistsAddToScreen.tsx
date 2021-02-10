@@ -35,8 +35,20 @@ type State = {
 const testIDPrefix = 'playlists_add_to_screen'
 
 export class PlaylistsAddToScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    return {
+  constructor(props: Props) {
+    super(props)
+    const { navigation } = props
+    const { isLoggedIn } = this.global.session
+    this.state = {
+      episodeId: navigation.getParam('episodeId'),
+      isLoading: true,
+      mediaRefId: navigation.getParam('mediaRefId')
+    }
+
+    navigation.setParams({ isLoggedIn })
+  }
+
+  static navigationOptions = ({ navigation }) => ({
       title: translate('Add to Playlist'),
       headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
       headerRight: () => (
@@ -50,21 +62,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
           )}
         </RNView>
       )
-    }
-  }
-
-  constructor(props: Props) {
-    super(props)
-    const { navigation } = props
-    const { isLoggedIn } = this.global.session
-    this.state = {
-      episodeId: navigation.getParam('episodeId'),
-      isLoading: true,
-      mediaRefId: navigation.getParam('mediaRefId')
-    }
-
-    navigation.setParams({ isLoggedIn })
-  }
+    })
 
   async componentDidMount() {
     this.props.navigation.setParams({
@@ -173,12 +171,12 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
         )}
         {isLoggedIn && (
           <View style={styles.view}>
-            {isLoading && <ActivityIndicator fillSpace={true} />}
+            {isLoading && <ActivityIndicator fillSpace />}
             {!isLoading && myPlaylists && (
               <FlatList
                 data={myPlaylists}
                 dataTotalCount={myPlaylists.length}
-                disableLeftSwipe={true}
+                disableLeftSwipe
                 extraData={myPlaylists}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
                 keyExtractor={(item: any, index: number) => `myPlaylists_${index}`}

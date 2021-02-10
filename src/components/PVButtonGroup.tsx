@@ -21,6 +21,7 @@ export const PVButtonGroup = (props: Props) => {
 
   return (
     <ButtonGroup
+      activeOpacity={0.7}
       buttons={buttons}
       buttonStyle={[styles.button, globalTheme.buttonGroup]}
       containerStyle={styles.container}

@@ -18,15 +18,14 @@ type State = {
 }
 
 export class MoreScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
-      title: translate('More')
-    }
-  }
 
   state = {
     options: []
   }
+
+  static navigationOptions = () => ({
+      title: translate('More')
+    })
 
   componentDidMount() {
     trackPageView('/more', 'More Screen')
@@ -37,9 +36,7 @@ export class MoreScreen extends React.Component<Props, State> {
     const loggedInFeatures = [_logoutKey]
 
     return allMoreFeatures
-      .filter((item: any) => {
-        return moreFeaturesList.find((screenKey: any) => item.key === screenKey)
-      })
+      .filter((item: any) => moreFeaturesList.find((screenKey: any) => item.key === screenKey))
       .filter((item = { key: '', title: '' }) => {
         if (isLoggedIn) {
           return item.key !== _loginKey
@@ -84,9 +81,8 @@ export class MoreScreen extends React.Component<Props, State> {
 
     const moreOtherList = Config.NAV_STACK_MORE_OTHER.split(',')
 
-    const options = allMoreOtherOptions.filter((item: any) => {
-      return moreOtherList.find((screenKey: string) => item.key === screenKey)
-    })
+    const options =
+      allMoreOtherOptions.filter((item: any) => moreOtherList.find((screenKey: string) => item.key === screenKey))
 
     return options
   }
@@ -143,16 +139,14 @@ export class MoreScreen extends React.Component<Props, State> {
               </RNView>
             </TouchableWithoutFeedback>
           )}
-          renderSectionHeader={({ section }) => {
-            return (
+          renderSectionHeader={({ section }) => (
               <TableSectionSelectors
-                hideFilter={true}
-                includePadding={true}
+                hideFilter
+                includePadding
                 selectedFilterLabel={section.title}
                 textStyle={styles.headerText}
               />
-            )
-          }}
+            )}
           sections={[
             { title: translate('Features'), data: featureOptions },
             { title: translate('Other'), data: otherOptions }

@@ -1,12 +1,10 @@
 import { Alert, StyleSheet } from 'react-native'
-import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
 import {
   ActivityIndicator,
   Divider,
   DropdownButtonSelect,
   NavHeaderButtonText,
-  Text,
   TextInput,
   View
 } from '../components'
@@ -17,7 +15,6 @@ import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { getAuthUserInfo } from '../state/actions/auth'
 import { updateLoggedInUser } from '../state/actions/user'
-import { core } from '../styles'
 
 type Props = {
   navigation?: any
@@ -32,18 +29,6 @@ type State = {
 const testIDPrefix = 'edit_profile_screen'
 
 export class EditProfileScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: translate('Edit Profile'),
-      headerRight: () => (
-        <NavHeaderButtonText
-          handlePress={navigation.getParam('updateUser')}
-          testID={testIDPrefix}
-          text={translate('Save')}
-        />
-      )
-    }
-  }
 
   constructor(props: Props) {
     super(props)
@@ -55,6 +40,17 @@ export class EditProfileScreen extends React.Component<Props, State> {
       selectedIsPublicKey: user.isPublic
     }
   }
+
+  static navigationOptions = ({ navigation }) => ({
+      title: translate('Edit Profile'),
+      headerRight: () => (
+        <NavHeaderButtonText
+          handlePress={navigation.getParam('updateUser')}
+          testID={testIDPrefix}
+          text={translate('Save')}
+        />
+      )
+    })
 
   async componentDidMount() {
     this.props.navigation.setParams({ updateUser: this._updateUser })
@@ -103,9 +99,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
     )
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
-  }
+  _ItemSeparatorComponent = () => <Divider />
 
   _onChangeIsPublic = (key: boolean) => {
     this.setState({ selectedIsPublicKey: key })
@@ -159,7 +153,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
             />
           </View>
         ) : (
-          <ActivityIndicator fillSpace={true} />
+          <ActivityIndicator fillSpace />
         )}
       </View>
     )

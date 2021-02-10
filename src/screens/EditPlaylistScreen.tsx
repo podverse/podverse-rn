@@ -35,6 +35,22 @@ type State = {
 const testIDPrefix = 'edit_playlist_screen'
 
 export class EditPlaylistScreen extends React.Component<Props, State> {
+
+  constructor(props: Props) {
+    super(props)
+    const playlist = props.navigation.getParam('playlist')
+
+    this.state = {
+      isEditing: false,
+      isLoading: true,
+      isRemoving: false,
+      isUpdating: false,
+      newTitle: playlist.title,
+      playlist,
+      sortableListData: []
+    }
+  }
+
   static navigationOptions = ({ navigation }) => {
     const isEditing = !!navigation.getParam('isEditing')
     const handlePress = navigation.getParam(isEditing ? '_stopEditing' : '_startEditing')
@@ -52,21 +68,6 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           />
         </RNView>
       )
-    }
-  }
-
-  constructor(props: Props) {
-    super(props)
-    const playlist = props.navigation.getParam('playlist')
-
-    this.state = {
-      isEditing: false,
-      isLoading: true,
-      isRemoving: false,
-      isUpdating: false,
-      newTitle: playlist.title,
-      playlist,
-      sortableListData: []
     }
   }
 
@@ -135,8 +136,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     )
   }
 
-  _resortItemsAndGetOrder = () => {
-    return new Promise((resolve) => {
+  _resortItemsAndGetOrder = () => new Promise((resolve) => {
       const { newItemsOrderByIndex, sortableListData } = this.state
       const itemsOrder = [] as any
       const newSortableListData = []
@@ -153,11 +153,8 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
         resolve()
       }
     })
-  }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
-  }
+  _ItemSeparatorComponent = () => <Divider />
 
   _renderRow = ({ active, data, index }) => {
     const { isEditing } = this.state
@@ -203,7 +200,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     return <SortableListRow active={active} cell={cell} />
   }
 
-  _handleRemovePlaylistItemPress = async (item: any) => {
+  _handleRemovePlaylistItemPress = (item: any) => {
     const { playlist, sortableListData } = this.state
 
     this.setState({ isRemoving: true }, async () => {
@@ -212,9 +209,8 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
         const mediaRefId = item.startTime || item.startTime === 0 ? item.id : null
         await addOrRemovePlaylistItem(playlist.id, episodeId, mediaRefId)
         await getPlaylist(playlist.id)
-        const newSortableListData = sortableListData.filter((x) => {
-          return (mediaRefId && x.id !== mediaRefId) || (episodeId && x.id !== episodeId)
-        })
+        const newSortableListData =
+          sortableListData.filter((x) => (mediaRefId && x.id !== mediaRefId) || (episodeId && x.id !== episodeId))
         this.setState({ isRemoving: false, sortableListData: newSortableListData })
       } catch (error) {
         this.setState({ isRemoving: false })
@@ -255,7 +251,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
         {(isUpdating || (!isLoading && sortableListData && sortableListData.length > 0)) && (
           <SortableList data={sortableListData} onReleaseRow={this._onReleaseRow} renderRow={this._renderRow} />
         )}
-        {(isLoading || isRemoving || isUpdating) && <ActivityIndicator isOverlay={true} />}
+        {(isLoading || isRemoving || isUpdating) && <ActivityIndicator isOverlay />}
       </View>
     )
   }

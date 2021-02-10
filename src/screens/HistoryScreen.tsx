@@ -36,6 +36,21 @@ type State = {
 const testIDPrefix = 'history_screen'
 
 export class HistoryScreen extends React.Component<Props, State> {
+
+  constructor(props: Props) {
+    super(props)
+
+    this.state = {
+      endOfResultsReached: false,
+      isLoading: true,
+      isLoadingMore: false,
+      isRemoving: false,
+      isTransparent: !!props.navigation.getParam('isTransparent'),
+      queryPage: 1,
+      viewType: props.navigation.getParam('viewType')
+    }
+  }
+
   static navigationOptions = ({ navigation }) => {
     const { globalTheme } = getGlobal()
     const isTransparent = !!navigation.getParam('isTransparent')
@@ -81,20 +96,6 @@ export class HistoryScreen extends React.Component<Props, State> {
     }
   }
 
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {
-      endOfResultsReached: false,
-      isLoading: true,
-      isLoadingMore: false,
-      isRemoving: false,
-      isTransparent: !!props.navigation.getParam('isTransparent'),
-      queryPage: 1,
-      viewType: props.navigation.getParam('viewType')
-    }
-  }
-
   async componentDidMount() {
     const { navigation } = this.props
 
@@ -123,7 +124,7 @@ export class HistoryScreen extends React.Component<Props, State> {
     this.setState({ isEditing: false }, () => this.props.navigation.setParams({ isEditing: false }))
   }
 
-  _handlePlayItem = async (item: NowPlayingItem) => {
+  _handlePlayItem = (item: NowPlayingItem) => {
     const isDarkMode = this.global.globalTheme === darkTheme
     try {
       const { navigation } = this.props
@@ -167,7 +168,7 @@ export class HistoryScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleRemoveHistoryItemPress = async (item: NowPlayingItem) => {
+  _handleRemoveHistoryItemPress = (item: NowPlayingItem) => {
     this.setState({ isRemoving: true }, async () => {
       try {
         await removeHistoryItem(item)
@@ -207,7 +208,7 @@ export class HistoryScreen extends React.Component<Props, State> {
           <FlatList
             data={historyItems}
             dataTotalCount={historyItems.length}
-            disableLeftSwipe={true}
+            disableLeftSwipe
             extraData={historyItems}
             isLoadingMore={isLoadingMore}
             keyExtractor={(item: any, index: number) => `${index}`}
@@ -230,7 +231,7 @@ export class HistoryScreen extends React.Component<Props, State> {
     }
   }
 
-  _queryData = async (page: number = 1) => {
+  _queryData = async (page = 1) => {
     const { historyItemsCount, historyItems = [] } = this.global.session.userInfo
     const newState = {
       isLoading: false,

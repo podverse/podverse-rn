@@ -35,7 +35,7 @@ export const SubscribeButton = (props: Props) => {
       <View>
         {isSubscribing && (
           <View style={styles.activityIndicator}>
-            <ActivityIndicator animating={true} color={globalTheme.activityIndicator.color} size='small' />
+            <ActivityIndicator animating color={globalTheme.activityIndicator.color} size='small' />
           </View>
         )}
         {!isSubscribing && (
