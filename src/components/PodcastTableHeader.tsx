@@ -3,8 +3,8 @@ import React, { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { core } from '../styles'
-import { ActivityIndicator, FastImage, SettingsButton, SubscribeButton, Text, View } from './'
 import { IndicatorDownload } from './IndicatorDownload'
+import { ActivityIndicator, FastImage, SettingsButton, SubscribeButton, Text, View } from './'
 
 type Props = {
   autoDownloadOn?: boolean
@@ -44,7 +44,7 @@ export const PodcastTableHeader = (props: Props) => {
     <View style={core.row}>
       {isLoading && (
         <View style={[styles.wrapper, core.view]}>
-          <ActivityIndicator fillSpace={true} />
+          <ActivityIndicator fillSpace />
         </View>
       )}
       {!isLoading && !isNotFound && (
@@ -73,7 +73,7 @@ export const PodcastTableHeader = (props: Props) => {
                 <View style={styles.autoDownloadContainer}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.xs}
-                    isSecondary={true}
+                    isSecondary
                     style={styles.autoDownloadText}>
                     {translate('Auto')}
                   </Text>

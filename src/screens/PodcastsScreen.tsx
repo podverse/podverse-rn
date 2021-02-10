@@ -28,7 +28,7 @@ import { getEpisode } from '../services/episode'
 import { checkIdlePlayerState, PVTrackPlayer, updateUserPlaybackPosition } from '../services/player'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { trackPageView } from '../services/tracking'
-import { getNowPlayingItem, getNowPlayingItemLocally } from '../services/userNowPlayingItem'
+import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { askToSyncWithNowPlayingItem, getAuthUserInfo } from '../state/actions/auth'
 import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
 import {
@@ -74,11 +74,6 @@ const testIDPrefix = 'podcasts_screen'
 let isInitialLoad = true
 
 export class PodcastsScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
-      title: translate('Podcasts')
-    }
-  }
 
   constructor(props: Props) {
     super(props)
@@ -104,6 +99,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
+
+  static navigationOptions = () => ({
+      title: translate('Podcasts')
+    })
 
   async componentDidMount() {
     Linking.addEventListener('url', this._handleOpenURLEvent)
@@ -333,7 +332,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  handleSelectSortItem = async (selectedKey: string) => {
+  handleSelectSortItem = (selectedKey: string) => {
     if (!selectedKey) {
       return
     }
@@ -445,12 +444,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
     )
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider style={{ marginHorizontal: 10 }} />
-  }
+  _ItemSeparatorComponent = () => <Divider style={{ marginHorizontal: 10 }} />
 
-  _renderPodcastItem = ({ item, index }) => {
-    return (
+  _renderPodcastItem = ({ item, index }) => (
       <PodcastTableCell
         id={item.id}
         lastEpisodePubDate={item.lastEpisodePubDate}
@@ -462,12 +458,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }
         podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
         {...(item.title ? { podcastTitle: item.title } : {})}
-        showAutoDownload={true}
-        showDownloadCount={true}
+        showAutoDownload
+        showDownloadCount
         testID={`${testIDPrefix}_podcast_item_${index}`}
       />
     )
-  }
 
   _renderHiddenItem = ({ item, index }, rowMap) => {
     const { queryFrom } = this.state
@@ -520,7 +515,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleSearchBarClear = (text: string) => {
+  _handleSearchBarClear = () => {
     this.setState({
       flatListData: [],
       flatListDataTotalCount: null,
@@ -536,13 +531,13 @@ export class PodcastsScreen extends React.Component<Props, State> {
         isLoadingMore: true,
         searchBarText: text
       },
-      async () => {
+      () => {
         this._handleSearchBarTextQuery(queryFrom, this.state, {}, { searchTitle: text })
       }
     )
   }
 
-  _handleSearchBarTextQuery = async (queryFrom: string | null, prevState: any, newState: any, queryOptions: any) => {
+  _handleSearchBarTextQuery = (queryFrom: string | null, prevState: any, newState: any, queryOptions: any) => {
     this.setState(
       {
         flatListData: [],
@@ -639,7 +634,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             handleSelectCategorySubItem={(x: any) => this._selectCategory(x, true)}
             handleSelectFilterItem={this.handleSelectFilterItem}
             handleSelectSortItem={this.handleSelectSortItem}
-            includePadding={true}
+            includePadding
             navigation={navigation}
             screenName='PodcastsScreen'
             selectedCategoryItemKey={selectedCategory}
@@ -650,7 +645,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             selectedSortLabel={selectedSortLabel}
             testID={testIDPrefix}
           />
-          {isLoading && <ActivityIndicator fillSpace={true} />}
+          {isLoading && <ActivityIndicator fillSpace />}
           {!isLoading && queryFrom && (
             <FlatList
               data={flatListData}
@@ -705,7 +700,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
   }
 
-  _queryAllPodcasts = async (sort: string | null, page: number = 1) => {
+  _queryAllPodcasts = async (sort: string | null, page = 1) => {
     const { searchBarText: searchTitle } = this.state
     const results = await getPodcasts({
       sort,
@@ -715,7 +710,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     return results
   }
 
-  _queryPodcastsByCategory = async (categoryId?: string | null, sort?: string | null, page: number = 1) => {
+  _queryPodcastsByCategory = async (categoryId?: string | null, sort?: string | null, page = 1) => {
     const { searchBarText: searchTitle } = this.state
     const results = await getPodcasts({
       categories: categoryId,
@@ -729,7 +724,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _queryData = async (
     filterKey: any,
     prevState: State,
-    nextState?: {},
+    nextState?: any,
     queryOptions: { isCategorySub?: boolean; searchTitle?: string } = {}
   ) => {
     let newState = {

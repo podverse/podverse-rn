@@ -9,9 +9,7 @@ type Props = {
   navigation: any
 }
 
-type State = {}
-
-export class OnboardingScreen extends React.Component<Props, State> {
+export class OnboardingScreen extends React.Component<Props> {
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -27,7 +25,7 @@ export class OnboardingScreen extends React.Component<Props, State> {
     this.props.navigation.navigate('MainApp')
   }
 
-  goToLogin = async () => {
+  goToLogin = () => {
     this.props.navigation.navigate(PV.RouteNames.AuthScreen, {
       isOnboarding: true
     })

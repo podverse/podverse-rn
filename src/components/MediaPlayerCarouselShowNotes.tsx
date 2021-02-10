@@ -3,17 +3,15 @@ import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { ClipInfoView, HTMLScrollView, ScrollView, View } from './'
 import { TableSectionSelectors } from './TableSectionSelectors'
+import { ClipInfoView, HTMLScrollView, ScrollView, View } from './'
 
 type Props = {
   navigation?: any
   width: number
 }
 
-type State = {}
-
-export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, State> {
+export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props> {
   constructor(props) {
     super(props)
     this.state = {}
@@ -32,7 +30,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
     const showClipInfo = (mediaRef && mediaRef.id) || (nowPlayingItem && nowPlayingItem.clipId)
 
     return (
-      <ScrollView style={[styles.wrapper, { width }]} transparent={true}>
+      <ScrollView style={[styles.wrapper, { width }]} transparent>
         {!!showClipInfo && (
           <ClipInfoView
             createdAt={mediaRef.createdAt}
@@ -49,10 +47,10 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props, Sta
             {...(mediaRef.title ? { title: mediaRef.title } : {})}
           />
         )}
-        <View style={styles.showNotesWrapper} transparent={true}>
+        <View style={styles.showNotesWrapper} transparent>
           <TableSectionSelectors
-            hideFilter={true}
-            includePadding={true}
+            hideFilter
+            includePadding
             selectedFilterLabel={translate('Show Notes')}
           />
           {!isLoading && episode && (

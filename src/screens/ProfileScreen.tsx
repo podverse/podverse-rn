@@ -67,24 +67,6 @@ type State = {
 const testIDPrefix = 'profile_screen'
 
 export class ProfileScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    const userId = navigation.getParam('userId')
-    const userIsPublic = navigation.getParam('userIsPublic')
-    const userName = navigation.getParam('userName')
-    const isMyProfile = navigation.getParam('isMyProfile')
-
-    return {
-      title: isMyProfile ? translate('My Profile') : translate('Profile'),
-      headerRight: () => (
-        <RNView style={core.row}>
-          {userIsPublic && userId && (
-            <NavShareIcon profileName={userName} urlId={userId} urlPath={PV.URLs.webPaths.profile} />
-          )}
-          <NavSearchIcon navigation={navigation} />
-        </RNView>
-      )
-    } as NavigationStackOptions
-  }
 
   constructor(props: Props) {
     super(props)
@@ -129,7 +111,26 @@ export class ProfileScreen extends React.Component<Props, State> {
     })
   }
 
-  async componentDidMount() {
+  static navigationOptions = ({ navigation }) => {
+    const userId = navigation.getParam('userId')
+    const userIsPublic = navigation.getParam('userIsPublic')
+    const userName = navigation.getParam('userName')
+    const isMyProfile = navigation.getParam('isMyProfile')
+
+    return {
+      title: isMyProfile ? translate('My Profile') : translate('Profile'),
+      headerRight: () => (
+        <RNView style={core.row}>
+          {userIsPublic && userId && (
+            <NavShareIcon profileName={userName} urlId={userId} urlPath={PV.URLs.webPaths.profile} />
+          )}
+          <NavSearchIcon navigation={navigation} />
+        </RNView>
+      )
+    } as NavigationStackOptions
+  }
+
+  componentDidMount() {
     const { userId } = this.state
     this._initializeScreenData()
     const idPath = userId ? userId : 'user-not-logged-in'
@@ -245,7 +246,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     )
   }
 
-  handleSelectSortItem = async (selectedKey: string) => {
+  handleSelectSortItem = (selectedKey: string) => {
     if (this.state.preventSortQuery) {
       this.setState({ preventSortQuery: false })
       return
@@ -289,18 +290,12 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
-  }
+  _ItemSeparatorComponent = () => <Divider />
 
   _handlePodcastPress = (podcast: any) => {
     this.props.navigation.navigate(PV.RouteNames.MorePodcastScreen, {
       podcast
     })
-  }
-
-  _handleClipPress = (clip: any) => {
-    console.log('clip pressed')
   }
 
   _handlePlaylistPress = (playlist: any) => {
@@ -309,11 +304,9 @@ export class ProfileScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleCancelPress = () => {
-    return new Promise((resolve, reject) => {
+  _handleCancelPress = () => new Promise((resolve) => {
       this.setState({ showActionSheet: false }, resolve)
     })
-  }
 
   _handleMorePress = (selectedItem: any) => {
     this.setState({
@@ -358,7 +351,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     this.setState({ showDeleteConfirmDialog: true })
   }
 
-  _deleteMediaRef = async () => {
+  _deleteMediaRef = () => {
     const { selectedItem } = this.state
     let { flatListData, flatListDataTotalCount } = this.state
 
@@ -392,7 +385,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     }
   }
 
-  _cancelDeleteMediaRef = async () => {
+  _cancelDeleteMediaRef = () => {
     this.setState({
       showDeleteConfirmDialog: false
     })
@@ -422,8 +415,8 @@ export class ProfileScreen extends React.Component<Props, State> {
       return item && item.episode && item.episode.id && item.episode.podcast ? (
         <ClipTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
-          showEpisodeInfo={true}
-          showPodcastInfo={true}
+          showEpisodeInfo
+          showPodcastInfo
           testID={`${testIDPrefix}_clip_item_${index}`}
           item={item}
         />
@@ -512,7 +505,7 @@ export class ProfileScreen extends React.Component<Props, State> {
               filterScreenTitle={translate('Profile')}
               handleSelectFilterItem={this.handleSelectFilterItem}
               handleSelectSortItem={this.handleSelectSortItem}
-              includePadding={true}
+              includePadding
               navigation={navigation}
               screenName='ProfileScreen'
               selectedFilterItemKey={viewType}
@@ -521,12 +514,12 @@ export class ProfileScreen extends React.Component<Props, State> {
               selectedSortLabel={selectedSortLabel}
               testID={testIDPrefix}
             />
-            {isLoading && <ActivityIndicator fillSpace={true} />}
+            {isLoading && <ActivityIndicator fillSpace />}
             {!isLoading && viewType && flatListData && (
               <FlatList
                 data={flatListData}
                 dataTotalCount={flatListDataTotalCount}
-                disableLeftSwipe={true}
+                disableLeftSwipe
                 extraData={flatListData}
                 isLoadingMore={isLoadingMore}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
@@ -575,8 +568,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     )
   }
 
-  _queryPodcasts = async (newState: any, page: number = 1, sort?: string | null) => {
-    return new Promise(async (resolve, reject) => {
+  _queryPodcasts = async (newState: any, page = 1, sort?: string | null) => new Promise(async (resolve) => {
       const { flatListData } = this.state
       const query = {
         page,
@@ -604,10 +596,8 @@ export class ProfileScreen extends React.Component<Props, State> {
         }
       )
     })
-  }
 
-  _queryMediaRefs = async (newState: any, page: number = 1, sort?: string | null) => {
-    return new Promise(async (resolve, reject) => {
+  _queryMediaRefs = async (newState: any, page = 1, sort?: string | null) => new Promise(async (resolve) => {
       const { flatListData, userId } = this.state
       const query = { page }
       const { id } = this.global.session.userInfo
@@ -636,10 +626,8 @@ export class ProfileScreen extends React.Component<Props, State> {
         }
       )
     })
-  }
 
-  _queryPlaylists = async (newState: any, page: number = 1, sort?: string | null) => {
-    return new Promise(async (resolve, reject) => {
+  _queryPlaylists = async (newState: any, page = 1, sort?: string | null) => new Promise(async (resolve) => {
       const { userId } = this.state
       const { id } = this.global.session.userInfo
       const query = { page, sort }
@@ -657,9 +645,8 @@ export class ProfileScreen extends React.Component<Props, State> {
       newState.queryPage = page
       resolve(newState)
     })
-  }
 
-  _queryData = async (filterKey: string | null, page: number = 1) => {
+  _queryData = async (filterKey: string | null, page = 1) => {
     const { querySort, viewType } = this.state
     let newState = {
       isLoading: false,

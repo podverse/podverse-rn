@@ -23,12 +23,6 @@ type State = {
 const testIDPrefix = 'playlists_screen'
 
 export class PlaylistsScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
-      title: translate('Playlists')
-    }
-  }
-
   constructor(props: Props) {
     super(props)
     const { isLoggedIn } = this.global.session
@@ -38,6 +32,10 @@ export class PlaylistsScreen extends React.Component<Props, State> {
       isLoadingMore: false
     }
   }
+
+  static navigationOptions = () => ({
+      title: translate('Playlists')
+    })
 
   async componentDidMount() {
     const { navigation } = this.props
@@ -56,9 +54,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     trackPageView('/playlists', 'Playlists Screen')
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
-  }
+  _ItemSeparatorComponent = () => <Divider />
 
   _renderPlaylistItem = ({ index, item, section }) => {
     const ownerName = (item.owner && item.owner.name) || translate('anonymous')
@@ -116,22 +112,20 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view} {...testProps('playlists_screen_view')}>
         <View style={styles.view}>
-          {isLoading && <ActivityIndicator fillSpace={true} />}
+          {isLoading && <ActivityIndicator fillSpace />}
           {!isLoading && this.global.session.isLoggedIn && (
             <FlatList
-              disableLeftSwipe={true}
+              disableLeftSwipe
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               keyExtractor={(item: any) => item.id}
               noResultsMessage={translate('No playlists found')}
               renderItem={this._renderPlaylistItem}
-              renderSectionHeader={({ section }) => {
-                return (
+              renderSectionHeader={({ section }) => (
                   <View style={styles.sectionItemWrapper}>
                     <Text style={styles.sectionItemText}>{section.title}</Text>
                   </View>
-                )
-              }}
+                )}
               sections={sections}
               showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
             />

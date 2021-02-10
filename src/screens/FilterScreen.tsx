@@ -26,17 +26,6 @@ type State = {
 const testIDPrefix = 'filter_screen'
 
 export class FilterScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    const filterScreenTitle = navigation.getParam('filterScreenTitle')
-
-    return {
-      title: filterScreenTitle || '',
-      headerLeft: () => null,
-      headerRight: () => (
-        <NavHeaderButtonText handlePress={navigation.dismiss} testID={testIDPrefix} text={translate('Done')} />
-      )
-    }
-  }
 
   constructor(props: Props) {
     super(props)
@@ -55,7 +44,19 @@ export class FilterScreen extends React.Component<Props, State> {
     }
   }
 
-  async componentDidMount() {
+  static navigationOptions = ({ navigation }) => {
+    const filterScreenTitle = navigation.getParam('filterScreenTitle')
+
+    return {
+      title: filterScreenTitle || '',
+      headerLeft: () => null,
+      headerRight: () => (
+        <NavHeaderButtonText handlePress={navigation.dismiss} testID={testIDPrefix} text={translate('Done')} />
+      )
+    }
+  }
+
+  componentDidMount() {
     trackPageView('/filter', 'Filter Screen')
     const { navigation } = this.props
     const { flatCategoryItems } = this.state
@@ -152,7 +153,7 @@ export class FilterScreen extends React.Component<Props, State> {
   getSelectHandler = async (section: any, item: any) => {
     const { navigation } = this.props
     let handleSelect: any
-    let categoryValueOverride: string = ''
+    let categoryValueOverride = ''
     if (section.value === PV.Filters._sectionFromKey) {
       handleSelect = navigation.getParam('handleSelectFromItem')
     } else if (section.value === PV.Filters._sectionFilterKey) {
@@ -219,7 +220,7 @@ export class FilterScreen extends React.Component<Props, State> {
           const { categoryValueOverride, handleSelect } = await this.getSelectHandler(section, item)
           const newState = (await this.getNewLocalState(section, item)) as any
 
-          this.setState(newState, async () => {
+          this.setState(newState, () => {
             handleSelect(categoryValueOverride || value)
           })
         }}>
@@ -240,16 +241,14 @@ export class FilterScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view}>
         <FlatList
-          disableLeftSwipe={true}
-          disableNoResultsMessage={true}
+          disableLeftSwipe
+          disableNoResultsMessage
           keyExtractor={(item: any) => item.value || item.id}
-          renderSectionHeader={({ section }) => {
-            return (
+          renderSectionHeader={({ section }) => (
               <View style={styles.sectionItemWrapper}>
                 <Text style={styles.sectionItemText}>{section.title}</Text>
               </View>
-            )
-          }}
+            )}
           renderItem={this.renderItem}
           sections={sections}
         />

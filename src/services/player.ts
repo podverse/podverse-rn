@@ -147,9 +147,7 @@ export const playerPreviewStartTime = async (startTime: number, endTime?: number
 }
 
 export const setClipHasEnded = async (clipHasEnded: boolean) => {
-  if (typeof clipHasEnded === 'boolean') {
-    await AsyncStorage.setItem(PV.Keys.CLIP_HAS_ENDED, JSON.stringify(clipHasEnded))
-  }
+  await AsyncStorage.setItem(PV.Keys.CLIP_HAS_ENDED, JSON.stringify(clipHasEnded))
 }
 
 const getDownloadedFilePath = async (id: string, episodeMediaUrl: string) => {
@@ -404,7 +402,7 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
   resolveImmediately?: boolean,
   shouldPlay?: boolean
 ) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const interval = setInterval(async () => {
       const duration = await TrackPlayer.getDuration()
       const currentTrackId = await TrackPlayer.getCurrentTrack()

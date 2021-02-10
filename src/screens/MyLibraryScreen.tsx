@@ -17,15 +17,14 @@ type State = {
 }
 
 export class MyLibraryScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
-      title: translate('My Library')
-    }
-  }
 
   state = {
     options: []
   }
+
+  static navigationOptions = () => ({
+      title: translate('My Library')
+    })
 
   componentDidMount() {
     trackPageView('/myLibrary', 'My Library Screen')

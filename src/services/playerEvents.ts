@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
@@ -47,7 +46,7 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   updateUserPlaybackPosition()
 }
 
-const syncNowPlayingItemWithTrack = async () => {
+const syncNowPlayingItemWithTrack = () => {
   // The first setTimeout is an attempt to prevent the following:
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
   // - Sometimes the debouncedSetPlaybackPosition seems to load with the previous track's playback position,
@@ -67,7 +66,7 @@ const syncNowPlayingItemWithTrack = async () => {
   setTimeout(sync, 1000)
 }
 
-const handleQueueEnded = async (x: any) => {
+const handleQueueEnded = (x: any) => {
   setTimeout(async () => {
     hideMiniPlayer()
 
@@ -86,13 +85,13 @@ const handleQueueEnded = async (x: any) => {
   }, 0)
 }
 
-module.exports = async () => {
+module.exports = () => {
   PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
 
   // NOTE: TrackPlayer.reset will call the playback-queue-ended event on Android!!!
-  PVTrackPlayer.addEventListener('playback-queue-ended', async (x) => {
+  PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
     console.log('playback-queue-ended', x)
-    await syncNowPlayingItemWithTrack()
+    syncNowPlayingItemWithTrack()
     handleQueueEnded(x)
   })
 
@@ -148,7 +147,7 @@ module.exports = async () => {
     }
   })
 
-  PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
+  PVTrackPlayer.addEventListener('playback-track-changed', (x: any) => {
     console.log('playback-track-changed', x)
     syncNowPlayingItemWithTrack()
   })
@@ -168,12 +167,12 @@ module.exports = async () => {
     updateUserPlaybackPosition()
   })
 
-  PVTrackPlayer.addEventListener('remote-play', async () => {
+  PVTrackPlayer.addEventListener('remote-play', () => {
     PVTrackPlayer.play()
     updateUserPlaybackPosition()
   })
 
-  PVTrackPlayer.addEventListener('remote-seek', async (data) => {
+  PVTrackPlayer.addEventListener('remote-seek', (data) => {
     if (data.position || data.position >= 0) {
       PVTrackPlayer.seekTo(Math.floor(data.position))
     }
@@ -215,7 +214,7 @@ let handleClipEndInterval = null as any
 const handlePlayerClipLoaded = async () => {
   console.log('PLAYER_CLIP_LOADED event')
 
-  const stopHandleClipEndInterval = async () => {
+  const stopHandleClipEndInterval = () => {
     if (Platform.OS === 'android') {
       BackgroundTimer.stopBackgroundTimer()
     }
@@ -225,7 +224,7 @@ const handlePlayerClipLoaded = async () => {
     BackgroundTimer.stop()
   }
 
-  await stopHandleClipEndInterval()
+  stopHandleClipEndInterval()
 
   const nowPlayingItem = await getNowPlayingItemLocally()
 

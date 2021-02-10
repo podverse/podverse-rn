@@ -11,9 +11,7 @@ type Props = {
   navigation: any
 }
 
-type State = {}
-
-export class MiniPlayer extends React.PureComponent<Props, State> {
+export class MiniPlayer extends React.PureComponent<Props> {
   render() {
     const { navigation } = this.props
     const { fontScaleMode, globalTheme, player, screenPlayer } = this.global
@@ -45,7 +43,7 @@ export class MiniPlayer extends React.PureComponent<Props, State> {
             {...testProps('mini_player')}>
             <View style={[styles.player, globalTheme.player]}>
               <FastImage
-                isSmall={true}
+                isSmall
                 resizeMode='contain'
                 source={nowPlayingItem.podcastImageUrl}
                 styles={styles.image}

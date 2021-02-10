@@ -38,6 +38,7 @@ type Props = {
   sections: any
   showNoInternetConnectionMessage?: boolean
   stickySectionHeadersEnabled?: boolean
+  testID: string
   transparent?: boolean
 }
 
@@ -73,6 +74,7 @@ export const PVFlatList = (props: Props) => {
     sections,
     showNoInternetConnectionMessage,
     stickySectionHeadersEnabled,
+    testID,
     transparent
   } = props
 
@@ -102,18 +104,20 @@ export const PVFlatList = (props: Props) => {
           middleActionHandler={handleNoResultsMiddleAction}
           middleActionText={noResultsMiddleActionText}
           subMessage={noResultsSubMessage}
+          testID={testID}
           topActionHandler={handleNoResultsTopAction}
           topActionText={noResultsTopActionText}
           transparent={transparent}
         />
       )}
-      {showNoInternetConnectionMessage && <MessageWithAction message={translate('No internet connection')} />}
+      {showNoInternetConnectionMessage &&
+        <MessageWithAction message={translate('No internet connection')} testID={testID} />}
       {shouldShowResults && (
         <SwipeListView
-          closeOnRowPress={true}
+          closeOnRowPress
           data={data}
           disableLeftSwipe={disableLeftSwipe}
-          disableRightSwipe={true}
+          disableRightSwipe
           extraData={extraData}
           ItemSeparatorComponent={ItemSeparatorComponent}
           keyExtractor={keyExtractor}

@@ -66,11 +66,6 @@ type State = {
 const testIDPrefix = 'settings_screen'
 
 export class SettingsScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
-      title: translate('Settings')
-    }
-  }
 
   constructor(props: Props) {
     super(props)
@@ -85,6 +80,10 @@ export class SettingsScreen extends React.Component<Props, State> {
       offlineModeEnabled
     }
   }
+
+  static navigationOptions = () => ({
+      title: translate('Settings')
+    })
 
   async componentDidMount() {
     const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
@@ -191,8 +190,8 @@ export class SettingsScreen extends React.Component<Props, State> {
     await setCensorNSFWText(value)
   }
 
-  _handleToggleOfflineMode = async (value: boolean) => {
-    this.setState({ offlineModeEnabled: value }, async () => {
+  _handleToggleOfflineMode = (value: boolean) => {
+    this.setState({ offlineModeEnabled: value }, () => {
       setOfflineModeEnabled(value)
     })
     this.setGlobal({ offlineModeEnabled: value })
@@ -341,7 +340,7 @@ export class SettingsScreen extends React.Component<Props, State> {
         contentContainerStyle={styles.scrollViewContentContainer}
         style={styles.wrapper}
         {...testProps('settings_screen_view')}>
-        {isLoading && <ActivityIndicator fillSpace={true} />}
+        {isLoading && <ActivityIndicator fillSpace />}
         {!isLoading && (
           <View>
             <View style={styles.itemWrapper}>
@@ -479,7 +478,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             />
             {isLoggedIn && (
               <Button
-                isWarning={true}
+                isWarning
                 onPress={this._handleToggleDeleteAccountDialog}
                 testID={`${testIDPrefix}_delete_account`}
                 text={translate('Delete Account')}

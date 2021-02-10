@@ -1,2 +1,2 @@
-const { runTests } = require('./test')
+const { runTests } = require('./runTests')
 runTests()
