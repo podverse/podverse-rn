@@ -25,12 +25,6 @@ type State = {
 const testIDPrefix = 'downloads_screen'
 
 export class DownloadsScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
-      title: translate('Downloads')
-    }
-  }
-
   constructor() {
     super()
     this.state = {
@@ -39,13 +33,15 @@ export class DownloadsScreen extends React.Component<Props, State> {
     }
   }
 
+  static navigationOptions = () => ({
+      title: translate('Downloads')
+    })
+
   componentDidMount() {
     trackPageView('/downloads', 'Downloads Screen')
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
-  }
+  _ItemSeparatorComponent = () => <Divider />
 
   _handleItemPress = (downloadTaskState: DownloadTaskState) => {
     if (downloadTaskState.status === DownloadStatus.FINISHED) {
@@ -61,8 +57,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleCancelPress = () => {
-    return new Promise((resolve, reject) => {
+  _handleCancelPress = () => new Promise((resolve) => {
       this.setState(
         {
           selectedItem: null,
@@ -71,10 +66,8 @@ export class DownloadsScreen extends React.Component<Props, State> {
         resolve
       )
     })
-  }
 
-  _renderItem = ({ item, index }) => {
-    return (
+  _renderItem = ({ item, index }) => (
       <DownloadTableCell
         bytesTotal={item.bytesTotal}
         bytesWritten={item.bytesWritten}
@@ -88,7 +81,6 @@ export class DownloadsScreen extends React.Component<Props, State> {
         testID={`${testIDPrefix}_download_item_${index}`}
       />
     )
-  }
 
   _renderHiddenItem = ({ item, index }, rowMap) => (
     <SwipeRowBack

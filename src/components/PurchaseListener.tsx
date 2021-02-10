@@ -14,13 +14,12 @@ import { iosHandlePurchaseStatusCheck } from '../state/actions/purchase.ios'
 type Props = {
   navigation: any
 }
-type State = {}
 
-export class PurchaseListener extends React.Component<Props, State> {
+export class PurchaseListener extends React.Component<Props> {
   purchaseUpdateSubscription = null as any
   purchaseErrorSubscription = null as any
 
-  async componentDidMount() {
+  componentDidMount() {
     const { navigation } = this.props
 
     this.purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase: InAppPurchase | Purchase) => {

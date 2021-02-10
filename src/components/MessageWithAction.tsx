@@ -36,19 +36,25 @@ export const MessageWithAction = (props: Props) => {
   return (
     <SafeAreaView style={styles.view} transparent={transparent}>
       {!!message && (
-        <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[globalTheme.text, styles.message]}>
+        <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          style={[globalTheme.text, styles.message]}
+          testID={`${testID}_message_with_action_message`}>
           {message}
         </Text>
       )}
       {!!subMessage && (
-        <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={[globalTheme.text, styles.subMessage]}>
+        <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          style={[globalTheme.text, styles.subMessage]}
+          testID={`${testID}_message_with_action_sub_message`}>
           {subMessage}
         </Text>
       )}
       {!isLoading && !!topActionText && !!topActionHandler && (
         <Button
           onPress={topActionHandler}
-          testID={`${testID}_top_action`}
+          testID={`${testID}_message_with_action_top_button`}
           text={topActionText}
           wrapperStyles={styles.button}
         />
@@ -56,7 +62,7 @@ export const MessageWithAction = (props: Props) => {
       {!isLoading && !!middleActionText && !!middleActionHandler && (
         <Button
           onPress={middleActionHandler}
-          testID={`${testID}_middle_action`}
+          testID={`${testID}_message_with_action_middle_button`}
           text={middleActionText}
           wrapperStyles={styles.button}
         />
@@ -64,12 +70,12 @@ export const MessageWithAction = (props: Props) => {
       {!isLoading && !!bottomActionText && !!bottomActionHandler && (
         <Button
           onPress={bottomActionHandler}
-          testID={`${testID}_bottom_action`}
+          testID={`${testID}_message_with_action_bottom_button`}
           text={bottomActionText}
           wrapperStyles={[styles.button, styles.bottomButton]}
         />
       )}
-      {isLoading && <ActivityIndicator fillSpace={true} />}
+      {isLoading && <ActivityIndicator fillSpace />}
     </SafeAreaView>
   )
 }

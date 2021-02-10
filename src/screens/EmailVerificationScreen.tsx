@@ -17,11 +17,6 @@ type State = {
 const testIDPrefix = 'email_verification_screen'
 
 export class EmailVerificationScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
-      title: translate('Verify Your Email')
-    }
-  }
 
   constructor(props: Props) {
     super(props)
@@ -32,6 +27,10 @@ export class EmailVerificationScreen extends React.Component<Props, State> {
       isResendingEmail: false
     }
   }
+
+  static navigationOptions = () => ({
+      title: translate('Verify Your Email')
+    })
 
   componentDidMount() {
     trackPageView('/email-verification', 'Email Verification Screen')
@@ -45,7 +44,7 @@ export class EmailVerificationScreen extends React.Component<Props, State> {
     await navigation.navigate(PV.RouteNames.AuthNavigator)
   }
 
-  _sendVerificationEmail = async () => {
+  _sendVerificationEmail = () => {
     const { email } = this.state
     if (email) {
       sendVerificationEmail(email)

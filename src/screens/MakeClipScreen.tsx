@@ -59,26 +59,6 @@ type State = {
 const testIDPrefix = 'make_clip_screen'
 
 export class MakeClipScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    const globalTheme = navigation.getParam('globalTheme')
-    const isLoggedIn = navigation.getParam('isLoggedIn')
-    return {
-      title: navigation.getParam('isEditing') ? translate('Edit Clip') : translate('Make Clip'),
-      headerTransparent: true,
-      headerStyle: {},
-      headerTintColor: globalTheme.text.color,
-      headerRight: () => (
-        <RNView style={styles.navHeaderButtonWrapper}>
-          <NavHeaderButtonText
-            color={globalTheme.text.color}
-            handlePress={navigation.getParam('_saveMediaRef')}
-            testID={testIDPrefix}
-            text={isLoggedIn ? translate('Save Clip') : translate('Go to Login')}
-          />
-        </RNView>
-      )
-    }
-  }
 
   constructor(props: Props) {
     super(props)
@@ -97,6 +77,27 @@ export class MakeClipScreen extends React.Component<Props, State> {
       ...(isEditing ? { mediaRefId: nowPlayingItem.clipId } : {}),
       progressValue: initialProgressValue || 0,
       startTime: isEditing ? nowPlayingItem.clipStartTime : null
+    }
+  }
+
+  static navigationOptions = ({ navigation }) => {
+    const globalTheme = navigation.getParam('globalTheme')
+    const isLoggedIn = navigation.getParam('isLoggedIn')
+    return {
+      title: navigation.getParam('isEditing') ? translate('Edit Clip') : translate('Make Clip'),
+      headerTransparent: true,
+      headerStyle: {},
+      headerTintColor: globalTheme.text.color,
+      headerRight: () => (
+        <RNView style={styles.navHeaderButtonWrapper}>
+          <NavHeaderButtonText
+            color={globalTheme.text.color}
+            handlePress={navigation.getParam('_saveMediaRef')}
+            testID={testIDPrefix}
+            text={isLoggedIn ? translate('Save Clip') : translate('Go to Login')}
+          />
+        </RNView>
+      )
     }
   }
 
@@ -149,7 +150,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     this.setState({ title: text })
   }
 
-  _handleSelectPrivacy = async (selectedKey: string) => {
+  _handleSelectPrivacy = (selectedKey: string) => {
     const items = [placeholderItem, ...privacyItems()]
     const selectedItem = items.find((x) => x.value === selectedKey)
     if (selectedItem) {
@@ -268,7 +269,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
           await setNowPlayingItem(newItem, position || 0)
         }
 
-        this.setState({ isSaving: false }, async () => {
+        this.setState({ isSaving: false }, () => {
           // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
           setTimeout(() => {
             const alertText = isEditing ? translate('Clip Updated') : translate('Clip Created')
@@ -339,7 +340,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     setTimeout(() => this.setState({ progressValue: null }), 250)
   }
 
-  _showClipPrivacyNote = async () => {
+  _showClipPrivacyNote = () => {
     Alert.alert(translate('Clip Settings'), translate(`Only with Link means only people who`), [
       {
         text: translate('Premium Info'),
@@ -369,9 +370,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
     return (
       <SafeAreaView style={styles.viewContainer}>
-        <View style={styles.view} transparent={true} {...testProps('make_clip_screen_view')}>
+        <View style={styles.view} transparent {...testProps('make_clip_screen_view')}>
           <View style={styles.contentContainer}>
-            <View style={styles.wrapperTop} transparent={true}>
+            <View style={styles.wrapperTop} transparent>
               <TextInput
                 autoCapitalize='none'
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -396,15 +397,15 @@ export class MakeClipScreen extends React.Component<Props, State> {
               value={isPublicItemSelected.value}
               wrapperStyle={styles.dropdownButtonSelectWrapper}
             />
-            <View style={styles.imageWrapper} transparent={true}>
+            <View style={styles.imageWrapper} transparent>
               <FastImage
                 resizeMode='contain'
                 source={nowPlayingItem && nowPlayingItem.podcastImageUrl}
                 styles={imageStyle}
               />
             </View>
-            <View style={styles.wrapperBottom} transparent={true}>
-              <View style={styles.wrapperBottomInside} transparent={true}>
+            <View style={styles.wrapperBottom} transparent>
+              <View style={styles.wrapperBottomInside} transparent>
                 <TimeInput
                   handlePreview={() => {
                     if (startTime) {
@@ -417,7 +418,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   testID={`${testIDPrefix}_start`}
                   time={startTime}
                 />
-                <View style={styles.wrapperBottomInsideSpacer} transparent={true} />
+                <View style={styles.wrapperBottomInsideSpacer} transparent />
                 <TimeInput
                   handleClearTime={endTime ? this._clearEndTime : null}
                   handlePreview={() => {
@@ -432,8 +433,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   time={endTime}
                 />
               </View>
-              <View style={styles.clearEndTimeWrapper} transparent={true}>
-                <View style={styles.clearEndTimeTextSpacer} transparent={true} />
+              <View style={styles.clearEndTimeWrapper} transparent>
+                <View style={styles.clearEndTimeTextSpacer} transparent />
                 {endTime && (
                   <TouchableWithoutFeedback
                     hitSlop={{
@@ -448,19 +449,19 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   </TouchableWithoutFeedback>
                 )}
               </View>
-              <View style={[styles.wrapper, globalTheme.player]} transparent={true}>
-                <View style={styles.progressWrapper} transparent={true}>
+              <View style={[styles.wrapper, globalTheme.player]} transparent>
+                <View style={styles.progressWrapper} transparent>
                   <PlayerProgressBar
                     backupDuration={backupDuration}
                     clipEndTime={endTime}
                     clipStartTime={startTime}
                     globalTheme={globalTheme}
-                    isMakeClipScreen={true}
+                    isMakeClipScreen
                     {...(progressValue || progressValue === 0 ? { value: progressValue } : {})}
                   />
                 </View>
-                <View style={styles.playerControlsMiddleRow} transparent={true}>
-                  <View style={styles.playerControlsMiddleRowTop} transparent={true}>
+                <View style={styles.playerControlsMiddleRow} transparent>
+                  <View style={styles.playerControlsMiddleRowTop} transparent>
                     <TouchableOpacity
                       onPress={this._playerJumpBackward}
                       style={playerStyles.icon}
@@ -500,7 +501,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     </TouchableOpacity>
                   </View>
                 </View>
-                <View style={styles.playerControlsBottomRow} transparent={true}>
+                <View style={styles.playerControlsBottomRow} transparent>
                   <TouchableOpacity
                     hitSlop={{
                       bottom: 4,
@@ -510,7 +511,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     }}
                     onPress={() => this.setState({ showHowToModal: true })}
                     {...testProps(`${testIDPrefix}_show_how_to`)}>
-                    <View transparent={true}>
+                    <View transparent>
                       <Text
                         fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                         style={[
@@ -531,7 +532,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     }}
                     onPress={this._adjustSpeed}
                     {...testProps(`${testIDPrefix}_adjust_speed`)}>
-                    <View transparent={true}>
+                    <View transparent>
                       <Text
                         fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                         style={[
@@ -553,7 +554,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     }}
                     onPress={() => navigation.navigate(PV.RouteNames.PlayerFAQScreen)}
                     {...testProps(`${testIDPrefix}_show_faq`)}>
-                    <View transparent={true}>
+                    <View transparent>
                       <Text
                         fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                         style={[
@@ -584,14 +585,14 @@ export class MakeClipScreen extends React.Component<Props, State> {
           </View>
         </View>
         {isSaving && (
-          <Modal transparent={true} visible={true}>
+          <Modal transparent visible>
             <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
-              <ActivityIndicator isOverlay={true} />
+              <ActivityIndicator isOverlay />
             </RNView>
           </Modal>
         )}
         {showHowToModal && (
-          <Modal transparent={true} visible={true}>
+          <Modal transparent visible>
             <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
               <RNView style={[styles.modalInnerWrapper, globalTheme.modalInnerWrapper]}>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>

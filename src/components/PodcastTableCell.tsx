@@ -55,7 +55,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       <Text
         fontSizeLargerScale={PV.Fonts.largeSizes.md}
         fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-        isSecondary={true}
+        isSecondary
         numberOfLines={1}
         style={styles.latestEpisode}
         testID={`${testID}_last_pub_date`}>
@@ -79,7 +79,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
               <RNView style={styles.downloadContainer}>
                 <Text
                   fontSizeLargerScale={PV.Fonts.largeSizes.md}
-                  isSecondary={true}
+                  isSecondary
                   numberOfLines={1}
                   style={styles.downloadedItems}
                   testID={`${testID}_downloaded`}>

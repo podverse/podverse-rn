@@ -3,9 +3,9 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { decodeHTMLString, readableDate, removeHTMLFromString, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { FastImage, IndicatorDownload, Text, View } from './'
 import { DownloadButton } from './DownloadButton'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
+import { FastImage, IndicatorDownload, Text, View } from './'
 
 type Props = {
   handleMorePress?: any
@@ -56,12 +56,12 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const innerTopView = (
       <RNView style={styles.innerTopView}>
-        {!!imageUrl && !hideImage && <FastImage isSmall={true} source={imageUrl} styles={styles.image} />}
+        {!!imageUrl && !hideImage && <FastImage isSmall source={imageUrl} styles={styles.image} />}
         <RNView style={styles.textWrapper}>
           {showPodcastInfo && podcastTitle && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              isSecondary={true}
+              isSecondary
               numberOfLines={1}
               style={styles.podcastTitle}
               testID={`${testID}_podcast_title`}>
@@ -80,7 +80,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           <RNView style={styles.textWrapperBottomRow}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              isSecondary={true}
+              isSecondary
               style={styles.pubDate}
               testID={`${testID}_pub_date`}>
               {readableDate(pubDate)}
@@ -96,7 +96,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const bottomText = (
       <Text
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
-        isSecondary={true}
+        isSecondary
         numberOfLines={2}
         style={descriptionStyle}
         testID={`${testID}_description`}>

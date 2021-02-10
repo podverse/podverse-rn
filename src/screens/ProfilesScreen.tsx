@@ -25,12 +25,6 @@ type State = {
 const testIDPrefix = 'profiles_screen'
 
 export class ProfilesScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
-      title: translate('Profiles')
-    }
-  }
-
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -41,6 +35,10 @@ export class ProfilesScreen extends React.Component<Props, State> {
       queryPage: 1
     }
   }
+  
+  static navigationOptions = () => ({
+      title: translate('Profiles')
+    })
 
   async componentDidMount() {
     const { navigation } = this.props
@@ -78,9 +76,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
     }
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
-  }
+  _ItemSeparatorComponent = () => <Divider />
 
   _renderProfileItem = ({ item, index }) => {
     // In order to be subscribed to a profile, that profile must be public,
@@ -140,7 +136,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
     return (
       <View style={styles.view} {...testProps('profiles_screen_view')}>
         <View style={styles.view}>
-          {isLoading && <ActivityIndicator fillSpace={true} />}
+          {isLoading && <ActivityIndicator fillSpace />}
           {!isLoading && (
             <FlatList
               data={flatListData}
@@ -162,7 +158,7 @@ export class ProfilesScreen extends React.Component<Props, State> {
     )
   }
 
-  _queryData = async (page: number = 1) => {
+  _queryData = async (page = 1) => {
     const { flatListData } = this.global.profiles
     const newState = {
       isLoading: false,

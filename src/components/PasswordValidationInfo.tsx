@@ -12,9 +12,7 @@ type Props = {
   style: any
 }
 
-type State = {}
-
-export class PasswordValidationInfo extends React.PureComponent<Props, State> {
+export class PasswordValidationInfo extends React.PureComponent<Props> {
   render() {
     const { hasAtLeastXCharacters, hasLowercase, hasNumber, hasUppercase, style } = this.props
 

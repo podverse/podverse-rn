@@ -25,11 +25,6 @@ type State = {
 const testIDPrefix = 'membership_screen'
 
 export class MembershipScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
-      title: translate('Membership')
-    }
-  }
 
   constructor(props: Props) {
     super(props)
@@ -39,6 +34,10 @@ export class MembershipScreen extends React.Component<Props, State> {
       isLoading: true
     }
   }
+
+  static navigationOptions = () => ({
+      title: translate('Membership')
+    })
 
   async componentDidMount() {
     try {
@@ -57,7 +56,7 @@ export class MembershipScreen extends React.Component<Props, State> {
     trackPageView('/membership', 'Membership Screen')
   }
 
-  handleRenewPress = async () => {
+  handleRenewPress = () => {
     this.setState({ disableButton: true }, async () => {
       try {
         await buy1YearPremium()
@@ -110,7 +109,7 @@ export class MembershipScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.wrapper} {...testProps('membership_screen_view')}>
-        {isLoading && isLoggedIn && <ActivityIndicator fillSpace={true} />}
+        {isLoading && isLoggedIn && <ActivityIndicator fillSpace />}
         {!isLoading && showNoInternetConnectionMessage && (
           <View style={styles.textRowCentered}>
             <Text style={[styles.subText, { textAlign: 'center' }]}>

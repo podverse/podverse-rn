@@ -10,7 +10,7 @@ import { getAddByRSSPodcastLocally } from '../services/parser'
 import { saveSpecialUserInfoForPodcast } from '../services/user'
 import { addAddByRSSPodcast } from '../state/actions/parser'
 
-type Props = {}
+type Props = any
 
 const testIDPrefix = 'scan_qr_code_screen'
 
@@ -29,7 +29,7 @@ export const ScanQRCodeScreen = (props: Props) => {
 
     const parsedData = qrData.split('?')
 
-    let userInfo: object | null = null
+    let userInfo: any | null = null
 
     if (parsedData.length > 1) {
       userInfo = {}
@@ -119,13 +119,11 @@ export const ScanQRCodeScreen = (props: Props) => {
   )
 }
 
-ScanQRCodeScreen.navigationOptions = ({ navigation }) => {
-  return {
+ScanQRCodeScreen.navigationOptions = ({ navigation }) => ({
     title: translate('QR Reader'),
     headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} />,
     headerRight: () => null
-  }
-}
+  })
 
 const styles = StyleSheet.create({
   view: {

@@ -48,7 +48,7 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
     clearAddByRSSPodcastAuthModalState()
   }
 
-  login = async () => {
+  login = () => {
     this.setState({ isLoading: true }, async () => {
       try {
         const { navigation } = this.props
@@ -104,7 +104,7 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
         : [styles.switchOptionText]
 
     return (
-      <Modal transparent={true}>
+      <Modal transparent>
         <View style={styles.view}>
           <KeyboardAvoidingView
             behavior='position'
@@ -136,7 +136,7 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
                 this.secondTextInput = input
               }}
               returnKeyType='done'
-              secureTextEntry={true}
+              secureTextEntry
               testID={`${testIDPrefix}_password`}
               value={password}
               underlineColorAndroid='transparent'
@@ -150,7 +150,7 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
                   onPress={this.login}
                   {...testProps(`${testIDPrefix}_submit`)}>
                   {isLoading ? (
-                    <ActivityIndicator animating={true} color={PV.Colors.gray} size='small' />
+                    <ActivityIndicator animating color={PV.Colors.gray} size='small' />
                   ) : (
                     <Text style={signInButtonTextStyle}>{translate('Login')}</Text>
                   )}

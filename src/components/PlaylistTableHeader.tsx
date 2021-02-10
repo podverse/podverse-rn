@@ -42,7 +42,7 @@ export const PlaylistTableHeader = (props: Props) => {
       <View style={core.row}>
         {isLoading && (
           <View style={[styles.wrapper, core.view]}>
-            <ActivityIndicator fillSpace={true} />
+            <ActivityIndicator fillSpace />
           </View>
         )}
         {!isLoading && !isNotFound && (
@@ -58,7 +58,7 @@ export const PlaylistTableHeader = (props: Props) => {
               {!!createdBy && (
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  isSecondary={true}
+                  isSecondary
                   numberOfLines={1}
                   style={styles.createdBy}
                   testID={`${testID}_created_by`}>
@@ -68,7 +68,7 @@ export const PlaylistTableHeader = (props: Props) => {
               <View style={styles.row}>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  isSecondary={true}
+                  isSecondary
                   numberOfLines={1}
                   style={styles.itemCount}
                   testID={`${testID}_item_count`}>
@@ -76,7 +76,7 @@ export const PlaylistTableHeader = (props: Props) => {
                 </Text>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  isSecondary={true}
+                  isSecondary
                   style={styles.lastUpdated}
                   testID={`${testID}_last_updated`}>
                   {readableDate(lastUpdated)}

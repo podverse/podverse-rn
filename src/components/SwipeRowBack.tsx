@@ -22,7 +22,7 @@ export const SwipeRowBack = (props: Props) => {
       {...testProps(`${testID}_swipe_row_back`)}>
       {isLoading ? (
         <View style={s.textWrapper}>
-          <ActivityIndicator animating={true} color={globalTheme.activityIndicatorAlternate.color} size='large' />
+          <ActivityIndicator animating color={globalTheme.activityIndicatorAlternate.color} size='large' />
         </View>
       ) : (
         <Text style={s.textWrapper}>{text}</Text>

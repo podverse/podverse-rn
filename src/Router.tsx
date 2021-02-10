@@ -253,7 +253,8 @@ const MyLibraryNavigator = createStackNavigator(
           </View>
         )
       },
-      tabBarLabel: (props) => <TabBarLabel {...props} title='My Library' />
+      tabBarLabel: (props) => <TabBarLabel {...props} title='My Library' />,
+      ...tabTestProps('tab_my_library_screen')
     }
   }
 )

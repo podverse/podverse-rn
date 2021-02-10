@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   Dimensions,
   Keyboard,
   Platform,
@@ -9,17 +8,16 @@ import {
 } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
-import { Button, PasswordValidationInfo, TextInput } from '.'
 import { translate } from '../lib/i18n'
 import {
   hasAtLeastXCharacters as hasAtLeastXCharactersLib,
   hasLowercase as hasLowercaseLib,
   hasMatchingStrings,
   hasNumber as hasNumberLib,
-  hasUppercase as hasUppercaseLib,
-  testProps
+  hasUppercase as hasUppercaseLib
 } from '../lib/utility'
 import { PV } from '../resources'
+import { Button, PasswordValidationInfo, TextInput } from '.'
 
 type Props = {
   bottomButtons: any
@@ -149,7 +147,7 @@ export class SignUp extends React.Component<Props, State> {
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
-        showsVerticalScrollIndicator={true}>
+        showsVerticalScrollIndicator>
         <TextInput
           autoCapitalize='none'
           autoCompleteType='email'
@@ -177,7 +175,7 @@ export class SignUp extends React.Component<Props, State> {
           placeholder={translate('Password')}
           placeholderTextColor={PV.Colors.gray}
           returnKeyType='next'
-          secureTextEntry={true}
+          secureTextEntry
           testID={`${testIDPrefix}_password`}
           underlineColorAndroid='transparent'
           value={this.state.password}
@@ -195,7 +193,7 @@ export class SignUp extends React.Component<Props, State> {
           placeholder={translate('Verify Password')}
           placeholderTextColor={PV.Colors.gray}
           returnKeyType={Platform.OS === 'ios' ? 'done' : 'default'}
-          secureTextEntry={true}
+          secureTextEntry
           style={passwordMismatch ? errorStyle : null}
           testID={`${testIDPrefix}_verify_password`}
           underlineColorAndroid='transparent'

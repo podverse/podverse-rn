@@ -7,16 +7,12 @@ import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 
-type Props = {}
+type Props = any
 
-type State = {}
-
-export class TermsOfServiceScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
+export class TermsOfServiceScreen extends React.Component<Props> {
+  static navigationOptions = () => ({
       title: translate('Terms of Service')
-    }
-  }
+    })
 
   componentDidMount() {
     trackPageView('/terms', 'Terms of Service Screen')
@@ -52,13 +48,11 @@ export class TermsOfServiceScreen extends React.Component<Props, State> {
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
             {translate('Third Party Libraries')}
           </Text>
-          {Object.keys(packageJson.dependencies).map((license) => {
-            return (
+          {Object.keys(packageJson.dependencies).map((license) => (
               <Text key={license} style={styles.text}>
                 {license}
               </Text>
-            )
-          })}
+            ))}
           <Divider style={styles.divider} />
           <RNView style={styles.copyLeftWrapper}>
             <Text

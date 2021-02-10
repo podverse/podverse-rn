@@ -1,10 +1,10 @@
 import { StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
-import { FastImage, Icon, Text, View } from '.'
 import { translate } from '../lib/i18n'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { button } from '../styles'
+import { FastImage, Icon, Text, View } from '.'
 
 type Props = {
   clipEndTime?: number
@@ -48,12 +48,12 @@ export class QueueTableCell extends React.PureComponent<Props> {
         transparent={transparent}
         testID={testID}>
         <RNView style={styles.wrapperTop}>
-          <FastImage isSmall={true} key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
+          <FastImage isSmall key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>
             {!!podcastTitle && (
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                isSecondary={true}
+                isSecondary
                 numberOfLines={1}
                 style={styles.podcastTitle}
                 testID={`${testID}_podcast_title`}>
@@ -72,7 +72,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
             {!!episodePubDate && (
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                isSecondary={true}
+                isSecondary
                 numberOfLines={1}
                 style={styles.episodePubDate}
                 testID={`${testID}_episode_pub_date`}>
@@ -80,7 +80,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
               </Text>
             )}
           </RNView>
-          {!!showMoveButton && <Icon isSecondary={true} name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />}
+          {!!showMoveButton && <Icon isSecondary name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />}
           {!!showRemoveButton && !!handleRemovePress && (
             <Icon
               name='times'

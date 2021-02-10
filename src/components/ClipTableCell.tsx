@@ -3,9 +3,9 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime, readableDate, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { FastImage, Text, View } from './'
 import { IndicatorDownload } from './IndicatorDownload'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
+import { FastImage, Text, View } from './'
 
 type Props = {
   downloadedEpisodeIds?: any
@@ -41,13 +41,13 @@ export class ClipTableCell extends React.PureComponent<Props> {
           {(showEpisodeInfo || showPodcastInfo) && (
             <RNView style={styles.imageAndTopRightTextWrapper}>
               {showPodcastInfo && !!podcastImageUrl && !hideImage && (
-                <FastImage isSmall={true} source={podcastImageUrl} styles={styles.image} />
+                <FastImage isSmall source={podcastImageUrl} styles={styles.image} />
               )}
               <RNView style={styles.textWrapper}>
                 {showPodcastInfo && podcastTitle && (
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    isSecondary={true}
+                    isSecondary
                     numberOfLines={1}
                     style={styles.podcastTitle}
                     testID={`${testID}_podcast_title`}>
@@ -64,7 +64,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                     <Text
                       fontSizeLargerScale={PV.Fonts.largeSizes.md}
                       fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                      isSecondary={true}
+                      isSecondary
                       numberOfLines={1}
                       style={styles.episodePubDate}
                       testID={`${testID}_episode_pub_date`}>

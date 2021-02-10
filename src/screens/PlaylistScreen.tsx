@@ -43,25 +43,6 @@ type State = {
 const testIDPrefix = 'playlist_screen'
 
 export class PlaylistScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    const playlistId = navigation.getParam('playlistId')
-    const playlistTitle = navigation.getParam('playlistTitle')
-
-    return {
-      title: translate('Playlist'),
-      headerRight: () => (
-        <RNView style={core.row}>
-          <NavShareIcon
-            endingText={translate('shared using brandName')}
-            playlistTitle={playlistTitle}
-            urlId={playlistId}
-            urlPath={PV.URLs.webPaths.playlist}
-          />
-          <NavSearchIcon navigation={navigation} />
-        </RNView>
-      )
-    } as NavigationStackOptions
-  }
 
   constructor(props: Props) {
     super(props)
@@ -71,7 +52,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
     )
     const playlist = this.props.navigation.getParam('playlist')
     const playlistId = (playlist && playlist.id) || this.props.navigation.getParam('playlistId')
-    const isSubscribed = subscribedPlaylistIds.some((x: string) => playlistId)
+    const isSubscribed = subscribedPlaylistIds.some((x: string) => x === playlistId)
 
     if (playlist && playlist.id) {
       this.props.navigation.setParams({ playlistId: playlist.id })
@@ -97,13 +78,33 @@ export class PlaylistScreen extends React.Component<Props, State> {
     })
   }
 
-  async componentDidMount() {
+  static navigationOptions = ({ navigation }) => {
+    const playlistId = navigation.getParam('playlistId')
+    const playlistTitle = navigation.getParam('playlistTitle')
+
+    return {
+      title: translate('Playlist'),
+      headerRight: () => (
+        <RNView style={core.row}>
+          <NavShareIcon
+            endingText={translate('shared using brandName')}
+            playlistTitle={playlistTitle}
+            urlId={playlistId}
+            urlPath={PV.URLs.webPaths.playlist}
+          />
+          <NavSearchIcon navigation={navigation} />
+        </RNView>
+      )
+    } as NavigationStackOptions
+  }
+
+  componentDidMount() {
     const { playlistId } = this.state
     this._initializePageData()
     trackPageView('/playlist/' + playlistId, 'Playlist Screen')
   }
 
-  async _initializePageData() {
+  _initializePageData() {
     const playlistId = this.props.navigation.getParam('playlistId') || this.state.playlistId
 
     this.setState(
@@ -112,7 +113,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
         isLoading: true,
         playlistId
       },
-      async () => {
+      () => {
         setGlobal(
           {
             flatListData: [],
@@ -132,17 +133,15 @@ export class PlaylistScreen extends React.Component<Props, State> {
     )
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
-  }
+  _ItemSeparatorComponent = () => <Divider />
 
   _renderItem = ({ item, index }) => {
     if (item.startTime) {
       return item.episode && item.episode.podcast ? (
         <ClipTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
-          showEpisodeInfo={true}
-          showPodcastInfo={true}
+          showEpisodeInfo
+          showPodcastInfo
           testID={`${testIDPrefix}_clip_item_${index}`}
           item={item}
         />
@@ -162,7 +161,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           }
           item={item}
           mediaFileDuration={mediaFileDuration}
-          showPodcastInfo={true}
+          showPodcastInfo
           testID={`${testIDPrefix}_episode_item_${index}`}
           userPlaybackPosition={userPlaybackPosition}
         />
@@ -194,11 +193,9 @@ export class PlaylistScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleCancelPress = () => {
-    return new Promise((resolve, reject) => {
+  _handleCancelPress = () => new Promise((resolve) => {
       this.setState({ showActionSheet: false }, resolve)
     })
-  }
 
   _handleMorePress = (selectedItem: any) => {
     this.setState({
@@ -247,12 +244,12 @@ export class PlaylistScreen extends React.Component<Props, State> {
           testID={testIDPrefix}
           title={playlist && playlist.title}
         />
-        {isLoading && <ActivityIndicator fillSpace={true} />}
+        {isLoading && <ActivityIndicator fillSpace />}
         {!isLoading && flatListData && (
           <FlatList
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
-            disableLeftSwipe={true}
+            disableLeftSwipe
             extraData={flatListData}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
