@@ -24,6 +24,15 @@ const elementByIdClick = async (id, testLabel, back) => {
   logTestInfo(logKeyEnd, id, testLabel)
 }
 
+const elementCheckIfPresent = async (id, testLabel, back) => {
+  const driver = getDriver()
+  logTestInfo(logKeyStart, id, testLabel)
+  // elementByAccessibilityId throws an error if it cannot find a matching element
+  await driver.elementByAccessibilityId(id)
+  if (back) await driver.back()
+  logTestInfo(logKeyEnd, id, testLabel)
+}
+
 const elementWaitFor = async (id, testLabel) => {
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
@@ -45,6 +54,7 @@ const elementbyIdToggle = async (id, testLabel) => {
 module.exports = {
   elementByIdAndClickAndTest,
   elementByIdClick,
+  elementCheckIfPresent,
   elementWaitFor,
   elementbyIdToggle,
   goBackKey
