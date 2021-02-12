@@ -25,7 +25,8 @@ import { getAppUserAgent, setAppUserAgent, setCategoryQueryProperty, testProps }
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisode } from '../services/episode'
-import { checkIdlePlayerState, PVTrackPlayer, updateUserPlaybackPosition } from '../services/player'
+import { checkIdlePlayerState, PVTrackPlayer, updateTrackPlayerCapabilities,
+  updateUserPlaybackPosition } from '../services/player'
 import { getPodcast, getPodcasts } from '../services/podcast'
 import { trackPageView } from '../services/tracking'
 import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
@@ -161,14 +162,23 @@ export class PodcastsScreen extends React.Component<Props, State> {
     }
 
     if (nextAppState === 'background' || nextAppState === 'inactive') {
+      // NOTE: On iOS TrackPlayer.updateOptions must be called every time the app
+      // goes into the background to prevent the remote controls from disappearing
+      // on the lock screen.
+      // Source: https://github.com/react-native-kit/react-native-track-player/issues/921#issuecomment-686806847
+      if (Platform.OS === 'ios') {
+        updateTrackPlayerCapabilities()
+      }
+
       const currentState = await PVTrackPlayer.getState()
       // If an episode is not playing, then assume its latest playback position does not
       // need to get updated in history.
       // This will also prevent the history from being updated when a user closes the app on Device A,
       // then reloads it to make it load with last history item (currently playing item) on Device B.
       if (currentState === PVTrackPlayer.STATE_PLAYING) {
-        await updateUserPlaybackPosition()
+        updateUserPlaybackPosition()
       }
+
     }
   }
 
