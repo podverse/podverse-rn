@@ -23,10 +23,16 @@ import {
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally, getHistoryItemsLocally } from './userHistoryItem'
 import { getNowPlayingItem, getNowPlayingItemLocally } from './userNowPlayingItem'
 
+export const PVTrackPlayer = TrackPlayer
+
 // TODO: setupPlayer is a promise, could this cause an async issue?
 TrackPlayer.setupPlayer({
   waitForBuffer: false
 }).then(() => {
+  updateTrackPlayerCapabilities()
+})
+
+export const updateTrackPlayerCapabilities = () => {
   TrackPlayer.updateOptions({
     capabilities: [
       TrackPlayer.CAPABILITY_JUMP_BACKWARD,
@@ -55,9 +61,7 @@ TrackPlayer.setupPlayer({
     stopWithApp: true,
     jumpInterval: PV.Player.jumpSeconds
   })
-})
-
-export const PVTrackPlayer = TrackPlayer
+}
 
 /*
   state key for android
