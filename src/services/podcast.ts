@@ -118,12 +118,15 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
     return [combinedPodcasts, combinedPodcasts.length]
   }
 }
+
 export const combineWithAddByRSSPodcasts = async () => {
   const subscribedPodcastsResults = await getSubscribedPodcastsLocally()
   const addByRSSPodcastsResults = await getAddByRSSPodcastsLocally()
-  const subscribedPodcasts = subscribedPodcastsResults[0] || []
-  const addByRSSPodcasts = addByRSSPodcastsResults[0] || []
-  const combinedPodcasts = [...subscribedPodcasts[0], ...addByRSSPodcasts]
+  const subscribedPodcasts =
+    subscribedPodcastsResults[0] && Array.isArray(subscribedPodcastsResults[0]) && subscribedPodcastsResults[0] || []
+  const addByRSSPodcasts =
+    addByRSSPodcastsResults[0] && Array.isArray(addByRSSPodcastsResults[0]) && addByRSSPodcastsResults[0] || []
+  const combinedPodcasts = [...subscribedPodcasts, ...addByRSSPodcasts]
 
   return sortPodcastArrayAlphabetically(combinedPodcasts)
 }
