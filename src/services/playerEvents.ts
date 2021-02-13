@@ -85,7 +85,8 @@ const handleQueueEnded = (x: any) => {
   }, 0)
 }
 
-module.exports = () => {
+// eslint-disable-next-line @typescript-eslint/require-await
+module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
 
   // NOTE: TrackPlayer.reset will call the playback-queue-ended event on Android!!!
