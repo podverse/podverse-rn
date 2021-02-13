@@ -103,7 +103,7 @@ const PodcastsNavigator = createStackNavigator(
     defaultNavigationOptions,
     initialRouteName: PV.RouteNames.PodcastsScreen,
     navigationOptions: {
-      tabBarIcon: ({ tintColor }) => (
+      tabBarIcon: ({ tintColor }: { tintColor: any }) => (
         <Image source={PV.Tabs.Podcasts.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
       tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Podcasts.title} />,
@@ -123,7 +123,7 @@ const EpisodesNavigator = createStackNavigator(
   {
     defaultNavigationOptions,
     navigationOptions: {
-      tabBarIcon: ({ tintColor }) => (
+      tabBarIcon: ({ tintColor }: { tintColor: any }) => (
         <Image source={PV.Tabs.Episodes.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
       tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Episodes.title} />,
@@ -139,7 +139,8 @@ const ClipsNavigator = createStackNavigator(
   {
     defaultNavigationOptions,
     navigationOptions: {
-      tabBarIcon: ({ tintColor }) => <Image source={PV.Tabs.Clips.icon} style={{ tintColor }} resizeMode={'contain'} />,
+      tabBarIcon: ({ tintColor }: { tintColor: any }) =>
+        <Image source={PV.Tabs.Clips.icon} style={{ tintColor }} resizeMode={'contain'} />,
       tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Clips.title} />,
       ...tabTestProps('tab_clips_screen')
     }
@@ -205,7 +206,7 @@ const MoreNavigator = createStackNavigator(
   {
     defaultNavigationOptions,
     navigationOptions: {
-      tabBarIcon: ({ tintColor }) => {
+      tabBarIcon: ({ tintColor }: { tintColor: any }) => {
         return (
           <View>
             <Image source={PV.Tabs.More.icon} style={{ tintColor }} resizeMode={'contain'} />
@@ -245,7 +246,8 @@ const MyLibraryNavigator = createStackNavigator(
     initialRouteName: PV.RouteNames.MyLibraryScreen,
     defaultNavigationOptions,
     navigationOptions: {
-      tabBarIcon: ({ tintColor }) => {
+      // eslint-disable-next-line react/prop-types
+      tabBarIcon: ({ tintColor }: { tintColor: any }) => {
         return (
           <View>
             <Image source={PV.Tabs.Queue.icon} style={{ tintColor }} resizeMode={'contain'} />

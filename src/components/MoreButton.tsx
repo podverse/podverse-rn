@@ -1,9 +1,9 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { ActivityIndicator } from '.'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
+import { ActivityIndicator } from '.'
 
 type Props = {
   handleMorePress: any

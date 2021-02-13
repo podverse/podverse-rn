@@ -1,8 +1,8 @@
 import React from 'react'
 import { Image } from 'react-native'
 import Config from 'react-native-config'
-import { NavItemWrapper } from '.'
 import { PV } from '../resources'
+import { NavItemWrapper } from '.'
 
 type Props = {
   navigation: any

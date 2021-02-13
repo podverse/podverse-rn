@@ -2,9 +2,9 @@ import React from 'react'
 import { Image } from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import { useGlobal } from 'reactn'
-import { Icon } from '.'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
+import { Icon } from '.'
 
 type Props = {
   containerStyle?: any
