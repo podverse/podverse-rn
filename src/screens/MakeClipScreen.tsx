@@ -6,7 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View as RNView
+  View as RNView,
+  Image,
+  ImageSourcePropType
 } from 'react-native'
 import Share from 'react-native-share'
 import React from 'reactn'
@@ -59,7 +61,6 @@ type State = {
 const testIDPrefix = 'make_clip_screen'
 
 export class MakeClipScreen extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
     const { nowPlayingItem = {} } = this.global.player
@@ -350,6 +351,14 @@ export class MakeClipScreen extends React.Component<Props, State> {
     ])
   }
 
+  _renderPlayerControlIcon = (source: ImageSourcePropType) => {
+    return (
+      <RNView style={styles.iconContainer}>
+        <Image source={source} resizeMode='contain' style={styles.icon} />
+      </RNView>
+    )
+  }
+
   render() {
     const { navigation } = this.props
     const { globalTheme, player } = this.global
@@ -466,13 +475,16 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       onPress={this._playerJumpBackward}
                       style={playerStyles.icon}
                       {...testProps(`${testIDPrefix}_jump_backward`)}>
-                      <Icon name='undo-alt' size={32} />
+                      {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS)}
+                      <View style={styles.skipTimeTextWrapper} transparent>
+                        <Text style={styles.skipTimeText}>30</Text>
+                      </View>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={this._playerMiniJumpBackward}
                       style={playerStyles.icon}
                       {...testProps(`${testIDPrefix}_mini_jump_backward`)}>
-                      <Icon name='angle-left' size={24} />
+                      <Icon name='angle-left' size={30} />
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => togglePlay()}
@@ -491,13 +503,16 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       onPress={this._playerMiniJumpForward}
                       style={playerStyles.icon}
                       {...testProps(`${testIDPrefix}_mini_jump_forward`)}>
-                      <Icon name='angle-right' size={24} />
+                      <Icon name='angle-right' size={30} />
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={this._playerJumpForward}
                       style={playerStyles.icon}
                       {...testProps(`${testIDPrefix}_jump_forward`)}>
-                      <Icon name='redo-alt' size={32} />
+                      {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD)}
+                      <View style={styles.skipTimeTextWrapper} transparent>
+                        <Text style={styles.skipTimeText}>30</Text>
+                      </View>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -725,7 +740,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginTop: 2
+    marginTop: 2,
+    marginHorizontal: 10
   },
   modalBackdrop: {
     alignItems: 'center',
@@ -799,5 +815,24 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 10,
     marginHorizontal: 40
+  },
+  iconContainer: {
+    width: 50,
+    height: 50
+  },
+  icon: {
+    tintColor: PV.Colors.white,
+    width: '100%',
+    height: '100%'
+  },
+  skipTimeTextWrapper: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  skipTimeText: {
+    fontSize: 16
   }
 })
