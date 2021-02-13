@@ -36,7 +36,6 @@ const mediaMoreButtons = (
   const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session.userInfo.id, '')
   const isLoggedIn = safelyUnwrapNestedVariable(() => globalState.session.isLoggedIn, '')
   const globalTheme = safelyUnwrapNestedVariable(() => globalState.globalTheme, {})
-  const urlsWeb = safelyUnwrapNestedVariable(() => globalState.urlsWeb, {})
 
   if (item.ownerId && item.ownerId === loggedInUserId) {
     buttons.push(
@@ -157,6 +156,7 @@ const mediaMoreButtons = (
         text: translate('Share'),
         onPress: async () => {
           try {
+            const urlsWeb = safelyUnwrapNestedVariable(() => globalState.urlsWeb, {})
             let url = ''
             let title = ''
 

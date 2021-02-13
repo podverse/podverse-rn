@@ -256,7 +256,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
       try {
         const mediaRef = isEditing ? await updateMediaRef(data) : await createMediaRef(data)
-        const url = this.global.urlsWeb.clip + mediaRef.id
 
         if (isEditing) {
           const newItem = {
@@ -273,6 +272,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
           // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
           setTimeout(() => {
             const alertText = isEditing ? translate('Clip Updated') : translate('Clip Created')
+            const url = this.global.urlsWeb.clip + mediaRef.id
             Alert.alert(alertText, url, [
               {
                 text: translate('Done'),
@@ -283,6 +283,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
               {
                 text: translate('Share'),
                 onPress: async () => {
+                  // the url must be read from global again to ensure the correct state is used
+                  const url = this.global.urlsWeb.clip + mediaRef.id
                   const { nowPlayingItem = {} } = this.global.player
                   const title = `${data.title || translate('Untitled Clip')} – ${nowPlayingItem.podcastTitle} – ${
                     nowPlayingItem.episodeTitle
