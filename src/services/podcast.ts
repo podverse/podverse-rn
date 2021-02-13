@@ -119,10 +119,10 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   }
 }
 export const combineWithAddByRSSPodcasts = async () => {
-  // Combine the AddByRSSPodcast in with the subscribed podcast data, then alphabetize array
-  const subscribedPodcasts = await getSubscribedPodcastsLocally()
-  const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
-  // @ts-ignore
+  const subscribedPodcastsResults = await getSubscribedPodcastsLocally()
+  const addByRSSPodcastsResults = await getAddByRSSPodcastsLocally()
+  const subscribedPodcasts = subscribedPodcastsResults[0] || []
+  const addByRSSPodcasts = addByRSSPodcastsResults[0] || []
   const combinedPodcasts = [...subscribedPodcasts[0], ...addByRSSPodcasts]
 
   return sortPodcastArrayAlphabetically(combinedPodcasts)

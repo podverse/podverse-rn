@@ -28,7 +28,7 @@ type State = {
 let volumeListener = null as any
 
 export class PlayerMoreActionSheet extends React.Component<Props, State> {
-  constructor(props: Props) {
+  constructor() {
     super()
 
     this.state = {}
@@ -86,7 +86,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
       podcast = await getAddByRSSPodcastLocally(nowPlayingItem.addByRSSPodcastFeedUrl)
     }
 
-    await navigateToPodcastScreenWithPodcast(navigation, podcast)
+    navigateToPodcastScreenWithPodcast(navigation, podcast)
   }
 
   _headerActionSheetButtons = () => {

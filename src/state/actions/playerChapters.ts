@@ -1,4 +1,4 @@
-import { convertNowPlayingItemToEpisode, NowPlayingItem } from 'podverse-shared'
+import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { retrieveLatestChaptersForEpisodeId } from '../../services/episode'
 import { PVTrackPlayer } from '../../services/player'

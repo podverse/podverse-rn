@@ -21,7 +21,7 @@ export const trackPageView = async (path: string, title: string) => {
   await gaTrackPageView(path, title, queryObj)
 }
 
-export const trackPlayerScreenPageView = (item: any, global: any) => {
+export const trackPlayerScreenPageView = (item: any) => {
   if (item.clipId) {
     trackPageView(
       '/clip/' + item.clipId,

@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
 import { convertSecToHHMMSS, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { core, darkTheme, iconStyles } from '../styles'
+import { core } from '../styles'
 import { Text } from './'
 
 type Props = {

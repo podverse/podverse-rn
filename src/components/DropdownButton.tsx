@@ -1,8 +1,8 @@
 import React from 'react'
 import { TouchableWithoutFeedback, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { Icon, Text } from '.'
 import { PV } from '../resources'
+import { Icon, Text } from '.'
 
 export const DropdownButton = (props: any) => {
   const { hideFilter, onPress, sortLabel } = props

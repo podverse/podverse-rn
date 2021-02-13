@@ -186,8 +186,8 @@ export class SettingsScreen extends React.Component<Props, State> {
     this.setState({ showSetAllDownloadDialog: false })
   }
 
-  _handleToggleNSFWText = async (value: boolean) => {
-    await setCensorNSFWText(value)
+  _handleToggleNSFWText = (value: boolean) => {
+    setCensorNSFWText(value)
   }
 
   _handleToggleOfflineMode = (value: boolean) => {
@@ -197,9 +197,9 @@ export class SettingsScreen extends React.Component<Props, State> {
     this.setGlobal({ offlineModeEnabled: value })
   }
 
-  _handleCustomAPIDomainToggle = async () => {
+  _handleCustomAPIDomainToggle = () => {
     const { customAPIDomainEnabled } = this.global
-    await setCustomAPIDomainEnabled(!customAPIDomainEnabled)
+    setCustomAPIDomainEnabled(!customAPIDomainEnabled)
   }
 
   _handleCustomAPIDomainDialogSave = async () => {
@@ -207,9 +207,9 @@ export class SettingsScreen extends React.Component<Props, State> {
     await saveCustomAPIDomain(customAPIDomain)
   }
 
-  _handleCustomWebDomainToggle = async () => {
+  _handleCustomWebDomainToggle = () => {
     const { customWebDomainEnabled } = this.global
-    await setCustomWebDomainEnabled(!customWebDomainEnabled)
+    setCustomWebDomainEnabled(!customWebDomainEnabled)
   }
 
   _handleCustomWebDomainDialogTextChange = async (text: string) => this.setGlobal({ customWebDomain: text })

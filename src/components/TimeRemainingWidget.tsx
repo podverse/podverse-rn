@@ -70,7 +70,6 @@ export const TimeRemainingWidget = (props: Props) => {
   const { episode = {}, podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
   const [player] = useGlobal('player')
-  const [fontScaleMode] = useGlobal('fontScaleMode')
   const { nowPlayingItem, playbackState } = player
 
   const hasStartedItem = !!userPlaybackPosition

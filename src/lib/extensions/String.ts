@@ -6,8 +6,8 @@ String.prototype.linkifyHtml = function() {
 }
 
 const badWordsRegexObj = require('badwords-list').object
-delete badWordsRegexObj['God']
-badWordsRegexObj['dicks'] = 1
+delete badWordsRegexObj.God
+badWordsRegexObj.dicks = 1
 const badWordsRegexString = `\\b(${Object.keys(badWordsRegexObj).join('|')})\\b`
 const badWordsRegex = new RegExp(badWordsRegexString, 'gi')
 

@@ -24,7 +24,7 @@ export const initializeSettings = async () => {
   })
 }
 
-export const setCensorNSFWText = async (value: boolean) => {
+export const setCensorNSFWText = (value: boolean) => {
   setGlobal({ censorNSFWText: value }, async () => {
     value
       ? await AsyncStorage.setItem(PV.Keys.CENSOR_NSFW_TEXT, 'TRUE')
@@ -47,7 +47,7 @@ export const saveCustomAPIDomain = async (value?: string) => {
   }
 }
 
-export const setCustomAPIDomainEnabled = async (value?: boolean) => {
+export const setCustomAPIDomainEnabled = (value?: boolean) => {
   setGlobal({ customAPIDomainEnabled: value }, async () => {
     value
       ? await AsyncStorage.setItem(PV.Keys.CUSTOM_API_DOMAIN_ENABLED, 'TRUE')
@@ -70,7 +70,7 @@ export const saveCustomWebDomain = async (value?: string) => {
   }
 }
 
-export const setCustomWebDomainEnabled = async (value?: boolean) => {
+export const setCustomWebDomainEnabled = (value?: boolean) => {
   setGlobal({ customWebDomainEnabled: value }, async () => {
     value
       ? await AsyncStorage.setItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED, 'TRUE')
@@ -78,7 +78,7 @@ export const setCustomWebDomainEnabled = async (value?: boolean) => {
   })
 }
 
-export const setOfflineModeEnabled = async (value: boolean) => {
+export const setOfflineModeEnabled = (value: boolean) => {
   setGlobal({ offlineModeEnabled: value }, async () => {
     value
       ? await AsyncStorage.setItem(PV.Keys.OFFLINE_MODE_ENABLED, 'TRUE')

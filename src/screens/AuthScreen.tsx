@@ -28,19 +28,6 @@ const _signup = 'signup'
 const testIDPrefix = 'auth_screen'
 
 export class AuthScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    const title = navigation.getParam('title') || translate('Login')
-    return {
-      title,
-      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-      headerRight: () => null,
-      headerStyle: {
-        borderBottomWidth: 0,
-        backgroundColor: PV.Colors.ink
-      }
-    }
-  }
-
   constructor(props: Props) {
     super(props)
 
@@ -51,6 +38,19 @@ export class AuthScreen extends React.Component<Props, State> {
       isLoadingResetPassword: false,
       isLoadingSignUp: false,
       screenType: (showSignUp && _signup) || props.screenType || _login
+    }
+  }
+
+  static navigationOptions = ({ navigation }) => {
+    const title = navigation.getParam('title') || translate('Login')
+    return {
+      title,
+      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
+      headerRight: () => null,
+      headerStyle: {
+        borderBottomWidth: 0,
+        backgroundColor: PV.Colors.ink
+      }
     }
   }
 
@@ -90,7 +90,7 @@ export class AuthScreen extends React.Component<Props, State> {
     })
   }
 
-  attemptResetPassword = async (email: string) => {
+  attemptResetPassword = (email: string) => {
     const { navigation } = this.props
     this.setState({ isLoadingResetPassword: true }, async () => {
       try {
