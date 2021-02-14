@@ -72,9 +72,10 @@ export const askToSyncWithNowPlayingItem = async () => {
 
   if (serverNowPlayingItem) {
     if (
-      !localNowPlayingItem ||
+      (!localNowPlayingItem ||
       (localNowPlayingItem.clipId && localNowPlayingItem.clipId !== serverNowPlayingItem.clipId) ||
-      (!localNowPlayingItem.clipId && localNowPlayingItem.episodeId !== serverNowPlayingItem.episodeId)
+      (!localNowPlayingItem.clipId && localNowPlayingItem.episodeId !== serverNowPlayingItem.episodeId)) &&
+      serverNowPlayingItem.userPlaybackPosition !== 0
     ) {
       const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(serverNowPlayingItem)
       Alert.alert(
