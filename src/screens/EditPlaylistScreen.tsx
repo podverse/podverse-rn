@@ -112,26 +112,28 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
       {
         isUpdating: true
       },
-      async () => {
-        const { newTitle, playlist } = this.state
-        const itemsOrder = await this._resortItemsAndGetOrder()
-
-        try {
-          await updatePlaylist({
-            id: playlist.id,
-            ...(itemsOrder && Array.isArray(itemsOrder) && itemsOrder.length > 0 ? { itemsOrder } : {}),
-            title: newTitle
-          })
-        } catch (error) {
-          if (error.response) {
-            Alert.alert(
-              PV.Alerts.SOMETHING_WENT_WRONG.title,
-              PV.Alerts.SOMETHING_WENT_WRONG.message,
-              PV.Alerts.BUTTONS.OK
-            )
+      () => {
+        (async () => {
+          const { newTitle, playlist } = this.state
+          const itemsOrder = await this._resortItemsAndGetOrder()
+  
+          try {
+            await updatePlaylist({
+              id: playlist.id,
+              ...(itemsOrder && Array.isArray(itemsOrder) && itemsOrder.length > 0 ? { itemsOrder } : {}),
+              title: newTitle
+            })
+          } catch (error) {
+            if (error.response) {
+              Alert.alert(
+                PV.Alerts.SOMETHING_WENT_WRONG.title,
+                PV.Alerts.SOMETHING_WENT_WRONG.message,
+                PV.Alerts.BUTTONS.OK
+              )
+            }
           }
-        }
-        this.setState({ isUpdating: false })
+          this.setState({ isUpdating: false })
+        })()
       }
     )
   }
@@ -203,18 +205,20 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
   _handleRemovePlaylistItemPress = (item: any) => {
     const { playlist, sortableListData } = this.state
 
-    this.setState({ isRemoving: true }, async () => {
-      try {
-        const episodeId = !item.startTime && item.id
-        const mediaRefId = item.startTime || item.startTime === 0 ? item.id : null
-        await addOrRemovePlaylistItem(playlist.id, episodeId, mediaRefId)
-        await getPlaylist(playlist.id)
-        const newSortableListData =
-          sortableListData.filter((x) => (mediaRefId && x.id !== mediaRefId) || (episodeId && x.id !== episodeId))
-        this.setState({ isRemoving: false, sortableListData: newSortableListData })
-      } catch (error) {
-        this.setState({ isRemoving: false })
-      }
+    this.setState({ isRemoving: true }, () => {
+      (async () => {
+        try {
+          const episodeId = !item.startTime && item.id
+          const mediaRefId = item.startTime || item.startTime === 0 ? item.id : null
+          await addOrRemovePlaylistItem(playlist.id, episodeId, mediaRefId)
+          await getPlaylist(playlist.id)
+          const newSortableListData =
+            sortableListData.filter((x) => (mediaRefId && x.id !== mediaRefId) || (episodeId && x.id !== episodeId))
+          this.setState({ isRemoving: false, sortableListData: newSortableListData })
+        } catch (error) {
+          this.setState({ isRemoving: false })
+        }
+      })()
     })
   }
 

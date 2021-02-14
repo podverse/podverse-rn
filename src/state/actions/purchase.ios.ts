@@ -3,7 +3,7 @@ import { iosHandlePurchaseStatusCheck as iosHandlePurchaseStatusCheckService } f
 import { getAuthUserInfo } from './auth'
 import { handleStatusSuccessful, purchaseLoading, showPurchaseSomethingWentWrongError } from './purchaseShared'
 
-export const iosHandlePurchaseLoading = async (
+export const iosHandlePurchaseLoading = (
   productId: string,
   transactionId: string,
   transactionReceipt: string
@@ -21,7 +21,7 @@ export const iosHandlePurchaseStatusCheck = async (
   transactionReceipt: string
 ) => {
   try {
-    await iosHandlePurchaseLoading(productId, transactionId, transactionReceipt)
+    iosHandlePurchaseLoading(productId, transactionId, transactionReceipt)
     await iosHandlePurchaseStatusCheckService(transactionReceipt)
     await iosHandleStatusSuccessful()
   } catch (error) {

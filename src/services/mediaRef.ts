@@ -1,4 +1,3 @@
-import { PV } from '../resources'
 import { getBearerToken } from './auth'
 import { request } from './request'
 

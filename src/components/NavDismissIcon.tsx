@@ -1,7 +1,7 @@
 import React from 'react'
-import { NavItemIcon, NavItemWrapper } from '.'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
+import { NavItemIcon, NavItemWrapper } from '.'
 
 type Props = {
   handlePress: any

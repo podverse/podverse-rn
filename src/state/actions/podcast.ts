@@ -29,37 +29,39 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
 }
 
 export const toggleSubscribeToPodcast = async (id: string) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const globalState = getGlobal()
-      const subscribedPodcastIds = await toggleSubscribeToPodcastService(id)
-      const subscribedPodcast = await getPodcastService(id)
-      let { subscribedPodcasts = [] } = globalState
-      subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast)
-      const subscribedPodcastsTotalCount = subscribedPodcasts ? subscribedPodcasts.length : 0
+  return new Promise<void>((resolve, reject) => {
+    (async () => {
+      try {
+        const globalState = getGlobal()
+        const subscribedPodcastIds = await toggleSubscribeToPodcastService(id)
+        const subscribedPodcast = await getPodcastService(id)
+        let { subscribedPodcasts = [] } = globalState
+        subscribedPodcasts = insertOrRemovePodcastFromAlphabetizedArray(subscribedPodcasts, subscribedPodcast)
+        const subscribedPodcastsTotalCount = subscribedPodcasts ? subscribedPodcasts.length : 0
 
-      setGlobal(
-        {
-          session: {
-            ...globalState.session,
-            userInfo: {
-              ...globalState.session.userInfo,
-              subscribedPodcastIds
-            }
+        setGlobal(
+          {
+            session: {
+              ...globalState.session,
+              userInfo: {
+                ...globalState.session.userInfo,
+                subscribedPodcastIds
+              }
+            },
+            subscribedPodcasts,
+            subscribedPodcastsTotalCount
           },
-          subscribedPodcasts,
-          subscribedPodcastsTotalCount
-        },
-        async () => {
-          await updateDownloadedPodcasts()
-          PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
-          resolve()
-        }
-      )
-    } catch (error) {
-      console.log('toggleSubscribeToPodcast action', error)
-      reject()
-    }
+          async () => {
+            await updateDownloadedPodcasts()
+            PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
+            resolve()
+          }
+        )
+      } catch (error) {
+        console.log('toggleSubscribeToPodcast action', error)
+        reject()
+      }
+    })()
   })
 }
 

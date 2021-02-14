@@ -51,32 +51,35 @@ export const ScanQRCodeScreen = (props: Props) => {
     }
   }
 
-  const showQRRead = async (scannedData: string) => {
-    try {
-      const parsedData = parsePayload(scannedData)
+  const showQRRead = (scannedData: string) => {
+    (async () => {
 
-      await addAddByRSSPodcast(parsedData.feedUrl)
-      const podcast = await getAddByRSSPodcastLocally(parsedData.feedUrl)
-
-      if (parsedData.userInfo && podcast && podcast.id) {
-        await saveSpecialUserInfoForPodcast(parsedData.userInfo, podcast.id)
-      }
-
-      navigate(PV.RouteNames.PodcastScreen, {
-        podcast,
-        addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
-      })
-    } catch (error) {
-      console.log(error)
-      Alert.alert(translate('QR Code Error'), error.message || error, [
-        {
-          text: translate('OK'),
-          onPress: () => {
-            setScanned(false)
-          }
+      try {
+        const parsedData = parsePayload(scannedData)
+  
+        await addAddByRSSPodcast(parsedData.feedUrl)
+        const podcast = await getAddByRSSPodcastLocally(parsedData.feedUrl)
+  
+        if (parsedData.userInfo && podcast && podcast.id) {
+          await saveSpecialUserInfoForPodcast(parsedData.userInfo, podcast.id)
         }
-      ])
-    }
+  
+        navigate(PV.RouteNames.PodcastScreen, {
+          podcast,
+          addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
+        })
+      } catch (error) {
+        console.log(error)
+        Alert.alert(translate('QR Code Error'), error.message || error, [
+          {
+            text: translate('OK'),
+            onPress: () => {
+              setScanned(false)
+            }
+          }
+        ])
+      }
+    })()
   }
 
   return (

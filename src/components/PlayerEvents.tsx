@@ -41,23 +41,27 @@ export class PlayerEvents extends React.PureComponent<Props> {
     )
   }
 
-  _handlePlayerPlaybackError = async () => {
-    await updatePlaybackState(PV.Player.errorState)
+  _handlePlayerPlaybackError = () => {
+    updatePlaybackState(PV.Player.errorState)
   }
 
-  _playerStateUpdated = () => updatePlaybackState()
+  _playerStateUpdated = () => {
+    updatePlaybackState()
+  }
 
-  _refreshNowPlayingItem = async () => {
-    refreshDownloadedPodcasts()
-
-    const nowPlayingItem = await getNowPlayingItemLocally()
-    if (nowPlayingItem) {
-      await updatePlayerState(nowPlayingItem)
-      showMiniPlayer()
-    }
-
-    await updatePlaybackState()
-    await getQueueItems()
+  _refreshNowPlayingItem = () => {
+    (async () => {
+      refreshDownloadedPodcasts()
+  
+      const nowPlayingItem = await getNowPlayingItemLocally()
+      if (nowPlayingItem) {
+        await updatePlayerState(nowPlayingItem)
+        showMiniPlayer()
+      }
+  
+      await updatePlaybackState()
+      await getQueueItems()
+    })()
   }
 
   render() {

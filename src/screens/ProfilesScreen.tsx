@@ -66,10 +66,12 @@ export class ProfilesScreen extends React.Component<Props, State> {
           {
             isLoadingMore: true
           },
-          async () => {
-            const nextPage = queryPage + 1
-            const newState = await this._queryData(nextPage)
-            this.setState(newState)
+          () => {
+            (async () => {
+              const nextPage = queryPage + 1
+              const newState = await this._queryData(nextPage)
+              this.setState(newState)
+            })()
           }
         )
       }
@@ -110,14 +112,16 @@ export class ProfilesScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection(translate('unsubscribe from this profile'))
     if (wasAlerted) return
 
-    this.setState({ isUnsubscribing: true }, async () => {
-      try {
-        await toggleSubscribeToUser(selectedId)
-        rowMap[selectedId].closeRow()
-        this.setState({ isUnsubscribing: false })
-      } catch (error) {
-        this.setState({ isUnsubscribing: false })
-      }
+    this.setState({ isUnsubscribing: true }, () => {
+      (async () => {
+        try {
+          await toggleSubscribeToUser(selectedId)
+          rowMap[selectedId].closeRow()
+          this.setState({ isUnsubscribing: false })
+        } catch (error) {
+          this.setState({ isUnsubscribing: false })
+        }
+      })()
     })
   }
 

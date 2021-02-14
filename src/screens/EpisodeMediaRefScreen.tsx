@@ -158,9 +158,11 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
         querySort: selectedKey,
         selectedSortLabel
       },
-      async () => {
-        const newState = await this._queryData(selectedKey)
-        this.setState(newState)
+      () => {
+        (async () => {
+          const newState = await this._queryData(selectedKey)
+          this.setState(newState)
+        })()
       }
     )
   }
@@ -173,11 +175,13 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
           {
             isLoadingMore: true
           },
-          async () => {
-            const newState = await this._queryData(viewType, {
-              queryPage: queryPage + 1
-            })
-            this.setState(newState)
+          () => {
+            (async () => {
+              const newState = await this._queryData(viewType, {
+                queryPage: queryPage + 1
+              })
+              this.setState(newState)
+            })()
           }
         )
       }

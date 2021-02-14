@@ -128,10 +128,12 @@ export class HistoryScreen extends React.Component<Props, State> {
     const isDarkMode = this.global.globalTheme === darkTheme
     try {
       const { navigation } = this.props
-      this.setState({ isLoading: true }, async () => {
-        const shouldPlay = true
-        await loadItemAndPlayTrack(item, shouldPlay)
-        navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
+      this.setState({ isLoading: true }, () => {
+        (async () => {
+          const shouldPlay = true
+          await loadItemAndPlayTrack(item, shouldPlay)
+          navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
+        })()
       })
     } catch (error) {
       // Error Loading and playing item
@@ -169,13 +171,15 @@ export class HistoryScreen extends React.Component<Props, State> {
   }
 
   _handleRemoveHistoryItemPress = (item: NowPlayingItem) => {
-    this.setState({ isRemoving: true }, async () => {
-      try {
-        await removeHistoryItem(item)
-      } catch (error) {
-        //
-      }
-      this.setState({ isRemoving: false })
+    this.setState({ isRemoving: true }, () => {
+      (async () => {
+        try {
+          await removeHistoryItem(item)
+        } catch (error) {
+          //
+        }
+        this.setState({ isRemoving: false })
+      })()
     })
   }
 
@@ -187,10 +191,12 @@ export class HistoryScreen extends React.Component<Props, State> {
           {
             isLoadingMore: true
           },
-          async () => {
-            const nextPage = queryPage + 1
-            const newState = await this._queryData(nextPage)
-            this.setState(newState)
+          () => {
+            (async () => {
+              const nextPage = queryPage + 1
+              const newState = await this._queryData(nextPage)
+              this.setState(newState)
+            })()
           }
         )
       }

@@ -117,9 +117,11 @@ export class ClipsScreen extends React.Component<Props, State> {
         selectedFilterLabel,
         selectedSortLabel
       },
-      async () => {
-        const newState = await this._queryData(selectedKey)
-        this.setState(newState)
+      () => {
+        (async () => {
+          const newState = await this._queryData(selectedKey)
+          this.setState(newState)
+        })()
       }
     )
   }
@@ -141,9 +143,11 @@ export class ClipsScreen extends React.Component<Props, State> {
         querySort: selectedKey,
         selectedSortLabel
       },
-      async () => {
-        const newState = await this._queryData(selectedKey)
-        this.setState(newState)
+      () => {
+        (async () => {
+          const newState = await this._queryData(selectedKey)
+          this.setState(newState)
+        })()
       }
     )
   }
@@ -165,9 +169,11 @@ export class ClipsScreen extends React.Component<Props, State> {
         queryPage: 1,
         selectedFilterLabel
       },
-      async () => {
-        const newState = await this._queryData(selectedKey, { isSubCategory })
-        this.setState(newState)
+      () => {
+        (async () => {
+          const newState = await this._queryData(selectedKey, { isSubCategory })
+          this.setState(newState)
+        })()
       }
     )
   }
@@ -181,12 +187,14 @@ export class ClipsScreen extends React.Component<Props, State> {
             isLoadingMore: true,
             queryPage: queryPage + 1
           },
-          async () => {
-            const newState = await this._queryData(queryFrom, {
-              queryPage: this.state.queryPage,
-              searchAllFieldsText: this.state.searchBarText
-            })
-            this.setState(newState)
+          () => {
+            (async () => {
+              const newState = await this._queryData(queryFrom, {
+                queryPage: this.state.queryPage,
+                searchAllFieldsText: this.state.searchBarText
+              })
+              this.setState(newState)
+            })()
           }
         )
       }
@@ -200,12 +208,14 @@ export class ClipsScreen extends React.Component<Props, State> {
       {
         isRefreshing: true
       },
-      async () => {
-        const newState = await this._queryData(queryFrom, {
-          queryPage: 1,
-          searchAllFieldsText: this.state.searchBarText
-        })
-        this.setState(newState)
+      () => {
+        (async () => {
+          const newState = await this._queryData(queryFrom, {
+            queryPage: 1,
+            searchAllFieldsText: this.state.searchBarText
+          })
+          this.setState(newState)
+        })()
       }
     )
   }
@@ -279,11 +289,13 @@ export class ClipsScreen extends React.Component<Props, State> {
         flatListDataTotalCount: null,
         queryPage: 1
       },
-      async () => {
-        const state = await this._queryData(queryFrom, {
-          searchAllFieldsText: queryOptions.searchAllFieldsText
-        })
-        this.setState(state)
+      () => {
+        (async () => {
+          const state = await this._queryData(queryFrom, {
+            searchAllFieldsText: queryOptions.searchAllFieldsText
+          })
+          this.setState(state)
+        })()
       }
     )
   }
@@ -324,26 +336,28 @@ export class ClipsScreen extends React.Component<Props, State> {
           isLoading: true,
           showDeleteConfirmDialog: false
         },
-        async () => {
-          try {
-            await deleteMediaRef(mediaRefIdToDelete)
-            flatListData = flatListData.filter((x: any) => x.id !== mediaRefIdToDelete)
-            flatListDataTotalCount = flatListData.length
-          } catch (error) {
-            if (error.response) {
-              Alert.alert(
-                PV.Alerts.SOMETHING_WENT_WRONG.title,
-                PV.Alerts.SOMETHING_WENT_WRONG.message,
-                PV.Alerts.BUTTONS.OK
-              )
+        () => {
+          (async () => {
+            try {
+              await deleteMediaRef(mediaRefIdToDelete)
+              flatListData = flatListData.filter((x: any) => x.id !== mediaRefIdToDelete)
+              flatListDataTotalCount = flatListData.length
+            } catch (error) {
+              if (error.response) {
+                Alert.alert(
+                  PV.Alerts.SOMETHING_WENT_WRONG.title,
+                  PV.Alerts.SOMETHING_WENT_WRONG.message,
+                  PV.Alerts.BUTTONS.OK
+                )
+              }
             }
-          }
-          this.setState({
-            flatListData,
-            flatListDataTotalCount,
-            isLoading: false,
-            mediaRefIdToDelete: ''
-          })
+            this.setState({
+              flatListData,
+              flatListDataTotalCount,
+              isLoading: false,
+              mediaRefIdToDelete: ''
+            })
+          })()
         }
       )
     }

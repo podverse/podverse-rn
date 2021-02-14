@@ -1,10 +1,10 @@
 import React from 'react'
 import { Platform, TextInput } from 'react-native'
 import { useGlobal } from 'reactn'
-import { Text, View } from '.'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
+import { Text, View } from '.'
 
 type Props = {
   autoCapitalize?: any
@@ -39,8 +39,6 @@ export const PVTextInput = (props: Props) => {
     autoCorrect,
     editable = true,
     eyebrowTitle,
-    fontSizeLargerScale,
-    fontSizeLargestScale,
     inputRef,
     keyboardType,
     numberOfLines = 1,
