@@ -65,7 +65,6 @@ const styles = {
     paddingRight: 16
   },
   dropdownHelpText: {
-    flex: 0,
     fontSize: PV.Fonts.sizes.tiny,
     maxWidth: '60%',
     flexWrap: 'wrap'
