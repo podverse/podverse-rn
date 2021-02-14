@@ -89,17 +89,19 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
 
       // Wait for app to initialize. Without this setTimeout, then when getSubscribedPodcasts is called in
       // PodcastsScreen _initializeScreenData, then downloadEpisode will not successfully update global state
-      setTimeout(async () => {
-        for (const episode of autoDownloadEpisodes[0]) {
-          const podcast = {
-            id: episode?.podcast?.id,
-            imageUrl: episode?.podcast?.shrunkImageUrl || episode?.podcast?.imageUrl,
-            title: episode?.podcast?.title
+      setTimeout(() => {
+        (async () => {
+          for (const episode of autoDownloadEpisodes[0]) {
+            const podcast = {
+              id: episode?.podcast?.id,
+              imageUrl: episode?.podcast?.shrunkImageUrl || episode?.podcast?.imageUrl,
+              title: episode?.podcast?.title
+            }
+            const restart = false
+            const waitToAddTask = true
+            await downloadEpisode(episode, podcast, restart, waitToAddTask)
           }
-          const restart = false
-          const waitToAddTask = true
-          await downloadEpisode(episode, podcast, restart, waitToAddTask)
-        }
+        })()
       }, 3000)
 
       await setSubscribedPodcasts(subscribedPodcasts)
