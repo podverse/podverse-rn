@@ -362,7 +362,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
   render() {
     const { navigation } = this.props
     const { globalTheme, player } = this.global
-    const { backupDuration, nowPlayingItem, playbackRate, playbackState } = player
+    const { backupDuration, playbackRate, playbackState } = player
     const {
       endTime,
       isLoggedIn,
@@ -373,9 +373,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
       startTime,
       title
     } = this.state
-    const imageHeight = navigation.getParam('imageHeight')
-    const imageWidth = navigation.getParam('imageWidth')
-    const imageStyle = [styles.image, { height: imageHeight, width: imageWidth }]
 
     return (
       <SafeAreaView style={styles.viewContainer}>
@@ -406,13 +403,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               value={isPublicItemSelected.value}
               wrapperStyle={styles.dropdownButtonSelectWrapper}
             />
-            <View style={styles.imageWrapper} transparent>
-              <FastImage
-                resizeMode='contain'
-                source={nowPlayingItem && nowPlayingItem.podcastImageUrl}
-                styles={imageStyle}
-              />
-            </View>
+            <View style={styles.fillerView} transparent />
             <View style={styles.wrapperBottom} transparent>
               <View style={styles.wrapperBottomInside} transparent>
                 <TimeInput
@@ -593,7 +584,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     style={[core.textInputEyeBrow, styles.loginMessage]}>
                     {translate('You must be logged in to make clips')}
                   </Text>
-                  <Divider style={styles.divider} />
                 </RNView>
               </RNView>
             )}
@@ -714,11 +704,8 @@ const styles = StyleSheet.create({
     flex: 1,
     marginVertical: 8
   },
-  imageWrapper: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16
+  fillerView: {
+    flex: 1
   },
   isPublicText: {
     fontSize: PV.Fonts.sizes.xl,
