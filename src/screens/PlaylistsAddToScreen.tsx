@@ -87,24 +87,26 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
         isLoading: true,
         showNewPlaylistDialog: false
       },
-      async () => {
-        const { newPlaylistTitle } = this.state
-
-        try {
-          await createPlaylist({ title: newPlaylistTitle }, this.global)
-        } catch (error) {
-          if (error.response) {
-            Alert.alert(
-              PV.Alerts.SOMETHING_WENT_WRONG.title,
-              PV.Alerts.SOMETHING_WENT_WRONG.message,
-              PV.Alerts.BUTTONS.OK
-            )
+      () => {
+        (async () => {
+          const { newPlaylistTitle } = this.state
+  
+          try {
+            await createPlaylist({ title: newPlaylistTitle }, this.global)
+          } catch (error) {
+            if (error.response) {
+              Alert.alert(
+                PV.Alerts.SOMETHING_WENT_WRONG.title,
+                PV.Alerts.SOMETHING_WENT_WRONG.message,
+                PV.Alerts.BUTTONS.OK
+              )
+            }
           }
-        }
-
-        this.setState({
-          isLoading: false
-        })
+  
+          this.setState({
+            isLoading: false
+          })
+        })()
       }
     )
   }
@@ -135,9 +137,11 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
               {
                 isSavingId: item.id
               },
-              async () => {
-                await addOrRemovePlaylistItem(item.id, episodeId, mediaRefId)
-                this.setState({ isSavingId: '' })
+              () => {
+                (async () => {
+                  await addOrRemovePlaylistItem(item.id, episodeId, mediaRefId)
+                  this.setState({ isSavingId: '' })
+                })()
               }
             )
           } catch (error) {

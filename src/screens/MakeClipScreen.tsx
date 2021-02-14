@@ -244,73 +244,75 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
     const isEditing = this.props.navigation.getParam('isEditing')
 
-    this.setState({ isSaving: true }, async () => {
-      const data = {
-        ...(endTime ? { endTime } : {}),
-        episodeId: nowPlayingItem.episodeId,
-        ...(isEditing ? { id: mediaRefId } : {}),
-        ...(isPublicItemSelected.value === _publicKey ? { isPublic: true } : { isPublic: false }),
-        startTime,
-        title
-      }
-
-      try {
-        const mediaRef = isEditing ? await updateMediaRef(data) : await createMediaRef(data)
-
-        if (isEditing) {
-          const newItem = {
-            ...nowPlayingItem,
-            clipEndTime: mediaRef.endTime,
-            clipStartTime: mediaRef.startTime,
-            clipTitle: mediaRef.title
+    this.setState({ isSaving: true }, () => {
+      (async () => {
+        const data = {
+          ...(endTime ? { endTime } : {}),
+          episodeId: nowPlayingItem.episodeId,
+          ...(isEditing ? { id: mediaRefId } : {}),
+          ...(isPublicItemSelected.value === _publicKey ? { isPublic: true } : { isPublic: false }),
+          startTime,
+          title
+        }
+  
+        try {
+          const mediaRef = isEditing ? await updateMediaRef(data) : await createMediaRef(data)
+  
+          if (isEditing) {
+            const newItem = {
+              ...nowPlayingItem,
+              clipEndTime: mediaRef.endTime,
+              clipStartTime: mediaRef.startTime,
+              clipTitle: mediaRef.title
+            }
+            const position = await PVTrackPlayer.getPosition()
+            await setNowPlayingItem(newItem, position || 0)
           }
-          const position = await PVTrackPlayer.getPosition()
-          await setNowPlayingItem(newItem, position || 0)
-        }
-
-        this.setState({ isSaving: false }, () => {
-          // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
-          setTimeout(() => {
-            const alertText = isEditing ? translate('Clip Updated') : translate('Clip Created')
-            const url = this.global.urlsWeb.clip + mediaRef.id
-            Alert.alert(alertText, url, [
-              {
-                text: translate('Done'),
-                onPress: () => {
-                  navigation.goBack(null)
-                }
-              },
-              {
-                text: translate('Share'),
-                onPress: async () => {
-                  // the url must be read from global again to ensure the correct state is used
-                  const url = this.global.urlsWeb.clip + mediaRef.id
-                  const { nowPlayingItem = {} } = this.global.player
-                  const title = `${data.title || translate('Untitled Clip')} – ${nowPlayingItem.podcastTitle} – ${
-                    nowPlayingItem.episodeTitle
-                  }${translate('clip created using brandName')}`
-                  try {
-                    await Share.open({
-                      title,
-                      subject: title,
-                      url
-                    })
-                  } catch (error) {
-                    console.log(error)
+  
+          this.setState({ isSaving: false }, () => {
+            // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
+            setTimeout(() => {
+              const alertText = isEditing ? translate('Clip Updated') : translate('Clip Created')
+              const url = this.global.urlsWeb.clip + mediaRef.id
+              Alert.alert(alertText, url, [
+                {
+                  text: translate('Done'),
+                  onPress: () => {
+                    navigation.goBack(null)
                   }
-                  navigation.goBack(null)
+                },
+                {
+                  text: translate('Share'),
+                  onPress: async () => {
+                    // the url must be read from global again to ensure the correct state is used
+                    const url = this.global.urlsWeb.clip + mediaRef.id
+                    const { nowPlayingItem = {} } = this.global.player
+                    const title = `${data.title || translate('Untitled Clip')} – ${nowPlayingItem.podcastTitle} – ${
+                      nowPlayingItem.episodeTitle
+                    }${translate('clip created using brandName')}`
+                    try {
+                      await Share.open({
+                        title,
+                        subject: title,
+                        url
+                      })
+                    } catch (error) {
+                      console.log(error)
+                    }
+                    navigation.goBack(null)
+                  }
                 }
-              }
-            ])
-          }, 100)
-        })
-      } catch (error) {
-        if (error.response) {
-          Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, error.response.data.message, PV.Alerts.BUTTONS.OK)
+              ])
+            }, 100)
+          })
+        } catch (error) {
+          if (error.response) {
+            Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, error.response.data.message, PV.Alerts.BUTTONS.OK)
+          }
+          console.log(error)
         }
-        console.log(error)
-      }
-      this.setState({ isSaving: false })
+        this.setState({ isSaving: false })
+      })()
     })
   }
 

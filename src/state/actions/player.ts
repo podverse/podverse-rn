@@ -175,7 +175,7 @@ export const loadItemAndPlayTrack = async (
         await handleLoadChapterForNowPlayingEpisode(item)
         return
       } else {
-        await loadChapterPlaybackInfo()
+        loadChapterPlaybackInfo()
       }
     }
 

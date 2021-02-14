@@ -120,12 +120,14 @@ export const playerPreviewEndTime = async (endTime: number) => {
   await PVTrackPlayer.seekTo(previewEndTime)
   PVTrackPlayer.play()
 
-  playerPreviewEndTimeInterval = setInterval(async () => {
-    const currentPosition = await PVTrackPlayer.getPosition()
-    if (currentPosition >= endTime) {
-      clearInterval(playerPreviewEndTimeInterval)
-      PVTrackPlayer.pause()
-    }
+  playerPreviewEndTimeInterval = setInterval(() => {
+    (async () => {
+      const currentPosition = await PVTrackPlayer.getPosition()
+      if (currentPosition >= endTime) {
+        clearInterval(playerPreviewEndTimeInterval)
+        PVTrackPlayer.pause()
+      }
+    })()
   }, 500)
 }
 
@@ -140,12 +142,14 @@ export const playerPreviewStartTime = async (startTime: number, endTime?: number
   TrackPlayer.setRate(rate)
 
   if (endTime) {
-    playerPreviewEndTimeInterval = setInterval(async () => {
-      const currentPosition = await PVTrackPlayer.getPosition()
-      if (currentPosition >= endTime) {
-        clearInterval(playerPreviewEndTimeInterval)
-        PVTrackPlayer.pause()
-      }
+    playerPreviewEndTimeInterval = setInterval(() => {
+      (async () => {
+        const currentPosition = await PVTrackPlayer.getPosition()
+        if (currentPosition >= endTime) {
+          clearInterval(playerPreviewEndTimeInterval)
+          PVTrackPlayer.pause()
+        }
+      })()
     }, 500)
   }
 }
@@ -407,41 +411,46 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
   shouldPlay?: boolean
 ) => {
   return new Promise((resolve) => {
-    const interval = setInterval(async () => {
-      const duration = await TrackPlayer.getDuration()
-      const currentTrackId = await TrackPlayer.getCurrentTrack()
+    const interval = setInterval(() => {
+      (async () => {
 
-      setTimeout(() => {
-        if (interval) clearInterval(interval)
-      }, 20000)
-
-      if (duration && duration > 0 && (!trackId || trackId === currentTrackId) && position >= 0) {
-        clearInterval(interval)
-        await TrackPlayer.seekTo(position)
-        // Sometimes seekTo does not work right away for all episodes...
-        // to work around this bug, we set another interval to confirm the track
-        // position has been advanced into the clip time.
-        const confirmClipLoadedInterval = setInterval(async () => {
-          const currentPosition = await TrackPlayer.getPosition()
-          if (currentPosition >= position - 1) {
-            clearInterval(confirmClipLoadedInterval)
-          } else {
-            await TrackPlayer.seekTo(position)
+        const duration = await TrackPlayer.getDuration()
+        const currentTrackId = await TrackPlayer.getCurrentTrack()
+  
+        setTimeout(() => {
+          if (interval) clearInterval(interval)
+        }, 20000)
+  
+        if (duration && duration > 0 && (!trackId || trackId === currentTrackId) && position >= 0) {
+          clearInterval(interval)
+          await TrackPlayer.seekTo(position)
+          // Sometimes seekTo does not work right away for all episodes...
+          // to work around this bug, we set another interval to confirm the track
+          // position has been advanced into the clip time.
+          const confirmClipLoadedInterval = setInterval(() => {
+            (async () => {
+              const currentPosition = await TrackPlayer.getPosition()
+              if (currentPosition >= position - 1) {
+                clearInterval(confirmClipLoadedInterval)
+              } else {
+                await TrackPlayer.seekTo(position)
+              }
+            })()
+          }, 500)
+  
+          const shouldPlayWhenClipIsLoaded = await AsyncStorage.getItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
+  
+          if (shouldPlay) {
+            await TrackPlayer.play()
+          } else if (shouldPlayWhenClipIsLoaded === 'true') {
+            AsyncStorage.removeItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
+            await TrackPlayer.play()
           }
-        }, 500)
-
-        const shouldPlayWhenClipIsLoaded = await AsyncStorage.getItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
-
-        if (shouldPlay) {
-          await TrackPlayer.play()
-        } else if (shouldPlayWhenClipIsLoaded === 'true') {
-          AsyncStorage.removeItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
-          await TrackPlayer.play()
+  
+          resolve(null)
         }
-
-        resolve()
-      }
-      if (resolveImmediately) resolve()
+        if (resolveImmediately) resolve(null)
+      })()
     }, 500)
   })
 }

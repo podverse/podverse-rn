@@ -35,19 +35,21 @@ export const loadChaptersForNowPlayingItem = async (item?: NowPlayingItem) => {
   }
 }
 
-export const loadChapterPlaybackInfo = async () => {
-  const globalState = getGlobal()
-  const { currentChapters } = globalState.player
-  const playerPosition = await PVTrackPlayer.getPosition()
-
-  if ((playerPosition || playerPosition === 0) && Array.isArray(currentChapters)) {
-    const currentChapter = currentChapters.find(
-      (chapter: any) => playerPosition >= chapter.startTime && playerPosition < chapter.endTime
-    )
-    if (currentChapter) {
-      setChapterOnGlobalState(currentChapter)
+export const loadChapterPlaybackInfo = () => {
+  (async () => {
+    const globalState = getGlobal()
+    const { currentChapters } = globalState.player
+    const playerPosition = await PVTrackPlayer.getPosition()
+  
+    if ((playerPosition || playerPosition === 0) && Array.isArray(currentChapters)) {
+      const currentChapter = currentChapters.find(
+        (chapter: any) => playerPosition >= chapter.startTime && playerPosition < chapter.endTime
+      )
+      if (currentChapter) {
+        setChapterOnGlobalState(currentChapter)
+      }
     }
-  }
+  })()
 }
 
 export const retriveNowPlayingItemChapters = async (episodeId: string) => {

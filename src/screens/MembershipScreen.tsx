@@ -57,45 +57,49 @@ export class MembershipScreen extends React.Component<Props, State> {
   }
 
   handleRenewPress = () => {
-    this.setState({ disableButton: true }, async () => {
-      try {
-        await buy1YearPremium()
-      } catch (error) {
-        console.log(error)
-        // If attempting to renew, but a recent previous purchase did not complete successfully,
-        // then do not buy a new product, and instead navigate to the PurchasingScreen
-        // and attempt to check and update the status of the cached purchase.
-        if (error.code === 'E_ALREADY_OWNED') {
-          if (Platform.OS === 'android') {
-            this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
-            const { productId, purchaseToken, transactionId } = this.global.purchase
-            await androidHandleStatusCheck(productId, transactionId, purchaseToken)
-          } else if (Platform.OS === 'ios') {
-            this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
-            const { productId, transactionId, transactionReceipt } = this.global.purchase
-            await iosHandlePurchaseStatusCheck(productId, transactionId, transactionReceipt)
+    this.setState({ disableButton: true }, () => {
+      (async () => {
+        try {
+          await buy1YearPremium()
+        } catch (error) {
+          console.log(error)
+          // If attempting to renew, but a recent previous purchase did not complete successfully,
+          // then do not buy a new product, and instead navigate to the PurchasingScreen
+          // and attempt to check and update the status of the cached purchase.
+          if (error.code === 'E_ALREADY_OWNED') {
+            if (Platform.OS === 'android') {
+              this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
+              const { productId, purchaseToken, transactionId } = this.global.purchase
+              await androidHandleStatusCheck(productId, transactionId, purchaseToken)
+            } else if (Platform.OS === 'ios') {
+              this.props.navigation.navigate(PV.RouteNames.PurchasingScreen)
+              const { productId, transactionId, transactionReceipt } = this.global.purchase
+              await iosHandlePurchaseStatusCheck(productId, transactionId, transactionReceipt)
+            }
+          } else if (error.code === 'E_USER_CANCELLED') {
+            // do nothing
+          } else {
+            Alert.alert(
+              PV.Alerts.PURCHASE_SOMETHING_WENT_WRONG.title,
+              PV.Alerts.PURCHASE_SOMETHING_WENT_WRONG.message,
+              PV.Alerts.BUTTONS.OK
+            )
           }
-        } else if (error.code === 'E_USER_CANCELLED') {
-          // do nothing
-        } else {
-          Alert.alert(
-            PV.Alerts.PURCHASE_SOMETHING_WENT_WRONG.title,
-            PV.Alerts.PURCHASE_SOMETHING_WENT_WRONG.message,
-            PV.Alerts.BUTTONS.OK
-          )
         }
-      }
-      this.setState({ disableButton: false })
+        this.setState({ disableButton: false })
+      })()
     })
   }
 
   handleSignUpPress = () => {
-    this.setState({ disableButton: true }, async () => {
-      await this.props.navigation.navigate(PV.RouteNames.AuthScreen, {
-        showSignUp: true,
-        title: translate('Sign Up')
-      })
-      this.setState({ disableButton: false })
+    this.setState({ disableButton: true }, () => {
+      (async () => {
+        await this.props.navigation.navigate(PV.RouteNames.AuthScreen, {
+          showSignUp: true,
+          title: translate('Sign Up')
+        })
+        this.setState({ disableButton: false })
+      })()
     })
   }
 

@@ -108,11 +108,13 @@ export class SearchScreen extends React.Component<Props, State> {
         queryPage: 1,
         isLoading: shouldSearch
       },
-      async () => {
-        if (shouldSearch) {
-          const state = await this._queryData(nextPage)
-          this.setState(state)
-        }
+      () => {
+        (async () => {
+          if (shouldSearch) {
+            const state = await this._queryData(nextPage)
+            this.setState(state)
+          }
+        })()
       }
     )
   }
@@ -127,9 +129,11 @@ export class SearchScreen extends React.Component<Props, State> {
           {
             isLoadingMore: true
           },
-          async () => {
-            const newState = await this._queryData(true)
-            this.setState(newState)
+          () => {
+            (async () => {
+              const newState = await this._queryData(true)
+              this.setState(newState)
+            })()
           }
         )
       }

@@ -128,7 +128,7 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
             })
 
             await setPlaybackPosition(position)
-            await loadChapterPlaybackInfo()
+            loadChapterPlaybackInfo()
           }}
           onValueChange={(value) => {
             if (this.state.slidingPosition) {

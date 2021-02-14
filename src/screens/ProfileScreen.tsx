@@ -163,51 +163,53 @@ export class ProfileScreen extends React.Component<Props, State> {
         showNoInternetConnectionMessage: false,
         userId
       },
-      async () => {
-        const { id } = this.global.session.userInfo
-        const isLoggedInUserProfile = userId === id
-        let newState = {} as any
-
-        if (isLoggedInUserProfile) {
-          newState = {
-            isLoading: false,
-            isLoadingMore: false,
-            queryPage: 1
-          } as State
-
-          try {
-            await getAuthUserInfo()
-            setGlobal(
-              {
-                profile: {
-                  ...this.global.profile,
-                  user: this.global.session.userInfo
+      () => {
+        (async () => {
+          const { id } = this.global.session.userInfo
+          const isLoggedInUserProfile = userId === id
+          let newState = {} as any
+  
+          if (isLoggedInUserProfile) {
+            newState = {
+              isLoading: false,
+              isLoadingMore: false,
+              queryPage: 1
+            } as State
+  
+            try {
+              await getAuthUserInfo()
+              setGlobal(
+                {
+                  profile: {
+                    ...this.global.profile,
+                    user: this.global.session.userInfo
+                  }
+                },
+                async () => {
+                  newState = await this._queryData(viewType, 1)
+                  this.setState(newState)
                 }
-              },
-              async () => {
-                newState = await this._queryData(viewType, 1)
-                this.setState(newState)
-              }
-            )
-          } catch (error) {
+              )
+            } catch (error) {
+              this.setState(newState)
+            }
+          } else {
+            newState = {
+              isLoading: false,
+              isLoadingMore: false,
+              queryPage: 1
+            } as State
+  
+            try {
+              const { profileFlatListData } = await getPublicUser(userId)
+              newState.flatListData = profileFlatListData
+              newState = await this._queryData(viewType, 1)
+            } catch (error) {
+              //
+            }
             this.setState(newState)
           }
-        } else {
-          newState = {
-            isLoading: false,
-            isLoadingMore: false,
-            queryPage: 1
-          } as State
-
-          try {
-            const { profileFlatListData } = await getPublicUser(userId)
-            newState.flatListData = profileFlatListData
-            newState = await this._queryData(viewType, 1)
-          } catch (error) {
-            //
-          }
-          this.setState(newState)
-        }
+        })()
       }
     )
   }
@@ -238,10 +240,12 @@ export class ProfileScreen extends React.Component<Props, State> {
         selectedFilterLabel,
         selectedSortLabel
       },
-      async () => {
-        const newState = await this._queryData(selectedKey, 1)
-        newState.preventSortQuery = false
-        this.setState(newState)
+      () => {
+        (async () => {
+          const newState = await this._queryData(selectedKey, 1)
+          newState.preventSortQuery = false
+          this.setState(newState)
+        })()
       }
     )
   }
@@ -266,9 +270,11 @@ export class ProfileScreen extends React.Component<Props, State> {
         querySort: selectedKey,
         selectedSortLabel
       },
-      async () => {
-        const newState = await this._queryData(selectedKey, 1)
-        this.setState(newState)
+      () => {
+        (async () => {
+          const newState = await this._queryData(selectedKey, 1)
+          this.setState(newState)
+        })()
       }
     )
   }
@@ -281,9 +287,11 @@ export class ProfileScreen extends React.Component<Props, State> {
           {
             isLoadingMore: true
           },
-          async () => {
-            const newState = await this._queryData(viewType, queryPage + 1)
-            this.setState(newState)
+          () => {
+            (async () => {
+              const newState = await this._queryData(viewType, queryPage + 1)
+              this.setState(newState)
+            })()
           }
         )
       }
@@ -324,19 +332,21 @@ export class ProfileScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection(translate('subscribe to profile'))
     if (wasAlerted) return
 
-    this.setState({ isSubscribing: true }, async () => {
-      try {
-        await toggleSubscribeToUser(id)
-        const subscribedUserIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedUserIds, [])
-        const isSubscribed = subscribedUserIds.some((x: string) => x === id)
-
-        this.setState({
-          isSubscribed,
-          isSubscribing: false
-        })
-      } catch (error) {
-        this.setState({ isSubscribing: false })
-      }
+    this.setState({ isSubscribing: true }, () => {
+      (async () => {
+        try {
+          await toggleSubscribeToUser(id)
+          const subscribedUserIds = safelyUnwrapNestedVariable(() => this.global.session.userInfo.subscribedUserIds, [])
+          const isSubscribed = subscribedUserIds.some((x: string) => x === id)
+  
+          this.setState({
+            isSubscribed,
+            isSubscribing: false
+          })
+        } catch (error) {
+          this.setState({ isSubscribing: false })
+        }
+      })()
     })
   }
 
@@ -361,25 +371,27 @@ export class ProfileScreen extends React.Component<Props, State> {
           isLoading: true,
           showDeleteConfirmDialog: false
         },
-        async () => {
-          try {
-            await deleteMediaRef(selectedItem.clipId)
-            flatListData = flatListData.filter((x: any) => x.id !== selectedItem.clipId)
-            flatListDataTotalCount = flatListData.length
-          } catch (error) {
-            if (error.response) {
-              Alert.alert(
-                PV.Alerts.SOMETHING_WENT_WRONG.title,
-                PV.Alerts.SOMETHING_WENT_WRONG.message,
-                PV.Alerts.BUTTONS.OK
-              )
+        () => {
+          (async () => {
+            try {
+              await deleteMediaRef(selectedItem.clipId)
+              flatListData = flatListData.filter((x: any) => x.id !== selectedItem.clipId)
+              flatListDataTotalCount = flatListData.length
+            } catch (error) {
+              if (error.response) {
+                Alert.alert(
+                  PV.Alerts.SOMETHING_WENT_WRONG.title,
+                  PV.Alerts.SOMETHING_WENT_WRONG.message,
+                  PV.Alerts.BUTTONS.OK
+                )
+              }
             }
-          }
-          this.setState({
-            flatListData,
-            flatListDataTotalCount,
-            isLoading: false
-          })
+            this.setState({
+              flatListData,
+              flatListDataTotalCount,
+              isLoading: false
+            })
+          })()
         }
       )
     }
@@ -568,7 +580,8 @@ export class ProfileScreen extends React.Component<Props, State> {
     )
   }
 
-  _queryPodcasts = async (newState: any, page = 1, sort?: string | null) => new Promise(async (resolve) => {
+  _queryPodcasts = async (newState: any, page = 1, sort?: string | null) => new Promise((resolve) => {
+    (async () => {
       const { flatListData } = this.state
       const query = {
         page,
@@ -595,9 +608,11 @@ export class ProfileScreen extends React.Component<Props, State> {
           resolve(newState)
         }
       )
-    })
+    })()
+  })
 
-  _queryMediaRefs = async (newState: any, page = 1, sort?: string | null) => new Promise(async (resolve) => {
+  _queryMediaRefs = async (newState: any, page = 1, sort?: string | null) => new Promise((resolve) => {
+    (async () => {
       const { flatListData, userId } = this.state
       const query = { page }
       const { id } = this.global.session.userInfo
@@ -625,9 +640,11 @@ export class ProfileScreen extends React.Component<Props, State> {
           resolve(newState)
         }
       )
-    })
+    })()
+  })
 
-  _queryPlaylists = async (newState: any, page = 1, sort?: string | null) => new Promise(async (resolve) => {
+  _queryPlaylists = async (newState: any, page = 1, sort?: string | null) => new Promise((resolve) => {
+    (async () => {
       const { userId } = this.state
       const { id } = this.global.session.userInfo
       const query = { page, sort }
@@ -644,7 +661,8 @@ export class ProfileScreen extends React.Component<Props, State> {
       newState.flatListDataTotalCount = results[1]
       newState.queryPage = page
       resolve(newState)
-    })
+    })()
+  })
 
   _queryData = async (filterKey: string | null, page = 1) => {
     const { querySort, viewType } = this.state

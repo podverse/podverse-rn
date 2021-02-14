@@ -179,17 +179,19 @@ export class PlaylistScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('subscribe to playlist')
     if (wasAlerted) return
 
-    this.setState({ isSubscribing: true }, async () => {
-      try {
-        const subscribedPlaylistIds = await toggleSubscribeToPlaylist(id)
-        const isSubscribed = subscribedPlaylistIds.some((x: string) => x === id)
-        this.setState({
-          isSubscribed,
-          isSubscribing: false
-        })
-      } catch (error) {
-        this.setState({ isSubscribing: false })
-      }
+    this.setState({ isSubscribing: true }, () => {
+      (async () => {
+        try {
+          const subscribedPlaylistIds = await toggleSubscribeToPlaylist(id)
+          const isSubscribed = subscribedPlaylistIds.some((x: string) => x === id)
+          this.setState({
+            isSubscribed,
+            isSubscribing: false
+          })
+        } catch (error) {
+          this.setState({ isSubscribing: false })
+        }
+      })()
     })
   }
 

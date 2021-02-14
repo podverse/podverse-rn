@@ -125,28 +125,34 @@ export class SettingsScreen extends React.Component<Props, State> {
       }
     })
 
-    this.setState({ downloadingWifiOnly: value }, async () => {
-      value
-        ? await AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
-        : await AsyncStorage.removeItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
+    this.setState({ downloadingWifiOnly: value }, () => {
+      (async () => {
+        value
+          ? await AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
+          : await AsyncStorage.removeItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
+      })()
     })
   }
 
   _toggleAutoDeleteEpisodeOnEnd = (value: boolean) => {
-    this.setState({ autoDeleteEpisodeOnEnd: value }, async () => {
-      value
-        ? await AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE')
-        : await AsyncStorage.removeItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+    this.setState({ autoDeleteEpisodeOnEnd: value }, () => {
+      (async () => {
+        value
+          ? await AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE')
+          : await AsyncStorage.removeItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END)
+      })()
     })
   }
 
   _setMaximumSpeed = (value: string) => {
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
     const maximumSpeedOptionSelected = maximumSpeedSelectOptions.find((x: any) => x.value === value) || placeholderItem
-    this.setState({ maximumSpeedOptionSelected }, async () => {
-      value
-        ? await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, value.toString())
-        : await AsyncStorage.removeItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
+    this.setState({ maximumSpeedOptionSelected }, () => {
+      (async () => {
+        value
+          ? await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, value.toString())
+          : await AsyncStorage.removeItem(PV.Keys.PLAYER_MAXIMUM_SPEED)
+      })()
     })
   }
 
@@ -162,10 +168,12 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   _handleSelectDownloadedEpisodeLimitDefault = (value: boolean) => {
-    this.setState({ downloadedEpisodeLimitDefault: value }, async () => {
-      await setDownloadedEpisodeLimitGlobalDefault(value)
-      this._handleToggleSetAllDownloadDialog()
-      this.setGlobal({ downloadedEpisodeLimitDefault: value })
+    this.setState({ downloadedEpisodeLimitDefault: value }, () => {
+      (async () => {
+        await setDownloadedEpisodeLimitGlobalDefault(value)
+        this._handleToggleSetAllDownloadDialog()
+        this.setGlobal({ downloadedEpisodeLimitDefault: value })
+      })()
     })
   }
 
@@ -232,13 +240,15 @@ export class SettingsScreen extends React.Component<Props, State> {
             {
               isLoading: true
             },
-            async () => {
-              try {
-                await clearHistoryItems()
-                this.setState({ isLoading: false })
-              } catch (error) {
-                this.setState({ isLoading: false })
-              }
+            () => {
+              (async () => {
+                try {
+                  await clearHistoryItems()
+                  this.setState({ isLoading: false })
+                } catch (error) {
+                  this.setState({ isLoading: false })
+                }
+              })()
             }
           )
         }
@@ -258,14 +268,16 @@ export class SettingsScreen extends React.Component<Props, State> {
         isLoading: true,
         showDeleteDownloadedEpisodesDialog: false
       },
-      async () => {
-        try {
-          await removeAllDownloadedPodcasts()
-        } catch (error) {
-          //
-        }
-        DownloadState.updateDownloadedPodcasts()
-        this.setState({ isLoading: false })
+      () => {
+        (async () => {
+          try {
+            await removeAllDownloadedPodcasts()
+          } catch (error) {
+            //
+          }
+          DownloadState.updateDownloadedPodcasts()
+          this.setState({ isLoading: false })
+        })()
       }
     )
   }

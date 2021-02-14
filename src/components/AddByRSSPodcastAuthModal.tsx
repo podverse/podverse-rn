@@ -49,25 +49,27 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
   }
 
   login = () => {
-    this.setState({ isLoading: true }, async () => {
-      try {
-        const { navigation } = this.props
-        const { parser } = this.global
-        const { feedUrl } = parser.addByRSSPodcastAuthModal
-        const { password, username } = this.state
-        const credentials = `${username}:${password}`
-        const addByRSSSucceeded = await addAddByRSSPodcastWithCredentials(feedUrl, credentials)
-        this.setState({ isLoading: false })
-
-        if (addByRSSSucceeded) {
-          const podcast = await getAddByRSSPodcastLocally(feedUrl)
-          clearAddByRSSPodcastAuthModalState()
-          navigateToPodcastScreenWithItem(navigation, podcast)
+    this.setState({ isLoading: true }, () => {
+      (async () => {
+        try {
+          const { navigation } = this.props
+          const { parser } = this.global
+          const { feedUrl } = parser.addByRSSPodcastAuthModal
+          const { password, username } = this.state
+          const credentials = `${username}:${password}`
+          const addByRSSSucceeded = await addAddByRSSPodcastWithCredentials(feedUrl, credentials)
+          this.setState({ isLoading: false })
+  
+          if (addByRSSSucceeded) {
+            const podcast = await getAddByRSSPodcastLocally(feedUrl)
+            clearAddByRSSPodcastAuthModalState()
+            navigateToPodcastScreenWithItem(navigation, podcast)
+          }
+        } catch (error) {
+          console.log('_handleSavePodcastByRSSURL', error)
+          this.setState({ isLoading: false })
         }
-      } catch (error) {
-        console.log('_handleSavePodcastByRSSURL', error)
-        this.setState({ isLoading: false })
-      }
+      })()
     })
   }
 

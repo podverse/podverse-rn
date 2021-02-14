@@ -72,29 +72,31 @@ export class EditProfileScreen extends React.Component<Props, State> {
       {
         isLoading: true
       },
-      async () => {
-        try {
-          const { name, selectedIsPublicKey } = this.state
-          const { id } = this.global.session.userInfo
-          await updateLoggedInUser(
-            {
-              id,
-              isPublic: selectedIsPublicKey,
-              name
-            },
-            this.global
-          )
-          this.props.navigation.goBack(null)
-        } catch (error) {
-          if (error.response) {
-            Alert.alert(
-              PV.Alerts.SOMETHING_WENT_WRONG.title,
-              PV.Alerts.SOMETHING_WENT_WRONG.message,
-              PV.Alerts.BUTTONS.OK
+      () => {
+        (async () => {
+          try {
+            const { name, selectedIsPublicKey } = this.state
+            const { id } = this.global.session.userInfo
+            await updateLoggedInUser(
+              {
+                id,
+                isPublic: selectedIsPublicKey,
+                name
+              },
+              this.global
             )
+            this.props.navigation.goBack(null)
+          } catch (error) {
+            if (error.response) {
+              Alert.alert(
+                PV.Alerts.SOMETHING_WENT_WRONG.title,
+                PV.Alerts.SOMETHING_WENT_WRONG.message,
+                PV.Alerts.BUTTONS.OK
+              )
+            }
           }
-        }
-        this.setState({ isLoading: false })
+          this.setState({ isLoading: false })
+        })()
       }
     )
   }

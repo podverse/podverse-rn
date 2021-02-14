@@ -62,7 +62,7 @@ const syncNowPlayingItemWithTrack = () => {
       if (currentNowPlayingItem) {
         await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
       }
-    })
+    })()
   }
 
   setTimeout(sync, 1000)
@@ -267,7 +267,7 @@ const handlePlayerClipLoaded = () => {
       const resolveImmediately = true
       await debouncedSetPlaybackPosition(nowPlayingItem.clipStartTime, nowPlayingItem.clipId, resolveImmediately)
     }
-  })
+  })()
 }
 
 const debouncedHandlePlayerClipLoaded = debounce(handlePlayerClipLoaded, 1000)
