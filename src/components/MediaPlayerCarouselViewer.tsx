@@ -1,4 +1,12 @@
-import { Alert, Linking, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import {
+  Alert,
+  Dimensions,
+  Linking,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View as RNView
+} from 'react-native'
 import TextTicker from 'react-native-text-ticker'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
@@ -91,7 +99,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             )
           )}
         </RNView>
-        <RNView style={styles.carouselImageWrapper}>
+        <RNView style={[styles.carouselImageWrapper, { width: width * 0.9 }]}>
           <TouchableOpacity
             activeOpacity={1}
             {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
@@ -127,20 +135,18 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
 const styles = StyleSheet.create({
   outerWrapper: {
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 10
   },
   carouselTextTopWrapper: {
     justifyContent: 'flex-end',
-    marginBottom: 10,
-    flex: 15
+    marginBottom: 10
   },
   carouselImageWrapper: {
     alignItems: 'center',
-    flex: 70
+    height: '70%'
   },
-  carouselChapterWrapper: {
-    flex: 15
-  },
+  carouselChapterWrapper: {},
   imageContainer: {
     width: '100%',
     height: '100%'
