@@ -113,7 +113,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     }
 
     let playButtonIcon = <Icon name='play' size={20} testID='player_controls_play_button' />
-    let playButtonAdjust = { paddingLeft: 2, marginHorizontal: 5 } as any
+    let playButtonAdjust = { paddingLeft: 2 } as any
     if (playbackState === PVTrackPlayer.STATE_PLAYING) {
       playButtonIcon = <Icon name='pause' size={20} testID='player_controls_pause_button' />
       playButtonAdjust = {}
