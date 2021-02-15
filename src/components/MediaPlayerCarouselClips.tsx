@@ -6,6 +6,7 @@ import { getSelectedFromLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRefs } from '../services/mediaRef'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from './'
@@ -26,6 +27,11 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
 
   componentDidMount() {
     this._selectQueryFrom(PV.Filters._fromThisEpisodeKey)
+    PVEventEmitter.on(PV.Events.PLAYER_TRACK_CHANGED, () => this._selectQueryFrom(PV.Filters._fromThisEpisodeKey))
+  }
+
+  componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYER_TRACK_CHANGED)
   }
 
   _selectQueryFrom = (selectedKey: string) => {
