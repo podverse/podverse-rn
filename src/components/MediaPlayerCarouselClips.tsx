@@ -31,7 +31,8 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   }
 
   componentWillUnmount() {
-    PVEventEmitter.removeListener(PV.Events.PLAYER_TRACK_CHANGED)
+    PVEventEmitter.removeListener(
+      PV.Events.PLAYER_TRACK_CHANGED, () => this._selectQueryFrom(PV.Filters._fromThisEpisodeKey))
   }
 
   _selectQueryFrom = (selectedKey: string) => {
