@@ -30,8 +30,12 @@ type State = {
 const testIDPrefix = 'add_podcast_by_rss_screen'
 
 export class AddPodcastByRSSScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    return {
+  constructor(props: Props) {
+    super(props)
+    this.state = {}
+  }
+
+  static navigationOptions = ({ navigation }) => ({
       title: translate('Add Custom RSS Feed'),
       headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
       headerRight: () => (
@@ -42,15 +46,9 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
           text={translate('Save')}
         />
       )
-    }
-  }
+    })
 
-  constructor(props: Props) {
-    super(props)
-    this.state = {}
-  }
-
-  async componentDidMount() {
+  componentDidMount() {
     this.props.navigation.setParams({
       _handleSavePodcastByRSSURL: this._handleSavePodcastByRSSURL
     })
@@ -58,7 +56,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
     trackPageView('/add-custom-rss-feed', 'Add Custom RSS Feed Screen')
   }
 
-  _navToRequestPodcastForm = async () => {
+  _navToRequestPodcastForm = () => {
     Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
       { text: translate('Cancel') },
       { text: translate('Yes'), onPress: () => Linking.openURL(PV.URLs.requestPodcast) }
@@ -69,34 +67,36 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
     this.setState({ url: value })
   }
 
-  _handleSavePodcastByRSSURL = async () => {
+  _handleSavePodcastByRSSURL = () => {
     const { isLoading, url } = this.state
     if (isLoading) {
       return
     } else if (url) {
       this.props.navigation.setParams({ _savePodcastByRSSUrlIsLoading: true })
-      this.setState({ isLoading: true }, async () => {
-        try {
-          const addByRSSSucceeded = await addAddByRSSPodcast(url)
-          this.setState({ isLoading: false })
-
-          if (addByRSSSucceeded) {
+      this.setState({ isLoading: true }, () => {
+        (async () => {
+          try {
+            const addByRSSSucceeded = await addAddByRSSPodcast(url)
+            this.setState({ isLoading: false })
+  
+            if (addByRSSSucceeded) {
+              this.props.navigation.setParams({
+                _savePodcastByRSSUrlIsLoading: false
+              })
+              const podcast = await getAddByRSSPodcastLocally(url)
+              this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
+                podcast,
+                addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
+              })
+            }
+          } catch (error) {
+            console.log('_handleSavePodcastByRSSURL', error)
             this.props.navigation.setParams({
               _savePodcastByRSSUrlIsLoading: false
             })
-            const podcast = await getAddByRSSPodcastLocally(url)
-            this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
-              podcast,
-              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
-            })
+            this.setState({ isLoading: false })
           }
-        } catch (error) {
-          console.log('_handleSavePodcastByRSSURL', error)
-          this.props.navigation.setParams({
-            _savePodcastByRSSUrlIsLoading: false
-          })
-          this.setState({ isLoading: false })
-        }
+        })()
       })
     }
   }
@@ -106,7 +106,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.content} {...testProps('add_podcast_by_rss_screen_view')}>
-        {isLoading && <ActivityIndicator fillSpace={true} />}
+        {isLoading && <ActivityIndicator fillSpace />}
         {!isLoading && (
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <TextInput

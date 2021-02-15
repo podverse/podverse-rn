@@ -211,7 +211,7 @@ const removeAddByRSSPodcastCredentials = async (feedUrl: string) => {
 }
 
 export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string) => {
-  const userAgent = await getAppUserAgent()
+  const userAgent = getAppUserAgent()
 
   const Authorization = credentials ? `Basic ${btoa(credentials)}` : ''
 

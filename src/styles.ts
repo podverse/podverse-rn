@@ -616,14 +616,6 @@ export const core = StyleSheet.create({
   }
 })
 
-export const hidePickerIconOnAndroidSectionSelector = (isDarkMode: boolean) => {
-  return {
-    // inputAndroidContainer: {
-    //   backgroundColor: isDarkMode ? PV.Colors.grayDarker : PV.Colors.grayLighter
-    // }
-  }
-}
-
 export const hidePickerIconOnAndroidTransparent = (isDarkMode: boolean) => {
   return {
     inputAndroidContainer: {

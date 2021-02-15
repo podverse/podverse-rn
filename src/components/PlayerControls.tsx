@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, Image, ImageSourcePropType } from 'react-native'
 import React from 'reactn'
 import { PV } from '../resources'
 import {
@@ -12,8 +12,8 @@ import {
 import { playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
-import { ActivityIndicator, Icon, PlayerProgressBar, Text } from './'
 import { PlayerMoreActionSheet } from './PlayerMoreActionSheet'
+import { ActivityIndicator, Icon, PlayerProgressBar, Text, View as PVView } from './'
 
 type Props = {
   navigation: any
@@ -76,11 +76,11 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     debouncedPlayerJumpForward()
   }
 
-  _hidePlayerMoreActionSheet = async () => {
+  _hidePlayerMoreActionSheet = () => {
     this.setState({ showPlayerMoreActionSheet: false })
   }
 
-  _showPlayerMoreActionSheet = async () => {
+  _showPlayerMoreActionSheet = () => {
     this.setState({
       showPlayerMoreActionSheet: true
     })
@@ -88,6 +88,14 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
   _returnToBeginningOfTrack = async () => {
     await setPlaybackPosition(0)
+  }
+
+  _renderPlayerControlIcon = (source: ImageSourcePropType, testID?: string) => {
+    return (
+      <PVView style={styles.iconContainer} transparent testID={testID}>
+        <Image source={source} resizeMode='contain' style={styles.icon} />
+      </PVView>
+    )
   }
 
   render() {
@@ -142,13 +150,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             <TouchableOpacity
               onPress={this._returnToBeginningOfTrack}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
-              <Icon name='step-backward' size={35} testID='player_controls_previous_track' />
+              {this._renderPlayerControlIcon(PV.Images.PREV_TRACK,'player_controls_previous_track')}
             </TouchableOpacity>
             <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
-              <Icon name='undo-alt' size={35} testID='player_controls_jump_backward' />
-              {/* <View style={styles.skipTimeTextWrapper}>
+              {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, 'player_controls_jump_backward')}
+              <View style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>30</Text>
-              </View> */}
+              </View>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => togglePlay(this.global)}
@@ -165,20 +173,20 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               )}
             </TouchableOpacity>
             <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
-              <Icon name='redo-alt' size={35} testID='player_controls_step_forward' />
-              {/* <View style={styles.skipTimeTextWrapper}>
+              {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD,'player_controls_step_forward')}
+              <View style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>30</Text>
-              </View> */}
+              </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={playNextFromQueue} style={[playerStyles.icon, { flexDirection: 'row' }]}>
-              <Icon name='step-forward' size={35} testID='player_controls_skip_track' />
+              {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK,'player_controls_skip_track')}
             </TouchableOpacity>
           </View>
         </View>
         <View style={styles.playerControlsBottomRow}>
           <TouchableOpacity hitSlop={hitSlop} onPress={this._navToStopWatchScreen}>
             <View style={styles.playerControlsBottomButton}>
-              <Icon name='moon' size={20} solid={true} testID='player_controls_sleep_timer' />
+              <Icon name='moon' size={20} solid testID='player_controls_sleep_timer' />
             </View>
           </TouchableOpacity>
           <TouchableWithoutFeedback hitSlop={hitSlop} onPress={this._adjustSpeed}>
@@ -252,7 +260,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   skipTimeText: {
-    fontSize: 11
+    fontSize: 14
   },
   speed: {
     alignItems: 'center',
@@ -265,5 +273,14 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     borderTopWidth: 1
+  },
+  iconContainer: {
+    width: 45,
+    height: 45
+  },
+  icon: {
+    tintColor: PV.Colors.white,
+    width: '100%',
+    height: '100%'
   }
 })

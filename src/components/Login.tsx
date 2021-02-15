@@ -1,11 +1,10 @@
-import { ActivityIndicator, Dimensions, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
+import { Dimensions, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
-import { Button, TextInput } from '.'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
+import { Button, TextInput } from '.'
 
 type Props = {
   bottomButtons: any
@@ -87,7 +86,7 @@ export class Login extends React.Component<Props, State> {
             this.secondTextInput = input
           }}
           returnKeyType='done'
-          secureTextEntry={true}
+          secureTextEntry
           testID={`${testIDPrefix}_password`}
           value={password}
           underlineColorAndroid='transparent'

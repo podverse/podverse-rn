@@ -129,7 +129,7 @@ export const initDownloads = async () => {
   }, 1000)
 }
 
-export const updateAutoDownloadSettings = async (podcastId: string, autoDownloadOn: boolean) => {
+export const updateAutoDownloadSettings = (podcastId: string, autoDownloadOn: boolean) => {
   const { autoDownloadSettings } = getGlobal()
   autoDownloadSettings[podcastId] = autoDownloadOn
 
@@ -161,7 +161,7 @@ export const updateDownloadedPodcasts = async (cb?: any) => {
   )
 }
 
-export const addDownloadTask = async (downloadTask: DownloadTaskState) => {
+export const addDownloadTask = (downloadTask: DownloadTaskState) => {
   const { downloadsActive, downloadsArray } = getGlobal()
 
   if (!downloadsArray.some((x: any) => x.episodeId === downloadTask.episodeId)) {

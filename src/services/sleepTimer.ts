@@ -50,13 +50,15 @@ export const startSleepTimer = async () => {
 
   timeRemaining = seconds
 
-  sleepTimerInterval = setInterval(async () => {
-    const seconds = getSleepTimerTimeRemaining()
-    timeRemaining = seconds - 1
-
-    if (timeRemaining <= 0) {
-      await handleSleepTimerReachedEnd()
-    }
+  sleepTimerInterval = setInterval(() => {
+    (async () => {
+      const seconds = getSleepTimerTimeRemaining()
+      timeRemaining = seconds - 1
+      
+      if (timeRemaining <= 0) {
+        await handleSleepTimerReachedEnd()
+      }
+    })()
   }, 1000)
 }
 

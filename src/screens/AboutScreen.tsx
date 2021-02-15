@@ -9,16 +9,12 @@ import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { button } from '../styles'
 
-type Props = {}
+type Props = any
 
-type State = {}
-
-export class AboutScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
-      title: translate('About brandName')
-    }
-  }
+export class AboutScreen extends React.Component<Props> {
+  static navigationOptions = () => ({
+    title: translate('About brandName')
+  })
 
   componentDidMount() {
     trackPageView('/about', 'About Screen')

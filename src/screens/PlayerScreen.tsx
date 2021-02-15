@@ -39,12 +39,16 @@ type Props = {
   navigation?: any
 }
 
-type State = {}
-
 const testIDPrefix = 'player_screen'
 
 let eventListenerPlayerNewEpisodeLoaded: any
-export class PlayerScreen extends React.Component<Props, State> {
+export class PlayerScreen extends React.Component<Props> {
+  constructor(props: Props) {
+    super(props)
+
+    this.state = {}
+  }
+
   static navigationOptions = ({ navigation }) => {
     const _getEpisodeId = navigation.getParam('_getEpisodeId')
     const _getMediaRefId = navigation.getParam('_getMediaRefId')
@@ -79,16 +83,10 @@ export class PlayerScreen extends React.Component<Props, State> {
               <NavShareIcon globalTheme={globalTheme} handlePress={_showShareActionSheet} />
             </RNView>
           )}
-          <NavQueueIcon globalTheme={globalTheme} isTransparent={true} navigation={navigation} showBackButton={true} />
+          <NavQueueIcon globalTheme={globalTheme} isTransparent navigation={navigation} showBackButton />
         </RNView>
       )
     }
-  }
-
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {}
   }
 
   async componentDidMount() {
@@ -124,7 +122,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleNewEpisodeLoaded = async () => {
+  _handleNewEpisodeLoaded = () => {
     setTimeout(() => {
       this._handleUpdateFullEpisode()
     }, 5000)
@@ -292,7 +290,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     return (
       <React.Fragment>
         <OpaqueBackground imageUrl={imageUrl}>
-          <View style={styles.view} transparent={true} {...testProps('player_screen_view')}>
+          <View style={styles.view} transparent {...testProps('player_screen_view')}>
             <MediaPlayerCarousel hasChapters={hasChapters} navigation={navigation} />
             <PlayerControls navigation={navigation} />
             <ActionSheet
@@ -315,12 +313,12 @@ const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefI
     {
       key: 'podcast',
       text: translate('Podcast'),
-      onPress: async () => handleShare(podcastId, null, null)
+      onPress: () => handleShare(podcastId, null, null)
     },
     {
       key: 'episode',
       text: translate('Episode'),
-      onPress: async () => handleShare(null, episodeId, null)
+      onPress: () => handleShare(null, episodeId, null)
     }
   ]
 
@@ -328,7 +326,7 @@ const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefI
     items.push({
       key: 'clip',
       text: translate('Clip'),
-      onPress: async () => handleShare(null, null, mediaRefId)
+      onPress: () => handleShare(null, null, mediaRefId)
     })
   }
 

@@ -11,9 +11,7 @@ type Props = {
   nowPlayingItem: NowPlayingItem
 }
 
-type State = {}
-
-export class PlayerClipInfoBar extends React.PureComponent<Props, State> {
+export class PlayerClipInfoBar extends React.PureComponent<Props> {
   render() {
     const { handleOnPress, nowPlayingItem } = this.props
     const { clipEndTime, clipStartTime } = nowPlayingItem
@@ -31,7 +29,7 @@ export class PlayerClipInfoBar extends React.PureComponent<Props, State> {
           {!!clipStartTime && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              isSecondary={true}
+              isSecondary
               numberOfLines={1}
               style={[styles.time, globalTheme.playerText]}>
               {readableClipTime(clipStartTime, clipEndTime)}

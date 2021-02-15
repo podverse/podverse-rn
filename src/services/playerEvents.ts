@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
@@ -47,7 +46,7 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   updateUserPlaybackPosition()
 }
 
-const syncNowPlayingItemWithTrack = async () => {
+const syncNowPlayingItemWithTrack = () => {
   // The first setTimeout is an attempt to prevent the following:
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
   // - Sometimes the debouncedSetPlaybackPosition seems to load with the previous track's playback position,
@@ -56,99 +55,106 @@ const syncNowPlayingItemWithTrack = async () => {
   // before playing from the clip start. Hopefully we can iron this out sometime...
   // - The second timeout is called in case something was out of sync previously from getCurrentTrack
   // or getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId...
-  async function sync() {
-    const currentTrackId = await PVTrackPlayer.getCurrentTrack()
-    const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentTrackId)
-    if (currentNowPlayingItem) {
-      await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
-    }
+  function sync() {
+    (async () => {
+      const currentTrackId = await PVTrackPlayer.getCurrentTrack()
+      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentTrackId)
+      if (currentNowPlayingItem) {
+        await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
+      }
+    })()
   }
 
   setTimeout(sync, 1000)
 }
 
-const handleQueueEnded = async (x: any) => {
-  setTimeout(async () => {
-    hideMiniPlayer()
-
-    if (x && x.track) {
-      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(x.track)
-      if (currentNowPlayingItem) {
-        await addOrUpdateHistoryItem(currentNowPlayingItem, 0, currentNowPlayingItem.mediaFileDuration || 0)
+const handleQueueEnded = (x: any) => {
+  setTimeout(() => {
+    (async () => {
+      hideMiniPlayer()
+      
+      if (x && x.track) {
+        const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(x.track)
+        if (currentNowPlayingItem) {
+          await addOrUpdateHistoryItem(currentNowPlayingItem, 0, currentNowPlayingItem.mediaFileDuration || 0)
+        }
       }
-    }
-
-    // Don't call reset on Android because it triggers the playback-queue-ended event
-    // and will cause an infinite loop
-    if (Platform.OS === 'ios') {
-      PVTrackPlayer.reset()
-    }
+      
+      // Don't call reset on Android because it triggers the playback-queue-ended event
+      // and will cause an infinite loop
+      if (Platform.OS === 'ios') {
+        PVTrackPlayer.reset()
+      }
+    })()
   }, 0)
 }
 
+// eslint-disable-next-line @typescript-eslint/require-await
 module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
 
   // NOTE: TrackPlayer.reset will call the playback-queue-ended event on Android!!!
-  PVTrackPlayer.addEventListener('playback-queue-ended', async (x) => {
+  PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
     console.log('playback-queue-ended', x)
-    await syncNowPlayingItemWithTrack()
+    syncNowPlayingItemWithTrack()
     handleQueueEnded(x)
   })
 
-  PVTrackPlayer.addEventListener('playback-state', async (x) => {
-    console.log('playback-state', x)
+  PVTrackPlayer.addEventListener('playback-state', (x) => {
+    (async () => {
+      console.log('playback-state', x)
 
-    PVEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
+      PVEventEmitter.emit(PV.Events.PLAYER_STATE_CHANGED)
 
-    const clipHasEnded = await getClipHasEnded()
-    const nowPlayingItem = await getNowPlayingItemLocally()
+      const clipHasEnded = await getClipHasEnded()
+      const nowPlayingItem = await getNowPlayingItemLocally()
 
-    if (nowPlayingItem) {
-      const { clipEndTime } = nowPlayingItem
-      const currentPosition = await PVTrackPlayer.getPosition()
-      const currentState = await PVTrackPlayer.getState()
-      const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
+      if (nowPlayingItem) {
+        const { clipEndTime } = nowPlayingItem
+        const currentPosition = await PVTrackPlayer.getPosition()
+        const currentState = await PVTrackPlayer.getState()
+        const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
 
-      const shouldHandleAfterClip = clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying
-      if (shouldHandleAfterClip) {
-        await handleResumeAfterClipHasEnded()
-      } else {
-        if (Platform.OS === 'ios') {
-          if (x.state === PVTrackPlayer.STATE_PLAYING) {
-            updateUserPlaybackPosition()
-            const rate = await getPlaybackSpeed()
-            PVTrackPlayer.setRate(rate)
-          } else if (x.state === PVTrackPlayer.STATE_PAUSED || PVTrackPlayer.STATE_STOPPED) {
-            updateUserPlaybackPosition()
-          }
-        } else if (Platform.OS === 'android') {
-          /*
-            state key for android
-            NOTE: ready and pause use the same number, so there is no true ready state for Android :[
-            none      0
-            stopped   1
-            paused    2
-            playing   3
-            ready     2
-            buffering 6
-            ???       8
-          */
-          const stopped = 1
-          const paused = 2
-          const playing = 3
-          if (x.state === playing) {
-            const rate = await getPlaybackSpeed()
-            PVTrackPlayer.setRate(rate)
-          } else if (x.state === paused || x.state === stopped) {
-            updateUserPlaybackPosition()
+        const shouldHandleAfterClip = clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying
+        if (shouldHandleAfterClip) {
+          await handleResumeAfterClipHasEnded()
+        } else {
+          if (Platform.OS === 'ios') {
+            if (x.state === PVTrackPlayer.STATE_PLAYING) {
+              updateUserPlaybackPosition()
+              const rate = await getPlaybackSpeed()
+              PVTrackPlayer.setRate(rate)
+            } else if (x.state === PVTrackPlayer.STATE_PAUSED || PVTrackPlayer.STATE_STOPPED) {
+              updateUserPlaybackPosition()
+            }
+          } else if (Platform.OS === 'android') {
+            /*
+              state key for android
+              NOTE: ready and pause use the same number, so there is no true ready state for Android :[
+              none      0
+              stopped   1
+              paused    2
+              playing   3
+              ready     2
+              buffering 6
+              ???       8
+            */
+            const stopped = 1
+            const paused = 2
+            const playing = 3
+            if (x.state === playing) {
+              const rate = await getPlaybackSpeed()
+              PVTrackPlayer.setRate(rate)
+            } else if (x.state === paused || x.state === stopped) {
+              updateUserPlaybackPosition()
+            }
           }
         }
       }
-    }
+    })()
   })
 
-  PVTrackPlayer.addEventListener('playback-track-changed', async (x: any) => {
+  PVTrackPlayer.addEventListener('playback-track-changed', (x: any) => {
     console.log('playback-track-changed', x)
     syncNowPlayingItemWithTrack()
   })
@@ -159,21 +165,25 @@ module.exports = async () => {
     PVEventEmitter.emit(PV.Events.PLAYER_PLAYBACK_ERROR)
   })
 
-  PVTrackPlayer.addEventListener('remote-jump-backward', () => playerJumpBackward(PV.Player.jumpSeconds))
+  PVTrackPlayer.addEventListener('remote-jump-backward', () => {
+    playerJumpBackward(PV.Player.jumpSeconds)
+  })
 
-  PVTrackPlayer.addEventListener('remote-jump-forward', () => playerJumpForward(PV.Player.jumpSeconds))
+  PVTrackPlayer.addEventListener('remote-jump-forward', () => {
+    playerJumpForward(PV.Player.jumpSeconds)
+  })
 
   PVTrackPlayer.addEventListener('remote-pause', () => {
     PVTrackPlayer.pause()
     updateUserPlaybackPosition()
   })
 
-  PVTrackPlayer.addEventListener('remote-play', async () => {
+  PVTrackPlayer.addEventListener('remote-play', () => {
     PVTrackPlayer.play()
     updateUserPlaybackPosition()
   })
 
-  PVTrackPlayer.addEventListener('remote-seek', async (data) => {
+  PVTrackPlayer.addEventListener('remote-seek', (data) => {
     if (data.position || data.position >= 0) {
       PVTrackPlayer.seekTo(Math.floor(data.position))
     }
@@ -184,74 +194,80 @@ module.exports = async () => {
     PVEventEmitter.emit(PV.Events.PLAYER_REMOTE_STOP)
   })
 
-  PVTrackPlayer.addEventListener('remote-duck', async (x: any) => {
-    const { paused, permanent } = x
-
-    // This remote-duck behavior for some Android users was causing playback to resume
-    // after receiving any notification, even when the player was paused.
-    if (Platform.OS === 'ios') {
-      // iOS triggers remote-duck with permanent: true when the player app returns to foreground,
-      // but only in case the track was paused before app going to background,
-      // so we need to check if the track is playing before making it stop or pause
-      // as a result of remote-duck.
-      // Thanks to nesinervink and bakkerjoeri for help resolving this issue:
-      // https://github.com/react-native-kit/react-native-track-player/issues/687#issuecomment-660149163
-      const currentState = await PVTrackPlayer.getState()
-      const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
-      if (permanent && isPlaying) {
-        PVTrackPlayer.stop()
-      } else if (paused) {
-        PVTrackPlayer.pause()
-      } else if (!permanent) {
-        PVTrackPlayer.play()
+  PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
+    (async () => {
+      const { paused, permanent } = x
+      
+      // This remote-duck behavior for some Android users was causing playback to resume
+      // after receiving any notification, even when the player was paused.
+      if (Platform.OS === 'ios') {
+        // iOS triggers remote-duck with permanent: true when the player app returns to foreground,
+        // but only in case the track was paused before app going to background,
+        // so we need to check if the track is playing before making it stop or pause
+        // as a result of remote-duck.
+        // Thanks to nesinervink and bakkerjoeri for help resolving this issue:
+        // https://github.com/react-native-kit/react-native-track-player/issues/687#issuecomment-660149163
+        const currentState = await PVTrackPlayer.getState()
+        const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
+        if (permanent && isPlaying) {
+          PVTrackPlayer.stop()
+        } else if (paused) {
+          PVTrackPlayer.pause()
+        } else if (!permanent) {
+          PVTrackPlayer.play()
+        }
       }
-    }
+    })()
   })
 }
 
 let handleClipEndInterval = null as any
 // Background timer handling from
 // https://github.com/ocetnik/react-native-background-timer/issues/122
-const handlePlayerClipLoaded = async () => {
-  console.log('PLAYER_CLIP_LOADED event')
-
-  const stopHandleClipEndInterval = async () => {
-    if (Platform.OS === 'android') {
-      BackgroundTimer.stopBackgroundTimer()
-    }
-    if (handleClipEndInterval) {
-      BackgroundTimer.clearInterval(handleClipEndInterval)
-    }
-    BackgroundTimer.stop()
-  }
-
-  await stopHandleClipEndInterval()
-
-  const nowPlayingItem = await getNowPlayingItemLocally()
-
-  if (nowPlayingItem) {
-    const { clipEndTime, clipId } = nowPlayingItem
-
-    const checkEndTime = async () => {
-      const currentPosition = await PVTrackPlayer.getPosition()
-      if (currentPosition > clipEndTime) {
-        PVTrackPlayer.pause()
-        await setClipHasEnded(true)
-        stopHandleClipEndInterval()
-      }
-    }
-
-    if (clipId && clipEndTime) {
+const handlePlayerClipLoaded = () => {
+  (async () => {
+    console.log('PLAYER_CLIP_LOADED event')
+  
+    const stopHandleClipEndInterval = () => {
       if (Platform.OS === 'android') {
-        BackgroundTimer.runBackgroundTimer(checkEndTime, 500)
-      } else {
-        await BackgroundTimer.start()
-        handleClipEndInterval = BackgroundTimer.setInterval(checkEndTime, 500)
+        BackgroundTimer.stopBackgroundTimer()
       }
+      if (handleClipEndInterval) {
+        BackgroundTimer.clearInterval(handleClipEndInterval)
+      }
+      BackgroundTimer.stop()
     }
-    const resolveImmediately = true
-    await debouncedSetPlaybackPosition(nowPlayingItem.clipStartTime, nowPlayingItem.clipId, resolveImmediately)
-  }
+  
+    stopHandleClipEndInterval()
+  
+    const nowPlayingItem = await getNowPlayingItemLocally()
+  
+    if (nowPlayingItem) {
+      const { clipEndTime, clipId } = nowPlayingItem
+  
+      const checkEndTime = () => {
+        (async () => {
+          const currentPosition = await PVTrackPlayer.getPosition()
+          if (currentPosition > clipEndTime) {
+            PVTrackPlayer.pause()
+            await setClipHasEnded(true)
+            stopHandleClipEndInterval()
+          }
+        })()
+      }
+  
+      if (clipId && clipEndTime) {
+        if (Platform.OS === 'android') {
+          BackgroundTimer.runBackgroundTimer(checkEndTime, 500)
+        } else {
+          await BackgroundTimer.start()
+          handleClipEndInterval = BackgroundTimer.setInterval(checkEndTime, 500)
+        }
+      }
+      const resolveImmediately = true
+      await debouncedSetPlaybackPosition(nowPlayingItem.clipStartTime, nowPlayingItem.clipId, resolveImmediately)
+    }
+  })()
 }
 
 const debouncedHandlePlayerClipLoaded = debounce(handlePlayerClipLoaded, 1000)

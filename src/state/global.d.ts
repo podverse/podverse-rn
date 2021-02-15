@@ -1,5 +1,5 @@
 import 'reactn'
-import { GlobalTheme, InitialState, UserInfo } from '../resources/Interfaces'
+import { GlobalTheme, UserInfo } from '../resources/Interfaces'
 
 declare module 'reactn/default' {
   export interface State {

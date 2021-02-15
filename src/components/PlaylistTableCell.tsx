@@ -48,7 +48,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
             ) : (
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                isSecondary={true}
+                isSecondary
                 style={styles.itemCount}
                 testID={`${testID}_item_count`}>
                 {translate('items')} {itemCount}
@@ -59,7 +59,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
             <RNView style={styles.wrapperBottom}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                isSecondary={true}
+                isSecondary
                 style={styles.createdBy}
                 testID={`${testID}_created_by`}>
                 {translate('by')} {createdBy}

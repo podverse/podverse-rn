@@ -54,12 +54,12 @@ export const TimePicker = (props: Props) => {
         <View style={styles.pickerColumn}>
           <Picker
             enabled={!isActive}
-            itemStyle={[styles.number, globalTheme.text]}
+            itemStyle={[styles.timeNumber, globalTheme.text]}
             onValueChange={(itemValue) => {
               handleUpdateSleepTimer(itemValue, currentMinute, currentSecond)
             }}
             selectedValue={currentHour}
-            style={styles.numberColumn}>
+            style={styles.timeNumberColumn}>
             {hourItems}
           </Picker>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} style={[stylesText, globalTheme.text]}>
@@ -69,12 +69,12 @@ export const TimePicker = (props: Props) => {
         <View style={styles.pickerColumn}>
           <Picker
             enabled={!isActive}
-            itemStyle={[styles.number, globalTheme.text]}
+            itemStyle={[styles.timeNumber, globalTheme.text]}
             onValueChange={(itemValue) => {
               handleUpdateSleepTimer(currentHour, itemValue, currentSecond)
             }}
             selectedValue={currentMinute}
-            style={styles.numberColumn}>
+            style={styles.timeNumberColumn}>
             {minuteItems}
           </Picker>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} style={[stylesText, globalTheme.text]}>
@@ -84,12 +84,12 @@ export const TimePicker = (props: Props) => {
         <View style={styles.pickerColumn}>
           <Picker
             enabled={!isActive}
-            itemStyle={[styles.number, globalTheme.text]}
-            onValueChange={async (itemValue) => {
+            itemStyle={[styles.timeNumber, globalTheme.text]}
+            onValueChange={(itemValue) => {
               handleUpdateSleepTimer(currentHour, currentMinute, itemValue)
             }}
             selectedValue={currentSecond}
-            style={styles.numberColumn}>
+            style={styles.timeNumberColumn}>
             {secondItems}
           </Picker>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.xs} style={[stylesText, globalTheme.text]}>
@@ -102,14 +102,6 @@ export const TimePicker = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
-  number: {
-    fontSize: 28,
-    fontWeight: PV.Fonts.weights.bold
-  },
-  numberColumn: {
-    flex: 0,
-    height: 216
-  },
   pickerColumn: {
     flex: 1
   },
@@ -120,6 +112,14 @@ const styles = StyleSheet.create({
   text: {
     fontSize: PV.Fonts.sizes.xl,
     textAlign: 'center'
+  },
+  timeNumber: {
+    fontSize: 28,
+    fontWeight: PV.Fonts.weights.bold
+  },
+  timeNumberColumn: {
+    flex: 0,
+    height: 216
   },
   view: {
     flex: 0

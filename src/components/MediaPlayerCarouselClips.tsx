@@ -6,6 +6,7 @@ import { getSelectedFromLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRefs } from '../services/mediaRef'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from './'
@@ -15,24 +16,29 @@ type Props = {
   width: number
 }
 
-type State = {}
+const getTestID = () => 'media_player_carousel_clips'
 
-const getTestID = () => {
-  return 'media_player_carousel_clips'
-}
-
-export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> {
+export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   constructor(props) {
     super(props)
 
     this.state = {}
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    this._selectQueryFrom(PV.Filters._fromThisEpisodeKey)
+    PVEventEmitter.on(PV.Events.PLAYER_TRACK_CHANGED, this._selectEpisodeQuery)
+  }
+
+  componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYER_TRACK_CHANGED, this._selectEpisodeQuery)
+  }
+
+  _selectEpisodeQuery = () => {
     this._selectQueryFrom(PV.Filters._fromThisEpisodeKey)
   }
 
-  _selectQueryFrom = async (selectedKey: string) => {
+  _selectQueryFrom = (selectedKey: string) => {
     if (!selectedKey) return
 
     const { querySort } = this.global.screenPlayer
@@ -71,7 +77,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
     )
   }
 
-  _selectQuerySort = async (selectedKey: string) => {
+  _selectQuerySort = (selectedKey: string) => {
     if (!selectedKey) return
 
     const selectedSortLabel = getSelectedSortLabel(selectedKey)
@@ -143,8 +149,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
     })
   }
 
-  _handleMoreCancelPress = () => {
-    return new Promise((resolve, reject) => {
+  _handleMoreCancelPress = () => new Promise((resolve) => {
       setGlobal(
         {
           screenPlayer: {
@@ -155,7 +160,6 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
         resolve
       )
     })
-  }
 
   _handleDownloadPressed = () => {
     const { selectedItem } = this.global.screenPlayer
@@ -183,20 +187,18 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
       <ClipTableCell
         item={item}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
-        hideImage={true}
+        hideImage
         showEpisodeInfo={queryFrom !== PV.Filters._fromThisEpisodeKey}
         showPodcastInfo={false}
         testID={`${testID}_item_${index}`}
-        transparent={true}
+        transparent
       />
     ) : (
       <></>
     )
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
-  }
+  _ItemSeparatorComponent = () => <Divider />
 
   render() {
     const { navigation, width } = this.props
@@ -220,12 +222,12 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
     const testID = getTestID()
 
     return (
-      <View style={[styles.wrapper, { width }]} transparent={true}>
+      <View style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors
           filterScreenTitle={translate('Clips')}
           handleSelectFromItem={this._selectQueryFrom}
           handleSelectSortItem={this._selectQuerySort}
-          includePadding={true}
+          includePadding
           navigation={navigation}
           screenName='PlayerScreen'
           selectedFilterLabel={selectedFromLabel}
@@ -233,14 +235,14 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
           selectedSortItemKey={querySort}
           selectedSortLabel={selectedSortLabel}
           testID={testID}
-          transparentDropdownButton={true}
+          transparentDropdownButton
         />
-        {isLoading || (isQuerying && <ActivityIndicator fillSpace={true} />)}
+        {isLoading || (isQuerying && <ActivityIndicator fillSpace />)}
         {!isLoading && !isQuerying && flatListData && (
           <FlatList
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
-            disableLeftSwipe={true}
+            disableLeftSwipe
             extraData={flatListData}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
@@ -249,7 +251,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props, State> 
             onEndReached={this._onEndReached}
             renderItem={this._renderItem}
             showNoInternetConnectionMessage={offlineModeEnabled || showNoInternetConnectionMessage}
-            transparent={true}
+            transparent
           />
         )}
         <ActionSheet

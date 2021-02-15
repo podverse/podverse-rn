@@ -6,7 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View as RNView
+  View as RNView,
+  Image,
+  ImageSourcePropType
 } from 'react-native'
 import Share from 'react-native-share'
 import React from 'reactn'
@@ -59,6 +61,26 @@ type State = {
 const testIDPrefix = 'make_clip_screen'
 
 export class MakeClipScreen extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props)
+    const { nowPlayingItem = {} } = this.global.player
+    const isEditing = this.props.navigation.getParam('isEditing')
+    const initialPrivacy = this.props.navigation.getParam('initialPrivacy')
+    const initialProgressValue = this.props.navigation.getParam('initialProgressValue')
+    const isLoggedIn = this.props.navigation.getParam('isLoggedIn')
+
+    const pItems = privacyItems()
+    this.state = {
+      endTime: isEditing ? nowPlayingItem.clipEndTime : null,
+      isLoggedIn,
+      ...(initialPrivacy ? { isPublicItemSelected: pItems[0] } : { isPublicItemSelected: pItems[1] }),
+      isSaving: false,
+      ...(isEditing ? { mediaRefId: nowPlayingItem.clipId } : {}),
+      progressValue: initialProgressValue || 0,
+      startTime: isEditing ? nowPlayingItem.clipStartTime : null
+    }
+  }
+
   static navigationOptions = ({ navigation }) => {
     const globalTheme = navigation.getParam('globalTheme')
     const isLoggedIn = navigation.getParam('isLoggedIn')
@@ -77,26 +99,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
           />
         </RNView>
       )
-    }
-  }
-
-  constructor(props: Props) {
-    super(props)
-    const { nowPlayingItem = {} } = this.global.player
-    const isEditing = this.props.navigation.getParam('isEditing')
-    const initialPrivacy = this.props.navigation.getParam('initialPrivacy')
-    const initialProgressValue = this.props.navigation.getParam('initialProgressValue')
-    const isLoggedIn = this.props.navigation.getParam('isLoggedIn')
-
-    const pItems = privacyItems()
-    this.state = {
-      endTime: isEditing ? nowPlayingItem.clipEndTime : null,
-      isLoggedIn,
-      ...(initialPrivacy ? { isPublicItemSelected: pItems[0] } : { isPublicItemSelected: pItems[1] }),
-      isSaving: false,
-      ...(isEditing ? { mediaRefId: nowPlayingItem.clipId } : {}),
-      progressValue: initialProgressValue || 0,
-      startTime: isEditing ? nowPlayingItem.clipStartTime : null
     }
   }
 
@@ -149,7 +151,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     this.setState({ title: text })
   }
 
-  _handleSelectPrivacy = async (selectedKey: string) => {
+  _handleSelectPrivacy = (selectedKey: string) => {
     const items = [placeholderItem, ...privacyItems()]
     const selectedItem = items.find((x) => x.value === selectedKey)
     if (selectedItem) {
@@ -243,71 +245,75 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
     const isEditing = this.props.navigation.getParam('isEditing')
 
-    this.setState({ isSaving: true }, async () => {
-      const data = {
-        ...(endTime ? { endTime } : {}),
-        episodeId: nowPlayingItem.episodeId,
-        ...(isEditing ? { id: mediaRefId } : {}),
-        ...(isPublicItemSelected.value === _publicKey ? { isPublic: true } : { isPublic: false }),
-        startTime,
-        title
-      }
-
-      try {
-        const mediaRef = isEditing ? await updateMediaRef(data) : await createMediaRef(data)
-        const url = this.global.urlsWeb.clip + mediaRef.id
-
-        if (isEditing) {
-          const newItem = {
-            ...nowPlayingItem,
-            clipEndTime: mediaRef.endTime,
-            clipStartTime: mediaRef.startTime,
-            clipTitle: mediaRef.title
+    this.setState({ isSaving: true }, () => {
+      (async () => {
+        const data = {
+          ...(endTime ? { endTime } : {}),
+          episodeId: nowPlayingItem.episodeId,
+          ...(isEditing ? { id: mediaRefId } : {}),
+          ...(isPublicItemSelected.value === _publicKey ? { isPublic: true } : { isPublic: false }),
+          startTime,
+          title
+        }
+  
+        try {
+          const mediaRef = isEditing ? await updateMediaRef(data) : await createMediaRef(data)
+  
+          if (isEditing) {
+            const newItem = {
+              ...nowPlayingItem,
+              clipEndTime: mediaRef.endTime,
+              clipStartTime: mediaRef.startTime,
+              clipTitle: mediaRef.title
+            }
+            const position = await PVTrackPlayer.getPosition()
+            await setNowPlayingItem(newItem, position || 0)
           }
-          const position = await PVTrackPlayer.getPosition()
-          await setNowPlayingItem(newItem, position || 0)
-        }
-
-        this.setState({ isSaving: false }, async () => {
-          // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
-          setTimeout(() => {
-            const alertText = isEditing ? translate('Clip Updated') : translate('Clip Created')
-            Alert.alert(alertText, url, [
-              {
-                text: translate('Done'),
-                onPress: () => {
-                  navigation.goBack(null)
-                }
-              },
-              {
-                text: translate('Share'),
-                onPress: async () => {
-                  const { nowPlayingItem = {} } = this.global.player
-                  const title = `${data.title || translate('Untitled Clip')} – ${nowPlayingItem.podcastTitle} – ${
-                    nowPlayingItem.episodeTitle
-                  }${translate('clip created using brandName')}`
-                  try {
-                    await Share.open({
-                      title,
-                      subject: title,
-                      url
-                    })
-                  } catch (error) {
-                    console.log(error)
+  
+          this.setState({ isSaving: false }, () => {
+            // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
+            setTimeout(() => {
+              const alertText = isEditing ? translate('Clip Updated') : translate('Clip Created')
+              const url = this.global.urlsWeb.clip + mediaRef.id
+              Alert.alert(alertText, url, [
+                {
+                  text: translate('Done'),
+                  onPress: () => {
+                    navigation.goBack(null)
                   }
-                  navigation.goBack(null)
+                },
+                {
+                  text: translate('Share'),
+                  onPress: async () => {
+                    // the url must be read from global again to ensure the correct state is used
+                    const url = this.global.urlsWeb.clip + mediaRef.id
+                    const { nowPlayingItem = {} } = this.global.player
+                    const title = `${data.title || translate('Untitled Clip')} – ${nowPlayingItem.podcastTitle} – ${
+                      nowPlayingItem.episodeTitle
+                    }${translate('clip created using brandName')}`
+                    try {
+                      await Share.open({
+                        title,
+                        subject: title,
+                        url
+                      })
+                    } catch (error) {
+                      console.log(error)
+                    }
+                    navigation.goBack(null)
+                  }
                 }
-              }
-            ])
-          }, 100)
-        })
-      } catch (error) {
-        if (error.response) {
-          Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, error.response.data.message, PV.Alerts.BUTTONS.OK)
+              ])
+            }, 100)
+          })
+        } catch (error) {
+          if (error.response) {
+            Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, error.response.data.message, PV.Alerts.BUTTONS.OK)
+          }
+          console.log(error)
         }
-        console.log(error)
-      }
-      this.setState({ isSaving: false })
+        this.setState({ isSaving: false })
+      })()
     })
   }
 
@@ -339,7 +345,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     setTimeout(() => this.setState({ progressValue: null }), 250)
   }
 
-  _showClipPrivacyNote = async () => {
+  _showClipPrivacyNote = () => {
     Alert.alert(translate('Clip Settings'), translate(`Only with Link means only people who`), [
       {
         text: translate('Premium Info'),
@@ -349,10 +355,18 @@ export class MakeClipScreen extends React.Component<Props, State> {
     ])
   }
 
+  _renderPlayerControlIcon = (source: ImageSourcePropType) => {
+    return (
+      <RNView style={styles.iconContainer}>
+        <Image source={source} resizeMode='contain' style={styles.icon} />
+      </RNView>
+    )
+  }
+
   render() {
     const { navigation } = this.props
     const { globalTheme, player } = this.global
-    const { backupDuration, nowPlayingItem, playbackRate, playbackState } = player
+    const { backupDuration, playbackRate, playbackState } = player
     const {
       endTime,
       isLoggedIn,
@@ -363,15 +377,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
       startTime,
       title
     } = this.state
-    const imageHeight = navigation.getParam('imageHeight')
-    const imageWidth = navigation.getParam('imageWidth')
-    const imageStyle = [styles.image, { height: imageHeight, width: imageWidth }]
 
     return (
       <SafeAreaView style={styles.viewContainer}>
-        <View style={styles.view} transparent={true} {...testProps('make_clip_screen_view')}>
+        <View style={styles.view} transparent {...testProps('make_clip_screen_view')}>
           <View style={styles.contentContainer}>
-            <View style={styles.wrapperTop} transparent={true}>
+            <View style={styles.wrapperTop} transparent>
               <TextInput
                 autoCapitalize='none'
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -396,15 +407,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
               value={isPublicItemSelected.value}
               wrapperStyle={styles.dropdownButtonSelectWrapper}
             />
-            <View style={styles.imageWrapper} transparent={true}>
-              <FastImage
-                resizeMode='contain'
-                source={nowPlayingItem && nowPlayingItem.podcastImageUrl}
-                styles={imageStyle}
-              />
-            </View>
-            <View style={styles.wrapperBottom} transparent={true}>
-              <View style={styles.wrapperBottomInside} transparent={true}>
+            <View style={styles.fillerView} transparent />
+            <View style={styles.wrapperBottom} transparent>
+              <View style={styles.wrapperBottomInside} transparent>
                 <TimeInput
                   handlePreview={() => {
                     if (startTime) {
@@ -417,7 +422,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   testID={`${testIDPrefix}_start`}
                   time={startTime}
                 />
-                <View style={styles.wrapperBottomInsideSpacer} transparent={true} />
+                <View style={styles.wrapperBottomInsideSpacer} transparent />
                 <TimeInput
                   handleClearTime={endTime ? this._clearEndTime : null}
                   handlePreview={() => {
@@ -432,8 +437,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   time={endTime}
                 />
               </View>
-              <View style={styles.clearEndTimeWrapper} transparent={true}>
-                <View style={styles.clearEndTimeTextSpacer} transparent={true} />
+              <View style={styles.clearEndTimeWrapper} transparent>
+                <View style={styles.clearEndTimeTextSpacer} transparent />
                 {endTime && (
                   <TouchableWithoutFeedback
                     hitSlop={{
@@ -448,30 +453,33 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   </TouchableWithoutFeedback>
                 )}
               </View>
-              <View style={[styles.wrapper, globalTheme.player]} transparent={true}>
-                <View style={styles.progressWrapper} transparent={true}>
+              <View style={[styles.wrapper, globalTheme.player]} transparent>
+                <View style={styles.progressWrapper} transparent>
                   <PlayerProgressBar
                     backupDuration={backupDuration}
                     clipEndTime={endTime}
                     clipStartTime={startTime}
                     globalTheme={globalTheme}
-                    isMakeClipScreen={true}
+                    isMakeClipScreen
                     {...(progressValue || progressValue === 0 ? { value: progressValue } : {})}
                   />
                 </View>
-                <View style={styles.playerControlsMiddleRow} transparent={true}>
-                  <View style={styles.playerControlsMiddleRowTop} transparent={true}>
+                <View style={styles.playerControlsMiddleRow} transparent>
+                  <View style={styles.playerControlsMiddleRowTop} transparent>
                     <TouchableOpacity
                       onPress={this._playerJumpBackward}
                       style={playerStyles.icon}
                       {...testProps(`${testIDPrefix}_jump_backward`)}>
-                      <Icon name='undo-alt' size={32} />
+                      {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS)}
+                      <View style={styles.skipTimeTextWrapper} transparent>
+                        <Text style={styles.skipTimeText}>30</Text>
+                      </View>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={this._playerMiniJumpBackward}
                       style={playerStyles.icon}
                       {...testProps(`${testIDPrefix}_mini_jump_backward`)}>
-                      <Icon name='angle-left' size={24} />
+                      <Icon name='angle-left' size={30} />
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => togglePlay()}
@@ -490,17 +498,20 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       onPress={this._playerMiniJumpForward}
                       style={playerStyles.icon}
                       {...testProps(`${testIDPrefix}_mini_jump_forward`)}>
-                      <Icon name='angle-right' size={24} />
+                      <Icon name='angle-right' size={30} />
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={this._playerJumpForward}
                       style={playerStyles.icon}
                       {...testProps(`${testIDPrefix}_jump_forward`)}>
-                      <Icon name='redo-alt' size={32} />
+                      {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD)}
+                      <View style={styles.skipTimeTextWrapper} transparent>
+                        <Text style={styles.skipTimeText}>30</Text>
+                      </View>
                     </TouchableOpacity>
                   </View>
                 </View>
-                <View style={styles.playerControlsBottomRow} transparent={true}>
+                <View style={styles.playerControlsBottomRow} transparent>
                   <TouchableOpacity
                     hitSlop={{
                       bottom: 4,
@@ -510,7 +521,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     }}
                     onPress={() => this.setState({ showHowToModal: true })}
                     {...testProps(`${testIDPrefix}_show_how_to`)}>
-                    <View transparent={true}>
+                    <View transparent>
                       <Text
                         fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                         style={[
@@ -531,7 +542,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     }}
                     onPress={this._adjustSpeed}
                     {...testProps(`${testIDPrefix}_adjust_speed`)}>
-                    <View transparent={true}>
+                    <View transparent>
                       <Text
                         fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                         style={[
@@ -553,7 +564,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     }}
                     onPress={() => navigation.navigate(PV.RouteNames.PlayerFAQScreen)}
                     {...testProps(`${testIDPrefix}_show_faq`)}>
-                    <View transparent={true}>
+                    <View transparent>
                       <Text
                         fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                         style={[
@@ -577,21 +588,20 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     style={[core.textInputEyeBrow, styles.loginMessage]}>
                     {translate('You must be logged in to make clips')}
                   </Text>
-                  <Divider style={styles.divider} />
                 </RNView>
               </RNView>
             )}
           </View>
         </View>
         {isSaving && (
-          <Modal transparent={true} visible={true}>
+          <Modal transparent visible>
             <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
-              <ActivityIndicator isOverlay={true} />
+              <ActivityIndicator isOverlay />
             </RNView>
           </Modal>
         )}
         {showHowToModal && (
-          <Modal transparent={true} visible={true}>
+          <Modal transparent visible>
             <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
               <RNView style={[styles.modalInnerWrapper, globalTheme.modalInnerWrapper]}>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
@@ -698,11 +708,8 @@ const styles = StyleSheet.create({
     flex: 1,
     marginVertical: 8
   },
-  imageWrapper: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16
+  fillerView: {
+    flex: 1
   },
   isPublicText: {
     fontSize: PV.Fonts.sizes.xl,
@@ -724,7 +731,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginTop: 2
+    marginTop: 2,
+    marginHorizontal: 10
   },
   modalBackdrop: {
     alignItems: 'center',
@@ -798,5 +806,24 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 10,
     marginHorizontal: 40
+  },
+  iconContainer: {
+    width: 50,
+    height: 50
+  },
+  icon: {
+    tintColor: PV.Colors.white,
+    width: '100%',
+    height: '100%'
+  },
+  skipTimeTextWrapper: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  skipTimeText: {
+    fontSize: 16
   }
 })

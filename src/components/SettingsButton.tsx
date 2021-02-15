@@ -14,7 +14,7 @@ export const SettingsButton = (props: Props) => {
     <TouchableWithoutFeedback onPress={handleToggleSettings} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
       <View style={styles.buttonView}>
         <View>
-          <Icon isSecondary={true} name={showCheckmark ? 'check' : 'cog'} size={18} solid={true} />
+          <Icon isSecondary name={showCheckmark ? 'check' : 'cog'} size={18} solid />
         </View>
       </View>
     </TouchableWithoutFeedback>

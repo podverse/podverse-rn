@@ -22,9 +22,7 @@ type Props = {
   title?: string
 }
 
-type State = {}
-
-export class ClipInfoView extends React.PureComponent<Props, State> {
+export class ClipInfoView extends React.PureComponent<Props> {
   _navToProfileScreen = () => {
     const { navigation, ownerId, ownerName } = this.props
     const user = {
@@ -78,7 +76,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
         {isLoading && <ActivityIndicator />}
         {!isLoading && (
           <Fragment>
-            <TableSectionSelectors hideFilter={true} selectedFilterLabel={sectionHeaderTitle} />
+            <TableSectionSelectors hideFilter selectedFilterLabel={sectionHeaderTitle} />
             <View style={core.row}>
               <View style={styles.topTextWrapper}>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>

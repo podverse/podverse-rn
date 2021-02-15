@@ -10,7 +10,7 @@ import {
   showPurchaseSomethingWentWrongError
 } from './purchaseShared'
 
-export const androidHandlePurchaseLoading = async (productId: string, transactionId: string, purchaseToken: string) => {
+export const androidHandlePurchaseLoading = (productId: string, transactionId: string, purchaseToken: string) => {
   const loadingState = purchaseLoading()
   loadingState.purchase.transactionId = transactionId
   loadingState.purchase.productId = productId
@@ -20,7 +20,7 @@ export const androidHandlePurchaseLoading = async (productId: string, transactio
 
 export const androidHandleStatusCheck = async (productId: string, transactionId: string, purchaseToken: string) => {
   try {
-    await androidHandlePurchaseLoading(productId, transactionId, purchaseToken)
+    androidHandlePurchaseLoading(productId, transactionId, purchaseToken)
     const response = await androidHandleStatusCheckService(productId, purchaseToken)
 
     if (response) {
@@ -29,15 +29,15 @@ export const androidHandleStatusCheck = async (productId: string, transactionId:
         await RNIap.consumePurchaseAndroid(purchaseToken)
         await handleStatusSuccessful()
       } else if (code === 1) {
-        await handleStatusCancel()
+        handleStatusCancel()
       } else if (code === 2) {
-        await handleStatusPending()
+        handleStatusPending()
       } else if (code === 3) {
-        await showPurchaseSomethingWentWrongError()
+        showPurchaseSomethingWentWrongError()
       } else if (code === 4) {
         await handleStatusSuccessful()
       } else {
-        await showPurchaseSomethingWentWrongError()
+        showPurchaseSomethingWentWrongError()
       }
     }
   } catch (error) {

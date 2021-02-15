@@ -1,16 +1,12 @@
 import React from 'react'
-import { Animated, Dimensions, Easing, Platform, StyleSheet } from 'react-native'
+import { Animated, Easing, Platform, StyleSheet } from 'react-native'
 
 type Props = {
   active: any
   cell: any
 }
 
-type State = {}
-
-const window = Dimensions.get('window')
-
-export class PVSortableListRow extends React.Component<Props, State> {
+export class PVSortableListRow extends React.Component<Props> {
   constructor(props: Props) {
     super(props)
 

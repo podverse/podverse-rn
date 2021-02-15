@@ -1,10 +1,10 @@
 import React from 'react'
 import { ActivityIndicator, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
-import { Text } from '.'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
+import { Text } from '.'
 
 type Props = {
   disabled?: boolean
@@ -46,7 +46,7 @@ export const PVButton = (props: Props) => {
       onPress={onPress}
       {...(testID ? testProps(`${testID}_button`) : {})}>
       {isLoading ? (
-        <ActivityIndicator animating={true} color={globalTheme.buttonPrimaryText.color} size='small' />
+        <ActivityIndicator animating color={globalTheme.buttonPrimaryText.color} size='small' />
       ) : (
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}

@@ -44,13 +44,7 @@ type State = {
 const testIDPrefix = 'search_screen'
 
 export class SearchScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: translate('Search'),
-      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-      headerRight: () => null
-    }
-  }
+
   searchBarInput: any
 
   constructor(props: Props) {
@@ -70,6 +64,12 @@ export class SearchScreen extends React.Component<Props, State> {
 
     this._handleSearchBarTextQuery = debounce(this._handleSearchBarTextQuery, PV.SearchBar.textInputDebounceTime)
   }
+
+  static navigationOptions = ({ navigation }) => ({
+      title: translate('Search'),
+      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
+      headerRight: () => null
+    })
 
   componentDidMount() {
     this.searchBarInput.focus()
@@ -98,7 +98,7 @@ export class SearchScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleSearchBarTextQuery = async (nextPage?: boolean) => {
+  _handleSearchBarTextQuery = (nextPage?: boolean) => {
     const shouldSearch = !!this.state.searchBarText && this.state.searchBarText.length > 1
 
     this.setState(
@@ -108,18 +108,18 @@ export class SearchScreen extends React.Component<Props, State> {
         queryPage: 1,
         isLoading: shouldSearch
       },
-      async () => {
-        if (shouldSearch) {
-          const state = await this._queryData(nextPage)
-          this.setState(state)
-        }
+      () => {
+        (async () => {
+          if (shouldSearch) {
+            const state = await this._queryData(nextPage)
+            this.setState(state)
+          }
+        })()
       }
     )
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
-  }
+  _ItemSeparatorComponent = () => <Divider />
 
   _onEndReached = ({ distanceFromEnd }) => {
     const { endOfResultsReached, isLoadingMore } = this.state
@@ -129,9 +129,11 @@ export class SearchScreen extends React.Component<Props, State> {
           {
             isLoadingMore: true
           },
-          async () => {
-            const newState = await this._queryData(true)
-            this.setState(newState)
+          () => {
+            (async () => {
+              const newState = await this._queryData(true)
+              this.setState(newState)
+            })()
           }
         )
       }
@@ -215,7 +217,7 @@ export class SearchScreen extends React.Component<Props, State> {
     this.setState({ showActionSheet: false })
   }
 
-  _navToRequestPodcastForm = async () => {
+  _navToRequestPodcastForm = () => {
     Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
       { text: translate('Cancel') },
       { text: translate('Yes'), onPress: () => Linking.openURL(PV.URLs.requestPodcast) }
@@ -250,7 +252,7 @@ export class SearchScreen extends React.Component<Props, State> {
           <FlatList
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
-            disableLeftSwipe={true}
+            disableLeftSwipe
             extraData={flatListData}
             handleNoResultsBottomAction={PV.URLs.requestPodcast ? this._navToRequestPodcastForm : null}
             handleNoResultsMiddleAction={this._handleAddPodcastByRSSURLNavigation}
@@ -264,9 +266,10 @@ export class SearchScreen extends React.Component<Props, State> {
             noResultsTopActionText={!Config.DISABLE_QR_SCANNER ? translate('Scan RSS Feed QR Code') : ''}
             onEndReached={this._onEndReached}
             renderItem={this._renderPodcastItem}
+            testID={testIDPrefix}
           />
         )}
-        {isLoading && <ActivityIndicator fillSpace={true} />}
+        {isLoading && <ActivityIndicator fillSpace />}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={this._moreButtons()}

@@ -9,9 +9,7 @@ type Props = {
   renderRow: any
 }
 
-type State = {}
-
-export class PVSortableList extends React.Component<Props, State> {
+export class PVSortableList extends React.Component<Props> {
   render() {
     const { data, onPressRow, onReleaseRow, renderRow } = this.props
 

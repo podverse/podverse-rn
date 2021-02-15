@@ -1,9 +1,9 @@
 import { Animated, Modal, Text, TouchableHighlight, View } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator } from '.'
 import { safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { actionSheetStyles } from '../styles'
+import { ActivityIndicator } from '.'
 
 type Props = {
   handleCancelPress?: any
@@ -23,7 +23,7 @@ type State = {
 
 export class PVActionSheet extends React.Component<Props, State> {
   constructor(props: Props) {
-    super()
+    super(props)
 
     this.state = {}
   }
@@ -85,12 +85,14 @@ export class PVActionSheet extends React.Component<Props, State> {
                     isLoadingQueueLast: true
                   })
             },
-            async () => {
-              await item.onPress()
-              this.setState({
-                isLoadingQueueLast: false,
-                isLoadingQueueNext: false
-              })
+            () => {
+              (async () => {
+                await item.onPress()
+                this.setState({
+                  isLoadingQueueLast: false,
+                  isLoadingQueueNext: false
+                })
+              })()
             }
           )
         }
@@ -165,7 +167,7 @@ export class PVActionSheet extends React.Component<Props, State> {
     }
 
     return (
-      <Modal transparent={true} visible={showModal}>
+      <Modal transparent visible={showModal}>
         <View style={[actionSheetStyles.backdrop, globalTheme.modalBackdrop]}>
           <Animated.View
             style={[

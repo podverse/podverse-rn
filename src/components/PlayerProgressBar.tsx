@@ -29,19 +29,6 @@ type State = {
 let lastPropsValue = ''
 
 export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, State> {
-  static getDerivedStateFromProps(nextProps: any, prevState: any) {
-    const { value } = nextProps
-    const { position } = prevState
-    if (value && value !== position && value !== lastPropsValue) {
-      lastPropsValue = value
-      return {
-        ...prevState,
-        position: value
-      }
-    }
-    return prevState
-  }
-
   isAnimationRunning: boolean
 
   constructor(props: Props) {
@@ -56,6 +43,19 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
       slidingPosition: null,
       clipColorAnimation: new Animated.Value(0)
     }
+  }
+
+  static getDerivedStateFromProps(nextProps: any, prevState: any) {
+    const { value } = nextProps
+    const { position } = prevState
+    if (value && value !== position && value !== lastPropsValue) {
+      lastPropsValue = value
+      return {
+        ...prevState,
+        position: value
+      }
+    }
+    return prevState
   }
 
   _handleAnimation = () => {
@@ -128,7 +128,7 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
             })
 
             await setPlaybackPosition(position)
-            await loadChapterPlaybackInfo()
+            loadChapterPlaybackInfo()
           }}
           onValueChange={(value) => {
             if (this.state.slidingPosition) {

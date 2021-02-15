@@ -36,7 +36,6 @@ const mediaMoreButtons = (
   const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session.userInfo.id, '')
   const isLoggedIn = safelyUnwrapNestedVariable(() => globalState.session.isLoggedIn, '')
   const globalTheme = safelyUnwrapNestedVariable(() => globalState.globalTheme, {})
-  const urlsWeb = safelyUnwrapNestedVariable(() => globalState.urlsWeb, {})
 
   if (item.ownerId && item.ownerId === loggedInUserId) {
     buttons.push(
@@ -50,15 +49,17 @@ const mediaMoreButtons = (
           const shouldPlay = false
           await loadItemAndPlayTrack(item, shouldPlay)
           await navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
-          setTimeout(async () => {
-            const initialProgressValue = await PVTrackPlayer.getPosition()
-            navigation.navigate(PV.RouteNames.MakeClipScreen, {
-              initialProgressValue,
-              initialPrivacy: item.isPublic,
-              isEditing: true,
-              isLoggedIn,
-              globalTheme
-            })
+          setTimeout(() => {
+            (async () => {
+              const initialProgressValue = await PVTrackPlayer.getPosition()
+              navigation.navigate(PV.RouteNames.MakeClipScreen, {
+                initialProgressValue,
+                initialPrivacy: item.isPublic,
+                isEditing: true,
+                isLoggedIn,
+                globalTheme
+              })
+            })()
           }, 1000)
         }
       },
@@ -157,6 +158,7 @@ const mediaMoreButtons = (
         text: translate('Share'),
         onPress: async () => {
           try {
+            const urlsWeb = safelyUnwrapNestedVariable(() => globalState.urlsWeb, {})
             let url = ''
             let title = ''
 

@@ -48,6 +48,20 @@ type State = {
 const testIDPrefix = 'queue_screen'
 
 export class QueueScreen extends React.Component<Props, State> {
+
+  constructor(props: Props) {
+    super(props)
+
+    this.state = {
+      endOfResultsReached: false,
+      isLoading: true,
+      isLoadingMore: false,
+      isRemoving: false,
+      isTransparent: !!props.navigation.getParam('isTransparent'),
+      viewType: props.navigation.getParam('viewType') || _queueKey
+    }
+  }
+
   static navigationOptions = ({ navigation }) => {
     const { globalTheme } = getGlobal()
     const isTransparent = !!navigation.getParam('isTransparent')
@@ -126,19 +140,6 @@ export class QueueScreen extends React.Component<Props, State> {
     }
   }
 
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {
-      endOfResultsReached: false,
-      isLoading: true,
-      isLoadingMore: false,
-      isRemoving: false,
-      isTransparent: !!props.navigation.getParam('isTransparent'),
-      viewType: props.navigation.getParam('viewType') || _queueKey
-    }
-  }
-
   async componentDidMount() {
     const { navigation } = this.props
 
@@ -192,16 +193,18 @@ export class QueueScreen extends React.Component<Props, State> {
     }
   }
 
-  _handlePlayItem = async (item: NowPlayingItem) => {
+  _handlePlayItem = (item: NowPlayingItem) => {
     const isDarkMode = this.global.globalTheme === darkTheme
     try {
       const { navigation } = this.props
-      this.setState({ isLoading: true }, async () => {
-        navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
-        const shouldPlay = true
-        await loadItemAndPlayTrack(item, shouldPlay)
-        await getQueueItems()
-        this.setState({ isLoading: false })
+      this.setState({ isLoading: true }, () => {
+        (async () => {
+          navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
+          const shouldPlay = true
+          await loadItemAndPlayTrack(item, shouldPlay)
+          await getQueueItems()
+          this.setState({ isLoading: false })
+        })()
       })
     } catch (error) {
       //
@@ -272,25 +275,29 @@ export class QueueScreen extends React.Component<Props, State> {
     return <SortableListRow active={active} cell={cell} />
   }
 
-  _handleRemoveQueueItemPress = async (item: NowPlayingItem) => {
-    this.setState({ isRemoving: true }, async () => {
-      try {
-        await removeQueueItem(item)
-      } catch (error) {
-        //
-      }
-      this.setState({ isRemoving: false })
+  _handleRemoveQueueItemPress = (item: NowPlayingItem) => {
+    this.setState({ isRemoving: true }, () => {
+      (async () => {
+        try {
+          await removeQueueItem(item)
+        } catch (error) {
+          //
+        }
+        this.setState({ isRemoving: false })
+      })()
     })
   }
 
-  _handleRemoveHistoryItemPress = async (item: NowPlayingItem) => {
-    this.setState({ isRemoving: true }, async () => {
-      try {
-        await removeHistoryItem(item)
-      } catch (error) {
-        //
-      }
-      this.setState({ isRemoving: false })
+  _handleRemoveHistoryItemPress = (item: NowPlayingItem) => {
+    this.setState({ isRemoving: true }, () => {
+      (async () => {
+        try {
+          await removeHistoryItem(item)
+        } catch (error) {
+          //
+        }
+        this.setState({ isRemoving: false })
+      })()
     })
   }
 
@@ -327,8 +334,10 @@ export class QueueScreen extends React.Component<Props, State> {
     const { endOfResultsReached, isLoadingMore } = this.state
 
     if (!endOfResultsReached && !isLoadingMore && distanceFromEnd > -1) {
-      this.setState({ isLoadingMore: true }, async () => {
-        await this._queryHistoryData(queryPage)
+      this.setState({ isLoadingMore: true }, () => {
+        (async () => {
+          await this._queryHistoryData(queryPage)
+        })()
       })
     }
   }
@@ -346,8 +355,8 @@ export class QueueScreen extends React.Component<Props, State> {
               <View transparent={isTransparent}>
                 <View style={styles.headerNowPlayingItemWrapper} transparent={isTransparent}>
                   <TableSectionSelectors
-                    hideFilter={true}
-                    includePadding={true}
+                    hideFilter
+                    includePadding
                     selectedFilterLabel={translate('Now Playing')}
                     textStyle={styles.sectionHeaderText}
                   />
@@ -361,15 +370,15 @@ export class QueueScreen extends React.Component<Props, State> {
                     {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
                     {...testProps(`${testIDPrefix}_now_playing_header`)}
                     transparent={isTransparent}
-                    hideDivider={true}
+                    hideDivider
                   />
                 </View>
                 <Divider style={styles.headerNowPlayingItemDivider} />
               </View>
             )}
             <TableSectionSelectors
-              hideFilter={true}
-              includePadding={true}
+              hideFilter
+              includePadding
               selectedFilterLabel={translate('Next Up')}
               textStyle={styles.sectionHeaderText}
             />
@@ -394,7 +403,7 @@ export class QueueScreen extends React.Component<Props, State> {
           <FlatList
             data={historyItems}
             dataTotalCount={historyItemsCount}
-            disableLeftSwipe={true}
+            disableLeftSwipe
             extraData={historyItems}
             isLoadingMore={isLoadingMore}
             keyExtractor={(item: any) => item.clipId || item.episodeId}
@@ -417,7 +426,7 @@ export class QueueScreen extends React.Component<Props, State> {
     }
   }
 
-  _queryHistoryData = async (queryPage: number = 1) => {
+  _queryHistoryData = async (queryPage = 1) => {
     try {
       const { historyItems, historyItemsCount } = this.global.session.userInfo
       const endOfResultsReached = historyItems && historyItems.length <= historyItemsCount
