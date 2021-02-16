@@ -108,6 +108,9 @@ export const darkTheme = StyleSheet.create({
   flatList: {
     backgroundColor: PV.Colors.ink
   },
+  headerText: {
+    color: PV.Colors.skyLight
+  },
   link: {
     color: PV.Colors.blueLighter
   },
@@ -342,6 +345,9 @@ export const lightTheme = StyleSheet.create({
   flatList: {
     backgroundColor: PV.Colors.white
   },
+  headerText: {
+    color: PV.Colors.skyLight
+  },
   link: {
     color: PV.Colors.blueDarker
   },
@@ -550,6 +556,9 @@ export const core = StyleSheet.create({
     paddingLeft: 8,
     paddingRight: 16,
     paddingVertical: 8
+  },
+  headerText: {
+    fontSize: PV.Fonts.sizes.xxxl
   },
   ListHeaderComponent: {
     borderBottomWidth: 0,

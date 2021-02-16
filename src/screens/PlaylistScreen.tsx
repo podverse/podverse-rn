@@ -16,6 +16,7 @@ import {
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
+import { navigateToEpisodeScreenWithItem } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -136,6 +137,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
   _ItemSeparatorComponent = () => <Divider />
 
   _renderItem = ({ item, index }) => {
+    const { navigation } = this.props
     if (item.startTime) {
       return item.episode && item.episode.podcast ? (
         <ClipTableCell
@@ -155,9 +157,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null, userPlaybackPosition))}
           handleNavigationPress={() =>
-            this.props.navigation.navigate(PV.RouteNames.MoreEpisodeScreen, {
-              episode: item
-            })
+            navigateToEpisodeScreenWithItem(navigation, convertToNowPlayingItem(item, null, null, userPlaybackPosition))
           }
           item={item}
           mediaFileDuration={mediaFileDuration}

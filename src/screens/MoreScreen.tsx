@@ -140,13 +140,13 @@ export class MoreScreen extends React.Component<Props, State> {
             </TouchableWithoutFeedback>
           )}
           renderSectionHeader={({ section }) => (
-              <TableSectionSelectors
-                hideFilter
-                includePadding
-                selectedFilterLabel={section.title}
-                textStyle={styles.headerText}
-              />
-            )}
+            <TableSectionSelectors
+              hideFilter
+              includePadding
+              selectedFilterLabel={section.title}
+              textStyle={[globalTheme.headerText, core.headerText]}
+            />
+          )}
           sections={[
             { title: translate('Features'), data: featureOptions },
             { title: translate('Other'), data: otherOptions }
@@ -193,10 +193,3 @@ const allMoreFeatures = [
     testID: 'more_screen_login_cell'
   }
 ]
-
-const styles = StyleSheet.create({
-  headerText: {
-    color: PV.Colors.skyLight,
-    fontSize: PV.Fonts.sizes.xxxl
-  }
-})
