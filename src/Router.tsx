@@ -1,4 +1,4 @@
-import { Image, View } from 'react-native'
+import { Image, Platform, View } from 'react-native'
 import Config from 'react-native-config'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator, NavigationStackOptions } from 'react-navigation-stack'
@@ -68,7 +68,10 @@ const defaultNavigationOptions = ({ navigation }) => {
       fontSize,
       fontWeight: 'bold'
     },
-    headerRight: () => <NavSearchIcon navigation={navigation} />
+    headerRight: () => <NavSearchIcon navigation={navigation} />,
+    // Prevent white screen flash on navigation on Android
+    ...(Platform.OS === 'android' ? { animationEnabled: false } : {}),
+    ...(Platform.OS === 'android' ? { backgroundColor: 'transparent' } : {})
   } as NavigationStackOptions
 }
 
