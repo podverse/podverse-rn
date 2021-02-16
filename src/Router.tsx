@@ -1,4 +1,4 @@
-import { Image, View } from 'react-native'
+import { Image, Platform, View } from 'react-native'
 import Config from 'react-native-config'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator, NavigationStackOptions } from 'react-navigation-stack'
@@ -68,7 +68,10 @@ const defaultNavigationOptions = ({ navigation }) => {
       fontSize,
       fontWeight: 'bold'
     },
-    headerRight: () => <NavSearchIcon navigation={navigation} />
+    headerRight: () => <NavSearchIcon navigation={navigation} />,
+    // Prevent white screen flash on navigation on Android
+    ...(Platform.OS === 'android' ? { animationEnabled: false } : {}),
+    ...(Platform.OS === 'android' ? { backgroundColor: 'transparent' } : {})
   } as NavigationStackOptions
 }
 
@@ -168,40 +171,12 @@ const FilterNavigator = createStackNavigator(
 const MoreNavigator = createStackNavigator(
   {
     [PV.RouteNames.MoreScreen]: MoreScreen,
-    [PV.RouteNames.DownloadsScreen]: DownloadsScreen,
-    [PV.RouteNames.PlaylistScreen]: {
-      screen: PlaylistScreen,
-      path: PV.DeepLinks.Playlist.path
-    },
-    [PV.RouteNames.PlaylistsScreen]: {
-      screen: PlaylistsScreen,
-      path: PV.DeepLinks.Playlists.path
-    },
-    [PV.RouteNames.PlaylistsEpisodeScreen]: EpisodeScreen,
-    [PV.RouteNames.PlaylistsPodcastScreen]: PodcastScreen,
-    [PV.RouteNames.ProfileScreen]: {
-      screen: ProfileScreen,
-      path: PV.DeepLinks.Profile.path
-    },
-    [PV.RouteNames.ProfilesEpisodeScreen]: EpisodeScreen,
-    [PV.RouteNames.ProfilesPodcastScreen]: PodcastScreen,
-    [PV.RouteNames.ProfilesScreen]: {
-      screen: ProfilesScreen,
-      path: PV.DeepLinks.Profiles.path
-    },
     [PV.RouteNames.SettingsScreen]: SettingsScreen,
-    [PV.RouteNames.MoreEpisodeScreen]: EpisodeScreen,
-    [PV.RouteNames.MorePlaylistScreen]: PlaylistScreen,
-    [PV.RouteNames.MorePodcastScreen]: PodcastScreen,
     [PV.RouteNames.MembershipScreen]: MembershipScreen,
     [PV.RouteNames.AboutScreen]: AboutScreen,
     [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen,
     [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
-    [PV.RouteNames.FAQScreen]: FAQScreen,
-    [PV.RouteNames.QueueScreen]: QueueScreen,
-    [PV.RouteNames.EpisodeMediaRefScreen]: {
-      screen: EpisodeMediaRefScreen
-    }
+    [PV.RouteNames.FAQScreen]: FAQScreen
   },
   {
     defaultNavigationOptions,
@@ -229,17 +204,20 @@ const MyLibraryNavigator = createStackNavigator(
       path: PV.DeepLinks.Playlist.path
     },
     [PV.RouteNames.QueueScreen]: QueueScreen,
+    [PV.RouteNames.MyProfileScreen]: ProfileScreen,
+    [PV.RouteNames.EditProfileScreen]: EditProfileScreen,
     [PV.RouteNames.PlaylistsScreen]: {
       screen: PlaylistsScreen,
       path: PV.DeepLinks.Playlists.path
     },
-    [PV.RouteNames.PlaylistsEpisodeScreen]: EpisodeScreen,
-    [PV.RouteNames.PlaylistsPodcastScreen]: PodcastScreen,
     [PV.RouteNames.EditPlaylistScreen]: EditPlaylistScreen,
-    [PV.RouteNames.EditProfileScreen]: EditProfileScreen,
-    [PV.RouteNames.MyProfileScreen]: ProfileScreen,
-    [PV.RouteNames.EpisodeMediaRefScreen]: {
-      screen: EpisodeMediaRefScreen
+    [PV.RouteNames.ProfilesScreen]: {
+      screen: ProfilesScreen,
+      path: PV.DeepLinks.Profiles.path
+    },
+    [PV.RouteNames.ProfileScreen]: {
+      screen: ProfileScreen,
+      path: PV.DeepLinks.Profile.path
     }
   },
   {
