@@ -168,7 +168,7 @@ export class AuthScreen extends React.Component<Props, State> {
           key='reset'
           onPress={this._showResetPassword}
           style={switchOptionTextStyle}
-          {...testProps('auth_screen_reset_password_button')}>
+          testID={`${testIDPrefix}_reset_password_button`}>
           {translate('Reset Password')}
         </Text>,
         <Text
@@ -176,7 +176,7 @@ export class AuthScreen extends React.Component<Props, State> {
           key='moreInfo'
           onPress={this._showMembership}
           style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}
-          {...testProps('auth_screen_sign_up_button')}>
+          testID={`${testIDPrefix}_sign_up_button`}>
           {translate('Sign Up')}
         </Text>
       ]
@@ -187,14 +187,14 @@ export class AuthScreen extends React.Component<Props, State> {
           key='login'
           onPress={this._showLogin}
           style={styles.switchOptionText}
-          {...testProps('auth_screen_login_button')}>
+          testID={`${testIDPrefix}_login_button`}>
           {translate('Back To Login')}
         </Text>
       ]
     }
 
     return (
-      <SafeAreaView style={styles.safeAreaView} {...testProps('auth_screen_view')}>
+      <SafeAreaView style={styles.safeAreaView} testID={`${testIDPrefix}_safe_area_view`}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={screenType === _signup ? styles.viewWithoutBanner : styles.view}>
             {screenType !== _signup && <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />}
