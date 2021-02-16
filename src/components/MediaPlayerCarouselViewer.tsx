@@ -1,11 +1,19 @@
-import { Alert, Linking, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import {
+  Alert,
+  Dimensions,
+  Linking,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View as RNView
+} from 'react-native'
 import TextTicker from 'react-native-text-ticker'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
-import { ActivityIndicator, FastImage, Text, View } from './'
+import { ActivityIndicator, FastImage, Text } from './'
 
 type Props = {
   handlePressClipInfo: any
@@ -61,50 +69,48 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     }
 
     return (
-      <View style={[styles.outerWrapper, { width }]} transparent>
-        <RNView style={styles.topWrapper}>
-          <View style={styles.carouselTextTopWrapper} transparent>
-            {isLoading ? (
-              <ActivityIndicator fillSpace />
-            ) : (
-              !!nowPlayingItem && (
-                <RNView style={styles.episodeTitleWrapper}>
-                  <TextTicker duration={15000} loop bounce repeatSpacer={60}>
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.xl}
-                      numberOfLines={1}
-                      style={styles.episodeTitle}
-                      testID='media_player_carousel_viewer_episode_title'>
-                      {nowPlayingItem.episodeTitle}
-                    </Text>
-                  </TextTicker>
-                  {fontScaleMode !== PV.Fonts.fontScale.largest && (
-                    <Text
-                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                      isSecondary
-                      numberOfLines={1}
-                      style={styles.podcastTitle}
-                      testID='media_player_carousel_viewer_podcast_title'>
-                      {nowPlayingItem.podcastTitle}
-                    </Text>
-                  )}
-                </RNView>
-              )
-            )}
-          </View>
-          <View style={styles.carouselImageWrapper} transparent>
-            <TouchableOpacity
-              activeOpacity={1}
-              {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
-              style={styles.imageContainer}>
-              <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyles} />
-            </TouchableOpacity>
-          </View>
+      <RNView style={[styles.outerWrapper, { width }]}>
+        <RNView style={styles.carouselTextTopWrapper}>
+          {isLoading ? (
+            <ActivityIndicator fillSpace />
+          ) : (
+            !!nowPlayingItem && (
+              <RNView style={styles.episodeTitleWrapper}>
+                <TextTicker duration={15000} loop bounce repeatSpacer={60}>
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.xl}
+                    numberOfLines={1}
+                    style={styles.episodeTitle}
+                    testID='media_player_carousel_viewer_episode_title'>
+                    {nowPlayingItem.episodeTitle}
+                  </Text>
+                </TextTicker>
+                {fontScaleMode !== PV.Fonts.fontScale.largest && (
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    isSecondary
+                    numberOfLines={1}
+                    style={styles.podcastTitle}
+                    testID='media_player_carousel_viewer_podcast_title'>
+                    {nowPlayingItem.podcastTitle}
+                  </Text>
+                )}
+              </RNView>
+            )
+          )}
+        </RNView>
+        <RNView style={[styles.carouselImageWrapper, { width: width * 0.9 }]}>
+          <TouchableOpacity
+            activeOpacity={1}
+            {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
+            style={styles.imageContainer}>
+            <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyles} />
+          </TouchableOpacity>
         </RNView>
         {!!clipId && (
-          <RNView style={styles.bottomWrapper}>
+          <RNView style={styles.carouselChapterWrapper}>
             <TouchableWithoutFeedback onPress={handlePressClipInfo}>
-              <View style={styles.clipWrapper} transparent>
+              <RNView style={styles.clipWrapper}>
                 <TextTicker
                   duration={10000}
                   loop
@@ -117,36 +123,33 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
                     {readableClipTime(clipStartTime, clipEndTime)}
                   </Text>
                 )}
-              </View>
+              </RNView>
             </TouchableWithoutFeedback>
           </RNView>
         )}
-      </View>
+      </RNView>
     )
   }
 }
 
 const styles = StyleSheet.create({
   outerWrapper: {
-    justifyContent: 'space-between'
-  },
-  topWrapper: {
-    flex: 1,
-    marginHorizontal: 8
-  },
-  bottomWrapper: {},
-  carouselTextTopWrapper: {
     justifyContent: 'center',
-    marginVertical: 10
+    alignItems: 'center',
+    padding: 10
+  },
+  carouselTextTopWrapper: {
+    justifyContent: 'flex-end',
+    marginBottom: 10
   },
   carouselImageWrapper: {
     alignItems: 'center',
-    height: '100%',
-    width: '100%'
+    height: '70%'
   },
+  carouselChapterWrapper: {},
   imageContainer: {
     width: '100%',
-    height: '80%'
+    height: '100%'
   },
   image: {
     width: '100%',
