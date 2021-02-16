@@ -21,6 +21,7 @@ import {
 import { downloadEpisode } from '../lib/downloader'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
+import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -301,9 +302,8 @@ export class ProfileScreen extends React.Component<Props, State> {
   _ItemSeparatorComponent = () => <Divider />
 
   _handlePodcastPress = (podcast: any) => {
-    this.props.navigation.navigate(PV.RouteNames.MorePodcastScreen, {
-      podcast
-    })
+    const { navigation } = this.props
+    navigateToPodcastScreenWithPodcast(navigation, podcast)
   }
 
   _handlePlaylistPress = (playlist: any) => {

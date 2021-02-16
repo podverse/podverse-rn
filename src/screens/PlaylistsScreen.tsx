@@ -48,7 +48,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     const playlistId = navigation.getParam('navToPlaylistWithId')
 
     if (playlistId) {
-      navigation.navigate(PV.RouteNames.MorePlaylistScreen, { playlistId })
+      navigation.navigate(PV.RouteNames.PlaylistScreen, { playlistId })
     }
 
     trackPageView('/playlists', 'Playlists Screen')
