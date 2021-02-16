@@ -101,7 +101,7 @@ export const clearNowPlayingItem = async () => {
   })
 }
 
-export const hideMiniPlayer = async () => {
+export const hideMiniPlayer = () => {
   const globalState = getGlobal()
   setGlobal({
     player: {
@@ -175,7 +175,7 @@ export const loadItemAndPlayTrack = async (
         await handleLoadChapterForNowPlayingEpisode(item)
         return
       } else {
-        await loadChapterPlaybackInfo()
+        loadChapterPlaybackInfo()
       }
     }
 
@@ -191,7 +191,7 @@ export const loadItemAndPlayTrack = async (
         isLoading: false
       }
     },
-    async () => {
+    () => {
       const globalState = getGlobal()
       trackPlayerScreenPageView(item, globalState)
       loadChaptersForNowPlayingItem(item)

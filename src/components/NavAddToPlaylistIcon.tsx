@@ -81,7 +81,7 @@ const actionSheetButtons = (episodeId: string, mediaRefId: string, navigation: a
   {
     key: 'episode',
     text: translate('Episode'),
-    onPress: async () => {
+    onPress: () => {
       handleDismiss()
       navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, { episodeId })
     }
@@ -89,7 +89,7 @@ const actionSheetButtons = (episodeId: string, mediaRefId: string, navigation: a
   {
     key: 'clip',
     text: translate('Clip'),
-    onPress: async () => {
+    onPress: () => {
       handleDismiss()
       navigation.navigate(PV.RouteNames.PlaylistsAddToScreen, { mediaRefId })
     }

@@ -1,4 +1,4 @@
-function PVError(name: string, message: string = '') {
+function PVError(name: string, message = '') {
   const error = new Error()
   error.name = name
   error.message = message

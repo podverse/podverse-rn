@@ -63,7 +63,7 @@ export const getNowPlayingItemOnServer = async () => {
 }
 
 export const setNowPlayingItemLocally = async (item: NowPlayingItem | null, playbackPosition: number) => {
-  if (item && typeof item === 'object') {
+  if (item) {
     item.userPlaybackPosition = (playbackPosition && Math.floor(playbackPosition)) || 0
     await AsyncStorage.setItem(PV.Keys.NOW_PLAYING_ITEM, JSON.stringify(item))
   }

@@ -150,7 +150,7 @@ export const updateLoggedInUser = async (data: any) => {
   return response && response.data
 }
 
-export const downloadLoggedInUserData = async (id: string) => {
+export const downloadLoggedInUserData = async () => {
   const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: '/user/download',

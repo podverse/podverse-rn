@@ -28,19 +28,6 @@ const _signup = 'signup'
 const testIDPrefix = 'auth_screen'
 
 export class AuthScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    const title = navigation.getParam('title') || translate('Login')
-    return {
-      title,
-      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-      headerRight: () => null,
-      headerStyle: {
-        borderBottomWidth: 0,
-        backgroundColor: PV.Colors.ink
-      }
-    }
-  }
-
   constructor(props: Props) {
     super(props)
 
@@ -54,6 +41,19 @@ export class AuthScreen extends React.Component<Props, State> {
     }
   }
 
+  static navigationOptions = ({ navigation }) => {
+    const title = navigation.getParam('title') || translate('Login')
+    return {
+      title,
+      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
+      headerRight: () => null,
+      headerStyle: {
+        borderBottomWidth: 0,
+        backgroundColor: PV.Colors.ink
+      }
+    }
+  }
+
   componentDidMount() {
     trackPageView('/auth', 'Auth Screen')
   }
@@ -64,47 +64,52 @@ export class AuthScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('login')
     if (wasAlerted) return
 
-    this.setState({ isLoadingLogin: true }, async () => {
-      try {
-        await loginUser(credentials, navigation)
-        if (navigation.getParam('isOnboarding', false)) {
-          navigation.navigate(PV.RouteNames.MainApp)
-        } else {
-          navigation.goBack(null)
+    this.setState({ isLoadingLogin: true }, () => {
+      (async () => {
+        try {
+          await loginUser(credentials, navigation)
+          if (navigation.getParam('isOnboarding', false)) {
+            navigation.navigate(PV.RouteNames.MainApp)
+          } else {
+            navigation.goBack(null)
+          }
+        } catch (error) {
+          const EMAIL_NOT_VERIFIED = PV.Alerts.EMAIL_NOT_VERIFIED(credentials.email)
+          if (error.response && error.response.status === PV.ResponseStatusCodes.EMAIL_NOT_VERIFIED) {
+            Alert.alert(EMAIL_NOT_VERIFIED.title, EMAIL_NOT_VERIFIED.message, EMAIL_NOT_VERIFIED.buttons)
+          } else if (error.response && error.response.status === PV.ResponseStatusCodes.UNAUTHORIZED) {
+            Alert.alert(PV.Alerts.LOGIN_INVALID.title, PV.Alerts.LOGIN_INVALID.message, PV.Alerts.BUTTONS.OK)
+          } else {
+            Alert.alert(
+              PV.Alerts.SOMETHING_WENT_WRONG.title,
+              PV.Alerts.SOMETHING_WENT_WRONG.message,
+              PV.Alerts.BUTTONS.OK
+            )
+          }
         }
-      } catch (error) {
-        const EMAIL_NOT_VERIFIED = PV.Alerts.EMAIL_NOT_VERIFIED(credentials.email)
-        if (error.response && error.response.status === PV.ResponseStatusCodes.EMAIL_NOT_VERIFIED) {
-          Alert.alert(EMAIL_NOT_VERIFIED.title, EMAIL_NOT_VERIFIED.message, EMAIL_NOT_VERIFIED.buttons)
-        } else if (error.response && error.response.status === PV.ResponseStatusCodes.UNAUTHORIZED) {
-          Alert.alert(PV.Alerts.LOGIN_INVALID.title, PV.Alerts.LOGIN_INVALID.message, PV.Alerts.BUTTONS.OK)
-        } else {
-          Alert.alert(
-            PV.Alerts.SOMETHING_WENT_WRONG.title,
-            PV.Alerts.SOMETHING_WENT_WRONG.message,
-            PV.Alerts.BUTTONS.OK
-          )
-        }
-      }
-      this.setState({ isLoadingLogin: false })
+        this.setState({ isLoadingLogin: false })
+      })()
     })
   }
 
-  attemptResetPassword = async (email: string) => {
+  attemptResetPassword = (email: string) => {
     const { navigation } = this.props
-    this.setState({ isLoadingResetPassword: true }, async () => {
-      try {
-        await sendResetPassword(email)
-        Alert.alert(
-          PV.Alerts.RESET_PASSWORD_SUCCESS.title,
-          PV.Alerts.RESET_PASSWORD_SUCCESS.message,
-          PV.Alerts.BUTTONS.OK
-        )
-      } catch (error) {
-        Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
-      }
-      this.setState({ isLoadingResetPassword: false })
-      navigation.goBack(null)
+    this.setState({ isLoadingResetPassword: true }, () => {
+      (async () => {
+        try {
+          await sendResetPassword(email)
+          Alert.alert(
+            PV.Alerts.RESET_PASSWORD_SUCCESS.title,
+            PV.Alerts.RESET_PASSWORD_SUCCESS.message,
+            PV.Alerts.BUTTONS.OK
+          )
+        } catch (error) {
+          Alert.alert(
+            PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
+        }
+        this.setState({ isLoadingResetPassword: false })
+        navigation.goBack(null)
+      })()
     })
   }
 
@@ -114,18 +119,20 @@ export class AuthScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('sign up')
     if (wasAlerted) return
 
-    this.setState({ isLoadingSignUp: true }, async () => {
-      try {
-        await signUpUser(credentials)
-        navigation.navigate(PV.RouteNames.EmailVerificationScreen, {
-          email: credentials.email
-        })
-      } catch (error) {
-        if (error.response && error.response.data && error.response.data.message) {
-          Alert.alert(PV.Alerts.SIGN_UP_ERROR.title, error.response.data.message, PV.Alerts.BUTTONS.OK)
+    this.setState({ isLoadingSignUp: true }, () => {
+      (async () => {
+        try {
+          await signUpUser(credentials)
+          navigation.navigate(PV.RouteNames.EmailVerificationScreen, {
+            email: credentials.email
+          })
+        } catch (error) {
+          if (error.response && error.response.data && error.response.data.message) {
+            Alert.alert(PV.Alerts.SIGN_UP_ERROR.title, error.response.data.message, PV.Alerts.BUTTONS.OK)
+          }
         }
-      }
-      this.setState({ isLoadingSignUp: false })
+        this.setState({ isLoadingSignUp: false })
+      })()
     })
   }
 
@@ -161,7 +168,7 @@ export class AuthScreen extends React.Component<Props, State> {
           key='reset'
           onPress={this._showResetPassword}
           style={switchOptionTextStyle}
-          {...testProps('auth_screen_reset_password_button')}>
+          testID={`${testIDPrefix}_reset_password_button`}>
           {translate('Reset Password')}
         </Text>,
         <Text
@@ -169,7 +176,7 @@ export class AuthScreen extends React.Component<Props, State> {
           key='moreInfo'
           onPress={this._showMembership}
           style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}
-          {...testProps('auth_screen_sign_up_button')}>
+          testID={`${testIDPrefix}_sign_up_button`}>
           {translate('Sign Up')}
         </Text>
       ]
@@ -180,14 +187,14 @@ export class AuthScreen extends React.Component<Props, State> {
           key='login'
           onPress={this._showLogin}
           style={styles.switchOptionText}
-          {...testProps('auth_screen_login_button')}>
+          testID={`${testIDPrefix}_login_button`}>
           {translate('Back To Login')}
         </Text>
       ]
     }
 
     return (
-      <SafeAreaView style={styles.safeAreaView} {...testProps('auth_screen_view')}>
+      <SafeAreaView style={styles.safeAreaView} testID={`${testIDPrefix}_safe_area_view`}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={screenType === _signup ? styles.viewWithoutBanner : styles.view}>
             {screenType !== _signup && <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />}

@@ -179,7 +179,7 @@
   "Limit the number of downloaded episodes from this podcast on your device. Once the download limit is exceeded the oldest episode will be automatically deleted.": "Una vez que se excede el límite de descarga, el episodio más antiguo se eliminará automáticamente.",
   "Only allow downloading when connected to Wifi": "Solo permitir descargas cuando esté conectado a Wifi",
   "Only with Link means only people who": "Solo con Link significa que solo las personas que tienen el enlace de su clip pueden reproducirlo. Estos clips no se mostrarán automáticamente en la lista pública de Podverse. Se requiere una cuenta premium para crear clips públicos.",
-  "Only with link": "Solo con enlace",
+  "Only with link": "Con enlace",
   "optional": "Opcional",
   "Other": "Otro",
   "Password requirements": "Requisitos de contraseña:",

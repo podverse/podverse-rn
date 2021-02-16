@@ -192,39 +192,41 @@ static navigationOptions = ({ navigation }) => {
         podcastId,
         queryPage: 1
       },
-      async () => {
-        let newState = {}
-        let newPodcast: any
-
-        try {
-          if (podcast && podcast.addByRSSPodcastFeedUrl) {
-            newPodcast = podcast
-            newState.flatListData = podcast.episodes || []
-            newState.flatListDataTotalCount = newState.flatListData.length
-          } else {
-            newPodcast = await getPodcast(podcastId)
-            if (viewType === PV.Filters._episodesKey) {
-              newState = await this._queryData(PV.Filters._episodesKey)
-            } else if (viewType === PV.Filters._clipsKey) {
-              newState = await this._queryData(PV.Filters._clipsKey)
+      () => {
+        (async () => {
+          let newState = {}
+          let newPodcast: any
+  
+          try {
+            if (podcast && podcast.addByRSSPodcastFeedUrl) {
+              newPodcast = podcast
+              newState.flatListData = podcast.episodes || []
+              newState.flatListDataTotalCount = newState.flatListData.length
+            } else {
+              newPodcast = await getPodcast(podcastId)
+              if (viewType === PV.Filters._episodesKey) {
+                newState = await this._queryData(PV.Filters._episodesKey)
+              } else if (viewType === PV.Filters._clipsKey) {
+                newState = await this._queryData(PV.Filters._clipsKey)
+              }
             }
+  
+            newPodcast.description = newPodcast.description || translate('No summary available')
+  
+            this.setState({
+              ...newState,
+              isLoading: false,
+              podcast: newPodcast
+            })
+          } catch (error) {
+            console.log('_initializePageData', error)
+            this.setState({
+              ...newState,
+              isLoading: false,
+              ...(newPodcast ? { podcast: newPodcast } : { podcast })
+            })
           }
-
-          newPodcast.description = newPodcast.description || translate('No summary available')
-
-          this.setState({
-            ...newState,
-            isLoading: false,
-            podcast: newPodcast
-          })
-        } catch (error) {
-          console.log('_initializePageData', error)
-          this.setState({
-            ...newState,
-            isLoading: false,
-            ...(newPodcast ? { podcast: newPodcast } : { podcast })
-          })
-        }
+        })()
       }
     )
   }
@@ -245,9 +247,11 @@ static navigationOptions = ({ navigation }) => {
         selectedFilterLabel,
         viewType: selectedKey
       },
-      async () => {
-        const newState = await this._queryData(selectedKey)
-        this.setState(newState)
+      () => {
+        (async () => {
+          const newState = await this._queryData(selectedKey)
+          this.setState(newState)
+        })()
       }
     )
   }
@@ -267,9 +271,11 @@ static navigationOptions = ({ navigation }) => {
         querySort: selectedKey,
         selectedSortLabel
       },
-      async () => {
-        const newState = await this._queryData(selectedKey)
-        this.setState(newState)
+      () => {
+        (async () => {
+          const newState = await this._queryData(selectedKey)
+          this.setState(newState)
+        })()
       }
     )
   }
@@ -288,12 +294,14 @@ static navigationOptions = ({ navigation }) => {
           {
             isLoadingMore: true
           },
-          async () => {
-            const newState = await this._queryData(viewType, {
-              queryPage: queryPage + 1,
-              searchAllFieldsText: this.state.searchBarText
-            })
-            this.setState(newState)
+          () => {
+            (async () => {
+              const newState = await this._queryData(viewType, {
+                queryPage: queryPage + 1,
+                searchAllFieldsText: this.state.searchBarText
+              })
+              this.setState(newState)
+            })()
           }
         )
       }
@@ -302,14 +310,15 @@ static navigationOptions = ({ navigation }) => {
 
   _onRefresh = () => {
     const { viewType } = this.state
-
     this.setState(
       {
         isRefreshing: true
       },
-      async () => {
-        const newState = await this._queryData(viewType, { queryPage: 1 })
-        this.setState(newState)
+      () => {
+        (async () => {
+          const newState = await this._queryData(viewType, { queryPage: 1 })
+          this.setState(newState)
+        })()
       }
     )
   }
@@ -418,10 +427,12 @@ static navigationOptions = ({ navigation }) => {
       {
         flatListData: filteredEpisodes
       },
-      async () => {
-        await DownloadState.removeDownloadedPodcastEpisode(selectedId)
-        const finalDownloadedEpisodes = await getDownloadedEpisodes()
-        this.setState({ flatListData: finalDownloadedEpisodes })
+      () => {
+        (async () => {
+          await DownloadState.removeDownloadedPodcastEpisode(selectedId)
+          const finalDownloadedEpisodes = await getDownloadedEpisodes()
+          this.setState({ flatListData: finalDownloadedEpisodes })
+        })()
       }
     )
   }
@@ -431,15 +442,17 @@ static navigationOptions = ({ navigation }) => {
   }
 
   _handleDeleteDownloadedEpisodes = () => {
-    this.setState({ showDeleteDownloadedEpisodesDialog: false }, async () => {
-      const { podcast, podcastId } = this.state
-      const id = (podcast && podcast.id) || podcastId
-      try {
-        await removeDownloadedPodcast(id)
-      } catch (error) {
-        //
-      }
-      DownloadState.updateDownloadedPodcasts()
+    this.setState({ showDeleteDownloadedEpisodesDialog: false }, () => {
+      (async () => {
+        const { podcast, podcastId } = this.state
+        const id = (podcast && podcast.id) || podcastId
+        try {
+          await removeDownloadedPodcast(id)
+        } catch (error) {
+          //
+        }
+        DownloadState.updateDownloadedPodcasts()
+      })()
     })
   }
 
@@ -464,11 +477,13 @@ static navigationOptions = ({ navigation }) => {
         flatListDataTotalCount: null,
         queryPage: 1
       },
-      async () => {
-        const state = await this._queryData(viewType, {
-          searchAllFieldsText: queryOptions.searchAllFieldsText
-        })
-        this.setState(state)
+      () => {
+        (async () => {
+          const state = await this._queryData(viewType, {
+            searchAllFieldsText: queryOptions.searchAllFieldsText
+          })
+          this.setState(state)
+        })()
       }
     )
   }
@@ -485,24 +500,26 @@ static navigationOptions = ({ navigation }) => {
       const wasAlerted = await alertIfNoNetworkConnection(translate('subscribe to podcast'))
       if (wasAlerted) return
 
-      this.setState({ isSubscribing: true }, async () => {
-        try {
-          if (addByRSSPodcastFeedUrl) {
-            await toggleAddByRSSPodcastFeedUrl(podcastId)
-          } else {
-            await toggleSubscribeToPodcast(podcastId)
+      this.setState({ isSubscribing: true }, () => {
+        (async () => {
+          try {
+            if (addByRSSPodcastFeedUrl) {
+              await toggleAddByRSSPodcastFeedUrl(podcastId)
+            } else {
+              await toggleSubscribeToPodcast(podcastId)
+            }
+            this.setState({ isSubscribing: false })
+          } catch (error) {
+            this.setState({ isSubscribing: false })
           }
-          this.setState({ isSubscribing: false })
-        } catch (error) {
-          this.setState({ isSubscribing: false })
-        }
-
-        const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
-
-        this.setState({
-          downloadedEpisodeLimit,
-          limitDownloadedEpisodes: downloadedEpisodeLimit && downloadedEpisodeLimit > 0
-        })
+  
+          const downloadedEpisodeLimit = await getDownloadedEpisodeLimit(podcastId)
+  
+          this.setState({
+            downloadedEpisodeLimit,
+            limitDownloadedEpisodes: downloadedEpisodeLimit && downloadedEpisodeLimit > 0
+          })
+        })()
       })
     }
   }

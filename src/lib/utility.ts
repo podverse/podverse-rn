@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-regexp-exec */
 import AsyncStorage from '@react-native-community/async-storage'
 import he from 'he'
 import { NowPlayingItem } from 'podverse-shared'
@@ -22,7 +23,7 @@ export const setAppUserAgent = async () => {
   }
 }
 
-export const getAppUserAgent = async () => {
+export const getAppUserAgent = () => {
   return `${Config.USER_AGENT_PREFIX || 'Unknown App'}/${`${Config.USER_AGENT_APP_TYPE}` ||
     'Unknown App Type'}/${userAgent}`
 }
@@ -134,7 +135,7 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
 
 export const checkIfStringContainsHTMLTags = (text: string) => {
   if (text) {
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     return /<(br|basefont|hr|input|source|frame|param|area|meta|!--|col|link|option|base|img|wbr|!DOCTYPE).*?>|<(a|abbr|acronym|address|applet|article|aside|audio|b|bdi|bdo|big|blockquote|body|button|canvas|caption|center|cite|code|colgroup|command|datalist|dd|del|details|dfn|dialog|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frameset|head|header|hgroup|h1|h2|h3|h4|h5|h6|html|i|iframe|ins|kbd|keygen|label|legend|li|map|mark|menu|meter|nav|noframes|noscript|object|ol|optgroup|output|p|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|track|tt|u|ul|var|video).*?<\/\2>/i.test(
       text
     )
@@ -169,7 +170,7 @@ export const decodeHTMLString = (text: string) => {
 
 export const removeHTMLAttributesFromString = (html: string) => {
   const $ = cheerio.load(html)
-  $('*').each(function(x: any) {
+  $('*').each(function() {
     this.attribs = {
       ...(this.attribs && this.attribs.href ? { href: this.attribs.href } : {})
     }
@@ -422,7 +423,7 @@ export const convertHHMMSSToAnchorTags = (html: string) => {
 
 export function validateHHMMSSString(hhmmss: string) {
   const regex = new RegExp(
-    // tslint:disable-next-line: max-line-length
+    // eslint-disable-next-line max-len
     '^(([0-9][0-9]):([0-5][0-9]):([0-5][0-9]))$|(([0-9]):([0-5][0-9]):([0-5][0-9]))$|^(([0-5][0-9]):([0-5][0-9]))$|^(([0-9]):([0-5][0-9]))$|^([0-5][0-9])$|^([0-9])'
   )
   return regex.test(hhmmss)
@@ -489,7 +490,7 @@ export const convertToSortableTitle = (title: string) => {
   return sortableTitle ? sortableTitle.replace(/#/g, '') : ''
 }
 
-export const hasAtLeastXCharacters = (str?: string, x: number = 8) => {
+export const hasAtLeastXCharacters = (str?: string, x = 8) => {
   return str && str.match(`^(?=.{${x},})`) ? true : false
 }
 

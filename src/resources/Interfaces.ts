@@ -22,6 +22,7 @@ export interface GlobalTheme {
   dropdownButtonIcon?: any
   dropdownButtonText?: any
   flatList?: any
+  headerText?: any
   inputContainerText?: any
   link?: any
   makeClipPlayerControlsWrapper?: any

@@ -197,12 +197,14 @@ export class QueueScreen extends React.Component<Props, State> {
     const isDarkMode = this.global.globalTheme === darkTheme
     try {
       const { navigation } = this.props
-      this.setState({ isLoading: true }, async () => {
-        navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
-        const shouldPlay = true
-        await loadItemAndPlayTrack(item, shouldPlay)
-        await getQueueItems()
-        this.setState({ isLoading: false })
+      this.setState({ isLoading: true }, () => {
+        (async () => {
+          navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
+          const shouldPlay = true
+          await loadItemAndPlayTrack(item, shouldPlay)
+          await getQueueItems()
+          this.setState({ isLoading: false })
+        })()
       })
     } catch (error) {
       //
@@ -274,24 +276,28 @@ export class QueueScreen extends React.Component<Props, State> {
   }
 
   _handleRemoveQueueItemPress = (item: NowPlayingItem) => {
-    this.setState({ isRemoving: true }, async () => {
-      try {
-        await removeQueueItem(item)
-      } catch (error) {
-        //
-      }
-      this.setState({ isRemoving: false })
+    this.setState({ isRemoving: true }, () => {
+      (async () => {
+        try {
+          await removeQueueItem(item)
+        } catch (error) {
+          //
+        }
+        this.setState({ isRemoving: false })
+      })()
     })
   }
 
   _handleRemoveHistoryItemPress = (item: NowPlayingItem) => {
-    this.setState({ isRemoving: true }, async () => {
-      try {
-        await removeHistoryItem(item)
-      } catch (error) {
-        //
-      }
-      this.setState({ isRemoving: false })
+    this.setState({ isRemoving: true }, () => {
+      (async () => {
+        try {
+          await removeHistoryItem(item)
+        } catch (error) {
+          //
+        }
+        this.setState({ isRemoving: false })
+      })()
     })
   }
 
@@ -328,8 +334,10 @@ export class QueueScreen extends React.Component<Props, State> {
     const { endOfResultsReached, isLoadingMore } = this.state
 
     if (!endOfResultsReached && !isLoadingMore && distanceFromEnd > -1) {
-      this.setState({ isLoadingMore: true }, async () => {
-        await this._queryHistoryData(queryPage)
+      this.setState({ isLoadingMore: true }, () => {
+        (async () => {
+          await this._queryHistoryData(queryPage)
+        })()
       })
     }
   }

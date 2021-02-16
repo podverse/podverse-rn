@@ -24,6 +24,35 @@ const elementByIdClick = async (id, testLabel, back) => {
   logTestInfo(logKeyEnd, id, testLabel)
 }
 
+const elementCheckIfPresent = async (id, testLabel) => {
+  const driver = getDriver()
+  logTestInfo(logKeyStart, id, testLabel)
+  // elementByAccessibilityId throws an error if it cannot find a matching element
+  await driver.elementByAccessibilityId(id)
+  logTestInfo(logKeyEnd, id, testLabel)
+}
+
+const elementCheckIfNotPresent = async (id, testLabel) => {
+  const driver = getDriver()
+  logTestInfo(logKeyStart, id, testLabel)
+
+  let shouldPass = false
+
+  try {
+    // elementByAccessibilityId throws an error if it cannot find a matching element
+    await driver.elementByAccessibilityId(id)
+  } catch (error) {
+    // If the element was not found, then this check has passed.
+    shouldPass = true
+  }
+
+  if (!shouldPass) {
+    throw new Error(`Element found when it should not be present: ${id}`)
+  }
+
+  logTestInfo(logKeyEnd, id, testLabel)
+}
+
 const elementWaitFor = async (id, testLabel) => {
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
@@ -45,6 +74,8 @@ const elementbyIdToggle = async (id, testLabel) => {
 module.exports = {
   elementByIdAndClickAndTest,
   elementByIdClick,
+  elementCheckIfNotPresent,
+  elementCheckIfPresent,
   elementWaitFor,
   elementbyIdToggle,
   goBackKey

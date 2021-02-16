@@ -194,7 +194,7 @@
   "Limit the number of downloaded episodes from this podcast on your device. Once the download limit is exceeded the oldest episode will be automatically deleted.": "Once the download limit is exceeded, the oldest episode will be auto deleted.",
   "Only allow downloading when connected to Wifi": "Only allow downloading when connected to Wifi",
   "Only with Link means only people who": "Only with Link means only people who have your clip's link can play it. These clips will not show up automatically in the Public list on Podverse. A premium account is required to create Public clips.",
-  "Only with link": "Only with link",
+  "Only with link": "With link",
   "optional": "optional",
   "Other": "Other",
   "Password requirements": "Password requirements:",

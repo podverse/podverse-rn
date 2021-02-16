@@ -1,8 +1,8 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
-import { ActivityIndicator, Icon, View } from '.'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
+import { ActivityIndicator, Icon, View } from '.'
 
 type Props = {
   onPress: any

@@ -66,28 +66,30 @@ class App extends Component<Props, State> {
     this.unsubscribeNetListener && this.unsubscribeNetListener()
   }
 
-  handleNetworkChange = async (state: NetInfoState) => {
-    // isInternetReachable will be false
-    if (!state.isInternetReachable) {
-      return
-    }
-
-    // Don't continue handleNetworkChange when internet is first reachable on initial app launch
-    if (ignoreHandleNetworkChange) {
-      ignoreHandleNetworkChange = false
-      return
-    }
-
-    if (state.type === 'wifi') {
-      refreshDownloads()
-    } else if (state.type === 'cellular') {
-      const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
-      if (downloadingWifiOnly) {
-        pauseDownloadingEpisodesAll()
-      } else {
-        refreshDownloads()
+  handleNetworkChange = (state: NetInfoState) => {
+    (async () => {
+      // isInternetReachable will be false
+      if (!state.isInternetReachable) {
+        return
       }
-    }
+  
+      // Don't continue handleNetworkChange when internet is first reachable on initial app launch
+      if (ignoreHandleNetworkChange) {
+        ignoreHandleNetworkChange = false
+        return
+      }
+  
+      if (state.type === 'wifi') {
+        refreshDownloads()
+      } else if (state.type === 'cellular') {
+        const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
+        if (downloadingWifiOnly) {
+          pauseDownloadingEpisodesAll()
+        } else {
+          refreshDownloads()
+        }
+      }
+    })()
   }
 
   async setupGlobalState(theme: GlobalTheme) {
@@ -119,8 +121,16 @@ class App extends Component<Props, State> {
   }
 
   render() {
+    // Prevent white screen flash on navigation on Android
+    const wrapperStyle = Platform.OS === 'android' ? {
+      backgroundColor: PV.Colors.ink,
+      borderColor: PV.Colors.ink,
+      shadowOpacity: 1,
+      opacity: 1
+    } : {}
+
     return this.state.appReady ? (
-      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics} style={wrapperStyle}>
         <View style={{ flex: 1 }}>
           <Router />
           <OverlayAlert />

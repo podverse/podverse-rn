@@ -73,28 +73,30 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
       return
     } else if (url) {
       this.props.navigation.setParams({ _savePodcastByRSSUrlIsLoading: true })
-      this.setState({ isLoading: true }, async () => {
-        try {
-          const addByRSSSucceeded = await addAddByRSSPodcast(url)
-          this.setState({ isLoading: false })
-
-          if (addByRSSSucceeded) {
+      this.setState({ isLoading: true }, () => {
+        (async () => {
+          try {
+            const addByRSSSucceeded = await addAddByRSSPodcast(url)
+            this.setState({ isLoading: false })
+  
+            if (addByRSSSucceeded) {
+              this.props.navigation.setParams({
+                _savePodcastByRSSUrlIsLoading: false
+              })
+              const podcast = await getAddByRSSPodcastLocally(url)
+              this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
+                podcast,
+                addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
+              })
+            }
+          } catch (error) {
+            console.log('_handleSavePodcastByRSSURL', error)
             this.props.navigation.setParams({
               _savePodcastByRSSUrlIsLoading: false
             })
-            const podcast = await getAddByRSSPodcastLocally(url)
-            this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
-              podcast,
-              addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
-            })
+            this.setState({ isLoading: false })
           }
-        } catch (error) {
-          console.log('_handleSavePodcastByRSSURL', error)
-          this.props.navigation.setParams({
-            _savePodcastByRSSUrlIsLoading: false
-          })
-          this.setState({ isLoading: false })
-        }
+        })()
       })
     }
   }

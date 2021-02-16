@@ -1,10 +1,9 @@
-import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
-import { Button, TextInput } from '.'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
+import { Button, TextInput } from '.'
 
 type Props = {
   isLoading: boolean
