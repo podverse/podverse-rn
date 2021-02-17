@@ -5,7 +5,8 @@
   "contributors": [
     "Creon Creonopoulos",
     "Mitch Downey",
-    "Gary Johnson"
+    "Gary Johnson",
+    "Kyle Downey"
   ],
   "scripts": {
     "dev": "react-native start",

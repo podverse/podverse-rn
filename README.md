@@ -24,6 +24,7 @@ Available on the [App Store](https://apps.apple.com/us/app/podverse/id1390888454
 - Mitch Downey
 - Creon Creonopoulos
 - Gary Johnson
+- Kyle Downey
 
 ## Frequently Asked Questions:
 
