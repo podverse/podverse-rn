@@ -3,12 +3,22 @@ const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, element
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
 const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
 
-const test02_nonLoggedInScreensDidLoadTests = async () => {
-  console.log('02_nonLoggedInScreensDidLoad')
+const test03_loggedInScreensDidLoadTests = async () => {
+  console.log('03_loggedInScreensDidLoad')
   const driver = getDriver()
-
+  
+  await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+  await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
+  await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
+  await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
+  await elementByIdClick('auth_screen_login_button')
+  await driver.sleep(4000)
+  await cancelAndroidAlert()
+  
     // Podcast Screen
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
+
+  
 
     // Episode Screen
   // await elementByIdAndClickAndTest('episodes_screen_episode_item_0', 'episode_screen_view', noTestLabel, goBackKey) // ***Appears, but failing?***
@@ -43,23 +53,22 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
   await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
   await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
   await elementByIdToggle('settings_screen_offline_mode_switch')
+  
   // await performScroll(scrollDownKey, 2)
   // await elementByIdToggle('settings_screen_custom_api_domain_switch', noTestLabel, goBackKey)
   // await elementByIdToggle('settings_screen_custom_web_domain_switch', noTestLabel, goBackKey)
   await driver.back()
   await driver.back()
 
-
     // Search Screen
   await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
   await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
   await driver.sleep(5000)
   await elementWaitFor('search_screen_podcast_item_0')
-  await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'podcasts_screen_view')
+  await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'more_screen_view')
   // Add Custom RSS Feed
-
 }
 
 module.exports = {
-  test02_nonLoggedInScreensDidLoadTests
+  test03_loggedInScreensDidLoadTests
 }

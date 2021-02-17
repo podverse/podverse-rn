@@ -1,6 +1,7 @@
 const { test00_initTests } = require('./tests/00-initTests')
 const { test01_launchApp } = require('./tests/01-launchApp')
 const { test02_nonLoggedInScreensDidLoadTests } = require('./tests/02-nonLoggedInScreensDidLoad')
+// const { test03_loggedInScreensDidLoadTests } = require('./tests/03-loggedInScreensDidLoad')
 const { createDriver } = require('./driver/driverFactory')
 const { getTestCapabilities } = require('./utils/getTestCapabilities')
 
@@ -27,7 +28,8 @@ const runTests = async (customCapabilities) => {
     await test00_initTests(capabilities)
     await test01_launchApp()
     await test02_nonLoggedInScreensDidLoadTests()
-    // test03
+    // await test03_loggedInScreensDidLoadTests()
+
 
   } catch (error) {
     console.log('runTests error: ', error)

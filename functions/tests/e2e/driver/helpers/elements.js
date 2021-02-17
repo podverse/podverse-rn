@@ -2,6 +2,7 @@ const { getDriver } = require('../driverFactory')
 const { logKeyEnd, logKeyStart, logTestInfo } = require('../../utils/logger')
 
 const goBackKey = true
+const noTestLabel = null
 
 const elementByIdAndClickAndTest = async (id, waitForElementId, testLabel, back) => {
   const driver = getDriver()
@@ -60,7 +61,7 @@ const elementWaitFor = async (id, testLabel) => {
   logTestInfo(logKeyEnd, id, testLabel)
 }
 
-const elementbyIdToggle = async (id, testLabel) => {
+const elementByIdToggle = async (id, testLabel) => {
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
   await driver.waitForElementByAccessibilityId(id, 10000)
@@ -77,6 +78,7 @@ module.exports = {
   elementCheckIfNotPresent,
   elementCheckIfPresent,
   elementWaitFor,
-  elementbyIdToggle,
-  goBackKey
+  elementByIdToggle,
+  goBackKey,
+  noTestLabel
 }
