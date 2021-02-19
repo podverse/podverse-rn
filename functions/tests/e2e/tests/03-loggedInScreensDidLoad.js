@@ -6,19 +6,18 @@ const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers
 const test03_loggedInScreensDidLoadTests = async () => {
   console.log('03_loggedInScreensDidLoad')
   const driver = getDriver()
-  
+
+  // Log In Premium
+
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
   await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
   await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
   await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
-  await elementByIdClick('auth_screen_login_button')
+  await elementByIdClick('login_submit_button')
   await driver.sleep(4000)
-  await cancelAndroidAlert()
   
     // Podcast Screen
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
-
-  
 
     // Episode Screen
   // await elementByIdAndClickAndTest('episodes_screen_episode_item_0', 'episode_screen_view', noTestLabel, goBackKey) // ***Appears, but failing?***
@@ -36,12 +35,6 @@ const test03_loggedInScreensDidLoadTests = async () => {
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
   await elementByIdAndClickAndTest(
     'more_screen_add_podcast_by_rss_cell','add_podcast_by_rss_screen_view', noTestLabel, goBackKey)
-  await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_safe_area_view')
-  await elementByIdClick('auth_screen_reset_password_button')
-  await driver.back()
-  await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_safe_area_view')
-  await elementByIdClick('auth_screen_sign_up_button')
-  await driver.back()
   await elementByIdAndClickAndTest('more_screen_membership_cell', 'membership_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', noTestLabel, goBackKey)
@@ -65,8 +58,13 @@ const test03_loggedInScreensDidLoadTests = async () => {
   await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
   await driver.sleep(5000)
   await elementWaitFor('search_screen_podcast_item_0')
-  await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'more_screen_view')
+  await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'podcasts_screen_view')
   // Add Custom RSS Feed
+
+  await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+  await elementByIdAndClickAndTest('more_screen_log_out_cell', 'more_screen_view')
+  await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
+
 }
 
 module.exports = {
