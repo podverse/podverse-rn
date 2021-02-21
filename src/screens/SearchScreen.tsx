@@ -44,11 +44,13 @@ type State = {
 const testIDPrefix = 'search_screen'
 
 export class SearchScreen extends React.Component<Props, State> {
-
+  shouldLoad: boolean
   searchBarInput: any
 
   constructor(props: Props) {
     super(props)
+
+    this.shouldLoad = true
 
     this.state = {
       endOfResultsReached: false,
@@ -122,9 +124,11 @@ export class SearchScreen extends React.Component<Props, State> {
   _ItemSeparatorComponent = () => <Divider />
 
   _onEndReached = ({ distanceFromEnd }) => {
-    const { endOfResultsReached, isLoadingMore } = this.state
-    if (!endOfResultsReached && !isLoadingMore) {
+    const { endOfResultsReached } = this.state
+    if (!endOfResultsReached && this.shouldLoad) {
       if (distanceFromEnd > -1) {
+        this.shouldLoad = false
+
         this.setState(
           {
             isLoadingMore: true
@@ -290,7 +294,10 @@ export class SearchScreen extends React.Component<Props, State> {
     }
 
     const wasAlerted = await alertIfNoNetworkConnection(translate('search podcasts'))
-    if (wasAlerted) return newState
+    if (wasAlerted) {
+      this.shouldLoad = true
+      return newState
+    }
 
     try {
       const results = await getPodcasts({
@@ -300,7 +307,8 @@ export class SearchScreen extends React.Component<Props, State> {
       })
 
       const newFlatListData = [...flatListData, ...results[0]]
-
+      
+      this.shouldLoad = true
       return {
         ...newState,
         endOfResultsReached: newFlatListData.length >= results[1],
@@ -309,6 +317,7 @@ export class SearchScreen extends React.Component<Props, State> {
         queryPage: page
       }
     } catch (error) {
+      this.shouldLoad = true
       return newState
     }
   }

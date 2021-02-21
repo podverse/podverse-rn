@@ -75,9 +75,12 @@ const testIDPrefix = 'podcasts_screen'
 let isInitialLoad = true
 
 export class PodcastsScreen extends React.Component<Props, State> {
+  shouldLoad: boolean
 
   constructor(props: Props) {
     super(props)
+
+    this.shouldLoad = true
 
     this.state = {
       endOfResultsReached: false,
@@ -416,9 +419,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _onEndReached = (evt: any) => {
     const { distanceFromEnd } = evt
-    const { endOfResultsReached, isLoadingMore, queryFrom, queryPage = 1 } = this.state
-    if (queryFrom !== PV.Filters._subscribedKey && !endOfResultsReached && !isLoadingMore) {
+    const { endOfResultsReached, queryFrom, queryPage = 1 } = this.state
+
+    if (queryFrom !== PV.Filters._subscribedKey && !endOfResultsReached && this.shouldLoad) {
       if (distanceFromEnd > -1) {
+        this.shouldLoad = false
+
         this.setState(
           {
             isLoadingMore: true
@@ -823,9 +829,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.flatListDataTotalCount = results[1]
       }
 
+      this.shouldLoad = true
       return newState
     } catch (error) {
       console.log('PodcastsScreen _queryData error', error)
+      this.shouldLoad = true
       return newState
     }
   }

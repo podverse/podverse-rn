@@ -48,9 +48,12 @@ type State = {
 const testIDPrefix = 'queue_screen'
 
 export class QueueScreen extends React.Component<Props, State> {
+  shouldLoad: boolean
 
   constructor(props: Props) {
     super(props)
+
+    this.shouldLoad = true
 
     this.state = {
       endOfResultsReached: false,
@@ -336,9 +339,10 @@ export class QueueScreen extends React.Component<Props, State> {
   _onEndReached = ({ distanceFromEnd }) => {
     const { historyQueryPage } = this.global.session.userInfo
     const queryPage = historyQueryPage || 1
-    const { endOfResultsReached, isLoadingMore } = this.state
+    const { endOfResultsReached } = this.state
 
-    if (!endOfResultsReached && !isLoadingMore && distanceFromEnd > -1) {
+    if (!endOfResultsReached && this.shouldLoad && distanceFromEnd > -1) {
+      this.shouldLoad = false
       this.setState({ isLoadingMore: true }, () => {
         (async () => {
           await this._queryHistoryData(queryPage)
@@ -439,11 +443,14 @@ export class QueueScreen extends React.Component<Props, State> {
       if (endOfResultsReached) {
         await getHistoryItems(queryPage + 1, historyItems || [])
         const endOfResultsReached = historyItems && historyItems.length >= historyItemsCount
+        this.shouldLoad = true
         this.setState({ isLoading: false, isLoadingMore: false, endOfResultsReached })
       } else {
+        this.shouldLoad = true
         this.setState({ isLoading: false, isLoadingMore: false, endOfResultsReached: true })
       }
     } catch (error) {
+      this.shouldLoad = true
       this.setState({ isLoading: false, isLoadingMore: false, endOfResultsReached: false })
     }
   }
