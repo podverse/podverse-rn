@@ -301,26 +301,31 @@ export class QueueScreen extends React.Component<Props, State> {
     })
   }
 
-  _onReleaseRow = async (key: number, currentOrder: [string]) => {
+  _onReleaseRow = async (previousIndex: number, currentOrder: [string]) => {
     try {
-      const { queueItems = [] } = this.global.session.userInfo
-      const item = queueItems[key] as any
+      const { queueItems: previousQueueItems = [] } = this.global.session.userInfo
+      const item = previousQueueItems[previousIndex] as any
       const id = item.clipId || item.episodeId
-      const sortedItems = currentOrder.map((index: string) => queueItems[index])
 
-      let newItems = (await setAllQueueItemsLocally(sortedItems)) as any
+      const newSortedItems = currentOrder.map((index: string) => previousQueueItems[index])
+      let newItems = (await setAllQueueItemsLocally(newSortedItems)) as any
 
       const newQueueItemIndex = newItems.findIndex((x: any) =>
         checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(id, x.clipId, x.episodeId)
       )
 
+      const sourceIndex = previousIndex ? previousIndex : 0
+      let destinationIndex = newQueueItemIndex ? newQueueItemIndex : 0
+      const offset = destinationIndex < sourceIndex ? -1 : 0
+      destinationIndex = ((destinationIndex + 1) * 1000) + offset
+
       const useServerData = await checkIfShouldUseServerData()
       if (useServerData && newQueueItemIndex > -1) {
-        newItems = addQueueItemToServer(item, newQueueItemIndex)
+        newItems = await addQueueItemToServer(item, destinationIndex)
       }
 
-      if (item && queueItems.length >= newQueueItemIndex) {
-        const nextItem = queueItems[newQueueItemIndex] as any
+      if (item && previousQueueItems.length >= newQueueItemIndex) {
+        const nextItem = previousQueueItems[newQueueItemIndex] as any
         await movePlayerItemToNewPosition(item.clipId || item.episodeId, nextItem.clipId || nextItem.episodeId)
       }
     } catch (error) {
