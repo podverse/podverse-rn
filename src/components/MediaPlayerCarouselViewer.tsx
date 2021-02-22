@@ -1,19 +1,18 @@
 import {
   Alert,
-  Dimensions,
   Linking,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View as RNView
 } from 'react-native'
-import TextTicker from 'react-native-text-ticker'
+
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
-import { ActivityIndicator, FastImage, Text } from './'
+import { ActivityIndicator, FastImage, Text, TextTicker } from './'
 
 type Props = {
   handlePressClipInfo: any
@@ -76,7 +75,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
           ) : (
             !!nowPlayingItem && (
               <RNView style={styles.episodeTitleWrapper}>
-                <TextTicker duration={15000} loop bounce repeatSpacer={60}>
+                <TextTicker bounce loop textLength={nowPlayingItem?.episodeTitle?.length}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.xl}
                     numberOfLines={1}
@@ -112,12 +111,12 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             <TouchableWithoutFeedback onPress={handlePressClipInfo}>
               <RNView style={styles.clipWrapper}>
                 <TextTicker
-                  duration={10000}
-                  loop
                   bounce
-                  style={styles.clipTitle}
-                  repeatSpacer={50}
-                  testID='media_player_carousel_viewer_title'>{`${clipTitle}`}</TextTicker>
+                  loop
+                  styles={styles.clipTitle}
+                  textLength={clipTitle?.length}>
+                  {`${clipTitle}`}
+                </TextTicker>
                 {fontScaleMode !== PV.Fonts.fontScale.largest && (
                   <Text style={styles.clipTime} testID='media_player_carousel_viewer_time'>
                     {readableClipTime(clipStartTime, clipEndTime)}
