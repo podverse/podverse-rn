@@ -80,15 +80,15 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             this.setState({ isLoading: false })
   
             if (addByRSSSucceeded) {
-              this.props.navigation.setParams({
-                _savePodcastByRSSUrlIsLoading: false
-              })
               const podcast = await getAddByRSSPodcastLocally(url)
               this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
                 podcast,
                 addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
               })
             }
+            this.props.navigation.setParams({
+              _savePodcastByRSSUrlIsLoading: false
+            })
           } catch (error) {
             console.log('_handleSavePodcastByRSSURL', error)
             this.props.navigation.setParams({
@@ -112,6 +112,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             <TextInput
               autoCapitalize='none'
               autoCompleteType='off'
+              autoCorrect={false}
               eyebrowTitle={translate('RSS feed link')}
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               onChangeText={this._handleChangeText}
