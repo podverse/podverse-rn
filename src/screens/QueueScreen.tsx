@@ -48,9 +48,12 @@ type State = {
 const testIDPrefix = 'queue_screen'
 
 export class QueueScreen extends React.Component<Props, State> {
+  shouldLoad: boolean
 
   constructor(props: Props) {
     super(props)
+
+    this.shouldLoad = true
 
     this.state = {
       endOfResultsReached: false,
@@ -301,26 +304,31 @@ export class QueueScreen extends React.Component<Props, State> {
     })
   }
 
-  _onReleaseRow = async (key: number, currentOrder: [string]) => {
+  _onReleaseRow = async (previousIndex: number, currentOrder: [string]) => {
     try {
-      const { queueItems = [] } = this.global.session.userInfo
-      const item = queueItems[key] as any
+      const { queueItems: previousQueueItems = [] } = this.global.session.userInfo
+      const item = previousQueueItems[previousIndex] as any
       const id = item.clipId || item.episodeId
-      const sortedItems = currentOrder.map((index: string) => queueItems[index])
 
-      let newItems = (await setAllQueueItemsLocally(sortedItems)) as any
+      const newSortedItems = currentOrder.map((index: string) => previousQueueItems[index])
+      let newItems = (await setAllQueueItemsLocally(newSortedItems)) as any
 
       const newQueueItemIndex = newItems.findIndex((x: any) =>
         checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(id, x.clipId, x.episodeId)
       )
 
+      const sourceIndex = previousIndex ? previousIndex : 0
+      let destinationIndex = newQueueItemIndex ? newQueueItemIndex : 0
+      const offset = destinationIndex < sourceIndex ? -1 : 0
+      destinationIndex = ((destinationIndex + 1) * 1000) + offset
+
       const useServerData = await checkIfShouldUseServerData()
       if (useServerData && newQueueItemIndex > -1) {
-        newItems = addQueueItemToServer(item, newQueueItemIndex)
+        newItems = await addQueueItemToServer(item, destinationIndex)
       }
 
-      if (item && queueItems.length >= newQueueItemIndex) {
-        const nextItem = queueItems[newQueueItemIndex] as any
+      if (item && previousQueueItems.length >= newQueueItemIndex) {
+        const nextItem = previousQueueItems[newQueueItemIndex] as any
         await movePlayerItemToNewPosition(item.clipId || item.episodeId, nextItem.clipId || nextItem.episodeId)
       }
     } catch (error) {
@@ -331,9 +339,10 @@ export class QueueScreen extends React.Component<Props, State> {
   _onEndReached = ({ distanceFromEnd }) => {
     const { historyQueryPage } = this.global.session.userInfo
     const queryPage = historyQueryPage || 1
-    const { endOfResultsReached, isLoadingMore } = this.state
+    const { endOfResultsReached } = this.state
 
-    if (!endOfResultsReached && !isLoadingMore && distanceFromEnd > -1) {
+    if (!endOfResultsReached && this.shouldLoad && distanceFromEnd > -1) {
+      this.shouldLoad = false
       this.setState({ isLoadingMore: true }, () => {
         (async () => {
           await this._queryHistoryData(queryPage)
@@ -434,11 +443,14 @@ export class QueueScreen extends React.Component<Props, State> {
       if (endOfResultsReached) {
         await getHistoryItems(queryPage + 1, historyItems || [])
         const endOfResultsReached = historyItems && historyItems.length >= historyItemsCount
+        this.shouldLoad = true
         this.setState({ isLoading: false, isLoadingMore: false, endOfResultsReached })
       } else {
+        this.shouldLoad = true
         this.setState({ isLoading: false, isLoadingMore: false, endOfResultsReached: true })
       }
     } catch (error) {
+      this.shouldLoad = true
       this.setState({ isLoading: false, isLoadingMore: false, endOfResultsReached: false })
     }
   }

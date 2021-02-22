@@ -14,9 +14,7 @@ import Share from 'react-native-share'
 import React from 'reactn'
 import {
   ActivityIndicator,
-  Divider,
   DropdownButtonSelect,
-  FastImage,
   Icon,
   NavHeaderButtonText,
   PlayerProgressBar,
@@ -479,7 +477,10 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       onPress={this._playerMiniJumpBackward}
                       style={playerStyles.icon}
                       {...testProps(`${testIDPrefix}_mini_jump_backward`)}>
-                      <Icon name='angle-left' size={30} />
+                      {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS)}
+                      <View style={styles.skipTimeTextWrapper} transparent>
+                        <Text style={styles.skipTimeText}>1</Text>
+                      </View>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => togglePlay()}
@@ -498,7 +499,10 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       onPress={this._playerMiniJumpForward}
                       style={playerStyles.icon}
                       {...testProps(`${testIDPrefix}_mini_jump_forward`)}>
-                      <Icon name='angle-right' size={30} />
+                      {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD)}
+                      <View style={styles.skipTimeTextWrapper} transparent>
+                        <Text style={styles.skipTimeText}>1</Text>
+                      </View>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={this._playerJumpForward}
@@ -606,9 +610,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
               <RNView style={[styles.modalInnerWrapper, globalTheme.modalInnerWrapper]}>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
                   {translate('Tap the Start and End Time inputs to set them with the current track time')}
-                </Text>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
-                  {translate('Press the left or right caret symbols to adjust the current time by one second')}
                 </Text>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.modalText}>
                   {translate('If a podcast inserts dynamic ads the clip start time may not stay accurate')}

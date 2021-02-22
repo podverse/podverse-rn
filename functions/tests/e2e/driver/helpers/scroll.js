@@ -7,7 +7,7 @@ const scrollUpKey = 'up'
 
 const performScroll = async (direction, numberOfScrolls = 1) => {
   const driver = getDriver()
-  const yDestination = direction === scrollUpKey ? -500 : 500
+  const yDestination = direction === scrollUpKey ? 500 : -500
 
   let i
   for (i = 0; i < numberOfScrolls; i++) {

@@ -32,6 +32,7 @@ type State = {
 const testIDPrefix = 'episode_media_ref_screen'
 
 export class EpisodeMediaRefScreen extends React.Component<Props, State> {
+  shouldLoad: boolean
 
   constructor(props: Props) {
     super()
@@ -39,6 +40,8 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
     const flatListDataTotalCount = props.navigation.getParam('totalItems') || 0
     const existingData = props.navigation.getParam('initialData') || []
 
+    this.shouldLoad = true
+    
     this.state = {
       endOfResultsReached: false,
       flatListData: existingData,
@@ -111,8 +114,10 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
 
       newState.queryPage = queryOptions.queryPage || 1
 
+      this.shouldLoad = true
       return newState
     } catch (error) {
+      this.shouldLoad = true
       return newState
     }
   }
@@ -168,9 +173,11 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
   }
 
   _onEndReached = ({ distanceFromEnd }: { distanceFromEnd: number }) => {
-    const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = this.state
-    if (viewType === PV.Filters._clipsKey && !endOfResultsReached && !isLoadingMore) {
+    const { endOfResultsReached, queryPage = 1, viewType } = this.state
+    if (viewType === PV.Filters._clipsKey && !endOfResultsReached && this.shouldLoad) {
       if (distanceFromEnd > -1) {
+        this.shouldLoad = false
+
         this.setState(
           {
             isLoadingMore: true

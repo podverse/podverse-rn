@@ -187,7 +187,7 @@ export class AuthScreen extends React.Component<Props, State> {
           key='login'
           onPress={this._showLogin}
           style={styles.switchOptionText}
-          testID={`${testIDPrefix}_login_button`}>
+          testID={`${testIDPrefix}_back_to_login_button`}>
           {translate('Back To Login')}
         </Text>
       ]

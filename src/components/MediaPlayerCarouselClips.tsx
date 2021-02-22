@@ -19,8 +19,12 @@ type Props = {
 const getTestID = () => 'media_player_carousel_clips'
 
 export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
+  shouldLoad: boolean
+
   constructor(props) {
     super(props)
+
+    this.shouldLoad = true
 
     this.state = {}
   }
@@ -109,9 +113,11 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
 
   _onEndReached = ({ distanceFromEnd }) => {
     const { screenPlayer } = this.global
-    const { endOfResultsReached, isLoadingMore, queryPage = 1 } = screenPlayer
-    if (!endOfResultsReached && !isLoadingMore) {
+    const { endOfResultsReached, queryPage = 1 } = screenPlayer
+    if (!endOfResultsReached && this.shouldLoad) {
       if (distanceFromEnd > -1) {
+        this.shouldLoad = false
+
         setGlobal(
           {
             screenPlayer: {
@@ -319,6 +325,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
 
     if (!hasInternetConnection) {
       newState.showNoInternetConnectionMessage = true
+      this.shouldLoad = true
       return newState
     }
 
@@ -328,9 +335,10 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
       newState.endOfResultsReached = newState.flatListData.length >= results[1]
       newState.flatListDataTotalCount = results[1]
       newState.querySort = this._validSort()
-
+      this.shouldLoad = true
       return newState
     } catch (error) {
+      this.shouldLoad = true
       return newState
     }
   }
