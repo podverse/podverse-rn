@@ -13,7 +13,7 @@ type Props = {
 }
 
 export const PVTextTicker = (props: Props) => {
-  const { bounce, children, loop, marqueeDelay = 4000, repeatSpacer = 60, styles, textLength } = props
+  const { bounce, children, loop, marqueeDelay = 3000, repeatSpacer = 60, styles, textLength } = props
   const duration = textLength > 0
     ? textLength * 125 // 125 milliseconds for each character
     : 10000 // 10 seconds by default
