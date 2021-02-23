@@ -3,10 +3,10 @@ import { safelyUnwrapNestedVariable } from '../../lib/utility'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import {
-  getAddByRSSPodcastsLocally,
   removeAddByRSSPodcast as removeAddByRSSPodcastService
 } from '../../services/parser'
 import {
+  combineWithAddByRSSPodcasts as combineWithAddByRSSPodcastsService,
   getPodcast as getPodcastService,
   getSubscribedPodcasts as getSubscribedPodcastsService,
   insertOrRemovePodcastFromAlphabetizedArray,
@@ -14,14 +14,20 @@ import {
 } from '../../services/podcast'
 import { updateDownloadedPodcasts } from './downloads'
 
+export const combineWithAddByRSSPodcasts = async () => {
+  const combinedPodcasts = await combineWithAddByRSSPodcastsService()
+  setGlobal({
+    subscribedPodcasts: combinedPodcasts,
+    subscribedPodcastsTotalCount: combinedPodcasts?.length
+  })
+}
+
 export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
   const data = await getSubscribedPodcastsService(subscribedPodcastIds)
   const subscribedPodcasts = data[0] || []
   const subscribedPodcastsTotalCount = data[1] || 0
-  const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
 
   setGlobal({
-    addByRSSPodcasts,
     subscribedPodcasts,
     subscribedPodcastsTotalCount
   })
@@ -66,10 +72,8 @@ export const toggleSubscribeToPodcast = async (id: string) => {
 }
 
 export const removeAddByRSSPodcast = async (feedUrl: string) => {
-  await removeAddByRSSPodcastService(feedUrl)
-  const globalState = getGlobal()
-  const subscribedPodcastIds = safelyUnwrapNestedVariable(() => globalState.session.userInfo.subscribedPodcastIds, [])
-  await getSubscribedPodcasts(subscribedPodcastIds)
+  await removeAddByRSSPodcastService(feedUrl)  
+  await combineWithAddByRSSPodcasts()
   PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
 }
 
