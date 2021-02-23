@@ -13,7 +13,6 @@ const initialTheme: InitialState = {
   downloadedEpisodeLimitDefault: null,
   downloadedPodcastEpisodeCounts: {},
   downloadedPodcasts: [],
-  addByRSSPodcasts: [],
   censorNSFWText: true,
   customAPIDomain: '',
   customAPIDomainEnabled: false,
