@@ -2,20 +2,21 @@ import { convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
-import { convertSecToHhoursMMinutes } from '../lib/utility'
+import { convertSecToHhoursMMinutes, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer } from '../services/player'
 import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
 import { Icon, MoreButton, Text, View } from './'
 
 type Props = {
+  clipTime?: string
   handleMorePress?: any
   item: any
   mediaFileDuration?: number | undefined
   style?: any
-  userPlaybackPosition?: number | undefined
-  clipTime?: string
+  testID: string
   transparent?: boolean
+  userPlaybackPosition?: number | undefined
 }
 
 type BarProps = {
@@ -66,7 +67,7 @@ const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { clipTime, handleMorePress, item, mediaFileDuration, style, transparent, userPlaybackPosition } = props
+  const { clipTime, handleMorePress, item, mediaFileDuration, style, testID, transparent, userPlaybackPosition } = props
   const { episode = {}, podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
   const [player] = useGlobal('player')
@@ -106,7 +107,10 @@ export const TimeRemainingWidget = (props: Props) => {
 
   return (
     <View style={[styles.container, style]} transparent={transparent}>
-      <TouchableOpacity onPress={playItem} style={iconStyle}>
+      <TouchableOpacity
+        onPress={playItem}
+        style={iconStyle}
+        {...testProps(`${testID}_time_remaining_widget_toggle_play`)}>
         {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
       </TouchableOpacity>
       {hasStartedItem && !isInvalidDuration && (
@@ -118,7 +122,7 @@ export const TimeRemainingWidget = (props: Props) => {
         style={styles.text}>
         {timeLabel}
       </Text>
-      {!!handleMorePress && <MoreButton handleMorePress={handleMorePress} />}
+      {!!handleMorePress && <MoreButton handleMorePress={handleMorePress} testID={testID} />}
     </View>
   )
 }

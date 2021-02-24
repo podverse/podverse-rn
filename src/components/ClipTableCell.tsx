@@ -94,6 +94,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
           handleMorePress={handleMorePress}
           clipTime={clipTime}
           item={item}
+          testID={testID}
           transparent={transparent}
         />
       </View>

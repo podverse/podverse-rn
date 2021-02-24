@@ -86,8 +86,9 @@ export const EpisodeTableHeader = (props: Props) => {
               <TimeRemainingWidget
                 item={episode}
                 handleMorePress={handleMorePress}
-                style={{ marginVertical: 20 }}
                 mediaFileDuration={mediaFileDuration}
+                style={{ marginVertical: 20 }}
+                testID={testID}
                 userPlaybackPosition={userPlaybackPosition}
               />
             </View>
