@@ -12,13 +12,11 @@ import {
   OpaqueBackground,
   QueueTableCell,
   SortableList,
-  SortableListRow,
   TableSectionSelectors,
   View
 } from '../components'
 import { translate } from '../lib/i18n'
 import {
-  checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
   overrideImageUrlWithChapterImageUrl,
   testProps
 } from '../lib/utility'
@@ -253,29 +251,27 @@ export class QueueScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderQueueItemRow = ({ active, data = {} as NowPlayingItem, index }) => {
+  _renderQueueItemRow = ({ item = {} as NowPlayingItem, index, drag, isActive }) => {
     const { isEditing, isTransparent } = this.state
 
-    const cell = (
-      <View transparent={isTransparent}>
-        <QueueTableCell
-          clipEndTime={data.clipEndTime}
-          clipStartTime={data.clipStartTime}
-          {...(data.clipTitle ? { clipTitle: data.clipTitle } : {})}
-          {...(data.episodePubDate ? { episodePubDate: data.episodePubDate } : {})}
-          {...(data.episodeTitle ? { episodeTitle: data.episodeTitle } : {})}
-          handleRemovePress={() => this._handleRemoveQueueItemPress(data)}
-          podcastImageUrl={data.podcastImageUrl}
-          {...(data.podcastTitle ? { podcastTitle: data.podcastTitle } : {})}
-          showMoveButton={!isEditing}
-          showRemoveButton={isEditing}
-          testID={`${testIDPrefix}_queue_item_${index}`}
-          transparent={isTransparent}
-        />
-      </View>
+    return (
+      <QueueTableCell
+        clipEndTime={item.clipEndTime}
+        clipStartTime={item.clipStartTime}
+        {...(item.clipTitle ? { clipTitle: item.clipTitle } : {})}
+        drag={drag}
+        {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
+        {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
+        handleRemovePress={() => this._handleRemoveQueueItemPress(item)}
+        isActive={isActive}
+        podcastImageUrl={item.podcastImageUrl}
+        {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
+        showMoveButton={!isEditing}
+        showRemoveButton={isEditing}
+        testID={`${testIDPrefix}_queue_item_${index}`}
+        transparent={isTransparent}
+      />
     )
-
-    return <SortableListRow active={active} cell={cell} />
   }
 
   _handleRemoveQueueItemPress = (item: NowPlayingItem) => {
@@ -304,31 +300,23 @@ export class QueueScreen extends React.Component<Props, State> {
     })
   }
 
-  _onReleaseRow = async (previousIndex: number, currentOrder: [string]) => {
+  _onDragEnd = async ({ data, from, to }) => {
     try {
       const { queueItems: previousQueueItems = [] } = this.global.session.userInfo
-      const item = previousQueueItems[previousIndex] as any
-      const id = item.clipId || item.episodeId
+      const item = previousQueueItems[from] as any
 
-      const newSortedItems = currentOrder.map((index: string) => previousQueueItems[index])
-      let newItems = (await setAllQueueItemsLocally(newSortedItems)) as any
+      await setAllQueueItemsLocally(data)
 
-      const newQueueItemIndex = newItems.findIndex((x: any) =>
-        checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(id, x.clipId, x.episodeId)
-      )
-
-      const sourceIndex = previousIndex ? previousIndex : 0
-      let destinationIndex = newQueueItemIndex ? newQueueItemIndex : 0
-      const offset = destinationIndex < sourceIndex ? -1 : 0
-      destinationIndex = ((destinationIndex + 1) * 1000) + offset
+      const offset = to < from ? -1 : 0
+      to = ((to + 1) * 1000) + offset
 
       const useServerData = await checkIfShouldUseServerData()
-      if (useServerData && newQueueItemIndex > -1) {
-        newItems = await addQueueItemToServer(item, destinationIndex)
+      if (useServerData && to > -1) {
+        addQueueItemToServer(item, to)
       }
 
-      if (item && previousQueueItems.length >= newQueueItemIndex) {
-        const nextItem = previousQueueItems[newQueueItemIndex] as any
+      if (item && previousQueueItems.length >= to) {
+        const nextItem = previousQueueItems[to] as any
         await movePlayerItemToNewPosition(item.clipId || item.episodeId, nextItem.clipId || nextItem.episodeId)
       }
     } catch (error) {
@@ -355,7 +343,6 @@ export class QueueScreen extends React.Component<Props, State> {
     const { historyItems, historyItemsCount, queueItems } = this.global.session.userInfo
     const { currentChapter, nowPlayingItem } = this.global.player
     const { isEditing, isLoading, isLoadingMore, isRemoving, isTransparent, viewType } = this.state
-
     const view = (
       <View style={styles.view} transparent={isTransparent} {...testProps(`${testIDPrefix}_view`)}>
         {!isLoading && viewType === _queueKey && ((queueItems && queueItems.length > 0) || nowPlayingItem) && (
@@ -396,9 +383,9 @@ export class QueueScreen extends React.Component<Props, State> {
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length > 0 && (
           <SortableList
             data={queueItems}
-            onPressRow={!isEditing && this._onPressRow}
-            onReleaseRow={!isEditing && this._onReleaseRow}
-            renderRow={this._renderQueueItemRow}
+            isEditing={isEditing}
+            onDragEnd={this._onDragEnd}
+            renderItem={this._renderQueueItemRow}
           />
         )}
         {!isLoading && viewType === _queueKey && queueItems && queueItems.length < 1 && (

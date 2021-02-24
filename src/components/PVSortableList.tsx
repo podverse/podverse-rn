@@ -1,25 +1,25 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
-import SortableList from 'react-native-sortable-list'
+import DraggableFlatList from 'react-native-draggable-flatlist'
 
 type Props = {
   data: any[]
-  onPressRow?: any
-  onReleaseRow: any
-  renderRow: any
+  isEditing?: boolean
+  onDragEnd: any
+  renderItem: any
 }
 
 export class PVSortableList extends React.Component<Props> {
   render() {
-    const { data, onPressRow, onReleaseRow, renderRow } = this.props
+    const { data, isEditing, onDragEnd, renderItem } = this.props
 
     return (
-      <SortableList
+      <DraggableFlatList
         data={data}
-        onPressRow={onPressRow}
-        onReleaseRow={onReleaseRow}
-        renderRow={renderRow}
-        rowActivationTime={750}
+        keyExtractor={
+          (item) => `draggable-item-${item.clipId || item.episodeId}-${isEditing ? 'isEditing' : 'isNotEditing'}`}
+        onDragEnd={onDragEnd}
+        renderItem={renderItem}
         style={styles.list}
       />
     )

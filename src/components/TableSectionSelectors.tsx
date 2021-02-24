@@ -65,6 +65,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       selectedFromItemKey,
       selectedSortItemKey,
       selectedSortLabel,
+      testID,
       transparentDropdownButton,
       textStyle
     } = this.props
@@ -105,6 +106,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
             })
           }}
           sortLabel={selectedSortLabel}
+          testID={testID}
           transparent={transparentDropdownButton}
         />
       </View>
