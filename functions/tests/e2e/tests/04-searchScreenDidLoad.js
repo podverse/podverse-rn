@@ -10,9 +10,11 @@ const test04_searchScreenDidLoad = async () => {
     // Search Screen
   await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
 
-  await elementByIdAndClickAndTest('add_podcast_by_RSS_feed', 'add_podcast_by_rss_screen_view')
+  await elementByIdAndClickAndTest('search_screen_message_with_action_middle_button_button', 'add_podcast_by_rss_screen_view')
   await sendKeysToElementById('add_podcast_by_rss_screen_rss_feed_text_input', 'https://stage.podverse.fm/sampleRSS/how-to-start-a-podcast.rss', 'Add Custom RSS Feed')
+  await elementByIdAndClickAndTest('add_podcast_by_rss_screen_save_nav_header_button_text', 'podcast_screen_view', noTestLabel, goBackKey)
 
+  await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
 
   await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
   await driver.sleep(5000)
