@@ -1,4 +1,4 @@
-import { StyleSheet, View as RNView } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime, readableDate } from '../lib/utility'
@@ -10,17 +10,19 @@ type Props = {
   clipEndTime?: number
   clipStartTime?: number
   clipTitle?: string
+  drag?: any
   episodePubDate?: string
   episodeTitle?: string
   handleRemovePress?: any
   hideBottomRow?: boolean
+  hideDivider?: boolean
+  isActive?: boolean
   podcastImageUrl?: string
   podcastTitle?: string
   showMoveButton?: boolean
   showRemoveButton?: boolean
   testID: string
   transparent?: boolean
-  hideDivider?: boolean
 }
 
 export class QueueTableCell extends React.PureComponent<Props> {
@@ -29,88 +31,96 @@ export class QueueTableCell extends React.PureComponent<Props> {
       clipEndTime,
       clipStartTime,
       clipTitle = translate('Untitled Clip'),
+      drag,
       episodePubDate = '',
       episodeTitle = translate('Untitled Episode'),
       handleRemovePress,
       hideBottomRow,
+      hideDivider,
+      isActive,
       podcastImageUrl,
       podcastTitle = translate('Untitled Podcast'),
       showMoveButton,
       showRemoveButton,
       testID,
-      transparent,
-      hideDivider
+      transparent
     } = this.props
 
+    const viewStyle = isActive
+      ? [styles.wrapper, styles.wrapperActive, hideDivider ? { borderBottomWidth: 0 } : {}]
+      : [styles.wrapper, hideDivider ? { borderBottomWidth: 0 } : {}]
+
     return (
-      <View
-        style={[styles.wrapper, hideDivider ? { borderBottomWidth: 0 } : {}]}
-        transparent={transparent}
-        testID={testID}>
-        <RNView style={styles.wrapperTop}>
-          <FastImage isSmall key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
-          <RNView style={styles.textWrapper}>
-            {!!podcastTitle && (
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                isSecondary
-                numberOfLines={1}
-                style={styles.podcastTitle}
-                testID={`${testID}_podcast_title`}>
-                {podcastTitle.trim()}
-              </Text>
-            )}
-            {!!episodeTitle && (
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                numberOfLines={1}
-                style={styles.episodeTitle}
-                testID={`${testID}_episode_title`}>
-                {episodeTitle.trim()}
-              </Text>
-            )}
-            {!!episodePubDate && (
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                isSecondary
-                numberOfLines={1}
-                style={styles.episodePubDate}
-                testID={`${testID}_episode_pub_date`}>
-                {readableDate(episodePubDate)}
-              </Text>
+      <TouchableWithoutFeedback onLongPress={drag}>
+        <View
+          style={viewStyle}
+          transparent={transparent}
+          testID={testID}>
+          <RNView style={styles.wrapperTop}>
+            <FastImage isSmall key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
+            <RNView style={styles.textWrapper}>
+              {!!podcastTitle && (
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  isSecondary
+                  numberOfLines={1}
+                  style={styles.podcastTitle}
+                  testID={`${testID}_podcast_title`}>
+                  {podcastTitle.trim()}
+                </Text>
+              )}
+              {!!episodeTitle && (
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  numberOfLines={1}
+                  style={styles.episodeTitle}
+                  testID={`${testID}_episode_title`}>
+                  {episodeTitle.trim()}
+                </Text>
+              )}
+              {!!episodePubDate && (
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  isSecondary
+                  numberOfLines={1}
+                  style={styles.episodePubDate}
+                  testID={`${testID}_episode_pub_date`}>
+                  {readableDate(episodePubDate)}
+                </Text>
+              )}
+            </RNView>
+            {!!showMoveButton && <Icon isSecondary name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />}
+            {!!showRemoveButton && !!handleRemovePress && (
+              <Icon
+                name='times'
+                onPress={handleRemovePress}
+                size={28}
+                style={button.iconOnlyMedium}
+                testID={`${testID}_remove_button`}
+              />
             )}
           </RNView>
-          {!!showMoveButton && <Icon isSecondary name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />}
-          {!!showRemoveButton && !!handleRemovePress && (
-            <Icon
-              name='times'
-              onPress={handleRemovePress}
-              size={28}
-              style={button.iconOnlyMedium}
-              testID={`${testID}_remove_button`}
-            />
+          {!hideBottomRow && (
+            <RNView style={styles.wrapperBottom}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                numberOfLines={1}
+                style={styles.clipTitle}
+                testID={`${testID}_bottom_text`}>
+                {!!clipStartTime && !!clipTitle ? clipTitle.trim() : translate('Full Episode')}
+              </Text>
+              {!!clipStartTime && (
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                  style={styles.clipTime}
+                  testID={`${testID}_clip_time`}>
+                  {readableClipTime(clipStartTime, clipEndTime)}
+                </Text>
+              )}
+            </RNView>
           )}
-        </RNView>
-        {!hideBottomRow && (
-          <RNView style={styles.wrapperBottom}>
-            <Text
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-              numberOfLines={1}
-              style={styles.clipTitle}
-              testID={`${testID}_bottom_text`}>
-              {!!clipStartTime && !!clipTitle ? clipTitle.trim() : translate('Full Episode')}
-            </Text>
-            {!!clipStartTime && (
-              <Text
-                fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                style={styles.clipTime}
-                testID={`${testID}_clip_time`}>
-                {readableClipTime(clipStartTime, clipEndTime)}
-              </Text>
-            )}
-          </RNView>
-        )}
-      </View>
+        </View>
+      </TouchableWithoutFeedback>
     )
   }
 }
@@ -154,12 +164,19 @@ const styles = StyleSheet.create({
     paddingRight: 8
   },
   wrapper: {
-    paddingBottom: 8,
     paddingHorizontal: 8,
-    paddingTop: 10,
+    paddingVertical: 10,
     marginHorizontal: 8,
     borderBottomColor: PV.Colors.gray,
     borderBottomWidth: 1
+  },
+  wrapperActive: {
+    borderBottomWidth: 2,
+    borderColor: PV.Colors.brandColor,
+    borderBottomColor: PV.Colors.brandColor,
+    borderWidth: 2,
+    paddingHorizontal: 6,
+    paddingVertical: 8
   },
   wrapperBottom: {
     flexDirection: 'row',
