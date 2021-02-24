@@ -222,7 +222,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, isRemoving, isUpdating, newTitle, sortableListData } = this.state
+    const { isEditing, isLoading, isRemoving, isUpdating, newTitle, sortableListData } = this.state
 
     return (
       <View style={styles.view} {...testProps('edit_playlist_screen_view')}>
@@ -242,7 +242,8 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
         </View>
         <Divider />
         {(isUpdating || (!isLoading && sortableListData && sortableListData.length > 0)) && (
-          <SortableList data={sortableListData} onDragEnd={this._onDragEnd} renderItem={this._renderRow} />
+          <SortableList
+            data={sortableListData} isEditing={isEditing} onDragEnd={this._onDragEnd} renderItem={this._renderRow} />
         )}
         {(isLoading || isRemoving || isUpdating) && <ActivityIndicator isOverlay />}
       </View>

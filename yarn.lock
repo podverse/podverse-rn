@@ -7797,13 +7797,6 @@ react-native-share@3.8.5:
   resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-3.8.5.tgz#e74ed39401b9fceef700435cef7c28bc37c7e267"
   integrity sha512-GjMI2NwUvi8zC7JHWk6NIcg/gFJmK/+cAQ8VStvfy4/kOiXYE5YnpPjvKs/K1Aun0HqYi2vjvZruL5ouDEWxmg==
 
-react-native-sortable-list@0.0.24:
-  version "0.0.24"
-  resolved "https://registry.yarnpkg.com/react-native-sortable-list/-/react-native-sortable-list-0.0.24.tgz#b71e469fd34f77ec87d827a8a29b94f9e0197978"
-  integrity sha512-UomAYeTeTpkuPmcRcqFd3mzKioVaD/+yDAlsivKjBnQoV9aEBd2SNthoxaSsYWTwoadBOStthZj2vIXMMC3+XQ==
-  dependencies:
-    prop-types "^15.5.10"
-
 react-native-status-bar-height@^2.2.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/react-native-status-bar-height/-/react-native-status-bar-height-2.6.0.tgz#b6afd25b6e3d533c43d0fcdcfd5cafd775592cea"
