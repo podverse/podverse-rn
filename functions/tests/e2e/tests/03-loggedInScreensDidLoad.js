@@ -20,7 +20,7 @@ const test03_loggedInScreensDidLoadTests = async () => {
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
 
     // Episode Screen
-  // await elementByIdAndClickAndTest('episodes_screen_episode_item_0', 'episode_screen_view', noTestLabel, goBackKey) // ***Appears, but failing?***
+    await elementByIdAndClickAndTest('episodes_screen_episode_item_0_top_view_nav', 'episode_screen_view', noTestLabel, goBackKey)
 
     // Clips Screen
   await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
