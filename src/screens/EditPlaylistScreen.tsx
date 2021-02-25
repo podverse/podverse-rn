@@ -6,7 +6,6 @@ import {
   NavHeaderButtonText,
   QueueTableCell,
   SortableList,
-  SortableListRow,
   TextInput,
   View
 } from '../components'
@@ -26,7 +25,6 @@ type State = {
   isLoading: boolean
   isRemoving: boolean
   isUpdating: boolean
-  newItemsOrderByIndex?: [string]
   newTitle?: string
   playlist: any
   sortableListData: any[]
@@ -139,67 +137,58 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
   }
 
   _resortItemsAndGetOrder = () => new Promise((resolve) => {
-      const { newItemsOrderByIndex, sortableListData } = this.state
+      const { sortableListData } = this.state
       const itemsOrder = [] as any
       const newSortableListData = []
 
-      if (newItemsOrderByIndex && newItemsOrderByIndex.length > 0) {
-        for (const index of newItemsOrderByIndex) {
-          itemsOrder.push(sortableListData[index].id)
-          newSortableListData.push(sortableListData[index])
-        }
-        this.setState({ sortableListData: newSortableListData }, () => {
-          resolve(itemsOrder)
-        })
-      } else {
-        resolve()
+      for (const item of sortableListData) {
+        itemsOrder.push(item.id)
+        newSortableListData.push(item)
       }
+      this.setState({ sortableListData: newSortableListData }, () => {
+        resolve(itemsOrder)
+      })
     })
 
   _ItemSeparatorComponent = () => <Divider />
 
-  _renderRow = ({ active, data, index }) => {
+  _renderRow = ({ item = {} as NowPlayingItem, index, drag }) => {
     const { isEditing } = this.state
-    let cell
 
-    if (data.startTime) {
-      cell = (
-        <View>
-          <QueueTableCell
-            clipEndTime={data.endTime}
-            clipStartTime={data.startTime}
-            {...(data.title ? { clipTitle: data.title } : {})}
-            {...(data.episode.pubDate ? { episodePubDate: data.episode.pubDate } : {})}
-            {...(data.episode.title ? { episodeTitle: data.episode.title } : {})}
-            handleRemovePress={() => this._handleRemovePlaylistItemPress(data)}
-            podcastImageUrl={data.episode.podcast.shrunkImageUrl || data.episode.podcast.imageUrl}
-            {...(data.episode.podcast.title ? { podcastTitle: data.episode.podcast.title } : {})}
-            showMoveButton={!isEditing}
-            showRemoveButton={isEditing}
-            testID={`${testIDPrefix}_queue_item_${index}`}
-          />
-          <Divider style={styles.tableCellDivider} />
-        </View>
+    if (item.startTime) {
+      return (
+        <QueueTableCell
+          clipEndTime={item.endTime}
+          clipStartTime={item.startTime}
+          drag={drag}
+          {...(item.title ? { clipTitle: item.title } : {})}
+          {...(item.episode.pubDate ? { episodePubDate: item.episode.pubDate } : {})}
+          {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
+          handleRemovePress={() => this._handleRemovePlaylistItemPress(item)}
+          isActive={isActive}
+          podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
+          {...(item.episode.podcast.title ? { podcastTitle: item.episode.podcast.title } : {})}
+          showMoveButton={!isEditing}
+          showRemoveButton={isEditing}
+          testID={`${testIDPrefix}_queue_item_${index}`}
+        />
       )
     } else {
-      cell = (
-        <View>
-          <QueueTableCell
-            {...(data.pubDate ? { episodePubDate: data.pubDate } : {})}
-            {...(data.title ? { episodeTitle: data.title } : {})}
-            handleRemovePress={() => this._handleRemovePlaylistItemPress(data)}
-            podcastImageUrl={(data.podcast && (data.podcast.shrunkImageUrl || data.podcast.imageUrl)) || ''}
-            {...(data.podcast && data.podcast.title ? { podcastTitle: data.podcast.title } : {})}
-            showMoveButton={!isEditing}
-            showRemoveButton={isEditing}
-            testID={`${testIDPrefix}_queue_item_${index}`}
-          />
-          <Divider style={styles.tableCellDivider} />
-        </View>
+      return (
+        <QueueTableCell
+          drag={drag}
+          {...(item.pubDate ? { episodePubDate: item.pubDate } : {})}
+          {...(item.title ? { episodeTitle: item.title } : {})}
+          handleRemovePress={() => this._handleRemovePlaylistItemPress(item)}
+          isActive={isActive}
+          podcastImageUrl={(item.podcast && (item.podcast.shrunkImageUrl || item.podcast.imageUrl)) || ''}
+          {...(item.podcast && item.podcast.title ? { podcastTitle: item.podcast.title } : {})}
+          showMoveButton={!isEditing}
+          showRemoveButton={isEditing}
+          testID={`${testIDPrefix}_queue_item_${index}`}
+        />
       )
     }
-
-    return <SortableListRow active={active} cell={cell} />
   }
 
   _handleRemovePlaylistItemPress = (item: any) => {
@@ -226,14 +215,14 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     this.setState({ newTitle: text })
   }
 
-  _onReleaseRow = (key: number, currentOrder: [string]) => {
-    this.setState({ newItemsOrderByIndex: currentOrder }, () => {
+  _onDragEnd = ({ data }) => {
+    this.setState({ sortableListData: data }, () => {
       this._updatePlaylist()
     })
   }
 
   render() {
-    const { isLoading, isRemoving, isUpdating, newTitle, sortableListData } = this.state
+    const { isEditing, isLoading, isRemoving, isUpdating, newTitle, sortableListData } = this.state
 
     return (
       <View style={styles.view} {...testProps('edit_playlist_screen_view')}>
@@ -253,7 +242,8 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
         </View>
         <Divider />
         {(isUpdating || (!isLoading && sortableListData && sortableListData.length > 0)) && (
-          <SortableList data={sortableListData} onReleaseRow={this._onReleaseRow} renderRow={this._renderRow} />
+          <SortableList
+            data={sortableListData} isEditing={isEditing} onDragEnd={this._onDragEnd} renderItem={this._renderRow} />
         )}
         {(isLoading || isRemoving || isUpdating) && <ActivityIndicator isOverlay />}
       </View>

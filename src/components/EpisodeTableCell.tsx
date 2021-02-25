@@ -134,6 +134,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             handleMorePress={handleMorePress}
             item={item}
             mediaFileDuration={mediaFileDuration}
+            testID={testID}
             userPlaybackPosition={userPlaybackPosition}
           />
         </View>

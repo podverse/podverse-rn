@@ -7,11 +7,15 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
   console.log('02_nonLoggedInScreensDidLoad')
   const driver = getDriver()
 
-    // Podcast Screen
+    // Podcasts Screen
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
 
-    // Episode Screen
-  // await elementByIdAndClickAndTest('episodes_screen_episode_item_0', 'episode_screen_view', noTestLabel, goBackKey) // ***Appears, but failing?***
+    // Episodes Screen
+  await elementByIdAndClickAndTest('episodes_screen_episode_item_0_bottom_view_nav_time_remaining_widget_toggle_play', 'episode_screen_view')
+  await elementByIdAndClickAndTest('episodes_screen_episode_item_0_top_view_nav', 'episode_screen_view', noTestLabel, goBackKey)
+
+
+  
 
     // Clips Screen
   await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
