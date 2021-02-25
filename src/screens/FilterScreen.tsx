@@ -241,7 +241,7 @@ export class FilterScreen extends React.Component<Props, State> {
     const { sections } = this.state
 
     return (
-      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+      <View style={styles.view} testID={`${testIDPrefix}_view`}>
         <FlatList
           disableLeftSwipe
           disableNoResultsMessage
