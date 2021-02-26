@@ -150,13 +150,13 @@ const allMyLibraryFeatures = [
     title: translate('My Clips'),
     routeName: PV.RouteNames.MyProfileScreen,
     key: _myClipsKey,
-    testId: 'my_library_screen_my_profile_cell'
+    testID: 'my_library_screen_my_profile_cell'
   },
   {
     title: translate('My Profile'),
     routeName: PV.RouteNames.MyProfileScreen,
     key: _myProfileKey,
-    testId: 'my_library_screen_my_profile_cell'
+    testID: 'my_library_screen_my_profile_cell'
   },
   {
     title: translate('Playlists'),
