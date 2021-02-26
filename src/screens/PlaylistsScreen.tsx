@@ -59,6 +59,10 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     trackPageView('/playlists', 'Playlists Screen')
   }
 
+  componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYLISTS_UPDATED, this._refreshSections)
+  }
+
   _refreshSections = () => {
     const sections = this.generatePlaylistsSections()
     this.setState({ sections })
