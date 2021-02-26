@@ -49,17 +49,15 @@ export class MiniPlayer extends React.PureComponent<Props> {
                 styles={styles.image}
               />
               <View style={styles.textWrapper}>
-                {![PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) && (
-                  <Text numberOfLines={1} style={[styles.podcastTitle, globalTheme.playerText]}>
-                    {nowPlayingItem.podcastTitle}
-                  </Text>
-                )}
+                <Text allowFontScaling={false} numberOfLines={1} style={[styles.podcastTitle, globalTheme.playerText]}>
+                  {nowPlayingItem.podcastTitle}
+                </Text>
                 <TextTicker
+                  allowFontScaling={false}
                   bounce
                   loop
                   textLength={nowPlayingItem?.episodeTitle?.length}>
                   <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     numberOfLines={1}
                     style={[styles.episodeTitle, globalTheme.playerText]}>
                     {nowPlayingItem.episodeTitle}
