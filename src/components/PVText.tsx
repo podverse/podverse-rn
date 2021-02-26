@@ -5,6 +5,7 @@ import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 
 type Props = {
+  allowFontScaling?: boolean
   children?: any
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
@@ -24,9 +25,9 @@ export const PVText = (props: Props) => {
   const globalThemeText = isSecondary ? globalTheme.textSecondary : globalTheme.text
 
   const textStyle = [globalThemeText, props.style]
-  if (fontScaleMode === PV.Fonts.fontScale.larger) {
+  if (fontScaleMode === PV.Fonts.fontScale.larger && fontSizeLargerScale) {
     textStyle.push({ fontSize: fontSizeLargerScale })
-  } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
+  } else if (fontScaleMode === PV.Fonts.fontScale.largest && fontSizeLargestScale) {
     textStyle.push({ fontSize: fontSizeLargestScale })
   }
 
