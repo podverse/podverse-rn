@@ -51,21 +51,11 @@ const tabTestProps = (id: string) => {
 }
 
 const defaultNavigationOptions = ({ navigation }) => {
-  const { fontScale, fontScaleMode } = getGlobal()
-
-  let fontSize = PV.Fonts.sizes.xl
-  if (fontScaleMode === PV.Fonts.fontScale.larger) {
-    fontSize = PV.Fonts.largeSizes.sm * fontScale
-  } else if (fontScaleMode === PV.Fonts.fontScale.largest) {
-    fontSize = PV.Fonts.largeSizes.tiny * fontScale
-  }
-
   return {
     headerStyle: { backgroundColor: PV.Colors.ink, shadowColor: 'transparent' },
     title: PV.Tabs.Podcasts.title,
     headerTintColor: darkTheme.text.color,
     headerTitleStyle: {
-      fontSize,
       fontWeight: 'bold'
     },
     headerRight: () => <NavSearchIcon navigation={navigation} />,

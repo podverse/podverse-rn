@@ -18,7 +18,7 @@ type Props = {
 export class PlaylistTableCell extends React.PureComponent<Props> {
   render() {
     const {
-      createdBy,
+      createdBy = translate('anonymous'),
       hasZebraStripe,
       isSaving,
       itemCount = 0,

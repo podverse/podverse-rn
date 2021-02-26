@@ -45,7 +45,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
 
   render() {
     const { handlePressClipInfo, width } = this.props
-    const { fontScaleMode, player, screenPlayer } = this.global
+    const { player, screenPlayer } = this.global
     const { currentChapter, nowPlayingItem = {} } = player
     const { isLoading } = screenPlayer
     let { clipId, clipEndTime, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem
@@ -75,25 +75,23 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
           ) : (
             !!nowPlayingItem && (
               <RNView style={styles.episodeTitleWrapper}>
-                <TextTicker bounce loop textLength={nowPlayingItem?.episodeTitle?.length}>
+                <TextTicker allowFontScaling={false} bounce loop textLength={nowPlayingItem?.episodeTitle?.length}>
                   <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.xl}
+                    allowFontScaling={false}
                     numberOfLines={1}
                     style={styles.episodeTitle}
                     testID='media_player_carousel_viewer_episode_title'>
                     {nowPlayingItem.episodeTitle}
                   </Text>
                 </TextTicker>
-                {fontScaleMode !== PV.Fonts.fontScale.largest && (
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    isSecondary
-                    numberOfLines={1}
-                    style={styles.podcastTitle}
-                    testID='media_player_carousel_viewer_podcast_title'>
-                    {nowPlayingItem.podcastTitle}
-                  </Text>
-                )}
+                <Text
+                  allowFontScaling={false}
+                  isSecondary
+                  numberOfLines={1}
+                  style={styles.podcastTitle}
+                  testID='media_player_carousel_viewer_podcast_title'>
+                  {nowPlayingItem.podcastTitle}
+                </Text>
               </RNView>
             )
           )}
@@ -111,17 +109,16 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             <TouchableWithoutFeedback onPress={handlePressClipInfo}>
               <RNView style={styles.clipWrapper}>
                 <TextTicker
+                  allowFontScaling={false}
                   bounce
                   loop
                   styles={styles.clipTitle}
                   textLength={clipTitle?.length}>
                   {`${clipTitle}`}
                 </TextTicker>
-                {fontScaleMode !== PV.Fonts.fontScale.largest && (
-                  <Text style={styles.clipTime} testID='media_player_carousel_viewer_time'>
-                    {readableClipTime(clipStartTime, clipEndTime)}
-                  </Text>
-                )}
+                <Text allowFontScaling={false} style={styles.clipTime} testID='media_player_carousel_viewer_time'>
+                  {readableClipTime(clipStartTime, clipEndTime)}
+                </Text>
               </RNView>
             </TouchableWithoutFeedback>
           </RNView>

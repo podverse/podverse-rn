@@ -17,7 +17,10 @@ export class PVSortableList extends React.Component<Props> {
       <DraggableFlatList
         data={data}
         keyExtractor={
-          (item) => `draggable-item-${item.clipId || item.episodeId}-${isEditing ? 'isEditing' : 'isNotEditing'}`}
+          (item) => {
+            const id = item.clipId || item.episodeId || item.id
+            return `draggable-item-${id}-${isEditing ? 'isEditing' : 'isNotEditing'}`}
+          }
         onDragEnd={onDragEnd}
         renderItem={renderItem}
         style={styles.list}

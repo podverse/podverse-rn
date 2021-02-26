@@ -11,7 +11,7 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
 
     // Episodes Screen
-  await elementByIdAndClickAndTest('episodes_screen_episode_item_0_bottom_view_nav_time_remaining_widget_toggle_play', 'episode_screen_view')
+  // await elementByIdAndClickAndTest('episodes_screen_episode_item_0_bottom_view_nav_time_remaining_widget_toggle_play', 'episode_screen_view')
   await elementByIdAndClickAndTest('episodes_screen_episode_item_0_top_view_nav', 'episode_screen_view', noTestLabel, goBackKey)
 
 
@@ -60,8 +60,6 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
   await driver.sleep(5000)
   await elementWaitFor('search_screen_podcast_item_0')
   await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'podcasts_screen_view')
-  // Add Custom RSS Feed
-
 }
 
 module.exports = {

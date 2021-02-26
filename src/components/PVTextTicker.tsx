@@ -3,6 +3,7 @@ import { Easing } from 'react-native'
 import TextTicker from 'react-native-text-ticker'
 
 type Props = {
+  allowFontScaling?: boolean
   bounce?: boolean
   children?: any
   loop?: boolean
@@ -13,13 +14,15 @@ type Props = {
 }
 
 export const PVTextTicker = (props: Props) => {
-  const { bounce, children, loop, marqueeDelay = 3000, repeatSpacer = 60, styles, textLength } = props
+  const { allowFontScaling = true,
+    bounce, children, loop, marqueeDelay = 3000, repeatSpacer = 60, styles, textLength } = props
   const duration = textLength > 0
     ? textLength * 125 // 125 milliseconds for each character
     : 10000 // 10 seconds by default
 
   return (
     <TextTicker
+      allowFontScaling={allowFontScaling}
       bounce={bounce}
       duration={duration}
       easing={Easing.linear}

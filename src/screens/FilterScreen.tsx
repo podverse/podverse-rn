@@ -4,6 +4,7 @@ import React from 'reactn'
 import { FlatList, Icon, NavHeaderButtonText, Text, View } from '../components'
 import { generateSections } from '../lib/filters'
 import { translate } from '../lib/i18n'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getDefaultCategory } from '../services/category'
 import { trackPageView } from '../services/tracking'
@@ -223,7 +224,8 @@ export class FilterScreen extends React.Component<Props, State> {
           this.setState(newState, () => {
             handleSelect(categoryValueOverride || value)
           })
-        }}>
+        }}
+        {...testProps(`${testIDPrefix}_${value}`)}>
         <View style={styles.itemWrapper}>
           <Text
             style={[itemTextStyle, isActive ? { fontWeight: PV.Fonts.weights.extraBold, color: PV.Colors.white } : {}]}>
@@ -239,7 +241,7 @@ export class FilterScreen extends React.Component<Props, State> {
     const { sections } = this.state
 
     return (
-      <View style={styles.view}>
+      <View style={styles.view} testID={`${testIDPrefix}_view`}>
         <FlatList
           disableLeftSwipe
           disableNoResultsMessage
@@ -251,6 +253,7 @@ export class FilterScreen extends React.Component<Props, State> {
             )}
           renderItem={this.renderItem}
           sections={sections}
+          testID={testIDPrefix}
         />
       </View>
     )

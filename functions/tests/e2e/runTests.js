@@ -32,10 +32,10 @@ const runTests = async (customCapabilities) => {
   try {
     await test00_initTests(capabilities)
     await test01_launchApp()
-    // await test02_nonLoggedInScreensDidLoadTests()
-    // await test03_loggedInScreensDidLoadTests()
-    // await test04_searchScreenDidLoad()
-    // await test05_tableSectionSelectors()
+    await test02_nonLoggedInScreensDidLoadTests()
+    await test03_loggedInScreensDidLoadTests()
+    await test04_searchScreenDidLoad()
+    await test05_tableSectionSelectors()
     await test06_nonLoggedInMediaPlayer()
 
 
