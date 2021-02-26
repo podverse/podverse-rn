@@ -1,12 +1,14 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, MessageWithAction, PlaylistTableCell,
-  TableSectionSelectors, View } from '../components'
+  SwipeRowBack, TableSectionSelectors, View } from '../components'
 import { translate } from '../lib/i18n'
-import { hasValidNetworkConnection } from '../lib/network'
+import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
+import { deletePlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { getLoggedInUserPlaylistsCombined } from '../state/actions/user'
 
 type Props = {
@@ -52,7 +54,14 @@ export class PlaylistsScreen extends React.Component<Props, State> {
       navigation.navigate(PV.RouteNames.PlaylistScreen, { playlistId })
     }
 
+    PVEventEmitter.on(PV.Events.PLAYLISTS_UPDATED, this._refreshSections)
+
     trackPageView('/playlists', 'Playlists Screen')
+  }
+
+  _refreshSections = () => {
+    const sections = this.generatePlaylistsSections()
+    this.setState({ sections })
   }
 
   _ItemSeparatorComponent = () => <Divider />
@@ -71,7 +80,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
           })
         }
         testID={`${testIDPrefix}_playlist_item_${index}`}
-        title={item.title}
+        title={item.title || translate('untitled playlist')}
       />
     )
   }
@@ -104,10 +113,66 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     return sections
   }
 
+  _renderHiddenItem = ({ item, index, section }, rowMap) => {
+    const { isRemoving } = this.state
+    const buttonText =
+      section.value === PV.Filters._sectionMyPlaylistsKey ? translate('Delete') : translate('Unsubscribe')
+      
+    const onPress = section.value === PV.Filters._sectionMyPlaylistsKey
+      ? this._handleHiddenItemPressDelete
+      : this._handleHiddenItemPressUnsubscribe
+
+    return (
+      <SwipeRowBack
+        isLoading={isRemoving}
+        onPress={() => onPress(item.id, rowMap)}
+        testID={`${testIDPrefix}_playlist_item_${index}`}
+        text={buttonText}
+      />
+    )
+  }
+
+  _handleHiddenItemPressUnsubscribe = async (id: string, rowMap: any) => {
+    const wasAlerted = await alertIfNoNetworkConnection('subscribe to playlist')
+    if (wasAlerted) return
+
+    this.setState({ isRemoving: true }, () => {
+      (async () => {
+        try {
+          await toggleSubscribeToPlaylist(id)
+          const row = rowMap[id]
+          row?.closeRow()
+          const sections = this.generatePlaylistsSections()
+          this.setState({ isRemoving: false, sections })
+        } catch (error) {
+          this.setState({ isRemoving: false })
+        }
+      })()
+    })
+  }
+
+  _handleHiddenItemPressDelete = async (id: string, rowMap: any) => {
+    const wasAlerted = await alertIfNoNetworkConnection('delete playlist')
+    if (wasAlerted) return
+
+    this.setState({ isRemoving: true }, () => {
+      (async () => {
+        try {
+          await deletePlaylist(id)
+          const row = rowMap[id]
+          row?.closeRow()
+          const sections = this.generatePlaylistsSections()
+          this.setState({ isRemoving: false, sections })
+        } catch (error) {
+          this.setState({ isRemoving: false })
+        }
+      })()
+    })
+  }
+
   render() {
     const { isLoading, isLoadingMore, sections, showNoInternetConnectionMessage } = this.state
     const { globalTheme, offlineModeEnabled } = this.global
-
     const showOfflineMessage = offlineModeEnabled
 
     return (
@@ -116,11 +181,13 @@ export class PlaylistsScreen extends React.Component<Props, State> {
           {isLoading && <ActivityIndicator fillSpace />}
           {!isLoading && this.global.session.isLoggedIn && (
             <FlatList
-              disableLeftSwipe
+              disableLeftSwipe={false}
+              extraData={sections}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               keyExtractor={(item: any) => item.id}
               noResultsMessage={translate('No playlists found')}
+              renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderPlaylistItem}
               renderSectionHeader={({ section }) => (
                 <TableSectionSelectors

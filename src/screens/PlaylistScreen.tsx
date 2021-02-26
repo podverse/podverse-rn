@@ -228,12 +228,13 @@ export class PlaylistScreen extends React.Component<Props, State> {
     const playlist = screenPlaylist.playlist ? screenPlaylist.playlist : navigation.getParam('playlist')
     const flatListData = screenPlaylist.flatListData || []
     const flatListDataTotalCount = screenPlaylist.flatListDataTotalCount || 0
-    const isLoggedInUserPlaylist = (playlist && playlist.owner && playlist.owner.id) === session.userInfo.id
-
+    const isLoggedInUserPlaylist = playlist?.owner?.id === session.userInfo.id
+    const ownerName = playlist?.owner?.name || translate('anonymous')
+    
     return (
       <View style={styles.view} {...testProps('playlist_screen_view')}>
         <PlaylistTableHeader
-          createdBy={isLoggedInUserPlaylist && playlist && playlist.owner ? playlist.owner.name : null}
+          createdBy={ownerName}
           handleEditPress={isLoggedInUserPlaylist ? this._handleEditPress : null}
           handleToggleSubscribe={isLoggedInUserPlaylist ? null : () => this._handleToggleSubscribe(playlistId)}
           id={playlistId}

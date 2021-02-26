@@ -1,5 +1,7 @@
 import { getGlobal, setGlobal } from 'reactn'
 import { combineAndSortPlaylistItems } from '../../lib/utility'
+import { PV } from '../../resources'
+import PVEventEmitter from '../../services/eventEmitter'
 import {
   addOrRemovePlaylistItem as addOrRemovePlaylistItemService,
   createPlaylist as createPlaylistService,
@@ -54,6 +56,8 @@ export const toggleSubscribeToPlaylist = async (id: string) => {
       myPlaylists: globalState.playlists.myPlaylists,
       subscribedPlaylists
     }
+  }, () => {
+    PVEventEmitter.emit(PV.Events.PLAYLISTS_UPDATED)
   })
 
   return subscribedPlaylistIds
@@ -126,6 +130,8 @@ export const updatePlaylist = async (data: any) => {
       flatListDataTotalCount: screenPlaylistFlatListData.length,
       playlist: newPlaylist
     }
+  }, () => {
+    PVEventEmitter.emit(PV.Events.PLAYLISTS_UPDATED)
   })
 }
 
@@ -139,6 +145,8 @@ export const createPlaylist = async (data: any) => {
       myPlaylists: [newPlaylist, ...playlistsFlatListData],
       subscribedPlaylists: globalState.playlists.subscribedPlaylists
     }
+  }, () => {
+    PVEventEmitter.emit(PV.Events.PLAYLISTS_UPDATED)
   })
 }
 
@@ -152,5 +160,7 @@ export const deletePlaylist = async (id: string) => {
       myPlaylists: [...filteredPlaylistsFlatListData],
       subscribedPlaylists: globalState.playlists.subscribedPlaylists
     }
+  }, () => {
+    PVEventEmitter.emit(PV.Events.PLAYLISTS_UPDATED)
   })
 }
