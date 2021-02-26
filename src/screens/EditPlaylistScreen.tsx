@@ -114,7 +114,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
         (async () => {
           const { newTitle, playlist } = this.state
           const itemsOrder = await this._resortItemsAndGetOrder()
-  
+          
           try {
             await updatePlaylist({
               id: playlist.id,
@@ -152,7 +152,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
 
   _ItemSeparatorComponent = () => <Divider />
 
-  _renderRow = ({ item = {} as NowPlayingItem, index, drag }) => {
+  _renderRow = ({ item = {} as NowPlayingItem, index, drag, isActive }) => {
     const { isEditing } = this.state
 
     if (item.startTime) {
@@ -230,6 +230,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           <TextInput
             autoCapitalize='none'
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            onBlur={this._updatePlaylist}
             onChangeText={this._onChangeTitle}
             onSubmitEditing={this._updatePlaylist}
             placeholder={translate('Playlist title')}
