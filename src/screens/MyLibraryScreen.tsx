@@ -150,7 +150,7 @@ const allMyLibraryFeatures = [
     title: translate('My Clips'),
     routeName: PV.RouteNames.MyProfileScreen,
     key: _myClipsKey,
-    testID: 'my_library_screen_my_profile_cell'
+    testID: 'my_library_screen_my_clips_cell'
   },
   {
     title: translate('My Profile'),
