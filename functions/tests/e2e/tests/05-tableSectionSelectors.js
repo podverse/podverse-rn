@@ -3,28 +3,28 @@ const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, element
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
 const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
 
-const test04_searchScreenDidLoad = async () => {
-  console.log('04_searchScreenDidLoad')
+const test05_tableSectionSelectors = async () => {
+  console.log('05_tableSectionSelectors')
   const driver = getDriver()
 
-    // Search Screen
-  await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
+  await elementByIdAndClickAndTest('podcasts_screen_dropdown_button', 'filter_screen_view')
+  await elementByIdClick('filter_screen_subscribed')
+  await elementByIdClick('filter_screen_downloaded')
+  await elementByIdClick('filter_screen_all-podcasts')
+  await elementByIdClick('filter_screen_top-past-day')
+  await elementByIdClick('filter_screen_top-past-week')
+  await elementByIdClick('filter_screen_top-past-month')
+  await elementByIdClick('filter_screen_top-past-year')
+  await elementByIdClick('filter_screen_top-all-time')
+  await elementByIdClick('filter_screen_category')
+  await elementByIdClick('filter_screen_nav_header_button_text')
 
-  await elementByIdAndClickAndTest('search_screen_message_with_action_middle_button_button', 'add_podcast_by_rss_screen_view')
-  await sendKeysToElementById('add_podcast_by_rss_screen_rss_feed_text_input', 'https://stage.podverse.fm/sampleRSS/how-to-start-a-podcast.rss', 'Add Custom RSS Feed')
-  await elementByIdAndClickAndTest('add_podcast_by_rss_screen_save_nav_header_button_text', 'podcast_screen_view', noTestLabel, goBackKey)
 
-  await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
 
-  await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
-  await driver.sleep(5000)
-  await elementWaitFor('search_screen_podcast_item_0')
-  await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'podcasts_screen_view')
 
-  await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
 
 }
 
 module.exports = {
-  test04_searchScreenDidLoad
+  test05_tableSectionSelectors
 }
