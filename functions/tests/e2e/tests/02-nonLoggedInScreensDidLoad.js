@@ -1,5 +1,5 @@
 const { getDriver } = require('../driver/driverFactory')
-const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, elementWaitFor, goBackKey, noTestLabel } = require('../driver/helpers/elements')
+const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, elementWaitFor, goBackKey, noTestLabel, elementCheckIfPresent, elementCheckIfNotPresent } = require('../driver/helpers/elements')
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
 const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
 
@@ -25,6 +25,17 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
   await elementByIdAndClickAndTest('my_library_screen_downloads_cell', 'downloads_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('my_library_screen_queue_cell', 'queue_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('my_library_screen_history_cell', 'history_screen_view', noTestLabel, goBackKey)
+  await elementCheckIfPresent('my_library_screen_downloads_cell')
+  await elementCheckIfPresent('my_library_screen_queue_cell')
+  await elementCheckIfPresent('my_library_screen_history_cell')
+  // await elementCheckIfNotPresent('my_library_screen_my_clips_cell')
+  await elementCheckIfNotPresent('my_library_screen_my_profile_cell')
+  await elementCheckIfNotPresent('my_library_screen_playlists_cell')
+  await elementCheckIfNotPresent('my_library_screen_profiles_cell')
+
+
+
+
 
     // More Screen
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
