@@ -194,19 +194,12 @@ export class QueueScreen extends React.Component<Props, State> {
     }
   }
 
-  _handlePlayItem = (item: NowPlayingItem) => {
-    const isDarkMode = this.global.globalTheme === darkTheme
+  _handlePlayItem = async (item: NowPlayingItem) => {
     try {
-      const { navigation } = this.props
-      this.setState({ isLoading: true }, () => {
-        (async () => {
-          navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
-          const shouldPlay = true
-          await loadItemAndPlayTrack(item, shouldPlay)
-          await getQueueItems()
-          this.setState({ isLoading: false })
-        })()
-      })
+      const shouldPlay = true
+      await loadItemAndPlayTrack(item, shouldPlay)
+      await getQueueItems()
+      this.setState({ isLoading: false })
     } catch (error) {
       //
     }
@@ -225,29 +218,26 @@ export class QueueScreen extends React.Component<Props, State> {
     const { isEditing, isTransparent } = this.state
 
     return (
-      <TouchableWithoutFeedback
-        onPress={() => {
-          if (!isEditing) {
-            this._handlePlayItem(item)
-          }
-        }}
-        {...testProps(`${testIDPrefix}_history_item_${index}`)}>
-        <View transparent={isTransparent}>
-          <QueueTableCell
-            clipEndTime={item.clipEndTime}
-            clipStartTime={item.clipStartTime}
-            {...(item.clipTitle ? { clipTitle: item.clipTitle } : {})}
-            {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
-            {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
-            handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
-            podcastImageUrl={item.podcastImageUrl}
-            {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
-            showRemoveButton={isEditing}
-            testID={`${testIDPrefix}_history_item_${index}`}
-            transparent={isTransparent}
-          />
-        </View>
-      </TouchableWithoutFeedback>
+      <View transparent={isTransparent}>
+        <QueueTableCell
+          clipEndTime={item.clipEndTime}
+          clipStartTime={item.clipStartTime}
+          {...(item.clipTitle ? { clipTitle: item.clipTitle } : {})}
+          {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
+          {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
+          handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
+          onPress={() => {
+            if (!isEditing) {
+              this._handlePlayItem(item)
+            }
+          }}
+          podcastImageUrl={item.podcastImageUrl}
+          {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
+          showRemoveButton={isEditing}
+          testID={`${testIDPrefix}_history_item_${index}`}
+          transparent={isTransparent}
+        />
+      </View>
     )
   }
 
@@ -264,6 +254,7 @@ export class QueueScreen extends React.Component<Props, State> {
         {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
         handleRemovePress={() => this._handleRemoveQueueItemPress(item)}
         isActive={isActive}
+        onPress={() => this._onPressRow(index)}
         podcastImageUrl={item.podcastImageUrl}
         {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
         showMoveButton={!isEditing}
@@ -362,11 +353,11 @@ export class QueueScreen extends React.Component<Props, State> {
                     {...(nowPlayingItem.clipTitle ? { clipTitle: nowPlayingItem.clipTitle } : {})}
                     {...(nowPlayingItem.episodePubDate ? { episodePubDate: nowPlayingItem.episodePubDate } : {})}
                     {...(nowPlayingItem.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}
+                    hideDivider
                     podcastImageUrl={nowPlayingItem.podcastImageUrl}
                     {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
                     {...testProps(`${testIDPrefix}_now_playing_header`)}
                     transparent={isTransparent}
-                    hideDivider
                   />
                 </View>
                 <Divider style={styles.headerNowPlayingItemDivider} />
