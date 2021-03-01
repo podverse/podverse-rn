@@ -17,6 +17,7 @@ type Props = {
   hideBottomRow?: boolean
   hideDivider?: boolean
   isActive?: boolean
+  onPress?: any
   podcastImageUrl?: string
   podcastTitle?: string
   showMoveButton?: boolean
@@ -38,6 +39,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
       hideBottomRow,
       hideDivider,
       isActive,
+      onPress,
       podcastImageUrl,
       podcastTitle = translate('Untitled Podcast'),
       showMoveButton,
@@ -51,7 +53,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
       : [styles.wrapper, hideDivider ? { borderBottomWidth: 0 } : {}]
 
     return (
-      <TouchableWithoutFeedback onLongPress={drag}>
+      <TouchableWithoutFeedback onLongPress={drag} onPress={onPress}>
         <View
           style={viewStyle}
           transparent={transparent}
