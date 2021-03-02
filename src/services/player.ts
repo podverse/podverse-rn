@@ -23,6 +23,13 @@ import {
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally, getHistoryItemsLocally } from './userHistoryItem'
 import { getNowPlayingItem, getNowPlayingItemLocally } from './userNowPlayingItem'
 
+
+declare module "react-native-track-player" {
+  export function getCurrentLoadedTrack(): Promise<string>;
+  export function getTrackDuration(): Promise<number>;
+  export function getTrackPosition(): Promise<number>;
+}
+
 export const PVTrackPlayer = TrackPlayer
 
 const checkServiceRunning = async (defaultReturn: any = '') => {
@@ -427,7 +434,7 @@ export const movePlayerItemToNewPosition = async (id: string, insertBeforeId: st
         (x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id)
       )
       if (itemToMove) {
-        const track = await createTrack(itemToMove)
+        const track = await createTrack(itemToMove) as any
         await TrackPlayer.add([track], insertBeforeId)
       }
     } catch (error) {
