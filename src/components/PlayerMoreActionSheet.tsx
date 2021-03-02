@@ -27,6 +27,8 @@ type State = {
 
 let volumeListener = null as any
 
+const testIDPrefix = 'player_more_action_sheet'
+
 export class PlayerMoreActionSheet extends React.Component<Props, State> {
   constructor() {
     super()
@@ -105,7 +107,9 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
         onPress={this._handleToggleSubscribe}
         style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
         underlayColor={safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonUnderlay.backgroundColor, '')}>
-        <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>
+        <Text
+          style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}
+          testID={`${testIDPrefix}_toggle_subscribe`}>
           {isSubscribed ? translate('Unsubscribe') : translate('Subscribe')}
         </Text>
       </TouchableHighlight>,
@@ -114,7 +118,9 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
         onPress={this._handlePodcastPagePress}
         style={[actionSheetStyles.button, globalTheme.actionSheetButton]}
         underlayColor={safelyUnwrapNestedVariable(() => globalTheme.actionSheetButtonUnderlay.backgroundColor, '')}>
-        <Text style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}>
+        <Text
+          style={[actionSheetStyles.buttonText, globalTheme.actionSheetButtonText]}
+          testID={`${testIDPrefix}_go_to_podcast`}>
           {translate('Go to Podcast')}
         </Text>
       </TouchableHighlight>

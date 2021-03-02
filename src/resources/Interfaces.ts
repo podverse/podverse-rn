@@ -101,6 +101,7 @@ export interface InitialState {
     }
   }
   player: {
+    backupDuration?: number
     currentChapter: any
     currentChapters: any
     hasErrored: boolean

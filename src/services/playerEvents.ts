@@ -3,7 +3,7 @@ import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import { PV } from '../resources'
-import { hideMiniPlayer } from '../state/actions/player'
+import { hideMiniPlayer, updatePlaybackState } from '../state/actions/player'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
@@ -57,6 +57,7 @@ const syncNowPlayingItemWithTrack = () => {
   // or getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId...
   function sync() {
     (async () => {
+      await updatePlaybackState()
       const currentTrackId = await PVTrackPlayer.getCurrentTrack()
       const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentTrackId)
       if (currentNowPlayingItem) {

@@ -378,7 +378,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
     return (
       <SafeAreaView style={styles.viewContainer}>
-        <View style={styles.view} transparent {...testProps('make_clip_screen_view')}>
+        <View style={styles.view} transparent testID='make_clip_screen_view'>
           <View style={styles.contentContainer}>
             <View style={styles.wrapperTop} transparent>
               <TextInput
