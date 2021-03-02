@@ -46,7 +46,7 @@ export const loadChapterPlaybackInfo = () => {
         // If no chapter.endTime, then assume it is the last chapter, and use the duration instead
         (chapter: any) => chapter.endTime
           ? playerPosition >= chapter.startTime && playerPosition < chapter.endTime
-          : playerPosition >= chapter.startTime && playerPosition < backupDuration
+          : playerPosition >= chapter.startTime && backupDuration && playerPosition < backupDuration
       )
       if (currentChapter) {
         setChapterOnGlobalState(currentChapter)
