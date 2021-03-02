@@ -187,6 +187,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(episodeId)
 
+    const extraHtmlScrollViewPadding = showChaptersCell || showClipsCell
+      ? styles.htmlScrollView
+      : {}
+
     return (
       <ScrollView style={styles.view} {...testProps('episode_screen_view')}>
         <EpisodeTableHeader
@@ -243,9 +247,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
           </TouchableOpacity>
         )}
         <HTMLScrollView
-          html={episode?.description || ''}
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
           disableScrolling
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          html={episode?.description || ''}
+          style={extraHtmlScrollViewPadding}
         />
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
@@ -267,6 +272,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   view: {
     flex: 1
+  },
+  htmlScrollView: {
+    marginVertical: 12
   },
   showNotesView: {
     margin: 8
