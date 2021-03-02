@@ -38,7 +38,7 @@ export class ClipInfoView extends React.PureComponent<Props> {
 
   _handleEditPress = async () => {
     const { isPublic, navigation } = this.props
-    const initialProgressValue = await PVTrackPlayer.getPosition()
+    const initialProgressValue = await PVTrackPlayer.getTrackPosition()
     const isLoggedIn = safelyUnwrapNestedVariable(() => this.global.session.isLoggedIn, false)
     const globalTheme = safelyUnwrapNestedVariable(() => this.global.globalTheme, {})
 

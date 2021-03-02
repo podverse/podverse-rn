@@ -58,7 +58,7 @@ const syncNowPlayingItemWithTrack = () => {
   function sync() {
     (async () => {
       await updatePlaybackState()
-      const currentTrackId = await PVTrackPlayer.getCurrentTrack()
+      const currentTrackId = await PVTrackPlayer.getCurrentLoadedTrack()
       const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentTrackId)
       if (currentNowPlayingItem) {
         await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
@@ -73,14 +73,14 @@ const handleQueueEnded = (x: any) => {
   setTimeout(() => {
     (async () => {
       hideMiniPlayer()
-      
+
       if (x && x.track) {
         const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(x.track)
         if (currentNowPlayingItem) {
           await addOrUpdateHistoryItem(currentNowPlayingItem, 0, currentNowPlayingItem.mediaFileDuration || 0)
         }
       }
-      
+
       // Don't call reset on Android because it triggers the playback-queue-ended event
       // and will cause an infinite loop
       if (Platform.OS === 'ios') {
@@ -112,7 +112,7 @@ module.exports = async () => {
 
       if (nowPlayingItem) {
         const { clipEndTime } = nowPlayingItem
-        const currentPosition = await PVTrackPlayer.getPosition()
+        const currentPosition = await PVTrackPlayer.getTrackPosition()
         const currentState = await PVTrackPlayer.getState()
         const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
 
@@ -198,7 +198,7 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('remote-duck', (x: any) => {
     (async () => {
       const { paused, permanent } = x
-      
+
       // This remote-duck behavior for some Android users was causing playback to resume
       // after receiving any notification, even when the player was paused.
       if (Platform.OS === 'ios') {
@@ -228,7 +228,7 @@ let handleClipEndInterval = null as any
 const handlePlayerClipLoaded = () => {
   (async () => {
     console.log('PLAYER_CLIP_LOADED event')
-  
+
     const stopHandleClipEndInterval = () => {
       if (Platform.OS === 'android') {
         BackgroundTimer.stopBackgroundTimer()
@@ -238,17 +238,17 @@ const handlePlayerClipLoaded = () => {
       }
       BackgroundTimer.stop()
     }
-  
+
     stopHandleClipEndInterval()
-  
+
     const nowPlayingItem = await getNowPlayingItemLocally()
-  
+
     if (nowPlayingItem) {
       const { clipEndTime, clipId } = nowPlayingItem
-  
+
       const checkEndTime = () => {
         (async () => {
-          const currentPosition = await PVTrackPlayer.getPosition()
+          const currentPosition = await PVTrackPlayer.getTrackPosition()
           if (currentPosition > clipEndTime) {
             PVTrackPlayer.pause()
             await setClipHasEnded(true)
@@ -256,7 +256,7 @@ const handlePlayerClipLoaded = () => {
           }
         })()
       }
-  
+
       if (clipId && clipEndTime) {
         if (Platform.OS === 'android') {
           BackgroundTimer.runBackgroundTimer(checkEndTime, 500)
