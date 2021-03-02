@@ -24,6 +24,7 @@ declare module 'reactn/default' {
       }
     }
     player: {
+      backupDuration?: number
       currentChapter: any
       currentChapters: any
       hasErrored: boolean
