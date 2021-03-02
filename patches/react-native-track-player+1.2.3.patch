@@ -1,0 +1,71 @@
+diff --git a/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/module/MusicModule.java b/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/module/MusicModule.java
+index 9bdfca0..3475275 100644
+--- a/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/module/MusicModule.java
++++ b/node_modules/react-native-track-player/android/src/main/java/com/guichaguri/trackplayer/module/MusicModule.java
+@@ -158,6 +158,11 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
+         waitForConnection(() -> binder.setupPlayer(options, promise));
+     }
+ 
++    @ReactMethod
++    public void isServiceRunning(final Promise promise) {
++        promise.resolve(binder != null);
++    }
++
+     @ReactMethod
+     public void destroy() {
+         // Ignore if it was already destroyed
+diff --git a/node_modules/react-native-track-player/index.d.ts b/node_modules/react-native-track-player/index.d.ts
+index b3ea0be..8390584 100644
+--- a/node_modules/react-native-track-player/index.d.ts
++++ b/node_modules/react-native-track-player/index.d.ts
+@@ -116,6 +116,7 @@ declare namespace RNTrackPlayer {
+ 
+   export function setupPlayer(options?: PlayerOptions): Promise<void>;
+   export function destroy(): void;
++  export function isServiceRunning(): Promise<boolean>;
+   
+   // Player Queue Commands
+ 
+diff --git a/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayer.swift b/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayer.swift
+index f4d3f36..29c281c 100644
+--- a/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayer.swift
++++ b/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayer.swift
+@@ -257,6 +257,12 @@ public class RNTrackPlayer: RCTEventEmitter {
+         resolve(NSNull())
+     }
+ 
++    @objc(isServiceRunning:rejecter:)
++    public func isServiceRunning(resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
++        // TODO That is probably always true
++        resolve(player != nil)
++    }
++    
+     @objc(destroy)
+     public func destroy() {
+         print("Destroying player")
+diff --git a/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayerBridge.m b/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayerBridge.m
+index f245a6d..e2251e4 100644
+--- a/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayerBridge.m
++++ b/node_modules/react-native-track-player/ios/RNTrackPlayer/RNTrackPlayerBridge.m
+@@ -15,6 +15,9 @@ @interface RCT_EXTERN_REMAP_MODULE(TrackPlayerModule, RNTrackPlayer, NSObject)
+                   resolver:(RCTPromiseResolveBlock)resolve
+                   rejecter:(RCTPromiseRejectBlock)reject);
+ 
++RCT_EXTERN_METHOD(isServiceRunning:(RCTPromiseResolveBlock)resolve
++                  rejecter:(RCTPromiseRejectBlock)reject);
++
+ RCT_EXTERN_METHOD(destroy);
+ 
+ RCT_EXTERN_METHOD(updateOptions:(NSDictionary *)options
+diff --git a/node_modules/react-native-track-player/lib/index.js b/node_modules/react-native-track-player/lib/index.js
+index 6177858..c147918 100644
+--- a/node_modules/react-native-track-player/lib/index.js
++++ b/node_modules/react-native-track-player/lib/index.js
+@@ -163,6 +163,7 @@ module.exports.RATING_PERCENTAGE = TrackPlayer.RATING_PERCENTAGE;
+ 
+ // General
+ module.exports.setupPlayer = setupPlayer;
++module.exports.isServiceRunning = TrackPlayer.isServiceRunning;
+ module.exports.destroy = TrackPlayer.destroy;
+ module.exports.updateOptions = updateOptions;
+ module.exports.registerEventHandler = registerEventHandler;
