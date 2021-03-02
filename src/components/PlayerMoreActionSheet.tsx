@@ -5,7 +5,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { safelyUnwrapNestedVariable } from '../lib/utility'
+import { safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
@@ -160,6 +160,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
           key='cancel'
           onPress={handleDismiss}
           style={[actionSheetStyles.buttonCancel, globalTheme.actionSheetButtonCancel]}
+          {...testProps(`${testIDPrefix}_cancel`)}
           underlayColor={safelyUnwrapNestedVariable(
             () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
             ''

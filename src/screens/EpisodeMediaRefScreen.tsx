@@ -203,8 +203,8 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
   }
 
   _handleCancelPress = () => new Promise((resolve) => {
-      this.setState({ showActionSheet: false }, resolve)
-    })
+    this.setState({ showActionSheet: false }, resolve)
+  })
 
   _renderItem = ({ item }) => {
     const episode = this.props.navigation.getParam('episode') || {}
