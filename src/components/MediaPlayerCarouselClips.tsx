@@ -156,16 +156,16 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
   }
 
   _handleMoreCancelPress = () => new Promise((resolve) => {
-      setGlobal(
-        {
-          screenPlayer: {
-            ...this.global.screenPlayer,
-            showMoreActionSheet: false
-          }
-        },
-        resolve
-      )
-    })
+    setGlobal(
+      {
+        screenPlayer: {
+          ...this.global.screenPlayer,
+          showMoreActionSheet: false
+        }
+      },
+      resolve
+    )
+  })
 
   _handleDownloadPressed = () => {
     const { selectedItem } = this.global.screenPlayer

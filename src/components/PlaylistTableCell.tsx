@@ -24,7 +24,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
       itemCount = 0,
       onPress,
       testID,
-      title = translate('untitled playlist')
+      title = translate('Untitled Playlist')
     } = this.props
 
     const wrapperTopStyles = [styles.wrapperTop]

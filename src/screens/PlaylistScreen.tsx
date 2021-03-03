@@ -196,8 +196,8 @@ export class PlaylistScreen extends React.Component<Props, State> {
   }
 
   _handleCancelPress = () => new Promise((resolve) => {
-      this.setState({ showActionSheet: false }, resolve)
-    })
+    this.setState({ showActionSheet: false }, resolve)
+  })
 
   _handleMorePress = (selectedItem: any) => {
     this.setState({

@@ -23,12 +23,32 @@ const test06_nonLoggedInMediaPlayer = async () => {
 
   await elementByIdAndClickAndTest('nav_queue_icon', 'queue_screen_view', noTestLabel, goBackKey)
 
+  await elementByIdAndClickAndTest('player_controls_sleep_timer_icon_button', 'sleep_timer_screen_view', noTestLabel, goBackKey)
+  await elementByIdClick('player_controls_playback_rate')
+
   await elementByIdClick('player_controls_pause_button_icon_button')
   await elementByIdClick('player_controls_play_button_icon_button')
 
-  await elementByIdAndClickAndTest('player_controls_sleep_timer_icon_button', 'sleep_timer_screen_view', noTestLabel, goBackKey)
-  await elementByIdClick('player_controls_playback_rate', noTestLabel, goBackKey)
+  await elementByIdClick('player_controls_previous_track')
+  await elementByIdClick('player_controls_jump_backward')
+  await elementByIdClick('player_controls_step_forward')
+  await elementByIdClick('player_controls_skip_track')
 
+  await elementByIdClick('player_controls_more_icon_button')
+  await elementByIdClick('player_more_action_sheet_toggle_subscribe')
+
+  await elementByIdClick('player_controls_more_icon_button')
+  await elementByIdClick('player_more_action_sheet_toggle_subscribe')
+
+  await elementByIdClick('player_controls_more_icon_button')  
+  await elementByIdClick('player_more_action_sheet_cancel')
+
+  await elementByIdClick('player_controls_more_icon_button')
+  await elementByIdClick('player_more_action_sheet_go_to_podcast')
+
+  await driver.back()
+
+  await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
 
 }
 

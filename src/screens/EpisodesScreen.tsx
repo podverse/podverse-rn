@@ -283,8 +283,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
   _ItemSeparatorComponent = () => <Divider style={{ marginHorizontal: 10 }} />
 
   _handleCancelPress = () => new Promise((resolve) => {
-      this.setState({ showActionSheet: false }, resolve)
-    })
+    this.setState({ showActionSheet: false }, resolve)
+  })
 
   _handleMorePress = (selectedItem: any) => {
     this.setState({

@@ -163,7 +163,7 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
               key='cancel'
               onPress={this.handleDismiss}
               style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}
-              {...testProps(`${testIDPrefix}_cancel`)}>
+              testID={`${testIDPrefix}_cancel`}>
               {translate('Cancel')}
             </Text>
           </KeyboardAvoidingView>

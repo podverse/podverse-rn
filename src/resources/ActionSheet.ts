@@ -51,7 +51,7 @@ const mediaMoreButtons = (
           await navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
           setTimeout(() => {
             (async () => {
-              const initialProgressValue = await PVTrackPlayer.getPosition()
+              const initialProgressValue = await PVTrackPlayer.getTrackPosition()
               navigation.navigate(PV.RouteNames.MakeClipScreen, {
                 initialProgressValue,
                 initialPrivacy: item.isPublic,

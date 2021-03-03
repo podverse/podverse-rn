@@ -105,7 +105,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { player } = this.global
     const { nowPlayingItem } = player
     navigation.setParams({ _saveMediaRef: this._saveMediaRef })
-    const currentPosition = await PVTrackPlayer.getPosition()
+    const currentPosition = await PVTrackPlayer.getTrackPosition()
     const isEditing = this.props.navigation.getParam('isEditing')
 
     // Prevent the temporary progressValue from sticking in the progress bar
@@ -159,12 +159,12 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   _setStartTime = async () => {
-    const currentPosition = await PVTrackPlayer.getPosition()
+    const currentPosition = await PVTrackPlayer.getTrackPosition()
     this.setState({ startTime: Math.floor(currentPosition) })
   }
 
   _setEndTime = async () => {
-    const currentPosition = await PVTrackPlayer.getPosition()
+    const currentPosition = await PVTrackPlayer.getTrackPosition()
     if (currentPosition && currentPosition > 0) {
       this.setState({ endTime: Math.floor(currentPosition) })
     }
@@ -253,10 +253,10 @@ export class MakeClipScreen extends React.Component<Props, State> {
           startTime,
           title
         }
-  
+
         try {
           const mediaRef = isEditing ? await updateMediaRef(data) : await createMediaRef(data)
-  
+
           if (isEditing) {
             const newItem = {
               ...nowPlayingItem,
@@ -264,10 +264,10 @@ export class MakeClipScreen extends React.Component<Props, State> {
               clipStartTime: mediaRef.startTime,
               clipTitle: mediaRef.title
             }
-            const position = await PVTrackPlayer.getPosition()
+            const position = await PVTrackPlayer.getTrackPosition()
             await setNowPlayingItem(newItem, position || 0)
           }
-  
+
           this.setState({ isSaving: false }, () => {
             // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
             setTimeout(() => {

@@ -5,7 +5,6 @@ import { navHeader } from '../styles'
 import { Text } from './'
 
 type Props = {
-  accessibilityLabel?: string
   color?: string
   disabled?: boolean
   handlePress: any
@@ -15,7 +14,7 @@ type Props = {
 }
 
 export const NavHeaderButtonText = (props: Props) => {
-  const { accessibilityLabel, color, disabled, handlePress, testID } = props
+  const { color, disabled, handlePress, testID } = props
 
   const buttonTextStyle = [navHeader.buttonText]
 
@@ -25,7 +24,6 @@ export const NavHeaderButtonText = (props: Props) => {
 
   return (
     <TouchableOpacity
-      accessibilityLabel={accessibilityLabel}
       disabled={disabled}
       onPress={handlePress}
       {...testProps(`${testID}_nav_header_button_text`)}>
