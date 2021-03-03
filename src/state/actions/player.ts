@@ -7,6 +7,7 @@ import {
 } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
+import PVEventEmitter from '../../services/eventEmitter'
 import {
   initializePlayerQueue as initializePlayerQueueService,
   loadItemAndPlayTrack as loadItemAndPlayTrackService,
@@ -62,7 +63,9 @@ export const updatePlayerState = async (item: NowPlayingItem) => {
     }
   }
 
-  setGlobal(newState)
+  setGlobal(newState, () => {
+    PVEventEmitter.emit(PV.Events.UPDATE_PLAYER_STATE_FINISHED)
+  })
 }
 
 export const initializePlayerQueue = async () => {
