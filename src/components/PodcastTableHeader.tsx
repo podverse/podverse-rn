@@ -60,7 +60,10 @@ export const PodcastTableHeader = (props: Props) => {
                 {podcastTitle}
               </Text>
               {isSubscribed && (
-                <SettingsButton handleToggleSettings={handleToggleSettings} showCheckmark={showSettings} />
+                <SettingsButton
+                  handleToggleSettings={handleToggleSettings}
+                  showCheckmark={showSettings}
+                  testID={`${testID}_settings`} />
               )}
             </View>
             <View style={styles.contentWrapperBottom}>
