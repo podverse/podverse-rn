@@ -207,7 +207,7 @@ export class PlayerScreen extends React.Component<Props> {
   }
 
   _getInitialProgressValue = async () => {
-    const initialProgressValue = await PVTrackPlayer.getPosition()
+    const initialProgressValue = await PVTrackPlayer.getTrackPosition()
     if (initialProgressValue || initialProgressValue === 0) {
       return Math.floor(initialProgressValue)
     } else {

@@ -84,7 +84,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
           })
         }
         testID={`${testIDPrefix}_playlist_item_${index}`}
-        title={item.title || translate('untitled playlist')}
+        title={item.title || translate('Untitled Playlist')}
       />
     )
   }

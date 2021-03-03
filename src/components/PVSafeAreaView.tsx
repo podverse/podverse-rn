@@ -4,7 +4,6 @@ import { useGlobal } from 'reactn'
 import { testProps } from '../lib/utility'
 
 type Props = {
-  accessibilityLabel?: string
   children: any
   style?: any
   transparent?: boolean
@@ -22,7 +21,6 @@ export const PVSafeAreaView = (props: Props) => {
 
   return (
     <SafeAreaView
-      accessibilityLabel={props.accessibilityLabel}
       style={[styles.safeAreaView, globalTheme.view, props.style, extraStyles]}
       {...(testID ? testProps(testID) : {})}>
       {props.children}

@@ -2,6 +2,7 @@ import { Dimensions, StyleSheet } from 'react-native'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import {
   MediaPlayerCarouselChapters,
   MediaPlayerCarouselClips,
@@ -40,6 +41,20 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { activeIndex } = this.state
     const animated = false
     this.scrollToActiveIndex(activeIndex, animated)
+
+    PVEventEmitter.on(PV.Events.UPDATE_PLAYER_STATE_FINISHED, this.scrollToDefaultActiveIndex)
+  }
+
+  componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.UPDATE_PLAYER_STATE_FINISHED, this.scrollToDefaultActiveIndex)
+  }
+
+  scrollToDefaultActiveIndex = () => {
+    const { player } = this.global
+    const hasChapters = player?.episode?.chaptersUrl
+    const defaultActiveIndex = hasChapters ? 2 : 1
+    const animated = false
+    this.scrollToActiveIndex(defaultActiveIndex, animated)
   }
 
   scrollToActiveIndex = (activeIndex: number, animated: boolean) => {
