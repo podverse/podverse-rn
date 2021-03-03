@@ -186,7 +186,8 @@ export const removeExtraInfoFromEpisodeDescription = (html: string) => {
 
 export const filterHTMLElementsFromString = (html: string) => {
   if (html) {
-    const finalHtml = html.replace(/<audio.*>.*?<\/audio>|<video.*>.*?<\/video>|<img.*>.*?<\/img>|<img.*>/gi, '')
+    // eslint-disable-next-line max-len
+    const finalHtml = html.replace(/<audio.*>.*?<\/audio>|<video.*>.*?<\/video>|<iframe.*>.*?<\/iframe>|<img.*>.*?<\/img>|<img.*>/gi, '')
     return finalHtml
   }
   return html
