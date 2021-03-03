@@ -6,6 +6,7 @@ const { test04_searchScreenDidLoad } = require('./tests/04-searchScreenDidLoad')
 const { test05_tableSectionSelectors } = require('./tests/05-tableSectionSelectors')
 const { test06_nonLoggedInMediaPlayer } = require('./tests/06-nonLoggedInMediaPlayer')
 const { test07_podcastScreenFull } = require('./tests/07-podcastScreenFull')
+const { test08_episodesScreenFull } = require('./tests/08-episodesScreenFull')
 
 
 
@@ -34,12 +35,13 @@ const runTests = async (customCapabilities) => {
   try {
     await test00_initTests(capabilities)
     await test01_launchApp()
-    await test02_nonLoggedInScreensDidLoadTests()
-    await test03_loggedInScreensDidLoadTests()
-    await test04_searchScreenDidLoad()
-    await test05_tableSectionSelectors()
-    await test06_nonLoggedInMediaPlayer()
+    // await test02_nonLoggedInScreensDidLoadTests()
+    // await test03_loggedInScreensDidLoadTests()
+    // await test04_searchScreenDidLoad()
+    // await test05_tableSectionSelectors()
+    // await test06_nonLoggedInMediaPlayer()
     await test07_podcastScreenFull()
+    // await test08_episodesScreenFull()
 
 
 
