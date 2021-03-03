@@ -57,7 +57,7 @@ const syncNowPlayingItemWithTrack = () => {
   // or getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId...
   function sync() {
     (async () => {
-      await updatePlaybackState()
+      updatePlaybackState()
       const currentTrackId = await PVTrackPlayer.getCurrentLoadedTrack()
       const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentTrackId)
       if (currentNowPlayingItem) {
