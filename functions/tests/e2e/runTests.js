@@ -5,6 +5,8 @@ const { test03_loggedInScreensDidLoadTests } = require('./tests/03-loggedInScree
 const { test04_searchScreenDidLoad } = require('./tests/04-searchScreenDidLoad')
 const { test05_tableSectionSelectors } = require('./tests/05-tableSectionSelectors')
 const { test06_nonLoggedInMediaPlayer } = require('./tests/06-nonLoggedInMediaPlayer')
+const { test07_podcastScreenFull } = require('./tests/07-podcastScreenFull')
+
 
 
 const { createDriver } = require('./driver/driverFactory')
@@ -37,6 +39,7 @@ const runTests = async (customCapabilities) => {
     await test04_searchScreenDidLoad()
     await test05_tableSectionSelectors()
     await test06_nonLoggedInMediaPlayer()
+    await test07_podcastScreenFull()
 
 
 

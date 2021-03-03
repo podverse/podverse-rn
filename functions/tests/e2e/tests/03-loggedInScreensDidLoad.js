@@ -16,10 +16,10 @@ const test03_loggedInScreensDidLoadTests = async () => {
   await elementByIdClick('login_submit_button')
   await driver.sleep(4000)
   
-    // Podcast Screen
+    // Podcasts Screen
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
 
-    // Episode Screen
+    // Episodes Screen
     await elementByIdAndClickAndTest('episodes_screen_episode_item_0_top_view_nav', 'episode_screen_view', noTestLabel, goBackKey)
 
     // Clips Screen

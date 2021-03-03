@@ -11,7 +11,6 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
 
     // Episodes Screen
-  // await elementByIdAndClickAndTest('episodes_screen_episode_item_0_bottom_view_nav_time_remaining_widget_toggle_play', 'episode_screen_view')
   await elementByIdAndClickAndTest('episodes_screen_episode_item_0_top_view_nav', 'episode_screen_view', noTestLabel, goBackKey)
 
 
