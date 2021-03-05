@@ -7,6 +7,7 @@ const { test05_tableSectionSelectors } = require('./tests/05-tableSectionSelecto
 const { test06_nonLoggedInMediaPlayer } = require('./tests/06-nonLoggedInMediaPlayer')
 const { test07_podcastScreenFull } = require('./tests/07-podcastScreenFull')
 const { test08_episodesScreenFull } = require('./tests/08-episodesScreenFull')
+const { test09_clipsScreenFull } = require('./tests/09-clipsScreenFull')
 
 
 
@@ -42,6 +43,8 @@ const runTests = async (customCapabilities) => {
     await test06_nonLoggedInMediaPlayer()
     await test07_podcastScreenFull()
     await test08_episodesScreenFull()
+    // await test09_clipsScreenFull()
+
 
 
 
