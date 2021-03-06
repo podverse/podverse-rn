@@ -11,6 +11,7 @@ type Props = {
   downloadedEpisodeIds?: any
   downloadsActive?: any
   handleMorePress: any
+  loadTimeStampOnPlay?: boolean
   showEpisodeInfo?: boolean
   showPodcastInfo?: boolean
   testID: string
@@ -21,7 +22,8 @@ type Props = {
 
 export class ClipTableCell extends React.PureComponent<Props> {
   render() {
-    const { handleMorePress, showEpisodeInfo, showPodcastInfo, testID, transparent, item, hideImage } = this.props
+    const { handleMorePress, loadTimeStampOnPlay,
+      showEpisodeInfo, showPodcastInfo, testID, transparent, item, hideImage } = this.props
 
     const episodePubDate = item?.episode?.pubDate || ''
     const episodeId = item?.episode?.id || ''
@@ -91,9 +93,10 @@ export class ClipTableCell extends React.PureComponent<Props> {
       <View style={styles.wrapper} transparent={transparent}>
         <RNView style={styles.wrapperTop}>{innerTopView}</RNView>
         <TimeRemainingWidget
-          handleMorePress={handleMorePress}
           clipTime={clipTime}
+          handleMorePress={handleMorePress}
           item={item}
+          loadTimeStampOnPlay={loadTimeStampOnPlay}
           testID={testID}
           transparent={transparent}
         />

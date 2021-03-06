@@ -41,7 +41,7 @@ export const loadChapterPlaybackInfo = () => {
     const { backupDuration, currentChapters } = globalState.player
     const playerPosition = await PVTrackPlayer.getTrackPosition()
 
-    if ((playerPosition || playerPosition === 0) && Array.isArray(currentChapters)) {
+    if ((playerPosition || playerPosition === 0) && Array.isArray(currentChapters) && currentChapters.length > 1) {
       const currentChapter = currentChapters.find(
         // If no chapter.endTime, then assume it is the last chapter, and use the duration instead
         (chapter: any) =>
