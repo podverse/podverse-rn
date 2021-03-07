@@ -1,4 +1,4 @@
-import { StyleSheet, View as RNView } from 'react-native'
+import { Alert, Linking, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime, readableDate, testProps } from '../lib/utility'
@@ -22,6 +22,13 @@ type Props = {
 }
 
 export class ClipTableCell extends React.PureComponent<Props> {
+  handleChapterLinkPress = (url: string) => {
+    Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
+      { text: translate('Cancel') },
+      { text: translate('Yes'), onPress: () => Linking.openURL(url) }
+    ])
+  }
+
   render() {
     const { handleMorePress, hideImage, item, loadTimeStampOnPlay, showChapterInfo,
       showEpisodeInfo, showPodcastInfo, testID, transparent } = this.props
@@ -39,7 +46,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const clipTime = readableClipTime(startTime, endTime)
     const { downloadedEpisodeIds, fontScaleMode } = this.global
     const isDownloaded = downloadedEpisodeIds[episodeId]
-    const chapterImageStyle = item.linkUrl
+    const chapterImageStyle = item?.linkUrl
       ? [styles.chapterImage, styles.chapterImageBorder]
       : styles.chapterImage
 
@@ -111,7 +118,11 @@ export class ClipTableCell extends React.PureComponent<Props> {
           />
         </View>
         {showChapterInfo && (chapterImageUrl || hasChapterCustomImage) && (
-          <FastImage isSmall source={chapterImageUrl || podcastImageUrl} styles={chapterImageStyle} />
+          <TouchableOpacity
+            activeOpacity={1}
+            {...(item?.linkUrl ? { onPress: () => this.handleChapterLinkPress(item.linkUrl) } : {})}>
+            <FastImage isSmall source={chapterImageUrl || podcastImageUrl} styles={chapterImageStyle} />
+          </TouchableOpacity>
         )}
       </View>
     )
