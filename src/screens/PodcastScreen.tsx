@@ -171,10 +171,10 @@ static navigationOptions = ({ navigation }) => {
       () => {
         this._initializePageData()
 
-        const pageTitle = podcast
-          ? translate('Podcasts Screen - ') + podcast.title
-          : translate('PodcastsScreen - ') + translate('no info available')
-        trackPageView('/podcast/' + podcastId, pageTitle)
+        const titleToEncode = podcast
+          ? podcast.title
+          : translate('no info available')
+        trackPageView('/podcast/' + podcastId, translate('PodcastsScreen - '), titleToEncode)
       }
     )
   }

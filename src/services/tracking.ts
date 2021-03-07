@@ -1,40 +1,51 @@
+/* eslint-disable max-len */
 import { getGlobal } from 'reactn'
 import { gaTrackPageView } from './googleAnalytics'
 
-export const trackPageView = async (path: string, title: string) => {
-  const global = getGlobal()
-  const { player } = global
-  const nowPlayingItem = player.nowPlayingItem || {}
+export const trackPageView = async (path: string, title: string, titleToEncode?: string) => {
+  try {
+    const global = getGlobal()
+    const { player } = global
+    const nowPlayingItem = player.nowPlayingItem || {}
+  
+    const { clipId, clipTitle, episodeId, episodeTitle, podcastId, podcastTitle } = nowPlayingItem
+    
+    const finalTitle = `${title}${titleToEncode ? encodeURIComponent(titleToEncode) : ''}`
 
-  const { clipId, clipTitle, episodeId, episodeTitle, podcastId, podcastTitle } = nowPlayingItem
-
-  const queryObj = {
-    cd: title ? title : '',
-    cg1: podcastTitle ? podcastTitle : '',
-    cg2: podcastId ? podcastId : '',
-    cg3: episodeTitle ? episodeTitle : '',
-    cg4: episodeId ? episodeId : '',
-    cg5: clipTitle ? clipTitle : '',
-    cg6: clipId ? clipId : ''
+    const queryObj = {
+      cd: finalTitle ? finalTitle : '',
+      cg1: podcastTitle ? encodeURIComponent(podcastTitle) : '',
+      cg2: podcastId ? podcastId : '',
+      cg3: episodeTitle ? encodeURIComponent(episodeTitle) : '',
+      cg4: episodeId ? episodeId : '',
+      cg5: clipTitle ? encodeURIComponent(clipTitle) : '',
+      cg6: clipId ? clipId : ''
+    }
+  
+    await gaTrackPageView(path, finalTitle, queryObj)
+  } catch (error) {
+    console.log('trackPageView error', error)
   }
-
-  await gaTrackPageView(path, title, queryObj)
 }
 
 export const trackPlayerScreenPageView = (item: any) => {
-  if (item.clipId) {
-    trackPageView(
-      '/clip/' + item.clipId,
-      'Player Screen - Clip - ' + item.podcastTitle + ' - ' + item.episodeTitle + ' - ' + item.clipTitle
-    )
-  }
-  if (item.episodeId) {
-    trackPageView(
-      '/episode/' + item.episodeId,
-      'Player Screen - Episode - ' + item.podcastTitle + ' - ' + item.episodeTitle
-    )
-  }
-  if (item.podcastId) {
-    trackPageView('/podcast/' + item.podcastId, 'Player Screen - Podcast - ' + item.podcastTitle)
+  try {
+    if (item.clipId) {
+      trackPageView(
+        '/clip/' + item.clipId,
+        'Player Screen - Clip - ' + encodeURIComponent(item.podcastTitle) + ' - ' + encodeURIComponent(item.episodeTitle) + ' - ' + encodeURIComponent(item.clipTitle)
+      )
+    }
+    if (item.episodeId) {
+      trackPageView(
+        '/episode/' + item.episodeId,
+        'Player Screen - Episode - ' + encodeURIComponent(item.podcastTitle) + ' - ' + encodeURIComponent(item.episodeTitle)
+      )
+    }
+    if (item.podcastId) {
+      trackPageView('/podcast/' + item.podcastId, 'Player Screen - Podcast - ' + encodeURIComponent(item.podcastTitle))
+    }
+  } catch (error) {
+    console.log('trackPlayerScreenPageView error', error)
   }
 }
