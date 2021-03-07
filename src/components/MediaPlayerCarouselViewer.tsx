@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   },
   carouselTextTopWrapper: {
     justifyContent: 'flex-end',
-    marginBottom: 10
+    marginBottom: 12
   },
   carouselImageWrapper: {
     alignItems: 'center',
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
   clipWrapper: {
     alignItems: 'center',
-    marginTop: 15
+    marginTop: 12
   },
   clipTime: {
     color: PV.Colors.skyLight,

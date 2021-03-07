@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
 import { convertSecToHhoursMMinutes, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { PVTrackPlayer } from '../services/player'
+import { PVTrackPlayer, setPlaybackPosition } from '../services/player'
 import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
 import { Icon, MoreButton, Text, View } from './'
 
@@ -12,6 +12,7 @@ type Props = {
   clipTime?: string
   handleMorePress?: any
   item: any
+  loadTimeStampOnPlay?: boolean
   mediaFileDuration?: number | undefined
   style?: any
   testID: string
@@ -67,7 +68,8 @@ const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { clipTime, handleMorePress, item, mediaFileDuration, style, testID, transparent, userPlaybackPosition } = props
+  const { clipTime, handleMorePress, item,
+    loadTimeStampOnPlay, mediaFileDuration, style, testID, transparent, userPlaybackPosition } = props
   const { episode = {}, podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
   const [player] = useGlobal('player')
@@ -89,13 +91,23 @@ export const TimeRemainingWidget = (props: Props) => {
     timeLabel = clipTime
   }
 
-  const playItem = () => {
-    const isNowPlayingItem = checkIfNowPlayingItem(item, nowPlayingItem)
+  const handleChapterLoad = async () => {
+    await setPlaybackPosition(item.startTime)
+    const currentState = await PVTrackPlayer.getState()
+    const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
+    if (!isPlaying) PVTrackPlayer.play()
+  }
 
-    if (isNowPlayingItem) {
-      togglePlay()
+  const playItem = async () => {
+    const isNowPlayingItem = checkIfNowPlayingItem(item, nowPlayingItem)
+    if (loadTimeStampOnPlay) {
+      await handleChapterLoad()
     } else {
-      loadItemAndPlayTrack(playingItem, true)
+      if (isNowPlayingItem) {
+        togglePlay()
+      } else {
+        loadItemAndPlayTrack(playingItem, true)
+      }
     }
   }
 

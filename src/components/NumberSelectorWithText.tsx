@@ -31,7 +31,7 @@ export const NumberSelectorWithText = (props: Props) => {
           placeholderTextColor={globalTheme.placeholderText.color}
           returnKeyType='done'
           style={styles.textInput}
-          {...(testID ? testProps(`${testID}_text_input`) : {})}
+          testID={testID}
           value={strNum}
           wrapperStyle={{ marginBottom: 0 }}
         />

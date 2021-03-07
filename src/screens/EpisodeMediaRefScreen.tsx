@@ -207,13 +207,14 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
   })
 
   _renderItem = ({ item }) => {
+    const { viewType } = this.state
     const episode = this.props.navigation.getParam('episode') || {}
     item.episode = episode
 
     return (
       <ClipTableCell
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
-        hideImage
+        showChapterInfo={viewType === PV.Filters._chaptersKey}
         showEpisodeInfo={false}
         showPodcastInfo={false}
         item={item}
