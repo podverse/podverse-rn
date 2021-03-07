@@ -10,6 +10,15 @@ const sendKeysToElementById = async (id, textString, testLabel) => {
   logTestInfo(logKeyEnd, id, testLabel)
 }
 
+const clearTextField = async (id, testLabel) => {
+  const driver = getDriver()
+  logTestInfo(logKeyStart, id, testLabel)
+  const element = await driver.elementByAccessibilityId(id);
+  await element.clear();
+  logTestInfo(logKeyEnd, id, testLabel)
+}
+
 module.exports = {
+  clearTextField,
   sendKeysToElementById
 }
