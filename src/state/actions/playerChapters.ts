@@ -63,6 +63,7 @@ export const retriveNowPlayingItemChapters = async (episodeId: string) => {
 
 const enrichChapterDataForPlayer = (chapters: any[]) => {
   const enrichedChapters = []
+  let hasCustomImage = false
 
   if (Array.isArray(chapters) && chapters.length > 0) {
     for (let i = 0; i < chapters.length; i++) {
@@ -71,7 +72,18 @@ const enrichChapterDataForPlayer = (chapters: any[]) => {
       if (chapter && !chapter.endTime && nextChapter) {
         chapter.endTime = nextChapter.startTime
       }
+      if (chapter && chapter.imageUrl) {
+        hasCustomImage = true
+      }
       enrichedChapters.push(chapter)
+    }
+  }
+
+  const enrichedChaptersFinal = []
+  for (const enrichedChapter of enrichedChapters) {
+    if (hasCustomImage) {
+      enrichedChapter.hasCustomImage = true
+      enrichedChaptersFinal.push(enrichedChapter)
     }
   }
 

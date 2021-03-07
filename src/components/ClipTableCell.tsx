@@ -11,23 +11,26 @@ type Props = {
   downloadedEpisodeIds?: any
   downloadsActive?: any
   handleMorePress: any
+  hideImage?: boolean
+  item: any
   loadTimeStampOnPlay?: boolean
+  showChapterInfo?: boolean
   showEpisodeInfo?: boolean
   showPodcastInfo?: boolean
   testID: string
   transparent?: boolean
-  item: any
-  hideImage?: boolean
 }
 
 export class ClipTableCell extends React.PureComponent<Props> {
   render() {
-    const { handleMorePress, loadTimeStampOnPlay,
-      showEpisodeInfo, showPodcastInfo, testID, transparent, item, hideImage } = this.props
+    const { handleMorePress, hideImage, item, loadTimeStampOnPlay, showChapterInfo,
+      showEpisodeInfo, showPodcastInfo, testID, transparent } = this.props
 
     const episodePubDate = item?.episode?.pubDate || ''
     const episodeId = item?.episode?.id || ''
     const podcastImageUrl = item?.episode?.podcast?.shrunkImageUrl || item?.episode?.podcast?.imageUrl
+    const chapterImageUrl = item?.imageUrl
+    const hasChapterCustomImage = item?.hasCustomImage
     const startTime = item.startTime
     const endTime = item.endTime
     const title = item?.title?.trim() || translate('Untitled Clip')
@@ -36,6 +39,9 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const clipTime = readableClipTime(startTime, endTime)
     const { downloadedEpisodeIds, fontScaleMode } = this.global
     const isDownloaded = downloadedEpisodeIds[episodeId]
+    const chapterImageStyle = item.linkUrl
+      ? [styles.chapterImage, styles.chapterImageBorder]
+      : styles.chapterImage
 
     const innerTopView = (
       <RNView style={styles.innerTopView} {...(testID ? testProps(`${testID}_top_view_nav`) : {})}>
@@ -91,24 +97,36 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
     return (
       <View style={styles.wrapper} transparent={transparent}>
-        <RNView style={styles.wrapperTop}>{innerTopView}</RNView>
-        <TimeRemainingWidget
-          clipTime={clipTime}
-          handleMorePress={handleMorePress}
-          item={item}
-          loadTimeStampOnPlay={loadTimeStampOnPlay}
-          testID={testID}
-          transparent={transparent}
-        />
+        <View style={styles.wrapperInner} transparent={transparent}>
+          <RNView style={styles.wrapperTop}>
+            {innerTopView}
+          </RNView>
+          <TimeRemainingWidget
+            clipTime={clipTime}
+            handleMorePress={handleMorePress}
+            item={item}
+            loadTimeStampOnPlay={loadTimeStampOnPlay}
+            testID={testID}
+            transparent={transparent}
+          />
+        </View>
+        {showChapterInfo && (chapterImageUrl || hasChapterCustomImage) && (
+          <FastImage isSmall source={chapterImageUrl || podcastImageUrl} styles={chapterImageStyle} />
+        )}
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    paddingHorizontal: 8,
-    paddingVertical: 16
+  chapterImage: {
+    height: 64,
+    marginLeft: 12,
+    width: 64
+  },
+  chapterImageBorder: {
+    borderColor: PV.Colors.skyDark,
+    borderWidth: 4
   },
   episodePubDate: {
     fontSize: PV.Fonts.sizes.sm,
@@ -159,6 +177,14 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.bold,
     color: PV.Colors.white
+  },
+  wrapper: {
+    flexDirection: 'row',
+    paddingHorizontal: 8,
+    paddingVertical: 16
+  },
+  wrapperInner: {
+    flex: 1
   },
   wrapperTop: {
     flexDirection: 'row',
