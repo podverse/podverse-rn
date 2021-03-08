@@ -8,6 +8,9 @@ const { test06_nonLoggedInMediaPlayer } = require('./tests/06-nonLoggedInMediaPl
 const { test07_podcastScreenFull } = require('./tests/07-podcastScreenFull')
 const { test08_episodesScreenFull } = require('./tests/08-episodesScreenFull')
 const { test09_clipsScreenFull } = require('./tests/09-clipsScreenFull')
+const { test10_settingsScreenFull } = require('./tests/10-settingsScreenFull')
+
+
 
 
 
@@ -44,6 +47,7 @@ const runTests = async (customCapabilities) => {
     await test07_podcastScreenFull()
     await test08_episodesScreenFull()
     // await test09_clipsScreenFull()
+    await test10_settingsScreenFull()
 
 
 
