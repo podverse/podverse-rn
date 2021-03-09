@@ -170,7 +170,7 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
             </Text>
           </View>
         )}
-        {!!clipStartTimePosition && (
+        {!!clipStartTimePosition && !!clipEndTime && (
           <Animated.View
             style={[
               sliderStyles.clipBarStyle,
