@@ -75,7 +75,7 @@ export const TimeRemainingWidget = (props: Props) => {
   const [player] = useGlobal('player')
   const { nowPlayingItem, playbackState } = player
 
-  const hasStartedItem = !!userPlaybackPosition
+  const hasStartedItem = !!mediaFileDuration
   const totalTime = mediaFileDuration || playingItem.episodeDuration || 0
   const playedTime = userPlaybackPosition || 0
 

@@ -69,17 +69,21 @@ const syncNowPlayingItemWithTrack = () => {
   setTimeout(sync, 1000)
 }
 
+const resetHistoryItem = async (x: any) => {
+  if (x && x.track) {
+    const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(x.track)
+    if (currentNowPlayingItem) {
+      const forceUpdateOrderDate = false
+      await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate)
+    }
+  }
+}
+
 const handleQueueEnded = (x: any) => {
   setTimeout(() => {
     (async () => {
       hideMiniPlayer()
-
-      if (x && x.track) {
-        const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(x.track)
-        if (currentNowPlayingItem) {
-          await addOrUpdateHistoryItem(currentNowPlayingItem, 0, currentNowPlayingItem.mediaFileDuration || 0)
-        }
-      }
+      await resetHistoryItem(x)
 
       // Don't call reset on Android because it triggers the playback-queue-ended event
       // and will cause an infinite loop
@@ -90,9 +94,23 @@ const handleQueueEnded = (x: any) => {
   }, 0)
 }
 
+const handleTrackEnded = (x: any) => {
+  setTimeout(() => {
+    (async () => {
+      await resetHistoryItem(x)
+    })()
+  }, 0)
+}
+
 // eslint-disable-next-line @typescript-eslint/require-await
 module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-error', (x) => console.log('playback error', x))
+
+  PVTrackPlayer.addEventListener('playback-track-changed', (x: any) => {
+    console.log('playback-track-changed', x)
+    syncNowPlayingItemWithTrack()
+    handleTrackEnded(x)
+  })
 
   // NOTE: TrackPlayer.reset will call the playback-queue-ended event on Android!!!
   PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
@@ -153,11 +171,6 @@ module.exports = async () => {
         }
       }
     })()
-  })
-
-  PVTrackPlayer.addEventListener('playback-track-changed', (x: any) => {
-    console.log('playback-track-changed', x)
-    syncNowPlayingItemWithTrack()
   })
 
   PVTrackPlayer.addEventListener('playback-error', (x: any) => {

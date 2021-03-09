@@ -107,10 +107,11 @@ export class EpisodeScreen extends React.Component<Props, State> {
   componentDidMount() {
     const { episode, episodeId } = this.state
     this._initializePageData()
-    const pageTitle = episode?.podcast
-      ? translate('Episode Screen - ') + episode.podcast.title + ' - ' + episode.title
-      : translate('Episode Screen - ') + translate('no info available')
-    trackPageView('/episode/' + episodeId, pageTitle)
+    const episodeTitle = episode.title ? episode.title : translate('Untitled Episode')
+    const titleToEncode = episode?.podcast
+      ? episode.podcast.title + ' - ' + episodeTitle
+      : translate('no info available')
+    trackPageView('/episode/' + episodeId, translate('Episode Screen - '), titleToEncode)
   }
 
   async _initializePageData() {
