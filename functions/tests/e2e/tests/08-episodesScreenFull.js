@@ -1,8 +1,5 @@
 const { getDriver } = require('../driver/driverFactory')
-const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, elementWaitFor, goBackKey, noTestLabel } = require('../driver/helpers/elements')
-const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
-const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
-
+const { elementByIdAndClickAndTest, elementByIdClick, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const test08_episodesScreenFull = async () => {
   console.log('08_episodesScreenFull')
   const driver = getDriver()

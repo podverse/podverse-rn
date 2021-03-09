@@ -46,7 +46,7 @@ const runTests = async (customCapabilities) => {
     await test06_nonLoggedInMediaPlayer()
     await test07_podcastScreenFull()
     await test08_episodesScreenFull()
-    // await test09_clipsScreenFull()
+    await test09_clipsScreenFull()
     await test10_settingsScreenFull()
 
 

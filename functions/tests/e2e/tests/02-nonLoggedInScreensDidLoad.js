@@ -27,7 +27,7 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
   await elementCheckIfPresent('my_library_screen_downloads_cell')
   await elementCheckIfPresent('my_library_screen_queue_cell')
   await elementCheckIfPresent('my_library_screen_history_cell')
-  // await elementCheckIfNotPresent('my_library_screen_my_clips_cell')
+  await elementCheckIfNotPresent('my_library_screen_my_clips_cell')
   await elementCheckIfNotPresent('my_library_screen_my_profile_cell')
   await elementCheckIfNotPresent('my_library_screen_playlists_cell')
   await elementCheckIfNotPresent('my_library_screen_profiles_cell')

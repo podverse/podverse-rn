@@ -1,5 +1,5 @@
 const { getDriver } = require('../driver/driverFactory')
-const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, elementWaitFor, elementCheckIfPresent, elementCheckIfNotPresent, goBackKey, noTestLabel } = require('../driver/helpers/elements')
+const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, elementWaitFor, elementCheckIfPresent, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
 const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
 
@@ -33,7 +33,7 @@ const test03_loggedInScreensDidLoadTests = async () => {
   await elementCheckIfPresent('my_library_screen_downloads_cell')
   await elementCheckIfPresent('my_library_screen_queue_cell')
   await elementCheckIfPresent('my_library_screen_history_cell')
-  // await elementCheckIfPresent('my_library_screen_my_clips_cell')
+  await elementCheckIfPresent('my_library_screen_my_clips_cell')
   await elementCheckIfPresent('my_library_screen_my_profile_cell')
   await elementCheckIfPresent('my_library_screen_playlists_cell')
   await elementCheckIfPresent('my_library_screen_profiles_cell')
