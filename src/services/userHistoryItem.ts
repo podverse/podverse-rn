@@ -204,6 +204,11 @@ const generateHistoryItemsIndex = (historyItems: any[]) => {
   return historyItemsIndex
 }
 
+export const getHistoryItemEpisodeFromIndexLocally = async (episodeId: string) => {
+  const historyItemsIndex = await getHistoryItemsIndexLocally()
+  return historyItemsIndex.episodes[episodeId]
+}
+
 export const getHistoryItemsIndexLocally = async () => {
   const results = await getHistoryItemsLocally()
   const { userHistoryItems } = results
