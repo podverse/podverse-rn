@@ -4,6 +4,7 @@ import { Platform } from 'react-native'
 import BackgroundTimer from 'react-native-background-timer'
 import { PV } from '../resources'
 import { hideMiniPlayer, updatePlaybackState } from '../state/actions/player'
+import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
@@ -17,7 +18,7 @@ import {
   setPlaybackPositionWhenDurationIsAvailable,
   updateUserPlaybackPosition
 } from './player'
-import { addOrUpdateHistoryItem } from './userHistoryItem'
+import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
 import { getNowPlayingItemLocally, setNowPlayingItemLocally } from './userNowPlayingItem'
 
 const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1000, {
@@ -70,11 +71,16 @@ const syncNowPlayingItemWithTrack = () => {
 }
 
 const resetHistoryItem = async (x: any) => {
-  if (x && x.track) {
-    const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(x.track)
-    if (currentNowPlayingItem) {
-      const forceUpdateOrderDate = false
-      await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate)
+  const { position, track } = x
+  const metaEpisode = await getHistoryItemEpisodeFromIndexLocally(track)
+  if (metaEpisode) {
+    const { mediaFileDuration } = metaEpisode
+    if (mediaFileDuration > 59 && mediaFileDuration - 59 < position) {
+      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(x.track)
+      if (currentNowPlayingItem) {
+        const forceUpdateOrderDate = false
+        await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate)
+      }
     }
   }
 }
@@ -108,6 +114,7 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-track-changed', (x: any) => {
     console.log('playback-track-changed', x)
+    clearChapterPlaybackInfo()
     syncNowPlayingItemWithTrack()
     handleTrackEnded(x)
   })
@@ -115,6 +122,7 @@ module.exports = async () => {
   // NOTE: TrackPlayer.reset will call the playback-queue-ended event on Android!!!
   PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
     console.log('playback-queue-ended', x)
+    clearChapterPlaybackInfo()
     syncNowPlayingItemWithTrack()
     handleQueueEnded(x)
   })
