@@ -13,11 +13,11 @@ const test10_settingsScreenFull = async () => {
   await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
   await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
   await elementByIdToggle('settings_screen_offline_mode_switch')
-  // await elementByIdClick('settings_screen_clear_history_button')
-  // await confirmAndroidAlert()
+  await elementByIdClick('settings_screen_clear_history_button')
+  await confirmAndroidAlert()
 
-  // await driver.back()
-  // await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
+  await driver.back()
+  await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
 
 
 }

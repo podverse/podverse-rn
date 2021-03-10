@@ -13,9 +13,6 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
     // Episodes Screen
   await elementByIdAndClickAndTest('episodes_screen_episode_item_0_top_view_nav', 'episode_screen_view', noTestLabel, goBackKey)
 
-
-  
-
     // Clips Screen
   await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
 
@@ -31,10 +28,6 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
   await elementCheckIfNotPresent('my_library_screen_my_profile_cell')
   await elementCheckIfNotPresent('my_library_screen_playlists_cell')
   await elementCheckIfNotPresent('my_library_screen_profiles_cell')
-
-
-
-
 
     // More Screen
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
@@ -57,9 +50,14 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
   await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
   await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
   await elementByIdToggle('settings_screen_offline_mode_switch')
+
+    //Custom API and Web domains
+
   // await performScroll(scrollDownKey, 2)
   // await elementByIdToggle('settings_screen_custom_api_domain_switch', noTestLabel, goBackKey)
   // await elementByIdToggle('settings_screen_custom_web_domain_switch', noTestLabel, goBackKey)
+  
+  
   await driver.back()
   await driver.back()
 
