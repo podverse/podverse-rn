@@ -122,6 +122,7 @@ module.exports = async () => {
   // NOTE: TrackPlayer.reset will call the playback-queue-ended event on Android!!!
   PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
     console.log('playback-queue-ended', x)
+    clearChapterPlaybackInfo()
     syncNowPlayingItemWithTrack()
     handleQueueEnded(x)
   })
