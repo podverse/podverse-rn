@@ -35,6 +35,11 @@ const test04_searchScreenDidLoad = async () => {
   await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_not_subscribed')
   await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed')
   await driver.back()
+
+    // Log Out 
+
+  await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+  await elementByIdAndClickAndTest('more_screen_log_out_cell', 'more_screen_view')
   await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
 
 }

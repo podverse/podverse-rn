@@ -70,6 +70,8 @@ const test03_loggedInScreensDidLoadTests = async () => {
   await elementWaitFor('search_screen_podcast_item_0')
   await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'podcasts_screen_view')
 
+    // Log Out
+
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
   await elementByIdAndClickAndTest('more_screen_log_out_cell', 'more_screen_view')
   await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
