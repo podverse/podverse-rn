@@ -14,17 +14,17 @@ const test09_clipsScreenFull = async () => {
   await elementByIdClick('clips_screen_clip_item_0_more_button')
   await elementByIdClick('clips_screen_action_sheet_cancel_button')
 
-  await elementByIdClick('clips_screen_clip_item_0_more_button')
-  await elementByIdClick('clips_screen_action_sheet_stream_button')
+  // await elementByIdClick('clips_screen_clip_item_0_more_button')
+  // await elementByIdClick('clips_screen_action_sheet_stream_button')
   
-  await elementByIdClick('clips_screen_clip_item_0_more_button')
-  await elementByIdClick('clips_screen_action_sheet_queue_next_button')
+  // await elementByIdClick('clips_screen_clip_item_0_more_button')
+  // await elementByIdClick('clips_screen_action_sheet_queue_next_button')
 
-  await elementByIdClick('clips_screen_clip_item_0_more_button')
-  await elementByIdClick('clips_screen_action_sheet_queue_last_button')
+  // await elementByIdClick('clips_screen_clip_item_0_more_button')
+  // await elementByIdClick('clips_screen_action_sheet_queue_last_button')
  
-  await elementByIdClick('clips_screen_clip_item_0_more_button')
-  await elementByIdClick('clips_screen_action_sheet_queue_next_button')
+  // await elementByIdClick('clips_screen_clip_item_0_more_button')
+  // await elementByIdClick('clips_screen_action_sheet_queue_next_button')
 
   await elementByIdClick('clips_screen_clip_item_0_more_button')
   await elementByIdClick('clips_screen_action_sheet_share_button')

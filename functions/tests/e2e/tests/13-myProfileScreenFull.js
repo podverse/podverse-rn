@@ -22,15 +22,14 @@ const test13_myProfileScreenFull = async () => {
     // My Profile Screen
   await elementByIdAndClickAndTest('my_library_screen_my_profile_cell', 'profile_screen_view')
   await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
-  await elementByIdClick('filter_screen_subscribed')
-  await elementByIdClick('filter_screen_downloaded')
-  await elementByIdClick('filter_screen_all-podcasts')
+  await elementByIdClick('filter_screen_podcasts')
   await elementByIdClick('filter_screen_top-past-day')
   await elementByIdClick('filter_screen_top-past-week')
   await elementByIdClick('filter_screen_top-past-month')
   await elementByIdClick('filter_screen_top-past-year')
   await elementByIdClick('filter_screen_top-all-time')
-  await elementByIdClick('filter_screen_category')
+  await elementByIdClick('filter_screen_clips')
+  await elementByIdClick('filter_screen_playlists')
   await elementByIdClick('filter_screen_nav_header_button_text')
 
     // Log Out
