@@ -56,7 +56,7 @@ const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean
   })
 }
 
-export const addAddByRSSPodcast = async (feedUrl: string) => {
+export const addAddByRSSPodcast = async (feedUrl: string, skipBadParse = false) => {
   let result = false
 
   if (!feedUrl) return result
@@ -67,7 +67,10 @@ export const addAddByRSSPodcast = async (feedUrl: string) => {
     PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
     result = true
   } catch (error) {
-    if (error.message === '401') {
+    if (skipBadParse) {
+      // Log error but don't do anything
+      console.log('Manual skip of parsing error. Error reason: ', error)
+    } else if (error.message === '401') {
       setAddByRSSPodcastAuthModalState(feedUrl)
     } else {
       console.log('addAddByRSSPodcast', error)
