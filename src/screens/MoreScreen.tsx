@@ -6,7 +6,7 @@ import DocumentPicker from 'react-native-document-picker'
 import RNFS from 'react-native-fs'
 import { Divider, TableSectionSelectors, Text, View, ActivityIndicator } from '../components'
 import { translate } from '../lib/i18n'
-import { createEmailLinkUrl, getMembershipStatus, testProps } from '../lib/utility'
+import { createEmailLinkUrl, getMembershipStatus, testProps, parseOpmlFile } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { logoutUser } from '../state/actions/auth'
@@ -109,10 +109,10 @@ export class MoreScreen extends React.Component<Props, State> {
               throw new Error('OPML file is not in the correct format')
             }
 
-            for (const item of result.opml.body[0].outline) {
-              if (item.$.type === 'rss') {
-                await addAddByRSSPodcast(item.$.xmlUrl, true)
-              }
+            const rssArr = parseOpmlFile(result, true)
+
+            for (const rssUrl of rssArr) {
+              await addAddByRSSPodcast(rssUrl, true)
             }
 
             this.setState({ isLoading: false }, () => {
@@ -120,6 +120,7 @@ export class MoreScreen extends React.Component<Props, State> {
             })
           } catch (error) {
             console.log('Error parsing podcast: ', error)
+            this.setState({ isLoading: false })
           }
         })
       })
@@ -128,7 +129,7 @@ export class MoreScreen extends React.Component<Props, State> {
         // User cancelled the picker, exit any dialogs or menus and move on
       } else {
         console.log('Error parsing podcast: ', err)
-        Alert.alert('Error', 'There was an issue with the opml file parsing.', err.message)
+        Alert.alert('Error', 'There was an issue with the opml file import.', err.message)
       }
     }
   }
