@@ -12,14 +12,8 @@ const { test10_settingsScreenFull } = require('./tests/10-settingsScreenFull')
 const { test11_queueScreenEditFeature } = require('./tests/11-queueScreenEditFeature')
 const { test12_historyScreenEditFeature } = require('./tests/12-historyScreenEditFeature')
 const { test13_myProfileScreenFull } = require('./tests/13-myProfileScreenFull')
-
-
-
-
-
-
-
-
+const { test14_profilesScreenFull } = require('./tests/14-profilesScreenFull')
+const { test15_playlistsScreenFull } = require('./tests/15-playlistsScreenFull')
 
 const { createDriver } = require('./driver/driverFactory')
 const { getTestCapabilities } = require('./utils/getTestCapabilities')
@@ -58,6 +52,10 @@ const runTests = async (customCapabilities) => {
     await test11_queueScreenEditFeature()
     await test12_historyScreenEditFeature()
     await test13_myProfileScreenFull()
+    await test14_profilesScreenFull()
+    await test15_playlistsScreenFull()
+
+
 
   } catch (error) {
     console.log('runTests error: ', error)
