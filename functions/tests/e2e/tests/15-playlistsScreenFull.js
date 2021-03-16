@@ -21,12 +21,18 @@ const test15_playlistsScreenFull = async () => {
 
     // Playlists Screen
   await elementByIdAndClickAndTest('my_library_screen_playlists_cell', 'playlists_screen_view')
+  await elementByIdAndClickAndTest('playlists_screen_playlist_item_0', 'playlist_screen_view')
+  await elementByIdAndClickAndTest('playlist_screen_edit_icon_button', 'edit_playlist_screen_view')
+
+  driver.back()
+
 
     // Log Out
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
   await elementByIdAndClickAndTest('more_screen_log_out_cell', 'more_screen_view')
   await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
+  
 }
 
 module.exports = {

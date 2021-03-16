@@ -24,6 +24,9 @@ const test14_profilesScreenFull = async () => {
   await elementByIdAndClickAndTest('profiles_screen_profile_0', 'profile_screen_view')
   await elementByIdAndClickAndTest('profile_screen_subscribe_button', 'profile_screen_is_not_subscribed')
   await elementByIdAndClickAndTest('profile_screen_subscribe_button', 'profile_screen_is_subscribed')
+  await driver.back()
+  await driver.back()
+
 
     // Log Out
 
