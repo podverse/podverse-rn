@@ -1,7 +1,6 @@
 const { getDriver } = require('../driver/driverFactory')
-const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, elementWaitFor, goBackKey, noTestLabel } = require('../driver/helpers/elements')
-const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
-const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
+const { elementByIdAndClickAndTest, elementByIdClick, goBackKey, noTestLabel } = require('../driver/helpers/elements')
+
 
 const test05_tableSectionSelectors = async () => {
   console.log('05_tableSectionSelectors')
