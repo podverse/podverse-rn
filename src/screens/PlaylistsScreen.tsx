@@ -72,7 +72,8 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
   _renderPlaylistItem = ({ index, item, section }) => {
     const ownerName = (item.owner && item.owner.name) || translate('anonymous')
-    const isSubscribed = section.value === PV.Filters._sectionSubscribedPlaylistsKey
+    const sectionKey = section.value
+    const isSubscribed = sectionKey === PV.Filters._sectionSubscribedPlaylistsKey
 
     return (
       <PlaylistTableCell
@@ -83,7 +84,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
             playlist: item
           })
         }
-        testID={`${testIDPrefix}_playlist_item_${index}`}
+        testID={`${testIDPrefix}_playlist_${sectionKey}_item_${index}`}
         title={item.title || translate('Untitled Playlist')}
       />
     )
