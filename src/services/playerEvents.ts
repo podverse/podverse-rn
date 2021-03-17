@@ -48,6 +48,10 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
 }
 
 const syncNowPlayingItemWithTrack = () => {
+  // If the clipEndInterval is already running, stop it before the clip is
+  // reloaded in the handleSyncNowPlayingItem function.
+  stopHandleClipEndInterval()
+
   // The first setTimeout is an attempt to prevent the following:
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
   // - Sometimes the debouncedSetPlaybackPosition seems to load with the previous track's playback position,
@@ -243,23 +247,22 @@ module.exports = async () => {
   })
 }
 
+const stopHandleClipEndInterval = () => {
+  if (Platform.OS === 'android') {
+    BackgroundTimer.stopBackgroundTimer()
+  }
+  if (handleClipEndInterval) {
+    BackgroundTimer.clearInterval(handleClipEndInterval)
+  }
+  BackgroundTimer.stop()
+}
+
 let handleClipEndInterval = null as any
 // Background timer handling from
 // https://github.com/ocetnik/react-native-background-timer/issues/122
 const handlePlayerClipLoaded = () => {
   (async () => {
     console.log('PLAYER_CLIP_LOADED event')
-
-    const stopHandleClipEndInterval = () => {
-      if (Platform.OS === 'android') {
-        BackgroundTimer.stopBackgroundTimer()
-      }
-      if (handleClipEndInterval) {
-        BackgroundTimer.clearInterval(handleClipEndInterval)
-      }
-      BackgroundTimer.stop()
-    }
-
     stopHandleClipEndInterval()
 
     const nowPlayingItem = await getNowPlayingItemLocally()
@@ -286,8 +289,6 @@ const handlePlayerClipLoaded = () => {
           handleClipEndInterval = BackgroundTimer.setInterval(checkEndTime, 500)
         }
       }
-      const resolveImmediately = true
-      await debouncedSetPlaybackPosition(nowPlayingItem.clipStartTime, nowPlayingItem.clipId, resolveImmediately)
     }
   })()
 }
