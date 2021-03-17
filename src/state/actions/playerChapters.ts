@@ -62,6 +62,8 @@ export const retriveNowPlayingItemChapters = async (episodeId: string) => {
 }
 
 const enrichChapterDataForPlayer = (chapters: any[]) => {
+  const globalState = getGlobal()
+  const { backupDuration } = globalState.player
   const enrichedChapters = []
   let hasCustomImage = false
 
@@ -69,8 +71,10 @@ const enrichChapterDataForPlayer = (chapters: any[]) => {
     for (let i = 0; i < chapters.length; i++) {
       const chapter = chapters[i]
       const nextChapter = chapters[i + 1]
-      if (chapter && !chapter.endTime && nextChapter) {
+      if (!chapter?.endTime && nextChapter) {
         chapter.endTime = nextChapter.startTime
+      } else if (!chapter?.endTime && backupDuration) {
+        chapter.endTime = backupDuration
       }
       if (chapter && chapter.imageUrl) {
         hasCustomImage = true
