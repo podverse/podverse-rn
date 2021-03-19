@@ -55,7 +55,20 @@ const setSubscribedPodcasts = async (subscribedPodcasts: any[]) => {
   }
 }
 
-export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
+export const findPodcastsByFeedUrls = async (feedUrls: string[]) => {
+  const response = await request({
+    endpoint: '/podcast/find-by-feed-urls',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: { feedUrls }
+  })
+
+  return response && response.data
+}
+
+export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
 
   const query = {
@@ -156,6 +169,14 @@ export const searchPodcasts = async (title?: string, author?: string) => {
   })
 
   return response && response.data
+}
+
+export const subscribeToPodcastIfNotAlready = async (alreadySubscribedPodcasts: any, podcastId: string) => {
+  if (Array.isArray(alreadySubscribedPodcasts) && !alreadySubscribedPodcasts.some(
+    alreadySubscribedPodcast => alreadySubscribedPodcast.id === podcastId)
+  ) {
+    await toggleSubscribeToPodcast(podcastId)
+  }
 }
 
 export const toggleSubscribeToPodcast = async (id: string) => {

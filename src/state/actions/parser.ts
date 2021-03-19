@@ -4,13 +4,17 @@ import { PV } from '../../resources'
 import { checkIfLoggedIn } from '../../services/auth'
 import PVEventEmitter from '../../services/eventEmitter'
 import {
+  addManyAddByRSSPodcastFeedUrlsOnServer,
   addAddByRSSPodcastFeedUrlOnServer,
   getAddByRSSPodcastFeedUrlsLocally,
   getAddByRSSPodcastsLocally,
   parseAddByRSSPodcast,
   removeAddByRSSPodcast as removeAddByRSSPodcastService
 } from '../../services/parser'
-import { getSubscribedPodcastsLocally, sortPodcastArrayAlphabetically } from '../../services/podcast'
+import { findPodcastsByFeedUrls, getSubscribedPodcastsLocally,
+  sortPodcastArrayAlphabetically, subscribeToPodcastIfNotAlready } from '../../services/podcast'
+import { getAuthUserInfo } from './auth'
+import { getSubscribedPodcasts } from './podcast'
 
 export const clearAddByRSSPodcastAuthModalState = () => {
   setGlobal({
@@ -54,6 +58,49 @@ const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean
     subscribedPodcasts: alphabetizedPodcasts,
     subscribedPodcastsTotalCount: alphabetizedPodcasts.length
   })
+}
+
+
+const addAddByRSSPodcastIfNotAlready = async (
+  alreadySubscribedAddByRSSPodcasts: any[], feedUrl: string, skipBadParse?: boolean) => {
+  if (Array.isArray(alreadySubscribedAddByRSSPodcasts) && !alreadySubscribedAddByRSSPodcasts.some(
+    alreadySubscribedAddByRSSPodcast =>
+      alreadySubscribedAddByRSSPodcast.addByRSSPodcastFeedUrl === feedUrl)
+  ) {
+    await addAddByRSSPodcast(feedUrl, skipBadParse)
+  }
+}
+
+const addManyAddByRSSPodcastFeedUrlsLocally = async (urls: string[]) => {
+  const { foundPodcastIds, notFoundFeedUrls } = await findPodcastsByFeedUrls(urls)
+  const alreadySubscribedPodcasts = await getSubscribedPodcasts()
+  const alreadyAddByRSSPodcasts = await getAddByRSSPodcastsLocally()
+  for (const foundPodcastId of foundPodcastIds) {
+    await subscribeToPodcastIfNotAlready(alreadySubscribedPodcasts, foundPodcastId)
+  }
+  for (const notFoundFeedUrl of notFoundFeedUrls) {
+    const skipBadParse = true
+    await addAddByRSSPodcastIfNotAlready(alreadyAddByRSSPodcasts, notFoundFeedUrl, skipBadParse)
+  }
+}
+
+export const addAddByRSSPodcasts = async (urls: string[]) => {
+  try {
+    const isLoggedIn = await checkIfLoggedIn()
+    if (isLoggedIn) {
+      await addManyAddByRSSPodcastFeedUrlsOnServer(urls)
+    } else {
+      await addManyAddByRSSPodcastFeedUrlsLocally(urls)
+    }
+
+    await getAuthUserInfo()
+    await getSubscribedPodcasts()
+    
+    PVEventEmitter.emit(PV.Events.PODCAST_SUBSCRIBE_TOGGLED)
+  } catch (error) {
+    console.log('addAddByRSSPodcasts', error)
+    Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)
+  }
 }
 
 export const addAddByRSSPodcast = async (feedUrl: string, skipBadParse = false) => {

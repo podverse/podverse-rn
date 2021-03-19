@@ -15,7 +15,7 @@
 		<windowleft>117</windowleft>
 		<windowbottom>473</windowbottom>
 		<windowright>479</windowright>
-		</head>
+	</head>
 	<body>
 		<outline text="Macintosh" title="Macintosh">
 			<outline text="Companies" title="Companies">
@@ -28,7 +28,6 @@
 			<outline xmlUrl="https://podcastfeeds.nbcnews.com/mommy-doomsday" type="rss" text="Mommy Doomsday" />
 			<outline xmlUrl="https://www.theguardian.com/music/series/reverberate/podcast.xml" type="rss" text="Reverberate" />
 			<outline type="rss" text="Scientifically..." xmlUrl="https://podcasts.files.bbci.co.uk/p07shc5x.rss" />
-			<outline text="MacZealots" title="MacZealots">
         </outline>
         <outline type="rss" text="How I Built This with Guy Raz text" title="How I Built This with Guy Raz" xmlUrl="https://feeds.npr.org/510313/podcast.xml" htmlUrl="https://www.npr.org/podcasts/510313/how-i-built-this"/>
         <outline type="rss" text="Other Life text" title="Other Life" xmlUrl="https://feeds.transistor.fm/other-life" htmlUrl="https://otherlife.transistor.fm/"/>

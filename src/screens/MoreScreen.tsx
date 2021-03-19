@@ -11,7 +11,7 @@ import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { logoutUser } from '../state/actions/auth'
 import { core, getMembershipTextStyle, table } from '../styles'
-import { addAddByRSSPodcast } from '../state/actions/parser'
+import { addAddByRSSPodcast, addAddByRSSPodcasts } from '../state/actions/parser'
 
 type Props = {
   navigation?: any
@@ -110,10 +110,7 @@ export class MoreScreen extends React.Component<Props, State> {
             }
 
             const rssArr = parseOpmlFile(result, true)
-
-            for (const rssUrl of rssArr) {
-              await addAddByRSSPodcast(rssUrl, true)
-            }
+            await addAddByRSSPodcasts(rssArr)
 
             this.setState({ isLoading: false }, () => {
               this.props.navigation.navigate(PV.RouteNames.PodcastsScreen)

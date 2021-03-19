@@ -7738,7 +7738,7 @@ react-native-dialog@5.6.0:
     prop-types "^15.7.2"
     react-native-modal "^9.0.0"
 
-react-native-document-picker@^5.0.1:
+react-native-document-picker@5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-5.0.1.tgz#382ecea8c5dbb83c2fd33fb63f30b079adab2d2a"
   integrity sha512-HDYAkwFoYzHeXR+cIfJi4/JIuE4DHduOh9eoKIEhCvQjXUQ0xvS6qX9x0AXa+b0FF8iUfFKY2DqFhw9gNcIhUg==
@@ -7933,10 +7933,10 @@ react-native-text-ticker@^1.11.0:
   resolved "https://registry.yarnpkg.com/react-native-text-ticker/-/react-native-text-ticker-1.11.0.tgz#d1711613b4cd6f0ffa0a7335f8de172f5e63190f"
   integrity sha512-+lDX7HO4qTPjMhHDzLYU39YWMqqrud2rs3aBdXnJPqcsWbEpOabogNuYQB6XZ/oqe2kSgqOJlVEH4nbNd1+AwQ==
 
-react-native-track-player@1.2.3:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-1.2.3.tgz#cd147b1fc93a229c49392abd7b37f087285e673a"
-  integrity sha512-h8HWOC9Zo54hen0ttlGzdofEMH38CPfT6+UWAcbEoHFgGcvxsRlJAgubdtM3QWwWZh20Q2zvQA8+8/l4Bu0yfA==
+react-native-track-player@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-1.2.6.tgz#f934b64d59cbe0241a5008ae97caa0bcf2354983"
+  integrity sha512-o8jSJVIj7WVnsGIFgVeCyS0+Y75t2dkvhgA33jAid/JxLEoaL33KhDZ/O3FIB0VhovfTNqrOAw5zFzUYDkBC8A==
 
 react-native-typescript-transformer@1.2.13:
   version "1.2.13"
