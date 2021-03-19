@@ -16,6 +16,7 @@ import {
   PVTrackPlayer,
   setClipHasEnded,
   setPlaybackPositionWhenDurationIsAvailable,
+  setRateWithLatestPlaybackSpeed,
   updateUserPlaybackPosition
 } from './player'
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
@@ -153,8 +154,7 @@ module.exports = async () => {
           if (Platform.OS === 'ios') {
             if (x.state === PVTrackPlayer.STATE_PLAYING) {
               updateUserPlaybackPosition()
-              const rate = await getPlaybackSpeed()
-              PVTrackPlayer.setRate(rate)
+              await setRateWithLatestPlaybackSpeed()
             } else if (x.state === PVTrackPlayer.STATE_PAUSED || PVTrackPlayer.STATE_STOPPED) {
               updateUserPlaybackPosition()
             }
@@ -200,13 +200,19 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('remote-pause', () => {
-    PVTrackPlayer.pause()
-    updateUserPlaybackPosition()
+    (async () => {
+      await setRateWithLatestPlaybackSpeed()
+      PVTrackPlayer.pause()
+      updateUserPlaybackPosition()
+    })()
   })
 
   PVTrackPlayer.addEventListener('remote-play', () => {
-    PVTrackPlayer.play()
-    updateUserPlaybackPosition()
+    (async () => {
+      await setRateWithLatestPlaybackSpeed()
+      PVTrackPlayer.play()
+      updateUserPlaybackPosition()
+    })()
   })
 
   PVTrackPlayer.addEventListener('remote-seek', (data) => {
