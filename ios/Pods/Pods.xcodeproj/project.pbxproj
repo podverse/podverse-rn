@@ -15041,6 +15041,32 @@
 			};
 			name = Release;
 		};
+		6A4B4740FFDFEF9B322C499B8142BF71 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 287B6DCDBACE4BB8ECCC3DBE77EE273C /* react-native-track-player.release.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				GCC_PREFIX_HEADER = "Target Support Files/react-native-track-player/react-native-track-player-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MODULEMAP_FILE = "Headers/Public/react_native_track_player/react-native-track-player.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = react_native_track_player;
+				PRODUCT_NAME = "react-native-track-player";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		6A53EC41C0C561E7A4F255FC2A47AF86 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 797182A21354D716847097B320A92061 /* React-Core.debug.xcconfig */;
@@ -15200,9 +15226,9 @@
 			};
 			name = Release;
 		};
-		7B7A71F0521B0B2B566CCA233726374E /* Release */ = {
+		7AC4B6BB2FE211706A0E42C063C675D6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 287B6DCDBACE4BB8ECCC3DBE77EE273C /* react-native-track-player.release.xcconfig */;
+			baseConfigurationReference = 98300A4FA6AE19C3606D94B288A20688 /* react-native-track-player.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -15220,11 +15246,10 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 			};
-			name = Release;
+			name = Debug;
 		};
 		7CAC24EDDB129F7AFF93EC99496D6C28 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -15790,31 +15815,6 @@
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		AFECD1D7C490AEFE1653DF5424325B78 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 98300A4FA6AE19C3606D94B288A20688 /* react-native-track-player.debug.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/react-native-track-player/react-native-track-player-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				MODULEMAP_FILE = "Headers/Public/react_native_track_player/react-native-track-player.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = react_native_track_player;
-				PRODUCT_NAME = "react-native-track-player";
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -17203,8 +17203,8 @@
 		5B5CDB26AA2ADCB3A9C8F62FE0A2834E /* Build configuration list for PBXNativeTarget "react-native-track-player" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AFECD1D7C490AEFE1653DF5424325B78 /* Debug */,
-				7B7A71F0521B0B2B566CCA233726374E /* Release */,
+				7AC4B6BB2FE211706A0E42C063C675D6 /* Debug */,
+				6A4B4740FFDFEF9B322C499B8142BF71 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
