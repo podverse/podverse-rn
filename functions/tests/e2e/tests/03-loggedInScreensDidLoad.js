@@ -1,5 +1,5 @@
 const { getDriver } = require('../driver/driverFactory')
-const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, elementWaitFor, elementCheckIfPresent, elementCheckIfNotPresent, goBackKey, noTestLabel } = require('../driver/helpers/elements')
+const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, elementWaitFor, elementCheckIfPresent, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
 const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
 
@@ -7,7 +7,7 @@ const test03_loggedInScreensDidLoadTests = async () => {
   console.log('03_loggedInScreensDidLoad')
   const driver = getDriver()
 
-  // Log In Premium
+    // Log In Premium
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
   await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
@@ -33,7 +33,7 @@ const test03_loggedInScreensDidLoadTests = async () => {
   await elementCheckIfPresent('my_library_screen_downloads_cell')
   await elementCheckIfPresent('my_library_screen_queue_cell')
   await elementCheckIfPresent('my_library_screen_history_cell')
-  // await elementCheckIfPresent('my_library_screen_my_clips_cell')
+  await elementCheckIfPresent('my_library_screen_my_clips_cell')
   await elementCheckIfPresent('my_library_screen_my_profile_cell')
   await elementCheckIfPresent('my_library_screen_playlists_cell')
   await elementCheckIfPresent('my_library_screen_profiles_cell')
@@ -54,9 +54,12 @@ const test03_loggedInScreensDidLoadTests = async () => {
   await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
   await elementByIdToggle('settings_screen_offline_mode_switch')
   
+    //Custom API and Web domains
+
   // await performScroll(scrollDownKey, 2)
   // await elementByIdToggle('settings_screen_custom_api_domain_switch', noTestLabel, goBackKey)
   // await elementByIdToggle('settings_screen_custom_web_domain_switch', noTestLabel, goBackKey)
+
   await driver.back()
   await driver.back()
 
@@ -66,6 +69,8 @@ const test03_loggedInScreensDidLoadTests = async () => {
   await driver.sleep(5000)
   await elementWaitFor('search_screen_podcast_item_0')
   await elementByIdAndClickAndTest('search_screen_nav_dismiss_icon', 'podcasts_screen_view')
+
+    // Log Out
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
   await elementByIdAndClickAndTest('more_screen_log_out_cell', 'more_screen_view')

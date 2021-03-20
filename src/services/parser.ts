@@ -332,6 +332,21 @@ const addParsedAddByRSSPodcastLocally = async (parsedPodcast: any) => {
   await setAddByRSSPodcastsLocally(rssPodcasts)
 }
 
+export const addManyAddByRSSPodcastFeedUrlsOnServer = async (addByRSSPodcastFeedUrls: string[]) => {
+  const bearerToken = await getBearerToken()
+  const response = await request({
+    endpoint: '/add-by-rss-podcast-feed-url/add-many',
+    method: 'POST',
+    headers: {
+      Authorization: bearerToken,
+      'Content-Type': 'application/json'
+    },
+    body: { addByRSSPodcastFeedUrls }
+  })
+
+  return response && response.data
+}
+
 export const addAddByRSSPodcastFeedUrlOnServer = async (addByRSSPodcastFeedUrl: string) => {
   const bearerToken = await getBearerToken()
   const response = await request({

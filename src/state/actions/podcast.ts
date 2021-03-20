@@ -22,7 +22,9 @@ export const combineWithAddByRSSPodcasts = async () => {
   })
 }
 
-export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
+export const getSubscribedPodcasts = async () => {
+  const globalState = getGlobal() 
+  const subscribedPodcastIds = globalState.session.userInfo.subscribedPodcastIds || []
   const data = await getSubscribedPodcastsService(subscribedPodcastIds)
   const subscribedPodcasts = data[0] || []
   const subscribedPodcastsTotalCount = data[1] || 0

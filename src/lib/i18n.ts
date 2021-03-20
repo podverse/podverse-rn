@@ -7,13 +7,13 @@ const translationGetters = {
 }
 
 class Internationalizer {
+  static instance: Internationalizer
   translationConfig: any
   
   constructor(translationConfig: any) {
     this.translationConfig = translationConfig
   }
   
-  static instance: Internationalizer
   
   static initializeTranslator = () => {
     if (!Internationalizer.instance) {

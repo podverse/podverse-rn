@@ -9,10 +9,11 @@ const { test07_podcastScreenFull } = require('./tests/07-podcastScreenFull')
 const { test08_episodesScreenFull } = require('./tests/08-episodesScreenFull')
 const { test09_clipsScreenFull } = require('./tests/09-clipsScreenFull')
 const { test10_settingsScreenFull } = require('./tests/10-settingsScreenFull')
-
-
-
-
+const { test11_queueScreenEditFeature } = require('./tests/11-queueScreenEditFeature')
+const { test12_historyScreenEditFeature } = require('./tests/12-historyScreenEditFeature')
+const { test13_myProfileScreenFull } = require('./tests/13-myProfileScreenFull')
+const { test14_profilesScreenFull } = require('./tests/14-profilesScreenFull')
+const { test15_playlistsScreenFull } = require('./tests/15-playlistsScreenFull')
 
 const { createDriver } = require('./driver/driverFactory')
 const { getTestCapabilities } = require('./utils/getTestCapabilities')
@@ -46,9 +47,13 @@ const runTests = async (customCapabilities) => {
     await test06_nonLoggedInMediaPlayer()
     await test07_podcastScreenFull()
     await test08_episodesScreenFull()
-    // await test09_clipsScreenFull()
+    await test09_clipsScreenFull()
     await test10_settingsScreenFull()
-
+    await test11_queueScreenEditFeature()
+    await test12_historyScreenEditFeature()
+    await test13_myProfileScreenFull()
+    await test14_profilesScreenFull()
+    await test15_playlistsScreenFull()
 
 
 

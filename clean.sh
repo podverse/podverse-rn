@@ -1,10 +1,10 @@
 ######################################################################################
 #  Script requirements:
 #  - Yarn (brew install yarn)
-#  - VSCode to be launchable from the command line. 
-#        To enable this option open VSCode
-#        Hit 'CMD + SHIFT + P'
-#        Search and select "Shell Command: Install 'code' command in PATH"
+#  - VSCode to be launchable from the command line. (If ran from terminal outside VSCode)
+#    To enable this option open VSCode
+#    Hit 'CMD + SHIFT + P'
+#    Search and select "Shell Command: Install 'code' command in PATH"
 #  
 ######################################################################################
 
@@ -31,4 +31,4 @@ rm -rf ./ios/build 2>/dev/null
 
 echo "Clearing node modules..."
 
-rm -rf node_modules/ && yarn cache clean && yarn && code . && clear
+rm -rf node_modules/ && yarn cache clean && yarn install && npx pod-install && code . && clear

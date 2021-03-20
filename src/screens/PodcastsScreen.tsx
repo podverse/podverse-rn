@@ -744,9 +744,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _querySubscribedPodcasts = async () => {
-    const { session } = this.global
-    const { userInfo } = session
-    await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
+    await getSubscribedPodcasts()
   }
 
   _queryAllPodcasts = async (sort: string | null, page = 1) => {

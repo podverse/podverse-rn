@@ -3,6 +3,7 @@ import { setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
 import { getDownloadedPodcast, removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { hasValidNetworkConnection } from '../lib/network'
+import { requestAppStoreReviewForSubscribedPodcast } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
 import { getAutoDownloadEpisodes, removeAutoDownloadSetting } from './autoDownloads'
@@ -55,7 +56,20 @@ const setSubscribedPodcasts = async (subscribedPodcasts: any[]) => {
   }
 }
 
-export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
+export const findPodcastsByFeedUrls = async (feedUrls: string[]) => {
+  const response = await request({
+    endpoint: '/podcast/find-by-feed-urls',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: { feedUrls }
+  })
+
+  return response && response.data
+}
+
+export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
 
   const query = {
@@ -125,8 +139,8 @@ export const combineWithAddByRSSPodcasts = async () => {
   const subscribedPodcastsResults = await getSubscribedPodcastsLocally()
   const addByRSSPodcastsResults = await getAddByRSSPodcastsLocally()
   const subscribedPodcasts =
-    subscribedPodcastsResults[0] && Array.isArray(subscribedPodcastsResults[0]) && subscribedPodcastsResults[0] || []
-  const addByRSSPodcasts = Array.isArray(addByRSSPodcastsResults) && addByRSSPodcastsResults || []
+    subscribedPodcastsResults[0] && Array.isArray(subscribedPodcastsResults[0]) ? subscribedPodcastsResults[0] : []
+  const addByRSSPodcasts = Array.isArray(addByRSSPodcastsResults) ? addByRSSPodcastsResults : []
   const combinedPodcasts = [...subscribedPodcasts, ...addByRSSPodcasts]
   return sortPodcastArrayAlphabetically(combinedPodcasts)
 }
@@ -156,6 +170,15 @@ export const searchPodcasts = async (title?: string, author?: string) => {
   })
 
   return response && response.data
+}
+
+export const subscribeToPodcastIfNotAlready = async (alreadySubscribedPodcasts: any, podcastId: string) => {
+  if (
+    Array.isArray(alreadySubscribedPodcasts) &&
+    !alreadySubscribedPodcasts.some((alreadySubscribedPodcast) => alreadySubscribedPodcast.id === podcastId)
+  ) {
+    await toggleSubscribeToPodcast(podcastId)
+  }
 }
 
 export const toggleSubscribeToPodcast = async (id: string) => {
@@ -203,6 +226,8 @@ export const toggleSubscribeToPodcast = async (id: string) => {
   if (isUnsubscribing) {
     await removeDownloadedPodcast(id)
     await setDownloadedEpisodeLimit(id)
+  } else {
+    requestAppStoreReviewForSubscribedPodcast()
   }
 
   return items
