@@ -35,11 +35,15 @@ export const SubscribeButton = (props: Props) => {
       <View>
         {isSubscribing && (
           <View style={styles.activityIndicator}>
-            <ActivityIndicator animating={true} color={globalTheme.activityIndicator.color} size='small' />
+            <ActivityIndicator animating color={globalTheme.activityIndicator.color} size='small' />
           </View>
         )}
         {!isSubscribing && (
-          <Text testID={testId} style={styles.buttonText}>
+          <Text
+            fontSizeLargerScale={PV.Fonts.largeSizes.md}
+            fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+            testID={testId}
+            style={styles.buttonText}>
             {buttonTitle.toUpperCase()}
           </Text>
         )}
@@ -58,10 +62,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 5,
+    paddingHorizontal: 5,
     borderColor: PV.Colors.brandBlueLight,
     borderWidth: 1,
     borderRadius: 15,
-    width: 120,
+    minWidth: 120,
     minHeight: 32,
     backgroundColor: PV.Colors.velvet
   },

@@ -9,7 +9,7 @@ import { setNowPlayingItem } from './userNowPlayingItem'
 export const addOrUpdateHistoryItem = async (
   item: NowPlayingItem,
   playbackPosition: number,
-  mediaFileDuration: number,
+  mediaFileDuration?: number | null,
   forceUpdateOrderDate?: boolean,
   skipSetNowPlaying?: boolean
 ) => {
@@ -58,14 +58,14 @@ export const getHistoryItemIndexInfoForEpisode = (episodeId: string) => {
 export const addOrUpdateHistoryItemLocally = async (
   item: NowPlayingItem,
   playbackPosition: number,
-  mediaFileDuration: number
+  mediaFileDuration?: number | null,
 ) => {
   playbackPosition = Math.floor(playbackPosition) || 0
-  mediaFileDuration = Math.floor(mediaFileDuration) || 0
+  mediaFileDuration = mediaFileDuration && Math.floor(mediaFileDuration) || 0
   const results = await getHistoryItemsLocally()
   const { userHistoryItems } = results
   const filteredItems = filterItemFromHistoryItems(userHistoryItems, item)
-  item.episodeDuration = mediaFileDuration
+  item.episodeDuration = mediaFileDuration ? mediaFileDuration : item.episodeDuration
   item.userPlaybackPosition = playbackPosition
   filteredItems.unshift(item)
   await setAllHistoryItemsLocally(filteredItems)
@@ -74,7 +74,7 @@ export const addOrUpdateHistoryItemLocally = async (
 const addOrUpdateHistoryItemOnServer = async (
   nowPlayingItem: NowPlayingItem,
   playbackPosition: number,
-  mediaFileDuration: number,
+  mediaFileDuration?: number | null,
   forceUpdateOrderDate?: boolean
 ) => {
   playbackPosition = Math.floor(playbackPosition) || 0
@@ -99,7 +99,7 @@ const addOrUpdateHistoryItemOnServer = async (
       episodeId: clipId ? null : episodeId,
       mediaRefId: clipId,
       forceUpdateOrderDate: forceUpdateOrderDate === false ? false : true,
-      mediaFileDuration: Math.floor(mediaFileDuration) || 0,
+      ...(mediaFileDuration || mediaFileDuration === 0 ? { mediaFileDuration: Math.floor(mediaFileDuration) } : {}),
       userPlaybackPosition: playbackPosition
     },
     opts: { credentials: 'include' }
@@ -202,6 +202,11 @@ const generateHistoryItemsIndex = (historyItems: any[]) => {
     }
   }
   return historyItemsIndex
+}
+
+export const getHistoryItemEpisodeFromIndexLocally = async (episodeId: string) => {
+  const historyItemsIndex = await getHistoryItemsIndexLocally()
+  return historyItemsIndex.episodes[episodeId]
 }
 
 export const getHistoryItemsIndexLocally = async () => {

@@ -29,19 +29,6 @@ type State = {
 let lastPropsValue = ''
 
 export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, State> {
-  static getDerivedStateFromProps(nextProps: any, prevState: any) {
-    const { value } = nextProps
-    const { position } = prevState
-    if (value && value !== position && value !== lastPropsValue) {
-      lastPropsValue = value
-      return {
-        ...prevState,
-        position: value
-      }
-    }
-    return prevState
-  }
-
   isAnimationRunning: boolean
 
   constructor(props: Props) {
@@ -56,6 +43,19 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
       slidingPosition: null,
       clipColorAnimation: new Animated.Value(0)
     }
+  }
+
+  static getDerivedStateFromProps(nextProps: any, prevState: any) {
+    const { value } = nextProps
+    const { position } = prevState
+    if (value && value !== position && value !== lastPropsValue) {
+      lastPropsValue = value
+      return {
+        ...prevState,
+        position: value
+      }
+    }
+    return prevState
   }
 
   _handleAnimation = () => {
@@ -116,8 +116,11 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
           maximumValue={isLoading ? 0 : 1}
           minimumTrackTintColor={PV.Colors.skyDark}
           maximumTrackTintColor={PV.Colors.gray}
-          onSlidingComplete={async (value) => {
-            const position = value * duration
+          onSlidingStart={(val) => {
+            this.setState({ slidingPosition: val * duration })
+          }}
+          onSlidingComplete={async (val) => {
+            const position = val * duration
 
             this.setState({
               position,
@@ -125,13 +128,13 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
             })
 
             await setPlaybackPosition(position)
-            await loadChapterPlaybackInfo()
+            loadChapterPlaybackInfo()
           }}
-          onValueChange={(value) =>
-            this.setState({ slidingPosition: value * duration }, () => {
-              setTimeout(() => this.setState({ slidingPosition: null }), 500)
-            })
-          }
+          onValueChange={(value) => {
+            if (this.state.slidingPosition) {
+              this.setState({ slidingPosition: value * duration })
+            }
+          }}
           thumbStyle={sliderStyles.thumbStyle}
           thumbTintColor={PV.Colors.white}
           value={isLoading ? 0 : value}
@@ -140,13 +143,13 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
           <View style={sliderStyles.timeRow}>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
               style={sliderStyles.time}>
               {convertSecToHHMMSS(slidingPosition || position)}
             </Text>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
               style={sliderStyles.time}>
               {duration > 0 ? convertSecToHHMMSS(duration) : '--:--'}
             </Text>
@@ -155,19 +158,19 @@ export class PlayerProgressBar extends PVTrackPlayer.ProgressComponent<Props, St
           <View style={sliderStyles.timeRow}>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
               style={sliderStyles.time}>
               {'--:--'}
             </Text>
             <Text
               fontSizeLargerScale={PV.Fonts.largeSizes.lg}
-              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
               style={sliderStyles.time}>
               {'--:--'}
             </Text>
           </View>
         )}
-        {!!clipStartTimePosition && (
+        {!!clipStartTimePosition && !!clipEndTime && (
           <Animated.View
             style={[
               sliderStyles.clipBarStyle,

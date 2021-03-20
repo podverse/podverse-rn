@@ -22,6 +22,7 @@ export interface GlobalTheme {
   dropdownButtonIcon?: any
   dropdownButtonText?: any
   flatList?: any
+  headerText?: any
   inputContainerText?: any
   link?: any
   makeClipPlayerControlsWrapper?: any
@@ -83,7 +84,6 @@ export interface InitialState {
   downloadedEpisodeLimitCount: number
   downloadedEpisodeLimitDefault: number | null
   downloadedPodcasts: any[]
-  addByRSSPodcasts: any[]
   censorNSFWText?: boolean
   customAPIDomain?: string
   customAPIDomainEnabled?: boolean
@@ -101,6 +101,7 @@ export interface InitialState {
     }
   }
   player: {
+    backupDuration?: number
     currentChapter: any
     currentChapters: any
     hasErrored: boolean

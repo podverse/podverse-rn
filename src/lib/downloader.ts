@@ -13,8 +13,8 @@ import {
   safelyUnwrapNestedVariable
 } from './utility'
 
-export const BackgroundDownloader = async () => {
-  const userAgent = await getAppUserAgent()
+export const BackgroundDownloader = () => {
+  const userAgent = getAppUserAgent()
   RNBackgroundDownloader.setHeaders({
     'user-agent': userAgent
   })
@@ -53,7 +53,7 @@ export const deleteDownloadedEpisode = async (episode: any) => {
   }
 }
 
-const addDLTask = async (episode: any, podcast: any) =>
+const addDLTask = (episode: any, podcast: any) =>
   DownloadState.addDownloadTask({
     addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl,
     episodeDescription: episode.description,
@@ -85,7 +85,7 @@ export const downloadEpisode = async (
   const podcast = clone(origPodcast)
 
   // Updates UI immediately
-  if (!waitToAddTask) await addDLTask(episode, podcast)
+  if (!waitToAddTask) addDLTask(episode, podcast)
 
   const shouldDownload = await hasValidDownloadingConnection()
 
@@ -108,7 +108,7 @@ export const downloadEpisode = async (
   }
 
   // Updates UI only after the previous conditionals pass and it confirmed we want to download the episode
-  if (waitToAddTask) await addDLTask(episode, podcast)
+  if (waitToAddTask) addDLTask(episode, podcast)
 
   let timeout = 0
   const existingTasks = existingDownloadTasks.filter((x: any) => x.id === episode.id)
@@ -151,9 +151,9 @@ export const downloadEpisode = async (
           }
         }
       })
-      .progress(async (percent: number, bytesWritten: number, bytesTotal: number) => {
+      .progress((percent: number, bytesWritten: number, bytesTotal: number) => {
         progressLimiter
-          .schedule(async () => {
+          .schedule(() => {
             const written = convertBytesToHumanReadableString(bytesWritten)
             const total = convertBytesToHumanReadableString(bytesTotal)
             DownloadState.updateDownloadProgress(episode.id, percent, written, total)

@@ -14,19 +14,15 @@ type Props = {
   width: number
 }
 
-type State = {}
+const getTestID = () => 'media_player_carousel_chapters'
 
-const getTestID = () => {
-  return 'media_player_carousel_chapters'
-}
-
-export class MediaPlayerCarouselChapters extends React.PureComponent<Props, State> {
+export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
   constructor(props) {
     super(props)
     this.state = {}
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this._queryData()
   }
 
@@ -45,8 +41,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     })
   }
 
-  _handleMoreCancelPress = () => {
-    return new Promise((resolve, reject) => {
+  _handleMoreCancelPress = () => new Promise((resolve) => {
       setGlobal(
         {
           screenPlayer: {
@@ -57,7 +52,6 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
         resolve
       )
     })
-  }
 
   _renderItem = ({ item, index }) => {
     const { player } = this.global
@@ -72,21 +66,20 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
 
     return item && item.episode && item.episode.id ? (
       <ClipTableCell
-        item={item}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
+        item={item}
+        loadTimeStampOnPlay
+        showChapterInfo
         showPodcastInfo={false}
         testID={`${testID}_item_${index}`}
-        hideImage={true}
-        transparent={true}
+        transparent
       />
     ) : (
       <></>
     )
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
-  }
+  _ItemSeparatorComponent = () => <Divider />
 
   render() {
     const { navigation, width } = this.props
@@ -107,14 +100,14 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
     const testID = getTestID()
 
     return (
-      <View style={[styles.wrapper, { width }]} transparent={true}>
-        <TableSectionSelectors hideFilter={true} includePadding={true} selectedFilterLabel={translate('Chapters')} />
-        {isLoading || (isQuerying && <ActivityIndicator fillSpace={true} />)}
+      <View style={[styles.wrapper, { width }]} transparent>
+        <TableSectionSelectors hideFilter includePadding selectedFilterLabel={translate('Chapters')} />
+        {isLoading || (isQuerying && <ActivityIndicator fillSpace />)}
         {!isLoading && !isQuerying && currentChapters && (
           <FlatList
             data={currentChapters}
             dataTotalCount={currentChapters.length}
-            disableLeftSwipe={true}
+            disableLeftSwipe
             extraData={currentChapters}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
@@ -123,7 +116,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props, Stat
             noResultsSubMessage={noResultsSubMessage}
             renderItem={this._renderItem}
             showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
-            transparent={true}
+            transparent
           />
         )}
         <ActionSheet

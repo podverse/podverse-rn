@@ -1,6 +1,8 @@
 import { Dimensions, StyleSheet } from 'react-native'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
+import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import {
   MediaPlayerCarouselChapters,
   MediaPlayerCarouselClips,
@@ -9,12 +11,9 @@ import {
   ScrollView,
   View
 } from '.'
-import { PV } from '../resources'
 
 type Props = {
   hasChapters: boolean
-  imageHeight: number
-  imageWidth: number
   navigation: any
 }
 
@@ -42,6 +41,20 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { activeIndex } = this.state
     const animated = false
     this.scrollToActiveIndex(activeIndex, animated)
+
+    PVEventEmitter.on(PV.Events.UPDATE_PLAYER_STATE_FINISHED, this.scrollToDefaultActiveIndex)
+  }
+
+  componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.UPDATE_PLAYER_STATE_FINISHED, this.scrollToDefaultActiveIndex)
+  }
+
+  scrollToDefaultActiveIndex = () => {
+    const { player } = this.global
+    const hasChapters = player?.episode?.chaptersUrl
+    const defaultActiveIndex = hasChapters ? 2 : 1
+    const animated = false
+    this.scrollToActiveIndex(defaultActiveIndex, animated)
   }
 
   scrollToActiveIndex = (activeIndex: number, animated: boolean) => {
@@ -58,7 +71,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   onScrollEnd = ({ nativeEvent }) => {
     const { contentOffset } = nativeEvent
-    const activeIndex = contentOffset.x / screenWidth
+    const activeIndex = Math.round(contentOffset.x / screenWidth)
     this.setState({ activeIndex })
   }
 
@@ -70,7 +83,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { imageHeight, imageWidth, navigation } = this.props
+    const { navigation } = this.props
     const { activeIndex } = this.state
     const { player } = this.global
     const { episode } = player
@@ -78,26 +91,21 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const itemCount = hasChapters ? 4 : 3
 
     return (
-      <View style={styles.wrapper} transparent={true}>
+      <View style={styles.wrapper} transparent>
         <ScrollView
           bounces={false}
           decelerationRate='fast'
-          horizontal={true}
+          horizontal
           onMomentumScrollEnd={this.onScrollEnd}
           pagingEnabled={false}
           scrollViewRef={(ref: any) => (this.scrollView = ref)}
           showsHorizontalScrollIndicator={false}
           snapToInterval={screenWidth}
-          snapToStart={true}
-          transparent={true}>
+          snapToStart
+          transparent>
           <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
           {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
-          <MediaPlayerCarouselViewer
-            handlePressClipInfo={this._handlePressClipInfo}
-            imageHeight={imageHeight}
-            imageWidth={imageWidth}
-            width={screenWidth}
-          />
+          <MediaPlayerCarouselViewer handlePressClipInfo={this._handlePressClipInfo} width={screenWidth} />
           <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
         </ScrollView>
         <Dots

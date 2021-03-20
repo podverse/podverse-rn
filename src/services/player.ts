@@ -23,10 +23,64 @@ import {
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally, getHistoryItemsLocally } from './userHistoryItem'
 import { getNowPlayingItem, getNowPlayingItemLocally } from './userNowPlayingItem'
 
+
+declare module "react-native-track-player" {
+  export function getCurrentLoadedTrack(): Promise<string>;
+  export function getTrackDuration(): Promise<number>;
+  export function getTrackPosition(): Promise<number>;
+}
+
+export const PVTrackPlayer = TrackPlayer
+
+const checkServiceRunning = async (defaultReturn: any = '') => {
+  try {
+    const serviceRunning = await TrackPlayer.isServiceRunning()
+    if (!serviceRunning) {
+      throw new Error('TrackPlayer Service not running')
+    }
+  } catch (err) {
+    console.log(err.message)
+    return defaultReturn
+  }
+
+  return true
+}
+
+PVTrackPlayer.getTrackPosition = async () => {
+  const serviceRunningResult = await checkServiceRunning(0)
+  if (serviceRunningResult !== true) {
+    return serviceRunningResult
+  }
+
+  return TrackPlayer.getPosition()
+}
+
+PVTrackPlayer.getCurrentLoadedTrack = async () => {
+  const serviceRunningResult = await checkServiceRunning()
+  if (serviceRunningResult !== true) {
+    return serviceRunningResult
+  }
+
+  return TrackPlayer.getCurrentTrack()
+}
+
+PVTrackPlayer.getTrackDuration = async () => {
+  const serviceRunningResult = await checkServiceRunning(0)
+  if (serviceRunningResult !== true) {
+    return serviceRunningResult
+  }
+
+  return TrackPlayer.getDuration()
+}
+
 // TODO: setupPlayer is a promise, could this cause an async issue?
 TrackPlayer.setupPlayer({
   waitForBuffer: false
 }).then(() => {
+  updateTrackPlayerCapabilities()
+})
+
+export const updateTrackPlayerCapabilities = () => {
   TrackPlayer.updateOptions({
     capabilities: [
       TrackPlayer.CAPABILITY_JUMP_BACKWARD,
@@ -55,9 +109,7 @@ TrackPlayer.setupPlayer({
     stopWithApp: true,
     jumpInterval: PV.Player.jumpSeconds
   })
-})
-
-export const PVTrackPlayer = TrackPlayer
+}
 
 /*
   state key for android
@@ -85,21 +137,21 @@ export const handleResumeAfterClipHasEnded = async () => {
   await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
   const nowPlayingItem = await getNowPlayingItemLocally()
   const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(nowPlayingItem)
-  const playbackPosition = await PVTrackPlayer.getPosition()
-  const mediaFileDuration = await PVTrackPlayer.getDuration()
+  const playbackPosition = await PVTrackPlayer.getTrackPosition()
+  const mediaFileDuration = await PVTrackPlayer.getTrackDuration()
   await addOrUpdateHistoryItem(nowPlayingItemEpisode, playbackPosition, mediaFileDuration)
   PVEventEmitter.emit(PV.Events.PLAYER_RESUME_AFTER_CLIP_HAS_ENDED)
 }
 
 export const playerJumpBackward = async (seconds: number) => {
-  const position = await TrackPlayer.getPosition()
+  const position = await PVTrackPlayer.getTrackPosition()
   const newPosition = position - seconds
   TrackPlayer.seekTo(newPosition)
   return newPosition
 }
 
 export const playerJumpForward = async (seconds: number) => {
-  const position = await TrackPlayer.getPosition()
+  const position = await PVTrackPlayer.getTrackPosition()
   const newPosition = position + seconds
   TrackPlayer.seekTo(newPosition)
   return newPosition
@@ -116,13 +168,20 @@ export const playerPreviewEndTime = async (endTime: number) => {
   await PVTrackPlayer.seekTo(previewEndTime)
   PVTrackPlayer.play()
 
-  playerPreviewEndTimeInterval = setInterval(async () => {
-    const currentPosition = await PVTrackPlayer.getPosition()
-    if (currentPosition >= endTime) {
-      clearInterval(playerPreviewEndTimeInterval)
-      PVTrackPlayer.pause()
-    }
+  playerPreviewEndTimeInterval = setInterval(() => {
+    (async () => {
+      const currentPosition = await PVTrackPlayer.getTrackPosition()
+      if (currentPosition >= endTime) {
+        clearInterval(playerPreviewEndTimeInterval)
+        PVTrackPlayer.pause()
+      }
+    })()
   }, 500)
+}
+
+export const setRateWithLatestPlaybackSpeed = async () => {
+  const rate = await getPlaybackSpeed()
+  PVTrackPlayer.setRate(rate)
 }
 
 export const playerPreviewStartTime = async (startTime: number, endTime?: number | null) => {
@@ -132,24 +191,23 @@ export const playerPreviewStartTime = async (startTime: number, endTime?: number
 
   TrackPlayer.seekTo(startTime)
   TrackPlayer.play()
-  const rate = await getPlaybackSpeed()
-  TrackPlayer.setRate(rate)
+  await setRateWithLatestPlaybackSpeed()
 
   if (endTime) {
-    playerPreviewEndTimeInterval = setInterval(async () => {
-      const currentPosition = await PVTrackPlayer.getPosition()
-      if (currentPosition >= endTime) {
-        clearInterval(playerPreviewEndTimeInterval)
-        PVTrackPlayer.pause()
-      }
+    playerPreviewEndTimeInterval = setInterval(() => {
+      (async () => {
+        const currentPosition = await PVTrackPlayer.getTrackPosition()
+        if (currentPosition >= endTime) {
+          clearInterval(playerPreviewEndTimeInterval)
+          PVTrackPlayer.pause()
+        }
+      })()
     }, 500)
   }
 }
 
 export const setClipHasEnded = async (clipHasEnded: boolean) => {
-  if (typeof clipHasEnded === 'boolean') {
-    await AsyncStorage.setItem(PV.Keys.CLIP_HAS_ENDED, JSON.stringify(clipHasEnded))
-  }
+  await AsyncStorage.setItem(PV.Keys.CLIP_HAS_ENDED, JSON.stringify(clipHasEnded))
 }
 
 const getDownloadedFilePath = async (id: string, episodeMediaUrl: string) => {
@@ -172,12 +230,12 @@ const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
 
 export const updateUserPlaybackPosition = async (skipSetNowPlaying?: boolean) => {
   try {
-    const currentTrackId = await PVTrackPlayer.getCurrentTrack()
+    const currentTrackId = await PVTrackPlayer.getCurrentLoadedTrack()
     const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentTrackId)
 
     if (currentNowPlayingItem) {
-      const lastPosition = await TrackPlayer.getPosition()
-      const duration = await TrackPlayer.getDuration()
+      const lastPosition = await PVTrackPlayer.getTrackPosition()
+      const duration = await PVTrackPlayer.getTrackDuration()
       const forceUpdateOrderDate = false
 
       if (duration > 0 && lastPosition >= duration - 10) {
@@ -251,7 +309,7 @@ export const loadItemAndPlayTrack = async (
     await TrackPlayer.add(track)
     await syncPlayerWithQueue()
   } else {
-    const currentId = await TrackPlayer.getCurrentTrack()
+    const currentId = await PVTrackPlayer.getCurrentLoadedTrack()
     if (currentId) {
       await TrackPlayer.removeUpcomingTracks()
       const track = (await createTrack(item)) as Track
@@ -284,7 +342,7 @@ export const playNextFromQueue = async () => {
   const queueItems = await PVTrackPlayer.getQueue()
   if (queueItems && queueItems.length > 1) {
     await PVTrackPlayer.skipToNext()
-    const currentId = await PVTrackPlayer.getCurrentTrack()
+    const currentId = await PVTrackPlayer.getCurrentLoadedTrack()
     const setPlayerClipIsLoadedIfClip = true
     const item = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentId, setPlayerClipIsLoadedIfClip)
     if (item) {
@@ -380,7 +438,7 @@ export const movePlayerItemToNewPosition = async (id: string, insertBeforeId: st
         (x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id)
       )
       if (itemToMove) {
-        const track = await createTrack(itemToMove)
+        const track = await createTrack(itemToMove) as any
         await TrackPlayer.add([track], insertBeforeId)
       }
     } catch (error) {
@@ -390,7 +448,7 @@ export const movePlayerItemToNewPosition = async (id: string, insertBeforeId: st
 }
 
 export const setPlaybackPosition = async (position?: number) => {
-  const currentId = await PVTrackPlayer.getCurrentTrack()
+  const currentId = await PVTrackPlayer.getCurrentLoadedTrack()
   if (currentId && (position || position === 0 || (position && position > 0))) {
     await TrackPlayer.seekTo(position)
   }
@@ -404,42 +462,46 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
   resolveImmediately?: boolean,
   shouldPlay?: boolean
 ) => {
-  return new Promise((resolve, reject) => {
-    const interval = setInterval(async () => {
-      const duration = await TrackPlayer.getDuration()
-      const currentTrackId = await TrackPlayer.getCurrentTrack()
+  return new Promise((resolve) => {
+    const interval = setInterval(() => {
+      (async () => {
+        const duration = await PVTrackPlayer.getTrackDuration()
+        const currentTrackId = await PVTrackPlayer.getCurrentLoadedTrack()
 
-      setTimeout(() => {
-        if (interval) clearInterval(interval)
-      }, 20000)
+        setTimeout(() => {
+          if (interval) clearInterval(interval)
+        }, 20000)
 
-      if (duration && duration > 0 && (!trackId || trackId === currentTrackId) && position >= 0) {
-        clearInterval(interval)
-        await TrackPlayer.seekTo(position)
-        // Sometimes seekTo does not work right away for all episodes...
-        // to work around this bug, we set another interval to confirm the track
-        // position has been advanced into the clip time.
-        const confirmClipLoadedInterval = setInterval(async () => {
-          const currentPosition = await TrackPlayer.getPosition()
-          if (currentPosition >= position - 1) {
-            clearInterval(confirmClipLoadedInterval)
-          } else {
-            await TrackPlayer.seekTo(position)
+        if (duration && duration > 0 && (!trackId || trackId === currentTrackId) && position >= 0) {
+          clearInterval(interval)
+          await TrackPlayer.seekTo(position)
+          // Sometimes seekTo does not work right away for all episodes...
+          // to work around this bug, we set another interval to confirm the track
+          // position has been advanced into the clip time.
+          const confirmClipLoadedInterval = setInterval(() => {
+            (async () => {
+              const currentPosition = await PVTrackPlayer.getTrackPosition()
+              if (currentPosition >= position - 1) {
+                clearInterval(confirmClipLoadedInterval)
+              } else {
+                await TrackPlayer.seekTo(position)
+              }
+            })()
+          }, 500)
+
+          const shouldPlayWhenClipIsLoaded = await AsyncStorage.getItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
+
+          if (shouldPlay) {
+            await TrackPlayer.play()
+          } else if (shouldPlayWhenClipIsLoaded === 'true') {
+            AsyncStorage.removeItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
+            await TrackPlayer.play()
           }
-        }, 500)
 
-        const shouldPlayWhenClipIsLoaded = await AsyncStorage.getItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
-
-        if (shouldPlay) {
-          await TrackPlayer.play()
-        } else if (shouldPlayWhenClipIsLoaded === 'true') {
-          AsyncStorage.removeItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
-          await TrackPlayer.play()
+          resolve(null)
         }
-
-        resolve()
-      }
-      if (resolveImmediately) resolve()
+        if (resolveImmediately) resolve(null)
+      })()
     }, 500)
   })
 }

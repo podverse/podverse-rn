@@ -9,16 +9,12 @@ import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { button } from '../styles'
 
-type Props = {}
+type Props = any
 
-type State = {}
-
-export class AboutScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
-      title: translate('About brandName')
-    }
-  }
+export class AboutScreen extends React.Component<Props> {
+  static navigationOptions = () => ({
+    title: translate('About brandName')
+  })
 
   componentDidMount() {
     trackPageView('/about', 'About Screen')
@@ -48,7 +44,7 @@ export class AboutScreen extends React.Component<Props, State> {
             {translate('Team')}
           </Text>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
-            {'Mitch Downey\n\nCreon Creonopoulos\n\nGary Johnson'}
+            {'Mitch Downey\n\nCreon Creonopoulos\n\nGary Johnson\n\nKyle Downey'}
           </Text>
           <Divider style={styles.divider} />
           <Text

@@ -1,5 +1,5 @@
 import { convertNowPlayingItemToMediaRef, convertToNowPlayingItem } from 'podverse-shared'
-import { Dimensions, StyleSheet, View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import Share from 'react-native-share'
 import React, { getGlobal, setGlobal } from 'reactn'
 import {
@@ -31,61 +31,24 @@ import { addQueueItemNext } from '../services/queue'
 import { trackPageView } from '../services/tracking'
 import { getNowPlayingItem } from '../services/userNowPlayingItem'
 import { loadItemAndPlayTrack } from '../state/actions/player'
+import { loadChaptersForEpisode } from '../state/actions/playerChapters'
 import { getHistoryItems } from '../state/actions/userHistoryItem'
-import { core, navHeader } from '../styles'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
 }
 
-type State = {}
-
 const testIDPrefix = 'player_screen'
 
 let eventListenerPlayerNewEpisodeLoaded: any
+export class PlayerScreen extends React.Component<Props> {
+  constructor(props: Props) {
+    super(props)
 
-const screenHeight = Dimensions.get('screen').height
-
-/*
-  carouselTextBottomWrapper: {
-    height: 52
-  },
-  carouselTextTopWrapper: {
-    height: 48
-  },
-  playerControls: {
-    height: 202
-  },
-  pagination: {
-    height: 32
+    this.state = {}
   }
 
-  console.log('approxHeaderHeight', approxHeaderHeight)
-  console.log('screenHeight', screenHeight)
-  console.log('scrollHeight', scrollHeight)
-  console.log('subBottomHeight', subBottomHeight)
-  console.log('scrollHeightAvailable', scrollHeightAvailable)
-  console.log('imageHeightAvailable', imageHeightAvailable)
-*/
-
-const approxHeaderHeight = 44
-const scrollHeight =
-  screenHeight -
-  (navHeader.headerHeight.paddingTop +
-    approxHeaderHeight +
-    PV.Player.pagination.height +
-    PV.Player.playerControls.height)
-const subBottomHeight = PV.Player.carouselTextSubBottomWrapper.height + PV.Player.carouselTextSubBottomWrapper.marginTop
-const scrollHeightAvailable =
-  scrollHeight -
-  (PV.Player.carouselTextBottomWrapper.height + PV.Player.carouselTextTopWrapper.height + subBottomHeight)
-
-// 16 x 2 for vertical padding.
-const imagePadding = 32
-let imageHeightAvailable = scrollHeightAvailable + imagePadding
-imageHeightAvailable = imageHeightAvailable > 372 ? 372 : imageHeightAvailable
-
-export class PlayerScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const _getEpisodeId = navigation.getParam('_getEpisodeId')
     const _getMediaRefId = navigation.getParam('_getMediaRefId')
@@ -109,8 +72,6 @@ export class PlayerScreen extends React.Component<Props, State> {
               <NavMakeClipIcon
                 getInitialProgressValue={_getInitialProgressValue}
                 globalTheme={globalTheme}
-                imageHeight={imageHeightAvailable}
-                imageWidth={imageHeightAvailable}
                 navigation={navigation}
               />
               <NavAddToPlaylistIcon
@@ -122,16 +83,10 @@ export class PlayerScreen extends React.Component<Props, State> {
               <NavShareIcon globalTheme={globalTheme} handlePress={_showShareActionSheet} />
             </RNView>
           )}
-          <NavQueueIcon globalTheme={globalTheme} isTransparent={true} navigation={navigation} showBackButton={true} />
+          <NavQueueIcon globalTheme={globalTheme} isTransparent navigation={navigation} showBackButton />
         </RNView>
       )
     }
-  }
-
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {}
   }
 
   async componentDidMount() {
@@ -167,7 +122,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleNewEpisodeLoaded = async () => {
+  _handleNewEpisodeLoaded = () => {
     setTimeout(() => {
       this._handleUpdateFullEpisode()
     }, 5000)
@@ -178,7 +133,7 @@ export class PlayerScreen extends React.Component<Props, State> {
     const episode = safelyUnwrapNestedVariable(() => this.global.player.episode, {})
     const podcast = safelyUnwrapNestedVariable(() => this.global.player.episode.podcast, {})
 
-    if (hasInternetConnection && episode && episode.id && !podcast.addByRSSPodcastFeedUrl) {
+    if (hasInternetConnection && episode?.id && !podcast.addByRSSPodcastFeedUrl) {
       try {
         const fullEpisode = await getEpisode(episode.id)
         if (fullEpisode && fullEpisode.description) {
@@ -193,6 +148,8 @@ export class PlayerScreen extends React.Component<Props, State> {
         // do nothing
       }
     }
+
+    loadChaptersForEpisode(episode)
   }
 
   _initializeScreenData = () => {
@@ -250,7 +207,7 @@ export class PlayerScreen extends React.Component<Props, State> {
   }
 
   _getInitialProgressValue = async () => {
-    const initialProgressValue = await PVTrackPlayer.getPosition()
+    const initialProgressValue = await PVTrackPlayer.getTrackPosition()
     if (initialProgressValue || initialProgressValue === 0) {
       return Math.floor(initialProgressValue)
     } else {
@@ -333,13 +290,8 @@ export class PlayerScreen extends React.Component<Props, State> {
     return (
       <React.Fragment>
         <OpaqueBackground imageUrl={imageUrl}>
-          <View style={styles.view} transparent={true} {...testProps('player_screen_view')}>
-            <MediaPlayerCarousel
-              hasChapters={hasChapters}
-              imageHeight={imageHeightAvailable}
-              imageWidth={imageHeightAvailable}
-              navigation={navigation}
-            />
+          <View style={styles.view} transparent {...testProps('player_screen_view')}>
+            <MediaPlayerCarousel hasChapters={hasChapters} navigation={navigation} />
             <PlayerControls navigation={navigation} />
             <ActionSheet
               handleCancelPress={this._dismissShareActionSheet}
@@ -361,12 +313,12 @@ const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefI
     {
       key: 'podcast',
       text: translate('Podcast'),
-      onPress: async () => handleShare(podcastId, null, null)
+      onPress: () => handleShare(podcastId, null, null)
     },
     {
       key: 'episode',
       text: translate('Episode'),
-      onPress: async () => handleShare(null, episodeId, null)
+      onPress: () => handleShare(null, episodeId, null)
     }
   ]
 
@@ -374,7 +326,7 @@ const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefI
     items.push({
       key: 'clip',
       text: translate('Clip'),
-      onPress: async () => handleShare(null, null, mediaRefId)
+      onPress: () => handleShare(null, null, mediaRefId)
     })
   }
 

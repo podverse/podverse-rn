@@ -1,9 +1,9 @@
 import React from 'react'
 import { SafeAreaView, StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'
+import { testProps } from '../lib/utility'
 
 type Props = {
-  accessibilityLabel?: string
   children: any
   style?: any
   transparent?: boolean
@@ -11,6 +11,7 @@ type Props = {
 }
 
 export const PVSafeAreaView = (props: Props) => {
+  const { testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const extraStyles = []
 
@@ -20,9 +21,8 @@ export const PVSafeAreaView = (props: Props) => {
 
   return (
     <SafeAreaView
-      accessibilityLabel={props.accessibilityLabel}
       style={[styles.safeAreaView, globalTheme.view, props.style, extraStyles]}
-      testID={props.testID}>
+      {...(testID ? testProps(testID) : {})}>
       {props.children}
     </SafeAreaView>
   )

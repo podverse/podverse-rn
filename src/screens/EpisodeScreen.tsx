@@ -43,30 +43,6 @@ type State = {
 const testIDPrefix = 'episode_screen'
 
 export class EpisodeScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    const episodeId = navigation.getParam('episodeId')
-    const episodeTitle = navigation.getParam('episodeTitle')
-    const podcastTitle = navigation.getParam('podcastTitle')
-    const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
-
-    return {
-      title: translate('Episode'),
-      headerRight: () => (
-        <RNView style={core.row}>
-          {!addByRSSPodcastFeedUrl && (
-            <NavShareIcon
-              endingText={translate('shared using brandName')}
-              episodeTitle={episodeTitle}
-              podcastTitle={podcastTitle}
-              urlId={episodeId}
-              urlPath={PV.URLs.webPaths.episode}
-            />
-          )}
-          <NavSearchIcon navigation={navigation} />
-        </RNView>
-      )
-    }
-  }
 
   constructor(props: Props) {
     super(props)
@@ -103,13 +79,39 @@ export class EpisodeScreen extends React.Component<Props, State> {
     }
   }
 
-  async componentDidMount() {
+  static navigationOptions = ({ navigation }) => {
+    const episodeId = navigation.getParam('episodeId')
+    const episodeTitle = navigation.getParam('episodeTitle')
+    const podcastTitle = navigation.getParam('podcastTitle')
+    const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
+
+    return {
+      title: translate('Episode'),
+      headerRight: () => (
+        <RNView style={core.row}>
+          {!addByRSSPodcastFeedUrl && (
+            <NavShareIcon
+              endingText={translate('shared using brandName')}
+              episodeTitle={episodeTitle}
+              podcastTitle={podcastTitle}
+              urlId={episodeId}
+              urlPath={PV.URLs.webPaths.episode}
+            />
+          )}
+          <NavSearchIcon navigation={navigation} />
+        </RNView>
+      )
+    }
+  }
+
+  componentDidMount() {
     const { episode, episodeId } = this.state
     this._initializePageData()
-    const pageTitle = episode?.podcast
-      ? translate('Episode Screen - ') + episode.podcast.title + ' - ' + episode.title
-      : translate('Episode Screen - ') + translate('no info available')
-    trackPageView('/episode/' + episodeId, pageTitle)
+    const episodeTitle = episode.title ? episode.title : translate('Untitled Episode')
+    const titleToEncode = episode?.podcast
+      ? episode.podcast.title + ' - ' + episodeTitle
+      : translate('no info available')
+    trackPageView('/episode/' + episodeId, translate('Episode Screen - '), titleToEncode)
   }
 
   async _initializePageData() {
@@ -140,11 +142,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleCancelPress = () => {
-    return new Promise((resolve, reject) => {
-      this.setState({ showActionSheet: false }, resolve)
-    })
-  }
+  _handleCancelPress = () => new Promise((resolve) => {
+    this.setState({ showActionSheet: false }, resolve)
+  })
 
   _handleMorePress = (selectedItem: any) => {
     this.setState({
@@ -188,14 +188,18 @@ export class EpisodeScreen extends React.Component<Props, State> {
 
     const { mediaFileDuration, userPlaybackPosition } = getHistoryItemIndexInfoForEpisode(episodeId)
 
+    const extraHtmlScrollViewPadding = showChaptersCell || showClipsCell
+      ? styles.htmlScrollView
+      : {}
+
     return (
       <ScrollView style={styles.view} {...testProps('episode_screen_view')}>
         <EpisodeTableHeader
+          episode={episode}
           episodeDownloaded={episodeDownloaded}
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast, userPlaybackPosition))
           }
-          episode={episode}
           isLoading={isLoading}
           mediaFileDuration={mediaFileDuration}
           testID={testIDPrefix}
@@ -244,9 +248,10 @@ export class EpisodeScreen extends React.Component<Props, State> {
           </TouchableOpacity>
         )}
         <HTMLScrollView
-          html={episode?.description || ''}
+          disableScrolling
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          disableScrolling={true}
+          html={episode?.description || ''}
+          style={extraHtmlScrollViewPadding}
         />
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
@@ -268,6 +273,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   view: {
     flex: 1
+  },
+  htmlScrollView: {
+    marginVertical: 12
   },
   showNotesView: {
     margin: 8

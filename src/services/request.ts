@@ -5,7 +5,7 @@ import { PV } from '../resources'
 
 type PVRequest = {
   endpoint?: string
-  query?: {}
+  query?: any
   body?: any
   headers?: any
   method?: string
@@ -21,7 +21,7 @@ export const request = async (req: PVRequest) => {
     })
     .join('&')
 
-  const userAgent = await getAppUserAgent()
+  const userAgent = getAppUserAgent()
   const urlsApi = await PV.URLs.api()
 
   const url = `${urlsApi.baseUrl}${endpoint}?${queryString}`

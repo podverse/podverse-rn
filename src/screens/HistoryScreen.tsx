@@ -36,6 +36,24 @@ type State = {
 const testIDPrefix = 'history_screen'
 
 export class HistoryScreen extends React.Component<Props, State> {
+  shouldLoad: boolean
+
+  constructor(props: Props) {
+    super(props)
+
+    this.shouldLoad = true
+
+    this.state = {
+      endOfResultsReached: false,
+      isLoading: true,
+      isLoadingMore: false,
+      isRemoving: false,
+      isTransparent: !!props.navigation.getParam('isTransparent'),
+      queryPage: 1,
+      viewType: props.navigation.getParam('viewType')
+    }
+  }
+
   static navigationOptions = ({ navigation }) => {
     const { globalTheme } = getGlobal()
     const isTransparent = !!navigation.getParam('isTransparent')
@@ -81,20 +99,6 @@ export class HistoryScreen extends React.Component<Props, State> {
     }
   }
 
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {
-      endOfResultsReached: false,
-      isLoading: true,
-      isLoadingMore: false,
-      isRemoving: false,
-      isTransparent: !!props.navigation.getParam('isTransparent'),
-      queryPage: 1,
-      viewType: props.navigation.getParam('viewType')
-    }
-  }
-
   async componentDidMount() {
     const { navigation } = this.props
 
@@ -124,14 +128,9 @@ export class HistoryScreen extends React.Component<Props, State> {
   }
 
   _handlePlayItem = async (item: NowPlayingItem) => {
-    const isDarkMode = this.global.globalTheme === darkTheme
     try {
-      const { navigation } = this.props
-      this.setState({ isLoading: true }, async () => {
-        const shouldPlay = true
-        await loadItemAndPlayTrack(item, shouldPlay)
-        navigation.navigate(PV.RouteNames.PlayerScreen, { isDarkMode })
-      })
+      const shouldPlay = true
+      await loadItemAndPlayTrack(item, shouldPlay)
     } catch (error) {
       // Error Loading and playing item
     }
@@ -141,55 +140,58 @@ export class HistoryScreen extends React.Component<Props, State> {
     const { isEditing, isTransparent } = this.state
 
     return (
-      <TouchableWithoutFeedback
-        onPress={() => {
-          if (!isEditing) {
-            this._handlePlayItem(item)
-          }
-        }}
-        {...testProps(`${testIDPrefix}_history_item_${index}`)}>
-        <View transparent={isTransparent}>
-          <QueueTableCell
-            clipEndTime={item.clipEndTime}
-            clipStartTime={item.clipStartTime}
-            {...(item.clipTitle ? { clipTitle: item.clipTitle } : {})}
-            {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
-            {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
-            handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
-            podcastImageUrl={item.podcastImageUrl}
-            {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
-            showRemoveButton={isEditing}
-            testID={`${testIDPrefix}_history_item_${index}`}
-            transparent={isTransparent}
-          />
-        </View>
-      </TouchableWithoutFeedback>
+      <View transparent={isTransparent}>
+        <QueueTableCell
+          clipEndTime={item.clipEndTime}
+          clipStartTime={item.clipStartTime}
+          {...(item.clipTitle ? { clipTitle: item.clipTitle } : {})}
+          {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
+          {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
+          handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
+          onPress={() => {
+            if (!isEditing) {
+              this._handlePlayItem(item)
+            }
+          }}
+          podcastImageUrl={item.podcastImageUrl}
+          {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
+          showRemoveButton={isEditing}
+          testID={`${testIDPrefix}_history_item_${index}`}
+          transparent={isTransparent}
+        />
+      </View>
     )
   }
 
-  _handleRemoveHistoryItemPress = async (item: NowPlayingItem) => {
-    this.setState({ isRemoving: true }, async () => {
-      try {
-        await removeHistoryItem(item)
-      } catch (error) {
-        //
-      }
-      this.setState({ isRemoving: false })
+  _handleRemoveHistoryItemPress = (item: NowPlayingItem) => {
+    this.setState({ isRemoving: true }, () => {
+      (async () => {
+        try {
+          await removeHistoryItem(item)
+        } catch (error) {
+          //
+        }
+        this.setState({ isRemoving: false })
+      })()
     })
   }
 
   _onEndReached = ({ distanceFromEnd }) => {
-    const { endOfResultsReached, isLoadingMore, queryPage = 1 } = this.state
-    if (!endOfResultsReached && !isLoadingMore) {
+    const { endOfResultsReached, queryPage = 1 } = this.state
+    if (!endOfResultsReached && this.shouldLoad) {
       if (distanceFromEnd > -1) {
+        this.shouldLoad = false
+
         this.setState(
           {
             isLoadingMore: true
           },
-          async () => {
-            const nextPage = queryPage + 1
-            const newState = await this._queryData(nextPage)
-            this.setState(newState)
+          () => {
+            (async () => {
+              const nextPage = queryPage + 1
+              const newState = await this._queryData(nextPage)
+              this.setState(newState)
+            })()
           }
         )
       }
@@ -207,10 +209,10 @@ export class HistoryScreen extends React.Component<Props, State> {
           <FlatList
             data={historyItems}
             dataTotalCount={historyItems.length}
-            disableLeftSwipe={true}
+            disableLeftSwipe
             extraData={historyItems}
             isLoadingMore={isLoadingMore}
-            keyExtractor={(item: any, index: number) => index}
+            keyExtractor={(item: any, index: number) => `${index}`}
             noResultsMessage={translate('No history items found')}
             onEndReached={this._onEndReached}
             renderItem={this._renderHistoryItem}
@@ -230,7 +232,7 @@ export class HistoryScreen extends React.Component<Props, State> {
     }
   }
 
-  _queryData = async (page: number = 1) => {
+  _queryData = async (page = 1) => {
     const { historyItemsCount, historyItems = [] } = this.global.session.userInfo
     const newState = {
       isLoading: false,
@@ -241,8 +243,10 @@ export class HistoryScreen extends React.Component<Props, State> {
       const newHistoryItems = await getHistoryItems(page || 1, historyItems)
       newState.endOfResultsReached = newHistoryItems.length >= historyItemsCount
       newState.queryPage = page
+      this.shouldLoad = true
       return newState
     } catch (error) {
+      this.shouldLoad = true
       return newState
     }
   }

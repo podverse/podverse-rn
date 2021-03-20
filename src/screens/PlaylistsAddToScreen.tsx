@@ -35,8 +35,20 @@ type State = {
 const testIDPrefix = 'playlists_add_to_screen'
 
 export class PlaylistsAddToScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    return {
+  constructor(props: Props) {
+    super(props)
+    const { navigation } = props
+    const { isLoggedIn } = this.global.session
+    this.state = {
+      episodeId: navigation.getParam('episodeId'),
+      isLoading: true,
+      mediaRefId: navigation.getParam('mediaRefId')
+    }
+
+    navigation.setParams({ isLoggedIn })
+  }
+
+  static navigationOptions = ({ navigation }) => ({
       title: translate('Add to Playlist'),
       headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
       headerRight: () => (
@@ -50,21 +62,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
           )}
         </RNView>
       )
-    }
-  }
-
-  constructor(props: Props) {
-    super(props)
-    const { navigation } = props
-    const { isLoggedIn } = this.global.session
-    this.state = {
-      episodeId: navigation.getParam('episodeId'),
-      isLoading: true,
-      mediaRefId: navigation.getParam('mediaRefId')
-    }
-
-    navigation.setParams({ isLoggedIn })
-  }
+    })
 
   async componentDidMount() {
     this.props.navigation.setParams({
@@ -89,24 +87,26 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
         isLoading: true,
         showNewPlaylistDialog: false
       },
-      async () => {
-        const { newPlaylistTitle } = this.state
-
-        try {
-          await createPlaylist({ title: newPlaylistTitle }, this.global)
-        } catch (error) {
-          if (error.response) {
-            Alert.alert(
-              PV.Alerts.SOMETHING_WENT_WRONG.title,
-              PV.Alerts.SOMETHING_WENT_WRONG.message,
-              PV.Alerts.BUTTONS.OK
-            )
+      () => {
+        (async () => {
+          const { newPlaylistTitle } = this.state
+  
+          try {
+            await createPlaylist({ title: newPlaylistTitle }, this.global)
+          } catch (error) {
+            if (error.response) {
+              Alert.alert(
+                PV.Alerts.SOMETHING_WENT_WRONG.title,
+                PV.Alerts.SOMETHING_WENT_WRONG.message,
+                PV.Alerts.BUTTONS.OK
+              )
+            }
           }
-        }
-
-        this.setState({
-          isLoading: false
-        })
+  
+          this.setState({
+            isLoading: false
+          })
+        })()
       }
     )
   }
@@ -137,9 +137,11 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
               {
                 isSavingId: item.id
               },
-              async () => {
-                await addOrRemovePlaylistItem(item.id, episodeId, mediaRefId)
-                this.setState({ isSavingId: '' })
+              () => {
+                (async () => {
+                  await addOrRemovePlaylistItem(item.id, episodeId, mediaRefId)
+                  this.setState({ isSavingId: '' })
+                })()
               }
             )
           } catch (error) {
@@ -148,7 +150,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
           }
         }}
         testID={`${testIDPrefix}_playlist_item_${index}`}
-        title={item.title}
+        title={item.title || translate('Untitled Playlist')}
       />
     )
   }
@@ -173,12 +175,12 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
         )}
         {isLoggedIn && (
           <View style={styles.view}>
-            {isLoading && <ActivityIndicator fillSpace={true} />}
+            {isLoading && <ActivityIndicator fillSpace />}
             {!isLoading && myPlaylists && (
               <FlatList
                 data={myPlaylists}
                 dataTotalCount={myPlaylists.length}
-                disableLeftSwipe={true}
+                disableLeftSwipe
                 extraData={myPlaylists}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
                 keyExtractor={(item: any, index: number) => `myPlaylists_${index}`}

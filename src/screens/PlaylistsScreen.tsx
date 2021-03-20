@@ -1,11 +1,14 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
-import { ActivityIndicator, Divider, FlatList, MessageWithAction, PlaylistTableCell, Text, View } from '../components'
+import { ActivityIndicator, Divider, FlatList, MessageWithAction, PlaylistTableCell,
+  SwipeRowBack, TableSectionSelectors, View } from '../components'
 import { translate } from '../lib/i18n'
-import { hasValidNetworkConnection } from '../lib/network'
+import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
+import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
+import { deletePlaylist, toggleSubscribeToPlaylist } from '../state/actions/playlist'
 import { getLoggedInUserPlaylistsCombined } from '../state/actions/user'
 
 type Props = {
@@ -23,12 +26,6 @@ type State = {
 const testIDPrefix = 'playlists_screen'
 
 export class PlaylistsScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
-    return {
-      title: translate('Playlists')
-    }
-  }
-
   constructor(props: Props) {
     super(props)
     const { isLoggedIn } = this.global.session
@@ -38,6 +35,10 @@ export class PlaylistsScreen extends React.Component<Props, State> {
       isLoadingMore: false
     }
   }
+
+  static navigationOptions = () => ({
+      title: translate('Playlists')
+    })
 
   async componentDidMount() {
     const { navigation } = this.props
@@ -50,19 +51,29 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     const playlistId = navigation.getParam('navToPlaylistWithId')
 
     if (playlistId) {
-      navigation.navigate(PV.RouteNames.MorePlaylistScreen, { playlistId })
+      navigation.navigate(PV.RouteNames.PlaylistScreen, { playlistId })
     }
+
+    PVEventEmitter.on(PV.Events.PLAYLISTS_UPDATED, this._refreshSections)
 
     trackPageView('/playlists', 'Playlists Screen')
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
+  componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYLISTS_UPDATED, this._refreshSections)
   }
+
+  _refreshSections = () => {
+    const sections = this.generatePlaylistsSections()
+    this.setState({ sections })
+  }
+
+  _ItemSeparatorComponent = () => <Divider />
 
   _renderPlaylistItem = ({ index, item, section }) => {
     const ownerName = (item.owner && item.owner.name) || translate('anonymous')
-    const isSubscribed = section.value === PV.Filters._sectionSubscribedPlaylistsKey
+    const sectionKey = section.value
+    const isSubscribed = sectionKey === PV.Filters._sectionSubscribedPlaylistsKey
 
     return (
       <PlaylistTableCell
@@ -73,8 +84,8 @@ export class PlaylistsScreen extends React.Component<Props, State> {
             playlist: item
           })
         }
-        testID={`${testIDPrefix}_playlist_item_${index}`}
-        title={item.title}
+        testID={`${testIDPrefix}_playlist_${sectionKey}_item_${index}`}
+        title={item.title || translate('Untitled Playlist')}
       />
     )
   }
@@ -107,31 +118,90 @@ export class PlaylistsScreen extends React.Component<Props, State> {
     return sections
   }
 
+  _renderHiddenItem = ({ item, index, section }, rowMap) => {
+    const { isRemoving } = this.state
+    const buttonText =
+      section.value === PV.Filters._sectionMyPlaylistsKey ? translate('Delete') : translate('Unsubscribe')
+      
+    const onPress = section.value === PV.Filters._sectionMyPlaylistsKey
+      ? this._handleHiddenItemPressDelete
+      : this._handleHiddenItemPressUnsubscribe
+
+    return (
+      <SwipeRowBack
+        isLoading={isRemoving}
+        onPress={() => onPress(item.id, rowMap)}
+        testID={`${testIDPrefix}_playlist_item_${index}`}
+        text={buttonText}
+      />
+    )
+  }
+
+  _handleHiddenItemPressUnsubscribe = async (id: string, rowMap: any) => {
+    const wasAlerted = await alertIfNoNetworkConnection('subscribe to playlist')
+    if (wasAlerted) return
+
+    this.setState({ isRemoving: true }, () => {
+      (async () => {
+        try {
+          await toggleSubscribeToPlaylist(id)
+          const row = rowMap[id]
+          row?.closeRow()
+          const sections = this.generatePlaylistsSections()
+          this.setState({ isRemoving: false, sections })
+        } catch (error) {
+          this.setState({ isRemoving: false })
+        }
+      })()
+    })
+  }
+
+  _handleHiddenItemPressDelete = async (id: string, rowMap: any) => {
+    const wasAlerted = await alertIfNoNetworkConnection('delete playlist')
+    if (wasAlerted) return
+
+    this.setState({ isRemoving: true }, () => {
+      (async () => {
+        try {
+          await deletePlaylist(id)
+          const row = rowMap[id]
+          row?.closeRow()
+          const sections = this.generatePlaylistsSections()
+          this.setState({ isRemoving: false, sections })
+        } catch (error) {
+          this.setState({ isRemoving: false })
+        }
+      })()
+    })
+  }
+
   render() {
     const { isLoading, isLoadingMore, sections, showNoInternetConnectionMessage } = this.state
-    const { offlineModeEnabled } = this.global
-
+    const { globalTheme, offlineModeEnabled } = this.global
     const showOfflineMessage = offlineModeEnabled
 
     return (
       <View style={styles.view} {...testProps('playlists_screen_view')}>
         <View style={styles.view}>
-          {isLoading && <ActivityIndicator fillSpace={true} />}
+          {isLoading && <ActivityIndicator fillSpace />}
           {!isLoading && this.global.session.isLoggedIn && (
             <FlatList
-              disableLeftSwipe={true}
+              disableLeftSwipe={false}
+              extraData={sections}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
               keyExtractor={(item: any) => item.id}
               noResultsMessage={translate('No playlists found')}
+              renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderPlaylistItem}
-              renderSectionHeader={({ section }) => {
-                return (
-                  <View style={styles.sectionItemWrapper}>
-                    <Text style={styles.sectionItemText}>{section.title}</Text>
-                  </View>
-                )
-              }}
+              renderSectionHeader={({ section }) => (
+                <TableSectionSelectors
+                  hideFilter
+                  includePadding
+                  selectedFilterLabel={section.title}
+                  textStyle={globalTheme.headerText}
+                />
+              )}
               sections={sections}
               showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
             />

@@ -12,6 +12,7 @@ import { setPlaybackPosition } from '../services/player'
 
 type Props = {
   disableScrolling?: boolean
+  disableTextSelectable?: boolean
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
   html: string
@@ -19,7 +20,7 @@ type Props = {
 }
 
 export const HTMLScrollView = (props: Props) => {
-  const { disableScrolling, fontSizeLargerScale, fontSizeLargestScale, html, style } = props
+  const { disableScrolling, disableTextSelectable, fontSizeLargerScale, fontSizeLargestScale, html, style } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const [censorNSFWText] = useGlobal('censorNSFWText')
@@ -58,6 +59,7 @@ export const HTMLScrollView = (props: Props) => {
           }
         }}
         tagsStyles={customHTMLTagStyles}
+        textSelectable={!disableTextSelectable}
       />
     </ScrollView>
   )
@@ -106,7 +108,8 @@ const customHTMLTagStyles = {
     fontSize: PV.Fonts.sizes.lg
   },
   a: {
-    fontSize: PV.Fonts.sizes.lg
+    fontSize: PV.Fonts.sizes.lg,
+    color: PV.Colors.skyLight
   },
   ul: {
     marginBottom: 0,
@@ -131,7 +134,7 @@ const styles = StyleSheet.create({
   html: {
     backgroundColor: 'transparent',
     marginHorizontal: 8,
-    marginVertical: 12
+    marginBottom: 12
   },
   scrollView: {
     backgroundColor: 'transparent',

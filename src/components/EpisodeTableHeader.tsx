@@ -1,11 +1,10 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
-import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { ActivityIndicator, FastImage, IndicatorDownload, Text } from './'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
+import { ActivityIndicator, FastImage, IndicatorDownload, Text } from './'
 
 type Props = {
   episode: any | null
@@ -43,14 +42,10 @@ export const EpisodeTableHeader = (props: Props) => {
   const podcastTitle = episode?.podcast?.title
   if (!podcastTitle) episodeTitle = translate('Untitled Podcast')
 
-  const [fontScaleMode] = useGlobal('fontScaleMode')
-
-  const titleNumberOfLines = [PV.Fonts.fontScale.larger, PV.Fonts.fontScale.largest].includes(fontScaleMode) ? 1 : 2
-
   return (
     <View style={styles.view}>
       {isLoading ? (
-        <ActivityIndicator fillSpace={true} />
+        <ActivityIndicator fillSpace />
       ) : (
         <View style={styles.wrapper}>
           {isNotFound ? (
@@ -69,22 +64,18 @@ export const EpisodeTableHeader = (props: Props) => {
               <View style={styles.textWrapper}>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  isSecondary={true}
+                  isSecondary
                   style={styles.podcastTitle}
                   testID={`${testID}_podcast_title`}>
                   {podcastTitle.trim()}
                 </Text>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={titleNumberOfLines}
-                  style={styles.title}
-                  testID={`${testID}_title`}>
+                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title} testID={`${testID}_title`}>
                   {episodeTitle.trim()}
                 </Text>
                 <View style={styles.textWrapperBottomRow}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                    isSecondary={true}
+                    isSecondary
                     style={styles.pubDate}
                     testID={`${testID}_pub_date`}>
                     {readableDate(pubDate)}
@@ -95,8 +86,9 @@ export const EpisodeTableHeader = (props: Props) => {
               <TimeRemainingWidget
                 item={episode}
                 handleMorePress={handleMorePress}
-                style={{ marginVertical: 20 }}
                 mediaFileDuration={mediaFileDuration}
+                style={{ marginVertical: 20 }}
+                testID={testID}
                 userPlaybackPosition={userPlaybackPosition}
               />
             </View>
@@ -109,7 +101,7 @@ export const EpisodeTableHeader = (props: Props) => {
 
 const styles = StyleSheet.create({
   view: {
-    marginHorizontal: 15,
+    marginHorizontal: 8,
     marginTop: 20
   },
   wrapper: {},

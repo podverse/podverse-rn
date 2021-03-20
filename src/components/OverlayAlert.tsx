@@ -5,17 +5,16 @@ import { translate } from '../lib/i18n'
 import { getMembershipStatus, readableDate, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 
-type Props = {}
 type State = {
   hideKey: string | null
   wrapperStyles: [any?, any?]
   alertTitle: string
-  alertTitleStyle: {}
+  alertTitleStyle: any
   linkAction: any
   showAlert: boolean
 }
 
-export const OverlayAlert = (props: Props) => {
+export const OverlayAlert = () => {
   const [globalTheme] = useGlobal('globalTheme')
   const { overlayAlertLink: overlayAlertLinkStyles } = globalTheme
   const [state, setState] = useState<State>({

@@ -16,6 +16,7 @@ import {
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
+import { navigateToEpisodeScreenWithItem } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
 import { safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -43,25 +44,6 @@ type State = {
 const testIDPrefix = 'playlist_screen'
 
 export class PlaylistScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    const playlistId = navigation.getParam('playlistId')
-    const playlistTitle = navigation.getParam('playlistTitle')
-
-    return {
-      title: translate('Playlist'),
-      headerRight: () => (
-        <RNView style={core.row}>
-          <NavShareIcon
-            endingText={translate('shared using brandName')}
-            playlistTitle={playlistTitle}
-            urlId={playlistId}
-            urlPath={PV.URLs.webPaths.playlist}
-          />
-          <NavSearchIcon navigation={navigation} />
-        </RNView>
-      )
-    } as NavigationStackOptions
-  }
 
   constructor(props: Props) {
     super(props)
@@ -71,7 +53,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
     )
     const playlist = this.props.navigation.getParam('playlist')
     const playlistId = (playlist && playlist.id) || this.props.navigation.getParam('playlistId')
-    const isSubscribed = subscribedPlaylistIds.some((x: string) => playlistId)
+    const isSubscribed = subscribedPlaylistIds.some((x: string) => x === playlistId)
 
     if (playlist && playlist.id) {
       this.props.navigation.setParams({ playlistId: playlist.id })
@@ -97,13 +79,33 @@ export class PlaylistScreen extends React.Component<Props, State> {
     })
   }
 
-  async componentDidMount() {
+  static navigationOptions = ({ navigation }) => {
+    const playlistId = navigation.getParam('playlistId')
+    const playlistTitle = navigation.getParam('playlistTitle') || translate('Untitled Playlist')
+
+    return {
+      title: translate('Playlist'),
+      headerRight: () => (
+        <RNView style={core.row}>
+          <NavShareIcon
+            endingText={translate('shared using brandName')}
+            playlistTitle={playlistTitle}
+            urlId={playlistId}
+            urlPath={PV.URLs.webPaths.playlist}
+          />
+          <NavSearchIcon navigation={navigation} />
+        </RNView>
+      )
+    } as NavigationStackOptions
+  }
+
+  componentDidMount() {
     const { playlistId } = this.state
     this._initializePageData()
     trackPageView('/playlist/' + playlistId, 'Playlist Screen')
   }
 
-  async _initializePageData() {
+  _initializePageData() {
     const playlistId = this.props.navigation.getParam('playlistId') || this.state.playlistId
 
     this.setState(
@@ -112,7 +114,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
         isLoading: true,
         playlistId
       },
-      async () => {
+      () => {
         setGlobal(
           {
             flatListData: [],
@@ -132,17 +134,16 @@ export class PlaylistScreen extends React.Component<Props, State> {
     )
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
-  }
+  _ItemSeparatorComponent = () => <Divider />
 
   _renderItem = ({ item, index }) => {
+    const { navigation } = this.props
     if (item.startTime) {
       return item.episode && item.episode.podcast ? (
         <ClipTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
-          showEpisodeInfo={true}
-          showPodcastInfo={true}
+          showEpisodeInfo
+          showPodcastInfo
           testID={`${testIDPrefix}_clip_item_${index}`}
           item={item}
         />
@@ -156,13 +157,11 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <EpisodeTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null, userPlaybackPosition))}
           handleNavigationPress={() =>
-            this.props.navigation.navigate(PV.RouteNames.MoreEpisodeScreen, {
-              episode: item
-            })
+            navigateToEpisodeScreenWithItem(navigation, convertToNowPlayingItem(item, null, null, userPlaybackPosition))
           }
           item={item}
           mediaFileDuration={mediaFileDuration}
-          showPodcastInfo={true}
+          showPodcastInfo
           testID={`${testIDPrefix}_episode_item_${index}`}
           userPlaybackPosition={userPlaybackPosition}
         />
@@ -180,25 +179,25 @@ export class PlaylistScreen extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection('subscribe to playlist')
     if (wasAlerted) return
 
-    this.setState({ isSubscribing: true }, async () => {
-      try {
-        const subscribedPlaylistIds = await toggleSubscribeToPlaylist(id)
-        const isSubscribed = subscribedPlaylistIds.some((x: string) => x === id)
-        this.setState({
-          isSubscribed,
-          isSubscribing: false
-        })
-      } catch (error) {
-        this.setState({ isSubscribing: false })
-      }
+    this.setState({ isSubscribing: true }, () => {
+      (async () => {
+        try {
+          const subscribedPlaylistIds = await toggleSubscribeToPlaylist(id)
+          const isSubscribed = subscribedPlaylistIds.some((x: string) => x === id)
+          this.setState({
+            isSubscribed,
+            isSubscribing: false
+          })
+        } catch (error) {
+          this.setState({ isSubscribing: false })
+        }
+      })()
     })
   }
 
-  _handleCancelPress = () => {
-    return new Promise((resolve, reject) => {
-      this.setState({ showActionSheet: false }, resolve)
-    })
-  }
+  _handleCancelPress = () => new Promise((resolve) => {
+    this.setState({ showActionSheet: false }, resolve)
+  })
 
   _handleMorePress = (selectedItem: any) => {
     this.setState({
@@ -229,12 +228,14 @@ export class PlaylistScreen extends React.Component<Props, State> {
     const playlist = screenPlaylist.playlist ? screenPlaylist.playlist : navigation.getParam('playlist')
     const flatListData = screenPlaylist.flatListData || []
     const flatListDataTotalCount = screenPlaylist.flatListDataTotalCount || 0
-    const isLoggedInUserPlaylist = (playlist && playlist.owner && playlist.owner.id) === session.userInfo.id
-
+    const isLoggedInUserPlaylist = playlist?.owner?.id === session.userInfo.id
+    const ownerName = playlist?.owner?.name || translate('anonymous')
+    const playlistTitle = playlist?.title || translate('Untitled Playlist')
+    
     return (
       <View style={styles.view} {...testProps('playlist_screen_view')}>
         <PlaylistTableHeader
-          createdBy={isLoggedInUserPlaylist && playlist && playlist.owner ? playlist.owner.name : null}
+          createdBy={ownerName}
           handleEditPress={isLoggedInUserPlaylist ? this._handleEditPress : null}
           handleToggleSubscribe={isLoggedInUserPlaylist ? null : () => this._handleToggleSubscribe(playlistId)}
           id={playlistId}
@@ -245,14 +246,14 @@ export class PlaylistScreen extends React.Component<Props, State> {
           itemCount={playlist && playlist.itemCount}
           lastUpdated={playlist && playlist.updatedAt}
           testID={testIDPrefix}
-          title={playlist && playlist.title}
+          title={playlistTitle}
         />
-        {isLoading && <ActivityIndicator fillSpace={true} />}
+        {isLoading && <ActivityIndicator fillSpace />}
         {!isLoading && flatListData && (
           <FlatList
             data={flatListData}
             dataTotalCount={flatListDataTotalCount}
-            disableLeftSwipe={true}
+            disableLeftSwipe
             extraData={flatListData}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}

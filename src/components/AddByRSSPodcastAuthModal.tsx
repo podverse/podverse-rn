@@ -48,26 +48,28 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
     clearAddByRSSPodcastAuthModalState()
   }
 
-  login = async () => {
-    this.setState({ isLoading: true }, async () => {
-      try {
-        const { navigation } = this.props
-        const { parser } = this.global
-        const { feedUrl } = parser.addByRSSPodcastAuthModal
-        const { password, username } = this.state
-        const credentials = `${username}:${password}`
-        const addByRSSSucceeded = await addAddByRSSPodcastWithCredentials(feedUrl, credentials)
-        this.setState({ isLoading: false })
-
-        if (addByRSSSucceeded) {
-          const podcast = await getAddByRSSPodcastLocally(feedUrl)
-          clearAddByRSSPodcastAuthModalState()
-          navigateToPodcastScreenWithItem(navigation, podcast)
+  login = () => {
+    this.setState({ isLoading: true }, () => {
+      (async () => {
+        try {
+          const { navigation } = this.props
+          const { parser } = this.global
+          const { feedUrl } = parser.addByRSSPodcastAuthModal
+          const { password, username } = this.state
+          const credentials = `${username}:${password}`
+          const addByRSSSucceeded = await addAddByRSSPodcastWithCredentials(feedUrl, credentials)
+          this.setState({ isLoading: false })
+  
+          if (addByRSSSucceeded) {
+            const podcast = await getAddByRSSPodcastLocally(feedUrl)
+            clearAddByRSSPodcastAuthModalState()
+            navigateToPodcastScreenWithItem(navigation, podcast)
+          }
+        } catch (error) {
+          console.log('_handleSavePodcastByRSSURL', error)
+          this.setState({ isLoading: false })
         }
-      } catch (error) {
-        console.log('_handleSavePodcastByRSSURL', error)
-        this.setState({ isLoading: false })
-      }
+      })()
     })
   }
 
@@ -104,7 +106,7 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
         : [styles.switchOptionText]
 
     return (
-      <Modal transparent={true}>
+      <Modal transparent>
         <View style={styles.view}>
           <KeyboardAvoidingView
             behavior='position'
@@ -136,7 +138,7 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
                 this.secondTextInput = input
               }}
               returnKeyType='done'
-              secureTextEntry={true}
+              secureTextEntry
               testID={`${testIDPrefix}_password`}
               value={password}
               underlineColorAndroid='transparent'
@@ -150,7 +152,7 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
                   onPress={this.login}
                   {...testProps(`${testIDPrefix}_submit`)}>
                   {isLoading ? (
-                    <ActivityIndicator animating={true} color={PV.Colors.gray} size='small' />
+                    <ActivityIndicator animating color={PV.Colors.gray} size='small' />
                   ) : (
                     <Text style={signInButtonTextStyle}>{translate('Login')}</Text>
                   )}
@@ -161,7 +163,7 @@ export class AddByRSSPodcastAuthModal extends React.Component<Props, State> {
               key='cancel'
               onPress={this.handleDismiss}
               style={[switchOptionTextStyle, { marginTop: 0, width: '100%' }]}
-              {...testProps(`${testIDPrefix}_cancel`)}>
+              testID={`${testIDPrefix}_cancel`}>
               {translate('Cancel')}
             </Text>
           </KeyboardAvoidingView>

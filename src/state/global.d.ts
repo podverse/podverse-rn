@@ -1,5 +1,5 @@
 import 'reactn'
-import { GlobalTheme, InitialState, UserInfo } from '../resources/Interfaces'
+import { GlobalTheme, UserInfo } from '../resources/Interfaces'
 
 declare module 'reactn/default' {
   export interface State {
@@ -14,7 +14,6 @@ declare module 'reactn/default' {
     downloadedEpisodeLimitCount: number
     downloadedEpisodeLimitDefault: number | null
     downloadedPodcasts: any[]
-    addByRSSPodcasts: any[]
     offlineModeEnabled: any
     overlayAlert: {
       shouldShowAlert: boolean
@@ -25,6 +24,7 @@ declare module 'reactn/default' {
       }
     }
     player: {
+      backupDuration?: number
       currentChapter: any
       currentChapters: any
       hasErrored: boolean

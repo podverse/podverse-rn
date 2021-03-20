@@ -56,7 +56,20 @@ const setSubscribedPodcasts = async (subscribedPodcasts: any[]) => {
   }
 }
 
-export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
+export const findPodcastsByFeedUrls = async (feedUrls: string[]) => {
+  const response = await request({
+    endpoint: '/podcast/find-by-feed-urls',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: { feedUrls }
+  })
+
+  return response && response.data
+}
+
+export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
   const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
 
   const query = {
@@ -90,17 +103,19 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
 
       // Wait for app to initialize. Without this setTimeout, then when getSubscribedPodcasts is called in
       // PodcastsScreen _initializeScreenData, then downloadEpisode will not successfully update global state
-      setTimeout(async () => {
-        for (const episode of autoDownloadEpisodes[0]) {
-          const podcast = {
-            id: episode.podcast_id,
-            imageUrl: episode.podcast_shrunkImageUrl || episode.podcast_imageUrl,
-            title: episode.podcast_title
+      setTimeout(() => {
+        (async () => {
+          for (const episode of autoDownloadEpisodes[0]) {
+            const podcast = {
+              id: episode?.podcast?.id,
+              imageUrl: episode?.podcast?.shrunkImageUrl || episode?.podcast?.imageUrl,
+              title: episode?.podcast?.title
+            }
+            const restart = false
+            const waitToAddTask = true
+            await downloadEpisode(episode, podcast, restart, waitToAddTask)
           }
-          const restart = false
-          const waitToAddTask = true
-          await downloadEpisode(episode, podcast, restart, waitToAddTask)
-        }
+        })()
       }, 3000)
 
       await setSubscribedPodcasts(subscribedPodcasts)
@@ -119,13 +134,14 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: [string]) => {
     return [combinedPodcasts, combinedPodcasts.length]
   }
 }
-export const combineWithAddByRSSPodcasts = async () => {
-  // Combine the AddByRSSPodcast in with the subscribed podcast data, then alphabetize array
-  const subscribedPodcasts = await getSubscribedPodcastsLocally()
-  const addByRSSPodcasts = await getAddByRSSPodcastsLocally()
-  // @ts-ignore
-  const combinedPodcasts = [...subscribedPodcasts[0], ...addByRSSPodcasts]
 
+export const combineWithAddByRSSPodcasts = async () => {
+  const subscribedPodcastsResults = await getSubscribedPodcastsLocally()
+  const addByRSSPodcastsResults = await getAddByRSSPodcastsLocally()
+  const subscribedPodcasts =
+    subscribedPodcastsResults[0] && Array.isArray(subscribedPodcastsResults[0]) && subscribedPodcastsResults[0] || []
+  const addByRSSPodcasts = Array.isArray(addByRSSPodcastsResults) && addByRSSPodcastsResults || []
+  const combinedPodcasts = [...subscribedPodcasts, ...addByRSSPodcasts]
   return sortPodcastArrayAlphabetically(combinedPodcasts)
 }
 
@@ -154,6 +170,14 @@ export const searchPodcasts = async (title?: string, author?: string) => {
   })
 
   return response && response.data
+}
+
+export const subscribeToPodcastIfNotAlready = async (alreadySubscribedPodcasts: any, podcastId: string) => {
+  if (Array.isArray(alreadySubscribedPodcasts) && !alreadySubscribedPodcasts.some(
+    alreadySubscribedPodcast => alreadySubscribedPodcast.id === podcastId)
+  ) {
+    await toggleSubscribeToPodcast(podcastId)
+  }
 }
 
 export const toggleSubscribeToPodcast = async (id: string) => {
@@ -232,6 +256,8 @@ const toggleSubscribeToPodcastLocally = async (id: string) => {
 }
 
 const toggleSubscribeToPodcastOnServer = async (id: string) => {
+  await toggleSubscribeToPodcastLocally(id)
+
   const bearerToken = await getBearerToken()
   const response = await request({
     endpoint: `/podcast/toggle-subscribe/${id}`,

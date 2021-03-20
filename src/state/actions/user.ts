@@ -8,7 +8,7 @@ import {
   updateLoggedInUser as updateLoggedInUserService
 } from '../../services/user'
 
-export const getPublicUsersByQuery = async (userIds: string, page: number = 1) => {
+export const getPublicUsersByQuery = async (userIds: string, page = 1) => {
   const results = await getPublicUsersByQueryService({
     page,
     userIds

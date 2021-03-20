@@ -211,7 +211,7 @@ const removeAddByRSSPodcastCredentials = async (feedUrl: string) => {
 }
 
 export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string) => {
-  const userAgent = await getAppUserAgent()
+  const userAgent = getAppUserAgent()
 
   const Authorization = credentials ? `Basic ${btoa(credentials)}` : ''
 
@@ -330,6 +330,21 @@ const addParsedAddByRSSPodcastLocally = async (parsedPodcast: any) => {
     rssPodcasts.push(parsedPodcast)
   }
   await setAddByRSSPodcastsLocally(rssPodcasts)
+}
+
+export const addManyAddByRSSPodcastFeedUrlsOnServer = async (addByRSSPodcastFeedUrls: string[]) => {
+  const bearerToken = await getBearerToken()
+  const response = await request({
+    endpoint: '/add-by-rss-podcast-feed-url/add-many',
+    method: 'POST',
+    headers: {
+      Authorization: bearerToken,
+      'Content-Type': 'application/json'
+    },
+    body: { addByRSSPodcastFeedUrls }
+  })
+
+  return response && response.data
 }
 
 export const addAddByRSSPodcastFeedUrlOnServer = async (addByRSSPodcastFeedUrl: string) => {

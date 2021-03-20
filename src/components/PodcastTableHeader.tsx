@@ -1,10 +1,11 @@
 import { StyleSheet, Switch } from 'react-native'
 import React, { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
-import { ActivityIndicator, FastImage, SettingsButton, SubscribeButton, Text, View } from './'
 import { IndicatorDownload } from './IndicatorDownload'
+import { ActivityIndicator, FastImage, SettingsButton, SubscribeButton, Text, View } from './'
 
 type Props = {
   autoDownloadOn?: boolean
@@ -44,7 +45,7 @@ export const PodcastTableHeader = (props: Props) => {
     <View style={core.row}>
       {isLoading && (
         <View style={[styles.wrapper, core.view]}>
-          <ActivityIndicator fillSpace={true} />
+          <ActivityIndicator fillSpace />
         </View>
       )}
       {!isLoading && !isNotFound && (
@@ -59,7 +60,10 @@ export const PodcastTableHeader = (props: Props) => {
                 {podcastTitle}
               </Text>
               {isSubscribed && (
-                <SettingsButton handleToggleSettings={handleToggleSettings} showCheckmark={showSettings} />
+                <SettingsButton
+                  handleToggleSettings={handleToggleSettings}
+                  showCheckmark={showSettings}
+                  testID={`${testID}_settings`} />
               )}
             </View>
             <View style={styles.contentWrapperBottom}>
@@ -73,16 +77,17 @@ export const PodcastTableHeader = (props: Props) => {
                 <View style={styles.autoDownloadContainer}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.xs}
-                    isSecondary={true}
+                    isSecondary
                     style={styles.autoDownloadText}>
                     {translate('Auto')}
                   </Text>
                   <IndicatorDownload style={{ marginLeft: 6 }} />
                   <Switch
                     onValueChange={handleToggleAutoDownload}
-                    value={autoDownloadOn}
                     style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }], marginLeft: 5 }}
                     trackColor={{ true: PV.Colors.brandBlueLight, false: PV.Colors.grayLightest }}
+                    {...(testID ? testProps(`${testID}_auto_dl_switch`) : {})}
+                    value={autoDownloadOn}
                   />
                 </View>
               )}

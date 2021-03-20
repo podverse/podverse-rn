@@ -37,7 +37,7 @@ export const handleStatusSuccessful = async () => {
   await getAuthUserInfo()
 }
 
-export const handleStatusPending = async () => {
+export const handleStatusPending = () => {
   const globalState = getGlobal()
 
   setGlobal({
@@ -53,7 +53,7 @@ export const handleStatusPending = async () => {
   })
 }
 
-export const handleStatusCancel = async () => {
+export const handleStatusCancel = () => {
   const globalState = getGlobal()
 
   setGlobal({
@@ -69,7 +69,7 @@ export const handleStatusCancel = async () => {
   })
 }
 
-export const showPurchaseSomethingWentWrongError = async () => {
+export const showPurchaseSomethingWentWrongError = () => {
   const globalState = getGlobal()
 
   setGlobal({

@@ -1,14 +1,14 @@
 import React from 'react'
 import RNPickerSelect from 'react-native-picker-select'
 import { useGlobal } from 'reactn'
-import { Icon, Text, View } from '.'
 import { PV } from '../resources'
+import { Icon, Text, View } from '.'
 
 export const DropdownButtonSelect = (props: any) => {
   const { helpText, items, label, onValueChange, placeholder, testID, value, wrapperStyle } = props
   const [globalTheme] = useGlobal('globalTheme')
   return (
-    <View style={[styles.dropdownWrapper, wrapperStyle]} transparent={true}>
+    <View style={[styles.dropdownWrapper, wrapperStyle]} transparent>
       <Text numberOfLines={3} style={styles.dropdownHelpText}>
         {helpText}
       </Text>
@@ -65,7 +65,6 @@ const styles = {
     paddingRight: 16
   },
   dropdownHelpText: {
-    flex: 0,
     fontSize: PV.Fonts.sizes.tiny,
     maxWidth: '60%',
     flexWrap: 'wrap'

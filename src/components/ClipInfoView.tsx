@@ -22,9 +22,7 @@ type Props = {
   title?: string
 }
 
-type State = {}
-
-export class ClipInfoView extends React.PureComponent<Props, State> {
+export class ClipInfoView extends React.PureComponent<Props> {
   _navToProfileScreen = () => {
     const { navigation, ownerId, ownerName } = this.props
     const user = {
@@ -40,7 +38,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
 
   _handleEditPress = async () => {
     const { isPublic, navigation } = this.props
-    const initialProgressValue = await PVTrackPlayer.getPosition()
+    const initialProgressValue = await PVTrackPlayer.getTrackPosition()
     const isLoggedIn = safelyUnwrapNestedVariable(() => this.global.session.isLoggedIn, false)
     const globalTheme = safelyUnwrapNestedVariable(() => this.global.globalTheme, {})
 
@@ -78,7 +76,7 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
         {isLoading && <ActivityIndicator />}
         {!isLoading && (
           <Fragment>
-            <TableSectionSelectors hideFilter={true} selectedFilterLabel={sectionHeaderTitle} />
+            <TableSectionSelectors hideFilter selectedFilterLabel={sectionHeaderTitle} />
             <View style={core.row}>
               <View style={styles.topTextWrapper}>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>
@@ -119,7 +117,10 @@ export class ClipInfoView extends React.PureComponent<Props, State> {
               </View>
             )}
             {!isOfficialChapter && (
-              <TextLink onPress={restartNowPlayingItemClip} style={styles.replayClip}>
+              <TextLink
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                onPress={restartNowPlayingItemClip}
+                style={styles.replayClip}>
                 {translate('Replay Clip')}
               </TextLink>
             )}
@@ -153,6 +154,7 @@ const styles = StyleSheet.create({
     fontSize: PV.Fonts.sizes.md
   },
   time: {
+    color: PV.Colors.skyLight,
     fontSize: PV.Fonts.sizes.md,
     marginTop: 8
   },

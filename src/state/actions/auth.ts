@@ -3,7 +3,8 @@ import RNSecureKeyStore from 'react-native-secure-key-store'
 import { getGlobal, setGlobal } from 'reactn'
 import { safelyUnwrapNestedVariable, shouldShowMembershipAlert } from '../../lib/utility'
 import { PV } from '../../resources'
-import { getAuthenticatedUserInfo, getAuthenticatedUserInfoLocally, login, signUp } from '../../services/auth'
+import { getAuthenticatedUserInfo, getAuthenticatedUserInfoLocally as getAuthenticatedUserInfoLocallyService,
+  login, signUp } from '../../services/auth'
 import { setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
 import { setAllQueueItemsLocally } from '../../services/queue'
 import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
@@ -39,31 +40,35 @@ export const getAuthUserInfo = async () => {
 
     return isLoggedIn
   } catch (error) {
-    console.log('getAuthUserInfo action', error)
-
     try {
-      // If an error happens, try to get the same data from local storage.
-      const results = await getAuthenticatedUserInfoLocally()
-      const userInfo = results[0]
-      const isLoggedIn = results[1]
-      const shouldShowAlert = shouldShowMembershipAlert(userInfo)
-      const globalState = getGlobal()
-      setGlobal({
-        session: {
-          userInfo,
-          isLoggedIn
-        },
-        overlayAlert: {
-          ...globalState.overlayAlert,
-          showAlert: shouldShowAlert
-        }
-      })
-
+      console.log('getAuthUserInfo action', error)
+      const isLoggedIn = await getAuthenticatedUserInfoLocally()
       return isLoggedIn
     } catch (error) {
       throw error
     }
   }
+}
+
+export const getAuthenticatedUserInfoLocally = async () => {
+  // If an error happens, try to get the same data from local storage.
+  const results = await getAuthenticatedUserInfoLocallyService()
+  const userInfo = results[0]
+  const isLoggedIn = results[1]
+  const shouldShowAlert = shouldShowMembershipAlert(userInfo)
+  const globalState = getGlobal()
+  setGlobal({
+    session: {
+      userInfo,
+      isLoggedIn
+    },
+    overlayAlert: {
+      ...globalState.overlayAlert,
+      showAlert: shouldShowAlert
+    }
+  })
+
+  return isLoggedIn
 }
 
 export const askToSyncWithNowPlayingItem = async () => {
@@ -72,9 +77,10 @@ export const askToSyncWithNowPlayingItem = async () => {
 
   if (serverNowPlayingItem) {
     if (
-      !localNowPlayingItem ||
+      (!localNowPlayingItem ||
       (localNowPlayingItem.clipId && localNowPlayingItem.clipId !== serverNowPlayingItem.clipId) ||
-      (!localNowPlayingItem.clipId && localNowPlayingItem.episodeId !== serverNowPlayingItem.episodeId)
+      (!localNowPlayingItem.clipId && localNowPlayingItem.episodeId !== serverNowPlayingItem.episodeId)) &&
+      serverNowPlayingItem.userPlaybackPosition !== 0
     ) {
       const askToSyncWithLastHistoryItem = PV.Alerts.ASK_TO_SYNC_WITH_LAST_HISTORY_ITEM(serverNowPlayingItem)
       Alert.alert(
@@ -109,7 +115,7 @@ export const loginUser = async (credentials: Credentials) => {
   try {
     const userInfo = await login(credentials.email, credentials.password)
     await syncItemsWithLocalStorage(userInfo)
-    await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
+    await getSubscribedPodcasts()
     await askToSyncWithNowPlayingItem()
 
     setGlobal({ session: { userInfo, isLoggedIn: true } })

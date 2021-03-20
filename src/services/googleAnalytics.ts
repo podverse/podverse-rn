@@ -35,7 +35,7 @@ export const gaTrackPageView = async (path: string, title: string, queryObj: any
     ...queryObj
   }
 
-  const userAgent = await getAppUserAgent()
+  const userAgent = getAppUserAgent()
 
   const queryString = generateQueryParams(query)
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-regexp-exec */
 import AsyncStorage from '@react-native-community/async-storage'
 import he from 'he'
 import { NowPlayingItem } from 'podverse-shared'
@@ -23,7 +24,7 @@ export const setAppUserAgent = async () => {
   }
 }
 
-export const getAppUserAgent = async () => {
+export const getAppUserAgent = () => {
   return `${Config.USER_AGENT_PREFIX || 'Unknown App'}/${`${Config.USER_AGENT_APP_TYPE}` ||
     'Unknown App Type'}/${userAgent}`
 }
@@ -37,40 +38,18 @@ export const safelyUnwrapNestedVariable = (func: any, fallbackValue: any) => {
   }
 }
 
-export const readableDate = (date: string) => {
-  const dateObj = date ? new Date(date) : new Date()
-  const year = dateObj.getFullYear()
-  const month = dateObj.getMonth() + 1
-  const day = dateObj.getDate()
-
-  return month + '/' + day + '/' + year
-}
-
-const getMonthName = (date: any) => {
-  const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ]
+const getMonth = (date: any) => {
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   return monthNames[date.getMonth()]
 }
 
-export const readableTextDate = (date: string) => {
+export const readableDate = (date: string) => {
   const dateObj = new Date(date)
   const year = dateObj.getFullYear()
-  const month = getMonthName(dateObj)
+  const monthAbbreviation = getMonth(dateObj)
   const day = dateObj.getDate()
 
-  return `${month} ${day}, ${year}`
+  return `${monthAbbreviation} ${day}, ${year}`
 }
 
 export const getHHMMSSArray = (sec: number) => {
@@ -157,7 +136,7 @@ export const readableClipTime = (startTime: number, endTime?: number) => {
 
 export const checkIfStringContainsHTMLTags = (text: string) => {
   if (text) {
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     return /<(br|basefont|hr|input|source|frame|param|area|meta|!--|col|link|option|base|img|wbr|!DOCTYPE).*?>|<(a|abbr|acronym|address|applet|article|aside|audio|b|bdi|bdo|big|blockquote|body|button|canvas|caption|center|cite|code|colgroup|command|datalist|dd|del|details|dfn|dialog|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frameset|head|header|hgroup|h1|h2|h3|h4|h5|h6|html|i|iframe|ins|kbd|keygen|label|legend|li|map|mark|menu|meter|nav|noframes|noscript|object|ol|optgroup|output|p|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|track|tt|u|ul|var|video).*?<\/\2>/i.test(
       text
     )
@@ -192,7 +171,7 @@ export const decodeHTMLString = (text: string) => {
 
 export const removeHTMLAttributesFromString = (html: string) => {
   const $ = cheerio.load(html)
-  $('*').each(function(x: any) {
+  $('*').each(function() {
     this.attribs = {
       ...(this.attribs && this.attribs.href ? { href: this.attribs.href } : {})
     }
@@ -208,7 +187,8 @@ export const removeExtraInfoFromEpisodeDescription = (html: string) => {
 
 export const filterHTMLElementsFromString = (html: string) => {
   if (html) {
-    const finalHtml = html.replace(/<audio.*>.*?<\/audio>|<video.*>.*?<\/video>|<img.*>.*?<\/img>|<img.*>/gi, '')
+    // eslint-disable-next-line max-len
+    const finalHtml = html.replace(/<audio.*>.*?<\/audio>|<video.*>.*?<\/video>|<iframe.*>.*?<\/iframe>|<img.*>.*?<\/img>|<img.*>/gi, '')
     return finalHtml
   }
   return html
@@ -445,7 +425,7 @@ export const convertHHMMSSToAnchorTags = (html: string) => {
 
 export function validateHHMMSSString(hhmmss: string) {
   const regex = new RegExp(
-    // tslint:disable-next-line: max-line-length
+    // eslint-disable-next-line max-len
     '^(([0-9][0-9]):([0-5][0-9]):([0-5][0-9]))$|(([0-9]):([0-5][0-9]):([0-5][0-9]))$|^(([0-5][0-9]):([0-5][0-9]))$|^(([0-9]):([0-5][0-9]))$|^([0-5][0-9])$|^([0-9])'
   )
   return regex.test(hhmmss)
@@ -512,7 +492,7 @@ export const convertToSortableTitle = (title: string) => {
   return sortableTitle ? sortableTitle.replace(/#/g, '') : ''
 }
 
-export const hasAtLeastXCharacters = (str?: string, x: number = 8) => {
+export const hasAtLeastXCharacters = (str?: string, x = 8) => {
   return str && str.match(`^(?=.{${x},})`) ? true : false
 }
 
@@ -613,4 +593,27 @@ export const requestAppStoreReviewForSubscribedPodcast = async () => {
     await AsyncStorage.setItem(PV.Keys.NUMBER_OF_SUBSCRIBED_PODCASTS, '0')
     requestAppStoreReview()
   }
+}
+
+export const parseOpmlFile = (data: any, topLevel = false): string[] => {
+  let outlineArr = data
+  if (topLevel) {
+    outlineArr = data.opml?.body[0]?.outline || []
+  }
+
+  const resultArr = new Array<string>()
+  for (const item of outlineArr) {
+    if (item.$?.type?.toLowerCase() === 'rss') {
+      const url = item.$?.xmlurl || item.$?.xmlUrl
+      if (url) {
+        resultArr.push(url)
+      }
+    } else {
+      if (item.outline) {
+        resultArr.push(...parseOpmlFile(item.outline))
+      }
+    }
+  }
+
+  return resultArr
 }

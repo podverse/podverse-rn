@@ -10,7 +10,7 @@ import { getAddByRSSPodcastLocally } from '../services/parser'
 import { saveSpecialUserInfoForPodcast } from '../services/user'
 import { addAddByRSSPodcast } from '../state/actions/parser'
 
-type Props = {}
+type Props = any
 
 const testIDPrefix = 'scan_qr_code_screen'
 
@@ -29,7 +29,7 @@ export const ScanQRCodeScreen = (props: Props) => {
 
     const parsedData = qrData.split('?')
 
-    let userInfo: object | null = null
+    let userInfo: any | null = null
 
     if (parsedData.length > 1) {
       userInfo = {}
@@ -51,32 +51,35 @@ export const ScanQRCodeScreen = (props: Props) => {
     }
   }
 
-  const showQRRead = async (scannedData: string) => {
-    try {
-      const parsedData = parsePayload(scannedData)
+  const showQRRead = (scannedData: string) => {
+    (async () => {
 
-      await addAddByRSSPodcast(parsedData.feedUrl)
-      const podcast = await getAddByRSSPodcastLocally(parsedData.feedUrl)
-
-      if (parsedData.userInfo && podcast && podcast.id) {
-        await saveSpecialUserInfoForPodcast(parsedData.userInfo, podcast.id)
-      }
-
-      navigate(PV.RouteNames.PodcastScreen, {
-        podcast,
-        addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
-      })
-    } catch (error) {
-      console.log(error)
-      Alert.alert(translate('QR Code Error'), error.message || error, [
-        {
-          text: translate('OK'),
-          onPress: () => {
-            setScanned(false)
-          }
+      try {
+        const parsedData = parsePayload(scannedData)
+  
+        await addAddByRSSPodcast(parsedData.feedUrl)
+        const podcast = await getAddByRSSPodcastLocally(parsedData.feedUrl)
+  
+        if (parsedData.userInfo && podcast && podcast.id) {
+          await saveSpecialUserInfoForPodcast(parsedData.userInfo, podcast.id)
         }
-      ])
-    }
+  
+        navigate(PV.RouteNames.PodcastScreen, {
+          podcast,
+          addByRSSPodcastFeedUrl: podcast.addByRSSPodcastFeedUrl
+        })
+      } catch (error) {
+        console.log(error)
+        Alert.alert(translate('QR Code Error'), error.message || error, [
+          {
+            text: translate('OK'),
+            onPress: () => {
+              setScanned(false)
+            }
+          }
+        ])
+      }
+    })()
   }
 
   return (
@@ -119,13 +122,11 @@ export const ScanQRCodeScreen = (props: Props) => {
   )
 }
 
-ScanQRCodeScreen.navigationOptions = ({ navigation }) => {
-  return {
+ScanQRCodeScreen.navigationOptions = ({ navigation }) => ({
     title: translate('QR Reader'),
     headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} />,
     headerRight: () => null
-  }
-}
+  })
 
 const styles = StyleSheet.create({
   view: {
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
   horizontalFiller: {
     width: '100%',
     height: 40,
-    backgroundColor: PV.Colors.black + 'CC'
+    backgroundColor: PV.Colors.ink + 'CC'
   },
   verticalFiller: {
     ...StyleSheet.absoluteFillObject,
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
   horizontalRowFiller: {
     width: '5%',
     height: '100%',
-    backgroundColor: PV.Colors.black + 'CC'
+    backgroundColor: PV.Colors.ink + 'CC'
   },
   instructions: {
     textAlign: 'center',
@@ -172,7 +173,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 10,
     justifyContent: 'space-around',
-    backgroundColor: PV.Colors.black + 'CC'
+    backgroundColor: PV.Colors.ink + 'CC'
   },
   dismissButton: {
     paddingVertical: 15,

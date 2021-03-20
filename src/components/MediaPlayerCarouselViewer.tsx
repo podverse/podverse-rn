@@ -1,24 +1,26 @@
-import { Alert, Linking, StyleSheet } from 'react-native'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import {
+  Alert,
+  Linking,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View as RNView
+} from 'react-native'
+
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
-import { ActivityIndicator, FastImage, Text, View } from './'
+import { ActivityIndicator, FastImage, Text, TextTicker } from './'
 
 type Props = {
   handlePressClipInfo: any
-  imageHeight: number
-  imageWidth: number
   navigation?: any
   width: number
 }
 
-type State = {
-  reduceBottomWrapperHeight?: boolean
-}
-export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State> {
+export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
   chapterInterval: NodeJS.Timeout
   constructor(props) {
     super(props)
@@ -26,6 +28,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
   }
 
   componentDidMount() {
+    loadChapterPlaybackInfo()
     this.chapterInterval = setInterval(loadChapterPlaybackInfo, 4000)
   }
 
@@ -41,9 +44,8 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
   }
 
   render() {
-    const { handlePressClipInfo, imageHeight, imageWidth, width } = this.props
+    const { handlePressClipInfo, width } = this.props
     const { player, screenPlayer } = this.global
-    const { reduceBottomWrapperHeight } = this.state
     const { currentChapter, nowPlayingItem = {} } = player
     const { isLoading } = screenPlayer
     let { clipId, clipEndTime, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem
@@ -60,122 +62,123 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props, State>
       podcastImageUrl = currentChapter.imageUrl || podcastImageUrl
     }
 
-    const imageStyle = [{ height: imageHeight, width: imageWidth }] as any
+    const imageStyles = [styles.image] as any
     if (clipUrl) {
-      imageStyle.push(styles.imageBorder)
+      imageStyles.push(styles.imageBorder)
     }
 
-    const imageWrapperStylePadding = clipId ? { padding: 16 } : { paddingHorizontal: 16, paddingTop: 16 }
-    const reduceBottomWrapperStyle = reduceBottomWrapperHeight
-      ? { height: PV.Player.carouselTextBottomWrapper.height - 24 }
-      : { height: PV.Player.carouselTextBottomWrapper.height }
-
     return (
-      <View style={[styles.outerWrapper, { width }]} transparent={true}>
-        <View style={styles.innerWrapper} transparent={true}>
-          <View style={styles.carouselTextTopWrapper} transparent={true}>
-            {isLoading && <ActivityIndicator fillSpace={true} />}
-            {!isLoading && !!nowPlayingItem && (
-              <React.Fragment>
+      <RNView style={[styles.outerWrapper, { width }]}>
+        <RNView style={styles.carouselTextTopWrapper}>
+          {isLoading ? (
+            <ActivityIndicator fillSpace />
+          ) : (
+            !!nowPlayingItem && (
+              <RNView style={styles.episodeTitleWrapper}>
+                <TextTicker allowFontScaling={false} bounce loop textLength={nowPlayingItem?.episodeTitle?.length}>
+                  <Text
+                    allowFontScaling={false}
+                    numberOfLines={1}
+                    style={styles.episodeTitle}
+                    testID='media_player_carousel_viewer_episode_title'>
+                    {nowPlayingItem.episodeTitle}
+                  </Text>
+                </TextTicker>
                 <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={1}
-                  style={styles.episodeTitle}
-                  testID='media_player_carousel_viewer_episode_title'>
-                  {nowPlayingItem.episodeTitle}
-                </Text>
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  isSecondary={true}
+                  allowFontScaling={false}
+                  isSecondary
                   numberOfLines={1}
                   style={styles.podcastTitle}
                   testID='media_player_carousel_viewer_podcast_title'>
                   {nowPlayingItem.podcastTitle}
                 </Text>
-              </React.Fragment>
-            )}
-          </View>
-          <View
-            style={[styles.imageWrapper, { height: imageHeight, width: '100%' }, imageWrapperStylePadding]}
-            transparent={true}>
-            <TouchableWithoutFeedback {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}>
-              <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyle} />
-            </TouchableWithoutFeedback>
-          </View>
-          {clipId && (
-            <TouchableWithoutFeedback onPress={handlePressClipInfo}>
-              <View style={[styles.carouselTextBottomWrapper, reduceBottomWrapperStyle]} transparent={true}>
-                <View style={styles.clipWrapper} transparent={true}>
-                  <Text
-                    numberOfLines={2}
-                    onTextLayout={(e) => {
-                      const { lines } = e.nativeEvent
-                      if (lines.length === 1) {
-                        this.setState({ reduceBottomWrapperHeight: true })
-                      } else {
-                        this.setState({ reduceBottomWrapperHeight: false })
-                      }
-                    }}
-                    style={styles.clipTitle}
-                    testID='media_player_carousel_viewer_title'>{`${clipTitle}`}</Text>
-                  <Text style={styles.clipTime} testID='media_player_carousel_viewer_time'>
-                    {readableClipTime(clipStartTime, clipEndTime)}
-                  </Text>
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
+              </RNView>
+            )
           )}
-        </View>
-      </View>
+        </RNView>
+        <RNView style={[styles.carouselImageWrapper, { width: width * 0.9 }]}>
+          <TouchableOpacity
+            activeOpacity={1}
+            {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
+            style={styles.imageContainer}>
+            <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyles} />
+          </TouchableOpacity>
+        </RNView>
+        {!!clipId && (
+          <RNView style={styles.carouselChapterWrapper}>
+            <TouchableWithoutFeedback onPress={handlePressClipInfo}>
+              <RNView style={styles.clipWrapper}>
+                <TextTicker
+                  allowFontScaling={false}
+                  bounce
+                  loop
+                  styles={styles.clipTitle}
+                  textLength={clipTitle?.length}>
+                  {`${clipTitle}`}
+                </TextTicker>
+                <Text allowFontScaling={false} style={styles.clipTime} testID='media_player_carousel_viewer_time'>
+                  {readableClipTime(clipStartTime, clipEndTime)}
+                </Text>
+              </RNView>
+            </TouchableWithoutFeedback>
+          </RNView>
+        )}
+      </RNView>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  carouselTextBottomWrapper: {
-    flex: 0
+  outerWrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10
   },
   carouselTextTopWrapper: {
-    flex: 0,
-    height: PV.Player.carouselTextTopWrapper.height
+    justifyContent: 'flex-end',
+    marginBottom: 12
+  },
+  carouselImageWrapper: {
+    alignItems: 'center',
+    height: '70%'
+  },
+  carouselChapterWrapper: {},
+  imageContainer: {
+    width: '100%',
+    height: '100%'
+  },
+  image: {
+    width: '100%',
+    height: '100%'
+  },
+  clipWrapper: {
+    alignItems: 'center',
+    marginTop: 12
   },
   clipTime: {
     color: PV.Colors.skyLight,
     fontSize: PV.Fonts.sizes.sm,
-    height: PV.Player.carouselTextSubBottomWrapper.height,
+    minHeight: PV.Player.carouselTextSubBottomWrapper.height,
     marginTop: PV.Player.carouselTextSubBottomWrapper.marginTop,
     textAlign: 'center'
   },
   clipTitle: {
     fontSize: PV.Fonts.sizes.xxl,
     paddingBottom: 2,
-    textAlign: 'center'
+    color: PV.Colors.white
   },
-  clipWrapper: {},
+  episodeTitleWrapper: {
+    alignItems: 'center'
+  },
   episodeTitle: {
-    fontSize: PV.Fonts.sizes.xxl,
-    textAlign: 'center'
+    fontSize: PV.Fonts.sizes.xxl
   },
   imageBorder: {
     borderColor: PV.Colors.skyDark,
     borderWidth: 5
   },
-  imageWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 10
-  },
-  innerWrapper: {
-    flex: 1,
-    justifyContent: 'center',
-    marginHorizontal: 8
-  },
-  outerWrapper: {
-    flex: 0
-  },
   podcastTitle: {
     color: PV.Colors.skyDark,
-    flex: 0,
     fontSize: PV.Fonts.sizes.md,
     fontWeight: PV.Fonts.weights.bold,
     marginTop: 2,

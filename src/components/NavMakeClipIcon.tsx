@@ -9,15 +9,13 @@ import { NavItemIcon, NavItemWrapper } from './'
 type Props = {
   getInitialProgressValue: any
   globalTheme: GlobalTheme
-  imageHeight: number
-  imageWidth: number
   navigation: any
 }
 
 export const NavMakeClipIcon = (props: Props) => {
   if (Config.DISABLE_MAKE_CLIP) return null
 
-  const { getInitialProgressValue, imageHeight, imageWidth, navigation } = props
+  const { getInitialProgressValue, navigation } = props
 
   const handlePress = async () => {
     const initialProgressValue = await getInitialProgressValue()
@@ -26,8 +24,6 @@ export const NavMakeClipIcon = (props: Props) => {
     const isLoggedIn = safelyUnwrapNestedVariable(() => session.isLoggedIn, false)
 
     navigation.navigate(PV.RouteNames.MakeClipScreen, {
-      imageHeight,
-      imageWidth,
       initialProgressValue,
       initialPrivacy: isPublic,
       isLoggedIn,

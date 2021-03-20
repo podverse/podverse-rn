@@ -32,11 +32,7 @@ type State = {
 const testIDPrefix = 'episode_media_ref_screen'
 
 export class EpisodeMediaRefScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.getParam('title') || ''
-    }
-  }
+  shouldLoad: boolean
 
   constructor(props: Props) {
     super()
@@ -44,6 +40,8 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
     const flatListDataTotalCount = props.navigation.getParam('totalItems') || 0
     const existingData = props.navigation.getParam('initialData') || []
 
+    this.shouldLoad = true
+    
     this.state = {
       endOfResultsReached: false,
       flatListData: existingData,
@@ -61,7 +59,11 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
     }
   }
 
-  async componentDidMount() {
+  static navigationOptions = ({ navigation }) => ({
+      title: navigation.getParam('title') || ''
+    })
+
+  componentDidMount() {
     trackPageView('/episode/mediaRefs', 'EpisodeMediaRef Screen')
   }
 
@@ -112,15 +114,15 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
 
       newState.queryPage = queryOptions.queryPage || 1
 
+      this.shouldLoad = true
       return newState
     } catch (error) {
+      this.shouldLoad = true
       return newState
     }
   }
 
-  _ItemSeparatorComponent = () => {
-    return <Divider />
-  }
+  _ItemSeparatorComponent = () => <Divider />
 
   _ListHeaderComponent = () => {
     const { navigation } = this.props
@@ -133,7 +135,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
         filterScreenTitle={viewType === PV.Filters._clipsKey ? translate('Clips') : ''}
         handleSelectSortItem={this.handleSelectSortItem}
         hideFilter={viewType === PV.Filters._chaptersKey}
-        includePadding={true}
+        includePadding
         navigation={navigation}
         screenName='EpisodeMediaRefScreen'
         selectedFilterLabel={selectedFilterLabel}
@@ -144,7 +146,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
     )
   }
 
-  handleSelectSortItem = async (selectedKey: string) => {
+  handleSelectSortItem = (selectedKey: string) => {
     if (!selectedKey) {
       return
     }
@@ -161,26 +163,32 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
         querySort: selectedKey,
         selectedSortLabel
       },
-      async () => {
-        const newState = await this._queryData(selectedKey)
-        this.setState(newState)
+      () => {
+        (async () => {
+          const newState = await this._queryData(selectedKey)
+          this.setState(newState)
+        })()
       }
     )
   }
 
   _onEndReached = ({ distanceFromEnd }: { distanceFromEnd: number }) => {
-    const { endOfResultsReached, isLoadingMore, queryPage = 1, viewType } = this.state
-    if (viewType === PV.Filters._clipsKey && !endOfResultsReached && !isLoadingMore) {
+    const { endOfResultsReached, queryPage = 1, viewType } = this.state
+    if (viewType === PV.Filters._clipsKey && !endOfResultsReached && this.shouldLoad) {
       if (distanceFromEnd > -1) {
+        this.shouldLoad = false
+
         this.setState(
           {
             isLoadingMore: true
           },
-          async () => {
-            const newState = await this._queryData(viewType, {
-              queryPage: queryPage + 1
-            })
-            this.setState(newState)
+          () => {
+            (async () => {
+              const newState = await this._queryData(viewType, {
+                queryPage: queryPage + 1
+              })
+              this.setState(newState)
+            })()
           }
         )
       }
@@ -194,20 +202,19 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
     })
   }
 
-  _handleCancelPress = () => {
-    return new Promise((resolve, reject) => {
-      this.setState({ showActionSheet: false }, resolve)
-    })
-  }
+  _handleCancelPress = () => new Promise((resolve) => {
+    this.setState({ showActionSheet: false }, resolve)
+  })
 
   _renderItem = ({ item }) => {
+    const { viewType } = this.state
     const episode = this.props.navigation.getParam('episode') || {}
     item.episode = episode
 
     return (
       <ClipTableCell
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
-        hideImage={true}
+        showChapterInfo={viewType === PV.Filters._chaptersKey}
         showEpisodeInfo={false}
         showPodcastInfo={false}
         item={item}
@@ -224,7 +231,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
         <FlatList
           data={flatListData}
           dataTotalCount={flatListDataTotalCount}
-          disableLeftSwipe={true}
+          disableLeftSwipe
           extraData={flatListData}
           isLoadingMore={isLoadingMore}
           ItemSeparatorComponent={this._ItemSeparatorComponent}
