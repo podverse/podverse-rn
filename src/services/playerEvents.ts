@@ -128,7 +128,6 @@ module.exports = async () => {
   PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
     console.log('playback-queue-ended', x)
     clearChapterPlaybackInfo()
-    syncNowPlayingItemWithTrack()
     handleQueueEnded(x)
   })
 

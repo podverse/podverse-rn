@@ -72,6 +72,8 @@ type State = {
   viewType: string | null
 }
 
+type RenderItemArg = { item: any; index: number }
+
 const testIDPrefix = 'podcast_screen'
 
 export class PodcastScreen extends React.Component<Props, State> {
@@ -283,7 +285,7 @@ static navigationOptions = ({ navigation }) => {
     )
   }
 
-  _onEndReached = ({ distanceFromEnd }) => {
+  _onEndReached = ({ distanceFromEnd }: { distanceFromEnd: number }) => {
     const { endOfResultsReached, podcast, queryPage = 1, viewType } = this.state
 
     if (
@@ -363,7 +365,7 @@ static navigationOptions = ({ navigation }) => {
     }
   }
 
-  _renderItem = ({ item, index }) => {
+  _renderItem = ({ item, index }: RenderItemArg) => {
     const { podcast, viewType } = this.state
 
     if (viewType === PV.Filters._clipsKey) {
@@ -418,15 +420,15 @@ static navigationOptions = ({ navigation }) => {
     }
   }
 
-  _renderHiddenItem = ({ item, index }, rowMap) => (
+  _renderHiddenItem = ({ item, index }: RenderItemArg) => (
     <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
+      onPress={() => this._handleHiddenItemPress(item.id)}
       testID={`${testIDPrefix}_clip_item_${index}`}
       text={translate('Delete')}
     />
   )
 
-  _handleHiddenItemPress = (selectedId) => {
+  _handleHiddenItemPress = (selectedId: string) => {
     const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
     this.setState(
       {
