@@ -1,13 +1,17 @@
-import { Linking, SectionList, StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Linking, SectionList, Alert, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
-import { Divider, TableSectionSelectors, Text, View } from '../components'
+import { parseString } from 'react-native-xml2js'
+import DocumentPicker from 'react-native-document-picker'
+import RNFS from 'react-native-fs'
+import { Divider, TableSectionSelectors, Text, View, ActivityIndicator } from '../components'
 import { translate } from '../lib/i18n'
-import { createEmailLinkUrl, getMembershipStatus, testProps } from '../lib/utility'
+import { createEmailLinkUrl, getMembershipStatus, testProps, parseOpmlFile } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { logoutUser } from '../state/actions/auth'
 import { core, getMembershipTextStyle, table } from '../styles'
+import { addAddByRSSPodcast, addAddByRSSPodcasts } from '../state/actions/parser'
 
 type Props = {
   navigation?: any
@@ -15,17 +19,18 @@ type Props = {
 
 type State = {
   options: any[]
+  isLoading: boolean
 }
 
 export class MoreScreen extends React.Component<Props, State> {
-
   state = {
-    options: []
+    options: [],
+    isLoading: false
   }
 
   static navigationOptions = () => ({
-      title: translate('More')
-    })
+    title: translate('More')
+  })
 
   componentDidMount() {
     trackPageView('/more', 'More Screen')
@@ -81,10 +86,49 @@ export class MoreScreen extends React.Component<Props, State> {
 
     const moreOtherList = Config.NAV_STACK_MORE_OTHER.split(',')
 
-    const options =
-      allMoreOtherOptions.filter((item: any) => moreOtherList.find((screenKey: string) => item.key === screenKey))
+    const options = allMoreOtherOptions.filter((item: any) =>
+      moreOtherList.find((screenKey: string) => item.key === screenKey)
+    )
 
     return options
+  }
+
+  _importOpml = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.allFiles]
+      })
+      const contents = await RNFS.readFile(res.uri, 'utf8')
+
+      this.setState({ isLoading: true }, () => {
+        parseString(contents, async (err: any, result: any) => {
+          try {
+            if (err) {
+              throw err
+            } else if (!result?.opml?.body[0]?.outline) {
+              throw new Error('OPML file is not in the correct format')
+            }
+
+            const rssArr = parseOpmlFile(result, true)
+            await addAddByRSSPodcasts(rssArr)
+
+            this.setState({ isLoading: false }, () => {
+              this.props.navigation.navigate(PV.RouteNames.PodcastsScreen)
+            })
+          } catch (error) {
+            console.log('Error parsing podcast: ', error)
+            this.setState({ isLoading: false })
+          }
+        })
+      })
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        console.log('Error parsing podcast: ', err)
+        Alert.alert('Error', 'There was an issue with the opml file import.', err.message)
+      }
+    }
   }
 
   _onPress = (item: any) => {
@@ -93,6 +137,8 @@ export class MoreScreen extends React.Component<Props, State> {
       Linking.openURL(createEmailLinkUrl(PV.Emails.CONTACT_US))
     } else if (item.key === _logoutKey) {
       logoutUser()
+    } else if (item.key === _importOpml) {
+      this._importOpml()
     } else {
       navigation.navigate(item.routeName)
     }
@@ -153,6 +199,7 @@ export class MoreScreen extends React.Component<Props, State> {
           ]}
           stickySectionHeadersEnabled={false}
         />
+        {this.state.isLoading && <ActivityIndicator isOverlay transparent={false} />}
       </View>
     )
   }
@@ -167,6 +214,7 @@ const _membershipKey = 'Membership'
 const _privacyPolicyKey = 'PrivacyPolicy'
 const _settingsKey = 'Settings'
 const _termsOfServiceKey = 'TermsOfService'
+const _importOpml = 'ImportOpml'
 
 const allMoreFeatures = [
   {
@@ -191,5 +239,10 @@ const allMoreFeatures = [
     key: _loginKey,
     routeName: PV.RouteNames.AuthNavigator,
     testID: 'more_screen_login_cell'
+  },
+  {
+    title: translate('Import OPML'),
+    key: _importOpml,
+    testID: 'more_screen_import_cell'
   }
 ]

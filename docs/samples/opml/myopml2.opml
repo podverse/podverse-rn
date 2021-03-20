@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!-- example OPML file -->
+<opml version="1.0">
+    <head>
+        <title>Podcast Subscriptions</title>
+    </head>
+    <body>
+        <outline type="rss" text="Buzzcast text" title="Buzzcast" xmlUrl="https://feeds.buzzsprout.com/231452.rss" htmlUrl="https://buzzcast.buzzsprout.com"/>
+        <outline type="rss" text="CppCast text" title="CppCast" xmlUrl="https://cppcast.libsyn.com/rss" htmlUrl="https://cppcast.com"/>
+        <outline type="rss" text="How I Built This with Guy Raz text" title="How I Built This with Guy Raz" xmlUrl="https://feeds.npr.org/510313/podcast.xml" htmlUrl="https://www.npr.org/podcasts/510313/how-i-built-this"/>
+        <outline type="rss" text="Other Life text" title="Other Life" xmlUrl="https://feeds.transistor.fm/other-life" htmlUrl="https://otherlife.transistor.fm/"/>
+        <outline type="rss" text="The Show Business Show text" title="The Show Business Show" xmlUrl="https://feeds.blubrry.com/feeds/showbusinessshow.xml" htmlUrl="https://showbusiness.show/"/>
+    </body>
+</opml>

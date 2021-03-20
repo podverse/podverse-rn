@@ -71,7 +71,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   onScrollEnd = ({ nativeEvent }) => {
     const { contentOffset } = nativeEvent
-    const activeIndex = contentOffset.x / screenWidth
+    const activeIndex = Math.round(contentOffset.x / screenWidth)
     this.setState({ activeIndex })
   }
 

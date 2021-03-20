@@ -2097,6 +2097,14 @@ buffer-from@^1.0.0:
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.1.tgz#32713bc028f75c02fdb710d7c7bcec1f2c6070ef"
   integrity sha512-MQcXEUbCKtEo7bhqEs6560Hyd4XaovZlO/k9V3hjVUF/zwW7KBVdSK4gIt/bzwS9MbR5qob+F5jusZsb0YQK2A==
 
+buffer@5.0.x:
+  version "5.0.8"
+  resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.0.8.tgz#84daa52e7cf2fa8ce4195bc5cf0f7809e0930b24"
+  integrity sha512-xXvjQhVNz50v2nPeoOsNqWCLGfiv4ji/gXZM28jnVwdLJxH4mFyqgqCKfaK9zf1KUbG6zTkjLOy7ou+jSMarGA==
+  dependencies:
+    base64-js "^1.0.2"
+    ieee754 "^1.1.4"
+
 buffer@^4.5.1:
   version "4.9.2"
   resolved "https://registry.yarnpkg.com/buffer/-/buffer-4.9.2.tgz#230ead344002988644841ab0244af8c44bbe3ef8"
@@ -3587,7 +3595,7 @@ eventemitter3@^3.0.0:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.2.tgz#2d3d48f9c346698fce83a85d7d664e98535df6e7"
   integrity sha512-tvtQIeLVHjDkJYnzf2dgVMxfuSGJeM/7UCG17TT4EumTfNtF+0nebF/4zWOIkCreAbtNqhGEboB6BWrwqNaw4Q==
 
-events@^1.1.0:
+events@1.1.x, events@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
   integrity sha1-nr23Y1rQmccNzEwqH1AEKI6L2SQ=
@@ -7730,6 +7738,11 @@ react-native-dialog@5.6.0:
     prop-types "^15.7.2"
     react-native-modal "^9.0.0"
 
+react-native-document-picker@5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-5.0.1.tgz#382ecea8c5dbb83c2fd33fb63f30b079adab2d2a"
+  integrity sha512-HDYAkwFoYzHeXR+cIfJi4/JIuE4DHduOh9eoKIEhCvQjXUQ0xvS6qX9x0AXa+b0FF8iUfFKY2DqFhw9gNcIhUg==
+
 react-native-dots-pagination@^0.1.11:
   version "0.1.11"
   resolved "https://registry.yarnpkg.com/react-native-dots-pagination/-/react-native-dots-pagination-0.1.11.tgz#30d3b80c1cec474af8390fa7029eb8b357d46245"
@@ -7920,10 +7933,10 @@ react-native-text-ticker@^1.11.0:
   resolved "https://registry.yarnpkg.com/react-native-text-ticker/-/react-native-text-ticker-1.11.0.tgz#d1711613b4cd6f0ffa0a7335f8de172f5e63190f"
   integrity sha512-+lDX7HO4qTPjMhHDzLYU39YWMqqrud2rs3aBdXnJPqcsWbEpOabogNuYQB6XZ/oqe2kSgqOJlVEH4nbNd1+AwQ==
 
-react-native-track-player@1.2.3:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-1.2.3.tgz#cd147b1fc93a229c49392abd7b37f087285e673a"
-  integrity sha512-h8HWOC9Zo54hen0ttlGzdofEMH38CPfT6+UWAcbEoHFgGcvxsRlJAgubdtM3QWwWZh20Q2zvQA8+8/l4Bu0yfA==
+react-native-track-player@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-1.2.6.tgz#f934b64d59cbe0241a5008ae97caa0bcf2354983"
+  integrity sha512-o8jSJVIj7WVnsGIFgVeCyS0+Y75t2dkvhgA33jAid/JxLEoaL33KhDZ/O3FIB0VhovfTNqrOAw5zFzUYDkBC8A==
 
 react-native-typescript-transformer@1.2.13:
   version "1.2.13"
@@ -7954,6 +7967,18 @@ react-native-webview@11.0.0:
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
+
+react-native-xml2js@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-xml2js/-/react-native-xml2js-1.0.3.tgz#7ec64263e04303174326710be3f4ed32d2e8b00b"
+  integrity sha1-fsZCY+BDAxdDJnEL4/TtMtLosAs=
+  dependencies:
+    buffer "5.0.x"
+    events "1.1.x"
+    sax "0.6.x"
+    stream "0.0.x"
+    timers "0.1.x"
+    xmlbuilder "8.2.x"
 
 react-native@0.63.4:
   version "0.63.4"
@@ -8543,6 +8568,11 @@ sane@^4.0.3:
     minimist "^1.1.1"
     walker "~1.0.5"
 
+sax@0.6.x:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/sax/-/sax-0.6.1.tgz#563b19c7c1de892e09bfc4f2fc30e3c27f0952b9"
+  integrity sha1-VjsZx8HeiS4Jv8Ty/DDjwn8JUrk=
+
 sax@>=0.6.0, sax@^1.2.1:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
@@ -9024,7 +9054,7 @@ stream-shift@^1.0.0:
   resolved "https://registry.yarnpkg.com/stream-shift/-/stream-shift-1.0.1.tgz#d7088281559ab2778424279b0877da3c392d5a3d"
   integrity sha512-AiisoFqQ0vbGcZgQPY1cdP2I76glaVA/RauYR4G4thNFgkTqr90yXTo4LYX60Jl+sIlPNHHdGSwo01AvbKUSVQ==
 
-stream@^0.0.2:
+stream@0.0.x, stream@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/stream/-/stream-0.0.2.tgz#7f5363f057f6592c5595f00bc80a27f5cec1f0ef"
   integrity sha1-f1Nj8Ff2WSxVlfALyAon9c7B8O8=
@@ -9336,7 +9366,7 @@ timed-out@^4.0.0:
   resolved "https://registry.yarnpkg.com/timed-out/-/timed-out-4.0.1.tgz#f32eacac5a175bea25d7fab565ab3ed8741ef56f"
   integrity sha1-8y6srFoXW+ol1/q1Zas+2HQe9W8=
 
-timers@^0.1.1:
+timers@0.1.x, timers@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/timers/-/timers-0.1.1.tgz#86ac5c78c1ee419694f35a58de4fd4183cfb9c1e"
   integrity sha1-hqxceMHuQZaU81pY3k/UGDz7nB4=
@@ -10068,6 +10098,11 @@ xml2js@^0.4.19:
   dependencies:
     sax ">=0.6.0"
     xmlbuilder "~11.0.0"
+
+xmlbuilder@8.2.x:
+  version "8.2.2"
+  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-8.2.2.tgz#69248673410b4ba42e1a6136551d2922335aa773"
+  integrity sha1-aSSGc0ELS6QuGmE2VR0pIjNap3M=
 
 xmlbuilder@^9.0.7:
   version "9.0.7"

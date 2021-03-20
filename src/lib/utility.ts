@@ -563,3 +563,26 @@ export const overrideImageUrlWithChapterImageUrl = (nowPlayingItem: any, current
   }
   return imageUrl
 }
+
+export const parseOpmlFile = (data: any, topLevel = false): string[] => {
+  let outlineArr = data
+  if (topLevel) {
+    outlineArr = data.opml?.body[0]?.outline || []
+  }
+
+  const resultArr = new Array<string>()
+  for (const item of outlineArr) {
+    if (item.$?.type?.toLowerCase() === 'rss') {
+      const url = item.$?.xmlurl || item.$?.xmlUrl
+      if (url) {
+        resultArr.push(url)
+      }
+    } else {
+      if (item.outline) {
+        resultArr.push(...parseOpmlFile(item.outline))
+      }
+    }
+  }
+
+  return resultArr
+}

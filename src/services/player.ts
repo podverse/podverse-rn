@@ -179,6 +179,11 @@ export const playerPreviewEndTime = async (endTime: number) => {
   }, 500)
 }
 
+export const setRateWithLatestPlaybackSpeed = async () => {
+  const rate = await getPlaybackSpeed()
+  PVTrackPlayer.setRate(rate)
+}
+
 export const playerPreviewStartTime = async (startTime: number, endTime?: number | null) => {
   if (playerPreviewEndTimeInterval) {
     clearInterval(playerPreviewEndTimeInterval)
@@ -186,8 +191,7 @@ export const playerPreviewStartTime = async (startTime: number, endTime?: number
 
   TrackPlayer.seekTo(startTime)
   TrackPlayer.play()
-  const rate = await getPlaybackSpeed()
-  TrackPlayer.setRate(rate)
+  await setRateWithLatestPlaybackSpeed()
 
   if (endTime) {
     playerPreviewEndTimeInterval = setInterval(() => {

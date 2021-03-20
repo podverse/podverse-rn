@@ -115,7 +115,7 @@ export const loginUser = async (credentials: Credentials) => {
   try {
     const userInfo = await login(credentials.email, credentials.password)
     await syncItemsWithLocalStorage(userInfo)
-    await getSubscribedPodcasts(userInfo.subscribedPodcastIds || [])
+    await getSubscribedPodcasts()
     await askToSyncWithNowPlayingItem()
 
     setGlobal({ session: { userInfo, isLoggedIn: true } })

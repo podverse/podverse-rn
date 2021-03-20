@@ -230,11 +230,13 @@ PODS:
     - react-native-config/App (= 1.4.1)
   - react-native-config/App (1.4.1):
     - React-Core
+  - react-native-document-picker (5.0.1):
+    - React-Core
   - react-native-netinfo (5.9.9):
     - React-Core
   - react-native-safe-area-context (3.1.8):
     - React-Core
-  - react-native-track-player (1.2.3):
+  - react-native-track-player (1.2.6):
     - React
   - react-native-webview (11.0.0):
     - React-Core
@@ -368,6 +370,7 @@ DEPENDENCIES:
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-config (from `../node_modules/react-native-config`)
+  - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-track-player (from `../node_modules/react-native-track-player`)
@@ -457,6 +460,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-camera"
   react-native-config:
     :path: "../node_modules/react-native-config"
+  react-native-document-picker:
+    :path: "../node_modules/react-native-document-picker"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
@@ -550,9 +555,10 @@ SPEC CHECKSUMS:
   react-native-background-timer: 029c606b3fd6dd476b153e177c518b6ade4c169f
   react-native-camera: 35854c4f764a4a6cf61c1c3525888b92f0fe4b31
   react-native-config: d8b45133fd13d4f23bd2064b72f6e2c08b2763ed
+  react-native-document-picker: d6a15c20e1b2d488af459aefff831839e9995927
   react-native-netinfo: 0212ce8604e88edf686f1481b925b17a42a52449
   react-native-safe-area-context: 79fea126c6830c85f65947c223a5e3058a666937
-  react-native-track-player: 28b96dd6404dea3eee80e67b74507679235a8dfb
+  react-native-track-player: 1a93c049a31413eb54768e5a69207b67d75b449c
   react-native-webview: 6b7950628616679d81bdd75747e50cf6de9b5a5f
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
