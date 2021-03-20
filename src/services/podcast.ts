@@ -139,8 +139,8 @@ export const combineWithAddByRSSPodcasts = async () => {
   const subscribedPodcastsResults = await getSubscribedPodcastsLocally()
   const addByRSSPodcastsResults = await getAddByRSSPodcastsLocally()
   const subscribedPodcasts =
-    subscribedPodcastsResults[0] && Array.isArray(subscribedPodcastsResults[0]) && subscribedPodcastsResults[0] || []
-  const addByRSSPodcasts = Array.isArray(addByRSSPodcastsResults) && addByRSSPodcastsResults || []
+    subscribedPodcastsResults[0] && Array.isArray(subscribedPodcastsResults[0]) ? subscribedPodcastsResults[0] : []
+  const addByRSSPodcasts = Array.isArray(addByRSSPodcastsResults) ? addByRSSPodcastsResults : []
   const combinedPodcasts = [...subscribedPodcasts, ...addByRSSPodcasts]
   return sortPodcastArrayAlphabetically(combinedPodcasts)
 }
@@ -173,8 +173,9 @@ export const searchPodcasts = async (title?: string, author?: string) => {
 }
 
 export const subscribeToPodcastIfNotAlready = async (alreadySubscribedPodcasts: any, podcastId: string) => {
-  if (Array.isArray(alreadySubscribedPodcasts) && !alreadySubscribedPodcasts.some(
-    alreadySubscribedPodcast => alreadySubscribedPodcast.id === podcastId)
+  if (
+    Array.isArray(alreadySubscribedPodcasts) &&
+    !alreadySubscribedPodcasts.some((alreadySubscribedPodcast) => alreadySubscribedPodcast.id === podcastId)
   ) {
     await toggleSubscribeToPodcast(podcastId)
   }

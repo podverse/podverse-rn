@@ -572,9 +572,10 @@ export const requestAppStoreReview = () => {
 }
 
 export const requestAppStoreReviewForEpisodePlayed = async () => {
+  const EPISODES_PLAYED_LIMIT = 10
   const numberOfPlayedEpisodesString: string | null = await AsyncStorage.getItem(PV.Keys.NUMBER_OF_EPISODES_PLAYED)
   let numberOfPlayedEpisodes = numberOfPlayedEpisodesString ? Number(numberOfPlayedEpisodesString) : 0
-  if (numberOfPlayedEpisodes < 3) {
+  if (numberOfPlayedEpisodes < EPISODES_PLAYED_LIMIT) {
     numberOfPlayedEpisodes += 1
     await AsyncStorage.setItem(PV.Keys.NUMBER_OF_EPISODES_PLAYED, String(numberOfPlayedEpisodes))
   } else {
@@ -584,11 +585,12 @@ export const requestAppStoreReviewForEpisodePlayed = async () => {
 }
 
 export const requestAppStoreReviewForSubscribedPodcast = async () => {
-  const numberOfPlayedEpisodesString: string | null = await AsyncStorage.getItem(PV.Keys.NUMBER_OF_SUBSCRIBED_PODCASTS)
-  let numberOfPlayedEpisodes = numberOfPlayedEpisodesString ? Number(numberOfPlayedEpisodesString) : 0
-  if (numberOfPlayedEpisodes < 6) {
-    numberOfPlayedEpisodes += 1
-    await AsyncStorage.setItem(PV.Keys.NUMBER_OF_SUBSCRIBED_PODCASTS, String(numberOfPlayedEpisodes))
+  const SUBSCRIBED_PODCASTS_REQUEST_LIMIT = 5
+  const numberOfSubscritptionsString: string | null = await AsyncStorage.getItem(PV.Keys.NUMBER_OF_SUBSCRIBED_PODCASTS)
+  let numberOfSubscribedPodcasts = numberOfSubscritptionsString ? Number(numberOfSubscritptionsString) : 0
+  if (numberOfSubscribedPodcasts < SUBSCRIBED_PODCASTS_REQUEST_LIMIT) {
+    numberOfSubscribedPodcasts += 1
+    await AsyncStorage.setItem(PV.Keys.NUMBER_OF_SUBSCRIBED_PODCASTS, String(numberOfSubscribedPodcasts))
   } else {
     await AsyncStorage.setItem(PV.Keys.NUMBER_OF_SUBSCRIBED_PODCASTS, '0')
     requestAppStoreReview()
