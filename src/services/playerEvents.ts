@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
@@ -5,6 +6,7 @@ import BackgroundTimer from 'react-native-background-timer'
 import { PV } from '../resources'
 import { hideMiniPlayer, updatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
+import { removeQueueItem } from '../state/actions/queue'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
@@ -64,8 +66,14 @@ const syncNowPlayingItemWithTrack = () => {
   function sync() {
     (async () => {
       updatePlaybackState()
+      await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
+
       const currentTrackId = await PVTrackPlayer.getCurrentLoadedTrack()
-      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentTrackId)
+      const setPlayerClipIsLoadedIfClip = true
+      const skipRemoveQueue = false
+      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
+        currentTrackId, setPlayerClipIsLoadedIfClip, skipRemoveQueue)
+
       if (currentNowPlayingItem) {
         await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
       }
@@ -81,7 +89,10 @@ const resetHistoryItem = async (x: any) => {
   if (metaEpisode) {
     const { mediaFileDuration } = metaEpisode
     if (mediaFileDuration > 59 && mediaFileDuration - 59 < position) {
-      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(x.track)
+      const setPlayerClipIsLoadedIfClip = false
+      const skipRemoveQueue = true
+      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
+        x.track, setPlayerClipIsLoadedIfClip, skipRemoveQueue)
       if (currentNowPlayingItem) {
         const forceUpdateOrderDate = false
         await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate)

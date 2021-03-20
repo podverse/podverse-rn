@@ -4,7 +4,7 @@ import React from 'reactn'
 import { refreshDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
-import { getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId, PVTrackPlayer } from '../services/player'
+import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
 import { updatePlaybackState, updatePlayerState } from '../state/actions/player'
 import { getQueueItems } from '../state/actions/queue'
 
@@ -52,13 +52,12 @@ export class PlayerEvents extends React.PureComponent<Props> {
   _refreshNowPlayingItem = () => {
     (async () => {
       refreshDownloadedPodcasts()
-  
-      const currentTrackId = await PVTrackPlayer.getCurrentLoadedTrack()
-      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(currentTrackId)
-      if (currentNowPlayingItem?.episodeId) {
-        await updatePlayerState(currentNowPlayingItem)
+
+      const nowPlayingItem = await getNowPlayingItemLocally()
+      if (nowPlayingItem) {
+        await updatePlayerState(nowPlayingItem)
       }
-  
+   
       await updatePlaybackState()
       await getQueueItems()
     })()
