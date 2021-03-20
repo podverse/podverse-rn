@@ -546,6 +546,11 @@ export const getPlaybackSpeed = async () => {
   }
 }
 
+/*
+  WARNING! THIS UGLY FUNCTION DOES A LOT MORE THAN JUST "GETTING" THE ITEM.
+  IT ALSO REMOVES AN ITEM FROM THE QUEUE, AND HANDLES CONVERTING
+  A CLIP TO AN EPISODE OBJECT. THIS FUNCTION REALLY SHOULD BE REWRITTEN.
+*/
 export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (
   trackId: string,
   setPlayerClipIsLoadedIfClip?: boolean,
