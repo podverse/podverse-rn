@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -21,7 +21,8 @@
     "test:e2e:fdroid": "export $(cat .env | xargs) && DEVICE_TYPE=F-Droid BROWSERSTACK_DEVICE='Google Pixel 3' BROWSERSTACK_OS_VERSION='9.0' node ./functions/tests/e2e/index.js",
     "test:w:e2e:fdroid": "BROWSERSTACK_TEST_ENV='local' DEVICE_TYPE='F-Droid' node ./functions/tests/e2e/index.js",
     "test:e2e:ios": "export $(cat .env | xargs) && DEVICE_TYPE=iOS BROWSERSTACK_DEVICE='iPhone 12 Pro Max' BROWSERSTACK_OS_VERSION='13.0' node ./functions/tests/e2e/index.js",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "version_update": "babel-node ./scripts/update_version.js"
   },
   "husky": {
     "hooks": {
