@@ -57,7 +57,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
       }
     }
 
-    if (episode && episode.id) {
+    if (episode?.id) {
       this.props.navigation.setParams({
         episodeId: episode.id,
         episodeTitle: episode.title,
@@ -107,7 +107,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
   componentDidMount() {
     const { episode, episodeId } = this.state
     this._initializePageData()
-    const episodeTitle = episode.title ? episode.title : translate('Untitled Episode')
+    const episodeTitle = episode?.title ? episode.title : translate('Untitled Episode')
     const titleToEncode = episode?.podcast
       ? episode.podcast.title + ' - ' + episodeTitle
       : translate('no info available')
