@@ -42,7 +42,7 @@ class App extends Component<Props, State> {
     super(props)
     this.state = {
       appReady: false,
-      minVersionMismatch: true
+      minVersionMismatch: false
     }
     this.unsubscribeNetListener = null
     downloadCategoriesList()
@@ -118,10 +118,6 @@ class App extends Component<Props, State> {
   }
 
   _renderIntersitial = () => {
-    if (this.state.minVersionMismatch) {
-      return <UpdateRequiredOverlay />
-    }
-
     if (Platform.OS === 'ios') {
       return null
     }
@@ -135,14 +131,21 @@ class App extends Component<Props, State> {
 
   render() {
     // Prevent white screen flash on navigation on Android
-    const wrapperStyle = Platform.OS === 'android' ? {
-      backgroundColor: PV.Colors.ink,
-      borderColor: PV.Colors.ink,
-      shadowOpacity: 1,
-      opacity: 1
-    } : {}
+    const wrapperStyle =
+      Platform.OS === 'android'
+        ? {
+            backgroundColor: PV.Colors.ink,
+            borderColor: PV.Colors.ink,
+            shadowOpacity: 1,
+            opacity: 1
+          }
+        : {}
 
-    return this.state.appReady && !this.state.minVersionMismatch ? (
+    if (this.state.minVersionMismatch) {
+      return <UpdateRequiredOverlay />
+    }
+
+    return this.state.appReady ? (
       <SafeAreaProvider initialMetrics={initialWindowMetrics} style={wrapperStyle}>
         <View style={{ flex: 1 }}>
           <Router />
