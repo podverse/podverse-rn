@@ -321,7 +321,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   _playerJumpBackward = async () => {
-    const progressValue = await playerJumpBackward(PV.Player.jumpSeconds)
+    const progressValue = await playerJumpBackward(PV.Player.jumpBackSeconds)
     this.setState({ progressValue })
     setTimeout(() => this.setState({ progressValue: null }), 250)
   }
@@ -471,7 +471,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       {...testProps(`${testIDPrefix}_jump_backward`)}>
                       {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS)}
                       <View style={styles.skipTimeTextWrapper} transparent>
-                        <Text style={styles.skipTimeText}>30</Text>
+                        <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
                       </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -512,7 +512,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       {...testProps(`${testIDPrefix}_jump_forward`)}>
                       {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD)}
                       <View style={styles.skipTimeTextWrapper} transparent>
-                        <Text style={styles.skipTimeText}>30</Text>
+                        <Text style={styles.skipTimeText}>{PV.Player.jumpSeconds}</Text>
                       </View>
                     </TouchableOpacity>
                   </View>
