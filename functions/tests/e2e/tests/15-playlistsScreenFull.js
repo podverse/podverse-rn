@@ -29,6 +29,8 @@ const test15_playlistsScreenFull = async () => {
   await elementByIdAndClickAndTest('edit_playlist_screen_nav_header_button_text', 'edit_playlist_screen_view')
 
   driver.back()
+  driver.back()
+
   driver.back()  
 
     // Log Out

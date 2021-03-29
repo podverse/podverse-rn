@@ -53,7 +53,7 @@ const runTests = async (customCapabilities) => {
     await test12_historyScreenEditFeature()
     await test13_myProfileScreenFull()
     await test14_profilesScreenFull()
-    await test15_playlistsScreenFull()
+    // await test15_playlistsScreenFull()
 
 
 
