@@ -1,18 +1,47 @@
-import {
-  Alert,
-  Linking,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View as RNView
-} from 'react-native'
+import { Alert, Linking, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View as RNView } from 'react-native'
 
 import React from 'reactn'
+import { sendPayments } from '../services/lightningNetwork'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { ActivityIndicator, FastImage, Text, TextTicker } from './'
+
+const customValueStruct = {
+  model: {
+    type: 'lightning',
+    method: 'keysend',
+    suggested: '0.00000005000'
+  },
+  destinations: [
+    {
+      name: 'Adam Curry (Podcaster)',
+      address: '02b92193a4c9d035c81f8076ae4a4aba04b7ea8e04058eb3296f894e6ccd5f2e6e',
+      type: 'node',
+      split: 2
+    },
+    {
+      name: 'Dave Jones (Podcaster)',
+      address: '02b92193a4c9d035c81f8076ae4a4aba04b7ea8e04058eb3296f894e6ccd5f2e6e',
+      type: 'node',
+      split: 2
+    },
+    {
+      name: 'Dreb Scott (Chapters)',
+      address: '02b92193a4c9d035c81f8076ae4a4aba04b7ea8e04058eb3296f894e6ccd5f2e6e',
+      type: 'node',
+      split: 2
+    },
+    {
+      name: 'Podcastindex.org',
+      address: '02b92193a4c9d035c81f8076ae4a4aba04b7ea8e04058eb3296f894e6ccd5f2e6e',
+      type: 'node',
+      fee: true,
+      split: 2
+    }
+  ]
+}
 
 type Props = {
   handlePressClipInfo: any
@@ -41,6 +70,10 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       { text: translate('Cancel') },
       { text: translate('Yes'), onPress: () => Linking.openURL(url) }
     ])
+  }
+
+  _attemptBoost = () => {
+    sendPayments(customValueStruct)
   }
 
   render() {
@@ -123,6 +156,11 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             </TouchableWithoutFeedback>
           </RNView>
         )}
+        {this.global.session.lightningPayEnabled && (
+          <TouchableOpacity style={styles.boostButton} onPress={this._attemptBoost}>
+            <Text testID='Boost Button'>{translate('Boost').toUpperCase()}</Text>
+          </TouchableOpacity>
+        )}
       </RNView>
     )
   }
@@ -183,5 +221,18 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold,
     marginTop: 2,
     textAlign: 'center'
+  },
+  boostButton: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    position: 'absolute',
+    bottom: '10%',
+    right: '5%',
+    backgroundColor: PV.Colors.velvet,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: PV.Colors.brandBlueLight,
+    borderWidth: 2
   }
 })

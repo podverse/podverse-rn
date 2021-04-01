@@ -42,6 +42,7 @@ import {
   SettingsScreen,
   SleepTimerScreen,
   TermsOfServiceScreen,
+  LNPaySignupScreen,
   WebPageScreen
 } from './screens'
 import { darkTheme } from './styles'
@@ -165,6 +166,7 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.MembershipScreen]: MembershipScreen,
     [PV.RouteNames.AboutScreen]: AboutScreen,
     [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen,
+    [PV.RouteNames.LNPaySignupScreen]: LNPaySignupScreen,
     [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
     [PV.RouteNames.FAQScreen]: FAQScreen
   },

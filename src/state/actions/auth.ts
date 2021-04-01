@@ -1,10 +1,15 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { Alert } from 'react-native'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { getGlobal, setGlobal } from 'reactn'
 import { safelyUnwrapNestedVariable, shouldShowMembershipAlert } from '../../lib/utility'
 import { PV } from '../../resources'
-import { getAuthenticatedUserInfo, getAuthenticatedUserInfoLocally as getAuthenticatedUserInfoLocallyService,
-  login, signUp } from '../../services/auth'
+import {
+  getAuthenticatedUserInfo,
+  getAuthenticatedUserInfoLocally as getAuthenticatedUserInfoLocallyService,
+  login,
+  signUp
+} from '../../services/auth'
 import { setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
 import { setAllQueueItemsLocally } from '../../services/queue'
 import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
@@ -25,12 +30,14 @@ export const getAuthUserInfo = async () => {
     const userInfo = results[0]
     const isLoggedIn = results[1]
     const shouldShowAlert = shouldShowMembershipAlert(userInfo)
+    const lnPayEnabled = await AsyncStorage.getItem(PV.Keys.LNPAY_ENABLED)
 
     const globalState = getGlobal()
     setGlobal({
       session: {
         userInfo,
-        isLoggedIn
+        isLoggedIn,
+        lightningPayEnabled: lnPayEnabled ? JSON.parse(lnPayEnabled) : false
       },
       overlayAlert: {
         ...globalState.overlayAlert,

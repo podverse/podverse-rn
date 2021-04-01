@@ -5,6 +5,7 @@ import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
+import { removeLNPayWallet, toggleLNPayFeature } from '../state/actions/lnpay'
 import {
   ActivityIndicator,
   Button,
@@ -82,8 +83,8 @@ export class SettingsScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = () => ({
-      title: translate('Settings')
-    })
+    title: translate('Settings')
+  })
 
   async componentDidMount() {
     const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
@@ -319,6 +320,16 @@ export class SettingsScreen extends React.Component<Props, State> {
     }
   }
 
+  _showLightningPaySetup = async (toggle: boolean) => {
+    if (toggle) {
+      this.props.navigation.navigate(PV.RouteNames.LNPaySignupScreen)
+    } else {
+      await removeLNPayWallet()
+      toggleLNPayFeature(false)
+      Alert.alert(translate('LN Pay Wallet Removed'), translate('All LNPay data have been deleted from this device'))
+    }
+  }
+
   render() {
     const {
       deleteAccountDialogConfirmed,
@@ -343,7 +354,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       globalTheme,
       session
     } = this.global
-    const { isLoggedIn } = session
+    const { isLoggedIn, lightningPayEnabled } = session
 
     const isDarkMode = globalTheme === darkTheme
 
@@ -473,6 +484,20 @@ export class SettingsScreen extends React.Component<Props, State> {
                     value={!!customWebDomainEnabled}
                   />
                 </View>
+                {isLoggedIn && (
+                  <View style={styles.itemWrapper}>
+                    <SwitchWithText
+                      onValueChange={this._showLightningPaySetup}
+                      subText={
+                        // eslint-disable-next-line max-len
+                        translate('Enable this experimental feature to sign up for Lightning Pay and support Podcasts through Boost')
+                      }
+                      testID={`${testIDPrefix}_lightningPay_mode`}
+                      text={translate(`Enable LN Pay`)}
+                      value={lightningPayEnabled}
+                    />
+                  </View>
+                )}
               </View>
             )}
             <Divider style={styles.divider} />

@@ -104,7 +104,8 @@ const initialTheme: InitialState = {
       subscribedPodcastIds: [],
       subscribedUserIds: []
     },
-    isLoggedIn: false
+    isLoggedIn: false,
+    lightningPayEnabled: false
   },
   subscribedPodcasts: [],
   subscribedPodcastsTotalCount: 0,

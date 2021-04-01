@@ -48,5 +48,8 @@ export const URLs = {
     }
   },
   webDefaultBaseUrl,
-  webPaths
+  webPaths,
+  lnpay: {
+    baseUrl: 'https://lnpay.co/v1'
+  }
 }

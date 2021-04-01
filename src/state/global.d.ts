@@ -87,7 +87,8 @@ declare module 'reactn/default' {
     }
     session: {
       isLoggedIn: boolean
-      userInfo: UserInfo
+      userInfo: UserInfo,
+      lightningPayEnabled: boolean
     }
     subscribedPodcasts: []
     subscribedPodcastsTotalCount: number
