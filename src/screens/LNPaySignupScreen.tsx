@@ -1,6 +1,6 @@
 import { Linking, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { createWallet } from '../services/lightningNetwork'
+import { createWallet } from '../services/lnpay'
 import { Button, Divider, ScrollView, Text, TextInput, View } from '../components'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
@@ -25,7 +25,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = () => ({
-    title: translate('LN PAY SIGNUP')
+    title: translate('LNPay Signup')
   })
 
   componentDidMount() {
@@ -52,15 +52,14 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
       translate('LNPayDescriptionText2'),
       translate('LNPayDescriptionText3')
     ]
-    const lnpayDasboardUrl = 'https://lnpay.co/developers/dashboard'
 
     return (
       <View style={styles.content} {...testProps('lnpay_signup_screen_view')}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {instructions[0]}
-            <Text style={this.global.globalTheme.link} onPress={() => Linking.openURL(lnpayurl)}>
-              {lnpayDasboardUrl}
+            <Text style={this.global.globalTheme.link} onPress={() => Linking.openURL(PV.LNPay.DeveloperDashboardUrl)}>
+              {PV.LNPay.DeveloperDashboardUrl}
             </Text>
           </Text>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>

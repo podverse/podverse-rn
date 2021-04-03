@@ -10,8 +10,11 @@ import TrackPlayer, { Track } from 'react-native-track-player'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl, getExtensionFromUrl } from '../lib/utility'
+import { convertPodcastIndexValueTagToStandardValueTag } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
+import { setNowPlayingItem } from '../state/actions/player'
 import PVEventEmitter from './eventEmitter'
+import { getPodcastFromPodcastIndexById } from './podcastIndex'
 import {
   addQueueItemLast,
   addQueueItemNext,
@@ -22,7 +25,6 @@ import {
 } from './queue'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally, getHistoryItemsLocally } from './userHistoryItem'
 import { getNowPlayingItem, getNowPlayingItemLocally } from './userNowPlayingItem'
-
 
 declare module "react-native-track-player" {
   export function getCurrentLoadedTrack(): Promise<string>;
@@ -341,6 +343,19 @@ export const loadItemAndPlayTrack = async (
 
   if (lastPlayingItem && lastPlayingItem.episodeId && lastPlayingItem.episodeId !== item.episodeId) {
     PVEventEmitter.emit(PV.Events.PLAYER_NEW_EPISODE_LOADED)
+  }
+
+  if (item.episodeValue || item.podcastValue) {
+    PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
+  } else if (item.podcastIndexPodcastId) {
+    const podcastIndexPodcast = await getPodcastFromPodcastIndexById(item.podcastIndexPodcastId)
+    const podcastIndexPodcastValueTag = podcastIndexPodcast?.feed?.value
+    if (podcastIndexPodcastValueTag?.model && podcastIndexPodcastValueTag?.destinations) {
+      const podcastValue = convertPodcastIndexValueTagToStandardValueTag(podcastIndexPodcastValueTag)
+      item.podcastValue = podcastValue
+      await setNowPlayingItem(item, item.userPlaybackPosition || 0)
+      PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
+    }
   }
 }
 

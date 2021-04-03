@@ -13,29 +13,6 @@ export interface LNWallet {
   }
 }
 
-export interface Value {
-  model: Model
-  destinations: DestinationsEntity[]
-}
-
-export interface Model {
-  type: string
-  method: string
-  suggested: string
-}
-
-export interface DestinationsEntity {
-  name: string
-  address: string
-  type: string
-  split: number
-  normalizedSplit?: number
-  customKey?: string
-  customValue?: unknown
-  fee?: boolean | null
-  amount?: number
-}
-
 export const toggleLNPayFeature = async (toggle: boolean) => {
   const globalState = getGlobal()
 
@@ -68,45 +45,4 @@ export const getLNWallet = async (): Promise<LNWallet | null> => {
 
 export const removeLNPayWallet = () => {
   return RNSecureKeyStore.remove(PV.Keys.LN_WALLET_KEY)
-}
-
-export const calculateSplit = (destinations: DestinationsEntity[], total: number) => {
-  destinations = normalizeSplit(destinations)
-  const feeRecepient = destinations.find((receiver) => receiver.fee === true)
-  let feeAmount = 0
-  if (feeRecepient) {
-    feeAmount = (total / 100) * (feeRecepient.normalizedSplit || 0)
-    total = total - feeAmount
-  }
-
-  const splitAmounts: DestinationsEntity[] = []
-  for (const receiver of destinations) {
-    let amount = (total / 100) * (receiver.normalizedSplit || 0)
-
-    if (feeAmount && receiver.fee) {
-      amount = feeAmount
-    }
-
-    splitAmounts.push({
-      ...receiver,
-      amount: Math.round(amount)
-    })
-  }
-
-  return splitAmounts
-}
-
-const normalizeSplit = (destinations: DestinationsEntity[]) => {
-  const totalSplit = destinations.reduce((total, destination) => {
-    return total + destination.split
-  }, 0)
-
-  destinations = destinations.map((destination) => {
-    return {
-      ...destination,
-      normalizedSplit: (destination.split / totalSplit) * 100
-    }
-  })
-
-  return destinations
 }
