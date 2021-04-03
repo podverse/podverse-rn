@@ -80,7 +80,7 @@ export const sendPayments = async (destinationData: Value) => {
       const userWallet = await getLNWallet()
       if (userWallet) {
         for (const destination of destinationData.destinations) {
-          const customData = destination.customKey ? { [destination.customKey]: [destination.customValue] } : {}
+          const customData = destination.customKey ? { [destination.customKey]: destination.customValue } : {}
           const recepient: Recepient = {
             address: destination.address,
             amount: destination.split,
