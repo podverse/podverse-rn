@@ -1,47 +1,12 @@
 import { Alert, Linking, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View as RNView } from 'react-native'
 
 import React from 'reactn'
-import { sendPayments } from '../services/lightningNetwork'
+import { sendPayments } from '../services/lnpay'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { ActivityIndicator, FastImage, Text, TextTicker } from './'
-
-const customValueStruct = {
-  model: {
-    type: 'lightning',
-    method: 'keysend',
-    suggested: '0.00000005000'
-  },
-  destinations: [
-    {
-      name: 'Adam Curry (Podcaster)',
-      address: '02b92193a4c9d035c81f8076ae4a4aba04b7ea8e04058eb3296f894e6ccd5f2e6e',
-      type: 'node',
-      split: 2
-    },
-    {
-      name: 'Dave Jones (Podcaster)',
-      address: '02b92193a4c9d035c81f8076ae4a4aba04b7ea8e04058eb3296f894e6ccd5f2e6e',
-      type: 'node',
-      split: 2
-    },
-    {
-      name: 'Dreb Scott (Chapters)',
-      address: '02b92193a4c9d035c81f8076ae4a4aba04b7ea8e04058eb3296f894e6ccd5f2e6e',
-      type: 'node',
-      split: 2
-    },
-    {
-      name: 'Podcastindex.org',
-      address: '02b92193a4c9d035c81f8076ae4a4aba04b7ea8e04058eb3296f894e6ccd5f2e6e',
-      type: 'node',
-      fee: true,
-      split: 2
-    }
-  ]
-}
 
 type Props = {
   handlePressClipInfo: any
@@ -73,7 +38,9 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
   }
 
   _attemptBoost = () => {
-    sendPayments(customValueStruct)
+    const { nowPlayingItem } = this.global.player
+    const valueTag = nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
+    sendPayments(valueTag)
   }
 
   render() {

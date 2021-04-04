@@ -1,9 +1,10 @@
 import axios from 'axios'
 import { Alert } from 'react-native'
-import { getLNWallet, LNWallet, Value } from '../state/actions/lnpay'
+import { calculateSplit, Value } from '../lib/valueTagHelpers'
+import { getLNWallet, LNWallet } from '../state/actions/lnpay'
 import { PV } from '../resources'
 
-type Request = {
+type LNPayRequest = {
   endpoint?: string
   query?: any
   body?: any
@@ -12,13 +13,13 @@ type Request = {
   opts?: any
 }
 
-type Recepient = {
+type LNPayRecipient = {
   address: string
   amount: number
   customData: Record<string, unknown>
 }
 
-const request = async (req: Request) => {
+const request = async (req: LNPayRequest) => {
   const { endpoint = '', query = {}, headers = {}, body, method = 'GET', opts = {} } = req
 
   const queryString = Object.keys(query)
@@ -73,21 +74,31 @@ export const getAllWallets = (apiKey = '') => {
   })
 }
 
-export const sendPayments = async (destinationData: Value) => {
+export const sendPayments = async (valueData: Value) => {
   let error = null
+  let boostWasSent = false
+
   try {
-    if (destinationData.model.type === 'lightning' && destinationData.model.method === 'keysend') {
+    if (
+      valueData?.type === 'lightning' && valueData?.method === 'keysend' && Array.isArray(valueData?.valueRecipients)
+    ) {
       const userWallet = await getLNWallet()
+      
       if (userWallet) {
-        for (const destination of destinationData.destinations) {
-          const customData = destination.customKey ? { [destination.customKey]: destination.customValue } : {}
-          const recepient: Recepient = {
-            address: destination.address,
-            amount: destination.split,
+        const normalizedValueRecipients = calculateSplit(valueData.valueRecipients, 10)
+        for (const normalizedValueRecipient of normalizedValueRecipients) {
+          const customData = normalizedValueRecipient.customKey
+            ? { [normalizedValueRecipient.customKey]: normalizedValueRecipient.customValue }
+            : {}
+          const recipient: LNPayRecipient = {
+            address: normalizedValueRecipient.address,
+            amount: normalizedValueRecipient.normalizedSplit || 0,
             customData
           }
+
           try {
-            await sendPayment(userWallet, recepient)
+            await sendPayment(userWallet, recipient)
+            boostWasSent = true
           } catch (paymentError) {
             error = paymentError
           }
@@ -95,17 +106,19 @@ export const sendPayments = async (destinationData: Value) => {
       }
     }
   } catch (err) {
-    console.log('Error Sending LNPayment: ', error)
+    console.log('Error Sending LNPayment: ', err)
   }
 
-  if (error) {
+  if (error?.response?.data?.message) {
+    Alert.alert('LNPay Error', `${error?.response?.data?.message}`)
+  } else if (!boostWasSent) {
     Alert.alert('LNPay Error', 'Something went wrong with one or more payments.')
-  } else {
+  } else if (boostWasSent) {
     Alert.alert('Boost sent!')
   }
 }
 
-const sendPayment = (wallet: LNWallet, recepient: Recepient) => {
+const sendPayment = (wallet: LNWallet, recipient: LNPayRecipient) => {
   return request({
     method: 'POST',
     endpoint: '/wallet/' + wallet.access_keys['Wallet Admin'][0] + '/keysend',
@@ -113,9 +126,9 @@ const sendPayment = (wallet: LNWallet, recepient: Recepient) => {
       'X-Api-Key': wallet.publicKey
     },
     body: {
-      dest_pubkey: recepient.address,
-      num_satoshis: recepient.amount,
-      passThru: recepient.customData
+      dest_pubkey: recipient.address,
+      num_satoshis: recipient.amount,
+      passThru: recipient.customData
     }
   })
 }
