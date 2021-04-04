@@ -1,4 +1,4 @@
-import { Animated, Modal, Text, TouchableHighlight, View } from 'react-native'
+import { Animated, Modal, Text, TouchableHighlight, View, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -151,6 +151,12 @@ export class PVActionSheet extends React.Component<Props, State> {
     return buttons
   }
 
+  attemptClose = () => {
+    if (this.props.handleCancelPress) {
+      this.props.handleCancelPress()
+    }
+  }
+
   render() {
     const { children, items, message, showModal, title } = this.props
     const { fontScaleMode, globalTheme } = this.global
@@ -167,8 +173,11 @@ export class PVActionSheet extends React.Component<Props, State> {
     }
 
     return (
-      <Modal transparent visible={showModal}>
-        <View style={[actionSheetStyles.backdrop, globalTheme.modalBackdrop]}>
+      <Modal transparent visible={showModal} onRequestClose={this.attemptClose}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={this.attemptClose}
+          style={[actionSheetStyles.backdrop, globalTheme.modalBackdrop]}>
           <Animated.View
             style={[
               actionSheetStyles.animatedView,
@@ -188,7 +197,7 @@ export class PVActionSheet extends React.Component<Props, State> {
             )}
             {buttons}
           </Animated.View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     )
   }

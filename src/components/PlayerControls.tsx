@@ -65,7 +65,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
   }
 
   _playerJumpBackward = async () => {
-    const progressValue = await playerJumpBackward(PV.Player.jumpSeconds)
+    const progressValue = await playerJumpBackward(PV.Player.jumpBackSeconds)
     this.setState({ progressValue })
     debouncedPlayerJumpBackward()
   }
@@ -150,12 +150,12 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             <TouchableOpacity
               onPress={this._returnToBeginningOfTrack}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
-              {this._renderPlayerControlIcon(PV.Images.PREV_TRACK,'player_controls_previous_track')}
+              {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, 'player_controls_previous_track')}
             </TouchableOpacity>
             <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
               {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, 'player_controls_jump_backward')}
               <View style={styles.skipTimeTextWrapper}>
-                <Text style={styles.skipTimeText}>30</Text>
+                <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
@@ -173,13 +173,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               )}
             </TouchableOpacity>
             <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
-              {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD,'player_controls_step_forward')}
+              {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, 'player_controls_step_forward')}
               <View style={styles.skipTimeTextWrapper}>
-                <Text style={styles.skipTimeText}>30</Text>
+                <Text style={styles.skipTimeText}>{PV.Player.jumpSeconds}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={playNextFromQueue} style={[playerStyles.icon, { flexDirection: 'row' }]}>
-              {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK,'player_controls_skip_track')}
+              {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, 'player_controls_skip_track')}
             </TouchableOpacity>
           </View>
         </View>

@@ -12,7 +12,6 @@ import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl, getExtensionFromUrl } from '../lib/utility'
 import { convertPodcastIndexValueTagToStandardValueTag } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
-import { setNowPlayingItem } from '../state/actions/player'
 import PVEventEmitter from './eventEmitter'
 import { getPodcastFromPodcastIndexById } from './podcastIndex'
 import {
@@ -109,7 +108,8 @@ export const updateTrackPlayerCapabilities = () => {
     // every time the user receives a notification.
     alwaysPauseOnInterruption: Platform.OS === 'ios',
     stopWithApp: true,
-    jumpInterval: PV.Player.jumpSeconds
+    // Better to skip 10 both ways than to skip 30 both ways. No current way to set them separately
+    jumpInterval: PV.Player.jumpBackSeconds
   })
 }
 
@@ -353,7 +353,10 @@ export const loadItemAndPlayTrack = async (
     if (podcastIndexPodcastValueTag?.model && podcastIndexPodcastValueTag?.destinations) {
       const podcastValue = convertPodcastIndexValueTagToStandardValueTag(podcastIndexPodcastValueTag)
       item.podcastValue = podcastValue
-      await setNowPlayingItem(item, item.userPlaybackPosition || 0)
+
+      // Make sure the item is saved to both UserHistoryItems and UserNowPlayingItem
+      // so getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId will have the correct value saved.
+      await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0)
       PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
     }
   }
