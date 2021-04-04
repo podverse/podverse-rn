@@ -66,7 +66,7 @@ export const calculateSplit = (valueRecipients: ValueRecipient[], total: number)
 
     splitAmounts.push({
       ...valueRecipient,
-      amount: Math.round(amount)
+      amount: Math.floor(amount)
     })
   }
 
