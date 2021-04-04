@@ -109,7 +109,8 @@ export const updateTrackPlayerCapabilities = () => {
     // every time the user receives a notification.
     alwaysPauseOnInterruption: Platform.OS === 'ios',
     stopWithApp: true,
-    jumpInterval: PV.Player.jumpSeconds
+    // Better to skip 10 both ways than to skip 30 both ways. No current way to set them separately
+    jumpInterval: PV.Player.jumpBackSeconds
   })
 }
 
@@ -502,7 +503,7 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
           // to work around this bug, we set another interval to confirm the track
           // position has been advanced into the clip time.
           const confirmClipLoadedInterval = setInterval(() => {
-            (async () => {
+            ;(async () => {
               const currentPosition = await PVTrackPlayer.getTrackPosition()
               if (currentPosition >= position - 1) {
                 clearInterval(confirmClipLoadedInterval)

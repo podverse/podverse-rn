@@ -202,7 +202,7 @@ module.exports = async () => {
   })
 
   PVTrackPlayer.addEventListener('remote-jump-backward', () => {
-    playerJumpBackward(PV.Player.jumpSeconds)
+    playerJumpBackward(PV.Player.jumpBackSeconds)
   })
 
   PVTrackPlayer.addEventListener('remote-jump-forward', () => {
