@@ -52,17 +52,51 @@ const request = async (req: LNPayRequest) => {
   }
 }
 
-export const createWallet = (apiKey = '', label?: string) => {
-  return request({
-    endpoint: '/wallet',
-    method: 'POST',
-    headers: {
-      'X-Api-Key': apiKey
-    },
-    body: {
-      user_label: label || 'Podverse Wallet'
+export const createWallet = async (apiKey = '', label?: string): Promise<LNWallet | undefined> => {
+  try {
+    const createdWallet = await request({
+      endpoint: '/wallet',
+      method: 'POST',
+      headers: {
+        'X-Api-Key': apiKey
+      },
+      body: {
+        user_label: label || 'Podverse Wallet'
+      }
+    })
+
+    return {
+      id: createdWallet.id,
+      publicKey: apiKey,
+      access_keys: createdWallet.access_keys
     }
-  })
+  } catch (error) {
+    console.log('Wallet creation Error', error)
+    throw new Error('Wallet Creation Failed. ' + error.message)
+  }
+}
+
+export const getWallet = async (walletInfo: LNWallet): Promise<LNWallet | null> => {
+  let existingWallet: LNWallet | null = null
+  try {
+    const resp = await request({
+      endpoint: '/wallet/' + walletInfo.access_keys['Wallet Admin'],
+      headers: {
+        'X-Api-Key': walletInfo.publicKey
+      }
+    })
+    if (resp.id === walletInfo.id) {
+      existingWallet = walletInfo
+    }
+  } catch (error) {
+    if (error.status === 404) {
+      existingWallet = null
+    } else {
+      throw new Error('Wallet Fetch Failed. ' + error.message)
+    }
+  }
+
+  return existingWallet
 }
 
 export const getAllWallets = (apiKey = '') => {
@@ -113,8 +147,9 @@ export const sendPayments = async (valueData: Value) => {
     Alert.alert('LNPay Error', `${error?.response?.data?.message}`)
   } else if (!boostWasSent) {
     Alert.alert('LNPay Error', 'Something went wrong with one or more payments.')
-  } else if (boostWasSent) {
-    Alert.alert('Boost sent!')
+    return false
+  } else {
+    return true
   }
 }
 

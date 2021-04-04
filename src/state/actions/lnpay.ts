@@ -8,8 +8,8 @@ export interface LNWallet {
   publicKey: string
   access_keys: {
     'Wallet Admin': [string]
-    'Wallet Invoice': [string]
-    'Wallet Read': [string]
+    'Wallet Invoice'?: [string]
+    'Wallet Read'?: [string]
   }
 }
 
