@@ -169,6 +169,10 @@ export interface InitialState {
   subscribedPodcasts: []
   subscribedPodcastsTotalCount: number
   userAgent?: string
+  bannerInfo: {
+    show: boolean
+    description: ''
+  }
 }
 
 export interface IActionSheet {

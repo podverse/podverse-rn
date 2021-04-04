@@ -111,7 +111,11 @@ const initialTheme: InitialState = {
   subscribedPodcastsTotalCount: 0,
   urlsAPI: null,
   urlsWeb: null,
-  userAgent: ''
+  userAgent: '',
+  bannerInfo: {
+    show: false,
+    description: ''
+  }
 }
 
 export default initialTheme
