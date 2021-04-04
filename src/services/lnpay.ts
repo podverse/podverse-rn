@@ -76,8 +76,12 @@ export const getAllWallets = (apiKey = '') => {
 
 export const sendPayments = async (valueData: Value) => {
   let error = null
+  let boostWasSent = false
+
   try {
-    if (valueData.type === 'lightning' && valueData.method === 'keysend' && Array.isArray(valueData.valueRecipients)) {
+    if (
+      valueData?.type === 'lightning' && valueData?.method === 'keysend' && Array.isArray(valueData?.valueRecipients)
+    ) {
       const userWallet = await getLNWallet()
       
       if (userWallet) {
@@ -94,6 +98,7 @@ export const sendPayments = async (valueData: Value) => {
 
           try {
             await sendPayment(userWallet, recipient)
+            boostWasSent = true
           } catch (paymentError) {
             error = paymentError
           }
@@ -101,12 +106,14 @@ export const sendPayments = async (valueData: Value) => {
       }
     }
   } catch (err) {
-    console.log('Error Sending LNPayment: ', error)
+    console.log('Error Sending LNPayment: ', err)
   }
 
-  if (error) {
+  if (error?.response?.data?.message) {
+    Alert.alert('LNPay Error', `${error?.response?.data?.message}`)
+  } else if (!boostWasSent) {
     Alert.alert('LNPay Error', 'Something went wrong with one or more payments.')
-  } else {
+  } else if (boostWasSent) {
     Alert.alert('Boost sent!')
   }
 }
