@@ -73,6 +73,7 @@ const errorState = 'error'
 export const Player = {
   defaultSleepTimerInSeconds: 1800,
   errorState,
+  jumpBackSeconds: 10,
   jumpSeconds: 30,
   maximumSpeedSelectOptions,
   miniJumpSeconds: 1,

@@ -136,7 +136,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     const items = this._headerActionSheetButtons()
 
     return (
-      <ActionSheet showModal={showModal} testID={testID}>
+      <ActionSheet showModal={showModal} testID={testID} handleCancelPress={handleDismiss}>
         {items}
         <View
           key='volume'

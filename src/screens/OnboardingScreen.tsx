@@ -60,7 +60,7 @@ export class OnboardingScreen extends React.Component<Props> {
 const styles = StyleSheet.create({
   view: {
     alignItems: 'center',
-    backgroundColor: PV.Colors.brandColor,
+    backgroundColor: PV.Colors.ink,
     flex: 1,
     justifyContent: 'center'
   },
@@ -88,7 +88,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: PV.Colors.gray,
     borderWidth: 1,
-    marginBottom: 200,
     padding: 10,
     width: '80%'
   },
