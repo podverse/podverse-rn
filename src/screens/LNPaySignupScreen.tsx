@@ -58,8 +58,10 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {instructions[0]}
-            <Text style={this.global.globalTheme.link} onPress={() => Linking.openURL(PV.LNPay.DeveloperDashboardUrl)}>
-              {PV.LNPay.DeveloperDashboardUrl}
+            <Text
+              onPress={() => Linking.openURL(PV.URLs.lnpay.DeveloperDashboardUrl)}
+              style={this.global.globalTheme.link}>
+              {PV.URLs.lnpay.DeveloperDashboardUrl}
             </Text>
           </Text>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
