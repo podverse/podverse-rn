@@ -12,7 +12,6 @@ import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl, getExtensionFromUrl } from '../lib/utility'
 import { convertPodcastIndexValueTagToStandardValueTag } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
-import { setNowPlayingItem } from '../state/actions/player'
 import PVEventEmitter from './eventEmitter'
 import { getPodcastFromPodcastIndexById } from './podcastIndex'
 import {
@@ -354,7 +353,10 @@ export const loadItemAndPlayTrack = async (
     if (podcastIndexPodcastValueTag?.model && podcastIndexPodcastValueTag?.destinations) {
       const podcastValue = convertPodcastIndexValueTagToStandardValueTag(podcastIndexPodcastValueTag)
       item.podcastValue = podcastValue
-      await setNowPlayingItem(item, item.userPlaybackPosition || 0)
+
+      // Make sure the item is saved to both UserHistoryItems and UserNowPlayingItem
+      // so getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId will have the correct value saved.
+      await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0)
       PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
     }
   }
@@ -503,7 +505,7 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
           // to work around this bug, we set another interval to confirm the track
           // position has been advanced into the clip time.
           const confirmClipLoadedInterval = setInterval(() => {
-            ;(async () => {
+            (async () => {
               const currentPosition = await PVTrackPlayer.getTrackPosition()
               if (currentPosition >= position - 1) {
                 clearInterval(confirmClipLoadedInterval)
