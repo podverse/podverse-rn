@@ -165,14 +165,18 @@ export interface InitialState {
   session: {
     isLoggedIn: boolean
     userInfo: UserInfo
+    lightningPayEnabled: boolean
+    boostAmount: number
   }
   subscribedPodcasts: []
   subscribedPodcastsTotalCount: number
   userAgent?: string
-  bannerInfo: {
-    show: boolean
-    description: ''
-  }
+  bannerInfo: BannerInfo
+}
+
+export interface BannerInfo {
+  show: boolean
+  description: string
 }
 
 export interface IActionSheet {

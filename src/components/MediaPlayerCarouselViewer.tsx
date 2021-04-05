@@ -37,10 +37,13 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     ])
   }
 
-  _attemptBoost = () => {
+  _attemptBoost = async () => {
     const { nowPlayingItem } = this.global.player
     const valueTag = nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
-    sendPayments(valueTag)
+    const boostSent = await sendPayments(valueTag)
+    if (boostSent) {
+      this.setGlobal({ bannerInfo: { show: true, description: 'Boost Sent!' } })
+    }
   }
 
   render() {

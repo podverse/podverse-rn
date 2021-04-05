@@ -1,5 +1,5 @@
 import 'reactn'
-import { GlobalTheme, UserInfo } from '../resources/Interfaces'
+import { BannerInfo, GlobalTheme, UserInfo } from '../resources/Interfaces'
 
 declare module 'reactn/default' {
   export interface State {
@@ -87,8 +87,9 @@ declare module 'reactn/default' {
     }
     session: {
       isLoggedIn: boolean
-      userInfo: UserInfo,
+      userInfo: UserInfo
       lightningPayEnabled: boolean
+      boostAmount: number
     }
     subscribedPodcasts: []
     subscribedPodcastsTotalCount: number
@@ -99,6 +100,7 @@ declare module 'reactn/default' {
     customWebDomainEnabled?: boolean
     urlsAPI?: any
     urlsWeb?: any
-    userAgent?: string
+    userAgent?: string,
+    bannerInfo: BannerInfo
   }
 }

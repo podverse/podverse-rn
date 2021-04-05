@@ -14,6 +14,7 @@ import { setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
 import { setAllQueueItemsLocally } from '../../services/queue'
 import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemLocally, getNowPlayingItemOnServer } from '../../services/userNowPlayingItem'
+import { DEFAULT_BOOST_PAYMENT } from './lnpay'
 import { getSubscribedPodcasts } from './podcast'
 
 export type Credentials = {
@@ -31,13 +32,15 @@ export const getAuthUserInfo = async () => {
     const isLoggedIn = results[1]
     const shouldShowAlert = shouldShowMembershipAlert(userInfo)
     const lnPayEnabled = await AsyncStorage.getItem(PV.Keys.LNPAY_ENABLED)
+    const boostAmount = await AsyncStorage.getItem(PV.Keys.NFT_BOOST_AMOUNT)
 
     const globalState = getGlobal()
     setGlobal({
       session: {
         userInfo,
         isLoggedIn,
-        lightningPayEnabled: lnPayEnabled ? JSON.parse(lnPayEnabled) : false
+        lightningPayEnabled: lnPayEnabled ? JSON.parse(lnPayEnabled) : false,
+        boostAmount: boostAmount ? Number(boostAmount) : DEFAULT_BOOST_PAYMENT
       },
       overlayAlert: {
         ...globalState.overlayAlert,

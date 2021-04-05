@@ -3,6 +3,9 @@ import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 
+export const DEFAULT_BOOST_PAYMENT = 500
+export const MINIMUM_BOOST_PAYMENT = 10
+
 export interface LNWallet {
   id: string
   publicKey: string
@@ -15,10 +18,12 @@ export interface LNWallet {
 
 export const toggleLNPayFeature = async (toggle: boolean) => {
   const globalState = getGlobal()
-
+  const defaultBoostAmount = DEFAULT_BOOST_PAYMENT
+  
+  await AsyncStorage.setItem(PV.Keys.NFT_BOOST_AMOUNT, String(defaultBoostAmount))
   await AsyncStorage.setItem(PV.Keys.LNPAY_ENABLED, String(toggle))
 
-  setGlobal({ session: { ...globalState.session, lightningPayEnabled: toggle } })
+  setGlobal({ session: { ...globalState.session, lightningPayEnabled: toggle, boostAmount: defaultBoostAmount } })
 }
 
 export const saveLNPayWallet = async (wallet: LNWallet) => {
