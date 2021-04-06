@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Alert } from 'react-native'
+import { getGlobal } from 'reactn'
 import { calculateSplit, Value } from '../lib/valueTagHelpers'
 import { getLNWallet, LNWallet } from '../state/actions/lnpay'
 import { PV } from '../resources'
@@ -110,7 +111,7 @@ export const getAllWallets = (apiKey = '') => {
 
 export const sendPayments = async (valueData: Value) => {
   let error = null
-  let boostWasSent = false
+  let boostsSent = true
 
   try {
     if (
@@ -119,7 +120,7 @@ export const sendPayments = async (valueData: Value) => {
       const userWallet = await getLNWallet()
       
       if (userWallet) {
-        const normalizedValueRecipients = calculateSplit(valueData.valueRecipients, 10)
+        const normalizedValueRecipients = calculateSplit(valueData.valueRecipients, getGlobal().session.boostAmount)
         for (const normalizedValueRecipient of normalizedValueRecipients) {
           const customData = normalizedValueRecipient.customKey
             ? { [normalizedValueRecipient.customKey]: normalizedValueRecipient.customValue }
@@ -132,9 +133,10 @@ export const sendPayments = async (valueData: Value) => {
 
           try {
             await sendPayment(userWallet, recipient)
-            boostWasSent = true
           } catch (paymentError) {
+            boostsSent = false
             error = paymentError
+            console.log("LN Boost Payment error: ", paymentError)
           }
         }
       }
@@ -145,7 +147,8 @@ export const sendPayments = async (valueData: Value) => {
 
   if (error?.response?.data?.message) {
     Alert.alert('LNPay Error', `${error?.response?.data?.message}`)
-  } else if (!boostWasSent) {
+    return false
+  } else if (!boostsSent) {
     Alert.alert('LNPay Error', 'Something went wrong with one or more payments.')
     return false
   } else {

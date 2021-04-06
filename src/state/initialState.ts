@@ -1,5 +1,6 @@
 import { PV } from '../resources'
 import { InitialState } from '../resources/Interfaces'
+import { DEFAULT_BOOST_PAYMENT } from './actions/lnpay'
 
 const initialTheme: InitialState = {
   globalTheme: {},
@@ -105,7 +106,8 @@ const initialTheme: InitialState = {
       subscribedUserIds: []
     },
     isLoggedIn: false,
-    lightningPayEnabled: false
+    lightningPayEnabled: false,
+    boostAmount: DEFAULT_BOOST_PAYMENT
   },
   subscribedPodcasts: [],
   subscribedPodcastsTotalCount: 0,
@@ -114,7 +116,7 @@ const initialTheme: InitialState = {
   userAgent: '',
   bannerInfo: {
     show: false,
-    description: ''
+    description: '',
   }
 }
 

@@ -51,6 +51,7 @@ export const DropdownBanner = (props: Props) => {
         }
       ]}>
       <TouchableOpacity
+        activeOpacity={1}
         onPress={() => {
           clearBanner()
         }}>
@@ -79,6 +80,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   descriptionStyle: {
-    fontSize: PV.Fonts.sizes.large
+    fontSize: PV.Fonts.sizes.xxl
   }
 })
