@@ -1,6 +1,6 @@
 import axios from 'axios'
+import { ValueTransaction } from 'podverse-shared'
 import { Alert } from 'react-native'
-import { calculateSplit, Value } from '../lib/valueTagHelpers'
 import { getLNWallet, LNWallet } from '../state/actions/lnpay'
 import { PV } from '../resources'
 
@@ -13,10 +13,11 @@ type LNPayRequest = {
   opts?: any
 }
 
-type LNPayRecipient = {
-  address: string
-  amount: number
-  customData: Record<string, unknown>
+type LNPayKeysendRequestBody = {
+  passThru: Record<string, unknown>
+  dest_pubkey: string
+  num_satoshis: number
+  custom_records: Record<string, unknown>
 }
 
 const request = async (req: LNPayRequest) => {
@@ -108,62 +109,52 @@ export const getAllWallets = (apiKey = '') => {
   })
 }
 
-export const sendPayments = async (valueData: Value) => {
+const generateLNPayKeysendRequestBody = (valueTransaction: ValueTransaction) => {
+  const { address, amount } = valueTransaction.normalizedValueRecipient
+  return {
+    passThru: {},
+    dest_pubkey: address,
+    num_satoshis: amount,
+    custom_records: {},
+  } as LNPayKeysendRequestBody
+}
+
+export const sendLNPayValueTransaction = async (valueTransaction: ValueTransaction) => {
   let error = null
-  let boostWasSent = false
-
+  let paymentWasSuccessful = false
+  
   try {
-    if (
-      valueData?.type === 'lightning' && valueData?.method === 'keysend' && Array.isArray(valueData?.valueRecipients)
-    ) {
-      const userWallet = await getLNWallet()
-      
-      if (userWallet) {
-        const normalizedValueRecipients = calculateSplit(valueData.valueRecipients, 10)
-        for (const normalizedValueRecipient of normalizedValueRecipients) {
-          const customData = normalizedValueRecipient.customKey
-            ? { [normalizedValueRecipient.customKey]: normalizedValueRecipient.customValue }
-            : {}
-          const recipient: LNPayRecipient = {
-            address: normalizedValueRecipient.address,
-            amount: normalizedValueRecipient.normalizedSplit || 0,
-            customData
-          }
-
-          try {
-            await sendPayment(userWallet, recipient)
-            boostWasSent = true
-          } catch (paymentError) {
-            error = paymentError
-          }
-        }
+    const userWallet = await getLNWallet()
+    
+    if (userWallet) {
+      const lnpayKeysendRequestBody = generateLNPayKeysendRequestBody(valueTransaction)
+      try {
+        await sendLNPayKeysendRequest(userWallet, lnpayKeysendRequestBody)
+        paymentWasSuccessful = true
+      } catch (paymentError) {
+        error = paymentError
       }
     }
   } catch (err) {
-    console.log('Error Sending LNPayment: ', err)
+    error = err
   }
 
   if (error?.response?.data?.message) {
     Alert.alert('LNPay Error', `${error?.response?.data?.message}`)
-  } else if (!boostWasSent) {
+  } else if (!paymentWasSuccessful || error) {
     Alert.alert('LNPay Error', 'Something went wrong with one or more payments.')
-    return false
-  } else {
-    return true
   }
+
+  return paymentWasSuccessful
 }
 
-const sendPayment = (wallet: LNWallet, recipient: LNPayRecipient) => {
+const sendLNPayKeysendRequest = async (wallet: LNWallet, body: LNPayKeysendRequestBody) => {
   return request({
     method: 'POST',
     endpoint: '/wallet/' + wallet.access_keys['Wallet Admin'][0] + '/keysend',
     headers: {
       'X-Api-Key': wallet.publicKey
     },
-    body: {
-      dest_pubkey: recipient.address,
-      num_satoshis: recipient.amount,
-      passThru: recipient.customData
-    }
+    body
   })
 }

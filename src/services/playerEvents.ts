@@ -6,7 +6,6 @@ import BackgroundTimer from 'react-native-background-timer'
 import { PV } from '../resources'
 import { hideMiniPlayer, updatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
-import { removeQueueItem } from '../state/actions/queue'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
