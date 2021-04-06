@@ -7472,9 +7472,9 @@ plugin-error@^0.1.2:
     extend-shallow "^1.1.2"
 
 podverse-shared@^1.0.13:
-  version "1.0.22"
-  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-1.0.22.tgz#b4ed513cbd0db582cfa97e3058c64b8fb44187c1"
-  integrity sha512-35QjGIbDZ1m4VjbEHjr8s+gfBwK3ZtPiIWSb9BipQvJrae4tthovg0oOz1Wus1esyGEbUr7MQNRlAb/+cibysQ==
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-1.0.23.tgz#e5f17d28cdd10deafa54b974875ba430afabe359"
+  integrity sha512-p9nlq1C0pZHH9ImOneI6owhWG60YYAGPxcYiATPro7/k0Qv4+kz8fyK+giDlbDTFtrImySGDfT1UN8EzILMRew==
   dependencies:
     typescript "3.7.2"
 

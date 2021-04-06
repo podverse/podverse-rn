@@ -14,7 +14,7 @@ type LNPayRequest = {
 }
 
 type LNPayKeysendRequestBody = {
-  passThru: Record<string, unknown>
+  // passThru: Record<string, unknown>
   dest_pubkey: string
   num_satoshis: number
   custom_records: Record<string, unknown>
@@ -111,11 +111,13 @@ export const getAllWallets = (apiKey = '') => {
 
 const generateLNPayKeysendRequestBody = (valueTransaction: ValueTransaction) => {
   const { address, amount } = valueTransaction.normalizedValueRecipient
+  const { satoshiStreamStats } = valueTransaction
+  
   return {
-    passThru: {},
+    // passThru: {},
     dest_pubkey: address,
     num_satoshis: amount,
-    custom_records: {},
+    custom_records: satoshiStreamStats,
   } as LNPayKeysendRequestBody
 }
 

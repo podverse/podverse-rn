@@ -143,10 +143,7 @@ export const playNextFromQueue = async () => {
   const item = await playNextFromQueueService()
   await getQueueItems()
 
-  if (item) {
-    const globalState = getGlobal()
-    trackPlayerScreenPageView(item, globalState)
-  }
+  if (item) trackPlayerScreenPageView(item)
 }
 
 const handleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem) => {

@@ -129,15 +129,16 @@ const convertValueTagIntoValueTransaction = async (
 ) => {
   const timestamp = Date.now()
   const speed = await PVTrackPlayer.getRate()
+  const currentPlaybackPosition = await PVTrackPlayer.getPosition()
   const pubkey = 'podverse-dev-test-pubkey'
 
   const satoshiStreamStats = createSatoshiStreamStats(
     nowPlayingItem,
-    timestamp,
+    currentPlaybackPosition.toString(),
     action,
-    speed,
+    speed.toString(),
     pubkey,
-    normalizedValueRecipient.amount
+    normalizedValueRecipient.amount.toString()
   )
 
   return {
