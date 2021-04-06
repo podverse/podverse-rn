@@ -1,11 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
-import { Alert, StyleSheet } from 'react-native'
+import { Alert, Keyboard, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { removeLNPayWallet, toggleLNPayFeature } from '../state/actions/lnpay'
+import { MINIMUM_BOOST_PAYMENT, removeLNPayWallet, toggleLNPayFeature } from '../state/actions/lnpay'
 import {
   ActivityIndicator,
   Button,
@@ -15,6 +15,7 @@ import {
   ScrollView,
   SwitchWithText,
   Text,
+  TextInput,
   View
 } from '../components'
 import {
@@ -354,7 +355,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       globalTheme,
       session
     } = this.global
-    const { isLoggedIn, lightningPayEnabled } = session
+    const { isLoggedIn, lightningPayEnabled, boostAmount } = session
 
     const isDarkMode = globalTheme === darkTheme
 
@@ -488,14 +489,30 @@ export class SettingsScreen extends React.Component<Props, State> {
                   <View style={styles.itemWrapper}>
                     <SwitchWithText
                       onValueChange={this._showLightningPaySetup}
-                      subText={
-                        // eslint-disable-next-line max-len
-                        translate('Enable this experimental feature to sign up for Lightning Pay and support Podcasts through Boost')
-                      }
+                      subText={translate('Enable Lightning Pay switch description')}
                       testID={`${testIDPrefix}_lightningPay_mode`}
                       text={translate(`Enable LN Pay`)}
                       value={lightningPayEnabled}
                     />
+                    {lightningPayEnabled && (
+                      <TextInput
+                        placeholder={translate('Boost Amount')}
+                        eyebrowTitle={translate('Boost Amount')}
+                        keyboardType='numeric'
+                        wrapperStyle={{ marginVertical: 20 }}
+                        onBlur={() => {
+                          if (this.global.session.boostAmount < MINIMUM_BOOST_PAYMENT) {
+                            this.setGlobal({ session: { ...session, boostAmount: MINIMUM_BOOST_PAYMENT } })
+                          }
+                        }}
+                        onSubmitEditing={() => Keyboard.dismiss()}
+                        value={`${boostAmount}`}
+                        onChangeText={(newText: string) => {
+                          this.setGlobal({ session: { ...session, boostAmount: Number(newText) } })
+                          AsyncStorage.setItem(PV.Keys.NFT_BOOST_AMOUNT, newText)
+                        }}
+                      />
+                    )}
                   </View>
                 )}
               </View>

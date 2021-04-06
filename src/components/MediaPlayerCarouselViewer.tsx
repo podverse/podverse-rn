@@ -41,7 +41,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     const { nowPlayingItem } = this.global.player
     const allPaymentsWereSent = await sendBoost(nowPlayingItem)
     if (allPaymentsWereSent) {
-      // this.setGlobal({ bannerInfo: { show: true, description: translate('Boost Sent') } })
+      this.setGlobal({ bannerInfo: { show: true, description: 'Boost Sent!' } })
     } else {
       // Error alerts are thrown within the sendBoost's valueTransaction handlers
     }
