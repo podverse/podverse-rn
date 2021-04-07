@@ -292,6 +292,8 @@ export const loadItemAndPlayTrack = async (
 ) => {
   if (!item) return
 
+  let newItem = item
+
   const skipSetNowPlaying = true
   updateUserPlaybackPosition(skipSetNowPlaying)
 
@@ -353,13 +355,15 @@ export const loadItemAndPlayTrack = async (
     if (podcastIndexPodcastValueTag?.model && podcastIndexPodcastValueTag?.destinations) {
       const podcastValue = convertPodcastIndexValueTagToStandardValueTag(podcastIndexPodcastValueTag)
       item.podcastValue = podcastValue
-
       // Make sure the item is saved to both UserHistoryItems and UserNowPlayingItem
       // so getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId will have the correct value saved.
       await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0)
       PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
+      newItem = item
     }
   }
+
+  return newItem
 }
 
 export const playNextFromQueue = async () => {

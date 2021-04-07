@@ -1,9 +1,9 @@
 import { Alert, Linking, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View as RNView } from 'react-native'
 
 import React from 'reactn'
-import { sendPayments } from '../services/lnpay'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
+import { sendBoost } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { ActivityIndicator, FastImage, Text, TextTicker } from './'
@@ -39,10 +39,11 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
 
   _attemptBoost = async () => {
     const { nowPlayingItem } = this.global.player
-    const valueTag = nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
-    const boostSent = await sendPayments(valueTag)
-    if (boostSent) {
+    const allPaymentsWereSent = await sendBoost(nowPlayingItem)
+    if (allPaymentsWereSent) {
       this.setGlobal({ bannerInfo: { show: true, description: 'Boost Sent!' } })
+    } else {
+      // Error alerts are thrown within the sendBoost's valueTransaction handlers
     }
   }
 

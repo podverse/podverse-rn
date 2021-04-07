@@ -143,10 +143,7 @@ export const playNextFromQueue = async () => {
   const item = await playNextFromQueueService()
   await getQueueItems()
 
-  if (item) {
-    const globalState = getGlobal()
-    trackPlayerScreenPageView(item, globalState)
-  }
+  if (item) trackPlayerScreenPageView(item)
 }
 
 const handleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem) => {
@@ -183,7 +180,12 @@ export const loadItemAndPlayTrack = async (
     }
 
     await updatePlayerState(item)
-    await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate)
+
+    // If the value tag is unavailable, try to enrich it from Podcast Index API
+    // then make sure the enrichedItem is on global state.
+    const enrichedItem = await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate)
+    if (enrichedItem) await updatePlayerState(enrichedItem)
+
     showMiniPlayer()
   }
 
@@ -195,8 +197,7 @@ export const loadItemAndPlayTrack = async (
       }
     },
     () => {
-      const globalState = getGlobal()
-      trackPlayerScreenPageView(item, globalState)
+      trackPlayerScreenPageView(item)
       loadChaptersForNowPlayingItem(item)
     }
   )
