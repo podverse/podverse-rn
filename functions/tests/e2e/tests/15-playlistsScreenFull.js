@@ -21,7 +21,7 @@ const test15_playlistsScreenFull = async () => {
 
     // Playlists Screen
   await elementByIdAndClickAndTest('my_library_screen_playlists_cell', 'playlists_screen_view')
-  await elementByIdAndClickAndTest('playlists_screen_playlist_item_0', 'playlist_screen_view')
+  await elementByIdAndClickAndTest('playlists_screen_playlist_section-my-playlists_item_0', 'playlist_screen_view')
   await elementByIdAndClickAndTest('playlist_screen_edit_icon_button', 'edit_playlist_screen_view')
   await elementByIdAndClickAndTest('edit_playlist_screen_nav_header_button_text', 'edit_playlist_screen_view')
   await sendKeysToElementById('edit_playlist_screen_title_text_input', 'Edited Playlist Title', 'Edit Playlist Title')
