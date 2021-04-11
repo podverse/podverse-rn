@@ -57,7 +57,7 @@ const calculateNormalizedSplits = (valueRecipients: ValueRecipient[]) => {
 
 const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipientNormalized) => 
   !!(normalizedValueRecipient?.address
-  && (normalizedValueRecipient?.amount >= 0)
+  && (normalizedValueRecipient?.amount >= 0) // TODO: this shouldn't allow 0
   && (normalizedValueRecipient?.normalizedSplit > 0)
   && (normalizedValueRecipient?.split > 0)
   && normalizedValueRecipient?.type)
