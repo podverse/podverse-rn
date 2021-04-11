@@ -50,17 +50,17 @@ const calculateNormalizedSplits = (valueRecipients: ValueRecipient[]) => {
     }
   })
 
-  normalizedValueRecipients = normalizedValueRecipients.filter((x) => !isValidNormalizedValueRecipient(x))
+  normalizedValueRecipients = normalizedValueRecipients.filter((x) => isValidNormalizedValueRecipient(x))
 
   return normalizedValueRecipients
 }
 
 const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipientNormalized) => 
-  normalizedValueRecipient?.address
-  && (normalizedValueRecipient?.amount > 0)
+  !!(normalizedValueRecipient?.address
+  && (normalizedValueRecipient?.amount >= 0)
   && (normalizedValueRecipient?.normalizedSplit > 0)
   && (normalizedValueRecipient?.split > 0)
-  && normalizedValueRecipient?.type
+  && normalizedValueRecipient?.type)
 
 export const normalizeValueRecipients = (valueRecipients: ValueRecipient[], total: number) => {
   const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(valueRecipients)
