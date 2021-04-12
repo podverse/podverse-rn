@@ -6,9 +6,9 @@ import { PV } from '../resources'
 import { Icon, Text } from '.'
 
 export const DropdownButton = (props: any) => {
-  const { hideFilter, onPress, sortLabel, testID } = props
+  const { disableFilter, onPress, sortLabel, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
-  const dropdownStyle = hideFilter ? { opacity: 0.0 } : {}
+  const dropdownStyle = disableFilter ? { opacity: 0.0 } : {}
 
   const extraStyles = []
 
@@ -17,7 +17,7 @@ export const DropdownButton = (props: any) => {
   }
 
   return (
-    <TouchableWithoutFeedback disabled={hideFilter} onPress={onPress} {...testProps(`${testID}_dropdown_button`)}>
+    <TouchableWithoutFeedback disabled={disableFilter} onPress={onPress} {...testProps(`${testID}_dropdown_button`)}>
       <View style={[styles.dropdownButton, dropdownStyle, extraStyles]}>
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}

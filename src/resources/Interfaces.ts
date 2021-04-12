@@ -1,3 +1,5 @@
+import { TranscriptRow } from "src/lib/transcriptHelpers";
+
 export interface GlobalTheme {
   actionSheetButton?: any
   actionSheetButtonCancel?: any

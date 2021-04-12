@@ -49,7 +49,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props> {
         )}
         <View style={styles.showNotesWrapper} transparent>
           <TableSectionSelectors
-            hideFilter
+            disableFilter
             includePadding
             selectedFilterLabel={translate('Show Notes')}
           />

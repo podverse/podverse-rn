@@ -12,7 +12,7 @@ type PVRequest = {
   opts?: any
 }
 
-export const request = async (req: PVRequest) => {
+export const request = async (req: PVRequest, customUrl?: string) => {
   const { endpoint = '', query = {}, headers = {}, body, method = 'GET', opts = {} } = req
 
   const queryString = Object.keys(query)
@@ -24,7 +24,7 @@ export const request = async (req: PVRequest) => {
   const userAgent = getAppUserAgent()
   const urlsApi = await PV.URLs.api()
 
-  const url = `${urlsApi.baseUrl}${endpoint}?${queryString}`
+  const url = customUrl ? customUrl : `${urlsApi.baseUrl}${endpoint}?${queryString}`
 
   const axiosRequest = {
     url,

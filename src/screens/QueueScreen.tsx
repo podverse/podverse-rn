@@ -342,7 +342,7 @@ export class QueueScreen extends React.Component<Props, State> {
               <View transparent={isTransparent}>
                 <View style={styles.headerNowPlayingItemWrapper} transparent={isTransparent}>
                   <TableSectionSelectors
-                    hideFilter
+                    disableFilter
                     includePadding
                     selectedFilterLabel={translate('Now Playing')}
                     textStyle={styles.sectionHeaderText}
@@ -364,7 +364,7 @@ export class QueueScreen extends React.Component<Props, State> {
               </View>
             )}
             <TableSectionSelectors
-              hideFilter
+              disableFilter
               includePadding
               selectedFilterLabel={translate('Next Up')}
               textStyle={styles.sectionHeaderText}

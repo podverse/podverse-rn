@@ -187,7 +187,7 @@ export class MoreScreen extends React.Component<Props, State> {
           )}
           renderSectionHeader={({ section }) => (
             <TableSectionSelectors
-              hideFilter
+              disableFilter
               includePadding
               selectedFilterLabel={section.title}
               textStyle={[globalTheme.headerText, core.headerText]}
