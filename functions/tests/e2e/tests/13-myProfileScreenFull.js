@@ -31,6 +31,7 @@ const test13_myProfileScreenFull = async () => {
   await elementByIdClick('filter_screen_clips')
   await elementByIdClick('filter_screen_playlists')
   await elementByIdClick('filter_screen_nav_header_button_text')
+
   await driver.back()
 
     // Log Out
