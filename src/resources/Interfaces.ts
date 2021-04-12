@@ -1,3 +1,5 @@
+import { ValueTransaction } from 'podverse-shared'
+
 export interface GlobalTheme {
   actionSheetButton?: any
   actionSheetButtonCancel?: any
@@ -174,9 +176,16 @@ export interface InitialState {
   bannerInfo: BannerInfo
 }
 
+export interface BannerInfoError {
+  error: Error
+  details: Record<string, any>
+}
+
 export interface BannerInfo {
   show: boolean
   description: string
+  errors?: BannerInfoError[]
+  transactions?: ValueTransaction[]
 }
 
 export interface IActionSheet {

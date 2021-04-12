@@ -3,6 +3,7 @@ import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, ValueTag, Val
 import { PVTrackPlayer } from '../services/player'
 // import { PV } from '../resources'
 import { sendLNPayValueTransaction } from '../services/lnpay'
+import { PV } from '../resources'
 import { createSatoshiStreamStats } from './satoshiStream'
 
 export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueTag: any) => {
@@ -55,12 +56,12 @@ const calculateNormalizedSplits = (valueRecipients: ValueRecipient[]) => {
   return normalizedValueRecipients
 }
 
-const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipientNormalized) => 
-  normalizedValueRecipient?.address
-  && (normalizedValueRecipient?.amount > 0)
-  && (normalizedValueRecipient?.normalizedSplit > 0)
-  && (normalizedValueRecipient?.split > 0)
-  && normalizedValueRecipient?.type
+const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipientNormalized) =>
+  normalizedValueRecipient?.address &&
+  normalizedValueRecipient?.amount > 0 &&
+  normalizedValueRecipient?.normalizedSplit > 0 &&
+  normalizedValueRecipient?.split > 0 &&
+  normalizedValueRecipient?.type
 
 export const normalizeValueRecipients = (valueRecipients: ValueRecipient[], total: number) => {
   const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(valueRecipients)
@@ -97,21 +98,27 @@ const convertValueTagIntoValueTransactions = async (
   const { method, type } = valueTag
 
   if (!method || !type) {
-    throw new Error('Invalid value tag found in the podcaster\'s RSS feed. Please contact us for support.')
+    throw new Error("Invalid value tag found in the podcaster's RSS feed. Please contact us for support.")
   }
 
   if (!(type === 'lightning' && method === 'keysend')) {
-    // eslint-disable-next-line max-len
-    throw new Error('Invalid value tag found in the podcaster\'s RSS feed. The only accepted value tag types currently are "lightning" and "keysend". Please contact us for support.')
+    throw new Error(
+      // eslint-disable-next-line max-len
+      'Invalid value tag found in the podcaster\'s RSS feed. The only accepted value tag types currently are "lightning" and "keysend". Please contact us for support.'
+    )
   }
 
   const valueTransactions: ValueTransaction[] = []
   const valueRecipients = valueTag.valueRecipients
   const normalizedValueRecipients = normalizeValueRecipients(valueRecipients, amount)
- 
+
   for (const normalizedValueRecipient of normalizedValueRecipients) {
     const valueTransaction = await convertValueTagIntoValueTransaction(
-      normalizedValueRecipient, nowPlayingItem, action, method, type
+      normalizedValueRecipient,
+      nowPlayingItem,
+      action,
+      method,
+      type
     )
 
     if (valueTransaction) valueTransactions.push(valueTransaction)
@@ -151,30 +158,28 @@ const convertValueTagIntoValueTransaction = async (
 }
 
 export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
+  const errors = []
+
   const valueTag = nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
-  if (!valueTag) return
+  if (!valueTag) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
   const { valueRecipients } = valueTag
-  if (!Array.isArray(valueRecipients)) return
+  if (!Array.isArray(valueRecipients)) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
   const action = 'boost'
   const amount = 100
 
-  const valueTransactions = await convertValueTagIntoValueTransactions(
-    valueTag,
-    nowPlayingItem,
-    action,
-    amount
-  )
-
-  let allPaymentsWereSent = true
+  const valueTransactions = await convertValueTagIntoValueTransactions(valueTag, nowPlayingItem, action, amount)
 
   for (const valueTransaction of valueTransactions) {
-    const paymentWasSent = await sendValueTransaction(valueTransaction)
-    if (!paymentWasSent) allPaymentsWereSent = false
+    try {
+      await sendValueTransaction(valueTransaction)
+    } catch (error) {
+      errors.push(error)
+    }
   }
 
-  return allPaymentsWereSent
+  return { errors, transactions: valueTransactions }
 }
 
 export const sendValueTransaction = async (valueTransaction: ValueTransaction) => {
@@ -182,7 +187,7 @@ export const sendValueTransaction = async (valueTransaction: ValueTransaction) =
     return sendLNPayValueTransaction(valueTransaction)
   }
 
-  return false
+  throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 }
 
 // export const getStreamingValueTransactionQueue = async () => {

@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { ValueTransaction } from 'podverse-shared'
-import { Alert } from 'react-native'
 import { getLNWallet, LNWallet } from '../state/actions/lnpay'
 import { PV } from '../resources'
 
@@ -142,9 +141,9 @@ export const sendLNPayValueTransaction = async (valueTransaction: ValueTransacti
   }
 
   if (error?.response?.data?.message) {
-    Alert.alert('LNPay Error', `${error?.response?.data?.message}`)
+    throw new Error(error?.response?.data?.message)
   } else if (!paymentWasSuccessful || error) {
-    Alert.alert('LNPay Error', 'Something went wrong with one or more payments.')
+    throw error || new Error('Something went wrong with one or more payments.')
   }
 
   return paymentWasSuccessful
