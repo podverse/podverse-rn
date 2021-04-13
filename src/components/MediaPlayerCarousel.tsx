@@ -1,14 +1,17 @@
-import { Dimensions, StyleSheet } from 'react-native'
+import { Dimensions, StyleSheet, Alert, TouchableOpacity } from 'react-native'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
+import { translate } from '../lib/i18n'
+import { sendBoost } from '../lib/valueTagHelpers'
 import {
   MediaPlayerCarouselChapters,
   MediaPlayerCarouselClips,
   MediaPlayerCarouselShowNotes,
   MediaPlayerCarouselViewer,
   ScrollView,
+  Text,
   View
 } from '.'
 
@@ -82,6 +85,23 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     this.scrollToActiveIndex(lastActiveIndex, animated)
   }
 
+  _attemptBoost = async () => {
+    try {
+      const { nowPlayingItem } = this.global.player
+      const { errors, transactions } = await sendBoost(nowPlayingItem)
+
+      this.setGlobal({
+        bannerInfo: { show: true, description: translate('Boost Sent'), errors, transactions }
+      })
+    } catch (error) {
+      Alert.alert(translate('Boost Pay Error'), error.message)
+    }
+  }
+
+  _toggleSatStreaming = () => {
+    // TOGGLE SAT STREAM
+  }
+
   render() {
     const { navigation } = this.props
     const { activeIndex } = this.state
@@ -119,6 +139,22 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           passiveDotHeight={8}
           passiveDotWidth={8}
         />
+        {this.global.session.lightningPayEnabled && (
+          <View style={styles.boostButtonsContainer}>
+            <TouchableOpacity style={styles.boostButton} onPress={this._toggleSatStreaming}>
+              <Text testID='Boost Button'>{'Sat Stream Off'.toUpperCase()}</Text>
+              <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
+                10 sats / min
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.boostButton} onPress={this._attemptBoost}>
+              <Text testID='boost_button_text_1'>{translate('Boost').toUpperCase()}</Text>
+              <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
+                {this.global.session.boostAmount} sats
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     )
   }
@@ -127,5 +163,19 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1
+  },
+  boostButtonsContainer: {
+    flexDirection: 'row'
+  },
+  boostButton: {
+    flex: 1,
+    margin: 10,
+    height: 50,
+    borderRadius: 35,
+    backgroundColor: PV.Colors.velvet,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: PV.Colors.brandBlueLight,
+    borderWidth: 2
   }
 })
