@@ -3,7 +3,7 @@ import Config from 'react-native-config'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator, NavigationStackOptions } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import React, { getGlobal } from 'reactn'
+import React from 'reactn'
 import { DownloadsActiveBadge, NavSearchIcon, PVTabBar, TabBarLabel } from './components'
 import { PV } from './resources'
 import {

@@ -1,5 +1,5 @@
 import { NowPlayingItem } from 'podverse-shared'
-import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import React, { getGlobal } from 'reactn'
 import {
   ActivityIndicator,
@@ -27,7 +27,7 @@ import { trackPageView } from '../services/tracking'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { addQueueItemToServer, getQueueItems, removeQueueItem, setAllQueueItemsLocally } from '../state/actions/queue'
 import { getHistoryItems, removeHistoryItem } from '../state/actions/userHistoryItem'
-import { core, darkTheme } from '../styles'
+import { core } from '../styles'
 
 type Props = {
   navigation?: any
