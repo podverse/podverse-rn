@@ -11,7 +11,7 @@ import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { logoutUser } from '../state/actions/auth'
 import { core, getMembershipTextStyle, table } from '../styles'
-import { addAddByRSSPodcast, addAddByRSSPodcasts } from '../state/actions/parser'
+import { addAddByRSSPodcasts } from '../state/actions/parser'
 
 type Props = {
   navigation?: any

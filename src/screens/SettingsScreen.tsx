@@ -503,6 +503,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                         onBlur={() => {
                           if (this.global.session.boostAmount < MINIMUM_BOOST_PAYMENT) {
                             this.setGlobal({ session: { ...session, boostAmount: MINIMUM_BOOST_PAYMENT } })
+                            AsyncStorage.setItem(PV.Keys.NFT_BOOST_AMOUNT, String(MINIMUM_BOOST_PAYMENT))
                           }
                         }}
                         onSubmitEditing={() => Keyboard.dismiss()}
