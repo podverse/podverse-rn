@@ -3,7 +3,6 @@ import { Alert, Linking, StyleSheet, TouchableOpacity, TouchableWithoutFeedback,
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
-import { sendBoost } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
 import { ActivityIndicator, FastImage, Text, TextTicker } from './'
@@ -37,18 +36,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     ])
   }
 
-  _attemptBoost = async () => {
-    try {
-      const { nowPlayingItem } = this.global.player
-      const { errors, transactions } = await sendBoost(nowPlayingItem)
 
-      this.setGlobal({
-        bannerInfo: { show: true, description: translate('Boost Sent'), errors, transactions }
-      })
-    } catch (error) {
-      Alert.alert(translate('Boost Pay Error'), error.message)
-    }
-  }
 
   render() {
     const { handlePressClipInfo, width } = this.props
@@ -130,11 +118,6 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             </TouchableWithoutFeedback>
           </RNView>
         )}
-        {this.global.session.lightningPayEnabled && (
-          <TouchableOpacity style={styles.boostButton} onPress={this._attemptBoost}>
-            <Text testID='Boost Button'>{translate('Boost').toUpperCase()}</Text>
-          </TouchableOpacity>
-        )}
       </RNView>
     )
   }
@@ -195,18 +178,5 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.bold,
     marginTop: 2,
     textAlign: 'center'
-  },
-  boostButton: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    position: 'absolute',
-    bottom: '10%',
-    right: '5%',
-    backgroundColor: PV.Colors.velvet,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: PV.Colors.brandBlueLight,
-    borderWidth: 2
   }
 })

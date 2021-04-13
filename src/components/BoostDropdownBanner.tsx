@@ -133,7 +133,7 @@ export const BoostDropdownBanner = () => {
                 {errors.map((error, index) => {
                   return (
                     <Text key={`${index}`} testID={`boost_error_text_${index}}`} style={styles.errorText}>
-                      {error?.error?.message}
+                      {error.details?.recipient} - {error?.error?.message}
                     </Text>
                   )
                 })}
