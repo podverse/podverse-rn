@@ -1,5 +1,6 @@
 // import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, ValueTag, ValueTransaction } from 'podverse-shared'
+import { getGlobal } from 'reactn'
 import { PVTrackPlayer } from '../services/player'
 // import { PV } from '../resources'
 import { sendLNPayValueTransaction } from '../services/lnpay'
@@ -167,7 +168,8 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
   if (!Array.isArray(valueRecipients)) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
   const action = 'boost'
-  const amount = 100
+  const { session } = getGlobal()
+  const amount = session.boostAmount
 
   const valueTransactions = await convertValueTagIntoValueTransactions(valueTag, nowPlayingItem, action, amount)
 
@@ -175,7 +177,7 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
     try {
       await sendValueTransaction(valueTransaction)
     } catch (error) {
-      errors.push(error)
+      errors.push({ error, details: { recipient: valueTransaction.normalizedValueRecipient.name } })
     }
   }
 

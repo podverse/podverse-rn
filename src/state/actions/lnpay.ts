@@ -3,8 +3,8 @@ import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
 
-export const DEFAULT_BOOST_PAYMENT = 500
-export const MINIMUM_BOOST_PAYMENT = 10
+export const DEFAULT_BOOST_PAYMENT = 100
+export const MINIMUM_BOOST_PAYMENT = 100
 
 export interface LNWallet {
   id: string
