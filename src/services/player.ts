@@ -9,7 +9,7 @@ import RNFS from 'react-native-fs'
 import TrackPlayer, { Track } from 'react-native-track-player'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
-import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl, getExtensionFromUrl } from '../lib/utility'
+import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl, getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from './eventEmitter'
 import {
@@ -22,7 +22,6 @@ import {
 } from './queue'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally, getHistoryItemsLocally } from './userHistoryItem'
 import { getNowPlayingItem, getNowPlayingItemLocally } from './userNowPlayingItem'
-
 
 declare module "react-native-track-player" {
   export function getCurrentLoadedTrack(): Promise<string>;
@@ -410,7 +409,10 @@ export const createTrack = async (item: NowPlayingItem) => {
         url: `file://${filePath}`,
         title: episodeTitle,
         artist: podcastTitle,
-        ...(imageUrl ? { artwork: imageUrl } : {})
+        ...(imageUrl ? { artwork: imageUrl } : {}),
+        headers: {
+          'User-Agent': getAppUserAgent()
+        }
       }
     } else {
       track = {
@@ -418,7 +420,10 @@ export const createTrack = async (item: NowPlayingItem) => {
         url: episodeMediaUrl,
         title: episodeTitle,
         artist: podcastTitle,
-        ...(imageUrl ? { artwork: imageUrl } : {})
+        ...(imageUrl ? { artwork: imageUrl } : {}),
+        headers: {
+          'User-Agent': getAppUserAgent()
+        }
       }
     }
   }
@@ -488,7 +493,7 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
           // to work around this bug, we set another interval to confirm the track
           // position has been advanced into the clip time.
           const confirmClipLoadedInterval = setInterval(() => {
-            ;(async () => {
+            (async () => {
               const currentPosition = await PVTrackPlayer.getTrackPosition()
               if (currentPosition >= position - 1) {
                 clearInterval(confirmClipLoadedInterval)
