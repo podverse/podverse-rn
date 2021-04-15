@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { TranscriptRow } from '../lib/transcriptHelpers'
@@ -16,7 +16,7 @@ type State = {
   searchText: string
   searchResults: never[]
   parsedTranscript: []
-  autoScrollTitle: string
+  autoScrollOn: boolean
 }
 
 let currentSpeaker = ''
@@ -37,7 +37,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
       searchText: '',
       searchResults: [],
       parsedTranscript,
-      autoScrollTitle: 'Autoscroll Off'
+      autoScrollOn: false
     }
   }
 
@@ -76,9 +76,9 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
   toggleAutoscroll = () => {
     if (this.interval) {
-      this.setState({ autoScrollTitle: 'Autoscroll Off' }, this.clearAutoScrollInterval)
+      this.setState({ autoScrollOn: false }, this.clearAutoScrollInterval)
     } else {
-      this.setState({ autoScrollTitle: 'Autoscroll On' })
+      this.setState({ autoScrollOn: true })
       this.interval = setInterval(() => {
         (async () => {
           const { player } = this.global
@@ -115,9 +115,11 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
       <View style={{ width }}>
         <TableSectionSelectors
           customButtons={
-            <Text onPress={this.toggleAutoscroll} style={styles.autoScrollerText} testID='transcript-autoscroll'>
-              {this.state.autoScrollTitle}
-            </Text>
+            <TouchableOpacity activeOpacity={0.7} onPress={this.toggleAutoscroll}>
+              <Text style={[styles.autoScrollerText]} testID='transcript-autoscroll'>
+                {this.state.autoScrollOn ? translate('Autoscroll On') : translate('Autoscroll Off')}
+              </Text>
+            </TouchableOpacity>
           }
           disableFilter
           hideDropdown
@@ -134,7 +136,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
                 searchResults: this.state.parsedTranscript.filter((item: Record<string, any>) => {
                   return item?.text?.includes(searchText)
                 }),
-                autoScrollTitle: 'Autoscroll Off'
+                autoScrollOn: false
               },
               this.clearAutoScrollInterval
             )
