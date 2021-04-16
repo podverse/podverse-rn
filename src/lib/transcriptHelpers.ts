@@ -1,15 +1,6 @@
+import { TranscriptRow } from 'podverse-shared'
 import { request } from '../services/request'
 import { convertSecToHHMMSS, convertTranscriptTimestampToSeconds } from './utility'
-
-export type TranscriptRow = {
-  line: number
-  startTime: number
-  startTimeHHMMSS: string | null
-  endTime: number
-  endTimeHHMMSS: string | null
-  text: string
-  speaker?: string
-}
 
 export const getParsedTranscript = async (transcriptUrl: string) => {
   let transcript = [] as TranscriptRow[]
