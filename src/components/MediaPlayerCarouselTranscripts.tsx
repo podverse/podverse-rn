@@ -56,21 +56,21 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     }
 
     return (
-      <View>
+      <TouchableOpacity activeOpacity={0.7} onPress={() => setPlaybackPosition(startTime)}>
         {!!currentSpeaker && (
           <Text isSecondary style={styles.speaker} testID={`${cellID}-${currentSpeaker}`}>
             {currentSpeaker}
           </Text>
         )}
         <View style={styles.row}>
-          <Text onPress={() => setPlaybackPosition(startTime)} style={styles.text} testID={cellID}>
+          <Text style={styles.text} testID={cellID}>
             {text}
           </Text>
           <Text style={styles.startTime} testID={`${cellID}-${startTime}`}>
             {startTimeHHMMSS}
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 
