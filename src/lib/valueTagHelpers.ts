@@ -1,5 +1,5 @@
 // import AsyncStorage from '@react-native-community/async-storage'
-import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, ValueTag, ValueTransaction } from 'podverse-shared'
+import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, Value, ValueTransaction } from 'podverse-shared'
 import { getGlobal } from 'reactn'
 import { PVTrackPlayer } from '../services/player'
 // import { PV } from '../resources'
@@ -34,7 +34,7 @@ export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueT
     }
   }
 
-  return { ...valueModel, valueRecipients } as ValueTag
+  return { ...valueModel, valueRecipients } as Value
 }
 
 const calculateNormalizedSplits = (valueRecipients: ValueRecipient[]) => {
@@ -91,7 +91,7 @@ export const normalizeValueRecipients = (valueRecipients: ValueRecipient[], tota
 }
 
 const convertValueTagIntoValueTransactions = async (
-  valueTag: ValueTag,
+  valueTag: Value,
   nowPlayingItem: NowPlayingItem,
   action: string,
   amount: number

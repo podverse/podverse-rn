@@ -361,15 +361,20 @@ export const loadItemAndPlayTrack = async (
     }
   }
 
-  // if (nowPlayingItem.episodeTranscriptUrl && getNowPlayingItem.episodeTranscriptType) {
-    newItem.parsedTranscript = await getParsedTranscript('https://mp3s.nashownotes.com/PC20-32-Captions.srt')
-  // }
+  if (item.episodeTranscript && item.episodeTranscript[0] && item.episodeTranscript[0].url) {
+    try {
+      newItem.parsedTranscript =
+        await getParsedTranscript(item.episodeTranscript[0].url, item.episodeTranscript[0].type)
+    } catch (error) {
+      console.log('loadItemAndPlayTrack transcript parsing error', error)
+    }
+  }
 
   // If there is at least one enriched field,
   // make sure the item is saved to both UserHistoryItems and UserNowPlayingItem
   // so getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId will have the correct value saved.
-  if (newItem.podcastValue && (newItem.parsedTranscript && newItem.parsedTranscript.length > 0)) {
-    await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0)
+  if (newItem.podcastValue || (newItem.parsedTranscript && newItem.parsedTranscript.length > 0)) {
+    await addOrUpdateHistoryItem(newItem, newItem.userPlaybackPosition || 0)
   }
 
   return newItem

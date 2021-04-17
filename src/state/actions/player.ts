@@ -214,6 +214,8 @@ export const setPlaybackSpeed = async (rate: number) => {
       playbackRate: rate
     }
   })
+
+  PVEventEmitter.emit(PV.Events.PLAYER_SPEED_UPDATED)
 }
 
 export const togglePlay = async () => {

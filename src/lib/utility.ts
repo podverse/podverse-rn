@@ -409,7 +409,9 @@ const createHHMMSSAnchorTag = (hhmmss: string) => {
 
 export const convertTranscriptTimestampToSeconds = (timestamp: string) => {
   // SRT time stamps use this formatting: 00:02:45,170
-  const hhmmss = timestamp.split(',')[0]
+  let hhmmss = timestamp.split(',')[0]
+  // VTT time stamps use this formatting: 00:02:45.170
+  hhmmss = timestamp.split('.')[0]
   return convertHHMMSSToSeconds(hhmmss)  
 }
 

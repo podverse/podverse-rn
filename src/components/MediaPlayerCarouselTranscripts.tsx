@@ -1,9 +1,10 @@
+import { TranscriptRow } from 'podverse-shared'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { TranscriptRow } from '../lib/transcriptHelpers'
 import { PV } from '../resources'
-import { PVTrackPlayer, setPlaybackPosition } from '../services/player'
+import PVEventEmitter from '../services/eventEmitter'
+import { getPlaybackSpeed, PVTrackPlayer, setPlaybackPosition } from '../services/player'
 import { PVSearchBar } from './PVSearchBar'
 import { FlatList, TableSectionSelectors, Text, View } from './'
 
@@ -13,19 +14,19 @@ type Props = {
 }
 
 type State = {
+  activeTranscriptRowIndex: number | null
+  autoScrollOn: boolean
+  parsedTranscript: []
   searchText: string
   searchResults: never[]
-  parsedTranscript: []
-  autoScrollOn: boolean
 }
-
-let currentSpeaker = ''
 
 const getCellID = (item: TranscriptRow) => `transcript-cell-${item.line}`
 
 export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, State> {
   listRef: any | null = null
   interval: ReturnType<typeof setInterval> | null = null
+  currentSpeaker?: string
 
   constructor() {
     super()
@@ -34,39 +35,54 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     const parsedTranscript = player?.nowPlayingItem?.parsedTranscript || []
 
     this.state = {
-      searchText: '',
-      searchResults: [],
+      activeTranscriptRowIndex: null,
+      autoScrollOn: false,
       parsedTranscript,
-      autoScrollOn: false
+      searchText: '',
+      searchResults: []
     }
   }
 
+  componentDidMount() {
+    PVEventEmitter.on(PV.Events.PLAYER_SPEED_UPDATED, this.updateAutoscroll)
+  }
+
   componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYER_SPEED_UPDATED)
     this.clearAutoScrollInterval()
   }
 
   renderItem = (item: any) => {
+    const { activeTranscriptRowIndex } = this.state
     const transcriptionItem = item.item
     const { speaker, startTime, startTimeHHMMSS, text } = transcriptionItem
     const cellID = getCellID(transcriptionItem)
-    if (speaker && speaker !== currentSpeaker) {
-      currentSpeaker = speaker
+
+    if (speaker && speaker !== this.currentSpeaker) {
+      this.currentSpeaker = speaker
     } else {
-      currentSpeaker = ''
+      this.currentSpeaker = ''
     }
+
+    const activeTranscriptStyle = 
+      ((activeTranscriptRowIndex && activeTranscriptRowIndex >= 0)
+      || activeTranscriptRowIndex === 0)
+      && activeTranscriptRowIndex === item.index
+      ? { color: PV.Colors.orange }
+      : {}
 
     return (
       <TouchableOpacity activeOpacity={0.7} onPress={() => setPlaybackPosition(startTime)}>
-        {!!currentSpeaker && (
-          <Text isSecondary style={styles.speaker} testID={`${cellID}-${currentSpeaker}`}>
-            {currentSpeaker}
+        {!!this.currentSpeaker && (
+          <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
+            {this.currentSpeaker}
           </Text>
         )}
         <View style={styles.row}>
-          <Text style={styles.text} testID={cellID}>
+          <Text style={[styles.text, activeTranscriptStyle]} testID={cellID}>
             {text}
           </Text>
-          <Text style={styles.startTime} testID={`${cellID}-${startTime}`}>
+          <Text style={[styles.startTime, activeTranscriptStyle]} testID={`${cellID}-${startTime}`}>
             {startTimeHHMMSS}
           </Text>
         </View>
@@ -76,9 +92,27 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
   toggleAutoscroll = () => {
     if (this.interval) {
-      this.setState({ autoScrollOn: false }, this.clearAutoScrollInterval)
+      this.setState({
+        activeTranscriptRowIndex: null,
+        autoScrollOn: false
+      }, this.clearAutoScrollInterval)
     } else {
-      this.setState({ autoScrollOn: true })
+      this.enableAutoscroll()
+    }
+  }
+
+  updateAutoscroll = () => {
+    if (this.interval) {
+      this.enableAutoscroll()
+    }
+  }
+
+  enableAutoscroll = async () => {
+    const playbackSpeed = await getPlaybackSpeed()
+    const intervalTime = 1000 / playbackSpeed
+    this.clearAutoScrollInterval()
+
+    this.setState({ autoScrollOn: true })
       this.interval = setInterval(() => {
         (async () => {
           const { player } = this.global
@@ -90,11 +124,12 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
           )
 
           if (index !== -1) {
-            this.listRef.scrollToIndex({ index, animated: false })
+            const indexBefore = index > 0 ? index - 1 : 0
+            this.listRef.scrollToIndex({ index: indexBefore, animated: false })
+            this.setState({ activeTranscriptRowIndex: index })
           }
         })()
-      }, 1500)
-    }
+      }, intervalTime)
   }
 
   clearAutoScrollInterval = () => {
@@ -134,7 +169,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
               {
                 searchText,
                 searchResults: this.state.parsedTranscript.filter((item: Record<string, any>) => {
-                  return item?.text?.includes(searchText)
+                  return item?.text?.toLowerCase().includes(searchText?.toLowerCase())
                 }),
                 autoScrollOn: false
               },
@@ -169,7 +204,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
             this.listRef = ref
           }}
           getItemLayout={(_: any, index: number) => {
-            return { length: 60, offset: 60 * index, index }
+            return { length: 80, offset: 80 * index, index }
           }}
           testID='transcript-flat-list'
           transparent
@@ -194,12 +229,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingBottom: 0,
     paddingHorizontal: 12,
-    height: 60
+    height: 80
   },
   speaker: {
     fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold,
     paddingBottom: 6,
+    paddingHorizontal: 12,
     paddingTop: 16
   },
   startTime: {
