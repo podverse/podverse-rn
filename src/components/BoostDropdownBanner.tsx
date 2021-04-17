@@ -91,8 +91,7 @@ export const BoostDropdownBanner = () => {
           style={[
             styles.card,
             {
-              transform: [{ translateY: animatedValue }],
-              borderBottomColor: PV.Colors.white
+              transform: [{ translateY: animatedValue }]
             }
           ]}>
           <ScrollView
@@ -128,7 +127,7 @@ export const BoostDropdownBanner = () => {
               <View>
                 <Divider />
                 <Text key={'boost_errors_title'} testID={'boost_errors_title'} style={styles.errorTitle}>
-                  {translate('Boost Pay Errors')}
+                  {translate('Boost Pay Issues')}
                 </Text>
                 {errors.map((error, index) => {
                   return (
@@ -145,7 +144,12 @@ export const BoostDropdownBanner = () => {
               {bannerInfo.description}
             </Text>
             {!!bannerInfo.errors?.length && (
-              <PVIcon testID='boost_pay_banner_icon' name='exclamation-triangle' size={30} color={PV.Colors.yellow} />
+              <PVIcon
+                testID='boost_pay_banner_icon'
+                name='exclamation-triangle'
+                size={30}
+                color={PV.Colors.redLighter}
+              />
             )}
           </View>
           <View style={styles.gestureIndicator} />
@@ -161,8 +165,9 @@ const styles = StyleSheet.create({
     width: '100%',
     top: 0,
     paddingHorizontal: 10,
-    backgroundColor: PV.Colors.skyDark,
+    backgroundColor: PV.Colors.velvet,
     borderBottomWidth: 2,
+    borderBottomColor: PV.Colors.brandBlueDark,
     maxHeight: SIZE
   },
   container: {
@@ -178,29 +183,32 @@ const styles = StyleSheet.create({
   },
   scrollViewContainer: {},
   descriptionStyle: {
-    fontSize: PV.Fonts.sizes.xxl
+    fontSize: PV.Fonts.sizes.xxl,
+    fontWeight: PV.Fonts.weights.extraBold
   },
   recipientTable: {
-    borderColor: PV.Colors.white,
+    borderColor: PV.Colors.skyLight,
     borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+    paddingBottom: 5
   },
   recipientTableHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomColor: PV.Colors.white,
-    borderBottomWidth: StyleSheet.hairlineWidth
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginBottom: 5
   },
   errorTitle: {
     paddingVertical: 10,
-    fontSize: PV.Fonts.sizes.lg,
-    color: PV.Colors.redDarker,
+    fontSize: PV.Fonts.sizes.xl,
+    color: PV.Colors.redLighter,
     textDecorationLine: 'underline'
   },
   errorText: {
     paddingVertical: 10,
     fontSize: PV.Fonts.sizes.md,
-    color: PV.Colors.redDarker
+    color: PV.Colors.redLighter
   },
   recipientText: {
     paddingVertical: 10,
@@ -211,6 +219,6 @@ const styles = StyleSheet.create({
     marginHorizontal: '25%',
     borderRadius: 1,
     height: 3,
-    backgroundColor: PV.Colors.white
+    backgroundColor: PV.Colors.brandBlueLight
   }
 })
