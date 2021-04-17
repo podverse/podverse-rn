@@ -165,16 +165,22 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
           testID='transcript_search_bar'
           value={this.state.searchText}
           onChangeText={(searchText: string) => {
-            this.setState(
-              {
-                searchText,
-                searchResults: this.state.parsedTranscript.filter((item: Record<string, any>) => {
-                  return item?.text?.toLowerCase().includes(searchText?.toLowerCase())
-                }),
-                autoScrollOn: false
-              },
-              this.clearAutoScrollInterval
-            )
+            if (searchText?.length <= 2) {
+              this.setState({ searchResults: [] })
+            } else {
+              const searchResults = this.state.parsedTranscript.filter((item: Record<string, any>) => {
+                return item?.text?.toLowerCase().includes(searchText?.toLowerCase())
+              })
+  
+              this.setState(
+                {
+                  searchText,
+                  searchResults,
+                  autoScrollOn: false
+                },
+                this.clearAutoScrollInterval
+              )
+            }
           }}
           onClear={() => {
             this.setState({
