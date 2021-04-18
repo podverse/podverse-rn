@@ -1,5 +1,5 @@
 // import AsyncStorage from '@react-native-community/async-storage'
-import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, Value, ValueTransaction } from 'podverse-shared'
+import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, ValueTag, ValueTransaction } from 'podverse-shared'
 import { getGlobal } from 'reactn'
 import { PVTrackPlayer } from '../services/player'
 // import { PV } from '../resources'
@@ -7,6 +7,13 @@ import { sendLNPayValueTransaction } from '../services/lnpay'
 import { PV } from '../resources'
 import { createSatoshiStreamStats } from './satoshiStream'
 
+/*
+  Currently Podcast Index only returns
+  a single podcast/channel-level value tag as an object,
+  but Podverse supports many podcast/channel
+  and episode/item-level value tags in an array.
+  That's why we're returning an array as the result of this function.
+*/
 export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueTag: any) => {
   const { destinations, model } = podcastIndexValueTag
   let valueModel = {}
@@ -34,7 +41,7 @@ export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueT
     }
   }
 
-  return { ...valueModel, valueRecipients } as Value
+  return [{ ...valueModel, valueRecipients }] as ValueTag[]
 }
 
 const calculateNormalizedSplits = (valueRecipients: ValueRecipient[]) => {
@@ -91,7 +98,7 @@ export const normalizeValueRecipients = (valueRecipients: ValueRecipient[], tota
 }
 
 const convertValueTagIntoValueTransactions = async (
-  valueTag: Value,
+  valueTag: ValueTag,
   nowPlayingItem: NowPlayingItem,
   action: string,
   amount: number
@@ -161,7 +168,10 @@ const convertValueTagIntoValueTransaction = async (
 export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
   const errors = []
 
-  const valueTag = nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
+  const valueTags = nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
+  // TODO: right now we are assuming the first item will be the lightning network
+  // this will need to be updated to support additional valueTags
+  const valueTag = valueTags[0]
   if (!valueTag) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
   const { valueRecipients } = valueTag
