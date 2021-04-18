@@ -180,7 +180,7 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
 
   const action = 'boost'
   const { session } = getGlobal()
-  const amount = session.boostAmount
+  const { boostAmount } = session.valueSettings.lightningNetwork.globalSettings
 
   const valueTransactions = await convertValueTagIntoValueTransactions(valueTag, nowPlayingItem, action, amount)
 
@@ -192,7 +192,7 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
     }
   }
 
-  return { errors, transactions: valueTransactions, totalAmount: amount }
+  return { errors, transactions: valueTransactions, totalAmount: boostAmount }
 }
 
 export const sendValueTransaction = async (valueTransaction: ValueTransaction) => {

@@ -31,18 +31,24 @@ export const getAuthUserInfo = async () => {
     const userInfo = results[0]
     const isLoggedIn = results[1]
     const shouldShowAlert = shouldShowMembershipAlert(userInfo)
-    const lnPayEnabled = await AsyncStorage.getItem(PV.Keys.LNPAY_ENABLED)
-    const boostAmount = await AsyncStorage.getItem(PV.Keys.NFT_BOOST_AMOUNT)
-    const streamingAmount = await AsyncStorage.getItem(PV.Keys.NFT_STREAMING_AMOUNT)
+    const lnpayEnabled = await AsyncStorage.getItem(PV.Keys.LNPAY_ENABLED)
+    const boostAmount = await AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT)
+    const streamingAmount = await AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_STREAMING_AMOUNT)
 
     const globalState = getGlobal()
     setGlobal({
       session: {
         userInfo,
         isLoggedIn,
-        lightningPayEnabled: lnPayEnabled ? JSON.parse(lnPayEnabled) : false,
-        boostAmount: boostAmount ? Number(boostAmount) : DEFAULT_BOOST_PAYMENT,
-        streamingAmount: streamingAmount ? Number(streamingAmount) : DEFAULT_STREAMING_PAYMENT,
+        valueSettings: {
+          lightningNetwork: {
+            lnpayEnabled: lnpayEnabled ? JSON.parse(lnpayEnabled) : false,
+            globalSettings: {
+              boostAmount: boostAmount ? Number(boostAmount) : DEFAULT_BOOST_PAYMENT,
+              streamingAmount: streamingAmount ? Number(streamingAmount) : DEFAULT_STREAMING_PAYMENT
+            }
+          }
+        }
       },
       overlayAlert: {
         ...globalState.overlayAlert,

@@ -106,9 +106,15 @@ const initialTheme: InitialState = {
       subscribedUserIds: []
     },
     isLoggedIn: false,
-    lightningPayEnabled: false,
-    boostAmount: DEFAULT_BOOST_PAYMENT,
-    streamingAmount: DEFAULT_STREAMING_PAYMENT
+    valueSettings: {
+      lightningNetwork: {
+        lnpayEnabled: false,
+        globalSettings: {
+          boostAmount: DEFAULT_BOOST_PAYMENT,
+          streamingAmount: DEFAULT_STREAMING_PAYMENT
+        }
+      }
+    }
   },
   subscribedPodcasts: [],
   subscribedPodcastsTotalCount: 0,

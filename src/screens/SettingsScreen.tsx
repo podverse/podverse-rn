@@ -42,6 +42,7 @@ import {
   setOfflineModeEnabled
 } from '../state/actions/settings'
 import { clearHistoryItems } from '../state/actions/userHistoryItem'
+import { updateGlobalBoostAmount } from '../state/actions/valueSettings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {
@@ -321,7 +322,7 @@ export class SettingsScreen extends React.Component<Props, State> {
     }
   }
 
-  _showLightningPaySetup = async (toggle: boolean) => {
+  _showLNPaySetup = async (toggle: boolean) => {
     if (toggle) {
       this.props.navigation.navigate(PV.RouteNames.LNPaySignupScreen)
     } else {
@@ -355,7 +356,10 @@ export class SettingsScreen extends React.Component<Props, State> {
       globalTheme,
       session
     } = this.global
-    const { isLoggedIn, lightningPayEnabled, boostAmount } = session
+    const { isLoggedIn, valueSettings } = session
+    const { lightningNetwork } = valueSettings
+    const { globalSettings, lnpayEnabled } = lightningNetwork
+    const { boostAmount } = globalSettings
 
     const isDarkMode = globalTheme === darkTheme
 
@@ -488,29 +492,27 @@ export class SettingsScreen extends React.Component<Props, State> {
                 {isLoggedIn && (
                   <View style={styles.itemWrapper}>
                     <SwitchWithText
-                      onValueChange={this._showLightningPaySetup}
+                      onValueChange={this._showLNPaySetup}
                       subText={translate('Enable Lightning Pay switch description')}
-                      testID={`${testIDPrefix}_lightningPay_mode`}
+                      testID={`${testIDPrefix}_lnpay_mode`}
                       text={translate(`Enable LN Pay`)}
-                      value={lightningPayEnabled}
+                      value={lnpayEnabled}
                     />
-                    {lightningPayEnabled && (
+                    {lnpayEnabled && (
                       <TextInput
-                        placeholder={translate('Boost Amount')}
                         eyebrowTitle={translate('Boost Amount')}
                         keyboardType='numeric'
                         wrapperStyle={{ marginVertical: 20 }}
                         onBlur={() => {
-                          if (this.global.session.boostAmount < MINIMUM_BOOST_PAYMENT) {
-                            this.setGlobal({ session: { ...session, boostAmount: MINIMUM_BOOST_PAYMENT } })
-                            AsyncStorage.setItem(PV.Keys.NFT_BOOST_AMOUNT, String(MINIMUM_BOOST_PAYMENT))
+                          const { boostAmount } = this.global.session.valueSettings.lightningNetwork.globalSettings
+                          if (boostAmount < MINIMUM_BOOST_PAYMENT) {
+                            updateGlobalBoostAmount(MINIMUM_BOOST_PAYMENT)
                           }
                         }}
                         onSubmitEditing={() => Keyboard.dismiss()}
                         value={`${boostAmount}`}
                         onChangeText={(newText: string) => {
-                          this.setGlobal({ session: { ...session, boostAmount: Number(newText) } })
-                          AsyncStorage.setItem(PV.Keys.NFT_BOOST_AMOUNT, newText)
+                          updateGlobalBoostAmount(Number(newText))
                         }}
                       />
                     )}

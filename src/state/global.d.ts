@@ -88,9 +88,15 @@ declare module 'reactn/default' {
     session: {
       isLoggedIn: boolean
       userInfo: UserInfo
-      lightningPayEnabled: boolean
-      boostAmount: number
-      streamingAmount: number
+      valueSettings: {
+        lightningNetwork: {
+          lnpayEnabled: boolean
+          globalSettings: {
+            boostAmount: number
+            streamingAmount: number
+          }
+        }
+      }
     }
     subscribedPodcasts: []
     subscribedPodcastsTotalCount: number

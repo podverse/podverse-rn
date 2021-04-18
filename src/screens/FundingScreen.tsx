@@ -2,7 +2,7 @@ import { ValueTransaction } from 'podverse-shared'
 import { Alert, Linking, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import React, { getGlobal } from 'reactn'
-import { Divider, FastImage, NavDismissIcon, ScrollView, Text, ValueTagInfoView, View } from '../components'
+import { Divider, FastImage, NavDismissIcon, ScrollView, Text, TextInput, ValueTagInfoView, View } from '../components'
 import { translate } from '../lib/i18n'
 import { readableDate, testProps } from '../lib/utility'
 import { convertValueTagIntoValueTransactions } from '../lib/valueTagHelpers'
@@ -42,7 +42,7 @@ export class FundingScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const { player, session } = this.global
     const { nowPlayingItem } = player
-    const { boostAmount, streamingAmount } = session
+    const { boostAmount, streamingAmount } = session.valueSettings.lightningNetwork.globalSettings
 
     const { episodeValue, podcastValue } = nowPlayingItem
     const valueTags = episodeValue || podcastValue
@@ -84,7 +84,7 @@ export class FundingScreen extends React.Component<Props, State> {
     const { boostTransactions, streamingTransactions } = this.state
     const { player, session } = this.global
     const { nowPlayingItem } = player
-    const { boostAmount, streamingAmount } = session
+    const { boostAmount, streamingAmount } = session.valueSettings.lightningNetwork.globalSettings
     const { episodeFunding, episodeValue, podcastFunding, podcastValue } = nowPlayingItem
 
     const podcastLinks = podcastFunding?.map((item: any, index: number) =>
@@ -143,22 +143,62 @@ export class FundingScreen extends React.Component<Props, State> {
                   testID={`${testIDPrefix}_value_settings_lightning_sub_label`}>
                   {translate('via your LNPay wallet')}
                 </Text>
+                <View style={styles.itemWrapper}>
+                  <TextInput
+                    eyebrowTitle={translate('Boost Amount for Podcast')}
+                    keyboardType='numeric'
+                    wrapperStyle={styles.textInput}
+                    onBlur={() => {
+                      // if (this.global.session.boostAmount < MINIMUM_BOOST_PAYMENT) {
+                      //   this.setGlobal({ session: { ...session, boostAmount: MINIMUM_BOOST_PAYMENT } })
+                      //   AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, String(MINIMUM_BOOST_PAYMENT))
+                      // }
+                    }}
+                    onSubmitEditing={() => Keyboard.dismiss()}
+                    onChangeText={(newText: string) => {
+                      // this.setGlobal({ session: { ...session, boostAmount: Number(newText) } })
+                      // AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, newText)
+                    }}
+                    testID={`${testIDPrefix}_boost_amount_text_input`}
+                    value={`${boostAmount}`}
+                  />
+                </View>
                 <View style={styles.valueTagInfoViewWrapper}>
                   <Text
                     style={styles.textTableLabel}
                     testID={`${testIDPrefix}_value_settings_lightning_boost_sample_label`}>
-                    {translate('Sample boost splits')}
+                    {translate('Boost splits')}
                   </Text>
                   <ValueTagInfoView
                     testID={testIDPrefix}
                     totalAmount={boostAmount}
                     transactions={boostTransactions} />
                 </View>
+                <View style={styles.itemWrapper}>
+                  <TextInput
+                    eyebrowTitle={translate('Streaming Amount for Podcast')}
+                    keyboardType='numeric'
+                    wrapperStyle={styles.textInput}
+                    onBlur={() => {
+                      // if (this.global.session.boostAmount < MINIMUM_BOOST_PAYMENT) {
+                      //   this.setGlobal({ session: { ...session, boostAmount: MINIMUM_BOOST_PAYMENT } })
+                      //   AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, String(MINIMUM_BOOST_PAYMENT))
+                      // }
+                    }}
+                    onSubmitEditing={() => Keyboard.dismiss()}
+                    onChangeText={(newText: string) => {
+                      // this.setGlobal({ session: { ...session, boostAmount: Number(newText) } })
+                      // AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, newText)
+                    }}
+                    testID={`${testIDPrefix}_boost_amount_text_input`}
+                    value={`${streamingAmount}`}
+                  />
+                </View>
                 <View style={styles.valueTagInfoViewWrapper}>
                   <Text
                     style={styles.textTableLabel}
                     testID={`${testIDPrefix}_value_settings_lightning_streaming_sample_label`}>
-                    {translate('Sample streaming splits per minute')}
+                    {translate('Streaming splits per minute')}
                   </Text>
                   <ValueTagInfoView
                     testID={testIDPrefix}
@@ -174,7 +214,7 @@ export class FundingScreen extends React.Component<Props, State> {
                 <Text
                   style={styles.textHeader}
                   testID={`${testIDPrefix}_episode_funding_header`}>
-                  {translate('Episode Links')}
+                  {translate('Episode Funding Links')}
                 </Text>
                 {episodeLinks}
               </View>
@@ -188,7 +228,7 @@ export class FundingScreen extends React.Component<Props, State> {
                 <Text
                   style={styles.textHeader}
                   testID={`${testIDPrefix}_podcast_funding_header`}>
-                  {translate('Podcast Links')}
+                  {translate('Podcast Funding Links')}
                 </Text>
                 {podcastLinks}
               </View>
@@ -231,6 +271,9 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     paddingHorizontal: 12
   },
+  itemWrapper: {
+    marginTop: 24
+  },
   podcastTitle: {
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.bold,
@@ -245,7 +288,8 @@ const styles = StyleSheet.create({
     marginTop: 3
   },
   scrollViewContent: {
-    paddingHorizontal: 12
+    paddingHorizontal: 12,
+    paddingBottom: 64
   },
   text: {
     fontSize: PV.Fonts.sizes.md,
@@ -254,6 +298,9 @@ const styles = StyleSheet.create({
   textHeader: {
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.bold
+  },
+  textInput: {
+    marginVertical: 0
   },
   textLabel: {
     fontSize: PV.Fonts.sizes.xl,
@@ -266,7 +313,7 @@ const styles = StyleSheet.create({
   textTableLabel: {
     fontSize: PV.Fonts.sizes.xl,
     fontStyle: 'italic',
-    marginVertical: 16
+    marginBottom: 16
   },
   textWrapper: {
     flex: 1

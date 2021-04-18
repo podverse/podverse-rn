@@ -140,11 +140,14 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { activeIndex } = this.state
+    const { activeIndex, boostPaymentLoading, explosionOrigin } = this.state
     const { player } = this.global
     const { episode } = player
     const hasChapters = episode?.chaptersUrl
     const hasTranscript = true
+    const { lightningNetwork } = this.global.session.valueSettings
+    const { globalSettings, lnpayEnabled } = lightningNetwork
+    const { boostAmount, streamingAmount } = globalSettings
   
     let itemCount = 3
     if (hasChapters) itemCount++
@@ -180,28 +183,28 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           passiveDotHeight={8}
           passiveDotWidth={8}
         />
-        {this.global.session.lightningPayEnabled && (
+        {lnpayEnabled && (
           <View style={styles.boostButtonsContainer}>
             <TouchableOpacity style={styles.boostButton} onPress={this._toggleSatStreaming}>
               <Text testID='Boost Button'>{'Sat Stream Off'.toUpperCase()}</Text>
               <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
-                {this.global.session.streamingAmount} sats / min
+                {streamingAmount} sats / min
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onLayout={(event) => {
                 this.setState({ explosionOrigin: event.nativeEvent.layout.y })
               }}
-              disabled={this.state.boostPaymentLoading}
+              disabled={boostPaymentLoading}
               style={styles.boostButton}
               onPress={this._attemptBoost}>
-              {this.state.boostPaymentLoading ? (
+              {boostPaymentLoading ? (
                 <ActivityIndicator />
               ) : (
                 <>
                   <Text testID='boost_button_text_1'>{translate('Boost').toUpperCase()}</Text>
                   <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
-                    {this.global.session.boostAmount} sats
+                    {boostAmount} sats
                   </Text>
                 </>
               )}
@@ -211,7 +214,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
         <ConfettiCannon
           count={200}
           explosionSpeed={500}
-          origin={{ x: Dimensions.get('screen').width, y: this.state.explosionOrigin }}
+          origin={{ x: Dimensions.get('screen').width, y: explosionOrigin }}
           autoStart={false}
           ref={(ref) => (this.explosion = ref)}
           fadeOut
