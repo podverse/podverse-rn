@@ -537,7 +537,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                         }}
                         onSubmitEditing={() => Keyboard.dismiss()}
                         testID={`${testIDPrefix}_streaming_amount_text_input`}
-                        value={`${boostAmount}`}
+                        value={`${streamingAmount}`}
                         wrapperStyle={styles.textInputWrapper}
                       />
                     )}
