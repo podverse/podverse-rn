@@ -5,6 +5,7 @@ import { PVTrackPlayer } from '../services/player'
 // import { PV } from '../resources'
 import { sendLNPayValueTransaction } from '../services/lnpay'
 import { PV } from '../resources'
+import { BannerInfoError } from '../resources/Interfaces'
 import { createSatoshiStreamStats } from './satoshiStream'
 
 /*
@@ -166,7 +167,7 @@ const convertValueTagIntoValueTransaction = async (
 }
 
 export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
-  const errors = []
+  const errors: BannerInfoError[] = []
 
   const valueTags = nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
   // TODO: right now we are assuming the first item will be the lightning network
@@ -242,7 +243,7 @@ export const sendValueTransaction = async (valueTransaction: ValueTransaction) =
 //   // iterate over the bundled transactions
 //     // send each transaction
 //     // clear each transaction from the bundled queue after success
-  
+
 // }
 
 // export const saveStreamingValuePaymentToTransactionQueue = async (valuePayment: ValueTag) => {
