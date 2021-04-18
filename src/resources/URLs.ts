@@ -50,7 +50,7 @@ export const URLs = {
   webDefaultBaseUrl,
   webPaths,
   lnpay: {
-    baseUrl: 'https://lnpay.co/v1',
+    baseUrl: 'https://api.lnpay.co/v1',
     DeveloperDashboardUrl: 'https://lnpay.co/developers/dashboard'
   }
 }

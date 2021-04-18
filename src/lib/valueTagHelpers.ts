@@ -5,6 +5,7 @@ import { PVTrackPlayer } from '../services/player'
 // import { PV } from '../resources'
 import { sendLNPayValueTransaction } from '../services/lnpay'
 import { PV } from '../resources'
+import { BannerInfoError } from '../resources/Interfaces'
 import { createSatoshiStreamStats } from './satoshiStream'
 
 export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueTag: any) => {
@@ -159,7 +160,7 @@ const convertValueTagIntoValueTransaction = async (
 }
 
 export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
-  const errors = []
+  const errors: BannerInfoError[] = []
 
   const valueTag = nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
   if (!valueTag) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
@@ -232,7 +233,7 @@ export const sendValueTransaction = async (valueTransaction: ValueTransaction) =
 //   // iterate over the bundled transactions
 //     // send each transaction
 //     // clear each transaction from the bundled queue after success
-  
+
 // }
 
 // export const saveStreamingValuePaymentToTransactionQueue = async (valuePayment: ValueTag) => {
