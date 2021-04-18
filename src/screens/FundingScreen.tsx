@@ -82,7 +82,9 @@ export class FundingScreen extends React.Component<Props, State> {
 
   render() {
     const { boostTransactions, streamingTransactions } = this.state
-    const { nowPlayingItem } = this.global.player
+    const { player, session } = this.global
+    const { nowPlayingItem } = player
+    const { boostAmount, streamingAmount } = session
     const { episodeFunding, episodeValue, podcastFunding, podcastValue } = nowPlayingItem
 
     const podcastLinks = podcastFunding?.map((item: any, index: number) =>
@@ -147,15 +149,21 @@ export class FundingScreen extends React.Component<Props, State> {
                     testID={`${testIDPrefix}_value_settings_lightning_boost_sample_label`}>
                     {translate('Sample boost splits')}
                   </Text>
-                  <ValueTagInfoView testID={testIDPrefix} transactions={boostTransactions} />
+                  <ValueTagInfoView
+                    testID={testIDPrefix}
+                    totalAmount={boostAmount}
+                    transactions={boostTransactions} />
                 </View>
                 <View style={styles.valueTagInfoViewWrapper}>
                   <Text
                     style={styles.textTableLabel}
                     testID={`${testIDPrefix}_value_settings_lightning_streaming_sample_label`}>
-                    {translate('Sample streaming splits')}
+                    {translate('Sample streaming splits per minute')}
                   </Text>
-                  <ValueTagInfoView testID={testIDPrefix} transactions={streamingTransactions} />
+                  <ValueTagInfoView
+                    testID={testIDPrefix}
+                    totalAmount={streamingAmount}
+                    transactions={streamingTransactions} />
                 </View>
               </View>
           }

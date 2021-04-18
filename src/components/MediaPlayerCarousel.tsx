@@ -114,11 +114,17 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
         try {
           const { nowPlayingItem } = this.global.player
 
-          const { errors, transactions } = await sendBoost(nowPlayingItem)
+          const { errors, transactions, totalAmount } = await sendBoost(nowPlayingItem)
 
           this.setState({ boostPaymentLoading: false })
           this.setGlobal({
-            bannerInfo: { show: true, description: translate('Boost Sent'), errors, transactions }
+            bannerInfo: {
+              show: true,
+              description: translate('Boost Sent'),
+              errors,
+              transactions,
+              totalAmount
+            }
           })
         } catch (error) {
           Alert.alert(translate('Boost Pay Error'), error.message)

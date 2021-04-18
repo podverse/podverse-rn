@@ -100,7 +100,10 @@ export const BoostDropdownBanner = () => {
             contentContainerStyle={styles.scrollViewContainer}
             showsVerticalScrollIndicator={false}>
             {!!transactions.length && (
-              <ValueTagInfoView testID='boost_dropdown_banner' transactions={transactions} />
+              <ValueTagInfoView
+                testID='boost_dropdown_banner'
+                totalAmount={bannerInfo.totalAmount}
+                transactions={transactions} />
             )}
             {!!errors.length && (
               <View>

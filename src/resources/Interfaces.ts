@@ -187,6 +187,7 @@ export interface BannerInfo {
   description: string
   errors?: BannerInfoError[]
   transactions?: ValueTransaction[]
+  totalAmount?: number
 }
 
 export interface IActionSheet {

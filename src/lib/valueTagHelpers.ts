@@ -192,7 +192,7 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
     }
   }
 
-  return { errors, transactions: valueTransactions }
+  return { errors, transactions: valueTransactions, totalAmount: amount }
 }
 
 export const sendValueTransaction = async (valueTransaction: ValueTransaction) => {

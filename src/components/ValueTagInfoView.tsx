@@ -7,13 +7,14 @@ import { Text, View } from './'
 
 type Props = {
   testID: string
+  totalAmount?: number
   transactions: ValueTransaction[]
 }
 
 export class ValueTagInfoView extends React.PureComponent<Props> {
 
   render() {
-    const { testID, transactions } = this.props
+    const { testID, totalAmount, transactions } = this.props
 
     return (
       <View style={styles.recipientTable}>
@@ -38,17 +39,33 @@ export class ValueTagInfoView extends React.PureComponent<Props> {
             </View>
           )
         })}
+        <View style={styles.recipientTableFooter}>
+          <Text testID={`${testID}_boost_recipient_amount_total`} style={styles.recipientFooterText}>
+            {`${translate('total sats')}: ${totalAmount}`}
+          </Text>
+        </View>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  recipientFooterText: {
+    paddingVertical: 10,
+    fontSize: PV.Fonts.sizes.lg
+  },
   recipientTable: {
     borderColor: PV.Colors.skyLight,
     borderWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: 10,
     paddingBottom: 5
+  },
+  recipientTableFooter: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    borderTopColor: PV.Colors.white,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    marginTop: 5
   },
   recipientTableHeader: {
     flexDirection: 'row',
