@@ -34,3 +34,29 @@ export const updateGlobalBoostAmount = (boostAmount: number) => {
 
   AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, boostAmount.toString())
 }
+
+export const updateGlobalStreamingAmount = (streamingAmount: number) => {
+  const globalState = getGlobal()
+  const { session } = globalState
+  const { valueSettings } = session
+  const { lightningNetwork } = valueSettings
+  const { globalSettings } = lightningNetwork
+  
+  setGlobal({
+    session: {
+      ...session,
+      valueSettings: {
+        ...valueSettings,
+        lightningNetwork: {
+          ...lightningNetwork,
+          globalSettings: {
+            ...globalSettings,
+            streamingAmount
+          }
+        }
+      }
+    }
+  })
+
+  AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_STREAMING_AMOUNT, streamingAmount.toString())
+}

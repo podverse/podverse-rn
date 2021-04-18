@@ -5,7 +5,6 @@ import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import RNPickerSelect from 'react-native-picker-select'
 import React from 'reactn'
-import { MINIMUM_BOOST_PAYMENT, removeLNPayWallet, toggleLNPayFeature } from '../state/actions/lnpay'
 import {
   ActivityIndicator,
   Button,
@@ -33,6 +32,7 @@ import { trackPageView } from '../services/tracking'
 import { deleteLoggedInUser } from '../services/user'
 import { logoutUser } from '../state/actions/auth'
 import * as DownloadState from '../state/actions/downloads'
+import { removeLNPayWallet, toggleLNPayFeature } from '../state/actions/lnpay'
 import {
   saveCustomAPIDomain,
   saveCustomWebDomain,
@@ -42,7 +42,12 @@ import {
   setOfflineModeEnabled
 } from '../state/actions/settings'
 import { clearHistoryItems } from '../state/actions/userHistoryItem'
-import { updateGlobalBoostAmount } from '../state/actions/valueSettings'
+import {
+  MINIMUM_BOOST_PAYMENT,
+  MINIMUM_STREAMING_PAYMENT,
+  updateGlobalBoostAmount,
+  updateGlobalStreamingAmount
+} from '../state/actions/valueSettings'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {
@@ -359,7 +364,7 @@ export class SettingsScreen extends React.Component<Props, State> {
     const { isLoggedIn, valueSettings } = session
     const { lightningNetwork } = valueSettings
     const { globalSettings, lnpayEnabled } = lightningNetwork
-    const { boostAmount } = globalSettings
+    const { boostAmount, streamingAmount } = globalSettings
 
     const isDarkMode = globalTheme === darkTheme
 
@@ -502,7 +507,6 @@ export class SettingsScreen extends React.Component<Props, State> {
                       <TextInput
                         eyebrowTitle={translate('Boost Amount')}
                         keyboardType='numeric'
-                        wrapperStyle={{ marginVertical: 20 }}
                         onBlur={() => {
                           const { boostAmount } = this.global.session.valueSettings.lightningNetwork.globalSettings
                           if (boostAmount < MINIMUM_BOOST_PAYMENT) {
@@ -510,10 +514,31 @@ export class SettingsScreen extends React.Component<Props, State> {
                           }
                         }}
                         onSubmitEditing={() => Keyboard.dismiss()}
-                        value={`${boostAmount}`}
                         onChangeText={(newText: string) => {
                           updateGlobalBoostAmount(Number(newText))
                         }}
+                        testID={`${testIDPrefix}_boost_amount_text_input`}
+                        value={`${boostAmount}`}
+                        wrapperStyle={styles.textInputWrapper}
+                      />
+                    )}
+                    {lnpayEnabled && (
+                      <TextInput
+                        eyebrowTitle={translate('Streaming Amount')}
+                        keyboardType='numeric'
+                        onBlur={() => {
+                          const { streamingAmount } = this.global.session.valueSettings.lightningNetwork.globalSettings
+                          if (streamingAmount < MINIMUM_STREAMING_PAYMENT) {
+                            updateGlobalStreamingAmount(MINIMUM_STREAMING_PAYMENT)
+                          }
+                        }}
+                        onChangeText={(newText: string) => {
+                          updateGlobalStreamingAmount(Number(newText))
+                        }}
+                        onSubmitEditing={() => Keyboard.dismiss()}
+                        testID={`${testIDPrefix}_streaming_amount_text_input`}
+                        value={`${boostAmount}`}
+                        wrapperStyle={styles.textInputWrapper}
                       />
                     )}
                   </View>
@@ -643,6 +668,9 @@ const styles = StyleSheet.create({
   },
   scrollViewContentContainer: {
     paddingBottom: 48
+  },
+  textInputWrapper: {
+    marginVertical: 20
   },
   wrapper: {
     flex: 1,
