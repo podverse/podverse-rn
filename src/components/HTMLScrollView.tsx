@@ -50,9 +50,8 @@ export const HTMLScrollView = (props: Props) => {
         html={formattedHtml}
         imagesMaxWidth={Dimensions.get('window').width}
         onLinkPress={(event: any, href: string, attributes: any) => {
-          const isTimestamp = true
           const startTime = parseInt(attributes && attributes['data-start-time'], 10)
-          if (isTimestamp && (startTime || startTime === 0)) {
+          if ((startTime || startTime === 0)) {
             setPlaybackPosition(startTime)
           } else if (href) {
             Linking.openURL(href)

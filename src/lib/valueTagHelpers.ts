@@ -1,5 +1,5 @@
 // import AsyncStorage from '@react-native-community/async-storage'
-import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, ValueTag, ValueTransaction } from 'podverse-shared'
+import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, Value, ValueTransaction } from 'podverse-shared'
 import { getGlobal } from 'reactn'
 import { PVTrackPlayer } from '../services/player'
 // import { PV } from '../resources'
@@ -34,7 +34,7 @@ export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueT
     }
   }
 
-  return { ...valueModel, valueRecipients } as ValueTag
+  return { ...valueModel, valueRecipients } as Value
 }
 
 const calculateNormalizedSplits = (valueRecipients: ValueRecipient[]) => {
@@ -52,17 +52,17 @@ const calculateNormalizedSplits = (valueRecipients: ValueRecipient[]) => {
     }
   })
 
-  normalizedValueRecipients = normalizedValueRecipients.filter((x) => !isValidNormalizedValueRecipient(x))
+  normalizedValueRecipients = normalizedValueRecipients.filter((x) => isValidNormalizedValueRecipient(x))
 
   return normalizedValueRecipients
 }
 
-const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipientNormalized) =>
-  normalizedValueRecipient?.address &&
-  normalizedValueRecipient?.amount > 0 &&
-  normalizedValueRecipient?.normalizedSplit > 0 &&
-  normalizedValueRecipient?.split > 0 &&
-  normalizedValueRecipient?.type
+const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipientNormalized) => 
+  !!(normalizedValueRecipient?.address
+  && normalizedValueRecipient?.amount >= 0 // TODO: this shouldn't allow 0
+  && normalizedValueRecipient?.normalizedSplit > 0
+  && normalizedValueRecipient?.split > 0
+  && normalizedValueRecipient?.type)
 
 export const normalizeValueRecipients = (valueRecipients: ValueRecipient[], total: number) => {
   const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(valueRecipients)
@@ -91,7 +91,7 @@ export const normalizeValueRecipients = (valueRecipients: ValueRecipient[], tota
 }
 
 const convertValueTagIntoValueTransactions = async (
-  valueTag: ValueTag,
+  valueTag: Value,
   nowPlayingItem: NowPlayingItem,
   action: string,
   amount: number

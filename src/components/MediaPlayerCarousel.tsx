@@ -9,6 +9,7 @@ import {
   MediaPlayerCarouselChapters,
   MediaPlayerCarouselClips,
   MediaPlayerCarouselShowNotes,
+  MediaPlayerCarouselTranscripts,
   MediaPlayerCarouselViewer,
   ScrollView,
   Text,
@@ -17,6 +18,7 @@ import {
 
 type Props = {
   hasChapters: boolean
+  hasTranscript: boolean
   navigation: any
 }
 
@@ -34,7 +36,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   constructor(props) {
     super(props)
     const defaultActiveIndex = props.hasChapters ? 2 : 1
-
+    
     this.state = {
       activeIndex: defaultActiveIndex
     }
@@ -55,7 +57,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   scrollToDefaultActiveIndex = () => {
     const { player } = this.global
     const hasChapters = player?.episode?.chaptersUrl
-    const defaultActiveIndex = hasChapters ? 2 : 1
+    let defaultActiveIndex = 1
+    if (hasChapters) defaultActiveIndex++
+  
     const animated = false
     this.scrollToActiveIndex(defaultActiveIndex, animated)
   }
@@ -79,8 +83,11 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   _handlePressClipInfo = () => {
-    const { hasChapters } = this.props
-    const lastActiveIndex = hasChapters ? 3 : 2
+    const { hasChapters, hasTranscript } = this.props
+    let lastActiveIndex = 2
+    if (hasChapters) lastActiveIndex++
+    if (hasTranscript) lastActiveIndex++
+  
     const animated = true
     this.scrollToActiveIndex(lastActiveIndex, animated)
   }
@@ -107,8 +114,12 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { activeIndex } = this.state
     const { player } = this.global
     const { episode } = player
-    const hasChapters = episode && episode.chaptersUrl
-    const itemCount = hasChapters ? 4 : 3
+    const hasChapters = episode?.chaptersUrl
+    const hasTranscript = true
+  
+    let itemCount = 3
+    if (hasChapters) itemCount++
+    if (hasTranscript) itemCount++
 
     return (
       <View style={styles.wrapper} transparent>
@@ -127,6 +138,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
           <MediaPlayerCarouselViewer handlePressClipInfo={this._handlePressClipInfo} width={screenWidth} />
           <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
+          {hasTranscript && <MediaPlayerCarouselTranscripts width={screenWidth} />}
         </ScrollView>
         <Dots
           active={activeIndex}

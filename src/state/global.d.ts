@@ -1,4 +1,5 @@
 import 'reactn'
+import { TranscriptRow } from '../lib/transcriptHelpers'
 import { BannerInfo, GlobalTheme, UserInfo } from '../resources/Interfaces'
 
 declare module 'reactn/default' {
@@ -100,7 +101,7 @@ declare module 'reactn/default' {
     customWebDomainEnabled?: boolean
     urlsAPI?: any
     urlsWeb?: any
-    userAgent?: string,
+    userAgent?: string
     bannerInfo: BannerInfo
   }
 }

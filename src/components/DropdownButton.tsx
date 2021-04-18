@@ -1,14 +1,14 @@
 import React from 'react'
-import { TouchableWithoutFeedback, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { Icon, Text } from '.'
 
 export const DropdownButton = (props: any) => {
-  const { hideFilter, onPress, sortLabel, testID } = props
+  const { disableFilter, onPress, sortLabel, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
-  const dropdownStyle = hideFilter ? { opacity: 0.0 } : {}
+  const dropdownStyle = disableFilter ? { opacity: 0.0 } : {}
 
   const extraStyles = []
 
@@ -17,7 +17,11 @@ export const DropdownButton = (props: any) => {
   }
 
   return (
-    <TouchableWithoutFeedback disabled={hideFilter} onPress={onPress} {...testProps(`${testID}_dropdown_button`)}>
+    <TouchableOpacity
+      activeOpacity={0.7}
+      disabled={disableFilter}
+      onPress={onPress}
+      {...testProps(`${testID}_dropdown_button`)}>
       <View style={[styles.dropdownButton, dropdownStyle, extraStyles]}>
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -27,7 +31,7 @@ export const DropdownButton = (props: any) => {
         </Text>
         <Icon name='angle-down' size={14} style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]} />
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   )
 }
 

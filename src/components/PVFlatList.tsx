@@ -40,6 +40,8 @@ type Props = {
   stickySectionHeadersEnabled?: boolean
   testID: string
   transparent?: boolean
+  listRef?: any
+  getItemLayout?: any
 }
 
 // This line silences a ref warning when a Flatlist doesn't need to be swipable.
@@ -75,7 +77,9 @@ export const PVFlatList = (props: Props) => {
     showNoInternetConnectionMessage,
     stickySectionHeadersEnabled,
     testID,
-    transparent
+    transparent,
+    listRef,
+    getItemLayout
   } = props
 
   const [globalTheme] = useGlobal('globalTheme')
@@ -159,6 +163,8 @@ export const PVFlatList = (props: Props) => {
           style={[globalTheme.flatList, transparent ? { backgroundColor: 'transparent' } : {}]}
           useFlatList={!useSectionList}
           useSectionList={useSectionList}
+          listViewRef={listRef}
+          getItemLayout={getItemLayout}
         />
       )}
     </View>
