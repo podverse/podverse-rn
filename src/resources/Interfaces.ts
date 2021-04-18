@@ -169,6 +169,7 @@ export interface InitialState {
     userInfo: UserInfo
     lightningPayEnabled: boolean
     boostAmount: number
+    streamingAmount: number
   }
   subscribedPodcasts: []
   subscribedPodcastsTotalCount: number

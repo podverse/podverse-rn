@@ -1,18 +1,32 @@
-import { ValueTag } from 'podverse-shared'
+import { ValueTransaction } from 'podverse-shared'
 import { Alert, Linking, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import React, { getGlobal } from 'reactn'
-import { FastImage, NavDismissIcon, ScrollView, Text, View } from '../components'
+import { Divider, FastImage, NavDismissIcon, ScrollView, Text, ValueTagInfoView, View } from '../components'
 import { translate } from '../lib/i18n'
 import { readableDate, testProps } from '../lib/utility'
+import { convertValueTagIntoValueTransactions } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 
 type Props = any
+type State = {
+  boostTransactions: ValueTransaction[]
+  streamingTransactions: ValueTransaction[]
+}
 
 const testIDPrefix = 'funding_screen'
 
-export class FundingScreen extends React.Component<Props> {
+export class FundingScreen extends React.Component<Props, State> {
+  constructor() {
+    super()
+    
+    this.state = {
+      boostTransactions: [],
+      streamingTransactions: []
+    }
+  }
+  
   static navigationOptions = ({ navigation }) => {
     const { globalTheme } = getGlobal()
 
@@ -25,14 +39,29 @@ export class FundingScreen extends React.Component<Props> {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const { player, session } = this.global
+    const { nowPlayingItem } = player
+    const { boostAmount, streamingAmount } = session
+
+    const { episodeValue, podcastValue } = nowPlayingItem
+    const valueTags = episodeValue || podcastValue
+    // TODO: right now we are assuming the first item will be the lightning network.
+    // This will need to be updated to support additional valueTags.
+    const valueTag = valueTags[0]
+    const boostTransactions = await convertValueTagIntoValueTransactions(
+        valueTag, nowPlayingItem, PV.ValueTag.ACTION_BOOST, boostAmount)
+    const streamingTransactions = await convertValueTagIntoValueTransactions(
+        valueTag, nowPlayingItem, PV.ValueTag.ACTION_STREAMING, streamingAmount)
+    this.setState({ boostTransactions, streamingTransactions })
+
     trackPageView('/funding', 'Funding Screen')
   }
 
   handleFollowLink = (url: string) => {
     Alert.alert(PV.Alerts.LEAVING_APP.title, PV.Alerts.LEAVING_APP.message, [
-      { text: 'Cancel' },
-      { text: 'Yes', onPress: () => Linking.openURL(url) }
+      { text: translate('Cancel') },
+      { text: translate('Yes'), onPress: () => Linking.openURL(url) }
     ])
   }
 
@@ -51,17 +80,11 @@ export class FundingScreen extends React.Component<Props> {
     )
   }
 
-  renderValueSection = (valueTags: ValueTag[]) => {
-    return null
-    // TODO: right now we are assuming the first item will be the lightning network.
-    // This will need to be updated to support additional valueTags.
-    // const valueTag = valueTags[0]
-  }
-
   render() {
+    const { boostTransactions, streamingTransactions } = this.state
     const { nowPlayingItem } = this.global.player
     const { episodeFunding, episodeValue, podcastFunding, podcastValue } = nowPlayingItem
-    const valueTags = episodeValue || podcastValue
+
     const podcastLinks = podcastFunding?.map((item: any, index: number) =>
       this.renderFundingLink(item, 'podcast', index))
     const episodeLinks = episodeFunding?.map((item: any, index: number) =>
@@ -106,29 +129,58 @@ export class FundingScreen extends React.Component<Props> {
                 <Text
                   style={styles.textHeader}
                   testID={`${testIDPrefix}_value_settings_header`}>
-                  Value Settings
+                  {translate('Value Settings')}
                 </Text>
-                {this.renderValueSection(valueTags)}
+                <Text
+                  style={styles.textLabel}
+                  testID={`${testIDPrefix}_value_settings_lightning_label`}>
+                  {translate('Bitcoin Lightning Network')}
+                </Text>
+                <Text
+                  style={styles.textSubLabel}
+                  testID={`${testIDPrefix}_value_settings_lightning_sub_label`}>
+                  {translate('via your LNPay wallet')}
+                </Text>
+                <View style={styles.valueTagInfoViewWrapper}>
+                  <Text
+                    style={styles.textTableLabel}
+                    testID={`${testIDPrefix}_value_settings_lightning_boost_sample_label`}>
+                    {translate('Sample boost splits')}
+                  </Text>
+                  <ValueTagInfoView testID={testIDPrefix} transactions={boostTransactions} />
+                </View>
+                <View style={styles.valueTagInfoViewWrapper}>
+                  <Text
+                    style={styles.textTableLabel}
+                    testID={`${testIDPrefix}_value_settings_lightning_streaming_sample_label`}>
+                    {translate('Sample streaming splits')}
+                  </Text>
+                  <ValueTagInfoView testID={testIDPrefix} transactions={streamingTransactions} />
+                </View>
               </View>
           }
+          {hasValueInfo && (episodeLinks?.length > 0) && <Divider />}
           {
             episodeLinks?.length > 0 &&
-              <View>
+              <View style={styles.fundingLinksWrapper}>
                 <Text
                   style={styles.textHeader}
                   testID={`${testIDPrefix}_episode_funding_header`}>
-                  Episode Funding Links
+                  {translate('Episode Links')}
                 </Text>
                 {episodeLinks}
               </View>
           }
+          {(hasValueInfo || episodeLinks?.length > 0) && (podcastLinks?.length > 0) &&
+            <Divider style={styles.divider} />
+          }
           {
             podcastLinks?.length > 0 &&
-              <View>
+              <View style={styles.fundingLinksWrapper}>
                 <Text
                   style={styles.textHeader}
                   testID={`${testIDPrefix}_podcast_funding_header`}>
-                  Podcast Funding Links
+                  {translate('Podcast Links')}
                 </Text>
                 {podcastLinks}
               </View>
@@ -143,14 +195,21 @@ const styles = StyleSheet.create({
   content: {
     flex: 1
   },
+  divider: {
+    marginVertical: 24
+  },
   episodeTitle: {
     fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.thin
   },
   fundingLink: {
-    fontSize: PV.Fonts.sizes.xl,
+    color: PV.Colors.linkColor,
+    fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.semibold,
-    marginLeft: 12
+    marginTop: 12
+  },
+  fundingLinksWrapper: {
+    marginTop: 0
   },
   image: {
     flex: 0,
@@ -161,7 +220,7 @@ const styles = StyleSheet.create({
   innerTopView: {
     flex: 0,
     flexDirection: 'row',
-    paddingBottom: 4,
+    paddingBottom: 16,
     paddingHorizontal: 12
   },
   podcastTitle: {
@@ -178,17 +237,28 @@ const styles = StyleSheet.create({
     marginTop: 3
   },
   scrollViewContent: {
-    paddingHorizontal: 12,
-    paddingVertical: 8
+    paddingHorizontal: 12
   },
   text: {
     fontSize: PV.Fonts.sizes.md,
     marginBottom: 24
   },
   textHeader: {
+    fontSize: PV.Fonts.sizes.xxl,
+    fontWeight: PV.Fonts.weights.bold
+  },
+  textLabel: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.bold,
-    marginBottom: 12
+    marginTop: 16
+  },
+  textSubLabel: {
+    fontSize: PV.Fonts.sizes.md,
+    marginTop: 2
+  },
+  textTableLabel: {
+    fontSize: PV.Fonts.sizes.xl,
+    fontStyle: 'italic',
+    marginVertical: 16
   },
   textWrapper: {
     flex: 1
@@ -197,5 +267,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'flex-start'
-  }
+  },
+  valueTagInfoViewWrapper: {}
 })

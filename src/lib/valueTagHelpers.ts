@@ -91,14 +91,14 @@ export const normalizeValueRecipients = (valueRecipients: ValueRecipient[], tota
 
     finalNormalizedValueRecipients.push({
       ...normalizedValueRecipient,
-      amount: Math.floor(amount)
+      amount: parseFloat(amount.toFixed(2))
     })
   }
 
   return finalNormalizedValueRecipients
 }
 
-const convertValueTagIntoValueTransactions = async (
+export const convertValueTagIntoValueTransactions = async (
   valueTag: ValueTag,
   nowPlayingItem: NowPlayingItem,
   action: string,

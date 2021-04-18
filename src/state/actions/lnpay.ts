@@ -6,6 +6,9 @@ import { PV } from '../../resources'
 export const DEFAULT_BOOST_PAYMENT = 100
 export const MINIMUM_BOOST_PAYMENT = 100
 
+export const DEFAULT_STREAMING_PAYMENT = 10
+export const MINIMUM_STREAMING_PAYMENT = 1
+
 export interface LNWallet {
   id: string
   publicKey: string
@@ -19,11 +22,20 @@ export interface LNWallet {
 export const toggleLNPayFeature = async (toggle: boolean) => {
   const globalState = getGlobal()
   const defaultBoostAmount = DEFAULT_BOOST_PAYMENT
+  const defaultStreamingAmount = DEFAULT_STREAMING_PAYMENT
   
   await AsyncStorage.setItem(PV.Keys.NFT_BOOST_AMOUNT, String(defaultBoostAmount))
+  await AsyncStorage.setItem(PV.Keys.NFT_STREAMING_AMOUNT, String(defaultStreamingAmount))
   await AsyncStorage.setItem(PV.Keys.LNPAY_ENABLED, String(toggle))
 
-  setGlobal({ session: { ...globalState.session, lightningPayEnabled: toggle, boostAmount: defaultBoostAmount } })
+  setGlobal({
+    session: {
+      ...globalState.session,
+      lightningPayEnabled: toggle,
+      boostAmount: defaultBoostAmount,
+      streamingAmount: defaultStreamingAmount
+    }
+  })
 }
 
 export const saveLNPayWallet = async (wallet: LNWallet) => {

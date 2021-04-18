@@ -1,5 +1,4 @@
 import 'reactn'
-import { TranscriptRow } from '../lib/transcriptHelpers'
 import { BannerInfo, GlobalTheme, UserInfo } from '../resources/Interfaces'
 
 declare module 'reactn/default' {
@@ -91,6 +90,7 @@ declare module 'reactn/default' {
       userInfo: UserInfo
       lightningPayEnabled: boolean
       boostAmount: number
+      streamingAmount: number
     }
     subscribedPodcasts: []
     subscribedPodcastsTotalCount: number

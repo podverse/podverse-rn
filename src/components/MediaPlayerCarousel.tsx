@@ -179,7 +179,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
             <TouchableOpacity style={styles.boostButton} onPress={this._toggleSatStreaming}>
               <Text testID='Boost Button'>{'Sat Stream Off'.toUpperCase()}</Text>
               <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
-                10 sats / min
+                {this.global.session.streamingAmount} sats / min
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
