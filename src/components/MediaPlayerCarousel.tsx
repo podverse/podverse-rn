@@ -1,11 +1,20 @@
 import { Dimensions, StyleSheet, Alert, TouchableOpacity } from 'react-native'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
+import ConfettiCannon from 'react-native-confetti-cannon'
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { translate } from '../lib/i18n'
 import { sendBoost } from '../lib/valueTagHelpers'
+
+const HapticOptions = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false
+}
+
 import {
+  ActivityIndicator,
   MediaPlayerCarouselChapters,
   MediaPlayerCarouselClips,
   MediaPlayerCarouselShowNotes,
@@ -22,6 +31,8 @@ type Props = {
 
 type State = {
   activeIndex: number
+  boostPaymentLoading: boolean
+  explosionOrigin: number
 }
 
 const screenWidth = Dimensions.get('screen').width
@@ -30,13 +41,16 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   carousel: any
   scrollView: any
   handlePressClipInfo: any
+  explosion: ConfettiCannon | null
 
   constructor(props) {
     super(props)
     const defaultActiveIndex = props.hasChapters ? 2 : 1
 
     this.state = {
-      activeIndex: defaultActiveIndex
+      activeIndex: defaultActiveIndex,
+      boostPaymentLoading: false,
+      explosionOrigin: 0
     }
   }
 
@@ -85,20 +99,29 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     this.scrollToActiveIndex(lastActiveIndex, animated)
   }
 
-  _attemptBoost = async () => {
-    try {
-      const { nowPlayingItem } = this.global.player
-      const { errors, transactions } = await sendBoost(nowPlayingItem)
+  _attemptBoost = () => {
+    ReactNativeHapticFeedback.trigger('impactHeavy', HapticOptions)
+    this.explosion && this.explosion.start()
+    this.setState({ boostPaymentLoading: true }, () => {
+      (async () => {
+        try {
+          const { nowPlayingItem } = this.global.player
 
-      this.setGlobal({
-        bannerInfo: { show: true, description: translate('Boost Sent'), errors, transactions }
-      })
-    } catch (error) {
-      Alert.alert(translate('Boost Pay Error'), error.message)
-    }
+          const { errors, transactions } = await sendBoost(nowPlayingItem)
+
+          this.setState({ boostPaymentLoading: false })
+          this.setGlobal({
+            bannerInfo: { show: true, description: translate('Boost Sent'), errors, transactions }
+          })
+        } catch (error) {
+          Alert.alert(translate('Boost Pay Error'), error.message)
+        }
+      })()
+    })
   }
 
   _toggleSatStreaming = () => {
+    ReactNativeHapticFeedback.trigger('impactHeavy', HapticOptions)
     // TOGGLE SAT STREAM
   }
 
@@ -147,14 +170,34 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                 10 sats / min
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.boostButton} onPress={this._attemptBoost}>
-              <Text testID='boost_button_text_1'>{translate('Boost').toUpperCase()}</Text>
-              <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
-                {this.global.session.boostAmount} sats
-              </Text>
+            <TouchableOpacity
+              onLayout={(event) => {
+                this.setState({ explosionOrigin: event.nativeEvent.layout.y })
+              }}
+              disabled={this.state.boostPaymentLoading}
+              style={styles.boostButton}
+              onPress={this._attemptBoost}>
+              {this.state.boostPaymentLoading ? (
+                <ActivityIndicator />
+              ) : (
+                <>
+                  <Text testID='boost_button_text_1'>{translate('Boost').toUpperCase()}</Text>
+                  <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
+                    {this.global.session.boostAmount} sats
+                  </Text>
+                </>
+              )}
             </TouchableOpacity>
           </View>
         )}
+        <ConfettiCannon
+          count={200}
+          explosionSpeed={500}
+          origin={{ x: Dimensions.get('screen').width, y: this.state.explosionOrigin }}
+          autoStart={false}
+          ref={(ref) => (this.explosion = ref)}
+          fadeOut
+        />
       </View>
     )
   }
