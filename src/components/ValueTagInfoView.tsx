@@ -41,7 +41,7 @@ export class ValueTagInfoView extends React.PureComponent<Props> {
         })}
         <View style={styles.recipientTableFooter}>
           <Text testID={`${testID}_boost_recipient_amount_total`} style={styles.recipientFooterText}>
-            {`${translate('total sats')}: ${totalAmount}`}
+            {`${translate('amount sent')}: ${totalAmount}`}
           </Text>
         </View>
       </View>

@@ -96,6 +96,7 @@ declare module 'reactn/default' {
             streamingAmount: number
           }
         }
+        streamingEnabled: boolean
       }
     }
     subscribedPodcasts: []

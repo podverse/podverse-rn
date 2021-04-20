@@ -175,6 +175,7 @@ export interface InitialState {
           streamingAmount: number
         }
       }
+      streamingEnabled: boolean
     }
   }
   subscribedPodcasts: []

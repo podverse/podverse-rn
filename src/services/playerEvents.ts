@@ -2,7 +2,9 @@ import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
+import { getGlobal } from 'reactn'
 import BackgroundTimer from 'react-native-background-timer'
+import { saveStreamingValueTransactionsToTransactionQueue } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
 import { hideMiniPlayer, updatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
@@ -52,7 +54,9 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
 const syncNowPlayingItemWithTrack = () => {
   // If the clipEndInterval is already running, stop it before the clip is
   // reloaded in the handleSyncNowPlayingItem function.
-  stopHandleClipEndInterval()
+  const checkClipEndTimeShouldStop = true
+  const streamingValueShouldStop = false
+  stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeShouldStop, streamingValueShouldStop)
 
   // The first setTimeout is an attempt to prevent the following:
   // - Sometimes clips start playing from the beginning of the episode, instead of the start of the clip.
@@ -262,52 +266,162 @@ module.exports = async () => {
   })
 }
 
-const stopHandleClipEndInterval = () => {
-  if (Platform.OS === 'android') {
-    BackgroundTimer.stopBackgroundTimer()
+/*
+  HANDLE CLIP END TIME INTERVAL
+*/
+
+const startCheckClipEndTime = async () => {
+  const nowPlayingItem = await getNowPlayingItemLocally()
+
+  if (nowPlayingItem) {
+    const { clipEndTime, clipId } = nowPlayingItem
+    if (clipId && clipEndTime) {
+      startBackgroundTimer()
+    }
   }
-  if (handleClipEndInterval) {
-    BackgroundTimer.clearInterval(handleClipEndInterval)
-  }
-  BackgroundTimer.stop()
 }
 
-let handleClipEndInterval = null as any
-// Background timer handling from
-// https://github.com/ocetnik/react-native-background-timer/issues/122
-const handlePlayerClipLoaded = () => {
+const stopBackgroundTimerIfShouldBeStopped = async (
+  checkClipEndTimeShouldStop: boolean,
+  streamingValueShouldStop: boolean
+) => {
+  const globalState = getGlobal()
+  const nowPlayingItem = await getNowPlayingItemLocally()
+
+  if (!checkClipEndTimeShouldStop && nowPlayingItem.clipEndTime) {
+    const clipHasEnded = await getClipHasEnded()
+    if (clipHasEnded) {
+      checkClipEndTimeShouldStop = true
+    }
+  }
+
+  const { streamingEnabled } = globalState.session.valueSettings
+  if (!streamingValueShouldStop && !streamingEnabled) {
+    streamingValueShouldStop = true
+  }
+
+  if (checkClipEndTimeShouldStop && streamingValueShouldStop) {
+    stopBackgroundTimer()
+  }
+}
+
+const stopCheckClipIfEndTimeReached = () => {
   (async () => {
-    console.log('PLAYER_CLIP_LOADED event')
-    stopHandleClipEndInterval()
-
     const nowPlayingItem = await getNowPlayingItemLocally()
-
-    if (nowPlayingItem) {
-      const { clipEndTime, clipId } = nowPlayingItem
-
-      const checkEndTime = () => {
-        (async () => {
-          const currentPosition = await PVTrackPlayer.getTrackPosition()
-          if (currentPosition > clipEndTime) {
-            PVTrackPlayer.pause()
-            await setClipHasEnded(true)
-            stopHandleClipEndInterval()
-          }
-        })()
-      }
-
-      if (clipId && clipEndTime) {
-        if (Platform.OS === 'android') {
-          BackgroundTimer.runBackgroundTimer(checkEndTime, 500)
-        } else {
-          await BackgroundTimer.start()
-          handleClipEndInterval = BackgroundTimer.setInterval(checkEndTime, 500)
-        }
-      }
+    const { clipEndTime } = nowPlayingItem
+    const currentPosition = await PVTrackPlayer.getTrackPosition()
+    if (currentPosition > clipEndTime) {
+      PVTrackPlayer.pause()
+      await setClipHasEnded(true)
+      const checkClipEndTimeStopped = true
+      const streamingValueStopped = false
+      stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeStopped, streamingValueStopped)
     }
   })()
 }
 
-const debouncedHandlePlayerClipLoaded = debounce(handlePlayerClipLoaded, 1000)
-
+const debouncedHandlePlayerClipLoaded = debounce(startCheckClipEndTime, 1000)
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
 PVEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, debouncedHandlePlayerClipLoaded)
+
+/*
+  HANDLE VALUE STREAMING TOGGLE
+*/
+
+const handleValueStreamingToggle = () => {
+  const globalState = getGlobal()
+  const { streamingEnabled } = globalState.session.valueSettings
+
+  if (streamingEnabled) {
+    startBackgroundTimer()
+  } else {
+    const checkClipEndTimeShouldStop = false
+    const streamingValueShouldStop = true
+    stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeShouldStop, streamingValueShouldStop)
+  }
+}
+
+const handleValueStreamingMinutePassed = () => {
+  const globalState = getGlobal()
+  const { nowPlayingItem } = globalState.player
+  const { streamingAmount } = globalState.session.valueSettings.lightningNetwork.globalSettings
+  const valueTag = nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
+
+  if (valueTag) {
+    saveStreamingValueTransactionsToTransactionQueue(
+      valueTag,
+      nowPlayingItem,
+      streamingAmount
+    )
+  }
+}
+
+PVEventEmitter.on(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED, handleValueStreamingToggle)
+
+/*
+  BACKGROUND TIMER
+*/
+
+let backgroundTimerInterval: any = null
+
+const startBackgroundTimer = async () => {
+  stopBackgroundTimer()
+
+  if (Platform.OS === 'android') {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    BackgroundTimer.runBackgroundTimer(handleBackgroundTimerInterval, 1000)
+  } else {
+    await BackgroundTimer.start()
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    backgroundTimerInterval = BackgroundTimer.setInterval(handleBackgroundTimerInterval, 1000)
+  }
+}
+
+const stopBackgroundTimer = () => {
+  if (Platform.OS === 'android') {
+    BackgroundTimer.stopBackgroundTimer()
+  }
+  if (backgroundTimerInterval) {
+    BackgroundTimer.clearInterval(backgroundTimerInterval)
+  }
+  BackgroundTimer.stop()
+}
+
+let valueStreamingIntervalCount = 0
+const handleBackgroundTimerInterval = async () => {
+  stopCheckClipIfEndTimeReached()
+  
+  const playbackState = await PVTrackPlayer.getState()
+  const globalState = getGlobal()
+  const { streamingEnabled } = globalState.session.valueSettings
+
+  if (streamingEnabled) {
+    if (playbackStateIsPlaying(playbackState)) {
+      valueStreamingIntervalCount++
+    }
+  
+    if (valueStreamingIntervalCount >= 10) {
+      valueStreamingIntervalCount = 0
+      handleValueStreamingMinutePassed()
+    }
+  } else {
+    valueStreamingIntervalCount = 0
+  }
+}
+
+const playbackStateIsPlaying = (playbackState: string | number) => {
+  let isPlaying = false
+
+  if (Platform.OS === 'ios') {
+    if (playbackState === PVTrackPlayer.STATE_PLAYING) {
+      isPlaying = true
+    }
+  } else if (Platform.OS === 'android') {
+    const playing = 3
+    if (playbackState === playing) {
+      isPlaying = true
+    }
+  }
+
+  return isPlaying
+}

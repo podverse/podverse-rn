@@ -13,6 +13,7 @@ const HapticOptions = {
   ignoreAndroidSystemSettings: false
 }
 
+import { toggleValueStreaming } from '../state/actions/valueTag'
 import {
   ActivityIndicator,
   MediaPlayerCarouselChapters,
@@ -135,7 +136,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   _toggleSatStreaming = () => {
     ReactNativeHapticFeedback.trigger('impactHeavy', HapticOptions)
-    // TOGGLE SAT STREAM
+    toggleValueStreaming()
   }
 
   render() {
@@ -145,13 +146,17 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { episode } = player
     const hasChapters = episode?.chaptersUrl
     const hasTranscript = true
-    const { lightningNetwork } = this.global.session.valueSettings
+    const { lightningNetwork, streamingEnabled } = this.global.session.valueSettings
     const { globalSettings, lnpayEnabled } = lightningNetwork
     const { boostAmount, streamingAmount } = globalSettings
   
     let itemCount = 3
     if (hasChapters) itemCount++
     if (hasTranscript) itemCount++
+
+    const satStreamText = streamingEnabled
+      ? translate('Stream On')
+      : translate('Stream Off')
 
     return (
       <View style={styles.wrapper} transparent>
@@ -186,9 +191,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
         {lnpayEnabled && (
           <View style={styles.boostButtonsContainer}>
             <TouchableOpacity style={styles.boostButton} onPress={this._toggleSatStreaming}>
-              <Text testID='Boost Button'>{'Sat Stream Off'.toUpperCase()}</Text>
+              <Text testID='Boost Button'>{satStreamText.toUpperCase()}</Text>
               <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
-                {streamingAmount} sats / min
+                {streamingAmount} {translate('sats / min')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -204,7 +209,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                 <>
                   <Text testID='boost_button_text_1'>{translate('Boost').toUpperCase()}</Text>
                   <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
-                    {boostAmount} sats
+                    {boostAmount} {translate('sats')}
                   </Text>
                 </>
               )}

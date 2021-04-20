@@ -113,7 +113,8 @@ const initialTheme: InitialState = {
           boostAmount: DEFAULT_BOOST_PAYMENT,
           streamingAmount: DEFAULT_STREAMING_PAYMENT
         }
-      }
+      },
+      streamingEnabled: false
     }
   },
   subscribedPodcasts: [],

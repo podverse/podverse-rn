@@ -47,7 +47,7 @@ import {
   MINIMUM_STREAMING_PAYMENT,
   updateGlobalBoostAmount,
   updateGlobalStreamingAmount
-} from '../state/actions/valueSettings'
+} from '../state/actions/valueTag'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {

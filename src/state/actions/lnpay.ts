@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
-import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './valueSettings'
+import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './valueTag'
 export interface LNWallet {
   id: string
   publicKey: string

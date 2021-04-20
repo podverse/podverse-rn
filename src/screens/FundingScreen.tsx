@@ -145,7 +145,7 @@ export class FundingScreen extends React.Component<Props, State> {
                 </Text>
                 <View style={styles.itemWrapper}>
                   <TextInput
-                    eyebrowTitle={translate('Boost Amount for Podcast')}
+                    eyebrowTitle={translate('Boost Amount for this Podcast')}
                     keyboardType='numeric'
                     wrapperStyle={styles.textInput}
                     onBlur={() => {
@@ -176,7 +176,7 @@ export class FundingScreen extends React.Component<Props, State> {
                 </View>
                 <View style={styles.itemWrapper}>
                   <TextInput
-                    eyebrowTitle={translate('Streaming Amount for Podcast')}
+                    eyebrowTitle={translate('Streaming Amount for this Podcast')}
                     keyboardType='numeric'
                     wrapperStyle={styles.textInput}
                     onBlur={() => {

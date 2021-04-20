@@ -15,7 +15,7 @@ import { setAllQueueItemsLocally } from '../../services/queue'
 import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemLocally, getNowPlayingItemOnServer } from '../../services/userNowPlayingItem'
 import { getSubscribedPodcasts } from './podcast'
-import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './valueSettings'
+import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './valueTag'
 
 export type Credentials = {
   addByRSSPodcastFeedUrls?: []
@@ -41,13 +41,14 @@ export const getAuthUserInfo = async () => {
         userInfo,
         isLoggedIn,
         valueSettings: {
+          ...globalState.session.valueSettings,
           lightningNetwork: {
             lnpayEnabled: lnpayEnabled ? JSON.parse(lnpayEnabled) : false,
             globalSettings: {
               boostAmount: boostAmount ? Number(boostAmount) : DEFAULT_BOOST_PAYMENT,
               streamingAmount: streamingAmount ? Number(streamingAmount) : DEFAULT_STREAMING_PAYMENT
             }
-          }
+          },
         }
       },
       overlayAlert: {
