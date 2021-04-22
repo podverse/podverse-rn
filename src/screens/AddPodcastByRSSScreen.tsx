@@ -123,7 +123,10 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
               value={url}
             />
             <Divider style={styles.divider} />
-            <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
+            <Text 
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm} 
+              style={[styles.text, {fontWeight: PV.Fonts.weights.bold, marginBottom: 60}]}
+            >
               {translate('AddPodcastByRSSScreenText1')}
             </Text>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
@@ -173,7 +176,6 @@ const styles = StyleSheet.create({
   },
   textLink: {
     fontSize: PV.Fonts.sizes.lg,
-    paddingVertical: 16,
-    textAlign: 'center'
+    textDecorationLine:"underline"
   }
 })
