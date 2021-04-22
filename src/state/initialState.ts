@@ -106,7 +106,7 @@ const initialTheme: InitialState = {
       subscribedUserIds: []
     },
     isLoggedIn: false,
-    valueSettings: {
+    valueTagSettings: {
       lightningNetwork: {
         lnpayEnabled: false,
         globalSettings: {

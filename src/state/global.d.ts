@@ -88,7 +88,7 @@ declare module 'reactn/default' {
     session: {
       isLoggedIn: boolean
       userInfo: UserInfo
-      valueSettings: {
+      valueTagSettings: {
         lightningNetwork: {
           lnpayEnabled: boolean
           globalSettings: {

@@ -15,13 +15,13 @@ let valueTransactionProcessorInterval = null
 
 /*
   initializeValueProcessor must be called after getAuthUserInfo
-  so the valueSettings data is available on global state.
+  so the valueTagSettings data is available on global state.
 */
 export const initializeValueProcessor = () => {
   const globalState = getGlobal()
   const { session } = globalState
-  const { valueSettings } = session
-  const { lightningNetwork } = valueSettings
+  const { valueTagSettings } = session
+  const { lightningNetwork } = valueTagSettings
   const { lnpayEnabled } = lightningNetwork
 
   if (lnpayEnabled) {
@@ -50,21 +50,21 @@ const createValueTransactionProcessorInterval = () => {
         }
       })
     }
-  }, 20000)
+  }, 1000 * 60 * 10)
 }
 
 export const updateGlobalBoostAmount = (boostAmount: number) => {
   const globalState = getGlobal()
   const { session } = globalState
-  const { valueSettings } = session
-  const { lightningNetwork } = valueSettings
+  const { valueTagSettings } = session
+  const { lightningNetwork } = valueTagSettings
   const { globalSettings } = lightningNetwork
   
   setGlobal({
     session: {
       ...session,
-      valueSettings: {
-        ...valueSettings,
+      valueTagSettings: {
+        ...valueTagSettings,
         lightningNetwork: {
           ...lightningNetwork,
           globalSettings: {
@@ -82,15 +82,15 @@ export const updateGlobalBoostAmount = (boostAmount: number) => {
 export const updateGlobalStreamingAmount = (streamingAmount: number) => {
   const globalState = getGlobal()
   const { session } = globalState
-  const { valueSettings } = session
-  const { lightningNetwork } = valueSettings
+  const { valueTagSettings } = session
+  const { lightningNetwork } = valueTagSettings
   const { globalSettings } = lightningNetwork
   
   setGlobal({
     session: {
       ...session,
-      valueSettings: {
-        ...valueSettings,
+      valueTagSettings: {
+        ...valueTagSettings,
         lightningNetwork: {
           ...lightningNetwork,
           globalSettings: {
@@ -108,14 +108,14 @@ export const updateGlobalStreamingAmount = (streamingAmount: number) => {
 export const toggleValueStreaming = () => {
   const globalState = getGlobal()
   const { session } = globalState
-  const { valueSettings } = session
-  const { streamingEnabled } = valueSettings
+  const { valueTagSettings } = session
+  const { streamingEnabled } = valueTagSettings
 
   setGlobal({
     session: {
       ...session,
-      valueSettings: {
-        ...valueSettings,
+      valueTagSettings: {
+        ...valueTagSettings,
         streamingEnabled: !streamingEnabled
       }
     }

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, StyleProp, ViewStyle } from 'react-native'
 import React, { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { ActivityIndicator, Button, SafeAreaView, Text } from './'
@@ -15,6 +15,7 @@ type Props = {
   topActionHandler?: any
   topActionText?: string
   transparent?: boolean
+  containerStyle?: StyleProp<ViewStyle>
 }
 
 export const MessageWithAction = (props: Props) => {
@@ -29,12 +30,13 @@ export const MessageWithAction = (props: Props) => {
     testID,
     topActionHandler,
     topActionText,
-    transparent
+    transparent,
+    containerStyle
   } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
-    <SafeAreaView style={styles.view} transparent={transparent}>
+    <SafeAreaView style={[styles.view, containerStyle]} transparent={transparent}>
       {!!message && (
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}

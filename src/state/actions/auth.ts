@@ -40,8 +40,8 @@ export const getAuthUserInfo = async () => {
       session: {
         userInfo,
         isLoggedIn,
-        valueSettings: {
-          ...globalState.session.valueSettings,
+        valueTagSettings: {
+          ...globalState.session.valueTagSettings,
           lightningNetwork: {
             lnpayEnabled: lnpayEnabled ? JSON.parse(lnpayEnabled) : false,
             globalSettings: {

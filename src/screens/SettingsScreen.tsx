@@ -361,8 +361,8 @@ export class SettingsScreen extends React.Component<Props, State> {
       globalTheme,
       session
     } = this.global
-    const { isLoggedIn, valueSettings } = session
-    const { lightningNetwork } = valueSettings
+    const { isLoggedIn, valueTagSettings } = session
+    const { lightningNetwork } = valueTagSettings
     const { globalSettings, lnpayEnabled } = lightningNetwork
     const { boostAmount, streamingAmount } = globalSettings
 
@@ -494,7 +494,6 @@ export class SettingsScreen extends React.Component<Props, State> {
                     value={!!customWebDomainEnabled}
                   />
                 </View>
-                {isLoggedIn && (
                   <View style={styles.itemWrapper}>
                     <SwitchWithText
                       onValueChange={this._showLNPaySetup}
@@ -508,7 +507,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                         eyebrowTitle={translate('Boost Amount')}
                         keyboardType='numeric'
                         onBlur={() => {
-                          const { boostAmount } = this.global.session.valueSettings.lightningNetwork.globalSettings
+                          const { boostAmount } = this.global.session.valueTagSettings.lightningNetwork.globalSettings
                           if (boostAmount < MINIMUM_BOOST_PAYMENT) {
                             updateGlobalBoostAmount(MINIMUM_BOOST_PAYMENT)
                           }
@@ -527,7 +526,8 @@ export class SettingsScreen extends React.Component<Props, State> {
                         eyebrowTitle={translate('Streaming Amount')}
                         keyboardType='numeric'
                         onBlur={() => {
-                          const { streamingAmount } = this.global.session.valueSettings.lightningNetwork.globalSettings
+                          const { streamingAmount } = 
+                            this.global.session.valueTagSettings.lightningNetwork.globalSettings
                           if (streamingAmount < MINIMUM_STREAMING_PAYMENT) {
                             updateGlobalStreamingAmount(MINIMUM_STREAMING_PAYMENT)
                           }
@@ -542,7 +542,6 @@ export class SettingsScreen extends React.Component<Props, State> {
                       />
                     )}
                   </View>
-                )}
               </View>
             )}
             <Divider style={styles.divider} />

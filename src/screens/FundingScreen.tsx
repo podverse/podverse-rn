@@ -42,7 +42,7 @@ export class FundingScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const { player, session } = this.global
     const { nowPlayingItem } = player
-    const { boostAmount, streamingAmount } = session.valueSettings.lightningNetwork.globalSettings
+    const { boostAmount, streamingAmount } = session.valueTagSettings.lightningNetwork.globalSettings
 
     const { episodeValue, podcastValue } = nowPlayingItem
     const valueTags = episodeValue || podcastValue
@@ -84,7 +84,7 @@ export class FundingScreen extends React.Component<Props, State> {
     const { boostTransactions, streamingTransactions } = this.state
     const { player, session } = this.global
     const { nowPlayingItem } = player
-    const { boostAmount, streamingAmount } = session.valueSettings.lightningNetwork.globalSettings
+    const { boostAmount, streamingAmount } = session.valueTagSettings.lightningNetwork.globalSettings
     const { episodeFunding, episodeValue, podcastFunding, podcastValue } = nowPlayingItem
 
     const podcastLinks = podcastFunding?.map((item: any, index: number) =>

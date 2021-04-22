@@ -31,4 +31,4 @@ rm -rf ./ios/build 2>/dev/null
 
 echo "Clearing node modules..."
 
-rm -rf node_modules/ && yarn cache clean && yarn install && npx pod-install && code . && clear
+rm -rf node_modules/ && yarn cache clean && yarn install && npx pod-install && yarn postinstall && code . && clear

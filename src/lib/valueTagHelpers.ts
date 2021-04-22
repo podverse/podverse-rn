@@ -181,19 +181,23 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
 
   const action = 'boost'
   const { session } = getGlobal()
-  const { boostAmount } = session.valueSettings.lightningNetwork.globalSettings
+  const { boostAmount } = session.valueTagSettings.lightningNetwork.globalSettings
 
-  const valueTransactions = await convertValueTagIntoValueTransactions(valueTag, nowPlayingItem, action, amount)
+  let totalAmountPaid = 0
+  const valueTransactions = await convertValueTagIntoValueTransactions(valueTag, nowPlayingItem, action, boostAmount)
 
   for (const valueTransaction of valueTransactions) {
     try {
-      await sendValueTransaction(valueTransaction)
+      const succesfull = await sendValueTransaction(valueTransaction)
+      if(succesfull) {
+        totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
+      }
     } catch (error) {
       errors.push({ error, details: { recipient: valueTransaction.normalizedValueRecipient.name } })
     }
   }
 
-  return { errors, transactions: valueTransactions, totalAmount: boostAmount }
+  return { errors, transactions: valueTransactions, totalAmountPaid }
 }
 
 export const sendValueTransaction = async (valueTransaction: ValueTransaction) => {

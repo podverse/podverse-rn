@@ -167,7 +167,7 @@ export interface InitialState {
   session: {
     isLoggedIn: boolean
     userInfo: UserInfo
-    valueSettings: {
+    valueTagSettings: {
       lightningNetwork: {
         lnpayEnabled: boolean
         globalSettings: {

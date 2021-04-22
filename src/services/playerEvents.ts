@@ -288,14 +288,14 @@ const stopBackgroundTimerIfShouldBeStopped = async (
   const globalState = getGlobal()
   const nowPlayingItem = await getNowPlayingItemLocally()
 
-  if (!checkClipEndTimeShouldStop && nowPlayingItem.clipEndTime) {
+  if (!checkClipEndTimeShouldStop && nowPlayingItem?.clipEndTime) {
     const clipHasEnded = await getClipHasEnded()
     if (clipHasEnded) {
       checkClipEndTimeShouldStop = true
     }
   }
 
-  const { streamingEnabled } = globalState.session.valueSettings
+  const { streamingEnabled } = globalState.session.valueTagSettings
   if (!streamingValueShouldStop && !streamingEnabled) {
     streamingValueShouldStop = true
   }
@@ -308,15 +308,17 @@ const stopBackgroundTimerIfShouldBeStopped = async (
 const stopCheckClipIfEndTimeReached = () => {
   (async () => {
     const nowPlayingItem = await getNowPlayingItemLocally()
-    const { clipEndTime } = nowPlayingItem
-    const currentPosition = await PVTrackPlayer.getTrackPosition()
-    if (currentPosition > clipEndTime) {
-      PVTrackPlayer.pause()
-      await setClipHasEnded(true)
-      const checkClipEndTimeStopped = true
-      const streamingValueStopped = false
-      stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeStopped, streamingValueStopped)
+    if(nowPlayingItem) {
+      const { clipEndTime } = nowPlayingItem
+      const currentPosition = await PVTrackPlayer.getTrackPosition()
+      if (currentPosition > clipEndTime) {
+        PVTrackPlayer.pause()
+        await setClipHasEnded(true)
+      }
     }
+    const checkClipEndTimeStopped = true
+    const streamingValueStopped = false
+    stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeStopped, streamingValueStopped)
   })()
 }
 
@@ -330,7 +332,7 @@ PVEventEmitter.on(PV.Events.PLAYER_CLIP_LOADED, debouncedHandlePlayerClipLoaded)
 
 const handleValueStreamingToggle = () => {
   const globalState = getGlobal()
-  const { streamingEnabled } = globalState.session.valueSettings
+  const { streamingEnabled } = globalState.session.valueTagSettings
 
   if (streamingEnabled) {
     startBackgroundTimer()
@@ -344,7 +346,7 @@ const handleValueStreamingToggle = () => {
 const handleValueStreamingMinutePassed = () => {
   const globalState = getGlobal()
   const { nowPlayingItem } = globalState.player
-  const { streamingAmount } = globalState.session.valueSettings.lightningNetwork.globalSettings
+  const { streamingAmount } = globalState.session.valueTagSettings.lightningNetwork.globalSettings
   const valueTag = nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
 
   if (valueTag) {
@@ -362,51 +364,37 @@ PVEventEmitter.on(PV.Events.PLAYER_VALUE_STREAMING_TOGGLED, handleValueStreaming
   BACKGROUND TIMER
 */
 
-let backgroundTimerInterval: any = null
-
-const startBackgroundTimer = async () => {
+const startBackgroundTimer = () => {
   stopBackgroundTimer()
-
-  if (Platform.OS === 'android') {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    BackgroundTimer.runBackgroundTimer(handleBackgroundTimerInterval, 1000)
-  } else {
-    await BackgroundTimer.start()
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    backgroundTimerInterval = BackgroundTimer.setInterval(handleBackgroundTimerInterval, 1000)
-  }
+  BackgroundTimer.runBackgroundTimer(handleBackgroundTimerInterval, 1000)
 }
 
 const stopBackgroundTimer = () => {
-  if (Platform.OS === 'android') {
-    BackgroundTimer.stopBackgroundTimer()
-  }
-  if (backgroundTimerInterval) {
-    BackgroundTimer.clearInterval(backgroundTimerInterval)
-  }
-  BackgroundTimer.stop()
+  BackgroundTimer.stopBackgroundTimer()
 }
 
 let valueStreamingIntervalCount = 0
-const handleBackgroundTimerInterval = async () => {
+const handleBackgroundTimerInterval = () => {
+
   stopCheckClipIfEndTimeReached()
   
-  const playbackState = await PVTrackPlayer.getState()
-  const globalState = getGlobal()
-  const { streamingEnabled } = globalState.session.valueSettings
-
-  if (streamingEnabled) {
-    if (playbackStateIsPlaying(playbackState)) {
-      valueStreamingIntervalCount++
-    }
-  
-    if (valueStreamingIntervalCount >= 10) {
+  PVTrackPlayer.getState().then((playbackState) => {
+    const globalState = getGlobal()
+    const { streamingEnabled } = globalState.session.valueTagSettings
+    
+    if (streamingEnabled) {
+      if (playbackStateIsPlaying(playbackState)) {
+        valueStreamingIntervalCount++
+      }
+      
+      if (valueStreamingIntervalCount >= 60) {
+        valueStreamingIntervalCount = 0
+        handleValueStreamingMinutePassed()
+      }
+    } else {
       valueStreamingIntervalCount = 0
-      handleValueStreamingMinutePassed()
     }
-  } else {
-    valueStreamingIntervalCount = 0
-  }
+  })
 }
 
 const playbackStateIsPlaying = (playbackState: string | number) => {

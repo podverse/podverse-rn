@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   },
   carouselImageWrapper: {
     alignItems: 'center',
-    height: '70%'
+    height: '65%'
   },
   carouselChapterWrapper: {},
   imageContainer: {

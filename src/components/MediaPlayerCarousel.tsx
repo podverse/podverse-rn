@@ -115,7 +115,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
         try {
           const { nowPlayingItem } = this.global.player
 
-          const { errors, transactions, totalAmount } = await sendBoost(nowPlayingItem)
+          const { errors, transactions, totalAmountPaid } = await sendBoost(nowPlayingItem)
 
           this.setState({ boostPaymentLoading: false })
           this.setGlobal({
@@ -124,7 +124,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
               description: translate('Boost Sent'),
               errors,
               transactions,
-              totalAmount
+              totalAmount: totalAmountPaid
             }
           })
         } catch (error) {
@@ -146,7 +146,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { episode } = player
     const hasChapters = episode?.chaptersUrl
     const hasTranscript = true
-    const { lightningNetwork, streamingEnabled } = this.global.session.valueSettings
+    const { lightningNetwork, streamingEnabled } = this.global.session.valueTagSettings
     const { globalSettings, lnpayEnabled } = lightningNetwork
     const { boostAmount, streamingAmount } = globalSettings
   

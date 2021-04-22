@@ -25,10 +25,10 @@ export const toggleLNPayFeature = async (toggle: boolean) => {
   setGlobal({
     session: {
       ...globalState.session,
-      valueSettings: {
-        ...globalState.session.valueSettings,
+      valueTagSettings: {
+        ...globalState.session.valueTagSettings,
         lightningNetwork: {
-          ...globalState.session.valueSettings.lightningNetwork,
+          ...globalState.session.valueTagSettings.lightningNetwork,
           lnpayEnabled: toggle,
           globalSettings: {
             boostAmount: defaultBoostAmount,
