@@ -112,7 +112,6 @@ export const PVFlatList = (props: Props) => {
           topActionHandler={handleNoResultsTopAction}
           topActionText={noResultsTopActionText}
           transparent={transparent}
-          containerStyle={{ justifyContent:"flex-start", marginTop: 30 }}
         />
       )}
       {showNoInternetConnectionMessage &&

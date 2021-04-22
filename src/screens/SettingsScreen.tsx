@@ -543,6 +543,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                       />
                     )}
                   </View>
+                )}
               </View>
             )}
             <Divider style={styles.divider} />
