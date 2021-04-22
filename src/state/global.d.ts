@@ -1,5 +1,4 @@
 import 'reactn'
-import { TranscriptRow } from '../lib/transcriptHelpers'
 import { BannerInfo, GlobalTheme, UserInfo } from '../resources/Interfaces'
 
 declare module 'reactn/default' {
@@ -89,8 +88,16 @@ declare module 'reactn/default' {
     session: {
       isLoggedIn: boolean
       userInfo: UserInfo
-      lightningPayEnabled: boolean
-      boostAmount: number
+      valueTagSettings: {
+        lightningNetwork: {
+          lnpayEnabled: boolean
+          globalSettings: {
+            boostAmount: number
+            streamingAmount: number
+          }
+        }
+        streamingEnabled: boolean
+      }
     }
     subscribedPodcasts: []
     subscribedPodcastsTotalCount: number

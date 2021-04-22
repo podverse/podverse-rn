@@ -373,7 +373,9 @@ export const loadItemAndPlayTrack = async (
   // If there is at least one enriched field,
   // make sure the item is saved to both UserHistoryItems and UserNowPlayingItem
   // so getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId will have the correct value saved.
-  if (newItem.podcastValue || (newItem.parsedTranscript && newItem.parsedTranscript.length > 0)) {
+  if (
+    (newItem.podcastValue?.length > 0)
+    || (newItem.parsedTranscript && newItem.parsedTranscript.length > 0)) {
     await addOrUpdateHistoryItem(newItem, newItem.userPlaybackPosition || 0)
   }
 

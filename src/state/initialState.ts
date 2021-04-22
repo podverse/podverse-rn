@@ -1,6 +1,6 @@
 import { PV } from '../resources'
 import { InitialState } from '../resources/Interfaces'
-import { DEFAULT_BOOST_PAYMENT } from './actions/lnpay'
+import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './actions/lnpay'
 
 const initialTheme: InitialState = {
   globalTheme: {},
@@ -106,8 +106,16 @@ const initialTheme: InitialState = {
       subscribedUserIds: []
     },
     isLoggedIn: false,
-    lightningPayEnabled: false,
-    boostAmount: DEFAULT_BOOST_PAYMENT
+    valueTagSettings: {
+      lightningNetwork: {
+        lnpayEnabled: false,
+        globalSettings: {
+          boostAmount: DEFAULT_BOOST_PAYMENT,
+          streamingAmount: DEFAULT_STREAMING_PAYMENT
+        }
+      },
+      streamingEnabled: false
+    }
   },
   subscribedPodcasts: [],
   subscribedPodcastsTotalCount: 0,
