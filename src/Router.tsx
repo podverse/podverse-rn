@@ -20,6 +20,7 @@ import {
   EpisodesScreen,
   FAQScreen,
   FilterScreen,
+  FundingScreen,
   HistoryScreen,
   MakeClipScreen,
   MembershipScreen,
@@ -347,6 +348,17 @@ const ScanQRCodeScreenNavigator = createStackNavigator(
   }
 )
 
+const FundingScreenNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.FundingScreen]: {
+      screen: FundingScreen
+    }
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
 const MainApp = createStackNavigator(
   {
     [PV.RouteNames.TabNavigator]: { screen: TabNavigator, path: '' },
@@ -360,6 +372,7 @@ const MainApp = createStackNavigator(
     EmailVerificationNavigator,
     PurchasingNavigator,
     ScanQRCodeScreenNavigator,
+    FundingScreenNavigator,
     [PV.RouteNames.AddPodcastByRSSScreen]: {
       screen: AddPodcastByRSSURLNavigator,
       path: ''

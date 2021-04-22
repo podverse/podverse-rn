@@ -12,13 +12,13 @@ type Props = {
   endingText?: string
   episodeTitle?: string
   getUrl?: any
+  globalTheme?: GlobalTheme
   handlePress?: any
   playlistTitle?: string
   podcastTitle?: string
   profileName?: string
   urlId?: string
   urlPath?: string
-  globalTheme?: GlobalTheme
 }
 
 export const NavShareIcon = (props: Props) => {

@@ -167,8 +167,16 @@ export interface InitialState {
   session: {
     isLoggedIn: boolean
     userInfo: UserInfo
-    lightningPayEnabled: boolean
-    boostAmount: number
+    valueTagSettings: {
+      lightningNetwork: {
+        lnpayEnabled: boolean
+        globalSettings: {
+          boostAmount: number
+          streamingAmount: number
+        }
+      }
+      streamingEnabled: boolean
+    }
   }
   subscribedPodcasts: []
   subscribedPodcastsTotalCount: number
@@ -186,6 +194,7 @@ export interface BannerInfo {
   description: string
   errors?: BannerInfoError[]
   transactions?: ValueTransaction[]
+  totalAmount?: number
 }
 
 export interface IActionSheet {

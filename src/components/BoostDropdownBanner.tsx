@@ -16,6 +16,7 @@ import { translate } from '../lib/i18n'
 import { BannerInfoError } from '../resources/Interfaces'
 import { PVIcon } from './PVIcon'
 import { Divider } from './Divider'
+import { ValueTagInfoView } from './ValueTagInfoView'
 import { Text } from '.'
 
 const SIZE = Dimensions.get('window').height
@@ -99,29 +100,10 @@ export const BoostDropdownBanner = () => {
             contentContainerStyle={styles.scrollViewContainer}
             showsVerticalScrollIndicator={false}>
             {!!transactions.length && (
-              <View style={styles.recipientTable}>
-                <View style={styles.recipientTableHeader}>
-                  <Text testID='boost_recipient_name_title' style={styles.recipientText}>
-                    {translate('Name')}
-                  </Text>
-                  <Text testID='boost_recipient_amount_title' style={styles.recipientText}>
-                    split / sats
-                  </Text>
-                </View>
-                {transactions.map((data, index) => {
-                  const { name, amount, split } = data.normalizedValueRecipient
-                  return (
-                    <View key={`${index}`} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <Text testID={`boost_recipient_name_${index}}`} style={styles.recipientText}>
-                        {name}
-                      </Text>
-                      <Text key={`${index}`} testID={`boost_recipient_amount_${index}}`} style={styles.recipientText}>
-                        {split} / {amount}
-                      </Text>
-                    </View>
-                  )
-                })}
-              </View>
+              <ValueTagInfoView
+                testID='boost_dropdown_banner'
+                totalAmount={bannerInfo.totalAmount}
+                transactions={transactions} />
             )}
             {!!errors.length && (
               <View>
@@ -186,19 +168,6 @@ const styles = StyleSheet.create({
   descriptionStyle: {
     fontSize: PV.Fonts.sizes.xxl,
     fontWeight: PV.Fonts.weights.extraBold
-  },
-  recipientTable: {
-    borderColor: PV.Colors.skyLight,
-    borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 10,
-    paddingBottom: 5
-  },
-  recipientTableHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderBottomColor: PV.Colors.white,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    marginBottom: 5
   },
   errorTitle: {
     paddingVertical: 10,

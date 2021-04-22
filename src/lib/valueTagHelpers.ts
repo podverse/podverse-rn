@@ -1,13 +1,21 @@
 // import AsyncStorage from '@react-native-community/async-storage'
-import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, Value, ValueTransaction } from 'podverse-shared'
+import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, ValueTag, ValueTransaction } from 'podverse-shared'
+import AsyncStorage from '@react-native-community/async-storage'
 import { getGlobal } from 'reactn'
-import { PVTrackPlayer } from '../services/player'
 // import { PV } from '../resources'
-import { sendLNPayValueTransaction } from '../services/lnpay'
 import { PV } from '../resources'
 import { BannerInfoError } from '../resources/Interfaces'
+import { sendLNPayValueTransaction } from '../services/lnpay'
+import { PVTrackPlayer } from '../services/player'
 import { createSatoshiStreamStats } from './satoshiStream'
 
+/*
+  Currently Podcast Index only returns
+  a single podcast/channel-level value tag as an object,
+  but Podverse supports many podcast/channel
+  and episode/item-level value tags in an array.
+  That's why we're returning an array as the result of this function.
+*/
 export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueTag: any) => {
   const { destinations, model } = podcastIndexValueTag
   let valueModel = {}
@@ -35,7 +43,7 @@ export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueT
     }
   }
 
-  return { ...valueModel, valueRecipients } as Value
+  return [{ ...valueModel, valueRecipients }] as ValueTag[]
 }
 
 const calculateNormalizedSplits = (valueRecipients: ValueRecipient[]) => {
@@ -84,15 +92,15 @@ export const normalizeValueRecipients = (valueRecipients: ValueRecipient[], tota
 
     finalNormalizedValueRecipients.push({
       ...normalizedValueRecipient,
-      amount: Math.floor(amount)
+      amount: parseFloat(amount.toFixed(2))
     })
   }
 
   return finalNormalizedValueRecipients
 }
 
-const convertValueTagIntoValueTransactions = async (
-  valueTag: Value,
+export const convertValueTagIntoValueTransactions = async (
+  valueTag: ValueTag,
   nowPlayingItem: NowPlayingItem,
   action: string,
   amount: number
@@ -162,7 +170,10 @@ const convertValueTagIntoValueTransaction = async (
 export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
   const errors: BannerInfoError[] = []
 
-  const valueTag = nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
+  const valueTags = nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
+  // TODO: right now we are assuming the first item will be the lightning network
+  // this will need to be updated to support additional valueTags
+  const valueTag = valueTags[0]
   if (!valueTag) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
   const { valueRecipients } = valueTag
@@ -170,22 +181,27 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
 
   const action = 'boost'
   const { session } = getGlobal()
-  const amount = session.boostAmount
+  const { boostAmount } = session.valueTagSettings.lightningNetwork.globalSettings
 
-  const valueTransactions = await convertValueTagIntoValueTransactions(valueTag, nowPlayingItem, action, amount)
+  let totalAmountPaid = 0
+  const valueTransactions = await convertValueTagIntoValueTransactions(valueTag, nowPlayingItem, action, boostAmount)
 
   for (const valueTransaction of valueTransactions) {
     try {
-      await sendValueTransaction(valueTransaction)
+      const succesfull = await sendValueTransaction(valueTransaction)
+      if(succesfull) {
+        totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
+      }
     } catch (error) {
       errors.push({ error, details: { recipient: valueTransaction.normalizedValueRecipient.name } })
     }
   }
 
-  return { errors, transactions: valueTransactions }
+  return { errors, transactions: valueTransactions, totalAmountPaid }
 }
 
 export const sendValueTransaction = async (valueTransaction: ValueTransaction) => {
+  // If a valueTransaction fails, then add it to the tempValueTransactionQueue
   if (valueTransaction?.type === 'lightning' && valueTransaction?.method === 'keysend') {
     return sendLNPayValueTransaction(valueTransaction)
   }
@@ -193,59 +209,135 @@ export const sendValueTransaction = async (valueTransaction: ValueTransaction) =
   throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 }
 
-// export const getStreamingValueTransactionQueue = async () => {
-//   try {
-//     const transactionQueueString = await AsyncStorage.getItem(PV.ValueTag.STREAMING_PAYMENTS_TRANSACTION_QUEUE)
-//     return transactionQueueString ? JSON.parse(transactionQueueString) : []
-//   } catch (err) {
-//     console.log('getStreamingValueTransactionQueue error:', err)
-//     await clearStreamingValueTransactionQueue()
-//   }
-// }
+export const processValueTransactionQueue = async () => {
+  const errors: BannerInfoError[] = []
+  const bundledValueTransactionsToProcess = await bundleValueTransactionQueue()
 
-// export const clearStreamingValueTransactionQueue = async () => {
-//   await AsyncStorage.setItem(PV.ValueTag.STREAMING_PAYMENTS_TRANSACTION_QUEUE, JSON.stringify([]))
-// }
+  let totalAmount = 0
 
-// /*
-//   Bundle the streamingValueTransactionQueue so we can send the funds in the
-//   minimum number of transactions.
-// */
-// export const bundleStreamingValueTransactionQueue = async () => {
-//   try {
-//     const transactionQueue = await getStreamingValueTransactionQueue()
-//     // get the bundled transaction queue from storage (else empty array)
-//     // bundle the temp transaction queue into a temp bundled transaction queue
-//       // sum the value of matching transactions
-//       // override satoshi stream datapoints with the latest transaction
-//     // merge the bundled transaction queue values with the temp bundled transaction queue values
-//     // save the final bundled transaction queue to storage
-//     // clear the temp transaction queue from storage
-//     // return the bundled transaction queue
-//   } catch (err) {
-//     console.log('saveStreamingSatsValuePayment error:', err)
-//     await clearStreamingValueTransactionQueue()
-//   }
-// }
+  for (const transaction of bundledValueTransactionsToProcess) {
+    try {
+      await sendValueTransaction(transaction)
+      totalAmount = totalAmount + transaction.normalizedValueRecipient.amount
+    } catch (error) {
+      errors.push({ error, details: { recipient: transaction.normalizedValueRecipient.name } })
+    }
+  }
 
-// export const processStreamingValueTranactionQueuePayments = async () => {
-//   const bundledTransactions = await bundleStreamingValueTransactionQueue()
-//   // iterate over the bundled transactions
-//     // send each transaction
-//     // clear each transaction from the bundled queue after success
+  return {
+    errors,
+    totalAmount,
+    transactions: bundledValueTransactionsToProcess
+  }
+}
 
-// }
+export const getValueTransactionQueue = async () => {
+  try {
+    const transactionQueueString = await AsyncStorage.getItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE)
+    return transactionQueueString ? JSON.parse(transactionQueueString) : []
+  } catch (err) {
+    console.log('getStreamingValueTransactionQueue error:', err)
+    await clearValueTransactionQueue()
+  }
+}
 
-// export const saveStreamingValuePaymentToTransactionQueue = async (valuePayment: ValueTag) => {
-//   try {
-//     const transactionQueue = await getStreamingValueTransactionQueue()
-//     // maybe pass in the nowplayingitem instead of value payment
-//     // enrich the valueTransaction object with SatoshiStream data
+export const clearValueTransactionQueue = async () => {
+  await AsyncStorage.setItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
+}
 
-//     transactionQueue.push(valuePayment)
-//     await AsyncStorage.setItem(PV.ValueTag.STREAMING_PAYMENTS_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
-//   } catch (err) {
-//     console.log('saveStreamingValuePaymentToTransactionQueue error:', err)
-//     await clearStreamingValueTransactionQueue()
-//   }
-// }
+/*
+  Bundle the ValueTransactionQueue so we can send the funds in the
+  minimum number of transactions.
+*/
+export const bundleValueTransactionQueue = async () => {
+  try {
+    const transactionQueue = await getValueTransactionQueue()
+    const bundledTransactionQueue: ValueTransaction[] = []
+
+    for (const transaction of transactionQueue) {
+      const bundledValueTransactionIndex = getMatchingValueTransactionIndex(transaction, bundledTransactionQueue)
+      if (bundledValueTransactionIndex > -1) {
+        bundledTransactionQueue[bundledValueTransactionIndex] =
+          combineTransactionAmounts(bundledTransactionQueue, bundledValueTransactionIndex, transaction)
+      } else {
+        bundledTransactionQueue.push(transaction)
+      }
+    }
+
+    const remainderTransactions: ValueTransaction[] = []
+    const transactionsToSend: ValueTransaction[] = []
+    for (const transaction of bundledTransactionQueue) {
+      if (transaction.normalizedValueRecipient.amount < 10) {
+        remainderTransactions.push(transaction)
+      } else {
+        transaction.normalizedValueRecipient.amount =
+          Math.floor(transaction.normalizedValueRecipient.amount)
+        transactionsToSend.push(transaction)
+      }
+    }
+
+    // Overwrite the whole transactionQueue, saving only the remainderTransactions
+    await saveTransactionQueue(remainderTransactions)
+
+    return transactionsToSend
+  } catch (err) {
+    console.log('bundleValueTransactionQueue error:', err)
+    await clearValueTransactionQueue()
+    return []
+  }
+}
+
+const combineTransactionAmounts = (
+  bundledQueue: ValueTransaction[],
+  bundledValueTransactionIndex: number,
+  transaction: ValueTransaction) => {
+  const bundledAmount = bundledQueue[bundledValueTransactionIndex].normalizedValueRecipient.amount
+  transaction.normalizedValueRecipient.amount = bundledAmount + transaction.normalizedValueRecipient.amount
+  return transaction
+}
+
+const getMatchingValueTransactionIndex = (
+  valueTransaction: ValueTransaction,
+  valueTransactions: ValueTransaction[]
+) => valueTransactions.findIndex((x: ValueTransaction) => {
+  return x.normalizedValueRecipient.address === valueTransaction.normalizedValueRecipient.address
+})
+
+export const saveStreamingValueTransactionsToTransactionQueue = async (
+  valueTags: ValueTag[],
+  nowPlayingItem: NowPlayingItem,
+  amount: number
+) => {
+  try {
+    const transactionQueue = await getValueTransactionQueue()
+
+    // TODO: right now we are assuming the first item will be the lightning network
+    // this will need to be updated to support additional valueTags
+    const valueTag = valueTags[0]
+
+    const valueTransactions = await convertValueTagIntoValueTransactions(
+      valueTag,
+      nowPlayingItem,
+      'streaming',
+      amount
+    )
+
+    for (const transaction of valueTransactions) {
+      transactionQueue.push(transaction)
+    }
+
+    await AsyncStorage.setItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
+  } catch (err) {
+    console.log('saveStreamingValueTransactionsToTransactionQueue error:', err)
+    await clearValueTransactionQueue()
+  }
+}
+
+const saveTransactionQueue = async (transactionQueue: ValueTransaction[]) => {
+  try {
+    await AsyncStorage.setItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
+  } catch (error) {
+    console.log('saveTransactionQueue error', error)
+    await clearValueTransactionQueue()
+  }
+}

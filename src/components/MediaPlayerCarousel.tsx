@@ -13,6 +13,7 @@ const HapticOptions = {
   ignoreAndroidSystemSettings: false
 }
 
+import { toggleValueStreaming } from '../state/actions/valueTag'
 import {
   ActivityIndicator,
   MediaPlayerCarouselChapters,
@@ -114,11 +115,17 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
         try {
           const { nowPlayingItem } = this.global.player
 
-          const { errors, transactions } = await sendBoost(nowPlayingItem)
+          const { errors, transactions, totalAmountPaid } = await sendBoost(nowPlayingItem)
 
           this.setState({ boostPaymentLoading: false })
           this.setGlobal({
-            bannerInfo: { show: true, description: translate('Boost Sent'), errors, transactions }
+            bannerInfo: {
+              show: true,
+              description: translate('Boost Sent'),
+              errors,
+              transactions,
+              totalAmount: totalAmountPaid
+            }
           })
         } catch (error) {
           Alert.alert(translate('Boost Pay Error'), error.message)
@@ -129,20 +136,27 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   _toggleSatStreaming = () => {
     ReactNativeHapticFeedback.trigger('impactHeavy', HapticOptions)
-    // TOGGLE SAT STREAM
+    toggleValueStreaming()
   }
 
   render() {
     const { navigation } = this.props
-    const { activeIndex } = this.state
+    const { activeIndex, boostPaymentLoading, explosionOrigin } = this.state
     const { player } = this.global
     const { episode } = player
     const hasChapters = episode?.chaptersUrl
     const hasTranscript = true
+    const { lightningNetwork, streamingEnabled } = this.global.session.valueTagSettings
+    const { globalSettings, lnpayEnabled } = lightningNetwork
+    const { boostAmount, streamingAmount } = globalSettings
   
     let itemCount = 3
     if (hasChapters) itemCount++
     if (hasTranscript) itemCount++
+
+    const satStreamText = streamingEnabled
+      ? translate('Stream On')
+      : translate('Stream Off')
 
     return (
       <View style={styles.wrapper} transparent>
@@ -174,28 +188,28 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           passiveDotHeight={8}
           passiveDotWidth={8}
         />
-        {this.global.session.lightningPayEnabled && (
+        {lnpayEnabled && (
           <View style={styles.boostButtonsContainer}>
             <TouchableOpacity style={styles.boostButton} onPress={this._toggleSatStreaming}>
-              <Text testID='Boost Button'>{'Sat Stream Off'.toUpperCase()}</Text>
+              <Text testID='Boost Button'>{satStreamText.toUpperCase()}</Text>
               <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
-                10 sats / min
+                {streamingAmount} {translate('sats / min')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onLayout={(event) => {
                 this.setState({ explosionOrigin: event.nativeEvent.layout.y })
               }}
-              disabled={this.state.boostPaymentLoading}
+              disabled={boostPaymentLoading}
               style={styles.boostButton}
               onPress={this._attemptBoost}>
-              {this.state.boostPaymentLoading ? (
+              {boostPaymentLoading ? (
                 <ActivityIndicator />
               ) : (
                 <>
                   <Text testID='boost_button_text_1'>{translate('Boost').toUpperCase()}</Text>
                   <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
-                    {this.global.session.boostAmount} sats
+                    {boostAmount} {translate('sats')}
                   </Text>
                 </>
               )}
@@ -205,7 +219,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
         <ConfettiCannon
           count={200}
           explosionSpeed={500}
-          origin={{ x: Dimensions.get('screen').width, y: this.state.explosionOrigin }}
+          origin={{ x: Dimensions.get('screen').width, y: explosionOrigin }}
           autoStart={false}
           ref={(ref) => (this.explosion = ref)}
           fadeOut
