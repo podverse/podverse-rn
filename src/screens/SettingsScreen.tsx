@@ -494,6 +494,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                     value={!!customWebDomainEnabled}
                   />
                 </View>
+                {Config.ENABLE_VALUE_TAG_TRANSACTIONS && (
                   <View style={styles.itemWrapper}>
                     <SwitchWithText
                       onValueChange={this._showLNPaySetup}
