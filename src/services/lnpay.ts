@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ValueTransaction } from 'podverse-shared'
+import { ValueTransaction, ValueRecipientNormalized } from 'podverse-shared'
 import { getLNWallet, LNWallet } from '../state/actions/lnpay'
 import { PV } from '../resources'
 
@@ -157,5 +157,19 @@ const sendLNPayKeysendRequest = async (wallet: LNWallet, body: LNPayKeysendReque
       'X-Api-Key': wallet.publicKey
     },
     body
+  })
+}
+
+export const checkLNPayRecipientRoute = async (wallet: LNWallet, recepient: ValueRecipientNormalized) => {
+  return request({
+    method: 'GET',
+    endpoint: '/node/default/payments/queryroutes',
+    headers: {
+      'X-Api-Key': wallet.publicKey
+    },
+    query: {
+      pub_key: recepient.address,
+      amt: recepient.amount
+    }
   })
 }

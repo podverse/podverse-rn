@@ -5,16 +5,21 @@ import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { Text, View } from './'
 
+export type ValueTransactionRouteError = {
+  address:string
+  message:string
+}
+
 type Props = {
   testID: string
   totalAmount?: number
   transactions: ValueTransaction[]
+  erroringTransactions?: ValueTransactionRouteError[]
 }
 
 export class ValueTagInfoView extends React.PureComponent<Props> {
-
   render() {
-    const { testID, totalAmount, transactions } = this.props
+    const { testID, totalAmount, transactions, erroringTransactions = [] } = this.props
 
     return (
       <View style={styles.recipientTable}>
@@ -27,13 +32,26 @@ export class ValueTagInfoView extends React.PureComponent<Props> {
           </Text>
         </View>
         {transactions.map((data, index) => {
-          const { name, amount, split } = data.normalizedValueRecipient
+          const { name, amount, split, address } = data.normalizedValueRecipient
+          const erroring = erroringTransactions.find((trs) => trs.address === address)
+
           return (
             <View key={`${index}`} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text testID={`${testID}_boost_recipient_name_${index}}`} style={styles.recipientText}>
+              <Text
+                testID={`${testID}_boost_recipient_name_${index}}`}
+                style={[styles.recipientText, erroring ? { color: PV.Colors.redLighter } : {}]}>
                 {name}
+                {erroring && (
+                  <Text testID={`${testID}_boost_recipient_error_${index}}`} style={styles.recipientTextError}>
+                    {'\n'}
+                    {erroring.message}
+                  </Text>
+                )}
               </Text>
-              <Text key={`${index}`} testID={`${testID}_boost_recipient_amount_${index}}`} style={styles.recipientText}>
+              <Text
+                key={`${index}`}
+                testID={`${testID}_boost_recipient_amount_${index}}`}
+                style={styles.recipientTextAmount}>
                 {split} / {amount}
               </Text>
             </View>
@@ -75,6 +93,16 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   recipientText: {
+    paddingVertical: 10,
+    fontSize: PV.Fonts.sizes.lg,
+    flex: 1
+  },
+  recipientTextError: {
+    fontSize: PV.Fonts.sizes.tiny,
+    color: PV.Colors.redLighter,
+    marginTop: 5
+  },
+  recipientTextAmount: {
     paddingVertical: 10,
     fontSize: PV.Fonts.sizes.lg
   }

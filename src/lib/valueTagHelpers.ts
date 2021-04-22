@@ -66,12 +66,14 @@ const calculateNormalizedSplits = (valueRecipients: ValueRecipient[]) => {
   return normalizedValueRecipients
 }
 
-const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipientNormalized) => 
-  !!(normalizedValueRecipient?.address
-  && normalizedValueRecipient?.amount >= 0 // TODO: this shouldn't allow 0
-  && normalizedValueRecipient?.normalizedSplit > 0
-  && normalizedValueRecipient?.split > 0
-  && normalizedValueRecipient?.type)
+const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipientNormalized) =>
+  !!(
+    normalizedValueRecipient?.address &&
+    normalizedValueRecipient?.amount >= 0 && // TODO: this shouldn't allow 0
+    normalizedValueRecipient?.normalizedSplit > 0 &&
+    normalizedValueRecipient?.split > 0 &&
+    normalizedValueRecipient?.type
+  )
 
 export const normalizeValueRecipients = (valueRecipients: ValueRecipient[], total: number) => {
   const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(valueRecipients)
@@ -189,11 +191,17 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
   for (const valueTransaction of valueTransactions) {
     try {
       const succesfull = await sendValueTransaction(valueTransaction)
-      if(succesfull) {
+      if (succesfull) {
         totalAmountPaid += valueTransaction.normalizedValueRecipient.amount
       }
     } catch (error) {
-      errors.push({ error, details: { recipient: valueTransaction.normalizedValueRecipient.name } })
+      errors.push({
+        error,
+        details: {
+          recipient: valueTransaction.normalizedValueRecipient.name,
+          address: valueTransaction.normalizedValueRecipient.address
+        }
+      })
     }
   }
 
@@ -220,7 +228,13 @@ export const processValueTransactionQueue = async () => {
       await sendValueTransaction(transaction)
       totalAmount = totalAmount + transaction.normalizedValueRecipient.amount
     } catch (error) {
-      errors.push({ error, details: { recipient: transaction.normalizedValueRecipient.name } })
+      errors.push({
+        error,
+        details: {
+          recipient: transaction.normalizedValueRecipient.name,
+          address: transaction.normalizedValueRecipient.address
+        }
+      })
     }
   }
 
@@ -257,8 +271,11 @@ export const bundleValueTransactionQueue = async () => {
     for (const transaction of transactionQueue) {
       const bundledValueTransactionIndex = getMatchingValueTransactionIndex(transaction, bundledTransactionQueue)
       if (bundledValueTransactionIndex > -1) {
-        bundledTransactionQueue[bundledValueTransactionIndex] =
-          combineTransactionAmounts(bundledTransactionQueue, bundledValueTransactionIndex, transaction)
+        bundledTransactionQueue[bundledValueTransactionIndex] = combineTransactionAmounts(
+          bundledTransactionQueue,
+          bundledValueTransactionIndex,
+          transaction
+        )
       } else {
         bundledTransactionQueue.push(transaction)
       }
@@ -270,8 +287,7 @@ export const bundleValueTransactionQueue = async () => {
       if (transaction.normalizedValueRecipient.amount < 10) {
         remainderTransactions.push(transaction)
       } else {
-        transaction.normalizedValueRecipient.amount =
-          Math.floor(transaction.normalizedValueRecipient.amount)
+        transaction.normalizedValueRecipient.amount = Math.floor(transaction.normalizedValueRecipient.amount)
         transactionsToSend.push(transaction)
       }
     }
@@ -290,18 +306,17 @@ export const bundleValueTransactionQueue = async () => {
 const combineTransactionAmounts = (
   bundledQueue: ValueTransaction[],
   bundledValueTransactionIndex: number,
-  transaction: ValueTransaction) => {
+  transaction: ValueTransaction
+) => {
   const bundledAmount = bundledQueue[bundledValueTransactionIndex].normalizedValueRecipient.amount
   transaction.normalizedValueRecipient.amount = bundledAmount + transaction.normalizedValueRecipient.amount
   return transaction
 }
 
-const getMatchingValueTransactionIndex = (
-  valueTransaction: ValueTransaction,
-  valueTransactions: ValueTransaction[]
-) => valueTransactions.findIndex((x: ValueTransaction) => {
-  return x.normalizedValueRecipient.address === valueTransaction.normalizedValueRecipient.address
-})
+const getMatchingValueTransactionIndex = (valueTransaction: ValueTransaction, valueTransactions: ValueTransaction[]) =>
+  valueTransactions.findIndex((x: ValueTransaction) => {
+    return x.normalizedValueRecipient.address === valueTransaction.normalizedValueRecipient.address
+  })
 
 export const saveStreamingValueTransactionsToTransactionQueue = async (
   valueTags: ValueTag[],
@@ -315,12 +330,7 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
     // this will need to be updated to support additional valueTags
     const valueTag = valueTags[0]
 
-    const valueTransactions = await convertValueTagIntoValueTransactions(
-      valueTag,
-      nowPlayingItem,
-      'streaming',
-      amount
-    )
+    const valueTransactions = await convertValueTagIntoValueTransactions(valueTag, nowPlayingItem, 'streaming', amount)
 
     for (const transaction of valueTransactions) {
       transactionQueue.push(transaction)
