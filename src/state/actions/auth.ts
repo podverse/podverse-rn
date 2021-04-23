@@ -137,7 +137,16 @@ export const loginUser = async (credentials: Credentials) => {
     await getSubscribedPodcasts()
     await askToSyncWithNowPlayingItem()
 
-    setGlobal({ session: { userInfo, isLoggedIn: true } })
+    const globalState = getGlobal()
+    const { valueTagSettings } = globalState.session
+
+    setGlobal({
+      session: {
+        userInfo,
+        isLoggedIn: true,
+        valueTagSettings
+      }
+    })
     return userInfo
   } catch (error) {
     throw error
