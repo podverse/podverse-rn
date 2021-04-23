@@ -73,6 +73,10 @@ export const BoostDropdownBanner = () => {
     setTransactions(bannerInfo.transactions || [])
   }
 
+  const erroringTransactions = errors.map((error) => {
+    return {message: error.error.message, address: error.details.address}
+  })
+
   return (
     <FlingGestureHandler
       direction={Directions.UP}
@@ -103,22 +107,9 @@ export const BoostDropdownBanner = () => {
               <ValueTagInfoView
                 testID='boost_dropdown_banner'
                 totalAmount={bannerInfo.totalAmount}
-                transactions={transactions} />
-            )}
-            {!!errors.length && (
-              <View>
-                <Divider />
-                <Text key={'boost_errors_title'} testID={'boost_errors_title'} style={styles.errorTitle}>
-                  {translate('Boost Pay Issues')}
-                </Text>
-                {errors.map((error, index) => {
-                  return (
-                    <Text key={`${index}`} testID={`boost_error_text_${index}}`} style={styles.errorText}>
-                      {error.details?.recipient} - {error?.error?.message}
-                    </Text>
-                  )
-                })}
-              </View>
+                transactions={transactions}
+                erroringTransactions={erroringTransactions}
+              />
             )}
           </ScrollView>
           <View style={styles.container}>
