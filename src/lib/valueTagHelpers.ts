@@ -36,7 +36,7 @@ export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueT
         customValue: destination.customValue,
         fee: destination.fee,
         name: destination.name,
-        split: destination.split,
+        split: parseFloat(destination.split),
         type: destination.type
       } as ValueRecipient
       valueRecipients.push(valueRecipient)
@@ -50,13 +50,13 @@ const calculateNormalizedSplits = (valueRecipients: ValueRecipient[]) => {
   let normalizedValueRecipients: ValueRecipientNormalized[] = []
 
   const totalSplit = valueRecipients.reduce((total, valueRecipient) => {
-    return total + valueRecipient.split
+    return total + parseFloat(valueRecipient.split)
   }, 0)
 
   normalizedValueRecipients = valueRecipients.map((valueRecipient) => {
     return {
       ...valueRecipient,
-      normalizedSplit: (valueRecipient.split / totalSplit) * 100,
+      normalizedSplit: (parseFloat(valueRecipient.split) / totalSplit) * 100,
       amount: 0 // temporarily set the amount to 0
     }
   })
