@@ -128,6 +128,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
             }
           })
         } catch (error) {
+          this.setState({ boostPaymentLoading: false })
           Alert.alert(translate('Boost Pay Error'), error.message)
         }
       })()
