@@ -27,7 +27,7 @@ export class ValueTagInfoView extends React.PureComponent<Props> {
           <Text testID={`${testID}_boost_recipient_name_title`} style={styles.recipientText}>
             {translate('Name')}
           </Text>
-          <Text testID={`${testID}_boost_recipient_amount_title`} style={styles.recipientText}>
+          <Text testID={`${testID}_boost_recipient_amount_title`} style={styles.recipientTextRight}>
             {translate('split')} / {translate('sats')}
           </Text>
         </View>
@@ -96,6 +96,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: PV.Fonts.sizes.lg,
     flex: 1
+  },
+  recipientTextRight: {
+    paddingVertical: 10,
+    fontSize: PV.Fonts.sizes.lg,
+    flex: 1,
+    textAlign: 'right'
   },
   recipientTextError: {
     fontSize: PV.Fonts.sizes.tiny,
