@@ -113,23 +113,18 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     ReactNativeHapticFeedback.trigger('impactHeavy', HapticOptions)
     this.setState({ boostIsSending: true }, () => {
       this.explosion && this.explosion.start()
-      try {
-        const { nowPlayingItem } = this.global.player
-        sendBoost(nowPlayingItem)
-        setTimeout(() => {
-          this.setState({
-            boostIsSending: false,
-            boostWasSent: true
-          }, () => {
-            setTimeout(() => {
-              this.setState({ boostWasSent: false })
-            }, 4000)
-          })
-        }, 1000)
-      } catch (error) {
-        this.setState({ boostWasSent: false })
-        Alert.alert(translate('Boost Pay Error'), error.message)
-      }
+      const { nowPlayingItem } = this.global.player
+      sendBoost(nowPlayingItem)
+      setTimeout(() => {
+        this.setState({
+          boostIsSending: false,
+          boostWasSent: true
+        }, () => {
+          setTimeout(() => {
+            this.setState({ boostWasSent: false })
+          }, 4000)
+        })
+      }, 1000)
     })
   }
 
