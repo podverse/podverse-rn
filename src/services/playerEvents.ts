@@ -2,9 +2,10 @@ import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
-import { getGlobal } from 'reactn'
+import { getGlobal, setGlobal } from 'reactn'
 import BackgroundTimer from 'react-native-background-timer'
-import { saveStreamingValueTransactionsToTransactionQueue } from '../lib/valueTagHelpers'
+import { processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../lib/valueTagHelpers'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { hideMiniPlayer, updatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
@@ -373,7 +374,7 @@ const stopBackgroundTimer = () => {
   BackgroundTimer.stopBackgroundTimer()
 }
 
-let valueStreamingIntervalCount = 0
+let valueStreamingIntervalSecondCount = 0
 const handleBackgroundTimerInterval = () => {
 
   stopCheckClipIfEndTimeReached()
@@ -384,15 +385,34 @@ const handleBackgroundTimerInterval = () => {
     
     if (streamingEnabled) {
       if (playbackStateIsPlaying(playbackState)) {
-        valueStreamingIntervalCount++
+        valueStreamingIntervalSecondCount++
       }
       
-      if (valueStreamingIntervalCount >= 60) {
-        valueStreamingIntervalCount = 0
+      if (
+        valueStreamingIntervalSecondCount
+        && valueStreamingIntervalSecondCount % 60 === 0) {        
         handleValueStreamingMinutePassed()
       }
-    } else {
-      valueStreamingIntervalCount = 0
+
+      if (valueStreamingIntervalSecondCount > 599) {
+        (async () => {
+          valueStreamingIntervalSecondCount = 0
+          const { errors, transactions, totalAmount } = await processValueTransactionQueue()
+          if (transactions.length > 0 && totalAmount > 0) {
+            setGlobal({
+              bannerInfo: {
+                show: true,
+                description: translate('Streaming Value Sent'),
+                errors,
+                transactions,
+                totalAmount
+              }
+            })
+          } else {
+            valueStreamingIntervalSecondCount = 0
+          }
+        })()
+      }
     }
   })
 }
