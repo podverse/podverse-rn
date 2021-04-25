@@ -198,7 +198,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
               onLayout={(event) => {
                 this.setState({ explosionOrigin: event.nativeEvent.layout.y })
               }}
-              disabled={boostWasSent}
+              disabled={boostIsSending || boostWasSent}
               style={styles.boostButton}
               onPress={this._attemptBoost}>
                 {boostIsSending ? 
