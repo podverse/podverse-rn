@@ -7,6 +7,7 @@ import { core } from '../styles'
 import { Text, View } from '.'
 
 type Props = {
+  alwaysShowEyebrow?: boolean
   autoCapitalize?: any
   autoCompleteType?: any
   autoCorrect?: boolean
@@ -34,6 +35,7 @@ type Props = {
 
 export const PVTextInput = (props: Props) => {
   const {
+    alwaysShowEyebrow,
     autoCapitalize,
     autoCompleteType,
     autoCorrect,
@@ -78,7 +80,7 @@ export const PVTextInput = (props: Props) => {
 
   return (
     <View style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
-      {hasText && (!!eyebrowTitle || !!placeholder) && (
+      {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
         <Text style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]} testID={`${testID}_text_input_eyebrow`}>
           {eyebrowTitle || placeholder}
         </Text>

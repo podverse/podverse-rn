@@ -34,7 +34,8 @@ type Props = {
 
 type State = {
   activeIndex: number
-  boostPaymentLoading: boolean
+  boostIsSending: boolean
+  boostWasSent: boolean
   explosionOrigin: number
 }
 
@@ -52,7 +53,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     
     this.state = {
       activeIndex: defaultActiveIndex,
-      boostPaymentLoading: false,
+      boostIsSending: false,
+      boostWasSent: false,
       explosionOrigin: 0
     }
   }
@@ -109,29 +111,25 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   _attemptBoost = () => {
     ReactNativeHapticFeedback.trigger('impactHeavy', HapticOptions)
-    this.explosion && this.explosion.start()
-    this.setState({ boostPaymentLoading: true }, () => {
-      (async () => {
-        try {
-          const { nowPlayingItem } = this.global.player
-
-          const { errors, transactions, totalAmountPaid } = await sendBoost(nowPlayingItem)
-
-          this.setState({ boostPaymentLoading: false })
-          this.setGlobal({
-            bannerInfo: {
-              show: true,
-              description: translate('Boost Sent'),
-              errors,
-              transactions,
-              totalAmount: totalAmountPaid
-            }
+    this.setState({ boostIsSending: true }, () => {
+      this.explosion && this.explosion.start()
+      try {
+        const { nowPlayingItem } = this.global.player
+        sendBoost(nowPlayingItem)
+        setTimeout(() => {
+          this.setState({
+            boostIsSending: false,
+            boostWasSent: true
+          }, () => {
+            setTimeout(() => {
+              this.setState({ boostWasSent: false })
+            }, 4000)
           })
-        } catch (error) {
-          this.setState({ boostPaymentLoading: false })
-          Alert.alert(translate('Boost Pay Error'), error.message)
-        }
-      })()
+        }, 1000)
+      } catch (error) {
+        this.setState({ boostWasSent: false })
+        Alert.alert(translate('Boost Pay Error'), error.message)
+      }
     })
   }
 
@@ -142,7 +140,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { activeIndex, boostPaymentLoading, explosionOrigin } = this.state
+    const { activeIndex, boostIsSending, boostWasSent, explosionOrigin } = this.state
     const { player } = this.global
     const { episode } = player
     const hasChapters = episode?.chaptersUrl
@@ -158,6 +156,10 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const satStreamText = streamingEnabled
       ? translate('Stream On')
       : translate('Stream Off')
+
+    const boostText = boostWasSent
+      ? translate('Boost Sent').toUpperCase()
+      : translate('Boost').toUpperCase()
 
     return (
       <View style={styles.wrapper} transparent>
@@ -201,19 +203,22 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
               onLayout={(event) => {
                 this.setState({ explosionOrigin: event.nativeEvent.layout.y })
               }}
-              disabled={boostPaymentLoading}
+              disabled={boostWasSent}
               style={styles.boostButton}
               onPress={this._attemptBoost}>
-              {boostPaymentLoading ? (
-                <ActivityIndicator />
-              ) : (
-                <>
-                  <Text testID='boost_button_text_1'>{translate('Boost').toUpperCase()}</Text>
-                  <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
-                    {boostAmount} {translate('sats')}
-                  </Text>
-                </>
-              )}
+                {boostIsSending ? 
+                  <ActivityIndicator />
+                  :
+                  <>
+                    <Text testID='boost_button_text_1'>{boostText}</Text>
+                    {
+                      !boostWasSent &&
+                        <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
+                          {boostAmount} {translate('sats')}
+                        </Text>
+                    }
+                  </>
+                }
             </TouchableOpacity>
           </View>
         )}

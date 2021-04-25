@@ -63,6 +63,8 @@ type State = {
   downloadingWifiOnly?: boolean
   hasLoaded?: boolean
   isLoading?: boolean
+  localBoostAmount: string
+  localStreamingAmount: string
   maximumSpeedOptionSelected?: any
   offlineModeEnabled: any
   showDeleteAccountDialog?: boolean
@@ -84,6 +86,8 @@ export class SettingsScreen extends React.Component<Props, State> {
       deleteAccountDialogText: '',
       downloadedEpisodeLimitCount,
       downloadedEpisodeLimitDefault,
+      localBoostAmount: 0,
+      localStreamingAmount: 0,
       maximumSpeedOptionSelected: maximumSpeedSelectOptions[1],
       offlineModeEnabled
     }
@@ -102,6 +106,7 @@ export class SettingsScreen extends React.Component<Props, State> {
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
     const maximumSpeedOptionSelected = maximumSpeedSelectOptions.find((x: any) => x.value === Number(maximumSpeed))
     const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
+    const { boostAmount, streamingAmount } = this.global.session.valueTagSettings.lightningNetwork.globalSettings
 
     this.setState(
       {
@@ -109,6 +114,8 @@ export class SettingsScreen extends React.Component<Props, State> {
         downloadedEpisodeLimitCount,
         downloadedEpisodeLimitDefault,
         downloadingWifiOnly: !!downloadingWifiOnly,
+        localBoostAmount: boostAmount.toString(),
+        localStreamingAmount: streamingAmount.toString(),
         maximumSpeedOptionSelected: maximumSpeedOptionSelected || maximumSpeedSelectOptions[1],
         offlineModeEnabled
       },
@@ -345,6 +352,8 @@ export class SettingsScreen extends React.Component<Props, State> {
       downloadedEpisodeLimitDefault,
       downloadingWifiOnly,
       isLoading,
+      localBoostAmount,
+      localStreamingAmount,
       maximumSpeedOptionSelected,
       offlineModeEnabled,
       showDeleteAccountDialog,
@@ -363,8 +372,7 @@ export class SettingsScreen extends React.Component<Props, State> {
     } = this.global
     const { isLoggedIn, valueTagSettings } = session
     const { lightningNetwork } = valueTagSettings
-    const { globalSettings, lnpayEnabled } = lightningNetwork
-    const { boostAmount, streamingAmount } = globalSettings
+    const { lnpayEnabled } = lightningNetwork
 
     const isDarkMode = globalTheme === darkTheme
 
@@ -505,40 +513,49 @@ export class SettingsScreen extends React.Component<Props, State> {
                     />
                     {lnpayEnabled && (
                       <TextInput
+                        alwaysShowEyebrow
                         eyebrowTitle={translate('Boost Amount')}
                         keyboardType='numeric'
                         onBlur={() => {
-                          const { boostAmount } = this.global.session.valueTagSettings.lightningNetwork.globalSettings
-                          if (boostAmount < MINIMUM_BOOST_PAYMENT) {
+                          const { localBoostAmount } = this.state
+                          if (Number(localBoostAmount) && Number(localBoostAmount) > MINIMUM_BOOST_PAYMENT) {
+                            updateGlobalBoostAmount(Number(localBoostAmount))
+                          } else {
                             updateGlobalBoostAmount(MINIMUM_BOOST_PAYMENT)
+                            this.setState({ localBoostAmount: MINIMUM_BOOST_PAYMENT.toString() })
                           }
                         }}
                         onSubmitEditing={() => Keyboard.dismiss()}
                         onChangeText={(newText: string) => {
-                          updateGlobalBoostAmount(Number(newText))
+                          this.setState({ localBoostAmount: newText })
                         }}
                         testID={`${testIDPrefix}_boost_amount_text_input`}
-                        value={`${boostAmount}`}
+                        value={`${localBoostAmount}`}
                         wrapperStyle={styles.textInputWrapper}
                       />
                     )}
                     {lnpayEnabled && (
                       <TextInput
+                        alwaysShowEyebrow
                         eyebrowTitle={translate('Streaming Amount')}
                         keyboardType='numeric'
                         onBlur={() => {
-                          const { streamingAmount } = 
-                            this.global.session.valueTagSettings.lightningNetwork.globalSettings
-                          if (streamingAmount < MINIMUM_STREAMING_PAYMENT) {
+                          const { localStreamingAmount } = this.state
+                          if (
+                            Number(localStreamingAmount)
+                            && Number(localStreamingAmount) > MINIMUM_STREAMING_PAYMENT) {
+                            updateGlobalStreamingAmount(Number(localStreamingAmount))
+                          } else {
                             updateGlobalStreamingAmount(MINIMUM_STREAMING_PAYMENT)
+                            this.setState({ localStreamingAmount: MINIMUM_STREAMING_PAYMENT.toString() })
                           }
                         }}
                         onChangeText={(newText: string) => {
-                          updateGlobalStreamingAmount(Number(newText))
+                          this.setState({ localStreamingAmount: newText })
                         }}
                         onSubmitEditing={() => Keyboard.dismiss()}
                         testID={`${testIDPrefix}_streaming_amount_text_input`}
-                        value={`${streamingAmount}`}
+                        value={`${localStreamingAmount}`}
                         wrapperStyle={styles.textInputWrapper}
                       />
                     )}

@@ -11,15 +11,17 @@ export type ValueTransactionRouteError = {
 }
 
 type Props = {
+  erroringTransactions?: ValueTransactionRouteError[]
+  isReceipt?: boolean
   testID: string
   totalAmount?: number
   transactions: ValueTransaction[]
-  erroringTransactions?: ValueTransactionRouteError[]
 }
 
 export class ValueTagInfoView extends React.PureComponent<Props> {
   render() {
-    const { testID, totalAmount, transactions, erroringTransactions = [] } = this.props
+    const { erroringTransactions = [], isReceipt, testID, totalAmount, transactions } = this.props
+    const totalAmountText = isReceipt ? translate('amount paid') : translate('total amount')
 
     return (
       <View style={styles.recipientTable}>
@@ -59,7 +61,7 @@ export class ValueTagInfoView extends React.PureComponent<Props> {
         })}
         <View style={styles.recipientTableFooter}>
           <Text testID={`${testID}_boost_recipient_amount_total`} style={styles.recipientFooterText}>
-            {`${translate('amount paid')}: ${totalAmount}`}
+            {`${translate('total amount')}: ${totalAmount}`}
           </Text>
         </View>
       </View>
