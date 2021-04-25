@@ -53,17 +53,21 @@ export class FundingScreen extends React.Component<Props, State> {
     // TODO: right now we are assuming the first item will be the lightning network.
     // This will need to be updated to support additional valueTags.
     const valueTag = valueTags[0]
+    const roundDownBoostTransactions = true
     const boostTransactions = await convertValueTagIntoValueTransactions(
       valueTag,
       nowPlayingItem,
       PV.ValueTag.ACTION_BOOST,
-      boostAmount
+      boostAmount,
+      roundDownBoostTransactions
     )
+    const roundDownStreamingTransactions = false
     const streamingTransactions = await convertValueTagIntoValueTransactions(
       valueTag,
       nowPlayingItem,
       PV.ValueTag.ACTION_STREAMING,
-      streamingAmount
+      streamingAmount,
+      roundDownStreamingTransactions
     )
     this.setState({ boostTransactions, streamingTransactions }, () => {
       this.checkForErroringTransactions()
@@ -83,7 +87,9 @@ export class FundingScreen extends React.Component<Props, State> {
 
       for (const transactionToTest of transactionsToTest) {
         try {
-          await checkLNPayRecipientRoute(wallet, transactionToTest.normalizedValueRecipient)
+          if (transactionToTest.normalizedValueRecipient.amount >= 1) {
+            await checkLNPayRecipientRoute(wallet, transactionToTest.normalizedValueRecipient)
+          }
         } catch (error) {
           if(error?.response?.data?.status === 400) {
             erroringTransactions.push({address: transactionToTest.normalizedValueRecipient.address, 

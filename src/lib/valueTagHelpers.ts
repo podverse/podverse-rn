@@ -75,7 +75,8 @@ const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipien
     normalizedValueRecipient?.type
   )
 
-export const normalizeValueRecipients = (valueRecipients: ValueRecipient[], total: number) => {
+export const normalizeValueRecipients = (
+  valueRecipients: ValueRecipient[], total: number, roundDownValues: boolean) => {
   const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(valueRecipients)
   const feeRecipient = normalizedValueRecipients.find((valueRecipient) => valueRecipient.fee === true)
   let feeAmount = 0
@@ -92,6 +93,8 @@ export const normalizeValueRecipients = (valueRecipients: ValueRecipient[], tota
       amount = feeAmount
     }
 
+    amount = roundDownValues ? Math.floor(amount) : amount
+
     finalNormalizedValueRecipients.push({
       ...normalizedValueRecipient,
       amount: parseFloat(amount.toFixed(2))
@@ -105,7 +108,8 @@ export const convertValueTagIntoValueTransactions = async (
   valueTag: ValueTag,
   nowPlayingItem: NowPlayingItem,
   action: string,
-  amount: number
+  amount: number,
+  roundDownValues: boolean
 ) => {
   const { method, type } = valueTag
 
@@ -122,7 +126,11 @@ export const convertValueTagIntoValueTransactions = async (
 
   const valueTransactions: ValueTransaction[] = []
   const valueRecipients = valueTag.valueRecipients
-  const normalizedValueRecipients = normalizeValueRecipients(valueRecipients, amount)
+  const normalizedValueRecipients = normalizeValueRecipients(
+    valueRecipients,
+    amount,
+    roundDownValues
+  )
 
   for (const normalizedValueRecipient of normalizedValueRecipients) {
     const valueTransaction = await convertValueTagIntoValueTransaction(
@@ -186,7 +194,14 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
   const { boostAmount } = session.valueTagSettings.lightningNetwork.globalSettings
 
   let totalAmountPaid = 0
-  const valueTransactions = await convertValueTagIntoValueTransactions(valueTag, nowPlayingItem, action, boostAmount)
+  const roundDownBoostTransactions = true
+  const valueTransactions = await convertValueTagIntoValueTransactions(
+    valueTag,
+    nowPlayingItem,
+    action,
+    boostAmount,
+    roundDownBoostTransactions
+  )
 
   for (const valueTransaction of valueTransactions) {
     try {
@@ -209,6 +224,8 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
 }
 
 export const sendValueTransaction = async (valueTransaction: ValueTransaction) => {
+  if (!valueTransaction.normalizedValueRecipient.amount) return
+
   // If a valueTransaction fails, then add it to the tempValueTransactionQueue
   if (valueTransaction?.type === 'lightning' && valueTransaction?.method === 'keysend') {
     return sendLNPayValueTransaction(valueTransaction)
@@ -330,7 +347,14 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
     // this will need to be updated to support additional valueTags
     const valueTag = valueTags[0]
 
-    const valueTransactions = await convertValueTagIntoValueTransactions(valueTag, nowPlayingItem, 'streaming', amount)
+    const roundDownStreamingTransactions = false
+    const valueTransactions = await convertValueTagIntoValueTransactions(
+      valueTag,
+      nowPlayingItem,
+      'streaming',
+      amount,
+      roundDownStreamingTransactions
+    )
 
     for (const transaction of valueTransactions) {
       transactionQueue.push(transaction)

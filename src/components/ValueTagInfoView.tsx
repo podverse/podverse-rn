@@ -61,7 +61,10 @@ export class ValueTagInfoView extends React.PureComponent<Props> {
         })}
         <View style={styles.recipientTableFooter}>
           <Text testID={`${testID}_boost_recipient_amount_total`} style={styles.recipientFooterText}>
-            {`${translate('total amount')}: ${totalAmount}`}
+            {`${totalAmountText}: ${totalAmount}*`}
+          </Text>
+          <Text style={styles.disclaimerText} testID='boost_dropdown_banner_disclaimer_text'>
+            {`*${translate('Actual amount will be higher due to network fees')}`}
           </Text>
         </View>
       </View>
@@ -70,19 +73,24 @@ export class ValueTagInfoView extends React.PureComponent<Props> {
 }
 
 const styles = StyleSheet.create({
+  disclaimerText: {
+    fontSize: PV.Fonts.sizes.md,
+    paddingBottom: 12,
+    textAlign: 'right'
+  },
   recipientFooterText: {
-    paddingVertical: 10,
-    fontSize: PV.Fonts.sizes.lg
+    fontSize: PV.Fonts.sizes.lg,
+    paddingBottom: 6,
+    paddingTop: 8
   },
   recipientTable: {
     borderColor: PV.Colors.skyLight,
     borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 10,
-    paddingBottom: 5
+    paddingHorizontal: 10
   },
   recipientTableFooter: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
     borderTopColor: PV.Colors.white,
     borderTopWidth: StyleSheet.hairlineWidth,
     marginTop: 5
