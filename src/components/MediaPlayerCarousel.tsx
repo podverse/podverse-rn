@@ -206,12 +206,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                   :
                   <>
                     <Text testID='boost_button_text_1'>{boostText}</Text>
-                    {
-                      !boostWasSent &&
-                        <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
-                          {boostAmount} {translate('sats')}
-                        </Text>
-                    }
+                    <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
+                      {boostAmount} {translate('sats')}
+                    </Text>
                   </>
                 }
             </TouchableOpacity>
