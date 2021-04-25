@@ -81,18 +81,16 @@ export class FundingScreen extends React.Component<Props, State> {
     const erroringTransactions = []
 
     if (wallet) {
-      const { boostTransactions, streamingTransactions } = this.state
-      const { boostAmount, streamingAmount } = this.global.session.valueTagSettings.lightningNetwork.globalSettings
-      const transactionsToTest = boostAmount > streamingAmount ? boostTransactions : streamingTransactions
-
-      for (const transactionToTest of transactionsToTest) {
+      const { boostTransactions } = this.state
+ 
+      for (const boostTransaction of boostTransactions) {
         try {
-          if (transactionToTest.normalizedValueRecipient.amount >= 1) {
-            await checkLNPayRecipientRoute(wallet, transactionToTest.normalizedValueRecipient)
+          if (boostTransaction.normalizedValueRecipient.amount >= 1) {
+            await checkLNPayRecipientRoute(wallet, boostTransaction.normalizedValueRecipient)
           }
         } catch (error) {
           if(error?.response?.data?.status === 400) {
-            erroringTransactions.push({address: transactionToTest.normalizedValueRecipient.address, 
+            erroringTransactions.push({address: boostTransaction.normalizedValueRecipient.address, 
                                        message: error.response.data.message})
           }
         }
