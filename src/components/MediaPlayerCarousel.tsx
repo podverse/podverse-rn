@@ -161,6 +161,14 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       ? translate('Boost Sent').toUpperCase()
       : translate('Boost').toUpperCase()
 
+    const streamingButtonMainTextStyles = streamingEnabled
+      ? [styles.boostButtonMainText, { color: PV.Colors.orange }]
+      : [styles.boostButtonMainText]
+
+    const streamingButtonSubTextStyles = streamingEnabled
+      ? [styles.boostButtonSubText, { color: PV.Colors.orange }]
+      : [styles.boostButtonSubText]
+
     return (
       <View style={styles.wrapper} transparent>
         <ScrollView
@@ -193,9 +201,15 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
         />
         {lnpayEnabled && (
           <View style={styles.boostButtonsContainer}>
-            <TouchableOpacity style={styles.boostButton} onPress={this._toggleSatStreaming}>
-              <Text testID='Boost Button'>{satStreamText.toUpperCase()}</Text>
-              <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
+            <TouchableOpacity
+              onPress={this._toggleSatStreaming}
+              style={styles.boostButton}>
+              <Text
+                style={streamingButtonMainTextStyles}
+                testID='stream_button_text_1'>{satStreamText.toUpperCase()}</Text>
+              <Text
+                style={streamingButtonSubTextStyles}
+                testID='stream_button_text_2'>
                 {streamingAmount} {translate('sats / min')}
               </Text>
             </TouchableOpacity>
@@ -210,10 +224,12 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                   <ActivityIndicator />
                   :
                   <>
-                    <Text testID='boost_button_text_1'>{boostText}</Text>
+                    <Text style={styles.boostButtonMainText} testID='boost_button_text_1'>{boostText}</Text>
                     {
                       !boostWasSent &&
-                        <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
+                        <Text
+                          style={styles.boostButtonSubText}
+                          testID='Boost Button_text_2'>
                           {boostAmount} {translate('sats')}
                         </Text>
                     }
@@ -252,5 +268,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderColor: PV.Colors.brandBlueLight,
     borderWidth: 2
+  },
+  boostButtonMainText: {
+    fontSize: PV.Fonts.sizes.sm
+  },
+  boostButtonSubText: {
+    fontSize: PV.Fonts.sizes.xs
   }
 })
