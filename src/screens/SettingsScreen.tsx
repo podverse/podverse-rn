@@ -13,6 +13,7 @@ import {
   NumberSelectorWithText,
   ScrollView,
   SwitchWithText,
+  TableCell,
   Text,
   TextInput,
   View
@@ -48,7 +49,7 @@ import {
   updateGlobalBoostAmount,
   updateGlobalStreamingAmount
 } from '../state/actions/valueTag'
-import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
+import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme, table } from '../styles'
 
 type Props = {
   navigation: any
@@ -384,6 +385,11 @@ export class SettingsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace />}
         {!isLoading && (
           <View>
+            <TableCell
+              testIDPrefix={testIDPrefix}
+              testIDSuffix='crypto_setup'>
+              {translate('Crypto Setup')}
+            </TableCell>
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 onValueChange={this._handleToggleOfflineMode}
