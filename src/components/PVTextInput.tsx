@@ -7,6 +7,7 @@ import { core } from '../styles'
 import { Text, View } from '.'
 
 type Props = {
+  alwaysShowEyebrow?: boolean
   autoCapitalize?: any
   autoCompleteType?: any
   autoCorrect?: boolean
@@ -18,6 +19,7 @@ type Props = {
   keyboardType?: any
   numberOfLines?: number
   onBlur?: any
+  onFocus?: any
   onChange?: any
   onChangeText?: any
   onSubmitEditing?: any
@@ -34,6 +36,7 @@ type Props = {
 
 export const PVTextInput = (props: Props) => {
   const {
+    alwaysShowEyebrow,
     autoCapitalize,
     autoCompleteType,
     autoCorrect,
@@ -43,6 +46,7 @@ export const PVTextInput = (props: Props) => {
     keyboardType,
     numberOfLines = 1,
     onBlur,
+    onFocus,
     onChange,
     onChangeText,
     onSubmitEditing,
@@ -78,7 +82,7 @@ export const PVTextInput = (props: Props) => {
 
   return (
     <View style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
-      {hasText && (!!eyebrowTitle || !!placeholder) && (
+      {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
         <Text style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]} testID={`${testID}_text_input_eyebrow`}>
           {eyebrowTitle || placeholder}
         </Text>
@@ -93,6 +97,7 @@ export const PVTextInput = (props: Props) => {
         multiline={numberOfLines > 1}
         numberOfLines={hasText ? numberOfLines : 1}
         onBlur={onBlur}
+        onFocus={onFocus}
         onChange={onChange}
         onChangeText={onChangeText}
         onSubmitEditing={onSubmitEditing}

@@ -134,7 +134,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
         addByRSSPodcastFeedUrl={addByRSSPodcastFeedUrl}
         filterScreenTitle={viewType === PV.Filters._clipsKey ? translate('Clips') : ''}
         handleSelectSortItem={this.handleSelectSortItem}
-        hideFilter={viewType === PV.Filters._chaptersKey}
+        disableFilter={viewType === PV.Filters._chaptersKey}
         includePadding
         navigation={navigation}
         screenName='EpisodeMediaRefScreen'

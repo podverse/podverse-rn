@@ -3,7 +3,7 @@ import Config from 'react-native-config'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator, NavigationStackOptions } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import React, { getGlobal } from 'reactn'
+import React from 'reactn'
 import { DownloadsActiveBadge, NavSearchIcon, PVTabBar, TabBarLabel } from './components'
 import { PV } from './resources'
 import {
@@ -11,6 +11,9 @@ import {
   AddPodcastByRSSScreen,
   AuthScreen,
   ClipsScreen,
+  CryptoConsentScreen,
+  CryptoPreviewScreen,
+  CryptoSetupScreen,
   DownloadsScreen,
   EditPlaylistScreen,
   EditProfileScreen,
@@ -20,6 +23,7 @@ import {
   EpisodesScreen,
   FAQScreen,
   FilterScreen,
+  FundingScreen,
   HistoryScreen,
   MakeClipScreen,
   MembershipScreen,
@@ -42,6 +46,7 @@ import {
   SettingsScreen,
   SleepTimerScreen,
   TermsOfServiceScreen,
+  LNPaySignupScreen,
   WebPageScreen
 } from './screens'
 import { darkTheme } from './styles'
@@ -165,8 +170,10 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.MembershipScreen]: MembershipScreen,
     [PV.RouteNames.AboutScreen]: AboutScreen,
     [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen,
+    [PV.RouteNames.LNPaySignupScreen]: LNPaySignupScreen,
     [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
-    [PV.RouteNames.FAQScreen]: FAQScreen
+    [PV.RouteNames.FAQScreen]: FAQScreen,
+    [PV.RouteNames.CryptoSetupScreen]: CryptoSetupScreen
   },
   {
     defaultNavigationOptions,
@@ -345,6 +352,31 @@ const ScanQRCodeScreenNavigator = createStackNavigator(
   }
 )
 
+const FundingScreenNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.FundingScreen]: {
+      screen: FundingScreen
+    },
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
+const CryptoOnboardingNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.CryptoPreviewScreen]: {
+      screen: CryptoPreviewScreen
+    },
+    [PV.RouteNames.CryptoConsentScreen]: {
+      screen: CryptoConsentScreen
+    }
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
 const MainApp = createStackNavigator(
   {
     [PV.RouteNames.TabNavigator]: { screen: TabNavigator, path: '' },
@@ -358,10 +390,12 @@ const MainApp = createStackNavigator(
     EmailVerificationNavigator,
     PurchasingNavigator,
     ScanQRCodeScreenNavigator,
+    FundingScreenNavigator,
     [PV.RouteNames.AddPodcastByRSSScreen]: {
       screen: AddPodcastByRSSURLNavigator,
       path: ''
-    }
+    },
+    CryptoOnboardingNavigator
   },
   {
     mode: 'modal',

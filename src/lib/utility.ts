@@ -407,6 +407,14 @@ const createHHMMSSAnchorTag = (hhmmss: string) => {
   return `<a data-start-time='${sec}' href='#'>${hhmmss}</a>`
 }
 
+export const convertTranscriptTimestampToSeconds = (timestamp: string) => {
+  // SRT time stamps use this formatting: 00:02:45,170
+  let hhmmss = timestamp.split(',')[0]
+  // VTT time stamps use this formatting: 00:02:45.170
+  hhmmss = timestamp.split('.')[0]
+  return convertHHMMSSToSeconds(hhmmss)  
+}
+
 export const convertHHMMSSToAnchorTags = (html: string) => {
   if (html) {
     const matches = getHHMMSSMatchesInString(html) || []

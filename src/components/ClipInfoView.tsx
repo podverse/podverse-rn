@@ -76,7 +76,7 @@ export class ClipInfoView extends React.PureComponent<Props> {
         {isLoading && <ActivityIndicator />}
         {!isLoading && (
           <Fragment>
-            <TableSectionSelectors hideFilter selectedFilterLabel={sectionHeaderTitle} />
+            <TableSectionSelectors disableFilter selectedFilterLabel={sectionHeaderTitle} />
             <View style={core.row}>
               <View style={styles.topTextWrapper}>
                 <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>

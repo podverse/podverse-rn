@@ -7,6 +7,7 @@ import {
   MediaPlayerCarousel,
   NavAddToPlaylistIcon,
   NavDismissIcon,
+  NavFundingIcon,
   NavMakeClipIcon,
   NavQueueIcon,
   NavShareIcon,
@@ -67,6 +68,7 @@ export class PlayerScreen extends React.Component<Props> {
       ),
       headerRight: () => (
         <RNView style={core.row}>
+          <NavFundingIcon globalTheme={globalTheme} navigation={navigation} />
           {!addByRSSPodcastFeedUrl && (
             <RNView style={core.row}>
               <NavMakeClipIcon

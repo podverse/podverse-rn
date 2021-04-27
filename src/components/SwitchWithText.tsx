@@ -20,7 +20,7 @@ type Props = {
   testID: string
   text: string
   value: boolean
-  wrapperStyle: any
+  wrapperStyle?: any
 }
 
 export const SwitchWithText = (props: Props) => {
@@ -39,7 +39,7 @@ export const SwitchWithText = (props: Props) => {
     testID,
     text,
     value,
-    wrapperStyle
+    wrapperStyle = {}
   } = props
   const [globalTheme] = useGlobal('globalTheme')
 

@@ -14,7 +14,7 @@ type Props = {
 export class MiniPlayer extends React.PureComponent<Props> {
   render() {
     const { navigation } = this.props
-    const { fontScaleMode, globalTheme, player, screenPlayer } = this.global
+    const { globalTheme, player, screenPlayer } = this.global
     const { nowPlayingItem, playbackState } = player
     const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
