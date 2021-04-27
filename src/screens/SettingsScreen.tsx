@@ -13,7 +13,7 @@ import {
   NumberSelectorWithText,
   ScrollView,
   SwitchWithText,
-  TableCell,
+  TableTextCell,
   Text,
   TextInput,
   View
@@ -385,11 +385,11 @@ export class SettingsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace />}
         {!isLoading && (
           <View>
-            <TableCell
+            <TableTextCell
               testIDPrefix={testIDPrefix}
-              testIDSuffix='crypto_setup'>
-              {translate('Crypto Setup')}
-            </TableCell>
+              testIDSuffix='crypto_setup'
+              text={translate('Crypto Setup')}
+              />
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 onValueChange={this._handleToggleOfflineMode}
