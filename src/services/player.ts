@@ -9,7 +9,7 @@ import RNFS from 'react-native-fs'
 import TrackPlayer, { Track } from 'react-native-track-player'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
-import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl, getExtensionFromUrl } from '../lib/utility'
+import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl, getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
 import { getParsedTranscript } from '../lib/transcriptHelpers'
 import { convertPodcastIndexValueTagToStandardValueTag } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
@@ -447,7 +447,10 @@ export const createTrack = async (item: NowPlayingItem) => {
         url: `file://${filePath}`,
         title: episodeTitle,
         artist: podcastTitle,
-        ...(imageUrl ? { artwork: imageUrl } : {})
+        ...(imageUrl ? { artwork: imageUrl } : {}),
+        headers: {
+          'User-Agent': getAppUserAgent()
+        }
       }
     } else {
       track = {
@@ -455,7 +458,10 @@ export const createTrack = async (item: NowPlayingItem) => {
         url: episodeMediaUrl,
         title: episodeTitle,
         artist: podcastTitle,
-        ...(imageUrl ? { artwork: imageUrl } : {})
+        ...(imageUrl ? { artwork: imageUrl } : {}),
+        headers: {
+          'User-Agent': getAppUserAgent()
+        }
       }
     }
   }
