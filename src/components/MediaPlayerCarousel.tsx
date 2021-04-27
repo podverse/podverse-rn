@@ -50,7 +50,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   constructor(props) {
     super(props)
     const defaultActiveIndex = props.hasChapters ? 2 : 1
-    
+
     this.state = {
       activeIndex: defaultActiveIndex,
       boostIsSending: false,
@@ -76,7 +76,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const hasChapters = player?.episode?.chaptersUrl
     let defaultActiveIndex = 1
     if (hasChapters) defaultActiveIndex++
-  
+
     const animated = false
     this.scrollToActiveIndex(defaultActiveIndex, animated)
   }
@@ -104,7 +104,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     let lastActiveIndex = 2
     if (hasChapters) lastActiveIndex++
     if (hasTranscript) lastActiveIndex++
-  
+
     const animated = true
     this.scrollToActiveIndex(lastActiveIndex, animated)
   }
@@ -116,14 +116,17 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       const { nowPlayingItem } = this.global.player
       sendBoost(nowPlayingItem)
       setTimeout(() => {
-        this.setState({
-          boostIsSending: false,
-          boostWasSent: true
-        }, () => {
-          setTimeout(() => {
-            this.setState({ boostWasSent: false })
-          }, 4000)
-        })
+        this.setState(
+          {
+            boostIsSending: false,
+            boostWasSent: true
+          },
+          () => {
+            setTimeout(() => {
+              this.setState({ boostWasSent: false })
+            }, 4000)
+          }
+        )
       }, 1000)
     })
   }
@@ -143,18 +146,22 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { lightningNetwork, streamingEnabled } = this.global.session.valueTagSettings
     const { globalSettings, lnpayEnabled } = lightningNetwork
     const { boostAmount, streamingAmount } = globalSettings
-  
+
     let itemCount = 3
     if (hasChapters) itemCount++
     if (hasTranscript) itemCount++
 
-    const satStreamText = streamingEnabled
-      ? translate('Stream On')
-      : translate('Stream Off')
+    const satStreamText = streamingEnabled ? translate('Stream On') : translate('Stream Off')
 
-    const boostText = boostWasSent
-      ? translate('Boost Sent').toUpperCase()
-      : translate('Boost').toUpperCase()
+    const boostText = boostWasSent ? translate('Boost Sent').toUpperCase() : translate('Boost').toUpperCase()
+
+    const streamingButtonMainTextStyles = streamingEnabled
+      ? [styles.boostButtonMainText, { color: PV.Colors.orange }]
+      : [styles.boostButtonMainText]
+
+    const streamingButtonSubTextStyles = streamingEnabled
+      ? [styles.boostButtonSubText, { color: PV.Colors.orange }]
+      : [styles.boostButtonSubText]
 
     return (
       <View style={styles.wrapper} transparent>
@@ -188,9 +195,11 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
         />
         {lnpayEnabled && (
           <View style={styles.boostButtonsContainer}>
-            <TouchableOpacity style={styles.boostButton} onPress={this._toggleSatStreaming}>
-              <Text testID='Boost Button'>{satStreamText.toUpperCase()}</Text>
-              <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
+            <TouchableOpacity onPress={this._toggleSatStreaming} style={styles.boostButton}>
+              <Text style={streamingButtonMainTextStyles} testID='stream_button_text_1'>
+                {satStreamText.toUpperCase()}
+              </Text>
+              <Text style={streamingButtonSubTextStyles} testID='stream_button_text_2'>
                 {streamingAmount} {translate('sats / min')}
               </Text>
             </TouchableOpacity>
@@ -201,16 +210,20 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
               disabled={boostIsSending || boostWasSent}
               style={styles.boostButton}
               onPress={this._attemptBoost}>
-                {boostIsSending ? 
-                  <ActivityIndicator />
-                  :
-                  <>
-                    <Text testID='boost_button_text_1'>{boostText}</Text>
-                    <Text testID='Boost Button_text_2' style={{ fontSize: PV.Fonts.sizes.xs }}>
+              {boostIsSending ? (
+                <ActivityIndicator />
+              ) : (
+                <>
+                  <Text style={styles.boostButtonMainText} testID='boost_button_text_1'>
+                    {boostText}
+                  </Text>
+                  {!boostWasSent && (
+                    <Text style={styles.boostButtonSubText} testID='Boost Button_text_2'>
                       {boostAmount} {translate('sats')}
                     </Text>
-                  </>
-                }
+                  )}
+                </>
+              )}
             </TouchableOpacity>
           </View>
         )}
@@ -244,5 +257,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderColor: PV.Colors.brandBlueLight,
     borderWidth: 2
+  },
+  boostButtonMainText: {
+    fontSize: PV.Fonts.sizes.sm
+  },
+  boostButtonSubText: {
+    fontSize: PV.Fonts.sizes.xs
   }
 })
