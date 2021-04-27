@@ -19,6 +19,7 @@ type Props = {
   keyboardType?: any
   numberOfLines?: number
   onBlur?: any
+  onFocus?: any
   onChange?: any
   onChangeText?: any
   onSubmitEditing?: any
@@ -45,6 +46,7 @@ export const PVTextInput = (props: Props) => {
     keyboardType,
     numberOfLines = 1,
     onBlur,
+    onFocus,
     onChange,
     onChangeText,
     onSubmitEditing,
@@ -95,6 +97,7 @@ export const PVTextInput = (props: Props) => {
         multiline={numberOfLines > 1}
         numberOfLines={hasText ? numberOfLines : 1}
         onBlur={onBlur}
+        onFocus={onFocus}
         onChange={onChange}
         onChangeText={onChangeText}
         onSubmitEditing={onSubmitEditing}

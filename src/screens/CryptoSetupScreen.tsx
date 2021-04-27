@@ -69,13 +69,6 @@ export class CryptoSetupScreen extends React.Component<Props, State> {
 
     return (
       <View style={styles.content} {...testProps(`${testIDPrefix}_view`)}>
-        <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          style={styles.text}>
-          {translate('Crypto Setup')}
-        </Text>
-        <View>
-          {Config.ENABLE_VALUE_TAG_TRANSACTIONS && (
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 onValueChange={this._showLNPaySetup}
@@ -133,8 +126,6 @@ export class CryptoSetupScreen extends React.Component<Props, State> {
                 />
               )}
             </View>
-          )}
-        </View>
       </View>
     )
   }
@@ -144,7 +135,8 @@ const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
     flex: 1,
-    justifyContent: 'center',
+    paddingTop:20,
+    paddingHorizontal:15
   },
   itemWrapper: {
     marginBottom: 24

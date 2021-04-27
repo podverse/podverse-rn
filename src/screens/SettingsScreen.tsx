@@ -367,13 +367,13 @@ export class SettingsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace />}
         {!isLoading && (
           <View>
-            <TableTextCell
+            {Config.ENABLE_VALUE_TAG_TRANSACTIONS && <TableTextCell
               onPress={this._handleCryptoSetupPressed}
               testIDPrefix={testIDPrefix}
               testIDSuffix='crypto_setup'
               text={translate('Crypto Setup')}
               hideChevron={false}
-              />
+              />}
             <Divider style={styles.divider} />
             <View style={styles.itemWrapper}>
               <SwitchWithText
