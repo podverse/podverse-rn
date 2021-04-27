@@ -711,8 +711,7 @@ export const table = StyleSheet.create({
     paddingLeft: 8
   },
   cellWrapper: {
-    alignItems: 'center',
-    textAlign: 'left',
+    justifyContent:"center",
     minHeight: PV.Table.cells.standard.height
   }
 })
