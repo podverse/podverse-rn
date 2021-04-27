@@ -29,7 +29,7 @@ export const TableCell = (props: TableCellProps) => {
       style={table.cellWrapper}
       testID={`${testIDPrefix}_table_cell_wrapper_${testIDSuffix}`}>
         <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
-          {children}
+          <View style={{flexDirection:"row", alignItems:"center"}}>{children}</View>
           {!hideChevron && <Icon style={{marginRight:20}} testID="table_cell_chevron" name="angle-right" size={30}/>}
         </View>
     </Pressable>
