@@ -11,6 +11,9 @@ import {
   AddPodcastByRSSScreen,
   AuthScreen,
   ClipsScreen,
+  CryptoConsentScreen,
+  CryptoPreviewScreen,
+  CryptoSetupScreen,
   DownloadsScreen,
   EditPlaylistScreen,
   EditProfileScreen,
@@ -169,7 +172,8 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.TermsOfServiceScreen]: TermsOfServiceScreen,
     [PV.RouteNames.LNPaySignupScreen]: LNPaySignupScreen,
     [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
-    [PV.RouteNames.FAQScreen]: FAQScreen
+    [PV.RouteNames.FAQScreen]: FAQScreen,
+    [PV.RouteNames.CryptoSetupScreen]: CryptoSetupScreen
   },
   {
     defaultNavigationOptions,
@@ -352,6 +356,20 @@ const FundingScreenNavigator = createStackNavigator(
   {
     [PV.RouteNames.FundingScreen]: {
       screen: FundingScreen
+    },
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
+const CryptoOnboardingNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.CryptoPreviewScreen]: {
+      screen: CryptoPreviewScreen
+    },
+    [PV.RouteNames.CryptoConsentScreen]: {
+      screen: CryptoConsentScreen
     }
   },
   {
@@ -376,7 +394,8 @@ const MainApp = createStackNavigator(
     [PV.RouteNames.AddPodcastByRSSScreen]: {
       screen: AddPodcastByRSSURLNavigator,
       path: ''
-    }
+    },
+    CryptoOnboardingNavigator
   },
   {
     mode: 'modal',

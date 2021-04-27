@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
-import { Alert, Keyboard, StyleSheet } from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import Dialog from 'react-native-dialog'
 import RNPickerSelect from 'react-native-picker-select'
@@ -13,8 +13,8 @@ import {
   NumberSelectorWithText,
   ScrollView,
   SwitchWithText,
+  TableTextCell,
   Text,
-  TextInput,
   View
 } from '../components'
 import {
@@ -32,7 +32,7 @@ import { trackPageView } from '../services/tracking'
 import { deleteLoggedInUser } from '../services/user'
 import { logoutUser } from '../state/actions/auth'
 import * as DownloadState from '../state/actions/downloads'
-import { removeLNPayWallet, toggleLNPayFeature } from '../state/actions/lnpay'
+
 import {
   saveCustomAPIDomain,
   saveCustomWebDomain,
@@ -42,12 +42,6 @@ import {
   setOfflineModeEnabled
 } from '../state/actions/settings'
 import { clearHistoryItems } from '../state/actions/userHistoryItem'
-import {
-  MINIMUM_BOOST_PAYMENT,
-  MINIMUM_STREAMING_PAYMENT,
-  updateGlobalBoostAmount,
-  updateGlobalStreamingAmount
-} from '../state/actions/valueTag'
 import { core, darkTheme, hidePickerIconOnAndroidTransparent, lightTheme } from '../styles'
 
 type Props = {
@@ -63,8 +57,6 @@ type State = {
   downloadingWifiOnly?: boolean
   hasLoaded?: boolean
   isLoading?: boolean
-  localBoostAmount: string
-  localStreamingAmount: string
   maximumSpeedOptionSelected?: any
   offlineModeEnabled: any
   showDeleteAccountDialog?: boolean
@@ -86,8 +78,6 @@ export class SettingsScreen extends React.Component<Props, State> {
       deleteAccountDialogText: '',
       downloadedEpisodeLimitCount,
       downloadedEpisodeLimitDefault,
-      localBoostAmount: 0,
-      localStreamingAmount: 0,
       maximumSpeedOptionSelected: maximumSpeedSelectOptions[1],
       offlineModeEnabled
     }
@@ -106,7 +96,7 @@ export class SettingsScreen extends React.Component<Props, State> {
     const maximumSpeedSelectOptions = PV.Player.maximumSpeedSelectOptions
     const maximumSpeedOptionSelected = maximumSpeedSelectOptions.find((x: any) => x.value === Number(maximumSpeed))
     const offlineModeEnabled = await AsyncStorage.getItem(PV.Keys.OFFLINE_MODE_ENABLED)
-    const { boostAmount, streamingAmount } = this.global.session.valueTagSettings.lightningNetwork.globalSettings
+    
 
     this.setState(
       {
@@ -114,8 +104,6 @@ export class SettingsScreen extends React.Component<Props, State> {
         downloadedEpisodeLimitCount,
         downloadedEpisodeLimitDefault,
         downloadingWifiOnly: !!downloadingWifiOnly,
-        localBoostAmount: boostAmount.toString(),
-        localStreamingAmount: streamingAmount.toString(),
         maximumSpeedOptionSelected: maximumSpeedOptionSelected || maximumSpeedSelectOptions[1],
         offlineModeEnabled
       },
@@ -334,14 +322,13 @@ export class SettingsScreen extends React.Component<Props, State> {
     }
   }
 
-  _showLNPaySetup = async (toggle: boolean) => {
-    if (toggle) {
-      this.props.navigation.navigate(PV.RouteNames.LNPaySignupScreen)
+  _handleCryptoSetupPressed = async () => {
+    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_CRYPTO_TERMS)
+    if(consentGivenString && JSON.parse(consentGivenString) === true) {
+      this.props.navigation.navigate(PV.RouteNames.CryptoSetupScreen)
     } else {
-      await removeLNPayWallet()
-      toggleLNPayFeature(false)
-      Alert.alert(translate('LN Pay Wallet Removed'), translate('All LNPay data have been deleted from this device'))
-    }
+      this.props.navigation.navigate(PV.RouteNames.CryptoPreviewScreen)
+    }  
   }
 
   render() {
@@ -352,8 +339,6 @@ export class SettingsScreen extends React.Component<Props, State> {
       downloadedEpisodeLimitDefault,
       downloadingWifiOnly,
       isLoading,
-      localBoostAmount,
-      localStreamingAmount,
       maximumSpeedOptionSelected,
       offlineModeEnabled,
       showDeleteAccountDialog,
@@ -370,9 +355,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       globalTheme,
       session
     } = this.global
-    const { isLoggedIn, valueTagSettings } = session
-    const { lightningNetwork } = valueTagSettings
-    const { lnpayEnabled } = lightningNetwork
+    const { isLoggedIn } = session
 
     const isDarkMode = globalTheme === darkTheme
 
@@ -384,6 +367,14 @@ export class SettingsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace />}
         {!isLoading && (
           <View>
+            {Config.ENABLE_VALUE_TAG_TRANSACTIONS && <TableTextCell
+              onPress={this._handleCryptoSetupPressed}
+              testIDPrefix={testIDPrefix}
+              testIDSuffix='crypto_setup'
+              text={translate('Crypto Setup')}
+              hideChevron={false}
+              />}
+            <Divider style={styles.divider} />
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 onValueChange={this._handleToggleOfflineMode}
@@ -502,65 +493,6 @@ export class SettingsScreen extends React.Component<Props, State> {
                     value={!!customWebDomainEnabled}
                   />
                 </View>
-                {Config.ENABLE_VALUE_TAG_TRANSACTIONS && (
-                  <View style={styles.itemWrapper}>
-                    <SwitchWithText
-                      onValueChange={this._showLNPaySetup}
-                      subText={translate('Enable Lightning Pay switch description')}
-                      testID={`${testIDPrefix}_lnpay_mode`}
-                      text={translate(`Enable LN Pay`)}
-                      value={lnpayEnabled}
-                    />
-                    {lnpayEnabled && (
-                      <TextInput
-                        alwaysShowEyebrow
-                        eyebrowTitle={translate('Boost Amount')}
-                        keyboardType='numeric'
-                        onBlur={() => {
-                          const { localBoostAmount } = this.state
-                          if (Number(localBoostAmount) && Number(localBoostAmount) > MINIMUM_BOOST_PAYMENT) {
-                            updateGlobalBoostAmount(Number(localBoostAmount))
-                          } else {
-                            updateGlobalBoostAmount(MINIMUM_BOOST_PAYMENT)
-                            this.setState({ localBoostAmount: MINIMUM_BOOST_PAYMENT.toString() })
-                          }
-                        }}
-                        onSubmitEditing={() => Keyboard.dismiss()}
-                        onChangeText={(newText: string) => {
-                          this.setState({ localBoostAmount: newText })
-                        }}
-                        testID={`${testIDPrefix}_boost_amount_text_input`}
-                        value={`${localBoostAmount}`}
-                        wrapperStyle={styles.textInputWrapper}
-                      />
-                    )}
-                    {lnpayEnabled && (
-                      <TextInput
-                        alwaysShowEyebrow
-                        eyebrowTitle={translate('Streaming Amount')}
-                        keyboardType='numeric'
-                        onBlur={() => {
-                          const { localStreamingAmount } = this.state
-                          if (
-                            Number(localStreamingAmount)
-                            && Number(localStreamingAmount) > MINIMUM_STREAMING_PAYMENT) {
-                            updateGlobalStreamingAmount(Number(localStreamingAmount))
-                          } else {
-                            updateGlobalStreamingAmount(MINIMUM_STREAMING_PAYMENT)
-                            this.setState({ localStreamingAmount: MINIMUM_STREAMING_PAYMENT.toString() })
-                          }
-                        }}
-                        onChangeText={(newText: string) => {
-                          this.setState({ localStreamingAmount: newText })
-                        }}
-                        onSubmitEditing={() => Keyboard.dismiss()}
-                        testID={`${testIDPrefix}_streaming_amount_text_input`}
-                        value={`${localStreamingAmount}`}
-                        wrapperStyle={styles.textInputWrapper}
-                      />
-                    )}
-                  </View>
-                )}
               </View>
             )}
             <Divider style={styles.divider} />

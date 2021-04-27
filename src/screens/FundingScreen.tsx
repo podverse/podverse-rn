@@ -1,7 +1,8 @@
 import { ValueTransaction } from 'podverse-shared'
-import { Alert, Keyboard, Linking, StyleSheet } from 'react-native'
+import { Alert, Keyboard, Linking, Pressable, StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import React, { getGlobal } from 'reactn'
+import AsyncStorage from '@react-native-community/async-storage'
 import { checkLNPayRecipientRoute } from '../services/lnpay'
 import { getLNWallet } from '../state/actions/lnpay'
 import { Divider, FastImage, NavDismissIcon, ScrollView, Text, TextInput, ValueTagInfoView, View } from '../components'
@@ -89,15 +90,17 @@ export class FundingScreen extends React.Component<Props, State> {
             await checkLNPayRecipientRoute(wallet, boostTransaction.normalizedValueRecipient)
           }
         } catch (error) {
-          if(error?.response?.data?.status === 400) {
-            erroringTransactions.push({address: boostTransaction.normalizedValueRecipient.address, 
-                                       message: error.response.data.message})
+          if (error?.response?.data?.status === 400) {
+            erroringTransactions.push({
+              address: boostTransaction.normalizedValueRecipient.address,
+              message: error.response.data.message
+            })
           }
         }
       }
 
-      if(erroringTransactions.length) {
-        this.setState({erroringTransactions})
+      if (erroringTransactions.length) {
+        this.setState({ erroringTransactions })
       }
     }
   }
@@ -124,11 +127,21 @@ export class FundingScreen extends React.Component<Props, State> {
     )
   }
 
+  _handleCryptoSetupPressed = async () => {
+    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_CRYPTO_TERMS)
+    if (consentGivenString && JSON.parse(consentGivenString) === true) {
+      this.props.navigation.navigate(PV.RouteNames.CryptoSetupScreen)
+    } else {
+      this.props.navigation.navigate(PV.RouteNames.CryptoPreviewScreen)
+    }
+  }
+
   render() {
     const { boostTransactions, streamingTransactions, erroringTransactions } = this.state
     const { player, session } = this.global
     const { nowPlayingItem } = player
-    const { boostAmount, streamingAmount } = session.valueTagSettings.lightningNetwork.globalSettings
+    const { globalSettings, lnpayEnabled } = session.valueTagSettings.lightningNetwork
+    const { boostAmount, streamingAmount } = globalSettings
     const { episodeFunding, episodeValue, podcastFunding, podcastValue } = nowPlayingItem
 
     const podcastLinks = podcastFunding?.map((item: any, index: number) =>
@@ -171,11 +184,19 @@ export class FundingScreen extends React.Component<Props, State> {
           </View>
         </View>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          {hasValueInfo && (
+          <Text style={styles.textHeader} testID={`${testIDPrefix}_episode_funding_header`}>
+            {translate('Crypto')}
+          </Text>
+          {hasValueInfo && !lnpayEnabled && (
+            <View style={styles.noLnpayView}>
+              <Text style={styles.noLnPayText}>{translate('Podcast supports crypto donations')}</Text>
+              <Pressable style={styles.goToCryptoSetupButton} onPress={this._handleCryptoSetupPressed}>
+                <Text style={styles.goToCryptoSetupButtonText}>{translate('Setup Crypto')}</Text>
+              </Pressable>
+            </View>
+          )}
+          {lnpayEnabled && hasValueInfo && (
             <View>
-              <Text style={styles.textHeader} testID={`${testIDPrefix}_value_settings_header`}>
-                {translate('Value Settings')}
-              </Text>
               <Text style={styles.textLabel} testID={`${testIDPrefix}_value_settings_lightning_label`}>
                 {translate('Bitcoin Lightning Network')}
               </Text>
@@ -208,11 +229,11 @@ export class FundingScreen extends React.Component<Props, State> {
                   testID={`${testIDPrefix}_value_settings_lightning_boost_sample_label`}>
                   {translate('Boost splits')}
                 </Text>
-                <ValueTagInfoView 
-                  testID={testIDPrefix} 
-                  totalAmount={boostAmount} 
+                <ValueTagInfoView
+                  testID={testIDPrefix}
+                  totalAmount={boostAmount}
                   transactions={boostTransactions}
-                  erroringTransactions={erroringTransactions} 
+                  erroringTransactions={erroringTransactions}
                 />
               </View>
               <View style={styles.itemWrapper}>
@@ -287,7 +308,7 @@ const styles = StyleSheet.create({
   },
   fundingLink: {
     color: PV.Colors.linkColor,
-    fontSize: PV.Fonts.sizes.xxl,
+    fontSize: PV.Fonts.sizes.lg,
     fontWeight: PV.Fonts.weights.semibold,
     marginTop: 12
   },
@@ -331,7 +352,7 @@ const styles = StyleSheet.create({
     marginBottom: 24
   },
   textHeader: {
-    fontSize: PV.Fonts.sizes.xxl,
+    fontSize: PV.Fonts.sizes.xl,
     fontWeight: PV.Fonts.weights.bold
   },
   textInput: {
@@ -358,5 +379,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start'
   },
-  valueTagInfoViewWrapper: {}
+  valueTagInfoViewWrapper: {},
+  noLnpayView: {
+    marginTop:10
+  },
+  noLnPayText: {
+    fontSize: PV.Fonts.sizes.lg
+  },
+  goToCryptoSetupButton: {
+    marginTop: 15
+  },
+  goToCryptoSetupButtonText: {
+    fontSize: PV.Fonts.sizes.lg,
+    color: PV.Colors.blueLighter,
+    fontWeight: PV.Fonts.weights.bold
+  }
 })
