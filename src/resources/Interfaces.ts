@@ -1,3 +1,5 @@
+import { ValueTransaction } from 'podverse-shared'
+
 export interface GlobalTheme {
   actionSheetButton?: any
   actionSheetButtonCancel?: any
@@ -165,10 +167,34 @@ export interface InitialState {
   session: {
     isLoggedIn: boolean
     userInfo: UserInfo
+    valueTagSettings: {
+      lightningNetwork: {
+        lnpayEnabled: boolean
+        globalSettings: {
+          boostAmount: number
+          streamingAmount: number
+        }
+      }
+      streamingEnabled: boolean
+    }
   }
   subscribedPodcasts: []
   subscribedPodcastsTotalCount: number
   userAgent?: string
+  bannerInfo: BannerInfo
+}
+
+export interface BannerInfoError {
+  error: Error
+  details: Record<string, any>
+}
+
+export interface BannerInfo {
+  show: boolean
+  description: string
+  errors?: BannerInfoError[]
+  transactions?: ValueTransaction[]
+  totalAmount?: number
 }
 
 export interface IActionSheet {

@@ -1,3 +1,5 @@
+const linkColor = '#4695c0'
+
 export const Colors = {
   brandColor: '#197BB1',
   white: '#ffffff',
@@ -13,7 +15,8 @@ export const Colors = {
   grayLighterTransparent: 'rgba(193, 193, 193, 0.2)',
   grayDarkestZ: '#181818', // only used in zebra stripe cells
   black: '#000000',
-  blueLighter: '#4695c0',
+  linkColor,
+  blueLighter: linkColor,
   blue: '#197BB1',
   blueDarker: '#14628d',
   redLighter: '#c43745',

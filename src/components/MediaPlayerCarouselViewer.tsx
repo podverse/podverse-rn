@@ -1,11 +1,4 @@
-import {
-  Alert,
-  Linking,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View as RNView
-} from 'react-native'
+import { Alert, Linking, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View as RNView } from 'react-native'
 
 import React from 'reactn'
 import { translate } from '../lib/i18n'
@@ -42,6 +35,8 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       { text: translate('Yes'), onPress: () => Linking.openURL(url) }
     ])
   }
+
+
 
   render() {
     const { handlePressClipInfo, width } = this.props
@@ -140,7 +135,7 @@ const styles = StyleSheet.create({
   },
   carouselImageWrapper: {
     alignItems: 'center',
-    height: '70%'
+    height: '65%'
   },
   carouselChapterWrapper: {},
   imageContainer: {

@@ -1,17 +1,17 @@
-import { Linking, SectionList, Alert, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { Linking, SectionList, Alert } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
 import { parseString } from 'react-native-xml2js'
 import DocumentPicker from 'react-native-document-picker'
 import RNFS from 'react-native-fs'
-import { Divider, TableSectionSelectors, Text, View, ActivityIndicator } from '../components'
+import { Divider, TableSectionSelectors, Text, View, ActivityIndicator, TableCell } from '../components'
 import { translate } from '../lib/i18n'
 import { createEmailLinkUrl, getMembershipStatus, testProps, parseOpmlFile } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { logoutUser } from '../state/actions/auth'
 import { core, getMembershipTextStyle, table } from '../styles'
-import { addAddByRSSPodcast, addAddByRSSPodcasts } from '../state/actions/parser'
+import { addAddByRSSPodcasts } from '../state/actions/parser'
 
 type Props = {
   navigation?: any
@@ -159,10 +159,13 @@ export class MoreScreen extends React.Component<Props, State> {
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
-            <TouchableWithoutFeedback onPress={() => this._onPress(item)} {...testProps(item.testID)}>
-              <RNView style={[core.row, table.cellWrapper]}>
+              <TableCell 
+                testIDPrefix=''
+                testIDSuffix='more_screen' 
+                onPress={() => this._onPress(item)} {...testProps(item.testID)}
+              >
                 {item.key === _membershipKey ? (
-                  <RNView style={[core.row, table.cellWrapper]}>
+                  <>
                     <Text
                       fontSizeLargestScale={PV.Fonts.largeSizes.md}
                       style={[table.cellText, globalTheme.tableCellTextPrimary]}>
@@ -174,7 +177,7 @@ export class MoreScreen extends React.Component<Props, State> {
                         {membershipStatus}
                       </Text>
                     )}
-                  </RNView>
+                  </>
                 ) : (
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -182,12 +185,11 @@ export class MoreScreen extends React.Component<Props, State> {
                     {item.title}
                   </Text>
                 )}
-              </RNView>
-            </TouchableWithoutFeedback>
+              </TableCell>
           )}
           renderSectionHeader={({ section }) => (
             <TableSectionSelectors
-              hideFilter
+              disableFilter
               includePadding
               selectedFilterLabel={section.title}
               textStyle={[globalTheme.headerText, core.headerText]}

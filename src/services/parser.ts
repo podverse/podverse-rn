@@ -306,6 +306,7 @@ export const parseAddByRSSPodcast = async (feedUrl: string, credentials?: string
 
       episode.soundbite = parsedEpisode.soundbite
       episode.title = parsedEpisode.title && parsedEpisode.title.trim()
+      episode.value = parsedEpisode.value
       episodes.push(episode)
     }
   }

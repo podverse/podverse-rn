@@ -21,7 +21,7 @@ export const isOnMinimumAllowedVersion = async () => {
     const data = (response && response.data) || {}
     const { version } = data
 
-    if (version && String(version).replace(/"/g, '') < getVersion()) {
+    if (!!version && String(version) > getVersion()) {
       return false
     }
 

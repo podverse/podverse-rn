@@ -4,6 +4,9 @@ export const RouteNames = {
   AuthNavigator: 'AuthNavigator',
   AuthScreen: 'AuthScreen',
   ClipsScreen: 'ClipsScreen',
+  CryptoConsentScreen: 'CryptoConsentScreen',
+  CryptoPreviewScreen: 'CryptoPreviewScreen',
+  CryptoSetupScreen: 'CryptoSetupScreen',
   DownloadsScreen: 'DownloadsListScreen',
   EditPlaylistScreen: 'EditPlaylistScreen',
   EditProfileScreen: 'EditProfileScreen',
@@ -13,6 +16,7 @@ export const RouteNames = {
   EpisodeMediaRefScreen: 'EpisodeMediaRefScreen',
   FAQScreen: 'FAQScreen',
   FilterScreen: 'FilterScreen',
+  FundingScreen: 'FundingScreen',
   HistoryScreen: 'HistoryScreen',
   MainApp: 'MainApp',
   MakeClipScreen: 'MakeClipScreen',
@@ -40,10 +44,10 @@ export const RouteNames = {
   SearchScreen: 'SearchScreen',
   SearchSearchScreen: 'SearchSearchScreen',
   SettingsScreen: 'SettingsScreen',
-  EpisodeMediaRefScreen: 'EpisodeMediaRefScreen',
   SleepTimerScreen: 'SleepTimerScreen',
   TabNavigator: 'TabNavigator',
   TermsOfServiceScreen: 'TermsOfServiceScreen',
   WebPageScreen: 'WebPageScreen',
-  MyLibraryScreen: 'MyLibraryScreen'
+  MyLibraryScreen: 'MyLibraryScreen',
+  LNPaySignupScreen: 'LNPaySignupScreen'
 }
