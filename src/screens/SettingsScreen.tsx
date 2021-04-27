@@ -369,7 +369,9 @@ export class SettingsScreen extends React.Component<Props, State> {
               testIDPrefix={testIDPrefix}
               testIDSuffix='crypto_setup'
               text={translate('Crypto Setup')}
+              hideChevron={false}
               />
+            <Divider style={styles.divider} />
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 onValueChange={this._handleToggleOfflineMode}
