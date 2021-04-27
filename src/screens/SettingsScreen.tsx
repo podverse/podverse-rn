@@ -322,10 +322,13 @@ export class SettingsScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleCryptoSetupPressed = () => {
-    console.log('handle pressed')
-    // TODO: handle path for already agreed to crypto consent
-    this.props.navigation.navigate(PV.RouteNames.CryptoPreviewScreen)
+  _handleCryptoSetupPressed = async () => {
+    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_CRYPTO_TERMS)
+    if(consentGivenString && JSON.parse(consentGivenString) === true) {
+      this.props.navigation.navigate(PV.RouteNames.CryptoSetupScreen)
+    } else {
+      this.props.navigation.navigate(PV.RouteNames.CryptoPreviewScreen)
+    }  
   }
 
   render() {
