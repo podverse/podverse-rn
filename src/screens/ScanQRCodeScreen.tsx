@@ -183,10 +183,5 @@ const styles = StyleSheet.create({
     width: '90%',
     borderColor: PV.Colors.white,
     borderWidth: 1
-  },
-  dismissButtonText: {
-    fontSize: PV.Fonts.sizes.lg,
-    fontWeight: PV.Fonts.weights.bold,
-    color: PV.Colors.white
   }
 })

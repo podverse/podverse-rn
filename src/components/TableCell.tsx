@@ -39,7 +39,7 @@ export const TableTextCell = (props: TableTextCellProps) => {
       <Text
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         style={table.cellText}
-        testID={`${testIDPrefix}_table_cell_text_crypto_setup`}>
+        testID={`${testIDPrefix}_table_cell_text_${testIDSuffix}`}>
         {text}
       </Text>
     </TableCell>
