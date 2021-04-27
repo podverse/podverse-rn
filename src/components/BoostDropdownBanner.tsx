@@ -105,10 +105,11 @@ export const BoostDropdownBanner = () => {
             showsVerticalScrollIndicator={false}>
             {!!transactions.length && (
               <ValueTagInfoView
+                erroringTransactions={erroringTransactions}
+                isReceipt
                 testID='boost_dropdown_banner'
                 totalAmount={bannerInfo.totalAmount}
                 transactions={transactions}
-                erroringTransactions={erroringTransactions}
               />
             )}
           </ScrollView>

@@ -115,7 +115,7 @@ const generateLNPayKeysendRequestBody = (valueTransaction: ValueTransaction) => 
   return {
     // passThru: {},
     dest_pubkey: address,
-    num_satoshis: amount,
+    num_satoshis: Math.ceil(amount),
     custom_records: satoshiStreamStats,
   } as LNPayKeysendRequestBody
 }
@@ -138,6 +138,10 @@ export const sendLNPayValueTransaction = async (valueTransaction: ValueTransacti
     }
   } catch (err) {
     error = err
+  }
+
+  if (error) {
+    console.log('sendLNPayValueTransaction error:', error)
   }
 
   if (error?.response?.data?.message) {

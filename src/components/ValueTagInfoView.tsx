@@ -11,15 +11,17 @@ export type ValueTransactionRouteError = {
 }
 
 type Props = {
+  erroringTransactions?: ValueTransactionRouteError[]
+  isReceipt?: boolean
   testID: string
   totalAmount?: number
   transactions: ValueTransaction[]
-  erroringTransactions?: ValueTransactionRouteError[]
 }
 
 export class ValueTagInfoView extends React.PureComponent<Props> {
   render() {
-    const { testID, totalAmount, transactions, erroringTransactions = [] } = this.props
+    const { erroringTransactions = [], isReceipt, testID, totalAmount, transactions } = this.props
+    const totalAmountText = isReceipt ? translate('amount paid') : translate('total amount')
 
     return (
       <View style={styles.recipientTable}>
@@ -27,7 +29,7 @@ export class ValueTagInfoView extends React.PureComponent<Props> {
           <Text testID={`${testID}_boost_recipient_name_title`} style={styles.recipientText}>
             {translate('Name')}
           </Text>
-          <Text testID={`${testID}_boost_recipient_amount_title`} style={styles.recipientText}>
+          <Text testID={`${testID}_boost_recipient_amount_title`} style={styles.recipientTextRight}>
             {translate('split')} / {translate('sats')}
           </Text>
         </View>
@@ -59,7 +61,10 @@ export class ValueTagInfoView extends React.PureComponent<Props> {
         })}
         <View style={styles.recipientTableFooter}>
           <Text testID={`${testID}_boost_recipient_amount_total`} style={styles.recipientFooterText}>
-            {`${translate('amount paid')}: ${totalAmount}`}
+            {`${totalAmountText}: ${totalAmount}*`}
+          </Text>
+          <Text style={styles.disclaimerText} testID='boost_dropdown_banner_disclaimer_text'>
+            {`*${translate('Actual amount will be higher due to network fees')}`}
           </Text>
         </View>
       </View>
@@ -68,19 +73,24 @@ export class ValueTagInfoView extends React.PureComponent<Props> {
 }
 
 const styles = StyleSheet.create({
+  disclaimerText: {
+    fontSize: PV.Fonts.sizes.md,
+    paddingBottom: 12,
+    textAlign: 'right'
+  },
   recipientFooterText: {
-    paddingVertical: 10,
-    fontSize: PV.Fonts.sizes.lg
+    fontSize: PV.Fonts.sizes.lg,
+    paddingBottom: 6,
+    paddingTop: 8
   },
   recipientTable: {
     borderColor: PV.Colors.skyLight,
     borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 10,
-    paddingBottom: 5
+    paddingHorizontal: 10
   },
   recipientTableFooter: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
     borderTopColor: PV.Colors.white,
     borderTopWidth: StyleSheet.hairlineWidth,
     marginTop: 5
@@ -96,6 +106,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: PV.Fonts.sizes.lg,
     flex: 1
+  },
+  recipientTextRight: {
+    paddingVertical: 10,
+    fontSize: PV.Fonts.sizes.lg,
+    flex: 1,
+    textAlign: 'right'
   },
   recipientTextError: {
     fontSize: PV.Fonts.sizes.tiny,

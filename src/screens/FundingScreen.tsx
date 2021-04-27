@@ -53,17 +53,21 @@ export class FundingScreen extends React.Component<Props, State> {
     // TODO: right now we are assuming the first item will be the lightning network.
     // This will need to be updated to support additional valueTags.
     const valueTag = valueTags[0]
+    const roundDownBoostTransactions = true
     const boostTransactions = await convertValueTagIntoValueTransactions(
       valueTag,
       nowPlayingItem,
       PV.ValueTag.ACTION_BOOST,
-      boostAmount
+      boostAmount,
+      roundDownBoostTransactions
     )
+    const roundDownStreamingTransactions = false
     const streamingTransactions = await convertValueTagIntoValueTransactions(
       valueTag,
       nowPlayingItem,
       PV.ValueTag.ACTION_STREAMING,
-      streamingAmount
+      streamingAmount,
+      roundDownStreamingTransactions
     )
     this.setState({ boostTransactions, streamingTransactions }, () => {
       this.checkForErroringTransactions()
@@ -77,23 +81,16 @@ export class FundingScreen extends React.Component<Props, State> {
     const erroringTransactions = []
 
     if (wallet) {
-      for (const boostTransaction of this.state.boostTransactions) {
+      const { boostTransactions } = this.state
+ 
+      for (const boostTransaction of boostTransactions) {
         try {
-          await checkLNPayRecipientRoute(wallet, boostTransaction.normalizedValueRecipient)
+          if (boostTransaction.normalizedValueRecipient.amount >= 1) {
+            await checkLNPayRecipientRoute(wallet, boostTransaction.normalizedValueRecipient)
+          }
         } catch (error) {
           if(error?.response?.data?.status === 400) {
             erroringTransactions.push({address: boostTransaction.normalizedValueRecipient.address, 
-                                       message: error.response.data.message})
-          }
-        }
-      }
-
-      for (const streamTransaction of this.state.streamingTransactions) {
-        try {
-          await checkLNPayRecipientRoute(wallet, streamTransaction.normalizedValueRecipient)
-        } catch (error) {
-          if(error?.response?.data?.status === 400) {
-            erroringTransactions.push({address: streamTransaction.normalizedValueRecipient.address, 
                                        message: error.response.data.message})
           }
         }
