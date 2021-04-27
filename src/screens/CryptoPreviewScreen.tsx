@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, SafeAreaView, Image } from 'react-native'
 import React, { getGlobal } from 'reactn'
-import { Button, NavDismissIcon, Text, View } from '../components'
+import { Button, NavDismissIcon, ScrollView, Text } from '../components'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -33,36 +33,67 @@ export class CryptoPreviewScreen extends React.Component<Props> {
 
   render() {
     return (
-      <View style={styles.content} {...testProps(`${testIDPrefix}_view`)}>
+      <SafeAreaView style={styles.content} {...testProps(`${testIDPrefix}_view`)}>
         <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          style={styles.text}>
-          {translate('Crypto Preview')}
+          fontSizeLargestScale={PV.Fonts.largeSizes.xl}
+          style={styles.title}>
+          {translate('crypto_preview_title')}
         </Text>
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContentView}>
+        <Text fontSizeLargestScale={PV.Fonts.largeSizes.lg}
+          style={styles.text}>{translate('crypto_preview_boost')}</Text>
+        <Text fontSizeLargestScale={PV.Fonts.largeSizes.lg}
+          style={styles.text}>{translate('crypto_preview_stream')}</Text>
+        <Image 
+          source={require("../resources/images/crypto_exmpl_1.png")} 
+          resizeMode="contain" 
+          style={styles.previewImage}
+        />
+        </ScrollView>
         <Button
           onPress={() => this._navigateToConsentScreen()}
           testID={`${testIDPrefix}_next`}
           text={translate('Next')}
           wrapperStyles={styles.nextButton} />
-      </View>
+      </SafeAreaView>
     )
   }
 }
 
 const styles = StyleSheet.create({
   content: {
-    alignItems: 'center',
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor:PV.Colors.ink
+  },
+  scrollView: {
+    flex:1
+  },
+  scrollContentView: {
+    padding:20
   },
   nextButton: {
     alignItems: 'center',
     alignSelf: 'center',
     paddingVertical: 15,
     paddingHorizontal: 30,
+    marginBottom: 20,
     width: '90%'
   },
+  previewImage: {
+    borderColor:"white", 
+    borderWidth:1, 
+    width:"100%", 
+    height: 250, 
+    marginTop:20
+  },
+  title: {
+    fontSize: PV.Fonts.sizes.xxl,
+    fontWeight: PV.Fonts.weights.bold,
+    textAlign:"center",
+    marginBottom: 20
+  },
   text: {
-    fontSize: PV.Fonts.sizes.xxl
+    fontSize: PV.Fonts.sizes.md,
+    marginVertical:10
   }
 })

@@ -14,6 +14,7 @@ const HapticOptions = {
 }
 
 import { toggleValueStreaming } from '../state/actions/valueTag'
+import { PVTrackPlayer } from '../services/player'
 import {
   ActivityIndicator,
   MediaPlayerCarouselChapters,
@@ -140,12 +141,13 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { navigation } = this.props
     const { activeIndex, boostIsSending, boostWasSent, explosionOrigin } = this.state
     const { player } = this.global
-    const { episode } = player
+    const { episode, playbackState } = player
     const hasChapters = episode?.chaptersUrl
     const hasTranscript = true
     const { lightningNetwork, streamingEnabled } = this.global.session.valueTagSettings
     const { globalSettings, lnpayEnabled } = lightningNetwork
     const { boostAmount, streamingAmount } = globalSettings
+    const isPlaying = playbackState === PVTrackPlayer.STATE_PLAYING
 
     let itemCount = 3
     if (hasChapters) itemCount++
@@ -156,11 +158,11 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const boostText = boostWasSent ? translate('Boost Sent').toUpperCase() : translate('Boost').toUpperCase()
 
     const streamingButtonMainTextStyles = streamingEnabled
-      ? [styles.boostButtonMainText, { color: PV.Colors.orange }]
+      ? [styles.boostButtonMainText, { color: PV.Colors.green }]
       : [styles.boostButtonMainText]
 
     const streamingButtonSubTextStyles = streamingEnabled
-      ? [styles.boostButtonSubText, { color: PV.Colors.orange }]
+      ? [styles.boostButtonSubText, { color: PV.Colors.green }]
       : [styles.boostButtonSubText]
 
     return (
@@ -202,6 +204,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
               <Text style={streamingButtonSubTextStyles} testID='stream_button_text_2'>
                 {streamingAmount} {translate('sats / min')}
               </Text>
+              {streamingEnabled && isPlaying && (
+                <ActivityIndicator size={15} styles={{ position: 'absolute', right: 20 }} />
+              )}
             </TouchableOpacity>
             <TouchableOpacity
               onLayout={(event) => {
