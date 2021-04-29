@@ -43,6 +43,7 @@ import {
 import { combineWithAddByRSSPodcasts,
   getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
 import { initializeSettings } from '../state/actions/settings'
+import { initializeValueProcessor } from '../state/actions/valueTag'
 import { core, darkTheme } from '../styles'
 
 type Props = {
@@ -319,6 +320,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
           await initDownloads()
           await initializePlayerQueue()
           await initializePlaybackSpeed()
+          initializeValueProcessor()
     
           trackPageView('/podcasts', 'Podcasts Screen')
         })()

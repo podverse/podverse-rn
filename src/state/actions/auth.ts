@@ -1,15 +1,21 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { Alert } from 'react-native'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { getGlobal, setGlobal } from 'reactn'
 import { safelyUnwrapNestedVariable, shouldShowMembershipAlert } from '../../lib/utility'
 import { PV } from '../../resources'
-import { getAuthenticatedUserInfo, getAuthenticatedUserInfoLocally as getAuthenticatedUserInfoLocallyService,
-  login, signUp } from '../../services/auth'
+import {
+  getAuthenticatedUserInfo,
+  getAuthenticatedUserInfoLocally as getAuthenticatedUserInfoLocallyService,
+  login,
+  signUp
+} from '../../services/auth'
 import { setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
 import { setAllQueueItemsLocally } from '../../services/queue'
 import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemLocally, getNowPlayingItemOnServer } from '../../services/userNowPlayingItem'
 import { getSubscribedPodcasts } from './podcast'
+import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './valueTag'
 
 export type Credentials = {
   addByRSSPodcastFeedUrls?: []
@@ -25,12 +31,25 @@ export const getAuthUserInfo = async () => {
     const userInfo = results[0]
     const isLoggedIn = results[1]
     const shouldShowAlert = shouldShowMembershipAlert(userInfo)
+    const lnpayEnabled = await AsyncStorage.getItem(PV.Keys.LNPAY_ENABLED)
+    const boostAmount = await AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT)
+    const streamingAmount = await AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_STREAMING_AMOUNT)
 
     const globalState = getGlobal()
     setGlobal({
       session: {
         userInfo,
-        isLoggedIn
+        isLoggedIn,
+        valueTagSettings: {
+          ...globalState.session.valueTagSettings,
+          lightningNetwork: {
+            lnpayEnabled: lnpayEnabled ? JSON.parse(lnpayEnabled) : false,
+            globalSettings: {
+              boostAmount: boostAmount ? Number(boostAmount) : DEFAULT_BOOST_PAYMENT,
+              streamingAmount: streamingAmount ? Number(streamingAmount) : DEFAULT_STREAMING_PAYMENT
+            }
+          },
+        }
       },
       overlayAlert: {
         ...globalState.overlayAlert,
@@ -118,7 +137,16 @@ export const loginUser = async (credentials: Credentials) => {
     await getSubscribedPodcasts()
     await askToSyncWithNowPlayingItem()
 
-    setGlobal({ session: { userInfo, isLoggedIn: true } })
+    const globalState = getGlobal()
+    const { valueTagSettings } = globalState.session
+
+    setGlobal({
+      session: {
+        userInfo,
+        isLoggedIn: true,
+        valueTagSettings
+      }
+    })
     return userInfo
   } catch (error) {
     throw error

@@ -6,13 +6,15 @@ import { DropdownButton, Text } from './'
 
 type Props = {
   addByRSSPodcastFeedUrl?: string
+  customButtons?: any
   filterScreenTitle?: string
   handleSelectCategoryItem?: any
   handleSelectCategorySubItem?: any
   handleSelectFilterItem?: any
   handleSelectFromItem?: any
   handleSelectSortItem?: any
-  hideFilter?: boolean
+  hideDropdown?: boolean
+  disableFilter?: boolean
   includePadding?: boolean
   navigation?: any
   screenName?: string
@@ -49,13 +51,15 @@ export class TableSectionSelectors extends React.Component<Props, State> {
   render() {
     const {
       addByRSSPodcastFeedUrl,
+      customButtons = null,
       filterScreenTitle,
       handleSelectCategoryItem,
       handleSelectCategorySubItem,
       handleSelectFilterItem,
       handleSelectFromItem,
       handleSelectSortItem,
-      hideFilter,
+      hideDropdown,
+      disableFilter,
       includePadding,
       screenName,
       selectedCategoryItemKey,
@@ -85,30 +89,34 @@ export class TableSectionSelectors extends React.Component<Props, State> {
             </Text>
           )}
         </View>
-        <DropdownButton
-          hideFilter={hideFilter}
-          onPress={() => {
-            this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
-              addByRSSPodcastFeedUrl,
-              filterScreenTitle,
-              flatCategoryItems,
-              handleSelectCategoryItem,
-              handleSelectCategorySubItem,
-              handleSelectFilterItem,
-              handleSelectFromItem,
-              handleSelectSortItem,
-              screenName,
-              selectedCategoryItemKey,
-              selectedCategorySubItemKey,
-              selectedSortItemKey,
-              selectedFilterItemKey,
-              selectedFromItemKey
-            })
-          }}
-          sortLabel={selectedSortLabel}
-          testID={testID}
-          transparent={transparentDropdownButton}
-        />
+        {customButtons}
+        {
+          !hideDropdown &&
+            <DropdownButton
+              disableFilter={disableFilter}
+              onPress={() => {
+                this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
+                  addByRSSPodcastFeedUrl,
+                  filterScreenTitle,
+                  flatCategoryItems,
+                  handleSelectCategoryItem,
+                  handleSelectCategorySubItem,
+                  handleSelectFilterItem,
+                  handleSelectFromItem,
+                  handleSelectSortItem,
+                  screenName,
+                  selectedCategoryItemKey,
+                  selectedCategorySubItemKey,
+                  selectedSortItemKey,
+                  selectedFilterItemKey,
+                  selectedFromItemKey
+                })
+              }}
+              sortLabel={selectedSortLabel}
+              testID={testID}
+              transparent={transparentDropdownButton}
+            />
+        }
       </View>
     )
   }

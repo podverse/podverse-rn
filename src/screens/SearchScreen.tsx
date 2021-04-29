@@ -74,8 +74,6 @@ export class SearchScreen extends React.Component<Props, State> {
     })
 
   componentDidMount() {
-    this.searchBarInput.focus()
-
     trackPageView('/search', 'Search Screen')
   }
 
