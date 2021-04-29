@@ -49,14 +49,7 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
   await elementByIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')
   await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
   await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
-  await elementByIdToggle('settings_screen_offline_mode_switch')
-
-    //Custom API and Web domains
-
-  // await performScroll(scrollDownKey, 2)
-  // await elementByIdToggle('settings_screen_custom_api_domain_switch', noTestLabel, goBackKey)
-  // await elementByIdToggle('settings_screen_custom_web_domain_switch', noTestLabel, goBackKey)
-  
+  await elementByIdToggle('settings_screen_offline_mode_switch')  
   
   await driver.back()
   await driver.back()

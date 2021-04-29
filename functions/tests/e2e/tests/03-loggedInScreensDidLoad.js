@@ -53,12 +53,6 @@ const test03_loggedInScreensDidLoadTests = async () => {
   await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
   await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
   await elementByIdToggle('settings_screen_offline_mode_switch')
-  
-    //Custom API and Web domains
-
-  // await performScroll(scrollDownKey, 2)
-  // await elementByIdToggle('settings_screen_custom_api_domain_switch', noTestLabel, goBackKey)
-  // await elementByIdToggle('settings_screen_custom_web_domain_switch', noTestLabel, goBackKey)
 
   await driver.back()
   await driver.back()
