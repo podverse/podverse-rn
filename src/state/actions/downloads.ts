@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { getGlobal, setGlobal } from 'reactn'
+import { getEpisodes } from '../../services/episode'
 import {
   getDownloadedEpisodeIds as getDownloadedEpisodeIdsService,
   getDownloadedPodcastEpisodeCounts as getDownloadedPodcastEpisodeCountsService,
@@ -8,6 +9,7 @@ import {
   removeDownloadedPodcastEpisode as removeDownloadedPodcastEpisodeService
 } from '../../lib/downloadedPodcast'
 import {
+  downloadEpisode,
   DownloadStatus,
   initDownloads as initDownloadsService,
   pauseDownloadTask,
@@ -19,6 +21,7 @@ import {
   getAutoDownloadSettings as getAutoDownloadSettingsService,
   updateAutoDownloadSettings as updateAutoDownloadSettingsService
 } from '../../services/autoDownloads'
+import { parseAddByRSSPodcast } from '../../services/parser'
 import { clearNowPlayingItem } from './player'
 
 // The DownloadTaskState should have the same episode and podcast properties as a NowPlayingItem,
@@ -139,7 +142,41 @@ export const updateAutoDownloadSettings = (podcastId: string, autoDownloadOn: bo
     },
     async () => {
       const newAutoDownloadSettings = await updateAutoDownloadSettingsService(podcastId)
-      setGlobal({ autoDownloadSettings: newAutoDownloadSettings })
+      setGlobal({ autoDownloadSettings: newAutoDownloadSettings }, async () => {
+        if(autoDownloadOn) {
+          const [serverEpisodes, episodesCount] = await getEpisodes({ 
+            sort:"most-recent", 
+            podcastId, 
+            includePodcast: true
+          })
+          
+          if(episodesCount) {
+            downloadEpisode(serverEpisodes[0], serverEpisodes[0].podcast)
+          }
+        }
+      })
+    }
+  )
+}
+
+export const updateAutoDownloadSettingsAddByRSS = (addByRSSPodcastFeedUrl: string, autoDownloadOn: boolean) => {
+  const { autoDownloadSettings } = getGlobal()
+  autoDownloadSettings[addByRSSPodcastFeedUrl] = autoDownloadOn
+
+  setGlobal(
+    {
+      autoDownloadSettings
+    },
+    async () => {
+      const newAutoDownloadSettings = await updateAutoDownloadSettingsService(addByRSSPodcastFeedUrl)
+      setGlobal({ autoDownloadSettings: newAutoDownloadSettings }, async () => {
+        if(autoDownloadOn) {
+          const podcast = await parseAddByRSSPodcast(addByRSSPodcastFeedUrl)
+          if(podcast && podcast.episodes && podcast.episodes[0]) {
+            downloadEpisode(podcast.episodes[0], podcast)
+          }
+        }
+      })
     }
   )
 }

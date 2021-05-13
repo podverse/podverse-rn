@@ -51,7 +51,7 @@ export class DownloadTableCell extends React.PureComponent<Props> {
               {episodeTitle && (
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={2}
+                  numberOfLines={1}
                   style={styles.episodeTitle}
                   testID={`${testID}_episode_title`}>
                   {episodeTitle.trim()}
