@@ -71,7 +71,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           {title && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
-              numberOfLines={1}
+              numberOfLines={2}
               style={titleStyle}
               testID={`${testID}_title`}>
               {title.trim()}

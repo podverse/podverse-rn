@@ -69,7 +69,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
 
     const pItems = privacyItems()
     this.state = {
-      endTime: isEditing ? nowPlayingItem.clipEndTime : null,
+      endTime: isEditing ? nowPlayingItem?.clipEndTime : null,
       isLoggedIn,
       ...(initialPrivacy ? { isPublicItemSelected: pItems[0] } : { isPublicItemSelected: pItems[1] }),
       isSaving: false,

@@ -1,7 +1,7 @@
-import { SectionList, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { SectionList, View as RNView } from 'react-native'
 import { Badge } from 'react-native-elements'
 import React from 'reactn'
-import { Divider, Text, View } from '../components'
+import { Divider, TableCell, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -67,7 +67,7 @@ export class MyLibraryScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { downloadsActive, fontScaleMode, globalTheme, session } = this.global
+    const { downloadsActive, fontScaleMode, session } = this.global
     const { isLoggedIn = false } = session
 
     let downloadsActiveCount = 0
@@ -81,36 +81,28 @@ export class MyLibraryScreen extends React.Component<Props, State> {
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
-            <TouchableWithoutFeedback onPress={() => this._onPress(item)} {...testProps(item.testID)}>
-              <RNView style={[core.row, table.cellWrapper]}>
-                {item.key === _downloadsKey ? (
-                  <RNView style={[core.row, { position: 'relative' }, table.cellWrapper]}>
+            <TableCell 
+                testIDPrefix=''
+                testIDSuffix='my_library_screen' 
+                onPress={() => this._onPress(item)} {...testProps(item.testID)}
+              >
+                  <RNView style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
                     <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={table.cellText}>
-                      {translate('Downloads')}
+                    {item.title}
                     </Text>
-                    {downloadsActiveCount > 0 &&
+                    {item.key === _downloadsKey && downloadsActiveCount > 0 &&
                       fontScaleMode !== PV.Fonts.fontScale.larger &&
                       fontScaleMode !== PV.Fonts.fontScale.largest && (
                         <Badge
-                          containerStyle={{
-                            position: 'absolute',
-                            right: -22,
-                            top: 19
-                          }}
                           status='error'
+                          containerStyle={{marginLeft:15, borderRadius:20}}
+                          badgeStyle={{width:25, height:25, backgroundColor: PV.Colors.redLighter, borderRadius:12.5}}
+                          textStyle={{fontSize:PV.Fonts.largeSizes.xxl, fontWeight:PV.Fonts.weights.bold}}
                           value={downloadsActiveCount}
                         />
                       )}
                   </RNView>
-                ) : (
-                  <Text
-                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                    {item.title}
-                  </Text>
-                )}
-              </RNView>
-            </TouchableWithoutFeedback>
+              </TableCell>
           )}
           sections={[{ title: '', data: featureOptions }]}
         />
