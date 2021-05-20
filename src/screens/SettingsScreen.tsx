@@ -322,14 +322,14 @@ export class SettingsScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleCryptoSetupPressed = async () => {
-    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_CRYPTO_TERMS)
-    if(consentGivenString && JSON.parse(consentGivenString) === true) {
-      this.props.navigation.navigate(PV.RouteNames.CryptoSetupScreen)
-    } else {
-      this.props.navigation.navigate(PV.RouteNames.CryptoPreviewScreen)
-    }  
-  }
+  // _handleCryptoSetupPressed = async () => {
+  //   const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_CRYPTO_TERMS)
+  //   if(consentGivenString && JSON.parse(consentGivenString) === true) {
+  //     this.props.navigation.navigate(PV.RouteNames.CryptoSetupScreen)
+  //   } else {
+  //     this.props.navigation.navigate(PV.RouteNames.CryptoPreviewScreen)
+  //   }  
+  // }
 
   render() {
     const {
@@ -367,14 +367,17 @@ export class SettingsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace />}
         {!isLoading && (
           <View>
-            {Config.ENABLE_VALUE_TAG_TRANSACTIONS && <TableTextCell
-              onPress={this._handleCryptoSetupPressed}
-              testIDPrefix={testIDPrefix}
-              testIDSuffix='crypto_setup'
-              text={translate('Crypto Setup')}
-              hideChevron={false}
-              />}
-            <Divider style={styles.divider} />
+            <View>
+              {/* Config.ENABLE_VALUE_TAG_TRANSACTIONS && <TableTextCell
+                onPress={this._handleCryptoSetupPressed}
+                testIDPrefix={testIDPrefix}
+                testIDSuffix='crypto_setup'
+                text={translate('Crypto Setup')}
+                hideChevron={false}
+              />
+              <Divider style={styles.divider} />
+              */}
+            </View>
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 onValueChange={this._handleToggleOfflineMode}

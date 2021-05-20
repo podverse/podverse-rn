@@ -64,12 +64,6 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { activeIndex } = this.state
     const animated = false
     this.scrollToActiveIndex(activeIndex, animated)
-
-    PVEventEmitter.on(PV.Events.UPDATE_PLAYER_STATE_FINISHED, this.scrollToDefaultActiveIndex)
-  }
-
-  componentWillUnmount() {
-    PVEventEmitter.removeListener(PV.Events.UPDATE_PLAYER_STATE_FINISHED, this.scrollToDefaultActiveIndex)
   }
 
   scrollToDefaultActiveIndex = () => {
@@ -141,9 +135,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { navigation } = this.props
     const { activeIndex, boostIsSending, boostWasSent, explosionOrigin } = this.state
     const { player } = this.global
-    const { episode, playbackState } = player
+    const { episode, nowPlayingItem, playbackState } = player
     const hasChapters = episode?.chaptersUrl
-    const hasTranscript = true
+    const hasTranscript = !!nowPlayingItem?.parsedTranscript
     const { lightningNetwork, streamingEnabled } = this.global.session.valueTagSettings
     const { globalSettings, lnpayEnabled } = lightningNetwork
     const { boostAmount, streamingAmount } = globalSettings
