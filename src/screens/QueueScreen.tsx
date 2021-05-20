@@ -348,8 +348,8 @@ export class QueueScreen extends React.Component<Props, State> {
                     textStyle={styles.sectionHeaderText}
                   />
                   <QueueTableCell
-                    clipEndTime={nowPlayingItem.clipEndTime}
-                    clipStartTime={nowPlayingItem.clipStartTime}
+                    clipEndTime={nowPlayingItem?.clipEndTime}
+                    clipStartTime={nowPlayingItem?.clipStartTime}
                     {...(nowPlayingItem.clipTitle ? { clipTitle: nowPlayingItem.clipTitle } : {})}
                     {...(nowPlayingItem.episodePubDate ? { episodePubDate: nowPlayingItem.episodePubDate } : {})}
                     {...(nowPlayingItem.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}

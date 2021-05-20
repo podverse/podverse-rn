@@ -74,7 +74,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
               {!!episodeTitle && (
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={1}
+                  numberOfLines={2}
                   style={styles.episodeTitle}
                   testID={`${testID}_episode_title`}>
                   {episodeTitle.trim()}

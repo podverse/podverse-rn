@@ -136,25 +136,25 @@ export class HistoryScreen extends React.Component<Props, State> {
     }
   }
 
-  _renderHistoryItem = ({ item = {} as NowPlayingItem, index }) => {
+  _renderHistoryItem = ({ item = {}, index }: {item: NowPlayingItem, index: number}) => {
     const { isEditing, isTransparent } = this.state
 
     return (
       <View transparent={isTransparent}>
         <QueueTableCell
-          clipEndTime={item.clipEndTime}
-          clipStartTime={item.clipStartTime}
-          {...(item.clipTitle ? { clipTitle: item.clipTitle } : {})}
-          {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
-          {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
+          clipEndTime={item?.clipEndTime}
+          clipStartTime={item?.clipStartTime}
+          {...(item?.clipTitle ? { clipTitle: item.clipTitle } : {})}
+          {...(item?.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
+          {...(item?.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
           handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
           onPress={() => {
             if (!isEditing) {
               this._handlePlayItem(item)
             }
           }}
-          podcastImageUrl={item.podcastImageUrl}
-          {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
+          podcastImageUrl={item?.podcastImageUrl}
+          {...(item?.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
           showRemoveButton={isEditing}
           testID={`${testIDPrefix}_history_item_${index}`}
           transparent={isTransparent}

@@ -534,7 +534,13 @@ static navigationOptions = ({ navigation }) => {
   _handleToggleAutoDownload = (autoDownloadOn: boolean) => {
     const { podcast, podcastId } = this.state
     const id = (podcast && podcast.id) || podcastId
-    if (id) DownloadState.updateAutoDownloadSettings(id, autoDownloadOn)
+    const { addByRSSPodcastFeedUrl } = podcast 
+    
+    if(addByRSSPodcastFeedUrl) { 
+      DownloadState.updateAutoDownloadSettingsAddByRSS(addByRSSPodcastFeedUrl, autoDownloadOn) 
+    } else if (id) { 
+      DownloadState.updateAutoDownloadSettings(id, autoDownloadOn)
+    }
   }
 
   _handleToggleSettings = () => {
