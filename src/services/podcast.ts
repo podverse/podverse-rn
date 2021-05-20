@@ -81,8 +81,11 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
 
   if (subscribedPodcastIds.length < 1 && addByRSSPodcasts.length < 1) return [[], 0]
 
+  const dateStr = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED)
+  const dateISOString = (dateStr && new Date(dateStr).toISOString()) || new Date().toISOString()
+
   if (subscribedPodcastIds.length < 1 && addByRSSPodcasts.length > 0) {
-    if (isConnected) await parseAllAddByRSSPodcasts()
+    if (isConnected) await parseAllAddByRSSPodcasts(dateISOString)
     await setSubscribedPodcasts([])
     const combinedPodcasts = await combineWithAddByRSSPodcasts()
     return [combinedPodcasts, combinedPodcasts.length]
@@ -90,16 +93,13 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
 
   if (isConnected) {
     try {
-      const date = await AsyncStorage.getItem(PV.Keys.SUBSCRIBED_PODCASTS_LAST_REFRESHED)
-      const dateObj = (date && new Date(date).toISOString()) || new Date().toISOString()
-
       const autoDownloadSettingsString = await AsyncStorage.getItem(PV.Keys.AUTO_DOWNLOAD_SETTINGS)
       const autoDownloadSettings = autoDownloadSettingsString ? JSON.parse(autoDownloadSettingsString) : {}
       const data = await getPodcasts(query)
       const subscribedPodcasts = data[0] || []
       const podcastIds = Object.keys(autoDownloadSettings).filter((key: string) => autoDownloadSettings[key] === true)
 
-      const autoDownloadEpisodes = await getAutoDownloadEpisodes(dateObj, podcastIds)
+      const autoDownloadEpisodes = await getAutoDownloadEpisodes(dateISOString, podcastIds)
 
       // Wait for app to initialize. Without this setTimeout, then when getSubscribedPodcasts is called in
       // PodcastsScreen _initializeScreenData, then downloadEpisode will not successfully update global state
@@ -120,7 +120,7 @@ export const getSubscribedPodcasts = async (subscribedPodcastIds: string[]) => {
 
       await setSubscribedPodcasts(subscribedPodcasts)
 
-      await parseAllAddByRSSPodcasts()
+      await parseAllAddByRSSPodcasts(dateISOString)
 
       const combinedPodcasts = await combineWithAddByRSSPodcasts()
       return [combinedPodcasts, combinedPodcasts.length]

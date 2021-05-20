@@ -1,4 +1,4 @@
-import { SectionList, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { SectionList, View as RNView } from 'react-native'
 import { Badge } from 'react-native-elements'
 import React from 'reactn'
 import { Divider, TableCell, Text, View } from '../components'
@@ -81,27 +81,28 @@ export class MyLibraryScreen extends React.Component<Props, State> {
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
-            <TouchableWithoutFeedback onPress={() => this._onPress(item)} {...testProps(item.testID)}>
               <TableCell 
-                testIDPrefix=''
-                testIDSuffix='more_screen' 
+                testIDPrefix='my_library_screen'
+                testIDSuffix='' 
                 onPress={() => this._onPress(item)} {...testProps(item.testID)}
               >
                 {item.key === _downloadsKey ? (
                   <RNView style={core.row}>
                     <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={table.cellText}>
-                      {translate('Downloads')}
+                    {item.title}
                     </Text>
-                    {downloadsActiveCount > 0 &&
+                    {item.key === _downloadsKey && downloadsActiveCount > 0 &&
                       fontScaleMode !== PV.Fonts.fontScale.larger &&
                       fontScaleMode !== PV.Fonts.fontScale.largest && (
                         <Badge
+                          badgeStyle={{ width:25, height:25, backgroundColor: PV.Colors.redLighter, borderRadius:12.5 }}
                           containerStyle={{
                             position: 'absolute',
-                            right: -26,
-                            top: 3
+                            right: -32,
+                            top: 0
                           }}
                           status='error'
+                          textStyle={{fontSize:PV.Fonts.largeSizes.xxl, fontWeight:PV.Fonts.weights.bold}}
                           value={downloadsActiveCount}
                         />
                       )}
@@ -114,7 +115,6 @@ export class MyLibraryScreen extends React.Component<Props, State> {
                   </Text>
                 )}
               </TableCell>
-            </TouchableWithoutFeedback>
           )}
           sections={[{ title: '', data: featureOptions }]}
         />
