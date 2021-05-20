@@ -133,7 +133,8 @@ export const checkIfStateIsBuffering = (playbackState: any) =>
   playbackState === 8
 
 export const getClipHasEnded = async () => {
-  return AsyncStorage.getItem(PV.Keys.CLIP_HAS_ENDED)
+  const clipHasEnded = await AsyncStorage.getItem(PV.Keys.CLIP_HAS_ENDED)
+  return clipHasEnded === 'true'
 }
 
 export const handleResumeAfterClipHasEnded = async () => {
