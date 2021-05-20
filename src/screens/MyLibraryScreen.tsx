@@ -1,7 +1,7 @@
 import { SectionList, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import { Badge } from 'react-native-elements'
 import React from 'reactn'
-import { Divider, Text, View } from '../components'
+import { Divider, TableCell, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -82,9 +82,13 @@ export class MyLibraryScreen extends React.Component<Props, State> {
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
             <TouchableWithoutFeedback onPress={() => this._onPress(item)} {...testProps(item.testID)}>
-              <RNView style={[core.row, table.cellWrapper]}>
+              <TableCell 
+                testIDPrefix=''
+                testIDSuffix='more_screen' 
+                onPress={() => this._onPress(item)} {...testProps(item.testID)}
+              >
                 {item.key === _downloadsKey ? (
-                  <RNView style={[core.row, { position: 'relative' }, table.cellWrapper]}>
+                  <RNView style={core.row}>
                     <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={table.cellText}>
                       {translate('Downloads')}
                     </Text>
@@ -94,8 +98,8 @@ export class MyLibraryScreen extends React.Component<Props, State> {
                         <Badge
                           containerStyle={{
                             position: 'absolute',
-                            right: -22,
-                            top: 19
+                            right: -26,
+                            top: 3
                           }}
                           status='error'
                           value={downloadsActiveCount}
@@ -109,7 +113,7 @@ export class MyLibraryScreen extends React.Component<Props, State> {
                     {item.title}
                   </Text>
                 )}
-              </RNView>
+              </TableCell>
             </TouchableWithoutFeedback>
           )}
           sections={[{ title: '', data: featureOptions }]}
