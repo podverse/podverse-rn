@@ -9,7 +9,7 @@ import { Divider, FastImage, NavDismissIcon, ScrollView, Text,
   /* TextInput, ValueTagInfoView, */ View } from '../components'
 import { translate } from '../lib/i18n'
 import { readableDate, testProps } from '../lib/utility'
-import { convertValueTagIntoValueTransactions } from '../lib/valueTagHelpers'
+// import { convertValueTagIntoValueTransactions } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { ValueTransactionRouteError } from '../components/ValueTagInfoView'
@@ -45,7 +45,8 @@ export class FundingScreen extends React.Component<Props, State> {
     }
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    /*
     const { player, session } = this.global
     const { nowPlayingItem } = player
     const { boostAmount, streamingAmount } = session.valueTagSettings.lightningNetwork.globalSettings
@@ -74,6 +75,7 @@ export class FundingScreen extends React.Component<Props, State> {
     this.setState({ boostTransactions, streamingTransactions }, () => {
       this.checkForErroringTransactions()
     })
+    */
 
     trackPageView('/funding', 'Funding Screen')
   }

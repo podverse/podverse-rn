@@ -1,29 +1,28 @@
-import { Dimensions, StyleSheet, Alert, TouchableOpacity } from 'react-native'
+import { Dimensions, StyleSheet, /* Alert, TouchableOpacity */ } from 'react-native'
 import Dots from 'react-native-dots-pagination'
 import React from 'reactn'
 import ConfettiCannon from 'react-native-confetti-cannon'
-import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
+// import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { PV } from '../resources'
-import PVEventEmitter from '../services/eventEmitter'
-import { translate } from '../lib/i18n'
-import { sendBoost } from '../lib/valueTagHelpers'
+// import { translate } from '../lib/i18n'
+// import { sendBoost } from '../lib/valueTagHelpers'
 
-const HapticOptions = {
-  enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false
-}
+// const HapticOptions = {
+//   enableVibrateFallback: true,
+//   ignoreAndroidSystemSettings: false
+// }
 
-import { toggleValueStreaming } from '../state/actions/valueTag'
-import { PVTrackPlayer } from '../services/player'
+// import { toggleValueStreaming } from '../state/actions/valueTag'
+// import { PVTrackPlayer } from '../services/player'
 import {
-  ActivityIndicator,
+  // ActivityIndicator,
   MediaPlayerCarouselChapters,
   MediaPlayerCarouselClips,
   MediaPlayerCarouselShowNotes,
   MediaPlayerCarouselTranscripts,
   MediaPlayerCarouselViewer,
   ScrollView,
-  Text,
+  // Text,
   View
 } from '.'
 
@@ -104,6 +103,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     this.scrollToActiveIndex(lastActiveIndex, animated)
   }
 
+  /*
   _attemptBoost = () => {
     ReactNativeHapticFeedback.trigger('impactHeavy', HapticOptions)
     this.setState({ boostIsSending: true }, () => {
@@ -125,28 +125,34 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
       }, 1000)
     })
   }
+  */
 
+  /*
   _toggleSatStreaming = () => {
     ReactNativeHapticFeedback.trigger('impactHeavy', HapticOptions)
     toggleValueStreaming()
   }
+  */
 
   render() {
     const { navigation } = this.props
-    const { activeIndex, boostIsSending, boostWasSent, explosionOrigin } = this.state
+    const { activeIndex, /* boostIsSending, boostWasSent, explosionOrigin */ } = this.state
     const { player } = this.global
-    const { episode, nowPlayingItem, playbackState } = player
+    const { episode, nowPlayingItem, /* playbackState */ } = player
     const hasChapters = episode?.chaptersUrl
     const hasTranscript = !!nowPlayingItem?.parsedTranscript
+    /*
     const { lightningNetwork, streamingEnabled } = this.global.session.valueTagSettings
     const { globalSettings, lnpayEnabled } = lightningNetwork
     const { boostAmount, streamingAmount } = globalSettings
     const isPlaying = playbackState === PVTrackPlayer.STATE_PLAYING
+    */
 
     let itemCount = 3
     if (hasChapters) itemCount++
     if (hasTranscript) itemCount++
 
+    /*
     const satStreamText = streamingEnabled ? translate('Stream On') : translate('Stream Off')
 
     const boostText = boostWasSent ? translate('Boost Sent').toUpperCase() : translate('Boost').toUpperCase()
@@ -158,6 +164,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const streamingButtonSubTextStyles = streamingEnabled
       ? [styles.boostButtonSubText, { color: PV.Colors.green }]
       : [styles.boostButtonSubText]
+    */
 
     return (
       <View style={styles.wrapper} transparent>
@@ -189,7 +196,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           passiveDotHeight={8}
           passiveDotWidth={8}
         />
-        {lnpayEnabled && (
+        {/* lnpayEnabled && (
           <View style={styles.boostButtonsContainer}>
             <TouchableOpacity onPress={this._toggleSatStreaming} style={styles.boostButton}>
               <Text style={streamingButtonMainTextStyles} testID='stream_button_text_1'>
@@ -225,15 +232,17 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
               )}
             </TouchableOpacity>
           </View>
-        )}
-        <ConfettiCannon
-          count={200}
-          explosionSpeed={500}
-          origin={{ x: Dimensions.get('screen').width, y: explosionOrigin }}
-          autoStart={false}
-          ref={(ref) => (this.explosion = ref)}
-          fadeOut
-        />
+        ) */}
+        {/*
+          <ConfettiCannon
+            count={200}
+            explosionSpeed={500}
+            origin={{ x: Dimensions.get('screen').width, y: explosionOrigin }}
+            autoStart={false}
+            ref={(ref) => (this.explosion = ref)}
+            fadeOut
+          />
+        */}
       </View>
     )
   }

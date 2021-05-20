@@ -12,10 +12,8 @@ import {
 import { Directions, FlingGestureHandler, ScrollView, State } from 'react-native-gesture-handler'
 import { ValueTransaction } from 'podverse-shared'
 import { PV } from '../resources'
-import { translate } from '../lib/i18n'
 import { BannerInfoError } from '../resources/Interfaces'
 import { PVIcon } from './PVIcon'
-import { Divider } from './Divider'
 import { ValueTagInfoView } from './ValueTagInfoView'
 import { Text } from '.'
 
