@@ -24,8 +24,6 @@ type TableTextCellProps = {
 export const TableCell = (props: TableCellProps) => {
   const { children, testIDPrefix, testIDSuffix, onPress = null, hideChevron = true } = props
 
-  console.log({...testProps(`${testIDPrefix}_table_cell_wrapper${testIDSuffix ? `_${testIDSuffix}` : ''}`)})
-
   return (
     <Pressable
       onPress={onPress}
