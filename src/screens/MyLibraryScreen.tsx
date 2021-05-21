@@ -67,7 +67,7 @@ export class MyLibraryScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { downloadsActive, fontScaleMode, session } = this.global
+    const { downloadsActive, fontScaleMode, globalTheme, session } = this.global
     const { isLoggedIn = false } = session
 
     let downloadsActiveCount = 0
@@ -81,12 +81,13 @@ export class MyLibraryScreen extends React.Component<Props, State> {
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
-            <TableCell 
-                testIDPrefix=''
-                testIDSuffix='my_library_screen' 
+              <TableCell 
+                testIDPrefix='my_library_screen'
+                testIDSuffix='' 
                 onPress={() => this._onPress(item)} {...testProps(item.testID)}
               >
-                  <RNView style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
+                {item.key === _downloadsKey ? (
+                  <RNView style={core.row}>
                     <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={table.cellText}>
                     {item.title}
                     </Text>
@@ -94,14 +95,25 @@ export class MyLibraryScreen extends React.Component<Props, State> {
                       fontScaleMode !== PV.Fonts.fontScale.larger &&
                       fontScaleMode !== PV.Fonts.fontScale.largest && (
                         <Badge
+                          badgeStyle={{ width:25, height:25, backgroundColor: PV.Colors.redLighter, borderRadius:12.5 }}
+                          containerStyle={{
+                            position: 'absolute',
+                            right: -32,
+                            top: 0
+                          }}
                           status='error'
-                          containerStyle={{marginLeft:15, borderRadius:20}}
-                          badgeStyle={{width:25, height:25, backgroundColor: PV.Colors.redLighter, borderRadius:12.5}}
                           textStyle={{fontSize:PV.Fonts.largeSizes.xxl, fontWeight:PV.Fonts.weights.bold}}
                           value={downloadsActiveCount}
                         />
                       )}
                   </RNView>
+                ) : (
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                    {item.title}
+                  </Text>
+                )}
               </TableCell>
           )}
           sections={[{ title: '', data: featureOptions }]}

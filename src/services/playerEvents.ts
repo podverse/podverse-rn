@@ -277,6 +277,7 @@ const startCheckClipEndTime = async () => {
   if (nowPlayingItem) {
     const { clipEndTime, clipId } = nowPlayingItem
     if (clipId && clipEndTime) {
+      await setClipHasEnded(false)
       startBackgroundTimer()
     }
   }
@@ -309,7 +310,7 @@ const stopBackgroundTimerIfShouldBeStopped = async (
 const stopCheckClipIfEndTimeReached = () => {
   (async () => {
     const nowPlayingItem = await getNowPlayingItemLocally()
-    if(nowPlayingItem) {
+    if (nowPlayingItem) {
       const { clipEndTime } = nowPlayingItem
       const currentPosition = await PVTrackPlayer.getTrackPosition()
       if (currentPosition > clipEndTime) {
@@ -317,7 +318,7 @@ const stopCheckClipIfEndTimeReached = () => {
         await setClipHasEnded(true)
       }
     }
-    const checkClipEndTimeStopped = true
+    const checkClipEndTimeStopped = false
     const streamingValueStopped = false
     stopBackgroundTimerIfShouldBeStopped(checkClipEndTimeStopped, streamingValueStopped)
   })()
@@ -376,9 +377,8 @@ const stopBackgroundTimer = () => {
 
 let valueStreamingIntervalSecondCount = 0
 const handleBackgroundTimerInterval = () => {
-
   stopCheckClipIfEndTimeReached()
-  
+
   PVTrackPlayer.getState().then((playbackState) => {
     const globalState = getGlobal()
     const { streamingEnabled } = globalState.session.valueTagSettings

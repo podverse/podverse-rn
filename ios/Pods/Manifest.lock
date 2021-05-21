@@ -234,7 +234,7 @@ PODS:
     - React-Core
   - react-native-in-app-review (2.1.8):
     - React
-  - react-native-netinfo (5.9.9):
+  - react-native-netinfo (6.0.0):
     - React-Core
   - react-native-safe-area-context (3.1.8):
     - React-Core
@@ -567,7 +567,7 @@ SPEC CHECKSUMS:
   react-native-config: d8b45133fd13d4f23bd2064b72f6e2c08b2763ed
   react-native-document-picker: d6a15c20e1b2d488af459aefff831839e9995927
   react-native-in-app-review: 3d6d73b840bdb94ecf83f22e5fee74ee255829d0
-  react-native-netinfo: 0212ce8604e88edf686f1481b925b17a42a52449
+  react-native-netinfo: e849fc21ca2f4128a5726c801a82fc6f4a6db50d
   react-native-safe-area-context: 79fea126c6830c85f65947c223a5e3058a666937
   react-native-track-player: 1a93c049a31413eb54768e5a69207b67d75b449c
   react-native-webview: 6b7950628616679d81bdd75747e50cf6de9b5a5f

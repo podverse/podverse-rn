@@ -165,7 +165,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
           testID='transcript_search_bar'
           value={this.state.searchText}
           onChangeText={(searchText: string) => {
-            if (searchText?.length <= 2) {
+            if (searchText?.length === 0) {
               this.setState({ searchResults: [] })
             } else {
               const searchResults = this.state.parsedTranscript.filter((item: Record<string, any>) => {
