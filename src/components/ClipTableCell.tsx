@@ -70,7 +70,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                   </Text>
                 )}
                 {showEpisodeInfo && PV.Fonts.fontScale.largest !== fontScaleMode && episodeTitle && (
-                  <Text numberOfLines={1} style={styles.episodeTitle} testID={`${testID}_episode_title`}>
+                  <Text numberOfLines={2} style={styles.episodeTitle} testID={`${testID}_episode_title`}>
                     {episodeTitle.trim()}
                   </Text>
                 )}
