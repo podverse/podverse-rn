@@ -57,7 +57,12 @@ export class PlayerScreen extends React.Component<Props> {
     const _getInitialProgressValue = navigation.getParam('_getInitialProgressValue')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
-    const { globalTheme } = getGlobal()
+    const { globalTheme, player } = getGlobal()
+    const { nowPlayingItem } = player
+    const { episodeFunding, /* episodeValue ,*/ podcastFunding, /* podcastValue */ } = nowPlayingItem
+
+    const showFundingIcon = podcastFunding?.length || episodeFunding?.length
+      /* episodeValue?.length > 0 || podcastValue?.length > 0 */
 
     return {
       title: '',
@@ -68,7 +73,9 @@ export class PlayerScreen extends React.Component<Props> {
       ),
       headerRight: () => (
         <RNView style={core.row}>
-          <NavFundingIcon globalTheme={globalTheme} navigation={navigation} />
+          {!!showFundingIcon &&
+            <NavFundingIcon globalTheme={globalTheme} navigation={navigation} />
+          }
           {!addByRSSPodcastFeedUrl && (
             <RNView style={core.row}>
               <NavMakeClipIcon

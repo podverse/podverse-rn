@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import axios from 'axios'
 import { ValueTransaction, ValueRecipientNormalized } from 'podverse-shared'
 import { getLNWallet, LNWallet } from '../state/actions/lnpay'
@@ -53,6 +55,7 @@ const request = async (req: LNPayRequest) => {
 }
 
 export const createWallet = async (apiKey = '', label?: string): Promise<LNWallet | undefined> => {
+  /*
   try {
     const createdWallet = await request({
       endpoint: '/wallet',
@@ -74,9 +77,11 @@ export const createWallet = async (apiKey = '', label?: string): Promise<LNWalle
     console.log('Wallet creation Error', error)
     throw new Error('Wallet Creation Failed. ' + error.message)
   }
+  */
 }
 
-export const getWallet = async (walletInfo: LNWallet): Promise<LNWallet | null> => {
+export const getWallet = /* async (walletInfo: LNWallet): Promise<LNWallet | null> */ () => {
+  /*
   let existingWallet: LNWallet | null = null
   try {
     const resp = await request({
@@ -97,15 +102,18 @@ export const getWallet = async (walletInfo: LNWallet): Promise<LNWallet | null> 
   }
 
   return existingWallet
+  */
 }
 
 export const getAllWallets = (apiKey = '') => {
+  /*
   return request({
     endpoint: '/wallets',
     headers: {
       'X-Api-Key': apiKey
     }
   })
+  */
 }
 
 const generateLNPayKeysendRequestBody = (valueTransaction: ValueTransaction) => {
@@ -121,6 +129,7 @@ const generateLNPayKeysendRequestBody = (valueTransaction: ValueTransaction) => 
 }
 
 export const sendLNPayValueTransaction = async (valueTransaction: ValueTransaction) => {
+  /*
   let error = null
   let paymentWasSuccessful = false
   
@@ -151,9 +160,11 @@ export const sendLNPayValueTransaction = async (valueTransaction: ValueTransacti
   }
 
   return paymentWasSuccessful
+  */
 }
 
 const sendLNPayKeysendRequest = async (wallet: LNWallet, body: LNPayKeysendRequestBody) => {
+  /*
   return request({
     method: 'POST',
     endpoint: '/wallet/' + wallet.access_keys['Wallet Admin'][0] + '/keysend',
@@ -162,9 +173,11 @@ const sendLNPayKeysendRequest = async (wallet: LNWallet, body: LNPayKeysendReque
     },
     body
   })
+  */
 }
 
 export const checkLNPayRecipientRoute = async (wallet: LNWallet, recepient: ValueRecipientNormalized) => {
+  /*
   return request({
     method: 'GET',
     endpoint: '/node/default/payments/queryroutes',
@@ -176,4 +189,5 @@ export const checkLNPayRecipientRoute = async (wallet: LNWallet, recepient: Valu
       amt: recepient.amount
     }
   })
+  */
 }

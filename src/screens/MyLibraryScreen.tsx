@@ -1,7 +1,7 @@
-import { SectionList, TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { SectionList, View as RNView } from 'react-native'
 import { Badge } from 'react-native-elements'
 import React from 'reactn'
-import { Divider, Text, View } from '../components'
+import { Divider, TableCell, Text, View } from '../components'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -15,6 +15,8 @@ type Props = {
 type State = {
   options: any[]
 }
+
+const testIDPrefix = 'my_library_screen'
 
 export class MyLibraryScreen extends React.Component<Props, State> {
 
@@ -77,27 +79,32 @@ export class MyLibraryScreen extends React.Component<Props, State> {
     const featureOptions = this._myLibraryOptions(isLoggedIn)
 
     return (
-      <View style={core.backgroundView} {...testProps('my_library_screen_view')}>
+      <View style={core.backgroundView} {...testProps(`${testIDPrefix}_view`)}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
-            <TouchableWithoutFeedback onPress={() => this._onPress(item)} {...testProps(item.testID)}>
-              <RNView style={[core.row, table.cellWrapper]}>
+              <TableCell 
+                testIDPrefix={`${testIDPrefix}_${item.key}`}
+                testIDSuffix='' 
+                onPress={() => this._onPress(item)}
+              >
                 {item.key === _downloadsKey ? (
-                  <RNView style={[core.row, { position: 'relative' }, table.cellWrapper]}>
+                  <RNView style={core.row}>
                     <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={table.cellText}>
-                      {translate('Downloads')}
+                    {item.title}
                     </Text>
-                    {downloadsActiveCount > 0 &&
+                    {item.key === _downloadsKey && downloadsActiveCount > 0 &&
                       fontScaleMode !== PV.Fonts.fontScale.larger &&
                       fontScaleMode !== PV.Fonts.fontScale.largest && (
                         <Badge
+                          badgeStyle={{ width:25, height:25, backgroundColor: PV.Colors.redLighter, borderRadius:12.5 }}
                           containerStyle={{
                             position: 'absolute',
-                            right: -22,
-                            top: 19
+                            right: -32,
+                            top: 0
                           }}
                           status='error'
+                          textStyle={{fontSize:PV.Fonts.largeSizes.xxl, fontWeight:PV.Fonts.weights.bold}}
                           value={downloadsActiveCount}
                         />
                       )}
@@ -109,8 +116,7 @@ export class MyLibraryScreen extends React.Component<Props, State> {
                     {item.title}
                   </Text>
                 )}
-              </RNView>
-            </TouchableWithoutFeedback>
+              </TableCell>
           )}
           sections={[{ title: '', data: featureOptions }]}
         />
@@ -131,43 +137,36 @@ const allMyLibraryFeatures = [
   {
     title: translate('Downloads'),
     key: _downloadsKey,
-    routeName: PV.RouteNames.DownloadsScreen,
-    testID: 'my_library_screen_downloads_cell'
+    routeName: PV.RouteNames.DownloadsScreen
   },
   {
     title: translate('Queue'),
     key: _queueKey,
-    routeName: PV.RouteNames.QueueScreen,
-    testID: 'my_library_screen_queue_cell'
+    routeName: PV.RouteNames.QueueScreen
   },
   {
     title: translate('History'),
     key: _historyKey,
-    routeName: PV.RouteNames.HistoryScreen,
-    testID: 'my_library_screen_history_cell'
+    routeName: PV.RouteNames.HistoryScreen
   },
   {
     title: translate('My Clips'),
     routeName: PV.RouteNames.MyProfileScreen,
-    key: _myClipsKey,
-    testID: 'my_library_screen_my_clips_cell'
+    key: _myClipsKey
   },
   {
     title: translate('My Profile'),
     routeName: PV.RouteNames.MyProfileScreen,
-    key: _myProfileKey,
-    testID: 'my_library_screen_my_profile_cell'
+    key: _myProfileKey
   },
   {
     title: translate('Playlists'),
     key: _playlistsKey,
-    routeName: PV.RouteNames.PlaylistsScreen,
-    testID: 'my_library_screen_playlists_cell'
+    routeName: PV.RouteNames.PlaylistsScreen
   },
   {
     title: translate('Profiles'),
-    key: _playlistsKey,
-    routeName: PV.RouteNames.ProfilesScreen,
-    testID: 'my_library_screen_profiles_cell'
+    key: _profilesKey,
+    routeName: PV.RouteNames.ProfilesScreen
   }
 ]

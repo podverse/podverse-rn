@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // import AsyncStorage from '@react-native-community/async-storage'
 import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, ValueTag, ValueTransaction } from 'podverse-shared'
 import AsyncStorage from '@react-native-community/async-storage'
-import { getGlobal } from 'reactn'
+// import { getGlobal } from 'reactn'
 // import { PV } from '../resources'
 import { PV } from '../resources'
-import { BannerInfoError } from '../resources/Interfaces'
-import { sendLNPayValueTransaction } from '../services/lnpay'
+// import { BannerInfoError } from '../resources/Interfaces'
+// import { sendLNPayValueTransaction } from '../services/lnpay'
 import { PVTrackPlayer } from '../services/player'
 import { createSatoshiStreamStats } from './satoshiStream'
 
@@ -178,6 +180,7 @@ const convertValueTagIntoValueTransaction = async (
 }
 
 export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
+  /*
   const errors: BannerInfoError[] = []
 
   const valueTags = nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
@@ -221,9 +224,11 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
   }
 
   return { errors, transactions: valueTransactions, totalAmountPaid }
+  */
 }
 
 export const sendValueTransaction = async (valueTransaction: ValueTransaction) => {
+  /*
   if (!valueTransaction.normalizedValueRecipient.amount) return
 
   // If a valueTransaction fails, then add it to the tempValueTransactionQueue
@@ -232,9 +237,11 @@ export const sendValueTransaction = async (valueTransaction: ValueTransaction) =
   }
 
   throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
+  */
 }
 
 export const processValueTransactionQueue = async () => {
+  /*
   const errors: BannerInfoError[] = []
   const bundledValueTransactionsToProcess = await bundleValueTransactionQueue()
 
@@ -260,6 +267,7 @@ export const processValueTransactionQueue = async () => {
     totalAmount,
     transactions: bundledValueTransactionsToProcess
   }
+  */
 }
 
 export const getValueTransactionQueue = async () => {
@@ -281,6 +289,7 @@ export const clearValueTransactionQueue = async () => {
   minimum number of transactions.
 */
 export const bundleValueTransactionQueue = async () => {
+  /*
   try {
     const transactionQueue = await getValueTransactionQueue()
     const bundledTransactionQueue: ValueTransaction[] = []
@@ -318,6 +327,7 @@ export const bundleValueTransactionQueue = async () => {
     await clearValueTransactionQueue()
     return []
   }
+  */
 }
 
 const combineTransactionAmounts = (
@@ -340,6 +350,7 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
   nowPlayingItem: NowPlayingItem,
   amount: number
 ) => {
+  /*
   try {
     const transactionQueue = await getValueTransactionQueue()
 
@@ -365,6 +376,7 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
     console.log('saveStreamingValueTransactionsToTransactionQueue error:', err)
     await clearValueTransactionQueue()
   }
+  */
 }
 
 const saveTransactionQueue = async (transactionQueue: ValueTransaction[]) => {

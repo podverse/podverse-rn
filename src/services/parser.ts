@@ -1,9 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { encode as btoa } from 'base-64'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
+import { downloadEpisode } from '../lib/downloader'
 import { convertToSortableTitle, getAppUserAgent, isValidDate } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfLoggedIn, getBearerToken } from './auth'
+import { getAutoDownloadSettings } from './autoDownloads'
 import { combineWithAddByRSSPodcasts } from './podcast'
 import { request } from './request'
 const podcastFeedParser = require('@podverse/podcast-feed-parser')
@@ -140,10 +142,11 @@ export const setAddByRSSPodcastFeedUrlsLocally = async (addByRSSPodcastFeedUrls:
   }
 }
 
-export const parseAllAddByRSSPodcasts = async () => {
+export const parseAllAddByRSSPodcasts = async (lastParsedPubDate: string) => {
   const urls = await getAddByRSSPodcastFeedUrlsLocally()
   const parsedPodcasts = []
   const finalParsedPodcasts = []
+  const autoDownloadPodcastSettings = await getAutoDownloadSettings()
 
   const allAddByRSSPodcastCredentials = await getAllAddByRSSPodcastCredentials()
 
@@ -168,6 +171,19 @@ export const parseAllAddByRSSPodcasts = async () => {
       finalParsedPodcasts[index] = parsedPodcast
     } else {
       finalParsedPodcasts.push(parsedPodcast)
+    }
+
+    if(autoDownloadPodcastSettings[parsedPodcast.addByRSSPodcastFeedUrl] 
+      && parsedPodcast.episodes 
+      && parsedPodcast.episodes.length) 
+    {
+      for(const episode of parsedPodcast.episodes) {
+        if(new Date(episode.pubDate).valueOf() > new Date(lastParsedPubDate).valueOf()) {
+          const restart = false
+          const waitToAddTask = true
+          downloadEpisode(episode, parsedPodcast, restart, waitToAddTask)
+        }
+      }
     }
   }
 

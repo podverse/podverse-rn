@@ -1,3 +1,4 @@
+/*
 import { Alert, Keyboard, StyleSheet } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
@@ -148,4 +149,4 @@ const styles = StyleSheet.create({
     marginVertical: 20
   }
 })
-
+*/
