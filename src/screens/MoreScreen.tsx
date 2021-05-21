@@ -22,6 +22,8 @@ type State = {
   isLoading: boolean
 }
 
+const testIDPrefix = 'more_screen'
+
 export class MoreScreen extends React.Component<Props, State> {
   state = {
     options: [],
@@ -56,31 +58,26 @@ export class MoreScreen extends React.Component<Props, State> {
       {
         title: membershipStatus,
         key: _membershipKey,
-        routeName: PV.RouteNames.MembershipScreen,
-        testID: 'more_screen_membership_cell'
+        routeName: PV.RouteNames.MembershipScreen
       },
       {
         title: translate('Contact Us'),
-        key: _contactKey,
-        testID: 'more_screen_contact_us_cell'
+        key: _contactKey
       },
       {
         title: translate('About brandName'),
         key: _aboutKey,
-        routeName: PV.RouteNames.AboutScreen,
-        testID: 'more_screen_about_cell'
+        routeName: PV.RouteNames.AboutScreen
       },
       {
         title: translate('Terms of Service'),
         key: _termsOfServiceKey,
-        routeName: PV.RouteNames.TermsOfServiceScreen,
-        testID: 'more_screen_terms_of_service_cell'
+        routeName: PV.RouteNames.TermsOfServiceScreen
       },
       {
         title: translate('Privacy Policy'),
         key: _privacyPolicyKey,
-        routeName: PV.RouteNames.PrivacyPolicyScreen,
-        testID: 'more_screen_privacy_policy_cell'
+        routeName: PV.RouteNames.PrivacyPolicyScreen
       }
     ]
 
@@ -155,14 +152,14 @@ export class MoreScreen extends React.Component<Props, State> {
     const otherOptions = this._moreOtherOptions(membershipStatus)
 
     return (
-      <View style={core.backgroundView} {...testProps('more_screen_view')}>
+      <View style={core.backgroundView} {...testProps(`${testIDPrefix}_view`)}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
               <TableCell 
-                testIDPrefix=''
-                testIDSuffix='more_screen' 
-                onPress={() => this._onPress(item)} {...testProps(item.testID)}
+                testIDPrefix={`${testIDPrefix}_${item.key}`}
+                testIDSuffix=''
+                onPress={() => this._onPress(item)}
               >
                 {item.key === _membershipKey ? (
                   <>
@@ -222,29 +219,24 @@ const allMoreFeatures = [
   {
     title: translate('Add Custom RSS Feed'),
     key: _addPodcastByRSSKey,
-    routeName: PV.RouteNames.AddPodcastByRSSScreen,
-    testID: 'more_screen_add_podcast_by_rss_cell'
+    routeName: PV.RouteNames.AddPodcastByRSSScreen
   },
   {
     title: translate('Settings'),
     key: _settingsKey,
-    routeName: PV.RouteNames.SettingsScreen,
-    testID: 'more_screen_settings_cell'
+    routeName: PV.RouteNames.SettingsScreen
   },
   {
     title: translate('Log out'),
-    key: _logoutKey,
-    testID: 'more_screen_log_out_cell'
+    key: _logoutKey
   },
   {
     title: translate('Login'),
     key: _loginKey,
-    routeName: PV.RouteNames.AuthNavigator,
-    testID: 'more_screen_login_cell'
+    routeName: PV.RouteNames.AuthNavigator
   },
   {
     title: translate('Import OPML'),
-    key: _importOpml,
-    testID: 'more_screen_import_cell'
+    key: _importOpml
   }
 ]
