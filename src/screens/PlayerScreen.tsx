@@ -1,5 +1,6 @@
 import { convertNowPlayingItemToMediaRef, convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
+import { Config } from 'react-native-config'
 import Share from 'react-native-share'
 import React, { getGlobal, setGlobal } from 'reactn'
 import {
@@ -57,12 +58,18 @@ export class PlayerScreen extends React.Component<Props> {
     const _getInitialProgressValue = navigation.getParam('_getInitialProgressValue')
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
-    const { globalTheme, player } = getGlobal()
+    const { globalTheme, player, podcastValueFinal } = getGlobal()
     const { nowPlayingItem } = player
-    const { episodeFunding, /* episodeValue ,*/ podcastFunding, /* podcastValue */ } = nowPlayingItem
+    const { episodeFunding, episodeValue, podcastFunding, podcastValue } = nowPlayingItem
 
-    const showFundingIcon = podcastFunding?.length || episodeFunding?.length
-      /* episodeValue?.length > 0 || podcastValue?.length > 0 */
+    const showFundingIcon = podcastFunding?.length > 0
+      || episodeFunding?.length > 0
+      || (
+        Config.ENABLE_VALUE_TAG_TRANSACTIONS
+        && podcastValueFinal?.length > 0
+        || episodeValue?.length > 0
+        || podcastValue?.length > 0
+      )
 
     return {
       title: '',

@@ -5,6 +5,7 @@ import {
   convertNowPlayingItemToMediaRef,
   NowPlayingItem
 } from 'podverse-shared'
+import Config from 'react-native-config'
 import { getGlobal, setGlobal } from 'reactn'
 import { getParsedTranscript } from '../../lib/transcriptHelpers'
 import { convertPodcastIndexValueTagToStandardValueTag } from '../../lib/valueTagHelpers'
@@ -186,7 +187,9 @@ export const loadItemAndPlayTrack = async (
     // then make sure the enrichedItem is on global state.
     // If the transcript tag is available, parse it and assign it to the enrichedItem.
     const enrichedItem = await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate)
-    if (enrichedItem) await updatePlayerState(enrichedItem)
+    if (enrichedItem) {
+      await updatePlayerState(enrichedItem)
+    }
 
     showMiniPlayer()
   }
@@ -222,6 +225,8 @@ const enrichParsedTranscript = (item: NowPlayingItem) => {
 }
 
 const enrichPodcastValue = (item: NowPlayingItem) => {
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   setGlobal({ podcastValueFinal: null }, async () => {
     if (item.episodeValue || item.podcastValue) {
       PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
