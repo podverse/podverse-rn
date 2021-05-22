@@ -6,6 +6,8 @@ import {
   NowPlayingItem
 } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
+import { getParsedTranscript } from '../../lib/transcriptHelpers'
+import { convertPodcastIndexValueTagToStandardValueTag } from '../../lib/valueTagHelpers'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import {
@@ -17,6 +19,7 @@ import {
   setPlaybackSpeed as setPlaybackSpeedService,
   togglePlay as togglePlayService
 } from '../../services/player'
+import { getPodcastFromPodcastIndexById } from '../../services/podcastIndex'
 import { initSleepTimerDefaultTimeRemaining } from '../../services/sleepTimer'
 import { trackPlayerScreenPageView } from '../../services/tracking'
 import {
@@ -198,8 +201,40 @@ export const loadItemAndPlayTrack = async (
     () => {
       trackPlayerScreenPageView(item)
       loadChaptersForNowPlayingItem(item)
+      enrichPodcastValue(item)
+      enrichParsedTranscript(item)
     }
   )
+}
+
+const enrichParsedTranscript = (item: NowPlayingItem) => {
+  setGlobal({ parsedTranscript: [] }, async () => {
+    if (item.episodeTranscript && item.episodeTranscript[0] && item.episodeTranscript[0].url) {
+      try {
+        const parsedTranscript =
+        await getParsedTranscript(item.episodeTranscript[0].url, item.episodeTranscript[0].type)
+        setGlobal({ parsedTranscript })
+      } catch (error) {
+        console.log('loadItemAndPlayTrack transcript parsing error', error)
+      }
+    }
+  })
+}
+
+const enrichPodcastValue = (item: NowPlayingItem) => {
+  setGlobal({ podcastValueFinal: null }, async () => {
+    if (item.episodeValue || item.podcastValue) {
+      PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
+    } else if (item.podcastIndexPodcastId) {
+      const podcastIndexPodcast = await getPodcastFromPodcastIndexById(item.podcastIndexPodcastId)
+      const podcastIndexPodcastValueTag = podcastIndexPodcast?.feed?.value
+      if (podcastIndexPodcastValueTag?.model && podcastIndexPodcastValueTag?.destinations) {
+        const podcastValue = convertPodcastIndexValueTagToStandardValueTag(podcastIndexPodcastValueTag)
+        PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
+        setGlobal({ podcastValueFinal: podcastValue })
+      }
+    }
+  })
 }
 
 export const setPlaybackSpeed = async (rate: number) => {

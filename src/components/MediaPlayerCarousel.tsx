@@ -28,7 +28,6 @@ import {
 
 type Props = {
   hasChapters: boolean
-  hasTranscript: boolean
   navigation: any
 }
 
@@ -94,7 +93,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   _handlePressClipInfo = () => {
-    const { hasChapters, hasTranscript } = this.props
+    const { hasChapters } = this.props
+    const { parsedTranscript } = this.global
+    const hasTranscript = parsedTranscript.length > 0
     let lastActiveIndex = 2
     if (hasChapters) lastActiveIndex++
     if (hasTranscript) lastActiveIndex++
@@ -137,10 +138,10 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   render() {
     const { navigation } = this.props
     const { activeIndex, /* boostIsSending, boostWasSent, explosionOrigin */ } = this.state
-    const { player } = this.global
-    const { episode, nowPlayingItem, /* playbackState */ } = player
+    const { parsedTranscript, player } = this.global
+    const { episode, /* playbackState */ } = player
     const hasChapters = episode?.chaptersUrl
-    const hasTranscript = !!nowPlayingItem?.parsedTranscript
+    const hasTranscript = parsedTranscript.length > 0
     /*
     const { lightningNetwork, streamingEnabled } = this.global.session.valueTagSettings
     const { globalSettings, lnpayEnabled } = lightningNetwork

@@ -1,4 +1,4 @@
-import { ValueTransaction } from 'podverse-shared'
+import { TranscriptRow, ValueTransaction } from 'podverse-shared'
 
 export interface GlobalTheme {
   actionSheetButton?: any
@@ -97,6 +97,7 @@ export interface InitialState {
   overlayAlert: {
     shouldShowAlert: boolean
   }
+  parsedTranscript: TranscriptRow[]
   parser: {
     addByRSSPodcastAuthModal: {
       feedUrl: string
@@ -119,6 +120,7 @@ export interface InitialState {
     myPlaylists: []
     subscribedPlaylists: []
   }
+  podcastValueFinal: any
   profile: {
     flatListData: []
     user: any

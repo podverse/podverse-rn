@@ -23,6 +23,7 @@ const initialTheme: InitialState = {
   overlayAlert: {
     shouldShowAlert: false
   },
+  parsedTranscript: [],
   parser: {
     addByRSSPodcastAuthModal: {
       feedUrl: ''
@@ -48,6 +49,7 @@ const initialTheme: InitialState = {
     myPlaylists: [],
     subscribedPlaylists: []
   },
+  podcastValueFinal: null,
   profile: {
     flatListData: [],
     user: null
