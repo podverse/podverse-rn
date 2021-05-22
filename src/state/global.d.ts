@@ -1,3 +1,4 @@
+import { TranscriptRow } from 'podverse-shared'
 import 'reactn'
 import { BannerInfo, GlobalTheme, UserInfo } from '../resources/Interfaces'
 
@@ -18,6 +19,7 @@ declare module 'reactn/default' {
     overlayAlert: {
       shouldShowAlert: boolean
     }
+    parsedTranscript: TranscriptRow[]
     parser: {
       addByRSSPodcastAuthModal: {
         feedUrl: string
@@ -40,6 +42,7 @@ declare module 'reactn/default' {
       myPlaylists: []
       subscribedPlaylists: []
     }
+    podcastValueFinal: any
     profile: {
       flatListData: []
       user: any

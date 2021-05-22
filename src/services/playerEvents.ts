@@ -347,9 +347,10 @@ const handleValueStreamingToggle = () => {
 
 const handleValueStreamingMinutePassed = () => {
   const globalState = getGlobal()
+  const { podcastValueFinal } = globalState
   const { nowPlayingItem } = globalState.player
   const { streamingAmount } = globalState.session.valueTagSettings.lightningNetwork.globalSettings
-  const valueTag = nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
+  const valueTag = podcastValueFinal || nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
 
   if (valueTag) {
     saveStreamingValueTransactionsToTransactionQueue(

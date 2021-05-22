@@ -1,15 +1,16 @@
 import { ValueTransaction } from 'podverse-shared'
-import { Alert, /* Keyboard, */ Linking, /* Pressable, */ StyleSheet } from 'react-native'
+import { Alert, Keyboard, Linking, Pressable, StyleSheet } from 'react-native'
+import Config from 'react-native-config'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import React, { getGlobal } from 'reactn'
-// import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-community/async-storage'
 import { checkLNPayRecipientRoute } from '../services/lnpay'
 import { getLNWallet } from '../state/actions/lnpay'
 import { Divider, FastImage, NavDismissIcon, ScrollView, Text,
-  /* TextInput, ValueTagInfoView, */ View } from '../components'
+  TextInput, ValueTagInfoView, View } from '../components'
 import { translate } from '../lib/i18n'
 import { readableDate, testProps } from '../lib/utility'
-// import { convertValueTagIntoValueTransactions } from '../lib/valueTagHelpers'
+import { convertValueTagIntoValueTransactions } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { ValueTransactionRouteError } from '../components/ValueTagInfoView'
@@ -45,14 +46,13 @@ export class FundingScreen extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount() {
-    /*
-    const { player, session } = this.global
+  async componentDidMount() {
+    const { player, podcastValueFinal, session } = this.global
     const { nowPlayingItem } = player
     const { boostAmount, streamingAmount } = session.valueTagSettings.lightningNetwork.globalSettings
 
     const { episodeValue, podcastValue } = nowPlayingItem
-    const valueTags = episodeValue || podcastValue
+    const valueTags = podcastValueFinal || episodeValue || podcastValue
     // TODO: right now we are assuming the first item will be the lightning network.
     // This will need to be updated to support additional valueTags.
     const valueTag = valueTags[0]
@@ -75,7 +75,6 @@ export class FundingScreen extends React.Component<Props, State> {
     this.setState({ boostTransactions, streamingTransactions }, () => {
       this.checkForErroringTransactions()
     })
-    */
 
     trackPageView('/funding', 'Funding Screen')
   }
@@ -130,22 +129,22 @@ export class FundingScreen extends React.Component<Props, State> {
     )
   }
 
-  // _handleCryptoSetupPressed = async () => {
-  //   const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_CRYPTO_TERMS)
-  //   if (consentGivenString && JSON.parse(consentGivenString) === true) {
-  //     this.props.navigation.navigate(PV.RouteNames.CryptoSetupScreen)
-  //   } else {
-  //     this.props.navigation.navigate(PV.RouteNames.CryptoPreviewScreen)
-  //   }
-  // }
+  _handleCryptoSetupPressed = async () => {
+    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_CRYPTO_TERMS)
+    if (consentGivenString && JSON.parse(consentGivenString) === true) {
+      this.props.navigation.navigate(PV.RouteNames.CryptoSetupScreen)
+    } else {
+      this.props.navigation.navigate(PV.RouteNames.CryptoPreviewScreen)
+    }
+  }
 
   render() {
-    // const { boostTransactions, streamingTransactions, erroringTransactions } = this.state
-    const { player, /* session */ } = this.global
+    const { boostTransactions, streamingTransactions, erroringTransactions } = this.state
+    const { player, podcastValueFinal, session } = this.global
     const { nowPlayingItem } = player
-    // const { globalSettings, lnpayEnabled } = session.valueTagSettings.lightningNetwork
-    // const { boostAmount, streamingAmount } = globalSettings
-    const { episodeFunding, episodeValue, podcastFunding, podcastValue } = nowPlayingItem
+    const { globalSettings, lnpayEnabled } = session.valueTagSettings.lightningNetwork
+    const { boostAmount, streamingAmount } = globalSettings
+    const { episodeFunding, podcastFunding } = nowPlayingItem
 
     const podcastLinks = podcastFunding?.map((item: any, index: number) =>
       this.renderFundingLink(item, 'podcast', index)
@@ -153,7 +152,12 @@ export class FundingScreen extends React.Component<Props, State> {
     const episodeLinks = episodeFunding?.map((item: any, index: number) =>
       this.renderFundingLink(item, 'episode', index)
     )
-    const hasValueInfo = episodeValue?.length > 0 || podcastValue?.length > 0
+    const hasValueInfo =
+      !!Config.ENABLE_VALUE_TAG_TRANSACTIONS && (
+        podcastValueFinal?.length > 0
+        || nowPlayingItem?.episodeValue?.length > 0
+        || nowPlayingItem?.podcastValue?.length > 0
+      )
 
     return (
       <View style={styles.content} {...testProps('funding_screen_view')}>
@@ -187,98 +191,96 @@ export class FundingScreen extends React.Component<Props, State> {
           </View>
         </View>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          {
-            /*
-              <Text style={styles.textHeader} testID={`${testIDPrefix}_episode_funding_header`}>
-                {translate('Crypto')}
+          {hasValueInfo && (
+            <Text style={styles.textHeader} testID={`${testIDPrefix}_episode_funding_header`}>
+              {translate('Crypto')}
+            </Text>
+          )}
+          {hasValueInfo && !lnpayEnabled && (
+            <View style={styles.noLnpayView}>
+              <Text style={styles.noLnPayText}>{translate('Podcast supports crypto donations')}</Text>
+              <Pressable style={styles.goToCryptoSetupButton} onPress={this._handleCryptoSetupPressed}>
+                <Text style={styles.goToCryptoSetupButtonText}>{translate('Setup Crypto')}</Text>
+              </Pressable>
+            </View>
+          )}
+          {lnpayEnabled && hasValueInfo && (
+            <View>
+              <Text style={styles.textLabel} testID={`${testIDPrefix}_value_settings_lightning_label`}>
+                {translate('Bitcoin Lightning Network')}
               </Text>
-              {hasValueInfo && !lnpayEnabled && (
-                <View style={styles.noLnpayView}>
-                  <Text style={styles.noLnPayText}>{translate('Podcast supports crypto donations')}</Text>
-                  <Pressable style={styles.goToCryptoSetupButton} onPress={this._handleCryptoSetupPressed}>
-                    <Text style={styles.goToCryptoSetupButtonText}>{translate('Setup Crypto')}</Text>
-                  </Pressable>
-                </View>
-              )}
-              {lnpayEnabled && hasValueInfo && (
-                <View>
-                  <Text style={styles.textLabel} testID={`${testIDPrefix}_value_settings_lightning_label`}>
-                    {translate('Bitcoin Lightning Network')}
-                  </Text>
-                  <Text style={styles.textSubLabel} testID={`${testIDPrefix}_value_settings_lightning_sub_label`}>
-                    {translate('via your LNPay wallet')}
-                  </Text>
-                  <View style={styles.itemWrapper}>
-                    <TextInput
-                      eyebrowTitle={translate('Boost Amount for this Podcast')}
-                      keyboardType='numeric'
-                      wrapperStyle={styles.textInput}
-                      onBlur={() => {
-                        // if (this.global.session.boostAmount < MINIMUM_BOOST_PAYMENT) {
-                        //   this.setGlobal({ session: { ...session, boostAmount: MINIMUM_BOOST_PAYMENT } })
-                        //   AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, String(MINIMUM_BOOST_PAYMENT))
-                        // }
-                      }}
-                      onSubmitEditing={() => Keyboard.dismiss()}
-                      onChangeText={(newText: string) => {
-                        // this.setGlobal({ session: { ...session, boostAmount: Number(newText) } })
-                        // AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, newText)
-                      }}
-                      testID={`${testIDPrefix}_boost_amount_text_input`}
-                      value={`${boostAmount}`}
-                    />
-                  </View>
-                  <View style={styles.valueTagInfoViewWrapper}>
-                    <Text
-                      style={styles.textTableLabel}
-                      testID={`${testIDPrefix}_value_settings_lightning_boost_sample_label`}>
-                      {translate('Boost splits')}
-                    </Text>
-                    <ValueTagInfoView
-                      testID={testIDPrefix}
-                      totalAmount={boostAmount}
-                      transactions={boostTransactions}
-                      erroringTransactions={erroringTransactions}
-                    />
-                  </View>
-                  <View style={styles.itemWrapper}>
-                    <TextInput
-                      eyebrowTitle={translate('Streaming Amount for this Podcast')}
-                      keyboardType='numeric'
-                      wrapperStyle={styles.textInput}
-                      onBlur={() => {
-                        // if (this.global.session.boostAmount < MINIMUM_BOOST_PAYMENT) {
-                        //   this.setGlobal({ session: { ...session, boostAmount: MINIMUM_BOOST_PAYMENT } })
-                        //   AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, String(MINIMUM_BOOST_PAYMENT))
-                        // }
-                      }}
-                      onSubmitEditing={() => Keyboard.dismiss()}
-                      onChangeText={(newText: string) => {
-                        // this.setGlobal({ session: { ...session, boostAmount: Number(newText) } })
-                        // AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, newText)
-                      }}
-                      testID={`${testIDPrefix}_boost_amount_text_input`}
-                      value={`${streamingAmount}`}
-                    />
-                  </View>
-                  <View style={styles.valueTagInfoViewWrapper}>
-                    <Text
-                      style={styles.textTableLabel}
-                      testID={`${testIDPrefix}_value_settings_lightning_streaming_sample_label`}>
-                      {translate('Streaming splits per minute')}
-                    </Text>
-                    <ValueTagInfoView
-                      testID={testIDPrefix}
-                      totalAmount={streamingAmount}
-                      transactions={streamingTransactions}
-                      erroringTransactions={erroringTransactions}
-                    />
-                  </View>
-                </View>
-              )}
-              {hasValueInfo && episodeLinks?.length > 0 && <Divider />}
-            */
-          }
+              <Text style={styles.textSubLabel} testID={`${testIDPrefix}_value_settings_lightning_sub_label`}>
+                {translate('via your LNPay wallet')}
+              </Text>
+              <View style={styles.itemWrapper}>
+                <TextInput
+                  eyebrowTitle={translate('Boost Amount for this Podcast')}
+                  keyboardType='numeric'
+                  wrapperStyle={styles.textInput}
+                  onBlur={() => {
+                    // if (this.global.session.boostAmount < MINIMUM_BOOST_PAYMENT) {
+                    //   this.setGlobal({ session: { ...session, boostAmount: MINIMUM_BOOST_PAYMENT } })
+                    //   AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, String(MINIMUM_BOOST_PAYMENT))
+                    // }
+                  }}
+                  onSubmitEditing={() => Keyboard.dismiss()}
+                  onChangeText={(newText: string) => {
+                    // this.setGlobal({ session: { ...session, boostAmount: Number(newText) } })
+                    // AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, newText)
+                  }}
+                  testID={`${testIDPrefix}_boost_amount_text_input`}
+                  value={`${boostAmount}`}
+                />
+              </View>
+              <View style={styles.valueTagInfoViewWrapper}>
+                <Text
+                  style={styles.textTableLabel}
+                  testID={`${testIDPrefix}_value_settings_lightning_boost_sample_label`}>
+                  {translate('Boost splits')}
+                </Text>
+                <ValueTagInfoView
+                  testID={testIDPrefix}
+                  totalAmount={boostAmount}
+                  transactions={boostTransactions}
+                  erroringTransactions={erroringTransactions}
+                />
+              </View>
+              <View style={styles.itemWrapper}>
+                <TextInput
+                  eyebrowTitle={translate('Streaming Amount for this Podcast')}
+                  keyboardType='numeric'
+                  wrapperStyle={styles.textInput}
+                  onBlur={() => {
+                    // if (this.global.session.boostAmount < MINIMUM_BOOST_PAYMENT) {
+                    //   this.setGlobal({ session: { ...session, boostAmount: MINIMUM_BOOST_PAYMENT } })
+                    //   AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, String(MINIMUM_BOOST_PAYMENT))
+                    // }
+                  }}
+                  onSubmitEditing={() => Keyboard.dismiss()}
+                  onChangeText={(newText: string) => {
+                    // this.setGlobal({ session: { ...session, boostAmount: Number(newText) } })
+                    // AsyncStorage.setItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT, newText)
+                  }}
+                  testID={`${testIDPrefix}_boost_amount_text_input`}
+                  value={`${streamingAmount}`}
+                />
+              </View>
+              <View style={styles.valueTagInfoViewWrapper}>
+                <Text
+                  style={styles.textTableLabel}
+                  testID={`${testIDPrefix}_value_settings_lightning_streaming_sample_label`}>
+                  {translate('Streaming splits per minute')}
+                </Text>
+                <ValueTagInfoView
+                  testID={testIDPrefix}
+                  totalAmount={streamingAmount}
+                  transactions={streamingTransactions}
+                  erroringTransactions={erroringTransactions}
+                />
+              </View>
+            </View>
+          )}
+          {hasValueInfo && episodeLinks?.length > 0 && <Divider />}
           {episodeLinks?.length > 0 && (
             <View style={styles.fundingLinksWrapper}>
               <Text style={styles.textHeader} testID={`${testIDPrefix}_episode_funding_header`}>
@@ -393,12 +395,12 @@ const styles = StyleSheet.create({
   noLnPayText: {
     fontSize: PV.Fonts.sizes.lg
   },
-  // goToCryptoSetupButton: {
-  //   marginTop: 15
-  // },
-  // goToCryptoSetupButtonText: {
-  //   fontSize: PV.Fonts.sizes.lg,
-  //   color: PV.Colors.blueLighter,
-  //   fontWeight: PV.Fonts.weights.bold
-  // }
+  goToCryptoSetupButton: {
+    marginTop: 15
+  },
+  goToCryptoSetupButtonText: {
+    fontSize: PV.Fonts.sizes.lg,
+    color: PV.Colors.blueLighter,
+    fontWeight: PV.Fonts.weights.bold
+  }
 })

@@ -1,13 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-// import AsyncStorage from '@react-native-community/async-storage'
-import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, ValueTag, ValueTransaction } from 'podverse-shared'
 import AsyncStorage from '@react-native-community/async-storage'
-// import { getGlobal } from 'reactn'
-// import { PV } from '../resources'
+import { NowPlayingItem, ValueRecipient, ValueRecipientNormalized, ValueTag, ValueTransaction } from 'podverse-shared'
+import Config from 'react-native-config'
+import { getGlobal } from 'reactn'
 import { PV } from '../resources'
-// import { BannerInfoError } from '../resources/Interfaces'
-// import { sendLNPayValueTransaction } from '../services/lnpay'
+import { BannerInfoError } from '../resources/Interfaces'
+import { sendLNPayValueTransaction } from '../services/lnpay'
 import { PVTrackPlayer } from '../services/player'
 import { createSatoshiStreamStats } from './satoshiStream'
 
@@ -19,6 +16,8 @@ import { createSatoshiStreamStats } from './satoshiStream'
   That's why we're returning an array as the result of this function.
 */
 export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueTag: any) => {
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   const { destinations, model } = podcastIndexValueTag
   let valueModel = {}
   const valueRecipients = [] as ValueRecipient[]
@@ -49,6 +48,8 @@ export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueT
 }
 
 const calculateNormalizedSplits = (valueRecipients: ValueRecipient[]) => {
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   let normalizedValueRecipients: ValueRecipientNormalized[] = []
 
   const totalSplit = valueRecipients.reduce((total, valueRecipient) => {
@@ -79,6 +80,8 @@ const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipien
 
 export const normalizeValueRecipients = (
   valueRecipients: ValueRecipient[], total: number, roundDownValues: boolean) => {
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(valueRecipients)
   const feeRecipient = normalizedValueRecipients.find((valueRecipient) => valueRecipient.fee === true)
   let feeAmount = 0
@@ -113,6 +116,8 @@ export const convertValueTagIntoValueTransactions = async (
   amount: number,
   roundDownValues: boolean
 ) => {
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   const { method, type } = valueTag
 
   if (!method || !type) {
@@ -156,6 +161,8 @@ const convertValueTagIntoValueTransaction = async (
   method: string,
   type: string
 ) => {
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   const timestamp = Date.now()
   const speed = await PVTrackPlayer.getRate()
   const currentPlaybackPosition = await PVTrackPlayer.getPosition()
@@ -179,11 +186,12 @@ const convertValueTagIntoValueTransaction = async (
   }
 }
 
-export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
-  /*
+export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFinal: any) => {
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   const errors: BannerInfoError[] = []
 
-  const valueTags = nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
+  const valueTags = podcastValueFinal || nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
   // TODO: right now we are assuming the first item will be the lightning network
   // this will need to be updated to support additional valueTags
   const valueTag = valueTags[0]
@@ -224,11 +232,11 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem) => {
   }
 
   return { errors, transactions: valueTransactions, totalAmountPaid }
-  */
 }
 
 export const sendValueTransaction = async (valueTransaction: ValueTransaction) => {
-  /*
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   if (!valueTransaction.normalizedValueRecipient.amount) return
 
   // If a valueTransaction fails, then add it to the tempValueTransactionQueue
@@ -237,11 +245,11 @@ export const sendValueTransaction = async (valueTransaction: ValueTransaction) =
   }
 
   throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
-  */
 }
 
 export const processValueTransactionQueue = async () => {
-  /*
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   const errors: BannerInfoError[] = []
   const bundledValueTransactionsToProcess = await bundleValueTransactionQueue()
 
@@ -267,10 +275,11 @@ export const processValueTransactionQueue = async () => {
     totalAmount,
     transactions: bundledValueTransactionsToProcess
   }
-  */
 }
 
 export const getValueTransactionQueue = async () => {
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   try {
     const transactionQueueString = await AsyncStorage.getItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE)
     return transactionQueueString ? JSON.parse(transactionQueueString) : []
@@ -281,6 +290,8 @@ export const getValueTransactionQueue = async () => {
 }
 
 export const clearValueTransactionQueue = async () => {
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   await AsyncStorage.setItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE, JSON.stringify([]))
 }
 
@@ -289,7 +300,8 @@ export const clearValueTransactionQueue = async () => {
   minimum number of transactions.
 */
 export const bundleValueTransactionQueue = async () => {
-  /*
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   try {
     const transactionQueue = await getValueTransactionQueue()
     const bundledTransactionQueue: ValueTransaction[] = []
@@ -327,7 +339,6 @@ export const bundleValueTransactionQueue = async () => {
     await clearValueTransactionQueue()
     return []
   }
-  */
 }
 
 const combineTransactionAmounts = (
@@ -335,6 +346,8 @@ const combineTransactionAmounts = (
   bundledValueTransactionIndex: number,
   transaction: ValueTransaction
 ) => {
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   const bundledAmount = bundledQueue[bundledValueTransactionIndex].normalizedValueRecipient.amount
   transaction.normalizedValueRecipient.amount = bundledAmount + transaction.normalizedValueRecipient.amount
   return transaction
@@ -350,7 +363,8 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
   nowPlayingItem: NowPlayingItem,
   amount: number
 ) => {
-  /*
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   try {
     const transactionQueue = await getValueTransactionQueue()
 
@@ -376,10 +390,11 @@ export const saveStreamingValueTransactionsToTransactionQueue = async (
     console.log('saveStreamingValueTransactionsToTransactionQueue error:', err)
     await clearValueTransactionQueue()
   }
-  */
 }
 
 const saveTransactionQueue = async (transactionQueue: ValueTransaction[]) => {
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
+
   try {
     await AsyncStorage.setItem(PV.ValueTag.VALUE_TRANSACTION_QUEUE, JSON.stringify(transactionQueue))
   } catch (error) {
