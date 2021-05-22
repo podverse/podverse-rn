@@ -16,7 +16,6 @@ type Props = {
 type State = {
   activeTranscriptRowIndex: number | null
   autoScrollOn: boolean
-  parsedTranscript: []
   searchText: string
   searchResults: never[]
 }
@@ -31,13 +30,9 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
   constructor() {
     super()
 
-    const { player } = this.global
-    const parsedTranscript = player?.nowPlayingItem?.parsedTranscript || []
-
     this.state = {
       activeTranscriptRowIndex: null,
       autoScrollOn: false,
-      parsedTranscript,
       searchText: '',
       searchResults: []
     }
@@ -115,9 +110,8 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
     this.setState({ autoScrollOn: true })
       this.interval = setInterval(() => {
         (async () => {
-          const { player } = this.global
+          const { parsedTranscript } = this.global
           const currentPosition = await PVTrackPlayer.getTrackPosition()
-          const parsedTranscript = player?.nowPlayingItem?.parsedTranscript || []
 
           const index = parsedTranscript.findIndex(
             (item: Record<string, any>) => item.startTime < currentPosition && item.endTime > currentPosition
@@ -141,7 +135,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
   render() {
     const { width } = this.props
-    let data: never[] | [] = this.state.parsedTranscript
+    let data: never[] | [] = this.global.parsedTranscript
     if (this.state.searchText) {
       data = this.state.searchResults
     }
@@ -168,7 +162,7 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
             if (searchText?.length === 0) {
               this.setState({ searchResults: [] })
             } else {
-              const searchResults = this.state.parsedTranscript.filter((item: Record<string, any>) => {
+              const searchResults = this.global.parsedTranscript.filter((item: Record<string, any>) => {
                 return item?.text?.toLowerCase().includes(searchText?.toLowerCase())
               })
   

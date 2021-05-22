@@ -16,6 +16,8 @@ type State = {
   options: any[]
 }
 
+const testIDPrefix = 'my_library_screen'
+
 export class MyLibraryScreen extends React.Component<Props, State> {
 
   state = {
@@ -77,14 +79,14 @@ export class MyLibraryScreen extends React.Component<Props, State> {
     const featureOptions = this._myLibraryOptions(isLoggedIn)
 
     return (
-      <View style={core.backgroundView} {...testProps('my_library_screen_view')}>
+      <View style={core.backgroundView} {...testProps(`${testIDPrefix}_view`)}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
               <TableCell 
-                testIDPrefix='my_library_screen'
+                testIDPrefix={`${testIDPrefix}_${item.key}`}
                 testIDSuffix='' 
-                onPress={() => this._onPress(item)} {...testProps(item.testID)}
+                onPress={() => this._onPress(item)}
               >
                 {item.key === _downloadsKey ? (
                   <RNView style={core.row}>
@@ -135,43 +137,36 @@ const allMyLibraryFeatures = [
   {
     title: translate('Downloads'),
     key: _downloadsKey,
-    routeName: PV.RouteNames.DownloadsScreen,
-    testID: 'my_library_screen_downloads_cell'
+    routeName: PV.RouteNames.DownloadsScreen
   },
   {
     title: translate('Queue'),
     key: _queueKey,
-    routeName: PV.RouteNames.QueueScreen,
-    testID: 'my_library_screen_queue_cell'
+    routeName: PV.RouteNames.QueueScreen
   },
   {
     title: translate('History'),
     key: _historyKey,
-    routeName: PV.RouteNames.HistoryScreen,
-    testID: 'my_library_screen_history_cell'
+    routeName: PV.RouteNames.HistoryScreen
   },
   {
     title: translate('My Clips'),
     routeName: PV.RouteNames.MyProfileScreen,
-    key: _myClipsKey,
-    testID: 'my_library_screen_my_clips_cell'
+    key: _myClipsKey
   },
   {
     title: translate('My Profile'),
     routeName: PV.RouteNames.MyProfileScreen,
-    key: _myProfileKey,
-    testID: 'my_library_screen_my_profile_cell'
+    key: _myProfileKey
   },
   {
     title: translate('Playlists'),
     key: _playlistsKey,
-    routeName: PV.RouteNames.PlaylistsScreen,
-    testID: 'my_library_screen_playlists_cell'
+    routeName: PV.RouteNames.PlaylistsScreen
   },
   {
     title: translate('Profiles'),
-    key: _playlistsKey,
-    routeName: PV.RouteNames.ProfilesScreen,
-    testID: 'my_library_screen_profiles_cell'
+    key: _profilesKey,
+    routeName: PV.RouteNames.ProfilesScreen
   }
 ]

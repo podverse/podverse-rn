@@ -1,5 +1,6 @@
 import React from 'react'
 import { Pressable, View } from 'react-native'
+import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { table } from '../styles'
 import { Text, Icon } from '.'
@@ -27,10 +28,16 @@ export const TableCell = (props: TableCellProps) => {
     <Pressable
       onPress={onPress}
       style={table.cellWrapper}
-      testID={`${testIDPrefix}_table_cell_wrapper_${testIDSuffix}`}>
+      {...testProps(`${testIDPrefix}_table_cell_wrapper${testIDSuffix ? `_${testIDSuffix}` : ''}`)}>
         <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
           <View style={{flexDirection:"row", alignItems:"center"}}>{children}</View>
-          {!hideChevron && <Icon style={{marginRight:20}} testID="table_cell_chevron" name="angle-right" size={30}/>}
+          {!hideChevron &&
+            <Icon
+              style={{marginRight:20}}
+              testID={`${testIDPrefix}_table_cell_chevron${testIDSuffix ? `_${testIDSuffix}` : ''}`}
+              name="angle-right"
+              size={30}/>
+          }
         </View>
     </Pressable>
   )
@@ -44,7 +51,7 @@ export const TableTextCell = (props: TableTextCellProps) => {
       <Text
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         style={table.cellText}
-        testID={`${testIDPrefix}_table_cell_text_${testIDSuffix}`}>
+        testID={`${testIDPrefix}_table_cell_text${testIDSuffix ? `_${testIDSuffix}` : ''}`}>
         {text}
       </Text>
     </TableCell>

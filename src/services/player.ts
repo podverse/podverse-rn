@@ -10,11 +10,8 @@ import TrackPlayer, { Track } from 'react-native-track-player'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl, getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
-import { getParsedTranscript } from '../lib/transcriptHelpers'
-import { convertPodcastIndexValueTagToStandardValueTag } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
 import PVEventEmitter from './eventEmitter'
-import { getPodcastFromPodcastIndexById } from './podcastIndex'
 import {
   addQueueItemLast,
   addQueueItemNext,
@@ -294,7 +291,7 @@ export const loadItemAndPlayTrack = async (
 ) => {
   if (!item) return
 
-  let newItem = item
+  const newItem = item
 
   const skipSetNowPlaying = true
   updateUserPlaybackPosition(skipSetNowPlaying)
@@ -347,37 +344,6 @@ export const loadItemAndPlayTrack = async (
 
   if (lastPlayingItem && lastPlayingItem.episodeId && lastPlayingItem.episodeId !== item.episodeId) {
     PVEventEmitter.emit(PV.Events.PLAYER_NEW_EPISODE_LOADED)
-  }
-
-  if (item.episodeValue || item.podcastValue) {
-    PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
-  } else if (item.podcastIndexPodcastId) {
-    const podcastIndexPodcast = await getPodcastFromPodcastIndexById(item.podcastIndexPodcastId)
-    const podcastIndexPodcastValueTag = podcastIndexPodcast?.feed?.value
-    if (podcastIndexPodcastValueTag?.model && podcastIndexPodcastValueTag?.destinations) {
-      const podcastValue = convertPodcastIndexValueTagToStandardValueTag(podcastIndexPodcastValueTag)
-      item.podcastValue = podcastValue
-      PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
-      newItem = item
-    }
-  }
-
-  if (item.episodeTranscript && item.episodeTranscript[0] && item.episodeTranscript[0].url) {
-    try {
-      newItem.parsedTranscript =
-        await getParsedTranscript(item.episodeTranscript[0].url, item.episodeTranscript[0].type)
-    } catch (error) {
-      console.log('loadItemAndPlayTrack transcript parsing error', error)
-    }
-  }
-
-  // If there is at least one enriched field,
-  // make sure the item is saved to both UserHistoryItems and UserNowPlayingItem
-  // so getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId will have the correct value saved.
-  if (
-    (newItem.podcastValue?.length > 0)
-    || (newItem.parsedTranscript && newItem.parsedTranscript.length > 0)) {
-    await addOrUpdateHistoryItem(newItem, newItem.userPlaybackPosition || 0)
   }
 
   return newItem
