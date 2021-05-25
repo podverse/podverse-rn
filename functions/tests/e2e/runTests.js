@@ -14,6 +14,8 @@ const { test12_historyScreenEditFeature } = require('./tests/12-historyScreenEdi
 const { test13_myProfileScreenFull } = require('./tests/13-myProfileScreenFull')
 const { test14_profilesScreenFull } = require('./tests/14-profilesScreenFull')
 const { test15_playlistsScreenFull } = require('./tests/15-playlistsScreenFull')
+const { test16_fundingPresent } = require('./tests/16-fundingPresent')
+
 
 const { createDriver } = require('./driver/driverFactory')
 const { getTestCapabilities } = require('./utils/getTestCapabilities')
@@ -54,6 +56,8 @@ const runTests = async (customCapabilities) => {
     await test13_myProfileScreenFull()
     await test14_profilesScreenFull()
     await test15_playlistsScreenFull()
+    await test16_fundingPresent()
+
 
 
 

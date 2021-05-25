@@ -9,7 +9,7 @@ const test11_queueScreenEditFeature = async () => {
   await elementByIdAndClickAndTest('tab_my_library_screen', 'my_library_screen_view')
 
     // Queue Screen
-  await elementByIdAndClickAndTest('my_library_screen_queue_cell', 'queue_screen_view')
+  await elementByIdAndClickAndTest('my_library_screen_Queue_table_cell_wrapper', 'queue_screen_view')
   await elementByIdAndClickAndTest('queue_screen_header_edit_nav_header_button_text', 'queue_screen_view')
   await elementByIdAndClickAndTest('queue_screen_header_done_nav_header_button_text', 'queue_screen_view')
   
