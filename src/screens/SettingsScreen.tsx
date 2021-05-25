@@ -322,14 +322,14 @@ export class SettingsScreen extends React.Component<Props, State> {
     }
   }
 
-  // _handleCryptoSetupPressed = async () => {
-  //   const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_CRYPTO_TERMS)
-  //   if(consentGivenString && JSON.parse(consentGivenString) === true) {
-  //     this.props.navigation.navigate(PV.RouteNames.CryptoSetupScreen)
-  //   } else {
-  //     this.props.navigation.navigate(PV.RouteNames.CryptoPreviewScreen)
-  //   }  
-  // }
+  _handleCryptoSetupPressed = async () => {
+    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_CRYPTO_TERMS)
+    if(consentGivenString && JSON.parse(consentGivenString) === true) {
+      this.props.navigation.navigate(PV.RouteNames.CryptoSetupScreen)
+    } else {
+      this.props.navigation.navigate(PV.RouteNames.CryptoPreviewScreen)
+    }  
+  }
 
   render() {
     const {
@@ -368,15 +368,18 @@ export class SettingsScreen extends React.Component<Props, State> {
         {!isLoading && (
           <View>
             <View>
-              {/* Config.ENABLE_VALUE_TAG_TRANSACTIONS && <TableTextCell
-                onPress={this._handleCryptoSetupPressed}
-                testIDPrefix={testIDPrefix}
-                testIDSuffix='crypto_setup'
-                text={translate('Crypto Setup')}
-                hideChevron={false}
-              />
-              <Divider style={styles.divider} />
-              */}
+              {!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && 
+                <View>
+                  <TableTextCell
+                    onPress={this._handleCryptoSetupPressed}
+                    testIDPrefix={testIDPrefix}
+                    testIDSuffix='crypto_setup'
+                    text={translate('Crypto Setup')}
+                    hideChevron={false}
+                  />
+                  <Divider style={styles.divider} />
+                </View>
+              }
             </View>
             <View style={styles.itemWrapper}>
               <SwitchWithText
@@ -388,7 +391,7 @@ export class SettingsScreen extends React.Component<Props, State> {
               />
             </View>
             <Divider style={styles.divider} />
-            {/* {!Config.DISABLE_THEME_SWITCH && (
+            {!Config.DISABLE_THEME_SWITCH && (
               <View style={styles.itemWrapper}>
                 <SwitchWithText
                   onValueChange={this._toggleTheme}
@@ -397,7 +400,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                   value={globalTheme === darkTheme}
                 />
               </View>
-            )} */}
+            )}
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 onValueChange={this._toggleDownloadingWifiOnly}

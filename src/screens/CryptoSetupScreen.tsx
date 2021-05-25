@@ -1,8 +1,6 @@
-/*
 import { Alert, Keyboard, StyleSheet } from 'react-native'
-import Config from 'react-native-config'
 import React from 'reactn'
-import { SwitchWithText, Text, TextInput, View } from '../components'
+import { SwitchWithText, TextInput, View } from '../components'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -149,4 +147,3 @@ const styles = StyleSheet.create({
     marginVertical: 20
   }
 })
-*/
