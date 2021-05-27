@@ -47,13 +47,13 @@ export const getNowPlayingItemOnServer = async () => {
       opts: { credentials: 'include' }
     })) as any
 
-    const { episode, mediaRef } = response.data
+    const { episode, mediaRef, userPlaybackPosition } = response.data
 
     if (!episode && !mediaRef) {
       throw new Error('Response data missing both episode and mediaRef')
     }
 
-    item = convertToNowPlayingItem(mediaRef || episode) || {}
+    item = convertToNowPlayingItem(mediaRef || episode, null, null, userPlaybackPosition || 0) || {}
   } catch (error) {
     console.log('Error in getNowPlayingItemOnServer: ', error)
     item = null
