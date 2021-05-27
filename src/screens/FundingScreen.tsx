@@ -142,13 +142,16 @@ export class FundingScreen extends React.Component<Props, State> {
     const { boostTransactions, streamingTransactions, erroringTransactions } = this.state
     const { player, podcastValueFinal, session } = this.global
     const { nowPlayingItem } = player
-    const { globalSettings, lnpayEnabled } = session.valueTagSettings.lightningNetwork
-    const { boostAmount, streamingAmount } = globalSettings
+    const podcastFunding = nowPlayingItem?.podcastFunding || []
+    const episodeFunding = nowPlayingItem?.episodeFunding || []
 
-    const podcastLinks = nowPlayingItem?.podcastFunding?.map((item: any, index: number) =>
+    const { globalSettings, lnpayEnabled } = session.valueTagSettings?.lightningNetwork || {}
+    const { boostAmount, streamingAmount } = globalSettings || {}
+
+    const podcastLinks = podcastFunding.map((item: any, index: number) =>
       this.renderFundingLink(item, 'podcast', index)
     )
-    const episodeLinks = nowPlayingItem?.episodeFunding?.map((item: any, index: number) =>
+    const episodeLinks = episodeFunding.map((item: any, index: number) =>
       this.renderFundingLink(item, 'episode', index)
     )
     const hasValueInfo =
