@@ -227,6 +227,10 @@ const allMoreFeatures = [
     routeName: PV.RouteNames.SettingsScreen
   },
   {
+    title: translate('Import OPML'),
+    key: _importOpml
+  },
+  {
     title: translate('Log out'),
     key: _logoutKey
   },
@@ -234,9 +238,5 @@ const allMoreFeatures = [
     title: translate('Login'),
     key: _loginKey,
     routeName: PV.RouteNames.AuthNavigator
-  },
-  {
-    title: translate('Import OPML'),
-    key: _importOpml
   }
 ]

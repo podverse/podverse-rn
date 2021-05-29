@@ -10,7 +10,7 @@ const test15_playlistsScreenFull = async () => {
     // Log In Premium
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-  await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
+  await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_sign_up_button')
   await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
   await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
   await elementByIdClick('login_submit_button')
@@ -20,7 +20,7 @@ const test15_playlistsScreenFull = async () => {
   await elementByIdAndClickAndTest('tab_my_library_screen', 'my_library_screen_view')
 
     // Playlists Screen
-  await elementByIdAndClickAndTest('my_library_screen_playlists_cell', 'playlists_screen_view')
+  await elementByIdAndClickAndTest('my_library_screen_Playlists_table_cell_wrapper', 'playlists_screen_view')
   await elementByIdAndClickAndTest('playlists_screen_playlist_section-my-playlists_item_0', 'playlist_screen_view')
   await elementByIdAndClickAndTest('playlist_screen_edit_icon_button', 'edit_playlist_screen_view')
   await elementByIdAndClickAndTest('edit_playlist_screen_nav_header_button_text', 'edit_playlist_screen_view')
@@ -36,7 +36,7 @@ const test15_playlistsScreenFull = async () => {
     // Log Out
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-  await elementByIdAndClickAndTest('more_screen_log_out_cell', 'more_screen_view')
+  await elementByIdAndClickAndTest('more_screen_Logout_table_cell_wrapper', 'more_screen_view')
   await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
   
 }

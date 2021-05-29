@@ -16,47 +16,40 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
     // Clips Screen
   await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
 
-    // My Library Screen
+  //   // My Library Screen
   await elementByIdAndClickAndTest('tab_my_library_screen', 'my_library_screen_view')
-  await elementByIdAndClickAndTest('my_library_screen_downloads_cell', 'downloads_screen_view', noTestLabel, goBackKey)
-  await elementByIdAndClickAndTest('my_library_screen_queue_cell', 'queue_screen_view', noTestLabel, goBackKey)
-  await elementByIdAndClickAndTest('my_library_screen_history_cell', 'history_screen_view', noTestLabel, goBackKey)
-  await elementCheckIfPresent('my_library_screen_downloads_cell')
-  await elementCheckIfPresent('my_library_screen_queue_cell')
-  await elementCheckIfPresent('my_library_screen_history_cell')
-  await elementCheckIfNotPresent('my_library_screen_my_clips_cell')
-  await elementCheckIfNotPresent('my_library_screen_my_profile_cell')
-  await elementCheckIfNotPresent('my_library_screen_playlists_cell')
-  await elementCheckIfNotPresent('my_library_screen_profiles_cell')
+  await elementByIdAndClickAndTest('my_library_screen_Downloads_table_cell_wrapper', 'downloads_screen_view', noTestLabel, goBackKey)
+  await elementByIdAndClickAndTest('my_library_screen_Queue_table_cell_wrapper', 'queue_screen_view', noTestLabel, goBackKey)
+  await elementByIdAndClickAndTest('my_library_screen_History_table_cell_wrapper', 'history_screen_view', noTestLabel, goBackKey)
+  await elementCheckIfPresent('my_library_screen_Downloads_table_cell_wrapper')
+  await elementCheckIfPresent('my_library_screen_Queue_table_cell_wrapper')
+  await elementCheckIfPresent('my_library_screen_History_table_cell_wrapper')
+  await elementCheckIfNotPresent('my_library_screen_MyClips_table_cell_wrapper')
+  await elementCheckIfNotPresent('my_library_screen_MyProfile_table_cell_wrapper')
+  await elementCheckIfNotPresent('my_library_screen_Playlists_table_cell_wrapper')
+  await elementCheckIfNotPresent('my_library_screen_Profiles_table_cell_wrapper')
 
     // More Screen
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
   await elementByIdAndClickAndTest(
-    'more_screen_add_podcast_by_rss_cell','add_podcast_by_rss_screen_view', noTestLabel, goBackKey)
-  await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_safe_area_view')
+    'more_screen_AddPodcastByRSS_table_cell_wrapper','add_podcast_by_rss_screen_view', noTestLabel, goBackKey)
+  await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_safe_area_view')
   await elementByIdClick('auth_screen_reset_password_button')
   await driver.back()
-  await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_safe_area_view')
+  await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_safe_area_view')
   await elementByIdClick('auth_screen_sign_up_button')
   await driver.back()
-  await elementByIdAndClickAndTest('more_screen_membership_cell', 'membership_screen_view', noTestLabel, goBackKey)
-  await elementByIdAndClickAndTest('more_screen_about_cell', 'about_screen_view', noTestLabel, goBackKey)
-  await elementByIdAndClickAndTest('more_screen_terms_of_service_cell', 'terms_of_service_screen_view', noTestLabel, goBackKey)
+  await elementByIdAndClickAndTest('more_screen_Membership_table_cell_wrapper', 'membership_screen_view', noTestLabel, goBackKey)
+  await elementByIdAndClickAndTest('more_screen_About_table_cell_wrapper', 'about_screen_view', noTestLabel, goBackKey)
+  await elementByIdAndClickAndTest('more_screen_TermsOfService_table_cell_wrapper', 'terms_of_service_screen_view', noTestLabel, goBackKey)
 
     // More Screen > Settings Screen
-  await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view')
+  await elementByIdAndClickAndTest('more_screen_Settings_table_cell_wrapper', 'settings_screen_view')
   await elementByIdToggle('settings_screen_only_allow_downloading_when_connected_to_wifi_switch')
   await elementByIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')
   await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
   await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
-  await elementByIdToggle('settings_screen_offline_mode_switch')
-
-    //Custom API and Web domains
-
-  // await performScroll(scrollDownKey, 2)
-  // await elementByIdToggle('settings_screen_custom_api_domain_switch', noTestLabel, goBackKey)
-  // await elementByIdToggle('settings_screen_custom_web_domain_switch', noTestLabel, goBackKey)
-  
+  await elementByIdToggle('settings_screen_offline_mode_switch')  
   
   await driver.back()
   await driver.back()

@@ -7,7 +7,7 @@ const test10_settingsScreenFull = async () => {
   const driver = getDriver()
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-  await elementByIdAndClickAndTest('more_screen_settings_cell', 'settings_screen_view')
+  await elementByIdAndClickAndTest('more_screen_Settings_table_cell_wrapper', 'settings_screen_view')
   await elementByIdToggle('settings_screen_only_allow_downloading_when_connected_to_wifi_switch')
   await elementByIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')
   await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')

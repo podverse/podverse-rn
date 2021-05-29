@@ -39,11 +39,12 @@ export class CryptoSetupScreen extends React.Component<Props, State> {
   })
 
   componentDidMount() {
-    const { boostAmount, streamingAmount } = this.global.session.valueTagSettings.lightningNetwork.globalSettings
+    const { boostAmount, streamingAmount } =
+      this.global.session?.valueTagSettings?.lightningNetwork?.globalSettings || {}
 
     this.setState({
-      localBoostAmount: boostAmount.toString(),
-      localStreamingAmount: streamingAmount.toString()
+      localBoostAmount: boostAmount?.toString(),
+      localStreamingAmount: streamingAmount?.toString()
     })
 
     trackPageView('/crypto-setup', 'Crypto Setup Screen')

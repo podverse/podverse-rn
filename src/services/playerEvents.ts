@@ -349,7 +349,7 @@ const handleValueStreamingMinutePassed = () => {
   const globalState = getGlobal()
   const { podcastValueFinal } = globalState
   const { nowPlayingItem } = globalState.player
-  const { streamingAmount } = globalState.session.valueTagSettings.lightningNetwork.globalSettings
+  const { streamingAmount } = globalState.session?.valueTagSettings?.lightningNetwork?.globalSettings || {}
   const valueTag = podcastValueFinal || nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
 
   if (valueTag) {
