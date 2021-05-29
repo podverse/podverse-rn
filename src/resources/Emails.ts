@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import Config from 'react-native-config'
 
 export const Emails = {
@@ -5,8 +6,9 @@ export const Emails = {
     email: Config.CONTACT_US_EMAIL,
     subject: 'Contact Podverse',
     body:
-      'If you are reporting an issue, please provide your device type ' +
-      'and steps to reproduce the bug if possible. Thank you!'
+      `Platform: ${Platform.OS}` +
+      'If you are reporting an issue, please provide your device type and/or brand ' +
+      'and steps to reproduce the bug if possible. Thank you!' 
   },
   CHECKOUT_ISSUE: {
     email: Config.SUPPORT_EMAIL,
