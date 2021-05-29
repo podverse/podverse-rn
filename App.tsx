@@ -139,7 +139,9 @@ class App extends Component<Props, State> {
             shadowOpacity: 1,
             opacity: 1
           }
-        : {}
+        : {
+          flex: 1
+        }
 
     if (this.state.minVersionMismatch) {
       return <UpdateRequiredOverlay />
