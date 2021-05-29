@@ -49,10 +49,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
 
   constructor(props) {
     super(props)
-    const defaultActiveIndex = props.hasChapters ? 2 : 1
 
     this.state = {
-      activeIndex: defaultActiveIndex,
+      activeIndex: 0,
       boostIsSending: false,
       boostWasSent: false,
       explosionOrigin: 0
@@ -63,16 +62,6 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { activeIndex } = this.state
     const animated = false
     this.scrollToActiveIndex(activeIndex, animated)
-  }
-
-  scrollToDefaultActiveIndex = () => {
-    const { player } = this.global
-    const hasChapters = player?.episode?.chaptersUrl
-    let defaultActiveIndex = 1
-    if (hasChapters) defaultActiveIndex++
-
-    const animated = false
-    this.scrollToActiveIndex(defaultActiveIndex, animated)
   }
 
   scrollToActiveIndex = (activeIndex: number, animated: boolean) => {
@@ -94,15 +83,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   }
 
   _handlePressClipInfo = () => {
-    const { hasChapters } = this.props
-    const { parsedTranscript } = this.global
-    const hasTranscript = parsedTranscript.length > 0
-    let lastActiveIndex = 2
-    if (hasChapters) lastActiveIndex++
-    if (hasTranscript) lastActiveIndex++
-
     const animated = true
-    this.scrollToActiveIndex(lastActiveIndex, animated)
+    this.scrollToActiveIndex(1, animated)
   }
 
   _attemptBoost = () => {
@@ -138,10 +120,10 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const { parsedTranscript, player } = this.global
     const { episode, playbackState } = player
     const hasChapters = episode?.chaptersUrl
-    const hasTranscript = parsedTranscript.length > 0
-    const { lightningNetwork, streamingEnabled } = this.global.session.valueTagSettings
-    const { globalSettings, lnpayEnabled } = lightningNetwork
-    const { boostAmount, streamingAmount } = globalSettings
+    const hasTranscript = parsedTranscript?.length > 0
+    const { lightningNetwork, streamingEnabled } = this.global.session?.valueTagSettings || {}
+    const { globalSettings, lnpayEnabled } = lightningNetwork || {}
+    const { boostAmount, streamingAmount } = globalSettings || {}
     const isPlaying = playbackState === PVTrackPlayer.STATE_PLAYING
 
 
@@ -174,10 +156,10 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           snapToInterval={screenWidth}
           snapToStart
           transparent>
-          <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
-          {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
           <MediaPlayerCarouselViewer handlePressClipInfo={this._handlePressClipInfo} width={screenWidth} />
           <MediaPlayerCarouselShowNotes navigation={navigation} width={screenWidth} />
+          {hasChapters && <MediaPlayerCarouselChapters navigation={navigation} width={screenWidth} />}
+          <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
           {hasTranscript && <MediaPlayerCarouselTranscripts width={screenWidth} />}
         </ScrollView>
         <Dots

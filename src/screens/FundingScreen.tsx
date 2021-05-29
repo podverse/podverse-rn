@@ -49,7 +49,7 @@ export class FundingScreen extends React.Component<Props, State> {
   async componentDidMount() {
     const { player, podcastValueFinal, session } = this.global
     const { nowPlayingItem } = player
-    const { boostAmount, streamingAmount } = session.valueTagSettings.lightningNetwork.globalSettings
+    const { boostAmount, streamingAmount } = session?.valueTagSettings?.lightningNetwork?.globalSettings || {}
 
     const { episodeValue, podcastValue } = nowPlayingItem
     const valueTags = podcastValueFinal || episodeValue || podcastValue
@@ -142,14 +142,16 @@ export class FundingScreen extends React.Component<Props, State> {
     const { boostTransactions, streamingTransactions, erroringTransactions } = this.state
     const { player, podcastValueFinal, session } = this.global
     const { nowPlayingItem } = player
-    const { globalSettings, lnpayEnabled } = session.valueTagSettings.lightningNetwork
-    const { boostAmount, streamingAmount } = globalSettings
-    const { episodeFunding, podcastFunding } = nowPlayingItem
+    const podcastFunding = nowPlayingItem?.podcastFunding || []
+    const episodeFunding = nowPlayingItem?.episodeFunding || []
 
-    const podcastLinks = podcastFunding?.map((item: any, index: number) =>
+    const { globalSettings, lnpayEnabled } = session?.valueTagSettings?.lightningNetwork || {}
+    const { boostAmount, streamingAmount } = globalSettings || {}
+
+    const podcastLinks = podcastFunding.map((item: any, index: number) =>
       this.renderFundingLink(item, 'podcast', index)
     )
-    const episodeLinks = episodeFunding?.map((item: any, index: number) =>
+    const episodeLinks = episodeFunding.map((item: any, index: number) =>
       this.renderFundingLink(item, 'episode', index)
     )
     const hasValueInfo =

@@ -9,7 +9,8 @@ import RNFS from 'react-native-fs'
 import TrackPlayer, { Track } from 'react-native-track-player'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
-import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl, getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
+import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
+  convertUrlToSecureHTTPS, getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from './eventEmitter'
 import {
@@ -422,7 +423,7 @@ export const createTrack = async (item: NowPlayingItem) => {
     } else {
       track = {
         id,
-        url: episodeMediaUrl,
+        url: convertUrlToSecureHTTPS(episodeMediaUrl),
         title: episodeTitle,
         artist: podcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
@@ -587,7 +588,9 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (
 
   if (!currentNowPlayingItem) {
     currentNowPlayingItem = await getDownloadedEpisode(trackId)
-    currentNowPlayingItem = convertToNowPlayingItem(currentNowPlayingItem)
+    currentNowPlayingItem = convertToNowPlayingItem(
+      currentNowPlayingItem, null, null, currentNowPlayingItem.userPlaybackPosition
+    )
   }
 
   if (setPlayerClipIsLoadedIfClip && currentNowPlayingItem?.clipId) {
