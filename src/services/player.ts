@@ -104,7 +104,7 @@ export const updateTrackPlayerCapabilities = () => {
     ],
     // alwaysPauseOnInterruption caused serious problems with the player unpausing
     // every time the user receives a notification.
-    alwaysPauseOnInterruption: Platform.OS === 'ios',
+    alwaysPauseOnInterruption: true,
     stopWithApp: true,
     // Better to skip 10 both ways than to skip 30 both ways. No current way to set them separately
     jumpInterval: PV.Player.jumpBackSeconds
