@@ -1,3 +1,4 @@
+import { Alert } from 'react-native'
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import RNBackgroundDownloader from 'react-native-background-downloader'
@@ -8,6 +9,7 @@ import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode
 import { hasValidDownloadingConnection } from './network'
 import {
   convertBytesToHumanReadableString,
+  convertUrlToSecureHTTPS,
   getAppUserAgent,
   getExtensionFromUrl,
   safelyUnwrapNestedVariable
@@ -128,13 +130,14 @@ export const downloadEpisode = async (
 
   const downloader = await BackgroundDownloader()
   const destination = `${downloader.directories.documents}/${episode.id}${ext}`
+  const secureEpisodeMediaUrl = convertUrlToSecureHTTPS(episode.mediaUrl)
 
   // Wait for t.stop() to complete
   setTimeout(() => {
     const task = downloader
       .download({
         id: episode.id,
-        url: episode.mediaUrl,
+        url: secureEpisodeMediaUrl,
         destination
       })
       .begin(() => {

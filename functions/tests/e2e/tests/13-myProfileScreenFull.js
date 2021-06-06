@@ -10,7 +10,7 @@ const test13_myProfileScreenFull = async () => {
     // Log In Premium
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-  await elementByIdAndClickAndTest('more_screen_login_cell', 'auth_screen_sign_up_button')
+  await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_sign_up_button')
   await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
   await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
   await elementByIdClick('login_submit_button')
@@ -20,7 +20,7 @@ const test13_myProfileScreenFull = async () => {
   await elementByIdAndClickAndTest('tab_my_library_screen', 'my_library_screen_view')
 
     // My Profile Screen
-  await elementByIdAndClickAndTest('my_library_screen_my_profile_cell', 'profile_screen_view')
+  await elementByIdAndClickAndTest('my_library_screen_MyProfile_table_cell_wrapper', 'profile_screen_view')
   await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
   await elementByIdClick('filter_screen_podcasts')
   await elementByIdClick('filter_screen_top-past-day')
@@ -37,7 +37,7 @@ const test13_myProfileScreenFull = async () => {
     // Log Out
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-  await elementByIdAndClickAndTest('more_screen_log_out_cell', 'more_screen_view')
+  await elementByIdAndClickAndTest('more_screen_Logout_table_cell_wrapper', 'more_screen_view')
   await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
 }
 

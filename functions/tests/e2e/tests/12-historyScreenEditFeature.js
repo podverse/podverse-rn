@@ -9,7 +9,7 @@ const test12_historyScreenEditFeature = async () => {
   await elementByIdAndClickAndTest('tab_my_library_screen', 'my_library_screen_view')
 
     // History Screen
-  await elementByIdAndClickAndTest('my_library_screen_history_cell', 'history_screen_view')
+  await elementByIdAndClickAndTest('my_library_screen_History_table_cell_wrapper', 'history_screen_view')
   await elementByIdAndClickAndTest('history_screen_header_edit_nav_header_button_text', 'history_screen_view')
   await elementByIdAndClickAndTest('history_screen_header_done_nav_header_button_text', 'history_screen_view')
   

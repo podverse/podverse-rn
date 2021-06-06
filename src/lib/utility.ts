@@ -549,6 +549,10 @@ export const isValidUrl = (str?: string) => {
   return str ? regex.test(str) : false
 }
 
+export const convertUrlToSecureHTTPS = (originalUrl: string) => {
+  return originalUrl ? originalUrl.replace('http://', 'https://') : ''
+}
+
 export const testProps = (id: string) => {
   return { testID: id, accessibilityLabel: id }
 }
