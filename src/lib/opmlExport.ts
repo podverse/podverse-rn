@@ -3,24 +3,38 @@
   Check out his Podcasting 2.0 Certified app by visiting https://curiocaster.com
 */
 
+import Share from "react-native-share"
+import RNFS from "react-native-fs"
 import { getSubscribedPodcasts } from '../state/actions/podcast'
 
 export const exportSubscribedPodcastsAsOPML = async () => {
   const subscribedPodcasts = await getSubscribedPodcasts()
   const blob = opmlExport(subscribedPodcasts)
-  downloadOPMLExport(blob)
+  await downloadOPMLExport(blob)
 }
 
-const downloadOPMLExport = (blob: any) => {
-  console.log('downloadOPMLExport', blob)
-  // TODO: DOWNLOAD THE OPML FILE LOCALLY
+const downloadOPMLExport = async (xmlData: string) => {
+  const path = RNFS.TemporaryDirectoryPath + '/podversefeed.opml';
+
+  try{
+    await RNFS.writeFile(path, xmlData, 'utf8')
+    const options = {
+      type: "xml",
+      url: path // (Platform.OS === 'android' ? 'file://' + filePath)
+    };
+
+    await Share.open(options);
+    await RNFS.unlink(path);
+  }
+  catch(err) {
+    console.log(err.message);
+  }
 }
 
 const opmlExport = (podcastList: any) => {
   const newOpml = jsonToXML(podcastList)
-  const file = new Blob([newOpml], { type: 'text/xml' })
 
-  return file
+  return newOpml
   
   function escapeEntities(str: string) {
     return str
