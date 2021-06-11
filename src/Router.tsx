@@ -1,10 +1,10 @@
 import { Image, Platform, View } from 'react-native'
 import Config from 'react-native-config'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
-import { createStackNavigator, NavigationStackOptions } from 'react-navigation-stack'
+import { createStackNavigator, NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import React from 'reactn'
-import { DownloadsActiveBadge, NavSearchIcon, PVTabBar, TabBarLabel } from './components'
+import React, { Component } from 'react'
+import { DownloadsActiveBadge, ErrorBoundary, NavSearchIcon, PVTabBar, TabBarLabel } from './components'
 import { PV } from './resources'
 import {
   AboutScreen,
@@ -413,7 +413,25 @@ const SwitchNavigator = createSwitchNavigator(
   }
 )
 
-const App = createAppContainer(SwitchNavigator)
+type Props = {
+  navigation: NavigationStackProp
+}
+
+type State = Record<string, unknown>
+
+class AppNavigator extends Component<Props, State> {
+  static router = SwitchNavigator.router
+  render() {
+    const { navigation } = this.props
+    return (
+      <ErrorBoundary navigation={navigation}>
+        <SwitchNavigator navigation={navigation} />
+      </ErrorBoundary>
+    )
+  }
+}
+
+const App = createAppContainer(AppNavigator)
 const prefix = PV.DeepLinks.prefix
 
 export default () => <App uriPrefix={prefix} />
