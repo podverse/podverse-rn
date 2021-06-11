@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -60,7 +60,7 @@
     "linkifyjs": "2.1.9",
     "lodash": "4.17.21",
     "lodash.memoize": "4.1.2",
-    "podverse-shared": "^3.0.0",
+    "podverse-shared": "^3.1.2",
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-background-downloader": "2.3.4",
@@ -89,7 +89,7 @@
     "react-native-safe-area-context": "3.1.8",
     "react-native-screens": "2.16.1",
     "react-native-secure-key-store": "2.0.9",
-    "react-native-share": "3.8.5",
+    "react-native-share": "6.2.1",
     "react-native-svg": "12.1.0",
     "react-native-swipe-list-view": "3.2.5",
     "react-native-system-setting": "1.7.5",

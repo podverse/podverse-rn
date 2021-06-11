@@ -7513,7 +7513,7 @@ plugin-error@^0.1.2:
     arr-union "^2.0.1"
     extend-shallow "^1.1.2"
 
-podverse-shared@^3.0.0:
+podverse-shared@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-3.1.2.tgz#e9c4f3c1fe7fdbdc3a32cbb676b42c349f02d3b5"
   integrity sha512-goMshPTOT8nIFl2E8lsyBL/Klgnc3znlx5U8iX4E0uxi5XvyfOw7r0cgLMYN2sCXeoGC/FcnPQbD4saiFP7A2g==
@@ -7976,10 +7976,10 @@ react-native-secure-key-store@2.0.9:
   resolved "https://registry.yarnpkg.com/react-native-secure-key-store/-/react-native-secure-key-store-2.0.9.tgz#9094d4d914145a301864b941c6289f57058780a5"
   integrity sha512-9qi1rOlv4qNSpJIjqcIB7d0EQSwo2Yho8NVBT/Jc9NeYibDLHdArLXl8jn8H6nlf+8alk/bXqr4rPINrCTtmog==
 
-react-native-share@3.8.5:
-  version "3.8.5"
-  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-3.8.5.tgz#e74ed39401b9fceef700435cef7c28bc37c7e267"
-  integrity sha512-GjMI2NwUvi8zC7JHWk6NIcg/gFJmK/+cAQ8VStvfy4/kOiXYE5YnpPjvKs/K1Aun0HqYi2vjvZruL5ouDEWxmg==
+react-native-share@6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-6.2.1.tgz#fc28c77fd2f74090b6a5e6302d8f73d25446b96d"
+  integrity sha512-LtT29le01c3k/1sWoumZDyAxigq/JrW4skv8Ri7eySgfIeXrjgnkk1SSR3bt4NrRO74knVngPwtb5xv/UCPP3w==
 
 react-native-status-bar-height@^2.2.0:
   version "2.6.0"

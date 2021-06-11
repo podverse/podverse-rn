@@ -6,6 +6,7 @@ import DocumentPicker from 'react-native-document-picker'
 import RNFS from 'react-native-fs'
 import { Divider, TableSectionSelectors, Text, View, ActivityIndicator, TableCell } from '../components'
 import { translate } from '../lib/i18n'
+import { exportSubscribedPodcastsAsOPML } from '../lib/opmlExport'
 import { createEmailLinkUrl, getMembershipStatus, testProps, parseOpmlFile } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -136,6 +137,8 @@ export class MoreScreen extends React.Component<Props, State> {
       logoutUser()
     } else if (item.key === _importOpml) {
       this._importOpml()
+    } else if (item.key === _exportOpml) {
+      exportSubscribedPodcastsAsOPML()
     } else {
       navigation.navigate(item.routeName)
     }
@@ -214,6 +217,7 @@ const _privacyPolicyKey = 'PrivacyPolicy'
 const _settingsKey = 'Settings'
 const _termsOfServiceKey = 'TermsOfService'
 const _importOpml = 'ImportOpml'
+const _exportOpml = 'ExportOpml'
 
 const allMoreFeatures = [
   {
@@ -229,6 +233,10 @@ const allMoreFeatures = [
   {
     title: translate('Import OPML'),
     key: _importOpml
+  },
+  {
+    title: translate('Export OPML'),
+    key: _exportOpml
   },
   {
     title: translate('Log out'),

@@ -709,7 +709,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               disableLeftSwipe={queryFrom !== PV.Filters._subscribedKey && queryFrom !== PV.Filters._downloadedKey}
               extraData={flatListData}
               handleNoResultsTopAction={this._handleNoResultsTopAction}
-              keyExtractor={(item: any) => item.id}
+              keyExtractor={(item: any) => item?.id}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
