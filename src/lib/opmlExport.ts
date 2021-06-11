@@ -53,20 +53,26 @@ const opmlExport = (podcastList: any) => {
   }
   // need to fix podcast.url below
   function jsonToXML(json: any[]) {
+
+    const filteredPodcasts = json.filter((podcast: any) =>
+      podcast.title && (podcast.addByRSSPodcastFeedUrl || podcast.feedUrls && podcast.feedUrls[0])
+    )
+
     return `
-      <?xml version="1.0"?>
-      <opml version="1.0">
-        <head>
-          <title>OPML exported from Podverse</title>
-          <dateCreated>${new Date()}</dateCreated>
-          <dateModified>${new Date()}</dateModified>
-        </head>
-        <body>
-          ${json.map((podcast: any) =>
-            `<outline text="${escapeEntities(podcast.title)}" type="rss" xmlUrl="${encodeURIComponent(podcast.url)}"/>`
-          )}
-        </body>
-      </opml>
+<?xml version="1.0"?>
+<opml version="1.0">
+  <head>
+    <title>OPML exported from Podverse</title>
+    <dateCreated>${new Date()}</dateCreated>
+    <dateModified>${new Date()}</dateModified>
+  </head>
+  <body>
+${filteredPodcasts.map((podcast: any) =>
+  // eslint-disable-next-line max-len
+  `    <outline text="${escapeEntities(podcast.title)}" type="rss" xmlUrl="${podcast.addByRSSPodcastFeedUrl || podcast.feedUrls[0].url}"/>`
+).join('\n') }
+  </body>
+</opml>
     `.trim()
   }
 }
