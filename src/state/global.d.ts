@@ -109,6 +109,7 @@ declare module 'reactn/default' {
     customAPIDomainEnabled?: boolean
     customWebDomain?: string
     customWebDomainEnabled?: boolean
+    errorReportingEnabled: boolean
     urlsAPI?: any
     urlsWeb?: any
     userAgent?: string
