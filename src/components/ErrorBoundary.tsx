@@ -1,5 +1,7 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import React from 'react'
 import { StyleSheet, SafeAreaView, View, Image, Platform } from 'react-native'
+import Config from 'react-native-config'
 import DeviceInfo from 'react-native-device-info'
 import { NavigationStackProp } from 'react-navigation-stack'
 import { trackCrashEvent } from '../lib/crashManager'
@@ -26,7 +28,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
     return { hasError: true }
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  async componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // You can also log the error to an error reporting service
     const errorRequestBody = {
       details: error.message + "\n" + errorInfo.componentStack.slice(0, 500), // Limitting error desc to 500 chars
@@ -35,7 +37,10 @@ export class ErrorBoundary extends React.Component<Props, State> {
       app_version: DeviceInfo.getVersion()
     }
     
-    trackCrashEvent(errorRequestBody)
+    const errorReportingEnabled = await AsyncStorage.getItem(PV.Keys.ERROR_REPORTING_ENABLED)
+    if (!Config.DISABLE_CRASH_LOGS && errorReportingEnabled) {
+      trackCrashEvent(errorRequestBody)
+    }
   }
 
   backToApp = () => {

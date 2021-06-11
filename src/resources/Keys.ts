@@ -27,6 +27,7 @@ export const Keys = {
   DOWNLOADING_EPISODES: 'DOWNLOADING_EPISODES',
   DOWNLOADING_WIFI_ONLY: 'DOWNLOADING_WIFI_ONLY',
   edit_clip: 'edit_clip',
+  ERROR_REPORTING_ENABLED: 'ERROR_REPORTING_ENABLED',
   GOOGLE_ANALYTICS_CLIENT_ID: 'GOOGLE_ANALYTICS_CLIENT_ID',
   go_to_episode: 'go_to_episode',
   go_to_podcast: 'go_to_podcast',
