@@ -19,6 +19,7 @@ const initialTheme: InitialState = {
   customAPIDomainEnabled: false,
   customWebDomain: '',
   customWebDomainEnabled: false,
+  errorReportingEnabled: false,
   offlineModeEnabled: false,
   overlayAlert: {
     shouldShowAlert: false

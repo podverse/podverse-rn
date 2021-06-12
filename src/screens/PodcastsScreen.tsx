@@ -120,6 +120,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5')
         await AsyncStorage.setItem(PV.Keys.CENSOR_NSFW_TEXT, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5')
+
+        if (!Config.DISABLE_CRASH_LOGS) {
+          await AsyncStorage.setItem(PV.Keys.ERROR_REPORTING_ENABLED, 'TRUE')
+        }
+
         this.setState({ showDataSettingsConfirmDialog: true })
       } else {
         this._initializeScreenData()
@@ -704,7 +709,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               disableLeftSwipe={queryFrom !== PV.Filters._subscribedKey && queryFrom !== PV.Filters._downloadedKey}
               extraData={flatListData}
               handleNoResultsTopAction={this._handleNoResultsTopAction}
-              keyExtractor={(item: any) => item.id}
+              keyExtractor={(item: any) => item?.id}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}

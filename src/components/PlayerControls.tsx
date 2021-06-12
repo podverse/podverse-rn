@@ -159,7 +159,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => togglePlay(this.global)}
+              onPress={togglePlay}
               style={[playerStyles.playButton, playButtonAdjust]}>
               {hasErrored ? (
                 <Icon

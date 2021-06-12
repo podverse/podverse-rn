@@ -9,6 +9,7 @@ export const initializeSettings = async () => {
   const customAPIDomainEnabled = await AsyncStorage.getItem(PV.Keys.CUSTOM_API_DOMAIN_ENABLED)
   const customWebDomain = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN)
   const customWebDomainEnabled = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED)
+  const errorReportingEnabled = await AsyncStorage.getItem(PV.Keys.ERROR_REPORTING_ENABLED)
   const urlsAPI = await PV.URLs.api()
   const urlsWeb = await PV.URLs.web()
 
@@ -18,6 +19,7 @@ export const initializeSettings = async () => {
     customAPIDomainEnabled: customAPIDomainEnabled === 'TRUE',
     customWebDomain: customWebDomain ? customWebDomain : PV.URLs.webDefaultBaseUrl,
     customWebDomainEnabled: customWebDomainEnabled === 'TRUE',
+    errorReportingEnabled,
     offlineModeEnabled,
     urlsAPI,
     urlsWeb
@@ -29,6 +31,14 @@ export const setCensorNSFWText = (value: boolean) => {
     value
       ? await AsyncStorage.setItem(PV.Keys.CENSOR_NSFW_TEXT, 'TRUE')
       : await AsyncStorage.removeItem(PV.Keys.CENSOR_NSFW_TEXT)
+  })
+}
+
+export const setErrorReportingEnabled = (value: boolean) => {
+  setGlobal({ errorReportingEnabled: value }, async () => {
+    value
+      ? await AsyncStorage.setItem(PV.Keys.ERROR_REPORTING_ENABLED, 'TRUE')
+      : await AsyncStorage.removeItem(PV.Keys.ERROR_REPORTING_ENABLED)
   })
 }
 
