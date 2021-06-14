@@ -153,10 +153,9 @@
     "typescript": "3.9.7"
   },
   "resolutions": {
-    "react-native-safe-area-view": "^2.0.0",
-    "css-what": "^5.0.1",
-    "underscore": "^1.12.1",
-    "trim": "^0.0.3"
+    "react-native-safe-area-view": "2.0.0",
+    "underscore": "1.12.1",
+    "trim": "0.0.3"
   },
   "isSwift": true
 }
