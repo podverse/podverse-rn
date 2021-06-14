@@ -16,7 +16,11 @@ export const initializeSettings = async () => {
   const urlsWeb = await PV.URLs.web()
 
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) {
-    await removeLNPayWallet()
+    try {
+      await removeLNPayWallet()
+    } catch (error) {
+      //
+    }
   }
 
   setGlobal({
