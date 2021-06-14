@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import Config from 'react-native-config'
 import { setGlobal } from 'reactn'
 import { PV } from '../../resources'
+import { removeLNPayWallet } from './lnpay'
 
 export const initializeSettings = async () => {
   const censorNSFWText = await AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_TEXT)
@@ -12,6 +14,10 @@ export const initializeSettings = async () => {
   const errorReportingEnabled = await AsyncStorage.getItem(PV.Keys.ERROR_REPORTING_ENABLED)
   const urlsAPI = await PV.URLs.api()
   const urlsWeb = await PV.URLs.web()
+
+  if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) {
+    await removeLNPayWallet()
+  }
 
   setGlobal({
     censorNSFWText,
