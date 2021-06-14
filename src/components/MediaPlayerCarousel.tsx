@@ -91,8 +91,9 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     ReactNativeHapticFeedback.trigger('impactHeavy', HapticOptions)
     this.setState({ boostIsSending: true }, () => {
       this.explosion && this.explosion.start()
+      const { podcastValueFinal } = this.global
       const { nowPlayingItem } = this.global.player
-      sendBoost(nowPlayingItem)
+      sendBoost(nowPlayingItem, podcastValueFinal)
       setTimeout(() => {
         this.setState(
           {
@@ -117,8 +118,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   render() {
     const { navigation } = this.props
     const { activeIndex, boostIsSending, boostWasSent, explosionOrigin } = this.state
-    const { parsedTranscript, player } = this.global
-    const { episode, playbackState } = player
+    const { parsedTranscript, player, podcastValueFinal } = this.global
+    const { episode, nowPlayingItem, playbackState } = player
     const hasChapters = episode?.chaptersUrl
     const hasTranscript = parsedTranscript?.length > 0
     const { lightningNetwork, streamingEnabled } = this.global.session?.valueTagSettings || {}
@@ -142,6 +143,13 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const streamingButtonSubTextStyles = streamingEnabled
       ? [styles.boostButtonSubText, { color: PV.Colors.green }]
       : [styles.boostButtonSubText]
+
+    const hasValueInfo =
+      !!Config.ENABLE_VALUE_TAG_TRANSACTIONS && (
+        podcastValueFinal?.length > 0
+        || nowPlayingItem?.episodeValue?.length > 0
+        || nowPlayingItem?.podcastValue?.length > 0
+      )
 
     return (
       <View style={styles.wrapper} transparent>
@@ -173,7 +181,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           passiveDotHeight={8}
           passiveDotWidth={8}
         />
-        {!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && lnpayEnabled && (
+        {!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && lnpayEnabled && hasValueInfo && (
           <View style={styles.boostButtonsContainer}>
             <TouchableOpacity onPress={this._toggleSatStreaming} style={styles.boostButton}>
               <Text style={streamingButtonMainTextStyles} testID='stream_button_text_1'>
