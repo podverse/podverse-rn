@@ -350,6 +350,13 @@ const combineTransactionAmounts = (
 
   const bundledAmount = bundledQueue[bundledValueTransactionIndex].normalizedValueRecipient.amount
   transaction.normalizedValueRecipient.amount = bundledAmount + transaction.normalizedValueRecipient.amount
+
+  // Update the satoshiStreamStats with the combined amount
+  transaction.satoshiStreamStats[7629169] = {
+    ...transaction.satoshiStreamStats[7629169],
+    amount: transaction.normalizedValueRecipient.amount
+  }
+
   return transaction
 }
 
