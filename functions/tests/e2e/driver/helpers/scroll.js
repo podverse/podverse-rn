@@ -12,9 +12,11 @@ const performScroll = async (direction, numberOfScrolls = 1) => {
   let i
   for (i = 0; i < numberOfScrolls; i++) {
     const action = new wd.TouchAction(driver)
-    action.press(getCenterCoordinates())
+    const centerCoordinates = await getCenterCoordinates()
+    action.press(centerCoordinates)
     action.wait(1000)
-    action.moveTo(getCenterCoordinates(0, yDestination))
+    const newCoordinates = await getCenterCoordinates(0, yDestination)
+    action.moveTo(newCoordinates)
     action.release()
     await action.perform()
   }
