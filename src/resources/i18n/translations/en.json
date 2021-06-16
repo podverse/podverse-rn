@@ -73,7 +73,7 @@
   "crypto_consent_text_4": "- Lightning Network fees are automatically added to each transaction and are calculated by the Lightning Network. Podverse cannot predict transaction fees. The fees are charged separately and in addition to your donation.",
   "crypto_consent_checkbox_text": "I have read and agreed to the Crypto Terms and Conditions",
   "Crypto": "Crypto",
-  "Crypto Setup": "Crypto Setup",
+  "Bitcoin Lightning Setup": "Bitcoin Lightning Setup",
   "Add Wallet": "Add Wallet",
   "Custom API domain": "Custom API domain",
   "Custom API domain description": "Enter a valid base URL for a custom Podverse API instance.",

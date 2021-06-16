@@ -35,7 +35,7 @@ export class CryptoSetupScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = () => ({
-    title: translate('Crypto Setup')
+    title: translate('Bitcoin Lightning Setup')
   })
 
   componentDidMount() {
@@ -47,7 +47,7 @@ export class CryptoSetupScreen extends React.Component<Props, State> {
       localStreamingAmount: streamingAmount?.toString()
     })
 
-    trackPageView('/crypto-setup', 'Crypto Setup Screen')
+    trackPageView('/bitcoin-lightning-setup', 'Bitcoin Lightning Setup Screen')
   }
 
   _showLNPaySetup = async (toggle: boolean) => {
