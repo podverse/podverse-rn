@@ -1,6 +1,7 @@
 import React from 'react'
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
+import { PV } from '../resources'
 import { testProps } from '../lib/utility'
 
 type Props = {
@@ -21,9 +22,7 @@ export const SwipeRowBack = (props: Props) => {
       style={[styles, s.swipeRowBack, globalTheme.swipeRowBack]}
       {...testProps(`${testID}_swipe_row_back`)}>
       {isLoading ? (
-        <View style={s.textWrapper}>
           <ActivityIndicator animating color={globalTheme.activityIndicatorAlternate.color} size='large' />
-        </View>
       ) : (
         <Text style={s.textWrapper}>{text}</Text>
       )}
@@ -34,13 +33,12 @@ export const SwipeRowBack = (props: Props) => {
 const s = StyleSheet.create({
   swipeRowBack: {
     alignItems: 'flex-end',
-    alignSelf: 'stretch',
     flex: 1,
-    paddingRight: 8,
+    paddingRight: 10,
     justifyContent: 'center'
   },
   textWrapper: {
     textAlign: 'center',
-    width: 82
+    fontWeight: PV.Fonts.weights.semibold
   }
 })
