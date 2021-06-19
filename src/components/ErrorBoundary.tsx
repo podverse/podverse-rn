@@ -3,6 +3,7 @@ import { StyleSheet, SafeAreaView, View, Image, Platform } from 'react-native'
 import Config from 'react-native-config'
 import DeviceInfo from 'react-native-device-info'
 import { NavigationStackProp } from 'react-navigation-stack'
+import { NavigationActions, StackActions } from 'react-navigation'
 import { trackCrashEvent } from '../lib/crashManager'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
@@ -44,7 +45,13 @@ export class ErrorBoundary extends React.Component<Props, State> {
   }
 
   backToApp = () => {
-    this.props.navigation.navigate(PV.RouteNames.PodcastsScreen)
+    this.props.navigation.dispatch(StackActions.reset({
+      index: 0,
+      key: null,
+      actions: [
+        NavigationActions.navigate({routeName:PV.RouteNames.TabNavigator})
+      ]
+    }))
     this.setState({ hasError: false })
   }
 

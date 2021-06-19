@@ -653,14 +653,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
       showDataSettingsConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
-    const { offlineModeEnabled } = this.global
-    const { subscribedPodcastIds } = this.global.session.userInfo
+    const { offlineModeEnabled, session, subscribedPodcasts = [], subscribedPodcastsTotalCount = 0 } = this.global
+    const { subscribedPodcastIds } = session?.userInfo
 
     let flatListData = []
     let flatListDataTotalCount = null
     if (queryFrom === PV.Filters._subscribedKey) {
-      flatListData = this.global.subscribedPodcasts
-      flatListDataTotalCount = this.global.subscribedPodcastsTotalCount
+      flatListData = subscribedPodcasts
+      flatListDataTotalCount = subscribedPodcastsTotalCount
     } else if (queryFrom === PV.Filters._downloadedKey) {
       flatListData = this.global.downloadedPodcasts
       flatListDataTotalCount = this.global.downloadedPodcasts && this.global.downloadedPodcasts.length
