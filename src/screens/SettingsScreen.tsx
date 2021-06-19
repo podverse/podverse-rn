@@ -327,12 +327,12 @@ export class SettingsScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleCryptoSetupPressed = async () => {
-    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_CRYPTO_TERMS)
+  _handleValueTagSetupPressed = async () => {
+    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS)
     if(consentGivenString && JSON.parse(consentGivenString) === true) {
-      this.props.navigation.navigate(PV.RouteNames.CryptoSetupScreen)
+      this.props.navigation.navigate(PV.RouteNames.ValueTagSetupScreen)
     } else {
-      this.props.navigation.navigate(PV.RouteNames.CryptoPreviewScreen)
+      this.props.navigation.navigate(PV.RouteNames.ValueTagPreviewScreen)
     }  
   }
 
@@ -377,10 +377,10 @@ export class SettingsScreen extends React.Component<Props, State> {
               {!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && 
                 <View>
                   <TableTextCell
-                    onPress={this._handleCryptoSetupPressed}
+                    onPress={this._handleValueTagSetupPressed}
                     testIDPrefix={testIDPrefix}
-                    testIDSuffix='crypto_setup'
-                    text={translate('Crypto Setup')}
+                    testIDSuffix='value_tag_setup'
+                    text={translate('Bitcoin Lightning Setup')}
                     hideChevron={false}
                   />
                   <Divider style={styles.divider} />

@@ -42,7 +42,7 @@ export const toggleLNPayFeature = async (toggle: boolean) => {
 
 export const saveLNPayWallet = async (wallet: LNWallet) => {
   await RNSecureKeyStore.set(PV.Keys.LN_WALLET_KEY, JSON.stringify(wallet), {
-    accessible: ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
+    accessible: ACCESSIBLE.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY
   })
 }
 

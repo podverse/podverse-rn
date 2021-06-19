@@ -132,10 +132,6 @@ const syncItemsWithLocalStorage = async (userInfo: any) => {
 export const loginUser = async (credentials: Credentials) => {
   try {
     const userInfo = await login(credentials.email, credentials.password)
-    await syncItemsWithLocalStorage(userInfo)
-    await getSubscribedPodcasts()
-    await askToSyncWithNowPlayingItem()
-
     const globalState = getGlobal()
     const { valueTagSettings } = globalState.session
 
@@ -145,7 +141,13 @@ export const loginUser = async (credentials: Credentials) => {
         isLoggedIn: true,
         valueTagSettings
       }
+    }, () => {
+      getSubscribedPodcasts()
     })
+
+    await syncItemsWithLocalStorage(userInfo)
+    await askToSyncWithNowPlayingItem()
+
     return userInfo
   } catch (error) {
     throw error

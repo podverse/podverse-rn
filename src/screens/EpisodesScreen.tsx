@@ -419,8 +419,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
       showNoInternetConnectionMessage
     } = this.state
     const { navigation } = this.props
-    const { offlineModeEnabled } = this.global
-    const { subscribedPodcastIds } = this.global.session.userInfo
+    const { offlineModeEnabled, session } = this.global
+    const { subscribedPodcastIds } = session?.userInfo
 
     const noSubscribedPodcasts =
       queryFrom === PV.Filters._subscribedKey &&
