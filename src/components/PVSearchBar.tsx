@@ -1,5 +1,4 @@
 import React from 'react'
-import { Image } from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import { useGlobal } from 'reactn'
 import { testProps } from '../lib/utility'

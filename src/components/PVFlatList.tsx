@@ -151,13 +151,18 @@ export const PVFlatList = (props: Props) => {
           onEndReachedThreshold={onEndReachedThreshold}
           {...(onRefresh
             ? {
-                refreshControl: <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+                refreshControl: <RefreshControl 
+                                  refreshing={isRefreshing} 
+                                  onRefresh={onRefresh} 
+                                  tintColor={globalTheme.activityIndicator.color}
+                                />,
+                
               }
             : {})}
           renderHiddenItem={renderHiddenItem || _renderHiddenItem}
           renderSectionHeader={renderSectionHeader}
           renderItem={renderItem}
-          rightOpenValue={-100}
+          rightOpenValue={-120}
           sections={sections}
           stickySectionHeadersEnabled={!!stickySectionHeadersEnabled}
           style={[globalTheme.flatList, transparent ? { backgroundColor: 'transparent' } : {}]}
