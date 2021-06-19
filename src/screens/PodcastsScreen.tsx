@@ -21,7 +21,7 @@ import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { getAppUserAgent, setAppUserAgent, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisode } from '../services/episode'
@@ -251,7 +251,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         } else if (path === PV.DeepLinks.Episode.pathPrefix) {
           const episode = await getEpisode(id)
           if (episode) {
-            const podcast = await getPodcast(episode.podcast.id)
+            const podcast = await getPodcast(episode.podcast?.id)
             navigate(PV.RouteNames.PodcastScreen, {
               podcast,
               navToEpisodeWithId: id
@@ -500,7 +500,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _renderPodcastItem = ({ item, index }) => (
       <PodcastTableCell
-        id={item.id}
+        id={item?.id}
         lastEpisodePubDate={item.lastEpisodePubDate}
         onPress={() =>
           this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
@@ -655,7 +655,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     } = this.state
     const { offlineModeEnabled, session, subscribedPodcasts = [], subscribedPodcastsTotalCount = 0 } = this.global
     const { subscribedPodcastIds } = session?.userInfo
-
+console.log('subscribedPodcasts', subscribedPodcasts)
     let flatListData = []
     let flatListDataTotalCount = null
     if (queryFrom === PV.Filters._subscribedKey) {
@@ -679,6 +679,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
       Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE
         ? translate('Scan QR Code')
         : translate('Search')
+
+    console.log('flatListData', flatListData)
 
     return (
       <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
@@ -709,7 +711,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               disableLeftSwipe={queryFrom !== PV.Filters._subscribedKey && queryFrom !== PV.Filters._downloadedKey}
               extraData={flatListData}
               handleNoResultsTopAction={this._handleNoResultsTopAction}
-              keyExtractor={(item: any) => item?.id}
+              keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}

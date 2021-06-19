@@ -30,7 +30,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { safeKeyExtractor, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
@@ -86,12 +86,12 @@ export class PodcastScreen extends React.Component<Props, State> {
 
     const podcast = this.props.navigation.getParam('podcast')
     const podcastId =
-      (podcast && podcast.id) ||
-      (podcast && podcast.addByRSSPodcastFeedUrl) ||
+      (podcast?.id) ||
+      (podcast?.addByRSSPodcastFeedUrl) ||
       this.props.navigation.getParam('podcastId')
     const viewType = this.props.navigation.getParam('viewType') || PV.Filters._episodesKey
 
-    if (podcast && (podcast.id || podcast.addByRSSPodcastFeedUrl)) {
+    if (podcast?.id || podcast?.addByRSSPodcastFeedUrl) {
       this.props.navigation.setParams({
         podcastId,
         podcastTitle: podcast.title,
@@ -370,9 +370,7 @@ static navigationOptions = ({ navigation }) => {
 
     if (viewType === PV.Filters._clipsKey) {
       return (
-        item &&
-        item.episode &&
-        item.episode.id && (
+        item?.episode?.id && (
           <ClipTableCell
             handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
             showEpisodeInfo
@@ -452,7 +450,7 @@ static navigationOptions = ({ navigation }) => {
     this.setState({ showDeleteDownloadedEpisodesDialog: false }, () => {
       (async () => {
         const { podcast, podcastId } = this.state
-        const id = (podcast && podcast.id) || podcastId
+        const id = podcast?.id || podcastId
         try {
           await removeDownloadedPodcast(id)
         } catch (error) {
@@ -533,7 +531,7 @@ static navigationOptions = ({ navigation }) => {
 
   _handleToggleAutoDownload = (autoDownloadOn: boolean) => {
     const { podcast, podcastId } = this.state
-    const id = (podcast && podcast.id) || podcastId
+    const id = podcast?.id || podcastId
     const { addByRSSPodcastFeedUrl } = podcast 
     
     if(addByRSSPodcastFeedUrl) { 
@@ -696,7 +694,7 @@ static navigationOptions = ({ navigation }) => {
                 isLoadingMore={isLoadingMore}
                 isRefreshing={isRefreshing}
                 ItemSeparatorComponent={this._ItemSeparatorComponent}
-                keyExtractor={(item: any) => item.id}
+                keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
                 ListHeaderComponent={
                   viewType === PV.Filters._episodesKey || viewType === PV.Filters._clipsKey
                     ? this._ListHeaderComponent

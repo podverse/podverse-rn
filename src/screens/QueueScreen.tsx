@@ -18,6 +18,7 @@ import {
 import { translate } from '../lib/i18n'
 import {
   overrideImageUrlWithChapterImageUrl,
+  safeKeyExtractor,
   testProps
 } from '../lib/utility'
 import { PV } from '../resources'
@@ -393,7 +394,8 @@ export class QueueScreen extends React.Component<Props, State> {
             disableLeftSwipe
             extraData={historyItems}
             isLoadingMore={isLoadingMore}
-            keyExtractor={(item: any) => item.clipId || item.episodeId}
+            keyExtractor={(item: any, index: number) =>
+                safeKeyExtractor(testIDPrefix, index, item?.clipId || item?.episodeId)}
             noResultsMessage={translate('No history items found')}
             onEndReached={this._onEndReached}
             renderItem={this._renderHistoryItem}

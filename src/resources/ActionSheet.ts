@@ -33,8 +33,8 @@ const mediaMoreButtons = (
   const downloadingText = isDownloading ? translate('Downloading Episode') : translate('Download')
   const isDownloaded = globalState.downloadedEpisodeIds[item.episodeId]
   const buttons = []
-  const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session.userInfo.id, '')
-  const isLoggedIn = safelyUnwrapNestedVariable(() => globalState.session.isLoggedIn, '')
+  const loggedInUserId = safelyUnwrapNestedVariable(() => globalState.session?.userInfo?.id, '')
+  const isLoggedIn = safelyUnwrapNestedVariable(() => globalState.session?.isLoggedIn, '')
   const globalTheme = safelyUnwrapNestedVariable(() => globalState.globalTheme, {})
 
   if (item.ownerId && item.ownerId === loggedInUserId) {

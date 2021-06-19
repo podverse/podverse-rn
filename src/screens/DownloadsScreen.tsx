@@ -3,7 +3,7 @@ import React from 'reactn'
 import { ActionSheet, Divider, DownloadTableCell, FlatList, SwipeRowBack, View } from '../components'
 import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
+import { safeKeyExtractor, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import {
@@ -109,7 +109,7 @@ export class DownloadsScreen extends React.Component<Props, State> {
           dataTotalCount={downloadsArray.length}
           disableLeftSwipe={false}
           extraData={downloadsArray}
-          keyExtractor={(item: any) => item.episodeId}
+          keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.episodeId)}
           ItemSeparatorComponent={this._ItemSeparatorComponent}
           noResultsMessage={translate('No downloads in progress')}
           renderHiddenItem={this._renderHiddenItem}

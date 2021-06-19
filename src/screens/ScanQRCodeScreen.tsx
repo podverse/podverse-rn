@@ -60,7 +60,7 @@ export const ScanQRCodeScreen = (props: Props) => {
         await addAddByRSSPodcast(parsedData.feedUrl)
         const podcast = await getAddByRSSPodcastLocally(parsedData.feedUrl)
   
-        if (parsedData.userInfo && podcast && podcast.id) {
+        if (parsedData.userInfo && podcast?.id) {
           await saveSpecialUserInfoForPodcast(parsedData.userInfo, podcast.id)
         }
   

@@ -132,7 +132,8 @@ export const getAddByRSSPodcastFeedUrlsLocally = async () => {
 
 const setAddByRSSPodcastsLocally = async (podcasts: any[]) => {
   if (Array.isArray(podcasts)) {
-    await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCASTS, JSON.stringify(podcasts))
+    const cleanedPodcasts = podcasts.filter((podcast: any) => !!podcast || typeof podcast !== 'object')
+    await AsyncStorage.setItem(PV.Keys.ADD_BY_RSS_PODCASTS, JSON.stringify(cleanedPodcasts))
   }
 }
 
