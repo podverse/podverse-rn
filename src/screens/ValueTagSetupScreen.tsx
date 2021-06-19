@@ -22,9 +22,9 @@ type State = {
   localStreamingAmount: string
 }
 
-const testIDPrefix = 'crypto_setup_screen'
+const testIDPrefix = 'value_tag_setup_screen'
 
-export class CryptoSetupScreen extends React.Component<Props, State> {
+export class ValueTagSetupScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     
