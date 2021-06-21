@@ -12,10 +12,11 @@ type Props = any
 
 type State = {
   apiKey: string
+  isAddingWallet: boolean
+  isKeyboardShowing: boolean
   walletName: string
   walletKey: string
   walletId: string
-  isKeyboardShowing: boolean
 }
 
 export class LNPaySignupScreen extends React.Component<Props, State> {
@@ -25,10 +26,11 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
     super()
     this.state = {
       apiKey: '',
+      isAddingWallet: false,
+      isKeyboardShowing: false,
       walletName: '',
       walletKey: '',
-      walletId: '',
-      isKeyboardShowing: false
+      walletId: ''
     }
   }
 
@@ -56,6 +58,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
   }
 
   _attemptCreateWallet = async () => {
+    this.setState({ isAddingWallet: true })
     try {
       let newWallet = null
       if (this.state.apiKey) {
@@ -93,10 +96,13 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
     } catch (err) {
       Alert.alert('LNPay Error', err.message)
     }
+    this.setState({ isAddingWallet: false })
   }
 
 
   render() {
+    const { isAddingWallet } = this.state
+
     const instructions = [
       translate('LNPayDescriptionText1'),
       translate('LNPayDescriptionText2'),
@@ -193,11 +199,12 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
               />
             )}
             <Button
-              testID='create_wallet_button'
               disabled={!this.state.apiKey || (!!this.state.walletId && !this.state.walletKey)}
+              isLoading={isAddingWallet}
+              onPress={this._attemptCreateWallet}
+              testID='create_wallet_button'
               text={translate('Add Wallet')}
               wrapperStyles={{ marginBottom: 20 }}
-              onPress={this._attemptCreateWallet}
             />
           </ScrollView>
       </View>
