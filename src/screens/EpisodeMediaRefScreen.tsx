@@ -116,11 +116,12 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
       newState.queryPage = queryOptions.queryPage || 1
 
       this.shouldLoad = true
-      return newState
+
     } catch (error) {
       this.shouldLoad = true
-      return newState
     }
+
+    return newState
   }
 
   _ItemSeparatorComponent = () => <Divider />

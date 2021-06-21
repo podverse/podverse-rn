@@ -655,7 +655,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     } = this.state
     const { offlineModeEnabled, session, subscribedPodcasts = [], subscribedPodcastsTotalCount = 0 } = this.global
     const { subscribedPodcastIds } = session?.userInfo
-console.log('subscribedPodcasts', subscribedPodcasts)
+
     let flatListData = []
     let flatListDataTotalCount = null
     if (queryFrom === PV.Filters._subscribedKey) {
@@ -679,8 +679,6 @@ console.log('subscribedPodcasts', subscribedPodcasts)
       Config.DEFAULT_ACTION_NO_SUBSCRIBED_PODCASTS === PV.Keys.DEFAULT_ACTION_BUTTON_SCAN_QR_CODE
         ? translate('Scan QR Code')
         : translate('Search')
-
-    console.log('flatListData', flatListData)
 
     return (
       <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
@@ -847,14 +845,19 @@ console.log('subscribedPodcasts', subscribedPodcasts)
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
-
-      this.shouldLoad = true
-      return newState
     } catch (error) {
       console.log('PodcastsScreen _queryData error', error)
-      this.shouldLoad = true
-      return newState
     }
+
+    newState.flatListData = this.cleanFlatListData(newState.flatListData)
+    
+    this.shouldLoad = true
+
+    return newState
+  }
+
+  cleanFlatListData = (flatListData: any[]) => {
+    return flatListData.filter((item) => !!item?.id)
   }
 }
 

@@ -787,15 +787,18 @@ static navigationOptions = ({ navigation }) => {
     try {
       if (filterKey === PV.Filters._episodesKey && podcast && podcast.addByRSSPodcastFeedUrl) {
         newState.flatListData = podcast.episodes || []
+        newState.flatListData = this.cleanFlatListData(newState.flatListData, filterKey)
         newState.flatListDataTotalCount = newState.flatListData.length
       } else if (filterKey === PV.Filters._episodesKey) {
         const results = await this._queryEpisodes(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
+        newState.flatListData = this.cleanFlatListData(newState.flatListData, filterKey)
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (filterKey === PV.Filters._clipsKey) {
         const results = await this._queryClips(querySort, queryOptions.queryPage)
         newState.flatListData = [...flatListData, ...results[0]]
+        newState.flatListData = this.cleanFlatListData(newState.flatListData, filterKey)
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       } else if (PV.FilterOptions.screenFilters.PodcastScreen.sort.some((option) => option === filterKey)) {
@@ -808,18 +811,28 @@ static navigationOptions = ({ navigation }) => {
         }
 
         newState.flatListData = [...flatListData, ...results[0]]
+        newState.flatListData = this.cleanFlatListData(newState.flatListData, viewType)
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
       newState.queryPage = queryOptions.queryPage || 1
 
       newState.selectedFilterLabel = await getSelectedFilterLabel(viewType)
-      this.shouldLoad = true
-      return newState
     } catch (error) {
-      console.log(error)
-      this.shouldLoad = true
-      return newState
+      console.log('PodcastScreen queryData error:', error)
+    }
+    this.shouldLoad = true
+    
+    return newState
+  }
+
+  cleanFlatListData = (flatListData: any[], viewTypeKey: string | null) => {
+    if (viewTypeKey === PV.Filters._episodesKey) {
+      return flatListData.filter((item: any) => !!item?.id)
+    } else if (viewTypeKey === PV.Filters._clipsKey) {
+      return flatListData.filter((item: any) => !!item?.episode?.id)
+    } else {
+      return flatListData
     }
   }
 }

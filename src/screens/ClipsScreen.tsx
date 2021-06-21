@@ -588,12 +588,19 @@ export class ClipsScreen extends React.Component<Props, State> {
         newState.flatListDataTotalCount = results[1]
       }
 
-      this.shouldLoad = true
-      return newState
+      
     } catch (error) {
-      this.shouldLoad = true
-      return newState
+      console.log('ClipsScreen queryData error:', error)
     }
+    newState.flatListData = this.cleanFlatListData(newState.flatListData)
+
+    this.shouldLoad = true
+
+    return newState
+  }
+
+  cleanFlatListData = (flatListData: any[]) => {
+    return flatListData.filter((item: any) => !!item?.episode?.id)
   }
 
   _queryAllMediaRefs = async (sort: string | null, page = 1) => {

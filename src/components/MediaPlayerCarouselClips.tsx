@@ -337,11 +337,11 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
       newState.flatListDataTotalCount = results[1]
       newState.querySort = this._validSort()
       this.shouldLoad = true
-      return newState
     } catch (error) {
       this.shouldLoad = true
-      return newState
     }
+
+    return newState
   }
 }
 
