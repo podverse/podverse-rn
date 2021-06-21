@@ -33,7 +33,7 @@ export const EpisodeTableHeader = (props: Props) => {
     episode?.imageUrl ||
     episode?.podcast?.shrunkImageUrl ||
     episode?.podcast_shrunkImageUrl ||
-    episode?.podcast.imageUrl
+    episode?.podcast?.imageUrl
 
   const pubDate = episode && episode.pubDate
   const isDownloaded = episodeDownloaded
