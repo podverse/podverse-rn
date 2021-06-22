@@ -558,7 +558,9 @@ export const core = StyleSheet.create({
     paddingVertical: 8
   },
   headerText: {
-    fontSize: PV.Fonts.sizes.xxxl
+    fontSize: PV.Fonts.sizes.xxl,
+    fontWeight: PV.Fonts.weights.bold,
+    marginBottom: 16
   },
   ListHeaderComponent: {
     borderBottomWidth: 0,
@@ -571,6 +573,9 @@ export const core = StyleSheet.create({
   row: {
     backgroundColor: 'transparent',
     flexDirection: 'row'
+  },
+  sectionHeaderText: {
+    fontSize: PV.Fonts.sizes.xxxl
   },
   selectorIcon: {
     flex: 0,
@@ -616,7 +621,9 @@ export const core = StyleSheet.create({
   },
   textInputWrapper: {
     paddingHorizontal: 16,
-    paddingVertical: 12
+    paddingVertical: 12,
+    marginBottom: 16,
+    marginTop: 0
   },
   view: {
     alignItems: 'center',

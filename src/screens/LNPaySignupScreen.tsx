@@ -39,7 +39,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
   })
 
   componentDidMount() {
-    trackPageView('/lnpaysignup', 'LN Pay Signup')
+    trackPageView('/lnpaysignup', 'LNPay Signup')
     Keyboard.addListener("keyboardDidShow", () => {
       this.setState({isKeyboardShowing: true})
     })
@@ -75,7 +75,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
             newWallet = existingWallet
           }
         } else {
-          newWallet = await createWallet(this.state.apiKey, this.state.walletName)
+          newWallet = await createWallet(this.state.apiKey, this.state.walletName.trim())
         }
 
         if (newWallet) {
@@ -156,7 +156,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
               <TextInput
                 testID='create_wallet_name_input'
                 value={this.state.walletName}
-                onChangeText={(newText: string) => this.setState({ walletName: newText.trim() })}
+                onChangeText={(newText: string) => this.setState({ walletName: newText })}
                 wrapperStyle={{ marginTop: 10 }}
                 placeholder={translate('Wallet Name (Optional)')}
                 eyebrowTitle={translate('Wallet Name (Optional)')}
