@@ -4,7 +4,7 @@ import React from 'reactn'
 import { FlatList, Icon, NavHeaderButtonText, Text, View } from '../components'
 import { generateSections } from '../lib/filters'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
+import { safeKeyExtractor, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getDefaultCategory } from '../services/category'
 import { trackPageView } from '../services/tracking'
@@ -113,19 +113,19 @@ export class FilterScreen extends React.Component<Props, State> {
       options.selectedSortItemKey = selectedSortItemKey
       if (item.value === PV.Filters._categoryKey) {
         const defaultCategory = await getDefaultCategory()
-        options.selectedCategoryItemKey = defaultCategory.id
+        options.selectedCategoryItemKey = defaultCategory?.id
       }
     } else if (section.value === PV.Filters._sectionCategoryKey) {
       if (item.parentId) {
         options.selectedCategorySubItemKey = item.value || item.id
         options.selectedCategoryItemKey = item.parentId
       } else {
-        options.selectedCategoryItemKey = item.value || item.id
+        options.selectedCategoryItemKey = item?.value || item?.id
       }
       options.selectedFilterItemKey = selectedFilterItemKey
       options.selectedSortItemKey = selectedSortItemKey
     } else if (section.value === PV.Filters._sectionSortKey) {
-      options.selectedSortItemKey = item.value
+      options.selectedSortItemKey = item?.value
       options.selectedFilterItemKey = selectedFilterItemKey
       options.selectedCategoryItemKey = selectedCategoryItemKey
       options.selectedCategorySubItemKey = selectedCategorySubItemKey
@@ -186,7 +186,7 @@ export class FilterScreen extends React.Component<Props, State> {
       selectedSortItemKey
     } = this.state
 
-    const value = item.value || item.id
+    const value = item?.value || item?.id
 
     /* Do not render category cells unless the category filter is active. */
     if (
@@ -202,7 +202,7 @@ export class FilterScreen extends React.Component<Props, State> {
     let isActive = false
     if (section.value === PV.Filters._sectionCategoryKey) {
       if (selectedCategorySubItemKey) {
-        if (item.parentId && item.id === selectedCategorySubItemKey) {
+        if (item?.parentId && item?.id === selectedCategorySubItemKey) {
           isActive = true
         }
       } else if (item.value && item.value === selectedCategoryItemKey) {
@@ -245,7 +245,7 @@ export class FilterScreen extends React.Component<Props, State> {
         <FlatList
           disableLeftSwipe
           disableNoResultsMessage
-          keyExtractor={(item: any) => item.value || item.id}
+          keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.value || item?.id)}
           renderSectionHeader={({ section }) => (
               <View style={styles.sectionItemWrapper}>
                 <Text style={styles.sectionItemText}>{section.title}</Text>

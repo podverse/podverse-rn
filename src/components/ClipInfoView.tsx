@@ -63,7 +63,7 @@ export class ClipInfoView extends React.PureComponent<Props> {
       startTime
     } = this.props
     const { session } = this.global
-    const userId = session.userInfo.id
+    const userId = session?.userInfo?.id
 
     let { title } = this.props
     if (!title) {

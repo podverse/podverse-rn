@@ -238,8 +238,8 @@ export const generateCategoryItems = (categories: any[]) => {
   if (categories && categories.length > 0) {
     for (const category of categories) {
       items.push({
-        label: category.title,
-        value: category.id
+        label: category?.title,
+        value: category?.id
       })
     }
   }
@@ -630,4 +630,12 @@ export const parseOpmlFile = (data: any, topLevel = false): string[] => {
   }
 
   return resultArr
+}
+
+export const safeKeyExtractor = (listName: string, index: number, id?: string) => {
+  if (id) {
+    return id
+  } else {
+    return `${listName}_${index}`
+  }
 }

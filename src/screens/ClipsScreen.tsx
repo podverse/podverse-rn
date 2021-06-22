@@ -19,7 +19,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { safelyUnwrapNestedVariable, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { safeKeyExtractor, safelyUnwrapNestedVariable, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
@@ -254,7 +254,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     })
   }
 
-  _renderClipItem = ({ item, index }) => item && item.episode && item.episode.id ? (
+  _renderClipItem = ({ item, index }) => item?.episode?.id ? (
       <ClipTableCell
         item={item}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.episode.podcast))}
@@ -441,7 +441,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             isLoadingMore={isLoadingMore}
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
-            keyExtractor={(item: any) => item.id}
+            keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
             ListHeaderComponent={this._ListHeaderComponent}
             noResultsTopActionText={noSubscribedPodcasts ? translate('Search') : ''}
             noResultsMessage={
@@ -588,12 +588,19 @@ export class ClipsScreen extends React.Component<Props, State> {
         newState.flatListDataTotalCount = results[1]
       }
 
-      this.shouldLoad = true
-      return newState
+      
     } catch (error) {
-      this.shouldLoad = true
-      return newState
+      console.log('ClipsScreen queryData error:', error)
     }
+    newState.flatListData = this.cleanFlatListData(newState.flatListData)
+
+    this.shouldLoad = true
+
+    return newState
+  }
+
+  cleanFlatListData = (flatListData: any[]) => {
+    return flatListData.filter((item: any) => !!item?.episode?.id)
   }
 
   _queryAllMediaRefs = async (sort: string | null, page = 1) => {
