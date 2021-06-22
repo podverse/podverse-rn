@@ -632,6 +632,11 @@ export const parseOpmlFile = (data: any, topLevel = false): string[] => {
   return resultArr
 }
 
+export const numberWithCommas = (x?: number) => {
+  if (!x || x === 0) return x  
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
 export const safeKeyExtractor = (listName: string, index: number, id?: string) => {
   if (id) {
     return id

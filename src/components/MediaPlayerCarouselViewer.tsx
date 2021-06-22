@@ -43,8 +43,10 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     const { player, screenPlayer } = this.global
     const { currentChapter, nowPlayingItem = {} } = player
     const { isLoading } = screenPlayer
-    let { clipId, clipEndTime, clipStartTime, clipTitle, podcastImageUrl } = nowPlayingItem
+    const { episodeImageUrl, podcastImageUrl } = nowPlayingItem
+    let { clipId, clipEndTime, clipStartTime, clipTitle } = nowPlayingItem
     let clipUrl = ''
+    let imageUrl = episodeImageUrl || podcastImageUrl
 
     // If a clip is currently playing, then load the clip info.
     // Else if a chapter is currently playing, then override with the chapter info.
@@ -54,7 +56,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       clipUrl = currentChapter.linkUrl
       clipStartTime = currentChapter.startTime
       clipTitle = currentChapter.title
-      podcastImageUrl = currentChapter.imageUrl || podcastImageUrl
+      imageUrl = currentChapter.imageUrl || episodeImageUrl || podcastImageUrl
     }
 
     const imageStyles = [styles.image] as any
@@ -96,7 +98,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             activeOpacity={1}
             {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
             style={styles.imageContainer}>
-            <FastImage key={podcastImageUrl} source={podcastImageUrl} styles={imageStyles} />
+            <FastImage key={imageUrl} source={imageUrl} styles={imageStyles} />
           </TouchableOpacity>
         </RNView>
         {!!clipId && (

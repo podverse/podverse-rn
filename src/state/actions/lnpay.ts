@@ -13,6 +13,24 @@ export interface LNWallet {
   }
 }
 
+export interface LNWalletInfo {
+  id: string
+  created_at: number
+  updated_at: number
+  user_label: string
+  balance: number
+  balance_msat: number | null
+  statusType: {
+    type: string
+    name: string
+    display_name: string
+  }
+  walletType: {
+    name: string
+    display_name: string
+  }
+}
+
 export const toggleLNPayFeature = async (toggle: boolean) => {
   const globalState = getGlobal()
   const defaultBoostAmount = DEFAULT_BOOST_PAYMENT
