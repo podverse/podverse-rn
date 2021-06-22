@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import DraggableFlatList from 'react-native-draggable-flatlist'
+import { safeKeyExtractor } from '../lib/utility'
 
 type Props = {
   data: any[]
@@ -17,9 +18,9 @@ export class PVSortableList extends React.Component<Props> {
       <DraggableFlatList
         data={data}
         keyExtractor={
-          (item) => {
-            const id = item.clipId || item.episodeId || item.id
-            return `draggable-item-${id}-${isEditing ? 'isEditing' : 'isNotEditing'}`}
+          (item: any, index: number) => {
+            const safeKey = safeKeyExtractor('sortable-list', index, item?.clipId || item?.episodeId || item?.id)
+            return `draggable-item-${safeKey}-${isEditing ? 'isEditing' : 'isNotEditing'}`}
           }
         onDragEnd={onDragEnd}
         renderItem={renderItem}

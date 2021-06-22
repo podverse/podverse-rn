@@ -4,6 +4,7 @@ import React from 'reactn'
 import { ActionSheet, ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from '../components'
 import { getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
+import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import { getMediaRefs } from '../services/mediaRef'
@@ -115,11 +116,12 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
       newState.queryPage = queryOptions.queryPage || 1
 
       this.shouldLoad = true
-      return newState
+
     } catch (error) {
       this.shouldLoad = true
-      return newState
     }
+
+    return newState
   }
 
   _ItemSeparatorComponent = () => <Divider />
@@ -235,7 +237,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
           extraData={flatListData}
           isLoadingMore={isLoadingMore}
           ItemSeparatorComponent={this._ItemSeparatorComponent}
-          keyExtractor={(item: any) => item.id}
+          keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
           ListHeaderComponent={this._ListHeaderComponent}
           onEndReached={this._onEndReached}
           renderItem={this._renderItem}

@@ -64,13 +64,14 @@ export class ValueTagConsentScreen extends React.Component<Props, State> {
           </Text>
         </ScrollView>
         <CheckBox
-          size={50}
           checked={this.state.checkboxSelected}
+          containerStyle={{ backgroundColor: PV.Colors.ink, borderWidth: 0 }}
           onPress={() => {
             this.setState({ checkboxSelected: !this.state.checkboxSelected })
           }}
+          size={50}
+          {...(testProps(`${testIDPrefix}_accept_check_box`))}
           title={translate("value_tag_consent_checkbox_text")}
-          containerStyle={{ backgroundColor: PV.Colors.ink, borderWidth: 0 }}
           textStyle={{ color: PV.Colors.white, fontSize: PV.Fonts.sizes.lg }}
         />
         <Button

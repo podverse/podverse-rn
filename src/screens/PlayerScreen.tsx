@@ -292,8 +292,8 @@ export class PlayerScreen extends React.Component<Props> {
     }
 
     const podcastId = nowPlayingItem ? nowPlayingItem.podcastId : null
-    const episodeId = episode ? episode.id : null
-    const mediaRefId = mediaRef ? mediaRef.id : null
+    const episodeId = episode?.id || null
+    const mediaRefId = mediaRef?.id || null
 
     if (episode?.description) {
       episode.description = replaceLinebreaksWithBrTags(episode.description)
