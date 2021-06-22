@@ -97,7 +97,11 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
 
 
   render() {
-    const instructions = [translate('LNPayDescriptionText1'), translate('LNPayDescriptionText2')]
+    const instructions = [
+      translate('LNPayDescriptionText1'),
+      translate('LNPayDescriptionText2'),
+      translate('LNPayDescriptionText3')
+    ]
 
     const extraPadding = this.state.isKeyboardShowing ? {paddingBottom: 180} : {}
     return (
@@ -111,12 +115,21 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
               <Text
                 onPress={() => Linking.openURL(PV.URLs.lnpay.DeveloperDashboardUrl)}
                 style={this.global.globalTheme.link}>
-                {PV.URLs.lnpay.DeveloperDashboardUrl}
+                {PV.URLs.lnpay.LoginUrl}
               </Text>
             </Text>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
               {'\n'}
               {instructions[1]}
+              <Text
+                onPress={() => Linking.openURL(PV.URLs.lnpay.DeveloperDashboardUrl)}
+                style={this.global.globalTheme.link}>
+                {PV.URLs.lnpay.DeveloperDashboardUrl}
+              </Text>
+            </Text>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
+              {'\n'}
+              {instructions[2]}
             </Text>
             <Divider style={styles.divider} />
             <TextInput

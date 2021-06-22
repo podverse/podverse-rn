@@ -129,12 +129,12 @@ export class FundingScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleCryptoSetupPressed = async () => {
-    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_CRYPTO_TERMS)
+  _handleValueTagSetupPressed = async () => {
+    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS)
     if (consentGivenString && JSON.parse(consentGivenString) === true) {
-      this.props.navigation.navigate(PV.RouteNames.CryptoSetupScreen)
+      this.props.navigation.navigate(PV.RouteNames.ValueTagSetupScreen)
     } else {
-      this.props.navigation.navigate(PV.RouteNames.CryptoPreviewScreen)
+      this.props.navigation.navigate(PV.RouteNames.ValueTagPreviewScreen)
     }
   }
 
@@ -195,14 +195,14 @@ export class FundingScreen extends React.Component<Props, State> {
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           {hasValueInfo && (
             <Text style={styles.textHeader} testID={`${testIDPrefix}_episode_funding_header`}>
-              {translate('Crypto')}
+              {translate('Value Tag')}
             </Text>
           )}
           {hasValueInfo && !lnpayEnabled && (
             <View style={styles.noLnpayView}>
-              <Text style={styles.noLnPayText}>{translate('Podcast supports crypto donations')}</Text>
-              <Pressable style={styles.goToCryptoSetupButton} onPress={this._handleCryptoSetupPressed}>
-                <Text style={styles.goToCryptoSetupButtonText}>{translate('Setup Crypto')}</Text>
+              <Text style={styles.noLnPayText}>{translate('Podcast supports value tag donations')}</Text>
+              <Pressable style={styles.goToValueTagSetupButton} onPress={this._handleValueTagSetupPressed}>
+                <Text style={styles.goToValueTagSetupButtonText}>{translate('Setup Value Tag')}</Text>
               </Pressable>
             </View>
           )}
@@ -397,10 +397,10 @@ const styles = StyleSheet.create({
   noLnPayText: {
     fontSize: PV.Fonts.sizes.lg
   },
-  goToCryptoSetupButton: {
+  goToValueTagSetupButton: {
     marginTop: 15
   },
-  goToCryptoSetupButtonText: {
+  goToValueTagSetupButtonText: {
     fontSize: PV.Fonts.sizes.lg,
     color: PV.Colors.blueLighter,
     fontWeight: PV.Fonts.weights.bold

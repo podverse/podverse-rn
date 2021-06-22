@@ -11,9 +11,9 @@ import {
   AddPodcastByRSSScreen,
   AuthScreen,
   ClipsScreen,
-  CryptoConsentScreen,
-  CryptoPreviewScreen,
-  CryptoSetupScreen,
+  ValueTagConsentScreen,
+  ValueTagPreviewScreen,
+  ValueTagSetupScreen,
   DownloadsScreen,
   EditPlaylistScreen,
   EditProfileScreen,
@@ -173,7 +173,7 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.LNPaySignupScreen]: LNPaySignupScreen,
     [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
     [PV.RouteNames.FAQScreen]: FAQScreen,
-    [PV.RouteNames.CryptoSetupScreen]: CryptoSetupScreen
+    [PV.RouteNames.ValueTagSetupScreen]: ValueTagSetupScreen
   },
   {
     defaultNavigationOptions,
@@ -363,13 +363,13 @@ const FundingScreenNavigator = createStackNavigator(
   }
 )
 
-const CryptoOnboardingNavigator = createStackNavigator(
+const ValueTagOnboardingNavigator = createStackNavigator(
   {
-    [PV.RouteNames.CryptoPreviewScreen]: {
-      screen: CryptoPreviewScreen
+    [PV.RouteNames.ValueTagPreviewScreen]: {
+      screen: ValueTagPreviewScreen
     },
-    [PV.RouteNames.CryptoConsentScreen]: {
-      screen: CryptoConsentScreen
+    [PV.RouteNames.ValueTagConsentScreen]: {
+      screen: ValueTagConsentScreen
     }
   },
   {
@@ -395,7 +395,7 @@ const MainApp = createStackNavigator(
       screen: AddPodcastByRSSURLNavigator,
       path: ''
     },
-    CryptoOnboardingNavigator
+    ValueTagOnboardingNavigator
   },
   {
     mode: 'modal',
