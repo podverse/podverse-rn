@@ -22,7 +22,7 @@ export const initializeValueProcessor = () => {
   const { session } = globalState
   const { valueTagSettings } = session
   const { lightningNetwork } = valueTagSettings
-  const { lnpayEnabled } = lightningNetwork
+  const { lnpayEnabled } = lightningNetwork?.lnpay || {}
 
   if (lnpayEnabled) {
     createValueTransactionProcessorInterval()
@@ -58,7 +58,8 @@ export const updateGlobalBoostAmount = (boostAmount: number) => {
   const { session } = globalState
   const { valueTagSettings } = session
   const { lightningNetwork } = valueTagSettings
-  const { globalSettings } = lightningNetwork
+  const { lnpay } = lightningNetwork
+  const { globalSettings } = lnpay
   
   setGlobal({
     session: {
@@ -67,10 +68,13 @@ export const updateGlobalBoostAmount = (boostAmount: number) => {
         ...valueTagSettings,
         lightningNetwork: {
           ...lightningNetwork,
-          globalSettings: {
-            ...globalSettings,
-            boostAmount
-          }
+          lnpay: {
+            ...lnpay,
+            globalSettings: {
+              ...globalSettings,
+              boostAmount
+            }
+          },
         }
       }
     }
@@ -84,7 +88,8 @@ export const updateGlobalStreamingAmount = (streamingAmount: number) => {
   const { session } = globalState
   const { valueTagSettings } = session
   const { lightningNetwork } = valueTagSettings
-  const { globalSettings } = lightningNetwork
+  const { lnpay } = lightningNetwork
+  const { globalSettings } = lnpay
   
   setGlobal({
     session: {
@@ -93,9 +98,12 @@ export const updateGlobalStreamingAmount = (streamingAmount: number) => {
         ...valueTagSettings,
         lightningNetwork: {
           ...lightningNetwork,
-          globalSettings: {
-            ...globalSettings,
-            streamingAmount
+          lnpay: {
+            ...lnpay,
+            globalSettings: {
+              ...globalSettings,
+              streamingAmount
+            }
           }
         }
       }
