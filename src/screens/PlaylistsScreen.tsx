@@ -4,7 +4,7 @@ import { ActivityIndicator, Divider, FlatList, MessageWithAction, PlaylistTableC
   SwipeRowBack, TableSectionSelectors, View } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { testProps } from '../lib/utility'
+import { safeKeyExtractor, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
@@ -190,7 +190,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
               extraData={sections}
               isLoadingMore={isLoadingMore}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
-              keyExtractor={(item: any) => item.id}
+              keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
               noResultsMessage={translate('No playlists found')}
               renderHiddenItem={this._renderHiddenItem}
               renderItem={this._renderPlaylistItem}

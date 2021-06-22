@@ -192,7 +192,7 @@ export class MoreScreen extends React.Component<Props, State> {
               disableFilter
               includePadding
               selectedFilterLabel={section.title}
-              textStyle={[globalTheme.headerText, core.headerText]}
+              textStyle={[globalTheme.headerText, core.sectionHeaderText]}
             />
           )}
           sections={[

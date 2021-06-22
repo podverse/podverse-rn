@@ -11,7 +11,7 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import { overrideImageUrlWithChapterImageUrl, testProps } from '../lib/utility'
+import { overrideImageUrlWithChapterImageUrl, safeKeyExtractor, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { loadItemAndPlayTrack } from '../state/actions/player'
@@ -212,7 +212,7 @@ export class HistoryScreen extends React.Component<Props, State> {
             disableLeftSwipe
             extraData={historyItems}
             isLoadingMore={isLoadingMore}
-            keyExtractor={(item: any, index: number) => `${index}`}
+            keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index)}
             noResultsMessage={translate('No history items found')}
             onEndReached={this._onEndReached}
             renderItem={this._renderHistoryItem}

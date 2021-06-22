@@ -27,7 +27,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props> {
     if (nowPlayingItem && nowPlayingItem.clipId) {
       mediaRef = convertNowPlayingItemToMediaRef(nowPlayingItem)
     }
-    const showClipInfo = (mediaRef && mediaRef.id) || (nowPlayingItem && nowPlayingItem.clipId)
+    const showClipInfo = mediaRef?.id || nowPlayingItem?.clipId
 
     return (
       <ScrollView style={[styles.wrapper, { width }]} transparent>

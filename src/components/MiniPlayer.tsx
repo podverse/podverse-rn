@@ -45,7 +45,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
               <FastImage
                 isSmall
                 resizeMode='contain'
-                source={nowPlayingItem.podcastImageUrl}
+                source={nowPlayingItem.episodeImageUrl || nowPlayingItem.podcastImageUrl}
                 styles={styles.image}
               />
               <View style={styles.textWrapper}>
