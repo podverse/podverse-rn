@@ -40,7 +40,7 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = () => ({
-    title: translate('Bitcoin Lightning Setup')
+    title: translate('Bitcoin Wallet')
   })
 
   componentDidMount() {
@@ -54,7 +54,7 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
 
     updateWalletInfo()
 
-    trackPageView('/bitcoin-lightning-setup', 'Bitcoin Lightning Setup Screen')
+    trackPageView('/bitcoin-wallet', 'Bitcoin Wallet')
   }
 
   _showLNPaySetup = async (toggle: boolean) => {
