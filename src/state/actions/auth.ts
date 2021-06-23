@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Alert } from 'react-native'
+import Config from 'react-native-config'
 import RNSecureKeyStore from 'react-native-secure-key-store'
 import { getGlobal, setGlobal } from 'reactn'
 import { safelyUnwrapNestedVariable, shouldShowMembershipAlert } from '../../lib/utility'
@@ -10,10 +11,12 @@ import {
   login,
   signUp
 } from '../../services/auth'
+import { getWalletInfo } from '../../services/lnpay'
 import { setAddByRSSPodcastFeedUrlsLocally } from '../../services/parser'
 import { setAllQueueItemsLocally } from '../../services/queue'
 import { setAllHistoryItemsLocally } from '../../services/userHistoryItem'
 import { getNowPlayingItemLocally, getNowPlayingItemOnServer } from '../../services/userNowPlayingItem'
+import { getLNWallet } from './lnpay'
 import { getSubscribedPodcasts } from './podcast'
 import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './valueTag'
 
@@ -31,7 +34,8 @@ export const getAuthUserInfo = async () => {
     const userInfo = results[0]
     const isLoggedIn = results[1]
     const shouldShowAlert = shouldShowMembershipAlert(userInfo)
-    const lnpayEnabled = await AsyncStorage.getItem(PV.Keys.LNPAY_ENABLED)
+    let lnpayEnabled = await AsyncStorage.getItem(PV.Keys.LNPAY_ENABLED)
+    lnpayEnabled = lnpayEnabled ? JSON.parse(lnpayEnabled) : false
     const boostAmount = await AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_BOOST_AMOUNT)
     const streamingAmount = await AsyncStorage.getItem(PV.Keys.GLOBAL_LIGHTNING_STREAMING_AMOUNT)
 
@@ -43,10 +47,12 @@ export const getAuthUserInfo = async () => {
         valueTagSettings: {
           ...globalState.session.valueTagSettings,
           lightningNetwork: {
-            lnpayEnabled: lnpayEnabled ? JSON.parse(lnpayEnabled) : false,
-            globalSettings: {
-              boostAmount: boostAmount ? Number(boostAmount) : DEFAULT_BOOST_PAYMENT,
-              streamingAmount: streamingAmount ? Number(streamingAmount) : DEFAULT_STREAMING_PAYMENT
+            lnpay: {
+              lnpayEnabled,
+              globalSettings: {
+                boostAmount: boostAmount ? Number(boostAmount) : DEFAULT_BOOST_PAYMENT,
+                streamingAmount: streamingAmount ? Number(streamingAmount) : DEFAULT_STREAMING_PAYMENT
+              }
             }
           },
         }
@@ -54,6 +60,30 @@ export const getAuthUserInfo = async () => {
       overlayAlert: {
         ...globalState.overlayAlert,
         showAlert: shouldShowAlert
+      }
+    }, async () => {
+      if (!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && lnpayEnabled) {
+        const wallet = await getLNWallet()
+        if (wallet) {
+          const lnpayWalletInfo = await getWalletInfo(wallet)
+
+          setGlobal({
+            session: {
+              ...globalState.session,
+              valueTagSettings: {
+                ...globalState.session.valueTagSettings,
+                lightningNetwork: {
+                  ...globalState.session.valueTagSettings.lightningNetwork,
+                  lnpay: {
+                    ...globalState.session.valueTagSettings.lightningNetwork.lnpay,
+                    walletSatsBalance: lnpayWalletInfo?.balance || null,
+                    walletUserLabel: lnpayWalletInfo?.user_label || null
+                  }
+                }
+              }
+            }
+          })
+        }
       }
     })
 

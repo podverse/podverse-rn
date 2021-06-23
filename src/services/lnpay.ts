@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ValueTransaction, ValueRecipientNormalized } from 'podverse-shared'
-import { getLNWallet, LNWallet, LNWalletInfo } from '../state/actions/lnpay'
+import { getLNWallet, LNWallet, LNWalletInfo, updateWalletInfo } from '../state/actions/lnpay'
 import { PV } from '../resources'
 
 type LNPayRequest = {
@@ -155,10 +155,11 @@ export const sendLNPayValueTransaction = async (valueTransaction: ValueTransacti
         error = paymentError
       }
     }
+
   } catch (err) {
     error = err
   }
-
+  
   if (error) {
     console.log('sendLNPayValueTransaction error:', error)
   }
@@ -168,6 +169,8 @@ export const sendLNPayValueTransaction = async (valueTransaction: ValueTransacti
   } else if (!paymentWasSuccessful || error) {
     throw error || new Error('Something went wrong with one or more payments.')
   }
+
+  await updateWalletInfo()
 
   return paymentWasSuccessful
 }
