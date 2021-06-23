@@ -6,7 +6,7 @@ import { numberWithCommas, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getWalletInfo } from '../services/lnpay'
 import { trackPageView } from '../services/tracking'
-import { getLNWallet, removeLNPayWallet, toggleLNPayFeature } from '../state/actions/lnpay'
+import { getLNWallet, removeLNPayWallet, toggleLNPayFeature, updateWalletInfo } from '../state/actions/lnpay'
 import {
   MINIMUM_BOOST_PAYMENT,
   MINIMUM_STREAMING_PAYMENT,
@@ -22,7 +22,7 @@ type Props = {
 type State = {
   localBoostAmount: string
   localStreamingAmount: string
-  satsBalance?: number
+  walletSatsBalance?: number
   walletUserLabel: string
 }
 
@@ -40,34 +40,21 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = () => ({
-    title: translate('Bitcoin Lightning Setup')
+    title: translate('Bitcoin Wallet')
   })
 
   componentDidMount() {
     const { boostAmount, streamingAmount } =
-      this.global.session?.valueTagSettings?.lightningNetwork?.globalSettings || {}
+      this.global.session?.valueTagSettings?.lightningNetwork?.lnpay?.globalSettings || {}
 
     this.setState({
       localBoostAmount: boostAmount?.toString(),
       localStreamingAmount: streamingAmount?.toString()
     })
 
-    this._updateWalletBalance()
+    updateWalletInfo()
 
-    trackPageView('/bitcoin-lightning-setup', 'Bitcoin Lightning Setup Screen')
-  }
-
-  _updateWalletBalance = async () => {
-    const wallet = await getLNWallet()
-    if (wallet) {
-      const walletInfo = await getWalletInfo(wallet)
-      if (walletInfo) {
-        this.setState({
-          satsBalance: walletInfo?.balance,
-          walletUserLabel: walletInfo?.user_label?.toString()
-        })
-      }
-    }
+    trackPageView('/bitcoin-wallet', 'Bitcoin Wallet')
   }
 
   _showLNPaySetup = async (toggle: boolean) => {
@@ -81,13 +68,13 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { localBoostAmount, localStreamingAmount, satsBalance, walletUserLabel } = this.state
+    const { localBoostAmount, localStreamingAmount } = this.state
     const { session } = this.global
     const { valueTagSettings } = session
     const { lightningNetwork } = valueTagSettings
-    const { lnpayEnabled } = lightningNetwork
+    const { lnpayEnabled, walletSatsBalance, walletUserLabel } = lightningNetwork?.lnpay || {}
 
-    const satsBalanceText = numberWithCommas(satsBalance)
+    const walletSatsBalanceText = numberWithCommas(walletSatsBalance) || 0
 
     return (
       <View style={styles.content} {...testProps(`${testIDPrefix}_view`)}>
@@ -106,7 +93,7 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
                 <Text style={core.headerText}>{translate('LNPay Wallet')}</Text>
                 <TextRow
                   label={`${translate('Balance')}: `}
-                  text={`${satsBalanceText} ${translate('satoshis')}`} />
+                  text={`${walletSatsBalanceText} ${translate('satoshis')}`} />
                 <TextRow
                   label={`${translate('Name')}: `}
                   text={`${walletUserLabel ? walletUserLabel : '----'}`} />

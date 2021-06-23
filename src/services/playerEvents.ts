@@ -349,7 +349,7 @@ const handleValueStreamingMinutePassed = async () => {
   const globalState = getGlobal()
   const { podcastValueFinal } = globalState
   const { nowPlayingItem } = globalState.player
-  const { streamingAmount } = globalState.session?.valueTagSettings?.lightningNetwork?.globalSettings || {}
+  const { streamingAmount } = globalState.session?.valueTagSettings?.lightningNetwork?.lnpay?.globalSettings || {}
   const valueTag = podcastValueFinal || nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
 
   if (valueTag) {

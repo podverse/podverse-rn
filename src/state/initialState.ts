@@ -111,10 +111,12 @@ const initialTheme: InitialState = {
     isLoggedIn: false,
     valueTagSettings: {
       lightningNetwork: {
-        lnpayEnabled: false,
-        globalSettings: {
-          boostAmount: DEFAULT_BOOST_PAYMENT,
-          streamingAmount: DEFAULT_STREAMING_PAYMENT
+        lnpay: {
+          lnpayEnabled: false,
+          globalSettings: {
+            boostAmount: DEFAULT_BOOST_PAYMENT,
+            streamingAmount: DEFAULT_STREAMING_PAYMENT
+          }
         }
       },
       streamingEnabled: false
