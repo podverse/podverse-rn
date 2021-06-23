@@ -74,7 +74,7 @@ export const SwitchWithText = (props: Props) => {
           wrapperStyle={styles.textInputWrapper}
         />
       )}
-      {subText && (
+      {!!subText && (
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
           style={[globalTheme.textSecondary, styles.subText]}

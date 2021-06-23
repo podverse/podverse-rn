@@ -16,7 +16,7 @@ import {
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { createEmailLinkUrl, isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { createEmailLinkUrl, isOdd, safeKeyExtractor, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
 import { trackPageView } from '../services/tracking'
@@ -258,7 +258,7 @@ export class SearchScreen extends React.Component<Props, State> {
             handleNoResultsTopAction={!Config.DISABLE_QR_SCANNER ? this._handleAddPodcastByRSSQRCodeNavigation : null}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
-            keyExtractor={(item: any) => item.id}
+            keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
             noResultsBottomActionText={PV.URLs.requestPodcast ? translate('Request Podcast') : ''}
             noResultsMessage={searchBarText.length > 1 && translate('No podcasts found')}
             noResultsMiddleActionText={translate('Add Custom RSS Feed')}

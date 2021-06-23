@@ -172,10 +172,14 @@ export interface InitialState {
     userInfo: UserInfo
     valueTagSettings: {
       lightningNetwork: {
-        lnpayEnabled: boolean
-        globalSettings: {
-          boostAmount: number
-          streamingAmount: number
+        lnpay: {
+          walletSatsBalance?: number
+          walletUserLabel?: string
+          lnpayEnabled: boolean
+          globalSettings: {
+            boostAmount: number
+            streamingAmount: number
+          }
         }
       }
       streamingEnabled: boolean

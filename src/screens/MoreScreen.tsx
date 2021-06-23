@@ -192,7 +192,7 @@ export class MoreScreen extends React.Component<Props, State> {
               disableFilter
               includePadding
               selectedFilterLabel={section.title}
-              textStyle={[globalTheme.headerText, core.headerText]}
+              textStyle={[globalTheme.headerText, core.sectionHeaderText]}
             />
           )}
           sections={[
@@ -209,6 +209,7 @@ export class MoreScreen extends React.Component<Props, State> {
 
 const _aboutKey = 'About'
 const _addPodcastByRSSKey = 'AddPodcastByRSS'
+const _bitcoinWalletKey = 'BitcoinWallet'
 const _contactKey = 'Contact'
 const _loginKey = 'Login'
 const _logoutKey = 'Logout'
@@ -224,6 +225,11 @@ const allMoreFeatures = [
     title: translate('Add Custom RSS Feed'),
     key: _addPodcastByRSSKey,
     routeName: PV.RouteNames.AddPodcastByRSSScreen
+  },
+  {
+    title: translate('Bitcoin Wallet'),
+    key: _bitcoinWalletKey,
+    routeName: PV.RouteNames.ValueTagSetupScreen
   },
   {
     title: translate('Settings'),

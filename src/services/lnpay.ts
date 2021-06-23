@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ValueTransaction, ValueRecipientNormalized } from 'podverse-shared'
-import { getLNWallet, LNWallet } from '../state/actions/lnpay'
+import { getLNWallet, LNWallet, LNWalletInfo, updateWalletInfo } from '../state/actions/lnpay'
 import { PV } from '../resources'
 
 type LNPayRequest = {
@@ -47,7 +47,7 @@ const request = async (req: LNPayRequest) => {
 
     return response.data
   } catch (error) {
-    console.log('LN Pay Request error', error.response.data)
+    console.log('LNPay Request error', error.response.data)
     throw error
   }
 }
@@ -76,17 +76,36 @@ export const createWallet = async (apiKey = '', label?: string): Promise<LNWalle
   }
 }
 
-export const getWallet = async (walletInfo: LNWallet): Promise<LNWallet | null> => {
+export const getWalletInfo = async (wallet: LNWallet): Promise<LNWalletInfo | null> => {
+  let walletInfo = null
+  try {
+    const resp = await request({
+      endpoint: '/wallet/' + wallet.access_keys['Wallet Admin'],
+      headers: {
+        'X-Api-Key': wallet.publicKey
+      }
+    })
+    if (resp.id) {
+      walletInfo = resp
+    }
+  } catch (error) {
+    throw new Error('Wallet Fetch Failed. ' + error.message)
+  }
+
+  return walletInfo
+}
+
+export const getWallet = async (wallet: LNWallet): Promise<LNWallet | null> => {
   let existingWallet: LNWallet | null = null
   try {
     const resp = await request({
-      endpoint: '/wallet/' + walletInfo.access_keys['Wallet Admin'],
+      endpoint: '/wallet/' + wallet.access_keys['Wallet Admin'],
       headers: {
-        'X-Api-Key': walletInfo.publicKey
+        'X-Api-Key': wallet.publicKey
       }
     })
-    if (resp.id === walletInfo.id) {
-      existingWallet = walletInfo
+    if (resp.id === wallet.id) {
+      existingWallet = wallet
     }
   } catch (error) {
     if (error.status === 404) {
@@ -136,10 +155,11 @@ export const sendLNPayValueTransaction = async (valueTransaction: ValueTransacti
         error = paymentError
       }
     }
+
   } catch (err) {
     error = err
   }
-
+  
   if (error) {
     console.log('sendLNPayValueTransaction error:', error)
   }
@@ -149,6 +169,8 @@ export const sendLNPayValueTransaction = async (valueTransaction: ValueTransacti
   } else if (!paymentWasSuccessful || error) {
     throw error || new Error('Something went wrong with one or more payments.')
   }
+
+  await updateWalletInfo()
 
   return paymentWasSuccessful
 }

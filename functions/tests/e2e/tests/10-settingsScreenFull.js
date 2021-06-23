@@ -1,6 +1,7 @@
 const { getDriver } = require('../driver/driverFactory')
 const { confirmAndroidAlert } = require('../driver/helpers/alerts')
 const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, goBackKey, noTestLabel } = require('../driver/helpers/elements')
+const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
 
 const test10_settingsScreenFull = async () => {
   console.log('10_settingsScreenFull')
@@ -13,6 +14,7 @@ const test10_settingsScreenFull = async () => {
   await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
   await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
   await elementByIdToggle('settings_screen_offline_mode_switch')
+  await performScroll(scrollDownKey, 2)
   await elementByIdClick('settings_screen_clear_history_button')
   await confirmAndroidAlert()
 
