@@ -202,7 +202,7 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
 
   const action = 'boost'
   const { session } = getGlobal()
-  const { boostAmount } = session?.valueTagSettings?.lightningNetwork?.globalSettings || {}
+  const { boostAmount } = session?.valueTagSettings?.lightningNetwork?.lnpay?.globalSettings || {}
 
   let totalAmountPaid = 0
   const roundDownBoostTransactions = true

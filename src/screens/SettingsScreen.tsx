@@ -380,7 +380,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                     onPress={this._handleValueTagSetupPressed}
                     testIDPrefix={testIDPrefix}
                     testIDSuffix='value_tag_setup'
-                    text={translate('Bitcoin Lightning Setup')}
+                    text={translate('Bitcoin Wallet')}
                     hideChevron={false}
                   />
                   <Divider style={styles.divider} />

@@ -25,19 +25,21 @@ import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryPro
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisode } from '../services/episode'
+import PVEventEmitter from '../services/eventEmitter'
 import { checkIdlePlayerState, PVTrackPlayer, updateTrackPlayerCapabilities,
   updateUserPlaybackPosition } from '../services/player'
-import { getPodcast, getPodcasts } from '../services/podcast'
-import { trackPageView } from '../services/tracking'
-import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
-import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
-import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
-import {
-  initializePlaybackSpeed,
-  initializePlayerQueue,
-  initPlayerState,
-  showMiniPlayer,
-  updatePlaybackState,
+  import { getPodcast, getPodcasts } from '../services/podcast'
+  import { trackPageView } from '../services/tracking'
+  import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
+  import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
+  import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
+  import { updateWalletInfo } from '../state/actions/lnpay'
+  import {
+    initializePlaybackSpeed,
+    initializePlayerQueue,
+    initPlayerState,
+    showMiniPlayer,
+    updatePlaybackState,
   updatePlayerState
 } from '../state/actions/player'
 import { combineWithAddByRSSPodcasts,
@@ -111,6 +113,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
   async componentDidMount() {
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    PVEventEmitter.on(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
@@ -143,6 +147,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange)
     Linking.removeEventListener('url', this._handleOpenURLEvent)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    PVEventEmitter.removeListener(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
   }
 
   _handleAppStateChange = (nextAppState: any) => {
