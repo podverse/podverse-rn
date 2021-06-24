@@ -28,6 +28,7 @@ const test09_clipsScreenFull = async () => {
 
   await elementByIdClick('clips_screen_clip_item_0_more_button')
   await elementByIdClick('clips_screen_action_sheet_share_button')
+  await driver.sleep(3000)
   await driver.back()
 
   await elementByIdClick('clips_screen_clip_item_0_more_button')
