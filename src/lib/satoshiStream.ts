@@ -5,6 +5,7 @@
 // 7629175: SatoshiStreamStatsPodcastIndexId // the Podcast Index feedId for the podcast
 
 import { NowPlayingItem, SatoshiStreamStats } from 'podverse-shared'
+import Config from 'react-native-config'
 import { translate } from './i18n'
 const uuidv4 = require('uuid/v4')
 
@@ -14,7 +15,8 @@ export const createSatoshiStreamStats = (
   action: string,
   speed: string,
   pubkey: string,
-  amount: string
+  amount: string,
+  name: string
 ) => {
   const podcast = nowPlayingItem?.podcastTitle || translate('Untitled Podcast')
   const episode = nowPlayingItem?.episodeTitle || translate('Untitled Episode')
@@ -26,13 +28,16 @@ export const createSatoshiStreamStats = (
   return {
     7629169: {
       podcast,
+      feedID: podcastIndexId,
       episode,
       ts,
       action,
       speed,
       pubkey,
       value_msat: amountNum,
-      uuid: uuidv4()
+      uuid: uuidv4(),
+      app_name: Config.USER_AGENT_PREFIX,
+      name
     },
     7629175: podcastIndexId
   } as SatoshiStreamStats
