@@ -26,7 +26,6 @@ export const URLs = {
     }
   },
   apiDefaultBaseUrl,
-  requestPodcast: Config.URL_EXTERNAL_REQUEST_PODCAST || '',
   social: {
     facebook: Config.URL_SOCIAL_FACEBOOK || '',
     github: Config.URL_SOCIAL_GITHUB || '',
