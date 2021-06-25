@@ -1,10 +1,13 @@
-import { NowPlayingItem, SatoshiStreamStats } from 'podverse-shared'
-import { translate } from './i18n'
+// For mappings of key integer definitions, visit
+// https://github.com/satoshisstream/satoshis.stream/blob/main/TLV_registry.md#field-7629169
 
-  // For mappings of key integer definitions, visit
-  // https://github.com/satoshisstream/satoshis.stream/blob/main/TLV_registry.md#field-7629169
-  
-  // 7629169: SatoshiStreamStatsPodcast // the "podcast" subject according to SatoshiStream spec
+// 7629169: SatoshiStreamStatsPodcast // the "podcast" subject according to SatoshiStream spec
+// 7629175: SatoshiStreamStatsPodcastIndexId // the Podcast Index feedId for the podcast
+
+import { NowPlayingItem, SatoshiStreamStats } from 'podverse-shared'
+import Config from 'react-native-config'
+import { translate } from './i18n'
+const uuidv4 = require('uuid/v4')
 
 export const createSatoshiStreamStats = (
   nowPlayingItem: NowPlayingItem,
@@ -12,21 +15,30 @@ export const createSatoshiStreamStats = (
   action: string,
   speed: string,
   pubkey: string,
-  amount: string
+  amount: string,
+  name: string
 ) => {
   const podcast = nowPlayingItem?.podcastTitle || translate('Untitled Podcast')
   const episode = nowPlayingItem?.episodeTitle || translate('Untitled Episode')
-  const ts = currentPlaybackPosition
+  const podcastIndexId = nowPlayingItem?.podcastIndexPodcastId &&
+    parseInt(nowPlayingItem.podcastIndexPodcastId, 10) || null
+  const ts = parseInt(currentPlaybackPosition, 10)
+  const amountNum = (parseInt(amount, 10) * 1000) // in millisats
 
   return {
     7629169: {
       podcast,
+      feedID: podcastIndexId,
       episode,
       ts,
       action,
       speed,
       pubkey,
-      amount
-    }
+      value_msat: amountNum,
+      uuid: uuidv4(),
+      app_name: Config.USER_AGENT_PREFIX,
+      name
+    },
+    7629175: podcastIndexId
   } as SatoshiStreamStats
 }
