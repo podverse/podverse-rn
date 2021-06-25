@@ -373,20 +373,6 @@ export class SettingsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace />}
         {!isLoading && (
           <View>
-            <View>
-              {!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && 
-                <View>
-                  <TableTextCell
-                    onPress={this._handleValueTagSetupPressed}
-                    testIDPrefix={testIDPrefix}
-                    testIDSuffix='value_tag_setup'
-                    text={translate('Bitcoin Wallet')}
-                    hideChevron={false}
-                  />
-                  <Divider style={styles.divider} />
-                </View>
-              }
-            </View>
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 onValueChange={this._handleToggleOfflineMode}

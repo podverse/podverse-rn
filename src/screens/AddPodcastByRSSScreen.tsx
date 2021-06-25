@@ -1,4 +1,5 @@
 import { Linking, StyleSheet } from 'react-native'
+import Config from 'react-native-config'
 import React from 'reactn'
 import {
   ActivityIndicator,
@@ -129,7 +130,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.sm} style={styles.text}>
               {translate('AddPodcastByRSSScreenText2')}
             </Text>
-            {!!PV.URLs.requestPodcast && (
+            {!!Config.CURATOR_EMAIL && (
               <TextLink
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 onPress={this._navToRequestPodcastEmail}
