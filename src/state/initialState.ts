@@ -130,6 +130,11 @@ const initialTheme: InitialState = {
   bannerInfo: {
     show: false,
     description: '',
+  },
+  tempMediaRefInfo: {
+    startTime: undefined,
+    endTime: null,
+    clipTitle: undefined
   }
 }
 
