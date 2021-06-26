@@ -6,7 +6,7 @@ import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
-import { LNWallet, saveLNPayWallet, toggleLNPayFeature } from '../state/actions/lnpay'
+import { LNWallet, saveLNPayWallet, toggleLNPayFeature, updateWalletInfo } from '../state/actions/lnpay'
 
 type Props = any
 
@@ -86,6 +86,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
           })
 
           await toggleLNPayFeature(true)
+          await updateWalletInfo()
           this.props.navigation.goBack()
         } else {
           throw new Error(

@@ -210,6 +210,12 @@ export interface IActionSheet {
   }
 }
 
+export interface TempMediaRef {
+  startTime: number | undefined
+  endTime: number | null
+  clipTitle: string | undefined
+}
+
 export interface IFilters {
   _subscribedKey: string
   _downloadedKey: string

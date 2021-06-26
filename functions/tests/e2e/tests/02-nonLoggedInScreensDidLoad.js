@@ -41,6 +41,7 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
   await driver.back()
   await elementByIdAndClickAndTest('more_screen_Membership_table_cell_wrapper', 'membership_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('more_screen_About_table_cell_wrapper', 'about_screen_view', noTestLabel, goBackKey)
+  await performScroll(scrollDownKey, 2)
   await elementByIdAndClickAndTest('more_screen_TermsOfService_table_cell_wrapper', 'terms_of_service_screen_view', noTestLabel, goBackKey)
 
     // More Screen > Settings Screen

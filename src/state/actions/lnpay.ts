@@ -84,8 +84,12 @@ export const getLNWallet = async (): Promise<LNWallet | null> => {
   return wallet
 }
 
-export const removeLNPayWallet = () => {
-  return RNSecureKeyStore.remove(PV.Keys.LN_WALLET_KEY)
+export const removeLNPayWallet = async () => {
+  try {
+    await RNSecureKeyStore.remove(PV.Keys.LN_WALLET_KEY)
+  } catch (error) {
+    console.log("Error removing LNPay: ", error)
+  }
 }
 
 export const updateWalletInfo = async () => {
@@ -110,10 +114,6 @@ export const updateWalletInfo = async () => {
           }
         }
 
-      })
-      this.setState({
-        walletSatsBalance: walletInfo?.balance,
-        walletUserLabel: walletInfo?.user_label?.toString()
       })
     }
   }

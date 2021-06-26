@@ -718,9 +718,9 @@ export class ProfileScreen extends React.Component<Props, State> {
 
   cleanFlatListData = (flatListData: any[], viewTypeKey: string | null) => {
     if (viewTypeKey === PV.Filters._podcastsKey || viewTypeKey === PV.Filters._playlistsKey) {
-      return flatListData.filter((item: any) => !!item?.id)
+      return flatListData?.filter((item: any) => !!item?.id) || []
     } else if (viewTypeKey === PV.Filters._clipsKey) {
-      return flatListData.filter((item: any) => !!item?.episode?.id && !!item?.episode?.podcast)
+      return flatListData?.filter((item: any) => !!item?.episode?.id && !!item?.episode?.podcast) || []
     } else {
       return flatListData
     }

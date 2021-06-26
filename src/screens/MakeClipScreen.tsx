@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import Share from 'react-native-share'
 import React from 'reactn'
+import { clearTempMediaRef, saveTempMediaRef } from '../state/actions/mediaRef'
 import {
   ActivityIndicator,
   DropdownButtonSelect,
@@ -125,10 +126,35 @@ export class MakeClipScreen extends React.Component<Props, State> {
         }
       },
       () => {
+        const {tempMediaRefInfo} = this.global
+        let startTime = null
+        let endTime = null
+        let title = ''
+        if(!isEditing) {
+          if(tempMediaRefInfo.startTime) {
+            startTime = tempMediaRefInfo.startTime
+          } else {
+            startTime = Math.floor(currentPosition)
+          }
+
+          if(tempMediaRefInfo.endTime) {
+            endTime = tempMediaRefInfo.endTime
+          }
+
+          if(tempMediaRefInfo.clipTitle) {
+            title = tempMediaRefInfo.clipTitle
+          }
+        } else {
+          startTime = nowPlayingItem.clipStartTime
+          endTime = nowPlayingItem.clipEndTime
+          title = nowPlayingItem.clipTitle
+        }
+
         this.setState({
           ...(!hideHowToModal ? { showHowToModal: true } : { showHowToModal: false }),
-          ...(!isEditing ? { startTime: Math.floor(currentPosition) } : {}),
-          title: isEditing ? nowPlayingItem.clipTitle : ''
+          startTime,
+          endTime,
+          title
         })
       }
     )
@@ -137,6 +163,10 @@ export class MakeClipScreen extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
+    if(!this.props.navigation.getParam('isEditing')) {
+      saveTempMediaRef({startTime: this.state.startTime, endTime:this.state.endTime, clipTitle:this.state.title})
+    }
+
     this.setGlobal({
       player: {
         ...this.global.player,
@@ -277,6 +307,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 {
                   text: translate('Done'),
                   onPress: () => {
+                    clearTempMediaRef()
                     navigation.goBack(null)
                   }
                 },
@@ -298,6 +329,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     } catch (error) {
                       console.log(error)
                     }
+                    clearTempMediaRef()
                     navigation.goBack(null)
                   }
                 }
