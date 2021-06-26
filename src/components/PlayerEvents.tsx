@@ -55,7 +55,7 @@ export class PlayerEvents extends React.PureComponent<Props> {
 
       const nowPlayingItem = await getNowPlayingItemLocally()
       if (nowPlayingItem) {
-        await updatePlayerState(nowPlayingItem)
+        updatePlayerState(nowPlayingItem)
       }
    
       await updatePlaybackState()

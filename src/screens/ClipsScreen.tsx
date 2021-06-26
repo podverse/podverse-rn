@@ -600,11 +600,7 @@ export class ClipsScreen extends React.Component<Props, State> {
   }
 
   cleanFlatListData = (flatListData: any[]) => {
-    if (Array.isArray(flatListData)) {
-      return flatListData.filter((item: any) => !!item?.episode?.id)
-    } else {
-      return []
-    }
+    return flatListData?.filter((item: any) => !!item?.episode?.id) || []
   }
 
   _queryAllMediaRefs = async (sort: string | null, page = 1) => {
