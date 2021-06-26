@@ -130,12 +130,25 @@ export const getAllWallets = (apiKey = '') => {
 const generateLNPayKeysendRequestBody = (valueTransaction: ValueTransaction) => {
   const { address, amount } = valueTransaction.normalizedValueRecipient
   const { satoshiStreamStats } = valueTransaction
+
+  /*
+    NOTE: LNPay requires custom_records values to be stringified objects.
+  */
   
+  const customRecord7629169 = JSON.stringify(satoshiStreamStats[7629169])
+  const customRecord7629175 = JSON.stringify(satoshiStreamStats[7629175])
+
+
+  const stringifiedCustomRecords = {
+    7629169: customRecord7629169,
+    7629175: customRecord7629175
+  }
+
   return {
     // passThru: {},
     dest_pubkey: address,
     num_satoshis: Math.ceil(amount),
-    custom_records: satoshiStreamStats,
+    custom_records: stringifiedCustomRecords,
   } as LNPayKeysendRequestBody
 }
 

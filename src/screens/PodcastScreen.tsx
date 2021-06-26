@@ -828,9 +828,9 @@ static navigationOptions = ({ navigation }) => {
 
   cleanFlatListData = (flatListData: any[], viewTypeKey: string | null) => {
     if (viewTypeKey === PV.Filters._episodesKey) {
-      return flatListData.filter((item: any) => !!item?.id)
+      return flatListData?.filter((item: any) => !!item?.id) || []
     } else if (viewTypeKey === PV.Filters._clipsKey) {
-      return flatListData.filter((item: any) => !!item?.episode?.id)
+      return flatListData?.filter((item: any) => !!item?.episode?.id) || []
     } else {
       return flatListData
     }

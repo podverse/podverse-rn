@@ -7,7 +7,7 @@ import BackgroundTimer from 'react-native-background-timer'
 import { processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../lib/valueTagHelpers'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { hideMiniPlayer, updatePlaybackState } from '../state/actions/player'
+import { handleEnrichingPlayerState, hideMiniPlayer, updatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
 import PVEventEmitter from './eventEmitter'
 import {
@@ -50,6 +50,8 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
 
   // Call updateUserPlaybackPosition to make sure the current item is saved as the userNowPlayingItem
   updateUserPlaybackPosition()
+
+  handleEnrichingPlayerState(currentNowPlayingItem)
 }
 
 const syncNowPlayingItemWithTrack = () => {
