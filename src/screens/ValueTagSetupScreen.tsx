@@ -4,9 +4,8 @@ import { SwitchWithText, Text, TextInput, TextRow, View } from '../components'
 import { translate } from '../lib/i18n'
 import { numberWithCommas, testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { getWalletInfo } from '../services/lnpay'
 import { trackPageView } from '../services/tracking'
-import { getLNWallet, removeLNPayWallet, toggleLNPayFeature, updateWalletInfo } from '../state/actions/lnpay'
+import { removeLNPayWallet, toggleLNPayFeature, updateWalletInfo } from '../state/actions/lnpay'
 import {
   MINIMUM_BOOST_PAYMENT,
   MINIMUM_STREAMING_PAYMENT,
@@ -62,7 +61,7 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
       this.props.navigation.navigate(PV.RouteNames.LNPaySignupScreen)
     } else {
       await removeLNPayWallet()
-      toggleLNPayFeature(false)
+      await toggleLNPayFeature(false)
       Alert.alert(translate('LNPay Wallet Removed'), translate('All LNPay data have been deleted from this device'))
     }
   }
