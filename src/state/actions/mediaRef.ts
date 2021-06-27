@@ -1,8 +1,8 @@
 import { setGlobal } from 'reactn'
 import { TempMediaRef } from 'src/resources/Interfaces'
 
-export const clearTempMediaRef = () => {
-  setGlobal({
+export const clearTempMediaRef = async () => {
+  return setGlobal({
     tempMediaRefInfo: {
       startTime: undefined,
       endTime: null,
@@ -11,8 +11,8 @@ export const clearTempMediaRef = () => {
   })
 }
 
-export const saveTempMediaRef = ({startTime, endTime, clipTitle}: TempMediaRef ) => {
-    setGlobal({
+export const saveTempMediaRef = async ({startTime, endTime, clipTitle}: TempMediaRef ) => {
+    return setGlobal({
       tempMediaRefInfo: {
         startTime,
         endTime,
