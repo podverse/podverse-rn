@@ -164,13 +164,13 @@ export class MakeClipScreen extends React.Component<Props, State> {
     trackPageView('/make-clip', 'Make Clip Screen')
   }
 
-  componentWillUnmount() {
+  async componentWillUnmount() {
     if(!this.props.navigation.getParam('isEditing')) {
-      saveTempMediaRef({startTime: this.state.startTime, endTime:this.state.endTime, clipTitle:this.state.title})
+      await saveTempMediaRef({startTime: this.state.startTime, endTime:this.state.endTime, clipTitle:this.state.title})
     }
 
     if(this.state.shouldClearClipInfo) {
-      clearTempMediaRef()
+      await clearTempMediaRef()
     }
 
     this.setGlobal({
