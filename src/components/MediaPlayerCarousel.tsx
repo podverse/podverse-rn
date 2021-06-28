@@ -205,8 +205,8 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                 this.setState({ explosionOrigin: event.nativeEvent.layout.y })
               }}
               onPress={this._attemptBoost}
-              {...testProps('boost_button')}>
               style={styles.boostButton}
+              {...testProps('boost_button')}>
               {boostIsSending ? (
                 <ActivityIndicator />
               ) : (
