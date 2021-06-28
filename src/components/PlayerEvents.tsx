@@ -51,8 +51,8 @@ export class PlayerEvents extends React.PureComponent<Props> {
   }
 
   _refreshNowPlayingItem = () => {
-    clearTempMediaRef();
     (async () => {
+      clearTempMediaRef()
       refreshDownloadedPodcasts()
 
       const nowPlayingItem = await getNowPlayingItemLocally()
