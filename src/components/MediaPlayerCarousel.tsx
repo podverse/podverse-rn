@@ -6,6 +6,7 @@ import ConfettiCannon from 'react-native-confetti-cannon'
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { PV } from '../resources'
 import { translate } from '../lib/i18n'
+import { testProps } from '../lib/utility'
 import { sendBoost } from '../lib/valueTagHelpers'
 
 const HapticOptions = {
@@ -184,7 +185,10 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
         />
         {!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && lnpayEnabled && hasValueInfo && (
           <View style={styles.boostButtonsContainer}>
-            <TouchableOpacity onPress={this._toggleSatStreaming} style={styles.boostButton}>
+            <TouchableOpacity
+              onPress={this._toggleSatStreaming}
+              style={styles.boostButton}
+              {...testProps('stream_button')}>
               <Text style={streamingButtonMainTextStyles} testID='stream_button_text_1'>
                 {satStreamText.toUpperCase()}
               </Text>
@@ -196,12 +200,13 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
               )}
             </TouchableOpacity>
             <TouchableOpacity
+              disabled={boostIsSending || boostWasSent}
               onLayout={(event) => {
                 this.setState({ explosionOrigin: event.nativeEvent.layout.y })
               }}
-              disabled={boostIsSending || boostWasSent}
+              onPress={this._attemptBoost}
               style={styles.boostButton}
-              onPress={this._attemptBoost}>
+              {...testProps('boost_button')}>
               {boostIsSending ? (
                 <ActivityIndicator />
               ) : (
