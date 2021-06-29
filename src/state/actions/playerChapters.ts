@@ -22,7 +22,6 @@ export const clearChapterPlaybackInfo = () => {
 }
 
 export const loadChaptersForEpisode = async (episode?: any) => {
-  await clearChapterPlaybackInfo()
   if (episode?.id) {
     const currentChapters = await retriveNowPlayingItemChapters(episode.id)
     setChaptersOnGlobalState(currentChapters)
@@ -30,7 +29,6 @@ export const loadChaptersForEpisode = async (episode?: any) => {
 }
 
 export const loadChaptersForNowPlayingItem = async (item?: NowPlayingItem) => {
-  await clearChapterPlaybackInfo()
   if (item?.episodeId) {
     const currentChapters = await retriveNowPlayingItemChapters(item.episodeId)
     setChaptersOnGlobalState(currentChapters)
