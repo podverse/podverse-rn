@@ -19,7 +19,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { getUniqueArrayByKey, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { getUniqueArrayByKey, safeKeyExtractor, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisodes } from '../services/episode'
@@ -419,8 +419,8 @@ export class EpisodesScreen extends React.Component<Props, State> {
       showNoInternetConnectionMessage
     } = this.state
     const { navigation } = this.props
-    const { offlineModeEnabled } = this.global
-    const { subscribedPodcastIds } = this.global.session.userInfo
+    const { offlineModeEnabled, session } = this.global
+    const { subscribedPodcastIds } = session?.userInfo
 
     const noSubscribedPodcasts =
       queryFrom === PV.Filters._subscribedKey &&
@@ -465,7 +465,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
             isLoadingMore={isLoadingMore}
             isRefreshing={isRefreshing}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
-            keyExtractor={(item: any) => item.id}
+            keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
             ListHeaderComponent={queryFrom !== PV.Filters._downloadedKey ? this._ListHeaderComponent : null}
             noResultsMessage={
               noSubscribedPodcasts ? translate("You don't have any podcasts yet") : translate('No episodes found')

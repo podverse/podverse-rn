@@ -7,7 +7,7 @@ import BackgroundTimer from 'react-native-background-timer'
 import { processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../lib/valueTagHelpers'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
-import { hideMiniPlayer, updatePlaybackState } from '../state/actions/player'
+import { handleEnrichingPlayerState, hideMiniPlayer, updatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
 import PVEventEmitter from './eventEmitter'
 import {
@@ -50,6 +50,8 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
 
   // Call updateUserPlaybackPosition to make sure the current item is saved as the userNowPlayingItem
   updateUserPlaybackPosition()
+
+  handleEnrichingPlayerState(currentNowPlayingItem)
 }
 
 const syncNowPlayingItemWithTrack = () => {
@@ -351,15 +353,15 @@ const handleValueStreamingToggle = () => {
   }
 }
 
-const handleValueStreamingMinutePassed = () => {
+const handleValueStreamingMinutePassed = async () => {
   const globalState = getGlobal()
   const { podcastValueFinal } = globalState
   const { nowPlayingItem } = globalState.player
-  const { streamingAmount } = globalState.session?.valueTagSettings?.lightningNetwork?.globalSettings || {}
+  const { streamingAmount } = globalState.session?.valueTagSettings?.lightningNetwork?.lnpay?.globalSettings || {}
   const valueTag = podcastValueFinal || nowPlayingItem.episodeValue || nowPlayingItem.podcastValue
 
   if (valueTag) {
-    saveStreamingValueTransactionsToTransactionQueue(
+    await saveStreamingValueTransactionsToTransactionQueue(
       valueTag,
       nowPlayingItem,
       streamingAmount
@@ -382,28 +384,28 @@ const stopBackgroundTimer = () => {
   BackgroundTimer.stopBackgroundTimer()
 }
 
-let valueStreamingIntervalSecondCount = 0
+let valueStreamingIntervalSecondCount = 1
 const handleBackgroundTimerInterval = () => {
   stopCheckClipIfEndTimeReached()
 
-  PVTrackPlayer.getState().then((playbackState) => {
+  PVTrackPlayer.getState().then(async (playbackState) => {
     const globalState = getGlobal()
     const { streamingEnabled } = globalState.session.valueTagSettings
-    
+
     if (streamingEnabled) {
       if (playbackStateIsPlaying(playbackState)) {
         valueStreamingIntervalSecondCount++
+
+        if (
+          valueStreamingIntervalSecondCount
+          && valueStreamingIntervalSecondCount % 60 === 0) {        
+          await handleValueStreamingMinutePassed()
+        }
       }
       
-      if (
-        valueStreamingIntervalSecondCount
-        && valueStreamingIntervalSecondCount % 60 === 0) {        
-        handleValueStreamingMinutePassed()
-      }
-
-      if (valueStreamingIntervalSecondCount > 599) {
+      if (valueStreamingIntervalSecondCount === 600) {
+        valueStreamingIntervalSecondCount = 1;
         (async () => {
-          valueStreamingIntervalSecondCount = 0
           const { errors, transactions, totalAmount } = await processValueTransactionQueue()
           if (transactions.length > 0 && totalAmount > 0) {
             setGlobal({
@@ -415,8 +417,6 @@ const handleBackgroundTimerInterval = () => {
                 totalAmount
               }
             })
-          } else {
-            valueStreamingIntervalSecondCount = 0
           }
         })()
       }

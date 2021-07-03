@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { Linking, SectionList, Alert } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
@@ -6,6 +7,7 @@ import DocumentPicker from 'react-native-document-picker'
 import RNFS from 'react-native-fs'
 import { Divider, TableSectionSelectors, Text, View, ActivityIndicator, TableCell } from '../components'
 import { translate } from '../lib/i18n'
+import { exportSubscribedPodcastsAsOPML } from '../lib/opmlExport'
 import { createEmailLinkUrl, getMembershipStatus, testProps, parseOpmlFile } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -90,6 +92,15 @@ export class MoreScreen extends React.Component<Props, State> {
     return options
   }
 
+  _handleValueTagSetupPressed = async () => {
+    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS)
+    if(consentGivenString && JSON.parse(consentGivenString) === true) {
+      this.props.navigation.navigate(PV.RouteNames.ValueTagSetupScreen)
+    } else {
+      this.props.navigation.navigate(PV.RouteNames.ValueTagPreviewScreen)
+    }  
+  }
+
   _importOpml = async () => {
     try {
       const res = await DocumentPicker.pick({
@@ -134,8 +145,12 @@ export class MoreScreen extends React.Component<Props, State> {
       Linking.openURL(createEmailLinkUrl(PV.Emails.CONTACT_US))
     } else if (item.key === _logoutKey) {
       logoutUser()
+    } else if (item.key === _bitcoinWalletKey) {
+      this._handleValueTagSetupPressed()
     } else if (item.key === _importOpml) {
       this._importOpml()
+    } else if (item.key === _exportOpml) {
+      exportSubscribedPodcastsAsOPML()
     } else {
       navigation.navigate(item.routeName)
     }
@@ -189,7 +204,7 @@ export class MoreScreen extends React.Component<Props, State> {
               disableFilter
               includePadding
               selectedFilterLabel={section.title}
-              textStyle={[globalTheme.headerText, core.headerText]}
+              textStyle={[globalTheme.headerText, core.sectionHeaderText]}
             />
           )}
           sections={[
@@ -206,6 +221,7 @@ export class MoreScreen extends React.Component<Props, State> {
 
 const _aboutKey = 'About'
 const _addPodcastByRSSKey = 'AddPodcastByRSS'
+const _bitcoinWalletKey = 'BitcoinWallet'
 const _contactKey = 'Contact'
 const _loginKey = 'Login'
 const _logoutKey = 'Logout'
@@ -214,12 +230,17 @@ const _privacyPolicyKey = 'PrivacyPolicy'
 const _settingsKey = 'Settings'
 const _termsOfServiceKey = 'TermsOfService'
 const _importOpml = 'ImportOpml'
+const _exportOpml = 'ExportOpml'
 
 const allMoreFeatures = [
   {
     title: translate('Add Custom RSS Feed'),
     key: _addPodcastByRSSKey,
     routeName: PV.RouteNames.AddPodcastByRSSScreen
+  },
+  {
+    title: translate('Bitcoin Wallet'),
+    key: _bitcoinWalletKey
   },
   {
     title: translate('Settings'),
@@ -229,6 +250,10 @@ const allMoreFeatures = [
   {
     title: translate('Import OPML'),
     key: _importOpml
+  },
+  {
+    title: translate('Export OPML'),
+    key: _exportOpml
   },
   {
     title: translate('Log out'),

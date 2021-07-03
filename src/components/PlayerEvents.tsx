@@ -1,6 +1,7 @@
 import debounce from 'lodash/debounce'
 import { Alert, StyleSheet, View } from 'react-native'
 import React from 'reactn'
+import { clearTempMediaRef } from '../state/actions/mediaRef'
 import { refreshDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
@@ -51,11 +52,12 @@ export class PlayerEvents extends React.PureComponent<Props> {
 
   _refreshNowPlayingItem = () => {
     (async () => {
+      clearTempMediaRef()
       refreshDownloadedPodcasts()
 
       const nowPlayingItem = await getNowPlayingItemLocally()
       if (nowPlayingItem) {
-        await updatePlayerState(nowPlayingItem)
+        updatePlayerState(nowPlayingItem)
       }
    
       await updatePlaybackState()

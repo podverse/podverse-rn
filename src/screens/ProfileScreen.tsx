@@ -688,11 +688,14 @@ export class ProfileScreen extends React.Component<Props, State> {
     try {
       if (filterKey === PV.Filters._podcastsKey || filterKey === PV.Filters._alphabeticalKey) {
         newState = await (this._queryPodcasts(newState, page, querySort) as any)
+        newState.flatListData = this.cleanFlatListData(newState.flatListData, filterKey)
       } else if (filterKey === PV.Filters._clipsKey) {
         newState.querySort = PV.Filters._mostRecentKey
         newState = await (this._queryMediaRefs(newState, page, PV.Filters._mostRecentKey) as any)
+        newState.flatListData = this.cleanFlatListData(newState.flatListData, filterKey)
       } else if (filterKey === PV.Filters._playlistsKey) {
         newState = await (this._queryPlaylists(newState, page, querySort) as any)
+        newState.flatListData = this.cleanFlatListData(newState.flatListData, filterKey)
       } else {
         if (viewType === PV.Filters._podcastsKey) {
           newState = await (this._queryPodcasts(newState, page, filterKey) as any)
@@ -701,15 +704,25 @@ export class ProfileScreen extends React.Component<Props, State> {
         } else if (viewType === PV.Filters._playlistsKey) {
           newState = await (this._queryPlaylists(newState, page, filterKey) as any)
         }
+        newState.flatListData = this.cleanFlatListData(newState.flatListData, viewType)
       }
 
       newState.selectedFilterLabel = await getSelectedFilterLabel(viewType)
-
-      this.shouldLoad = true
-      return newState
     } catch (error) {
-      this.shouldLoad = true
-      return newState
+      console.log('ProfileScreen queryData error:', error)
+    }
+
+    this.shouldLoad = true
+    return newState
+  }
+
+  cleanFlatListData = (flatListData: any[], viewTypeKey: string | null) => {
+    if (viewTypeKey === PV.Filters._podcastsKey || viewTypeKey === PV.Filters._playlistsKey) {
+      return flatListData?.filter((item: any) => !!item?.id) || []
+    } else if (viewTypeKey === PV.Filters._clipsKey) {
+      return flatListData?.filter((item: any) => !!item?.episode?.id && !!item?.episode?.podcast) || []
+    } else {
+      return flatListData
     }
   }
 }

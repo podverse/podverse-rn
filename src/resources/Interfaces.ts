@@ -91,6 +91,7 @@ export interface InitialState {
   customAPIDomainEnabled?: boolean
   customWebDomain?: string
   customWebDomainEnabled?: boolean
+  errorReportingEnabled: boolean
   urlsAPI?: any
   urlsWeb?: any
   offlineModeEnabled?: any
@@ -171,10 +172,14 @@ export interface InitialState {
     userInfo: UserInfo
     valueTagSettings: {
       lightningNetwork: {
-        lnpayEnabled: boolean
-        globalSettings: {
-          boostAmount: number
-          streamingAmount: number
+        lnpay: {
+          walletSatsBalance?: number
+          walletUserLabel?: string
+          lnpayEnabled: boolean
+          globalSettings: {
+            boostAmount: number
+            streamingAmount: number
+          }
         }
       }
       streamingEnabled: boolean
@@ -203,6 +208,12 @@ export interface IActionSheet {
   media: {
     moreButtons: any
   }
+}
+
+export interface TempMediaRef {
+  startTime: number | undefined
+  endTime: number | null
+  clipTitle: string | undefined
 }
 
 export interface IFilters {

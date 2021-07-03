@@ -26,7 +26,6 @@ export const URLs = {
     }
   },
   apiDefaultBaseUrl,
-  requestPodcast: Config.URL_EXTERNAL_REQUEST_PODCAST || '',
   social: {
     facebook: Config.URL_SOCIAL_FACEBOOK || '',
     github: Config.URL_SOCIAL_GITHUB || '',
@@ -51,6 +50,7 @@ export const URLs = {
   webPaths,
   lnpay: {
     baseUrl: 'https://api.lnpay.co/v1',
-    DeveloperDashboardUrl: 'https://lnpay.co/developers/dashboard'
+    DeveloperDashboardUrl: 'https://lnpay.co/developers/dashboard',
+    LoginUrl: 'https://dashboard.lnpay.co/home/login'
   }
 }

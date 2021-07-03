@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "3.1.0",
+  "version": "3.1.3",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -12,6 +12,7 @@
     "dev": "react-native start",
     "dev:android": "react-native run-android",
     "dev:ios": "react-native run-ios --simulator 'iPhone 12 Pro Max'",
+    "dev:ios:device": "react-native run-ios --device",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "eslint --fix 'src/**/*.{ts,tsx}'",
     "format": "prettier --write src/**/*.ts*",
@@ -58,9 +59,9 @@
     "eventemitter3": "4.0.7",
     "he": "1.2.0",
     "linkifyjs": "2.1.9",
-    "lodash": "4.17.20",
+    "lodash": "4.17.21",
     "lodash.memoize": "4.1.2",
-    "podverse-shared": "^3.0.0",
+    "podverse-shared": "^3.1.6",
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-background-downloader": "2.3.4",
@@ -73,7 +74,7 @@
     "react-native-device-info": "7.3.1",
     "react-native-dialog": "5.6.0",
     "react-native-document-picker": "5.0.1",
-    "react-native-dots-pagination": "^0.1.11",
+    "react-native-dots-pagination": "^0.2.0",
     "react-native-draggable-flatlist": "^2.5.4",
     "react-native-elements": "1.2.7",
     "react-native-fast-image": "8.3.4",
@@ -89,7 +90,7 @@
     "react-native-safe-area-context": "3.1.8",
     "react-native-screens": "2.16.1",
     "react-native-secure-key-store": "2.0.9",
-    "react-native-share": "3.8.5",
+    "react-native-share": "6.2.1",
     "react-native-svg": "12.1.0",
     "react-native-swipe-list-view": "3.2.5",
     "react-native-system-setting": "1.7.5",
@@ -153,7 +154,9 @@
     "typescript": "3.9.7"
   },
   "resolutions": {
-    "react-native-safe-area-view": "^2.0.0"
+    "react-native-safe-area-view": "2.0.0",
+    "underscore": "1.12.1",
+    "trim": "0.0.3"
   },
   "isSwift": true
 }

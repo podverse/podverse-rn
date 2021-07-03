@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Platform } from 'react-native'
 import Config from 'react-native-config'
 
@@ -21,6 +22,6 @@ export const Emails = {
     body:
       'Please provide the title of the podcast. ' + 
       'If there are multiple podcasts with the same title, ' +
-      'please provide a link to the podcast so we know which one you are requesting.'
+      'please provide the name of the host or a link to the podcast you are looking for.'
   },
 }

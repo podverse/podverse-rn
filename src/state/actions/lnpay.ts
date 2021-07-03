@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store'
 import { getGlobal, setGlobal } from 'reactn'
 import { PV } from '../../resources'
+import { getWalletInfo } from '../../services/lnpay'
 import { DEFAULT_BOOST_PAYMENT, DEFAULT_STREAMING_PAYMENT } from './valueTag'
 export interface LNWallet {
   id: string
@@ -10,6 +11,24 @@ export interface LNWallet {
     'Wallet Admin': [string]
     'Wallet Invoice'?: [string]
     'Wallet Read'?: [string]
+  }
+}
+
+export interface LNWalletInfo {
+  id: string
+  created_at: number
+  updated_at: number
+  user_label: string
+  balance: number
+  balance_msat: number | null
+  statusType: {
+    type: string
+    name: string
+    display_name: string
+  }
+  walletType: {
+    name: string
+    display_name: string
   }
 }
 
@@ -29,10 +48,13 @@ export const toggleLNPayFeature = async (toggle: boolean) => {
         ...globalState.session.valueTagSettings,
         lightningNetwork: {
           ...globalState.session.valueTagSettings.lightningNetwork,
-          lnpayEnabled: toggle,
-          globalSettings: {
-            boostAmount: defaultBoostAmount,
-            streamingAmount: defaultStreamingAmount
+          lnpay: {
+            ...globalState.session.valueTagSettings.lightningNetwork.lnpay,
+            lnpayEnabled: toggle,
+            globalSettings: {
+              boostAmount: defaultBoostAmount,
+              streamingAmount: defaultStreamingAmount
+            }
           }
         }
       }
@@ -42,7 +64,7 @@ export const toggleLNPayFeature = async (toggle: boolean) => {
 
 export const saveLNPayWallet = async (wallet: LNWallet) => {
   await RNSecureKeyStore.set(PV.Keys.LN_WALLET_KEY, JSON.stringify(wallet), {
-    accessible: ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY
+    accessible: ACCESSIBLE.AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY
   })
 }
 
@@ -62,6 +84,37 @@ export const getLNWallet = async (): Promise<LNWallet | null> => {
   return wallet
 }
 
-export const removeLNPayWallet = () => {
-  return RNSecureKeyStore.remove(PV.Keys.LN_WALLET_KEY)
+export const removeLNPayWallet = async () => {
+  try {
+    await RNSecureKeyStore.remove(PV.Keys.LN_WALLET_KEY)
+  } catch (error) {
+    console.log("Error removing LNPay: ", error)
+  }
+}
+
+export const updateWalletInfo = async () => {
+  const wallet = await getLNWallet()
+  if (wallet) {
+    const walletInfo = await getWalletInfo(wallet)
+    if (walletInfo) {
+      const globalState = getGlobal()
+      setGlobal({
+        session: {
+          ...globalState.session,
+          valueTagSettings: {
+            ...globalState.session.valueTagSettings,
+            lightningNetwork: {
+              ...globalState.session.valueTagSettings.lightningNetwork,
+              lnpay: {
+                ...globalState.session.valueTagSettings.lightningNetwork.lnpay,
+                walletSatsBalance: walletInfo?.balance,
+                walletUserLabel: walletInfo?.user_label
+              }
+            }
+          }
+        }
+
+      })
+    }
+  }
 }

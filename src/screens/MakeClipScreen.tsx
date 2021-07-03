@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import Share from 'react-native-share'
 import React from 'reactn'
+import { clearTempMediaRef, saveTempMediaRef } from '../state/actions/mediaRef'
 import {
   ActivityIndicator,
   DropdownButtonSelect,
@@ -54,6 +55,7 @@ type State = {
   showHowToModal?: boolean
   startTime?: number
   title?: string
+  shouldClearClipInfo: boolean
 }
 
 const testIDPrefix = 'make_clip_screen'
@@ -75,7 +77,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
       isSaving: false,
       ...(isEditing ? { mediaRefId: nowPlayingItem.clipId } : {}),
       progressValue: initialProgressValue || 0,
-      startTime: isEditing ? nowPlayingItem.clipStartTime : null
+      startTime: isEditing ? nowPlayingItem.clipStartTime : null,
+      shouldClearClipInfo: false
     }
   }
 
@@ -125,10 +128,35 @@ export class MakeClipScreen extends React.Component<Props, State> {
         }
       },
       () => {
+        const {tempMediaRefInfo} = this.global
+        let startTime = null
+        let endTime = null
+        let title = ''
+        if(!isEditing) {
+          if(tempMediaRefInfo.startTime) {
+            startTime = tempMediaRefInfo.startTime
+          } else {
+            startTime = Math.floor(currentPosition)
+          }
+
+          if(tempMediaRefInfo.endTime) {
+            endTime = tempMediaRefInfo.endTime
+          }
+
+          if(tempMediaRefInfo.clipTitle) {
+            title = tempMediaRefInfo.clipTitle
+          }
+        } else {
+          startTime = nowPlayingItem.clipStartTime
+          endTime = nowPlayingItem.clipEndTime
+          title = nowPlayingItem.clipTitle
+        }
+
         this.setState({
           ...(!hideHowToModal ? { showHowToModal: true } : { showHowToModal: false }),
-          ...(!isEditing ? { startTime: Math.floor(currentPosition) } : {}),
-          title: isEditing ? nowPlayingItem.clipTitle : ''
+          startTime,
+          endTime,
+          title
         })
       }
     )
@@ -136,7 +164,15 @@ export class MakeClipScreen extends React.Component<Props, State> {
     trackPageView('/make-clip', 'Make Clip Screen')
   }
 
-  componentWillUnmount() {
+  async componentWillUnmount() {
+    if(!this.props.navigation.getParam('isEditing')) {
+      await saveTempMediaRef({startTime: this.state.startTime, endTime:this.state.endTime, clipTitle:this.state.title})
+    }
+
+    if(this.state.shouldClearClipInfo) {
+      await clearTempMediaRef()
+    }
+
     this.setGlobal({
       player: {
         ...this.global.player,
@@ -182,7 +218,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
       newSpeed = speeds[index + 1]
     }
 
-    await setPlaybackSpeed(newSpeed, this.global)
+    await setPlaybackSpeed(newSpeed)
   }
 
   _clearEndTime = () => {
@@ -268,7 +304,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
             await setNowPlayingItem(newItem, position || 0)
           }
 
-          this.setState({ isSaving: false }, () => {
+          this.setState({ isSaving: false, shouldClearClipInfo:true }, () => {
             // NOTE: setTimeout to prevent an error when Modal and Alert modal try to render at the same time
             setTimeout(() => {
               const alertText = isEditing ? translate('Clip Updated') : translate('Clip Created')

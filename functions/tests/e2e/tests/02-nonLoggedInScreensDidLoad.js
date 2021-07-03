@@ -41,15 +41,18 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
   await driver.back()
   await elementByIdAndClickAndTest('more_screen_Membership_table_cell_wrapper', 'membership_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('more_screen_About_table_cell_wrapper', 'about_screen_view', noTestLabel, goBackKey)
+  await performScroll(scrollDownKey, 2)
   await elementByIdAndClickAndTest('more_screen_TermsOfService_table_cell_wrapper', 'terms_of_service_screen_view', noTestLabel, goBackKey)
 
     // More Screen > Settings Screen
   await elementByIdAndClickAndTest('more_screen_Settings_table_cell_wrapper', 'settings_screen_view')
   await elementByIdToggle('settings_screen_only_allow_downloading_when_connected_to_wifi_switch')
+  await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
+  await elementByIdToggle('settings_screen_offline_mode_switch')
+  await performScroll(scrollUpKey)
+  await performScroll(scrollUpKey)
   await elementByIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')
   await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
-  await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
-  await elementByIdToggle('settings_screen_offline_mode_switch')  
   
   await driver.back()
   await driver.back()

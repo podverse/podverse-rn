@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native'
 import React, { setGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
+import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import { loadItemAndPlayTrack } from '../state/actions/player'
@@ -64,7 +65,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
       episode
     }
 
-    return item && item.episode && item.episode.id ? (
+    return item?.episode?.id ? (
       <ClipTableCell
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
         item={item}
@@ -111,7 +112,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
             extraData={currentChapters}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
-            keyExtractor={(item: any) => item.id}
+            keyExtractor={(item: any, index: number) => safeKeyExtractor(getTestID(), index, item?.id)}
             noResultsMessage={noResultsMessage}
             noResultsSubMessage={noResultsSubMessage}
             renderItem={this._renderItem}

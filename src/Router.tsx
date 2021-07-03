@@ -1,19 +1,19 @@
 import { Image, Platform, View } from 'react-native'
 import Config from 'react-native-config'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
-import { createStackNavigator, NavigationStackOptions } from 'react-navigation-stack'
+import { createStackNavigator, NavigationStackOptions, NavigationStackProp } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import React from 'reactn'
-import { DownloadsActiveBadge, NavSearchIcon, PVTabBar, TabBarLabel } from './components'
+import React, { Component } from 'react'
+import { DownloadsActiveBadge, ErrorBoundary, NavSearchIcon, PVTabBar, TabBarLabel } from './components'
 import { PV } from './resources'
 import {
   AboutScreen,
   AddPodcastByRSSScreen,
   AuthScreen,
   ClipsScreen,
-  CryptoConsentScreen,
-  CryptoPreviewScreen,
-  CryptoSetupScreen,
+  ValueTagConsentScreen,
+  ValueTagPreviewScreen,
+  ValueTagSetupScreen,
   DownloadsScreen,
   EditPlaylistScreen,
   EditProfileScreen,
@@ -173,7 +173,7 @@ const MoreNavigator = createStackNavigator(
     [PV.RouteNames.LNPaySignupScreen]: LNPaySignupScreen,
     [PV.RouteNames.PrivacyPolicyScreen]: PrivacyPolicyScreen,
     [PV.RouteNames.FAQScreen]: FAQScreen,
-    [PV.RouteNames.CryptoSetupScreen]: CryptoSetupScreen
+    [PV.RouteNames.ValueTagSetupScreen]: ValueTagSetupScreen
   },
   {
     defaultNavigationOptions,
@@ -363,13 +363,13 @@ const FundingScreenNavigator = createStackNavigator(
   }
 )
 
-const CryptoOnboardingNavigator = createStackNavigator(
+const ValueTagOnboardingNavigator = createStackNavigator(
   {
-    [PV.RouteNames.CryptoPreviewScreen]: {
-      screen: CryptoPreviewScreen
+    [PV.RouteNames.ValueTagPreviewScreen]: {
+      screen: ValueTagPreviewScreen
     },
-    [PV.RouteNames.CryptoConsentScreen]: {
-      screen: CryptoConsentScreen
+    [PV.RouteNames.ValueTagConsentScreen]: {
+      screen: ValueTagConsentScreen
     }
   },
   {
@@ -395,7 +395,7 @@ const MainApp = createStackNavigator(
       screen: AddPodcastByRSSURLNavigator,
       path: ''
     },
-    CryptoOnboardingNavigator
+    ValueTagOnboardingNavigator
   },
   {
     mode: 'modal',
@@ -413,7 +413,25 @@ const SwitchNavigator = createSwitchNavigator(
   }
 )
 
-const App = createAppContainer(SwitchNavigator)
+type Props = {
+  navigation: NavigationStackProp
+}
+
+type State = Record<string, unknown>
+
+class AppNavigator extends Component<Props, State> {
+  static router = SwitchNavigator.router
+  render() {
+    const { navigation } = this.props
+    return (
+      <ErrorBoundary navigation={navigation}>
+        <SwitchNavigator navigation={navigation} />
+      </ErrorBoundary>
+    )
+  }
+}
+
+const App = createAppContainer(AppNavigator)
 const prefix = PV.DeepLinks.prefix
 
 export default () => <App uriPrefix={prefix} />

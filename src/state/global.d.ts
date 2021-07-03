@@ -1,6 +1,6 @@
 import { TranscriptRow } from 'podverse-shared'
 import 'reactn'
-import { BannerInfo, GlobalTheme, UserInfo } from '../resources/Interfaces'
+import { BannerInfo, GlobalTheme, UserInfo, TempMediaRef } from '../resources/Interfaces'
 
 declare module 'reactn/default' {
   export interface State {
@@ -93,10 +93,14 @@ declare module 'reactn/default' {
       userInfo: UserInfo
       valueTagSettings: {
         lightningNetwork: {
-          lnpayEnabled: boolean
-          globalSettings: {
-            boostAmount: number
-            streamingAmount: number
+          lnpay: {
+            walletSatsBalance?: number
+            walletUserLabel?: string
+            lnpayEnabled: boolean
+            globalSettings: {
+              boostAmount: number
+              streamingAmount: number
+            }
           }
         }
         streamingEnabled: boolean
@@ -109,9 +113,11 @@ declare module 'reactn/default' {
     customAPIDomainEnabled?: boolean
     customWebDomain?: string
     customWebDomainEnabled?: boolean
+    errorReportingEnabled: boolean
     urlsAPI?: any
     urlsWeb?: any
     userAgent?: string
-    bannerInfo: BannerInfo
+    bannerInfo: BannerInfo,
+    tempMediaRefInfo: TempMediaRef
   }
 }

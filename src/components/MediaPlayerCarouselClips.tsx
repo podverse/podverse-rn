@@ -5,6 +5,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFromLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
+import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRefs } from '../services/mediaRef'
@@ -189,7 +190,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
       }
     }
 
-    return item && item.episode && item.episode.id ? (
+    return item?.episode?.id ? (
       <ClipTableCell
         item={item}
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
@@ -252,7 +253,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
             extraData={flatListData}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
-            keyExtractor={(item: any) => item.id}
+            keyExtractor={(item: any, index: number) => safeKeyExtractor(getTestID(), index, item?.id)}
             noResultsMessage={noResultsMessage}
             onEndReached={this._onEndReached}
             renderItem={this._renderItem}
@@ -336,11 +337,11 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
       newState.flatListDataTotalCount = results[1]
       newState.querySort = this._validSort()
       this.shouldLoad = true
-      return newState
     } catch (error) {
       this.shouldLoad = true
-      return newState
     }
+
+    return newState
   }
 }
 

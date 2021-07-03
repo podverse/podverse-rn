@@ -166,7 +166,7 @@ const convertValueTagIntoValueTransaction = async (
   const timestamp = Date.now()
   const speed = await PVTrackPlayer.getRate()
   const currentPlaybackPosition = await PVTrackPlayer.getPosition()
-  const pubkey = 'podverse-dev-test-pubkey'
+  const pubkey = 'podverse-pubkey'
 
   const satoshiStreamStats = createSatoshiStreamStats(
     nowPlayingItem,
@@ -174,7 +174,8 @@ const convertValueTagIntoValueTransaction = async (
     action,
     speed.toString(),
     pubkey,
-    normalizedValueRecipient.amount.toString()
+    normalizedValueRecipient.amount.toString(),
+    normalizedValueRecipient.name || ''
   )
 
   return {
@@ -202,7 +203,7 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
 
   const action = 'boost'
   const { session } = getGlobal()
-  const { boostAmount } = session?.valueTagSettings?.lightningNetwork?.globalSettings || {}
+  const { boostAmount } = session?.valueTagSettings?.lightningNetwork?.lnpay?.globalSettings || {}
 
   let totalAmountPaid = 0
   const roundDownBoostTransactions = true
@@ -350,6 +351,13 @@ const combineTransactionAmounts = (
 
   const bundledAmount = bundledQueue[bundledValueTransactionIndex].normalizedValueRecipient.amount
   transaction.normalizedValueRecipient.amount = bundledAmount + transaction.normalizedValueRecipient.amount
+
+  // Update the satoshiStreamStats with the combined amount
+  transaction.satoshiStreamStats[7629169] = {
+    ...transaction.satoshiStreamStats[7629169],
+    amount: transaction.normalizedValueRecipient.amount
+  }
+
   return transaction
 }
 

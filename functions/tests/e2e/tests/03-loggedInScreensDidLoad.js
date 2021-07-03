@@ -1,4 +1,5 @@
 const { getDriver } = require('../driver/driverFactory')
+const { confirmAndroidAlert } = require('../driver/helpers/alerts')
 const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, elementWaitFor, elementCheckIfPresent, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
 const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
@@ -15,6 +16,8 @@ const test03_loggedInScreensDidLoadTests = async () => {
   await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
   await elementByIdClick('login_submit_button')
   await driver.sleep(4000)
+  
+  await confirmAndroidAlert()
   
     // Podcasts Screen
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
@@ -40,15 +43,17 @@ const test03_loggedInScreensDidLoadTests = async () => {
     'more_screen_AddPodcastByRSS_table_cell_wrapper','add_podcast_by_rss_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('more_screen_Membership_table_cell_wrapper', 'membership_screen_view', noTestLabel, goBackKey)
   await elementByIdAndClickAndTest('more_screen_About_table_cell_wrapper', 'about_screen_view', noTestLabel, goBackKey)
+  await performScroll(scrollDownKey, 2)
   await elementByIdAndClickAndTest('more_screen_TermsOfService_table_cell_wrapper', 'terms_of_service_screen_view', noTestLabel, goBackKey)
 
     // More Screen > Settings Screen
   await elementByIdAndClickAndTest('more_screen_Settings_table_cell_wrapper', 'settings_screen_view')
+  await elementByIdToggle('settings_screen_offline_mode_switch')
   await elementByIdToggle('settings_screen_only_allow_downloading_when_connected_to_wifi_switch')
+  await performScroll(scrollDownKey, 2)
   await elementByIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')
   await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
   await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
-  await elementByIdToggle('settings_screen_offline_mode_switch')
 
   await driver.back()
   await driver.back()

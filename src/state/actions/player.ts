@@ -38,14 +38,10 @@ const clearChaptersIfNewEpisode = async (previousNowPlayingItem: NowPlayingItem,
   }
 }
 
-export const updatePlayerState = async (item: NowPlayingItem) => {
+export const updatePlayerState = (item: NowPlayingItem) => {
   if (!item) return
 
   const globalState = getGlobal()
-
-  const previousNowPlayingItem = globalState.player.nowPlayingItem || {}
-  await clearChaptersIfNewEpisode(previousNowPlayingItem, item)
-  loadChaptersForNowPlayingItem(item)
 
   const episode = convertNowPlayingItemToEpisode(item)
   episode.description = episode.description || 'No show notes available'
@@ -181,14 +177,14 @@ export const loadItemAndPlayTrack = async (
       }
     }
 
-    await updatePlayerState(item)
+    updatePlayerState(item)
 
     // If the value tag is unavailable, try to enrich it from Podcast Index API
     // then make sure the enrichedItem is on global state.
     // If the transcript tag is available, parse it and assign it to the enrichedItem.
     const enrichedItem = await loadItemAndPlayTrackService(item, shouldPlay, forceUpdateOrderDate)
     if (enrichedItem) {
-      await updatePlayerState(enrichedItem)
+      updatePlayerState(enrichedItem)
     }
 
     showMiniPlayer()
@@ -202,12 +198,16 @@ export const loadItemAndPlayTrack = async (
       }
     },
     () => {
-      trackPlayerScreenPageView(item)
-      loadChaptersForNowPlayingItem(item)
-      enrichPodcastValue(item)
-      enrichParsedTranscript(item)
+      handleEnrichingPlayerState(item)
     }
   )
+}
+
+export const handleEnrichingPlayerState = (item: NowPlayingItem) => {
+  trackPlayerScreenPageView(item)
+  loadChaptersForNowPlayingItem(item)
+  enrichPodcastValue(item)
+  enrichParsedTranscript(item)
 }
 
 const enrichParsedTranscript = (item: NowPlayingItem) => {
@@ -228,7 +228,7 @@ const enrichPodcastValue = (item: NowPlayingItem) => {
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
   setGlobal({ podcastValueFinal: null }, async () => {
-    if (item.episodeValue || item.podcastValue) {
+    if (item?.episodeValue?.length || item?.podcastValue?.length) {
       PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
     } else if (item.podcastIndexPodcastId) {
       const podcastIndexPodcast = await getPodcastFromPodcastIndexById(item.podcastIndexPodcastId)
@@ -288,7 +288,7 @@ export const updatePlaybackState = async (state?: any) => {
 export const setNowPlayingItem = async (item: NowPlayingItem | null, playbackPosition: number) => {
   if (item) {
     await setNowPlayingItemService(item, playbackPosition)
-    await updatePlayerState(item)
+    updatePlayerState(item)
   }
 }
 

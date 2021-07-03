@@ -1,4 +1,3 @@
-import { Alert } from 'react-native'
 import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import RNBackgroundDownloader from 'react-native-background-downloader'

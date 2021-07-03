@@ -6,16 +6,17 @@ import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
-import { LNWallet, saveLNPayWallet, toggleLNPayFeature } from '../state/actions/lnpay'
+import { LNWallet, saveLNPayWallet, toggleLNPayFeature, updateWalletInfo } from '../state/actions/lnpay'
 
 type Props = any
 
 type State = {
   apiKey: string
+  isAddingWallet: boolean
+  isKeyboardShowing: boolean
   walletName: string
   walletKey: string
   walletId: string
-  isKeyboardShowing: boolean
 }
 
 export class LNPaySignupScreen extends React.Component<Props, State> {
@@ -25,10 +26,11 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
     super()
     this.state = {
       apiKey: '',
+      isAddingWallet: false,
+      isKeyboardShowing: false,
       walletName: '',
       walletKey: '',
-      walletId: '',
-      isKeyboardShowing: false
+      walletId: ''
     }
   }
 
@@ -37,7 +39,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
   })
 
   componentDidMount() {
-    trackPageView('/lnpaysignup', 'LN Pay Signup')
+    trackPageView('/lnpaysignup', 'LNPay Signup')
     Keyboard.addListener("keyboardDidShow", () => {
       this.setState({isKeyboardShowing: true})
     })
@@ -56,6 +58,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
   }
 
   _attemptCreateWallet = async () => {
+    this.setState({ isAddingWallet: true })
     try {
       let newWallet = null
       if (this.state.apiKey) {
@@ -72,7 +75,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
             newWallet = existingWallet
           }
         } else {
-          newWallet = await createWallet(this.state.apiKey, this.state.walletName)
+          newWallet = await createWallet(this.state.apiKey, this.state.walletName.trim())
         }
 
         if (newWallet) {
@@ -83,6 +86,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
           })
 
           await toggleLNPayFeature(true)
+          await updateWalletInfo()
           this.props.navigation.goBack()
         } else {
           throw new Error(
@@ -93,11 +97,18 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
     } catch (err) {
       Alert.alert('LNPay Error', err.message)
     }
+    this.setState({ isAddingWallet: false })
   }
 
 
   render() {
-    const instructions = [translate('LNPayDescriptionText1'), translate('LNPayDescriptionText2')]
+    const { isAddingWallet } = this.state
+
+    const instructions = [
+      translate('LNPayDescriptionText1'),
+      translate('LNPayDescriptionText2'),
+      translate('LNPayDescriptionText3')
+    ]
 
     const extraPadding = this.state.isKeyboardShowing ? {paddingBottom: 180} : {}
     return (
@@ -111,12 +122,21 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
               <Text
                 onPress={() => Linking.openURL(PV.URLs.lnpay.DeveloperDashboardUrl)}
                 style={this.global.globalTheme.link}>
-                {PV.URLs.lnpay.DeveloperDashboardUrl}
+                {PV.URLs.lnpay.LoginUrl}
               </Text>
             </Text>
             <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
               {'\n'}
               {instructions[1]}
+              <Text
+                onPress={() => Linking.openURL(PV.URLs.lnpay.DeveloperDashboardUrl)}
+                style={this.global.globalTheme.link}>
+                {PV.URLs.lnpay.DeveloperDashboardUrl}
+              </Text>
+            </Text>
+            <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
+              {'\n'}
+              {instructions[2]}
             </Text>
             <Divider style={styles.divider} />
             <TextInput
@@ -137,7 +157,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
               <TextInput
                 testID='create_wallet_name_input'
                 value={this.state.walletName}
-                onChangeText={(newText: string) => this.setState({ walletName: newText.trim() })}
+                onChangeText={(newText: string) => this.setState({ walletName: newText })}
                 wrapperStyle={{ marginTop: 10 }}
                 placeholder={translate('Wallet Name (Optional)')}
                 eyebrowTitle={translate('Wallet Name (Optional)')}
@@ -180,11 +200,12 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
               />
             )}
             <Button
-              testID='create_wallet_button'
               disabled={!this.state.apiKey || (!!this.state.walletId && !this.state.walletKey)}
-              text={translate('Add Wallet')}
-              wrapperStyles={{ marginBottom: 20 }}
+              isLoading={isAddingWallet}
               onPress={this._attemptCreateWallet}
+              testID='create_wallet_button'
+              text={translate('Add Wallet')}
+              wrapperStyles={{ marginBottom: 52 }}
             />
           </ScrollView>
       </View>

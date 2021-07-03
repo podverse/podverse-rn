@@ -1,17 +1,18 @@
 import { Alert, Keyboard, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { SwitchWithText, TextInput, View } from '../components'
+import { SwitchWithText, Text, TextInput, TextRow, View } from '../components'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
+import { numberWithCommas, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
-import { removeLNPayWallet, toggleLNPayFeature } from '../state/actions/lnpay'
+import { removeLNPayWallet, toggleLNPayFeature, updateWalletInfo } from '../state/actions/lnpay'
 import {
   MINIMUM_BOOST_PAYMENT,
   MINIMUM_STREAMING_PAYMENT,
   updateGlobalBoostAmount,
   updateGlobalStreamingAmount
 } from '../state/actions/valueTag'
+import { core } from '../styles'
 
 type Props = {
   navigation: any
@@ -20,34 +21,39 @@ type Props = {
 type State = {
   localBoostAmount: string
   localStreamingAmount: string
+  walletSatsBalance?: number
+  walletUserLabel: string
 }
 
-const testIDPrefix = 'crypto_setup_screen'
+const testIDPrefix = 'value_tag_setup_screen'
 
-export class CryptoSetupScreen extends React.Component<Props, State> {
+export class ValueTagSetupScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     
     this.state = {
       localBoostAmount: '0',
-      localStreamingAmount: '0'
+      localStreamingAmount: '0',
+      walletUserLabel: ''
     }
   }
 
   static navigationOptions = () => ({
-    title: translate('Crypto Setup')
+    title: translate('Bitcoin Wallet')
   })
 
   componentDidMount() {
     const { boostAmount, streamingAmount } =
-      this.global.session?.valueTagSettings?.lightningNetwork?.globalSettings || {}
+      this.global.session?.valueTagSettings?.lightningNetwork?.lnpay?.globalSettings || {}
 
     this.setState({
       localBoostAmount: boostAmount?.toString(),
       localStreamingAmount: streamingAmount?.toString()
     })
 
-    trackPageView('/crypto-setup', 'Crypto Setup Screen')
+    updateWalletInfo()
+
+    trackPageView('/bitcoin-wallet', 'Bitcoin Wallet')
   }
 
   _showLNPaySetup = async (toggle: boolean) => {
@@ -55,8 +61,8 @@ export class CryptoSetupScreen extends React.Component<Props, State> {
       this.props.navigation.navigate(PV.RouteNames.LNPaySignupScreen)
     } else {
       await removeLNPayWallet()
-      toggleLNPayFeature(false)
-      Alert.alert(translate('LN Pay Wallet Removed'), translate('All LNPay data have been deleted from this device'))
+      await toggleLNPayFeature(false)
+      Alert.alert(translate('LNPay Wallet Removed'), translate('All LNPay data have been deleted from this device'))
     }
   }
 
@@ -65,19 +71,34 @@ export class CryptoSetupScreen extends React.Component<Props, State> {
     const { session } = this.global
     const { valueTagSettings } = session
     const { lightningNetwork } = valueTagSettings
-    const { lnpayEnabled } = lightningNetwork
+    const { lnpayEnabled, walletSatsBalance, walletUserLabel } = lightningNetwork?.lnpay || {}
+
+    const walletSatsBalanceText = numberWithCommas(walletSatsBalance) || 0
 
     return (
       <View style={styles.content} {...testProps(`${testIDPrefix}_view`)}>
-            <View style={styles.itemWrapper}>
-              <SwitchWithText
-                onValueChange={this._showLNPaySetup}
-                subText={translate('Enable Lightning Pay switch description')}
-                testID={`${testIDPrefix}_lnpay_mode`}
-                text={translate(`Enable LN Pay`)}
-                value={lnpayEnabled}
-              />
-              {lnpayEnabled && (
+        <View style={styles.itemWrapper}>
+          <SwitchWithText
+            onValueChange={this._showLNPaySetup}
+            subText={lnpayEnabled ? '' : translate('Enable Lightning Pay switch description')}
+            testID={`${testIDPrefix}_lnpay_mode`}
+            text={translate(`Enable LNPay`)}
+            value={lnpayEnabled}
+            wrapperStyle={styles.switchWithTextWrapper}
+          />
+          {lnpayEnabled && (
+            <View>
+              <View style={styles.sectionWrapper}>
+                <Text style={core.headerText}>{translate('LNPay Wallet')}</Text>
+                <TextRow
+                  label={`${translate('Balance')}: `}
+                  text={`${walletSatsBalanceText} ${translate('satoshis')}`} />
+                <TextRow
+                  label={`${translate('Name')}: `}
+                  text={`${walletUserLabel ? walletUserLabel : '----'}`} />
+              </View>
+              <View style={styles.sectionWrapper}>
+                <Text style={core.headerText}>{translate('LNPay Global Settings')}</Text>
                 <TextInput
                   alwaysShowEyebrow
                   eyebrowTitle={translate('Boost Amount')}
@@ -99,8 +120,6 @@ export class CryptoSetupScreen extends React.Component<Props, State> {
                   value={`${localBoostAmount}`}
                   wrapperStyle={styles.textInputWrapper}
                 />
-              )}
-              {lnpayEnabled && (
                 <TextInput
                   alwaysShowEyebrow
                   eyebrowTitle={translate('Streaming Amount')}
@@ -124,8 +143,10 @@ export class CryptoSetupScreen extends React.Component<Props, State> {
                   value={`${localStreamingAmount}`}
                   wrapperStyle={styles.textInputWrapper}
                 />
-              )}
+              </View>
             </View>
+          )}
+        </View>
       </View>
     )
   }
@@ -139,12 +160,20 @@ const styles = StyleSheet.create({
     paddingHorizontal:15
   },
   itemWrapper: {
+    marginBottom: 0,
+    width: '100%'
+  },
+  sectionWrapper: {
     marginBottom: 24
+  },
+  switchWithTextWrapper: {
+    marginBottom: 28,
+    marginTop: 8
   },
   text: {
     fontSize: PV.Fonts.sizes.xxl
   },
   textInputWrapper: {
-    marginVertical: 20
+    marginVertical: 0
   }
 })

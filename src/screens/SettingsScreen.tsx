@@ -39,6 +39,7 @@ import {
   setCensorNSFWText,
   setCustomAPIDomainEnabled,
   setCustomWebDomainEnabled,
+  setErrorReportingEnabled,
   setOfflineModeEnabled
 } from '../state/actions/settings'
 import { clearHistoryItems } from '../state/actions/userHistoryItem'
@@ -201,6 +202,10 @@ export class SettingsScreen extends React.Component<Props, State> {
     setCensorNSFWText(value)
   }
 
+  _handleToggleErrorReporting = (value: boolean) => {
+    setErrorReportingEnabled(value)
+  }
+
   _handleToggleOfflineMode = (value: boolean) => {
     this.setState({ offlineModeEnabled: value }, () => {
       setOfflineModeEnabled(value)
@@ -322,15 +327,6 @@ export class SettingsScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleCryptoSetupPressed = async () => {
-    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_CRYPTO_TERMS)
-    if(consentGivenString && JSON.parse(consentGivenString) === true) {
-      this.props.navigation.navigate(PV.RouteNames.CryptoSetupScreen)
-    } else {
-      this.props.navigation.navigate(PV.RouteNames.CryptoPreviewScreen)
-    }  
-  }
-
   render() {
     const {
       deleteAccountDialogConfirmed,
@@ -352,6 +348,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       customAPIDomainEnabled,
       customWebDomain,
       customWebDomainEnabled,
+      errorReportingEnabled,
       globalTheme,
       session
     } = this.global
@@ -367,20 +364,6 @@ export class SettingsScreen extends React.Component<Props, State> {
         {isLoading && <ActivityIndicator fillSpace />}
         {!isLoading && (
           <View>
-            <View>
-              {!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && 
-                <View>
-                  <TableTextCell
-                    onPress={this._handleCryptoSetupPressed}
-                    testIDPrefix={testIDPrefix}
-                    testIDSuffix='crypto_setup'
-                    text={translate('Crypto Setup')}
-                    hideChevron={false}
-                  />
-                  <Divider style={styles.divider} />
-                </View>
-              }
-            </View>
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 onValueChange={this._handleToggleOfflineMode}
@@ -391,6 +374,21 @@ export class SettingsScreen extends React.Component<Props, State> {
               />
             </View>
             <Divider style={styles.divider} />
+            {!Config.DISABLE_CRASH_LOGS && (
+              <View>
+                <View style={styles.itemWrapper}>
+                  <SwitchWithText
+                    onValueChange={this._handleToggleErrorReporting}
+                    subText={translate('Error Reporting subtext')}
+                    testID={`${testIDPrefix}_error_reporting`}
+                    text={errorReportingEnabled
+                      ? translate('Error Reporting Enabled') : translate('Error Reporting Disabled')}
+                    value={!!errorReportingEnabled}
+                  />
+                </View>
+                <Divider style={styles.divider} />
+              </View>
+            )}
             {!Config.DISABLE_THEME_SWITCH && (
               <View style={styles.itemWrapper}>
                 <SwitchWithText

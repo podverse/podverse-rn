@@ -15,6 +15,7 @@ const { test13_myProfileScreenFull } = require('./tests/13-myProfileScreenFull')
 const { test14_profilesScreenFull } = require('./tests/14-profilesScreenFull')
 const { test15_playlistsScreenFull } = require('./tests/15-playlistsScreenFull')
 const { test16_fundingPresent } = require('./tests/16-fundingPresent')
+const { test17_LNPaySetup } = require('./tests/17-LNPaySetup')
 
 
 const { createDriver } = require('./driver/driverFactory')
@@ -57,6 +58,7 @@ const runTests = async (customCapabilities) => {
     await test14_profilesScreenFull()
     await test15_playlistsScreenFull()
     await test16_fundingPresent()
+    await test17_LNPaySetup()
 
 
 

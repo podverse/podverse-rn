@@ -13,9 +13,9 @@ type State = {
   checkboxSelected: boolean
 }
 
-const testIDPrefix = 'crypto_consent_screen'
+const testIDPrefix = 'value_tag_consent_screen'
 
-export class CryptoConsentScreen extends React.Component<Props, State> {
+export class ValueTagConsentScreen extends React.Component<Props, State> {
   constructor() {
     super()
     this.state = {
@@ -31,12 +31,12 @@ export class CryptoConsentScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    trackPageView('/crypto-consent', 'Crypto Consent Screen')
+    trackPageView('/value-tag-consent', 'Value Tag Consent Screen')
   }
 
   _acceptAgreement = async () => {
-    await AsyncStorage.setItem(PV.Keys.USER_CONSENT_CRYPTO_TERMS, "true")
-    this.props.navigation.navigate(PV.RouteNames.CryptoSetupScreen)
+    await AsyncStorage.setItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS, "true")
+    this.props.navigation.navigate(PV.RouteNames.ValueTagSetupScreen)
   }
 
   _declineAgreement() {
@@ -47,30 +47,31 @@ export class CryptoConsentScreen extends React.Component<Props, State> {
     return (
       <SafeAreaView style={styles.content} {...testProps(`${testIDPrefix}_view`)}>
         <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>
-        {translate("crypto_consent_title")}
+        {translate("value_tag_consent_title")}
         </Text>
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollviewContent}>
           <Text style={[styles.text, styles.attentionText]}>
-          {translate("crypto_consent_text_1")}
+          {translate("value_tag_consent_text_1")}
           </Text>
           <Text style={styles.text}>
-          {translate("crypto_consent_text_2")}
+          {translate("value_tag_consent_text_2")}
           </Text>
           <Text style={styles.text}>
-          {translate("crypto_consent_text_3")}
+          {translate("value_tag_consent_text_3")}
           </Text>
           <Text style={styles.text}>
-          {translate("crypto_consent_text_4")}
+          {translate("value_tag_consent_text_4")}
           </Text>
         </ScrollView>
         <CheckBox
-          size={50}
           checked={this.state.checkboxSelected}
+          containerStyle={{ backgroundColor: PV.Colors.ink, borderWidth: 0 }}
           onPress={() => {
             this.setState({ checkboxSelected: !this.state.checkboxSelected })
           }}
-          title={translate("crypto_consent_checkbox_text")}
-          containerStyle={{ backgroundColor: PV.Colors.ink, borderWidth: 0 }}
+          size={50}
+          {...(testProps(`${testIDPrefix}_accept_check_box`))}
+          title={translate("value_tag_consent_checkbox_text")}
           textStyle={{ color: PV.Colors.white, fontSize: PV.Fonts.sizes.lg }}
         />
         <Button

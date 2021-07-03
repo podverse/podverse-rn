@@ -21,23 +21,25 @@ import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { getAppUserAgent, setAppUserAgent, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisode } from '../services/episode'
+import PVEventEmitter from '../services/eventEmitter'
 import { checkIdlePlayerState, PVTrackPlayer, updateTrackPlayerCapabilities,
   updateUserPlaybackPosition } from '../services/player'
-import { getPodcast, getPodcasts } from '../services/podcast'
-import { trackPageView } from '../services/tracking'
-import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
-import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
-import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
-import {
-  initializePlaybackSpeed,
-  initializePlayerQueue,
-  initPlayerState,
-  showMiniPlayer,
-  updatePlaybackState,
+  import { getPodcast, getPodcasts } from '../services/podcast'
+  import { trackPageView } from '../services/tracking'
+  import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
+  import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
+  import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
+  import { updateWalletInfo } from '../state/actions/lnpay'
+  import {
+    initializePlaybackSpeed,
+    initializePlayerQueue,
+    initPlayerState,
+    showMiniPlayer,
+    updatePlaybackState,
   updatePlayerState
 } from '../state/actions/player'
 import { combineWithAddByRSSPodcasts,
@@ -111,6 +113,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
   async componentDidMount() {
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    PVEventEmitter.on(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
@@ -120,6 +124,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
         await AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5')
         await AsyncStorage.setItem(PV.Keys.CENSOR_NSFW_TEXT, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.PLAYER_MAXIMUM_SPEED, '2.5')
+
+        if (!Config.DISABLE_CRASH_LOGS) {
+          await AsyncStorage.setItem(PV.Keys.ERROR_REPORTING_ENABLED, 'TRUE')
+        }
+
         this.setState({ showDataSettingsConfirmDialog: true })
       } else {
         this._initializeScreenData()
@@ -138,6 +147,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange)
     Linking.removeEventListener('url', this._handleOpenURLEvent)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    PVEventEmitter.removeListener(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
   }
 
   _handleAppStateChange = (nextAppState: any) => {
@@ -147,7 +158,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         const currentItem = await getNowPlayingItemLocally()
   
         if (!lastItem || (lastItem && currentItem && currentItem.episodeId !== lastItem.episodeId)) {
-          await updatePlayerState(currentItem)
+          updatePlayerState(currentItem)
           await updateUserPlaybackPosition()
           showMiniPlayer()
         }
@@ -246,7 +257,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         } else if (path === PV.DeepLinks.Episode.pathPrefix) {
           const episode = await getEpisode(id)
           if (episode) {
-            const podcast = await getPodcast(episode.podcast.id)
+            const podcast = await getPodcast(episode.podcast?.id)
             navigate(PV.RouteNames.PodcastScreen, {
               podcast,
               navToEpisodeWithId: id
@@ -495,7 +506,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _renderPodcastItem = ({ item, index }) => (
       <PodcastTableCell
-        id={item.id}
+        id={item?.id}
         lastEpisodePubDate={item.lastEpisodePubDate}
         onPress={() =>
           this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
@@ -648,14 +659,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
       showDataSettingsConfirmDialog,
       showNoInternetConnectionMessage
     } = this.state
-    const { offlineModeEnabled } = this.global
-    const { subscribedPodcastIds } = this.global.session.userInfo
+    const { offlineModeEnabled, session, subscribedPodcasts = [], subscribedPodcastsTotalCount = 0 } = this.global
+    const { subscribedPodcastIds } = session?.userInfo
 
     let flatListData = []
     let flatListDataTotalCount = null
     if (queryFrom === PV.Filters._subscribedKey) {
-      flatListData = this.global.subscribedPodcasts
-      flatListDataTotalCount = this.global.subscribedPodcastsTotalCount
+      flatListData = subscribedPodcasts
+      flatListDataTotalCount = subscribedPodcastsTotalCount
     } else if (queryFrom === PV.Filters._downloadedKey) {
       flatListData = this.global.downloadedPodcasts
       flatListDataTotalCount = this.global.downloadedPodcasts && this.global.downloadedPodcasts.length
@@ -704,7 +715,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
               disableLeftSwipe={queryFrom !== PV.Filters._subscribedKey && queryFrom !== PV.Filters._downloadedKey}
               extraData={flatListData}
               handleNoResultsTopAction={this._handleNoResultsTopAction}
-              keyExtractor={(item: any) => item.id}
+              keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
               isLoadingMore={isLoadingMore}
               isRefreshing={isRefreshing}
               ItemSeparatorComponent={this._ItemSeparatorComponent}
@@ -840,14 +851,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
         newState.endOfResultsReached = newState.flatListData.length >= results[1]
         newState.flatListDataTotalCount = results[1]
       }
-
-      this.shouldLoad = true
-      return newState
     } catch (error) {
       console.log('PodcastsScreen _queryData error', error)
-      this.shouldLoad = true
-      return newState
     }
+
+    newState.flatListData = this.cleanFlatListData(newState.flatListData)
+    
+    this.shouldLoad = true
+
+    return newState
+  }
+
+  cleanFlatListData = (flatListData: any[]) => {
+    return flatListData?.filter((item) => !!item?.id) || []
   }
 }
 

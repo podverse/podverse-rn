@@ -28,11 +28,13 @@ export const EpisodeTableHeader = (props: Props) => {
   } = props
 
   const isNotFound = !isLoading && !episode
-  const podcastImageUrl =
-    episode &&
-    ((episode.podcast && episode.podcast.shrunkImageUrl) ||
-      episode.podcast_shrunkImageUrl ||
-      (episode.podcast && episode.podcast.imageUrl))
+
+  const imageUrl =
+    episode?.imageUrl ||
+    episode?.podcast?.shrunkImageUrl ||
+    episode?.podcast_shrunkImageUrl ||
+    episode?.podcast?.imageUrl
+
   const pubDate = episode && episode.pubDate
   const isDownloaded = episodeDownloaded
 
@@ -60,7 +62,7 @@ export const EpisodeTableHeader = (props: Props) => {
             </View>
           ) : (
             <View style={styles.innerWrapper}>
-              <FastImage source={podcastImageUrl} styles={styles.image} />
+              <FastImage source={imageUrl} styles={styles.image} />
               <View style={styles.textWrapper}>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}

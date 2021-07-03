@@ -588,9 +588,11 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (
 
   if (!currentNowPlayingItem) {
     currentNowPlayingItem = await getDownloadedEpisode(trackId)
-    currentNowPlayingItem = convertToNowPlayingItem(
-      currentNowPlayingItem, null, null, currentNowPlayingItem.userPlaybackPosition
-    )
+    if (currentNowPlayingItem) {
+      currentNowPlayingItem = convertToNowPlayingItem(
+        currentNowPlayingItem, null, null, currentNowPlayingItem.userPlaybackPosition
+      )
+    }
   }
 
   if (setPlayerClipIsLoadedIfClip && currentNowPlayingItem?.clipId) {

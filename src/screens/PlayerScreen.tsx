@@ -3,6 +3,7 @@ import { StyleSheet, View as RNView } from 'react-native'
 import { Config } from 'react-native-config'
 import Share from 'react-native-share'
 import React, { getGlobal, setGlobal } from 'reactn'
+import { clearTempMediaRef } from '../state/actions/mediaRef'
 import {
   ActionSheet,
   MediaPlayerCarousel,
@@ -131,6 +132,7 @@ export class PlayerScreen extends React.Component<Props> {
 
   async componentWillUnmount() {
     try {
+      clearTempMediaRef()
       await updateUserPlaybackPosition()
       await getHistoryItems(1, [])
     } catch (e) {
@@ -292,8 +294,8 @@ export class PlayerScreen extends React.Component<Props> {
     }
 
     const podcastId = nowPlayingItem ? nowPlayingItem.podcastId : null
-    const episodeId = episode ? episode.id : null
-    const mediaRefId = mediaRef ? mediaRef.id : null
+    const episodeId = episode?.id || null
+    const mediaRefId = mediaRef?.id || null
 
     if (episode?.description) {
       episode.description = replaceLinebreaksWithBrTags(episode.description)

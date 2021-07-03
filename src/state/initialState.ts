@@ -19,6 +19,7 @@ const initialTheme: InitialState = {
   customAPIDomainEnabled: false,
   customWebDomain: '',
   customWebDomainEnabled: false,
+  errorReportingEnabled: false,
   offlineModeEnabled: false,
   overlayAlert: {
     shouldShowAlert: false
@@ -110,10 +111,12 @@ const initialTheme: InitialState = {
     isLoggedIn: false,
     valueTagSettings: {
       lightningNetwork: {
-        lnpayEnabled: false,
-        globalSettings: {
-          boostAmount: DEFAULT_BOOST_PAYMENT,
-          streamingAmount: DEFAULT_STREAMING_PAYMENT
+        lnpay: {
+          lnpayEnabled: false,
+          globalSettings: {
+            boostAmount: DEFAULT_BOOST_PAYMENT,
+            streamingAmount: DEFAULT_STREAMING_PAYMENT
+          }
         }
       },
       streamingEnabled: false
@@ -127,6 +130,11 @@ const initialTheme: InitialState = {
   bannerInfo: {
     show: false,
     description: '',
+  },
+  tempMediaRefInfo: {
+    startTime: undefined,
+    endTime: null,
+    clipTitle: undefined
   }
 }
 

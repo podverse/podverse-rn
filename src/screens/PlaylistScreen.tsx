@@ -18,7 +18,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { navigateToEpisodeScreenWithItem } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { safeKeyExtractor, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
@@ -257,7 +257,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
             extraData={flatListData}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
-            keyExtractor={(item: any) => item.id}
+            keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
             noResultsMessage={translate('No playlist items found')}
             renderItem={this._renderItem}
           />
