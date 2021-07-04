@@ -246,6 +246,8 @@ module.exports = async () => {
     (async () => {
       const { paused, permanent } = x
 
+      // This remote-duck behavior for some Android users was causing playback to resume
+      // after receiving any notification, even when the player was paused.
       if (Platform.OS === 'ios') {
         // iOS triggers remote-duck with permanent: true when the player app returns to foreground,
         // but only in case the track was paused before app going to background,
@@ -262,15 +264,17 @@ module.exports = async () => {
         } else if (!permanent) {
           PVTrackPlayer.play()
         }
-      } else {
-        if (permanent) {
-          PVTrackPlayer.stop()
-        } else if (paused) {
-          PVTrackPlayer.pause()
-        } else if (!permanent) {
-          PVTrackPlayer.play()
-        }
-      }
+      } 
+      
+      // else {
+      //   if (permanent) {
+      //     PVTrackPlayer.stop()
+      //   } else if (paused) {
+      //     PVTrackPlayer.pause()
+      //   } else if (!permanent) {
+      //     PVTrackPlayer.play()
+      //   }
+      // }
     })()
   })
 }
