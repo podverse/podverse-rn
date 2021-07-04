@@ -228,7 +228,12 @@ const enrichPodcastValue = (item: NowPlayingItem) => {
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
   setGlobal({ podcastValueFinal: null }, async () => {
-    if (item?.episodeValue?.length || item?.podcastValue?.length) {
+    if (
+      item?.episodeValue?.length
+      || item?.episodeValue?.recipients?.length
+      || item?.podcastValue?.length
+      || item?.podcastValue?.recipients?.length
+    ) {
       PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
     } else if (item.podcastIndexPodcastId) {
       const podcastIndexPodcast = await getPodcastFromPodcastIndexById(item.podcastIndexPodcastId)

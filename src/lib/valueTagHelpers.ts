@@ -20,7 +20,7 @@ export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueT
 
   const { destinations, model } = podcastIndexValueTag
   let valueModel = {}
-  const valueRecipients = [] as ValueRecipient[]
+  const recipients = [] as ValueRecipient[]
 
   if (Array.isArray(destinations) && model) {
     const { method, suggested, type } = model
@@ -40,26 +40,26 @@ export const convertPodcastIndexValueTagToStandardValueTag = (podcastIndexValueT
         split: parseFloat(destination.split),
         type: destination.type
       } as ValueRecipient
-      valueRecipients.push(valueRecipient)
+      recipients.push(valueRecipient)
     }
   }
 
-  return [{ ...valueModel, valueRecipients }] as ValueTag[]
+  return [{ ...valueModel, recipients }] as ValueTag[]
 }
 
-const calculateNormalizedSplits = (valueRecipients: ValueRecipient[]) => {
+const calculateNormalizedSplits = (recipients: ValueRecipient[]) => {
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
   let normalizedValueRecipients: ValueRecipientNormalized[] = []
 
-  const totalSplit = valueRecipients.reduce((total, valueRecipient) => {
-    return total + parseFloat(valueRecipient.split)
+  const totalSplit = recipients.reduce((total, recipient) => {
+    return total + parseFloat(recipient.split)
   }, 0)
 
-  normalizedValueRecipients = valueRecipients.map((valueRecipient) => {
+  normalizedValueRecipients = recipients.map((recipient) => {
     return {
-      ...valueRecipient,
-      normalizedSplit: (parseFloat(valueRecipient.split) / totalSplit) * 100,
+      ...recipient,
+      normalizedSplit: (parseFloat(recipient.split) / totalSplit) * 100,
       amount: 0 // temporarily set the amount to 0
     }
   })
@@ -79,10 +79,10 @@ const isValidNormalizedValueRecipient = (normalizedValueRecipient: ValueRecipien
   )
 
 export const normalizeValueRecipients = (
-  valueRecipients: ValueRecipient[], total: number, roundDownValues: boolean) => {
+  recipients: ValueRecipient[], total: number, roundDownValues: boolean) => {
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
-  const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(valueRecipients)
+  const normalizedValueRecipients: ValueRecipientNormalized[] = calculateNormalizedSplits(recipients)
   const feeRecipient = normalizedValueRecipients.find((valueRecipient) => valueRecipient.fee === true)
   let feeAmount = 0
   if (feeRecipient) {
@@ -132,9 +132,10 @@ export const convertValueTagIntoValueTransactions = async (
   }
 
   const valueTransactions: ValueTransaction[] = []
-  const valueRecipients = valueTag.valueRecipients
+  const recipients = valueTag.recipients
+
   const normalizedValueRecipients = normalizeValueRecipients(
-    valueRecipients,
+    recipients,
     amount,
     roundDownValues
   )
@@ -198,8 +199,8 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
   const valueTag = valueTags[0]
   if (!valueTag) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
-  const { valueRecipients } = valueTag
-  if (!Array.isArray(valueRecipients)) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
+  const { recipients } = valueTag
+  if (!Array.isArray(recipients)) throw PV.Errors.BOOST_PAYMENT_VALUE_TAG_ERROR.error()
 
   const action = 'boost'
   const { session } = getGlobal()
