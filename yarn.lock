@@ -7525,10 +7525,10 @@ plugin-error@^0.1.2:
     arr-union "^2.0.1"
     extend-shallow "^1.1.2"
 
-podverse-shared@^3.1.7:
-  version "3.1.7"
-  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-3.1.7.tgz#09f8012df9c112c13c391a637582d361c0cdfe59"
-  integrity sha512-D8nJ4OZaXm5prhRVmJ42Gcl0d8lrNlce8ZCdNTQ+L8fPo8EKRvjKWi1W4m1L6ssuzSWzlUDs/iwHhHc1SIa4Dg==
+podverse-shared@^3.1.8:
+  version "3.1.8"
+  resolved "https://registry.yarnpkg.com/podverse-shared/-/podverse-shared-3.1.8.tgz#5f90f71eb43a4de1b16f4a67c6b235bb27151bba"
+  integrity sha512-VomYUcZ/Z6WdaaUkNxHvH4W2IYBAfScrzakdku1LmCt6qtrzc2MS5hXIc+41UYYkM9kL9xsu5EkSpwK6w2nqdA==
   dependencies:
     typescript "3.9.7"
 
