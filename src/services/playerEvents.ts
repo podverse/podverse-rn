@@ -264,7 +264,17 @@ module.exports = async () => {
         } else if (!permanent) {
           PVTrackPlayer.play()
         }
-      }
+      } 
+      
+      // else {
+      //   if (permanent) {
+      //     PVTrackPlayer.stop()
+      //   } else if (paused) {
+      //     PVTrackPlayer.pause()
+      //   } else if (!permanent) {
+      //     PVTrackPlayer.play()
+      //   }
+      // }
     })()
   })
 }
