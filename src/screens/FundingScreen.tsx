@@ -52,10 +52,14 @@ export class FundingScreen extends React.Component<Props, State> {
     const { boostAmount, streamingAmount } = session?.valueTagSettings?.lightningNetwork?.lnpay?.globalSettings || {}
 
     const { episodeValue, podcastValue } = nowPlayingItem
-    const valueTags = podcastValueFinal || episodeValue || podcastValue
+    const valueTags = podcastValueFinal
+      || (episodeValue?.length && episodeValue)
+      || (podcastValue?.length && podcastValue)
+
     // TODO: right now we are assuming the first item will be the lightning network.
     // This will need to be updated to support additional valueTags.
     const valueTag = valueTags[0]
+
     const roundDownBoostTransactions = true
     const boostTransactions = await convertValueTagIntoValueTransactions(
       valueTag,
