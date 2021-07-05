@@ -10,7 +10,7 @@ import TrackPlayer, { Track } from 'react-native-track-player'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
-  convertUrlToSecureHTTPS, getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
+  getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from './eventEmitter'
 import {
@@ -423,7 +423,7 @@ export const createTrack = async (item: NowPlayingItem) => {
     } else {
       track = {
         id,
-        url: convertUrlToSecureHTTPS(episodeMediaUrl),
+        url: episodeMediaUrl,
         title: episodeTitle,
         artist: podcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
