@@ -10,7 +10,7 @@ import TrackPlayer, { Track } from 'react-native-track-player'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
-  convertUrlToSecureHTTPS, getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
+  getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from './eventEmitter'
 import {
@@ -234,11 +234,10 @@ export const updateUserPlaybackPosition = async (skipSetNowPlaying?: boolean) =>
   try {
     const currentTrackId = await PVTrackPlayer.getCurrentLoadedTrack()
     const setPlayerClipIsLoadedIfClip = false
-    const skipRemoveQueue = true
+
     const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
       currentTrackId,
-      setPlayerClipIsLoadedIfClip,
-      skipRemoveQueue
+      setPlayerClipIsLoadedIfClip
     )
 
     if (currentNowPlayingItem) {
@@ -356,9 +355,8 @@ export const playNextFromQueue = async () => {
     await PVTrackPlayer.skipToNext()
     const currentId = await PVTrackPlayer.getCurrentLoadedTrack()
     const setPlayerClipIsLoadedIfClip = true
-    const skipRemoveQueue = false
     const item = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
-      currentId, setPlayerClipIsLoadedIfClip, skipRemoveQueue)
+      currentId, setPlayerClipIsLoadedIfClip)
     if (item) {
       await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0)
       await removeQueueItem(item)
@@ -423,7 +421,7 @@ export const createTrack = async (item: NowPlayingItem) => {
     } else {
       track = {
         id,
-        url: convertUrlToSecureHTTPS(episodeMediaUrl),
+        url: episodeMediaUrl,
         title: episodeTitle,
         artist: podcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
@@ -565,8 +563,7 @@ export const getPlaybackSpeed = async () => {
 */
 export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (
   trackId: string,
-  setPlayerClipIsLoadedIfClip?: boolean,
-  skipRemoveQueue?: boolean
+  setPlayerClipIsLoadedIfClip?: boolean
 ) => {
   const queueItems = await getQueueItemsLocally()
 
@@ -574,8 +571,6 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (
     checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl(trackId, x.clipId, x.episodeId)
   )
   let currentNowPlayingItem = queueItemIndex > -1 && queueItems[queueItemIndex]
-
-  if (currentNowPlayingItem && !skipRemoveQueue) removeQueueItem(currentNowPlayingItem)
 
   if (!currentNowPlayingItem) {
     const results = await getHistoryItemsLocally()
