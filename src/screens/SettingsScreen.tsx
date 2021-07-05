@@ -327,15 +327,6 @@ export class SettingsScreen extends React.Component<Props, State> {
     }
   }
 
-  _handleValueTagSetupPressed = async () => {
-    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS)
-    if(consentGivenString && JSON.parse(consentGivenString) === true) {
-      this.props.navigation.navigate(PV.RouteNames.ValueTagSetupScreen)
-    } else {
-      this.props.navigation.navigate(PV.RouteNames.ValueTagPreviewScreen)
-    }  
-  }
-
   render() {
     const {
       deleteAccountDialogConfirmed,

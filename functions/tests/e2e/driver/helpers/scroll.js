@@ -5,14 +5,14 @@ const { logPerformance } = require('../../utils/logger')
 const scrollDownKey = 'down'
 const scrollUpKey = 'up'
 
-const performScroll = async (direction, numberOfScrolls = 1) => {
+const performScroll = async (direction, numberOfScrolls = 1, offsetYStartPosition = 0) => {
   const driver = getDriver()
-  const yDestination = direction === scrollUpKey ? 500 : -500
+  const yDestination = direction === scrollUpKey ? 500 + offsetYStartPosition : -500 + offsetYStartPosition
 
   let i
   for (i = 0; i < numberOfScrolls; i++) {
     const action = new wd.TouchAction(driver)
-    const centerCoordinates = await getCenterCoordinates()
+    const centerCoordinates = await getCenterCoordinates(0, offsetYStartPosition)
     action.press(centerCoordinates)
     action.wait(1000)
     const newCoordinates = await getCenterCoordinates(0, yDestination)

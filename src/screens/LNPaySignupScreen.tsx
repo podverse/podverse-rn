@@ -205,7 +205,7 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
               onPress={this._attemptCreateWallet}
               testID='create_wallet_button'
               text={translate('Add Wallet')}
-              wrapperStyles={{ marginBottom: 20 }}
+              wrapperStyles={{ marginBottom: 52 }}
             />
           </ScrollView>
       </View>

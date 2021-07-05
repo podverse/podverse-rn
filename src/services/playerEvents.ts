@@ -25,6 +25,7 @@ import {
 } from './player'
 import { addOrUpdateHistoryItem, getHistoryItemEpisodeFromIndexLocally } from './userHistoryItem'
 import { getNowPlayingItemLocally, setNowPlayingItemLocally } from './userNowPlayingItem'
+import { removeQueueItem } from './queue'
 
 const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsAvailable, 1000, {
   leading: true,
@@ -76,12 +77,12 @@ const syncNowPlayingItemWithTrack = () => {
 
       const currentTrackId = await PVTrackPlayer.getCurrentLoadedTrack()
       const setPlayerClipIsLoadedIfClip = true
-      const skipRemoveQueue = false
       const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
-        currentTrackId, setPlayerClipIsLoadedIfClip, skipRemoveQueue)
+        currentTrackId, setPlayerClipIsLoadedIfClip)
 
       if (currentNowPlayingItem) {
         await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
+        await removeQueueItem(currentNowPlayingItem)
       }
     })()
   }
@@ -96,9 +97,8 @@ const resetHistoryItem = async (x: any) => {
     const { mediaFileDuration } = metaEpisode
     if (mediaFileDuration > 59 && mediaFileDuration - 59 < position) {
       const setPlayerClipIsLoadedIfClip = false
-      const skipRemoveQueue = true
       const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
-        x.track, setPlayerClipIsLoadedIfClip, skipRemoveQueue)
+        x.track, setPlayerClipIsLoadedIfClip)
       if (currentNowPlayingItem) {
         const forceUpdateOrderDate = false
         await addOrUpdateHistoryItem(currentNowPlayingItem, 0, null, forceUpdateOrderDate)
@@ -264,7 +264,17 @@ module.exports = async () => {
         } else if (!permanent) {
           PVTrackPlayer.play()
         }
-      }
+      } 
+      
+      // else {
+      //   if (permanent) {
+      //     PVTrackPlayer.stop()
+      //   } else if (paused) {
+      //     PVTrackPlayer.pause()
+      //   } else if (!permanent) {
+      //     PVTrackPlayer.play()
+      //   }
+      // }
     })()
   })
 }

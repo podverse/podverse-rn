@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage'
 import { Linking, SectionList, Alert } from 'react-native'
 import Config from 'react-native-config'
 import React from 'reactn'
@@ -91,6 +92,15 @@ export class MoreScreen extends React.Component<Props, State> {
     return options
   }
 
+  _handleValueTagSetupPressed = async () => {
+    const consentGivenString = await AsyncStorage.getItem(PV.Keys.USER_CONSENT_VALUE_TAG_TERMS)
+    if(consentGivenString && JSON.parse(consentGivenString) === true) {
+      this.props.navigation.navigate(PV.RouteNames.ValueTagSetupScreen)
+    } else {
+      this.props.navigation.navigate(PV.RouteNames.ValueTagPreviewScreen)
+    }  
+  }
+
   _importOpml = async () => {
     try {
       const res = await DocumentPicker.pick({
@@ -135,6 +145,8 @@ export class MoreScreen extends React.Component<Props, State> {
       Linking.openURL(createEmailLinkUrl(PV.Emails.CONTACT_US))
     } else if (item.key === _logoutKey) {
       logoutUser()
+    } else if (item.key === _bitcoinWalletKey) {
+      this._handleValueTagSetupPressed()
     } else if (item.key === _importOpml) {
       this._importOpml()
     } else if (item.key === _exportOpml) {
@@ -228,8 +240,7 @@ const allMoreFeatures = [
   },
   {
     title: translate('Bitcoin Wallet'),
-    key: _bitcoinWalletKey,
-    routeName: PV.RouteNames.ValueTagSetupScreen
+    key: _bitcoinWalletKey
   },
   {
     title: translate('Settings'),

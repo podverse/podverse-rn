@@ -8,7 +8,6 @@ import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode
 import { hasValidDownloadingConnection } from './network'
 import {
   convertBytesToHumanReadableString,
-  convertUrlToSecureHTTPS,
   getAppUserAgent,
   getExtensionFromUrl,
   safelyUnwrapNestedVariable
@@ -129,7 +128,7 @@ export const downloadEpisode = async (
 
   const downloader = await BackgroundDownloader()
   const destination = `${downloader.directories.documents}/${episode.id}${ext}`
-  const secureEpisodeMediaUrl = convertUrlToSecureHTTPS(episode.mediaUrl)
+  const secureEpisodeMediaUrl = episode.mediaUrl
 
   // Wait for t.stop() to complete
   setTimeout(() => {
