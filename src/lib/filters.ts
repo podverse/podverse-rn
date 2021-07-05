@@ -351,3 +351,4 @@ export const getSelectedFilterLabel = async (
 
   return selectedFilterLabel || ''
 }
+
