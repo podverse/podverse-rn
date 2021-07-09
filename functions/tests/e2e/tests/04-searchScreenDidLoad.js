@@ -14,6 +14,13 @@ const test04_searchScreenDidLoad = async () => {
   await elementByIdClick('login_submit_button')
   await driver.sleep(4000)
 
+  try {
+    await confirmAndroidAlert()
+  } catch (err) {
+    console.log('confirmAndroidAlert err')
+  }
+  
+
     // Search Screen
   await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
   await elementByIdAndClickAndTest('search_screen_message_with_action_middle_button_button', 'add_podcast_by_rss_screen_view')
@@ -33,6 +40,7 @@ const test04_searchScreenDidLoad = async () => {
   await elementByIdAndClickAndTest('search_screen_podcast_item_0', 'search_screen_action_sheet_goToPodcast_button')
   await elementByIdAndClickAndTest('search_screen_action_sheet_goToPodcast_button', 'podcast_screen_is_subscribed')
   await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_not_subscribed')
+  await driver.sleep(1000)
   await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed')
   await driver.back()
 

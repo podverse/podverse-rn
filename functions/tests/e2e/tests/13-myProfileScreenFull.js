@@ -16,9 +16,11 @@ const test13_myProfileScreenFull = async () => {
   await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
   await elementByIdClick('login_submit_button')
   await driver.sleep(4000)
-
-  // await confirmAndroidAlert()
-
+  try {
+    await confirmAndroidAlert()
+  } catch (err) {
+    console.log('confirmAndroidAlert err')
+  }
 
     // My Library Screen
   await elementByIdAndClickAndTest('tab_my_library_screen', 'my_library_screen_view')
