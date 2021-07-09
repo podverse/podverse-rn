@@ -124,18 +124,30 @@ export class MembershipScreen extends React.Component<Props, State> {
         {!isLoading && isLoggedIn && !!membershipStatus && (
           <View>
             <View style={styles.textRow}>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.label}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={styles.label}
+                testID={`${testIDPrefix}_status_label`}>
                 {translate('Status')}{' '}
               </Text>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.text, membershipTextStyle]}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={[styles.text, membershipTextStyle]}
+                testID={`${testIDPrefix}_status_membership`}>
                 {membershipStatus}
               </Text>
             </View>
             <View style={styles.textRow}>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.label}>
-                {`Expires: `}
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={styles.label}
+                testID={`${testIDPrefix}_expires`}>
+                  {`${translate('Expires')}: `}
               </Text>
-              <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
+              <Text
+                fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                style={styles.text}
+                testID={`${testIDPrefix}_expiration_date`}>
                 {readableDate(expirationDate)}
               </Text>
             </View>

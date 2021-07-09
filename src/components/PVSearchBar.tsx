@@ -10,7 +10,6 @@ type Props = {
   handleClear?: any
   inputRef?: any
   onChangeText: any
-  onClear: any
   placeholder?: string
   testID: string
   value?: string

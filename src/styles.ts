@@ -714,12 +714,12 @@ export const sliderStyles = StyleSheet.create({
 export const table = StyleSheet.create({
   cellText: {
     fontSize: PV.Fonts.sizes.xl,
-    fontWeight: PV.Fonts.weights.semibold,
-    paddingLeft: 8
+    fontWeight: PV.Fonts.weights.semibold
   },
   cellWrapper: {
     justifyContent:"center",
-    minHeight: PV.Table.cells.standard.height
+    minHeight: PV.Table.cells.standard.height,
+    paddingLeft: 8
   }
 })
 

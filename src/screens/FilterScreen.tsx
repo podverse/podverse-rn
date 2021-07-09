@@ -231,7 +231,13 @@ export class FilterScreen extends React.Component<Props, State> {
             style={[itemTextStyle, isActive ? { fontWeight: PV.Fonts.weights.extraBold, color: PV.Colors.white } : {}]}>
             {item.labelShort || item.label || item.title}
           </Text>
-          {isActive && <Icon style={styles.itemIcon} name='check' size={24} />}
+          {isActive && (
+            <Icon
+              name='check'
+              size={24}
+              style={styles.itemIcon}
+              testID={`${testIDPrefix}_${value}_check`}/>
+          )}
         </View>
       </TouchableWithoutFeedback>
     )
