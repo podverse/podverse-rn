@@ -13,8 +13,7 @@ const existingWalletAdminKey = process.env.TEST_LNPAY_EXISTING_WALLET_ADMIN_KEY;
 
     // Settings Screen
     await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-    await elementByIdAndClickAndTest('more_screen_Settings_table_cell_wrapper', 'settings_screen_view')
-    await elementByIdAndClickAndTest('settings_screen_table_cell_wrapper_value_tag_setup', 'value_tag_preview_screen_view')
+    await elementByIdAndClickAndTest('more_screen_BitcoinWallet_table_cell_wrapper', 'value_tag_preview_screen_view')
     await elementByIdAndClickAndTest('value_tag_preview_screen_next_button', 'value_tag_consent_screen_view')
     await elementByIdClick('value_tag_consent_screen_accept_check_box')
     await elementByIdAndClickAndTest('value_tag_consent_screen_next_button', 'value_tag_setup_screen_view')
@@ -22,8 +21,10 @@ const existingWalletAdminKey = process.env.TEST_LNPAY_EXISTING_WALLET_ADMIN_KEY;
     await sendKeysToElementById('ln_public_api_button_text_input', publicAPIKey, 'API Key Input')
     await performScroll(scrollDownKey, 1)
     await sendKeysToElementById('import_wallet_id_input_text_input', existingWalletID, 'Wallet ID Input')
-    await performScroll(scrollDownKey, 1)
+    await driver.sleep(1000)
+    await performScroll(scrollDownKey, 1, -100)
     await sendKeysToElementById('import_wallet_key_input_text_input', existingWalletAdminKey, 'Wallet ID Input')
+    await driver.sleep(1000)
     await elementByIdClick('create_wallet_button_button')
     await driver.sleep(1000)
     await sendKeysToElementById('value_tag_setup_screen_boost_amount_text_input_text_input', 100, 'Boost Amount Input')
@@ -31,12 +32,16 @@ const existingWalletAdminKey = process.env.TEST_LNPAY_EXISTING_WALLET_ADMIN_KEY;
 
     //boost
     await elementByIdAndClickAndTest('nav_search_icon', 'search_screen_view')
-    await sendKeysToElementById('search_screen_search_bar', 'Podcasting 2.0', 'Search for Podcasting 2.0')
-    await elementByIdAndClickAndTest('search_screen_podcast_item_1', 'search_screen_action_sheet_goToPodcast_button')
-    await elementByIdAndClickAndTest('search_screen_action_sheet_goToPodcast_button', 'podcast_screen_is_not_subscribed')
+    await sendKeysToElementById('search_screen_search_bar', 'Joe Rogan', 'Search for Joe Rogan')
+    await elementByIdAndClickAndTest('search_screen_podcast_item_0', 'search_screen_action_sheet_goToPodcast_button')
+    await elementByIdAndClickAndTest('search_screen_action_sheet_goToPodcast_button', 'podcast_screen_dropdown_button')
+    
+    await elementByIdAndClickAndTest('podcast_screen_dropdown_button', 'filter_screen_view')
+    await elementByIdClick('filter_screen_top-past-week')
+    await elementByIdAndClickAndTest('filter_screen_nav_header_button_text', 'podcasts_screen_view')
     await elementByIdClick('podcast_screen_episode_item_0_time_remaining_widget_toggle_play')
     await elementByIdAndClickAndTest('mini_player', 'player_screen_view')
-    await elementByIdClick('nav_funding_icon')
+    await elementByIdClick('boost_button')
 }
 
 module.exports = {
