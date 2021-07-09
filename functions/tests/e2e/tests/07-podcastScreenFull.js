@@ -6,13 +6,28 @@ const test07_podcastScreenFull = async () => {
   console.log('07_podcastScreenFull')
   const driver = getDriver()
 
+  //Login
+  await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+  await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_sign_up_button')
+  await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
+  await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
+  await elementByIdClick('login_submit_button')
+  await driver.sleep(4000)
+
+  try {
+    await confirmAndroidAlert()
+  } catch (err) {
+    console.log('confirmAndroidAlert err')
+  }
+
   await elementByIdAndClickAndTest('podcasts_screen_dropdown_button', 'filter_screen_view')
   await elementByIdClick('filter_screen_all-podcasts')
   await elementByIdClick('filter_screen_top-past-week')
   await elementByIdAndClickAndTest('filter_screen_nav_header_button_text', 'podcasts_screen_view')
-  await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_view')
+  await elementByIdAndClickAndTest('podcasts_screen_podcast_item_0', 'podcast_screen_is_subscribed')
 
   await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_not_subscribed')
+  await driver.sleep(1000)
   await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed')
 
 
@@ -29,6 +44,11 @@ const test07_podcastScreenFull = async () => {
 
   await elementByIdClick('dialog_delete_downloaded_episodes_yes')
 
+  // Log Out 
+
+  await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+  await elementByIdAndClickAndTest('more_screen_Logout_table_cell_wrapper', 'more_screen_view')
+  await elementByIdAndClickAndTest('tab_podcasts_screen', 'podcasts_screen_view')
 }
 
 module.exports = {
