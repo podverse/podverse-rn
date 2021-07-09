@@ -235,8 +235,12 @@ export class SearchScreen extends React.Component<Props, State> {
     } = this.state
 
     return (
-      <View style={styles.view} {...testProps('search_screen_view')}>
-        <ButtonGroup buttons={buttons} onPress={this._handleSearchTypePress} selectedIndex={searchType} />
+      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+        <ButtonGroup
+          buttons={buttons}
+          onPress={this._handleSearchTypePress}
+          selectedIndex={searchType}
+          testID={`${testIDPrefix}_search_type`} />
         <SearchBar
           containerStyle={styles.searchBarContainer}
           handleClear={this._handleSearchBarClear}

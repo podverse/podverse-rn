@@ -11,6 +11,8 @@ type Props = {
   navigation: any
 }
 
+const testIDPrefix = 'mini_player'
+
 export class MiniPlayer extends React.PureComponent<Props> {
   render() {
     const { navigation } = this.props
@@ -19,10 +21,10 @@ export class MiniPlayer extends React.PureComponent<Props> {
     const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
 
-    let playButtonIcon = <Icon name='play' size={20} testID='mini_player_play_button' />
+    let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
     let playButtonAdjust = { paddingLeft: 2 } as any
     if (playbackState === PVTrackPlayer.STATE_PLAYING) {
-      playButtonIcon = <Icon name='pause' size={20} testID='mini_player_pause_button' />
+      playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
       playButtonAdjust = {}
     } else if (checkIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator />
@@ -40,7 +42,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
                 isDarkMode
               })
             }
-            {...testProps('mini_player')}>
+            {...testProps(testIDPrefix)}>
             <View style={[styles.player, globalTheme.player]}>
               <FastImage
                 isSmall
@@ -49,7 +51,11 @@ export class MiniPlayer extends React.PureComponent<Props> {
                 styles={styles.image}
               />
               <View style={styles.textWrapper}>
-                <Text allowFontScaling={false} numberOfLines={1} style={[styles.podcastTitle, globalTheme.playerText]}>
+                <Text
+                  allowFontScaling={false}
+                  numberOfLines={1}
+                  style={[styles.podcastTitle, globalTheme.playerText]}
+                  testID={`${testIDPrefix}_podcast_title`}>
                   {nowPlayingItem.podcastTitle}
                 </Text>
                 <TextTicker
@@ -59,7 +65,8 @@ export class MiniPlayer extends React.PureComponent<Props> {
                   textLength={nowPlayingItem?.episodeTitle?.length}>
                   <Text
                     numberOfLines={1}
-                    style={[styles.episodeTitle, globalTheme.playerText]}>
+                    style={[styles.episodeTitle, globalTheme.playerText]}
+                    {...testProps(`${testIDPrefix}_episode_title`)}>
                     {nowPlayingItem.episodeTitle}
                   </Text>
                 </TextTicker>
@@ -67,14 +74,14 @@ export class MiniPlayer extends React.PureComponent<Props> {
               <TouchableOpacity
                 onPress={() => togglePlay(this.global)}
                 style={[playerStyles.icon, playButtonAdjust]}
-                {...testProps('mini_player_toggle_play_button')}>
+                {...testProps(`${testIDPrefix}_toggle_play_button`)}>
                 {!hasErrored && playButtonIcon}
                 {hasErrored && (
                   <Icon
                     color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
                     name={'exclamation-triangle'}
                     size={26}
-                    testID='mini_player_error'
+                    testID={`${testIDPrefix}_error`}
                   />
                 )}
               </TouchableOpacity>
