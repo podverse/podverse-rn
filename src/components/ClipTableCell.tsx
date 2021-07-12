@@ -8,8 +8,6 @@ import { TimeRemainingWidget } from './TimeRemainingWidget'
 import { FastImage, Text, View } from './'
 
 type Props = {
-  downloadedEpisodeIds?: any
-  downloadsActive?: any
   handleMorePress: any
   hideImage?: boolean
   item: any
@@ -30,8 +28,8 @@ export class ClipTableCell extends React.PureComponent<Props> {
   }
 
   render() {
-    const { handleMorePress, hideImage, item, loadTimeStampOnPlay, showChapterInfo,
-      showEpisodeInfo, showPodcastInfo, testID, transparent } = this.props
+    const { handleMorePress, hideImage, item, loadTimeStampOnPlay,
+      showChapterInfo, showEpisodeInfo, showPodcastInfo, testID, transparent } = this.props
 
     const episodePubDate = item?.episode?.pubDate || ''
     const episodeId = item?.episode?.id || ''
@@ -44,11 +42,13 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const episodeTitle = item?.episode?.title?.trim() || translate('Untitled Episode')
     const podcastTitle = item?.episode?.podcast?.title?.trim() || translate('Untitled Podcast')
     const clipTime = readableClipTime(startTime, endTime)
-    const { downloadedEpisodeIds, fontScaleMode } = this.global
+    const { downloadsActive, downloadedEpisodeIds, fontScaleMode } = this.global
     const isDownloaded = downloadedEpisodeIds[episodeId]
+    const episodeDownloading = item?.episode?.id && !!downloadsActive[item.episode.id]
     const chapterImageStyle = item?.linkUrl
       ? [styles.chapterImage, styles.chapterImageBorder]
       : styles.chapterImage
+
 
     const innerTopView = (
       <RNView style={styles.innerTopView} {...(testID ? testProps(`${testID}_top_view_nav`) : {})}>
@@ -110,6 +110,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
           </RNView>
           <TimeRemainingWidget
             clipTime={clipTime}
+            episodeDownloading={episodeDownloading}
             handleMorePress={handleMorePress}
             item={item}
             loadTimeStampOnPlay={loadTimeStampOnPlay}

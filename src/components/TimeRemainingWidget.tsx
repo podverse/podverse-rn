@@ -6,10 +6,11 @@ import { convertSecToHhoursMMinutes, testProps, requestAppStoreReviewForEpisodeP
 import { PV } from '../resources'
 import { PVTrackPlayer, setPlaybackPosition } from '../services/player'
 import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
-import { Icon, MoreButton, Text, View } from './'
+import { ActivityIndicator, Icon, MoreButton, Text, View } from './'
 
 type Props = {
   clipTime?: string
+  episodeDownloading?: boolean
   handleMorePress?: any
   item: any
   loadTimeStampOnPlay?: boolean
@@ -68,7 +69,7 @@ const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { clipTime, handleMorePress, item,
+  const { clipTime, episodeDownloading, handleMorePress, item,
     loadTimeStampOnPlay, mediaFileDuration, style, testID, transparent, userPlaybackPosition } = props
   const { episode = {}, podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
@@ -135,7 +136,12 @@ export const TimeRemainingWidget = (props: Props) => {
         style={styles.text}>
         {timeLabel}
       </Text>
-      {!!handleMorePress && <MoreButton handleMorePress={handleMorePress} testID={testID} />}
+      {!!handleMorePress && (
+        <MoreButton
+          handleMorePress={handleMorePress}
+          isLoading={episodeDownloading}
+          testID={testID} />
+      )}
     </View>
   )
 }
