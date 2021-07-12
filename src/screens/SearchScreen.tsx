@@ -247,6 +247,7 @@ export class SearchScreen extends React.Component<Props, State> {
           inputRef={(ref: any) => (this.searchBarInput = ref)}
           onChangeText={this._handleSearchBarTextChange}
           placeholder={translate('search')}
+          subText={searchType === _podcastByTitle ? translate('use double quotes for exact matches') : null}
           testID={testIDPrefix}
           value={searchBarText}
         />
@@ -329,7 +330,8 @@ const buttons = [translate('Podcast'), translate('Host')]
 
 const styles = StyleSheet.create({
   searchBarContainer: {
-    marginVertical: 12
+    marginBottom: 6,
+    marginTop: 12
   },
   view: {
     flex: 1,

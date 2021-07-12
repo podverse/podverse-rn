@@ -1,9 +1,10 @@
 import React from 'react'
+import { StyleSheet, View as RNView } from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import { useGlobal } from 'reactn'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { Icon } from '.'
+import { Icon, Text } from '.'
 
 type Props = {
   containerStyle?: any
@@ -11,40 +12,50 @@ type Props = {
   inputRef?: any
   onChangeText: any
   placeholder?: string
+  subText?: string
   testID: string
   value?: string
 }
 
 export const PVSearchBar = (props: Props) => {
-  const { containerStyle, handleClear, inputRef, onChangeText, placeholder, testID, value } = props
+  const { containerStyle, handleClear, inputRef, onChangeText, placeholder, subText, testID, value } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const inputStyle = PV.Fonts.fontScale.largest === fontScaleMode ? { fontSize: PV.Fonts.largeSizes.md } : {}
 
   return (
-    <SearchBar
-      autoCorrect={false}
-      clearIcon={<Icon name='times' onPress={handleClear} size={20} />}
-      containerStyle={[styles.containerStyle, containerStyle]}
-      inputContainerStyle={styles.inputContainerStyle}
-      inputStyle={[styles.inputStyle, globalTheme.textInput, inputStyle]}
-      onChangeText={onChangeText}
-      placeholder={placeholder}
-      ref={inputRef}
-      returnKeyType='search'
-      searchIcon={<Icon color={PV.Colors.white} name={'search'} size={PV.Icons.NAV} solid />}
-      {...(testID ? testProps(`${testID}_search_bar`) : {})}
-      value={value}
-    />
+    <RNView>
+      <SearchBar
+        autoCorrect={false}
+        clearIcon={<Icon name='times' onPress={handleClear} size={20} />}
+        containerStyle={[styles.containerStyle, containerStyle]}
+        inputContainerStyle={styles.inputContainerStyle}
+        inputStyle={[styles.inputStyle, globalTheme.textInput, inputStyle]}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        ref={inputRef}
+        returnKeyType='search'
+        searchIcon={<Icon color={PV.Colors.white} name={'search'} size={PV.Icons.NAV} solid />}
+        {...(testID ? testProps(`${testID}_search_bar`) : {})}
+        value={value}
+      />
+      {!!subText && (
+        <Text
+          fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          style={[globalTheme.textSecondary, styles.subText]}
+          {...testProps(`${testID}_search_bar_sub_text`)}>
+          {subText}
+        </Text>
+      )}
+    </RNView>
   )
 }
 
-const styles = {
+const styles = StyleSheet.create({
   containerStyle: {
     backgroundColor: 'transparent',
     borderWidth: 0,
-    paddingLeft: 12,
-    paddingRight: 16
+    paddingHorizontal: 12
   },
   inputContainerStyle: {
     backgroundColor: 'transparent',
@@ -59,5 +70,11 @@ const styles = {
     width: 28,
     height: 28,
     tintColor: 'white'
+  },
+  subText: {
+    color: PV.Colors.grayLighter,
+    fontSize: PV.Fonts.sizes.lg,
+    marginBottom: 16,
+    paddingHorizontal: 12
   }
-}
+})
