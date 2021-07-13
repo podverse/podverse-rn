@@ -183,7 +183,18 @@ export const playerPreviewEndTime = async (endTime: number) => {
 
 export const setRateWithLatestPlaybackSpeed = async () => {
   const rate = await getPlaybackSpeed()
-  PVTrackPlayer.setRate(rate)
+
+  // https://github.com/DoubleSymmetry/react-native-track-player/issues/766
+  if (Platform.OS === 'ios') {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    setTimeout( () => PVTrackPlayer.setRate(rate), 200)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    setTimeout( () => PVTrackPlayer.setRate(rate), 500)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    setTimeout( () => PVTrackPlayer.setRate(rate), 800)
+  } else {
+    PVTrackPlayer.setRate(rate)
+  }
 }
 
 export const playerPreviewStartTime = async (startTime: number, endTime?: number | null) => {
