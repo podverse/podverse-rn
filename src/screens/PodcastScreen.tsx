@@ -373,11 +373,11 @@ static navigationOptions = ({ navigation }) => {
         item?.episode?.id && (
           <ClipTableCell
             handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
+            hideImage
+            item={item}
             showEpisodeInfo
             showPodcastInfo={false}
             testID={`${testIDPrefix}_clip_item_${index}`}
-            item={item}
-            hideImage
           />
         )
       )

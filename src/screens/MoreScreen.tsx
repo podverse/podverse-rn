@@ -181,11 +181,10 @@ export class MoreScreen extends React.Component<Props, State> {
                     <Text
                       fontSizeLargestScale={PV.Fonts.largeSizes.md}
                       style={[table.cellText, globalTheme.tableCellTextPrimary]}>
-                      {translate('Membership')}
+                      {translate('Membership')}{isLoggedIn ? ' - ' : ''}
                     </Text>
                     {isLoggedIn && (
                       <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[table.cellText, membershipTextStyle]}>
-                        <Text>- </Text>
                         {membershipStatus}
                       </Text>
                     )}

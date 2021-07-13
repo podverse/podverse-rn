@@ -254,15 +254,17 @@ export class ClipsScreen extends React.Component<Props, State> {
     })
   }
 
-  _renderClipItem = ({ item, index }) => item?.episode?.id ? (
-      <ClipTableCell
-        item={item}
-        handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.episode.podcast))}
-        showEpisodeInfo
-        showPodcastInfo
-        testID={`${testIDPrefix}_clip_item_${index}`}
-      />
-    ) : null
+  _renderClipItem = ({ item, index }) => {
+    return item?.episode?.id ? (
+        <ClipTableCell
+          item={item}
+          handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, item.episode.podcast))}
+          showEpisodeInfo
+          showPodcastInfo
+          testID={`${testIDPrefix}_clip_item_${index}`}
+        />
+      ) : null
+  }
 
   _handleSearchBarClear = () => {
     this.setState({

@@ -429,7 +429,8 @@ export class ProfileScreen extends React.Component<Props, State> {
         />
       )
     } else if (viewType === PV.Filters._clipsKey) {
-      return item && item.episode && item.episode.id && item.episode.podcast ? (
+      const episode = item?.episode
+      return episode?.id && episode?.podcast ? (
         <ClipTableCell
           handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, null))}
           showEpisodeInfo

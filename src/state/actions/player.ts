@@ -12,6 +12,7 @@ import { convertPodcastIndexValueTagToStandardValueTag } from '../../lib/valueTa
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import {
+  handlePlay,
   initializePlayerQueue as initializePlayerQueueService,
   loadItemAndPlayTrack as loadItemAndPlayTrackService,
   playNextFromQueue as playNextFromQueueService,
@@ -148,7 +149,7 @@ const handleLoadChapterForNowPlayingEpisode = async (item: NowPlayingItem) => {
   setPlaybackPosition(item.clipStartTime)
   const nowPlayingItemEpisode = convertNowPlayingItemClipToNowPlayingItemEpisode(item)
   await setNowPlayingItem(nowPlayingItemEpisode, item.clipStartTime || 0)
-  await PVTrackPlayer.play()
+  handlePlay()
   loadChapterPlaybackInfo()
 }
 
