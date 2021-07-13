@@ -4,9 +4,9 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
 import { convertSecToHhoursMMinutes, testProps, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
-import { PVTrackPlayer, setPlaybackPosition } from '../services/player'
+import { handlePlay, PVTrackPlayer, setPlaybackPosition } from '../services/player'
 import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
-import { ActivityIndicator, Icon, MoreButton, Text, View } from './'
+import { Icon, MoreButton, Text, View } from './'
 
 type Props = {
   clipTime?: string
@@ -96,7 +96,9 @@ export const TimeRemainingWidget = (props: Props) => {
     await setPlaybackPosition(item.startTime)
     const currentState = await PVTrackPlayer.getState()
     const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
-    if (!isPlaying) PVTrackPlayer.play()
+    if (!isPlaying) {
+      handlePlay()
+    }
   }
 
   const playItem = async () => {
