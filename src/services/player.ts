@@ -6,7 +6,7 @@ import {
 } from 'podverse-shared'
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
-import TrackPlayer, { Track } from 'react-native-track-player'
+import TrackPlayer, { PITCH_ALGORITHM_VOICE, Track } from 'react-native-track-player'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
@@ -427,7 +427,8 @@ export const createTrack = async (item: NowPlayingItem) => {
         ...(imageUrl ? { artwork: imageUrl } : {}),
         headers: {
           'User-Agent': getAppUserAgent()
-        }
+        },
+        pitchAlgorithm: PITCH_ALGORITHM_VOICE
       }
     } else {
       track = {
@@ -438,7 +439,8 @@ export const createTrack = async (item: NowPlayingItem) => {
         ...(imageUrl ? { artwork: imageUrl } : {}),
         headers: {
           'User-Agent': getAppUserAgent()
-        }
+        },
+        pitchAlgorithm: PITCH_ALGORITHM_VOICE
       }
     }
   }
