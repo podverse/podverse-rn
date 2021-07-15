@@ -8,8 +8,9 @@ import { ActivityIndicator, FastImage, IndicatorDownload, Text } from './'
 
 type Props = {
   episode: any | null
-  handleMorePress?: any
   episodeDownloaded?: boolean
+  episodeDownloading?: boolean
+  handleMorePress?: any
   isLoading?: boolean
   mediaFileDuration?: number
   testID: string
@@ -20,6 +21,7 @@ export const EpisodeTableHeader = (props: Props) => {
   const {
     episode,
     episodeDownloaded = false,
+    episodeDownloading = false,
     handleMorePress,
     isLoading,
     mediaFileDuration,
@@ -86,6 +88,7 @@ export const EpisodeTableHeader = (props: Props) => {
                 </View>
               </View>
               <TimeRemainingWidget
+                episodeDownloading={episodeDownloading}
                 item={episode}
                 handleMorePress={handleMorePress}
                 mediaFileDuration={mediaFileDuration}

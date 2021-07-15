@@ -197,6 +197,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         <EpisodeTableHeader
           episode={episode}
           episodeDownloaded={episodeDownloaded}
+          episodeDownloading={episodeDownloading}
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(episode, null, episode.podcast, userPlaybackPosition))
           }
@@ -258,7 +259,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           items={() =>
             PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
               handleDismiss: this._handleCancelPress,
-              handleDownload: episodeDownloading ? null : this._handleDownloadPressed,
+              handleDownload: this._handleDownloadPressed,
               includeGoToPodcast
             })
           }

@@ -6,7 +6,7 @@ import {
 } from 'podverse-shared'
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
-import TrackPlayer, { Track } from 'react-native-track-player'
+import TrackPlayer, { PITCH_ALGORITHM_VOICE, Track } from 'react-native-track-player'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
@@ -168,7 +168,7 @@ export const playerPreviewEndTime = async (endTime: number) => {
 
   const previewEndTime = endTime - 3
   await PVTrackPlayer.seekTo(previewEndTime)
-  PVTrackPlayer.play()
+  handlePlay()
 
   playerPreviewEndTimeInterval = setInterval(() => {
     (async () => {
@@ -183,17 +183,28 @@ export const playerPreviewEndTime = async (endTime: number) => {
 
 export const setRateWithLatestPlaybackSpeed = async () => {
   const rate = await getPlaybackSpeed()
-  PVTrackPlayer.setRate(rate)
+
+  // https://github.com/DoubleSymmetry/react-native-track-player/issues/766
+  if (Platform.OS === 'ios') {
+    PVTrackPlayer.setRate(rate)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    setTimeout( () => PVTrackPlayer.setRate(rate), 200)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    setTimeout( () => PVTrackPlayer.setRate(rate), 500)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    setTimeout( () => PVTrackPlayer.setRate(rate), 800)
+  } else {
+    PVTrackPlayer.setRate(rate)
+  }
 }
 
-export const playerPreviewStartTime = async (startTime: number, endTime?: number | null) => {
+export const playerPreviewStartTime = (startTime: number, endTime?: number | null) => {
   if (playerPreviewEndTimeInterval) {
     clearInterval(playerPreviewEndTimeInterval)
   }
 
   TrackPlayer.seekTo(startTime)
-  TrackPlayer.play()
-  await setRateWithLatestPlaybackSpeed()
+  handlePlay()
 
   if (endTime) {
     playerPreviewEndTimeInterval = setInterval(() => {
@@ -335,7 +346,7 @@ export const loadItemAndPlayTrack = async (
   if (shouldPlay) {
     if (item && !item.clipId) {
       setTimeout(() => {
-        TrackPlayer.play()
+        handlePlay()
       }, 1500)
     } else if (item && item.clipId) {
       AsyncStorage.setItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED, 'true')
@@ -416,7 +427,8 @@ export const createTrack = async (item: NowPlayingItem) => {
         ...(imageUrl ? { artwork: imageUrl } : {}),
         headers: {
           'User-Agent': getAppUserAgent()
-        }
+        },
+        pitchAlgorithm: PITCH_ALGORITHM_VOICE
       }
     } else {
       track = {
@@ -427,7 +439,8 @@ export const createTrack = async (item: NowPlayingItem) => {
         ...(imageUrl ? { artwork: imageUrl } : {}),
         headers: {
           'User-Agent': getAppUserAgent()
-        }
+        },
+        pitchAlgorithm: PITCH_ALGORITHM_VOICE
       }
     }
   }
@@ -510,10 +523,10 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
           const shouldPlayWhenClipIsLoaded = await AsyncStorage.getItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
 
           if (shouldPlay) {
-            await TrackPlayer.play()
+            handlePlay()
           } else if (shouldPlayWhenClipIsLoaded === 'true') {
             AsyncStorage.removeItem(PV.Keys.PLAYER_SHOULD_PLAY_WHEN_CLIP_IS_LOADED)
-            await TrackPlayer.play()
+            handlePlay()
           }
 
           resolve(null)
@@ -528,7 +541,7 @@ export const restartNowPlayingItemClip = async () => {
   const nowPlayingItem = await getNowPlayingItem()
   if (nowPlayingItem && nowPlayingItem.clipStartTime) {
     setPlaybackPosition(nowPlayingItem.clipStartTime)
-    TrackPlayer.play()
+    handlePlay()
   }
 }
 
@@ -606,15 +619,20 @@ export const togglePlay = async () => {
   const state = await TrackPlayer.getState()
 
   if (state === TrackPlayer.STATE_NONE) {
-    TrackPlayer.play()
+    handlePlay()
     return
   }
 
   if (state === TrackPlayer.STATE_PLAYING) {
     TrackPlayer.pause()
   } else {
-    TrackPlayer.play()
+    handlePlay()
   }
+}
+
+export const handlePlay = () => {
+  TrackPlayer.play()
+  setRateWithLatestPlaybackSpeed()
 }
 
 export const checkIdlePlayerState = async () => {
