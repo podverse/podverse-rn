@@ -1,28 +1,10 @@
 /* eslint-disable max-len */
-import { getGlobal } from 'reactn'
-import { gaTrackPageView } from './googleAnalytics'
+import { matomoTrackPageView } from './matomo'
 
 export const trackPageView = async (path: string, title: string, titleToEncode?: string) => {
   try {
-    const global = getGlobal()
-    const { player } = global
-    const nowPlayingItem = player.nowPlayingItem || {}
-  
-    const { clipId, clipTitle, episodeId, episodeTitle, podcastId, podcastTitle } = nowPlayingItem
-    
     const finalTitle = `${title}${titleToEncode ? encodeURIComponent(titleToEncode) : ''}`
-
-    const queryObj = {
-      cd: finalTitle ? finalTitle : '',
-      cg1: podcastTitle ? encodeURIComponent(podcastTitle) : '',
-      cg2: podcastId ? podcastId : '',
-      cg3: episodeTitle ? encodeURIComponent(episodeTitle) : '',
-      cg4: episodeId ? episodeId : '',
-      cg5: clipTitle ? encodeURIComponent(clipTitle) : '',
-      cg6: clipId ? clipId : ''
-    }
-  
-    await gaTrackPageView(path, finalTitle, queryObj)
+    await matomoTrackPageView(path, finalTitle)
   } catch (error) {
     console.log('trackPageView error', error)
   }
