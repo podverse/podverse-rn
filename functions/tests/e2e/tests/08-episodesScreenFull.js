@@ -6,34 +6,30 @@ const test08_episodesScreenFull = async () => {
 
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
 
-  // await elementByIdHasText('episodes_screen-dropdown_button_text', 'top - week')
-  // await elementByIdHasText('episodes_screen-table_section_header_title_text', 'Subscribed')
+  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top - week')
+  await elementByIdHasText('episodes_screen_table_section_header_title_text', 'All Podcasts')
 
   await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
-  // await elementByIdAndClickAndTest('filter_screen_subscribed', 'filter_screen_subscribed_check_icon_button') //1a
-  // await elementByIdAndClickAndTest('filter_screen_downloaded', 'filter_screen_downloaded_check_icon_button') //2a
+  await elementByIdAndClickAndTest('filter_screen_all-podcasts', 'filter_screen_all-podcasts_check_icon_button') //1a
+  await elementByIdAndClickAndTest('filter_screen_downloaded', 'filter_screen_downloaded_check_icon_button') //2a
 
   //go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   //check title text
-  // await elementByIdHasText('episodes_screen-table_section_header_title_text', 'Downloaded')
+  await elementByIdHasText('episodes_screen_table_section_header_title_text', 'Downloaded')
   //navigate back to filter screen
-
-  ///FAILING HERE
-
-  await driver.sleep(3000)
-  await elementByIdAndClickAndTest('episodes_screen-dropdown_button', 'filter_screen_view')
+  await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
   await elementCheckIfNotPresent('filter_screen_subscribed_check_icon_button') //1b
-  await elementByIdAndClickAndTest('filter_screen_all-podcasts', 'filter_screen_all-podcasts_check_icon_button') //8a
+  await elementByIdAndClickAndTest('filter_screen_subscribed', 'filter_screen_subscribed_check_icon_button') //8a
   
   //go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   //check title text
-  // await elementByIdHasText('episodes_screen-table_section_header_title_text', 'All Podcasts')
+  await elementByIdHasText('episodes_screen_table_section_header_title_text', 'Subscribed')
   //navigate back to filter screen
-  await elementByIdAndClickAndTest('episodes_screen-dropdown_button', 'filter_screen_view')
+  await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
   await elementCheckIfNotPresent('filter_screen_downloaded_check_icon_button') //2b
   await elementByIdAndClickAndTest('filter_screen_top-past-day', 'filter_screen_top-past-day_check_icon_button') //3a
@@ -41,9 +37,9 @@ const test08_episodesScreenFull = async () => {
   //go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   //check dropdown text
-  // await elementByIdHasText('episodes_screen-dropdown_button_text', 'top - day')
+  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top - day')
   //navigate back to filter screen
-  await elementByIdAndClickAndTest('episodes_screen-dropdown_button', 'filter_screen_view')
+  await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
   await elementByIdAndClickAndTest('filter_screen_top-past-week', 'filter_screen_top-past-week_check_icon_button') //4a
   await elementCheckIfNotPresent('filter_screen_top-past-day_check_icon_button') //3b
@@ -51,9 +47,9 @@ const test08_episodesScreenFull = async () => {
   //go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   //check dropdown text
-  // await elementByIdHasText('episodes_screen-dropdown_button_text', 'top - week')
+  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top - week')
   //navigate back to filter screen
-  await elementByIdAndClickAndTest('episodes_screen-dropdown_button', 'filter_screen_view')
+  await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
   await elementByIdAndClickAndTest('filter_screen_top-past-month', 'filter_screen_top-past-month_check_icon_button') //5a
   await elementCheckIfNotPresent('filter_screen_top-past-week_check_icon_button') //4b
@@ -61,9 +57,9 @@ const test08_episodesScreenFull = async () => {
   //go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   //check dropdown text
-  // await elementByIdHasText('episodes_screen-dropdown_button_text', 'top - month')
+  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top - month')
   //navigate back to filter screen
-  await elementByIdAndClickAndTest('episodes_screen-dropdown_button', 'filter_screen_view')
+  await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
   await elementByIdAndClickAndTest('filter_screen_top-past-year', 'filter_screen_top-past-year_check_icon_button') //6a
   await elementCheckIfNotPresent('filter_screen_top-past-month_check_icon_button') //5b
@@ -71,9 +67,9 @@ const test08_episodesScreenFull = async () => {
   //go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   //check dropdown text
-  // await elementByIdHasText('episodes_screen-dropdown_button_text', 'top - year')
+  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top - year')
   //navigate back to filter screen
-  await elementByIdAndClickAndTest('episodes_screen-dropdown_button', 'filter_screen_view')
+  await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
   
   await elementByIdAndClickAndTest('filter_screen_top-all-time', 'filter_screen_top-all-time_check_icon_button') //7a
   await elementCheckIfNotPresent('filter_screen_top-past-year_check_icon_button') //6b
@@ -81,9 +77,9 @@ const test08_episodesScreenFull = async () => {
   //go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   //check dropdown text
-  // await elementByIdHasText('episodes_screen-dropdown_button_text', 'top - all time')
+  await elementByIdHasText('episodes_screen_dropdown_button_text', 'top - all time')
   //navigate back to filter screen
-  await elementByIdAndClickAndTest('episodes_screen-dropdown_button', 'filter_screen_view')
+  await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
   await elementByIdAndClickAndTest('filter_screen_top-past-year', 'filter_screen_top-past-year_check_icon_button')
   await elementCheckIfNotPresent('filter_screen_top-all-time_check_icon_button') //7b
@@ -92,19 +88,14 @@ const test08_episodesScreenFull = async () => {
   //go back
   await elementByIdClick('filter_screen_nav_header_button_text')
   //check text
-  // await elementByIdHasText('episodes_screen-table_section_header_title_text', 'Arts')
+  await elementByIdHasText('episodes_screen_table_section_header_title_text', 'Arts')
   //navigate back to filter screen
-  await elementByIdAndClickAndTest('episodes_screen-dropdown_button', 'filter_screen_view')
+  await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
 
   await elementCheckIfNotPresent('filter_screen_podcasts_check_icon_button') //8b
-  await elementByIdClick('filter_screen_nav_header_button_text')
-
-
 
   await elementByIdClick('filter_screen_all-podcasts')
   await elementByIdClick('filter_screen_top-past-week')
-
-
 
   await elementByIdAndClickAndTest('filter_screen_nav_header_button_text', 'episodes_screen_view')
   await elementByIdClick('episodes_screen_episode_item_0_time_remaining_widget_toggle_play')

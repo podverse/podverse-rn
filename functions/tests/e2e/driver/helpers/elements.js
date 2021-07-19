@@ -73,7 +73,10 @@ const elementByIdToggle = async (id, testLabel) => {
 }
 
 const elementByIdHasText = async (id, text, testLabel) => {
-  const label = `${testLabel} text check`
+  if (!testLabel) {
+    testLabel = id + ', "' + text + '" '
+  }
+  const label = `${testLabel}: text check`
   const driver = getDriver()
   logTestInfo(logKeyStart, id, label)
   await driver.waitForElementByAccessibilityId(id, 10000)
