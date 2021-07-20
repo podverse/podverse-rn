@@ -94,7 +94,7 @@ const test08_episodesScreenFull = async () => {
 
   await elementCheckIfNotPresent('filter_screen_podcasts_check_icon_button') //8b
 
-  await elementByIdClick('filter_screen_all-podcasts')
+  await elementByIdAndClickAndTest('filter_screen_all-podcasts', 'filter_screen_all-podcasts_check_icon_button') //1a
   await elementByIdClick('filter_screen_top-past-week')
 
   await elementByIdAndClickAndTest('filter_screen_nav_header_button_text', 'episodes_screen_view')
