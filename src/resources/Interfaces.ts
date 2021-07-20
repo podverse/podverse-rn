@@ -99,11 +99,6 @@ export interface InitialState {
     shouldShowAlert: boolean
   }
   parsedTranscript: TranscriptRow[]
-  parser: {
-    addByRSSPodcastAuthModal: {
-      feedUrl: string
-    }
-  }
   player: {
     backupDuration?: number
     currentChapter: any

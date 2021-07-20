@@ -8,6 +8,7 @@ import { DownloadsActiveBadge, ErrorBoundary, NavSearchIcon, PVTabBar, TabBarLab
 import { PV } from './resources'
 import {
   AboutScreen,
+  AddPodcastByRSSAuthScreen,
   AddPodcastByRSSScreen,
   AuthScreen,
   ClipsScreen,
@@ -341,6 +342,15 @@ const AddPodcastByRSSURLNavigator = createStackNavigator(
   }
 )
 
+const AddPodcastByRSSAuthNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.AddPodcastByRSSAuthScreen]: AddPodcastByRSSAuthScreen
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
 const ScanQRCodeScreenNavigator = createStackNavigator(
   {
     [PV.RouteNames.ScanQRCodeScreen]: {
@@ -395,6 +405,7 @@ const MainApp = createStackNavigator(
       screen: AddPodcastByRSSURLNavigator,
       path: ''
     },
+    AddPodcastByRSSAuthNavigator,
     ValueTagOnboardingNavigator
   },
   {
