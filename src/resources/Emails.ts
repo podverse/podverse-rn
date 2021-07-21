@@ -7,9 +7,8 @@ export const Emails = {
     email: Config.CONTACT_US_EMAIL,
     subject: 'Contact Podverse',
     body:
-      `\n\nPlatform: ${Platform.OS} \n` +
-      'If you are reporting an issue, please provide your device type and/or brand ' +
-      'and steps to reproduce the bug if possible. Thank you!' 
+      `Platform: ${Platform.OS}
+If you are reporting an issue, please provide your device type and/or brand and steps to reproduce the bug if possible. Thank you!`
   },
   CHECKOUT_ISSUE: {
     email: Config.SUPPORT_EMAIL,
