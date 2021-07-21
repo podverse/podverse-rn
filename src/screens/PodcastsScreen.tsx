@@ -6,7 +6,6 @@ import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
   ActivityIndicator,
-  AddByRSSPodcastAuthModal,
   Divider,
   FlatList,
   PlayerEvents,
@@ -115,6 +114,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
     AppState.addEventListener('change', this._handleAppStateChange)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
+    PVEventEmitter.on(PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
@@ -149,6 +149,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     Linking.removeEventListener('url', this._handleOpenURLEvent)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.removeListener(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
+    PVEventEmitter.removeListener(
+      PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
   }
 
   _handleAppStateChange = (nextAppState: any) => {
@@ -202,6 +204,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
   // but required to work in production (??? unconfirmed).
   _handleOpenURLEvent = (event: any) => {
     if (event) this._handleOpenURL(event.url)
+  }
+
+  _handleNavigateToAddPodcastByRSSAuthScreen = (params: any) => {
+    const { feedUrl } = params
+    this.props.navigation.navigate(PV.RouteNames.AddPodcastByRSSAuthScreen, { feedUrl })
   }
 
   // On some Android devices, the .goBack method appears to not work reliably
@@ -751,7 +758,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
           />
         </Dialog.Container>
         <PurchaseListener navigation={navigation} />
-        <AddByRSSPodcastAuthModal navigation={navigation} />
       </View>
     )
   }

@@ -25,11 +25,6 @@ const initialTheme: InitialState = {
     shouldShowAlert: false
   },
   parsedTranscript: [],
-  parser: {
-    addByRSSPodcastAuthModal: {
-      feedUrl: ''
-    }
-  },
   player: {
     currentChapter: null,
     currentChapters: [],

@@ -1,4 +1,5 @@
 export { AboutScreen } from './AboutScreen'
+export { AddPodcastByRSSAuthScreen } from './AddPodcastByRSSAuthScreen'
 export { AddPodcastByRSSScreen } from './AddPodcastByRSSScreen'
 export { AuthScreen } from './AuthScreen'
 export { ClipsScreen } from './ClipsScreen'
