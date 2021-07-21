@@ -13,7 +13,6 @@ import {
   NumberSelectorWithText,
   ScrollView,
   SwitchWithText,
-  TableTextCell,
   Text,
   View
 } from '../components'

@@ -6,6 +6,7 @@ import { getGlobal, setGlobal } from 'reactn'
 import BackgroundTimer from 'react-native-background-timer'
 import { processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../lib/valueTagHelpers'
 import { translate } from '../lib/i18n'
+import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
 import { handleEnrichingPlayerState, hideMiniPlayer, updatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
@@ -46,6 +47,12 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
     debouncedSetPlaybackPosition(currentNowPlayingItem.clipStartTime || 0)
   } else if (!currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
     debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
+  } else {
+    const { podcastId } = currentNowPlayingItem
+    const startPodcastFromTime = await getStartPodcastFromTime(podcastId)
+    if (!currentNowPlayingItem.clipId && startPodcastFromTime) {
+      debouncedSetPlaybackPosition(startPodcastFromTime, trackId)
+    }
   }
 
   PVEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
