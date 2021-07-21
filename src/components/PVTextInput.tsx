@@ -1,6 +1,7 @@
 import React from 'react'
 import { Platform, TextInput } from 'react-native'
 import { useGlobal } from 'reactn'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
@@ -22,6 +23,7 @@ type Props = {
   onFocus?: any
   onChange?: any
   onChangeText?: any
+  onPress?: any
   onSubmitEditing?: any
   placeholder?: string
   placeholderTextColor?: string
@@ -49,6 +51,7 @@ export const PVTextInput = (props: Props) => {
     onFocus,
     onChange,
     onChangeText,
+    onPress,
     onSubmitEditing,
     placeholder,
     placeholderTextColor,
@@ -81,36 +84,38 @@ export const PVTextInput = (props: Props) => {
   const hasText = !!value && value.length
 
   return (
-    <View style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
-      {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
-        <Text style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]} testID={`${testID}_text_input_eyebrow`}>
-          {eyebrowTitle || placeholder}
-        </Text>
-      )}
-      <TextInput
-        autoCapitalize={autoCapitalize}
-        autoCompleteType={autoCompleteType}
-        autoCorrect={autoCorrect}
-        blurOnSubmit={returnKeyType === 'done'}
-        editable={!!editable}
-        keyboardType={keyboardType}
-        multiline={numberOfLines > 1}
-        numberOfLines={hasText ? numberOfLines : 1}
-        onBlur={onBlur}
-        onFocus={onFocus}
-        onChange={onChange}
-        onChangeText={onChangeText}
-        onSubmitEditing={onSubmitEditing}
-        placeholder={placeholder}
-        placeholderTextColor={placeholderTextColor || globalTheme.placeholderText.color}
-        ref={inputRef}
-        returnKeyType={returnKeyType}
-        secureTextEntry={secureTextEntry}
-        style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
-        underlineColorAndroid={underlineColorAndroid}
-        {...(testID ? testProps(`${testID}_text_input`) : {})}
-        value={value}
-      />
-    </View>
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
+        {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
+          <Text style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]} testID={`${testID}_text_input_eyebrow`}>
+            {eyebrowTitle || placeholder}
+          </Text>
+        )}
+        <TextInput
+          autoCapitalize={autoCapitalize}
+          autoCompleteType={autoCompleteType}
+          autoCorrect={autoCorrect}
+          blurOnSubmit={returnKeyType === 'done'}
+          editable={!!editable}
+          keyboardType={keyboardType}
+          multiline={numberOfLines > 1}
+          numberOfLines={hasText ? numberOfLines : 1}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          onChange={onChange}
+          onChangeText={onChangeText}
+          onSubmitEditing={onSubmitEditing}
+          placeholder={placeholder}
+          placeholderTextColor={placeholderTextColor || globalTheme.placeholderText.color}
+          ref={inputRef}
+          returnKeyType={returnKeyType}
+          secureTextEntry={secureTextEntry}
+          style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
+          underlineColorAndroid={underlineColorAndroid}
+          {...(testID ? testProps(`${testID}_text_input`) : {})}
+          value={value}
+        />
+      </View>
+    </TouchableWithoutFeedback>
   )
 }
