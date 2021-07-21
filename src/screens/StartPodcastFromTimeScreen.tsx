@@ -40,7 +40,7 @@ export class StartPodcastFromTimeScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const handleDismiss = navigation.getParam('handleDismiss')
     return {
-      title: translate('Start podcast from time'),
+      title: translate('Preset podcast start time'),
       headerLeft: () => <NavDismissIcon handlePress={handleDismiss} testID={testIDPrefix} />,
       headerRight: () => <RNView />
     }
@@ -52,7 +52,7 @@ export class StartPodcastFromTimeScreen extends React.Component<Props, State> {
     const startPodcastFromTime = await getStartPodcastFromTime(podcastId)
     this.setState({ startPodcastFromTime })
 
-    trackPageView('/start-podcast-from-time', 'Start Podcast From Time')
+    trackPageView('/start-podcast-from-time', 'Preset podcast start time')
   }
 
   _updateStartPodcastFromTime = async (hours: number, minutes: number, seconds: number) => {

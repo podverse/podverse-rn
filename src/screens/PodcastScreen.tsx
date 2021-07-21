@@ -687,24 +687,27 @@ static navigationOptions = ({ navigation }) => {
               wrapperStyle={styles.toggleLimitDownloadsSwitchWrapper}
             />
             {limitDownloadedEpisodes && (
-              <NumberSelectorWithText
-                handleChangeText={this._handleChangeDownloadLimitText}
-                selectedNumber={downloadedEpisodeLimit}
-                subText={translate(
-                  // eslint-disable-next-line max-len
-                  'Limit the number of downloaded episodes from this podcast on your device. Once the download limit is exceeded the oldest episode will be automatically deleted.'
-                )}
-                testID={`${testIDPrefix}_downloaded_episode_limit_count`}
-                text={translate('Download limit max')}
-              />
+              <View style={styles.itemWrapper}>
+                <NumberSelectorWithText
+                  handleChangeText={this._handleChangeDownloadLimitText}
+                  selectedNumber={downloadedEpisodeLimit}
+                  subText={translate(
+                    // eslint-disable-next-line max-len
+                    'Limit the number of downloaded episodes from this podcast on your device. Once the download limit is exceeded the oldest episode will be automatically deleted.'
+                  )}
+                  testID={`${testIDPrefix}_downloaded_episode_limit_count`}
+                  text={translate('Download limit max')}
+                />
+              </View>
             )}
             <View style={styles.itemWrapper}>
               <NumberSelectorWithText
                 editable={false}
                 isHHMMSS
                 selectedNumber={startPodcastFromTime}
+                subText={translate('Episodes of this podcast will start playback from this time')}
                 testID={`${testIDPrefix}_start_podcast_from_time`}
-                text={translate('Start podcast from time')}
+                text={translate('Preset podcast start time')}
                 textInputOnPress={this._handleNavigateToStartPodcastFromTimeScreen}
                 textInputStyle={{ width: 76 }}
               />
@@ -889,7 +892,7 @@ const styles = StyleSheet.create({
     marginTop: 12
   },
   itemWrapper: {
-    marginBottom: 16
+    marginTop: 32
   },
   settingsHelpText: {
     fontSize: PV.Fonts.sizes.md
@@ -908,9 +911,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 8
   },
-  toggleLimitDownloadsSwitchWrapper: {
-    marginBottom: 32
-  },
+  toggleLimitDownloadsSwitchWrapper: {},
   view: {
     flex: 1
   }
