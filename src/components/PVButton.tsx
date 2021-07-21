@@ -8,6 +8,7 @@ import { Text } from '.'
 
 type Props = {
   disabled?: boolean
+  isDisabledStyle?: boolean
   isLoading?: boolean
   isPrimary?: boolean
   isSuccess?: boolean
@@ -19,11 +20,12 @@ type Props = {
 }
 
 export const PVButton = (props: Props) => {
-  const { disabled, isLoading, isPrimary, isSuccess, isWarning, onPress, testID, text, wrapperStyles } = props
+  const { disabled, isDisabledStyle, isLoading, isPrimary, isSuccess, isWarning, onPress,
+    testID, text, wrapperStyles } = props
   const [globalTheme] = useGlobal('globalTheme')
 
-  const disabledStyle = disabled ? globalTheme.buttonDisabledWrapper : null
-  const disabledTextStyle = disabled ? globalTheme.buttonDisabledText : null
+  const disabledStyle = disabled || isDisabledStyle ? globalTheme.buttonDisabledWrapper : null
+  const disabledTextStyle = disabled || isDisabledStyle ? globalTheme.buttonDisabledText : null
   const isPrimaryStyle = isPrimary ? globalTheme.buttonPrimaryWrapper : null
   const isPrimaryTextStyle = isPrimary ? globalTheme.buttonPrimaryText : null
   const isSuccessStyle = isSuccess ? globalTheme.buttonSuccessWrapper : null

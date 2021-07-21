@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
 import { convertToNowPlayingItem } from 'podverse-shared'
-import { View as RNView } from 'react-native'
+import { StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
 import React from 'reactn'
@@ -30,9 +30,11 @@ import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
+import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { safeKeyExtractor, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
+import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRefs } from '../services/mediaRef'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { getPodcast } from '../services/podcast'
@@ -69,6 +71,7 @@ type State = {
   showDeleteDownloadedEpisodesDialog?: boolean
   showNoInternetConnectionMessage?: boolean
   showSettings: boolean
+  startPodcastFromTime: number
   viewType: string | null
 }
 
@@ -148,9 +151,13 @@ static navigationOptions = ({ navigation }) => {
   }
 
   async componentDidMount() {
+    const { navigation } = this.props
     const { podcastId } = this.state
-    let podcast = this.props.navigation.getParam('podcast')
+    let podcast = navigation.getParam('podcast')
     const addByRSSPodcastFeedUrl = this.props.navigation.getParam('addByRSSPodcastFeedUrl')
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    PVEventEmitter.on(PV.Events.PODCAST_START_PODCAST_FROM_TIME_SET, this.refreshStartPodcastFromTime)
+
     const hasInternetConnection = await hasValidNetworkConnection()
 
     // If passed the addByRSSPodcastFeedUrl in the navigation,
@@ -160,6 +167,8 @@ static navigationOptions = ({ navigation }) => {
     } else if (!hasInternetConnection && podcastId) {
       podcast = await getPodcast(podcastId)
     }
+
+    this.refreshStartPodcastFromTime()
 
     this.setState(
       {
@@ -234,6 +243,12 @@ static navigationOptions = ({ navigation }) => {
         })()
       }
     )
+  }
+
+  refreshStartPodcastFromTime = async () => {
+    const { podcastId } = this.state
+    const startPodcastFromTime = await getStartPodcastFromTime(podcastId)
+    this.setState({ startPodcastFromTime })
   }
 
   handleSelectFilterItem = async (selectedKey: string) => {
@@ -567,6 +582,15 @@ static navigationOptions = ({ navigation }) => {
     if (int) setDownloadedEpisodeLimit(podcast.id, int)
   }
 
+  _handleNavigateToStartPodcastFromTimeScreen = () => {
+    const { navigation } = this.props
+    const { podcast, startPodcastFromTime } = this.state
+    navigation.navigate(PV.RouteNames.StartPodcastFromTimeScreen, {
+      podcast,
+      startPodcastFromTime
+    })
+  }
+
   render() {
     const { navigation } = this.props
 
@@ -587,6 +611,7 @@ static navigationOptions = ({ navigation }) => {
       showDeleteDownloadedEpisodesDialog,
       showNoInternetConnectionMessage,
       showSettings,
+      startPodcastFromTime,
       viewType
     } = this.state
     const { offlineModeEnabled } = this.global
@@ -673,6 +698,17 @@ static navigationOptions = ({ navigation }) => {
                 text={translate('Download limit max')}
               />
             )}
+            <View style={styles.itemWrapper}>
+              <NumberSelectorWithText
+                editable={false}
+                isHHMMSS
+                selectedNumber={startPodcastFromTime}
+                testID={`${testIDPrefix}_start_podcast_from_time`}
+                text={translate('Start podcast from time')}
+                textInputOnPress={this._handleNavigateToStartPodcastFromTimeScreen}
+                textInputStyle={{ width: 76 }}
+              />
+            </View>
             <Divider style={styles.divider} />
             <Button
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
@@ -837,7 +873,7 @@ static navigationOptions = ({ navigation }) => {
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   aboutView: {
     margin: 8
   },
@@ -851,6 +887,9 @@ const styles = {
   divider: {
     marginBottom: 24,
     marginTop: 12
+  },
+  itemWrapper: {
+    marginBottom: 16
   },
   settingsHelpText: {
     fontSize: PV.Fonts.sizes.md
@@ -870,9 +909,9 @@ const styles = {
     marginTop: 8
   },
   toggleLimitDownloadsSwitchWrapper: {
-    marginBottom: 16
+    marginBottom: 32
   },
   view: {
     flex: 1
   }
-}
+})

@@ -46,6 +46,7 @@ import {
   SearchScreen,
   SettingsScreen,
   SleepTimerScreen,
+  StartPodcastFromTimeScreen,
   TermsOfServiceScreen,
   LNPaySignupScreen,
   WebPageScreen
@@ -303,6 +304,15 @@ const SleepTimerNavigator = createStackNavigator(
   }
 )
 
+const StartPodcastFromTimeNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.StartPodcastFromTimeScreen]: StartPodcastFromTimeScreen
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
 const WebPageNavigator = createStackNavigator(
   {
     [PV.RouteNames.WebPageScreen]: WebPageScreen
@@ -396,6 +406,7 @@ const MainApp = createStackNavigator(
     SearchNavigator,
     FilterNavigator,
     SleepTimerNavigator,
+    StartPodcastFromTimeNavigator,
     WebPageNavigator,
     EmailVerificationNavigator,
     PurchasingNavigator,
