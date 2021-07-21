@@ -18,7 +18,13 @@ export const getAllStartPodcastFromTime = async () => {
 export const setStartPodcastFromTime = async (podcastId?: string, seconds?: number) => {
   if (podcastId) {
     const allStartPodcastFromTime: any = await getAllStartPodcastFromTime()
-    allStartPodcastFromTime[podcastId] = seconds && seconds > 0 ? seconds : null
+
+    if (!seconds) {
+      delete allStartPodcastFromTime[podcastId]
+    } else {
+      allStartPodcastFromTime[podcastId] = seconds
+    }
+
     await AsyncStorage.setItem(
       PV.Keys.START_PODCAST_FROM_TIME,
       JSON.stringify(allStartPodcastFromTime)
