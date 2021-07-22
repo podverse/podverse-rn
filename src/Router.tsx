@@ -12,9 +12,6 @@ import {
   AddPodcastByRSSScreen,
   AuthScreen,
   ClipsScreen,
-  ValueTagConsentScreen,
-  ValueTagPreviewScreen,
-  ValueTagSetupScreen,
   DownloadsScreen,
   EditPlaylistScreen,
   EditProfileScreen,
@@ -26,6 +23,7 @@ import {
   FilterScreen,
   FundingScreen,
   HistoryScreen,
+  LNPaySignupScreen,
   MakeClipScreen,
   MembershipScreen,
   MoreScreen,
@@ -48,7 +46,10 @@ import {
   SleepTimerScreen,
   StartPodcastFromTimeScreen,
   TermsOfServiceScreen,
-  LNPaySignupScreen,
+  TrackingConsentScreen,
+  ValueTagConsentScreen,
+  ValueTagPreviewScreen,
+  ValueTagSetupScreen,
   WebPageScreen
 } from './screens'
 import { darkTheme } from './styles'
@@ -361,6 +362,15 @@ const AddPodcastByRSSAuthNavigator = createStackNavigator(
   }
 )
 
+const TrackingConsentNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.TrackingConsentScreen]: TrackingConsentScreen
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
 const ScanQRCodeScreenNavigator = createStackNavigator(
   {
     [PV.RouteNames.ScanQRCodeScreen]: {
@@ -417,7 +427,8 @@ const MainApp = createStackNavigator(
       path: ''
     },
     AddPodcastByRSSAuthNavigator,
-    ValueTagOnboardingNavigator
+    ValueTagOnboardingNavigator,
+    TrackingConsentNavigator
   },
   {
     mode: 'modal',

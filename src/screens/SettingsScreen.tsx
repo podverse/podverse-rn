@@ -39,6 +39,7 @@ import {
   setCustomAPIDomainEnabled,
   setCustomWebDomainEnabled,
   setErrorReportingEnabled,
+  setListenTrackingEnabled,
   setOfflineModeEnabled
 } from '../state/actions/settings'
 import { clearHistoryItems } from '../state/actions/userHistoryItem'
@@ -205,6 +206,11 @@ export class SettingsScreen extends React.Component<Props, State> {
     setErrorReportingEnabled(value)
   }
 
+  _handleToggleListenTracking = () => {
+    const { navigation } = this.props
+    navigation.navigate(PV.RouteNames.TrackingConsentScreen)
+  }
+
   _handleToggleOfflineMode = (value: boolean) => {
     this.setState({ offlineModeEnabled: value }, () => {
       setOfflineModeEnabled(value)
@@ -349,6 +355,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       customWebDomainEnabled,
       errorReportingEnabled,
       globalTheme,
+      listenTrackingEnabled,
       session
     } = this.global
     const { isLoggedIn } = session
@@ -388,6 +395,19 @@ export class SettingsScreen extends React.Component<Props, State> {
                 <Divider style={styles.divider} />
               </View>
             )}
+            <View>
+              <View style={styles.itemWrapper}>
+                <SwitchWithText
+                  onValueChange={this._handleToggleListenTracking}
+                  subText={translate('Listen Tracking subtext')}
+                  testID={`${testIDPrefix}_listen_tracking`}
+                  text={listenTrackingEnabled
+                    ? translate('Listen Tracking Enabled') : translate('Listen Tracking Disabled')}
+                  value={!!listenTrackingEnabled}
+                />
+              </View>
+              <Divider style={styles.divider} />
+            </View>
             {!Config.DISABLE_THEME_SWITCH && (
               <View style={styles.itemWrapper}>
                 <SwitchWithText

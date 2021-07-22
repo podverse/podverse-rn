@@ -20,6 +20,7 @@ const initialTheme: InitialState = {
   customWebDomain: '',
   customWebDomainEnabled: false,
   errorReportingEnabled: false,
+  listenTrackingEnabled: false,
   offlineModeEnabled: false,
   overlayAlert: {
     shouldShowAlert: false

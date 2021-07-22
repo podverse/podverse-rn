@@ -28,7 +28,7 @@ import PVEventEmitter from '../services/eventEmitter'
 import { checkIdlePlayerState, PVTrackPlayer, updateTrackPlayerCapabilities,
   updateUserPlaybackPosition } from '../services/player'
   import { getPodcast, getPodcasts } from '../services/podcast'
-  import { trackPageView } from '../services/tracking'
+  import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
   import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
   import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
   import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
@@ -110,11 +110,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
 
   async componentDidMount() {
+    const { navigation } = this.props
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
     PVEventEmitter.on(PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    PVEventEmitter.on(PV.Events.TRACKING_TERMS_ACKNOWLEDGED, this._handleTrackingTermsAcknowledged)
+
+    const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
+    if (!trackingConsentAcknowledged) {
+      await navigation.navigate(PV.RouteNames.TrackingConsentScreen)
+    }
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
@@ -128,8 +136,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         if (!Config.DISABLE_CRASH_LOGS) {
           await AsyncStorage.setItem(PV.Keys.ERROR_REPORTING_ENABLED, 'TRUE')
         }
-
-        this.setState({ showDataSettingsConfirmDialog: true })
       } else {
         this._initializeScreenData()
       }
@@ -151,6 +157,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
     PVEventEmitter.removeListener(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
     PVEventEmitter.removeListener(
       PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
+  }
+
+  _handleTrackingTermsAcknowledged = async () => {
+    const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
+    if (!trackingConsentAcknowledged) {
+      await setTrackingConsentAcknowledged()
+      this.setState({ showDataSettingsConfirmDialog: true })
+    }
   }
 
   _handleAppStateChange = (nextAppState: any) => {

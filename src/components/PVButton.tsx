@@ -12,6 +12,7 @@ type Props = {
   isLoading?: boolean
   isPrimary?: boolean
   isSuccess?: boolean
+  isTransparent?: boolean
   isWarning?: boolean
   onPress: any
   testID: string
@@ -20,8 +21,8 @@ type Props = {
 }
 
 export const PVButton = (props: Props) => {
-  const { disabled, isDisabledStyle, isLoading, isPrimary, isSuccess, isWarning, onPress,
-    testID, text, wrapperStyles } = props
+  const { disabled, isDisabledStyle, isLoading, isPrimary, isSuccess, isTransparent,
+    isWarning, onPress, testID, text, wrapperStyles } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   const disabledStyle = disabled || isDisabledStyle ? globalTheme.buttonDisabledWrapper : null
@@ -32,6 +33,7 @@ export const PVButton = (props: Props) => {
   const isSuccessTextStyle = isSuccess ? globalTheme.buttonSuccessText : null
   const isWarningStyle = isWarning ? globalTheme.buttonWarningWrapper : null
   const isWarningTextStyle = isWarning ? globalTheme.buttonWarningText : null
+  const isTransparentStyle = isTransparent ? globalTheme.buttonTransparentWrapper : null
 
   return (
     <TouchableOpacity
@@ -42,6 +44,7 @@ export const PVButton = (props: Props) => {
         isPrimaryStyle,
         isSuccessStyle,
         isWarningStyle,
+        isTransparentStyle,
         wrapperStyles
       ]}
       disabled={disabled || isLoading}
