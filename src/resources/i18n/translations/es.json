@@ -116,7 +116,7 @@
   "Email": "Correo electrónico",
   "Enable Lightning Pay switch description": "¡Habilite esta función experimental para conectar una billetera Bitcoin Wallet a Podverse y admitir podcasts a través de Streaming Sats y Boost!",
   "Enable LNPay": "Habilitar LNPay",
-  "Enable Tracking question": "¿Habilitar seguimiento?",
+  "Enable Tracking": "Habilitar seguimiento",
   "End of results": "Fin de los resultados",
   "End time cannot be equal to 0": "La hora de finalización no puede ser igual a 0.",
   "End time": "Hora de finalización",
