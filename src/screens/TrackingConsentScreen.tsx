@@ -5,7 +5,8 @@ import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
-import { setTrackingEnabled, trackPageView } from '../services/tracking'
+import { trackPageView } from '../services/tracking'
+import { setTrackingEnabled } from '../state/actions/tracking'
 
 type Props = {
   navigation?: any
