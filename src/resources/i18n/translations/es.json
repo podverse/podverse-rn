@@ -116,7 +116,7 @@
   "Email": "Correo electrónico",
   "Enable Lightning Pay switch description": "¡Habilite esta función experimental para conectar una billetera Bitcoin Wallet a Podverse y admitir podcasts a través de Streaming Sats y Boost!",
   "Enable LNPay": "Habilitar LNPay",
-  "Enable Tracking": "Habilitar seguimiento",
+  "Enable Analytics": "Habilitar Analytics",
   "End of results": "Fin de los resultados",
   "End time cannot be equal to 0": "La hora de finalización no puede ser igual a 0.",
   "End time": "Hora de finalización",
@@ -276,6 +276,7 @@
   "podcasts": "podcasts",
   "Podcasts": "Podcasts",
   "PodcastsScreen - ": "PodcastsScreen -",
+  "Popularity Analytics": "Análisis de popularidad",
   "Premium Info": "Información Premium",
   "Premium Membership Expired": "Membresía Premium caducada",
   "Premium Membership Required": "Se requiere membresía premium",
@@ -447,5 +448,10 @@
   "TermsOfServiceScreenText4": "Todos los clips alojados en podverse.fm son de origen colectivo y no oficiales, a menos que el podcaster indique lo contrario.",
   "TermsOfServiceScreenText5": "Los clips se cargan dentro del archivo multimedia del episodio completo, por lo que el usuario siempre tiene acceso a la grabación completa.",
   "TermsOfServiceScreenText6": "Podverse aloja enlaces de financiación de podcasts y contenido de fuentes y sitios de podcasts de terceros. Estos tienen sus propias políticas de privacidad independientes y no tenemos ninguna responsabilidad por su contenido o actividades.",
-  "TermsOfServicesScreenText7": "Podverse almacena credenciales para podcasts que requieren autenticación en el chip de almacenamiento seguro del dispositivo. Podverse no usa ni almacena estos datos de ninguna otra manera que no sea para permitir la suscripción a fuentes de podcast que requieren autenticación. Estos datos no se almacenan en ningún servidor de Podverse."
+  "TermsOfServicesScreenText7": "Podverse almacena credenciales para podcasts que requieren autenticación en el chip de almacenamiento seguro del dispositivo. Podverse no usa ni almacena estos datos de ninguna otra manera que no sea para permitir la suscripción a fuentes de podcast que requieren autenticación. Estos datos no se almacenan en ningún servidor de Podverse.",
+  "TermsOfServiceScreenMatomoTrackingText1": "Podverse permite a los usuarios habilitar opcionalmente el seguimiento anónimo dentro de la aplicación. Usamos esta información de seguimiento para ayudar a determinar qué contenido del sitio (incluidos podcasts, episodios y clips) son más populares.",
+  "TermsOfServiceScreenMatomoTrackingText2": "El software de seguimiento que utilizamos se llama Matomo y es una plataforma de análisis gratuita y de código abierto. Alojamos una instancia de Matomo, por lo que todos los datos de seguimiento se alojan en nuestros servidores, y los datos de seguimiento de usuarios individuales nunca se venderán ni se compartirán con terceros.",
+  "TermsOfServiceScreenMatomoTrackingText3": "Todos nuestros datos de seguimiento se anonimizan al ocultar la dirección IP en 2 bytes, lo que significa que las direcciones IP se ocultan y luego se guardan en nuestro servidor con el formato 192.168.xxx.xxx.",
+  "TermsOfServiceScreenMatomoTrackingText4": "Para proteger aún más el anonimato del usuario, no usamos ID de sesión para rastrear a los usuarios en múltiples visitas. Del mismo modo, para proteger aún más el anonimato, no utilizamos el seguimiento basado en cookies en nuestro sitio web.",
+  "TermsOfServiceScreenMatomoTrackingText5": "Si bien utilizamos los datos de seguimiento de Matomo para ayudarnos a determinar qué contenido es más popular en Podverse, los usuarios deben tener en cuenta que estas métricas de popularidad son fáciles de manipular y es posible que no reflejen con precisión la popularidad del contenido."
 }

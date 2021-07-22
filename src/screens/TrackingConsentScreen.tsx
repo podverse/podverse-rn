@@ -71,7 +71,7 @@ export class TrackingConsentScreen extends React.Component<Props> {
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={styles.header}>
-            {translate('Enable Tracking')}
+            {translate('Enable Analytics')}
           </Text>
           <HTMLScrollView
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
