@@ -96,10 +96,10 @@ const customHTMLTagStyles = {
     fontWeight: PV.Fonts.weights.bold
   },
   h6: {
-    marginBottom: 8,
+    marginBottom: 12,
     marginTop: 4,
-    fontSize: PV.Fonts.sizes.md,
-    fontWeight: PV.Fonts.weights.bold
+    fontSize: PV.Fonts.sizes.xl,
+    fontWeight: PV.Fonts.weights.normal
   },
   p: {
     marginBottom: 8,
