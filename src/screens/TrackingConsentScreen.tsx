@@ -85,7 +85,7 @@ export class TrackingConsentScreen extends React.Component<Props> {
             wrapperStyles={styles.button}
           />
           <Button
-            isDisabledStyle
+            isTransparent
             onPress={this._disableTracking}
             testID={`${testIDPrefix}_no_thanks`}
             text={translate('No thanks')}

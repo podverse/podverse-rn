@@ -96,6 +96,9 @@ export const darkTheme = StyleSheet.create({
   buttonWarningWrapper: {
     backgroundColor: PV.Colors.redDarker
   },
+  buttonTransparentWrapper: {
+    backgroundColor: 'transparent'
+  },
   divider: {
     backgroundColor: PV.Colors.grayDark + '80'
   },
@@ -332,6 +335,9 @@ export const lightTheme = StyleSheet.create({
   },
   buttonWarningWrapper: {
     backgroundColor: PV.Colors.redLighter
+  },
+  buttonTransparentWrapper: {
+    backgroundColor: 'transparent'
   },
   divider: {
     backgroundColor: PV.Colors.grayLight
