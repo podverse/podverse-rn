@@ -72,6 +72,26 @@ const elementByIdToggle = async (id, testLabel) => {
   logTestInfo(logKeyEnd, id, testLabel)
 }
 
+const elementByIdHasText = async (id, text, testLabel) => {
+  if (!testLabel) {
+    testLabel = id + ', "' + text + '" '
+  }
+  const label = `${testLabel}: text check`
+  const driver = getDriver()
+  logTestInfo(logKeyStart, id, label)
+  await driver.waitForElementByAccessibilityId(id, 10000)
+  const element = await driver.elementByAccessibilityId(id)
+  const actualText = await element.text()
+  if (text !== actualText) {
+    throw new Error(`
+      Error: Text not found.
+      Expected: ${text}
+      Actual: ${actualText}
+    `)
+  }
+  logTestInfo(logKeyEnd, id, label)
+}
+
 module.exports = {
   elementByIdAndClickAndTest,
   elementByIdClick,
@@ -79,6 +99,7 @@ module.exports = {
   elementCheckIfPresent,
   elementWaitFor,
   elementByIdToggle,
+  elementByIdHasText,
   goBackKey,
   noTestLabel
 }

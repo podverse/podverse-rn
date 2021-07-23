@@ -6,6 +6,7 @@ import { getGlobal, setGlobal } from 'reactn'
 import BackgroundTimer from 'react-native-background-timer'
 import { processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../lib/valueTagHelpers'
 import { translate } from '../lib/i18n'
+import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
 import { handleEnrichingPlayerState, hideMiniPlayer, updatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
@@ -44,8 +45,19 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
 
   if (currentNowPlayingItem && currentNowPlayingItem.clipId) {
     debouncedSetPlaybackPosition(currentNowPlayingItem.clipStartTime || 0)
-  } else if (!currentNowPlayingItem.clipId && currentNowPlayingItem.userPlaybackPosition) {
+  } else if (
+    !currentNowPlayingItem.clipId
+    && currentNowPlayingItem.userPlaybackPosition
+    && currentNowPlayingItem.userPlaybackPosition >= 5
+  ) {
     debouncedSetPlaybackPosition(currentNowPlayingItem.userPlaybackPosition, trackId)
+  } else {
+    const { podcastId } = currentNowPlayingItem
+    const startPodcastFromTime = await getStartPodcastFromTime(podcastId)
+
+    if (!currentNowPlayingItem.clipId && startPodcastFromTime) {
+      debouncedSetPlaybackPosition(startPodcastFromTime, trackId)
+    }
   }
 
   PVEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
@@ -78,13 +90,28 @@ const syncNowPlayingItemWithTrack = () => {
 
       const currentTrackId = await PVTrackPlayer.getCurrentLoadedTrack()
       const setPlayerClipIsLoadedIfClip = true
-      const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
-        currentTrackId, setPlayerClipIsLoadedIfClip)
 
-      if (currentNowPlayingItem) {
-        await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
-        await removeQueueItem(currentNowPlayingItem)
-      }
+      /*
+        When a new item loads, sometimes that item is not available in the local history
+        until a few seconds into the loadItemAndPlayTrack, so we're reattempting the
+        getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId up to 5 times.
+      */
+      let retryIntervalCount = 1
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      const retryInterval = setInterval(async () => {
+        retryIntervalCount += 1
+        if (retryIntervalCount >= 5) {
+          clearInterval(retryInterval)
+        } else {
+          const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
+            currentTrackId, setPlayerClipIsLoadedIfClip)    
+          if (currentNowPlayingItem && retryInterval) {
+            clearInterval(retryInterval)
+            await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
+            await removeQueueItem(currentNowPlayingItem)
+          }
+        }
+      }, 1000)
     })()
   }
 

@@ -11,7 +11,7 @@ type Props = {
   handleClearTime?: any
   handlePreview?: any
   handleSetTime: any
-  labelText: string
+  labelText?: string
   placeholder?: string
   testID: string
   time?: number | null

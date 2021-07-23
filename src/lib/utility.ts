@@ -439,6 +439,13 @@ export function validateHHMMSSString(hhmmss: string) {
   return regex.test(hhmmss)
 }
 
+export function convertHoursMinutesSecondsToSeconds(hours: number, minutes: number, seconds: number) {
+  let totalSeconds = hours * 3600
+  totalSeconds += minutes * 60
+  totalSeconds += seconds
+  return totalSeconds
+}
+
 export function convertHHMMSSToSeconds(hhmmssString: string) {
   if (hhmmssString) {
     if (!validateHHMMSSString(hhmmssString)) {

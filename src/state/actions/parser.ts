@@ -16,26 +16,6 @@ import { findPodcastsByFeedUrls, getSubscribedPodcastsLocally,
 import { getAuthUserInfo } from './auth'
 import { getSubscribedPodcasts } from './podcast'
 
-export const clearAddByRSSPodcastAuthModalState = () => {
-  setGlobal({
-    parser: {
-      addByRSSPodcastAuthModal: {
-        feedUrl: ''
-      }
-    }
-  })
-}
-
-export const setAddByRSSPodcastAuthModalState = (feedUrl: string) => {
-  setGlobal({
-    parser: {
-      addByRSSPodcastAuthModal: {
-        feedUrl
-      }
-    }
-  })
-}
-
 const handleAddOrRemoveByRSSPodcast = async (feedUrl: string, shouldAdd: boolean, credentials?: string) => {
   if (shouldAdd) {
     const podcast = await parseAddByRSSPodcast(feedUrl, credentials)
@@ -118,7 +98,7 @@ export const addAddByRSSPodcast = async (feedUrl: string, skipBadParse = false) 
       // Log error but don't do anything
       console.log('Manual skip of parsing error. Error reason: ', error)
     } else if (error.message === '401') {
-      setAddByRSSPodcastAuthModalState(feedUrl)
+      PVEventEmitter.emit(PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, { feedUrl })
     } else {
       console.log('addAddByRSSPodcast', error)
       Alert.alert(PV.Alerts.SOMETHING_WENT_WRONG.title, PV.Alerts.SOMETHING_WENT_WRONG.message, PV.Alerts.BUTTONS.OK)

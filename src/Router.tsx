@@ -8,12 +8,10 @@ import { DownloadsActiveBadge, ErrorBoundary, NavSearchIcon, PVTabBar, TabBarLab
 import { PV } from './resources'
 import {
   AboutScreen,
+  AddPodcastByRSSAuthScreen,
   AddPodcastByRSSScreen,
   AuthScreen,
   ClipsScreen,
-  ValueTagConsentScreen,
-  ValueTagPreviewScreen,
-  ValueTagSetupScreen,
   DownloadsScreen,
   EditPlaylistScreen,
   EditProfileScreen,
@@ -25,6 +23,7 @@ import {
   FilterScreen,
   FundingScreen,
   HistoryScreen,
+  LNPaySignupScreen,
   MakeClipScreen,
   MembershipScreen,
   MoreScreen,
@@ -45,8 +44,12 @@ import {
   SearchScreen,
   SettingsScreen,
   SleepTimerScreen,
+  StartPodcastFromTimeScreen,
   TermsOfServiceScreen,
-  LNPaySignupScreen,
+  TrackingConsentScreen,
+  ValueTagConsentScreen,
+  ValueTagPreviewScreen,
+  ValueTagSetupScreen,
   WebPageScreen
 } from './screens'
 import { darkTheme } from './styles'
@@ -302,6 +305,15 @@ const SleepTimerNavigator = createStackNavigator(
   }
 )
 
+const StartPodcastFromTimeNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.StartPodcastFromTimeScreen]: StartPodcastFromTimeScreen
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
 const WebPageNavigator = createStackNavigator(
   {
     [PV.RouteNames.WebPageScreen]: WebPageScreen
@@ -335,6 +347,24 @@ const AddPodcastByRSSURLNavigator = createStackNavigator(
       screen: AddPodcastByRSSScreen,
       path: PV.DeepLinks.AddByRSSPodcastFeedUrl.path
     }
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
+const AddPodcastByRSSAuthNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.AddPodcastByRSSAuthScreen]: AddPodcastByRSSAuthScreen
+  },
+  {
+    defaultNavigationOptions
+  }
+)
+
+const TrackingConsentNavigator = createStackNavigator(
+  {
+    [PV.RouteNames.TrackingConsentScreen]: TrackingConsentScreen
   },
   {
     defaultNavigationOptions
@@ -386,6 +416,7 @@ const MainApp = createStackNavigator(
     SearchNavigator,
     FilterNavigator,
     SleepTimerNavigator,
+    StartPodcastFromTimeNavigator,
     WebPageNavigator,
     EmailVerificationNavigator,
     PurchasingNavigator,
@@ -395,7 +426,9 @@ const MainApp = createStackNavigator(
       screen: AddPodcastByRSSURLNavigator,
       path: ''
     },
-    ValueTagOnboardingNavigator
+    AddPodcastByRSSAuthNavigator,
+    ValueTagOnboardingNavigator,
+    TrackingConsentNavigator
   },
   {
     mode: 'modal',

@@ -37,17 +37,17 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = ({ navigation }) => ({
-      title: translate('Add Custom RSS Feed'),
-      headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
-      headerRight: () => (
-        <NavHeaderButtonText
-          disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
-          handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}
-          testID={`${testIDPrefix}_save`}
-          text={translate('Save')}
-        />
-      )
-    })
+    title: translate('Add Custom RSS Feed'),
+    headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
+    headerRight: () => (
+      <NavHeaderButtonText
+        disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
+        handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}
+        testID={`${testIDPrefix}_save`}
+        text={translate('Save')}
+      />
+    )
+  })
 
   componentDidMount() {
     this.props.navigation.setParams({

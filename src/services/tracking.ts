@@ -1,30 +1,37 @@
 /* eslint-disable max-len */
-import { getGlobal } from 'reactn'
-import { gaTrackPageView } from './googleAnalytics'
+import AsyncStorage from '@react-native-community/async-storage'
+import { PV } from '../resources'
+import { matomoTrackPageView } from './matomo'
+
+export const getTrackingConsentAcknowledged = async () => {
+  return AsyncStorage.getItem(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED)
+}
+
+export const setTrackingConsentAcknowledged = async () => {
+  return AsyncStorage.setItem(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED, 'true')
+}
+
+export const checkIfTrackingIsEnabled = async () => {
+  return AsyncStorage.getItem(PV.Keys.TRACKING_ENABLED)
+}
+
+export const setTrackingEnabled = async (isEnabled: boolean) => {
+  if (isEnabled) {
+    await AsyncStorage.setItem(PV.Keys.TRACKING_ENABLED, 'true')
+  } else {
+    await AsyncStorage.removeItem(PV.Keys.TRACKING_ENABLED)
+  }
+}
 
 export const trackPageView = async (path: string, title: string, titleToEncode?: string) => {
-  try {
-    const global = getGlobal()
-    const { player } = global
-    const nowPlayingItem = player.nowPlayingItem || {}
-  
-    const { clipId, clipTitle, episodeId, episodeTitle, podcastId, podcastTitle } = nowPlayingItem
-    
-    const finalTitle = `${title}${titleToEncode ? encodeURIComponent(titleToEncode) : ''}`
-
-    const queryObj = {
-      cd: finalTitle ? finalTitle : '',
-      cg1: podcastTitle ? encodeURIComponent(podcastTitle) : '',
-      cg2: podcastId ? podcastId : '',
-      cg3: episodeTitle ? encodeURIComponent(episodeTitle) : '',
-      cg4: episodeId ? episodeId : '',
-      cg5: clipTitle ? encodeURIComponent(clipTitle) : '',
-      cg6: clipId ? clipId : ''
+  const trackingEnabled = await checkIfTrackingIsEnabled()
+  if (trackingEnabled) {
+    try {
+      const finalTitle = `${title}${titleToEncode ? encodeURIComponent(titleToEncode) : ''}`
+      await matomoTrackPageView(path, finalTitle)
+    } catch (error) {
+      console.log('trackPageView error', error)
     }
-  
-    await gaTrackPageView(path, finalTitle, queryObj)
-  } catch (error) {
-    console.log('trackPageView error', error)
   }
 }
 
