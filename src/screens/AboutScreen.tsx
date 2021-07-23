@@ -49,8 +49,7 @@ export class AboutScreen extends React.Component<Props> {
           <Divider style={styles.divider} />
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            style={styles.text}>{`Version ${getVersion()} Build ${getBuildNumber()} ${Config.RELEASE_TYPE ||
-            ''}`}</Text>
+            style={styles.text}>{`Version ${getVersion()} Build ${getBuildNumber()}`}</Text>
           <Divider style={styles.divider} />
           <RNView style={styles.socialLinksWrapper}>
             <Icon
