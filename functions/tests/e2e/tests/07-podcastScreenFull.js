@@ -30,6 +30,7 @@ const test07_podcastScreenFull = async () => {
   await driver.sleep(1000)
   await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed')
 
+  // test loading spinner displays
 
   await elementByIdAndClickAndTest('podcast_screen_settings_icon_button', 'podcast_screen_toggle_download_limit_switch')
 

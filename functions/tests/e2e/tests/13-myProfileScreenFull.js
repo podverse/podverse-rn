@@ -28,6 +28,10 @@ const test13_myProfileScreenFull = async () => {
     // My Profile Screen
   await elementByIdAndClickAndTest('my_library_screen_MyProfile_table_cell_wrapper', 'profile_screen_view')
 
+  // test loading spinner displays
+
+  //START FILTER TESTS
+
   await elementByIdHasText('profile_screen_dropdown_button_text', 'A-Z')
   await elementByIdHasText('profile_screen_table_section_header_title_text', 'Podcasts')
 
@@ -118,6 +122,8 @@ const test13_myProfileScreenFull = async () => {
   await elementByIdAndClickAndTest('profile_screen_dropdown_button', 'filter_screen_view')
 
   await elementByIdClick('filter_screen_nav_header_button_text')
+
+  //END FILTER TESTS
 
   await driver.back()
 

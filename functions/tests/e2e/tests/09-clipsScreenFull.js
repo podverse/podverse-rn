@@ -6,6 +6,8 @@ const test09_clipsScreenFull = async () => {
 
   await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
 
+  //START FILTER TESTS
+
   await elementByIdAndClickAndTest('clips_screen_dropdown_button', 'filter_screen_view')
   await elementByIdClick('filter_screen_all-podcasts')
   await elementByIdClick('filter_screen_top-past-week')
@@ -102,6 +104,10 @@ const test09_clipsScreenFull = async () => {
   await elementByIdClick('filter_screen_top-past-week')
 
   await elementByIdAndClickAndTest('filter_screen_nav_header_button_text', 'clips_screen_view')
+
+  //END FILTER TESTS
+
+  // test loading spinner displays
 
   await elementByIdClick('clips_screen_clip_item_0_more_button')
   await elementByIdClick('clips_screen_action_sheet_cancel_button')

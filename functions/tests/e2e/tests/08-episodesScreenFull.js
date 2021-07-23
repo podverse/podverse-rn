@@ -6,6 +6,8 @@ const test08_episodesScreenFull = async () => {
 
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
 
+  //START FILTER TESTS
+
   await elementByIdHasText('episodes_screen_dropdown_button_text', 'top - week')
   await elementByIdHasText('episodes_screen_table_section_header_title_text', 'All Podcasts')
 
@@ -98,6 +100,9 @@ const test08_episodesScreenFull = async () => {
   await elementByIdClick('filter_screen_top-past-week')
 
   await elementByIdAndClickAndTest('filter_screen_nav_header_button_text', 'episodes_screen_view')
+  
+  //END FILTER TESTS
+
   await elementByIdClick('episodes_screen_episode_item_0_time_remaining_widget_toggle_play')
 
   await elementByIdClick('episodes_screen_episode_item_0_more_button')
@@ -118,6 +123,8 @@ const test08_episodesScreenFull = async () => {
   await elementByIdClick('episodes_screen_episode_item_0_more_button')
   await elementByIdClick('episodes_screen_action_sheet_share_button')
   await driver.back()
+
+  // test loading spinner displays
 
   await elementByIdClick('episodes_screen_episode_item_0_download_button_icon_icon_button')
 
