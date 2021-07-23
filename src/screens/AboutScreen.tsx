@@ -1,5 +1,4 @@
 import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
-import Config from 'react-native-config'
 import { getBuildNumber, getVersion } from 'react-native-device-info'
 import React from 'reactn'
 import { Divider, Icon, ScrollView, Text, View } from '../components'
