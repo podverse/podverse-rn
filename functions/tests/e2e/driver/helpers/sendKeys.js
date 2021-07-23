@@ -7,6 +7,7 @@ const sendKeysToElementById = async (id, textString, testLabel) => {
   await driver.waitForElementByAccessibilityId(id, 10000)
   const element = await driver.elementByAccessibilityId(id);
   await element.sendKeys(textString)
+  await driver.sleep(2000)
   logTestInfo(logKeyEnd, id, testLabel)
 }
 
