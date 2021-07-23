@@ -26,7 +26,8 @@ export const DropdownButton = (props: any) => {
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
-          style={[styles.dropdownButtonText, globalTheme.dropdownButtonText]}>
+          style={[styles.dropdownButtonText, globalTheme.dropdownButtonText]}
+          testID={`${testID}_dropdown_button_text`}>
           {sortLabel}
         </Text>
         <Icon name='angle-down' size={14} style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]} />

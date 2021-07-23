@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
+import { convertHoursMinutesSecondsToSeconds } from '../lib/utility'
 import { PV } from '../resources'
 import { PVTrackPlayer } from './player'
 
@@ -35,10 +36,7 @@ export const setSleepTimerDefaultTimeRemaining = async (seconds: number) => {
 }
 
 export const setSleepTimerTimeRemaining = (hours: number, minutes: number, seconds: number) => {
-  let totalSeconds = hours * 3600
-  totalSeconds += minutes * 60
-  totalSeconds += seconds
-  timeRemaining = totalSeconds
+  timeRemaining = convertHoursMinutesSecondsToSeconds(hours, minutes, seconds)
   return timeRemaining
 }
 

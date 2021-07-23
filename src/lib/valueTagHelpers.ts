@@ -193,7 +193,11 @@ export const sendBoost = async (nowPlayingItem: NowPlayingItem, podcastValueFina
 
   const errors: BannerInfoError[] = []
 
-  const valueTags = podcastValueFinal || nowPlayingItem?.episodeValue || nowPlayingItem?.podcastValue
+  const valueTags =
+    podcastValueFinal
+    || (nowPlayingItem?.episodeValue?.length && nowPlayingItem?.episodeValue)
+    || (nowPlayingItem?.podcastValue?.length && nowPlayingItem?.podcastValue)
+
   // TODO: right now we are assuming the first item will be the lightning network
   // this will need to be updated to support additional valueTags
   const valueTag = valueTags[0]

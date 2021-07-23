@@ -1,5 +1,4 @@
 import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
-import Config from 'react-native-config'
 import { getBuildNumber, getVersion } from 'react-native-device-info'
 import React from 'reactn'
 import { Divider, Icon, ScrollView, Text, View } from '../components'
@@ -49,8 +48,7 @@ export class AboutScreen extends React.Component<Props> {
           <Divider style={styles.divider} />
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            style={styles.text}>{`Version ${getVersion()} Build ${getBuildNumber()} ${Config.RELEASE_TYPE ||
-            ''}`}</Text>
+            style={styles.text}>{`Version ${getVersion()} Build ${getBuildNumber()}`}</Text>
           <Divider style={styles.divider} />
           <RNView style={styles.socialLinksWrapper}>
             <Icon

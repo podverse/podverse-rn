@@ -92,6 +92,7 @@ export interface InitialState {
   customWebDomain?: string
   customWebDomainEnabled?: boolean
   errorReportingEnabled: boolean
+  listenTrackingEnabled: boolean
   urlsAPI?: any
   urlsWeb?: any
   offlineModeEnabled?: any
@@ -99,11 +100,6 @@ export interface InitialState {
     shouldShowAlert: boolean
   }
   parsedTranscript: TranscriptRow[]
-  parser: {
-    addByRSSPodcastAuthModal: {
-      feedUrl: string
-    }
-  }
   player: {
     backupDuration?: number
     currentChapter: any

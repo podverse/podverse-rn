@@ -20,11 +20,6 @@ declare module 'reactn/default' {
       shouldShowAlert: boolean
     }
     parsedTranscript: TranscriptRow[]
-    parser: {
-      addByRSSPodcastAuthModal: {
-        feedUrl: string
-      }
-    }
     player: {
       backupDuration?: number
       currentChapter: any
@@ -114,6 +109,7 @@ declare module 'reactn/default' {
     customWebDomain?: string
     customWebDomainEnabled?: boolean
     errorReportingEnabled: boolean
+    listenTrackingEnabled: boolean
     urlsAPI?: any
     urlsWeb?: any
     userAgent?: string

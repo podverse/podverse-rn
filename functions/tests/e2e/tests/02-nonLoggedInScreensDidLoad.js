@@ -49,8 +49,8 @@ const test02_nonLoggedInScreensDidLoadTests = async () => {
   await elementByIdToggle('settings_screen_only_allow_downloading_when_connected_to_wifi_switch')
   await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
   await elementByIdToggle('settings_screen_offline_mode_switch')
-  await performScroll(scrollUpKey)
-  await performScroll(scrollUpKey)
+  await performScroll(scrollDownKey)
+  await performScroll(scrollDownKey)
   await elementByIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')
   await elementByIdClick('settings_screen_dialog_update_download_limit_yes_button')
   

@@ -10,7 +10,6 @@ import { FilterOptions } from './FilterOptions'
 import { Filters } from './Filters'
 import { FlatList } from './FlatList'
 import { Fonts } from './Fonts'
-import { Google } from './Google'
 import { HTML } from './HTML'
 import { Icons } from './Icons'
 import { Images } from './Images'
@@ -41,7 +40,6 @@ export const PV = {
   FilterOptions,
   FlatList,
   Fonts,
-  Google,
   HTML,
   Icons,
   Images,

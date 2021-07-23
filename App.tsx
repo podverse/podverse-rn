@@ -16,7 +16,6 @@ import { determineFontScaleMode } from './src/resources/Fonts'
 import { GlobalTheme } from './src/resources/Interfaces'
 import Router from './src/Router'
 import { downloadCategoriesList } from './src/services/category'
-import { gaInitialize } from './src/services/googleAnalytics'
 import { pauseDownloadingEpisodesAll } from './src/state/actions/downloads'
 import initialState from './src/state/initialState'
 import { darkTheme, lightTheme } from './src/styles'
@@ -63,7 +62,6 @@ class App extends Component<Props, State> {
     await this.checkAppVersion()
     await this.setupGlobalState(globalTheme)
     this.unsubscribeNetListener = NetInfo.addEventListener(this.handleNetworkChange)
-    await gaInitialize()
   }
 
   componentWillUnmount() {

@@ -1,36 +1,50 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
+import { convertSecToHHMMSS, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, TextInput } from './'
 
 type Props = {
-  handleChangeText: any
+  editable?: boolean
+  handleChangeText?: any
   handleSubmitEditing?: any
+  isHHMMSS?: boolean
   isSmallText?: boolean
   selectedNumber?: number | string | null
   subText?: string
   testID: string
   text: string
+  textInputOnPress?: any
+  textInputStyle?: any
 }
 
 export const NumberSelectorWithText = (props: Props) => {
-  const { handleChangeText, handleSubmitEditing, isSmallText, selectedNumber = 0, subText, testID, text } = props
+  const { editable, handleChangeText, handleSubmitEditing, isHHMMSS, isSmallText,
+    selectedNumber = 0, subText, testID, text, textInputOnPress, textInputStyle = {} } = props
   const [globalTheme] = useGlobal('globalTheme')
-  const strNum = Number.isInteger(selectedNumber) ? selectedNumber.toString() : selectedNumber
+
+  let strNum = ''
+  const parsedNumber =
+    typeof selectedNumber === 'string' ? parseInt(selectedNumber, 10) : selectedNumber
+  if (parsedNumber || parsedNumber === 0) {
+    strNum = isHHMMSS ? convertSecToHHMMSS(parsedNumber) : parsedNumber.toString()
+  }
+
   return (
     <View style={styles.outerWrapper}>
       <View style={styles.innerWrapper}>
         <TextInput
           autoCompleteType='off'
+          editable={editable}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           keyboardType='numeric'
           onChangeText={handleChangeText}
+          onPress={textInputOnPress}
           onSubmitEditing={handleSubmitEditing}
           placeholderTextColor={globalTheme.placeholderText.color}
           returnKeyType='done'
-          style={styles.textInput}
+          style={[styles.textInput, textInputStyle]}
           testID={testID}
           value={strNum}
           wrapperStyle={{ marginBottom: 0 }}

@@ -6,7 +6,6 @@ import Dialog from 'react-native-dialog'
 import React from 'reactn'
 import {
   ActivityIndicator,
-  AddByRSSPodcastAuthModal,
   Divider,
   FlatList,
   PlayerEvents,
@@ -29,7 +28,7 @@ import PVEventEmitter from '../services/eventEmitter'
 import { checkIdlePlayerState, PVTrackPlayer, updateTrackPlayerCapabilities,
   updateUserPlaybackPosition } from '../services/player'
   import { getPodcast, getPodcasts } from '../services/podcast'
-  import { trackPageView } from '../services/tracking'
+  import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
   import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
   import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
   import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
@@ -111,10 +110,19 @@ export class PodcastsScreen extends React.Component<Props, State> {
     })
 
   async componentDidMount() {
+    const { navigation } = this.props
     Linking.addEventListener('url', this._handleOpenURLEvent)
     AppState.addEventListener('change', this._handleAppStateChange)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
+    PVEventEmitter.on(PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    PVEventEmitter.on(PV.Events.TRACKING_TERMS_ACKNOWLEDGED, this._handleTrackingTermsAcknowledged)
+
+    const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
+    if (!trackingConsentAcknowledged) {
+      await navigation.navigate(PV.RouteNames.TrackingConsentScreen)
+    }
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
@@ -128,8 +136,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         if (!Config.DISABLE_CRASH_LOGS) {
           await AsyncStorage.setItem(PV.Keys.ERROR_REPORTING_ENABLED, 'TRUE')
         }
-
-        this.setState({ showDataSettingsConfirmDialog: true })
       } else {
         this._initializeScreenData()
       }
@@ -149,6 +155,16 @@ export class PodcastsScreen extends React.Component<Props, State> {
     Linking.removeEventListener('url', this._handleOpenURLEvent)
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.removeListener(PV.Events.LNPAY_WALLET_INFO_SHOULD_UPDATE, updateWalletInfo)
+    PVEventEmitter.removeListener(
+      PV.Events.ADD_BY_RSS_AUTH_SCREEN_SHOW, this._handleNavigateToAddPodcastByRSSAuthScreen)
+  }
+
+  _handleTrackingTermsAcknowledged = async () => {
+    const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
+    if (!trackingConsentAcknowledged) {
+      await setTrackingConsentAcknowledged()
+      this.setState({ showDataSettingsConfirmDialog: true })
+    }
   }
 
   _handleAppStateChange = (nextAppState: any) => {
@@ -202,6 +218,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
   // but required to work in production (??? unconfirmed).
   _handleOpenURLEvent = (event: any) => {
     if (event) this._handleOpenURL(event.url)
+  }
+
+  _handleNavigateToAddPodcastByRSSAuthScreen = (params: any) => {
+    const { feedUrl } = params
+    this.props.navigation.navigate(PV.RouteNames.AddPodcastByRSSAuthScreen, { feedUrl })
   }
 
   // On some Android devices, the .goBack method appears to not work reliably
@@ -751,7 +772,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
           />
         </Dialog.Container>
         <PurchaseListener navigation={navigation} />
-        <AddByRSSPodcastAuthModal navigation={navigation} />
       </View>
     )
   }

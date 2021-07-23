@@ -12,6 +12,7 @@ export const initializeSettings = async () => {
   const customWebDomain = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN)
   const customWebDomainEnabled = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED)
   const errorReportingEnabled = await AsyncStorage.getItem(PV.Keys.ERROR_REPORTING_ENABLED)
+  const listenTrackingEnabled = await AsyncStorage.getItem(PV.Keys.TRACKING_ENABLED)
   const urlsAPI = await PV.URLs.api()
   const urlsWeb = await PV.URLs.web()
 
@@ -30,6 +31,7 @@ export const initializeSettings = async () => {
     customWebDomain: customWebDomain ? customWebDomain : PV.URLs.webDefaultBaseUrl,
     customWebDomainEnabled: customWebDomainEnabled === 'TRUE',
     errorReportingEnabled,
+    listenTrackingEnabled,
     offlineModeEnabled,
     urlsAPI,
     urlsWeb
