@@ -96,5 +96,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <key>NSUserTrackingUsageDescription</key>
+	<string>$(PRODUCT_NAME) requires your permission to enable tracking.</string>
 </dict>
 </plist>
