@@ -39,13 +39,14 @@ import { checkIdlePlayerState, PVTrackPlayer, updateTrackPlayerCapabilities,
     initPlayerState,
     showMiniPlayer,
     updatePlaybackState,
-  updatePlayerState
-} from '../state/actions/player'
-import { combineWithAddByRSSPodcasts,
-  getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
-import { initializeSettings } from '../state/actions/settings'
-import { initializeValueProcessor } from '../state/actions/valueTag'
-import { core, darkTheme } from '../styles'
+    updatePlayerState
+  } from '../state/actions/player'
+  import { combineWithAddByRSSPodcasts,
+    getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
+    import { initializeSettings } from '../state/actions/settings'
+    import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
+    import { initializeValueProcessor } from '../state/actions/valueTag'
+    import { core, darkTheme } from '../styles'
 
 type Props = {
   navigation?: any
@@ -172,6 +173,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
       if (nextAppState === 'active' && !isInitialLoad) {
         const { nowPlayingItem: lastItem } = this.global.player
         const currentItem = await getNowPlayingItemLocally()
+
+        if (Platform.OS === 'ios') {
+          checkIfTrackingIsEnabled()
+        }
   
         if (!lastItem || (lastItem && currentItem && currentItem.episodeId !== lastItem.episodeId)) {
           updatePlayerState(currentItem)
