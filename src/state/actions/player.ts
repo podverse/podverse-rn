@@ -31,11 +31,13 @@ import {
 import { getQueueItems } from '../../state/actions/queue'
 import { clearChapterPlaybackInfo, loadChapterPlaybackInfo, loadChaptersForNowPlayingItem } from './playerChapters'
 
-const clearChaptersIfNewEpisode = async (previousNowPlayingItem: NowPlayingItem, nowPlayingItem: NowPlayingItem) => {
+const clearEnrichedPodcastDataIfNewEpisode =
+ async (previousNowPlayingItem: NowPlayingItem, nowPlayingItem: NowPlayingItem) => {
   const shouldClearPreviousPlaybackInfo =
     previousNowPlayingItem && previousNowPlayingItem.episodeId !== nowPlayingItem.episodeId
   if (shouldClearPreviousPlaybackInfo) {
     await clearChapterPlaybackInfo()
+    setGlobal({ podcastValueFinal: null })
   }
 }
 
@@ -162,8 +164,7 @@ export const loadItemAndPlayTrack = async (
 
   if (item) {
     const { nowPlayingItem: previousNowPlayingItem } = globalState.player
-
-    await clearChaptersIfNewEpisode(previousNowPlayingItem, item)
+    await clearEnrichedPodcastDataIfNewEpisode(previousNowPlayingItem, item)
 
     item.clipId
       ? await AsyncStorage.setItem(PV.Keys.PLAYER_CLIP_IS_LOADED, 'TRUE')
@@ -225,27 +226,25 @@ const enrichParsedTranscript = (item: NowPlayingItem) => {
   })
 }
 
-const enrichPodcastValue = (item: NowPlayingItem) => {
+const enrichPodcastValue = async (item: NowPlayingItem) => {
   if (!Config.ENABLE_VALUE_TAG_TRANSACTIONS) return
 
-  setGlobal({ podcastValueFinal: null }, async () => {
-    if (
-      item?.episodeValue?.length
-      || item?.episodeValue?.recipients?.length
-      || item?.podcastValue?.length
-      || item?.podcastValue?.recipients?.length
-    ) {
+  if (
+    item?.episodeValue?.length
+    || item?.episodeValue?.recipients?.length
+    || item?.podcastValue?.length
+    || item?.podcastValue?.recipients?.length
+  ) {
+    PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
+  } else if (item.podcastIndexPodcastId) {
+    const podcastIndexPodcast = await getPodcastFromPodcastIndexById(item.podcastIndexPodcastId)
+    const podcastIndexPodcastValueTag = podcastIndexPodcast?.feed?.value
+    if (podcastIndexPodcastValueTag?.model && podcastIndexPodcastValueTag?.destinations) {
+      const podcastValue = convertPodcastIndexValueTagToStandardValueTag(podcastIndexPodcastValueTag)
       PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
-    } else if (item.podcastIndexPodcastId) {
-      const podcastIndexPodcast = await getPodcastFromPodcastIndexById(item.podcastIndexPodcastId)
-      const podcastIndexPodcastValueTag = podcastIndexPodcast?.feed?.value
-      if (podcastIndexPodcastValueTag?.model && podcastIndexPodcastValueTag?.destinations) {
-        const podcastValue = convertPodcastIndexValueTagToStandardValueTag(podcastIndexPodcastValueTag)
-        PVEventEmitter.emit(PV.Events.PLAYER_VALUE_ENABLED_ITEM_LOADED)
-        setGlobal({ podcastValueFinal: podcastValue })
-      }
+      setGlobal({ podcastValueFinal: podcastValue })
     }
-  })
+  }
 }
 
 export const setPlaybackSpeed = async (rate: number) => {
