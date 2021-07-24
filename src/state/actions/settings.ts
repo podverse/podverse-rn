@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import Config from 'react-native-config'
 import { setGlobal } from 'reactn'
 import { PV } from '../../resources'
+import { checkIfTrackingIsEnabled } from '../../services/tracking'
 import { removeLNPayWallet } from './lnpay'
 
 export const initializeSettings = async () => {
@@ -12,7 +13,7 @@ export const initializeSettings = async () => {
   const customWebDomain = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN)
   const customWebDomainEnabled = await AsyncStorage.getItem(PV.Keys.CUSTOM_WEB_DOMAIN_ENABLED)
   const errorReportingEnabled = await AsyncStorage.getItem(PV.Keys.ERROR_REPORTING_ENABLED)
-  const listenTrackingEnabled = await AsyncStorage.getItem(PV.Keys.TRACKING_ENABLED)
+  const listenTrackingEnabled = await checkIfTrackingIsEnabled()
   const urlsAPI = await PV.URLs.api()
   const urlsWeb = await PV.URLs.web()
 

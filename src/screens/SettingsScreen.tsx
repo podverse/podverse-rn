@@ -39,7 +39,6 @@ import {
   setCustomAPIDomainEnabled,
   setCustomWebDomainEnabled,
   setErrorReportingEnabled,
-  setListenTrackingEnabled,
   setOfflineModeEnabled
 } from '../state/actions/settings'
 import { clearHistoryItems } from '../state/actions/userHistoryItem'
