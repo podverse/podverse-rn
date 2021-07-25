@@ -10,6 +10,7 @@ import { trackPageView } from '../services/tracking'
 import { setTrackingEnabled } from '../state/actions/tracking'
 
 type Props = {
+  iOSIsInitialPrompt?: boolean
   navigation?: any
 }
 
@@ -35,6 +36,9 @@ ${translate('trackingTermsText4')}
 </h6>
 <h6>
 ${translate('trackingTermsText5')}
+</h6>
+<h6>
+${translate('trackingTermsText6')}
 </h6>
 `
 
@@ -102,13 +106,23 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
   render() {
     const { iOSAlreadyDetermined } = this.state
 
+    let topButtonText = ''
+    const isIOSInitialPrompt = Platform.OS === 'ios' && !iOSAlreadyDetermined
+    if (iOSAlreadyDetermined) {
+      topButtonText = translate('Go to Settings')
+    } else if (Platform.OS === 'ios') {
+      topButtonText = translate('Next')
+    } else {
+      topButtonText = translate('Yes enable tracking')
+    }
+
     return (
       <SafeAreaView {...testProps(`${testIDPrefix}_view`)}>
         <View style={styles.view}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={styles.header}>
-            {translate('Enable Analytics')}
+            {translate('Analytics Tracking')}
           </Text>
           <HTMLScrollView
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -117,17 +131,21 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
           />
           <Button
             onPress={iOSAlreadyDetermined ? this._goToSettings : this._enableTracking}
-            testID={iOSAlreadyDetermined ? `${testIDPrefix}_go_to_settings` : `${testIDPrefix}_yes_enable_tracking`}
-            text={iOSAlreadyDetermined ? translate('Go to Settings') : translate('Yes enable tracking')}
+            testID={`${testIDPrefix}_top_button`}
+            text={topButtonText}
             wrapperStyles={styles.button}
           />
-          <Button
-            isTransparent
-            onPress={iOSAlreadyDetermined ? this._handleDismiss : this._disableTracking}
-            testID={iOSAlreadyDetermined ? `${testIDPrefix}_back` : `${testIDPrefix}_no_thanks`}
-            text={iOSAlreadyDetermined ? translate('Back') : translate('No thanks')}
-            wrapperStyles={styles.button}
-          />
+          {
+            !isIOSInitialPrompt && (
+              <Button
+                isTransparent
+                onPress={iOSAlreadyDetermined ? this._handleDismiss : this._disableTracking}
+                testID={`${testIDPrefix}_bottom_button`}
+                text={iOSAlreadyDetermined ? translate('Back') : translate('No thanks')}
+                wrapperStyles={styles.button}
+              />
+            )
+          }
         </View>
       </SafeAreaView>
     )
