@@ -1,6 +1,6 @@
 {
   "name": "podverse",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "private": true,
   "contributors": [
     "Creon Creonopoulos",
@@ -96,6 +96,7 @@
     "react-native-system-setting": "1.7.5",
     "react-native-text-ticker": "^1.11.0",
     "react-native-track-player": "1.2.6",
+    "react-native-tracking-transparency": "0.1.1",
     "react-native-vector-icons": "6.7.0",
     "react-native-webview": "11.0.0",
     "react-native-xml2js": "^1.0.3",
@@ -160,4 +161,3 @@
   },
   "isSwift": true
 }
-

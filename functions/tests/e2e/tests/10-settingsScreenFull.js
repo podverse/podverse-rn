@@ -12,10 +12,13 @@ const test10_settingsScreenFull = async () => {
   await elementByIdToggle('settings_screen_only_allow_downloading_when_connected_to_wifi_switch')
   await elementByIdToggle('settings_screen_offline_mode_switch')
   await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
-  await elementByIdClick('settings_screen_listen_tracking_switch')
-  await elementByIdClick('tracking_consent_screen_yes_enable_tracking_button')
-  await elementByIdClick('settings_screen_listen_tracking_switch')
-  await elementByIdClick('tracking_consent_screen_no_thanks_button')
+
+  if (process.env.DEVICE_TYPE !== 'F-Droid') {
+    await elementByIdClick('settings_screen_listen_tracking_switch')
+    await elementByIdClick('tracking_consent_screen_yes_enable_tracking_button')
+    await elementByIdClick('settings_screen_listen_tracking_switch')
+    await elementByIdClick('tracking_consent_screen_no_thanks_button')
+  }
 
   await performScroll(scrollDownKey, 2)
   await elementByIdClick('settings_screen_limit_the_number_of_downloaded_episodes_switch')

@@ -1,4 +1,5 @@
-import { StyleSheet, View as RNView } from 'react-native'
+import { Linking, Platform, StyleSheet, View as RNView } from 'react-native'
+import { getTrackingStatus } from 'react-native-tracking-transparency'
 import React from 'reactn'
 import { Button, HTMLScrollView, SafeAreaView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
@@ -9,7 +10,12 @@ import { trackPageView } from '../services/tracking'
 import { setTrackingEnabled } from '../state/actions/tracking'
 
 type Props = {
+  iOSIsInitialPrompt?: boolean
   navigation?: any
+}
+
+type State = {
+  iOSAlreadyDetermined: boolean
 }
 
 const testIDPrefix = 'tracking_consent_screen'
@@ -31,11 +37,18 @@ ${translate('trackingTermsText4')}
 <h6>
 ${translate('trackingTermsText5')}
 </h6>
+<h6>
+${translate('trackingTermsText6')}
+</h6>
 `
 
-export class TrackingConsentScreen extends React.Component<Props> {
+export class TrackingConsentScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
+
+    this.state = {
+      iOSAlreadyDetermined: false
+    }
   }
 
   static navigationOptions = () => {
@@ -46,32 +59,70 @@ export class TrackingConsentScreen extends React.Component<Props> {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    if (Platform.OS === 'ios') {
+      const trackingStatus = await getTrackingStatus()
+      if (trackingStatus !== 'not-determined') {
+        this.setState({ iOSAlreadyDetermined: true })
+      }
+    }
     trackPageView('/tracking-consent-screen', 'Tracking Consent Screen')
   }
 
   _enableTracking = async () => {
+    if (Platform.OS === 'ios') {
+      const trackingStatus = await getTrackingStatus()
+      if (trackingStatus === 'not-determined') {
+        await setTrackingEnabled()
+      }
+    } else {
+      await setTrackingEnabled(true)
+    }
+
     const { navigation } = this.props
     navigation.dismiss()
-    await setTrackingEnabled(true)
     PVEventEmitter.emit(PV.Events.TRACKING_TERMS_ACKNOWLEDGED)
   }
 
-  _disableTracking = async () => {
+  _disableTracking = async () => {    
+    if (Platform.OS !== 'ios') {
+      await setTrackingEnabled(false)
+    }
+
     const { navigation } = this.props
     navigation.dismiss()
-    await setTrackingEnabled(false)
     PVEventEmitter.emit(PV.Events.TRACKING_TERMS_ACKNOWLEDGED)
+  }
+
+  _goToSettings = () => {
+    Linking.openSettings()
+  }
+
+  _handleDismiss = () => {
+    const { navigation } = this.props
+    navigation.dismiss()
   }
 
   render() {
+    const { iOSAlreadyDetermined } = this.state
+
+    let topButtonText = ''
+    const isIOSInitialPrompt = Platform.OS === 'ios' && !iOSAlreadyDetermined
+    if (iOSAlreadyDetermined) {
+      topButtonText = translate('Go to Settings')
+    } else if (Platform.OS === 'ios') {
+      topButtonText = translate('Next')
+    } else {
+      topButtonText = translate('Yes enable tracking')
+    }
+
     return (
       <SafeAreaView {...testProps(`${testIDPrefix}_view`)}>
         <View style={styles.view}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={styles.header}>
-            {translate('Enable Analytics')}
+            {translate('Analytics Tracking')}
           </Text>
           <HTMLScrollView
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -79,18 +130,22 @@ export class TrackingConsentScreen extends React.Component<Props> {
             style={styles.scrollView}
           />
           <Button
-            onPress={this._enableTracking}
-            testID={`${testIDPrefix}_yes_enable_tracking`}
-            text={translate('Yes enable tracking')}
+            onPress={iOSAlreadyDetermined ? this._goToSettings : this._enableTracking}
+            testID={`${testIDPrefix}_top_button`}
+            text={topButtonText}
             wrapperStyles={styles.button}
           />
-          <Button
-            isTransparent
-            onPress={this._disableTracking}
-            testID={`${testIDPrefix}_no_thanks`}
-            text={translate('No thanks')}
-            wrapperStyles={styles.button}
-          />
+          {
+            !isIOSInitialPrompt && (
+              <Button
+                isTransparent
+                onPress={iOSAlreadyDetermined ? this._handleDismiss : this._disableTracking}
+                testID={`${testIDPrefix}_bottom_button`}
+                text={iOSAlreadyDetermined ? translate('Back') : translate('No thanks')}
+                wrapperStyles={styles.button}
+              />
+            )
+          }
         </View>
       </SafeAreaView>
     )

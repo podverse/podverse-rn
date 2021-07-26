@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 import AsyncStorage from '@react-native-community/async-storage'
+import { Platform } from 'react-native'
+import { getTrackingStatus, requestTrackingPermission } from 'react-native-tracking-transparency'
 import { PV } from '../resources'
 import { matomoTrackPageView } from './matomo'
 
@@ -12,15 +14,30 @@ export const setTrackingConsentAcknowledged = async () => {
 }
 
 export const checkIfTrackingIsEnabled = async () => {
-  return AsyncStorage.getItem(PV.Keys.TRACKING_ENABLED)
+  if (Platform.OS === 'ios') {
+    const trackingStatus = await getTrackingStatus()
+    return trackingStatus === 'authorized'
+  } else {
+    return AsyncStorage.getItem(PV.Keys.TRACKING_ENABLED)
+  }
 }
 
-export const setTrackingEnabled = async (isEnabled: boolean) => {
-  if (isEnabled) {
-    await AsyncStorage.setItem(PV.Keys.TRACKING_ENABLED, 'true')
+export const setTrackingEnabled = async (isEnabled?: boolean) => {
+  let finalIsEnabled = false
+
+  if (Platform.OS === 'ios') {
+    const trackingStatus = await requestTrackingPermission()
+    finalIsEnabled = trackingStatus === 'authorized'
   } else {
-    await AsyncStorage.removeItem(PV.Keys.TRACKING_ENABLED)
+    if (isEnabled) {
+      await AsyncStorage.setItem(PV.Keys.TRACKING_ENABLED, 'true')
+      finalIsEnabled = true
+    } else {
+      await AsyncStorage.removeItem(PV.Keys.TRACKING_ENABLED)
+    }
   }
+
+  return finalIsEnabled
 }
 
 export const trackPageView = async (path: string, title: string, titleToEncode?: string) => {

@@ -96,5 +96,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <key>NSUserTrackingUsageDescription</key>
+	<string>$(PRODUCT_NAME) requests your permission to enable tracking so your app interactions can affect the popularity rankings on Podverse.</string>
 </dict>
 </plist>
