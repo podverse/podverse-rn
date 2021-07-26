@@ -2,8 +2,8 @@ const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { clearTextField, sendKeysToElementById } = require('../driver/helpers/sendKeys')
 
-const test07_podcastScreenFull = async () => {
-  console.log('07_podcastScreenFull')
+const test_podcastScreenFull = async () => {
+  console.log('_Podcast Screen Full_')
   const driver = getDriver()
 
   //Login
@@ -53,5 +53,5 @@ const test07_podcastScreenFull = async () => {
 }
 
 module.exports = {
-  test07_podcastScreenFull
+  test_podcastScreenFull
 }

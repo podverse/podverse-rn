@@ -1,7 +1,7 @@
 const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick, elementByIdHasText, elementByIdToggle, elementCheckIfNotPresent, goBackKey, noTestLabel } = require('../driver/helpers/elements')
-const test09_clipsScreenFull = async () => {
-  console.log('09_clipsScreenFull')
+const test_clipsScreenFull = async () => {
+  console.log('_Clips Screen Full_')
   const driver = getDriver()
 
   await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
@@ -138,5 +138,5 @@ const test09_clipsScreenFull = async () => {
 }
 
 module.exports = {
-  test09_clipsScreenFull
+  test_clipsScreenFull
 }

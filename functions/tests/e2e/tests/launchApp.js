@@ -1,7 +1,7 @@
 const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick } = require('../driver/helpers/elements')
 
-const test01_launchApp = async () => {
+const test_launchApp = async () => {
   const driver = getDriver()
 
   if (process.env.DEVICE_TYPE !== 'F-Droid') {
@@ -14,5 +14,5 @@ const test01_launchApp = async () => {
 }
 
 module.exports = {
-  test01_launchApp
+  test_launchApp
 }

@@ -1,7 +1,7 @@
 const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick, goBackKey, noTestLabel } = require('../driver/helpers/elements')
-const test06_nonLoggedInMediaPlayer = async () => {
-  console.log('06_nonLoggedInMediaPlayer')
+const test_nonLoggedInMediaPlayer = async () => {
+  console.log('_Non Logged In Media Player_')
   const driver = getDriver()
 
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
@@ -50,5 +50,5 @@ const test06_nonLoggedInMediaPlayer = async () => {
 }
 
 module.exports = {
-  test06_nonLoggedInMediaPlayer
+  test_nonLoggedInMediaPlayer
 }

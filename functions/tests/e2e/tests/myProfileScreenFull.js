@@ -4,8 +4,8 @@ const { elementByIdAndClickAndTest, elementByIdClick, elementByIdHasText, elemen
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
 
 
-const test13_myProfileScreenFull = async () => {
-  console.log('13_myProfileScreenFull')
+const test_myProfileScreenFull = async () => {
+  console.log('_My Profile Screen Full_')
   const driver = getDriver()
   
     // Log In Premium
@@ -135,5 +135,5 @@ const test13_myProfileScreenFull = async () => {
 }
 
 module.exports = {
-  test13_myProfileScreenFull
+  test_myProfileScreenFull
 }

@@ -3,8 +3,8 @@ const { confirmAndroidAlert } = require('../driver/helpers/alerts')
 const { elementByIdAndClickAndTest, elementByIdClick, elementWaitFor, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
 const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
-const test17_LNPaySetup = async () => {
-  console.log('17_LNPaySetup')
+const test_LNPaySetup = async () => {
+  console.log('_LN Pay Setup_')
   const driver = getDriver()
 
 const publicAPIKey = process.env.TEST_LNPAY_PUBLIC_API_KEY;
@@ -45,5 +45,5 @@ const existingWalletAdminKey = process.env.TEST_LNPAY_EXISTING_WALLET_ADMIN_KEY;
 }
 
 module.exports = {
-  test17_LNPaySetup
+  test_LNPaySetup
 }
