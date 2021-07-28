@@ -92,9 +92,11 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
                 <Text style={core.headerText}>{translate('LNPay Wallet')}</Text>
                 <TextRow
                   label={`${translate('Balance')}: `}
+                  testID={`${testIDPrefix}_balance`}
                   text={`${walletSatsBalanceText} ${translate('satoshis')}`} />
                 <TextRow
                   label={`${translate('Name')}: `}
+                  testID={`${testIDPrefix}_name`}
                   text={`${walletUserLabel ? walletUserLabel : '----'}`} />
               </View>
               <View style={styles.sectionWrapper}>
