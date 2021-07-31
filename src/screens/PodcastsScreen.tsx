@@ -164,7 +164,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
     if (!trackingConsentAcknowledged) {
       await setTrackingConsentAcknowledged()
-      this.setState({ showDataSettingsConfirmDialog: true })
+      this.setState({
+        showDataSettingsConfirmDialog: true,
+        isLoading: false
+      })
     }
   }
 
