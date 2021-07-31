@@ -60,6 +60,15 @@ export const trackPageView = async (path: string, title: string, titleToEncode?:
   }
 }
 
+/* Don't track custom URLs as podcastIds or episodeIds since they could contain PII */
+export const getTrackingIdText = (id?: string) => {
+  if (id && id.indexOf('http') >= 0) {
+    return 'custom-url'
+  } else {
+    return id || 'id-missing'
+  }
+}
+
 export const trackPlayerScreenPageView = (item: any) => {
   try {
     if (item.clipId) {
