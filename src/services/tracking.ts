@@ -2,24 +2,13 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { Platform } from 'react-native'
 import { getTrackingStatus, requestTrackingPermission } from 'react-native-tracking-transparency'
-import { checkIfAsyncStorageIsEnabled } from '../lib/asyncStorage'
 import { PV } from '../resources'
 import { matomoTrackPageView } from './matomo'
 
 export const getTrackingConsentAcknowledged = async () => {
-  const asyncStorageIsEnabled = await checkIfAsyncStorageIsEnabled()
   const trackingStatus = await getTrackingStatus()
   let result
-  /* If AsyncStorage is not enabled at all, then we never want the consent screen
-     to appear on app launch, so assume it has already been acknowledged. */
-  if (!asyncStorageIsEnabled) {
-    result = true
-  }
-  /* In case AsyncStorage is available on the user's iOS device,
-     but it is not persisting data between app launches for some reason,
-     check if the tracking status has already been determined
-     using the iOS tracking API. */
-  else if (Platform.OS === 'ios' && trackingStatus !== 'not-determined') {
+  if (Platform.OS === 'ios' && trackingStatus !== 'not-determined') {
     result = true
   } else {
     result = await AsyncStorage.getItem(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED)

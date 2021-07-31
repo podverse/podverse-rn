@@ -161,7 +161,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleTrackingTermsAcknowledged = async () => {
-    const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
+    /* Get tracking terms from AsyncStorage only here so that getTrackingConsentAcknowledged does not
+       return true the first time _handleTrackingTermsAcknowledged is run on iOS */
+    const trackingConsentAcknowledged = await AsyncStorage.getItem(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED)
     if (!trackingConsentAcknowledged) {
       await setTrackingConsentAcknowledged()
       this.setState({
