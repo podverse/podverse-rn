@@ -38,7 +38,7 @@ import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRefs } from '../services/mediaRef'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { getPodcast } from '../services/podcast'
-import { trackPageView } from '../services/tracking'
+import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import * as DownloadState from '../state/actions/downloads'
 import { toggleAddByRSSPodcastFeedUrl } from '../state/actions/parser'
@@ -185,7 +185,7 @@ static navigationOptions = ({ navigation }) => {
         const titleToEncode = podcast
           ? podcast.title
           : translate('no info available')
-        trackPageView('/podcast/' + podcastId, translate('PodcastsScreen - '), titleToEncode)
+        trackPageView('/podcast/' + getTrackingIdText(podcastId), translate('PodcastsScreen - '), titleToEncode)
       }
     )
   }
@@ -723,7 +723,7 @@ static navigationOptions = ({ navigation }) => {
         )}
         {!showSettings && (
           <View style={styles.view}>
-            {isLoading && <ActivityIndicator fillSpace />}
+            {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
             {!isLoading && flatListData && podcast && (
               <FlatList
                 data={flatListData}

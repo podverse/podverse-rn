@@ -155,7 +155,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
             />
           </View>
         ) : (
-          <ActivityIndicator fillSpace />
+          <ActivityIndicator fillSpace testID={testIDPrefix} />
         )}
       </View>
     )

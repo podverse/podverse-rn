@@ -77,7 +77,7 @@ export const MessageWithAction = (props: Props) => {
           wrapperStyles={[styles.button, styles.bottomButton]}
         />
       )}
-      {isLoading && <ActivityIndicator fillSpace />}
+      {isLoading && <ActivityIndicator fillSpace testID={testID} />}
     </SafeAreaView>
   )
 }

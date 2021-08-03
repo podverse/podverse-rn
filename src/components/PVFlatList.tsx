@@ -54,6 +54,7 @@ export const PVFlatList = (props: Props) => {
     disableLeftSwipe = true,
     disableNoResultsMessage,
     extraData,
+    getItemLayout,
     handleNoResultsBottomAction,
     handleNoResultsMiddleAction,
     handleNoResultsTopAction,
@@ -62,6 +63,7 @@ export const PVFlatList = (props: Props) => {
     ItemSeparatorComponent,
     keyExtractor,
     ListHeaderComponent,
+    listRef,
     noResultsBottomActionText,
     noResultsMessage,
     noResultsMiddleActionText,
@@ -77,9 +79,7 @@ export const PVFlatList = (props: Props) => {
     showNoInternetConnectionMessage,
     stickySectionHeadersEnabled,
     testID,
-    transparent,
-    listRef,
-    getItemLayout
+    transparent
   } = props
 
   const [globalTheme] = useGlobal('globalTheme')
@@ -129,7 +129,7 @@ export const PVFlatList = (props: Props) => {
             if (isLoadingMore && !isEndOfResults) {
               return (
                 <View style={[styles.isLoadingMoreCell, globalTheme.tableCellBorder]} transparent={transparent}>
-                  <ActivityIndicator />
+                  <ActivityIndicator testID={testID} />
                 </View>
               )
             } else if (!isLoadingMore && !isEndOfResults) {

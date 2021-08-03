@@ -122,12 +122,14 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
     if (!trackingConsentAcknowledged) {
+      console.log('await navigation.navigate(PV.RouteNames.TrackingConsentScreen)')
       await navigation.navigate(PV.RouteNames.TrackingConsentScreen)
     }
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
       if (!appHasLaunched) {
+        console.log('!appHasLaunched')
         await AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
         await AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5')
@@ -137,7 +139,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         if (!Config.DISABLE_CRASH_LOGS) {
           await AsyncStorage.setItem(PV.Keys.ERROR_REPORTING_ENABLED, 'TRUE')
         }
+        this.setState({ isLoading: false })
       } else {
+        console.log('appHasLaunched')
         this._initializeScreenData()
       }
     } catch (error) {
@@ -161,10 +165,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleTrackingTermsAcknowledged = async () => {
-    const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
+    /* Get tracking terms from AsyncStorage only here so that getTrackingConsentAcknowledged does not
+       return true the first time _handleTrackingTermsAcknowledged is run on iOS */
+    const trackingConsentAcknowledged = await AsyncStorage.getItem(PV.Keys.TRACKING_TERMS_ACKNOWLEDGED)
     if (!trackingConsentAcknowledged) {
       await setTrackingConsentAcknowledged()
-      this.setState({ showDataSettingsConfirmDialog: true })
+      this.setState({
+        showDataSettingsConfirmDialog: true,
+        isLoading: false
+      })
     }
   }
 
@@ -733,7 +742,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             selectedSortLabel={selectedSortLabel}
             testID={testIDPrefix}
           />
-          {isLoading && <ActivityIndicator fillSpace />}
+          {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
           {!isLoading && queryFrom && (
             <FlatList
               data={flatListData}

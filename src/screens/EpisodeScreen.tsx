@@ -17,7 +17,7 @@ import { hasValidNetworkConnection } from '../lib/network'
 import { replaceLinebreaksWithBrTags, testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
-import { trackPageView } from '../services/tracking'
+import { getTrackingIdText, trackPageView } from '../services/tracking'
 import { getHistoryItemIndexInfoForEpisode } from '../services/userHistoryItem'
 import { retriveNowPlayingItemChapters } from '../state/actions/playerChapters'
 import { core } from '../styles'
@@ -111,7 +111,8 @@ export class EpisodeScreen extends React.Component<Props, State> {
     const titleToEncode = episode?.podcast
       ? episode.podcast.title + ' - ' + episodeTitle
       : translate('no info available')
-    trackPageView('/episode/' + episodeId, translate('Episode Screen - '), titleToEncode)
+
+    trackPageView('/episode/' + getTrackingIdText(episodeId), translate('Episode Screen - '), titleToEncode)
   }
 
   async _initializePageData() {

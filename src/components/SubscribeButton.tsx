@@ -1,10 +1,9 @@
 import React from 'react'
-import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native'
-import { useGlobal } from 'reactn'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import { translate } from '../lib/i18n'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { Text, View } from './'
+import { ActivityIndicator, Text, View } from './'
 
 type Props = {
   handleToggleSubscribe: any
@@ -16,10 +15,9 @@ type Props = {
 
 export const SubscribeButton = (props: Props) => {
   const { handleToggleSubscribe, isSubscribed, isSubscribing, testID } = props
-  const [globalTheme] = useGlobal('globalTheme')
 
   const buttonTitle = isSubscribed ? translate('Unsubscribe') : translate('Subscribe')
-  const testId = isSubscribed ? `${testID}_is_subscribed` : `${testID}_is_not_subscribed`
+  const buttonTextTestId = isSubscribed ? `${testID}_is_subscribed` : `${testID}_is_not_subscribed`
 
   return (
     <TouchableOpacity
@@ -35,14 +33,14 @@ export const SubscribeButton = (props: Props) => {
       <View>
         {isSubscribing && (
           <View style={styles.activityIndicator}>
-            <ActivityIndicator animating color={globalTheme.activityIndicator.color} size='small' />
+            <ActivityIndicator size='small' testID={testID} />
           </View>
         )}
         {!isSubscribing && (
           <Text
             fontSizeLargerScale={PV.Fonts.largeSizes.md}
             fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-            testID={testId}
+            testID={buttonTextTestId}
             style={styles.buttonText}>
             {buttonTitle.toUpperCase()}
           </Text>

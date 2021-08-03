@@ -246,7 +246,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           <SortableList
             data={sortableListData} isEditing={isEditing} onDragEnd={this._onDragEnd} renderItem={this._renderRow} />
         )}
-        {(isLoading || isRemoving || isUpdating) && <ActivityIndicator isOverlay />}
+        {(isLoading || isRemoving || isUpdating) && <ActivityIndicator isOverlay testID={testIDPrefix} />}
       </View>
     )
   }

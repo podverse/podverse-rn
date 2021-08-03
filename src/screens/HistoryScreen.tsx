@@ -219,7 +219,12 @@ export class HistoryScreen extends React.Component<Props, State> {
             transparent={isTransparent}
           />
         )}
-        {(isLoading || isRemoving) && <ActivityIndicator isOverlay={isRemoving} styles={styles.activityIndicator} />}
+        {(isLoading || isRemoving) && (
+          <ActivityIndicator
+            isOverlay={isRemoving}
+            styles={styles.activityIndicator}
+            testID={testIDPrefix} />
+        )}
       </View>
     )
 

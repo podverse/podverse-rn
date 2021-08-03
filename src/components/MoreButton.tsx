@@ -31,7 +31,7 @@ export const MoreButton = (props: Props) => {
         </View>
       ) : (
         <View style={[styles.activityWrapper]}>
-          <ActivityIndicator onPress={handleMorePress} styles={[styles.activityIndicator]} />
+          <ActivityIndicator onPress={handleMorePress} styles={[styles.activityIndicator]} testID={testID} />
         </View>
       )}
     </TouchableOpacity>

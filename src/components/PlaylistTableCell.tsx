@@ -65,7 +65,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
             )}
           </RNView>
           <RNView style={styles.wrapperRight}>
-            {isSaving && <ActivityIndicator styles={styles.activityIndicator} />}
+            {isSaving && <ActivityIndicator styles={styles.activityIndicator} testID={testID} />}
           </RNView>
         </View>
       </TouchableWithoutFeedback>
