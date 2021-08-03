@@ -27,7 +27,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
       playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
       playButtonAdjust = {}
     } else if (checkIfStateIsBuffering(playbackState)) {
-      playButtonIcon = <ActivityIndicator />
+      playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
     }
 

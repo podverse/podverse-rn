@@ -234,7 +234,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
     const playlistTitle = playlist?.title || translate('Untitled Playlist')
     
     return (
-      <View style={styles.view} {...testProps('playlist_screen_view')}>
+      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
         <PlaylistTableHeader
           createdBy={ownerName}
           handleEditPress={isLoggedInUserPlaylist ? this._handleEditPress : null}
@@ -249,7 +249,7 @@ export class PlaylistScreen extends React.Component<Props, State> {
           testID={testIDPrefix}
           title={playlistTitle}
         />
-        {isLoading && <ActivityIndicator fillSpace />}
+        {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && flatListData && (
           <FlatList
             data={flatListData}

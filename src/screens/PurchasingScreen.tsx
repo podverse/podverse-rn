@@ -12,6 +12,8 @@ type Props = {
   navigation?: any
 }
 
+const testIDPrefix = 'purchasing_screen'
+
 export class PurchasingScreen extends React.Component<Props> {
   constructor(props: Props) {
     super(props)
@@ -49,10 +51,10 @@ export class PurchasingScreen extends React.Component<Props> {
     const { isLoading, message, showContactSupportLink, showDismissLink, showRetryLink, title } = purchase
 
     return (
-      <SafeAreaView style={styles.safeAreaView} {...testProps('purchasing_screen_view')}>
+      <SafeAreaView style={styles.safeAreaView} {...testProps(`${testIDPrefix}_view`)}>
         <View style={styles.view}>
           <Text style={[globalTheme.text, styles.title]}>{title}</Text>
-          {!!isLoading && <ActivityIndicator styles={styles.activityIndicator} />}
+          {!!isLoading && <ActivityIndicator styles={styles.activityIndicator} testID={testIDPrefix} />}
           {!!message && <Text style={[globalTheme.text, styles.message]}>{message}</Text>}
           {!isLoading && showRetryLink && (
             <TouchableOpacity onPress={this._handleRetryProcessing}>

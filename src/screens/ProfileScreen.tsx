@@ -498,7 +498,7 @@ export class ProfileScreen extends React.Component<Props, State> {
     const showOfflineMessage = offlineModeEnabled
 
     return (
-      <View style={styles.view} {...testProps('profile_screen_view')}>
+      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
         {isMyProfile && !isLoggedIn && (
           <MessageWithAction
             topActionHandler={this._onPressLogin}
@@ -532,7 +532,7 @@ export class ProfileScreen extends React.Component<Props, State> {
               selectedSortLabel={selectedSortLabel}
               testID={testIDPrefix}
             />
-            {isLoading && <ActivityIndicator fillSpace />}
+            {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
             {!isLoading && viewType && flatListData && (
               <FlatList
                 data={flatListData}
