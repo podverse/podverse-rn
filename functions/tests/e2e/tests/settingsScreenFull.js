@@ -3,8 +3,8 @@ const { confirmAndroidAlert } = require('../driver/helpers/alerts')
 const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
 
-const test10_settingsScreenFull = async () => {
-  console.log('10_settingsScreenFull')
+const test_settingsScreenFull = async () => {
+  console.log('_Settings Screen Full_')
   const driver = getDriver()
 
   await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
@@ -33,5 +33,5 @@ const test10_settingsScreenFull = async () => {
 }
 
 module.exports = {
-  test10_settingsScreenFull
+  test_settingsScreenFull
 }

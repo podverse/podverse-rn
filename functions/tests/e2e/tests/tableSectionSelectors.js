@@ -2,8 +2,8 @@ const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick, elementCheckIfNotPresent, elementByIdHasText, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 
 
-const test05_tableSectionSelectors = async () => {
-  console.log('05_tableSectionSelectors')
+const test_tableSectionSelectors = async () => {
+  console.log('_Table Section Selectors_')
   const driver = getDriver()
 
   await elementByIdHasText('podcasts_screen_dropdown_button_text', 'A-Z')
@@ -98,5 +98,5 @@ const test05_tableSectionSelectors = async () => {
 }
 
 module.exports = {
-  test05_tableSectionSelectors
+  test_tableSectionSelectors
 }
