@@ -8039,7 +8039,7 @@ react-native-track-player@1.2.6:
   resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-1.2.6.tgz#f934b64d59cbe0241a5008ae97caa0bcf2354983"
   integrity sha512-o8jSJVIj7WVnsGIFgVeCyS0+Y75t2dkvhgA33jAid/JxLEoaL33KhDZ/O3FIB0VhovfTNqrOAw5zFzUYDkBC8A==
 
-react-native-tracking-transparency@^0.1.1:
+react-native-tracking-transparency@0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/react-native-tracking-transparency/-/react-native-tracking-transparency-0.1.1.tgz#6426d4c826d0deaed7ed32f707cb2d15b09c3c3f"
   integrity sha512-yGzpprmZ7dnlScegpoq1uQLuMLR2yDcFVHKF39FB0hxUBmck3G0bKSIbjj1ienM9IgjPvJQPgvG0dX9asyZ7NA==
@@ -9455,9 +9455,9 @@ tar-stream@^2.1.0:
     readable-stream "^3.1.1"
 
 tar@^4.4.10, tar@^4.4.12, tar@^4.4.13:
-  version "4.4.13"
-  resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.13.tgz#43b364bc52888d555298637b10d60790254ab525"
-  integrity sha512-w2VwSrBoHa5BsSyH+KxEqeQBAllHhccyMFVHtGtdMpF4W7IRWfZjFiQceJPChOeTsSDVUpER2T8FA93pr0L+QA==
+  version "4.4.15"
+  resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.15.tgz#3caced4f39ebd46ddda4d6203d48493a919697f8"
+  integrity sha512-ItbufpujXkry7bHH9NpQyTXPbJ72iTlXgkBAYsAjDXk3Ds8t/3NfO5P4xZGy7u+sYuQUbimgzswX4uQIEeNVOA==
   dependencies:
     chownr "^1.1.1"
     fs-minipass "^1.2.5"
