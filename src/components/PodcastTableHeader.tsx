@@ -45,7 +45,7 @@ export const PodcastTableHeader = (props: Props) => {
     <View style={core.row}>
       {isLoading && (
         <View style={[styles.wrapper, core.view]}>
-          <ActivityIndicator fillSpace />
+          <ActivityIndicator fillSpace testID={testID} />
         </View>
       )}
       {!isLoading && !isNotFound && (

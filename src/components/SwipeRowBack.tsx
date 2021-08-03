@@ -1,8 +1,9 @@
 import React from 'react'
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { testProps } from '../lib/utility'
+import { ActivityIndicator } from '.'
 
 type Props = {
   isLoading?: boolean
@@ -22,7 +23,7 @@ export const SwipeRowBack = (props: Props) => {
       style={[styles, s.swipeRowBack, globalTheme.swipeRowBack]}
       {...testProps(`${testID}_swipe_row_back`)}>
       {isLoading ? (
-          <ActivityIndicator animating color={globalTheme.activityIndicatorAlternate.color} size='large' />
+          <ActivityIndicator size='large' testID={testID} />
       ) : (
         <Text style={s.textWrapper}>{text}</Text>
       )}

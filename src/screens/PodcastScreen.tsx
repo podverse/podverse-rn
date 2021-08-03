@@ -723,7 +723,7 @@ static navigationOptions = ({ navigation }) => {
         )}
         {!showSettings && (
           <View style={styles.view}>
-            {isLoading && <ActivityIndicator fillSpace />}
+            {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
             {!isLoading && flatListData && podcast && (
               <FlatList
                 data={flatListData}

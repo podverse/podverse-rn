@@ -244,7 +244,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
           testID={testID}
           transparentDropdownButton
         />
-        {isLoading || (isQuerying && <ActivityIndicator fillSpace />)}
+        {isLoading || (isQuerying && <ActivityIndicator fillSpace testID={getTestID()} />)}
         {!isLoading && !isQuerying && flatListData && (
           <FlatList
             data={flatListData}

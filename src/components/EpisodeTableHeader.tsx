@@ -49,7 +49,7 @@ export const EpisodeTableHeader = (props: Props) => {
   return (
     <View style={styles.view}>
       {isLoading ? (
-        <ActivityIndicator fillSpace />
+        <ActivityIndicator fillSpace testID={testID} />
       ) : (
         <View style={styles.wrapper}>
           {isNotFound ? (

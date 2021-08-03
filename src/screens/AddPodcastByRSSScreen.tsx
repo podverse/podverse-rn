@@ -103,8 +103,8 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
     const { isLoading, url } = this.state
 
     return (
-      <View style={styles.content} {...testProps('add_podcast_by_rss_screen_view')}>
-        {isLoading && <ActivityIndicator fillSpace />}
+      <View style={styles.content} {...testProps(`${testIDPrefix}_view`)}>
+        {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && (
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <TextInput

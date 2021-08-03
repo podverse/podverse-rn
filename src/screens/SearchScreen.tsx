@@ -273,7 +273,7 @@ export class SearchScreen extends React.Component<Props, State> {
             testID={testIDPrefix}
           />
         )}
-        {isLoading && <ActivityIndicator fillSpace />}
+        {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={this._moreButtons()}

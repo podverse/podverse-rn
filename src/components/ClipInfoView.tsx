@@ -22,6 +22,8 @@ type Props = {
   title?: string
 }
 
+const testIDPrefix = 'clip_info_view'
+
 export class ClipInfoView extends React.PureComponent<Props> {
   _navToProfileScreen = () => {
     const { navigation, ownerId, ownerName } = this.props
@@ -73,7 +75,7 @@ export class ClipInfoView extends React.PureComponent<Props> {
 
     return (
       <View style={styles.wrapper}>
-        {isLoading && <ActivityIndicator />}
+        {isLoading && <ActivityIndicator testID={testIDPrefix} />}
         {!isLoading && (
           <Fragment>
             <TableSectionSelectors disableFilter selectedFilterLabel={sectionHeaderTitle} />

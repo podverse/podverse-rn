@@ -1,6 +1,6 @@
-import { ActivityIndicator, KeyboardAvoidingView, Modal, StyleSheet, TouchableOpacity } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { NavDismissIcon, Text, TextInput, View } from '../components'
+import { ActivityIndicator, NavDismissIcon, Text, TextInput, View } from '../components'
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithItem } from '../lib/navigate'
 import { testProps } from '../lib/utility'
@@ -159,7 +159,7 @@ export class AddPodcastByRSSAuthScreen extends React.Component<Props, State> {
                 onPress={this.login}
                 {...testProps(`${testIDPrefix}_submit`)}>
                 {isLoading ? (
-                  <ActivityIndicator animating color={PV.Colors.gray} size='small' />
+                  <ActivityIndicator size='small' testID={testIDPrefix} />
                 ) : (
                   <Text style={signInButtonTextStyle}>{translate('Login')}</Text>
                 )}

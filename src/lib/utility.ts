@@ -586,7 +586,7 @@ export const overrideImageUrlWithChapterImageUrl = (nowPlayingItem: any, current
 
 export const requestAppStoreReview = () => {
   if (InAppReview.isAvailable()) {
-    InAppReview.RequestInAppReview()
+    // InAppReview.RequestInAppReview()
   }
 }
 

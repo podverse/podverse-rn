@@ -16,7 +16,7 @@ export const DownloadButton = (props: Props) => {
 
   return isDownloading ? (
     <View style={[styles.activityWrapper]}>
-      <ActivityIndicator styles={[styles.activityIndicator]} />
+      <ActivityIndicator styles={[styles.activityIndicator]} testID={`${testID}_download`} />
     </View>
   ) : (
     <View style={[styles.imageWrapper]}>
