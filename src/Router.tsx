@@ -53,6 +53,7 @@ import {
   WebPageScreen
 } from './screens'
 import { darkTheme } from './styles'
+import { PodcastInfoScreen } from './screens/PodcastInfoScreen'
 
 const tabTestProps = (id: string) => {
   return { tabBarTestID: id, tabBarAccessibilityLabel: id }
@@ -91,6 +92,9 @@ const PodcastsNavigator = createStackNavigator(
     [PV.RouteNames.PodcastScreen]: {
       screen: PodcastScreen,
       path: PV.DeepLinks.Podcast.path
+    },
+    [PV.RouteNames.PodcastInfoScreen]: {
+      screen: PodcastInfoScreen
     },
     [PV.RouteNames.EpisodeScreen]: {
       screen: EpisodeScreen,

@@ -591,6 +591,12 @@ static navigationOptions = ({ navigation }) => {
     })
   }
 
+  _handleNavigateToPodcastInfoScreen = () => {
+    const { navigation } = this.props
+    const { podcast } = this.state
+    navigation.navigate(PV.RouteNames.PodcastInfoScreen, { podcast })
+  }
+
   render() {
     const { navigation } = this.props
 
@@ -649,6 +655,8 @@ static navigationOptions = ({ navigation }) => {
       <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
         <PodcastTableHeader
           autoDownloadOn={autoDownloadOn}
+          description={podcast && podcast.description}
+          handleNavigateToPodcastInfoScreen={this._handleNavigateToPodcastInfoScreen}
           handleToggleAutoDownload={this._handleToggleAutoDownload}
           handleToggleSettings={this._handleToggleSettings}
           handleToggleSubscribe={this._toggleSubscribeToPodcast}
