@@ -122,14 +122,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
     const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
     if (!trackingConsentAcknowledged) {
-      console.log('await navigation.navigate(PV.RouteNames.TrackingConsentScreen)')
       await navigation.navigate(PV.RouteNames.TrackingConsentScreen)
     }
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
       if (!appHasLaunched) {
-        console.log('!appHasLaunched')
         await AsyncStorage.setItem(PV.Keys.APP_HAS_LAUNCHED, 'true')
         await AsyncStorage.setItem(PV.Keys.AUTO_DELETE_EPISODE_ON_END, 'TRUE')
         await AsyncStorage.setItem(PV.Keys.DOWNLOADED_EPISODE_LIMIT_GLOBAL_COUNT, '5')
@@ -141,7 +139,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         }
         this.setState({ isLoading: false })
       } else {
-        console.log('appHasLaunched')
         this._initializeScreenData()
       }
     } catch (error) {
