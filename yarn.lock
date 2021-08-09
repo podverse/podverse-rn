@@ -8039,7 +8039,7 @@ react-native-track-player@1.2.6:
   resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-1.2.6.tgz#f934b64d59cbe0241a5008ae97caa0bcf2354983"
   integrity sha512-o8jSJVIj7WVnsGIFgVeCyS0+Y75t2dkvhgA33jAid/JxLEoaL33KhDZ/O3FIB0VhovfTNqrOAw5zFzUYDkBC8A==
 
-react-native-tracking-transparency@^0.1.1:
+react-native-tracking-transparency@0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/react-native-tracking-transparency/-/react-native-tracking-transparency-0.1.1.tgz#6426d4c826d0deaed7ed32f707cb2d15b09c3c3f"
   integrity sha512-yGzpprmZ7dnlScegpoq1uQLuMLR2yDcFVHKF39FB0hxUBmck3G0bKSIbjj1ienM9IgjPvJQPgvG0dX9asyZ7NA==
