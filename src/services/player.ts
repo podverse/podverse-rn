@@ -226,7 +226,18 @@ export const setClipHasEnded = async (clipHasEnded: boolean) => {
 const getDownloadedFilePath = async (id: string, episodeMediaUrl: string) => {
   const ext = getExtensionFromUrl(episodeMediaUrl)
   const downloader = await BackgroundDownloader()
-  return `${downloader.directories.documents}/${id}${ext}`
+
+  
+  /* If downloaded episode is for an addByRSSPodcast, then the episodeMediaUrl
+     will be the id, so remove the URL params from the URL, and don't append
+     an extension to the file path.
+  */
+  if (id && id.indexOf('http') > -1) {
+    const idWithoutUrlParams = id.split('?')[0]
+    return `${downloader.directories.documents}/${idWithoutUrlParams}`
+  } else {
+    return `${downloader.directories.documents}/${id}${ext}`
+  }
 }
 
 const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
