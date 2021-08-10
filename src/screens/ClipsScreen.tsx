@@ -76,12 +76,12 @@ export class ClipsScreen extends React.Component<Props, State> {
       isRefreshing: false,
       queryFrom: hasSubscribedPodcasts ? PV.Filters._subscribedKey : PV.Filters._allPodcastsKey,
       queryPage: 1,
-      querySort: hasSubscribedPodcasts ? PV.Filters._mostRecentKey : PV.Filters._topPastWeek,
+      querySort: PV.Filters._mostRecentKey,
       searchBarText: '',
       selectedCategory: null,
       selectedCategorySub: null,
       selectedFilterLabel: hasSubscribedPodcasts ? translate('Subscribed') : translate('All Podcasts'),
-      selectedSortLabel: hasSubscribedPodcasts ? translate('recent') : translate('top - week'),
+      selectedSortLabel: translate('recent'),
       showActionSheet: false
     }
     

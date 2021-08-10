@@ -1,9 +1,19 @@
 import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { retrieveLatestChaptersForEpisodeId } from '../../services/episode'
-import { PVTrackPlayer } from '../../services/player'
+import { PVTrackPlayer, updateCurrentTrack } from '../../services/player'
+import { getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
 
-export const clearChapterPlaybackInfo = () => {
+export const clearChapterPlaybackInfo = async () => {
+  const nowPlayingItem = await getNowPlayingItemLocally()
+  
+  if (nowPlayingItem) {
+    const imageUrl = nowPlayingItem.episodeImageUrl
+      || nowPlayingItem.podcastShrunkImageUrl
+      || nowPlayingItem.podcastImageUrl
+    updateCurrentTrack(nowPlayingItem.episodeTitle, imageUrl)
+  }
+
   return new Promise((resolve) => {
     const globalState = getGlobal()
     setGlobal(
@@ -96,6 +106,8 @@ const enrichChapterDataForPlayer = (chapters: any[]) => {
 
 export const setChapterOnGlobalState = (currentChapter: any) => {
   const globalState = getGlobal()
+  updateCurrentTrack(currentChapter.title, currentChapter.imageUrl)
+
   setGlobal({
     player: {
       ...globalState.player,
