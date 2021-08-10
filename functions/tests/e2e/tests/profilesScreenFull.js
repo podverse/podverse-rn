@@ -1,6 +1,8 @@
 const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
+const { confirmAndroidAlert } = require('../driver/helpers/alerts')
+
 
 
 const test_profilesScreenFull = async () => {
@@ -9,12 +11,20 @@ const test_profilesScreenFull = async () => {
   
     // Log In Premium
 
-  await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
-  await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_sign_up_button')
-  await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
-  await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
-  await elementByIdClick('login_submit_button')
-  await driver.sleep(4000)
+//Login
+await elementByIdAndClickAndTest('tab_more_screen', 'more_screen_view')
+await elementByIdAndClickAndTest('more_screen_Login_table_cell_wrapper', 'auth_screen_sign_up_button')
+await sendKeysToElementById('login_email_text_input', 'premium@stage.podverse.fm', 'Valid Login Email Input')
+await sendKeysToElementById('login_password_text_input', 'Aa!1asdf', 'Valid Login Password Input')
+await elementByIdClick('login_submit_button')
+await driver.sleep(7000)
+
+try {
+  await confirmAndroidAlert()
+} catch (err) {
+  console.log('confirmAndroidAlert err')
+  console.log(err)
+}
 
     // My Library Screen
   await elementByIdAndClickAndTest('tab_my_library_screen', 'my_library_screen_view')
