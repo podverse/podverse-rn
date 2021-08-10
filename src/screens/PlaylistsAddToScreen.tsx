@@ -164,7 +164,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
     const { isLoggedIn } = session
 
     return (
-      <View style={styles.view} {...testProps('playlists_add_to_screen_view')}>
+      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
         {!isLoggedIn && (
           <MessageWithAction
             testID={testIDPrefix}
@@ -175,7 +175,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
         )}
         {isLoggedIn && (
           <View style={styles.view}>
-            {isLoading && <ActivityIndicator fillSpace />}
+            {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
             {!isLoading && myPlaylists && (
               <FlatList
                 data={myPlaylists}

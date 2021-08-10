@@ -2,8 +2,8 @@ const { getDriver } = require('../driver/driverFactory')
 const { confirmAndroidAlert } = require('../driver/helpers/alerts')
 const { elementByIdAndClickAndTest, elementByIdClick, elementWaitFor, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
-const test04_searchScreenDidLoad = async () => {
-  console.log('04_searchScreenDidLoad')
+const test_searchScreenDidLoad = async () => {
+  console.log('_Search Screen Did Load_')
   const driver = getDriver()
 
   //Login
@@ -53,5 +53,5 @@ const test04_searchScreenDidLoad = async () => {
 }
 
 module.exports = {
-  test04_searchScreenDidLoad
+  test_searchScreenDidLoad
 }

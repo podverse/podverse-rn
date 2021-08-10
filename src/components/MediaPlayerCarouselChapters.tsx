@@ -103,7 +103,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
     return (
       <View style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors disableFilter includePadding selectedFilterLabel={translate('Chapters')} />
-        {isLoading || (isQuerying && <ActivityIndicator fillSpace />)}
+        {isLoading || (isQuerying && <ActivityIndicator fillSpace testID={getTestID()} />)}
         {!isLoading && !isQuerying && currentChapters && (
           <FlatList
             data={currentChapters}

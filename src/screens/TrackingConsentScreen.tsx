@@ -37,9 +37,6 @@ ${translate('trackingTermsText4')}
 <h6>
 ${translate('trackingTermsText5')}
 </h6>
-<h6>
-${translate('trackingTermsText6')}
-</h6>
 `
 
 export class TrackingConsentScreen extends React.Component<Props, State> {

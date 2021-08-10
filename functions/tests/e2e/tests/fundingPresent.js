@@ -2,8 +2,8 @@ const { getDriver } = require('../driver/driverFactory')
 const { confirmAndroidAlert } = require('../driver/helpers/alerts')
 const { elementByIdAndClickAndTest, elementByIdClick, elementWaitFor, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
-const test16_fundingPresent = async () => {
-  console.log('16_fundingPresent')
+const test_fundingPresent = async () => {
+  console.log('_Funding Present_')
   const driver = getDriver()
 
     // Search Screen
@@ -23,5 +23,5 @@ const test16_fundingPresent = async () => {
 }
 
 module.exports = {
-  test16_fundingPresent
+  test_fundingPresent
 }

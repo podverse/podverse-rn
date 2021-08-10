@@ -3,8 +3,8 @@ const { elementByIdAndClickAndTest, elementByIdClick, goBackKey, noTestLabel } =
 const { sendKeysToElementById } = require('../driver/helpers/sendKeys')
 
 
-const test14_profilesScreenFull = async () => {
-  console.log('14_profilesScreenFull')
+const test_profilesScreenFull = async () => {
+  console.log('_Profiles Screen Full_')
   const driver = getDriver()
   
     // Log In Premium
@@ -36,5 +36,5 @@ const test14_profilesScreenFull = async () => {
 }
 
 module.exports = {
-  test14_profilesScreenFull
+  test_profilesScreenFull
 }

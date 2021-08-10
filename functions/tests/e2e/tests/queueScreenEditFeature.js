@@ -1,8 +1,8 @@
 const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 
-const test11_queueScreenEditFeature = async () => {
-  console.log('11_queueScreenEditFeature')
+const test_queueScreenEditFeature = async () => {
+  console.log('_Queue Screen Edit Feature_')
   const driver = getDriver()
   
     // My Library Screen
@@ -21,5 +21,5 @@ const test11_queueScreenEditFeature = async () => {
 }
 
 module.exports = {
-  test11_queueScreenEditFeature
+  test_queueScreenEditFeature
 }

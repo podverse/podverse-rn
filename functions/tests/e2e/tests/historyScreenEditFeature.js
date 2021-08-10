@@ -1,8 +1,8 @@
 const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 
-const test12_historyScreenEditFeature = async () => {
-  console.log('12_historyScreenEditFeature')
+const test_historyScreenEditFeature = async () => {
+  console.log('_History Screen Edit Feature_')
   const driver = getDriver()
   
     // My Library Screen
@@ -21,5 +21,5 @@ const test12_historyScreenEditFeature = async () => {
 }
 
 module.exports = {
-  test12_historyScreenEditFeature
+  test_historyScreenEditFeature
 }

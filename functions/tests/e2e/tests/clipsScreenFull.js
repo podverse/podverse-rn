@@ -1,10 +1,12 @@
 const { getDriver } = require('../driver/driverFactory')
 const { elementByIdAndClickAndTest, elementByIdClick, elementByIdHasText, elementByIdToggle, elementCheckIfNotPresent, goBackKey, noTestLabel } = require('../driver/helpers/elements')
-const test09_clipsScreenFull = async () => {
-  console.log('09_clipsScreenFull')
+const test_clipsScreenFull = async () => {
+  console.log('_Clips Screen Full_')
   const driver = getDriver()
 
   await elementByIdAndClickAndTest('tab_clips_screen', 'clips_screen_view')
+
+  //START FILTER TESTS
 
   await elementByIdAndClickAndTest('clips_screen_dropdown_button', 'filter_screen_view')
   await elementByIdClick('filter_screen_all-podcasts')
@@ -103,6 +105,10 @@ const test09_clipsScreenFull = async () => {
 
   await elementByIdAndClickAndTest('filter_screen_nav_header_button_text', 'clips_screen_view')
 
+  //END FILTER TESTS
+
+  // test loading spinner displays
+
   await elementByIdClick('clips_screen_clip_item_0_more_button')
   await elementByIdClick('clips_screen_action_sheet_cancel_button')
 
@@ -132,5 +138,5 @@ const test09_clipsScreenFull = async () => {
 }
 
 module.exports = {
-  test09_clipsScreenFull
+  test_clipsScreenFull
 }
