@@ -75,7 +75,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-## Folly
+## RCT-Folly
 
 
                                  Apache License
@@ -482,7 +482,7 @@ SOFTWARE.
 
 MIT License
 
-Copyright (c) 2017-2018 dooboolab
+Copyright (c) 2017-2021 dooboolab
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -1003,7 +1003,7 @@ SOFTWARE.
 
 MIT License
 
-Copyright (c) 2016 Elyx0
+Copyright (c) 2020 Elyx0 <elyx00@gmail.com> (@Elyx0)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

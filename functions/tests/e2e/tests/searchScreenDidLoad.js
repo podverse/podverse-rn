@@ -39,9 +39,11 @@ const test_searchScreenDidLoad = async () => {
   await sendKeysToElementById('search_screen_search_bar', 'Very Bad Wizards', 'Search for Very Bad Wizards')
   await elementByIdAndClickAndTest('search_screen_podcast_item_0', 'search_screen_action_sheet_goToPodcast_button')
   await elementByIdAndClickAndTest('search_screen_action_sheet_goToPodcast_button', 'podcast_screen_is_subscribed')
-  await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_not_subscribed')
+  await elementByIdClick('podcast_screen_subscribe_button')
+  await elementWaitFor('podcast_screen_is_not_subscribed')
   await driver.sleep(1000)
-  await elementByIdAndClickAndTest('podcast_screen_subscribe_button', 'podcast_screen_is_subscribed')
+  await elementByIdClick('podcast_screen_subscribe_button')
+  await elementWaitFor('podcast_screen_is_subscribed')
   await driver.back()
 
     // Log Out 

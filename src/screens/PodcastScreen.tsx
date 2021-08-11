@@ -17,6 +17,7 @@ import {
   NavShareIcon,
   NumberSelectorWithText,
   PodcastTableHeader,
+  ScrollView,
   SearchBar,
   SwipeRowBack,
   SwitchWithText,
@@ -685,7 +686,7 @@ static navigationOptions = ({ navigation }) => {
             testID={testIDPrefix}
           />
         ) : (
-          <View style={styles.settingsView}>
+          <ScrollView style={styles.settingsView}>
             <Text style={styles.settingsTitle}>{translate('Settings')}</Text>
             <SwitchWithText
               onValueChange={this._handleToggleLimitDownloads}
@@ -727,7 +728,7 @@ static navigationOptions = ({ navigation }) => {
               testID={`${testIDPrefix}_delete_downloaded_episodes`}
               text={translate('Delete Downloaded Episodes')}
             />
-          </View>
+          </ScrollView>
         )}
         {!showSettings && (
           <View style={styles.view}>

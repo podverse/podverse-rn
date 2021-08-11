@@ -300,7 +300,7 @@ module.exports = async () => {
         }
       } 
       
-      // else {
+      // else if (Platform.OS === 'android') {
       //   if (permanent) {
       //     PVTrackPlayer.stop()
       //   } else if (paused) {
@@ -309,6 +309,11 @@ module.exports = async () => {
       //     PVTrackPlayer.play()
       //   }
       // }
+
+      /* Always save the user playback position whenever the remote-duck event happens.
+         I'm not sure if playback-state gets called whenever remote-duck gets called,
+         so it's possible we are calling updateUserPlaybackPosition more times than necessary. */
+      updateUserPlaybackPosition()
     })()
   })
 }

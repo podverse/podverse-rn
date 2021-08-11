@@ -93,6 +93,10 @@ const test_tableSectionSelectors = async () => {
   await elementByIdAndClickAndTest('podcasts_screen_dropdown_button', 'filter_screen_view')
 
   await elementCheckIfNotPresent('filter_screen_podcasts_check_icon_button') //8b
+
+  await elementByIdAndClickAndTest('filter_screen_all-podcasts', 'filter_screen_all-podcasts_check_icon_button')
+
+  //go back
   await elementByIdClick('filter_screen_nav_header_button_text')
 
 }
