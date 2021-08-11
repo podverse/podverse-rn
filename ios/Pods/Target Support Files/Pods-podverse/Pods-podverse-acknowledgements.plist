@@ -310,7 +310,7 @@ Files in folly/external/farmhash licensed as follows
 			<key>License</key>
 			<string>Apache License, Version 2.0</string>
 			<key>Title</key>
-			<string>Folly</string>
+			<string>RCT-Folly</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
