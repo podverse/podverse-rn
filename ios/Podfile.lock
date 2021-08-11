@@ -47,7 +47,7 @@ PODS:
     - libwebp/demux
   - libwebp/webp (1.2.0)
   - RCTRequired (0.63.4)
-  - RCTSystemSetting (1.7.5):
+  - RCTSystemSetting (1.7.6):
     - React
   - RCTTypeSafety (0.63.4):
     - FBLazyVector (= 0.63.4)
@@ -230,19 +230,19 @@ PODS:
     - react-native-config/App (= 1.4.3)
   - react-native-config/App (1.4.3):
     - React-Core
-  - react-native-document-picker (5.0.1):
+  - react-native-document-picker (6.0.2):
     - React-Core
   - react-native-in-app-review (2.1.8):
     - React
   - react-native-netinfo (6.0.0):
     - React-Core
-  - react-native-safe-area-context (3.1.8):
+  - react-native-safe-area-context (3.3.0):
     - React-Core
   - react-native-track-player (1.2.6):
     - React
   - react-native-tracking-transparency (0.1.1):
     - React
-  - react-native-webview (11.0.0):
+  - react-native-webview (11.13.0):
     - React-Core
   - React-RCTActionSheet (0.63.4):
     - React-Core/RCTActionSheetHeaders (= 0.63.4)
@@ -312,20 +312,20 @@ PODS:
     - React
   - RNCPicker (1.8.1):
     - React-Core
-  - RNDeviceInfo (7.3.1):
+  - RNDeviceInfo (8.1.7):
     - React-Core
   - RNFastImage (8.3.7):
     - React-Core
     - SDWebImage (~> 5.8)
     - SDWebImageWebPCoder (~> 0.6.1)
-  - RNFS (2.16.6):
+  - RNFS (2.18.0):
     - React
-  - RNGestureHandler (1.8.0):
-    - React
+  - RNGestureHandler (1.10.3):
+    - React-Core
   - RNIap (4.6.3):
     - React-Core
-  - RNLocalize (1.4.1):
-    - React
+  - RNLocalize (2.1.1):
+    - React-Core
   - RNReactNativeHapticFeedback (1.11.0):
     - React-Core
   - RNReanimated (1.13.2):
@@ -336,10 +336,10 @@ PODS:
     - React
   - RNShare (6.2.1):
     - React-Core
-  - RNSVG (12.1.0):
+  - RNSVG (12.1.1):
     - React
-  - RNVectorIcons (6.7.0):
-    - React
+  - RNVectorIcons (8.1.0):
+    - React-Core
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
@@ -556,7 +556,7 @@ SPEC CHECKSUMS:
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
   libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   RCTRequired: 082f10cd3f905d6c124597fd1c14f6f2655ff65e
-  RCTSystemSetting: f1273cd074d852c98fc5490e7a1d21b3eb91b948
+  RCTSystemSetting: 5107b7350d63b3f7b42a1277d07e4e5d9df879be
   RCTTypeSafety: 8c9c544ecbf20337d069e4ae7fd9a377aadf504b
   React: b0a957a2c44da4113b0c4c9853d8387f8e64e615
   React-callinvoker: c3f44dd3cb195b6aa46621fff95ded79d59043fe
@@ -570,13 +570,13 @@ SPEC CHECKSUMS:
   react-native-background-timer: 029c606b3fd6dd476b153e177c518b6ade4c169f
   react-native-camera: 11166fe7e3a673493c152f52966e8ab1c5cdcacc
   react-native-config: 387b1ea507bc50a2059e69149dac1342b9532f58
-  react-native-document-picker: d6a15c20e1b2d488af459aefff831839e9995927
+  react-native-document-picker: b5bebda9a4e4d965cd32b6b8a233ab6c8c1aecb1
   react-native-in-app-review: 3d6d73b840bdb94ecf83f22e5fee74ee255829d0
   react-native-netinfo: e849fc21ca2f4128a5726c801a82fc6f4a6db50d
-  react-native-safe-area-context: 79fea126c6830c85f65947c223a5e3058a666937
+  react-native-safe-area-context: 61c8c484a3a9e7d1fda19f7b1794b35bbfd2262a
   react-native-track-player: 1a93c049a31413eb54768e5a69207b67d75b449c
   react-native-tracking-transparency: b2029ff756f1128b1f2c7c7c7f3003bc3c950f9f
-  react-native-webview: 6b7950628616679d81bdd75747e50cf6de9b5a5f
+  react-native-webview: 133a6a5149f963259646e710b4545c67ef35d7c9
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
   React-RCTBlob: a97d378b527740cc667e03ebfa183a75231ab0f0
@@ -591,24 +591,24 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNCPicker: 914b557e20b3b8317b084aca9ff4b4edb95f61e4
-  RNDeviceInfo: 6ecb1d1c87d20e4c62354be0348de23362824dcd
+  RNDeviceInfo: ace1442cd0f7d01292a39a3b587666177eaf8cb0
   RNFastImage: a7384db75df352500261e8e8f1ac2026def26102
-  RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
-  RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
+  RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
+  RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNIap: 66b83af54a855b6314a243a200081a64d7f64c2e
-  RNLocalize: 49634a6a605dcdeb319e9c42a5c2f1aec508694b
+  RNLocalize: 82a569022724d35461e2dc5b5d015a13c3ca995b
   RNReactNativeHapticFeedback: 653a8c126a0f5e88ce15ffe280b3ff37e1fbb285
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: 45c457af3d2ee9e08fc01e70da87e653d46b1198
   RNSecureKeyStore: f1ad870e53806453039f650720d2845c678d89c8
   RNShare: 5ac8f6532ca4cd80fc71caef1cfbba1854a6a045
-  RNSVG: ce9d996113475209013317e48b05c21ee988d42e
-  RNVectorIcons: 368d6d8b8301224e5ffb6254191f4f8876c2be0d
+  RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
+  RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
   toolbar-android: 85f3ef4d691469f2d304e7dee4bca013aa1ba1ff
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
 
-PODFILE CHECKSUM: af0fc747e686af110e0bf840ac798659a6550528
+PODFILE CHECKSUM: 8eb012b36585cb980bf98d75326c09fb3a55c168
 
 COCOAPODS: 1.10.2
