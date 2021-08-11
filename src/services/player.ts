@@ -6,7 +6,7 @@ import {
 } from 'podverse-shared'
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
-import TrackPlayer, { PITCH_ALGORITHM_VOICE, Track } from 'react-native-track-player'
+import TrackPlayer, { Capability, PitchAlgorithm, State, Track } from 'react-native-track-player'
 import { getDownloadedEpisode } from '../lib/downloadedPodcast'
 import { BackgroundDownloader } from '../lib/downloader'
 import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
@@ -83,25 +83,25 @@ TrackPlayer.setupPlayer({
 export const updateTrackPlayerCapabilities = () => {
   TrackPlayer.updateOptions({
     capabilities: [
-      TrackPlayer.CAPABILITY_JUMP_BACKWARD,
-      TrackPlayer.CAPABILITY_JUMP_FORWARD,
-      TrackPlayer.CAPABILITY_PAUSE,
-      TrackPlayer.CAPABILITY_PLAY,
-      TrackPlayer.CAPABILITY_SEEK_TO
+      Capability.JumpBackward,
+      Capability.JumpForward,
+      Capability.Pause,
+      Capability.Play,
+      Capability.SeekTo
     ],
     compactCapabilities: [
-      TrackPlayer.CAPABILITY_JUMP_BACKWARD,
-      TrackPlayer.CAPABILITY_JUMP_FORWARD,
-      TrackPlayer.CAPABILITY_PAUSE,
-      TrackPlayer.CAPABILITY_PLAY,
-      TrackPlayer.CAPABILITY_SEEK_TO
+      Capability.JumpBackward,
+      Capability.JumpForward,
+      Capability.Pause,
+      Capability.Play,
+      Capability.SeekTo
     ],
     notificationCapabilities: [
-      TrackPlayer.CAPABILITY_JUMP_BACKWARD,
-      TrackPlayer.CAPABILITY_JUMP_FORWARD,
-      TrackPlayer.CAPABILITY_PAUSE,
-      TrackPlayer.CAPABILITY_PLAY,
-      TrackPlayer.CAPABILITY_SEEK_TO
+      Capability.JumpBackward,
+      Capability.JumpForward,
+      Capability.Pause,
+      Capability.Play,
+      Capability.SeekTo
     ],
     // alwaysPauseOnInterruption caused serious problems with the player unpausing
     // every time the user receives a notification.
@@ -125,7 +125,7 @@ export const updateTrackPlayerCapabilities = () => {
 */
 export const checkIfStateIsBuffering = (playbackState: any) =>
   // for iOS
-  playbackState === PVTrackPlayer.STATE_BUFFERING ||
+  playbackState === State.Buffering ||
   // for Android
   playbackState === 6 ||
   playbackState === 8
@@ -418,7 +418,7 @@ export const updateCurrentTrack = async (trackTitle?: string, artworkUrl?: strin
         ...track,
         ...(trackTitle ? { title: trackTitle } : {}),
         ...(artworkUrl ? { artwork: artworkUrl } : {})
-      }
+      } as Track
     
       await PVTrackPlayer.updateMetadataForTrack(currentIndex, newTrack)
     }
@@ -458,7 +458,7 @@ export const createTrack = async (item: NowPlayingItem) => {
         headers: {
           'User-Agent': getAppUserAgent()
         },
-        pitchAlgorithm: PITCH_ALGORITHM_VOICE
+        pitchAlgorithm: PitchAlgorithm.Voice
       }
     } else {
       track = {
@@ -470,7 +470,7 @@ export const createTrack = async (item: NowPlayingItem) => {
         headers: {
           'User-Agent': getAppUserAgent()
         },
-        pitchAlgorithm: PITCH_ALGORITHM_VOICE
+        pitchAlgorithm: PitchAlgorithm.Voice
       }
     }
   }
@@ -488,19 +488,21 @@ export const createTracks = async (items: NowPlayingItem[]) => {
   return tracks
 }
 
-export const movePlayerItemToNewPosition = async (id: string, insertBeforeId: string) => {
+export const movePlayerItemToNewPosition = async (id: string, newIndex: number) => {
   const playerQueueItems = await TrackPlayer.getQueue()
-  if (playerQueueItems.some((x: any) => x.id === id)) {
+
+  const previousIndex = playerQueueItems.findIndex((x: any) => x.id === id)
+
+  if (previousIndex >= 0) {
     try {
-      await TrackPlayer.getTrack(id)
-      await TrackPlayer.remove(id)
+      await TrackPlayer.remove(previousIndex)
       const pvQueueItems = await getQueueItemsLocally()
       const itemToMove = pvQueueItems.find(
         (x: any) => (x.clipId && x.clipId === id) || (!x.clipId && x.episodeId === id)
       )
       if (itemToMove) {
         const track = await createTrack(itemToMove) as any
-        await TrackPlayer.add([track], insertBeforeId)
+        await TrackPlayer.add([track], newIndex)
       }
     } catch (error) {
       console.log('movePlayerItemToNewPosition error:', error)
@@ -579,7 +581,7 @@ export const setPlaybackSpeed = async (rate: number) => {
   await AsyncStorage.setItem(PV.Keys.PLAYER_PLAYBACK_SPEED, JSON.stringify(rate))
 
   const currentState = await PVTrackPlayer.getState()
-  const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
+  const isPlaying = currentState === State.Playing
 
   if (isPlaying) {
     await TrackPlayer.setRate(rate)
@@ -648,12 +650,12 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (
 export const togglePlay = async () => {
   const state = await TrackPlayer.getState()
 
-  if (state === TrackPlayer.STATE_NONE) {
+  if (state === State.None) {
     handlePlay()
     return
   }
 
-  if (state === TrackPlayer.STATE_PLAYING) {
+  if (state === State.Playing) {
     TrackPlayer.pause()
   } else {
     handlePlay()
@@ -667,5 +669,5 @@ export const handlePlay = () => {
 
 export const checkIdlePlayerState = async () => {
   const state = await TrackPlayer.getState()
-  return state === 'idle' || state === 0 || state === TrackPlayer.STATE_NONE
+  return state === 0 || state === State.None
 }

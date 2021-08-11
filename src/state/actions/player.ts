@@ -6,6 +6,7 @@ import {
   NowPlayingItem
 } from 'podverse-shared'
 import Config from 'react-native-config'
+import { State as RNTPState } from 'react-native-track-player'
 import { getGlobal, setGlobal } from 'reactn'
 import { getParsedTranscript } from '../../lib/transcriptHelpers'
 import { convertPodcastIndexValueTagToStandardValueTag } from '../../lib/valueTagHelpers'
@@ -95,7 +96,7 @@ export const clearNowPlayingItem = async () => {
     player: {
       ...globalState.player,
       nowPlayingItem: null,
-      playbackState: PVTrackPlayer.STATE_STOPPED,
+      playbackState: RNTPState.Stopped,
       showMiniPlayer: false
     },
     screenPlayer: {
