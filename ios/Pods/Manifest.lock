@@ -232,7 +232,7 @@ PODS:
     - React-Core
   - react-native-document-picker (6.0.2):
     - React-Core
-  - react-native-in-app-review (2.1.8):
+  - react-native-in-app-review (3.2.2):
     - React
   - react-native-netinfo (6.0.0):
     - React-Core
@@ -310,7 +310,7 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
-  - RNCPicker (1.8.1):
+  - RNCPicker (1.16.5):
     - React-Core
   - RNDeviceInfo (8.1.7):
     - React-Core
@@ -322,19 +322,47 @@ PODS:
     - React
   - RNGestureHandler (1.10.3):
     - React-Core
-  - RNIap (4.6.3):
+  - RNIap (7.2.1):
     - React-Core
   - RNLocalize (2.1.1):
     - React-Core
   - RNReactNativeHapticFeedback (1.11.0):
     - React-Core
-  - RNReanimated (1.13.2):
+  - RNReanimated (2.2.0):
+    - DoubleConversion
+    - FBLazyVector
+    - FBReactNativeSpec
+    - Folly
+    - glog
+    - RCTRequired
+    - RCTTypeSafety
+    - React
+    - React-callinvoker
     - React-Core
-  - RNScreens (2.16.1):
+    - React-Core/DevSupport
+    - React-Core/RCTWebSocket
+    - React-CoreModules
+    - React-cxxreact
+    - React-jsi
+    - React-jsiexecutor
+    - React-jsinspector
+    - React-RCTActionSheet
+    - React-RCTAnimation
+    - React-RCTBlob
+    - React-RCTImage
+    - React-RCTLinking
+    - React-RCTNetwork
+    - React-RCTSettings
+    - React-RCTText
+    - React-RCTVibration
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - RNScreens (3.5.0):
     - React-Core
+    - React-RCTImage
   - RNSecureKeyStore (1.0.0):
     - React
-  - RNShare (6.2.1):
+  - RNShare (7.0.0):
     - React-Core
   - RNSVG (12.1.1):
     - React
@@ -396,7 +424,7 @@ DEPENDENCIES:
   - RNBackgroundFetch (from `../node_modules/react-native-background-fetch`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
-  - "RNCPicker (from `../node_modules/@react-native-community/picker`)"
+  - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - RNFS (from `../node_modules/react-native-fs`)
@@ -510,7 +538,7 @@ EXTERNAL SOURCES:
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
   RNCPicker:
-    :path: "../node_modules/@react-native-community/picker"
+    :path: "../node_modules/@react-native-picker/picker"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFastImage:
@@ -571,7 +599,7 @@ SPEC CHECKSUMS:
   react-native-camera: 11166fe7e3a673493c152f52966e8ab1c5cdcacc
   react-native-config: 387b1ea507bc50a2059e69149dac1342b9532f58
   react-native-document-picker: b5bebda9a4e4d965cd32b6b8a233ab6c8c1aecb1
-  react-native-in-app-review: 3d6d73b840bdb94ecf83f22e5fee74ee255829d0
+  react-native-in-app-review: 00a66a085c61dbd4474041dc14e7bfee81a86130
   react-native-netinfo: e849fc21ca2f4128a5726c801a82fc6f4a6db50d
   react-native-safe-area-context: 61c8c484a3a9e7d1fda19f7b1794b35bbfd2262a
   react-native-track-player: 1a93c049a31413eb54768e5a69207b67d75b449c
@@ -590,18 +618,18 @@ SPEC CHECKSUMS:
   RNBackgroundFetch: 182d0ff90747bacbb3d4e168ecc2194442d0a2d3
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
-  RNCPicker: 914b557e20b3b8317b084aca9ff4b4edb95f61e4
+  RNCPicker: 28e41a58b79cd82cc639391bb99ca1b2489a3ea9
   RNDeviceInfo: ace1442cd0f7d01292a39a3b587666177eaf8cb0
   RNFastImage: a7384db75df352500261e8e8f1ac2026def26102
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNIap: 66b83af54a855b6314a243a200081a64d7f64c2e
+  RNIap: 536b64f090a3d2e707b4f55d9aa5351482f20ea4
   RNLocalize: 82a569022724d35461e2dc5b5d015a13c3ca995b
   RNReactNativeHapticFeedback: 653a8c126a0f5e88ce15ffe280b3ff37e1fbb285
-  RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
-  RNScreens: 45c457af3d2ee9e08fc01e70da87e653d46b1198
+  RNReanimated: d9da990fc90123f4ffbfdda93d00fc15174863a8
+  RNScreens: 01ab149b5dd5c27f5ff26741b1d2bdf2cee1af35
   RNSecureKeyStore: f1ad870e53806453039f650720d2845c678d89c8
-  RNShare: 5ac8f6532ca4cd80fc71caef1cfbba1854a6a045
+  RNShare: 00e7409201e3cab13e0febc41fd4465a83ae8225
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
