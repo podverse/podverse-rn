@@ -1,6 +1,6 @@
 const { getDriver } = require('../driver/driverFactory')
 
-const test00_initTests = async (capabilities) => {
+const test_initTests = async (capabilities) => {
   console.log('init testing')
   const driver = getDriver()
   await driver.init(capabilities)
@@ -8,5 +8,5 @@ const test00_initTests = async (capabilities) => {
 }
 
 module.exports = {
-  test00_initTests
+  test_initTests
 }

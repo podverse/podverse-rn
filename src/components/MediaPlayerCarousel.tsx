@@ -42,6 +42,8 @@ type State = {
 
 const screenWidth = Dimensions.get('screen').width
 
+const testIDPrefix = 'media_player_carousel'
+
 export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
   carousel: any
   scrollView: any
@@ -196,7 +198,10 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
                 {streamingAmount} {translate('sats / min')}
               </Text>
               {streamingEnabled && isPlaying && (
-                <ActivityIndicator size={15} styles={{ position: 'absolute', right: 20 }} />
+                <ActivityIndicator
+                  size={15}
+                  styles={{ position: 'absolute', right: 20 }}
+                  testID={testIDPrefix} />
               )}
             </TouchableOpacity>
             <TouchableOpacity
@@ -208,7 +213,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
               style={styles.boostButton}
               {...testProps('boost_button')}>
               {boostIsSending ? (
-                <ActivityIndicator />
+                <ActivityIndicator testID={testIDPrefix} />
               ) : (
                 <>
                   <Text style={styles.boostButtonMainText} testID='boost_button_text_1'>

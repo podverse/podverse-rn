@@ -137,6 +137,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
         if (!Config.DISABLE_CRASH_LOGS) {
           await AsyncStorage.setItem(PV.Keys.ERROR_REPORTING_ENABLED, 'TRUE')
         }
+        this.setState({ isLoading: false })
       } else {
         this._initializeScreenData()
       }
@@ -175,6 +176,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _handleAppStateChange = (nextAppState: any) => {
     (async () => {
+      updateUserPlaybackPosition()
+
       if (nextAppState === 'active' && !isInitialLoad) {
         const { nowPlayingItem: lastItem } = this.global.player
         const currentItem = await getNowPlayingItemLocally()
@@ -185,7 +188,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
   
         if (!lastItem || (lastItem && currentItem && currentItem.episodeId !== lastItem.episodeId)) {
           updatePlayerState(currentItem)
-          await updateUserPlaybackPosition()
           showMiniPlayer()
         }
   
@@ -210,16 +212,6 @@ export class PodcastsScreen extends React.Component<Props, State> {
         if (Platform.OS === 'ios') {
           updateTrackPlayerCapabilities()
         }
-  
-        const currentState = await PVTrackPlayer.getState()
-        // If an episode is not playing, then assume its latest playback position does not
-        // need to get updated in history.
-        // This will also prevent the history from being updated when a user closes the app on Device A,
-        // then reloads it to make it load with last history item (currently playing item) on Device B.
-        if (currentState === PVTrackPlayer.STATE_PLAYING) {
-          updateUserPlaybackPosition()
-        }
-  
       }
     })()
   }
@@ -738,7 +730,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             selectedSortLabel={selectedSortLabel}
             testID={testIDPrefix}
           />
-          {isLoading && <ActivityIndicator fillSpace />}
+          {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
           {!isLoading && queryFrom && (
             <FlatList
               data={flatListData}

@@ -112,8 +112,8 @@ export class MembershipScreen extends React.Component<Props, State> {
     const expirationDate = getMembershipExpiration(userInfo)
 
     return (
-      <View style={styles.wrapper} {...testProps('membership_screen_view')}>
-        {isLoading && isLoggedIn && <ActivityIndicator fillSpace />}
+      <View style={styles.wrapper} {...testProps(`${testIDPrefix}_view`)}>
+        {isLoading && isLoggedIn && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && showNoInternetConnectionMessage && (
           <View style={styles.textRowCentered}>
             <Text style={[styles.subText, { textAlign: 'center' }]}>

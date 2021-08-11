@@ -530,7 +530,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                           testID={`${testIDPrefix}_${playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}`}
                         />
                       ) : (
-                        <ActivityIndicator />
+                        <ActivityIndicator testID={testIDPrefix} />
                       )}
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -638,7 +638,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         {isSaving && (
           <Modal transparent visible>
             <RNView style={[styles.modalBackdrop, globalTheme.modalBackdrop]}>
-              <ActivityIndicator isOverlay />
+              <ActivityIndicator isOverlay testID={testIDPrefix} />
             </RNView>
           </Modal>
         )}

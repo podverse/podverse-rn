@@ -17,6 +17,7 @@ import {
   NavShareIcon,
   NumberSelectorWithText,
   PodcastTableHeader,
+  ScrollView,
   SearchBar,
   SwipeRowBack,
   SwitchWithText,
@@ -591,6 +592,12 @@ static navigationOptions = ({ navigation }) => {
     })
   }
 
+  _handleNavigateToPodcastInfoScreen = () => {
+    const { navigation } = this.props
+    const { podcast } = this.state
+    navigation.navigate(PV.RouteNames.PodcastInfoScreen, { podcast })
+  }
+
   render() {
     const { navigation } = this.props
 
@@ -649,6 +656,8 @@ static navigationOptions = ({ navigation }) => {
       <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
         <PodcastTableHeader
           autoDownloadOn={autoDownloadOn}
+          description={podcast && podcast.description}
+          handleNavigateToPodcastInfoScreen={this._handleNavigateToPodcastInfoScreen}
           handleToggleAutoDownload={this._handleToggleAutoDownload}
           handleToggleSettings={this._handleToggleSettings}
           handleToggleSubscribe={this._toggleSubscribeToPodcast}
@@ -677,7 +686,7 @@ static navigationOptions = ({ navigation }) => {
             testID={testIDPrefix}
           />
         ) : (
-          <View style={styles.settingsView}>
+          <ScrollView style={styles.settingsView}>
             <Text style={styles.settingsTitle}>{translate('Settings')}</Text>
             <SwitchWithText
               onValueChange={this._handleToggleLimitDownloads}
@@ -719,11 +728,11 @@ static navigationOptions = ({ navigation }) => {
               testID={`${testIDPrefix}_delete_downloaded_episodes`}
               text={translate('Delete Downloaded Episodes')}
             />
-          </View>
+          </ScrollView>
         )}
         {!showSettings && (
           <View style={styles.view}>
-            {isLoading && <ActivityIndicator fillSpace />}
+            {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
             {!isLoading && flatListData && podcast && (
               <FlatList
                 data={flatListData}

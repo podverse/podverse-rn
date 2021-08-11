@@ -34,6 +34,8 @@ const debouncedPlayerJumpForward = debounce(loadChapterPlaybackInfo, 500, {
   trailing: true
 })
 
+const testIDPrefix = 'player_controls'
+
 export class PlayerControls extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
@@ -112,13 +114,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       top: 8
     }
 
-    let playButtonIcon = <Icon name='play' size={20} testID='player_controls_play_button' />
+    let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
     let playButtonAdjust = { paddingLeft: 2 } as any
     if (playbackState === PVTrackPlayer.STATE_PLAYING) {
-      playButtonIcon = <Icon name='pause' size={20} testID='player_controls_pause_button' />
+      playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
       playButtonAdjust = {}
     } else if (checkIfStateIsBuffering(playbackState)) {
-      playButtonIcon = <ActivityIndicator />
+      playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
     }
 
@@ -150,10 +152,10 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             <TouchableOpacity
               onPress={this._returnToBeginningOfTrack}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
-              {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, 'player_controls_previous_track')}
+              {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
             </TouchableOpacity>
             <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
-              {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, 'player_controls_jump_backward')}
+              {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, `${testIDPrefix}_jump_backward`)}
               <View style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
               </View>
@@ -166,40 +168,40 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                   color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
                   name={'exclamation-triangle'}
                   size={35}
-                  testID='player_controls_error'
+                  testID={`${testIDPrefix}_error`}
                 />
               ) : (
                 playButtonIcon
               )}
             </TouchableOpacity>
             <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
-              {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, 'player_controls_step_forward')}
+              {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, `${testIDPrefix}_step_forward`)}
               <View style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>{PV.Player.jumpSeconds}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={playNextFromQueue} style={[playerStyles.icon, { flexDirection: 'row' }]}>
-              {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, 'player_controls_skip_track')}
+              {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`)}
             </TouchableOpacity>
           </View>
         </View>
         <View style={styles.playerControlsBottomRow}>
           <TouchableOpacity hitSlop={hitSlop} onPress={this._navToStopWatchScreen}>
             <View style={styles.playerControlsBottomButton}>
-              <Icon name='moon' size={20} solid testID='player_controls_sleep_timer' />
+              <Icon name='moon' size={20} solid testID={`${testIDPrefix}_sleep_timer`} />
             </View>
           </TouchableOpacity>
           <TouchableWithoutFeedback hitSlop={hitSlop} onPress={this._adjustSpeed}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               style={[styles.playerControlsBottomButton, styles.playerControlsBottomRowText]}
-              testID='player_controls_playback_rate'>
+              testID={`${testIDPrefix}_playback_rate`}>
               {`${playbackRate}X`}
             </Text>
           </TouchableWithoutFeedback>
           <TouchableOpacity hitSlop={hitSlop} onPress={this._showPlayerMoreActionSheet}>
             <View style={styles.playerControlsBottomButton}>
-              <Icon name='ellipsis-h' size={24} testID='player_controls_more' />
+              <Icon name='ellipsis-h' size={24} testID={`${testIDPrefix}_more`} />
             </View>
           </TouchableOpacity>
         </View>

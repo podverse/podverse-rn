@@ -13,6 +13,8 @@ type Props = {
   width: number
 }
 
+const testIDPrefix = 'media_player_carousel_viewer'
+
 export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
   chapterInterval: NodeJS.Timeout
   constructor(props) {
@@ -68,7 +70,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       <RNView style={[styles.outerWrapper, { width }]}>
         <RNView style={styles.carouselTextTopWrapper}>
           {isLoading ? (
-            <ActivityIndicator fillSpace />
+            <ActivityIndicator fillSpace testID={testIDPrefix} />
           ) : (
             !!nowPlayingItem && (
               <RNView style={styles.episodeTitleWrapper}>
@@ -77,7 +79,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
                     allowFontScaling={false}
                     numberOfLines={1}
                     style={styles.episodeTitle}
-                    testID='media_player_carousel_viewer_episode_title'>
+                    testID={`${testIDPrefix}_episode_title`}>
                     {nowPlayingItem.episodeTitle}
                   </Text>
                 </TextTicker>

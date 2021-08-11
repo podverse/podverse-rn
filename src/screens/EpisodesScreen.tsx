@@ -454,7 +454,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
           selectedSortLabel={selectedSortLabel}
           testID={testIDPrefix}
         />
-        {isLoading && <ActivityIndicator fillSpace />}
+        {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && queryFrom && (
           <FlatList
             data={flatListData}

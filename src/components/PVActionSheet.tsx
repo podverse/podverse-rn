@@ -117,7 +117,7 @@ export class PVActionSheet extends React.Component<Props, State> {
               {item.isDownloading && <ActivityIndicator size='small' styles={actionSheetStyles.activityIndicator} />}
               {((item.key === PV.Keys.queue_next && isLoadingQueueNext) ||
                 (item.key === PV.Keys.queue_last && isLoadingQueueLast)) && (
-                <ActivityIndicator size='small' styles={actionSheetStyles.activityIndicator} />
+                <ActivityIndicator size='small' styles={actionSheetStyles.activityIndicator} testID={testID} />
               )}
             </View>
           </TouchableHighlight>
