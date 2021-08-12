@@ -411,16 +411,18 @@ export const syncPlayerWithQueue = async () => {
 export const updateCurrentTrack = async (trackTitle?: string, artworkUrl?: string) => {
   try {
     const currentIndex = await PVTrackPlayer.getCurrentTrack()
-    const track = await PVTrackPlayer.getTrack(currentIndex)
-    
-    if (track) {
-      const newTrack = {
-        ...track,
-        ...(trackTitle ? { title: trackTitle } : {}),
-        ...(artworkUrl ? { artwork: artworkUrl } : {})
-      } as Track
-    
-      await PVTrackPlayer.updateMetadataForTrack(currentIndex, newTrack)
+    if (currentIndex >= 0) {
+      const track = await PVTrackPlayer.getTrack(currentIndex)
+      
+      if (track) {
+        const newTrack = {
+          ...track,
+          ...(trackTitle ? { title: trackTitle } : {}),
+          ...(artworkUrl ? { artwork: artworkUrl } : {})
+        } as Track
+      
+        await PVTrackPlayer.updateMetadataForTrack(currentIndex, newTrack)
+      }
     }
   } catch (error) {
     console.log('updateCurrentTrack error:', error)
