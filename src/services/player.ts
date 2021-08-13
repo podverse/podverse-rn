@@ -48,6 +48,7 @@ const checkServiceRunning = async (defaultReturn: any = '') => {
 
 PVTrackPlayer.getTrackPosition = async () => {
   const serviceRunningResult = await checkServiceRunning(0)
+
   if (serviceRunningResult !== true) {
     return serviceRunningResult
   }
@@ -57,6 +58,7 @@ PVTrackPlayer.getTrackPosition = async () => {
 
 PVTrackPlayer.getCurrentLoadedTrack = async () => {
   const serviceRunningResult = await checkServiceRunning()
+
   if (serviceRunningResult !== true) {
     return serviceRunningResult
   }
@@ -148,14 +150,14 @@ export const handleResumeAfterClipHasEnded = async () => {
 export const playerJumpBackward = async (seconds: number) => {
   const position = await PVTrackPlayer.getTrackPosition()
   const newPosition = position - seconds
-  TrackPlayer.seekTo(newPosition)
+  await TrackPlayer.seekTo(newPosition)
   return newPosition
 }
 
 export const playerJumpForward = async (seconds: number) => {
   const position = await PVTrackPlayer.getTrackPosition()
   const newPosition = position + seconds
-  TrackPlayer.seekTo(newPosition)
+  await TrackPlayer.seekTo(newPosition)
   return newPosition
 }
 
@@ -198,12 +200,12 @@ export const setRateWithLatestPlaybackSpeed = async () => {
   }
 }
 
-export const playerPreviewStartTime = (startTime: number, endTime?: number | null) => {
+export const playerPreviewStartTime = async (startTime: number, endTime?: number | null) => {
   if (playerPreviewEndTimeInterval) {
     clearInterval(playerPreviewEndTimeInterval)
   }
 
-  TrackPlayer.seekTo(startTime)
+  await TrackPlayer.seekTo(startTime)
   handlePlay()
 
   if (endTime) {
@@ -252,9 +254,15 @@ const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
   return isDownloadedFile
 }
 
+export const getCurrentLoadedTrackId = async () => {
+  const trackIndex = await PVTrackPlayer.getCurrentTrack()
+  const track = await PVTrackPlayer.getTrack(trackIndex)
+  return track.id
+}
+
 export const updateUserPlaybackPosition = async (skipSetNowPlaying?: boolean) => {
   try {
-    const currentTrackId = await PVTrackPlayer.getCurrentLoadedTrack()
+    const currentTrackId = await getCurrentLoadedTrackId()
     const setPlayerClipIsLoadedIfClip = false
 
     const currentNowPlayingItem = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
@@ -340,7 +348,7 @@ export const loadItemAndPlayTrack = async (
     await TrackPlayer.add(track)
     await syncPlayerWithQueue()
   } else {
-    const currentId = await PVTrackPlayer.getCurrentLoadedTrack()
+    const currentId = await getCurrentLoadedTrackId()
     if (currentId) {
       await TrackPlayer.removeUpcomingTracks()
       const track = (await createTrack(item)) as Track
@@ -375,7 +383,7 @@ export const playNextFromQueue = async () => {
   const queueItems = await PVTrackPlayer.getQueue()
   if (queueItems && queueItems.length > 1) {
     await PVTrackPlayer.skipToNext()
-    const currentId = await PVTrackPlayer.getCurrentLoadedTrack()
+    const currentId = await getCurrentLoadedTrackId()
     const setPlayerClipIsLoadedIfClip = true
     const item = await getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId(
       currentId, setPlayerClipIsLoadedIfClip)
@@ -513,7 +521,7 @@ export const movePlayerItemToNewPosition = async (id: string, newIndex: number) 
 }
 
 export const setPlaybackPosition = async (position?: number) => {
-  const currentId = await PVTrackPlayer.getCurrentLoadedTrack()
+  const currentId = await getCurrentLoadedTrackId()
   if (currentId && (position || position === 0 || (position && position > 0))) {
     await TrackPlayer.seekTo(position)
   }
@@ -531,7 +539,7 @@ export const setPlaybackPositionWhenDurationIsAvailable = async (
     const interval = setInterval(() => {
       (async () => {
         const duration = await PVTrackPlayer.getTrackDuration()
-        const currentTrackId = await PVTrackPlayer.getCurrentLoadedTrack()
+        const currentTrackId = await getCurrentLoadedTrackId()
 
         setTimeout(() => {
           if (interval) clearInterval(interval)

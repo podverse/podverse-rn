@@ -14,6 +14,7 @@ import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
+  getCurrentLoadedTrackId,
   getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId,
   getPlaybackSpeed,
   handlePlay,
@@ -89,7 +90,7 @@ const syncNowPlayingItemWithTrack = () => {
       updatePlaybackState()
       await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
 
-      const currentTrackId = await PVTrackPlayer.getCurrentLoadedTrack()
+      const currentTrackId = await getCurrentLoadedTrackId()
       const setPlayerClipIsLoadedIfClip = true
 
       /*

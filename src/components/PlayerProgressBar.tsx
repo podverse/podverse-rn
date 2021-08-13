@@ -1,7 +1,8 @@
-import {useState, useEffect} from 'react';
+import { useState } from 'react';
 import { Animated, Dimensions, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import React from 'reactn'
+import { useProgress } from 'react-native-track-player'
 import { convertSecToHHMMSS } from '../lib/utility'
 import { PV } from '../resources'
 import { setPlaybackPosition } from '../services/player'
@@ -20,47 +21,24 @@ type Props = {
   value: number
 }
 
-// type State = {
-//   bufferedPosition: number
-//   duration: number
-//   position: number
-//   slidingPosition: number | null
-//   clipColorAnimation: any
-// }
-
-let lastPropsValue = 0;
-
 export function PlayerProgressBar(props: Props) {
   let isAnimationRunning = false;
-  const {value} = props;
-  const [state, setState] = useState({   
-    bufferedPosition: 0,
-    duration: 0,
-    position: 0,
-    slidingPosition: null,
-    clipColorAnimation: new Animated.Value(0)
-  })
 
-  useEffect(()=>{
-    if (value && value!== state.position && value !== lastPropsValue){
-      lastPropsValue = value
-      setState({
-        ...state,
-        position: value,
-      })
-    }
-  }, [value])
+  const [localState, setLocalState] = useState({   
+    clipColorAnimation: new Animated.Value(0),
+    slidingPosition: null
+  })
 
   const _handleAnimation = () => {
     if (isAnimationRunning) return
     isAnimationRunning = true
 
-    Animated.timing(state.clipColorAnimation, {
+    Animated.timing(localState.clipColorAnimation, {
       toValue: 1,
       duration: 2000,
       useNativeDriver: false
     }).start(() => {
-      Animated.timing(state.clipColorAnimation, {
+      Animated.timing(localState.clipColorAnimation, {
         toValue: 0,
         duration: 2000,
         useNativeDriver: false
@@ -71,35 +49,36 @@ export function PlayerProgressBar(props: Props) {
   }
 
   const { backupDuration, clipEndTime, clipStartTime, isLoading, isMakeClipScreen } = props;
-  const { position, slidingPosition } = state
+  const { slidingPosition } = localState
+  const { position } = useProgress()
+  let { duration } = useProgress()
 
-  const backgroundColorInterpolator = state.clipColorAnimation.interpolate({
+  const backgroundColorInterpolator = localState.clipColorAnimation.interpolate({
     inputRange: [0, 1],
     outputRange: [PV.Colors.skyLight + '99', PV.Colors.yellow + '99']
   })
 
-    // If no item is currently in the TrackPlayer, fallback to use the
-    // last loaded item's duration (backupDuration).
-    let { duration } = state
-    duration = duration > 0 ? duration : backupDuration || 0
+  // If no item is currently in the TrackPlayer, fallback to use the
+  // last loaded item's duration (backupDuration).
+  duration = duration > 0 ? duration : backupDuration || 0
 
-    const pos = slidingPosition || position
-    const newProgressValue = duration > 0 ? pos / duration : 0
+  const pos = slidingPosition || position
+  const newProgressValue = duration > 0 ? pos / duration : 0
 
-    let clipStartTimePosition = 0
-    const sliderWidth = Dimensions.get('screen').width - sliderStyles.wrapper.marginHorizontal * 2
+  let clipStartTimePosition = 0
+  const sliderWidth = Dimensions.get('screen').width - sliderStyles.wrapper.marginHorizontal * 2
 
-    if (duration && clipStartTime) {
-      clipStartTimePosition = sliderWidth * (clipStartTime / duration)
-    }
+  if (duration && clipStartTime) {
+    clipStartTimePosition = sliderWidth * (clipStartTime / duration)
+  }
 
-    let clipWidthBar = sliderWidth - clipStartTimePosition
-    if (isMakeClipScreen && !clipEndTime) {
-      clipWidthBar = 0
-    } else if (duration && clipEndTime) {
-      const endPosition = sliderWidth * (clipEndTime / duration)
-      clipWidthBar = endPosition - clipStartTimePosition
-    }
+  let clipWidthBar = sliderWidth - clipStartTimePosition
+  if (isMakeClipScreen && !clipEndTime) {
+    clipWidthBar = 0
+  } else if (duration && clipEndTime) {
+    const endPosition = sliderWidth * (clipEndTime / duration)
+    clipWidthBar = endPosition - clipStartTimePosition
+  }
 
   return (
     <View style={sliderStyles.wrapper}>
@@ -109,23 +88,19 @@ export function PlayerProgressBar(props: Props) {
         minimumTrackTintColor={PV.Colors.skyDark}
         maximumTrackTintColor={PV.Colors.gray}
         onSlidingStart={(newProgressValue) => {
-          setState({ ...state, slidingPosition: newProgressValue * duration })
+          const slidingPosition = newProgressValue * duration
+          setLocalState({ ...localState, slidingPosition })
         }}
         onSlidingComplete={async (newProgressValue) => {
           const position = newProgressValue * duration
-
-          setState({
-            ...state,
-            position,
-            slidingPosition: null
-          })
-
+          setLocalState({ ...localState, slidingPosition: null })
           await setPlaybackPosition(position)
           loadChapterPlaybackInfo()
         }}
         onValueChange={(newProgressValue) => {
-          if (state.slidingPosition) {
-            setState({ ...state, slidingPosition: newProgressValue * duration })
+          const slidingPosition = newProgressValue * duration
+          if (localState.slidingPosition) {
+            setLocalState({ ...localState, slidingPosition })
           }
         }}
         thumbStyle={sliderStyles.thumbStyle}

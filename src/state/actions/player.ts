@@ -13,6 +13,7 @@ import { convertPodcastIndexValueTagToStandardValueTag } from '../../lib/valueTa
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import {
+  getCurrentLoadedTrackId,
   handlePlay,
   initializePlayerQueue as initializePlayerQueueService,
   loadItemAndPlayTrack as loadItemAndPlayTrackService,
@@ -265,7 +266,7 @@ export const setPlaybackSpeed = async (rate: number) => {
 export const togglePlay = async () => {
   // If somewhere a play button is pressed, but nothing is currently loaded in the player,
   // then load the last time from memory by re-initializing the player.
-  const trackId = await PVTrackPlayer.getCurrentLoadedTrack()
+  const trackId = await getCurrentLoadedTrackId()
   if (!trackId) {
     await initializePlayerQueue()
   }
