@@ -1,7 +1,6 @@
 import React from 'react'
-import { Platform, TextInput } from 'react-native'
+import { Platform, TextInput, TouchableWithoutFeedback } from 'react-native'
 import { useGlobal } from 'reactn'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'

@@ -256,8 +256,16 @@ const checkIfFileIsDownloaded = async (id: string, episodeMediaUrl: string) => {
 
 export const getCurrentLoadedTrackId = async () => {
   const trackIndex = await PVTrackPlayer.getCurrentTrack()
-  const track = await PVTrackPlayer.getTrack(trackIndex)
-  return track.id
+
+  let trackId = ''
+  if (trackIndex > 0 || trackIndex === 0) {
+    const track = await PVTrackPlayer.getTrack(trackIndex)
+    if (track?.id) {
+      trackId = track.id
+    }
+  }
+
+  return trackId
 }
 
 export const updateUserPlaybackPosition = async (skipSetNowPlaying?: boolean) => {
@@ -419,7 +427,7 @@ export const syncPlayerWithQueue = async () => {
 export const updateCurrentTrack = async (trackTitle?: string, artworkUrl?: string) => {
   try {
     const currentIndex = await PVTrackPlayer.getCurrentTrack()
-    if (currentIndex >= 0) {
+    if (currentIndex > 0 || currentIndex === 0) {
       const track = await PVTrackPlayer.getTrack(currentIndex)
       
       if (track) {
@@ -503,7 +511,7 @@ export const movePlayerItemToNewPosition = async (id: string, newIndex: number) 
 
   const previousIndex = playerQueueItems.findIndex((x: any) => x.id === id)
 
-  if (previousIndex >= 0) {
+  if (previousIndex > 0 || previousIndex === 0) {
     try {
       await TrackPlayer.remove(previousIndex)
       const pvQueueItems = await getQueueItemsLocally()
@@ -620,6 +628,8 @@ export const getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId = async (
   trackId: string,
   setPlayerClipIsLoadedIfClip?: boolean
 ) => {
+  if (!trackId) return null
+
   const queueItems = await getQueueItemsLocally()
 
   const queueItemIndex = queueItems.findIndex((x: any) =>
