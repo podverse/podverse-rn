@@ -5,7 +5,6 @@ const { test_loggedInScreensDidLoadTests } = require('./tests/loggedInScreensDid
 const { test_searchScreenDidLoad } = require('./tests/searchScreenDidLoad')
 const { test_tableSectionSelectors } = require('./tests/tableSectionSelectors')
 const { test_nonLoggedInMediaPlayer } = require('./tests/nonLoggedInMediaPlayer')
-const { test_podcastsScreenFull } = require('./tests/podcastsScreenFull')
 const { test_podcastScreenFull } = require('./tests/podcastScreenFull')
 const { test_episodesScreenFull } = require('./tests/episodesScreenFull')
 const { test_episodeScreenFull } = require('./tests/episodeScreenFull')
@@ -18,6 +17,8 @@ const { test_profilesScreenFull } = require('./tests/profilesScreenFull')
 const { test_playlistsScreenFull } = require('./tests/playlistsScreenFull')
 const { test_fundingPresent } = require('./tests/fundingPresent')
 const { test_LNPaySetup } = require('./tests/LNPaySetup')
+const { test_bitcoinWallet } = require('./tests/bitcoinWallet')
+
 
 
 const { createDriver } = require('./driver/driverFactory')
@@ -64,6 +65,7 @@ const runTests = async (customCapabilities) => {
     await test_historyScreenEditFeature()
     await test_fundingPresent()
     await test_LNPaySetup()
+    await test_bitcoinWallet()
 
 
 
