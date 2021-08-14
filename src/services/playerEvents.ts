@@ -37,6 +37,8 @@ const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsA
 const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem) => {
   if (!currentNowPlayingItem) return
 
+  await clearChapterPlaybackInfo(currentNowPlayingItem)
+
   await setNowPlayingItemLocally(currentNowPlayingItem, currentNowPlayingItem.userPlaybackPosition || 0)
 
   if (currentNowPlayingItem && currentNowPlayingItem.clipId && !currentNowPlayingItem.clipIsOfficialChapter) {
@@ -164,7 +166,6 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-track-changed', (x: any) => {
     console.log('playback-track-changed', x)
-    clearChapterPlaybackInfo()
     syncNowPlayingItemWithTrack()
     handleTrackEnded(x)
   })
@@ -172,7 +173,6 @@ module.exports = async () => {
   // NOTE: TrackPlayer.reset will call the playback-queue-ended event on Android!!!
   PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
     console.log('playback-queue-ended', x)
-    clearChapterPlaybackInfo()
     handleQueueEnded(x)
   })
 
