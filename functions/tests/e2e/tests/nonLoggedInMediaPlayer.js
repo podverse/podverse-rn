@@ -5,6 +5,14 @@ const test_nonLoggedInMediaPlayer = async () => {
   const driver = getDriver()
 
   await elementByIdAndClickAndTest('tab_episodes_screen', 'episodes_screen_view')
+
+  await elementByIdAndClickAndTest('episodes_screen_dropdown_button', 'filter_screen_view')
+
+  await elementByIdAndClickAndTest('filter_screen_top-past-month', 'filter_screen_top-past-month_check_icon_button')
+
+  //go back
+  await elementByIdClick('filter_screen_nav_header_button_text')
+
   await elementByIdClick('episodes_screen_episode_item_0_time_remaining_widget_toggle_play')
   await elementByIdAndClickAndTest('mini_player_pause_button_icon_button', 'mini_player_play_button_icon_button')
   await elementByIdAndClickAndTest('mini_player_play_button_icon_button', 'mini_player_pause_button_icon_button')

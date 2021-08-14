@@ -1,6 +1,6 @@
 const { getDriver } = require('../driver/driverFactory')
 const { confirmAndroidAlert } = require('../driver/helpers/alerts')
-const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, goBackKey, noTestLabel } = require('../driver/helpers/elements')
+const { elementByIdAndClickAndTest, elementByIdClick, elementByIdToggle, elementByIdHasText, goBackKey, noTestLabel } = require('../driver/helpers/elements')
 const { performScroll, scrollDownKey, scrollUpKey } = require('../driver/helpers/scroll')
 
 const test_settingsScreenFull = async () => {
@@ -14,10 +14,14 @@ const test_settingsScreenFull = async () => {
   await elementByIdToggle('settings_screen_censor_nsfw_text_switch')
 
   if (process.env.DEVICE_TYPE !== 'F-Droid') {
+    await elementByIdHasText('settings_screen_listen_tracking_text', 'Listen Tracking Enabled')
     await elementByIdClick('settings_screen_listen_tracking_switch')
-    await elementByIdClick('tracking_consent_screen_yes_enable_tracking_button')
+    await elementByIdClick('tracking_consent_screen_bottom_button_button')
+    await elementByIdHasText('settings_screen_listen_tracking_text', 'Listen Tracking Disabled')
     await elementByIdClick('settings_screen_listen_tracking_switch')
-    await elementByIdClick('tracking_consent_screen_no_thanks_button')
+    await elementByIdClick('tracking_consent_screen_top_button_button')
+    await elementByIdHasText('settings_screen_listen_tracking_text', 'Listen Tracking Enabled')
+
   }
 
   await performScroll(scrollDownKey, 2)
