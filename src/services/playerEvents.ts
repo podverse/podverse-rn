@@ -142,12 +142,6 @@ const handleQueueEnded = (x: any) => {
     (async () => {
       hideMiniPlayer()
       await resetHistoryItem(x)
-
-      // Don't call reset on Android because it triggers the playback-queue-ended event
-      // and will cause an infinite loop
-      if (Platform.OS === 'ios') {
-        PVTrackPlayer.reset()
-      }
     })()
   }, 0)
 }

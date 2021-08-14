@@ -160,19 +160,19 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={togglePlay}
-              style={[playerStyles.playButton, playButtonAdjust]}>
-              {hasErrored ? (
-                <Icon
-                  color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
-                  name={'exclamation-triangle'}
-                  size={35}
-                  testID={`${testIDPrefix}_error`}
-                />
-              ) : (
-                playButtonIcon
-              )}
+            <TouchableOpacity onPress={togglePlay}>
+              <View style={[playerStyles.playButton, playButtonAdjust]}>
+                {hasErrored ? (
+                  <Icon
+                    color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
+                    name={'exclamation-triangle'}
+                    size={35}
+                    testID={`${testIDPrefix}_error`}
+                  />
+                ) : (
+                  playButtonIcon
+                )}
+              </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
               {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, `${testIDPrefix}_step_forward`)}
