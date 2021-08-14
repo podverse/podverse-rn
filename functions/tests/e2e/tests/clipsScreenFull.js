@@ -87,9 +87,8 @@ const test_clipsScreenFull = async () => {
   //navigate back to filter screen
   await elementByIdAndClickAndTest('clips_screen_dropdown_button', 'filter_screen_view')
 
-  await elementByIdAndClickAndTest('filter_screen_top-past-year', 'filter_screen_top-past-year_check_icon_button')
-  await elementCheckIfNotPresent('filter_screen_top-all-time_check_icon_button') //7b
   await elementByIdAndClickAndTest('filter_screen_category', 'filter_screen_category_check_icon_button')
+  await elementCheckIfNotPresent('filter_screen_top-all-time_check_icon_button') //7b
 
   //go back
   await elementByIdClick('filter_screen_nav_header_button_text')
