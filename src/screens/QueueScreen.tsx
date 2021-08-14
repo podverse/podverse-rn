@@ -226,7 +226,9 @@ export class QueueScreen extends React.Component<Props, State> {
           {...(item.clipTitle ? { clipTitle: item.clipTitle } : {})}
           {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
           {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
-          handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
+          handleRemovePress={() => {
+            this._handleRemoveHistoryItemPress(item)}
+          }
           onPress={() => {
             if (!isEditing) {
               this._handlePlayItem(item)

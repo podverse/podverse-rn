@@ -53,76 +53,78 @@ export class QueueTableCell extends React.PureComponent<Props> {
       : [styles.wrapper, hideDivider ? { borderBottomWidth: 0 } : {}]
 
     return (
-      <TouchableWithoutFeedback onLongPress={drag} onPress={onPress}>
-        <View
-          style={viewStyle}
-          transparent={transparent}
-          testID={testID}>
-          <RNView style={styles.wrapperTop}>
-            <FastImage isSmall key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
-            <RNView style={styles.textWrapper}>
-              {!!podcastTitle && (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  isSecondary
-                  numberOfLines={1}
-                  style={styles.podcastTitle}
-                  testID={`${testID}_podcast_title`}>
-                  {podcastTitle.trim()}
-                </Text>
-              )}
-              {!!episodeTitle && (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                  numberOfLines={2}
-                  style={styles.episodeTitle}
-                  testID={`${testID}_episode_title`}>
-                  {episodeTitle.trim()}
-                </Text>
-              )}
-              {!!episodePubDate && (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  isSecondary
-                  numberOfLines={1}
-                  style={styles.episodePubDate}
-                  testID={`${testID}_episode_pub_date`}>
-                  {readableDate(episodePubDate)}
-                </Text>
-              )}
+      <View
+        style={viewStyle}
+        transparent={transparent}
+        testID={testID}>
+        <RNView style={styles.wrapperTop}>
+          <TouchableWithoutFeedback onLongPress={drag} onPress={onPress}>
+            <RNView style={styles.wrapperTappableInner}>
+              <FastImage isSmall key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
+              <RNView style={styles.textWrapper}>
+                {!!podcastTitle && (
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    isSecondary
+                    numberOfLines={1}
+                    style={styles.podcastTitle}
+                    testID={`${testID}_podcast_title`}>
+                    {podcastTitle.trim()}
+                  </Text>
+                )}
+                {!!episodeTitle && (
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                    numberOfLines={2}
+                    style={styles.episodeTitle}
+                    testID={`${testID}_episode_title`}>
+                    {episodeTitle.trim()}
+                  </Text>
+                )}
+                {!!episodePubDate && (
+                  <Text
+                    fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                    isSecondary
+                    numberOfLines={1}
+                    style={styles.episodePubDate}
+                    testID={`${testID}_episode_pub_date`}>
+                    {readableDate(episodePubDate)}
+                  </Text>
+                )}
+              </RNView>
+              {!!showMoveButton && <Icon isSecondary name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />}
             </RNView>
-            {!!showMoveButton && <Icon isSecondary name='arrows-alt-v' size={28} style={button.iconOnlyMedium} />}
-            {!!showRemoveButton && !!handleRemovePress && (
-              <Icon
-                name='times'
-                onPress={handleRemovePress}
-                size={28}
-                style={button.iconOnlyMedium}
-                testID={`${testID}_remove_button`}
-              />
-            )}
-          </RNView>
-          {!hideBottomRow && (
-            <RNView style={styles.wrapperBottom}>
+          </TouchableWithoutFeedback>
+          {!!showRemoveButton && !!handleRemovePress && (
+            <Icon
+              name='times'
+              onPress={handleRemovePress}
+              size={28}
+              style={button.iconOnlyMedium}
+              testID={`${testID}_remove_button`}
+            />
+          )}
+        </RNView>
+        {!hideBottomRow && (
+          <RNView style={styles.wrapperBottom}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              numberOfLines={1}
+              style={styles.clipTitle}
+              testID={`${testID}_bottom_text`}>
+              {!!clipStartTime && !!clipTitle ? clipTitle.trim() : translate('Full Episode')}
+            </Text>
+            {!!clipStartTime && (
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                numberOfLines={1}
-                style={styles.clipTitle}
-                testID={`${testID}_bottom_text`}>
-                {!!clipStartTime && !!clipTitle ? clipTitle.trim() : translate('Full Episode')}
+                style={styles.clipTime}
+                testID={`${testID}_clip_time`}>
+                {readableClipTime(clipStartTime, clipEndTime)}
               </Text>
-              {!!clipStartTime && (
-                <Text
-                  fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-                  style={styles.clipTime}
-                  testID={`${testID}_clip_time`}>
-                  {readableClipTime(clipStartTime, clipEndTime)}
-                </Text>
-              )}
-            </RNView>
-          )}
-        </View>
-      </TouchableWithoutFeedback>
+            )}
+          </RNView>
+        )}
+      </View>
     )
   }
 }
@@ -183,6 +185,10 @@ const styles = StyleSheet.create({
   wrapperBottom: {
     flexDirection: 'row',
     marginTop: 8
+  },
+  wrapperTappableInner: {
+    flex: 1,
+    flexDirection: 'row'
   },
   wrapperTop: {
     alignItems: 'center',
