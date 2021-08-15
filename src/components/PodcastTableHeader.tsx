@@ -1,4 +1,4 @@
-import { StyleSheet, Switch, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, Switch, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React, { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { removeHTMLFromString, testProps } from '../lib/utility'
@@ -108,10 +108,16 @@ export const PodcastTableHeader = (props: Props) => {
         {!isLoading && !isNotFound && !!finalDescription && (
           <View style={styles.descriptionWrapper}>
             <TouchableWithoutFeedback onPress={handleNavigateToPodcastInfoScreen}>
-              <Text
-                numberOfLines={2}
-                style={styles.descriptionText}
-                testID={`${testID}_description_text`}>{finalDescription}</Text>
+              <RNView>
+                <Text
+                  numberOfLines={2}
+                  style={styles.descriptionText}
+                  testID={`${testID}_description_text`}>{finalDescription}</Text>
+                {/* <Text
+                  numberOfLines={1}
+                  style={styles.descriptionText}
+                  testID={`${testID}_description_text_more`}>{translate('more-ellipsis')}</Text> */}
+              </RNView>
             </TouchableWithoutFeedback>
           </View>
         )}

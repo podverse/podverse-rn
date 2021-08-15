@@ -32,7 +32,7 @@ export class PodcastInfoScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = () => ({
-    title: translate('Podcast Info'),
+    title: translate('More Info'),
     headerRight: null
   })
 
