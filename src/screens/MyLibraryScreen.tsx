@@ -3,7 +3,6 @@ import { Badge } from 'react-native-elements'
 import React from 'reactn'
 import { Divider, TableCell, Text, View } from '../components'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { core, table } from '../styles'
@@ -79,7 +78,9 @@ export class MyLibraryScreen extends React.Component<Props, State> {
     const featureOptions = this._myLibraryOptions(isLoggedIn)
 
     return (
-      <View style={core.backgroundView} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={core.backgroundView}
+        testID={`${testIDPrefix}_view`}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (

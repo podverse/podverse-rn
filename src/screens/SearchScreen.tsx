@@ -16,7 +16,7 @@ import {
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { createEmailLinkUrl, isOdd, safeKeyExtractor, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { createEmailLinkUrl, isOdd, safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getPodcasts } from '../services/podcast'
 import { trackPageView } from '../services/tracking'
@@ -235,7 +235,9 @@ export class SearchScreen extends React.Component<Props, State> {
     } = this.state
 
     return (
-      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        testID={`${testIDPrefix}_view`}>
         <ButtonGroup
           buttons={buttons}
           onPress={this._handleSearchTypePress}

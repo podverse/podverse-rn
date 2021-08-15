@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
-import { convertSecToHHMMSS, testProps } from '../lib/utility'
+import { convertSecToHHMMSS } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { Text } from './'
@@ -23,7 +23,9 @@ export const TimeInput = (props: Props) => {
 
   return (
     <View style={styles.timeInputWrapper}>
-      <TouchableWithoutFeedback onPress={handleSetTime} {...testProps(`${testID}_time_input_set_button`)}>
+      <TouchableWithoutFeedback
+        onPress={handleSetTime}
+        testID={`${testID}_time_input_set_button`}>
         <View style={styles.timeInputTextWrapper}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -52,7 +54,7 @@ export const TimeInput = (props: Props) => {
             top: 4
           }}
           onPress={handlePreview}
-          {...testProps(`${testID}_time_input_preview_button`)}>
+          testID={`${testID}_time_input_preview_button`}>
           <Icon color={globalTheme.dropdownButtonText.color} name='play' size={20} style={styles.previewIcon} />
         </TouchableOpacity>
       )}

@@ -1,6 +1,5 @@
 import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
-import { testProps } from '../lib/utility'
 import { navHeader } from '../styles'
 
 type Props = {
@@ -22,7 +21,7 @@ export const NavItemWrapper = (props: Props) => {
           top: 12
         }}
         onPress={handlePress}
-        {...(testID ? testProps(testID) : {})}>
+        {...(testID ? { testID } : {})}>
         {children}
       </TouchableOpacity>
     </View>

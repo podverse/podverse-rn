@@ -1,7 +1,6 @@
 import React from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { ActivityIndicator, Text, View } from './'
 
@@ -29,7 +28,7 @@ export const SubscribeButton = (props: Props) => {
       }}
       onPress={handleToggleSubscribe}
       style={[styles.buttonView, props.style]}
-      {...(testID ? testProps(`${testID}_subscribe_button`) : {})}>
+      {...(testID ? { testID: `${testID}_subscribe_button` } : {})}>
       <View>
         {isSubscribing && (
           <View style={styles.activityIndicator}>

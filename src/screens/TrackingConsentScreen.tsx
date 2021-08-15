@@ -3,7 +3,6 @@ import { getTrackingStatus } from 'react-native-tracking-transparency'
 import React from 'reactn'
 import { Button, HTMLScrollView, SafeAreaView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
@@ -114,8 +113,8 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
     }
 
     return (
-      <SafeAreaView {...testProps(`${testIDPrefix}_view`)}>
-        <View style={styles.view}>
+      <SafeAreaView testID={`${testIDPrefix}_view`}>
+        <View accessible style={styles.view}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={styles.header}>

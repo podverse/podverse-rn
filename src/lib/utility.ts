@@ -560,10 +560,6 @@ export const convertUrlToSecureHTTPS = (originalUrl: string) => {
   return originalUrl ? originalUrl.replace('http://', 'https://') : ''
 }
 
-export const testProps = (id: string) => {
-  return { testID: id, accessibilityLabel: id }
-}
-
 export const getUniqueArrayByKey = (arr: any[], key: string) => {
   return [...new Map(arr.map((item: any) => [item[key], item])).values()]
 }

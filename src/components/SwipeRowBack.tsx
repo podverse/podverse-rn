@@ -2,7 +2,6 @@ import React from 'react'
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
-import { testProps } from '../lib/utility'
 import { ActivityIndicator } from '.'
 
 type Props = {
@@ -21,7 +20,7 @@ export const SwipeRowBack = (props: Props) => {
     <TouchableOpacity
       onPress={onPress}
       style={[styles, s.swipeRowBack, globalTheme.swipeRowBack]}
-      {...testProps(`${testID}_swipe_row_back`)}>
+      testID={`${testID}_swipe_row_back`}>
       {isLoading ? (
           <ActivityIndicator size='large' testID={testID} />
       ) : (

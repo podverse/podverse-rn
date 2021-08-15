@@ -1,7 +1,6 @@
 import React from 'react'
 import { Platform, TextInput, TouchableWithoutFeedback } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { Text, View } from '.'
@@ -111,7 +110,7 @@ export const PVTextInput = (props: Props) => {
           secureTextEntry={secureTextEntry}
           style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
           underlineColorAndroid={underlineColorAndroid}
-          {...(testID ? testProps(`${testID}_text_input`) : {})}
+          {...(testID ? { testID: `${testID}_text_input` } : {})}
           value={value}
         />
       </View>

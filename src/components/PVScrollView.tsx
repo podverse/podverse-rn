@@ -17,6 +17,7 @@ type Props = {
   snapToOffsets?: number
   snapToStart?: boolean
   style?: any
+  testID?: string
   transparent?: boolean
 }
 

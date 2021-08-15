@@ -32,7 +32,7 @@ import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
-import { safeKeyExtractor, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
@@ -653,7 +653,9 @@ static navigationOptions = ({ navigation }) => {
       (viewType === PV.Filters._clipsKey && translate('No clips found'))
 
     return (
-      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        testID={`${testIDPrefix}_view`}>
         <PodcastTableHeader
           autoDownloadOn={autoDownloadOn}
           description={podcast && podcast.description}
@@ -775,12 +777,12 @@ static navigationOptions = ({ navigation }) => {
           <Dialog.Button
             label={translate('No')}
             onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
-            {...testProps('dialog_delete_downloaded_episodes_no')}
+            testID='dialog_delete_downloaded_episodes_no'
           />
           <Dialog.Button
             label={translate('Yes')}
             onPress={this._handleDeleteDownloadedEpisodes}
-            {...testProps('dialog_delete_downloaded_episodes_yes')}
+            testID='dialog_delete_downloaded_episodes_yes'
           />
         </Dialog.Container>
       </View>

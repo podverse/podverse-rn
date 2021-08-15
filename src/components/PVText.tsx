@@ -1,10 +1,10 @@
 import React from 'react'
 import { Text } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 
 type Props = {
+  accessible?: boolean
   allowFontScaling?: boolean
   children?: any
   fontSizeLargerScale?: number
@@ -32,7 +32,7 @@ export const PVText = (props: Props) => {
   }
 
   return (
-    <Text {...props} style={textStyle} {...(testID ? testProps(testID) : {})}>
+    <Text {...props} style={textStyle} {...(testID ? { testID } : {})}>
       {typeof props.children === 'string' ? props.children?.sanitize(censorNSFWText) : props.children}
     </Text>
   )

@@ -1,7 +1,6 @@
 import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { Icon, Text } from '.'
 
@@ -21,7 +20,7 @@ export const DropdownButton = (props: any) => {
       activeOpacity={0.7}
       disabled={disableFilter}
       onPress={onPress}
-      {...testProps(`${testID}_dropdown_button`)}>
+      testID={`${testID}_dropdown_button`}>
       <View style={[styles.dropdownButton, dropdownStyle, extraStyles]}>
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}

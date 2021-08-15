@@ -3,7 +3,6 @@ import { ActivityIndicator, Dimensions, StyleSheet, TouchableWithoutFeedback, Vi
 import { useGlobal } from 'reactn'
 import { Colors } from '../resources/Colors'
 import { core } from '../styles'
-import { testProps } from '../lib/utility'
 
 type Props = {
   children?: any
@@ -31,7 +30,7 @@ export const PVActivityIndicator = (props: Props) => {
             animating
             color={globalTheme.activityIndicator.color}
             size={size}
-            {...testProps(`${testID}_activity_indicator`)} />
+            testID={`${testID}_activity_indicator`} />
         </View>
       )}
       {!isOverlay && (
@@ -41,7 +40,7 @@ export const PVActivityIndicator = (props: Props) => {
               animating
               color={globalTheme.activityIndicator.color}
               size={size}
-              {...testProps(`${testID}_activity_indicator`)} />
+              testID={`${testID}_activity_indicator`} />
           </View>
         </TouchableWithoutFeedback>
       )}

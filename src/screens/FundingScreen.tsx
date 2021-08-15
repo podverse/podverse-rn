@@ -8,7 +8,7 @@ import { getLNWallet } from '../state/actions/lnpay'
 import { Divider, FastImage, NavDismissIcon, ScrollView, Text,
   TextInput, ValueTagInfoView, View } from '../components'
 import { translate } from '../lib/i18n'
-import { readableDate, testProps } from '../lib/utility'
+import { readableDate } from '../lib/utility'
 import { convertValueTagIntoValueTransactions } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
@@ -165,7 +165,9 @@ export class FundingScreen extends React.Component<Props, State> {
       )
 
     return (
-      <View style={styles.content} {...testProps('funding_screen_view')}>
+      <View
+        style={styles.content}
+        testID='funding_screen_view'>
         <View style={styles.innerTopView}>
           <FastImage isSmall source={nowPlayingItem.podcastShrunkImageUrl} styles={styles.image} />
           <View>

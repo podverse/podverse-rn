@@ -3,7 +3,7 @@ import React from 'reactn'
 import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { getMembershipExpiration, getMembershipStatus, readableDate, testProps } from '../lib/utility'
+import { getMembershipExpiration, getMembershipStatus, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { buy1YearPremium } from '../services/purchaseShared'
 import { trackPageView } from '../services/tracking'
@@ -112,7 +112,9 @@ export class MembershipScreen extends React.Component<Props, State> {
     const expirationDate = getMembershipExpiration(userInfo)
 
     return (
-      <View style={styles.wrapper} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.wrapper}
+        testID={`${testIDPrefix}_view`}>
         {isLoading && isLoggedIn && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && showNoInternetConnectionMessage && (
           <View style={styles.textRowCentered}>
@@ -157,7 +159,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={this.handleRenewPress}
                 style={styles.subText}
-                {...testProps(`${testIDPrefix}_renew_membership`)}>
+                testID={`${testIDPrefix}_renew_membership`}>
                 {translate('Renew Membership')}
               </TextLink>
             </View>
@@ -181,7 +183,7 @@ export class MembershipScreen extends React.Component<Props, State> {
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={this.handleSignUpPress}
                 style={styles.subText}
-                {...testProps(`${testIDPrefix}_sign_up`)}>
+                testID={`${testIDPrefix}_sign_up`}>
                 {translate('Sign Up')}
               </TextLink>
             </View>

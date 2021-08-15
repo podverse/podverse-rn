@@ -1,7 +1,6 @@
 import React from 'react'
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { ActivityIndicator, Text, View } from './'
 
@@ -31,7 +30,9 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
     if (createdBy) wrapperLeftStyles.push(styles.wrapperLeftWithCreatedBy)
 
     return (
-      <TouchableWithoutFeedback onPress={onPress} {...(testID ? testProps(testID) : {})}>
+      <TouchableWithoutFeedback
+        onPress={onPress}
+        {...(testID ? { testID } : {})}>
         <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
           <RNView style={wrapperLeftStyles}>
             <RNView style={styles.wrapperLeftTop}>

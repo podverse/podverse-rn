@@ -3,7 +3,6 @@ import React from 'reactn'
 import { ActivityIndicator, NavDismissIcon, Text, TextInput, View } from '../components'
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithItem } from '../lib/navigate'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { addAddByRSSPodcastWithCredentials } from '../state/actions/parser'
@@ -157,7 +156,7 @@ export class AddPodcastByRSSAuthScreen extends React.Component<Props, State> {
                 style={[styles.signInButton, disabledStyle]}
                 disabled={submitIsDisabled || isLoading}
                 onPress={this.login}
-                {...testProps(`${testIDPrefix}_submit`)}>
+                testID={`${testIDPrefix}_submit`}>
                 {isLoading ? (
                   <ActivityIndicator size='small' testID={testIDPrefix} />
                 ) : (

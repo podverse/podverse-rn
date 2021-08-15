@@ -20,7 +20,7 @@ import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisode } from '../services/episode'
@@ -120,10 +120,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Events.TRACKING_TERMS_ACKNOWLEDGED, this._handleTrackingTermsAcknowledged)
 
-    const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
-    if (!trackingConsentAcknowledged) {
+    // const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
+    // if (!trackingConsentAcknowledged) {
       await navigation.navigate(PV.RouteNames.TrackingConsentScreen)
-    }
+    // }
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
@@ -710,7 +710,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         : translate('Search')
 
     return (
-      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        testID={`${testIDPrefix}_view`}>
         <RNView style={{ flex: 1 }}>
           <PlayerEvents />
           <TableSectionSelectors
@@ -765,12 +767,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
           <Dialog.Button
             label={translate('No Wifi Only')}
             onPress={this._handleDataSettingsWifiOnly}
-            {...testProps('alert_no_wifi_only')}
+            testID='alert_no_wifi_only'
           />
           <Dialog.Button
             label={translate('Yes Allow Data')}
             onPress={this._handleDataSettingsAllowData}
-            {...testProps('alert_yes_allow_data')}
+            testID='alert_yes_allow_data'
           />
         </Dialog.Container>
         <PurchaseListener navigation={navigation} />

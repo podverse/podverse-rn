@@ -1,6 +1,5 @@
 import React from 'react'
 import { Pressable, View } from 'react-native'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { table } from '../styles'
 import { Text, Icon } from '.'
@@ -28,7 +27,7 @@ export const TableCell = (props: TableCellProps) => {
     <Pressable
       onPress={onPress}
       style={table.cellWrapper}
-      {...testProps(`${testIDPrefix}_table_cell_wrapper${testIDSuffix ? `_${testIDSuffix}` : ''}`)}>
+      testID={`${testIDPrefix}_table_cell_wrapper${testIDSuffix ? `_${testIDSuffix}` : ''}`}>
         <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
           <View style={{flexDirection:"row", alignItems:"center"}}>{children}</View>
           {!hideChevron &&

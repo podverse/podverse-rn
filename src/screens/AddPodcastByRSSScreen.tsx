@@ -13,7 +13,7 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import { createEmailLinkUrl, testProps } from '../lib/utility'
+import { createEmailLinkUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { trackPageView } from '../services/tracking'
@@ -103,7 +103,9 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
     const { isLoading, url } = this.state
 
     return (
-      <View style={styles.content} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.content}
+        testID={`${testIDPrefix}_view`}>
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && (
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -135,7 +137,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 onPress={this._navToRequestPodcastEmail}
                 style={styles.textLink}
-                {...testProps(`${testIDPrefix}_request_podcast`)}>
+                testID={`${testIDPrefix}_request_podcast`}>
                 {translate('Request Podcast')}
               </TextLink>
             )}

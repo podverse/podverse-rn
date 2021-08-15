@@ -2,7 +2,6 @@ import React from 'react'
 import { StyleSheet, View as RNView } from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { Icon, Text } from '.'
 
@@ -36,14 +35,14 @@ export const PVSearchBar = (props: Props) => {
         ref={inputRef}
         returnKeyType='search'
         searchIcon={<Icon color={PV.Colors.white} name={'search'} size={PV.Icons.NAV} solid />}
-        {...(testID ? testProps(`${testID}_search_bar`) : {})}
+        {...(testID ? { testID: `${testID}_search_bar` } : {})}
         value={value}
       />
       {!!subText && (
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
           style={[globalTheme.textSecondary, styles.subText]}
-          {...testProps(`${testID}_search_bar_sub_text`)}>
+          testID={`${testID}_search_bar_sub_text`}>
           {subText}
         </Text>
       )}

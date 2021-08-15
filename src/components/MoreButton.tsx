@@ -1,7 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { ActivityIndicator } from '.'
 
@@ -24,7 +23,7 @@ export const MoreButton = (props: Props) => {
         top: 10
       }}
       onPress={handleMorePress}
-      {...testProps(`${testID}_more_button`)}>
+      testID={`${testID}_more_button`}>
       {!isLoading ? (
         <View style={[styles.imageWrapper]}>
           <Image resizeMode='contain' source={PV.Images.MORE} style={[styles.image, globalTheme.buttonImage]} />

@@ -10,7 +10,6 @@ import {
 } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { getAuthUserInfo } from '../state/actions/auth'
@@ -129,7 +128,9 @@ export class EditProfileScreen extends React.Component<Props, State> {
     }
 
     return (
-      <View style={styles.view} {...testProps('edit_profile_screen_view')}>
+      <View
+        style={styles.view}
+        testID='edit_profile_screen_view'>
         {!isLoading ? (
           <View>
             <TextInput

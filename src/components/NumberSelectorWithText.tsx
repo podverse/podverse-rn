@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { convertSecToHHMMSS, testProps } from '../lib/utility'
+import { convertSecToHHMMSS } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, TextInput } from './'
 
@@ -57,7 +57,7 @@ export const NumberSelectorWithText = (props: Props) => {
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
           style={[globalTheme.textSecondary, styles.subText]}
-          {...(testID ? testProps(`${testID}_sub_text`) : {})}>
+          {...(testID ? { testID: `${testID}_sub_text` } : {})}>
           {subText}
         </Text>
       )}

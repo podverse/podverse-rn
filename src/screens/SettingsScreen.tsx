@@ -25,7 +25,6 @@ import {
 import { removeAllDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { refreshDownloads } from '../lib/downloader'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { deleteLoggedInUser } from '../services/user'
@@ -365,7 +364,7 @@ export class SettingsScreen extends React.Component<Props, State> {
       <ScrollView
         contentContainerStyle={styles.scrollViewContentContainer}
         style={styles.wrapper}
-        {...testProps(`${testIDPrefix}_view`)}>
+        testID={`${testIDPrefix}_view`}>
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && (
           <View>
@@ -549,7 +548,7 @@ export class SettingsScreen extends React.Component<Props, State> {
           <Dialog.Button
             label={translate('No')}
             onPress={this._handleToggleSetAllDownloadDialog}
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_update_download_limit_no_button`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_update_download_limit_no_button` } : {})}
           />
           <Dialog.Button
             label={translate('Yes')}
@@ -558,7 +557,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                 ? this._handleUpdateAllDownloadedEpiosdeLimitCount
                 : this._handleUpdateAllDownloadedEpiosdeLimitDefault
             }
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_update_download_limit_yes_button`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_update_download_limit_yes_button` } : {})}
           />
         </Dialog.Container>
 
@@ -570,12 +569,12 @@ export class SettingsScreen extends React.Component<Props, State> {
           <Dialog.Button
             label={translate('No')}
             onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_downloaded_episodes_no`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_no` } : {})}
           />
           <Dialog.Button
             label={translate('Yes')}
             onPress={this._handleDeleteDownloadedEpisodes}
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_downloaded_episodes_yes`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_yes` } : {})}
           />
         </Dialog.Container>
 
@@ -586,13 +585,13 @@ export class SettingsScreen extends React.Component<Props, State> {
           <Dialog.Input
             onChangeText={this._handleDeleteAccountDialogTextChange}
             placeholder=''
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_account_input`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_input` } : {})}
             value={deleteAccountDialogText}
           />
           <Dialog.Button
             label={translate('Cancel')}
             onPress={this._handleToggleDeleteAccountDialog}
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_account_cancel`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_cancel` } : {})}
           />
           <Dialog.Button
             bold={deleteAccountDialogConfirmed}
@@ -600,7 +599,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             disabled={!deleteAccountDialogConfirmed}
             label={translate('Delete')}
             onPress={this._handleDeleteAccount}
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_account_delete`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_delete` } : {})}
           />
         </Dialog.Container>
       </ScrollView>

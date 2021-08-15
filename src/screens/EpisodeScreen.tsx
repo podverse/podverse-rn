@@ -14,7 +14,7 @@ import {
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { replaceLinebreaksWithBrTags, testProps } from '../lib/utility'
+import { replaceLinebreaksWithBrTags } from '../lib/utility'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
@@ -194,7 +194,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
       : {}
 
     return (
-      <ScrollView style={styles.view} {...testProps('episode_screen_view')}>
+      <ScrollView
+        style={styles.view}
+        testID='episode_screen_view'>
         <EpisodeTableHeader
           episode={episode}
           episodeDownloaded={episodeDownloaded}

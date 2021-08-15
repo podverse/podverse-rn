@@ -1,6 +1,5 @@
 import { TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { testProps } from '../lib/utility'
 import { navHeader } from '../styles'
 import { Text } from './'
 
@@ -26,7 +25,7 @@ export const NavHeaderButtonText = (props: Props) => {
     <TouchableOpacity
       disabled={disabled}
       onPress={handlePress}
-      {...testProps(`${testID}_nav_header_button_text`)}>
+      testID={`${testID}_nav_header_button_text`}>
       <Text allowFontScaling={false} style={buttonTextStyle} testID={`${testID}_text`}>
         {props.text}
       </Text>

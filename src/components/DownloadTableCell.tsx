@@ -2,7 +2,6 @@ import React from 'react'
 import { StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
 import { Slider } from 'react-native-elements'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getDownloadStatusText } from '../state/actions/downloads'
 import { FastImage, Text, View } from './'
@@ -42,7 +41,7 @@ export class DownloadTableCell extends React.PureComponent<Props> {
       <TouchableOpacity
         activeOpacity={1}
         onPress={onPress}
-        {...(testID ? testProps(testID) : {})}
+        {...(testID ? { testID } : {})}
         style={styles.cellView}>
         <View style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={styles.image} />

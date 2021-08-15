@@ -1,7 +1,7 @@
 import { StyleSheet, Switch, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React, { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
-import { removeHTMLFromString, testProps } from '../lib/utility'
+import { removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { IndicatorDownload } from './IndicatorDownload'
@@ -96,7 +96,7 @@ export const PodcastTableHeader = (props: Props) => {
                       onValueChange={handleToggleAutoDownload}
                       style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }], marginLeft: 5 }}
                       trackColor={{ true: PV.Colors.brandBlueLight, false: PV.Colors.grayLightest }}
-                      {...(testID ? testProps(`${testID}_auto_dl_switch`) : {})}
+                      {...(testID ? { testID: `${testID}_auto_dl_switch` } : {})}
                       value={autoDownloadOn}
                     />
                   </View>

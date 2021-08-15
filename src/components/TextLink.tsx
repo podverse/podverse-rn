@@ -11,6 +11,7 @@ type Props = {
   numberOfLines?: number
   onPress?: any
   style?: any
+  testID: string
 }
 
 export const TextLink = (props: Props) => {

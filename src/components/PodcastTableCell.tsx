@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { readableDate, testProps } from '../lib/utility'
+import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { FastImage, IndicatorDownload, Text, View } from './'
 
@@ -64,7 +64,9 @@ export class PodcastTableCell extends React.PureComponent<Props> {
     )
 
     return (
-      <TouchableWithoutFeedback onPress={onPress} {...(testID ? testProps(testID) : {})}>
+      <TouchableWithoutFeedback
+        onPress={onPress}
+        {...(testID ? { testID } : {})}>
         <View style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={PV.Table.cells.podcast.image} />
           <RNView style={styles.textWrapper}>

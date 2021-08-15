@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, View, WebViewStaticHTML } from '../components'
-import { testProps } from '../lib/utility'
 import { trackPageView } from '../services/tracking'
 
 type Props = any
@@ -37,7 +36,9 @@ export class FAQScreen extends React.Component<Props, State> {
     const { isLoading } = this.state
 
     return (
-      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        testID={`${testIDPrefix}_view`}>
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         <WebViewStaticHTML html={html} isLoading={isLoading} />
       </View>

@@ -3,7 +3,6 @@ import React from 'reactn'
 import packageJson from '../../package.json'
 import { Divider, ScrollView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 
@@ -27,7 +26,9 @@ export class TermsOfServiceScreen extends React.Component<Props> {
 
   render() {
     return (
-      <View style={styles.content} {...testProps('terms_of_service_screen_view')}>
+      <View
+        style={styles.content}
+        testID='terms_of_service_screen_view'>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
             {translate('Terms of Service')}

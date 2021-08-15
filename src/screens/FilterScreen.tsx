@@ -3,7 +3,7 @@ import React from 'reactn'
 import { FlatList, Icon, NavHeaderButtonText, Text, View } from '../components'
 import { generateSections } from '../lib/filters'
 import { translate } from '../lib/i18n'
-import { safeKeyExtractor, testProps } from '../lib/utility'
+import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import { getDefaultCategory } from '../services/category'
 import { trackPageView } from '../services/tracking'
@@ -224,7 +224,7 @@ export class FilterScreen extends React.Component<Props, State> {
             handleSelect(categoryValueOverride || value)
           })
         }}
-        {...testProps(`${testIDPrefix}_${value}`)}>
+        testID={`${testIDPrefix}_${value}`}>
         <View style={styles.itemWrapper}>
           <Text
             style={[itemTextStyle, isActive ? { fontWeight: PV.Fonts.weights.extraBold, color: PV.Colors.white } : {}]}>

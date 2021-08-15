@@ -1,9 +1,8 @@
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { State as RNTPState } from 'react-native-track-player'
 import React from 'reactn'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
-import { checkIfStateIsBuffering, PVTrackPlayer } from '../services/player'
+import { checkIfStateIsBuffering } from '../services/player'
 import { togglePlay } from '../state/actions/player'
 import { darkTheme, iconStyles, playerStyles } from '../styles'
 import { ActivityIndicator, FastImage, Icon, Text, TextTicker } from './'
@@ -43,7 +42,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
                 isDarkMode
               })
             }
-            {...testProps(testIDPrefix)}>
+            testID={testIDPrefix}>
             <View style={[styles.player, globalTheme.player]}>
               <FastImage
                 isSmall
@@ -67,7 +66,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
                   <Text
                     numberOfLines={1}
                     style={[styles.episodeTitle, globalTheme.playerText]}
-                    {...testProps(`${testIDPrefix}_episode_title`)}>
+                    testID={`${testIDPrefix}_episode_title`}>
                     {nowPlayingItem.episodeTitle}
                   </Text>
                 </TextTicker>
@@ -75,7 +74,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
               <TouchableOpacity
                 onPress={() => togglePlay(this.global)}
                 style={[playerStyles.icon, playButtonAdjust]}
-                {...testProps(`${testIDPrefix}_toggle_play_button`)}>
+                testID={`${testIDPrefix}_toggle_play_button`}>
                 {!hasErrored && playButtonIcon}
                 {hasErrored && (
                   <Icon

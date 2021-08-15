@@ -19,7 +19,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { safeKeyExtractor, safelyUnwrapNestedVariable, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { safeKeyExtractor, safelyUnwrapNestedVariable, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
@@ -414,7 +414,9 @@ export class ClipsScreen extends React.Component<Props, State> {
     const showOfflineMessage = offlineModeEnabled
 
     return (
-      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        testID={`${testIDPrefix}_view`}>
         <TableSectionSelectors
           filterScreenTitle={translate('Clips')}
           handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
@@ -477,12 +479,12 @@ export class ClipsScreen extends React.Component<Props, State> {
           <Dialog.Button
             label={translate('Cancel')}
             onPress={this._cancelDeleteMediaRef}
-            {...testProps(`${testIDPrefix}_delete_clip_cancel`)}
+            testID={`${testIDPrefix}_delete_clip_cancel`}
           />
           <Dialog.Button
             label={translate('Delete')}
             onPress={this._deleteMediaRef}
-            {...testProps(`${testIDPrefix}_delete_clip_delete`)}
+            testID={`${testIDPrefix}_delete_clip_delete`}
           />
         </Dialog.Container>
       </View>

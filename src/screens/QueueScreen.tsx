@@ -18,8 +18,7 @@ import {
 import { translate } from '../lib/i18n'
 import {
   overrideImageUrlWithChapterImageUrl,
-  safeKeyExtractor,
-  testProps
+  safeKeyExtractor
 } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData } from '../services/auth'
@@ -337,7 +336,10 @@ export class QueueScreen extends React.Component<Props, State> {
     const { currentChapter, nowPlayingItem } = this.global.player
     const { isEditing, isLoading, isLoadingMore, isRemoving, isTransparent, viewType } = this.state
     const view = (
-      <View style={styles.view} transparent={isTransparent} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        transparent={isTransparent}
+        testID={`${testIDPrefix}_view`}>
         {!isLoading && viewType === _queueKey && ((queueItems && queueItems.length > 0) || nowPlayingItem) && (
           <View transparent={isTransparent}>
             {!!nowPlayingItem && (
@@ -358,7 +360,7 @@ export class QueueScreen extends React.Component<Props, State> {
                     hideDivider
                     podcastImageUrl={nowPlayingItem.podcastImageUrl}
                     {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
-                    {...testProps(`${testIDPrefix}_now_playing_header`)}
+                    testID={`${testIDPrefix}_now_playing_header`}
                     transparent={isTransparent}
                   />
                 </View>

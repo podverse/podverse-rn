@@ -11,7 +11,7 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import { overrideImageUrlWithChapterImageUrl, safeKeyExtractor, testProps } from '../lib/utility'
+import { overrideImageUrlWithChapterImageUrl, safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { loadItemAndPlayTrack } from '../state/actions/player'
@@ -204,7 +204,10 @@ export class HistoryScreen extends React.Component<Props, State> {
     const { isLoading, isLoadingMore, isRemoving, isTransparent } = this.state
 
     const view = (
-      <View style={styles.view} transparent={isTransparent} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        transparent={isTransparent}
+        testID={`${testIDPrefix}_view`}>
         {!isLoading && (
           <FlatList
             data={historyItems}

@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { decodeHTMLString, readableDate, removeHTMLFromString, testProps } from '../lib/utility'
+import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
 import { DownloadButton } from './DownloadButton'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
@@ -110,7 +110,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           {handleNavigationPress ? (
             <TouchableWithoutFeedback
               onPress={handleNavigationPress}
-              {...(testID ? testProps(`${testID}_top_view_nav`) : {})}>
+              {...(testID ? { testID: `${testID}_top_view_nav` } : {})}>
               {innerTopView}
             </TouchableWithoutFeedback>
           ) : (
@@ -123,7 +123,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         {handleNavigationPress ? (
           <TouchableWithoutFeedback
             onPress={handleNavigationPress}
-            {...(testID ? testProps(`${testID}_bottom_view_nav`) : {})}>
+            {...(testID ? { testID: `${testID}_bottom_view_nav` } : {})}>
             <RNView>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</RNView>
           </TouchableWithoutFeedback>
         ) : (

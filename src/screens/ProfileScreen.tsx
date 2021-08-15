@@ -23,7 +23,7 @@ import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel }
 import { translate } from '../lib/i18n'
 import { navigateToPodcastScreenWithPodcast } from '../lib/navigate'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { isOdd, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { isOdd, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { deleteMediaRef } from '../services/mediaRef'
 import { getPodcasts } from '../services/podcast'
@@ -498,7 +498,9 @@ export class ProfileScreen extends React.Component<Props, State> {
     const showOfflineMessage = offlineModeEnabled
 
     return (
-      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        testID={`${testIDPrefix}_view`}>
         {isMyProfile && !isLoggedIn && (
           <MessageWithAction
             topActionHandler={this._onPressLogin}
@@ -572,12 +574,12 @@ export class ProfileScreen extends React.Component<Props, State> {
               <Dialog.Button
                 label={translate('Cancel')}
                 onPress={this._cancelDeleteMediaRef}
-                {...testProps('dialog_delete_clip_cancel')}
+                testID='dialog_delete_clip_cancel'
               />
               <Dialog.Button
                 label={translate('Delete')}
                 onPress={this._deleteMediaRef}
-                {...testProps('dialog_delete_clip_delete')}
+                testID='dialog_delete_clip_delete'
               />
             </Dialog.Container>
           </View>

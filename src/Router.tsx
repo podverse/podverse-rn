@@ -55,10 +55,6 @@ import {
 import { darkTheme } from './styles'
 import { PodcastInfoScreen } from './screens/PodcastInfoScreen'
 
-const tabTestProps = (id: string) => {
-  return { tabBarTestID: id, tabBarAccessibilityLabel: id }
-}
-
 const defaultNavigationOptions = ({ navigation }) => {
   return {
     headerStyle: { backgroundColor: PV.Colors.ink, shadowColor: 'transparent' },
@@ -112,7 +108,7 @@ const PodcastsNavigator = createStackNavigator(
         <Image source={PV.Tabs.Podcasts.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
       tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Podcasts.title} />,
-      ...tabTestProps('tab_podcasts_screen')
+      testID: 'tab_podcasts_screen'
     }
   }
 )
@@ -132,7 +128,7 @@ const EpisodesNavigator = createStackNavigator(
         <Image source={PV.Tabs.Episodes.icon} style={{ tintColor }} resizeMode={'contain'} />
       ),
       tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Episodes.title} />,
-      ...tabTestProps('tab_episodes_screen')
+      testID: 'tab_episodes_screen'
     }
   }
 )
@@ -147,7 +143,7 @@ const ClipsNavigator = createStackNavigator(
       tabBarIcon: ({ tintColor }: { tintColor: any }) =>
         <Image source={PV.Tabs.Clips.icon} style={{ tintColor }} resizeMode={'contain'} />,
       tabBarLabel: (props) => <TabBarLabel {...props} title={PV.Tabs.Clips.title} />,
-      ...tabTestProps('tab_clips_screen')
+      testID: 'tab_clips_screen'
     }
   }
 )
@@ -193,7 +189,7 @@ const MoreNavigator = createStackNavigator(
         )
       },
       tabBarLabel: (props) => <TabBarLabel {...props} title='More' />,
-      ...tabTestProps('tab_more_screen')
+      testID: 'tab_more_screen'
     }
   }
 )
@@ -238,7 +234,7 @@ const MyLibraryNavigator = createStackNavigator(
         )
       },
       tabBarLabel: (props) => <TabBarLabel {...props} title='My Library' />,
-      ...tabTestProps('tab_my_library_screen')
+      testID: 'tab_my_library_screen'
     }
   }
 )

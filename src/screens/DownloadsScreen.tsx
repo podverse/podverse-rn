@@ -3,7 +3,7 @@ import React from 'reactn'
 import { ActionSheet, Divider, DownloadTableCell, FlatList, SwipeRowBack, View } from '../components'
 import { cancelDownloadTask, DownloadStatus } from '../lib/downloader'
 import { translate } from '../lib/i18n'
-import { safeKeyExtractor, testProps } from '../lib/utility'
+import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import {
@@ -103,7 +103,9 @@ export class DownloadsScreen extends React.Component<Props, State> {
     const { selectedItem, showActionSheet } = this.state
 
     return (
-      <View style={styles.view} {...testProps('downloads_screen_view')}>
+      <View
+        style={styles.view}
+        testID='downloads_screen_view'>
         <FlatList
           data={downloadsArray}
           dataTotalCount={downloadsArray.length}

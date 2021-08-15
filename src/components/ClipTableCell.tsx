@@ -1,7 +1,7 @@
 import { Alert, Linking, StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { readableClipTime, readableDate, testProps } from '../lib/utility'
+import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { IndicatorDownload } from './IndicatorDownload'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
@@ -51,7 +51,9 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
 
     const innerTopView = (
-      <RNView style={styles.innerTopView} {...(testID ? testProps(`${testID}_top_view_nav`) : {})}>
+      <RNView
+        style={styles.innerTopView}
+        {...(testID ? { testID: `${testID}_top_view_nav` } : {})}>
         <RNView style={{ flex: 1, flexDirection: 'column' }}>
           {(showEpisodeInfo || showPodcastInfo) && (
             <RNView style={styles.imageAndTopRightTextWrapper}>

@@ -22,8 +22,7 @@ import { hasValidNetworkConnection } from '../lib/network'
 import {
   overrideImageUrlWithChapterImageUrl,
   replaceLinebreaksWithBrTags,
-  safelyUnwrapNestedVariable,
-  testProps
+  safelyUnwrapNestedVariable
 } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
@@ -308,7 +307,10 @@ export class PlayerScreen extends React.Component<Props> {
     return (
       <React.Fragment>
         <OpaqueBackground imageUrl={imageUrl}>
-          <View style={styles.view} transparent {...testProps('player_screen_view')}>
+          <View
+            style={styles.view}
+            transparent
+            testID='player_screen_view'>
             <MediaPlayerCarousel hasChapters={hasChapters} navigation={navigation} />
             <PlayerControls navigation={navigation} />
             <ActionSheet

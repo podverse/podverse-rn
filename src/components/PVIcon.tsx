@@ -2,7 +2,6 @@ import React from 'react'
 import { TouchableWithoutFeedback, View as RNView } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
 import { darkTheme, iconStyles } from '../styles'
 
 type Props = {
@@ -52,7 +51,7 @@ export const PVIcon = (props: Props) => {
               top: 8
             }}
             onPress={onPress}
-            {...(testID ? testProps(`${testID}_icon_button`) : {})}>
+            {...(testID ? { testID: `${testID}_icon_button` } : {})}>
             {icon}
           </TouchableWithoutFeedback>
         ) : (

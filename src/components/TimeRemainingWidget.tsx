@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { State as RNTPState } from 'react-native-track-player'
 import { useGlobal } from 'reactn'
-import { convertSecToHhoursMMinutes, testProps, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
+import { convertSecToHhoursMMinutes, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
 import { handlePlay, PVTrackPlayer, setPlaybackPosition } from '../services/player'
 import { loadItemAndPlayTrack, togglePlay } from '../state/actions/player'
@@ -127,7 +127,7 @@ export const TimeRemainingWidget = (props: Props) => {
       <TouchableOpacity
         onPress={playItem}
         style={iconStyle}
-        {...testProps(`${testID}_time_remaining_widget_toggle_play`)}>
+        testID={`${testID}_time_remaining_widget_toggle_play`}>
         {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
       </TouchableOpacity>
       {hasStartedItem && !isInvalidDuration && (

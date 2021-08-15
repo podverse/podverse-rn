@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { ActivityIndicator, Icon, View } from '.'
 
@@ -21,7 +20,6 @@ export const DownloadButton = (props: Props) => {
   ) : (
     <View style={[styles.imageWrapper]}>
       <Icon
-        {...testProps(`${testID}_download_button`)}
         testID={`${testID}_download_button_icon`}
         name='download'
         onPress={onPress}

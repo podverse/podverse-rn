@@ -11,7 +11,7 @@ import {
 } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { combineAndSortPlaylistItems, testProps } from '../lib/utility'
+import { combineAndSortPlaylistItems } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { addOrRemovePlaylistItem, getPlaylist, updatePlaylist } from '../state/actions/playlist'
@@ -225,7 +225,9 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     const { isEditing, isLoading, isRemoving, isUpdating, newTitle, sortableListData } = this.state
 
     return (
-      <View style={styles.view} {...testProps('edit_playlist_screen_view')}>
+      <View
+        style={styles.view}
+        testID='edit_playlist_screen_view'>
         <View style={styles.topWrapper}>
           <TextInput
             autoCapitalize='none'

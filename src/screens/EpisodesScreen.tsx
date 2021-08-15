@@ -19,7 +19,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { getUniqueArrayByKey, safeKeyExtractor, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { getUniqueArrayByKey, safeKeyExtractor, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisodes } from '../services/episode'
@@ -436,7 +436,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
         : translate('Search')
 
     return (
-      <View style={styles.view} {...testProps('episodes_screen_view')}>
+      <View
+        style={styles.view}
+        testID='episodes_screen_view'>
         <TableSectionSelectors
           filterScreenTitle={translate('Episodes')}
           handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
