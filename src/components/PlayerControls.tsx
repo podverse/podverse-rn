@@ -1,12 +1,12 @@
 import debounce from 'lodash/debounce'
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, Image, ImageSourcePropType } from 'react-native'
+import { State as RNTPState } from 'react-native-track-player'
 import React from 'reactn'
 import { PV } from '../resources'
 import {
   checkIfStateIsBuffering,
   playerJumpBackward,
   playerJumpForward,
-  PVTrackPlayer,
   setPlaybackPosition
 } from '../services/player'
 import { playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
@@ -116,7 +116,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
     let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
     let playButtonAdjust = { paddingLeft: 2 } as any
-    if (playbackState === PVTrackPlayer.STATE_PLAYING) {
+    if (playbackState === RNTPState.Playing) {
       playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
       playButtonAdjust = {}
     } else if (checkIfStateIsBuffering(playbackState)) {
@@ -160,19 +160,19 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={togglePlay}
-              style={[playerStyles.playButton, playButtonAdjust]}>
-              {hasErrored ? (
-                <Icon
-                  color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
-                  name={'exclamation-triangle'}
-                  size={35}
-                  testID={`${testIDPrefix}_error`}
-                />
-              ) : (
-                playButtonIcon
-              )}
+            <TouchableOpacity onPress={togglePlay}>
+              <View style={[playerStyles.playButton, playButtonAdjust]}>
+                {hasErrored ? (
+                  <Icon
+                    color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
+                    name={'exclamation-triangle'}
+                    size={35}
+                    testID={`${testIDPrefix}_error`}
+                  />
+                ) : (
+                  playButtonIcon
+                )}
+              </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
               {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, `${testIDPrefix}_step_forward`)}

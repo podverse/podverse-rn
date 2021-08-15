@@ -389,7 +389,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _handleScanQRCodeNavigation = () => {
-    this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
+    // this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
   }
 
   _handleNoResultsTopAction = () => {

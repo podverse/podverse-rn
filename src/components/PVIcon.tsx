@@ -1,5 +1,5 @@
 import React from 'react'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { TouchableWithoutFeedback, View as RNView } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
 import { testProps } from '../lib/utility'
@@ -29,24 +29,36 @@ export const PVIcon = (props: Props) => {
     ? iconStyles.lightSecondary.color
     : iconStyles.light.color
 
+  const icon = (
+    <Icon
+      {...(brand ? { brand } : {})}
+      color={colorOverride || color}
+      name={name}
+      size={size}
+      {...(solid ? { solid } : {})}
+      {...(style ? { style } : {})}
+    />
+  )
+
   return (
-    <TouchableWithoutFeedback
-      hitSlop={{
-        bottom: 8,
-        left: 8,
-        right: 8,
-        top: 8
-      }}
-      onPress={onPress}
-      {...(testID ? testProps(`${testID}_icon_button`) : {})}>
-      <Icon
-        {...(brand ? { brand } : {})}
-        color={colorOverride || color}
-        name={name}
-        size={size}
-        {...(solid ? { solid } : {})}
-        {...(style ? { style } : {})}
-      />
-    </TouchableWithoutFeedback>
+    <RNView>
+      {
+        !!onPress ? (
+          <TouchableWithoutFeedback
+            hitSlop={{
+              bottom: 8,
+              left: 8,
+              right: 8,
+              top: 8
+            }}
+            onPress={onPress}
+            {...(testID ? testProps(`${testID}_icon_button`) : {})}>
+            {icon}
+          </TouchableWithoutFeedback>
+        ) : (
+          icon
+        )
+      }
+    </RNView>
   )
 }

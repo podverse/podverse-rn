@@ -1,6 +1,7 @@
 import { convertToNowPlayingItem } from 'podverse-shared'
 import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
+import { State as RNTPState } from 'react-native-track-player'
 import { useGlobal } from 'reactn'
 import { convertSecToHhoursMMinutes, testProps, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
@@ -95,7 +96,7 @@ export const TimeRemainingWidget = (props: Props) => {
   const handleChapterLoad = async () => {
     await setPlaybackPosition(item.startTime)
     const currentState = await PVTrackPlayer.getState()
-    const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
+    const isPlaying = currentState === RNTPState.Playing
     if (!isPlaying) {
       handlePlay()
     }
@@ -116,7 +117,7 @@ export const TimeRemainingWidget = (props: Props) => {
   }
 
   const isInvalidDuration = totalTime <= 0
-  const isPlaying = playbackState === PVTrackPlayer.STATE_PLAYING
+  const isPlaying = playbackState === RNTPState.Playing
   const isNowPlayingItem = isPlaying && checkIfNowPlayingItem(item, nowPlayingItem)
 
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]

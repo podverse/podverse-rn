@@ -163,7 +163,7 @@ export class SearchScreen extends React.Component<Props, State> {
   }
 
   _handleAddPodcastByRSSQRCodeNavigation = () => {
-    this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
+    // this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
   }
 
   _renderPodcastItem = ({ item, index }) => (

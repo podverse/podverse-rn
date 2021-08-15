@@ -1,4 +1,4 @@
-import { Picker } from '@react-native-community/picker'
+import { Picker } from '@react-native-picker/picker'
 import React from 'react'
 import { Platform, StyleSheet } from 'react-native'
 import { useGlobal } from 'reactn'

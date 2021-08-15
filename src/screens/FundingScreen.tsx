@@ -1,7 +1,6 @@
 import { ValueTransaction } from 'podverse-shared'
-import { Alert, Keyboard, Linking, Pressable, StyleSheet } from 'react-native'
+import { Alert, Keyboard, Linking, Pressable, StyleSheet, TouchableOpacity } from 'react-native'
 import Config from 'react-native-config'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import React, { getGlobal } from 'reactn'
 import AsyncStorage from '@react-native-community/async-storage'
 import { checkLNPayRecipientRoute } from '../services/lnpay'
