@@ -5,7 +5,7 @@ import { PV } from '../resources'
 import { Icon, Text } from '.'
 
 export const DropdownButton = (props: any) => {
-  const { disableFilter, onPress, sortLabel, testID } = props
+  const { accessibilityHint, disableFilter, onPress, sortLabel, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const dropdownStyle = disableFilter ? { opacity: 0.0 } : {}
 
@@ -17,6 +17,9 @@ export const DropdownButton = (props: any) => {
 
   return (
     <TouchableOpacity
+      accessible
+      accessibilityHint={accessibilityHint}
+      accessibilityRole='button'
       activeOpacity={0.7}
       disabled={disableFilter}
       onPress={onPress}
@@ -29,7 +32,11 @@ export const DropdownButton = (props: any) => {
           testID={`${testID}_dropdown_button_text`}>
           {sortLabel}
         </Text>
-        <Icon name='angle-down' size={14} style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]} />
+        <Icon
+          accessibilityRole='none'
+          name='angle-down'
+          size={14}
+          style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]} />
       </View>
     </TouchableOpacity>
   )

@@ -457,5 +457,8 @@
   "TermsOfServiceScreenMatomoTrackingText2": "The tracking software we use is called Matomo, and it is a free and open source analytics platform. We host an instance of Matomo, so all tracking data is hosted on our servers, and individual user tracking data will never be sold to or shared with 3rd parties.",
   "TermsOfServiceScreenMatomoTrackingText3": "All of our tracking data is anonymized by obscuring the IP address by 2 bytes, which means IP addresses are obscured and then saved on our server with the format 192.168.xxx.xxx.",
   "TermsOfServiceScreenMatomoTrackingText4": "To further protect user anonymity, we do not use session IDs to track users across multiple visits. Likewise, to further protect anonymity, we do not use cookie-based tracking on our website.",
-  "TermsOfServiceScreenMatomoTrackingText5": "While we use Matomo tracking data to help us determine what content is most popular on Podverse, users should keep in mind that these popularity metrics are easy to manipulate, and may not accurately reflect the popularity of content."
+  "TermsOfServiceScreenMatomoTrackingText5": "While we use Matomo tracking data to help us determine what content is most popular on Podverse, users should keep in mind that these popularity metrics are easy to manipulate, and may not accurately reflect the popularity of content.",
+  "ARIA - Tap to select a different filter": "Tap to select a different filter",
+  "ARIA - This is the selected filter for this screen": "This is the selected filter for this screen",
+  "ARIA - Tap to select this search filter": "Tap to select this search filter"
 }

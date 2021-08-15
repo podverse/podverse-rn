@@ -74,6 +74,8 @@ export class SearchScreen extends React.Component<Props, State> {
     })
 
   componentDidMount() {
+    this.searchBarInput.focus()
+
     trackPageView('/search', 'Search Screen')
   }
 
@@ -328,7 +330,10 @@ export class SearchScreen extends React.Component<Props, State> {
 const _podcastByTitle = 0
 const _podcastByHost = 1
 
-const buttons = [translate('Podcast'), translate('Host')]
+const buttons = [
+  translate('Podcast'),
+  translate('Host')
+]
 
 const styles = StyleSheet.create({
   searchBarContainer: {

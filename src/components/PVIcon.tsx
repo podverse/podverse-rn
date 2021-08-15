@@ -1,10 +1,12 @@
 import React from 'react'
-import { TouchableWithoutFeedback, View as RNView } from 'react-native'
+import { AccessibilityRole, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
 import { darkTheme, iconStyles } from '../styles'
 
 type Props = {
+  accessibilityLabel?: string
+  accessibilityRole?: AccessibilityRole
   brand?: boolean
   color?: string
   isSecondary?: boolean
@@ -17,7 +19,8 @@ type Props = {
 }
 
 export const PVIcon = (props: Props) => {
-  const { brand, color: colorOverride, isSecondary, name, onPress, size, solid, style, testID } = props
+  const { accessibilityLabel, accessibilityRole, brand, color: colorOverride,
+    isSecondary, name, onPress, size, solid, style, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const isDarkMode = globalTheme === darkTheme
   const color = isDarkMode
@@ -30,6 +33,8 @@ export const PVIcon = (props: Props) => {
 
   const icon = (
     <Icon
+      {...(accessibilityLabel ? { accessibilityLabel } : {})}
+      {...(accessibilityRole ? { accessibilityRole } : {})}
       {...(brand ? { brand } : {})}
       color={colorOverride || color}
       name={name}

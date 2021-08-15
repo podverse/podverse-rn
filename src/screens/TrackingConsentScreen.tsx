@@ -114,18 +114,21 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
 
     return (
       <SafeAreaView testID={`${testIDPrefix}_view`}>
-        <View accessible style={styles.view}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            style={styles.header}>
-            {translate('Analytics Tracking')}
-          </Text>
-          <HTMLScrollView
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            html={trackingTermsAndConditions}
-            style={styles.scrollView}
-          />
+        <View style={styles.view}>
+          <View accessible style={{ flex: 1 }}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={styles.header}>
+              {translate('Analytics Tracking')}
+            </Text>
+            <HTMLScrollView
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              html={trackingTermsAndConditions}
+              style={styles.scrollView}
+            />
+          </View>
           <Button
+            accessible
             onPress={iOSAlreadyDetermined ? this._goToSettings : this._enableTracking}
             testID={`${testIDPrefix}_top_button`}
             text={topButtonText}
@@ -134,6 +137,7 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
           {
             !isIOSInitialPrompt && (
               <Button
+                accessible
                 isTransparent
                 onPress={iOSAlreadyDetermined ? this._handleDismiss : this._disableTracking}
                 testID={`${testIDPrefix}_bottom_button`}

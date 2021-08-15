@@ -120,10 +120,10 @@ export class PodcastsScreen extends React.Component<Props, State> {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     PVEventEmitter.on(PV.Events.TRACKING_TERMS_ACKNOWLEDGED, this._handleTrackingTermsAcknowledged)
 
-    // const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
-    // if (!trackingConsentAcknowledged) {
+    const trackingConsentAcknowledged = await getTrackingConsentAcknowledged()
+    if (!trackingConsentAcknowledged) {
       await navigation.navigate(PV.RouteNames.TrackingConsentScreen)
-    // }
+    }
 
     try {
       const appHasLaunched = await AsyncStorage.getItem(PV.Keys.APP_HAS_LAUNCHED)
@@ -761,7 +761,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
             />
           )}
         </RNView>
-        <Dialog.Container visible={showDataSettingsConfirmDialog}>
+        <Dialog.Container accessible visible={showDataSettingsConfirmDialog}>
           <Dialog.Title>Data Settings</Dialog.Title>
           <Dialog.Description>Do you want to allow downloading episodes with your data plan?</Dialog.Description>
           <Dialog.Button

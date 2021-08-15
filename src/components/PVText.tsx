@@ -1,10 +1,12 @@
 import React from 'react'
-import { Text } from 'react-native'
+import { AccessibilityRole, Text } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 
 type Props = {
   accessible?: boolean
+  accessibilityHint?: string
+  accessibilityRole?: AccessibilityRole
   allowFontScaling?: boolean
   children?: any
   fontSizeLargerScale?: number

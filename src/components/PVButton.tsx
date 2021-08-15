@@ -6,6 +6,8 @@ import { core } from '../styles'
 import { Text } from '.'
 
 type Props = {
+  accessibilityHint?: string
+  accessible?: boolean
   disabled?: boolean
   isDisabledStyle?: boolean
   isLoading?: boolean
@@ -20,7 +22,7 @@ type Props = {
 }
 
 export const PVButton = (props: Props) => {
-  const { disabled, isDisabledStyle, isLoading, isPrimary, isSuccess, isTransparent,
+  const { accessibilityHint, accessible, disabled, isDisabledStyle, isLoading, isPrimary, isSuccess, isTransparent,
     isWarning, onPress, testID, text, wrapperStyles } = props
   const [globalTheme] = useGlobal('globalTheme')
 
@@ -36,6 +38,8 @@ export const PVButton = (props: Props) => {
 
   return (
     <TouchableOpacity
+      accessible={accessible}
+      accessibilityHint={accessibilityHint}
       style={[
         core.button,
         globalTheme.buttonPrimaryWrapper,
