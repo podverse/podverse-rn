@@ -1,5 +1,4 @@
-import { StyleSheet, View as RNView } from 'react-native'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { FlatList, Icon, NavHeaderButtonText, Text, View } from '../components'
 import { generateSections } from '../lib/filters'

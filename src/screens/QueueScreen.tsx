@@ -292,7 +292,7 @@ export class QueueScreen extends React.Component<Props, State> {
     })
   }
 
-  _onDragEnd = async ({ data, from, to }) => {
+  _onDragEnd = async ({ data, from, to } : { data: NowPlayingItem[], from: number, to: number }) => {
     try {
       const { queueItems: previousQueueItems = [] } = this.global.session.userInfo
       const item = previousQueueItems[from] as any
@@ -308,8 +308,7 @@ export class QueueScreen extends React.Component<Props, State> {
       }
 
       if (item && previousQueueItems.length >= to) {
-        const nextItem = previousQueueItems[to] as any
-        await movePlayerItemToNewPosition(item.clipId || item.episodeId, nextItem.clipId || nextItem.episodeId)
+        await movePlayerItemToNewPosition(item.clipId || item.episodeId, to)
       }
     } catch (error) {
       console.log('QueueScreen - _onReleaseRow - ', error)

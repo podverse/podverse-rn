@@ -25,28 +25,28 @@ import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
-import { checkIdlePlayerState, PVTrackPlayer, updateTrackPlayerCapabilities,
+import { checkIdlePlayerState, updateTrackPlayerCapabilities,
   updateUserPlaybackPosition } from '../services/player'
-  import { getPodcast, getPodcasts } from '../services/podcast'
-  import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
-  import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
-  import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
-  import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
-  import { updateWalletInfo } from '../state/actions/lnpay'
-  import {
-    initializePlaybackSpeed,
-    initializePlayerQueue,
-    initPlayerState,
-    showMiniPlayer,
-    updatePlaybackState,
-    updatePlayerState
-  } from '../state/actions/player'
-  import { combineWithAddByRSSPodcasts,
-    getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
-    import { initializeSettings } from '../state/actions/settings'
-    import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
-    import { initializeValueProcessor } from '../state/actions/valueTag'
-    import { core, darkTheme } from '../styles'
+import { getPodcast, getPodcasts } from '../services/podcast'
+import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
+import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
+import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
+import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
+import { updateWalletInfo } from '../state/actions/lnpay'
+import {
+  initializePlaybackSpeed,
+  initializePlayerQueue,
+  initPlayerState,
+  showMiniPlayer,
+  updatePlaybackState,
+  updatePlayerState
+} from '../state/actions/player'
+import { combineWithAddByRSSPodcasts,
+  getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
+import { initializeSettings } from '../state/actions/settings'
+import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
+import { initializeValueProcessor } from '../state/actions/valueTag'
+import { core, darkTheme } from '../styles'
 
 type Props = {
   navigation?: any
@@ -645,7 +645,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleScanQRCodeNavigation = () => {
-    this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
+    // this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
   }
 
   _handleNoResultsTopAction = () => {

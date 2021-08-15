@@ -1,4 +1,5 @@
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { State as RNTPState } from 'react-native-track-player'
 import React from 'reactn'
 import { testProps } from '../lib/utility'
 import { PV } from '../resources'
@@ -23,7 +24,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
 
     let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
     let playButtonAdjust = { paddingLeft: 2 } as any
-    if (playbackState === PVTrackPlayer.STATE_PLAYING) {
+    if (playbackState === RNTPState.Playing) {
       playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
       playButtonAdjust = {}
     } else if (checkIfStateIsBuffering(playbackState)) {

@@ -11,6 +11,7 @@ import {
   ImageSourcePropType
 } from 'react-native'
 import Share from 'react-native-share'
+import { State as RNTPState } from 'react-native-track-player'
 import React from 'reactn'
 import { clearTempMediaRef, saveTempMediaRef } from '../state/actions/mediaRef'
 import {
@@ -525,9 +526,9 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       {...testProps(`${testIDPrefix}_toggle_play`)}>
                       {!checkIfStateIsBuffering(playbackState) ? (
                         <Icon
-                          name={playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}
+                          name={playbackState === RNTPState.Playing ? 'pause' : 'play'}
                           size={20}
-                          testID={`${testIDPrefix}_${playbackState === PVTrackPlayer.STATE_PLAYING ? 'pause' : 'play'}`}
+                          testID={`${testIDPrefix}_${playbackState === RNTPState.Playing ? 'pause' : 'play'}`}
                         />
                       ) : (
                         <ActivityIndicator testID={testIDPrefix} />
