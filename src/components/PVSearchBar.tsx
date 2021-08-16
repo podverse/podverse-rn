@@ -34,7 +34,14 @@ export const PVSearchBar = (props: Props) => {
         placeholder={placeholder}
         ref={inputRef}
         returnKeyType='search'
-        searchIcon={<Icon color={PV.Colors.white} name={'search'} size={PV.Icons.NAV} solid />}
+        searchIcon={(
+          <Icon
+            accessible={false}
+            color={PV.Colors.white}
+            name={'search'}
+            size={PV.Icons.NAV}
+            solid />
+        )}
         {...(testID ? { testID: `${testID}_search_bar` } : {})}
         value={value}
       />

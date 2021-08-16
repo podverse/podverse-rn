@@ -321,6 +321,8 @@
   "search podcasts": "search podcasts",
   "search": "search",
   "Search": "Search",
+  "search by podcast title": "search by podcast title",
+  "search by podcast host": "search by podcast host",
   "seconds": "seconds",
   "Select": "Select...",
   "Send Email": "Send Email",
@@ -461,5 +463,7 @@
   "ARIA - Tap to select a different filter": "Tap to select a different filter",
   "ARIA - This is the selected filter for this screen": "This is the selected filter for this screen",
   "ARIA - Tap to select this search filter": "Tap to select this search filter",
-  "ARIA - Tap to navigate to the search screen": "Tap to navigate to the search screen"
+  "ARIA - Tap to navigate to the search screen": "Tap to navigate to the search screen",
+  "ARIA - Tap to add a podcast by its RSS feed": "Tap to add a podcast by its RSS feed",
+  "ARIA - Tap to send us an email to request a podcast": "Tap to send us an email to request a podcast"
 }

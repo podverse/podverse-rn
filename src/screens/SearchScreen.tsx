@@ -250,7 +250,11 @@ export class SearchScreen extends React.Component<Props, State> {
           handleClear={this._handleSearchBarClear}
           inputRef={(ref: any) => (this.searchBarInput = ref)}
           onChangeText={this._handleSearchBarTextChange}
-          placeholder={translate('search')}
+          placeholder={
+            searchType === _podcastByTitle
+            ? translate('search by podcast title')
+            : translate('search by podcast host')
+          }
           subText={searchType === _podcastByTitle ? translate('use double quotes for exact matches') : null}
           testID={testIDPrefix}
           value={searchBarText}
@@ -269,8 +273,12 @@ export class SearchScreen extends React.Component<Props, State> {
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
             noResultsBottomActionText={!!Config.CURATOR_EMAIL ? translate('Request Podcast') : ''}
+            noResultsBottomActionTextAccessibilityHint={
+              translate('ARIA - Tap to send us an email to request a podcast')
+            }
             noResultsMessage={searchBarText.length > 1 && translate('No podcasts found')}
             noResultsMiddleActionText={translate('Add Custom RSS Feed')}
+            noResultsMiddleActionTextAccessibilityHint={translate('ARIA - Tap to add a podcast by its RSS feed')}
             noResultsTopActionText={!Config.DISABLE_QR_SCANNER ? translate('Scan RSS Feed QR Code') : ''}
             onEndReached={this._onEndReached}
             renderItem={this._renderPodcastItem}

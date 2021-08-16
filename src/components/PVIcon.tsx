@@ -5,6 +5,7 @@ import { useGlobal } from 'reactn'
 import { darkTheme, iconStyles } from '../styles'
 
 type Props = {
+  accessible?: boolean
   accessibilityLabel?: string
   accessibilityRole?: AccessibilityRole
   brand?: boolean
@@ -19,7 +20,7 @@ type Props = {
 }
 
 export const PVIcon = (props: Props) => {
-  const { accessibilityLabel, accessibilityRole, brand, color: colorOverride,
+  const { accessible, accessibilityLabel, accessibilityRole, brand, color: colorOverride,
     isSecondary, name, onPress, size, solid, style, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const isDarkMode = globalTheme === darkTheme
@@ -33,8 +34,7 @@ export const PVIcon = (props: Props) => {
 
   const icon = (
     <Icon
-      {...(accessibilityLabel ? { accessibilityLabel } : {})}
-      {...(accessibilityRole ? { accessibilityRole } : {})}
+      {...(accessible === false ? { accessible: false } : {})}
       {...(brand ? { brand } : {})}
       color={colorOverride || color}
       name={name}
