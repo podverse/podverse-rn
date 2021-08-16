@@ -22,8 +22,6 @@ import { getPodcasts } from '../services/podcast'
 import { trackPageView } from '../services/tracking'
 import { toggleSubscribeToPodcast } from '../state/actions/podcast'
 
-const { _episodesKey, _clipsKey } = PV.Filters
-
 type Props = {
   navigation?: any
 }
@@ -149,6 +147,9 @@ export class SearchScreen extends React.Component<Props, State> {
   _handleCancelPress = () => this.setState({ showActionSheet: false })
 
   _handleMorePress = (podcast: any) => {
+    /* Have to blur to make sure screen reader focuses on the ActionSheet */
+    this.searchBarInput.blur()
+
     this.setState({
       selectedPodcast: podcast,
       showActionSheet: true
@@ -187,21 +188,16 @@ export class SearchScreen extends React.Component<Props, State> {
 
     return [
       {
+        accessibilityHint:
+          isSubscribed
+          ? translate('ARIA - Tap to unsubscribe from this podcast')
+          : translate('ARIA - Tap to subscribe to this podcast'),
         key: 'toggleSubscribe',
         text: isSubscribed ? translate('Unsubscribe') : translate('Subscribe'),
         onPress: () => selectedPodcast && this._toggleSubscribeToPodcast(selectedPodcast.id)
       },
       {
-        key: 'episodes',
-        text: translate('Episodes'),
-        onPress: () => this._handleNavigationPress(selectedPodcast, _episodesKey)
-      },
-      {
-        key: 'clips',
-        text: translate('Clips'),
-        onPress: () => this._handleNavigationPress(selectedPodcast, _clipsKey)
-      },
-      {
+        accessibilityHint: translate('ARIA - Tap to navigate to this podcast'),
         key: 'goToPodcast',
         text: translate('Go to Podcast'),
         onPress: () => this._handleNavigationPress(selectedPodcast)

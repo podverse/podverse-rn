@@ -1,5 +1,6 @@
 import { Animated, Modal, Text, TouchableHighlight, View, TouchableOpacity } from 'react-native'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { actionSheetStyles } from '../styles'
@@ -102,6 +103,9 @@ export class PVActionSheet extends React.Component<Props, State> {
 
         buttons.push(
           <TouchableHighlight
+            accessible
+            accessibilityHint={item.accessibilityHint}
+            accessibilityRole='menuitem'
             key={item.key}
             onPress={onPress}
             style={buttonStyle}
@@ -132,6 +136,9 @@ export class PVActionSheet extends React.Component<Props, State> {
 
         buttons.push(
           <TouchableHighlight
+            accessible
+            accessibilityHint={translate('ARIA - Tap to dismiss this menu')}
+            accessibilityRole='menuitem'
             key={PV.Keys.cancel}
             onPress={handleCancelPress}
             style={[actionSheetStyles.buttonCancel, globalTheme.actionSheetButtonCancel]}
@@ -175,6 +182,7 @@ export class PVActionSheet extends React.Component<Props, State> {
     return (
       <Modal transparent visible={showModal} onRequestClose={this.attemptClose}>
         <TouchableOpacity
+          accessible={false}
           activeOpacity={1}
           onPress={this.attemptClose}
           style={[actionSheetStyles.backdrop, globalTheme.modalBackdrop]}>

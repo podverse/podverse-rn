@@ -465,5 +465,9 @@
   "ARIA - Tap to select this search filter": "Tap to select this search filter",
   "ARIA - Tap to navigate to the search screen": "Tap to navigate to the search screen",
   "ARIA - Tap to add a podcast by its RSS feed": "Tap to add a podcast by its RSS feed",
-  "ARIA - Tap to send us an email to request a podcast": "Tap to send us an email to request a podcast"
+  "ARIA - Tap to send us an email to request a podcast": "Tap to send us an email to request a podcast",
+  "ARIA - Tap to navigate to this podcast": "Tap to navigate to this podcast",
+  "ARIA - Tap to subscribe to this podcast": "Tap to subscribe to this podcast",
+  "ARIA - Tap to unsubscribe from this podcast": "Tap to unsubscribe from this podcast",
+  "ARIA - Tap to dismiss this menu": "Tap to dismiss this menu"
 }

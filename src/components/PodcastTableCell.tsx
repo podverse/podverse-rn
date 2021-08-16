@@ -70,13 +70,15 @@ export class PodcastTableCell extends React.PureComponent<Props> {
         <View style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={PV.Table.cells.podcast.image} />
           <RNView style={styles.textWrapper}>
-            {!!lastPubDate && fontScaleMode === PV.Fonts.fontScale.largest && lastPubDateNode}
-            {podcastTitle && (
-              <Text numberOfLines={1} style={styles.title} testID={`${testID}_title`}>
-                {podcastTitle.trim()}
-              </Text>
-            )}
-            {!!lastPubDate && fontScaleMode !== PV.Fonts.fontScale.largest && lastPubDateNode}
+            <RNView style={styles.textWrapperInner}>
+              {!!lastPubDate && fontScaleMode === PV.Fonts.fontScale.largest && lastPubDateNode}
+              {podcastTitle && (
+                <Text numberOfLines={1} style={styles.title} testID={`${testID}_title`}>
+                  {podcastTitle.trim()}
+                </Text>
+              )}
+              {!!lastPubDate && fontScaleMode !== PV.Fonts.fontScale.largest && lastPubDateNode}
+            </RNView>
             {fontScaleMode !== PV.Fonts.fontScale.largest && showDownloadCount && (
               <RNView style={styles.downloadContainer}>
                 <Text
@@ -120,7 +122,9 @@ const styles = StyleSheet.create({
     maxWidth:
       Dimensions.get('screen').width -
       (PV.Table.cells.podcast.image.width + PV.Table.cells.podcast.image.margin * 2) -
-      10,
+      10
+  },
+  textWrapperInner: {
     flexDirection: 'column-reverse'
   },
   title: {
