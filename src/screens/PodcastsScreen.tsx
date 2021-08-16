@@ -547,10 +547,15 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _renderHiddenItem = ({ item, index }, rowMap) => {
     const { queryFrom } = this.state
+    const title = item?.title ? item.title : translate('Untitled Podcast')
     const buttonText = queryFrom === PV.Filters._downloadedKey ? translate('Delete') : translate('Unsubscribe')
+    const buttonAccessibilityLabel = queryFrom === PV.Filters._downloadedKey
+      ? `${translate(`ARIA - Tap to delete all downloaded episodes from`)} ${title}`
+      : `${translate(`ARIA - Tap to unsubscribe from`)} ${title}`
 
     return (
       <SwipeRowBack
+        accessibilityLabel={buttonAccessibilityLabel}
         isLoading={this.state.isUnsubscribing}
         onPress={() => this._handleHiddenItemPress(item.id, item.addByRSSPodcastFeedUrl, rowMap)}
         testID={`${testIDPrefix}_podcast_item_${index}`}

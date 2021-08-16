@@ -245,6 +245,7 @@
   "Password requirements": "Password requirements:",
   "Password": "Password",
   "paste RSS feed link here": "paste RSS feed link here",
+  "Pause": "Pause",
   "Play": "Play",
   "Playlist Not Found": "Playlist Not Found",
   "Playlist title": "Playlist title",
@@ -469,5 +470,12 @@
   "ARIA - Tap to navigate to this podcast": "Tap to navigate to this podcast",
   "ARIA - Tap to subscribe to this podcast": "Tap to subscribe to this podcast",
   "ARIA - Tap to unsubscribe from this podcast": "Tap to unsubscribe from this podcast",
-  "ARIA - Tap to dismiss this menu": "Tap to dismiss this menu"
+  "ARIA - Tap to dismiss this menu": "Tap to dismiss this menu",
+  "ARIA - Tap to delete all downloaded episodes from": "Tap to delete all downloaded episodes from",
+  "ARIA - Tap to unsubscribe from": "Tap to unsubscribe from",
+  "ARIA - Now playing": "Now playing",
+  "ARIA - Tap to open the full player screen": "Tap to open the full player screen",
+  "ARIA - Tap to resume playing": "Tap to resume playing",
+  "ARIA - Tap to pause": "Tap to pause",
+  "ARIA - Error something went wrong with playing this item": "Error. Something went wrong with playing this item."
 }

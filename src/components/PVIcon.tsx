@@ -6,6 +6,7 @@ import { darkTheme, iconStyles } from '../styles'
 
 type Props = {
   accessible?: boolean
+  accessibilityHint?: string
   accessibilityLabel?: string
   accessibilityRole?: AccessibilityRole
   brand?: boolean
@@ -17,11 +18,13 @@ type Props = {
   solid?: boolean
   style?: any
   testID: string
+  wrapperStyle?: any
 }
 
 export const PVIcon = (props: Props) => {
-  const { accessible, accessibilityLabel, accessibilityRole, brand, color: colorOverride,
-    isSecondary, name, onPress, size, solid, style, testID } = props
+  const { accessible, accessibilityHint, accessibilityLabel, accessibilityRole,
+    brand, color: colorOverride, isSecondary, name, onPress, size, solid, style,
+    testID, wrapperStyle = {} } = props
   const [globalTheme] = useGlobal('globalTheme')
   const isDarkMode = globalTheme === darkTheme
   const color = isDarkMode
@@ -49,6 +52,9 @@ export const PVIcon = (props: Props) => {
       {
         !!onPress ? (
           <TouchableWithoutFeedback
+            {...(accessibilityHint ? { accessibilityHint } : {})}
+            {...(accessibilityLabel ? { accessibilityLabel } : {})}
+            {...(accessibilityRole ? { accessibilityRole } : {})}
             hitSlop={{
               bottom: 8,
               left: 8,
@@ -57,10 +63,19 @@ export const PVIcon = (props: Props) => {
             }}
             onPress={onPress}
             {...(testID ? { testID: `${testID}_icon_button` } : {})}>
-            {icon}
+            <RNView style={wrapperStyle}>
+              {icon}
+            </RNView>
           </TouchableWithoutFeedback>
         ) : (
-          icon
+          <RNView
+            {...(accessible ? { accessible } : {})}
+            {...(accessible && accessibilityHint ? { accessibilityHint } : { accessibilityHint: '' })}
+            {...(accessible && accessibilityLabel ? { accessibilityLabel } : { accessibilityLabel: '' })}
+            {...(accessible && accessibilityRole ? { accessibilityRole } : {})}
+            style={wrapperStyle}>
+            {icon}
+          </RNView>
         )
       }
     </RNView>

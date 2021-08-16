@@ -33,7 +33,6 @@ export const DropdownButton = (props: any) => {
           {sortLabel}
         </Text>
         <Icon
-          accessibilityRole='none'
           name='angle-down'
           size={14}
           style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]} />

@@ -1,6 +1,7 @@
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { State as RNTPState } from 'react-native-track-player'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { checkIfStateIsBuffering } from '../services/player'
 import { togglePlay } from '../state/actions/player'
@@ -21,72 +22,99 @@ export class MiniPlayer extends React.PureComponent<Props> {
     const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
 
-    let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
     let playButtonAdjust = { paddingLeft: 2 } as any
+    let playButtonIcon = (
+      <Icon
+        accessibilityHint={translate('ARIA - Tap to resume playing')}
+        accessibilityLabel={translate('Play')}
+        accessibilityRole='button'
+        name='play'
+        onPress={() => togglePlay(this.global)}
+        size={20}
+        testID={`${testIDPrefix}_play_button`}
+        wrapperStyle={[playerStyles.icon, playButtonAdjust]} />
+    )
     if (playbackState === RNTPState.Playing) {
-      playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
+      playButtonIcon = (
+        <Icon
+          accessibilityHint={translate('ARIA - Tap to pause')}
+          accessibilityLabel={translate('Pause')}
+          accessibilityRole='button'
+          name='pause'
+          onPress={() => togglePlay(this.global)}
+          size={20}
+          testID={`${testIDPrefix}_pause_button`}
+          wrapperStyle={[playerStyles.icon, playButtonAdjust]} />
+      )
       playButtonAdjust = {}
     } else if (checkIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
     }
 
+    let nowPlayingAccessibilityLabel = `${translate('ARIA - Now playing')}. `
+    nowPlayingAccessibilityLabel += `${nowPlayingItem.podcastTitle}. `
+    nowPlayingAccessibilityLabel += `${nowPlayingItem.episodeTitle}.`
+
     return (
       <View>
         {nowPlayingItem && (
-          <TouchableWithoutFeedback
-            onPress={() =>
-              navigation.navigate(PV.RouteNames.PlayerScreen, {
-                nowPlayingItem,
-                addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl,
-                isDarkMode
-              })
-            }
-            testID={testIDPrefix}>
-            <View style={[styles.player, globalTheme.player]}>
-              <FastImage
-                isSmall
-                resizeMode='contain'
-                source={nowPlayingItem.episodeImageUrl || nowPlayingItem.podcastImageUrl}
-                styles={styles.image}
-              />
-              <View style={styles.textWrapper}>
-                <Text
-                  allowFontScaling={false}
-                  numberOfLines={1}
-                  style={[styles.podcastTitle, globalTheme.playerText]}
-                  testID={`${testIDPrefix}_podcast_title`}>
-                  {nowPlayingItem.podcastTitle}
-                </Text>
-                <TextTicker
-                  allowFontScaling={false}
-                  bounce
-                  loop
-                  textLength={nowPlayingItem?.episodeTitle?.length}>
+          <View style={[styles.playerInnerWrapper, globalTheme.player]}>
+            <TouchableWithoutFeedback
+              accessibilityLabel={nowPlayingAccessibilityLabel}
+              accessibilityHint={translate('ARIA - Tap to open the full player screen')}
+              onPress={() =>
+                navigation.navigate(PV.RouteNames.PlayerScreen, {
+                  nowPlayingItem,
+                  addByRSSPodcastFeedUrl: nowPlayingItem.addByRSSPodcastFeedUrl,
+                  isDarkMode
+                })
+              }
+              testID={testIDPrefix}>
+              <View style={[styles.player, globalTheme.player]}>
+                <FastImage
+                  isSmall
+                  resizeMode='contain'
+                  source={nowPlayingItem.episodeImageUrl || nowPlayingItem.podcastImageUrl}
+                  styles={styles.image}
+                />
+                <View style={styles.textWrapper}>
                   <Text
+                    allowFontScaling={false}
                     numberOfLines={1}
-                    style={[styles.episodeTitle, globalTheme.playerText]}
-                    testID={`${testIDPrefix}_episode_title`}>
-                    {nowPlayingItem.episodeTitle}
+                    style={[styles.podcastTitle, globalTheme.playerText]}
+                    testID={`${testIDPrefix}_podcast_title`}>
+                    {nowPlayingItem.podcastTitle}
                   </Text>
-                </TextTicker>
+                  <TextTicker
+                    allowFontScaling={false}
+                    bounce
+                    loop
+                    textLength={nowPlayingItem?.episodeTitle?.length}>
+                    <Text
+                      numberOfLines={1}
+                      style={[styles.episodeTitle, globalTheme.playerText]}
+                      testID={`${testIDPrefix}_episode_title`}>
+                      {nowPlayingItem.episodeTitle}
+                    </Text>
+                  </TextTicker>
+                </View>
               </View>
-              <TouchableOpacity
-                onPress={() => togglePlay(this.global)}
-                style={[playerStyles.icon, playButtonAdjust]}
-                testID={`${testIDPrefix}_toggle_play_button`}>
-                {!hasErrored && playButtonIcon}
-                {hasErrored && (
-                  <Icon
-                    color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
-                    name={'exclamation-triangle'}
-                    size={26}
-                    testID={`${testIDPrefix}_error`}
-                  />
-                )}
-              </TouchableOpacity>
+            </TouchableWithoutFeedback>
+            <View>
+              {!hasErrored && playButtonIcon}
+              {hasErrored && (
+                <Icon
+                  accessible
+                  accessibilityLabel={translate('ARIA - Error something went wrong with playing this item')}
+                  color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
+                  name={'exclamation-triangle'}
+                  size={26}
+                  testID={`${testIDPrefix}_error`}
+                  wrapperStyle={[playerStyles.icon, playButtonAdjust]} />
+              )}
             </View>
-          </TouchableWithoutFeedback>
+          </View>
         )}
       </View>
     )
@@ -107,9 +135,13 @@ const styles = StyleSheet.create({
   },
   player: {
     borderBottomWidth: 0,
-    borderTopWidth: 1,
+    flex: 1,
     flexDirection: 'row',
     minHeight: 61
+  },
+  playerInnerWrapper: {
+    borderTopWidth: 1,
+    flexDirection: 'row'
   },
   podcastTitle: {
     fontSize: PV.Fonts.sizes.xl,
