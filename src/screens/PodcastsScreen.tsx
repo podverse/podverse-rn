@@ -749,6 +749,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
                   ? this._ListHeaderComponent
                   : null
               }
+              noResultsTopActionTextAccessibilityHint={translate('ARIA - Tap to navigate to the search screen')}
               noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
               noResultsMessage={
                 noSubscribedPodcasts ? translate("You don't have any podcasts yet") : translate('No podcasts found')

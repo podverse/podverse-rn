@@ -19,11 +19,12 @@ export const NavSearchIcon = (props: Props) => {
 
   return (
     <NavItemWrapper 
+      accessibilityHint={translate('ARIA - Tap to navigate to the search screen')}
+      accessibilityLabel={translate('Search')}
+      accessibilityRole='button'
       handlePress={handlePress}
       testID='nav_search_icon'>
-      <NavItemIcon
-        accessibilityLabel={translate('Search')}
-        name='search' />
+      <NavItemIcon name='search' />
     </NavItemWrapper>
   )
 }

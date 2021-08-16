@@ -460,5 +460,6 @@
   "TermsOfServiceScreenMatomoTrackingText5": "While we use Matomo tracking data to help us determine what content is most popular on Podverse, users should keep in mind that these popularity metrics are easy to manipulate, and may not accurately reflect the popularity of content.",
   "ARIA - Tap to select a different filter": "Tap to select a different filter",
   "ARIA - This is the selected filter for this screen": "This is the selected filter for this screen",
-  "ARIA - Tap to select this search filter": "Tap to select this search filter"
+  "ARIA - Tap to select this search filter": "Tap to select this search filter",
+  "ARIA - Tap to navigate to the search screen": "Tap to navigate to the search screen"
 }

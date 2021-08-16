@@ -40,6 +40,7 @@ export const PVButton = (props: Props) => {
     <TouchableOpacity
       accessible={accessible}
       accessibilityHint={accessibilityHint}
+      accessibilityRole='button'
       style={[
         core.button,
         globalTheme.buttonPrimaryWrapper,
