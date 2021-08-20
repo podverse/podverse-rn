@@ -337,7 +337,6 @@
   "Share": "Share",
   "shared using brandName": " – shared using Podverse",
   "Show Notes": "Show Notes",
-  "Podcast Settings": "Podcast Settings",
   "Sign Up Error": "Sign Up Error",
   "Sign up for a premium account to use this feature": "Sign up for a premium account to use this feature.",
   "Sign Up": "Sign Up",
@@ -499,5 +498,17 @@
   "ARIA - Tap to play this episode": "Tap to play this episode",
   "ARIA - Tap to stream this episode": "Tap to stream this episode",
   "ARIA - This is the time remaining for this episode": "This is the time remaining for this episode",
-  "ARIA - Tap to show more options": "Tap to show more options"
+  "ARIA - Tap to show more options": "Tap to show more options",
+  "ARIA - Tap to add this next in your queue": "Tap to add this next in your queue",
+  "ARIA - Tap to add this last in your queue": "Tap to add this last in your queue",
+  "ARIA - Tap to add to your playlist": "Tap to add to your playlist",
+  "ARIA - Tap to share": "Tap to share",
+  "ARIA - Tap to go to this podcast": "Tap to go to this podcast",
+  "ARIA - Tap to go to this episode": "Tap to go to this episode",
+  "ARIA - Tap to edit this clip": "Tap to edit this clip",
+  "ARIA - Tap to delete this clip": "Tap to delete this clip",
+  "ARIA - Tap to play": "Tap to play",
+  "ARIA - Tap to stream": "Tap to stream",
+  "ARIA - Podcast settings": "Podcast settings",
+  "ARIA - Hide podcast settings": "Hide podcast settings"
 }

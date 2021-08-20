@@ -105,6 +105,7 @@ export class PVActionSheet extends React.Component<Props, State> {
           <TouchableHighlight
             accessible
             accessibilityHint={item.accessibilityHint}
+            accessibilityLabel={item.accessibilityLabel}
             accessibilityRole='menuitem'
             key={item.key}
             onPress={onPress}

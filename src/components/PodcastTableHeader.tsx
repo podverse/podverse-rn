@@ -70,8 +70,14 @@ export const PodcastTableHeader = (props: Props) => {
                 </Text>
                 {isSubscribed && (
                   <SettingsButton
-                    accessibilityHint={translate('ARIA - Tap to show the settings for this podcast')}
-                    accessibilityLabel={translate('Podcast Settings')}
+                    accessibilityHint={showSettings
+                      ? ''
+                      : translate('ARIA - Tap to show the settings for this podcast')
+                    }
+                    accessibilityLabel={showSettings
+                        ? translate('ARIA - Hide podcast settings')
+                        : translate('ARIA - Podcast settings')
+                    }
                     handleToggleSettings={handleToggleSettings}
                     showCheckmark={showSettings}
                     testID={`${testID}_settings`} />
