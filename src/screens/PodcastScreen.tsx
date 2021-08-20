@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { convertToNowPlayingItem } from 'podverse-shared'
+import { convertToNowPlayingItem, NowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
@@ -414,7 +414,7 @@ static navigationOptions = ({ navigation }) => {
 
       return (
         <EpisodeTableCell
-          item={episode}
+          handleDeletePress={() => this._handleDeleteEpisode(item)}
           handleDownloadPress={() => this._handleDownloadPressed(item)}
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast, userPlaybackPosition))
@@ -426,6 +426,7 @@ static navigationOptions = ({ navigation }) => {
             })
           }}
           hideImage
+          item={episode}
           mediaFileDuration={mediaFileDuration}
           testID={testId}
           userPlaybackPosition={userPlaybackPosition}
@@ -434,28 +435,23 @@ static navigationOptions = ({ navigation }) => {
     }
   }
 
-  _renderHiddenItem = ({ item, index }: RenderItemArg) => (
-    <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.id)}
-      testID={`${testIDPrefix}_clip_item_${index}`}
-      text={translate('Delete')}
-    />
-  )
-
-  _handleHiddenItemPress = (selectedId: string) => {
-    const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
-    this.setState(
-      {
-        flatListData: filteredEpisodes
-      },
-      () => {
-        (async () => {
-          await DownloadState.removeDownloadedPodcastEpisode(selectedId)
-          const finalDownloadedEpisodes = await getDownloadedEpisodes()
-          this.setState({ flatListData: finalDownloadedEpisodes })
-        })()
-      }
-    )
+  _handleDeleteEpisode = (item: NowPlayingItem) => {
+    const selectedId = item?.episodeId
+    if (selectedId) {
+      const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
+      this.setState(
+        {
+          flatListData: filteredEpisodes
+        },
+        () => {
+          (async () => {
+            await DownloadState.removeDownloadedPodcastEpisode(selectedId)
+            const finalDownloadedEpisodes = await getDownloadedEpisodes()
+            this.setState({ flatListData: finalDownloadedEpisodes })
+          })()
+        }
+      )
+    }
   }
 
   _handleToggleDeleteDownloadedEpisodesDialog = () => {

@@ -37,7 +37,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
     if (playbackState === RNTPState.Playing) {
       playButtonIcon = (
         <Icon
-          accessibilityHint={translate('ARIA - Tap to pause')}
+          accessibilityHint={translate('ARIA - Tap to pause playback')}
           accessibilityLabel={translate('Pause')}
           accessibilityRole='button'
           name='pause'

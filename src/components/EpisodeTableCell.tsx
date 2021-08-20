@@ -3,14 +3,15 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
-import { DownloadButton } from './DownloadButton'
+import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
 import { FastImage, IndicatorDownload, Text, View } from './'
 
 type Props = {
+  handleDeletePress?: any
+  handleDownloadPress?: any
   handleMorePress?: any
   handleNavigationPress?: any
-  handleDownloadPress?: any
   hideImage?: boolean
   item?: any
   mediaFileDuration?: number
@@ -24,9 +25,10 @@ type Props = {
 export class EpisodeTableCell extends React.PureComponent<Props> {
   render() {
     const {
+      handleDeletePress,
+      handleDownloadPress,
       handleMorePress,
       handleNavigationPress,
-      handleDownloadPress,
       hideImage,
       item,
       mediaFileDuration,
@@ -85,7 +87,6 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               testID={`${testID}_pub_date`}>
               {readableDate(pubDate)}
             </Text>
-            {isDownloaded && <IndicatorDownload />}
           </RNView>
         </RNView>
       </RNView>
@@ -95,6 +96,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const bottomText = (
       <Text
+        accessibilityHint={translate('ARIA - This is the episode description')}
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         isSecondary
         numberOfLines={2}
@@ -117,7 +119,11 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             innerTopView
           )}
           {!isDownloaded && (
-            <DownloadButton testID={testID} isDownloading={isDownloading} onPress={() => handleDownloadPress(item)} />
+            <DownloadOrDeleteButton
+              isDownloading={isDownloading}
+              onPressDelete={() => handleDeletePress(item)}
+              onPressDownload={() => handleDownloadPress(item)}
+              testID={testID} />
           )}
         </RNView>
         {handleNavigationPress ? (
@@ -132,6 +138,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         <View style={styles.timeRemainingWrapper}>
           <TimeRemainingWidget
             handleMorePress={handleMorePress}
+            isDownloaded={isDownloaded}
             item={item}
             mediaFileDuration={mediaFileDuration}
             testID={testID}

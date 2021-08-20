@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { State as RNTPState } from 'react-native-track-player'
 import { useGlobal } from 'reactn'
+import { translate } from '../lib/i18n'
 import { convertSecToHhoursMMinutes, requestAppStoreReviewForEpisodePlayed } from '../lib/utility'
 import { PV } from '../resources'
 import { handlePlay, PVTrackPlayer, setPlaybackPosition } from '../services/player'
@@ -13,6 +14,7 @@ type Props = {
   clipTime?: string
   episodeDownloading?: boolean
   handleMorePress?: any
+  isDownloaded?: boolean
   item: any
   loadTimeStampOnPlay?: boolean
   mediaFileDuration?: number | undefined
@@ -70,7 +72,7 @@ const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { clipTime, episodeDownloading, handleMorePress, item,
+  const { clipTime, episodeDownloading, handleMorePress, isDownloaded, item,
     loadTimeStampOnPlay, mediaFileDuration, style, testID, transparent, userPlaybackPosition } = props
   const { episode = {}, podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
@@ -125,20 +127,44 @@ export const TimeRemainingWidget = (props: Props) => {
   return (
     <View style={[styles.container, style]} transparent={transparent}>
       <TouchableOpacity
+        accessibilityHint={isNowPlayingItem
+          ? translate('ARIA - Tap to pause this episode')
+          : translate('ARIA - Tap to play this episode')
+        }
+        accessibilityLabel={isNowPlayingItem
+          ? translate('Pause')
+          : translate('Play')
+        }
+        accessibilityRole='button'
         onPress={playItem}
         style={iconStyle}
         testID={`${testID}_time_remaining_widget_toggle_play`}>
-        {isNowPlayingItem ? <Icon name={'pause'} size={13} /> : <Icon name={'play'} size={13} />}
+        {isNowPlayingItem
+          ? <Icon name={'pause'} size={13} />
+          : <Icon name={'play'} size={13} />
+        }
       </TouchableOpacity>
       {hasStartedItem && !isInvalidDuration && (
         <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
       )}
-      <Text
-        fontSizeLargerScale={PV.Fonts.largeSizes.md}
-        fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-        style={styles.text}>
-        {timeLabel}
-      </Text>
+      <View
+        accessible
+        accessibilityHint={timeLabel
+          ? translate('ARIA - This is the time remaining for this episode')
+          : ''
+        }
+        accessibilityLabel={timeLabel
+          ? timeLabel
+          : translate('Unplayed episode')
+        }
+        style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
+        <Text
+          fontSizeLargerScale={PV.Fonts.largeSizes.md}
+          fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          style={styles.text}>
+          {timeLabel}
+        </Text>
+      </View>
       {!!handleMorePress && (
         <MoreButton
           handleMorePress={handleMorePress}
@@ -156,7 +182,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly'
   },
   text: {
-    flex: 1,
     color: PV.Colors.skyLight,
     fontSize: PV.Fonts.sizes.sm
   },

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useGlobal } from 'reactn'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { ActivityIndicator } from '.'
 
@@ -16,6 +17,9 @@ export const MoreButton = (props: Props) => {
 
   return (
     <TouchableOpacity
+      accessibilityHint={translate('ARIA - Tap to show more options')}
+      accessibilityLabel={translate('More')}
+      accessibilityRole='button'
       hitSlop={{
         bottom: 10,
         left: 10,

@@ -1,6 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import { getGlobal } from 'reactn'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { Icon } from '.'
 
@@ -20,7 +21,9 @@ export const IndicatorDownload = (props: Props) => {
   }
 
   return (
-    <View style={style}>
+    <View
+      accessibilityLabel={translate('Downloaded Episode')}
+      style={style}>
       <Icon isSecondary name='download' size={size} />
     </View>
   )
