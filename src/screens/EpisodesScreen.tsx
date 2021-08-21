@@ -10,7 +10,6 @@ import {
   EpisodeTableCell,
   FlatList,
   SearchBar,
-  SwipeRowBack,
   TableSectionSelectors,
   View
 } from '../components'
@@ -324,14 +323,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderHiddenItem = ({ item, index }, rowMap) => (
-    <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      testID={`${testIDPrefix}_episode_item_${index}`}
-      text={translate('Delete')}
-    />
-  )
-
   _handleHiddenItemPress = (selectedId) => {
     const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
     this.setState(
@@ -475,7 +466,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
             noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
             onEndReached={this._onEndReached}
             onRefresh={this._onRefresh}
-            renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderEpisodeItem}
             showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
           />
