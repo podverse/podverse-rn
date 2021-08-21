@@ -487,7 +487,8 @@
   "ARIA - Tap to share this podcast": "Tap to share this podcast",
   "ARIA - This is the podcast title": "This is the podcast title",
   "ARIA - This is the episode title": "This is the episode title",
-  "ARIA - Tap to show the settings for this podcast": "Tap to show the settings for this podcast",
+  "ARIA - On tap settings will appear lower on this screen": "On tap settings will appear lower on this screen",
+  "ARIA - On tap episodes will appear lower on this screen": "On tap episodes will appear lower on this screen",
   "ARIA - Tap to stop auto downloading new episodes from this podcast": "Tap to stop auto downloading new episodes from this podcast",
   "ARIA - Tap to auto download new episodes from this podcast when they are released": "Tap to auto download new episodes from this podcast when they are released",
   "ARIA - Tap to show more info about this podcast": "Tap to show more info about this podcast",
@@ -509,6 +510,11 @@
   "ARIA - Tap to delete this clip": "Tap to delete this clip",
   "ARIA - Tap to play": "Tap to play",
   "ARIA - Tap to stream": "Tap to stream",
-  "ARIA - Podcast settings": "Podcast settings",
-  "ARIA - Hide podcast settings": "Hide podcast settings"
+  "ARIA - Show podcast settings": "Show podcast settings",
+  "ARIA - Hide podcast settings": "Hide podcast settings",
+  "ARIA - Tap to limit the number of episodes from this podcast to save on your device": "Tap to limit the number of episodes from this podcast to save on your device",
+  "ARIA - Tap to disable the downloaded episode limit for this podcast": "Tap to disable the downloaded episode limit for this podcast",
+  "ARIA - Tap to set the maximum number of downloaded episodes to save from this podcast on your device": "Tap to set the maximum number of downloaded episodes to save from this podcast on your device",
+  "ARIA - Tap to set the time you want this episode to always start playing from": "Tap to set the time you want this episode to always start playing from",
+  "ARIA - Tap to delete all the episodes you have downloaded for this podcast": "Tap to delete all the episodes you have downloaded for this podcast"
 }

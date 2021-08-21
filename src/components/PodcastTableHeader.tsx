@@ -71,12 +71,12 @@ export const PodcastTableHeader = (props: Props) => {
                 {isSubscribed && (
                   <SettingsButton
                     accessibilityHint={showSettings
-                      ? ''
-                      : translate('ARIA - Tap to show the settings for this podcast')
+                      ? translate('ARIA - On tap episodes will appear lower on this screen')
+                      : translate('ARIA - On tap settings will appear lower on this screen')
                     }
                     accessibilityLabel={showSettings
                         ? translate('ARIA - Hide podcast settings')
-                        : translate('ARIA - Podcast settings')
+                        : translate('ARIA - Show podcast settings')
                     }
                     handleToggleSettings={handleToggleSettings}
                     showCheckmark={showSettings}
@@ -103,7 +103,7 @@ export const PodcastTableHeader = (props: Props) => {
                       : translate('Autodownloading Off')
                     }
                     onPress={handleToggleAutoDownload}>
-                    <View pointerEvents='none' style={styles.autoDownloadContainer}>
+                    <View style={styles.autoDownloadContainer}>
                       <Text
                         fontSizeLargestScale={PV.Fonts.largeSizes.xs}
                         isSecondary

@@ -1,10 +1,12 @@
 import React from 'react'
-import { StyleSheet, Switch, View } from 'react-native'
+import { StyleSheet, Switch, TouchableWithoutFeedback, View } from 'react-native'
 import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 import { Text, TextInput } from './'
 
 type Props = {
+  accessibilityHint?: string
+  accessibilityLabel?: string
   inputAutoCorrect?: boolean
   inputEditable?: boolean
   inputEyebrowTitle?: string
@@ -24,6 +26,8 @@ type Props = {
 
 export const SwitchWithText = (props: Props) => {
   const {
+    accessibilityHint,
+    accessibilityLabel,
     inputAutoCorrect,
     inputEditable,
     inputEyebrowTitle,
@@ -44,18 +48,23 @@ export const SwitchWithText = (props: Props) => {
 
   return (
     <View style={wrapperStyle}>
-      <View style={styles.switchWrapper}>
-        <Switch
-          onValueChange={onValueChange}
-          value={value}
-          {...(testID ? { testID: `${testID}_switch` } : {})} />
-        <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          style={styles.text}
-          {...(testID ? { testID: `${testID}_text` } : {})}>
-          {text}
-        </Text>
-      </View>
+      <TouchableWithoutFeedback
+        accessibilityHint={accessibilityHint}
+        accessibilityLabel={accessibilityLabel}
+        accessibilityRole='switch'
+        onPress={onValueChange}>
+        <View style={styles.switchWrapper}>
+          <Switch
+            value={value}
+            {...(testID ? { testID: `${testID}_switch` } : {})} />
+          <Text
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.text}
+            {...(testID ? { testID: `${testID}_text` } : {})}>
+            {text}
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>
       {inputShow && (
         <TextInput
           autoCapitalize='none'
