@@ -83,7 +83,11 @@ export class TableSectionSelectors extends React.Component<Props, State> {
         <View style={styles.tableSectionHeaderTitleWrapper}>
           {!!selectedFilterLabel && (
             <Text
-              accessibilityHint={translate('ARIA - This is the selected filter for this screen')}
+              accessibilityHint={!disableFilter
+                ? translate('ARIA - This is the selected filter for this screen')
+                : ''
+              }
+              accessibilityRole={disableFilter ? 'header' : 'button'}
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               numberOfLines={1}
               style={[styles.tableSectionHeaderTitleText, globalTheme.tableSectionHeaderText, textStyle]}
@@ -96,8 +100,8 @@ export class TableSectionSelectors extends React.Component<Props, State> {
         {
           !hideDropdown &&
             <DropdownButton
+              accessible={!disableFilter}
               accessibilityHint={translate('ARIA - Tap to select a different filter')}
-              accessible
               disableFilter={disableFilter}
               onPress={() => {
                 this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
@@ -117,6 +121,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
                   selectedFromItemKey
                 })
               }}
+              
               sortLabel={selectedSortLabel}
               testID={testID}
               transparent={transparentDropdownButton}

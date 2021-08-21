@@ -181,7 +181,7 @@ export const removeHTMLAttributesFromString = (html: string) => {
 }
 
 export const removeExtraInfoFromEpisodeDescription = (html: string) => {
-  html = html.replace('<p>Show Notes</p>', '')
+  html = html.replace('<p>Episode Summary</p>', '')
   return html.replace(/<p>\s*<\/p>/, '')
 }
 

@@ -54,7 +54,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props> {
           <TableSectionSelectors
             disableFilter
             includePadding
-            selectedFilterLabel={translate('Show Notes')}
+            selectedFilterLabel={translate('Episode Summary')}
           />
           {!isLoading && episode && (
             <View>

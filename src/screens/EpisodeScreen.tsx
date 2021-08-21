@@ -9,6 +9,7 @@ import {
   NavSearchIcon,
   NavShareIcon,
   ScrollView,
+  TableSectionSelectors,
   Text
 } from '../components'
 import { downloadEpisode } from '../lib/downloader'
@@ -257,6 +258,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           disableScrolling
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           html={episode?.description || ''}
+          sectionTitle={translate('Episode Summary')}
           style={extraHtmlScrollViewPadding}
         />
         <ActionSheet
