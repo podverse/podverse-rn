@@ -130,13 +130,25 @@ export const TimeRemainingWidget = (props: Props) => {
       ? translate('ARIA - This is the chapter time range')
       : translate('ARIA - This is the clip time range')
 
+  let playButtonAccessibilityHint = ''
+  if (!clipTime) {
+    playButtonAccessibilityHint = isNowPlayingItem
+      ? translate('ARIA - Tap to pause this episode')
+      : translate('ARIA - Tap to play this episode')
+  } else if (clipTime && isChapter) {
+    playButtonAccessibilityHint = isNowPlayingItem
+      ? translate('ARIA - Tap to pause this chapter')
+      : translate('ARIA - Tap to play this chapter')
+  } else if (clipTime) {
+    playButtonAccessibilityHint = isNowPlayingItem
+      ? translate('ARIA - Tap to pause this clip')
+      : translate('ARIA - Tap to play this clip')
+  }
+
   return (
     <View style={[styles.container, style]} transparent={transparent}>
       <TouchableOpacity
-        accessibilityHint={isNowPlayingItem
-          ? translate('ARIA - Tap to pause this episode')
-          : translate('ARIA - Tap to play this episode')
-        }
+        accessibilityHint={playButtonAccessibilityHint}
         accessibilityLabel={isNowPlayingItem
           ? translate('Pause')
           : translate('Play')
