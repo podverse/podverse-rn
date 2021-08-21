@@ -84,40 +84,42 @@ export class MyLibraryScreen extends React.Component<Props, State> {
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
-              <TableCell 
-                testIDPrefix={`${testIDPrefix}_${item.key}`}
-                testIDSuffix='' 
-                onPress={() => this._onPress(item)}
-              >
-                {item.key === _downloadsKey ? (
-                  <RNView style={core.row}>
-                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={table.cellText}>
-                    {item.title}
-                    </Text>
-                    {item.key === _downloadsKey && downloadsActiveCount > 0 &&
-                      fontScaleMode !== PV.Fonts.fontScale.larger &&
-                      fontScaleMode !== PV.Fonts.fontScale.largest && (
-                        <Badge
-                          badgeStyle={{ width:25, height:25, backgroundColor: PV.Colors.redLighter, borderRadius:12.5 }}
-                          containerStyle={{
-                            position: 'absolute',
-                            right: -32,
-                            top: 0
-                          }}
-                          status='error'
-                          textStyle={{fontSize:PV.Fonts.largeSizes.xxl, fontWeight:PV.Fonts.weights.bold}}
-                          value={downloadsActiveCount}
-                        />
-                      )}
-                  </RNView>
-                ) : (
+            <TableCell
+              accessibilityHint={translate('ARIA - Tap to go to this screen')}
+              testIDPrefix={`${testIDPrefix}_${item.key}`}
+              testIDSuffix='' 
+              onPress={() => this._onPress(item)}>
+              {item.key === _downloadsKey ? (
+                <RNView style={core.row}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
-                    style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                    style={table.cellText}>
                     {item.title}
                   </Text>
-                )}
-              </TableCell>
+                  {item.key === _downloadsKey && downloadsActiveCount > 0 &&
+                    fontScaleMode !== PV.Fonts.fontScale.larger &&
+                    fontScaleMode !== PV.Fonts.fontScale.largest && (
+                      <Badge
+                        badgeStyle={{ width:25, height:25, backgroundColor: PV.Colors.redLighter, borderRadius:12.5 }}
+                        containerStyle={{
+                          position: 'absolute',
+                          right: -32,
+                          top: 0
+                        }}
+                        status='error'
+                        textStyle={{fontSize:PV.Fonts.largeSizes.xxl, fontWeight:PV.Fonts.weights.bold}}
+                        value={downloadsActiveCount}
+                      />
+                    )}
+                </RNView>
+              ) : (
+                <Text
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  style={[table.cellText, globalTheme.tableCellTextPrimary]}>
+                  {item.title}
+                </Text>
+              )}
+            </TableCell>
           )}
           sections={[{ title: '', data: featureOptions }]}
         />

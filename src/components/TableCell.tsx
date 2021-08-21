@@ -5,6 +5,7 @@ import { table } from '../styles'
 import { Text, Icon } from '.'
 
 type TableCellProps = {
+  accessibilityHint?: string
   children: any
   testIDPrefix: string
   testIDSuffix: string
@@ -21,10 +22,12 @@ type TableTextCellProps = {
 }
 
 export const TableCell = (props: TableCellProps) => {
-  const { children, testIDPrefix, testIDSuffix, onPress = null, hideChevron = true } = props
+  const { accessibilityHint, children, testIDPrefix, testIDSuffix, onPress = null,
+    hideChevron = true } = props
 
   return (
     <Pressable
+      accessibilityHint={accessibilityHint}
       onPress={onPress}
       style={table.cellWrapper}
       testID={`${testIDPrefix}_table_cell_wrapper${testIDSuffix ? `_${testIDSuffix}` : ''}`}>
