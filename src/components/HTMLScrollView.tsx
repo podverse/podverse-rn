@@ -50,10 +50,12 @@ export const HTMLScrollView = (props: Props) => {
   return (
     <ScrollView style={[styles.scrollView, style]} scrollEnabled={!disableScrolling}>
       {!!sectionTitle &&
-        <TableSectionSelectors disableFilter selectedFilterLabel={sectionTitle} />
+        <TableSectionSelectors
+          disableFilter
+          includePadding
+          selectedFilterLabel={sectionTitle} />
       }
       <RenderHTML
-        // baseFontStyle={baseFontStyle}
         baseStyle={styles.html}
         contentWidth={Dimensions.get('window').width}
         imagesMaxWidth={Dimensions.get('window').width}
@@ -77,6 +79,10 @@ export const HTMLScrollView = (props: Props) => {
 }
 
 const customHTMLTagStyles = {
+  body: {
+    color: 'white',
+    fontSize: PV.Fonts.sizes.lg
+  },
   h1: {
     marginBottom: 8,
     marginTop: 4,
@@ -148,9 +154,6 @@ const customHTMLTagStyles = {
 }
 
 const styles = StyleSheet.create({
-  baseFontStyle: {
-    fontSize: PV.Fonts.sizes.lg
-  },
   html: {
     backgroundColor: 'transparent',
     marginHorizontal: 8,

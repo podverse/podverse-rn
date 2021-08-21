@@ -62,10 +62,10 @@ export class PodcastInfoScreen extends React.Component<Props, State> {
           podcastTitle={podcast && podcast.title}
           testID={testIDPrefix}
         />
-        <Text style={styles.text}>{translate('About')}</Text>
         <HTMLScrollView
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          html={podcast.description ? podcast.description : ''} />
+          html={podcast.description ? `<body>${podcast.description}</body>` : ''}
+          sectionTitle={translate('About')} />
       </View>
     )
   }

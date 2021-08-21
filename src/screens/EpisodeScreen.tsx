@@ -285,12 +285,6 @@ const styles = StyleSheet.create({
   htmlScrollView: {
     marginVertical: 12
   },
-  showNotesView: {
-    margin: 8
-  },
-  showNotesViewText: {
-    fontSize: PV.Fonts.sizes.lg
-  },
   showNotesCell: {
     padding: 15,
     borderTopColor: PV.Colors.grayLighterTransparent,
