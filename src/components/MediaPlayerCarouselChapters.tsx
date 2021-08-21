@@ -70,7 +70,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
         item={item}
         loadTimeStampOnPlay
-        showChapterInfo
+        isChapter
         showPodcastInfo={false}
         testID={`${testID}_item_${index}`}
         transparent

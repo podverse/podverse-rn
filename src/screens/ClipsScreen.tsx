@@ -10,7 +10,6 @@ import {
   Divider,
   FlatList,
   SearchBar,
-  SwipeRowBack,
   TableSectionSelectors,
   View
 } from '../components'
@@ -315,15 +314,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     }
   }
 
-  _renderHiddenItem = ({ item, index }, rowMap) => (
-    <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      testID={`${testIDPrefix}_clip_item_${index}`}
-      text={translate('Delete')}
-    />
-  )
-
-  _handleHiddenItemPress = (selectedId) => {
+  _handleDeleteClip = (selectedId) => {
     this.setState({
       mediaRefIdToDelete: selectedId,
       showDeleteConfirmDialog: true
@@ -453,7 +444,6 @@ export class ClipsScreen extends React.Component<Props, State> {
             }
             onEndReached={this._onEndReached}
             onRefresh={this._onRefresh}
-            renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderClipItem}
             showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
           />
@@ -466,7 +456,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             return PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
               handleDismiss: this._handleCancelPress,
               handleDownload: this._handleDownloadPressed,
-              handleDeleteClip: this._handleHiddenItemPress,
+              handleDeleteClip: this._handleDeleteClip,
               includeGoToEpisode: true
             })
           }}

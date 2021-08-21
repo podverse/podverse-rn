@@ -12,7 +12,7 @@ type Props = {
   hideImage?: boolean
   item: any
   loadTimeStampOnPlay?: boolean
-  showChapterInfo?: boolean
+  isChapter?: boolean
   showEpisodeInfo?: boolean
   showPodcastInfo?: boolean
   testID: string
@@ -29,7 +29,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
   render() {
     const { handleMorePress, hideImage, item, loadTimeStampOnPlay,
-      showChapterInfo, showEpisodeInfo, showPodcastInfo, testID, transparent } = this.props
+      isChapter, showEpisodeInfo, showPodcastInfo, testID, transparent } = this.props
 
     const episodePubDate = item?.episode?.pubDate || ''
     const episodeId = item?.episode?.id || ''
@@ -63,6 +63,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
               <RNView style={styles.textWrapper}>
                 {showPodcastInfo && podcastTitle && (
                   <Text
+                    accessibilityHint={translate('ARIA - This is the podcast title')}
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     isSecondary
                     numberOfLines={1}
@@ -72,13 +73,18 @@ export class ClipTableCell extends React.PureComponent<Props> {
                   </Text>
                 )}
                 {showEpisodeInfo && PV.Fonts.fontScale.largest !== fontScaleMode && episodeTitle && (
-                  <Text numberOfLines={2} style={styles.episodeTitle} testID={`${testID}_episode_title`}>
+                  <Text
+                    accessibilityHint={translate('ARIA - This is the episode title')}
+                    numberOfLines={2}
+                    style={styles.episodeTitle}
+                    testID={`${testID}_episode_title`}>
                     {episodeTitle.trim()}
                   </Text>
                 )}
                 {showEpisodeInfo && !!episodePubDate && (
                   <RNView style={styles.textWrapperBottomRow}>
                     <Text
+                      accessibilityHint={translate('ARIA - This is the episode publication date')}
                       fontSizeLargerScale={PV.Fonts.largeSizes.md}
                       fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                       isSecondary
@@ -94,6 +100,10 @@ export class ClipTableCell extends React.PureComponent<Props> {
             </RNView>
           )}
           <Text
+            accessibilityHint={isChapter
+              ? translate('ARIA - This is the chapter title')
+              : translate('ARIA - This is the clip title')
+            }
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={4}
             style={styles.title}
@@ -114,13 +124,14 @@ export class ClipTableCell extends React.PureComponent<Props> {
             clipTime={clipTime}
             episodeDownloading={episodeDownloading}
             handleMorePress={handleMorePress}
+            isChapter={isChapter}
             item={item}
             loadTimeStampOnPlay={loadTimeStampOnPlay}
             testID={testID}
             transparent={transparent}
           />
         </View>
-        {showChapterInfo && (chapterImageUrl || hasChapterCustomImage) && (
+        {isChapter && (chapterImageUrl || hasChapterCustomImage) && (
           <TouchableOpacity
             activeOpacity={1}
             {...(item?.linkUrl ? { onPress: () => this.handleChapterLinkPress(item.linkUrl) } : {})}>

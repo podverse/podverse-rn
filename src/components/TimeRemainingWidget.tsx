@@ -14,7 +14,7 @@ type Props = {
   clipTime?: string
   episodeDownloading?: boolean
   handleMorePress?: any
-  isDownloaded?: boolean
+  isChapter?: boolean
   item: any
   loadTimeStampOnPlay?: boolean
   mediaFileDuration?: number | undefined
@@ -72,7 +72,7 @@ const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { clipTime, episodeDownloading, handleMorePress, isDownloaded, item,
+  const { clipTime, episodeDownloading, handleMorePress, isChapter, item,
     loadTimeStampOnPlay, mediaFileDuration, style, testID, transparent, userPlaybackPosition } = props
   const { episode = {}, podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
@@ -124,6 +124,12 @@ export const TimeRemainingWidget = (props: Props) => {
 
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]
 
+  const timeViewAccessibilityHint = !clipTime
+    ? translate('ARIA - This is the time remaining for this episode')
+    : isChapter
+      ? translate('ARIA - This is the chapter time range')
+      : translate('ARIA - This is the clip time range')
+
   return (
     <View style={[styles.container, style]} transparent={transparent}>
       <TouchableOpacity
@@ -149,7 +155,7 @@ export const TimeRemainingWidget = (props: Props) => {
       )}
       <View
         accessible
-        accessibilityHint={translate('ARIA - This is the time remaining for this episode')}
+        accessibilityHint={timeViewAccessibilityHint}
         accessibilityLabel={timeLabel
           ? timeLabel
           : translate('Unplayed episode')
