@@ -536,5 +536,6 @@
   "ARIA - Select a sorting filter from the list below": "Select a sorting filter from the list below",
   "ARIA - Select a category from the list below": "Select a category from the list below. When a category is selected its subcategories will appear below it.",
   "ARIA - Currently selected filter": "Currently selected filter",
-  "ARIA - Tap to go to this screen": "Tap to go to this screen"
+  "ARIA - Tap to go to this screen": "Tap to go to this screen",
+  "ARIA - Tap to remove this download": "Tap to remove this download"
 }

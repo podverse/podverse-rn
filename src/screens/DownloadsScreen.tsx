@@ -68,22 +68,23 @@ export class DownloadsScreen extends React.Component<Props, State> {
     })
 
   _renderItem = ({ item, index }) => (
-      <DownloadTableCell
-        bytesTotal={item.bytesTotal}
-        bytesWritten={item.bytesWritten}
-        completed={item.completed}
-        {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
-        onPress={() => this._handleItemPress(item)}
-        percent={item.percent}
-        podcastImageUrl={item.podcastImageUrl}
-        {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
-        status={item.status}
-        testID={`${testIDPrefix}_download_item_${index}`}
-      />
-    )
+    <DownloadTableCell
+      bytesTotal={item.bytesTotal}
+      bytesWritten={item.bytesWritten}
+      completed={item.completed}
+      {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
+      onPress={() => this._handleItemPress(item)}
+      percent={item.percent}
+      podcastImageUrl={item.podcastImageUrl}
+      {...(item.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
+      status={item.status}
+      testID={`${testIDPrefix}_download_item_${index}`}
+    />
+  )
 
   _renderHiddenItem = ({ item, index }, rowMap) => (
     <SwipeRowBack
+      accessibilityLabel={translate('ARIA - Tap to remove this download')}
       onPress={() => this._handleHiddenItemPress(item.episodeId, rowMap)}
       testID={`${testIDPrefix}_download_item_${index}`}
       text='Remove'

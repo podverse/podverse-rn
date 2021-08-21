@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import { Slider } from 'react-native-elements'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
@@ -38,12 +38,11 @@ export class DownloadTableCell extends React.PureComponent<Props> {
     const statusText = getDownloadStatusText(status)
 
     return (
-      <TouchableOpacity
-        activeOpacity={1}
+      <Pressable
         onPress={onPress}
         {...(testID ? { testID } : {})}
         style={styles.cellView}>
-        <View style={styles.wrapper}>
+        <View pointerEvents='none' style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>
             <RNView style={styles.textWrapperTop}>
@@ -100,14 +99,14 @@ export class DownloadTableCell extends React.PureComponent<Props> {
             </RNView>
           </RNView>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     )
   }
 }
 
 const styles = StyleSheet.create({
   cellView: {
-    backgroundColor: PV.Colors.ink
+    flex: 0
   },
   episodeTitle: {
     flex: 1,

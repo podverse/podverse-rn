@@ -528,22 +528,22 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _ItemSeparatorComponent = () => <Divider style={{ marginHorizontal: 10 }} />
 
   _renderPodcastItem = ({ item, index }) => (
-      <PodcastTableCell
-        id={item?.id}
-        lastEpisodePubDate={item.lastEpisodePubDate}
-        onPress={() =>
-          this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
-            podcast: item,
-            addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
-          })
-        }
-        podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
-        {...(item.title ? { podcastTitle: item.title } : {})}
-        showAutoDownload
-        showDownloadCount
-        testID={`${testIDPrefix}_podcast_item_${index}`}
-      />
-    )
+    <PodcastTableCell
+      id={item?.id}
+      lastEpisodePubDate={item.lastEpisodePubDate}
+      onPress={() =>
+        this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
+          podcast: item,
+          addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
+        })
+      }
+      podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
+      {...(item.title ? { podcastTitle: item.title } : {})}
+      showAutoDownload
+      showDownloadCount
+      testID={`${testIDPrefix}_podcast_item_${index}`}
+    />
+  )
 
   _renderHiddenItem = ({ item, index }, rowMap) => {
     const { queryFrom } = this.state
