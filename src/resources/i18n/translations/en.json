@@ -531,5 +531,9 @@
   "ARIA - Tap to show clips from this podcast": "Tap to show clips from this podcast",
   "ARIA - Tap to show the chapters from this podcast": "Tap to show the chapters from this podcast",
   "ARIA - This is the chapter time range": "This is the chapter time range",
-  "ARIA - This is the clip time range": "This is the clip time range"
+  "ARIA - This is the clip time range": "This is the clip time range",
+  "ARIA - Select a primary filter from the list below": "Select a primary filter from the list below",
+  "ARIA - Select a sorting filter from the list below": "Select a sorting filter from the list below",
+  "ARIA - Select a category from the list below": "Select a category from the list below. When a category is selected its subcategories will appear below it.",
+  "ARIA - Currently selected filter": "Currently selected filter"
 }

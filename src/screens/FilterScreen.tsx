@@ -216,6 +216,7 @@ export class FilterScreen extends React.Component<Props, State> {
 
     return (
       <TouchableWithoutFeedback
+        accessibilityHint={isActive ? translate('ARIA - Currently selected filter') : ''}
         onPress={async () => {
           const { categoryValueOverride, handleSelect } = await this.getSelectHandler(section, item)
           const newState = (await this.getNewLocalState(section, item)) as any
@@ -253,7 +254,11 @@ export class FilterScreen extends React.Component<Props, State> {
           keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.value || item?.id)}
           renderSectionHeader={({ section }) => (
               <View style={styles.sectionItemWrapper}>
-                <Text style={styles.sectionItemText}>{section.title}</Text>
+                <Text
+                  accessible
+                  accessibilityHint={section.accessibilityHint}
+                  accessibilityRole={section.accessibilityRole}
+                  style={styles.sectionItemText}>{section.title}</Text>
               </View>
             )}
           renderItem={this.renderItem}
