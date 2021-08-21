@@ -516,5 +516,8 @@
   "ARIA - Tap to disable the downloaded episode limit for this podcast": "Tap to disable the downloaded episode limit for this podcast",
   "ARIA - Tap to set the maximum number of downloaded episodes to save from this podcast on your device": "Tap to set the maximum number of downloaded episodes to save from this podcast on your device",
   "ARIA - Tap to set the time you want this episode to always start playing from": "Tap to set the time you want this episode to always start playing from",
-  "ARIA - Tap to delete all the episodes you have downloaded for this podcast": "Tap to delete all the episodes you have downloaded for this podcast"
+  "ARIA - Tap to delete all the episodes you have downloaded for this podcast": "Tap to delete all the episodes you have downloaded for this podcast",
+  "ARIA - This is the time in hours to start this podcast from": "This is the time in hours to start this podcast from",
+  "ARIA - This is the time in minutes to start this podcast from": "This is the time in minutes to start this podcast from",
+  "ARIA - This is the time in seconds to start this podcast from": "This is the time in seconds to start this podcast from"
 }
