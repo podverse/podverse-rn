@@ -211,6 +211,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         />
         {showClipsCell && (
           <TouchableOpacity
+            accessibilityHint={translate('ARIA - Tap to show clips from this podcast')}
             activeOpacity={1}
             style={styles.showNotesCell}
             onPress={() => {
@@ -232,6 +233,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         )}
         {showChaptersCell && (
           <TouchableOpacity
+            accessibilityHint={translate('ARIA - Tap to show the chapters from this podcast')}
             activeOpacity={1}
             style={styles.showNotesCell}
             onPress={() => {

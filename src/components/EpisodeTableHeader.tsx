@@ -67,17 +67,23 @@ export const EpisodeTableHeader = (props: Props) => {
               <FastImage source={imageUrl} styles={styles.image} />
               <View style={styles.textWrapper}>
                 <Text
+                  accessibilityHint={translate('ARIA - This is the podcast title')}
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary
                   style={styles.podcastTitle}
                   testID={`${testID}_podcast_title`}>
                   {podcastTitle.trim()}
                 </Text>
-                <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title} testID={`${testID}_title`}>
+                <Text
+                  accessibilityHint={translate('ARIA - This is the episode title')}
+                  fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                  style={styles.title}
+                  testID={`${testID}_title`}>
                   {episodeTitle.trim()}
                 </Text>
                 <View style={styles.textWrapperBottomRow}>
                   <Text
+                    accessibilityHint={translate('ARIA - This is the episode publication date')}
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     isSecondary
                     style={styles.pubDate}
@@ -116,8 +122,8 @@ const styles = StyleSheet.create({
   },
   innerWrapper: {},
   image: {
-    height: 110,
-    width: 110
+    height: 200,
+    width: 200
   },
   notFoundText: {
     fontSize: PV.Fonts.sizes.xl,

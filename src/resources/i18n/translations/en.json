@@ -487,6 +487,7 @@
   "ARIA - Tap to share this podcast": "Tap to share this podcast",
   "ARIA - This is the podcast title": "This is the podcast title",
   "ARIA - This is the episode title": "This is the episode title",
+  "ARIA - This is the episode publication date": "This is the episode publication date",
   "ARIA - On tap settings will appear lower on this screen": "On tap settings will appear lower on this screen",
   "ARIA - On tap episodes will appear lower on this screen": "On tap episodes will appear lower on this screen",
   "ARIA - Tap to stop auto downloading new episodes from this podcast": "Tap to stop auto downloading new episodes from this podcast",
@@ -519,5 +520,7 @@
   "ARIA - Tap to delete all the episodes you have downloaded for this podcast": "Tap to delete all the episodes you have downloaded for this podcast",
   "ARIA - This is the time in hours to start this podcast from": "This is the time in hours to start this podcast from",
   "ARIA - This is the time in minutes to start this podcast from": "This is the time in minutes to start this podcast from",
-  "ARIA - This is the time in seconds to start this podcast from": "This is the time in seconds to start this podcast from"
+  "ARIA - This is the time in seconds to start this podcast from": "This is the time in seconds to start this podcast from",
+  "ARIA - Tap to show clips from this podcast": "Tap to show clips from this podcast",
+  "ARIA - Tap to show the chapters from this podcast": "Tap to show the chapters from this podcast"
 }

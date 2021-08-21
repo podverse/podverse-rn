@@ -149,10 +149,7 @@ export const TimeRemainingWidget = (props: Props) => {
       )}
       <View
         accessible
-        accessibilityHint={timeLabel
-          ? translate('ARIA - This is the time remaining for this episode')
-          : ''
-        }
+        accessibilityHint={translate('ARIA - This is the time remaining for this episode')}
         accessibilityLabel={timeLabel
           ? timeLabel
           : translate('Unplayed episode')
