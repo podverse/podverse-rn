@@ -469,6 +469,10 @@ export class SettingsScreen extends React.Component<Props, State> {
             </View>
             <View style={styles.itemWrapper}>
               <NumberSelectorWithText
+                // eslint-disable-next-line max-len
+                accessibilityHint={translate('ARIA - Tap to set the maximum number of downloaded episodes to save from each podcast on your device')}
+                // eslint-disable-next-line max-len
+                accessibilityLabel={`${translate('Default downloaded episode limit for each podcast')}`}
                 handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
                 handleSubmitEditing={this._handleSetGlobalDownloadedEpisodeLimitCount}
                 selectedNumber={downloadedEpisodeLimitCount}

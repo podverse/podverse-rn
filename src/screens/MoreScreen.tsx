@@ -173,11 +173,11 @@ export class MoreScreen extends React.Component<Props, State> {
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
-              <TableCell 
-                testIDPrefix={`${testIDPrefix}_${item.key}`}
-                testIDSuffix=''
+              <TableCell
+                accessibilityHint={translate('ARIA - Tap to go to this screen')}
                 onPress={() => this._onPress(item)}
-              >
+                testIDPrefix={`${testIDPrefix}_${item.key}`}
+                testIDSuffix=''>
                 {item.key === _membershipKey ? (
                   <>
                     <Text

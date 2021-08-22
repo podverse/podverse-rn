@@ -453,7 +453,7 @@
   "Your purchase was successful You may close this window": "Your purchase was successful. You may close this window.",
   "Your queue is empty": "Your queue is empty",
   "AddPodcastByRSSScreenText1": "Note: clips and playlists are not supported for custom RSS feeds.",
-  "AddPodcastByRSSScreenText2": "To add a podcast with support for clips and playlists, use the Request Podcast link below.",
+  "AddPodcastByRSSScreenText2": "To add a podcast with support for clips and playlists, use the Request Podcast link below so we can add it to our database.",
   "TermsOfServiceScreenText1": "Podverse will never sell or share private user data.",
   "TermsOfServiceScreenText2": "Podverse will never put advertisements next to or within a podcast's content without that podcast's permission.",
   "TermsOfServiceScreenText3": "All audio files found on podverse.fm load from the podcaster's own public server. We do not host podcast audio files ourselves.",
@@ -548,5 +548,9 @@
   "ARIA - This is the now playing episode": "This is the now playing episode",
   "ARIA - This is the now playing clip title": "This is the now playing clip title",
   "ARIA - This section contains information about the currently playing item": "This section contains information about the currently playing item",
-  "ARIA - This section contains the items next up in your queue": "This section contains the items next up in your queue"
+  "ARIA - This section contains the items next up in your queue": "This section contains the items next up in your queue",
+  "ARIA - Tap to subscribe to this custom RSS feed": "Tap to subscribe to this custom RSS feed",
+  "ARIA - When finished press the Save button above": "When finished press the Save button above",
+  "ARIA - Tap to open your email client to request a podcast by email": "Tap to open your email client to request a podcast by email",
+  "ARIA - Tap to set the maximum number of downloaded episodes to save from each podcast on your device": "Tap to set the maximum number of downloaded episodes to save from each podcast on your device"
 }
