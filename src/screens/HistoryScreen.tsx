@@ -74,6 +74,7 @@ export class HistoryScreen extends React.Component<Props, State> {
             {!navigation.getParam('isEditing') ? (
               <RNView style={styles.headerButtonWrapper}>
                 <NavHeaderButtonText
+                  accessibilityHint={translate('ARIA - Tap to start removing items from your history')}
                   color={textColor}
                   handlePress={navigation.getParam('_startEditing')}
                   style={styles.navHeaderTextButton}
@@ -84,6 +85,7 @@ export class HistoryScreen extends React.Component<Props, State> {
             ) : (
               <RNView style={styles.headerButtonWrapper}>
                 <NavHeaderButtonText
+                  accessibilityHint={translate('ARIA - Tap to stop removing items from your history')}
                   color={textColor}
                   handlePress={navigation.getParam('_stopEditing')}
                   style={styles.navHeaderTextButton}
@@ -148,6 +150,7 @@ export class HistoryScreen extends React.Component<Props, State> {
           {...(item?.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
           {...(item?.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
           handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
+          isHistoryItem
           onPress={() => {
             if (!isEditing) {
               this._handlePlayItem(item)

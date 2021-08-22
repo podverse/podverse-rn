@@ -17,6 +17,7 @@ type Props = {
   hideBottomRow?: boolean
   hideDivider?: boolean
   isActive?: boolean
+  isHistoryItem?: boolean
   isNowPlayingItem?: boolean
   onPress?: any
   podcastImageUrl?: string
@@ -40,6 +41,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
       hideBottomRow,
       hideDivider,
       isActive,
+      isHistoryItem,
       isNowPlayingItem,
       onPress,
       podcastImageUrl,
@@ -67,7 +69,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
               ? translate('ARIA - This is the now playing episode')
               : !isClip
                 ? translate('ARIA - Tap to play this episode')
-                : translate('ARIA - This is the clip title Tap to play this clip')
+                : translate('ARIA - This is the episode title of a clip Tap to play this clip')
             }
             onLongPress={drag}
             onPress={onPress}>
@@ -109,7 +111,9 @@ export class QueueTableCell extends React.PureComponent<Props> {
           </TouchableWithoutFeedback>
           {!!showRemoveButton && !!handleRemovePress && (
             <Icon
-              accessibilityHint={translate('ARIA - Tap to remove this item from the queue')}
+              accessibilityHint={isHistoryItem
+                ? translate('ARIA - Tap to remove this item from your history')
+                : translate('ARIA - Tap to remove this item from your queue')}
               accessibilityLabel={translate('Remove')}
               accessibilityRole='button'
               name='times'
