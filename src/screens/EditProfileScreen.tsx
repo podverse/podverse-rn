@@ -41,7 +41,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
   }
 
   static navigationOptions = ({ navigation }) => ({
-      title: translate('Edit Profile'),
+      title: translate('Edit My Profile'),
       headerRight: () => (
         <NavHeaderButtonText
           handlePress={navigation.getParam('updateUser')}
@@ -60,7 +60,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
     }
     this.setState({ isLoading: false })
 
-    trackPageView('/edit-profile', 'Edit Profile Screen')
+    trackPageView('/edit-profile', 'Edit My Profile Screen')
   }
 
   _updateUser = async () => {

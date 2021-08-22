@@ -5,6 +5,7 @@ import { PV } from '../resources'
 import { ActivityIndicator, Text, View } from './'
 
 type Props = {
+  accessibilityHint?: string
   createdBy?: string
   hasZebraStripe?: boolean
   isSaving?: boolean
@@ -17,6 +18,7 @@ type Props = {
 export class PlaylistTableCell extends React.PureComponent<Props> {
   render() {
     const {
+      accessibilityHint,
       createdBy = translate('anonymous'),
       hasZebraStripe,
       isSaving,
@@ -29,8 +31,15 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
     const wrapperLeftStyles = [styles.wrapperLeft]
     if (createdBy) wrapperLeftStyles.push(styles.wrapperLeftWithCreatedBy)
 
+    const trimmedTitle = title.trim()
+    const itemsCount = `${translate('items')} ${itemCount}`
+    const byText = `${translate('by')} ${createdBy}`
+    const accessibilityLabel = `${trimmedTitle}, ${itemsCount}, ${byText}`
+
     return (
       <TouchableWithoutFeedback
+        accessibilityHint={accessibilityHint}
+        accessibilityLabel={accessibilityLabel}
         onPress={onPress}
         {...(testID ? { testID } : {})}>
         <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>

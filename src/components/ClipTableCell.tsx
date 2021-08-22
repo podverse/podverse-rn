@@ -49,12 +49,20 @@ export class ClipTableCell extends React.PureComponent<Props> {
       ? [styles.chapterImage, styles.chapterImageBorder]
       : styles.chapterImage
 
+    const podcastTitleText = podcastTitle.trim()
+    const episodeTitleText = episodeTitle.trim()
+    const pubDate = readableDate(episodePubDate)
+    // eslint-disable-next-line max-len
+    const accessibilityLabel = `${showPodcastInfo ? `${podcastTitleText},` : ''} ${showEpisodeInfo ? `${episodeTitleText}, ${pubDate},` : ''} ${title}`
 
     const innerTopView = (
       <RNView
         style={styles.innerTopView}
         {...(testID ? { testID: `${testID}_top_view_nav` } : {})}>
-        <RNView style={{ flex: 1, flexDirection: 'column' }}>
+        <RNView
+          accessible
+          accessibilityLabel={accessibilityLabel}
+          style={{ flex: 1, flexDirection: 'column' }}>
           {(showEpisodeInfo || showPodcastInfo) && (
             <RNView style={styles.imageAndTopRightTextWrapper}>
               {showPodcastInfo && !!podcastImageUrl && !hideImage && (
@@ -63,27 +71,30 @@ export class ClipTableCell extends React.PureComponent<Props> {
               <RNView style={styles.textWrapper}>
                 {showPodcastInfo && podcastTitle && (
                   <Text
+                    accessible={false}
                     accessibilityHint={translate('ARIA - This is the podcast title')}
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     isSecondary
                     numberOfLines={1}
                     style={styles.podcastTitle}
                     testID={`${testID}_podcast_title`}>
-                    {podcastTitle.trim()}
+                    {podcastTitleText}
                   </Text>
                 )}
                 {showEpisodeInfo && PV.Fonts.fontScale.largest !== fontScaleMode && episodeTitle && (
                   <Text
+                    accessible={false}
                     accessibilityHint={translate('ARIA - This is the episode title')}
                     numberOfLines={2}
                     style={styles.episodeTitle}
                     testID={`${testID}_episode_title`}>
-                    {episodeTitle.trim()}
+                    {episodeTitleText}
                   </Text>
                 )}
                 {showEpisodeInfo && !!episodePubDate && (
                   <RNView style={styles.textWrapperBottomRow}>
                     <Text
+                      accessible={false}
                       accessibilityHint={translate('ARIA - This is the episode publication date')}
                       fontSizeLargerScale={PV.Fonts.largeSizes.md}
                       fontSizeLargestScale={PV.Fonts.largeSizes.sm}
@@ -91,7 +102,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                       numberOfLines={1}
                       style={styles.episodePubDate}
                       testID={`${testID}_episode_pub_date`}>
-                      {readableDate(episodePubDate)}
+                      {pubDate}
                     </Text>
                     {isDownloaded && <IndicatorDownload />}
                   </RNView>

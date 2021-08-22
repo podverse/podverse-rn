@@ -56,11 +56,18 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const imageUrl = podcast.shrunkImageUrl || podcast.imageUrl
 
+    const podcastTitleText = podcastTitle.trim()
+    const episodeTitleText = title.trim()
+    const pubDateText = readableDate(pubDate)
+    const accessibilityLabel =
+      `${showPodcastInfo ? `${podcastTitleText}, ` : ''} ${title ? `${title}, ` : ''} ${pubDateText}`
+
     const innerTopView = (
       <RNView style={styles.innerTopView}>
         {!!imageUrl && !hideImage && <FastImage isSmall source={imageUrl} styles={styles.image} />}
         <RNView
           accessibilityHint={translate('ARIA - Tap to go to this episode')}
+          accessibilityLabel={accessibilityLabel}
           style={styles.textWrapper}>
           {showPodcastInfo && podcastTitle && (
             <Text
@@ -69,7 +76,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               numberOfLines={1}
               style={styles.podcastTitle}
               testID={`${testID}_podcast_title`}>
-              {podcastTitle.trim()}
+              {podcastTitleText}
             </Text>
           )}
           {title && (
@@ -78,7 +85,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               numberOfLines={2}
               style={titleStyle}
               testID={`${testID}_title`}>
-              {title.trim()}
+              {episodeTitleText}
             </Text>
           )}
           <RNView style={styles.textWrapperBottomRow}>
@@ -87,7 +94,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               isSecondary
               style={styles.pubDate}
               testID={`${testID}_pub_date`}>
-              {readableDate(pubDate)}
+              {pubDateText}
             </Text>
           </RNView>
         </RNView>

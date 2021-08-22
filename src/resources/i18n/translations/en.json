@@ -108,7 +108,7 @@
   "Edit Clip": "Edit Clip",
   "Edit clips and playlists": "- Edit clips and playlists",
   "Edit Playlist": "Edit Playlist",
-  "Edit Profile": "Edit Profile",
+  "Edit My Profile": "Edit My Profile",
   "Edit": "Edit",
   "Email": "Email",
   "Enable Lightning Pay switch description": "Enable this experimental feature to connect a Bitcoin Wallet wallet to Podverse, and support podcasts through Streaming Sats and Boost!",
@@ -590,5 +590,8 @@
   "ARIA - Type your password a second time to confirm with requirements": "Type your password a second time to confirm. Check below for the minimum password requirements.",
   "ARIA - Type a valid email and matching passwords to enable the sign up button": "Type a valid email and matching passwords to enable the sign up button",
   "ARIA - Tap to sign up": "Tap to sign up",
-  "ARIA - Tap to change the colors of the user interface": "Tap to change the colors of the user interface"
+  "ARIA - Tap to change the colors of the user interface": "Tap to change the colors of the user interface",
+  "ARIA - Tap to go to the edit my profile screen": "Tap to go to the edit my profile screen",
+  "ARIA - This is your profile name": "This is your profile name",
+  "ARIA - Tap to go to this playlist": "Tap to go to this playlist"
 }

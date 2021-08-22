@@ -51,6 +51,9 @@ export class PodcastTableCell extends React.PureComponent<Props> {
         : `${translate('Latest episode')}: ${readableDate(lastEpisodePubDate)}`
     }
 
+    const trimmedPodcastTitle = podcastTitle.trim()
+    const downloadCountText = `${downloadCount} ${translate('downloaded')}`
+
     const lastPubDateNode = (
       <Text
         fontSizeLargerScale={PV.Fonts.largeSizes.md}
@@ -63,8 +66,11 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       </Text>
     )
 
+    const accessibilityLabel = `${trimmedPodcastTitle}, ${lastPubDate}, ${downloadCount}`
+
     return (
       <TouchableWithoutFeedback
+        accessibilityLabel={accessibilityLabel}
         onPress={onPress}
         {...(testID ? { testID } : {})}>
         <View style={styles.wrapper}>
@@ -74,7 +80,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
               {!!lastPubDate && fontScaleMode === PV.Fonts.fontScale.largest && lastPubDateNode}
               {podcastTitle && (
                 <Text numberOfLines={1} style={styles.title} testID={`${testID}_title`}>
-                  {podcastTitle.trim()}
+                  {trimmedPodcastTitle}
                 </Text>
               )}
               {!!lastPubDate && fontScaleMode !== PV.Fonts.fontScale.largest && lastPubDateNode}
@@ -87,7 +93,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                   numberOfLines={1}
                   style={styles.downloadedItems}
                   testID={`${testID}_downloaded`}>
-                  {`${downloadCount} ${translate('downloaded')}`}
+                  {downloadCountText}
                 </Text>
                 {showAutoDownload && shouldAutoDownload && <IndicatorDownload style={styles.autoDownloadIcon} />}
               </RNView>
