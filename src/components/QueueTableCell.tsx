@@ -17,6 +17,7 @@ type Props = {
   hideBottomRow?: boolean
   hideDivider?: boolean
   isActive?: boolean
+  isNowPlayingItem?: boolean
   onPress?: any
   podcastImageUrl?: string
   podcastTitle?: string
@@ -39,6 +40,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
       hideBottomRow,
       hideDivider,
       isActive,
+      isNowPlayingItem,
       onPress,
       podcastImageUrl,
       podcastTitle = translate('Untitled Podcast'),
@@ -52,13 +54,23 @@ export class QueueTableCell extends React.PureComponent<Props> {
       ? [styles.wrapper, styles.wrapperActive, hideDivider ? { borderBottomWidth: 0 } : {}]
       : [styles.wrapper, hideDivider ? { borderBottomWidth: 0 } : {}]
 
+    const isClip = !!clipStartTime && !!clipTitle
+
     return (
       <View
         style={viewStyle}
         transparent={transparent}
         testID={testID}>
         <RNView style={styles.wrapperTop}>
-          <TouchableWithoutFeedback onLongPress={drag} onPress={onPress}>
+          <TouchableWithoutFeedback
+            accessibilityHint={isNowPlayingItem
+              ? translate('ARIA - This is the now playing episode')
+              : !isClip
+                ? translate('ARIA - Tap to play this episode')
+                : translate('ARIA - This is the clip title Tap to play this clip')
+            }
+            onLongPress={drag}
+            onPress={onPress}>
             <RNView style={styles.wrapperTappableInner}>
               <FastImage isSmall key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
               <RNView style={styles.textWrapper}>
@@ -97,6 +109,9 @@ export class QueueTableCell extends React.PureComponent<Props> {
           </TouchableWithoutFeedback>
           {!!showRemoveButton && !!handleRemovePress && (
             <Icon
+              accessibilityHint={translate('ARIA - Tap to remove this item from the queue')}
+              accessibilityLabel={translate('Remove')}
+              accessibilityRole='button'
               name='times'
               onPress={handleRemovePress}
               size={28}
@@ -108,14 +123,22 @@ export class QueueTableCell extends React.PureComponent<Props> {
         {!hideBottomRow && (
           <RNView style={styles.wrapperBottom}>
             <Text
+              accessible={isClip}
+              accessibilityHint={!isClip
+                ? ''
+                : isNowPlayingItem
+                  ? translate('ARIA - This is the now playing clip title')
+                  : translate('ARIA - Tap to play this clip')
+              }
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               numberOfLines={1}
               style={styles.clipTitle}
               testID={`${testID}_bottom_text`}>
-              {!!clipStartTime && !!clipTitle ? clipTitle.trim() : translate('Full Episode')}
+              {!isClip ? translate('Full Episode') : clipTitle.trim()}
             </Text>
             {!!clipStartTime && (
               <Text
+                accessibilityHint={translate('ARIA - This is the clip time range')}
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 style={styles.clipTime}
                 testID={`${testID}_clip_time`}>

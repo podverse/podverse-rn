@@ -93,18 +93,24 @@ export class QueueScreen extends React.Component<Props, State> {
           {navigation.getParam('viewType') === _historyKey ? (
             <RNView>
               {!navigation.getParam('isEditing') ? (
-                <RNView style={styles.headerButtonWrapper}>
+                <RNView
+                  accessibilityHint={translate('ARIA - Tap to start removing items from your queue')}
+                  style={styles.headerButtonWrapper}>
                   <NavHeaderButtonText
+                    accessibilityHint={translate('ARIA - Tap to start removing items from your queue')}
                     color={textColor}
                     handlePress={navigation.getParam('_startEditing')}
                     style={styles.navHeaderTextButton}
                     testID={`${testIDPrefix}_header_edit`}
-                    text={translate('Edit')}
+                    text={translate('Remove')}
                   />
                 </RNView>
               ) : (
-                <RNView style={styles.headerButtonWrapper}>
+                <RNView
+                  accessibilityHint={translate('ARIA - Tap to start removing items from your queue')}
+                  style={styles.headerButtonWrapper}>
                   <NavHeaderButtonText
+                    accessibilityHint={translate('ARIA - Tap to stop removing items from your queue')}
                     color={textColor}
                     handlePress={navigation.getParam('_stopEditing')}
                     style={styles.navHeaderTextButton}
@@ -118,14 +124,16 @@ export class QueueScreen extends React.Component<Props, State> {
             <RNView>
               {!navigation.getParam('isEditing') ? (
                 <NavHeaderButtonText
+                  accessibilityHint={translate('ARIA - Tap to start removing items from your queue')}
                   color={textColor}
                   handlePress={navigation.getParam('_startEditing')}
                   style={styles.navHeaderTextButton}
                   testID={`${testIDPrefix}_header_edit`}
-                  text={translate('Edit')}
+                  text={translate('Remove')}
                 />
               ) : (
                 <NavHeaderButtonText
+                  accessibilityHint={translate('ARIA - Tap to stop removing items from your queue')}
                   color={textColor}
                   handlePress={navigation.getParam('_stopEditing')}
                   style={styles.navHeaderTextButton}
@@ -349,6 +357,9 @@ export class QueueScreen extends React.Component<Props, State> {
                     disableFilter
                     includePadding
                     selectedFilterLabel={translate('Now Playing')}
+                    selectedFilterAccessibilityHint={
+                      translate('ARIA - This section contains information about the currently playing item')
+                    }
                     textStyle={styles.sectionHeaderText}
                   />
                   <QueueTableCell
@@ -358,6 +369,7 @@ export class QueueScreen extends React.Component<Props, State> {
                     {...(nowPlayingItem.episodePubDate ? { episodePubDate: nowPlayingItem.episodePubDate } : {})}
                     {...(nowPlayingItem.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}
                     hideDivider
+                    isNowPlayingItem
                     podcastImageUrl={nowPlayingItem.podcastImageUrl}
                     {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
                     testID={`${testIDPrefix}_now_playing_header`}
@@ -371,6 +383,9 @@ export class QueueScreen extends React.Component<Props, State> {
               disableFilter
               includePadding
               selectedFilterLabel={translate('Next Up')}
+              selectedFilterAccessibilityHint={
+                translate('ARIA - This section contains the items next up in your queue')
+              }
               textStyle={styles.sectionHeaderText}
             />
           </View>

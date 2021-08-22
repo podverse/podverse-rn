@@ -21,6 +21,7 @@ type Props = {
   screenName?: string
   selectedCategoryItemKey?: string | null
   selectedCategorySubItemKey?: string | null
+  selectedFilterAccessibilityHint?: string | null
   selectedFilterItemKey?: string | null
   selectedFilterLabel?: string | null
   selectedFromItemKey?: string | null
@@ -67,6 +68,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFilterLabel,
+      selectedFilterAccessibilityHint,
       selectedFromItemKey,
       selectedSortItemKey,
       selectedSortLabel,
@@ -83,9 +85,11 @@ export class TableSectionSelectors extends React.Component<Props, State> {
         <View style={styles.tableSectionHeaderTitleWrapper}>
           {!!selectedFilterLabel && (
             <Text
-              accessibilityHint={!disableFilter
-                ? translate('ARIA - This is the selected primary filter for this screen')
-                : ''
+              accessibilityHint={selectedFilterAccessibilityHint
+                ? selectedFilterAccessibilityHint
+                : !disableFilter
+                  ? translate('ARIA - This is the selected primary filter for this screen')
+                  : ''
               }
               accessibilityRole={disableFilter ? 'header' : 'button'}
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
