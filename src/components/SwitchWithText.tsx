@@ -5,6 +5,7 @@ import { PV } from '../resources'
 import { Text, TextInput } from './'
 
 type Props = {
+  accessible?: boolean
   accessibilityHint?: string
   accessibilityLabel?: string
   inputAutoCorrect?: boolean
@@ -26,6 +27,7 @@ type Props = {
 
 export const SwitchWithText = (props: Props) => {
   const {
+    accessible = true,
     accessibilityHint,
     accessibilityLabel,
     inputAutoCorrect,
@@ -49,15 +51,18 @@ export const SwitchWithText = (props: Props) => {
   return (
     <View style={wrapperStyle}>
       <TouchableWithoutFeedback
+        accessible={accessible}
         accessibilityHint={accessibilityHint}
         accessibilityLabel={accessibilityLabel}
         accessibilityRole='switch'
         onPress={onValueChange}>
-        <View style={styles.switchWrapper}>
+        <View accessible={accessible} style={styles.switchWrapper}>
           <Switch
+            accessible={accessible}
             value={value}
             {...(testID ? { testID: `${testID}_switch` } : {})} />
           <Text
+            accessible={accessible}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={styles.text}
             {...(testID ? { testID: `${testID}_text` } : {})}>
@@ -87,6 +92,7 @@ export const SwitchWithText = (props: Props) => {
       )}
       {!!subText && (
         <Text
+          accessible={false}
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
           style={[globalTheme.textSecondary, styles.subText]}
           {...(testID ? { testID: `${testID}_sub_text` } : {})}>
