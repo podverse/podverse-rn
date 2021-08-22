@@ -172,9 +172,15 @@ export class MoreScreen extends React.Component<Props, State> {
         testID={`${testIDPrefix}_view`}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
-          renderItem={({ item }) => (
+          renderItem={({ item }) => {
+            let tableCellAccessibilityHint = translate('ARIA - Tap to go to this screen')
+            if (item.key === _contactKey) {
+              tableCellAccessibilityHint = translate('ARIA - Contact Us button')
+            }
+
+            return (
               <TableCell
-                accessibilityHint={translate('ARIA - Tap to go to this screen')}
+                accessibilityHint={tableCellAccessibilityHint}
                 onPress={() => this._onPress(item)}
                 testIDPrefix={`${testIDPrefix}_${item.key}`}
                 testIDSuffix=''>
@@ -199,7 +205,8 @@ export class MoreScreen extends React.Component<Props, State> {
                   </Text>
                 )}
               </TableCell>
-          )}
+            )
+          }}
           renderSectionHeader={({ section }) => (
             <TableSectionSelectors
               disableFilter

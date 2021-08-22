@@ -53,30 +53,40 @@ export class AboutScreen extends React.Component<Props> {
           <Divider style={styles.divider} />
           <RNView style={styles.socialLinksWrapper}>
             <Icon
+              accessibilityLabel={translate('Social Media - reddit')}
+              accessibilityRole='button'
               name='reddit'
               onPress={() => this.handleFollowLink(PV.URLs.social.reddit)}
               size={28}
               style={[button.iconOnlySmall, styles.icon]}
             />
             <Icon
+              accessibilityLabel={translate('Social Media - Twitter')}
+              accessibilityRole='button'
               name='twitter'
               onPress={() => this.handleFollowLink(PV.URLs.social.twitter)}
               size={28}
               style={[button.iconOnlySmall, styles.icon]}
             />
             <Icon
+              accessibilityLabel={translate('Social Media - Facebook')}
+              accessibilityRole='button'
               name='facebook'
               onPress={() => this.handleFollowLink(PV.URLs.social.facebook)}
               size={28}
               style={[button.iconOnlySmall, styles.icon]}
             />
             <Icon
+              accessibilityLabel={translate('Social Media - LinkedIn')}
+              accessibilityRole='button'
               name='linkedin'
               onPress={() => this.handleFollowLink(PV.URLs.social.linkedin)}
               size={28}
               style={[button.iconOnlySmall, styles.icon]}
             />
             <Icon
+              accessibilityLabel={translate('Social Media - GitHub')}
+              accessibilityRole='button'
               name='github'
               onPress={() => this.handleFollowLink(PV.URLs.social.github)}
               size={28}
