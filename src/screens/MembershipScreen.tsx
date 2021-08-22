@@ -179,6 +179,7 @@ export class MembershipScreen extends React.Component<Props, State> {
             </View>
             <View style={styles.textRowCentered}>
               <TextLink
+                accessibilityHint={translate('ARIA - Tap to sign up for your premium account')}
                 disabled={disableButton}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={this.handleSignUpPress}
@@ -195,7 +196,8 @@ export class MembershipScreen extends React.Component<Props, State> {
               column1Title={translate('Free')}
               column2Title={translate('Premium')}
               data={comparisonData}
-              mainTitle='Features'
+              mainTitle={translate('Features')}
+              mainTitleAccessibilityHint={translate('ARIA - Membership features header')}
             />
           </View>
         )}
@@ -208,57 +210,62 @@ const comparisonData = [
   {
     text: translate('subscribe to podcasts'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA - Membership - Subscribe to podcasts')
   },
   {
     text: translate('download episodes'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA - Membership - Download episodes')
   },
   {
     text: translate('drag-and-drop queue'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA - Membership - Drag and drop queue')
   },
   {
     text: translate('sleep timer'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA - Membership - Sleep timer')
   },
-  // {
-  //   text: translate('light - dark mode'),
-  //   column1: true,
-  //   column2: true
-  // },
   {
     text: translate('create and share clips'),
     column1: false,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA - Membership - Create and share clips')
   },
   {
     text: translate('sync your subscriptions on all devices'),
     column1: false,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA - Membership - Sync your subscriptions on all devices')
   },
   {
     text: translate('sync your queue on all devices'),
     column1: false,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA - Membership - Sync your queue on all devices')
   },
   {
     text: translate('create playlists'),
     column1: false,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA - Membership - Create playlists')
   },
   {
     text: translate('download a backup of your data'),
     column1: false,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA - Membership - Download a backup of your data')
   },
   {
     text: translate('support free and open source software'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA - Membership - Support free and open source software')
   }
 ]
 

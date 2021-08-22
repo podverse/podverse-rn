@@ -1,5 +1,5 @@
 {
-  "10 per year after that": "$10/year after that",
+  "10 per year after that": "$10 per year after that",
   "A-Z": "A-Z",
   "About": "About",
   "About brandName": "About Podverse",
@@ -552,5 +552,17 @@
   "ARIA - Tap to subscribe to this custom RSS feed": "Tap to subscribe to this custom RSS feed",
   "ARIA - When finished press the Save button above": "When finished press the Save button above",
   "ARIA - Tap to open your email client to request a podcast by email": "Tap to open your email client to request a podcast by email",
-  "ARIA - Tap to set the maximum number of downloaded episodes to save from each podcast on your device": "Tap to set the maximum number of downloaded episodes to save from each podcast on your device"
+  "ARIA - Tap to set the maximum number of downloaded episodes to save from each podcast on your device": "Tap to set the maximum number of downloaded episodes to save from each podcast on your device",
+  "ARIA - Tap to sign up for your premium account": "Tap to sign up for your premium account",
+  "ARIA - Membership features header": "Below is a list of features available in the app. They are grouped together as free features and premium only features.",
+  "ARIA - Membership - Subscribe to podcasts": "Subscribe to podcasts. Available in free and premium.",
+  "ARIA - Membership - Download episodes": "Download episodes. Available in free and premium.",
+  "ARIA - Membership - Drag and drop queue": "Player queue. Available in free and premium.",
+  "ARIA - Membership - Sleep timer": "Sleep timer. Available in free and premium.",
+  "ARIA - Membership - Create and share clips": "Create and share clips. Available in premium only.",
+  "ARIA - Membership - Sync your subscriptions on all devices": "Sync your subscriptions on all devices. Available in premium only.",
+  "ARIA - Membership - Sync your queue on all devices": "Sync your queue on all devices. Available in premium only.",
+  "ARIA - Membership - Create playlists": "Create playlists. Available in premium only.",
+  "ARIA - Membership - Download a backup of your data": "Download a backup of your data. Available in premium only.",
+  "ARIA - Membership - Support free and open source software": "Support free and open source software 😊"
 }
