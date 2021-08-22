@@ -150,7 +150,6 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexDirection: 'row',
-    marginHorizontal: 8,
     borderBottomColor: PV.Colors.gray,
     borderBottomWidth: 1,
     backgroundColor: PV.Colors.ink,

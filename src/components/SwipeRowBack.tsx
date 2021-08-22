@@ -5,6 +5,7 @@ import { PV } from '../resources'
 import { ActivityIndicator } from '.'
 
 type Props = {
+  accessible?: boolean
   accessibilityLabel?: string
   isLoading?: boolean
   onPress: any
@@ -14,11 +15,12 @@ type Props = {
 }
 
 export const SwipeRowBack = (props: Props) => {
-  const { accessibilityLabel, isLoading, onPress, styles, testID, text = 'Remove' } = props
+  const { accessible = false, accessibilityLabel, isLoading, onPress, styles, testID, text = 'Remove' } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <TouchableOpacity
+      accessible={accessible}
       accessibilityLabel={accessibilityLabel}
       onPress={onPress}
       style={[styles, s.swipeRowBack, globalTheme.swipeRowBack]}
@@ -26,7 +28,7 @@ export const SwipeRowBack = (props: Props) => {
       {isLoading ? (
           <ActivityIndicator size='large' testID={testID} />
       ) : (
-        <Text style={s.textWrapper}>{text}</Text>
+        <Text accessible={accessible} style={s.textWrapper}>{text}</Text>
       )}
     </TouchableOpacity>
   )

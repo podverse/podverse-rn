@@ -84,7 +84,6 @@ export class DownloadsScreen extends React.Component<Props, State> {
 
   _renderHiddenItem = ({ item, index }, rowMap) => (
     <SwipeRowBack
-      accessibilityLabel={translate('ARIA - Tap to remove this download')}
       onPress={() => this._handleHiddenItemPress(item.episodeId, rowMap)}
       testID={`${testIDPrefix}_download_item_${index}`}
       text='Remove'
