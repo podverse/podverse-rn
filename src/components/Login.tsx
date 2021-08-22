@@ -1,4 +1,4 @@
-import { Dimensions, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
+import { Dimensions, ScrollView, StyleSheet } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { translate } from '../lib/i18n'
@@ -64,6 +64,7 @@ export class Login extends React.Component<Props, State> {
         contentContainerStyle={styles.scrollViewContent}
         style={styles.scrollView}>
         <TextInput
+          accessibilityHint={translate('ARIA - Type your premium account email address')}
           autoCapitalize='none'
           autoCompleteType='email'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -79,6 +80,7 @@ export class Login extends React.Component<Props, State> {
           wrapperStyle={core.textInputWrapper}
         />
         <TextInput
+          accessibilityHint={translate('ARIA - Type your password')}
           autoCapitalize='none'
           autoCompleteType='password'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -95,6 +97,10 @@ export class Login extends React.Component<Props, State> {
           wrapperStyle={core.textInputWrapper}
         />
         <Button
+          accessibilityHint={submitIsDisabled
+            ? translate('ARIA - Type a valid email and password to enable the login button')
+            : translate('ARIA - Tap to login')
+          }
           disabled={submitIsDisabled}
           isLoading={isLoading}
           isPrimary={!submitIsDisabled}

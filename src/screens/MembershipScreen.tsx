@@ -2,7 +2,6 @@ import { Alert, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
 import { translate } from '../lib/i18n'
-import { hasValidNetworkConnection } from '../lib/network'
 import { getMembershipExpiration, getMembershipStatus, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { buy1YearPremium } from '../services/purchaseShared'
@@ -19,7 +18,6 @@ type Props = {
 type State = {
   disableButton: boolean
   isLoading: boolean
-  showNoInternetConnectionMessage?: boolean
 }
 
 const testIDPrefix = 'membership_screen'
@@ -46,12 +44,7 @@ export class MembershipScreen extends React.Component<Props, State> {
       //
     }
 
-    const hasInternetConnection = await hasValidNetworkConnection()
-
-    this.setState({
-      isLoading: false,
-      showNoInternetConnectionMessage: !hasInternetConnection
-    })
+    this.setState({ isLoading: false })
 
     trackPageView('/membership', 'Membership Screen')
   }
@@ -104,7 +97,7 @@ export class MembershipScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { disableButton, isLoading, showNoInternetConnectionMessage } = this.state
+    const { disableButton, isLoading } = this.state
     const { globalTheme, session } = this.global
     const { isLoggedIn, userInfo } = session
     const membershipStatus = getMembershipStatus(userInfo)
@@ -116,13 +109,6 @@ export class MembershipScreen extends React.Component<Props, State> {
         style={styles.wrapper}
         testID={`${testIDPrefix}_view`}>
         {isLoading && isLoggedIn && <ActivityIndicator fillSpace testID={testIDPrefix} />}
-        {!isLoading && showNoInternetConnectionMessage && (
-          <View style={styles.textRowCentered}>
-            <Text style={[styles.subText, { textAlign: 'center' }]}>
-              {translate('Connect to the internet and reload this page to sign up for Premium')}
-            </Text>
-          </View>
-        )}
         {!isLoading && isLoggedIn && !!membershipStatus && (
           <View>
             <View style={styles.textRow}>

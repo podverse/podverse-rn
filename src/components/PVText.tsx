@@ -6,6 +6,7 @@ import { PV } from '../resources'
 type Props = {
   accessible?: boolean
   accessibilityHint?: string
+  accessibilityLabel?: string
   accessibilityRole?: AccessibilityRole
   allowFontScaling?: boolean
   children?: any
