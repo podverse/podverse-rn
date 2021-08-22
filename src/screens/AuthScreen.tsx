@@ -164,6 +164,7 @@ export class AuthScreen extends React.Component<Props, State> {
     if (screenType === _login) {
       bottomButtons = [
         <Text
+          accessible
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           key='reset'
           onPress={this._showResetPassword}
@@ -172,6 +173,7 @@ export class AuthScreen extends React.Component<Props, State> {
           {translate('Reset Password')}
         </Text>,
         <Text
+          accessible
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           key='moreInfo'
           onPress={this._showMembership}
@@ -195,12 +197,15 @@ export class AuthScreen extends React.Component<Props, State> {
 
     return (
       <SafeAreaView style={styles.safeAreaView} testID={`${testIDPrefix}_safe_area_view`}>
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <TouchableWithoutFeedback accessible={false} onPress={() => Keyboard.dismiss()}>
           <View style={screenType === _signup ? styles.viewWithoutBanner : styles.view}>
             {screenType !== _signup && <Image source={PV.Images.BANNER} style={styles.banner} resizeMode='contain' />}
             <View style={styles.contentView}>
               {screenType === _login && (
-                <Login bottomButtons={bottomButtons} isLoading={isLoadingLogin} onLoginPressed={this.attemptLogin} />
+                <Login
+                  bottomButtons={bottomButtons}
+                  isLoading={isLoadingLogin}
+                  onLoginPressed={this.attemptLogin} />
               )}
               {screenType === _resetPassword && (
                 <ResetPassword

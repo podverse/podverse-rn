@@ -60,7 +60,9 @@ export class Login extends React.Component<Props, State> {
     const { email, password, submitIsDisabled } = this.state
 
     return (
-      <ScrollView contentContainerStyle={styles.scrollViewContent} style={styles.scrollView}>
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        style={styles.scrollView}>
         <TextInput
           autoCapitalize='none'
           autoCompleteType='email'
@@ -92,18 +94,16 @@ export class Login extends React.Component<Props, State> {
           underlineColorAndroid='transparent'
           wrapperStyle={core.textInputWrapper}
         />
-        <TouchableOpacity activeOpacity={1}>
-          <Button
-            disabled={submitIsDisabled}
-            isLoading={isLoading}
-            isPrimary={!submitIsDisabled}
-            onPress={this.login}
-            testID={`${testIDPrefix}_submit`}
-            text={translate('Login')}
-            wrapperStyles={styles.signInButton}
-          />
-          {bottomButtons}
-        </TouchableOpacity>
+        <Button
+          disabled={submitIsDisabled}
+          isLoading={isLoading}
+          isPrimary={!submitIsDisabled}
+          onPress={this.login}
+          testID={`${testIDPrefix}_submit`}
+          text={translate('Login')}
+          wrapperStyles={styles.signInButton}
+        />
+        {bottomButtons}
       </ScrollView>
     )
   }
@@ -113,7 +113,7 @@ const deviceWidth = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
   signInButton: {
-    marginBottom: 16
+    marginTop: 8
   },
   signInButtonText: {},
   scrollView: {
