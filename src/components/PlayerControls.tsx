@@ -2,6 +2,7 @@ import debounce from 'lodash/debounce'
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, Image, ImageSourcePropType } from 'react-native'
 import { State as RNTPState } from 'react-native-track-player'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import {
   checkIfStateIsBuffering,
@@ -134,6 +135,11 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       }
     }
 
+    const jumpBackAccessibilityLabel =
+      `${translate(`Jump back`)} ${PV.Player.jumpBackSeconds} ${translate('seconds')}`
+    const jumpForwardAccessibilityLabel =
+      `${translate(`Jump forward`)} ${PV.Player.jumpSeconds} ${translate('seconds')}`
+
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
         <View style={styles.progressWrapper}>
@@ -150,11 +156,17 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         <View style={styles.playerControlsMiddleRow}>
           <View style={styles.playerControlsMiddleRowTop}>
             <TouchableOpacity
+              accessibilityLabel={translate('Return to beginning of episode')}
+              accessibilityRole='button'
               onPress={this._returnToBeginningOfTrack}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
               {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
             </TouchableOpacity>
-            <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
+            <TouchableOpacity
+              accessibilityLabel={jumpBackAccessibilityLabel}
+              accessibilityRole='button'
+              onPress={this._playerJumpBackward}
+              style={playerStyles.icon}>
               {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, `${testIDPrefix}_jump_backward`)}
               <View style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
@@ -174,13 +186,21 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 )}
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
+            <TouchableOpacity
+              accessibilityLabel={jumpForwardAccessibilityLabel}
+              accessibilityRole='button'
+              onPress={this._playerJumpForward}
+              style={playerStyles.icon}>
               {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, `${testIDPrefix}_step_forward`)}
               <View style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>{PV.Player.jumpSeconds}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={playNextFromQueue} style={[playerStyles.icon, { flexDirection: 'row' }]}>
+            <TouchableOpacity
+              accessibilityLabel={translate('Skip to next item in your queue')}
+              accessibilityRole='button'
+              onPress={playNextFromQueue}
+              style={[playerStyles.icon, { flexDirection: 'row' }]}>
               {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`)}
             </TouchableOpacity>
           </View>

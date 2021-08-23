@@ -603,5 +603,11 @@
   "ARIA - Tap to unsubscribe from this playlist": "Tap to unsubscribe from this playlist",
   "ARIA - Tap to subscribe to this playlist": "Tap to subscribe to this playlist",
   "ARIA - Tap to unsubscribe from this profile": "Tap to unsubscribe from this profile",
-  "ARIA - Tap to subscribe to this profile": "Tap to subscribe to this profile"
+  "ARIA - Tap to subscribe to this profile": "Tap to subscribe to this profile",
+  "Return to beginning of episode": "Return to beginning of episode",
+  "Skip to next item in your queue": "Skip to next item in your queue",
+  "ARIA - Tap to jump back": "Tap to jump back",
+  "Jump back": "Jump back",
+  "ARIA - Tap to jump forward": "Tap to jump forward",
+  "Jump forward": "Jump forward"
 }
