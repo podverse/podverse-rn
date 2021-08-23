@@ -61,6 +61,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
         {...(testID ? { testID: `${testID}_top_view_nav` } : {})}>
         <RNView
           accessible
+          accessibilityHint={translate('ARIA - This is a clip')}
           accessibilityLabel={accessibilityLabel}
           style={{ flex: 1, flexDirection: 'column' }}>
           {(showEpisodeInfo || showPodcastInfo) && (

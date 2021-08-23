@@ -94,7 +94,6 @@ export class QueueScreen extends React.Component<Props, State> {
             <RNView>
               {!navigation.getParam('isEditing') ? (
                 <RNView
-                  accessibilityHint={translate('ARIA - Tap to start removing items from your queue')}
                   style={styles.headerButtonWrapper}>
                   <NavHeaderButtonText
                     accessibilityHint={translate('ARIA - Tap to start removing items from your queue')}
@@ -107,7 +106,6 @@ export class QueueScreen extends React.Component<Props, State> {
                 </RNView>
               ) : (
                 <RNView
-                  accessibilityHint={translate('ARIA - Tap to start removing items from your queue')}
                   style={styles.headerButtonWrapper}>
                   <NavHeaderButtonText
                     accessibilityHint={translate('ARIA - Tap to stop removing items from your queue')}

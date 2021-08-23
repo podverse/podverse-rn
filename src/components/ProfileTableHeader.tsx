@@ -10,6 +10,7 @@ type Props = {
   handleToggleSubscribe?: any
   id?: string
   isLoading?: boolean
+  isLoggedInUserProfile?: boolean | string
   isNotFound?: boolean
   isSubscribed?: boolean
   isSubscribing?: boolean
@@ -23,6 +24,7 @@ export const ProfileTableHeader = (props: Props) => {
     handleToggleSubscribe,
     id,
     isLoading,
+    isLoggedInUserProfile,
     isNotFound,
     isSubscribed,
     isSubscribing,
@@ -41,7 +43,10 @@ export const ProfileTableHeader = (props: Props) => {
         <View style={styles.wrapper}>
           <View
             accessible
-            accessibilityHint={translate('ARIA - This is your profile name')}
+            accessibilityHint={isLoggedInUserProfile
+              ? translate('ARIA - This is your profile name')
+              : translate('ARIA - This is the profile name')
+            }
             style={styles.textWrapper}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
               <Text
@@ -64,6 +69,7 @@ export const ProfileTableHeader = (props: Props) => {
           {!!handleToggleSubscribe && (
             <SubscribeButton
               handleToggleSubscribe={handleToggleSubscribe}
+              isProfile
               isSubscribed={isSubscribed}
               isSubscribing={isSubscribing}
               testID={testID}

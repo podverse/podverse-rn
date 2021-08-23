@@ -515,6 +515,7 @@ export class ProfileScreen extends React.Component<Props, State> {
               handleToggleSubscribe={isLoggedInUserProfile ? null : () => this._handleToggleSubscribe(userId)}
               id={userId}
               isLoading={isLoading && !user}
+              isLoggedInUserProfile={isLoggedInUserProfile}
               isNotFound={!isLoading && !user}
               isSubscribed={isSubscribed}
               isSubscribing={isSubscribing}

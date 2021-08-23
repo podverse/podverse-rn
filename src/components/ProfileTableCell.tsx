@@ -16,7 +16,11 @@ export class ProfileTableCell extends React.PureComponent<Props> {
     const { hasZebraStripe, name = '', onPress, testID } = this.props
 
     return (
-      <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
+      <View
+        accessible
+        accessibilityHint={translate('ARIA - Tap to go to this profile')}
+        hasZebraStripe={hasZebraStripe}
+        style={styles.wrapper}>
         <Text onPress={onPress} style={styles.name} testID={testID}>
           {name.trim() || translate('anonymous')}
         </Text>

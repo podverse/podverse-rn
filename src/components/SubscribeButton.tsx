@@ -6,6 +6,8 @@ import { ActivityIndicator, Text, View } from './'
 
 type Props = {
   handleToggleSubscribe: any
+  isPlaylist?: boolean
+  isProfile?: boolean
   isSubscribed?: boolean
   isSubscribing?: boolean
   testID: string
@@ -13,13 +15,24 @@ type Props = {
 }
 
 export const SubscribeButton = (props: Props) => {
-  const { handleToggleSubscribe, isSubscribed, isSubscribing, testID } = props
+  const { handleToggleSubscribe, isPlaylist, isProfile, isSubscribed, isSubscribing, testID } = props
 
   const buttonTitle = isSubscribed ? translate('Unsubscribe') : translate('Subscribe')
   const buttonTextTestId = isSubscribed ? `${testID}_is_subscribed` : `${testID}_is_not_subscribed`
-  const accessibililityHint = isSubscribed
+  
+  let accessibililityHint = isSubscribed
     ? translate('ARIA - Tap to unsubscribe from this podcast')
     : translate('ARIA - Tap to subscribe to this podcast')
+  if (isPlaylist) {
+    accessibililityHint = isSubscribed
+      ? translate('ARIA - Tap to unsubscribe from this playlist')
+      : translate('ARIA - Tap to subscribe to this playlist')
+  } else if (isProfile) {
+    accessibililityHint = isSubscribed
+      ? translate('ARIA - Tap to unsubscribe from this profile')
+      : translate('ARIA - Tap to subscribe to this profile')
+  }
+
   const accessibilityLabel = isSubscribed ? translate('Unsubscribe') : translate('Subscribe')
 
   return (

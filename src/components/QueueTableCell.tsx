@@ -17,8 +17,8 @@ type Props = {
   hideBottomRow?: boolean
   hideDivider?: boolean
   isActive?: boolean
-  isHistoryItem?: boolean
   isNowPlayingItem?: boolean
+  isPlaylistScreen?: boolean
   onPress?: any
   podcastImageUrl?: string
   podcastTitle?: string
@@ -41,7 +41,6 @@ export class QueueTableCell extends React.PureComponent<Props> {
       hideBottomRow,
       hideDivider,
       isActive,
-      isHistoryItem,
       isNowPlayingItem,
       onPress,
       podcastImageUrl,
@@ -58,6 +57,12 @@ export class QueueTableCell extends React.PureComponent<Props> {
 
     const isClip = !!clipStartTime && !!clipTitle
 
+    const podcastTitleText = podcastTitle.trim()
+    const episodeTitleText = episodeTitle.trim()
+    const pubDateText = readableDate(episodePubDate)
+    // eslint-disable-next-line max-len
+    const accessibilityLabel = `${!!podcastTitle ? `${podcastTitleText}, ` : ''} ${!!episodeTitle ? `${episodeTitleText}, ` : ''} ${!!episodePubDate ? `${pubDateText}` : ''}`
+
     return (
       <View
         style={viewStyle}
@@ -71,6 +76,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                 ? translate('ARIA - Tap to play this episode')
                 : translate('ARIA - This is the episode title of a clip Tap to play this clip')
             }
+            accessibilityLabel={accessibilityLabel}
             onLongPress={drag}
             onPress={onPress}>
             <RNView style={styles.wrapperTappableInner}>
@@ -83,7 +89,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                     numberOfLines={1}
                     style={styles.podcastTitle}
                     testID={`${testID}_podcast_title`}>
-                    {podcastTitle.trim()}
+                    {podcastTitleText}
                   </Text>
                 )}
                 {!!episodeTitle && (
@@ -92,7 +98,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                     numberOfLines={2}
                     style={styles.episodeTitle}
                     testID={`${testID}_episode_title`}>
-                    {episodeTitle.trim()}
+                    {episodeTitleText}
                   </Text>
                 )}
                 {!!episodePubDate && (
@@ -102,7 +108,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                     numberOfLines={1}
                     style={styles.episodePubDate}
                     testID={`${testID}_episode_pub_date`}>
-                    {readableDate(episodePubDate)}
+                    {pubDateText}
                   </Text>
                 )}
               </RNView>
@@ -111,9 +117,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
           </TouchableWithoutFeedback>
           {!!showRemoveButton && !!handleRemovePress && (
             <Icon
-              accessibilityHint={isHistoryItem
-                ? translate('ARIA - Tap to remove this item from your history')
-                : translate('ARIA - Tap to remove this item from your queue')}
+              accessibilityHint={translate('ARIA - Tap to remove this item')}
               accessibilityLabel={translate('Remove')}
               accessibilityRole='button'
               name='times'
