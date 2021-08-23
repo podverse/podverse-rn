@@ -5,19 +5,25 @@ import { PV } from '../resources'
 import { Icon, Text, View } from '.'
 
 export const DropdownButtonSelect = (props: any) => {
-  const { helpText, items, label, onValueChange, placeholder, testID, value, wrapperStyle } = props
+  const { accessibilityHint, helpText, items, label, onValueChange, placeholder, testID, value, wrapperStyle } = props
   const [globalTheme] = useGlobal('globalTheme')
+  const accessibilityLabel = `${label}${helpText ? `, ${helpText}` : ''}`
+
   return (
-    <View style={[styles.dropdownWrapper, wrapperStyle]} transparent>
-      <Text numberOfLines={3} style={styles.dropdownHelpText}>
-        {helpText}
-      </Text>
+    <View
+      style={[styles.dropdownWrapper, wrapperStyle]}
+      transparent>
       <RNPickerSelect
         items={items}
         onValueChange={onValueChange}
         placeholder={placeholder}
         style={{ viewContainer: { alignSelf: 'center' } }}
-        touchableWrapperProps={{ testID: `${testID}_dropdown_button_select` }}
+        touchableWrapperProps={{
+          accessible: true,
+          accessibilityHint,
+          accessibilityLabel,
+          testID: `${testID}_dropdown_button_select`
+        }}
         useNativeAndroidPickerStyle={false}
         value={value}>
         <View style={styles.dropdownButton}>
@@ -36,6 +42,9 @@ export const DropdownButtonSelect = (props: any) => {
           />
         </View>
       </RNPickerSelect>
+      <Text accessible={false} style={styles.dropdownHelpText}>
+        {helpText}
+      </Text>
     </View>
   )
 }
@@ -71,7 +80,7 @@ const styles = {
   },
   dropdownWrapper: {
     alignItems: 'center',
-    flexDirection: 'row',
+    flexDirection: 'row-reverse',
     justifyContent: 'space-between',
     minHeight: PV.Table.sectionHeader.height,
     paddingHorizontal: 8

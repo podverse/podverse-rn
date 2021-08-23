@@ -132,8 +132,9 @@ export class EditProfileScreen extends React.Component<Props, State> {
         style={styles.view}
         testID='edit_profile_screen_view'>
         {!isLoading ? (
-          <View>
+          <>
             <TextInput
+              accessibilityHint={translate('ARIA - This is your profile name tap to edit')}
               autoCapitalize='none'
               autoCompleteType='off'
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -146,6 +147,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
               value={name}
             />
             <DropdownButtonSelect
+              accessibilityHint={selectedIsPublicOption.label}
               helpText={helpText}
               items={isPublicOptions}
               label={selectedIsPublicOption.label}
@@ -154,7 +156,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
               value={selectedIsPublicKey}
               wrapperStyle={styles.dropdownButtonSelectWrapper}
             />
-          </View>
+          </>
         ) : (
           <ActivityIndicator fillSpace testID={testIDPrefix} />
         )}

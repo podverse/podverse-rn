@@ -269,9 +269,9 @@
   "Please wait while your transaction completes": "Please wait while your transaction completes...",
   "Podcast Not Found": "Podcast Not Found",
   "Podcast": "Podcast",
-  "Podcasts clips and playlists are not visible": "Podcasts, clips, and playlists are not visible on your profile page",
-  "Podcasts clips and playlists are visible": "Podcasts, clips, and playlists are visible on your profile page",
-  "Podcasts clips and playlists will be visible": "Podcasts, clips, and playlists will be visible on your profile page",
+  "Podcasts clips and playlists are not visible": "Profile Privacy: Podcasts, clips, and playlists are not visible on your profile page",
+  "Podcasts clips and playlists are visible": "Profile Privacy: Podcasts, clips, and playlists are visible on your profile page",
+  "Podcasts clips and playlists will be visible": "Profile Privacy: Podcasts, clips, and playlists will be visible on your profile page",
   "Podcast Clips": "Podcast Clips",
   "Podcast Funding Links": "Podcast Funding Links",
   "Podcast supports value tag donations": "This podcast supports value tag donations. Connect your Bitcoin Wallet wallet to begin donating to podcasters.",
@@ -452,8 +452,8 @@
   "Your membership expired": "Your membership expired ",
   "your name": "your name",
   "Your premium membership expires": "Your premium membership expires ",
-  "Your profile page is hidden": "Your profile page is hidden. Your clip and playlist links are still accessible to anyone with the links.",
-  "Your profile page will be hidden": "Your profile page will be hidden. Your clip and playlist links will still be accessible to anyone with the links.",
+  "Your profile page is hidden": "Profile Privacy: Your profile page is hidden. Your clip and playlist links are still accessible to anyone with the links.",
+  "Your profile page will be hidden": "Profile Privacy: Your profile page will be hidden. Your clip and playlist links will still be accessible to anyone with the links.",
   "Your purchase was successful You may close this window": "Your purchase was successful. You may close this window.",
   "Your queue is empty": "Your queue is empty",
   "AddPodcastByRSSScreenText1": "Note: clips and playlists are not supported for custom RSS feeds.",
@@ -593,5 +593,6 @@
   "ARIA - Tap to change the colors of the user interface": "Tap to change the colors of the user interface",
   "ARIA - Tap to go to the edit my profile screen": "Tap to go to the edit my profile screen",
   "ARIA - This is your profile name": "This is your profile name",
-  "ARIA - Tap to go to this playlist": "Tap to go to this playlist"
+  "ARIA - Tap to go to this playlist": "Tap to go to this playlist",
+  "ARIA - This is your profile name tap to edit": "This is your profile name. Tap to edit."
 }
