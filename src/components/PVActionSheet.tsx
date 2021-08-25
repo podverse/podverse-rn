@@ -197,7 +197,7 @@ export class PVActionSheet extends React.Component<Props, State> {
             {(!!title || !!message) && (
               <View style={[actionSheetStyles.header, globalTheme.actionSheetButton]}>
                 {!!title && (
-                  <Text numberOfLines={1} style={headerTitleStyle}>
+                  <Text accessibilityRole='header' numberOfLines={1} style={headerTitleStyle}>
                     {title}
                   </Text>
                 )}

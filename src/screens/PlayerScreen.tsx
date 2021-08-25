@@ -331,11 +331,13 @@ export class PlayerScreen extends React.Component<Props> {
 const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefId: string, handleShare: any) => {
   const items = [
     {
+      accessibilityHint: translate('ARIA - Tap to share this podcast'),
       key: 'podcast',
       text: translate('Podcast'),
       onPress: () => handleShare(podcastId, null, null)
     },
     {
+      accessibilityHint: translate('ARIA - Tap to share this episode'),
       key: 'episode',
       text: translate('Episode'),
       onPress: () => handleShare(null, episodeId, null)
@@ -344,6 +346,7 @@ const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefI
 
   if (mediaRefId) {
     items.push({
+      accessibilityHint: translate('ARIA - Tap to share this clip'),
       key: 'clip',
       text: translate('Clip'),
       onPress: () => handleShare(null, null, mediaRefId)
