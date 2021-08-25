@@ -634,6 +634,13 @@
   "ARIA - Tap to remove the end time for this clip": "Tap to remove the end time for this clip",
   "ARIA - Tap to show how to information for the make clip screen": "Tap to show how to information for the make clip screen",
   "ARIA - Tap to go to the FAQ page": "Tap to go to the FAQ page",
-  "ARIA - This is the current playback speed": "This is the current playback speed",
-  "ARIA - Tap to create a new playlist": "Tap to create a new playlist"
+  "ARIA - This is the current playback speed": "This is the current playback speed. Tap to change the playback speed.",
+  "ARIA - Tap to create a new playlist": "Tap to create a new playlist",
+  "ARIA - This is the current playback time for this episode": "This is the current playback time for this episode",
+  "ARIA - This is the duration for this episode": "This is the duration for this episode",
+  "Unknown duration": "Unknown duration",
+  "ARIA - Tap to go to the sleep timer screen": "Tap to go to the sleep timer screen",
+  "ARIA - Tap to show more player screen options": "Tap to show more player screen options",
+  "More player options": "More player options",
+  "Episode is loading": "Episode is loading"
 }

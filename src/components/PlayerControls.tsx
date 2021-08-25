@@ -117,12 +117,28 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
     let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
     let playButtonAdjust = { paddingLeft: 2 } as any
-    if (playbackState === RNTPState.Playing) {
+    let playButtonAccessibilityHint = translate('ARIA - Tap to resume playing')
+    let playButtonAccessibilityLabel = translate('Play')
+    if (hasErrored) {
+      playButtonIcon = (
+        <Icon
+          color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
+          name={'exclamation-triangle'}
+          size={35}
+          testID={`${testIDPrefix}_error`}
+        />
+      )
+      playButtonAdjust = { paddingBottom: 8 } as any
+    } else if (playbackState === RNTPState.Playing) {
       playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
       playButtonAdjust = {}
+      playButtonAccessibilityHint = translate('ARIA - Tap to pause playback')
+      playButtonAccessibilityLabel = translate('Pause')
     } else if (checkIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
+      playButtonAccessibilityHint = ''
+      playButtonAccessibilityLabel = translate('Episode is loading')
     }
 
     let { clipEndTime, clipStartTime } = nowPlayingItem
@@ -172,18 +188,12 @@ export class PlayerControls extends React.PureComponent<Props, State> {
                 <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={togglePlay}>
+            <TouchableOpacity
+              accessibilityHint={playButtonAccessibilityHint}
+              accessibilityLabel={playButtonAccessibilityLabel}
+              onPress={togglePlay}>
               <View style={[playerStyles.playButton, playButtonAdjust]}>
-                {hasErrored ? (
-                  <Icon
-                    color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
-                    name={'exclamation-triangle'}
-                    size={35}
-                    testID={`${testIDPrefix}_error`}
-                  />
-                ) : (
-                  playButtonIcon
-                )}
+                {playButtonIcon}
               </View>
             </TouchableOpacity>
             <TouchableOpacity
@@ -206,12 +216,21 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </View>
         </View>
         <View style={styles.playerControlsBottomRow}>
-          <TouchableOpacity hitSlop={hitSlop} onPress={this._navToStopWatchScreen}>
+          <TouchableOpacity
+            accessibilityHint={translate('ARIA - Tap to go to the sleep timer screen')}
+            accessibilityLabel={translate('Sleep Timer')}
+            accessibilityRole='button'
+            hitSlop={hitSlop}
+            onPress={this._navToStopWatchScreen}>
             <View style={styles.playerControlsBottomButton}>
               <Icon name='moon' size={20} solid testID={`${testIDPrefix}_sleep_timer`} />
             </View>
           </TouchableOpacity>
-          <TouchableWithoutFeedback hitSlop={hitSlop} onPress={this._adjustSpeed}>
+          <TouchableWithoutFeedback
+            accessibilityHint={translate('ARIA - This is the current playback speed')}
+            accessibilityRole='button'
+            hitSlop={hitSlop}
+            onPress={this._adjustSpeed}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               style={[styles.playerControlsBottomButton, styles.playerControlsBottomRowText]}
@@ -219,8 +238,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               {`${playbackRate}X`}
             </Text>
           </TouchableWithoutFeedback>
-          <TouchableOpacity hitSlop={hitSlop} onPress={this._showPlayerMoreActionSheet}>
-            <View style={styles.playerControlsBottomButton}>
+          <TouchableOpacity
+            accessibilityHint={translate('ARIA - Tap to show more player screen options')}
+            accessibilityLabel={translate('More player options')}
+            accessibilityRole='button'
+            hitSlop={hitSlop}
+            onPress={this._showPlayerMoreActionSheet}>
+            <View accessible={false} style={styles.playerControlsBottomButton}>
               <Icon name='ellipsis-h' size={24} testID={`${testIDPrefix}_more`} />
             </View>
           </TouchableOpacity>
