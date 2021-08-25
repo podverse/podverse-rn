@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import { State as RNTPState } from 'react-native-track-player'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
@@ -22,7 +22,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
     const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
 
-    let playButtonAdjust = { paddingLeft: 2 } as any
+    let playButtonAdjust = { paddingLeft: 2, paddingTop: 2 } as any
     let playButtonIcon = (
       <Icon
         accessibilityHint={translate('ARIA - Tap to resume playing')}
@@ -101,7 +101,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
                 </View>
               </View>
             </TouchableWithoutFeedback>
-            <View>
+            <View style={{ flex: 0, justifyContent: 'center', height: 60, width: 60 }}>
               {!hasErrored && playButtonIcon}
               {hasErrored && (
                 <Icon
