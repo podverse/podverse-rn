@@ -23,7 +23,7 @@ export class ValueTagPreviewScreen extends React.Component<Props> {
   }
 
   componentDidMount() {
-    trackPageView('/value-tag-preview', 'Value Tag Preview Screen')
+    trackPageView('/value-for-value-preview', 'Value-for-Value Preview Screen')
   }
 
   _navigateToConsentScreen() {

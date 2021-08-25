@@ -61,7 +61,11 @@ export class NavAddToPlaylistIcon extends React.Component<Props, State> {
     }
     return (
       <View>
-        <NavItemWrapper handlePress={this._handleIconPress} testID='nav_add_to_playlist_icon'>
+        <NavItemWrapper
+          accessibilityHint={translate('ARIA - Tap to add this item to a playlist')}
+          accessibilityLabel={translate('Add to Playlist')}
+          accessibilityRole='button'
+          handlePress={this._handleIconPress} testID='nav_add_to_playlist_icon'>
           <NavItemIcon name='plus' color={color} />
         </NavItemWrapper>
         <ActionSheet

@@ -30,7 +30,7 @@ export class ValueTagConsentScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    trackPageView('/value-tag-consent', 'Value Tag Consent Screen')
+    trackPageView('/value-for-value-consent', 'Value-for-Value Consent Screen')
   }
 
   _acceptAgreement = async () => {
