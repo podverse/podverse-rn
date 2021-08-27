@@ -7,7 +7,8 @@ import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
 import { loadItemAndPlayTrack } from '../state/actions/player'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from './'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList,
+  ScrollView, TableSectionSelectors } from './'
 
 type Props = {
   isChapters?: boolean
@@ -70,7 +71,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
         item={item}
         loadTimeStampOnPlay
-        showChapterInfo
+        isChapter
         showPodcastInfo={false}
         testID={`${testID}_item_${index}`}
         transparent
@@ -101,8 +102,12 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
     const testID = getTestID()
 
     return (
-      <View style={[styles.wrapper, { width }]} transparent>
-        <TableSectionSelectors disableFilter includePadding selectedFilterLabel={translate('Chapters')} />
+      <ScrollView style={[styles.wrapper, { width }]} transparent>
+        <TableSectionSelectors
+          disableFilter
+          includePadding
+          selectedFilterLabel={translate('Chapters')}
+          selectedFilterAccessibilityHint={translate('ARIA HINT - This is a list of the chapters for this episode')} />
         {isLoading || (isQuerying && <ActivityIndicator fillSpace testID={getTestID()} />)}
         {!isLoading && !isQuerying && currentChapters && (
           <FlatList
@@ -130,7 +135,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
           showModal={showMoreActionSheet}
           testID={`${testID}_more`}
         />
-      </View>
+      </ScrollView>
     )
   }
 

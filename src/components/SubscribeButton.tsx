@@ -1,12 +1,13 @@
 import React from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { ActivityIndicator, Text, View } from './'
 
 type Props = {
   handleToggleSubscribe: any
+  isPlaylist?: boolean
+  isProfile?: boolean
   isSubscribed?: boolean
   isSubscribing?: boolean
   testID: string
@@ -14,13 +15,30 @@ type Props = {
 }
 
 export const SubscribeButton = (props: Props) => {
-  const { handleToggleSubscribe, isSubscribed, isSubscribing, testID } = props
+  const { handleToggleSubscribe, isPlaylist, isProfile, isSubscribed, isSubscribing, testID } = props
 
   const buttonTitle = isSubscribed ? translate('Unsubscribe') : translate('Subscribe')
   const buttonTextTestId = isSubscribed ? `${testID}_is_subscribed` : `${testID}_is_not_subscribed`
+  
+  let accessibililityHint = isSubscribed
+    ? translate('ARIA HINT - Tap to unsubscribe from this podcast')
+    : translate('ARIA HINT - Tap to subscribe to this podcast')
+  if (isPlaylist) {
+    accessibililityHint = isSubscribed
+      ? translate('ARIA HINT - Tap to unsubscribe from this playlist')
+      : translate('ARIA HINT - Tap to subscribe to this playlist')
+  } else if (isProfile) {
+    accessibililityHint = isSubscribed
+      ? translate('ARIA HINT - Tap to unsubscribe from this profile')
+      : translate('ARIA HINT - Tap to subscribe to this profile')
+  }
+
+  const accessibilityLabel = isSubscribed ? translate('Unsubscribe') : translate('Subscribe')
 
   return (
     <TouchableOpacity
+      accessibilityHint={accessibililityHint}
+      accessibilityLabel={accessibilityLabel}
       hitSlop={{
         bottom: 4,
         left: 8,
@@ -29,7 +47,7 @@ export const SubscribeButton = (props: Props) => {
       }}
       onPress={handleToggleSubscribe}
       style={[styles.buttonView, props.style]}
-      {...(testID ? testProps(`${testID}_subscribe_button`) : {})}>
+      {...(testID ? { testID: `${testID}_subscribe_button` } : {})}>
       <View>
         {isSubscribing && (
           <View style={styles.activityIndicator}>

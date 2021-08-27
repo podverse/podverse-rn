@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { convertToNowPlayingItem } from 'podverse-shared'
+import { convertToNowPlayingItem, NowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
@@ -19,7 +19,6 @@ import {
   PodcastTableHeader,
   ScrollView,
   SearchBar,
-  SwipeRowBack,
   SwitchWithText,
   TableSectionSelectors,
   Text,
@@ -32,7 +31,7 @@ import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
-import { safeKeyExtractor, safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { safeKeyExtractor, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisodes } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
@@ -414,7 +413,7 @@ static navigationOptions = ({ navigation }) => {
 
       return (
         <EpisodeTableCell
-          item={episode}
+          handleDeletePress={() => this._handleDeleteEpisode(item)}
           handleDownloadPress={() => this._handleDownloadPressed(item)}
           handleMorePress={() =>
             this._handleMorePress(convertToNowPlayingItem(item, null, podcast, userPlaybackPosition))
@@ -426,6 +425,7 @@ static navigationOptions = ({ navigation }) => {
             })
           }}
           hideImage
+          item={episode}
           mediaFileDuration={mediaFileDuration}
           testID={testId}
           userPlaybackPosition={userPlaybackPosition}
@@ -434,28 +434,23 @@ static navigationOptions = ({ navigation }) => {
     }
   }
 
-  _renderHiddenItem = ({ item, index }: RenderItemArg) => (
-    <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.id)}
-      testID={`${testIDPrefix}_clip_item_${index}`}
-      text={translate('Delete')}
-    />
-  )
-
-  _handleHiddenItemPress = (selectedId: string) => {
-    const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
-    this.setState(
-      {
-        flatListData: filteredEpisodes
-      },
-      () => {
-        (async () => {
-          await DownloadState.removeDownloadedPodcastEpisode(selectedId)
-          const finalDownloadedEpisodes = await getDownloadedEpisodes()
-          this.setState({ flatListData: finalDownloadedEpisodes })
-        })()
-      }
-    )
+  _handleDeleteEpisode = (item: NowPlayingItem) => {
+    const selectedId = item?.episodeId
+    if (selectedId) {
+      const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
+      this.setState(
+        {
+          flatListData: filteredEpisodes
+        },
+        () => {
+          (async () => {
+            await DownloadState.removeDownloadedPodcastEpisode(selectedId)
+            const finalDownloadedEpisodes = await getDownloadedEpisodes()
+            this.setState({ flatListData: finalDownloadedEpisodes })
+          })()
+        }
+      )
+    }
   }
 
   _handleToggleDeleteDownloadedEpisodesDialog = () => {
@@ -653,7 +648,9 @@ static navigationOptions = ({ navigation }) => {
       (viewType === PV.Filters._clipsKey && translate('No clips found'))
 
     return (
-      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        testID={`${testIDPrefix}_view`}>
         <PodcastTableHeader
           autoDownloadOn={autoDownloadOn}
           description={podcast && podcast.description}
@@ -689,6 +686,14 @@ static navigationOptions = ({ navigation }) => {
           <ScrollView style={styles.settingsView}>
             <Text style={styles.settingsTitle}>{translate('Settings')}</Text>
             <SwitchWithText
+              accessibilityHint={limitDownloadedEpisodes
+                ? translate('ARIA HINT - Tap to disable the downloaded episode limit for this podcast')
+                : translate('ARIA HINT - Tap to limit the number of episodes from this podcast to save on your device')
+              }
+              accessibilityLabel={limitDownloadedEpisodes
+                ? translate('Download limit on')
+                : translate('Download limit off')
+              }
               onValueChange={this._handleToggleLimitDownloads}
               testID={`${testIDPrefix}_toggle_download_limit`}
               text={translate('Download limit')}
@@ -698,6 +703,10 @@ static navigationOptions = ({ navigation }) => {
             {limitDownloadedEpisodes && (
               <View style={styles.itemWrapper}>
                 <NumberSelectorWithText
+                  // eslint-disable-next-line max-len
+                  accessibilityHint={translate('ARIA HINT - Tap to set the maximum number of downloaded episodes to save from this podcast on your device')}
+                  // eslint-disable-next-line max-len
+                  accessibilityLabel={`${translate('Download limit max')} ${!!downloadedEpisodeLimit ? downloadedEpisodeLimit : ''}`}
                   handleChangeText={this._handleChangeDownloadLimitText}
                   selectedNumber={downloadedEpisodeLimit}
                   subText={translate(
@@ -711,18 +720,23 @@ static navigationOptions = ({ navigation }) => {
             )}
             <View style={styles.itemWrapper}>
               <NumberSelectorWithText
-                editable={false}
+                accessibilityHint={
+                  translate('ARIA HINT - Tap to set the time you want this episode to always start playing from')
+                }
                 isHHMMSS
                 selectedNumber={startPodcastFromTime}
                 subText={translate('Episodes of this podcast will start playback from this time')}
                 testID={`${testIDPrefix}_start_podcast_from_time`}
                 text={translate('Preset podcast start time')}
-                textInputOnPress={this._handleNavigateToStartPodcastFromTimeScreen}
                 textInputStyle={{ width: 76 }}
+                wrapperOnPress={this._handleNavigateToStartPodcastFromTimeScreen}
               />
             </View>
             <Divider style={styles.divider} />
             <Button
+              accessibilityHint={
+                translate('ARIA HINT - Tap to delete all the episodes you have downloaded for this podcast')
+              }
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
               wrapperStyles={styles.settingsDeletebutton}
               testID={`${testIDPrefix}_delete_downloaded_episodes`}
@@ -775,12 +789,12 @@ static navigationOptions = ({ navigation }) => {
           <Dialog.Button
             label={translate('No')}
             onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
-            {...testProps('dialog_delete_downloaded_episodes_no')}
+            testID='dialog_delete_downloaded_episodes_no'
           />
           <Dialog.Button
             label={translate('Yes')}
             onPress={this._handleDeleteDownloadedEpisodes}
-            {...testProps('dialog_delete_downloaded_episodes_yes')}
+            testID='dialog_delete_downloaded_episodes_yes'
           />
         </Dialog.Container>
       </View>

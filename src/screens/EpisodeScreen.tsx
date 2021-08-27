@@ -14,7 +14,7 @@ import {
 import { downloadEpisode } from '../lib/downloader'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { replaceLinebreaksWithBrTags, testProps } from '../lib/utility'
+import { replaceLinebreaksWithBrTags } from '../lib/utility'
 import { PV } from '../resources'
 import { getMediaRefs } from '../services/mediaRef'
 import { getTrackingIdText, trackPageView } from '../services/tracking'
@@ -194,7 +194,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
       : {}
 
     return (
-      <ScrollView style={styles.view} {...testProps('episode_screen_view')}>
+      <ScrollView
+        style={styles.view}
+        testID='episode_screen_view'>
         <EpisodeTableHeader
           episode={episode}
           episodeDownloaded={episodeDownloaded}
@@ -209,6 +211,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         />
         {showClipsCell && (
           <TouchableOpacity
+            accessibilityHint={translate('ARIA HINT - Tap to show clips from this podcast')}
             activeOpacity={1}
             style={styles.showNotesCell}
             onPress={() => {
@@ -230,6 +233,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
         )}
         {showChaptersCell && (
           <TouchableOpacity
+            accessibilityHint={translate('ARIA HINT - Tap to show the chapters from this podcast')}
             activeOpacity={1}
             style={styles.showNotesCell}
             onPress={() => {
@@ -253,6 +257,7 @@ export class EpisodeScreen extends React.Component<Props, State> {
           disableScrolling
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           html={episode?.description || ''}
+          sectionTitle={translate('Episode Summary')}
           style={extraHtmlScrollViewPadding}
         />
         <ActionSheet
@@ -278,12 +283,6 @@ const styles = StyleSheet.create({
   },
   htmlScrollView: {
     marginVertical: 12
-  },
-  showNotesView: {
-    margin: 8
-  },
-  showNotesViewText: {
-    fontSize: PV.Fonts.sizes.lg
   },
   showNotesCell: {
     padding: 15,

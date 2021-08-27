@@ -17,6 +17,8 @@ type Props = {
   hideBottomRow?: boolean
   hideDivider?: boolean
   isActive?: boolean
+  isNowPlayingItem?: boolean
+  isPlaylistScreen?: boolean
   onPress?: any
   podcastImageUrl?: string
   podcastTitle?: string
@@ -39,6 +41,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
       hideBottomRow,
       hideDivider,
       isActive,
+      isNowPlayingItem,
       onPress,
       podcastImageUrl,
       podcastTitle = translate('Untitled Podcast'),
@@ -52,13 +55,30 @@ export class QueueTableCell extends React.PureComponent<Props> {
       ? [styles.wrapper, styles.wrapperActive, hideDivider ? { borderBottomWidth: 0 } : {}]
       : [styles.wrapper, hideDivider ? { borderBottomWidth: 0 } : {}]
 
+    const isClip = !!clipStartTime && !!clipTitle
+
+    const podcastTitleText = podcastTitle.trim()
+    const episodeTitleText = episodeTitle.trim()
+    const pubDateText = readableDate(episodePubDate)
+    // eslint-disable-next-line max-len
+    const accessibilityLabel = `${!!podcastTitle ? `${podcastTitleText}, ` : ''} ${!!episodeTitle ? `${episodeTitleText}, ` : ''} ${!!episodePubDate ? `${pubDateText}` : ''}`
+
     return (
       <View
         style={viewStyle}
         transparent={transparent}
         testID={testID}>
         <RNView style={styles.wrapperTop}>
-          <TouchableWithoutFeedback onLongPress={drag} onPress={onPress}>
+          <TouchableWithoutFeedback
+            accessibilityHint={isNowPlayingItem
+              ? translate('ARIA HINT - This is the now playing episode')
+              : !isClip
+                ? translate('ARIA HINT - Tap to play this episode')
+                : translate('ARIA HINT - This is the episode title of a clip Tap to play this clip')
+            }
+            accessibilityLabel={accessibilityLabel}
+            onLongPress={drag}
+            onPress={onPress}>
             <RNView style={styles.wrapperTappableInner}>
               <FastImage isSmall key={podcastImageUrl} source={podcastImageUrl} styles={styles.image} />
               <RNView style={styles.textWrapper}>
@@ -69,7 +89,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                     numberOfLines={1}
                     style={styles.podcastTitle}
                     testID={`${testID}_podcast_title`}>
-                    {podcastTitle.trim()}
+                    {podcastTitleText}
                   </Text>
                 )}
                 {!!episodeTitle && (
@@ -78,7 +98,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                     numberOfLines={2}
                     style={styles.episodeTitle}
                     testID={`${testID}_episode_title`}>
-                    {episodeTitle.trim()}
+                    {episodeTitleText}
                   </Text>
                 )}
                 {!!episodePubDate && (
@@ -88,7 +108,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                     numberOfLines={1}
                     style={styles.episodePubDate}
                     testID={`${testID}_episode_pub_date`}>
-                    {readableDate(episodePubDate)}
+                    {pubDateText}
                   </Text>
                 )}
               </RNView>
@@ -97,6 +117,9 @@ export class QueueTableCell extends React.PureComponent<Props> {
           </TouchableWithoutFeedback>
           {!!showRemoveButton && !!handleRemovePress && (
             <Icon
+              accessibilityHint={translate('ARIA HINT - Tap to remove this item')}
+              accessibilityLabel={translate('Remove')}
+              accessibilityRole='button'
               name='times'
               onPress={handleRemovePress}
               size={28}
@@ -108,14 +131,22 @@ export class QueueTableCell extends React.PureComponent<Props> {
         {!hideBottomRow && (
           <RNView style={styles.wrapperBottom}>
             <Text
+              accessible={isClip}
+              accessibilityHint={!isClip
+                ? ''
+                : isNowPlayingItem
+                  ? translate('ARIA HINT - This is the now playing clip title')
+                  : translate('ARIA HINT - Tap to play this clip')
+              }
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               numberOfLines={1}
               style={styles.clipTitle}
               testID={`${testID}_bottom_text`}>
-              {!!clipStartTime && !!clipTitle ? clipTitle.trim() : translate('Full Episode')}
+              {!isClip ? translate('Full Episode') : clipTitle.trim()}
             </Text>
             {!!clipStartTime && (
               <Text
+                accessibilityHint={translate('ARIA HINT - This is the clip time range')}
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 style={styles.clipTime}
                 testID={`${testID}_clip_time`}>

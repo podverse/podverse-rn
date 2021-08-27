@@ -22,8 +22,7 @@ import { hasValidNetworkConnection } from '../lib/network'
 import {
   overrideImageUrlWithChapterImageUrl,
   replaceLinebreaksWithBrTags,
-  safelyUnwrapNestedVariable,
-  testProps
+  safelyUnwrapNestedVariable
 } from '../lib/utility'
 import { PV } from '../resources'
 import { getEpisode } from '../services/episode'
@@ -308,7 +307,10 @@ export class PlayerScreen extends React.Component<Props> {
     return (
       <React.Fragment>
         <OpaqueBackground imageUrl={imageUrl}>
-          <View style={styles.view} transparent {...testProps('player_screen_view')}>
+          <View
+            style={styles.view}
+            transparent
+            testID='player_screen_view'>
             <MediaPlayerCarousel hasChapters={hasChapters} navigation={navigation} />
             <PlayerControls navigation={navigation} />
             <ActionSheet
@@ -329,11 +331,13 @@ export class PlayerScreen extends React.Component<Props> {
 const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefId: string, handleShare: any) => {
   const items = [
     {
+      accessibilityHint: translate('ARIA HINT - Tap to share this podcast'),
       key: 'podcast',
       text: translate('Podcast'),
       onPress: () => handleShare(podcastId, null, null)
     },
     {
+      accessibilityHint: translate('ARIA HINT - Tap to share this episode'),
       key: 'episode',
       text: translate('Episode'),
       onPress: () => handleShare(null, episodeId, null)
@@ -342,6 +346,7 @@ const shareActionSheetButtons = (podcastId: string, episodeId: string, mediaRefI
 
   if (mediaRefId) {
     items.push({
+      accessibilityHint: translate('ARIA HINT - Tap to share this clip'),
       key: 'clip',
       text: translate('Clip'),
       onPress: () => handleShare(null, null, mediaRefId)

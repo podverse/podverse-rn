@@ -2,7 +2,7 @@ import { Linking, Platform, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, SafeAreaView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
-import { createEmailLinkUrl, testProps } from '../lib/utility'
+import { createEmailLinkUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { androidHandleStatusCheck } from '../state/actions/purchase.android'
@@ -51,7 +51,9 @@ export class PurchasingScreen extends React.Component<Props> {
     const { isLoading, message, showContactSupportLink, showDismissLink, showRetryLink, title } = purchase
 
     return (
-      <SafeAreaView style={styles.safeAreaView} {...testProps(`${testIDPrefix}_view`)}>
+      <SafeAreaView
+        style={styles.safeAreaView}
+        testID={`${testIDPrefix}_view`}>
         <View style={styles.view}>
           <Text style={[globalTheme.text, styles.title]}>{title}</Text>
           {!!isLoading && <ActivityIndicator styles={styles.activityIndicator} testID={testIDPrefix} />}

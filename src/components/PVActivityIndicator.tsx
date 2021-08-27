@@ -3,9 +3,10 @@ import { ActivityIndicator, Dimensions, StyleSheet, TouchableWithoutFeedback, Vi
 import { useGlobal } from 'reactn'
 import { Colors } from '../resources/Colors'
 import { core } from '../styles'
-import { testProps } from '../lib/utility'
 
 type Props = {
+  accessibilityHint?: string
+  accessibilityLabel?: string
   children?: any
   fillSpace?: boolean
   isOverlay?: boolean
@@ -18,7 +19,8 @@ type Props = {
 
 export const PVActivityIndicator = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
-  const { fillSpace, isOverlay, onPress, size = 'large', testID, transparent = true } = props
+  const { accessibilityHint, accessibilityLabel, fillSpace, isOverlay, onPress, size = 'large',
+    testID, transparent = true } = props
 
   const viewStyle = fillSpace ? { flex: 1 } : {}
   const backgroundColor = transparent ? {} : { backgroundColor: Colors.blackOpaque }
@@ -26,22 +28,28 @@ export const PVActivityIndicator = (props: Props) => {
   return (
     <Fragment>
       {isOverlay && (
-        <View style={[styles.activityOverlay, backgroundColor]}>
+        <View
+          accessibilityHint={accessibilityHint}
+          accessibilityLabel={accessibilityLabel}
+          style={[styles.activityOverlay, backgroundColor]}>
           <ActivityIndicator
             animating
             color={globalTheme.activityIndicator.color}
             size={size}
-            {...testProps(`${testID}_activity_indicator`)} />
+            testID={`${testID}_activity_indicator`} />
         </View>
       )}
       {!isOverlay && (
-        <TouchableWithoutFeedback onPress={onPress}>
+        <TouchableWithoutFeedback
+          accessibilityHint={accessibilityHint}
+          accessibilityLabel={accessibilityLabel}
+          onPress={onPress}>
           <View style={[core.view, styles.view, viewStyle, props.styles]}>
             <ActivityIndicator
               animating
               color={globalTheme.activityIndicator.color}
               size={size}
-              {...testProps(`${testID}_activity_indicator`)} />
+              testID={`${testID}_activity_indicator`} />
           </View>
         </TouchableWithoutFeedback>
       )}

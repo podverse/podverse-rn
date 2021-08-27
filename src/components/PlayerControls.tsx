@@ -1,12 +1,13 @@
 import debounce from 'lodash/debounce'
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, Image, ImageSourcePropType } from 'react-native'
+import { State as RNTPState } from 'react-native-track-player'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import {
   checkIfStateIsBuffering,
   playerJumpBackward,
   playerJumpForward,
-  PVTrackPlayer,
   setPlaybackPosition
 } from '../services/player'
 import { playNextFromQueue, setPlaybackSpeed, togglePlay } from '../state/actions/player'
@@ -116,12 +117,28 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
     let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
     let playButtonAdjust = { paddingLeft: 2 } as any
-    if (playbackState === PVTrackPlayer.STATE_PLAYING) {
+    let playButtonAccessibilityHint = translate('ARIA HINT - Tap to resume playing')
+    let playButtonAccessibilityLabel = translate('Play')
+    if (hasErrored) {
+      playButtonIcon = (
+        <Icon
+          color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
+          name={'exclamation-triangle'}
+          size={35}
+          testID={`${testIDPrefix}_error`}
+        />
+      )
+      playButtonAdjust = { paddingBottom: 8 } as any
+    } else if (playbackState === RNTPState.Playing) {
       playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
       playButtonAdjust = {}
+      playButtonAccessibilityHint = translate('ARIA HINT - Tap to pause playback')
+      playButtonAccessibilityLabel = translate('Pause')
     } else if (checkIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
+      playButtonAccessibilityHint = ''
+      playButtonAccessibilityLabel = translate('Episode is loading')
     }
 
     let { clipEndTime, clipStartTime } = nowPlayingItem
@@ -133,6 +150,11 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         hideClipIndicator = true
       }
     }
+
+    const jumpBackAccessibilityLabel =
+      `${translate(`Jump back`)} ${PV.Player.jumpBackSeconds} ${translate('seconds')}`
+    const jumpForwardAccessibilityLabel =
+      `${translate(`Jump forward`)} ${PV.Player.jumpSeconds} ${translate('seconds')}`
 
     return (
       <View style={[styles.wrapper, globalTheme.player]}>
@@ -150,48 +172,65 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         <View style={styles.playerControlsMiddleRow}>
           <View style={styles.playerControlsMiddleRowTop}>
             <TouchableOpacity
+              accessibilityLabel={translate('Return to beginning of episode')}
+              accessibilityRole='button'
               onPress={this._returnToBeginningOfTrack}
               style={[playerStyles.icon, { flexDirection: 'row' }]}>
               {this._renderPlayerControlIcon(PV.Images.PREV_TRACK, `${testIDPrefix}_previous_track`)}
             </TouchableOpacity>
-            <TouchableOpacity onPress={this._playerJumpBackward} style={playerStyles.icon}>
+            <TouchableOpacity
+              accessibilityLabel={jumpBackAccessibilityLabel}
+              accessibilityRole='button'
+              onPress={this._playerJumpBackward}
+              style={playerStyles.icon}>
               {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, `${testIDPrefix}_jump_backward`)}
               <View style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={togglePlay}
-              style={[playerStyles.playButton, playButtonAdjust]}>
-              {hasErrored ? (
-                <Icon
-                  color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
-                  name={'exclamation-triangle'}
-                  size={35}
-                  testID={`${testIDPrefix}_error`}
-                />
-              ) : (
-                playButtonIcon
-              )}
+              accessibilityHint={playButtonAccessibilityHint}
+              accessibilityLabel={playButtonAccessibilityLabel}
+              onPress={togglePlay}>
+              <View style={[playerStyles.playButton, playButtonAdjust]}>
+                {playButtonIcon}
+              </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={this._playerJumpForward} style={playerStyles.icon}>
+            <TouchableOpacity
+              accessibilityLabel={jumpForwardAccessibilityLabel}
+              accessibilityRole='button'
+              onPress={this._playerJumpForward}
+              style={playerStyles.icon}>
               {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, `${testIDPrefix}_step_forward`)}
               <View style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>{PV.Player.jumpSeconds}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={playNextFromQueue} style={[playerStyles.icon, { flexDirection: 'row' }]}>
+            <TouchableOpacity
+              accessibilityLabel={translate('Skip to next item in your queue')}
+              accessibilityRole='button'
+              onPress={playNextFromQueue}
+              style={[playerStyles.icon, { flexDirection: 'row' }]}>
               {this._renderPlayerControlIcon(PV.Images.NEXT_TRACK, `${testIDPrefix}_skip_track`)}
             </TouchableOpacity>
           </View>
         </View>
         <View style={styles.playerControlsBottomRow}>
-          <TouchableOpacity hitSlop={hitSlop} onPress={this._navToStopWatchScreen}>
+          <TouchableOpacity
+            accessibilityHint={translate('ARIA HINT - Tap to go to the sleep timer screen')}
+            accessibilityLabel={translate('Sleep Timer')}
+            accessibilityRole='button'
+            hitSlop={hitSlop}
+            onPress={this._navToStopWatchScreen}>
             <View style={styles.playerControlsBottomButton}>
               <Icon name='moon' size={20} solid testID={`${testIDPrefix}_sleep_timer`} />
             </View>
           </TouchableOpacity>
-          <TouchableWithoutFeedback hitSlop={hitSlop} onPress={this._adjustSpeed}>
+          <TouchableWithoutFeedback
+            accessibilityHint={translate('ARIA HINT - This is the current playback speed')}
+            accessibilityRole='button'
+            hitSlop={hitSlop}
+            onPress={this._adjustSpeed}>
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               style={[styles.playerControlsBottomButton, styles.playerControlsBottomRowText]}
@@ -199,8 +238,13 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               {`${playbackRate}X`}
             </Text>
           </TouchableWithoutFeedback>
-          <TouchableOpacity hitSlop={hitSlop} onPress={this._showPlayerMoreActionSheet}>
-            <View style={styles.playerControlsBottomButton}>
+          <TouchableOpacity
+            accessibilityHint={translate('ARIA HINT - Tap to show more player screen options')}
+            accessibilityLabel={translate('More player options')}
+            accessibilityRole='button'
+            hitSlop={hitSlop}
+            onPress={this._showPlayerMoreActionSheet}>
+            <View accessible={false} style={styles.playerControlsBottomButton}>
               <Icon name='ellipsis-h' size={24} testID={`${testIDPrefix}_more`} />
             </View>
           </TouchableOpacity>

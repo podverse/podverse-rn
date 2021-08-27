@@ -1,13 +1,13 @@
 import React from 'react'
-import { Platform, TextInput } from 'react-native'
+import { Platform, TextInput, TouchableWithoutFeedback } from 'react-native'
 import { useGlobal } from 'reactn'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { core } from '../styles'
 import { Text, View } from '.'
 
 type Props = {
+  accessibilityHint?: string
+  accessibilityLabel?: string
   alwaysShowEyebrow?: boolean
   autoCapitalize?: any
   autoCompleteType?: any
@@ -38,6 +38,8 @@ type Props = {
 
 export const PVTextInput = (props: Props) => {
   const {
+    accessibilityHint,
+    accessibilityLabel,
     alwaysShowEyebrow,
     autoCapitalize,
     autoCompleteType,
@@ -84,7 +86,10 @@ export const PVTextInput = (props: Props) => {
   const hasText = !!value && value.length
 
   return (
-    <TouchableWithoutFeedback onPress={onPress}>
+    <TouchableWithoutFeedback
+      accessibilityHint={accessibilityHint}
+      accessibilityLabel={accessibilityLabel}
+      onPress={onPress}>
       <View style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
         {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
           <Text style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]} testID={`${testID}_text_input_eyebrow`}>
@@ -112,7 +117,7 @@ export const PVTextInput = (props: Props) => {
           secureTextEntry={secureTextEntry}
           style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
           underlineColorAndroid={underlineColorAndroid}
-          {...(testID ? testProps(`${testID}_text_input`) : {})}
+          {...(testID ? { testID: `${testID}_text_input` } : {})}
           value={value}
         />
       </View>

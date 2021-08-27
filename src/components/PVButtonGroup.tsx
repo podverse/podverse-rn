@@ -2,7 +2,6 @@ import React from 'react'
 import { Platform, StyleSheet } from 'react-native'
 import { ButtonGroup } from 'react-native-elements'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 
 type Props = {
@@ -32,8 +31,7 @@ export const PVButtonGroup = (props: Props) => {
       selectedIndex={selectedIndex}
       selectedTextStyle={globalTheme.buttonGroupTextSelected}
       textStyle={[textStyle, globalTheme.buttonGroupText]}
-      {...testProps(`${testID}_button_group`)}
-    />
+      testID={`${testID}_button_group`} />
   )
 }
 

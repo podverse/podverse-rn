@@ -1,8 +1,7 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity, View as RNView } from 'react-native'
+import { Pressable, StyleSheet, View as RNView } from 'react-native'
 import { Slider } from 'react-native-elements'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { getDownloadStatusText } from '../state/actions/downloads'
 import { FastImage, Text, View } from './'
@@ -39,12 +38,11 @@ export class DownloadTableCell extends React.PureComponent<Props> {
     const statusText = getDownloadStatusText(status)
 
     return (
-      <TouchableOpacity
-        activeOpacity={1}
+      <Pressable
         onPress={onPress}
-        {...(testID ? testProps(testID) : {})}
+        {...(testID ? { testID } : {})}
         style={styles.cellView}>
-        <View style={styles.wrapper}>
+        <View pointerEvents='none' style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={styles.image} />
           <RNView style={styles.textWrapper}>
             <RNView style={styles.textWrapperTop}>
@@ -101,14 +99,14 @@ export class DownloadTableCell extends React.PureComponent<Props> {
             </RNView>
           </RNView>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     )
   }
 }
 
 const styles = StyleSheet.create({
   cellView: {
-    backgroundColor: PV.Colors.ink
+    flex: 0
   },
   episodeTitle: {
     flex: 1,
@@ -152,7 +150,6 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexDirection: 'row',
-    marginHorizontal: 8,
     borderBottomColor: PV.Colors.gray,
     borderBottomWidth: 1,
     backgroundColor: PV.Colors.ink,

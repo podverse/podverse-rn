@@ -1,9 +1,8 @@
 import { Alert, Linking, StyleSheet, View as RNView } from 'react-native'
 import React from 'reactn'
 import packageJson from '../../package.json'
-import { Divider, ScrollView, Text, View } from '../components'
+import { Divider, ScrollView, TableSectionSelectors, Text, View } from '../components'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 
@@ -27,11 +26,37 @@ export class TermsOfServiceScreen extends React.Component<Props> {
 
   render() {
     return (
-      <View style={styles.content} {...testProps('terms_of_service_screen_view')}>
+      <View
+        style={styles.content}
+        testID='terms_of_service_screen_view'>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
-            {translate('Terms of Service')}
-          </Text>
+          <TableSectionSelectors
+            disableFilter
+            selectedFilterLabel={translate('License')} />
+          <RNView style={styles.copyLeftWrapper}>
+            <Text
+              onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}
+              style={styles.copyLeftText}>
+              {translate('All brandName software is provided free and open source under the AGPLv3 license')}
+            </Text>
+          </RNView>
+          <RNView style={styles.copyLeftWrapper}>
+            <Text
+              onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}
+              style={styles.copyLeftText}>
+              copyleft
+            </Text>
+            <Text
+              accessible={false}
+              onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}
+              style={styles.copyLeftSymbol}>
+              &copy;
+            </Text>
+          </RNView>
+          <Divider style={styles.divider} />
+          <TableSectionSelectors
+            disableFilter
+            selectedFilterLabel={translate('Terms of Service')} />
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {translate('TermsOfServiceScreenText1')}
             {'\n\n'}
@@ -48,9 +73,9 @@ export class TermsOfServiceScreen extends React.Component<Props> {
             {translate('TermsOfServicesScreenText7')}
           </Text>
           <Divider style={styles.divider} />
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
-            {translate('Popularity Analytics')}
-          </Text>
+          <TableSectionSelectors
+            disableFilter
+            selectedFilterLabel={translate('Popularity Analytics')} />
           <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text}>
             {translate('TermsOfServiceScreenMatomoTrackingText1')}
             {'\n\n'}
@@ -63,34 +88,14 @@ export class TermsOfServiceScreen extends React.Component<Props> {
             {translate('TermsOfServiceScreenMatomoTrackingText5')}
           </Text>
           <Divider style={styles.divider} />
-          <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.sectionTitle}>
-            {translate('Third Party Libraries')}
-          </Text>
+          <TableSectionSelectors
+            disableFilter
+            selectedFilterLabel={translate('Third Party Libraries')} />
           {Object.keys(packageJson.dependencies).map((license) => (
-              <Text key={license} style={styles.text}>
-                {license}
-              </Text>
-            ))}
-          <Divider style={styles.divider} />
-          <RNView style={styles.copyLeftWrapper}>
-            <Text
-              onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}
-              style={styles.copyLeftText}>
-              {translate('All brandName software is provided free and open source under the AGPLv3 license')}
+            <Text key={license} style={styles.text}>
+              {license}
             </Text>
-          </RNView>
-          <RNView style={styles.copyLeftWrapper}>
-            <Text
-              onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}
-              style={styles.copyLeftText}>
-              copyleft
-            </Text>
-            <Text
-              onPress={() => this.showLeavingAppAlert('https://www.gnu.org/licenses/agpl-3.0.en.html')}
-              style={styles.copyLeftSymbol}>
-              &copy;
-            </Text>
-          </RNView>
+          ))}
         </ScrollView>
       </View>
     )

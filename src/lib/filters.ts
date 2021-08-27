@@ -78,6 +78,10 @@ export const getDefaultSortForFilter = (options: any) => {
   return newSelectedSortItemKey
 }
 
+const filterAccessibilityHint = 'ARIA HINT - Select a primary filter from the list below'
+const categoryAccessibilityHint = 'ARIA HINT - Select a category from the list below'
+const sortingFilterAccessibilityHint = 'ARIA HINT - Select a sorting filter from the list below'
+
 export const generateSections = (options: any) => {
   let sortItems: any[] = PV.FilterOptions.sortItems
   const {
@@ -127,13 +131,43 @@ export const generateSections = (options: any) => {
 
       sections = includeCategories
         ? [
-            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-            { title: translate('Category'), data: flatCategoryItems, value: PV.Filters._sectionCategoryKey },
-            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+            {
+              title: translate('Filter'),
+              data: filterItems,
+              value: PV.Filters._sectionFilterKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Category'),
+              data: flatCategoryItems,
+              value: PV.Filters._sectionCategoryKey,
+              accessibilityHint: translate(categoryAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Sort'),
+              data: sortItems,
+              value: PV.Filters._sectionSortKey,
+              accessibilityHint: translate(sortingFilterAccessibilityHint),
+              accessibilityRole: 'header'
+            }
           ]
         : [
-            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+            {
+              title: translate('Filter'),
+              data: filterItems,
+              value: PV.Filters._sectionFilterKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Sort'),
+              data: sortItems,
+              value: PV.Filters._sectionSortKey,
+              accessibilityHint: translate(sortingFilterAccessibilityHint),
+              accessibilityRole: 'header'
+            }
           ]
 
       break
@@ -178,13 +212,43 @@ export const generateSections = (options: any) => {
 
       sections = includeCategories
         ? [
-            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-            { title: translate('Category'), data: flatCategoryItems, value: PV.Filters._sectionCategoryKey },
-            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+            {
+              title: translate('Filter'),
+              data: filterItems,
+              value: PV.Filters._sectionFilterKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Category'),
+              data: flatCategoryItems,
+              value: PV.Filters._sectionCategoryKey,
+              accessibilityHint: translate(categoryAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Sort'),
+              data: sortItems,
+              value: PV.Filters._sectionSortKey,
+              accessibilityHint: translate(sortingFilterAccessibilityHint),
+              accessibilityRole: 'header'
+            }
           ]
         : [
-            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+            {
+              title: translate('Filter'),
+              data: filterItems,
+              value: PV.Filters._sectionFilterKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Sort'),
+              data: sortItems,
+              value: PV.Filters._sectionSortKey,
+              accessibilityHint: translate(sortingFilterAccessibilityHint),
+              accessibilityRole: 'header'
+            }
           ]
 
       break
@@ -235,8 +299,20 @@ export const generateSections = (options: any) => {
       }
 
       sections = [
-        { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-        { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+        {
+          title: translate('Filter'),
+          data: filterItems,
+          value: PV.Filters._sectionFilterKey,
+          accessibilityHint: translate(filterAccessibilityHint),
+          accessibilityRole: 'header'
+        },
+        {
+          title: translate('Sort'),
+          data: sortItems,
+          value: PV.Filters._sectionSortKey,
+          accessibilityHint: translate(sortingFilterAccessibilityHint),
+          accessibilityRole: 'header'
+        }
       ]
 
       break
@@ -259,13 +335,44 @@ export const generateSections = (options: any) => {
 
       sections = includeCategories
         ? [
-            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-            { title: translate('Category'), data: flatCategoryItems, value: PV.Filters._sectionCategoryKey },
-            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+            {
+              title: translate('Filter'),
+              data:
+              filterItems,
+              value: PV.Filters._sectionFilterKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Category'),
+              data: flatCategoryItems,
+              value: PV.Filters._sectionCategoryKey,
+              accessibilityHint: translate(categoryAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Sort'),
+              data: sortItems,
+              value: PV.Filters._sectionSortKey,
+              accessibilityHint: translate(sortingFilterAccessibilityHint),
+              accessibilityRole: 'header'
+            }
           ]
         : [
-            { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-            { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+            {
+              title: translate('Filter'),
+              data: filterItems,
+              value: PV.Filters._sectionFilterKey,
+              accessibilityHint: translate(filterAccessibilityHint),
+              accessibilityRole: 'header'
+            },
+            {
+              title: translate('Sort'),
+              data: sortItems,
+              value: PV.Filters._sectionSortKey,
+              accessibilityHint: translate(sortingFilterAccessibilityHint),
+              accessibilityRole: 'header'
+            }
           ]
 
       break
@@ -294,8 +401,20 @@ export const generateSections = (options: any) => {
       }
 
       sections = [
-        { title: translate('Filter'), data: filterItems, value: PV.Filters._sectionFilterKey },
-        { title: translate('Sort'), data: sortItems, value: PV.Filters._sectionSortKey }
+        {
+          title: translate('Filter'),
+          data: filterItems,
+          value: PV.Filters._sectionFilterKey,
+          accessibilityHint: translate(filterAccessibilityHint),
+          accessibilityRole: 'header'
+        },
+        {
+          title: translate('Sort'),
+          data: sortItems,
+          value: PV.Filters._sectionSortKey,
+          accessibilityHint: translate(sortingFilterAccessibilityHint),
+          accessibilityRole: 'header'
+        }
       ]
 
       break
