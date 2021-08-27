@@ -33,6 +33,7 @@ export const TextLink = (props: Props) => {
     <TouchableOpacity
       accessible={accessible}
       accessibilityHint={accessibilityHint}
+      accessibilityRole='button'
       disabled={disabled}
       onPress={onPress}>
       <Text

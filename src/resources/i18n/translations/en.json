@@ -652,5 +652,8 @@
   "ARIA - This is a list of clips created from this episode": "This is a list of clips created from this episode",
   "ARIA - Type to show only the transcript text that includes this search term": "Type to show only the transcript text that includes this search term",
   "Transcript search input": "Transcript search input",
-  "Clear input": "Clear input"
+  "Clear input": "Clear input",
+  "ARIA - This is the membership status of your currently logged-in account": "This is the membership status of your currently logged-in account",
+  "ARIA - This is the date your premium membership will expire unless it is renewed": "This is the date your premium membership will expire unless it is renewed",
+  "ARIA - Tap to renew your premium membership": "Tap to renew your premium membership"
 }

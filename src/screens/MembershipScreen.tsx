@@ -103,6 +103,8 @@ export class MembershipScreen extends React.Component<Props, State> {
     const membershipStatus = getMembershipStatus(userInfo)
     const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
     const expirationDate = getMembershipExpiration(userInfo)
+    const statusAccessibilityLabel = `${translate('Status')}: ${membershipStatus}`
+    const expiresAccessibilityLabel = `${translate('Expires')}: ${readableDate(expirationDate)}`
 
     return (
       <View
@@ -111,7 +113,11 @@ export class MembershipScreen extends React.Component<Props, State> {
         {isLoading && isLoggedIn && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && isLoggedIn && !!membershipStatus && (
           <View>
-            <View style={styles.textRow}>
+            <View
+              accessible
+              accessibilityHint={translate('ARIA - This is the membership status of your currently logged-in account')}
+              accessibilityLabel={statusAccessibilityLabel}
+              style={styles.textRow}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 style={styles.label}
@@ -125,7 +131,12 @@ export class MembershipScreen extends React.Component<Props, State> {
                 {membershipStatus}
               </Text>
             </View>
-            <View style={styles.textRow}>
+            <View
+              accessible
+              accessibilityHint={
+                translate('ARIA - This is the date your premium membership will expire unless it is renewed')}
+              accessibilityLabel={expiresAccessibilityLabel}
+              style={styles.textRow}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 style={styles.label}
@@ -141,6 +152,7 @@ export class MembershipScreen extends React.Component<Props, State> {
             </View>
             <View style={styles.textRowCentered}>
               <TextLink
+                accessibilityHint={translate('ARIA - Tap to renew your premium membership')}
                 disabled={disableButton}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={this.handleRenewPress}
