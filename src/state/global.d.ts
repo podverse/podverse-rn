@@ -13,7 +13,7 @@ declare module 'reactn/default' {
     downloadedEpisodeIds: any
     downloadedPodcastEpisodeCounts: any
     downloadedEpisodeLimitCount: number
-    downloadedEpisodeLimitDefault: number | null
+    downloadedEpisodeLimitDefault: boolean | null
     downloadedPodcasts: any[]
     offlineModeEnabled: any
     overlayAlert: {

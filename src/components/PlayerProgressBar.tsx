@@ -3,6 +3,7 @@ import { Animated, Dimensions, View } from 'react-native'
 import { Slider } from 'react-native-elements'
 import React from 'reactn'
 import { useProgress } from 'react-native-track-player'
+import { translate } from '../lib/i18n';
 import { convertSecToHHMMSS } from '../lib/utility'
 import { PV } from '../resources'
 import { setPlaybackPosition } from '../services/player'
@@ -110,12 +111,15 @@ export function PlayerProgressBar(props: Props) {
       {!isLoading ? (
         <View style={sliderStyles.timeRow}>
           <Text
+            accessibilityHint={translate('ARIA HINT - This is the current playback time for this episode')}
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={sliderStyles.time}>
             {convertSecToHHMMSS(slidingPosition || position)}
           </Text>
           <Text
+            accessibilityHint={translate('ARIA HINT - This is the duration for this episode')}
+            accessibilityLabel={duration > 0 ? convertSecToHHMMSS(duration) : translate('Unknown duration')}
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={sliderStyles.time}>
@@ -125,12 +129,16 @@ export function PlayerProgressBar(props: Props) {
       ) : (
         <View style={sliderStyles.timeRow}>
           <Text
+            accessibilityHint={translate('ARIA HINT - This is the current playback time for this episode')}
+            accessibilityLabel={duration > 0 ? convertSecToHHMMSS(duration) : translate('Unknown duration')}
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={sliderStyles.time}>
             {'--:--'}
           </Text>
           <Text
+            accessibilityHint={translate('ARIA HINT - This is the duration for this episode')}
+            accessibilityLabel={duration > 0 ? convertSecToHHMMSS(duration) : translate('Unknown duration')}
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={sliderStyles.time}>

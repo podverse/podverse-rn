@@ -37,6 +37,11 @@ export const PlaylistTableHeader = (props: Props) => {
     title
   } = props
 
+  const createdByText = `${translate('by')} ${createdBy}`
+  const itemCountText = `${translate('items')} ${itemCount}`
+  const pubDateText = `${readableDate(lastUpdated)}`
+  const accessibilityLabel = `${title}${createdBy ? `, ${createdByText}` : ''}, ${itemCountText}, ${pubDateText}`
+
   return (
     <View>
       <View style={core.row}>
@@ -47,7 +52,7 @@ export const PlaylistTableHeader = (props: Props) => {
         )}
         {!isLoading && !isNotFound && (
           <View style={[styles.wrapper, core.view]}>
-            <View style={styles.textWrapper}>
+            <View accessible accessibilityLabel={accessibilityLabel} style={styles.textWrapper}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 numberOfLines={1}
@@ -62,7 +67,7 @@ export const PlaylistTableHeader = (props: Props) => {
                   numberOfLines={1}
                   style={styles.createdBy}
                   testID={`${testID}_created_by`}>
-                  {translate('by')} {createdBy}
+                  {createdByText}
                 </Text>
               )}
               <View style={styles.row}>
@@ -72,19 +77,21 @@ export const PlaylistTableHeader = (props: Props) => {
                   numberOfLines={1}
                   style={styles.itemCount}
                   testID={`${testID}_item_count`}>
-                  {translate('items')} {itemCount}
+                  {itemCountText}
                 </Text>
                 <Text
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary
                   style={styles.lastUpdated}
                   testID={`${testID}_last_updated`}>
-                  {readableDate(lastUpdated)}
+                  {pubDateText}
                 </Text>
               </View>
             </View>
             {handleEditPress && (
               <Icon
+                accessibilityHint={translate('ARIA HINT - Tap to edit this playlist')}
+                accessibilityLabel={translate('Edit Playlist')}
                 name='pencil-alt'
                 onPress={() => handleEditPress(id)}
                 size={26}
@@ -95,6 +102,7 @@ export const PlaylistTableHeader = (props: Props) => {
             {handleToggleSubscribe && (
               <SubscribeButton
                 handleToggleSubscribe={handleToggleSubscribe}
+                isPlaylist
                 isSubscribed={isSubscribed}
                 isSubscribing={isSubscribing}
                 testID={testID}

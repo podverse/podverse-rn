@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { readableDate, testProps } from '../lib/utility'
+import { readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { FastImage, IndicatorDownload, Text, View } from './'
 
@@ -51,6 +51,9 @@ export class PodcastTableCell extends React.PureComponent<Props> {
         : `${translate('Latest episode')}: ${readableDate(lastEpisodePubDate)}`
     }
 
+    const trimmedPodcastTitle = podcastTitle.trim()
+    const downloadCountText = `${downloadCount} ${translate('downloaded')}`
+
     const lastPubDateNode = (
       <Text
         fontSizeLargerScale={PV.Fonts.largeSizes.md}
@@ -63,18 +66,25 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       </Text>
     )
 
+    const accessibilityLabel = `${trimmedPodcastTitle}, ${lastPubDate}, ${downloadCount}`
+
     return (
-      <TouchableWithoutFeedback onPress={onPress} {...(testID ? testProps(testID) : {})}>
+      <TouchableWithoutFeedback
+        accessibilityLabel={accessibilityLabel}
+        onPress={onPress}
+        {...(testID ? { testID } : {})}>
         <View style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={PV.Table.cells.podcast.image} />
           <RNView style={styles.textWrapper}>
-            {!!lastPubDate && fontScaleMode !== PV.Fonts.fontScale.largest && lastPubDateNode}
-            {podcastTitle && (
-              <Text numberOfLines={1} style={styles.title} testID={`${testID}_title`}>
-                {podcastTitle.trim()}
-              </Text>
-            )}
-            {!!lastPubDate && fontScaleMode === PV.Fonts.fontScale.largest && lastPubDateNode}
+            <RNView style={styles.textWrapperInner}>
+              {!!lastPubDate && fontScaleMode === PV.Fonts.fontScale.largest && lastPubDateNode}
+              {podcastTitle && (
+                <Text numberOfLines={1} style={styles.title} testID={`${testID}_title`}>
+                  {trimmedPodcastTitle}
+                </Text>
+              )}
+              {!!lastPubDate && fontScaleMode !== PV.Fonts.fontScale.largest && lastPubDateNode}
+            </RNView>
             {fontScaleMode !== PV.Fonts.fontScale.largest && showDownloadCount && (
               <RNView style={styles.downloadContainer}>
                 <Text
@@ -83,7 +93,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
                   numberOfLines={1}
                   style={styles.downloadedItems}
                   testID={`${testID}_downloaded`}>
-                  {`${downloadCount} ${translate('downloaded')}`}
+                  {downloadCountText}
                 </Text>
                 {showAutoDownload && shouldAutoDownload && <IndicatorDownload style={styles.autoDownloadIcon} />}
               </RNView>
@@ -119,6 +129,9 @@ const styles = StyleSheet.create({
       Dimensions.get('screen').width -
       (PV.Table.cells.podcast.image.width + PV.Table.cells.podcast.image.margin * 2) -
       10
+  },
+  textWrapperInner: {
+    flexDirection: 'column-reverse'
   },
   title: {
     fontSize: PV.Fonts.sizes.xl,

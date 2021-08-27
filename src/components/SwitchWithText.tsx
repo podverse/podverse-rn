@@ -1,11 +1,13 @@
 import React from 'react'
-import { StyleSheet, Switch, View } from 'react-native'
+import { StyleSheet, Switch, TouchableWithoutFeedback, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, TextInput } from './'
 
 type Props = {
+  accessible?: boolean
+  accessibilityHint?: string
+  accessibilityLabel?: string
   inputAutoCorrect?: boolean
   inputEditable?: boolean
   inputEyebrowTitle?: string
@@ -25,6 +27,9 @@ type Props = {
 
 export const SwitchWithText = (props: Props) => {
   const {
+    accessible = true,
+    accessibilityHint,
+    accessibilityLabel,
     inputAutoCorrect,
     inputEditable,
     inputEyebrowTitle,
@@ -45,15 +50,26 @@ export const SwitchWithText = (props: Props) => {
 
   return (
     <View style={wrapperStyle}>
-      <View style={styles.switchWrapper}>
-        <Switch onValueChange={onValueChange} value={value} {...(testID ? testProps(`${testID}_switch`) : {})} />
-        <Text
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          style={styles.text}
-          {...(testID ? testProps(`${testID}_text`) : {})}>
-          {text}
-        </Text>
-      </View>
+      <TouchableWithoutFeedback
+        accessible={accessible}
+        accessibilityHint={accessibilityHint}
+        accessibilityLabel={accessibilityLabel}
+        accessibilityRole='switch'
+        onPress={onValueChange}>
+        <View accessible={accessible} style={styles.switchWrapper}>
+          <Switch
+            accessible={accessible}
+            value={value}
+            {...(testID ? { testID: `${testID}_switch` } : {})} />
+          <Text
+            accessible={accessible}
+            fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            style={styles.text}
+            {...(testID ? { testID: `${testID}_text` } : {})}>
+            {text}
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>
       {inputShow && (
         <TextInput
           autoCapitalize='none'
@@ -68,7 +84,7 @@ export const SwitchWithText = (props: Props) => {
           placeholder={inputPlaceholder}
           returnKeyType='done'
           style={[globalTheme.textInput, styles.textInput]}
-          {...(testID ? testProps(`${testID}_text_input`) : {})}
+          {...(testID ? { testID: `${testID}_text_input` } : {})}
           underlineColorAndroid='transparent'
           value={inputText}
           wrapperStyle={styles.textInputWrapper}
@@ -76,9 +92,10 @@ export const SwitchWithText = (props: Props) => {
       )}
       {!!subText && (
         <Text
+          accessible={false}
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
           style={[globalTheme.textSecondary, styles.subText]}
-          {...(testID ? testProps(`${testID}_sub_text`) : {})}>
+          {...(testID ? { testID: `${testID}_sub_text` } : {})}>
           {subText}
         </Text>
       )}

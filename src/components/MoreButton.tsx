@@ -1,7 +1,7 @@
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { ActivityIndicator } from '.'
 
@@ -17,6 +17,9 @@ export const MoreButton = (props: Props) => {
 
   return (
     <TouchableOpacity
+      accessibilityHint={translate('ARIA HINT - Tap to show more options')}
+      accessibilityLabel={translate('More')}
+      accessibilityRole='button'
       hitSlop={{
         bottom: 10,
         left: 10,
@@ -24,7 +27,7 @@ export const MoreButton = (props: Props) => {
         top: 10
       }}
       onPress={handleMorePress}
-      {...testProps(`${testID}_more_button`)}>
+      testID={`${testID}_more_button`}>
       {!isLoading ? (
         <View style={[styles.imageWrapper]}>
           <Image resizeMode='contain' source={PV.Images.MORE} style={[styles.image, globalTheme.buttonImage]} />

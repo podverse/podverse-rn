@@ -7,7 +7,6 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback'
 import { State as RNTPState } from 'react-native-track-player'
 import { PV } from '../resources'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { sendBoost } from '../lib/valueTagHelpers'
 
 const HapticOptions = {
@@ -191,7 +190,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
             <TouchableOpacity
               onPress={this._toggleSatStreaming}
               style={styles.boostButton}
-              {...testProps('stream_button')}>
+              testID='stream_button'>
               <Text style={streamingButtonMainTextStyles} testID='stream_button_text_1'>
                 {satStreamText.toUpperCase()}
               </Text>
@@ -212,7 +211,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
               }}
               onPress={this._attemptBoost}
               style={styles.boostButton}
-              {...testProps('boost_button')}>
+              testID='boost_button'>
               {boostIsSending ? (
                 <ActivityIndicator testID={testIDPrefix} />
               ) : (

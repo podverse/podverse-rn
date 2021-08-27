@@ -30,6 +30,6 @@ export const Errors = {
   },
   BOOST_PAYMENT_VALUE_TAG_ERROR: {
     name: _boostPaymentValueTagError,
-    error: () => PVError(_boostPaymentValueTagError, 'Something is wrong with the Podcasters Value Tags')
+    error: () => PVError(_boostPaymentValueTagError, 'Something is wrong with the Podcasters Value-For-Value Tags')
   }
 }

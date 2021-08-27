@@ -25,7 +25,6 @@ import {
 import { removeAllDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { refreshDownloads } from '../lib/downloader'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { deleteLoggedInUser } from '../services/user'
@@ -113,24 +112,29 @@ export class SettingsScreen extends React.Component<Props, State> {
     trackPageView('/settings', 'Settings Screen')
   }
 
-  _toggleTheme = (value: boolean) => {
-    this.setGlobal({ globalTheme: value ? darkTheme : lightTheme }, async () => {
-      value
+  _toggleTheme = async () => {
+    const darkModeEnabled = await AsyncStorage.getItem(PV.Keys.DARK_MODE_ENABLED)
+    const newDarkModeSetting = darkModeEnabled === 'TRUE'
+    this.setGlobal({ globalTheme: !newDarkModeSetting ? darkTheme : lightTheme }, async () => {
+      !newDarkModeSetting
         ? await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'TRUE')
         : await AsyncStorage.setItem(PV.Keys.DARK_MODE_ENABLED, 'FALSE')
     })
   }
 
-  _toggleDownloadingWifiOnly = (value: boolean) => {
+  _toggleDownloadingWifiOnly = async () => {
+    const downloadingWifiOnly = await AsyncStorage.getItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
+    const newValue = downloadingWifiOnly !== 'TRUE'
+
     NetInfo.fetch().then((state) => {
-      if (!value && state.type === 'cellular') {
+      if (!newValue && state.type === 'cellular') {
         refreshDownloads()
       }
     })
 
-    this.setState({ downloadingWifiOnly: value }, () => {
+    this.setState({ downloadingWifiOnly: newValue }, () => {
       (async () => {
-        value
+        newValue
           ? await AsyncStorage.setItem(PV.Keys.DOWNLOADING_WIFI_ONLY, 'TRUE')
           : await AsyncStorage.removeItem(PV.Keys.DOWNLOADING_WIFI_ONLY)
       })()
@@ -170,12 +174,13 @@ export class SettingsScreen extends React.Component<Props, State> {
     this.setGlobal({ downloadedEpisodeLimitCount })
   }
 
-  _handleSelectDownloadedEpisodeLimitDefault = (value: boolean) => {
-    this.setState({ downloadedEpisodeLimitDefault: value }, () => {
+  _handleSelectDownloadedEpisodeLimitDefault = () => {
+    const newDownloadedEpisodeLimitDefault = !this.state.downloadedEpisodeLimitDefault
+    this.setState({ downloadedEpisodeLimitDefault: newDownloadedEpisodeLimitDefault }, () => {
       (async () => {
-        await setDownloadedEpisodeLimitGlobalDefault(value)
+        await setDownloadedEpisodeLimitGlobalDefault(newDownloadedEpisodeLimitDefault)
         this._handleToggleSetAllDownloadDialog()
-        this.setGlobal({ downloadedEpisodeLimitDefault: value })
+        this.setGlobal({ downloadedEpisodeLimitDefault: newDownloadedEpisodeLimitDefault })
       })()
     })
   }
@@ -197,12 +202,14 @@ export class SettingsScreen extends React.Component<Props, State> {
     this.setState({ showSetAllDownloadDialog: false })
   }
 
-  _handleToggleNSFWText = (value: boolean) => {
-    setCensorNSFWText(value)
+  _handleToggleNSFWText = async () => {
+    const censorNSFWText = await AsyncStorage.getItem(PV.Keys.CENSOR_NSFW_TEXT)
+    setCensorNSFWText(!censorNSFWText)
   }
 
-  _handleToggleErrorReporting = (value: boolean) => {
-    setErrorReportingEnabled(value)
+  _handleToggleErrorReporting = async () => {
+    const errorReportingEnabled = await AsyncStorage.getItem(PV.Keys.ERROR_REPORTING_ENABLED)
+    setErrorReportingEnabled(!errorReportingEnabled)
   }
 
   _handleToggleListenTracking = () => {
@@ -210,11 +217,12 @@ export class SettingsScreen extends React.Component<Props, State> {
     navigation.navigate(PV.RouteNames.TrackingConsentScreen)
   }
 
-  _handleToggleOfflineMode = (value: boolean) => {
-    this.setState({ offlineModeEnabled: value }, () => {
-      setOfflineModeEnabled(value)
+  _handleToggleOfflineMode = () => {
+    const { offlineModeEnabled } = this.state
+    this.setState({ offlineModeEnabled: !offlineModeEnabled }, () => {
+      setOfflineModeEnabled(!offlineModeEnabled)
     })
-    this.setGlobal({ offlineModeEnabled: value })
+    this.setGlobal({ offlineModeEnabled: !offlineModeEnabled })
   }
 
   _handleCustomAPIDomainToggle = () => {
@@ -365,12 +373,13 @@ export class SettingsScreen extends React.Component<Props, State> {
       <ScrollView
         contentContainerStyle={styles.scrollViewContentContainer}
         style={styles.wrapper}
-        {...testProps(`${testIDPrefix}_view`)}>
+        testID={`${testIDPrefix}_view`}>
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && (
           <View>
             <View style={styles.itemWrapper}>
               <SwitchWithText
+                accessibilityHint={translate('Offline mode can save battery life and improve performance')}
                 onValueChange={this._handleToggleOfflineMode}
                 subText={translate('Offline mode can save battery life and improve performance')}
                 testID={`${testIDPrefix}_offline_mode`}
@@ -383,6 +392,7 @@ export class SettingsScreen extends React.Component<Props, State> {
               <View>
                 <View style={styles.itemWrapper}>
                   <SwitchWithText
+                    accessibilityHint={translate('Error Reporting subtext')}
                     onValueChange={this._handleToggleErrorReporting}
                     subText={translate('Error Reporting subtext')}
                     testID={`${testIDPrefix}_error_reporting`}
@@ -397,6 +407,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             <View>
               <View style={styles.itemWrapper}>
                 <SwitchWithText
+                  accessibilityHint={translate('Listen Tracking subtext')}
                   onValueChange={this._handleToggleListenTracking}
                   subText={translate('Listen Tracking subtext')}
                   testID={`${testIDPrefix}_listen_tracking`}
@@ -410,6 +421,8 @@ export class SettingsScreen extends React.Component<Props, State> {
             {!Config.DISABLE_THEME_SWITCH && (
               <View style={styles.itemWrapper}>
                 <SwitchWithText
+                  accessible={false}
+                  accessibilityHint={translate('ARIA HINT - Tap to change the colors of the user interface')}
                   onValueChange={this._toggleTheme}
                   testID={`${testIDPrefix}_dark_mode`}
                   text={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}
@@ -449,7 +462,9 @@ export class SettingsScreen extends React.Component<Props, State> {
                     <Icon name='angle-down' size={14} style={[styles.pickerSelectIcon, globalTheme.text]} />
                   </View>
                   <View style={core.selectorWrapperRight}>
-                    <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.pickerSelect, globalTheme.text]}>
+                    <Text
+                      fontSizeLargestScale={PV.Fonts.largeSizes.md}
+                      style={[styles.pickerSelect, globalTheme.text]}>
                       {translate('Max playback speed')}
                     </Text>
                   </View>
@@ -470,6 +485,10 @@ export class SettingsScreen extends React.Component<Props, State> {
             </View>
             <View style={styles.itemWrapper}>
               <NumberSelectorWithText
+                // eslint-disable-next-line max-len
+                accessibilityHint={translate('ARIA HINT - Tap to set the maximum number of downloaded episodes to save from each podcast on your device')}
+                // eslint-disable-next-line max-len
+                accessibilityLabel={`${translate('Default downloaded episode limit for each podcast')}`}
                 handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
                 handleSubmitEditing={this._handleSetGlobalDownloadedEpisodeLimitCount}
                 selectedNumber={downloadedEpisodeLimitCount}
@@ -549,7 +568,7 @@ export class SettingsScreen extends React.Component<Props, State> {
           <Dialog.Button
             label={translate('No')}
             onPress={this._handleToggleSetAllDownloadDialog}
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_update_download_limit_no_button`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_update_download_limit_no_button` } : {})}
           />
           <Dialog.Button
             label={translate('Yes')}
@@ -558,7 +577,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                 ? this._handleUpdateAllDownloadedEpiosdeLimitCount
                 : this._handleUpdateAllDownloadedEpiosdeLimitDefault
             }
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_update_download_limit_yes_button`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_update_download_limit_yes_button` } : {})}
           />
         </Dialog.Container>
 
@@ -570,12 +589,12 @@ export class SettingsScreen extends React.Component<Props, State> {
           <Dialog.Button
             label={translate('No')}
             onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_downloaded_episodes_no`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_no` } : {})}
           />
           <Dialog.Button
             label={translate('Yes')}
             onPress={this._handleDeleteDownloadedEpisodes}
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_downloaded_episodes_yes`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_yes` } : {})}
           />
         </Dialog.Container>
 
@@ -586,13 +605,13 @@ export class SettingsScreen extends React.Component<Props, State> {
           <Dialog.Input
             onChangeText={this._handleDeleteAccountDialogTextChange}
             placeholder=''
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_account_input`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_input` } : {})}
             value={deleteAccountDialogText}
           />
           <Dialog.Button
             label={translate('Cancel')}
             onPress={this._handleToggleDeleteAccountDialog}
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_account_cancel`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_cancel` } : {})}
           />
           <Dialog.Button
             bold={deleteAccountDialogConfirmed}
@@ -600,7 +619,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             disabled={!deleteAccountDialogConfirmed}
             label={translate('Delete')}
             onPress={this._handleDeleteAccount}
-            {...(testIDPrefix ? testProps(`${testIDPrefix}_dialog_delete_account_delete`) : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_delete` } : {})}
           />
         </Dialog.Container>
       </ScrollView>

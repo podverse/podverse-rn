@@ -13,7 +13,7 @@ import {
 } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { isOdd, testProps } from '../lib/utility'
+import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { addOrRemovePlaylistItem, createPlaylist } from '../state/actions/playlist'
@@ -55,6 +55,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
         <RNView>
           {navigation.getParam('isLoggedIn') && (
             <NavHeaderButtonText
+              accessibilityHint={translate('ARIA HINT - Tap to create a new playlist')}
               handlePress={navigation.getParam('showNewPlaylistDialog')}
               testID={`${testIDPrefix}_new`}
               text={translate('New')}
@@ -164,7 +165,9 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
     const { isLoggedIn } = session
 
     return (
-      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        testID={`${testIDPrefix}_view`}>
         {!isLoggedIn && (
           <MessageWithAction
             testID={testIDPrefix}
@@ -189,22 +192,24 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
               />
             )}
             <Dialog.Container visible={showNewPlaylistDialog}>
-              <Dialog.Title>{translate('New Playlist')}</Dialog.Title>
+              <Dialog.Title accessibilityRole='header'>{translate('New Playlist')}</Dialog.Title>
               <Dialog.Input
                 onChangeText={this._handleNewPlaylistTextChange}
                 placeholder={translate('title of playlist')}
-                {...testProps('new_playlist_title_input')}
+                testID='new_playlist_title_input'
                 value={newPlaylistTitle}
               />
               <Dialog.Button
+                accessibilityRole='button'
                 label={translate('Cancel')}
                 onPress={this._handleNewPlaylistDismiss}
-                {...testProps('new_playlist_title_cancel')}
+                testID='new_playlist_title_cancel'
               />
               <Dialog.Button
+                accessibilityRole='button'
                 label={translate('Save')}
                 onPress={this._saveNewPlaylist}
-                {...testProps('new_playlist_title_save')}
+                testID='new_playlist_title_save'
               />
             </Dialog.Container>
           </View>

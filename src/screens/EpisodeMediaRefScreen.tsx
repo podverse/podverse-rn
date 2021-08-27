@@ -217,7 +217,7 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
       <ClipTableCell
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, episode, episode.podcast))}
         item={item}
-        showChapterInfo={viewType === PV.Filters._chaptersKey}
+        isChapter={viewType === PV.Filters._chaptersKey}
         showEpisodeInfo={false}
         showPodcastInfo={false}
       />

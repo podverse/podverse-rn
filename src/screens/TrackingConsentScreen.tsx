@@ -3,7 +3,6 @@ import { getTrackingStatus } from 'react-native-tracking-transparency'
 import React from 'reactn'
 import { Button, HTMLScrollView, SafeAreaView, Text, View } from '../components'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
@@ -114,19 +113,22 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
     }
 
     return (
-      <SafeAreaView {...testProps(`${testIDPrefix}_view`)}>
+      <SafeAreaView testID={`${testIDPrefix}_view`}>
         <View style={styles.view}>
-          <Text
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            style={styles.header}>
-            {translate('Analytics Tracking')}
-          </Text>
-          <HTMLScrollView
-            fontSizeLargestScale={PV.Fonts.largeSizes.md}
-            html={trackingTermsAndConditions}
-            style={styles.scrollView}
-          />
+          <View accessible style={{ flex: 1 }}>
+            <Text
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              style={styles.header}>
+              {translate('Analytics Tracking')}
+            </Text>
+            <HTMLScrollView
+              fontSizeLargestScale={PV.Fonts.largeSizes.md}
+              html={trackingTermsAndConditions}
+              style={styles.scrollView}
+            />
+          </View>
           <Button
+            accessible
             onPress={iOSAlreadyDetermined ? this._goToSettings : this._enableTracking}
             testID={`${testIDPrefix}_top_button`}
             text={topButtonText}
@@ -135,6 +137,7 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
           {
             !isIOSInitialPrompt && (
               <Button
+                accessible
                 isTransparent
                 onPress={iOSAlreadyDetermined ? this._handleDismiss : this._disableTracking}
                 testID={`${testIDPrefix}_bottom_button`}

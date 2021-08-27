@@ -2,11 +2,12 @@ import React from 'react'
 import { StyleSheet, View as RNView } from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import { useGlobal } from 'reactn'
-import { testProps } from '../lib/utility'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { Icon, Text } from '.'
 
 type Props = {
+  accessible?: boolean
   containerStyle?: any
   handleClear?: any
   inputRef?: any
@@ -18,7 +19,8 @@ type Props = {
 }
 
 export const PVSearchBar = (props: Props) => {
-  const { containerStyle, handleClear, inputRef, onChangeText, placeholder, subText, testID, value } = props
+  const { accessible,containerStyle, handleClear, inputRef, onChangeText, placeholder,
+    subText, testID, value } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const inputStyle = PV.Fonts.fontScale.largest === fontScaleMode ? { fontSize: PV.Fonts.largeSizes.md } : {}
@@ -26,8 +28,20 @@ export const PVSearchBar = (props: Props) => {
   return (
     <RNView>
       <SearchBar
+        accessible={accessible}
+        accessibilityHint={
+          translate('ARIA HINT - Type to show only the transcript text that includes this search term')
+        }
+        accessibilityLabel={translate('Transcript search input')}
         autoCorrect={false}
-        clearIcon={<Icon name='times' onPress={handleClear} size={20} />}
+        clearIcon={
+          <Icon
+            accessibilityLabel={translate('Clear input')}
+            accessibilityRole='button'
+            name='times'
+            onPress={handleClear}
+            size={20} />
+        }
         containerStyle={[styles.containerStyle, containerStyle]}
         inputContainerStyle={styles.inputContainerStyle}
         inputStyle={[styles.inputStyle, globalTheme.textInput, inputStyle]}
@@ -35,15 +49,22 @@ export const PVSearchBar = (props: Props) => {
         placeholder={placeholder}
         ref={inputRef}
         returnKeyType='search'
-        searchIcon={<Icon color={PV.Colors.white} name={'search'} size={PV.Icons.NAV} solid />}
-        {...(testID ? testProps(`${testID}_search_bar`) : {})}
+        searchIcon={(
+          <Icon
+            accessible={false}
+            color={PV.Colors.white}
+            name={'search'}
+            size={PV.Icons.NAV}
+            solid />
+        )}
+        {...(testID ? { testID: `${testID}_search_bar` } : {})}
         value={value}
       />
       {!!subText && (
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
           style={[globalTheme.textSecondary, styles.subText]}
-          {...testProps(`${testID}_search_bar_sub_text`)}>
+          testID={`${testID}_search_bar_sub_text`}>
           {subText}
         </Text>
       )}

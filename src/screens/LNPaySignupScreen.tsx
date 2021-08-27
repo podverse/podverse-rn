@@ -3,7 +3,6 @@ import React from 'reactn'
 import { createWallet, getWallet } from '../services/lnpay'
 import { Button, Divider,  Text, TextInput, View, ScrollView } from '../components'
 import { translate } from '../lib/i18n'
-import { testProps } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { LNWallet, saveLNPayWallet, toggleLNPayFeature, updateWalletInfo } from '../state/actions/lnpay'
@@ -112,7 +111,9 @@ export class LNPaySignupScreen extends React.Component<Props, State> {
 
     const extraPadding = this.state.isKeyboardShowing ? {paddingBottom: 180} : {}
     return (
-      <View style={styles.content} {...testProps('lnpay_signup_screen_view')}>
+      <View
+        style={styles.content}
+        testID='lnpay_signup_screen_view'>
           <ScrollView 
             contentContainerStyle={[styles.scrollViewContent, extraPadding]} 
             scrollViewRef={(ref) => this.scrollViewRef = ref}
