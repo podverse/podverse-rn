@@ -62,7 +62,7 @@ export const PodcastTableHeader = (props: Props) => {
             <View style={styles.contentWrapper}>
               <View style={styles.contentWrapperTop}>
                 <Text
-                  accessibilityHint={translate('ARIA - This is the podcast title')}
+                  accessibilityHint={translate('ARIA HINT - This is the podcast title')}
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   numberOfLines={titleNumberOfLines}
                   style={styles.title}>
@@ -71,12 +71,12 @@ export const PodcastTableHeader = (props: Props) => {
                 {isSubscribed && (
                   <SettingsButton
                     accessibilityHint={showSettings
-                      ? translate('ARIA - On tap episodes will appear lower on this screen')
-                      : translate('ARIA - On tap settings will appear lower on this screen')
+                      ? translate('ARIA HINT - On tap episodes will appear lower on this screen')
+                      : translate('ARIA HINT - On tap settings will appear lower on this screen')
                     }
                     accessibilityLabel={showSettings
-                        ? translate('ARIA - Hide podcast settings')
-                        : translate('ARIA - Show podcast settings')
+                        ? translate('ARIA HINT - Hide podcast settings')
+                        : translate('ARIA HINT - Show podcast settings')
                     }
                     handleToggleSettings={handleToggleSettings}
                     showCheckmark={showSettings}
@@ -95,8 +95,9 @@ export const PodcastTableHeader = (props: Props) => {
                 {isSubscribed && (
                   <TouchableWithoutFeedback
                     accessibilityHint={autoDownloadOn
-                      ? translate('ARIA - Tap to stop auto downloading new episodes from this podcast')
-                      : translate('ARIA - Tap to auto download new episodes from this podcast when they are released')
+                      ? translate('ARIA HINT - Tap to stop auto downloading new episodes from this podcast')
+                      // eslint-disable-next-line max-len
+                      : translate('ARIA HINT - Tap to auto download new episodes from this podcast when they are released')
                     }
                     accessibilityLabel={autoDownloadOn
                       ? translate('Autodownloading On')
@@ -127,7 +128,7 @@ export const PodcastTableHeader = (props: Props) => {
         {!isLoading && !isNotFound && !!finalDescription && (
           <View style={styles.descriptionWrapper}>
             <TouchableWithoutFeedback
-              accessibilityHint={translate('ARIA - Tap to show more info about this podcast')}
+              accessibilityHint={translate('ARIA HINT - Tap to show more info about this podcast')}
               onPress={handleNavigateToPodcastInfoScreen}>
               <RNView>
                 <Text

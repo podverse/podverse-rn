@@ -216,7 +216,7 @@ export class FilterScreen extends React.Component<Props, State> {
 
     return (
       <TouchableWithoutFeedback
-        accessibilityHint={isActive ? translate('ARIA - Currently selected filter') : ''}
+        accessibilityHint={isActive ? translate('ARIA HINT - Currently selected filter') : ''}
         onPress={async () => {
           const { categoryValueOverride, handleSelect } = await this.getSelectHandler(section, item)
           const newState = (await this.getNewLocalState(section, item)) as any

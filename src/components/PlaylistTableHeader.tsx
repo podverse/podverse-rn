@@ -90,7 +90,7 @@ export const PlaylistTableHeader = (props: Props) => {
             </View>
             {handleEditPress && (
               <Icon
-                accessibilityHint={translate('ARIA - Tap to edit this playlist')}
+                accessibilityHint={translate('ARIA HINT - Tap to edit this playlist')}
                 accessibilityLabel={translate('Edit Playlist')}
                 name='pencil-alt'
                 onPress={() => handleEditPress(id)}

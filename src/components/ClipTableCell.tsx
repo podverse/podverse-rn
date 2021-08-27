@@ -64,7 +64,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
         {...(testID ? { testID: `${testID}_top_view_nav` } : {})}>
         <RNView
           accessible
-          accessibilityHint={translate('ARIA - This is the clip title and time range')}
+          accessibilityHint={translate('ARIA HINT - This is the clip title and time range')}
           accessibilityLabel={accessibilityLabel}
           style={{ flex: 1, flexDirection: 'column' }}>
           {(showEpisodeInfo || showPodcastInfo) && (
@@ -76,7 +76,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                 {showPodcastInfo && podcastTitle && (
                   <Text
                     accessible={false}
-                    accessibilityHint={translate('ARIA - This is the podcast title')}
+                    accessibilityHint={translate('ARIA HINT - This is the podcast title')}
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     isSecondary
                     numberOfLines={1}
@@ -88,7 +88,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                 {showEpisodeInfo && PV.Fonts.fontScale.largest !== fontScaleMode && episodeTitle && (
                   <Text
                     accessible={false}
-                    accessibilityHint={translate('ARIA - This is the episode title')}
+                    accessibilityHint={translate('ARIA HINT - This is the episode title')}
                     numberOfLines={2}
                     style={styles.episodeTitle}
                     testID={`${testID}_episode_title`}>
@@ -99,7 +99,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                   <RNView style={styles.textWrapperBottomRow}>
                     <Text
                       accessible={false}
-                      accessibilityHint={translate('ARIA - This is the episode publication date')}
+                      accessibilityHint={translate('ARIA HINT - This is the episode publication date')}
                       fontSizeLargerScale={PV.Fonts.largeSizes.md}
                       fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                       isSecondary
@@ -116,8 +116,8 @@ export class ClipTableCell extends React.PureComponent<Props> {
           )}
           <Text
             accessibilityHint={isChapter
-              ? translate('ARIA - This is the chapter title')
-              : translate('ARIA - This is the clip title')
+              ? translate('ARIA HINT - This is the chapter title')
+              : translate('ARIA HINT - This is the clip title')
             }
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={4}

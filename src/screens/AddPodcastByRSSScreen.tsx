@@ -41,7 +41,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
     headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
     headerRight: () => (
       <NavHeaderButtonText
-        accessibilityHint={translate('ARIA - Tap to subscribe to this custom RSS feed')}
+        accessibilityHint={translate('ARIA HINT - Tap to subscribe to this custom RSS feed')}
         disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
         handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}
         testID={`${testIDPrefix}_save`}
@@ -111,7 +111,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
         {!isLoading && (
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <TextInput
-              accessibilityHint={translate('ARIA - When finished press the Save button above')}
+              accessibilityHint={translate('ARIA HINT - When finished press the Save button above')}
               autoCapitalize='none'
               autoCompleteType='off'
               autoCorrect={false}
@@ -136,7 +136,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             </Text>
             {!!Config.CURATOR_EMAIL && (
               <TextLink
-                accessibilityHint={translate('ARIA - Tap to open your email client to request a podcast by email')}
+                accessibilityHint={translate('ARIA HINT - Tap to open your email client to request a podcast by email')}
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 onPress={this._navToRequestPodcastEmail}
                 style={styles.textLink}

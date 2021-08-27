@@ -68,7 +68,7 @@ export const NavShareIcon = (props: Props) => {
 
   return (
     <NavItemWrapper
-      accessibilityHint={translate('ARIA - Tap to share this podcast')}
+      accessibilityHint={translate('ARIA HINT - Tap to share this podcast')}
       accessibilityLabel={translate('Share')}
       accessibilityRole='button'
       handlePress={handlePress ? handlePress : onShare}

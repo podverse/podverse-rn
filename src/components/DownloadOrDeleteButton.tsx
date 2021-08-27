@@ -19,7 +19,7 @@ export const DownloadOrDeleteButton = (props: Props) => {
   let component = (
     <View style={[styles.imageWrapper]}>
       <Icon
-        accessibilityHint={translate('ARIA - Tap to download this episode')}
+        accessibilityHint={translate('ARIA HINT - Tap to download this episode')}
         accessibilityLabel={translate('Download')}
         accessibilityRole='button'
         color={PV.Colors.white}
@@ -45,7 +45,7 @@ export const DownloadOrDeleteButton = (props: Props) => {
     component = (
       <View style={[styles.imageWrapper]}>
         <Icon
-          accessibilityHint={translate('ARIA - Tap to delete this downloaded episode')}
+          accessibilityHint={translate('ARIA HINT - Tap to delete this downloaded episode')}
           accessibilityLabel={translate('Delete')}
           accessibilityRole='button'
           color={PV.Colors.white}

@@ -17,7 +17,7 @@ export const MoreButton = (props: Props) => {
 
   return (
     <TouchableOpacity
-      accessibilityHint={translate('ARIA - Tap to show more options')}
+      accessibilityHint={translate('ARIA HINT - Tap to show more options')}
       accessibilityLabel={translate('More')}
       accessibilityRole='button'
       hitSlop={{

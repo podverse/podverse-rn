@@ -138,7 +138,7 @@ export class PVActionSheet extends React.Component<Props, State> {
         buttons.push(
           <TouchableHighlight
             accessible
-            accessibilityHint={translate('ARIA - Tap to dismiss this menu')}
+            accessibilityHint={translate('ARIA HINT - Tap to dismiss this menu')}
             accessibilityRole='menuitem'
             key={PV.Keys.cancel}
             onPress={handleCancelPress}

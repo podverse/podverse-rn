@@ -5,7 +5,7 @@ import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/uti
 import { PV } from '../resources'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
-import { FastImage, IndicatorDownload, Text, View } from './'
+import { FastImage, Text, View } from './'
 
 type Props = {
   handleDeletePress?: any
@@ -66,7 +66,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <RNView style={styles.innerTopView}>
         {!!imageUrl && !hideImage && <FastImage isSmall source={imageUrl} styles={styles.image} />}
         <RNView
-          accessibilityHint={translate('ARIA - Tap to go to this episode')}
+          accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
           accessibilityLabel={accessibilityLabel}
           style={styles.textWrapper}>
           {showPodcastInfo && podcastTitle && (
@@ -105,7 +105,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const bottomText = (
       <Text
-        accessibilityHint={translate('ARIA - This is the episode description')}
+        accessibilityHint={translate('ARIA HINT - This is the episode description')}
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         isSecondary
         numberOfLines={2}
@@ -120,7 +120,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         <RNView style={styles.wrapperTop}>
           {handleNavigationPress ? (
             <TouchableWithoutFeedback
-              accessibilityHint={translate('ARIA - Tap to go to this episode')}
+              accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
               onPress={handleNavigationPress}
               {...(testID ? { testID: `${testID}_top_view_nav` } : {})}>
               {innerTopView}
@@ -138,7 +138,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         </RNView>
         {handleNavigationPress ? (
           <TouchableWithoutFeedback
-            accessibilityHint={translate('ARIA - Tap to go to this episode')}
+            accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
             onPress={handleNavigationPress}
             {...(testID ? { testID: `${testID}_bottom_view_nav` } : {})}>
             <RNView>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</RNView>

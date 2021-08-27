@@ -550,8 +550,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const title = item?.title ? item.title : translate('Untitled Podcast')
     const buttonText = queryFrom === PV.Filters._downloadedKey ? translate('Delete') : translate('Unsubscribe')
     const buttonAccessibilityLabel = queryFrom === PV.Filters._downloadedKey
-      ? `${translate(`ARIA - Tap to delete all downloaded episodes from`)} ${title}`
-      : `${translate(`ARIA - Tap to unsubscribe from`)} ${title}`
+      ? `${translate(`ARIA HINT - Tap to delete all downloaded episodes from`)} ${title}`
+      : `${translate(`ARIA HINT - Tap to unsubscribe from`)} ${title}`
 
     return (
       <SwipeRowBack
@@ -754,7 +754,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
                   ? this._ListHeaderComponent
                   : null
               }
-              noResultsTopActionTextAccessibilityHint={translate('ARIA - Tap to navigate to the search screen')}
+              noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - Tap to navigate to the search screen')}
               noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
               noResultsMessage={
                 noSubscribedPodcasts ? translate("You don't have any podcasts yet") : translate('No podcasts found')

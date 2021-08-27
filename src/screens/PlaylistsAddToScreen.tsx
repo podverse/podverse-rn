@@ -55,7 +55,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
         <RNView>
           {navigation.getParam('isLoggedIn') && (
             <NavHeaderButtonText
-              accessibilityHint={translate('ARIA - Tap to create a new playlist')}
+              accessibilityHint={translate('ARIA HINT - Tap to create a new playlist')}
               handlePress={navigation.getParam('showNewPlaylistDialog')}
               testID={`${testIDPrefix}_new`}
               text={translate('New')}

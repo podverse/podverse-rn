@@ -30,7 +30,7 @@ export const PVSearchBar = (props: Props) => {
       <SearchBar
         accessible={accessible}
         accessibilityHint={
-          translate('ARIA - Type to show only the transcript text that includes this search term')
+          translate('ARIA HINT - Type to show only the transcript text that includes this search term')
         }
         accessibilityLabel={translate('Transcript search input')}
         autoCorrect={false}

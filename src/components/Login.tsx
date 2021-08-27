@@ -64,7 +64,7 @@ export class Login extends React.Component<Props, State> {
         contentContainerStyle={styles.scrollViewContent}
         style={styles.scrollView}>
         <TextInput
-          accessibilityHint={translate('ARIA - Type your premium account email address')}
+          accessibilityHint={translate('ARIA HINT - Type your premium account email address')}
           autoCapitalize='none'
           autoCompleteType='email'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -80,7 +80,7 @@ export class Login extends React.Component<Props, State> {
           wrapperStyle={core.textInputWrapper}
         />
         <TextInput
-          accessibilityHint={translate('ARIA - Type your password')}
+          accessibilityHint={translate('ARIA HINT - Type your password')}
           autoCapitalize='none'
           autoCompleteType='password'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -98,8 +98,8 @@ export class Login extends React.Component<Props, State> {
         />
         <Button
           accessibilityHint={submitIsDisabled
-            ? translate('ARIA - Type a valid email and password to enable the login button')
-            : translate('ARIA - Tap to login')
+            ? translate('ARIA HINT - Type a valid email and password to enable the login button')
+            : translate('ARIA HINT - Tap to login')
           }
           disabled={submitIsDisabled}
           isLoading={isLoading}

@@ -71,10 +71,10 @@ export class QueueTableCell extends React.PureComponent<Props> {
         <RNView style={styles.wrapperTop}>
           <TouchableWithoutFeedback
             accessibilityHint={isNowPlayingItem
-              ? translate('ARIA - This is the now playing episode')
+              ? translate('ARIA HINT - This is the now playing episode')
               : !isClip
-                ? translate('ARIA - Tap to play this episode')
-                : translate('ARIA - This is the episode title of a clip Tap to play this clip')
+                ? translate('ARIA HINT - Tap to play this episode')
+                : translate('ARIA HINT - This is the episode title of a clip Tap to play this clip')
             }
             accessibilityLabel={accessibilityLabel}
             onLongPress={drag}
@@ -117,7 +117,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
           </TouchableWithoutFeedback>
           {!!showRemoveButton && !!handleRemovePress && (
             <Icon
-              accessibilityHint={translate('ARIA - Tap to remove this item')}
+              accessibilityHint={translate('ARIA HINT - Tap to remove this item')}
               accessibilityLabel={translate('Remove')}
               accessibilityRole='button'
               name='times'
@@ -135,8 +135,8 @@ export class QueueTableCell extends React.PureComponent<Props> {
               accessibilityHint={!isClip
                 ? ''
                 : isNowPlayingItem
-                  ? translate('ARIA - This is the now playing clip title')
-                  : translate('ARIA - Tap to play this clip')
+                  ? translate('ARIA HINT - This is the now playing clip title')
+                  : translate('ARIA HINT - Tap to play this clip')
               }
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               numberOfLines={1}
@@ -146,7 +146,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
             </Text>
             {!!clipStartTime && (
               <Text
-                accessibilityHint={translate('ARIA - This is the clip time range')}
+                accessibilityHint={translate('ARIA HINT - This is the clip time range')}
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 style={styles.clipTime}
                 testID={`${testID}_clip_time`}>

@@ -211,7 +211,7 @@ export class FundingScreen extends React.Component<Props, State> {
           {hasValueInfo && (
             <Text
               // eslint-disable-next-line max-len
-              accessibilityHint={translate('ARIA - This section provides the value-for-value information for this podcast')}
+              accessibilityHint={translate('ARIA HINT - This section provides the value-for-value information for this podcast')}
               accessibilityRole='header'
               style={styles.textHeader}
               testID={`${testIDPrefix}_episode_funding_header`}>
@@ -222,7 +222,7 @@ export class FundingScreen extends React.Component<Props, State> {
             <View style={styles.noLnpayView}>
               <Text style={styles.noLnPayText}>{translate('Podcast supports value-for-value donations')}</Text>
               <Pressable
-                accessibilityHint={translate('ARIA - Tap to go to the Bitcoin wallet setup screen')}
+                accessibilityHint={translate('ARIA HINT - Tap to go to the Bitcoin wallet setup screen')}
                 accessibilityRole='button'
                 style={styles.goToValueTagSetupButton} onPress={this._handleValueTagSetupPressed}>
                 <Text
@@ -321,7 +321,8 @@ export class FundingScreen extends React.Component<Props, State> {
           {podcastLinks?.length > 0 && (
             <View style={styles.fundingLinksWrapper}>
               <Text
-                accessibilityHint={translate('ARIA - This section contains links to ways you can support this podcast')}
+                // eslint-disable-next-line max-len
+                accessibilityHint={translate('ARIA HINT - This section contains links to ways you can support this podcast')}
                 accessibilityRole='header'
                 style={styles.textHeader}
                 testID={`${testIDPrefix}_podcast_funding_header`}>

@@ -85,7 +85,7 @@ export class MyLibraryScreen extends React.Component<Props, State> {
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
             <TableCell
-              accessibilityHint={translate('ARIA - Tap to go to this screen')}
+              accessibilityHint={translate('ARIA HINT - Tap to go to this screen')}
               testIDPrefix={`${testIDPrefix}_${item.key}`}
               testIDSuffix='' 
               onPress={() => this._onPress(item)}>

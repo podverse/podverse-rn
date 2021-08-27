@@ -149,7 +149,7 @@ export class SignUp extends React.Component<Props, State> {
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator>
         <TextInput
-          accessibilityHint={translate('ARIA - Type your premium account email address')}
+          accessibilityHint={translate('ARIA HINT - Type your premium account email address')}
           autoCapitalize='none'
           autoCompleteType='email'
           keyboardType='email-address'
@@ -164,7 +164,7 @@ export class SignUp extends React.Component<Props, State> {
           value={this.state.email}
         />
         <TextInput
-          accessibilityHint={translate('ARIA - Type your password with requirements')}
+          accessibilityHint={translate('ARIA HINT - Type your password with requirements')}
           autoCapitalize='none'
           autoCompleteType='off'
           inputRef={(input) => {
@@ -183,7 +183,7 @@ export class SignUp extends React.Component<Props, State> {
           value={this.state.password}
         />
         <TextInput
-          accessibilityHint={translate('ARIA - Type your password a second time to confirm with requirements')}
+          accessibilityHint={translate('ARIA HINT - Type your password a second time to confirm with requirements')}
           autoCapitalize='none'
           autoCompleteType='off'
           inputRef={(input) => {
@@ -212,8 +212,8 @@ export class SignUp extends React.Component<Props, State> {
         />
         <Button
           accessibilityHint={submitIsDisabled
-            ? translate('ARIA - Type a valid email and matching passwords to enable the sign up button')
-            : translate('ARIA - Tap to sign up')
+            ? translate('ARIA HINT - Type a valid email and matching passwords to enable the sign up button')
+            : translate('ARIA HINT - Tap to sign up')
           }
           disabled={submitIsDisabled}
           isLoading={isLoading}

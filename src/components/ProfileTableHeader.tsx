@@ -44,8 +44,8 @@ export const ProfileTableHeader = (props: Props) => {
           <View
             accessible
             accessibilityHint={isLoggedInUserProfile
-              ? translate('ARIA - This is your profile name')
-              : translate('ARIA - This is the profile name')
+              ? translate('ARIA HINT - This is your profile name')
+              : translate('ARIA HINT - This is the profile name')
             }
             style={styles.textWrapper}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
@@ -59,7 +59,7 @@ export const ProfileTableHeader = (props: Props) => {
           </View>
           {!!handleEditPress && (
             <Icon
-              accessibilityHint={translate('ARIA - Tap to go to the edit my profile screen')}
+              accessibilityHint={translate('ARIA HINT - Tap to go to the edit my profile screen')}
               accessibilityLabel={translate('Edit My Profile')}
               name='pencil-alt'
               onPress={() => handleEditPress(id)}

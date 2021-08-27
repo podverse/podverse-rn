@@ -78,9 +78,9 @@ export const getDefaultSortForFilter = (options: any) => {
   return newSelectedSortItemKey
 }
 
-const filterAccessibilityHint = 'ARIA - Select a primary filter from the list below'
-const categoryAccessibilityHint = 'ARIA - Select a category from the list below'
-const sortingFilterAccessibilityHint = 'ARIA - Select a sorting filter from the list below'
+const filterAccessibilityHint = 'ARIA HINT - Select a primary filter from the list below'
+const categoryAccessibilityHint = 'ARIA HINT - Select a category from the list below'
+const sortingFilterAccessibilityHint = 'ARIA HINT - Select a sorting filter from the list below'
 
 export const generateSections = (options: any) => {
   let sortItems: any[] = PV.FilterOptions.sortItems

@@ -95,8 +95,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
         <RNView style={styles.navHeaderButtonWrapper}>
           <NavHeaderButtonText
             accessibilityHint={isLoggedIn
-              ? translate('ARIA - Tap to save this clip')
-              : translate('ARIA - Tap to go to the login screen')
+              ? translate('ARIA HINT - Tap to save this clip')
+              : translate('ARIA HINT - Tap to go to the login screen')
             }
             color={globalTheme.text.color}
             handlePress={navigation.getParam('_saveMediaRef')}
@@ -424,7 +424,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
           <View style={styles.contentContainer}>
             <View style={styles.wrapperTop} transparent>
               <TextInput
-                accessibilityHint={translate('ARIA - You can optionally provide a title for your clip here')}
+                accessibilityHint={translate('ARIA HINT - You can optionally provide a title for your clip here')}
                 autoCapitalize='none'
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onChangeText={this._onChangeTitle}
@@ -439,7 +439,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               />
             </View>
             <DropdownButtonSelect
-              accessibilityHint={translate('ARIA - Tap to change the privacy setting for your clip')}
+              accessibilityHint={translate('ARIA HINT - Tap to change the privacy setting for your clip')}
               helpText={translate('Tip: Titling your clips')}
               hideHelpTextInAccessibility
               items={privacyItems()}
@@ -455,7 +455,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               <View style={styles.wrapperBottomInside} transparent>
                 <TimeInput
                   // eslint-disable-next-line max-len
-                  accessibilityHint={translate('ARIA - Tap to set the current playback position as the start time for this clip')}
+                  accessibilityHint={translate('ARIA HINT - Tap to set the current playback position as the start time for this clip')}
                   handlePreview={() => {
                     if (startTime) {
                       playerPreviewStartTime(startTime, endTime)
@@ -464,7 +464,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   handleSetTime={this._setStartTime}
                   labelText={translate('Start time')}
                   placeholder='--:--'
-                  previewAccessibilityHint={translate('ARIA - Tap preview the start position for this clip')}
+                  previewAccessibilityHint={translate('ARIA HINT - Tap preview the start position for this clip')}
                   previewAccessibilityLabel={translate('Preview Start Time')}
                   testID={`${testIDPrefix}_start`}
                   time={startTime}
@@ -472,7 +472,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <View style={styles.wrapperBottomInsideSpacer} transparent />
                 <TimeInput
                   // eslint-disable-next-line max-len
-                  accessibilityHint={translate('ARIA - Tap to set the current playback position as the end time for this clip')}
+                  accessibilityHint={translate('ARIA HINT - Tap to set the current playback position as the end time for this clip')}
                   handleClearTime={endTime ? this._clearEndTime : null}
                   handlePreview={() => {
                     if (endTime) {
@@ -482,7 +482,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   handleSetTime={this._setEndTime}
                   labelText={translate('End time')}
                   placeholder={translate('optional')}
-                  previewAccessibilityHint={translate('ARIA - Tap preview the end position for this clip')}
+                  previewAccessibilityHint={translate('ARIA HINT - Tap preview the end position for this clip')}
                   previewAccessibilityLabel={translate('Preview End Time')}
                   testID={`${testIDPrefix}_end`}
                   time={endTime}
@@ -502,7 +502,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     testID={`${testIDPrefix}_time_input_clear_button`}>
                     <Text
                       accessible
-                      accessibilityHint={translate('ARIA - Tap to remove the end time for this clip')}
+                      accessibilityHint={translate('ARIA HINT - Tap to remove the end time for this clip')}
                       accessibilityRole='button'
                       style={styles.clearEndTimeText}>
                       {translate('Remove end time')}
@@ -577,7 +577,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 </View>
                 <View style={styles.playerControlsBottomRow} transparent>
                   <TouchableOpacity
-                    accessibilityHint={translate('ARIA - Tap to show how to information for the make clip screen')}
+                    accessibilityHint={translate('ARIA HINT - Tap to show how to information for the make clip screen')}
                     accessibilityRole='button'
                     hitSlop={{
                       bottom: 4,
@@ -600,7 +600,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     </View>
                   </TouchableOpacity>
                   <TouchableWithoutFeedback
-                    accessibilityHint={translate('ARIA - This is the current playback speed')}
+                    accessibilityHint={translate('ARIA HINT - This is the current playback speed')}
                     accessibilityRole='button'
                     hitSlop={{
                       bottom: 4,
@@ -624,7 +624,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     </View>
                   </TouchableWithoutFeedback>
                   <TouchableOpacity
-                    accessibilityHint={translate('ARIA - Tap to go to the FAQ page')}
+                    accessibilityHint={translate('ARIA HINT - Tap to go to the FAQ page')}
                     accessibilityRole='button'
                     hitSlop={{
                       bottom: 4,
@@ -681,7 +681,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   {translate('If a podcast inserts dynamic ads the clip start time may not stay accurate')}
                 </Text>
                 <TouchableOpacity
-                  accessibilityHint={translate('ARIA - Tap to continue to the Make Clip screen')}
+                  accessibilityHint={translate('ARIA HINT - Tap to continue to the Make Clip screen')}
                   accessibilityRole='button'
                   onPress={this._hideHowTo}
                   style={{ marginTop: 12 }}

@@ -125,22 +125,22 @@ export const TimeRemainingWidget = (props: Props) => {
   const iconStyle = isNowPlayingItem ? styles.playButton : [styles.playButton, { paddingLeft: 2 }]
 
   const timeViewAccessibilityHint = !clipTime
-    ? translate('ARIA - This is the time remaining for this episode')
+    ? translate('ARIA HINT - This is the time remaining for this episode')
     : ''
 
   let playButtonAccessibilityHint = ''
   if (!clipTime) {
     playButtonAccessibilityHint = isNowPlayingItem
-      ? translate('ARIA - Tap to pause this episode')
-      : translate('ARIA - Tap to play this episode')
+      ? translate('ARIA HINT - Tap to pause this episode')
+      : translate('ARIA HINT - Tap to play this episode')
   } else if (clipTime && isChapter) {
     playButtonAccessibilityHint = isNowPlayingItem
-      ? translate('ARIA - Tap to pause this chapter')
-      : translate('ARIA - Tap to play this chapter')
+      ? translate('ARIA HINT - Tap to pause this chapter')
+      : translate('ARIA HINT - Tap to play this chapter')
   } else if (clipTime) {
     playButtonAccessibilityHint = isNowPlayingItem
-      ? translate('ARIA - Tap to pause this clip')
-      : translate('ARIA - Tap to play this clip')
+      ? translate('ARIA HINT - Tap to pause this clip')
+      : translate('ARIA HINT - Tap to play this clip')
   }
 
   return (

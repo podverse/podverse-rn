@@ -238,7 +238,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
           includePadding
           navigation={navigation}
           screenName='PlayerScreen'
-          selectedFilterAccessibilityHint={translate('ARIA - This is a list of clips created from this episode')}
+          selectedFilterAccessibilityHint={translate('ARIA HINT - This is a list of clips created from this episode')}
           selectedFilterLabel={selectedFromLabel}
           selectedFromItemKey={queryFrom}
           selectedSortItemKey={querySort}

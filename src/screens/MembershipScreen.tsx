@@ -115,7 +115,8 @@ export class MembershipScreen extends React.Component<Props, State> {
           <View>
             <View
               accessible
-              accessibilityHint={translate('ARIA - This is the membership status of your currently logged-in account')}
+              // eslint-disable-next-line max-len
+              accessibilityHint={translate('ARIA HINT - This is the membership status of your currently logged-in account')}
               accessibilityLabel={statusAccessibilityLabel}
               style={styles.textRow}>
               <Text
@@ -134,7 +135,7 @@ export class MembershipScreen extends React.Component<Props, State> {
             <View
               accessible
               accessibilityHint={
-                translate('ARIA - This is the date your premium membership will expire unless it is renewed')}
+                translate('ARIA HINT - This is the date your premium membership will expire unless it is renewed')}
               accessibilityLabel={expiresAccessibilityLabel}
               style={styles.textRow}>
               <Text
@@ -152,7 +153,7 @@ export class MembershipScreen extends React.Component<Props, State> {
             </View>
             <View style={styles.textRowCentered}>
               <TextLink
-                accessibilityHint={translate('ARIA - Tap to renew your premium membership')}
+                accessibilityHint={translate('ARIA HINT - Tap to renew your premium membership')}
                 disabled={disableButton}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={this.handleRenewPress}
@@ -177,7 +178,7 @@ export class MembershipScreen extends React.Component<Props, State> {
             </View>
             <View style={styles.textRowCentered}>
               <TextLink
-                accessibilityHint={translate('ARIA - Tap to sign up for your premium account')}
+                accessibilityHint={translate('ARIA HINT - Tap to sign up for your premium account')}
                 disabled={disableButton}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={this.handleSignUpPress}
@@ -195,7 +196,7 @@ export class MembershipScreen extends React.Component<Props, State> {
               column2Title={translate('Premium')}
               data={comparisonData}
               mainTitle={translate('Features')}
-              mainTitleAccessibilityHint={translate('ARIA - Membership features header')}
+              mainTitleAccessibilityHint={translate('ARIA HINT - Membership features header')}
             />
           </View>
         )}
@@ -209,61 +210,61 @@ const comparisonData = [
     text: translate('subscribe to podcasts'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('ARIA - Membership - Subscribe to podcasts')
+    accessibilityLabel: translate('ARIA HINT - Membership - Subscribe to podcasts')
   },
   {
     text: translate('download episodes'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('ARIA - Membership - Download episodes')
+    accessibilityLabel: translate('ARIA HINT - Membership - Download episodes')
   },
   {
     text: translate('drag-and-drop queue'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('ARIA - Membership - Drag and drop queue')
+    accessibilityLabel: translate('ARIA HINT - Membership - Drag and drop queue')
   },
   {
     text: translate('sleep timer'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('ARIA - Membership - Sleep timer')
+    accessibilityLabel: translate('ARIA HINT - Membership - Sleep timer')
   },
   {
     text: translate('create and share clips'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('ARIA - Membership - Create and share clips')
+    accessibilityLabel: translate('ARIA HINT - Membership - Create and share clips')
   },
   {
     text: translate('sync your subscriptions on all devices'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('ARIA - Membership - Sync your subscriptions on all devices')
+    accessibilityLabel: translate('ARIA HINT - Membership - Sync your subscriptions on all devices')
   },
   {
     text: translate('sync your queue on all devices'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('ARIA - Membership - Sync your queue on all devices')
+    accessibilityLabel: translate('ARIA HINT - Membership - Sync your queue on all devices')
   },
   {
     text: translate('create playlists'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('ARIA - Membership - Create playlists')
+    accessibilityLabel: translate('ARIA HINT - Membership - Create playlists')
   },
   {
     text: translate('download a backup of your data'),
     column1: false,
     column2: true,
-    accessibilityLabel: translate('ARIA - Membership - Download a backup of your data')
+    accessibilityLabel: translate('ARIA HINT - Membership - Download a backup of your data')
   },
   {
     text: translate('support free and open source software'),
     column1: true,
     column2: true,
-    accessibilityLabel: translate('ARIA - Membership - Support free and open source software')
+    accessibilityLabel: translate('ARIA HINT - Membership - Support free and open source software')
   }
 ]
 

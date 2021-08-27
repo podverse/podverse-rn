@@ -134,7 +134,7 @@ export class EditProfileScreen extends React.Component<Props, State> {
         {!isLoading ? (
           <>
             <TextInput
-              accessibilityHint={translate('ARIA - This is your profile name tap to edit')}
+              accessibilityHint={translate('ARIA HINT - This is your profile name tap to edit')}
               autoCapitalize='none'
               autoCompleteType='off'
               fontSizeLargestScale={PV.Fonts.largeSizes.md}

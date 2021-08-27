@@ -19,7 +19,6 @@ import {
   PodcastTableHeader,
   ScrollView,
   SearchBar,
-  SwipeRowBack,
   SwitchWithText,
   TableSectionSelectors,
   Text,
@@ -688,8 +687,8 @@ static navigationOptions = ({ navigation }) => {
             <Text style={styles.settingsTitle}>{translate('Settings')}</Text>
             <SwitchWithText
               accessibilityHint={limitDownloadedEpisodes
-                ? translate('ARIA - Tap to disable the downloaded episode limit for this podcast')
-                : translate('ARIA - Tap to limit the number of episodes from this podcast to save on your device')
+                ? translate('ARIA HINT - Tap to disable the downloaded episode limit for this podcast')
+                : translate('ARIA HINT - Tap to limit the number of episodes from this podcast to save on your device')
               }
               accessibilityLabel={limitDownloadedEpisodes
                 ? translate('Download limit on')
@@ -705,7 +704,7 @@ static navigationOptions = ({ navigation }) => {
               <View style={styles.itemWrapper}>
                 <NumberSelectorWithText
                   // eslint-disable-next-line max-len
-                  accessibilityHint={translate('ARIA - Tap to set the maximum number of downloaded episodes to save from this podcast on your device')}
+                  accessibilityHint={translate('ARIA HINT - Tap to set the maximum number of downloaded episodes to save from this podcast on your device')}
                   // eslint-disable-next-line max-len
                   accessibilityLabel={`${translate('Download limit max')} ${!!downloadedEpisodeLimit ? downloadedEpisodeLimit : ''}`}
                   handleChangeText={this._handleChangeDownloadLimitText}
@@ -722,7 +721,7 @@ static navigationOptions = ({ navigation }) => {
             <View style={styles.itemWrapper}>
               <NumberSelectorWithText
                 accessibilityHint={
-                  translate('ARIA - Tap to set the time you want this episode to always start playing from')
+                  translate('ARIA HINT - Tap to set the time you want this episode to always start playing from')
                 }
                 isHHMMSS
                 selectedNumber={startPodcastFromTime}
@@ -736,7 +735,7 @@ static navigationOptions = ({ navigation }) => {
             <Divider style={styles.divider} />
             <Button
               accessibilityHint={
-                translate('ARIA - Tap to delete all the episodes you have downloaded for this podcast')
+                translate('ARIA HINT - Tap to delete all the episodes you have downloaded for this podcast')
               }
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
               wrapperStyles={styles.settingsDeletebutton}

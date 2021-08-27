@@ -91,7 +91,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
               accessibilityHint={selectedFilterAccessibilityHint
                 ? selectedFilterAccessibilityHint
                 : !disableFilter
-                  ? translate('ARIA - This is the selected primary filter for this screen')
+                  ? translate('ARIA HINT - This is the selected primary filter for this screen')
                   : ''
               }
               accessibilityRole={disableFilter ? 'header' : 'button'}
@@ -109,7 +109,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
             <DropdownButton
               accessible={accessible && !disableFilter}
               // eslint-disable-next-line max-len
-              accessibilityHint={translate('ARIA - This is the selected sorting filter for this screen Tap to select a different filter')}
+              accessibilityHint={translate('ARIA HINT - This is the selected sorting filter for this screen Tap to select a different filter')}
               disableFilter={disableFilter}
               onPress={() => {
                 this.props.navigation.navigate(PV.RouteNames.FilterScreen, {

@@ -190,14 +190,14 @@ export class SearchScreen extends React.Component<Props, State> {
       {
         accessibilityHint:
           isSubscribed
-          ? translate('ARIA - Tap to unsubscribe from this podcast')
-          : translate('ARIA - Tap to subscribe to this podcast'),
+          ? translate('ARIA HINT - Tap to unsubscribe from this podcast')
+          : translate('ARIA HINT - Tap to subscribe to this podcast'),
         key: 'toggleSubscribe',
         text: isSubscribed ? translate('Unsubscribe') : translate('Subscribe'),
         onPress: () => selectedPodcast && this._toggleSubscribeToPodcast(selectedPodcast.id)
       },
       {
-        accessibilityHint: translate('ARIA - Tap to navigate to this podcast'),
+        accessibilityHint: translate('ARIA HINT - Tap to navigate to this podcast'),
         key: 'goToPodcast',
         text: translate('Go to Podcast'),
         onPress: () => this._handleNavigationPress(selectedPodcast)
@@ -270,11 +270,11 @@ export class SearchScreen extends React.Component<Props, State> {
             keyExtractor={(item: any, index: number) => safeKeyExtractor(testIDPrefix, index, item?.id)}
             noResultsBottomActionText={!!Config.CURATOR_EMAIL ? translate('Request Podcast') : ''}
             noResultsBottomActionTextAccessibilityHint={
-              translate('ARIA - Tap to send us an email to request a podcast')
+              translate('ARIA HINT - Tap to send us an email to request a podcast')
             }
             noResultsMessage={searchBarText.length > 1 && translate('No podcasts found')}
             noResultsMiddleActionText={translate('Add Custom RSS Feed')}
-            noResultsMiddleActionTextAccessibilityHint={translate('ARIA - Tap to add a podcast by its RSS feed')}
+            noResultsMiddleActionTextAccessibilityHint={translate('ARIA HINT - Tap to add a podcast by its RSS feed')}
             noResultsTopActionText={!Config.DISABLE_QR_SCANNER ? translate('Scan RSS Feed QR Code') : ''}
             onEndReached={this._onEndReached}
             renderItem={this._renderPodcastItem}

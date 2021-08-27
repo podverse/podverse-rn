@@ -107,7 +107,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
           disableFilter
           includePadding
           selectedFilterLabel={translate('Chapters')}
-          selectedFilterAccessibilityHint={translate('ARIA - This is a list of the chapters for this episode')} />
+          selectedFilterAccessibilityHint={translate('ARIA HINT - This is a list of the chapters for this episode')} />
         {isLoading || (isQuerying && <ActivityIndicator fillSpace testID={getTestID()} />)}
         {!isLoading && !isQuerying && currentChapters && (
           <FlatList

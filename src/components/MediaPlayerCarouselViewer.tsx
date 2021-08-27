@@ -69,8 +69,8 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     const useTo = true
     const clipAccessibilityLabel = `${clipTitle}, ${readableClipTime(clipStartTime, clipEndTime, useTo)}`
     const clipAccessibilityHint = isOfficialChapter
-      ? translate('ARIA - This is the now playing chapter info')
-      : translate('ARIA - This is the now playing clip info')
+      ? translate('ARIA HINT - This is the now playing chapter info')
+      : translate('ARIA HINT - This is the now playing clip info')
 
     return (
       <ScrollView
@@ -78,7 +78,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
         contentContainerStyle={[styles.outerWrapper, { width }]}>
         <RNView
           accessible
-          accessibilityHint={translate('ARIA - This is the now playing episode in a carousel')}
+          accessibilityHint={translate('ARIA HINT - This is the now playing episode in a carousel')}
           accessibilityLabel={textTopWrapperAccessibilityLabel}
           style={styles.carouselTextTopWrapper}>
           {isLoading ? (

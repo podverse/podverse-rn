@@ -25,7 +25,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
     let playButtonAdjust = { paddingLeft: 2, paddingTop: 2 } as any
     let playButtonIcon = (
       <Icon
-        accessibilityHint={translate('ARIA - Tap to resume playing')}
+        accessibilityHint={translate('ARIA HINT - Tap to resume playing')}
         accessibilityLabel={translate('Play')}
         accessibilityRole='button'
         name='play'
@@ -37,7 +37,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
     if (playbackState === RNTPState.Playing) {
       playButtonIcon = (
         <Icon
-          accessibilityHint={translate('ARIA - Tap to pause playback')}
+          accessibilityHint={translate('ARIA HINT - Tap to pause playback')}
           accessibilityLabel={translate('Pause')}
           accessibilityRole='button'
           name='pause'
@@ -52,7 +52,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
       playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
     }
 
-    let nowPlayingAccessibilityLabel = `${translate('ARIA - Now playing')}. `
+    let nowPlayingAccessibilityLabel = `${translate('ARIA HINT - Now playing')}. `
     nowPlayingAccessibilityLabel += `${nowPlayingItem.podcastTitle}. `
     nowPlayingAccessibilityLabel += `${nowPlayingItem.episodeTitle}.`
 
@@ -62,7 +62,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
           <View style={[styles.playerInnerWrapper, globalTheme.player]}>
             <TouchableWithoutFeedback
               accessibilityLabel={nowPlayingAccessibilityLabel}
-              accessibilityHint={translate('ARIA - Tap to open the full player screen')}
+              accessibilityHint={translate('ARIA HINT - Tap to open the full player screen')}
               onPress={() =>
                 navigation.navigate(PV.RouteNames.PlayerScreen, {
                   nowPlayingItem,
@@ -106,7 +106,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
               {hasErrored && (
                 <Icon
                   accessible
-                  accessibilityLabel={translate('ARIA - Error something went wrong with playing this item')}
+                  accessibilityLabel={translate('ARIA HINT - Error something went wrong with playing this item')}
                   color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
                   name={'exclamation-triangle'}
                   size={26}
