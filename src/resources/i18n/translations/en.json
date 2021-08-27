@@ -495,6 +495,7 @@
   "ARIA - This is the podcast title": "This is the podcast title",
   "ARIA - This is the episode title": "This is the episode title",
   "ARIA - This is the clip title": "This is the clip title",
+  "ARIA - This is the clip title and time range": "This is the clip title and time range",
   "ARIA - This is the episode title of a clip Tap to play this clip": "This is the episode title of a clip. Tap to play this clip.",
   "ARIA - This is the chapter title": "This is the chapter title",
   "ARIA - This is the episode publication date": "This is the episode publication date",
@@ -596,7 +597,6 @@
   "ARIA - This is your profile name": "This is your profile name",
   "ARIA - Tap to go to this playlist": "Tap to go to this playlist",
   "ARIA - This is your profile name tap to edit": "This is your profile name. Tap to edit.",
-  "ARIA - This is a clip": "This is a clip",
   "ARIA - Tap to edit this playlist": "Tap to edit this playlist",
   "ARIA - Tap to edit this playlist title": "Tap to edit this playlist title",
   "ARIA - Tap to start removing items from this playlist": "Tap to start removing items from this playlist",
@@ -642,5 +642,15 @@
   "ARIA - Tap to go to the sleep timer screen": "Tap to go to the sleep timer screen",
   "ARIA - Tap to show more player screen options": "Tap to show more player screen options",
   "More player options": "More player options",
-  "Episode is loading": "Episode is loading"
+  "Episode is loading": "Episode is loading",
+  "ARIA - This is the now playing chapter": "ARIA - This is the now playing chapter",
+  "ARIA - This is the now playing clip": "ARIA - This is the now playing clip",
+  "ARIA - This is the now playing episode in a carousel": "This is the now playing episode. You are in a horizontal carousel view on the player screen. You can swipe to the right to view different information. You can tap near the bottom of the screen to focus on the play button and other controls.",
+  "ARIA - This is the now playing chapter info": "This is the now playing chapter info",
+  "ARIA - This is the now playing clip info": "This is the now playing clip info",
+  "ARIA - This is a list of the chapters for this episode": "This is a list of the chapters for this episode",
+  "ARIA - This is a list of clips created from this episode": "This is a list of clips created from this episode",
+  "ARIA - Type to show only the transcript text that includes this search term": "Type to show only the transcript text that includes this search term",
+  "Transcript search input": "Transcript search input",
+  "Clear input": "Clear input"
 }

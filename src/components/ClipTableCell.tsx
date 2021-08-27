@@ -53,7 +53,10 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const episodeTitleText = episodeTitle.trim()
     const pubDate = readableDate(episodePubDate)
     // eslint-disable-next-line max-len
-    const accessibilityLabel = `${showPodcastInfo ? `${podcastTitleText},` : ''} ${showEpisodeInfo ? `${episodeTitleText}, ${pubDate},` : ''} ${title}`
+    const useTo = true
+    const accessibilityClipTime = readableClipTime(startTime, endTime, useTo)
+    // eslint-disable-next-line max-len
+    const accessibilityLabel = `${showPodcastInfo ? `${podcastTitleText},` : ''} ${showEpisodeInfo ? `${episodeTitleText}, ${pubDate},` : ''} ${title}, ${accessibilityClipTime}`
 
     const innerTopView = (
       <RNView
@@ -61,7 +64,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
         {...(testID ? { testID: `${testID}_top_view_nav` } : {})}>
         <RNView
           accessible
-          accessibilityHint={translate('ARIA - This is a clip')}
+          accessibilityHint={translate('ARIA - This is the clip title and time range')}
           accessibilityLabel={accessibilityLabel}
           style={{ flex: 1, flexDirection: 'column' }}>
           {(showEpisodeInfo || showPodcastInfo) && (
@@ -145,6 +148,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
         </View>
         {isChapter && (chapterImageUrl || hasChapterCustomImage) && (
           <TouchableOpacity
+            accessible={false}
             activeOpacity={1}
             {...(item?.linkUrl ? { onPress: () => this.handleChapterLinkPress(item.linkUrl) } : {})}>
             <FastImage isSmall source={chapterImageUrl || podcastImageUrl} styles={chapterImageStyle} />

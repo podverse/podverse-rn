@@ -126,9 +126,7 @@ export const TimeRemainingWidget = (props: Props) => {
 
   const timeViewAccessibilityHint = !clipTime
     ? translate('ARIA - This is the time remaining for this episode')
-    : isChapter
-      ? translate('ARIA - This is the chapter time range')
-      : translate('ARIA - This is the clip time range')
+    : ''
 
   let playButtonAccessibilityHint = ''
   if (!clipTime) {
@@ -166,7 +164,7 @@ export const TimeRemainingWidget = (props: Props) => {
         <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
       )}
       <View
-        accessible
+        accessible={!clipTime}
         accessibilityHint={timeViewAccessibilityHint}
         accessibilityLabel={timeLabel
           ? timeLabel
@@ -174,6 +172,7 @@ export const TimeRemainingWidget = (props: Props) => {
         }
         style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
         <Text
+          accessible={!clipTime}
           fontSizeLargerScale={PV.Fonts.largeSizes.md}
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
           style={styles.text}>

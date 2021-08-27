@@ -66,8 +66,15 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
       ? { color: PV.Colors.orange }
       : {}
 
+    const accessibilityLabel =
+      `${this.currentSpeaker ? `${this.currentSpeaker}, ` : ''} ${text}, ${startTimeHHMMSS}`
+
     return (
-      <TouchableOpacity activeOpacity={0.7} onPress={() => setPlaybackPosition(startTime)}>
+      <TouchableOpacity
+        accessible
+        accessibilityLabel={accessibilityLabel}
+        activeOpacity={0.7}
+        onPress={() => setPlaybackPosition(startTime)}>
         {!!this.currentSpeaker && (
           <Text isSecondary style={styles.speaker} testID={`${cellID}-${this.currentSpeaker}`}>
             {this.currentSpeaker}
@@ -144,8 +151,14 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
       <View style={{ width }}>
         <TableSectionSelectors
           customButtons={
-            <TouchableOpacity activeOpacity={0.7} onPress={this.toggleAutoscroll}>
-              <Text style={[styles.autoScrollerText]} testID='transcript-autoscroll'>
+            <TouchableOpacity
+              accessible={false}
+              activeOpacity={0.7}
+              onPress={this.toggleAutoscroll}>
+              <Text
+                accessible={false}
+                style={[styles.autoScrollerText]}
+                testID='transcript-autoscroll'>
                 {this.state.autoScrollOn ? translate('Autoscroll On') : translate('Autoscroll Off')}
               </Text>
             </TouchableOpacity>
@@ -156,11 +169,24 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
           selectedFilterLabel={translate('Transcript')}
         />
         <PVSearchBar
-          testID='transcript_search_bar'
-          value={this.state.searchText}
+          containerStyle={{
+            backgroundColor: PV.Colors.velvet,
+            marginBottom: 10,
+            marginHorizontal: 12
+          }}
+          handleClear={() => {
+            this.setState({
+              searchText: '',
+              searchResults: []
+            })
+          }}
           onChangeText={(searchText: string) => {
-            if (searchText?.length === 0) {
-              this.setState({ searchResults: [] })
+            console.log('searchText', searchText)
+            if (!searchText || searchText?.length === 0) {
+              this.setState({
+                searchText: '',
+                searchResults: []
+              })
             } else {
               const searchResults = this.global.parsedTranscript.filter((item: Record<string, any>) => {
                 return item?.text?.toLowerCase().includes(searchText?.toLowerCase())
@@ -182,17 +208,8 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
               searchResults: []
             })
           }}
-          handleClear={() => {
-            this.setState({
-              searchText: '',
-              searchResults: []
-            })
-          }}
-          containerStyle={{
-            backgroundColor: PV.Colors.velvet,
-            marginBottom: 10,
-            marginHorizontal: 12
-          }}
+          testID='transcript_search_bar'
+          value={this.state.searchText}
         />
         <FlatList
           data={data}

@@ -11,6 +11,7 @@ type Props = {
   onMomentumScrollEnd?: any
   onScrollEndDrag?: any
   pagingEnabled?: boolean
+  scrollEnabled?: boolean
   scrollViewRef?: any
   showsHorizontalScrollIndicator?: boolean
   snapToInterval?: number

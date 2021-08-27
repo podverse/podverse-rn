@@ -6,6 +6,7 @@ import { getFlatCategoryItems } from '../services/category'
 import { DropdownButton, Text } from './'
 
 type Props = {
+  accessible?: boolean
   addByRSSPodcastFeedUrl?: string
   customButtons?: any
   filterScreenTitle?: string
@@ -52,8 +53,10 @@ export class TableSectionSelectors extends React.Component<Props, State> {
 
   render() {
     const {
+      accessible = true,
       addByRSSPodcastFeedUrl,
       customButtons = null,
+      disableFilter,
       filterScreenTitle,
       handleSelectCategoryItem,
       handleSelectCategorySubItem,
@@ -61,7 +64,6 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       handleSelectFromItem,
       handleSelectSortItem,
       hideDropdown,
-      disableFilter,
       includePadding,
       screenName,
       selectedCategoryItemKey,
@@ -85,6 +87,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
         <View style={styles.tableSectionHeaderTitleWrapper}>
           {!!selectedFilterLabel && (
             <Text
+              accessible={accessible}
               accessibilityHint={selectedFilterAccessibilityHint
                 ? selectedFilterAccessibilityHint
                 : !disableFilter
@@ -104,7 +107,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
         {
           !hideDropdown &&
             <DropdownButton
-              accessible={!disableFilter}
+              accessible={accessible && !disableFilter}
               // eslint-disable-next-line max-len
               accessibilityHint={translate('ARIA - This is the selected sorting filter for this screen Tap to select a different filter')}
               disableFilter={disableFilter}

@@ -10,7 +10,8 @@ import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { getMediaRefs } from '../services/mediaRef'
 import { loadItemAndPlayTrack } from '../state/actions/player'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList, TableSectionSelectors, View } from './'
+import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList,
+  ScrollView, TableSectionSelectors } from './'
 
 type Props = {
   navigation?: any
@@ -229,7 +230,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     const testID = getTestID()
 
     return (
-      <View style={[styles.wrapper, { width }]} transparent>
+      <ScrollView style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors
           filterScreenTitle={translate('Clips')}
           handleSelectFromItem={this._selectQueryFrom}
@@ -237,6 +238,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
           includePadding
           navigation={navigation}
           screenName='PlayerScreen'
+          selectedFilterAccessibilityHint={translate('ARIA - This is a list of clips created from this episode')}
           selectedFilterLabel={selectedFromLabel}
           selectedFromItemKey={queryFrom}
           selectedSortItemKey={querySort}
@@ -272,7 +274,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
           showModal={showMoreActionSheet}
           testID={`${testID}_more`}
         />
-      </View>
+      </ScrollView>
     )
   }
 

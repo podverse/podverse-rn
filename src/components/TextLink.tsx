@@ -4,6 +4,7 @@ import { useGlobal } from 'reactn'
 import { PV } from '../resources'
 
 type Props = {
+  accessible?: boolean
   accessibilityHint?: string
   children?: any
   disabled?: boolean
@@ -16,8 +17,8 @@ type Props = {
 }
 
 export const TextLink = (props: Props) => {
-  const { accessibilityHint, children, disabled, fontSizeLargerScale, fontSizeLargestScale,
-    numberOfLines, onPress, style } = props
+  const { accessible = true, accessibilityHint, children, disabled,
+    fontSizeLargerScale, fontSizeLargestScale, numberOfLines, onPress, style } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
 
@@ -30,6 +31,7 @@ export const TextLink = (props: Props) => {
 
   return (
     <TouchableOpacity
+      accessible={accessible}
       accessibilityHint={accessibilityHint}
       disabled={disabled}
       onPress={onPress}>

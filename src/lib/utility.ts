@@ -124,11 +124,11 @@ export const convertSecToHhoursMMinutes = (sec: number) => {
   return result
 }
 
-export const readableClipTime = (startTime: number, endTime?: number) => {
+export const readableClipTime = (startTime: number, endTime?: number, useTo?: boolean) => {
   const s = convertSecToHHMMSS(startTime)
   if ((startTime || startTime === 0) && endTime) {
     const e = convertSecToHHMMSS(endTime)
-    return `${s} - ${e}`
+    return `${s} ${useTo ? 'to' : '-'} ${e}`
   } else {
     return `Start: ${s}`
   }
