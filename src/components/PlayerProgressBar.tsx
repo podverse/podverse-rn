@@ -27,7 +27,7 @@ export function PlayerProgressBar(props: Props) {
 
   const [localState, setLocalState] = useState({   
     clipColorAnimation: new Animated.Value(0),
-    slidingPosition: null
+    slidingPositionOverride: 0
   })
 
   const _handleAnimation = () => {
@@ -50,7 +50,7 @@ export function PlayerProgressBar(props: Props) {
   }
 
   const { backupDuration, clipEndTime, clipStartTime, isLoading, isMakeClipScreen } = props;
-  const { slidingPosition } = localState
+  const { slidingPositionOverride } = localState
   const { position } = useProgress()
   let { duration } = useProgress()
 
@@ -63,7 +63,7 @@ export function PlayerProgressBar(props: Props) {
   // last loaded item's duration (backupDuration).
   duration = duration > 0 ? duration : backupDuration || 0
 
-  const pos = slidingPosition || position
+  const pos = slidingPositionOverride || position
   const newProgressValue = duration > 0 ? pos / duration : 0
 
   let clipStartTimePosition = 0
@@ -89,20 +89,28 @@ export function PlayerProgressBar(props: Props) {
         minimumTrackTintColor={PV.Colors.skyDark}
         maximumTrackTintColor={PV.Colors.gray}
         onSlidingStart={(newProgressValue) => {
-          const slidingPosition = newProgressValue * duration
-          setLocalState({ ...localState, slidingPosition })
+          const slidingPositionOverride = newProgressValue * duration
+          setLocalState({ ...localState, slidingPositionOverride })
         }}
         onSlidingComplete={async (newProgressValue) => {
           const position = newProgressValue * duration
-          setLocalState({ ...localState, slidingPosition: null })
           await setPlaybackPosition(position)
+
+          /*
+            Calling TrackPlayer.seekTo(position) in setPlaybackPosition causes the progress bar
+            to re-render with the *last* position, before finally seeking to the new position
+            and then re-rendering with the new correct position. To workaround this, I am adding
+            a 2 second delay before clearing the slidingPositionOverride from local state.
+          */
+          setTimeout(() => {
+            setLocalState({ ...localState, slidingPositionOverride: 0 })
+          }, 2000)
+
           loadChapterPlaybackInfo()
         }}
         onValueChange={(newProgressValue) => {
-          const slidingPosition = newProgressValue * duration
-          if (localState.slidingPosition) {
-            setLocalState({ ...localState, slidingPosition })
-          }
+          const slidingPositionOverride = newProgressValue * duration
+          setLocalState({ ...localState, slidingPositionOverride })
         }}
         thumbStyle={sliderStyles.thumbStyle}
         thumbTintColor={PV.Colors.white}
@@ -115,7 +123,7 @@ export function PlayerProgressBar(props: Props) {
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={sliderStyles.time}>
-            {convertSecToHHMMSS(slidingPosition || position)}
+            {convertSecToHHMMSS(slidingPositionOverride || position)}
           </Text>
           <Text
             accessibilityHint={translate('ARIA HINT - This is the duration for this episode')}
