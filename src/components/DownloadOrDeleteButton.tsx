@@ -85,10 +85,10 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 0,
-    height: 30,
-    lineHeight: 30,
+    height: 50,
+    lineHeight: 50,
     textAlign: 'center',
-    width: 30
+    width: 50
   },
   imageWrapper: {
     alignItems: 'center',
