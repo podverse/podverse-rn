@@ -473,9 +473,7 @@ export const createTrack = async (item: NowPlayingItem) => {
         title: episodeTitle,
         artist: podcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
-        headers: {
-          'User-Agent': getAppUserAgent()
-        },
+        userAgent: getAppUserAgent(),
         pitchAlgorithm: PitchAlgorithm.Voice
       }
     } else {
@@ -485,9 +483,7 @@ export const createTrack = async (item: NowPlayingItem) => {
         title: episodeTitle,
         artist: podcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
-        headers: {
-          'User-Agent': getAppUserAgent()
-        },
+        userAgent: getAppUserAgent(),
         pitchAlgorithm: PitchAlgorithm.Voice
       }
     }
