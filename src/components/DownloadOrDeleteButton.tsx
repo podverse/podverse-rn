@@ -1,7 +1,9 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
+import { useGlobal } from 'reactn'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
+import { darkTheme, iconStyles } from '../styles'
 import { ActivityIndicator, Icon, View } from '.'
 
 type Props = {
@@ -15,6 +17,8 @@ type Props = {
 
 export const DownloadOrDeleteButton = (props: Props) => {
   const { isDownloaded, isDownloading, onPressDelete, onPressDownload, style, testID } = props
+  const [globalTheme] = useGlobal('globalTheme')
+  const isDarkMode = globalTheme === darkTheme
 
   let component = (
     <View style={[styles.imageWrapper]}>
@@ -48,7 +52,7 @@ export const DownloadOrDeleteButton = (props: Props) => {
           accessibilityHint={translate('ARIA HINT - Tap to delete this downloaded episode')}
           accessibilityLabel={translate('Delete')}
           accessibilityRole='button'
-          color={PV.Colors.white}
+          color={isDarkMode ? iconStyles.darkTertiary.color : iconStyles.lightSecondary.color}
           name='trash-alt'
           onPress={onPressDelete}
           size={25}
@@ -81,14 +85,15 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 0,
-    height: 30,
-    width: 30
+    height: 50,
+    lineHeight: 50,
+    textAlign: 'center',
+    width: 50
   },
   imageWrapper: {
     alignItems: 'center',
     flex: 0,
     height: 50,
-    lineHeight: 50,
     justifyContent: 'center',
     width: 44
   }

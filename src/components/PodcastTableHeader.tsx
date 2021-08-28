@@ -100,8 +100,8 @@ export const PodcastTableHeader = (props: Props) => {
                       : translate('ARIA HINT - Tap to auto download new episodes from this podcast when they are released')
                     }
                     accessibilityLabel={autoDownloadOn
-                      ? translate('Autodownloading On')
-                      : translate('Autodownloading Off')
+                      ? translate('Auto Downloading On')
+                      : translate('Auto Downloading Off')
                     }
                     onPress={handleToggleAutoDownload}>
                     <View style={styles.autoDownloadContainer}>
