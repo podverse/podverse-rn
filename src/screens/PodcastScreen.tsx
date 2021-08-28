@@ -434,22 +434,10 @@ static navigationOptions = ({ navigation }) => {
     }
   }
 
-  _handleDeleteEpisode = (item: NowPlayingItem) => {
-    const selectedId = item?.episodeId
+  _handleDeleteEpisode = async (item: any) => {
+    const selectedId = item?.episodeId || item?.id
     if (selectedId) {
-      const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
-      this.setState(
-        {
-          flatListData: filteredEpisodes
-        },
-        () => {
-          (async () => {
-            await DownloadState.removeDownloadedPodcastEpisode(selectedId)
-            const finalDownloadedEpisodes = await getDownloadedEpisodes()
-            this.setState({ flatListData: finalDownloadedEpisodes })
-          })()
-        }
-      )
+      await DownloadState.removeDownloadedPodcastEpisode(selectedId)
     }
   }
 
