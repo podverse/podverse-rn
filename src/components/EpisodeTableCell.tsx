@@ -128,13 +128,12 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           ) : (
             innerTopView
           )}
-          {!isDownloaded && (
-            <DownloadOrDeleteButton
-              isDownloading={isDownloading}
-              onPressDelete={() => handleDeletePress(item)}
-              onPressDownload={() => handleDownloadPress(item)}
-              testID={testID} />
-          )}
+          <DownloadOrDeleteButton
+            isDownloaded={isDownloaded}
+            isDownloading={isDownloading}
+            onPressDelete={() => handleDeletePress(item)}
+            onPressDownload={() => handleDownloadPress(item)}
+            testID={testID} />
         </RNView>
         {handleNavigationPress ? (
           <TouchableWithoutFeedback
@@ -149,7 +148,6 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         <View style={styles.timeRemainingWrapper}>
           <TimeRemainingWidget
             handleMorePress={handleMorePress}
-            isDownloaded={isDownloaded}
             item={item}
             mediaFileDuration={mediaFileDuration}
             testID={testID}
