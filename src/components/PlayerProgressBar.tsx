@@ -22,6 +22,8 @@ type Props = {
   value: number
 }
 
+let parentScopeDuration = 0
+
 export function PlayerProgressBar(props: Props) {
   let isAnimationRunning = false;
 
@@ -52,7 +54,7 @@ export function PlayerProgressBar(props: Props) {
   const { backupDuration, clipEndTime, clipStartTime, isLoading, isMakeClipScreen } = props;
   const { slidingPositionOverride } = localState
   const { position } = useProgress()
-  let { duration } = useProgress()
+  const { duration } = useProgress()
 
   const backgroundColorInterpolator = localState.clipColorAnimation.interpolate({
     inputRange: [0, 1],
@@ -61,23 +63,23 @@ export function PlayerProgressBar(props: Props) {
 
   // If no item is currently in the TrackPlayer, fallback to use the
   // last loaded item's duration (backupDuration).
-  duration = duration > 0 ? duration : backupDuration || 0
+  parentScopeDuration = duration > 0 ? duration : backupDuration || 0
 
   const pos = slidingPositionOverride || position
-  const newProgressValue = duration > 0 ? pos / duration : 0
+  const newProgressValue = parentScopeDuration > 0 ? pos / parentScopeDuration : 0
 
   let clipStartTimePosition = 0
   const sliderWidth = Dimensions.get('screen').width - sliderStyles.wrapper.marginHorizontal * 2
 
-  if (duration && clipStartTime) {
-    clipStartTimePosition = sliderWidth * (clipStartTime / duration)
+  if (parentScopeDuration && clipStartTime) {
+    clipStartTimePosition = sliderWidth * (clipStartTime / parentScopeDuration)
   }
 
   let clipWidthBar = sliderWidth - clipStartTimePosition
   if (isMakeClipScreen && !clipEndTime) {
     clipWidthBar = 0
-  } else if (duration && clipEndTime) {
-    const endPosition = sliderWidth * (clipEndTime / duration)
+  } else if (parentScopeDuration && clipEndTime) {
+    const endPosition = sliderWidth * (clipEndTime / parentScopeDuration)
     clipWidthBar = endPosition - clipStartTimePosition
   }
 
@@ -89,27 +91,27 @@ export function PlayerProgressBar(props: Props) {
         minimumTrackTintColor={PV.Colors.skyDark}
         maximumTrackTintColor={PV.Colors.gray}
         onSlidingStart={(newProgressValue) => {
-          const slidingPositionOverride = newProgressValue * duration
+          const slidingPositionOverride = newProgressValue * parentScopeDuration
           setLocalState({ ...localState, slidingPositionOverride })
         }}
         onSlidingComplete={async (newProgressValue) => {
-          const position = newProgressValue * duration
+          const position = newProgressValue * parentScopeDuration
           await setPlaybackPosition(position)
 
           /*
             Calling TrackPlayer.seekTo(position) in setPlaybackPosition causes the progress bar
             to re-render with the *last* position, before finally seeking to the new position
             and then re-rendering with the new correct position. To workaround this, I am adding
-            a 2 second delay before clearing the slidingPositionOverride from local state.
+            a 1.5 second delay before clearing the slidingPositionOverride from local state.
           */
           setTimeout(() => {
             setLocalState({ ...localState, slidingPositionOverride: 0 })
-          }, 2000)
+          }, 1500)
 
           loadChapterPlaybackInfo()
         }}
         onValueChange={(newProgressValue) => {
-          const slidingPositionOverride = newProgressValue * duration
+          const slidingPositionOverride = newProgressValue * parentScopeDuration
           setLocalState({ ...localState, slidingPositionOverride })
         }}
         thumbStyle={sliderStyles.thumbStyle}
@@ -127,18 +129,19 @@ export function PlayerProgressBar(props: Props) {
           </Text>
           <Text
             accessibilityHint={translate('ARIA HINT - This is the duration for this episode')}
-            accessibilityLabel={duration > 0 ? convertSecToHHMMSS(duration) : translate('Unknown duration')}
+            accessibilityLabel={duration > 0 ? convertSecToHHMMSS(parentScopeDuration) : translate('Unknown duration')}
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={sliderStyles.time}>
-            {duration > 0 ? convertSecToHHMMSS(duration) : '--:--'}
+            {parentScopeDuration > 0 ? convertSecToHHMMSS(parentScopeDuration) : '--:--'}
           </Text>
         </View>
       ) : (
         <View style={sliderStyles.timeRow}>
           <Text
             accessibilityHint={translate('ARIA HINT - This is the current playback time for this episode')}
-            accessibilityLabel={duration > 0 ? convertSecToHHMMSS(duration) : translate('Unknown duration')}
+            accessibilityLabel={
+              parentScopeDuration > 0 ? convertSecToHHMMSS(parentScopeDuration) : translate('Unknown duration')}
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={sliderStyles.time}>
@@ -146,7 +149,8 @@ export function PlayerProgressBar(props: Props) {
           </Text>
           <Text
             accessibilityHint={translate('ARIA HINT - This is the duration for this episode')}
-            accessibilityLabel={duration > 0 ? convertSecToHHMMSS(duration) : translate('Unknown duration')}
+            accessibilityLabel={
+              parentScopeDuration > 0 ? convertSecToHHMMSS(parentScopeDuration) : translate('Unknown duration')}
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={sliderStyles.time}>
