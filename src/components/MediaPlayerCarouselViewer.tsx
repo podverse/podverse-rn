@@ -118,7 +118,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             activeOpacity={1}
             {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
             style={styles.imageContainer}>
-            <FastImage key={imageUrl} source={''} styles={imageStyles} />
+            <FastImage key={imageUrl} source={imageUrl} styles={imageStyles} />
           </TouchableOpacity>
         </RNView>
         {!!clipId && (
