@@ -19,7 +19,3 @@ String.prototype.sanitize = function(nsfw: boolean) {
       }).toString()
     : this.toString()
 }
-
-String.prototype.prependTestId = function () {
-  return this ? `${Config.TEST_ID_RESOURCE_ID}:id/${this}` : ''
-}
