@@ -61,6 +61,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
     const wasAlerted = await alertIfNoNetworkConnection(translate('subscribe to podcast'))
     if (wasAlerted) return
     const { nowPlayingItem } = this.global.player
+    
     try {
       if (nowPlayingItem) {
         if (nowPlayingItem.addByRSSPodcastFeedUrl) {
@@ -93,7 +94,11 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
 
   _headerActionSheetButtons = () => {
     const { globalTheme, player, session } = this.global
-    const { nowPlayingItem } = player
+
+    // nowPlayingItem will be undefined when loading from a deep link
+    let { nowPlayingItem } = player
+    nowPlayingItem = nowPlayingItem || {}
+
     const subscribedPodcastIds = safelyUnwrapNestedVariable(() => session.userInfo.subscribedPodcastIds, [])
     const isSubscribed = checkIfSubscribedToPodcast(
       subscribedPodcastIds,

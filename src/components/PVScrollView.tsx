@@ -7,6 +7,7 @@ type Props = {
   children: any
   contentContainerStyle?: any
   decelerationRate?: string
+  fillSpace?: boolean
   horizontal?: boolean
   onMomentumScrollEnd?: any
   onScrollEndDrag?: any
@@ -23,7 +24,7 @@ type Props = {
 }
 
 export const PVScrollView = (props: Props) => {
-  const { scrollViewRef } = props
+  const { contentContainerStyle, scrollViewRef } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   const styles = [props.style, globalTheme.view]
@@ -31,8 +32,18 @@ export const PVScrollView = (props: Props) => {
     styles.push({ backgroundColor: 'transparent' })
   }
 
+  const contentContainerStyles = contentContainerStyle ? [contentContainerStyle] : []
+  if (props.fillSpace) {
+    contentContainerStyles.push({ flex: 1 })
+  }
+
   return (
-    <ScrollView {...props} ref={scrollViewRef} style={styles} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      {...props}
+      contentContainerStyle={contentContainerStyles}
+      ref={scrollViewRef}
+      showsVerticalScrollIndicator={false}
+      style={styles}>
       {props.children}
     </ScrollView>
   )

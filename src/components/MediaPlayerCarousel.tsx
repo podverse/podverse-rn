@@ -126,7 +126,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
     const hasChapters = episode?.chaptersUrl
     const hasTranscript = parsedTranscript?.length > 0
     const { lightningNetwork, streamingEnabled } = this.global.session?.valueTagSettings || {}
-    const { lnpay } = lightningNetwork
+    const { lnpay } = lightningNetwork || {}
     const { globalSettings, lnpayEnabled } = lnpay || {}
     const { boostAmount, streamingAmount } = globalSettings || {}
     const isPlaying = playbackState === RNTPState.Playing

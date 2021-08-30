@@ -105,7 +105,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     const { navigation } = this.props
     const { progressValue, showPlayerMoreActionSheet } = this.state
     const { globalTheme, player, screenPlayer } = this.global
-    const { backupDuration, currentChapter, currentChapters, nowPlayingItem, playbackRate, playbackState } = player
+    const { backupDuration, currentChapter, currentChapters, playbackRate, playbackState } = player
     const { isLoading } = screenPlayer
     const hasErrored = playbackState === PV.Player.errorState
     const hitSlop = {
@@ -114,6 +114,10 @@ export class PlayerControls extends React.PureComponent<Props, State> {
       right: 8,
       top: 8
     }
+
+    // nowPlayingItem will be undefined when loading from a deep link
+    let { nowPlayingItem } = player
+    nowPlayingItem = nowPlayingItem || {}
 
     let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
     let playButtonAdjust = { paddingLeft: 2 } as any
