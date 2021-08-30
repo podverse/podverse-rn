@@ -41,8 +41,13 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
   render() {
     const { handlePressClipInfo, width } = this.props
     const { player, screenPlayer } = this.global
-    const { currentChapter, nowPlayingItem = {} } = player
+    const { currentChapter } = player
     const { isLoading } = screenPlayer
+    
+    // nowPlayingItem will be undefined when loading from a deep link
+    let { nowPlayingItem } = player
+    nowPlayingItem = nowPlayingItem || {}
+
     const { episodeImageUrl, podcastImageUrl } = nowPlayingItem
     let { clipId, clipEndTime, clipStartTime, clipTitle } = nowPlayingItem
     let clipUrl = ''
@@ -113,7 +118,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             activeOpacity={1}
             {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
             style={styles.imageContainer}>
-            <FastImage key={imageUrl} source={imageUrl} styles={imageStyles} />
+            <FastImage key={imageUrl} source={''} styles={imageStyles} />
           </TouchableOpacity>
         </RNView>
         {!!clipId && (
@@ -161,7 +166,8 @@ const styles = StyleSheet.create({
   carouselChapterWrapper: {},
   imageContainer: {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    justifyContent: 'center'
   },
   image: {
     width: '100%',

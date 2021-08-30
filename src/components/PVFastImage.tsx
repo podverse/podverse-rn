@@ -47,6 +47,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     ) : (
       <FastImage
         accessible={accessible}
+        fallback
         key={uuid}
         onError={this._handleError}
         resizeMode={resizeMode}
