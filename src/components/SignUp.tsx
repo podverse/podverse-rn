@@ -3,8 +3,7 @@ import {
   Keyboard,
   Platform,
   ScrollView,
-  StyleSheet,
-  TouchableOpacity
+  StyleSheet
 } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
@@ -138,6 +137,7 @@ export class SignUp extends React.Component<Props, State> {
     } = this.state
 
     const passwordMismatch = passwordVerification.length > 0 && passwordVerification !== password
+    const passwordsMatch = passwordVerification.length > 0 && passwordVerification === password
     const errorStyle = {
       borderColor: PV.Colors.red,
       borderWidth: 2
@@ -149,6 +149,7 @@ export class SignUp extends React.Component<Props, State> {
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator>
         <TextInput
+          accessibilityHint={translate('ARIA HINT - Type your premium account email address')}
           autoCapitalize='none'
           autoCompleteType='email'
           keyboardType='email-address'
@@ -163,6 +164,7 @@ export class SignUp extends React.Component<Props, State> {
           value={this.state.email}
         />
         <TextInput
+          accessibilityHint={translate('ARIA HINT - Type your password with requirements')}
           autoCapitalize='none'
           autoCompleteType='off'
           inputRef={(input) => {
@@ -181,6 +183,7 @@ export class SignUp extends React.Component<Props, State> {
           value={this.state.password}
         />
         <TextInput
+          accessibilityHint={translate('ARIA HINT - Type your password a second time to confirm with requirements')}
           autoCapitalize='none'
           autoCompleteType='off'
           inputRef={(input) => {
@@ -199,27 +202,28 @@ export class SignUp extends React.Component<Props, State> {
           underlineColorAndroid='transparent'
           value={this.state.passwordVerification}
         />
-        <TouchableOpacity activeOpacity={1}>
-          <>
-            <PasswordValidationInfo
-              hasAtLeastXCharacters={hasAtLeastXCharacters}
-              hasLowercase={hasLowercase}
-              hasNumber={hasNumber}
-              hasUppercase={hasUppercase}
-              style={styles.passwordValidationInfo}
-            />
-            <Button
-              disabled={submitIsDisabled}
-              isLoading={isLoading}
-              isPrimary={!submitIsDisabled}
-              onPress={this.signUp}
-              testID={`${testIDPrefix}_submit`}
-              text={translate('Sign Up')}
-              wrapperStyles={styles.signInButton}
-            />
-            {bottomButtons}
-          </>
-        </TouchableOpacity>
+        <PasswordValidationInfo
+          hasAtLeastXCharacters={hasAtLeastXCharacters}
+          hasLowercase={hasLowercase}
+          hasNumber={hasNumber}
+          hasUppercase={hasUppercase}
+          passwordsMatch={passwordsMatch}
+          style={styles.passwordValidationInfo}
+        />
+        <Button
+          accessibilityHint={submitIsDisabled
+            ? translate('ARIA HINT - Type a valid email and matching passwords to enable the sign up button')
+            : translate('ARIA HINT - Tap to sign up')
+          }
+          disabled={submitIsDisabled}
+          isLoading={isLoading}
+          isPrimary={!submitIsDisabled}
+          onPress={this.signUp}
+          testID={`${testIDPrefix}_submit`}
+          text={translate('Sign Up')}
+          wrapperStyles={styles.signInButton}
+        />
+        {bottomButtons}
       </ScrollView>
     )
   }

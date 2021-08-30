@@ -2,8 +2,7 @@ import { Alert, Platform, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { ActivityIndicator, ComparisonTable, Text, TextLink, View } from '../components'
 import { translate } from '../lib/i18n'
-import { hasValidNetworkConnection } from '../lib/network'
-import { getMembershipExpiration, getMembershipStatus, readableDate, testProps } from '../lib/utility'
+import { getMembershipExpiration, getMembershipStatus, readableDate } from '../lib/utility'
 import { PV } from '../resources'
 import { buy1YearPremium } from '../services/purchaseShared'
 import { trackPageView } from '../services/tracking'
@@ -19,7 +18,6 @@ type Props = {
 type State = {
   disableButton: boolean
   isLoading: boolean
-  showNoInternetConnectionMessage?: boolean
 }
 
 const testIDPrefix = 'membership_screen'
@@ -46,12 +44,7 @@ export class MembershipScreen extends React.Component<Props, State> {
       //
     }
 
-    const hasInternetConnection = await hasValidNetworkConnection()
-
-    this.setState({
-      isLoading: false,
-      showNoInternetConnectionMessage: !hasInternetConnection
-    })
+    this.setState({ isLoading: false })
 
     trackPageView('/membership', 'Membership Screen')
   }
@@ -104,26 +97,28 @@ export class MembershipScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { disableButton, isLoading, showNoInternetConnectionMessage } = this.state
+    const { disableButton, isLoading } = this.state
     const { globalTheme, session } = this.global
     const { isLoggedIn, userInfo } = session
     const membershipStatus = getMembershipStatus(userInfo)
     const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
     const expirationDate = getMembershipExpiration(userInfo)
+    const statusAccessibilityLabel = `${translate('Status')}: ${membershipStatus}`
+    const expiresAccessibilityLabel = `${translate('Expires')}: ${readableDate(expirationDate)}`
 
     return (
-      <View style={styles.wrapper} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.wrapper}
+        testID={`${testIDPrefix}_view`}>
         {isLoading && isLoggedIn && <ActivityIndicator fillSpace testID={testIDPrefix} />}
-        {!isLoading && showNoInternetConnectionMessage && (
-          <View style={styles.textRowCentered}>
-            <Text style={[styles.subText, { textAlign: 'center' }]}>
-              {translate('Connect to the internet and reload this page to sign up for Premium')}
-            </Text>
-          </View>
-        )}
         {!isLoading && isLoggedIn && !!membershipStatus && (
           <View>
-            <View style={styles.textRow}>
+            <View
+              accessible
+              // eslint-disable-next-line max-len
+              accessibilityHint={translate('ARIA HINT - This is the membership status of your currently logged-in account')}
+              accessibilityLabel={statusAccessibilityLabel}
+              style={styles.textRow}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 style={styles.label}
@@ -137,7 +132,12 @@ export class MembershipScreen extends React.Component<Props, State> {
                 {membershipStatus}
               </Text>
             </View>
-            <View style={styles.textRow}>
+            <View
+              accessible
+              accessibilityHint={
+                translate('ARIA HINT - This is the date your premium membership will expire unless it is renewed')}
+              accessibilityLabel={expiresAccessibilityLabel}
+              style={styles.textRow}>
               <Text
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 style={styles.label}
@@ -153,11 +153,12 @@ export class MembershipScreen extends React.Component<Props, State> {
             </View>
             <View style={styles.textRowCentered}>
               <TextLink
+                accessibilityHint={translate('ARIA HINT - Tap to renew your premium membership')}
                 disabled={disableButton}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={this.handleRenewPress}
                 style={styles.subText}
-                {...testProps(`${testIDPrefix}_renew_membership`)}>
+                testID={`${testIDPrefix}_renew_membership`}>
                 {translate('Renew Membership')}
               </TextLink>
             </View>
@@ -177,11 +178,12 @@ export class MembershipScreen extends React.Component<Props, State> {
             </View>
             <View style={styles.textRowCentered}>
               <TextLink
+                accessibilityHint={translate('ARIA HINT - Tap to sign up for your premium account')}
                 disabled={disableButton}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={this.handleSignUpPress}
                 style={styles.subText}
-                {...testProps(`${testIDPrefix}_sign_up`)}>
+                testID={`${testIDPrefix}_sign_up`}>
                 {translate('Sign Up')}
               </TextLink>
             </View>
@@ -193,7 +195,8 @@ export class MembershipScreen extends React.Component<Props, State> {
               column1Title={translate('Free')}
               column2Title={translate('Premium')}
               data={comparisonData}
-              mainTitle='Features'
+              mainTitle={translate('Features')}
+              mainTitleAccessibilityHint={translate('ARIA HINT - Membership features header')}
             />
           </View>
         )}
@@ -206,57 +209,62 @@ const comparisonData = [
   {
     text: translate('subscribe to podcasts'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA HINT - Membership - Subscribe to podcasts')
   },
   {
     text: translate('download episodes'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA HINT - Membership - Download episodes')
   },
   {
     text: translate('drag-and-drop queue'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA HINT - Membership - Drag and drop queue')
   },
   {
     text: translate('sleep timer'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA HINT - Membership - Sleep timer')
   },
-  // {
-  //   text: translate('light - dark mode'),
-  //   column1: true,
-  //   column2: true
-  // },
   {
     text: translate('create and share clips'),
     column1: false,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA HINT - Membership - Create and share clips')
   },
   {
     text: translate('sync your subscriptions on all devices'),
     column1: false,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA HINT - Membership - Sync your subscriptions on all devices')
   },
   {
     text: translate('sync your queue on all devices'),
     column1: false,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA HINT - Membership - Sync your queue on all devices')
   },
   {
     text: translate('create playlists'),
     column1: false,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA HINT - Membership - Create playlists')
   },
   {
     text: translate('download a backup of your data'),
     column1: false,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA HINT - Membership - Download a backup of your data')
   },
   {
     text: translate('support free and open source software'),
     column1: true,
-    column2: true
+    column2: true,
+    accessibilityLabel: translate('ARIA HINT - Membership - Support free and open source software')
   }
 ]
 

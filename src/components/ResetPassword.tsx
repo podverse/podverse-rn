@@ -50,6 +50,7 @@ export class ResetPassword extends React.Component<Props, State> {
     return (
       <View style={[styles.view, style]}>
         <TextInput
+          accessibilityHint={translate('ARIA HINT - Type your premium account email address')}
           autoCapitalize='none'
           autoCompleteType='email'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -61,12 +62,16 @@ export class ResetPassword extends React.Component<Props, State> {
           value={this.state.email}
         />
         <Button
+          accessibilityHint={submitIsDisabled
+            ? translate('ARIA HINT - Type your email address in the previous input')
+            : translate('ARIA HINT - Tap to send a password reset link to your email address')
+          }
           disabled={submitIsDisabled}
           isLoading={isLoading}
           isPrimary={!submitIsDisabled}
           onPress={this._resetPassword}
           testID={`${testIDPrefix}_submit`}
-          text={translate('Send Reset')}
+          text={translate('Send Password Reset')}
           wrapperStyles={styles.signInButton}
         />
         {bottomButtons}

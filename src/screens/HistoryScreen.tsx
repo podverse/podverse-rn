@@ -11,7 +11,7 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import { overrideImageUrlWithChapterImageUrl, safeKeyExtractor, testProps } from '../lib/utility'
+import { overrideImageUrlWithChapterImageUrl, safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { loadItemAndPlayTrack } from '../state/actions/player'
@@ -74,6 +74,7 @@ export class HistoryScreen extends React.Component<Props, State> {
             {!navigation.getParam('isEditing') ? (
               <RNView style={styles.headerButtonWrapper}>
                 <NavHeaderButtonText
+                  accessibilityHint={translate('ARIA HINT - Tap to start removing items from your history')}
                   color={textColor}
                   handlePress={navigation.getParam('_startEditing')}
                   style={styles.navHeaderTextButton}
@@ -84,6 +85,7 @@ export class HistoryScreen extends React.Component<Props, State> {
             ) : (
               <RNView style={styles.headerButtonWrapper}>
                 <NavHeaderButtonText
+                  accessibilityHint={translate('ARIA HINT - Tap to stop removing items from your history')}
                   color={textColor}
                   handlePress={navigation.getParam('_stopEditing')}
                   style={styles.navHeaderTextButton}
@@ -148,6 +150,7 @@ export class HistoryScreen extends React.Component<Props, State> {
           {...(item?.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
           {...(item?.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
           handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
+          isHistoryItem
           onPress={() => {
             if (!isEditing) {
               this._handlePlayItem(item)
@@ -204,7 +207,10 @@ export class HistoryScreen extends React.Component<Props, State> {
     const { isLoading, isLoadingMore, isRemoving, isTransparent } = this.state
 
     const view = (
-      <View style={styles.view} transparent={isTransparent} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        transparent={isTransparent}
+        testID={`${testIDPrefix}_view`}>
         {!isLoading && (
           <FlatList
             data={historyItems}

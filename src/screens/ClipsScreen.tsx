@@ -10,7 +10,6 @@ import {
   Divider,
   FlatList,
   SearchBar,
-  SwipeRowBack,
   TableSectionSelectors,
   View
 } from '../components'
@@ -19,7 +18,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { safeKeyExtractor, safelyUnwrapNestedVariable, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { safeKeyExtractor, safelyUnwrapNestedVariable, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
@@ -315,15 +314,7 @@ export class ClipsScreen extends React.Component<Props, State> {
     }
   }
 
-  _renderHiddenItem = ({ item, index }, rowMap) => (
-    <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      testID={`${testIDPrefix}_clip_item_${index}`}
-      text={translate('Delete')}
-    />
-  )
-
-  _handleHiddenItemPress = (selectedId) => {
+  _handleDeleteClip = (selectedId) => {
     this.setState({
       mediaRefIdToDelete: selectedId,
       showDeleteConfirmDialog: true
@@ -414,7 +405,9 @@ export class ClipsScreen extends React.Component<Props, State> {
     const showOfflineMessage = offlineModeEnabled
 
     return (
-      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        testID={`${testIDPrefix}_view`}>
         <TableSectionSelectors
           filterScreenTitle={translate('Clips')}
           handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
@@ -451,7 +444,6 @@ export class ClipsScreen extends React.Component<Props, State> {
             }
             onEndReached={this._onEndReached}
             onRefresh={this._onRefresh}
-            renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderClipItem}
             showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
           />
@@ -464,7 +456,7 @@ export class ClipsScreen extends React.Component<Props, State> {
             return PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
               handleDismiss: this._handleCancelPress,
               handleDownload: this._handleDownloadPressed,
-              handleDeleteClip: this._handleHiddenItemPress,
+              handleDeleteClip: this._handleDeleteClip,
               includeGoToEpisode: true
             })
           }}
@@ -477,12 +469,12 @@ export class ClipsScreen extends React.Component<Props, State> {
           <Dialog.Button
             label={translate('Cancel')}
             onPress={this._cancelDeleteMediaRef}
-            {...testProps(`${testIDPrefix}_delete_clip_cancel`)}
+            testID={`${testIDPrefix}_delete_clip_cancel`}
           />
           <Dialog.Button
             label={translate('Delete')}
             onPress={this._deleteMediaRef}
-            {...testProps(`${testIDPrefix}_delete_clip_delete`)}
+            testID={`${testIDPrefix}_delete_clip_delete`}
           />
         </Dialog.Container>
       </View>

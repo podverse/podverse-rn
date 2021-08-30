@@ -20,33 +20,33 @@ import { getDownloadedPodcasts } from '../lib/downloadedPodcast'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { getAppUserAgent, safeKeyExtractor, setAppUserAgent, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisode } from '../services/episode'
 import PVEventEmitter from '../services/eventEmitter'
-import { checkIdlePlayerState, PVTrackPlayer, updateTrackPlayerCapabilities,
+import { checkIdlePlayerState, updateTrackPlayerCapabilities,
   updateUserPlaybackPosition } from '../services/player'
-  import { getPodcast, getPodcasts } from '../services/podcast'
-  import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
-  import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
-  import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
-  import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
-  import { updateWalletInfo } from '../state/actions/lnpay'
-  import {
-    initializePlaybackSpeed,
-    initializePlayerQueue,
-    initPlayerState,
-    showMiniPlayer,
-    updatePlaybackState,
-    updatePlayerState
-  } from '../state/actions/player'
-  import { combineWithAddByRSSPodcasts,
-    getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
-    import { initializeSettings } from '../state/actions/settings'
-    import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
-    import { initializeValueProcessor } from '../state/actions/valueTag'
-    import { core, darkTheme } from '../styles'
+import { getPodcast, getPodcasts } from '../services/podcast'
+import { getTrackingConsentAcknowledged, setTrackingConsentAcknowledged, trackPageView } from '../services/tracking'
+import { getNowPlayingItemLocally } from '../services/userNowPlayingItem'
+import { askToSyncWithNowPlayingItem, getAuthenticatedUserInfoLocally, getAuthUserInfo } from '../state/actions/auth'
+import { initDownloads, removeDownloadedPodcast } from '../state/actions/downloads'
+import { updateWalletInfo } from '../state/actions/lnpay'
+import {
+  initializePlaybackSpeed,
+  initializePlayerQueue,
+  initPlayerState,
+  showMiniPlayer,
+  updatePlaybackState,
+  updatePlayerState
+} from '../state/actions/player'
+import { combineWithAddByRSSPodcasts,
+  getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
+import { initializeSettings } from '../state/actions/settings'
+import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
+import { initializeValueProcessor } from '../state/actions/valueTag'
+import { core, darkTheme } from '../styles'
 
 type Props = {
   navigation?: any
@@ -528,29 +528,34 @@ export class PodcastsScreen extends React.Component<Props, State> {
   _ItemSeparatorComponent = () => <Divider style={{ marginHorizontal: 10 }} />
 
   _renderPodcastItem = ({ item, index }) => (
-      <PodcastTableCell
-        id={item?.id}
-        lastEpisodePubDate={item.lastEpisodePubDate}
-        onPress={() =>
-          this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
-            podcast: item,
-            addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
-          })
-        }
-        podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
-        {...(item.title ? { podcastTitle: item.title } : {})}
-        showAutoDownload
-        showDownloadCount
-        testID={`${testIDPrefix}_podcast_item_${index}`}
-      />
-    )
+    <PodcastTableCell
+      id={item?.id}
+      lastEpisodePubDate={item.lastEpisodePubDate}
+      onPress={() =>
+        this.props.navigation.navigate(PV.RouteNames.PodcastScreen, {
+          podcast: item,
+          addByRSSPodcastFeedUrl: item.addByRSSPodcastFeedUrl
+        })
+      }
+      podcastImageUrl={item.shrunkImageUrl || item.imageUrl}
+      {...(item.title ? { podcastTitle: item.title } : {})}
+      showAutoDownload
+      showDownloadCount
+      testID={`${testIDPrefix}_podcast_item_${index}`}
+    />
+  )
 
   _renderHiddenItem = ({ item, index }, rowMap) => {
     const { queryFrom } = this.state
+    const title = item?.title ? item.title : translate('Untitled Podcast')
     const buttonText = queryFrom === PV.Filters._downloadedKey ? translate('Delete') : translate('Unsubscribe')
+    const buttonAccessibilityLabel = queryFrom === PV.Filters._downloadedKey
+      ? `${translate(`ARIA HINT - Tap to delete all downloaded episodes from`)} ${title}`
+      : `${translate(`ARIA HINT - Tap to unsubscribe from`)} ${title}`
 
     return (
       <SwipeRowBack
+        accessibilityLabel={buttonAccessibilityLabel}
         isLoading={this.state.isUnsubscribing}
         onPress={() => this._handleHiddenItemPress(item.id, item.addByRSSPodcastFeedUrl, rowMap)}
         testID={`${testIDPrefix}_podcast_item_${index}`}
@@ -645,7 +650,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
   }
 
   _handleScanQRCodeNavigation = () => {
-    this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
+    // this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
   }
 
   _handleNoResultsTopAction = () => {
@@ -710,7 +715,9 @@ export class PodcastsScreen extends React.Component<Props, State> {
         : translate('Search')
 
     return (
-      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        testID={`${testIDPrefix}_view`}>
         <RNView style={{ flex: 1 }}>
           <PlayerEvents />
           <TableSectionSelectors
@@ -747,6 +754,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
                   ? this._ListHeaderComponent
                   : null
               }
+              noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - Tap to go to the search screen')}
               noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
               noResultsMessage={
                 noSubscribedPodcasts ? translate("You don't have any podcasts yet") : translate('No podcasts found')
@@ -759,18 +767,18 @@ export class PodcastsScreen extends React.Component<Props, State> {
             />
           )}
         </RNView>
-        <Dialog.Container visible={showDataSettingsConfirmDialog}>
+        <Dialog.Container accessible visible={showDataSettingsConfirmDialog}>
           <Dialog.Title>Data Settings</Dialog.Title>
           <Dialog.Description>Do you want to allow downloading episodes with your data plan?</Dialog.Description>
           <Dialog.Button
             label={translate('No Wifi Only')}
             onPress={this._handleDataSettingsWifiOnly}
-            {...testProps('alert_no_wifi_only')}
+            testID='alert_no_wifi_only'
           />
           <Dialog.Button
             label={translate('Yes Allow Data')}
             onPress={this._handleDataSettingsAllowData}
-            {...testProps('alert_yes_allow_data')}
+            testID='alert_yes_allow_data'
           />
         </Dialog.Container>
         <PurchaseListener navigation={navigation} />

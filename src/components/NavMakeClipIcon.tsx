@@ -2,6 +2,7 @@ import Config from 'react-native-config'
 import React, { getGlobal } from 'reactn'
 import { GlobalTheme } from '../../src/resources/Interfaces'
 import { darkTheme } from '../../src/styles'
+import { translate } from '../lib/i18n'
 import { getMakeClipIsPublic, safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { NavItemIcon, NavItemWrapper } from './'
@@ -37,7 +38,12 @@ export const NavMakeClipIcon = (props: Props) => {
   }
 
   return (
-    <NavItemWrapper handlePress={handlePress} testID='nav_make_clip_icon'>
+    <NavItemWrapper
+      accessibilityHint={translate('ARIA HINT - Tap to make a clip from this podcast')}
+      accessibilityLabel={translate('Make Clip')}
+      accessibilityRole='button'
+      handlePress={handlePress}
+      testID='nav_make_clip_icon'>
       <NavItemIcon name='cut' color={color} />
     </NavItemWrapper>
   )

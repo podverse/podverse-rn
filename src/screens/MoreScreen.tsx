@@ -8,7 +8,7 @@ import RNFS from 'react-native-fs'
 import { Divider, TableSectionSelectors, Text, View, ActivityIndicator, TableCell } from '../components'
 import { translate } from '../lib/i18n'
 import { exportSubscribedPodcastsAsOPML } from '../lib/opmlExport'
-import { createEmailLinkUrl, getMembershipStatus, testProps, parseOpmlFile } from '../lib/utility'
+import { createEmailLinkUrl, getMembershipStatus, parseOpmlFile } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { logoutUser } from '../state/actions/auth'
@@ -167,15 +167,23 @@ export class MoreScreen extends React.Component<Props, State> {
     const otherOptions = this._moreOtherOptions(membershipStatus)
 
     return (
-      <View style={core.backgroundView} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={core.backgroundView}
+        testID={`${testIDPrefix}_view`}>
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
-          renderItem={({ item }) => (
-              <TableCell 
-                testIDPrefix={`${testIDPrefix}_${item.key}`}
-                testIDSuffix=''
+          renderItem={({ item }) => {
+            let tableCellAccessibilityHint = translate('ARIA HINT - Tap to go to this screen')
+            if (item.key === _contactKey) {
+              tableCellAccessibilityHint = translate('ARIA HINT - Contact Us button')
+            }
+
+            return (
+              <TableCell
+                accessibilityHint={tableCellAccessibilityHint}
                 onPress={() => this._onPress(item)}
-              >
+                testIDPrefix={`${testIDPrefix}_${item.key}`}
+                testIDSuffix=''>
                 {item.key === _membershipKey ? (
                   <>
                     <Text
@@ -197,7 +205,8 @@ export class MoreScreen extends React.Component<Props, State> {
                   </Text>
                 )}
               </TableCell>
-          )}
+            )
+          }}
           renderSectionHeader={({ section }) => (
             <TableSectionSelectors
               disableFilter

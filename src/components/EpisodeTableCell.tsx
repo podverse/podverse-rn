@@ -1,16 +1,17 @@
 import { StyleSheet, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import React from 'reactn'
 import { translate } from '../lib/i18n'
-import { decodeHTMLString, readableDate, removeHTMLFromString, testProps } from '../lib/utility'
+import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
-import { DownloadButton } from './DownloadButton'
+import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
-import { FastImage, IndicatorDownload, Text, View } from './'
+import { FastImage, Text, View } from './'
 
 type Props = {
+  handleDeletePress?: any
+  handleDownloadPress?: any
   handleMorePress?: any
   handleNavigationPress?: any
-  handleDownloadPress?: any
   hideImage?: boolean
   item?: any
   mediaFileDuration?: number
@@ -24,9 +25,10 @@ type Props = {
 export class EpisodeTableCell extends React.PureComponent<Props> {
   render() {
     const {
+      handleDeletePress,
+      handleDownloadPress,
       handleMorePress,
       handleNavigationPress,
-      handleDownloadPress,
       hideImage,
       item,
       mediaFileDuration,
@@ -54,10 +56,19 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const imageUrl = podcast.shrunkImageUrl || podcast.imageUrl
 
+    const podcastTitleText = podcastTitle.trim()
+    const episodeTitleText = title.trim()
+    const pubDateText = readableDate(pubDate)
+    const accessibilityLabel =
+      `${showPodcastInfo ? `${podcastTitleText}, ` : ''} ${title ? `${title}, ` : ''} ${pubDateText}`
+
     const innerTopView = (
       <RNView style={styles.innerTopView}>
         {!!imageUrl && !hideImage && <FastImage isSmall source={imageUrl} styles={styles.image} />}
-        <RNView style={styles.textWrapper}>
+        <RNView
+          accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
+          accessibilityLabel={accessibilityLabel}
+          style={styles.textWrapper}>
           {showPodcastInfo && podcastTitle && (
             <Text
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
@@ -65,7 +76,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               numberOfLines={1}
               style={styles.podcastTitle}
               testID={`${testID}_podcast_title`}>
-              {podcastTitle.trim()}
+              {podcastTitleText}
             </Text>
           )}
           {title && (
@@ -74,7 +85,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               numberOfLines={2}
               style={titleStyle}
               testID={`${testID}_title`}>
-              {title.trim()}
+              {episodeTitleText}
             </Text>
           )}
           <RNView style={styles.textWrapperBottomRow}>
@@ -83,9 +94,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
               isSecondary
               style={styles.pubDate}
               testID={`${testID}_pub_date`}>
-              {readableDate(pubDate)}
+              {pubDateText}
             </Text>
-            {isDownloaded && <IndicatorDownload />}
           </RNView>
         </RNView>
       </RNView>
@@ -95,6 +105,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const bottomText = (
       <Text
+        accessibilityHint={translate('ARIA HINT - This is the episode description')}
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         isSecondary
         numberOfLines={2}
@@ -109,21 +120,26 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         <RNView style={styles.wrapperTop}>
           {handleNavigationPress ? (
             <TouchableWithoutFeedback
+              accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
               onPress={handleNavigationPress}
-              {...(testID ? testProps(`${testID}_top_view_nav`) : {})}>
+              {...(testID ? { testID: `${testID}_top_view_nav` } : {})}>
               {innerTopView}
             </TouchableWithoutFeedback>
           ) : (
             innerTopView
           )}
-          {!isDownloaded && (
-            <DownloadButton testID={testID} isDownloading={isDownloading} onPress={() => handleDownloadPress(item)} />
-          )}
+          <DownloadOrDeleteButton
+            isDownloaded={isDownloaded}
+            isDownloading={isDownloading}
+            onPressDelete={() => handleDeletePress(item)}
+            onPressDownload={() => handleDownloadPress(item)}
+            testID={testID} />
         </RNView>
         {handleNavigationPress ? (
           <TouchableWithoutFeedback
+            accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
             onPress={handleNavigationPress}
-            {...(testID ? testProps(`${testID}_bottom_view_nav`) : {})}>
+            {...(testID ? { testID: `${testID}_bottom_view_nav` } : {})}>
             <RNView>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</RNView>
           </TouchableWithoutFeedback>
         ) : (

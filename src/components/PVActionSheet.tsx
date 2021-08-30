@@ -1,6 +1,7 @@
 import { Animated, Modal, Text, TouchableHighlight, View, TouchableOpacity } from 'react-native'
 import React from 'reactn'
-import { safelyUnwrapNestedVariable, testProps } from '../lib/utility'
+import { translate } from '../lib/i18n'
+import { safelyUnwrapNestedVariable } from '../lib/utility'
 import { PV } from '../resources'
 import { actionSheetStyles } from '../styles'
 import { ActivityIndicator } from '.'
@@ -102,16 +103,20 @@ export class PVActionSheet extends React.Component<Props, State> {
 
         buttons.push(
           <TouchableHighlight
+            accessible
+            accessibilityHint={item.accessibilityHint}
+            accessibilityLabel={item.accessibilityLabel}
+            accessibilityRole='menuitem'
             key={item.key}
             onPress={onPress}
             style={buttonStyle}
-            {...(testID ? testProps(`${testID}_action_sheet_${item.key}_button`) : {})}
+            {...(testID ? { testID: `${testID}_action_sheet_${item.key}_button` } : {})}
             underlayColor={globalTheme.actionSheetButtonUnderlay?.backgroundColor}>
             <View style={actionSheetStyles.buttonRow}>
               <Text
                 numberOfLines={1}
                 style={[actionSheetStyles.buttonText, buttonTextStyle]}
-                {...(testID ? testProps(`${testID}_action_sheet_${item.key}_text`) : {})}>
+                {...(testID ? { testID: `${testID}_action_sheet_${item.key}_text` } : {})}>
                 {item.text}
               </Text>
               {item.isDownloading && <ActivityIndicator size='small' styles={actionSheetStyles.activityIndicator} />}
@@ -132,10 +137,13 @@ export class PVActionSheet extends React.Component<Props, State> {
 
         buttons.push(
           <TouchableHighlight
+            accessible
+            accessibilityHint={translate('ARIA HINT - Tap to dismiss this menu')}
+            accessibilityRole='menuitem'
             key={PV.Keys.cancel}
             onPress={handleCancelPress}
             style={[actionSheetStyles.buttonCancel, globalTheme.actionSheetButtonCancel]}
-            {...(testID ? testProps(`${testID}_action_sheet_${PV.Keys.cancel}_button`) : {})}
+            {...(testID ? { testID: `${testID}_action_sheet_${PV.Keys.cancel}_button` } : {})}
             underlayColor={safelyUnwrapNestedVariable(
               () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
               ''
@@ -175,6 +183,7 @@ export class PVActionSheet extends React.Component<Props, State> {
     return (
       <Modal transparent visible={showModal} onRequestClose={this.attemptClose}>
         <TouchableOpacity
+          accessible={false}
           activeOpacity={1}
           onPress={this.attemptClose}
           style={[actionSheetStyles.backdrop, globalTheme.modalBackdrop]}>
@@ -188,7 +197,7 @@ export class PVActionSheet extends React.Component<Props, State> {
             {(!!title || !!message) && (
               <View style={[actionSheetStyles.header, globalTheme.actionSheetButton]}>
                 {!!title && (
-                  <Text numberOfLines={1} style={headerTitleStyle}>
+                  <Text accessibilityRole='header' numberOfLines={1} style={headerTitleStyle}>
                     {title}
                   </Text>
                 )}
