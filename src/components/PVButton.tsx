@@ -53,7 +53,7 @@ export const PVButton = (props: Props) => {
       ]}
       disabled={disabled || isLoading}
       onPress={onPress}
-      {...(testID ? { testID: `${testID}_button` } : {})}>
+      {...(testID ? { testID: `${testID}_button`.prependTestId() } : {})}>
       {isLoading ? (
         <ActivityIndicator animating color={globalTheme.buttonPrimaryText.color} size='small' />
       ) : (

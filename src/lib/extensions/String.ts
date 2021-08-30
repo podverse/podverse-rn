@@ -1,5 +1,6 @@
 // tslint:disable:no-string-literal
 import linkifyHtml from 'linkifyjs/html'
+import Config from 'react-native-config'
 
 String.prototype.linkifyHtml = function() {
   return this ? linkifyHtml(this) : ''
@@ -17,4 +18,8 @@ String.prototype.sanitize = function(nsfw: boolean) {
         return '*'.repeat(a.length)
       }).toString()
     : this.toString()
+}
+
+String.prototype.prependTestId = function () {
+  return this ? `${Config.TEST_ID_RESOURCE_ID}:id/${this}` : ''
 }
