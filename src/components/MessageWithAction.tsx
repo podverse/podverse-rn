@@ -4,14 +4,17 @@ import { PV } from '../resources'
 import { ActivityIndicator, Button, SafeAreaView, Text } from './'
 
 type Props = {
+  bottomActionAccessibilityHint?: string
   bottomActionHandler?: any
   bottomActionText?: string
   isLoading?: boolean
   message?: string
+  middleActionAccessibilityHint?: string
   middleActionHandler?: any
   middleActionText?: string
   subMessage?: string
   testID: string
+  topActionAccessibilityHint?: string
   topActionHandler?: any
   topActionText?: string
   transparent?: boolean
@@ -20,14 +23,17 @@ type Props = {
 
 export const MessageWithAction = (props: Props) => {
   const {
+    bottomActionAccessibilityHint,
     bottomActionHandler,
     bottomActionText,
     isLoading,
     message,
+    middleActionAccessibilityHint,
     middleActionHandler,
     middleActionText,
     subMessage,
     testID,
+    topActionAccessibilityHint,
     topActionHandler,
     topActionText,
     transparent,
@@ -55,6 +61,7 @@ export const MessageWithAction = (props: Props) => {
       )}
       {!isLoading && !!topActionText && !!topActionHandler && (
         <Button
+          accessibilityHint={topActionAccessibilityHint}
           onPress={topActionHandler}
           testID={`${testID}_message_with_action_top_button`}
           text={topActionText}
@@ -63,6 +70,7 @@ export const MessageWithAction = (props: Props) => {
       )}
       {!isLoading && !!middleActionText && !!middleActionHandler && (
         <Button
+          accessibilityHint={middleActionAccessibilityHint}
           onPress={middleActionHandler}
           testID={`${testID}_message_with_action_middle_button`}
           text={middleActionText}
@@ -71,6 +79,7 @@ export const MessageWithAction = (props: Props) => {
       )}
       {!isLoading && !!bottomActionText && !!bottomActionHandler && (
         <Button
+          accessibilityHint={bottomActionAccessibilityHint}
           onPress={bottomActionHandler}
           testID={`${testID}_message_with_action_bottom_button`}
           text={bottomActionText}

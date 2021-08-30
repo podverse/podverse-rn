@@ -13,7 +13,7 @@ import {
   View
 } from '../components'
 import { translate } from '../lib/i18n'
-import { createEmailLinkUrl, testProps } from '../lib/utility'
+import { createEmailLinkUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { trackPageView } from '../services/tracking'
@@ -41,6 +41,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
     headerLeft: () => <NavDismissIcon handlePress={navigation.dismiss} testID={testIDPrefix} />,
     headerRight: () => (
       <NavHeaderButtonText
+        accessibilityHint={translate('ARIA HINT - Tap to subscribe to this custom RSS feed')}
         disabled={navigation.getParam('_savePodcastByRSSUrlIsLoading')}
         handlePress={navigation.getParam('_handleSavePodcastByRSSURL')}
         testID={`${testIDPrefix}_save`}
@@ -103,11 +104,14 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
     const { isLoading, url } = this.state
 
     return (
-      <View style={styles.content} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.content}
+        testID={`${testIDPrefix}_view`}>
         {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
         {!isLoading && (
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <TextInput
+              accessibilityHint={translate('ARIA HINT - When finished press the Save button above')}
               autoCapitalize='none'
               autoCompleteType='off'
               autoCorrect={false}
@@ -123,7 +127,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             <Divider style={styles.divider} />
             <Text 
               fontSizeLargestScale={PV.Fonts.largeSizes.sm} 
-              style={[styles.text, {fontWeight: PV.Fonts.weights.bold, marginBottom: 60}]}
+              style={[styles.text, {fontWeight: PV.Fonts.weights.bold, marginBottom: 24}]}
             >
               {translate('AddPodcastByRSSScreenText1')}
             </Text>
@@ -132,10 +136,11 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
             </Text>
             {!!Config.CURATOR_EMAIL && (
               <TextLink
+                accessibilityHint={translate('ARIA HINT - Tap to open your email client to request a podcast by email')}
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 onPress={this._navToRequestPodcastEmail}
                 style={styles.textLink}
-                {...testProps(`${testIDPrefix}_request_podcast`)}>
+                testID={`${testIDPrefix}_request_podcast`}>
                 {translate('Request Podcast')}
               </TextLink>
             )}

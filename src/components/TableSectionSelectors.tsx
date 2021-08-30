@@ -1,10 +1,12 @@
 import { View } from 'react-native'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { getFlatCategoryItems } from '../services/category'
 import { DropdownButton, Text } from './'
 
 type Props = {
+  accessible?: boolean
   addByRSSPodcastFeedUrl?: string
   customButtons?: any
   filterScreenTitle?: string
@@ -20,6 +22,7 @@ type Props = {
   screenName?: string
   selectedCategoryItemKey?: string | null
   selectedCategorySubItemKey?: string | null
+  selectedFilterAccessibilityHint?: string | null
   selectedFilterItemKey?: string | null
   selectedFilterLabel?: string | null
   selectedFromItemKey?: string | null
@@ -50,8 +53,10 @@ export class TableSectionSelectors extends React.Component<Props, State> {
 
   render() {
     const {
+      accessible = true,
       addByRSSPodcastFeedUrl,
       customButtons = null,
+      disableFilter,
       filterScreenTitle,
       handleSelectCategoryItem,
       handleSelectCategorySubItem,
@@ -59,13 +64,13 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       handleSelectFromItem,
       handleSelectSortItem,
       hideDropdown,
-      disableFilter,
       includePadding,
       screenName,
       selectedCategoryItemKey,
       selectedCategorySubItemKey,
       selectedFilterItemKey,
       selectedFilterLabel,
+      selectedFilterAccessibilityHint,
       selectedFromItemKey,
       selectedSortItemKey,
       selectedSortLabel,
@@ -82,6 +87,14 @@ export class TableSectionSelectors extends React.Component<Props, State> {
         <View style={styles.tableSectionHeaderTitleWrapper}>
           {!!selectedFilterLabel && (
             <Text
+              accessible={accessible}
+              accessibilityHint={selectedFilterAccessibilityHint
+                ? selectedFilterAccessibilityHint
+                : !disableFilter
+                  ? translate('ARIA HINT - This is the selected primary filter for this screen')
+                  : ''
+              }
+              accessibilityRole={disableFilter ? 'header' : 'button'}
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               numberOfLines={1}
               style={[styles.tableSectionHeaderTitleText, globalTheme.tableSectionHeaderText, textStyle]}
@@ -94,6 +107,9 @@ export class TableSectionSelectors extends React.Component<Props, State> {
         {
           !hideDropdown &&
             <DropdownButton
+              accessible={accessible && !disableFilter}
+              // eslint-disable-next-line max-len
+              accessibilityHint={translate('ARIA HINT - This is the selected sorting filter for this screen Tap to select a different filter')}
               disableFilter={disableFilter}
               onPress={() => {
                 this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
@@ -113,6 +129,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
                   selectedFromItemKey
                 })
               }}
+              
               sortLabel={selectedSortLabel}
               testID={testID}
               transparent={transparentDropdownButton}

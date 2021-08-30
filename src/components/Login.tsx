@@ -1,4 +1,4 @@
-import { Dimensions, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
+import { Dimensions, ScrollView, StyleSheet } from 'react-native'
 import React from 'reactn'
 import isEmail from 'validator/lib/isEmail'
 import { translate } from '../lib/i18n'
@@ -60,8 +60,11 @@ export class Login extends React.Component<Props, State> {
     const { email, password, submitIsDisabled } = this.state
 
     return (
-      <ScrollView contentContainerStyle={styles.scrollViewContent} style={styles.scrollView}>
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        style={styles.scrollView}>
         <TextInput
+          accessibilityHint={translate('ARIA HINT - Type your premium account email address')}
           autoCapitalize='none'
           autoCompleteType='email'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -77,6 +80,7 @@ export class Login extends React.Component<Props, State> {
           wrapperStyle={core.textInputWrapper}
         />
         <TextInput
+          accessibilityHint={translate('ARIA HINT - Type your password')}
           autoCapitalize='none'
           autoCompleteType='password'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -92,18 +96,20 @@ export class Login extends React.Component<Props, State> {
           underlineColorAndroid='transparent'
           wrapperStyle={core.textInputWrapper}
         />
-        <TouchableOpacity activeOpacity={1}>
-          <Button
-            disabled={submitIsDisabled}
-            isLoading={isLoading}
-            isPrimary={!submitIsDisabled}
-            onPress={this.login}
-            testID={`${testIDPrefix}_submit`}
-            text={translate('Login')}
-            wrapperStyles={styles.signInButton}
-          />
-          {bottomButtons}
-        </TouchableOpacity>
+        <Button
+          accessibilityHint={submitIsDisabled
+            ? translate('ARIA HINT - Type a valid email and password to enable the login button')
+            : translate('ARIA HINT - Tap to login')
+          }
+          disabled={submitIsDisabled}
+          isLoading={isLoading}
+          isPrimary={!submitIsDisabled}
+          onPress={this.login}
+          testID={`${testIDPrefix}_submit`}
+          text={translate('Login')}
+          wrapperStyles={styles.signInButton}
+        />
+        {bottomButtons}
       </ScrollView>
     )
   }
@@ -113,7 +119,7 @@ const deviceWidth = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
   signInButton: {
-    marginBottom: 16
+    marginTop: 8
   },
   signInButtonText: {},
   scrollView: {

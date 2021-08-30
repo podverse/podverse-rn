@@ -18,8 +18,7 @@ import {
 import { translate } from '../lib/i18n'
 import {
   overrideImageUrlWithChapterImageUrl,
-  safeKeyExtractor,
-  testProps
+  safeKeyExtractor
 } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData } from '../services/auth'
@@ -94,18 +93,22 @@ export class QueueScreen extends React.Component<Props, State> {
           {navigation.getParam('viewType') === _historyKey ? (
             <RNView>
               {!navigation.getParam('isEditing') ? (
-                <RNView style={styles.headerButtonWrapper}>
+                <RNView
+                  style={styles.headerButtonWrapper}>
                   <NavHeaderButtonText
+                    accessibilityHint={translate('ARIA HINT - Tap to start removing items from your queue')}
                     color={textColor}
                     handlePress={navigation.getParam('_startEditing')}
                     style={styles.navHeaderTextButton}
                     testID={`${testIDPrefix}_header_edit`}
-                    text={translate('Edit')}
+                    text={translate('Remove')}
                   />
                 </RNView>
               ) : (
-                <RNView style={styles.headerButtonWrapper}>
+                <RNView
+                  style={styles.headerButtonWrapper}>
                   <NavHeaderButtonText
+                    accessibilityHint={translate('ARIA HINT - Tap to stop removing items from your queue')}
                     color={textColor}
                     handlePress={navigation.getParam('_stopEditing')}
                     style={styles.navHeaderTextButton}
@@ -119,14 +122,16 @@ export class QueueScreen extends React.Component<Props, State> {
             <RNView>
               {!navigation.getParam('isEditing') ? (
                 <NavHeaderButtonText
+                  accessibilityHint={translate('ARIA HINT - Tap to start removing items from your queue')}
                   color={textColor}
                   handlePress={navigation.getParam('_startEditing')}
                   style={styles.navHeaderTextButton}
                   testID={`${testIDPrefix}_header_edit`}
-                  text={translate('Edit')}
+                  text={translate('Remove')}
                 />
               ) : (
                 <NavHeaderButtonText
+                  accessibilityHint={translate('ARIA HINT - Tap to stop removing items from your queue')}
                   color={textColor}
                   handlePress={navigation.getParam('_stopEditing')}
                   style={styles.navHeaderTextButton}
@@ -226,7 +231,9 @@ export class QueueScreen extends React.Component<Props, State> {
           {...(item.clipTitle ? { clipTitle: item.clipTitle } : {})}
           {...(item.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
           {...(item.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
-          handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
+          handleRemovePress={() => {
+            this._handleRemoveHistoryItemPress(item)}
+          }
           onPress={() => {
             if (!isEditing) {
               this._handlePlayItem(item)
@@ -292,7 +299,7 @@ export class QueueScreen extends React.Component<Props, State> {
     })
   }
 
-  _onDragEnd = async ({ data, from, to }) => {
+  _onDragEnd = async ({ data, from, to } : { data: NowPlayingItem[], from: number, to: number }) => {
     try {
       const { queueItems: previousQueueItems = [] } = this.global.session.userInfo
       const item = previousQueueItems[from] as any
@@ -308,8 +315,7 @@ export class QueueScreen extends React.Component<Props, State> {
       }
 
       if (item && previousQueueItems.length >= to) {
-        const nextItem = previousQueueItems[to] as any
-        await movePlayerItemToNewPosition(item.clipId || item.episodeId, nextItem.clipId || nextItem.episodeId)
+        await movePlayerItemToNewPosition(item.clipId || item.episodeId, to)
       }
     } catch (error) {
       console.log('QueueScreen - _onReleaseRow - ', error)
@@ -336,7 +342,10 @@ export class QueueScreen extends React.Component<Props, State> {
     const { currentChapter, nowPlayingItem } = this.global.player
     const { isEditing, isLoading, isLoadingMore, isRemoving, isTransparent, viewType } = this.state
     const view = (
-      <View style={styles.view} transparent={isTransparent} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        transparent={isTransparent}
+        testID={`${testIDPrefix}_view`}>
         {!isLoading && viewType === _queueKey && ((queueItems && queueItems.length > 0) || nowPlayingItem) && (
           <View transparent={isTransparent}>
             {!!nowPlayingItem && (
@@ -346,6 +355,9 @@ export class QueueScreen extends React.Component<Props, State> {
                     disableFilter
                     includePadding
                     selectedFilterLabel={translate('Now Playing')}
+                    selectedFilterAccessibilityHint={
+                      translate('ARIA HINT - This section contains information about the currently playing item')
+                    }
                     textStyle={styles.sectionHeaderText}
                   />
                   <QueueTableCell
@@ -355,9 +367,10 @@ export class QueueScreen extends React.Component<Props, State> {
                     {...(nowPlayingItem.episodePubDate ? { episodePubDate: nowPlayingItem.episodePubDate } : {})}
                     {...(nowPlayingItem.episodeTitle ? { episodeTitle: nowPlayingItem.episodeTitle } : {})}
                     hideDivider
+                    isNowPlayingItem
                     podcastImageUrl={nowPlayingItem.podcastImageUrl}
                     {...(nowPlayingItem.podcastTitle ? { podcastTitle: nowPlayingItem.podcastTitle } : {})}
-                    {...testProps(`${testIDPrefix}_now_playing_header`)}
+                    testID={`${testIDPrefix}_now_playing_header`}
                     transparent={isTransparent}
                   />
                 </View>
@@ -368,6 +381,9 @@ export class QueueScreen extends React.Component<Props, State> {
               disableFilter
               includePadding
               selectedFilterLabel={translate('Next Up')}
+              selectedFilterAccessibilityHint={
+                translate('ARIA HINT - This section contains the items next up in your queue')
+              }
               textStyle={styles.sectionHeaderText}
             />
           </View>

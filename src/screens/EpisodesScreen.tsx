@@ -10,7 +10,6 @@ import {
   EpisodeTableCell,
   FlatList,
   SearchBar,
-  SwipeRowBack,
   TableSectionSelectors,
   View
 } from '../components'
@@ -19,7 +18,7 @@ import { downloadEpisode } from '../lib/downloader'
 import { getDefaultSortForFilter, getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
 import { hasValidNetworkConnection } from '../lib/network'
-import { getUniqueArrayByKey, safeKeyExtractor, setCategoryQueryProperty, testProps } from '../lib/utility'
+import { getUniqueArrayByKey, safeKeyExtractor, setCategoryQueryProperty } from '../lib/utility'
 import { PV } from '../resources'
 import { assignCategoryQueryToState, assignCategoryToStateForSortSelect, getCategoryLabel } from '../services/category'
 import { getEpisodes } from '../services/episode'
@@ -324,14 +323,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
     )
   }
 
-  _renderHiddenItem = ({ item, index }, rowMap) => (
-    <SwipeRowBack
-      onPress={() => this._handleHiddenItemPress(item.id, rowMap)}
-      testID={`${testIDPrefix}_episode_item_${index}`}
-      text={translate('Delete')}
-    />
-  )
-
   _handleHiddenItemPress = (selectedId) => {
     const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
     this.setState(
@@ -389,7 +380,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
   }
 
   _handleScanQRCodeNavigation = () => {
-    this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
+    // this.props.navigation.navigate(PV.RouteNames.ScanQRCodeScreen)
   }
 
   _handleNoResultsTopAction = () => {
@@ -436,7 +427,9 @@ export class EpisodesScreen extends React.Component<Props, State> {
         : translate('Search')
 
     return (
-      <View style={styles.view} {...testProps('episodes_screen_view')}>
+      <View
+        style={styles.view}
+        testID='episodes_screen_view'>
         <TableSectionSelectors
           filterScreenTitle={translate('Episodes')}
           handleSelectCategoryItem={(x: any) => this._selectCategory(x)}
@@ -473,7 +466,6 @@ export class EpisodesScreen extends React.Component<Props, State> {
             noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
             onEndReached={this._onEndReached}
             onRefresh={this._onRefresh}
-            renderHiddenItem={this._renderHiddenItem}
             renderItem={this._renderEpisodeItem}
             showNoInternetConnectionMessage={showOfflineMessage || showNoInternetConnectionMessage}
           />

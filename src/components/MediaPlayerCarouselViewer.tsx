@@ -5,7 +5,7 @@ import { translate } from '../lib/i18n'
 import { readableClipTime } from '../lib/utility'
 import { PV } from '../resources'
 import { loadChapterPlaybackInfo } from '../state/actions/playerChapters'
-import { ActivityIndicator, FastImage, Text, TextTicker } from './'
+import { ActivityIndicator, FastImage, ScrollView, Text, TextTicker } from './'
 
 type Props = {
   handlePressClipInfo: any
@@ -38,13 +38,16 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
     ])
   }
 
-
-
   render() {
     const { handlePressClipInfo, width } = this.props
     const { player, screenPlayer } = this.global
-    const { currentChapter, nowPlayingItem = {} } = player
+    const { currentChapter } = player
     const { isLoading } = screenPlayer
+    
+    // nowPlayingItem will be undefined when loading from a deep link
+    let { nowPlayingItem } = player
+    nowPlayingItem = nowPlayingItem || {}
+
     const { episodeImageUrl, podcastImageUrl } = nowPlayingItem
     let { clipId, clipEndTime, clipStartTime, clipTitle } = nowPlayingItem
     let clipUrl = ''
@@ -52,7 +55,8 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
 
     // If a clip is currently playing, then load the clip info.
     // Else if a chapter is currently playing, then override with the chapter info.
-    if (currentChapter && !clipId) {
+    const isOfficialChapter = currentChapter && !clipId
+    if (isOfficialChapter) {
       clipId = currentChapter.id
       clipEndTime = currentChapter.endTime
       clipUrl = currentChapter.linkUrl
@@ -66,9 +70,22 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       imageStyles.push(styles.imageBorder)
     }
 
+    const textTopWrapperAccessibilityLabel = `${nowPlayingItem.episodeTitle}. ${nowPlayingItem.podcastTitle}`
+    const useTo = true
+    const clipAccessibilityLabel = `${clipTitle}, ${readableClipTime(clipStartTime, clipEndTime, useTo)}`
+    const clipAccessibilityHint = isOfficialChapter
+      ? translate('ARIA HINT - This is the now playing chapter info')
+      : translate('ARIA HINT - This is the now playing clip info')
+
     return (
-      <RNView style={[styles.outerWrapper, { width }]}>
-        <RNView style={styles.carouselTextTopWrapper}>
+      <ScrollView
+        scrollEnabled={false}
+        contentContainerStyle={[styles.outerWrapper, { width }]}>
+        <RNView
+          accessible
+          accessibilityHint={translate('ARIA HINT - This is the now playing episode in a carousel')}
+          accessibilityLabel={textTopWrapperAccessibilityLabel}
+          style={styles.carouselTextTopWrapper}>
           {isLoading ? (
             <ActivityIndicator fillSpace testID={testIDPrefix} />
           ) : (
@@ -97,6 +114,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
         </RNView>
         <RNView style={[styles.carouselImageWrapper, { width: width * 0.9 }]}>
           <TouchableOpacity
+            accessible={false}
             activeOpacity={1}
             {...(clipUrl ? { onPress: () => this.handleChapterLinkPress(clipUrl) } : {})}
             style={styles.imageContainer}>
@@ -105,7 +123,10 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
         </RNView>
         {!!clipId && (
           <RNView style={styles.carouselChapterWrapper}>
-            <TouchableWithoutFeedback onPress={handlePressClipInfo}>
+            <TouchableWithoutFeedback
+              accessibilityHint={clipAccessibilityHint}
+              accessibilityLabel={clipAccessibilityLabel}
+              onPress={handlePressClipInfo}>
               <RNView style={styles.clipWrapper}>
                 <TextTicker
                   allowFontScaling={false}
@@ -113,7 +134,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
                   loop
                   styles={styles.clipTitle}
                   textLength={clipTitle?.length}>
-                  {`${clipTitle}`}
+                  {clipTitle}
                 </TextTicker>
                 <Text allowFontScaling={false} style={styles.clipTime} testID='media_player_carousel_viewer_time'>
                   {readableClipTime(clipStartTime, clipEndTime)}
@@ -122,7 +143,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             </TouchableWithoutFeedback>
           </RNView>
         )}
-      </RNView>
+      </ScrollView>
     )
   }
 }
@@ -131,7 +152,8 @@ const styles = StyleSheet.create({
   outerWrapper: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10
+    padding: 10,
+    flex: 1
   },
   carouselTextTopWrapper: {
     justifyContent: 'flex-end',
@@ -144,7 +166,8 @@ const styles = StyleSheet.create({
   carouselChapterWrapper: {},
   imageContainer: {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    justifyContent: 'center'
   },
   image: {
     width: '100%',

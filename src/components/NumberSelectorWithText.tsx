@@ -1,11 +1,13 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import { useGlobal } from 'reactn'
-import { convertSecToHHMMSS, testProps } from '../lib/utility'
+import { convertSecToHHMMSS } from '../lib/utility'
 import { PV } from '../resources'
 import { Text, TextInput } from './'
 
 type Props = {
+  accessibilityHint?: string
+  accessibilityLabel?: string
   editable?: boolean
   handleChangeText?: any
   handleSubmitEditing?: any
@@ -17,11 +19,12 @@ type Props = {
   text: string
   textInputOnPress?: any
   textInputStyle?: any
+  wrapperOnPress?: any
 }
 
 export const NumberSelectorWithText = (props: Props) => {
-  const { editable, handleChangeText, handleSubmitEditing, isHHMMSS, isSmallText,
-    selectedNumber = 0, subText, testID, text, textInputOnPress, textInputStyle = {} } = props
+  const { accessibilityHint, accessibilityLabel, editable, handleChangeText, handleSubmitEditing, isHHMMSS, isSmallText,
+    selectedNumber = 0, subText, testID, text, textInputOnPress, textInputStyle = {}, wrapperOnPress } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   let strNum = ''
@@ -31,33 +34,52 @@ export const NumberSelectorWithText = (props: Props) => {
     strNum = isHHMMSS ? convertSecToHHMMSS(parsedNumber) : parsedNumber.toString()
   }
 
+  const textInput = (
+    <View style={styles.innerWrapper}>
+      <TextInput
+        accessibilityHint={!!wrapperOnPress ? '' : accessibilityHint}
+        accessibilityLabel={!!wrapperOnPress ? '' : accessibilityLabel}
+        autoCompleteType='off'
+        editable={editable}
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
+        keyboardType='numeric'
+        onChangeText={handleChangeText}
+        onPress={textInputOnPress}
+        onSubmitEditing={handleSubmitEditing}
+        placeholderTextColor={globalTheme.placeholderText.color}
+        returnKeyType='done'
+        style={[styles.textInput, textInputStyle]}
+        testID={testID}
+        value={strNum}
+        wrapperStyle={{ marginBottom: 0 }}
+      />
+      <Text
+        accessible={false}
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
+        style={isSmallText ? styles.smallText : styles.text}>
+        {text}
+      </Text>
+    </View>
+  )
+
   return (
     <View style={styles.outerWrapper}>
-      <View style={styles.innerWrapper}>
-        <TextInput
-          autoCompleteType='off'
-          editable={editable}
-          fontSizeLargestScale={PV.Fonts.largeSizes.md}
-          keyboardType='numeric'
-          onChangeText={handleChangeText}
-          onPress={textInputOnPress}
-          onSubmitEditing={handleSubmitEditing}
-          placeholderTextColor={globalTheme.placeholderText.color}
-          returnKeyType='done'
-          style={[styles.textInput, textInputStyle]}
-          testID={testID}
-          value={strNum}
-          wrapperStyle={{ marginBottom: 0 }}
-        />
-        <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={isSmallText ? styles.smallText : styles.text}>
-          {text}
-        </Text>
-      </View>
+      {!!wrapperOnPress
+        ? (
+          <TouchableWithoutFeedback
+            accessibilityHint={accessibilityHint}
+            accessibilityLabel={accessibilityLabel}
+            onPress={wrapperOnPress}>
+            {textInput}
+          </TouchableWithoutFeedback>
+        )
+        : textInput
+      }
       {subText && (
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
           style={[globalTheme.textSecondary, styles.subText]}
-          {...(testID ? testProps(`${testID}_sub_text`) : {})}>
+          {...(testID ? { testID: `${testID}_sub_text` } : {})}>
           {subText}
         </Text>
       )}

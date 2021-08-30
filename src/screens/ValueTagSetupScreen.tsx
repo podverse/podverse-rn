@@ -2,7 +2,7 @@ import { Alert, Keyboard, StyleSheet } from 'react-native'
 import React from 'reactn'
 import { SwitchWithText, Text, TextInput, TextRow, View } from '../components'
 import { translate } from '../lib/i18n'
-import { numberWithCommas, testProps } from '../lib/utility'
+import { numberWithCommas } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { removeLNPayWallet, toggleLNPayFeature, updateWalletInfo } from '../state/actions/lnpay'
@@ -76,7 +76,9 @@ export class ValueTagSetupScreen extends React.Component<Props, State> {
     const walletSatsBalanceText = numberWithCommas(walletSatsBalance) || 0
 
     return (
-      <View style={styles.content} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.content}
+        testID={`${testIDPrefix}_view`}>
         <View style={styles.itemWrapper}>
           <SwitchWithText
             onValueChange={this._showLNPaySetup}

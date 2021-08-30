@@ -4,6 +4,7 @@ import { NowPlayingItem } from 'podverse-shared'
 import { Platform } from 'react-native'
 import { getGlobal, setGlobal } from 'reactn'
 import BackgroundTimer from 'react-native-background-timer'
+import { State as RNTPState } from 'react-native-track-player'
 import { processValueTransactionQueue, saveStreamingValueTransactionsToTransactionQueue } from '../lib/valueTagHelpers'
 import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
@@ -13,6 +14,7 @@ import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
 import PVEventEmitter from './eventEmitter'
 import {
   getClipHasEnded,
+  getCurrentLoadedTrackId,
   getNowPlayingItemFromQueueOrHistoryOrDownloadedByTrackId,
   getPlaybackSpeed,
   handlePlay,
@@ -36,6 +38,8 @@ const debouncedSetPlaybackPosition = debounce(setPlaybackPositionWhenDurationIsA
 
 const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: NowPlayingItem) => {
   if (!currentNowPlayingItem) return
+
+  await clearChapterPlaybackInfo(currentNowPlayingItem)
 
   await setNowPlayingItemLocally(currentNowPlayingItem, currentNowPlayingItem.userPlaybackPosition || 0)
 
@@ -88,7 +92,7 @@ const syncNowPlayingItemWithTrack = () => {
       updatePlaybackState()
       await AsyncStorage.removeItem(PV.Keys.PLAYER_CLIP_IS_LOADED)
 
-      const currentTrackId = await PVTrackPlayer.getCurrentLoadedTrack()
+      const currentTrackId = await getCurrentLoadedTrackId()
       const setPlayerClipIsLoadedIfClip = true
 
       /*
@@ -140,12 +144,6 @@ const handleQueueEnded = (x: any) => {
     (async () => {
       hideMiniPlayer()
       await resetHistoryItem(x)
-
-      // Don't call reset on Android because it triggers the playback-queue-ended event
-      // and will cause an infinite loop
-      if (Platform.OS === 'ios') {
-        PVTrackPlayer.reset()
-      }
     })()
   }, 0)
 }
@@ -164,7 +162,6 @@ module.exports = async () => {
 
   PVTrackPlayer.addEventListener('playback-track-changed', (x: any) => {
     console.log('playback-track-changed', x)
-    clearChapterPlaybackInfo()
     syncNowPlayingItemWithTrack()
     handleTrackEnded(x)
   })
@@ -172,7 +169,6 @@ module.exports = async () => {
   // NOTE: TrackPlayer.reset will call the playback-queue-ended event on Android!!!
   PVTrackPlayer.addEventListener('playback-queue-ended', (x) => {
     console.log('playback-queue-ended', x)
-    clearChapterPlaybackInfo()
     handleQueueEnded(x)
   })
 
@@ -189,17 +185,17 @@ module.exports = async () => {
         const { clipEndTime } = nowPlayingItem
         const currentPosition = await PVTrackPlayer.getTrackPosition()
         const currentState = await PVTrackPlayer.getState()
-        const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
+        const isPlaying = currentState === RNTPState.Playing
 
         const shouldHandleAfterClip = clipHasEnded && clipEndTime && currentPosition >= clipEndTime && isPlaying
         if (shouldHandleAfterClip) {
           await handleResumeAfterClipHasEnded()
         } else {
           if (Platform.OS === 'ios') {
-            if (x.state === PVTrackPlayer.STATE_PLAYING) {
+            if (x.state === RNTPState.Playing) {
               updateUserPlaybackPosition()
               await setRateWithLatestPlaybackSpeed()
-            } else if (x.state === PVTrackPlayer.STATE_PAUSED || PVTrackPlayer.STATE_STOPPED) {
+            } else if (x.state === RNTPState.Paused || RNTPState.Stopped) {
               updateUserPlaybackPosition()
             }
           } else if (Platform.OS === 'android') {
@@ -290,7 +286,7 @@ module.exports = async () => {
         // Thanks to nesinervink and bakkerjoeri for help resolving this issue:
         // https://github.com/react-native-kit/react-native-track-player/issues/687#issuecomment-660149163
         const currentState = await PVTrackPlayer.getState()
-        const isPlaying = currentState === PVTrackPlayer.STATE_PLAYING
+        const isPlaying = currentState === RNTPState.Playing
         if (permanent && isPlaying) {
           PVTrackPlayer.stop()
         } else if (paused) {
@@ -471,7 +467,7 @@ const playbackStateIsPlaying = (playbackState: string | number) => {
   let isPlaying = false
 
   if (Platform.OS === 'ios') {
-    if (playbackState === PVTrackPlayer.STATE_PLAYING) {
+    if (playbackState === RNTPState.Playing) {
       isPlaying = true
     }
   } else if (Platform.OS === 'android') {

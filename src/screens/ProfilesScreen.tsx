@@ -3,7 +3,7 @@ import React from 'reactn'
 import { ActivityIndicator, Divider, FlatList, ProfileTableCell, SwipeRowBack, View } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection, hasValidNetworkConnection } from '../lib/network'
-import { isOdd, testProps } from '../lib/utility'
+import { isOdd } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { getAuthUserInfo } from '../state/actions/auth'
@@ -145,7 +145,9 @@ export class ProfilesScreen extends React.Component<Props, State> {
     const showOfflineMessage = offlineModeEnabled
 
     return (
-      <View style={styles.view} {...testProps(`${testIDPrefix}_view`)}>
+      <View
+        style={styles.view}
+        testID={`${testIDPrefix}_view`}>
         <View style={styles.view}>
           {isLoading && <ActivityIndicator fillSpace testID={testIDPrefix} />}
           {!isLoading && (

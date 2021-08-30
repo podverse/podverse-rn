@@ -25,9 +25,12 @@ type Props = {
   keyExtractor: any
   ListHeaderComponent?: any
   noResultsBottomActionText?: string
+  noResultsBottomActionTextAccessibilityHint?: string
   noResultsMessage?: string
+  noResultsMiddleActionTextAccessibilityHint?: string
   noResultsMiddleActionText?: string
   noResultsSubMessage?: string
+  noResultsTopActionTextAccessibilityHint?: string
   noResultsTopActionText?: string
   onEndReached?: any
   onEndReachedThreshold?: number
@@ -64,11 +67,14 @@ export const PVFlatList = (props: Props) => {
     keyExtractor,
     ListHeaderComponent,
     listRef,
+    noResultsBottomActionTextAccessibilityHint,
     noResultsBottomActionText,
     noResultsMessage,
     noResultsMiddleActionText,
+    noResultsMiddleActionTextAccessibilityHint,
     noResultsSubMessage,
     noResultsTopActionText,
+    noResultsTopActionTextAccessibilityHint,
     onEndReached,
     onEndReachedThreshold = 0.9,
     onRefresh,
@@ -107,8 +113,11 @@ export const PVFlatList = (props: Props) => {
           message={noResultsMessage}
           middleActionHandler={handleNoResultsMiddleAction}
           middleActionText={noResultsMiddleActionText}
+          bottomActionAccessibilityHint={noResultsBottomActionTextAccessibilityHint}
+          middleActionAccessibilityHint={noResultsMiddleActionTextAccessibilityHint}
           subMessage={noResultsSubMessage}
           testID={testID}
+          topActionAccessibilityHint={noResultsTopActionTextAccessibilityHint}
           topActionHandler={handleNoResultsTopAction}
           topActionText={noResultsTopActionText}
           transparent={transparent}

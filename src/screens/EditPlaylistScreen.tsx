@@ -11,7 +11,7 @@ import {
 } from '../components'
 import { translate } from '../lib/i18n'
 import { alertIfNoNetworkConnection } from '../lib/network'
-import { combineAndSortPlaylistItems, testProps } from '../lib/utility'
+import { combineAndSortPlaylistItems } from '../lib/utility'
 import { PV } from '../resources'
 import { trackPageView } from '../services/tracking'
 import { addOrRemovePlaylistItem, getPlaylist, updatePlaylist } from '../state/actions/playlist'
@@ -52,13 +52,17 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     const isEditing = !!navigation.getParam('isEditing')
     const handlePress = navigation.getParam(isEditing ? '_stopEditing' : '_startEditing')
-    const text = isEditing ? translate('Done') : translate('Edit')
+    const text = isEditing ? translate('Done') : translate('Remove')
+    const accessibilityHint = isEditing
+      ? translate('ARIA HINT - Tap to stop removing items from this playlist')
+      : translate('ARIA HINT - Tap to start removing items from this playlist')
 
     return {
       title: translate('Edit Playlist'),
       headerRight: () => (
         <RNView style={styles.headerButtonWrapper}>
           <NavHeaderButtonText
+            accessibilityHint={accessibilityHint}
             handlePress={handlePress}
             style={styles.navHeaderTextButton}
             testID={testIDPrefix}
@@ -166,6 +170,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
           {...(item.episode.title ? { episodeTitle: item.episode.title } : {})}
           handleRemovePress={() => this._handleRemovePlaylistItemPress(item)}
           isActive={isActive}
+          isPlaylistScreen
           podcastImageUrl={item.episode.podcast.shrunkImageUrl || item.episode.podcast.imageUrl}
           {...(item.episode.podcast.title ? { podcastTitle: item.episode.podcast.title } : {})}
           showMoveButton={!isEditing}
@@ -225,9 +230,12 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
     const { isEditing, isLoading, isRemoving, isUpdating, newTitle, sortableListData } = this.state
 
     return (
-      <View style={styles.view} {...testProps('edit_playlist_screen_view')}>
+      <View
+        style={styles.view}
+        testID='edit_playlist_screen_view'>
         <View style={styles.topWrapper}>
           <TextInput
+            accessibilityHint={translate('ARIA HINT - Tap to edit this playlist title')}
             autoCapitalize='none'
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             onBlur={this._updatePlaylist}

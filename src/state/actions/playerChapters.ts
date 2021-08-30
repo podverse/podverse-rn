@@ -2,11 +2,8 @@ import { NowPlayingItem } from 'podverse-shared'
 import { getGlobal, setGlobal } from 'reactn'
 import { retrieveLatestChaptersForEpisodeId } from '../../services/episode'
 import { PVTrackPlayer, updateCurrentTrack } from '../../services/player'
-import { getNowPlayingItemLocally } from '../../services/userNowPlayingItem'
 
-export const clearChapterPlaybackInfo = async () => {
-  const nowPlayingItem = await getNowPlayingItemLocally()
-  
+export const clearChapterPlaybackInfo = async (nowPlayingItem?: NowPlayingItem) => { 
   if (nowPlayingItem) {
     const imageUrl = nowPlayingItem.episodeImageUrl
       || nowPlayingItem.podcastShrunkImageUrl

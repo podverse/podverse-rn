@@ -6,12 +6,14 @@ import {
   NowPlayingItem
 } from 'podverse-shared'
 import Config from 'react-native-config'
+import { State as RNTPState } from 'react-native-track-player'
 import { getGlobal, setGlobal } from 'reactn'
 import { getParsedTranscript } from '../../lib/transcriptHelpers'
 import { convertPodcastIndexValueTagToStandardValueTag } from '../../lib/valueTagHelpers'
 import { PV } from '../../resources'
 import PVEventEmitter from '../../services/eventEmitter'
 import {
+  getCurrentLoadedTrackId,
   handlePlay,
   initializePlayerQueue as initializePlayerQueueService,
   loadItemAndPlayTrack as loadItemAndPlayTrackService,
@@ -36,7 +38,7 @@ const clearEnrichedPodcastDataIfNewEpisode =
   const shouldClearPreviousPlaybackInfo =
     previousNowPlayingItem && previousNowPlayingItem.episodeId !== nowPlayingItem.episodeId
   if (shouldClearPreviousPlaybackInfo) {
-    await clearChapterPlaybackInfo()
+    await clearChapterPlaybackInfo(nowPlayingItem)
     setGlobal({ podcastValueFinal: null })
   }
 }
@@ -95,7 +97,7 @@ export const clearNowPlayingItem = async () => {
     player: {
       ...globalState.player,
       nowPlayingItem: null,
-      playbackState: PVTrackPlayer.STATE_STOPPED,
+      playbackState: RNTPState.Stopped,
       showMiniPlayer: false
     },
     screenPlayer: {
@@ -264,7 +266,7 @@ export const setPlaybackSpeed = async (rate: number) => {
 export const togglePlay = async () => {
   // If somewhere a play button is pressed, but nothing is currently loaded in the player,
   // then load the last time from memory by re-initializing the player.
-  const trackId = await PVTrackPlayer.getCurrentLoadedTrack()
+  const trackId = await getCurrentLoadedTrackId()
   if (!trackId) {
     await initializePlayerQueue()
   }

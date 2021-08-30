@@ -3,7 +3,7 @@ import React from 'reactn'
 import { Button, NavDismissIcon, SafeAreaView, TimePicker, View } from '../components'
 import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime, setStartPodcastFromTime } from '../lib/startPodcastFromTime'
-import { convertHoursMinutesSecondsToSeconds, testProps } from '../lib/utility'
+import { convertHoursMinutesSecondsToSeconds } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
 import { trackPageView } from '../services/tracking'
@@ -72,7 +72,7 @@ export class StartPodcastFromTimeScreen extends React.Component<Props, State> {
     const { startPodcastFromTime } = this.state
 
     return (
-      <SafeAreaView {...testProps(`${testIDPrefix}_view`)}>
+      <SafeAreaView testID={`${testIDPrefix}_view`}>
         <View style={styles.view}>
           <TimePicker
             currentTime={startPodcastFromTime}
