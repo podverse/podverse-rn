@@ -230,7 +230,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     const testID = getTestID()
 
     return (
-      <ScrollView style={[styles.wrapper, { width }]} transparent>
+      <ScrollView fillSpace style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors
           filterScreenTitle={translate('Clips')}
           handleSelectFromItem={this._selectQueryFrom}

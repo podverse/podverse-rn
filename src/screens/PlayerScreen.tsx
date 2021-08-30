@@ -59,7 +59,11 @@ export class PlayerScreen extends React.Component<Props> {
     const addByRSSPodcastFeedUrl = navigation.getParam('addByRSSPodcastFeedUrl')
 
     const { globalTheme, player, podcastValueFinal } = getGlobal()
-    const { nowPlayingItem } = player
+
+    // nowPlayingItem will be undefined when loading from a deep link
+    let { nowPlayingItem } = player
+    nowPlayingItem = nowPlayingItem || {}
+
     const { episodeFunding, episodeValue, podcastFunding, podcastValue } = nowPlayingItem
 
     const showFundingIcon = podcastFunding?.length > 0

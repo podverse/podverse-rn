@@ -102,7 +102,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
     const testID = getTestID()
 
     return (
-      <ScrollView style={[styles.wrapper, { width }]} transparent>
+      <ScrollView fillSpace style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors
           disableFilter
           includePadding
