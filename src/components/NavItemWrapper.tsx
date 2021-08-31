@@ -29,7 +29,7 @@ export const NavItemWrapper = (props: Props) => {
           top: 12
         }}
         onPress={handlePress}
-        {...(testID ? { testID } : {})}>
+        {...(testID ? { testID: testID.prependTestId() } : {})}>
         {children}
       </TouchableOpacity>
     </View>

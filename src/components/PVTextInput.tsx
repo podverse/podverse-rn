@@ -117,7 +117,7 @@ export const PVTextInput = (props: Props) => {
           secureTextEntry={secureTextEntry}
           style={[globalTheme.textInput, core.textInput, style, textInputStyle]}
           underlineColorAndroid={underlineColorAndroid}
-          {...(testID ? { testID: `${testID}_text_input` } : {})}
+          {...(testID ? { testID: `${testID}_text_input`.prependTestId() } : {})}
           value={value}
         />
       </View>

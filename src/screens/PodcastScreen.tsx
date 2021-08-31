@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import debounce from 'lodash/debounce'
-import { convertToNowPlayingItem, NowPlayingItem } from 'podverse-shared'
+import { convertToNowPlayingItem } from 'podverse-shared'
 import { StyleSheet, View as RNView } from 'react-native'
 import Dialog from 'react-native-dialog'
 import { NavigationStackOptions } from 'react-navigation-stack'
@@ -25,7 +25,7 @@ import {
   View
 } from '../components'
 import { getDownloadedEpisodeLimit, setDownloadedEpisodeLimit } from '../lib/downloadedEpisodeLimiter'
-import { getDownloadedEpisodes, removeDownloadedPodcast } from '../lib/downloadedPodcast'
+import { removeDownloadedPodcast } from '../lib/downloadedPodcast'
 import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFilterLabel, getSelectedSortLabel } from '../lib/filters'
 import { translate } from '../lib/i18n'
@@ -777,12 +777,12 @@ static navigationOptions = ({ navigation }) => {
           <Dialog.Button
             label={translate('No')}
             onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
-            testID='dialog_delete_downloaded_episodes_no'
+            testID={'dialog_delete_downloaded_episodes_no'.prependTestId()}
           />
           <Dialog.Button
             label={translate('Yes')}
             onPress={this._handleDeleteDownloadedEpisodes}
-            testID='dialog_delete_downloaded_episodes_yes'
+            testID={'dialog_delete_downloaded_episodes_yes'.prependTestId()}
           />
         </Dialog.Container>
       </View>

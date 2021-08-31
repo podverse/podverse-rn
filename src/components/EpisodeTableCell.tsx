@@ -122,7 +122,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
             <TouchableWithoutFeedback
               accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
               onPress={handleNavigationPress}
-              {...(testID ? { testID: `${testID}_top_view_nav` } : {})}>
+              {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
               {innerTopView}
             </TouchableWithoutFeedback>
           ) : (
@@ -139,7 +139,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           <TouchableWithoutFeedback
             accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
             onPress={handleNavigationPress}
-            {...(testID ? { testID: `${testID}_bottom_view_nav` } : {})}>
+            {...(testID ? { testID: `${testID}_bottom_view_nav`.prependTestId() } : {})}>
             <RNView>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</RNView>
           </TouchableWithoutFeedback>
         ) : (

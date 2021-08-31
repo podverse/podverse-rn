@@ -156,7 +156,7 @@ export class AddPodcastByRSSAuthScreen extends React.Component<Props, State> {
                 style={[styles.signInButton, disabledStyle]}
                 disabled={submitIsDisabled || isLoading}
                 onPress={this.login}
-                testID={`${testIDPrefix}_submit`}>
+                testID={`${testIDPrefix}_submit`.prependTestId()}>
                 {isLoading ? (
                   <ActivityIndicator size='small' testID={testIDPrefix} />
                 ) : (

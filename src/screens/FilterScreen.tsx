@@ -225,7 +225,7 @@ export class FilterScreen extends React.Component<Props, State> {
             handleSelect(categoryValueOverride || value)
           })
         }}
-        testID={`${testIDPrefix}_${value}`}>
+        testID={`${testIDPrefix}_${value}`.prependTestId()}>
         <View style={styles.itemWrapper}>
           <Text
             style={[itemTextStyle, isActive ? { fontWeight: PV.Fonts.weights.extraBold, color: PV.Colors.white } : {}]}>

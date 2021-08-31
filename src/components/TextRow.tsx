@@ -20,10 +20,16 @@ export const TextRow = (props: Props) => {
 
   return (
     <View style={[styles.textRow, wrapperStyle]}>
-      <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.label} testID={`${testID}_label`}>
+      <Text
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
+        style={styles.label}
+        testID={`${testID}_label`}>
         {label}{' '}
       </Text>
-      <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.text} testID={`${testID}_text`}>
+      <Text
+        fontSizeLargestScale={PV.Fonts.largeSizes.md}
+        style={styles.text}
+        testID={`${testID}_text`}>
         {text}
       </Text>
     </View>

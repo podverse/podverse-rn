@@ -499,7 +499,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       top: 4
                     }}
                     onPress={this._clearEndTime}
-                    testID={`${testIDPrefix}_time_input_clear_button`}>
+                    testID={`${testIDPrefix}_time_input_clear_button`.prependTestId()}>
                     <Text
                       accessible
                       accessibilityHint={translate('ARIA HINT - Tap to remove the end time for this clip')}
@@ -526,7 +526,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     <TouchableOpacity
                       onPress={this._playerJumpBackward}
                       style={playerStyles.icon}
-                      testID={`${testIDPrefix}_jump_backward`}>
+                      testID={`${testIDPrefix}_jump_backward`.prependTestId()}>
                       {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS)}
                       <View style={styles.skipTimeTextWrapper} transparent>
                         <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
@@ -535,7 +535,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     <TouchableOpacity
                       onPress={this._playerMiniJumpBackward}
                       style={playerStyles.icon}
-                      testID={`${testIDPrefix}_mini_jump_backward`}>
+                      testID={`${testIDPrefix}_mini_jump_backward`.prependTestId()}>
                       {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS)}
                       <View style={styles.skipTimeTextWrapper} transparent>
                         <Text style={styles.skipTimeText}>1</Text>
@@ -544,7 +544,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     <TouchableOpacity
                       onPress={() => togglePlay()}
                       style={playerStyles.playButton}
-                      testID={`${testIDPrefix}_toggle_play`}>
+                      testID={`${testIDPrefix}_toggle_play`.prependTestId()}>
                       {!checkIfStateIsBuffering(playbackState) ? (
                         <Icon
                           name={playbackState === RNTPState.Playing ? 'pause' : 'play'}
@@ -558,7 +558,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     <TouchableOpacity
                       onPress={this._playerMiniJumpForward}
                       style={playerStyles.icon}
-                      testID={`${testIDPrefix}_mini_jump_forward`}>
+                      testID={`${testIDPrefix}_mini_jump_forward`.prependTestId()}>
                       {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD)}
                       <View style={styles.skipTimeTextWrapper} transparent>
                         <Text style={styles.skipTimeText}>1</Text>
@@ -567,7 +567,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     <TouchableOpacity
                       onPress={this._playerJumpForward}
                       style={playerStyles.icon}
-                      testID={`${testIDPrefix}_jump_forward`}>
+                      testID={`${testIDPrefix}_jump_forward`.prependTestId()}>
                       {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD)}
                       <View style={styles.skipTimeTextWrapper} transparent>
                         <Text style={styles.skipTimeText}>{PV.Player.jumpSeconds}</Text>
@@ -586,7 +586,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       top: 4
                     }}
                     onPress={() => this.setState({ showHowToModal: true })}
-                    testID={`${testIDPrefix}_show_how_to`}>
+                    testID={`${testIDPrefix}_show_how_to`.prependTestId()}>
                     <View transparent>
                       <Text
                         fontSizeLargestScale={PV.Fonts.largeSizes.sm}
@@ -609,7 +609,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       top: 4
                     }}
                     onPress={this._adjustSpeed}
-                    testID={`${testIDPrefix}_adjust_speed`}>
+                    testID={`${testIDPrefix}_adjust_speed`.prependTestId()}>
                     <View transparent>
                       <Text
                         fontSizeLargestScale={PV.Fonts.largeSizes.sm}
@@ -633,7 +633,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       top: 4
                     }}
                     onPress={() => navigation.navigate(PV.RouteNames.PlayerFAQScreen)}
-                    testID={`${testIDPrefix}_show_faq`}>
+                    testID={`${testIDPrefix}_show_faq`.prependTestId()}>
                     <View transparent>
                       <Text
                         fontSizeLargestScale={PV.Fonts.largeSizes.sm}
@@ -685,7 +685,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   accessibilityRole='button'
                   onPress={this._hideHowTo}
                   style={{ marginTop: 12 }}
-                  testID={`${testIDPrefix}_close`}>
+                  testID={`${testIDPrefix}_close`.prependTestId()}>
                   <Text
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     numberOfLines={1}

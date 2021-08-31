@@ -61,7 +61,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
     const innerTopView = (
       <RNView
         style={styles.innerTopView}
-        {...(testID ? { testID: `${testID}_top_view_nav` } : {})}>
+        {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
         <RNView
           accessible
           accessibilityHint={translate('ARIA HINT - This is the clip title and time range')}

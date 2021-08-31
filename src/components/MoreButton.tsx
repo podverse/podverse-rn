@@ -27,7 +27,7 @@ export const MoreButton = (props: Props) => {
         top: 10
       }}
       onPress={handleMorePress}
-      testID={`${testID}_more_button`}>
+      testID={`${testID}_more_button`.prependTestId()}>
       {!isLoading ? (
         <View style={[styles.imageWrapper]}>
           <Image resizeMode='contain' source={PV.Images.MORE} style={[styles.image, globalTheme.buttonImage]} />

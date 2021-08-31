@@ -31,7 +31,7 @@ export const TimeInput = (props: Props) => {
         accessibilityHint={accessibilityHint}
         accessibilityRole='button'
         onPress={handleSetTime}
-        testID={`${testID}_time_input_set_button`}>
+        testID={`${testID}_time_input_set_button`.prependTestId()}>
         <View style={styles.timeInputTextWrapper}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -63,7 +63,7 @@ export const TimeInput = (props: Props) => {
             top: 4
           }}
           onPress={handlePreview}
-          testID={`${testID}_time_input_preview_button`}>
+          testID={`${testID}_time_input_preview_button`.prependTestId()}>
           <Icon
             color={globalTheme.dropdownButtonText.color}
             name='play'

@@ -165,7 +165,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
           key='cancel'
           onPress={handleDismiss}
           style={[actionSheetStyles.buttonCancel, globalTheme.actionSheetButtonCancel]}
-          testID={`${testIDPrefix}_cancel`}
+          testID={`${testIDPrefix}_cancel`.prependTestId()}
           underlayColor={safelyUnwrapNestedVariable(
             () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
             ''

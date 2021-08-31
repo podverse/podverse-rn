@@ -469,12 +469,12 @@ export class ClipsScreen extends React.Component<Props, State> {
           <Dialog.Button
             label={translate('Cancel')}
             onPress={this._cancelDeleteMediaRef}
-            testID={`${testIDPrefix}_delete_clip_cancel`}
+            testID={`${testIDPrefix}_delete_clip_cancel`.prependTestId()}
           />
           <Dialog.Button
             label={translate('Delete')}
             onPress={this._deleteMediaRef}
-            testID={`${testIDPrefix}_delete_clip_delete`}
+            testID={`${testIDPrefix}_delete_clip_delete`.prependTestId()}
           />
         </Dialog.Container>
       </View>

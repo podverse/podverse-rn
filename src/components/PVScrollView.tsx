@@ -24,7 +24,7 @@ type Props = {
 }
 
 export const PVScrollView = (props: Props) => {
-  const { contentContainerStyle, scrollViewRef } = props
+  const { contentContainerStyle, scrollViewRef, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   const styles = [props.style, globalTheme.view]
@@ -43,7 +43,8 @@ export const PVScrollView = (props: Props) => {
       contentContainerStyle={contentContainerStyles}
       ref={scrollViewRef}
       showsVerticalScrollIndicator={false}
-      style={styles}>
+      style={styles}
+      testID={testID ? { testID: testID.prependTestId() } : {}}>
       {props.children}
     </ScrollView>
   )

@@ -24,7 +24,7 @@ export const SwipeRowBack = (props: Props) => {
       accessibilityLabel={accessibilityLabel}
       onPress={onPress}
       style={[styles, s.swipeRowBack, globalTheme.swipeRowBack]}
-      testID={`${testID}_swipe_row_back`}>
+      testID={`${testID}_swipe_row_back`.prependTestId()}>
       {isLoading ? (
           <ActivityIndicator size='large' testID={testID} />
       ) : (

@@ -27,7 +27,7 @@ export const NavHeaderButtonText = (props: Props) => {
       accessibilityHint={accessibilityHint}
       disabled={disabled}
       onPress={handlePress}
-      testID={`${testID}_nav_header_button_text`}>
+      testID={`${testID}_nav_header_button_text`.prependTestId()}>
       <Text allowFontScaling={false} style={buttonTextStyle} testID={`${testID}_text`}>
         {props.text}
       </Text>

@@ -46,7 +46,7 @@ export class ValueTagConsentScreen extends React.Component<Props, State> {
     return (
       <SafeAreaView
         style={styles.content}
-        testID={`${testIDPrefix}_view`}>
+        testID={`${testIDPrefix}_view`.prependTestId()}>
         <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={styles.title}>
         {translate("value_tag_consent_title")}
         </Text>
@@ -71,7 +71,7 @@ export class ValueTagConsentScreen extends React.Component<Props, State> {
             this.setState({ checkboxSelected: !this.state.checkboxSelected })
           }}
           size={50}
-          testID={`${testIDPrefix}_accept_check_box`}
+          testID={`${testIDPrefix}_accept_check_box`.prependTestId()}
           title={translate("value_tag_consent_checkbox_text")}
           textStyle={{ color: PV.Colors.white, fontSize: PV.Fonts.sizes.lg }}
         />

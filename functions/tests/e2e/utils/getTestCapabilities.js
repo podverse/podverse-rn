@@ -36,7 +36,7 @@ const getTestCapabilities = (customCapabilities) => {
     'build': `${process.env.DEVICE_TYPE}`,
     'name': `${process.env.DEVICE_TYPE}`,
     'app': bsApp,
-    'browserstack.appium_version': '1.17.0'
+    'browserstack.appium_version': '1.21.0'
   });
 
   Object.assign(capabilities, customCapabilities)

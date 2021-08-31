@@ -7,10 +7,10 @@ const noTestLabel = null
 const elementByIdAndClickAndTest = async (id, waitForElementId, testLabel, back) => {
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
-  await driver.waitForElementByAccessibilityId(id, 10000)
-  const element = await driver.elementByAccessibilityId(id)
+  await driver.waitForElementById(id, 10000)
+  const element = await driver.elementById(id)
   await element.click()
-  await driver.waitForElementByAccessibilityId(waitForElementId, 10000)
+  await driver.waitForElementById(waitForElementId, 10000)
   if (back) await driver.back()
   logTestInfo(logKeyEnd, id, testLabel)
 }
@@ -18,8 +18,8 @@ const elementByIdAndClickAndTest = async (id, waitForElementId, testLabel, back)
 const elementByIdClick = async (id, testLabel, back) => {
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
-  await driver.waitForElementByAccessibilityId(id, 10000)
-  const element = await driver.elementByAccessibilityId(id)
+  await driver.waitForElementById(id, 10000)
+  const element = await driver.elementById(id)
   await element.click()
   if (back) await driver.back()
   logTestInfo(logKeyEnd, id, testLabel)
@@ -28,8 +28,8 @@ const elementByIdClick = async (id, testLabel, back) => {
 const elementCheckIfPresent = async (id, testLabel) => {
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
-  // elementByAccessibilityId throws an error if it cannot find a matching element
-  await driver.elementByAccessibilityId(id)
+  // elementById throws an error if it cannot find a matching element
+  await driver.elementById(id)
   logTestInfo(logKeyEnd, id, testLabel)
 }
 
@@ -40,8 +40,8 @@ const elementCheckIfNotPresent = async (id, testLabel) => {
   let shouldPass = false
 
   try {
-    // elementByAccessibilityId throws an error if it cannot find a matching element
-    await driver.elementByAccessibilityId(id)
+    // elementById throws an error if it cannot find a matching element
+    await driver.elementById(id)
   } catch (error) {
     // If the element was not found, then this check has passed.
     shouldPass = true
@@ -57,15 +57,15 @@ const elementCheckIfNotPresent = async (id, testLabel) => {
 const elementWaitFor = async (id, testLabel) => {
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
-  await driver.waitForElementByAccessibilityId(id, 10000)
+  await driver.waitForElementById(id, 10000)
   logTestInfo(logKeyEnd, id, testLabel)
 }
 
 const elementByIdToggle = async (id, testLabel) => {
   const driver = getDriver()
   logTestInfo(logKeyStart, id, testLabel)
-  await driver.waitForElementByAccessibilityId(id, 10000)
-  const element = await driver.elementByAccessibilityId(id)
+  await driver.waitForElementById(id, 10000)
+  const element = await driver.elementById(id)
   await element.click()
   await driver.sleep(1000)
   await element.click()
@@ -79,8 +79,8 @@ const elementByIdHasText = async (id, text, testLabel) => {
   const label = `${testLabel}: text check`
   const driver = getDriver()
   logTestInfo(logKeyStart, id, label)
-  await driver.waitForElementByAccessibilityId(id, 10000)
-  const element = await driver.elementByAccessibilityId(id)
+  await driver.waitForElementById(id, 10000)
+  const element = await driver.elementById(id)
   const actualText = await element.text()
   if (text !== actualText) {
     throw new Error(`
@@ -99,8 +99,8 @@ const elementByIdGetText = async (id, testLabel) => {
   const label = `${testLabel}: text check`
   const driver = getDriver()
   logTestInfo(logKeyStart, id, label)
-  await driver.waitForElementByAccessibilityId(id, 10000)
-  const element = await driver.elementByAccessibilityId(id)
+  await driver.waitForElementById(id, 10000)
+  const element = await driver.elementById(id)
   const actualText = await element.text()
   logTestInfo(logKeyEnd, id, label)
   return actualText

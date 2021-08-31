@@ -110,13 +110,13 @@ export class PVActionSheet extends React.Component<Props, State> {
             key={item.key}
             onPress={onPress}
             style={buttonStyle}
-            {...(testID ? { testID: `${testID}_action_sheet_${item.key}_button` } : {})}
+            {...(testID ? { testID: `${testID}_action_sheet_${item.key}_button`.prependTestId() } : {})}
             underlayColor={globalTheme.actionSheetButtonUnderlay?.backgroundColor}>
             <View style={actionSheetStyles.buttonRow}>
               <Text
                 numberOfLines={1}
                 style={[actionSheetStyles.buttonText, buttonTextStyle]}
-                {...(testID ? { testID: `${testID}_action_sheet_${item.key}_text` } : {})}>
+                {...(testID ? { testID: `${testID}_action_sheet_${item.key}_text`.prependTestId() } : {})}>
                 {item.text}
               </Text>
               {item.isDownloading && <ActivityIndicator size='small' styles={actionSheetStyles.activityIndicator} />}
@@ -143,7 +143,7 @@ export class PVActionSheet extends React.Component<Props, State> {
             key={PV.Keys.cancel}
             onPress={handleCancelPress}
             style={[actionSheetStyles.buttonCancel, globalTheme.actionSheetButtonCancel]}
-            {...(testID ? { testID: `${testID}_action_sheet_${PV.Keys.cancel}_button` } : {})}
+            {...(testID ? { testID: `${testID}_action_sheet_${PV.Keys.cancel}_button`.prependTestId() } : {})}
             underlayColor={safelyUnwrapNestedVariable(
               () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
               ''

@@ -190,7 +190,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
             <TouchableOpacity
               onPress={this._toggleSatStreaming}
               style={styles.boostButton}
-              testID='stream_button'>
+              testID={'stream_button'.prependTestId()}>
               <Text style={streamingButtonMainTextStyles} testID='stream_button_text_1'>
                 {satStreamText.toUpperCase()}
               </Text>
@@ -211,7 +211,7 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
               }}
               onPress={this._attemptBoost}
               style={styles.boostButton}
-              testID='boost_button'>
+              testID={'boost_button'.prependTestId()}>
               {boostIsSending ? (
                 <ActivityIndicator testID={testIDPrefix} />
               ) : (

@@ -18,7 +18,7 @@ type Props = {
 
 export const TextLink = (props: Props) => {
   const { accessible = true, accessibilityHint, children, disabled,
-    fontSizeLargerScale, fontSizeLargestScale, numberOfLines, onPress, style } = props
+    fontSizeLargerScale, fontSizeLargestScale, numberOfLines, onPress, style, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
 
@@ -35,7 +35,8 @@ export const TextLink = (props: Props) => {
       accessibilityHint={accessibilityHint}
       accessibilityRole='button'
       disabled={disabled}
-      onPress={onPress}>
+      onPress={onPress}
+      testID={testID ? { testID: testID.prependTestId() } : {}}>
       <Text
         numberOfLines={numberOfLines}
         style={[style, globalTheme.link, textInputStyle]}>

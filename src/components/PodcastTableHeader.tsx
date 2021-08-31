@@ -114,7 +114,7 @@ export const PodcastTableHeader = (props: Props) => {
                         <Switch
                           style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }], marginLeft: 5 }}
                           trackColor={{ true: PV.Colors.brandBlueLight, false: PV.Colors.grayLightest }}
-                          {...(testID ? { testID: `${testID}_auto_dl_switch` } : {})}
+                          {...(testID ? { testID: `${testID}_auto_dl_switch`.prependTestId() } : {})}
                           value={autoDownloadOn}
                         />
                       </View>
