@@ -53,7 +53,7 @@ export const PVButton = (props: Props) => {
       ]}
       disabled={disabled || isLoading}
       onPress={onPress}
-      {...(testID ? { testID: `${testID}_button` } : {})}>
+      {...(testID ? { testID: `com.podverse:id/${testID}_button` } : {})}>
       {isLoading ? (
         <ActivityIndicator animating color={globalTheme.buttonPrimaryText.color} size='small' />
       ) : (
