@@ -24,11 +24,13 @@ export const TimeInput = (props: Props) => {
   const { accessibilityHint, handlePreview, handleSetTime, labelText, placeholder,
     previewAccessibilityHint, previewAccessibilityLabel, testID, time } = props
   const [globalTheme] = useGlobal('globalTheme')
+  const text = time || time === 0 ? convertSecToHHMMSS(time) : placeholder
 
   return (
     <View style={styles.timeInputWrapper}>
       <TouchableWithoutFeedback
         accessibilityHint={accessibilityHint}
+        accessibilityLabel={text}
         accessibilityRole='button'
         onPress={handleSetTime}
         testID={`${testID}_time_input_set_button`.prependTestId()}>
@@ -46,7 +48,7 @@ export const TimeInput = (props: Props) => {
                 globalTheme.textInput,
                 time || time === 0 ? {} : globalTheme.placeholderText
               ]}>
-              {time || time === 0 ? convertSecToHHMMSS(time) : placeholder}
+              {text}
             </Text>
           </View>
         </View>

@@ -45,6 +45,7 @@ export const MessageWithAction = (props: Props) => {
     <SafeAreaView style={[styles.view, containerStyle]} transparent={transparent}>
       {!!message && (
         <Text
+          accessible
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           style={[globalTheme.text, styles.message]}
           testID={`${testID}_message_with_action_message`}>
@@ -53,6 +54,7 @@ export const MessageWithAction = (props: Props) => {
       )}
       {!!subMessage && (
         <Text
+          accessible
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
           style={[globalTheme.text, styles.subMessage]}
           testID={`${testID}_message_with_action_sub_message`}>
@@ -62,6 +64,7 @@ export const MessageWithAction = (props: Props) => {
       {!isLoading && !!topActionText && !!topActionHandler && (
         <Button
           accessibilityHint={topActionAccessibilityHint}
+          accessibilityLabel={topActionText}
           onPress={topActionHandler}
           testID={`${testID}_message_with_action_top_button`}
           text={topActionText}
@@ -71,6 +74,7 @@ export const MessageWithAction = (props: Props) => {
       {!isLoading && !!middleActionText && !!middleActionHandler && (
         <Button
           accessibilityHint={middleActionAccessibilityHint}
+          accessibilityLabel={middleActionText}
           onPress={middleActionHandler}
           testID={`${testID}_message_with_action_middle_button`}
           text={middleActionText}
@@ -80,6 +84,7 @@ export const MessageWithAction = (props: Props) => {
       {!isLoading && !!bottomActionText && !!bottomActionHandler && (
         <Button
           accessibilityHint={bottomActionAccessibilityHint}
+          accessibilityLabel={bottomActionText}
           onPress={bottomActionHandler}
           testID={`${testID}_message_with_action_bottom_button`}
           text={bottomActionText}

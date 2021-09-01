@@ -19,6 +19,7 @@ export const DropdownButton = (props: any) => {
     <TouchableOpacity
       accessible={accessible}
       accessibilityHint={accessibilityHint}
+      accessibilityLabel={sortLabel}
       accessibilityRole='button'
       activeOpacity={0.7}
       disabled={disableFilter}

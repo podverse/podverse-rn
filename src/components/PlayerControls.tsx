@@ -232,6 +232,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
           </TouchableOpacity>
           <TouchableWithoutFeedback
             accessibilityHint={translate('ARIA HINT - This is the current playback speed')}
+            accessibilityLabel={`${playbackRate}X`}
             accessibilityRole='button'
             hitSlop={hitSlop}
             onPress={this._adjustSpeed}>

@@ -97,6 +97,7 @@ export class QueueScreen extends React.Component<Props, State> {
                   style={styles.headerButtonWrapper}>
                   <NavHeaderButtonText
                     accessibilityHint={translate('ARIA HINT - Tap to start removing items from your queue')}
+                    accessibilityLabel={translate('Remove')}
                     color={textColor}
                     handlePress={navigation.getParam('_startEditing')}
                     style={styles.navHeaderTextButton}
@@ -109,6 +110,7 @@ export class QueueScreen extends React.Component<Props, State> {
                   style={styles.headerButtonWrapper}>
                   <NavHeaderButtonText
                     accessibilityHint={translate('ARIA HINT - Tap to stop removing items from your queue')}
+                    accessibilityLabel={translate('Done')}
                     color={textColor}
                     handlePress={navigation.getParam('_stopEditing')}
                     style={styles.navHeaderTextButton}
@@ -123,6 +125,7 @@ export class QueueScreen extends React.Component<Props, State> {
               {!navigation.getParam('isEditing') ? (
                 <NavHeaderButtonText
                   accessibilityHint={translate('ARIA HINT - Tap to start removing items from your queue')}
+                  accessibilityLabel={translate('Remove')}
                   color={textColor}
                   handlePress={navigation.getParam('_startEditing')}
                   style={styles.navHeaderTextButton}
@@ -132,6 +135,7 @@ export class QueueScreen extends React.Component<Props, State> {
               ) : (
                 <NavHeaderButtonText
                   accessibilityHint={translate('ARIA HINT - Tap to stop removing items from your queue')}
+                  accessibilityLabel={translate('Done')}
                   color={textColor}
                   handlePress={navigation.getParam('_stopEditing')}
                   style={styles.navHeaderTextButton}
@@ -354,10 +358,10 @@ export class QueueScreen extends React.Component<Props, State> {
                   <TableSectionSelectors
                     disableFilter
                     includePadding
-                    selectedFilterLabel={translate('Now Playing')}
                     selectedFilterAccessibilityHint={
                       translate('ARIA HINT - This section contains information about the currently playing item')
                     }
+                    selectedFilterLabel={translate('Now Playing')}
                     textStyle={styles.sectionHeaderText}
                   />
                   <QueueTableCell
@@ -380,10 +384,10 @@ export class QueueScreen extends React.Component<Props, State> {
             <TableSectionSelectors
               disableFilter
               includePadding
-              selectedFilterLabel={translate('Next Up')}
               selectedFilterAccessibilityHint={
                 translate('ARIA HINT - This section contains the items next up in your queue')
               }
+              selectedFilterLabel={translate('Next Up')}
               textStyle={styles.sectionHeaderText}
             />
           </View>

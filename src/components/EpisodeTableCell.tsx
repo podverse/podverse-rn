@@ -63,11 +63,12 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       `${showPodcastInfo ? `${podcastTitleText}, ` : ''} ${title ? `${title}, ` : ''} ${pubDateText}`
 
     const innerTopView = (
-      <RNView style={styles.innerTopView}>
+      <RNView
+        accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
+        accessibilityLabel={accessibilityLabel}
+        style={styles.innerTopView}>
         {!!imageUrl && !hideImage && <FastImage isSmall source={imageUrl} styles={styles.image} />}
         <RNView
-          accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
-          accessibilityLabel={accessibilityLabel}
           style={styles.textWrapper}>
           {showPodcastInfo && podcastTitle && (
             <Text
@@ -106,6 +107,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const bottomText = (
       <Text
         accessibilityHint={translate('ARIA HINT - This is the episode description')}
+        accessibilityLabel={description.trim()}
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         isSecondary
         numberOfLines={2}
@@ -121,6 +123,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           {handleNavigationPress ? (
             <TouchableWithoutFeedback
               accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
+              accessibilityLabel={accessibilityLabel}
               onPress={handleNavigationPress}
               {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
               {innerTopView}
@@ -138,6 +141,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         {handleNavigationPress ? (
           <TouchableWithoutFeedback
             accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
+            accessibilityLabel={description.trim()}
             onPress={handleNavigationPress}
             {...(testID ? { testID: `${testID}_bottom_view_nav`.prependTestId() } : {})}>
             <RNView>{PV.Fonts.fontScale.largest !== fontScaleMode && bottomText}</RNView>
