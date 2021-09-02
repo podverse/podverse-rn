@@ -22,7 +22,7 @@ import {
 } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData } from '../services/auth'
-import { movePlayerItemToNewPosition } from '../services/player'
+import { movePlayerItemToNewPosition, syncPlayerWithQueue } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { addQueueItemToServer, getQueueItems, removeQueueItem, setAllQueueItemsLocally } from '../state/actions/queue'
@@ -220,6 +220,7 @@ export class QueueScreen extends React.Component<Props, State> {
     if (queueItems && queueItems[rowIndex]) {
       const item = queueItems[rowIndex]
       await removeQueueItem(item)
+      await syncPlayerWithQueue()
       this._handlePlayItem(item)
     }
   }
@@ -282,6 +283,7 @@ export class QueueScreen extends React.Component<Props, State> {
       (async () => {
         try {
           await removeQueueItem(item)
+          await syncPlayerWithQueue()
         } catch (error) {
           //
         }

@@ -360,7 +360,7 @@ export const loadItemAndPlayTrack = async (
   } else {
     const currentId = await getCurrentLoadedTrackId()
     if (currentId) {
-      await TrackPlayer.removeUpcomingTracks()
+      TrackPlayer.removeUpcomingTracks()
       const track = (await createTrack(item)) as Track
       await TrackPlayer.add(track)
       await TrackPlayer.skipToNext()
@@ -399,7 +399,6 @@ export const playNextFromQueue = async () => {
       currentId, setPlayerClipIsLoadedIfClip)
     if (item) {
       await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0)
-      await removeQueueItem(item)
       return item
     }
   }
@@ -418,7 +417,7 @@ export const addItemToPlayerQueueLast = async (item: NowPlayingItem) => {
 export const syncPlayerWithQueue = async () => {
   try {
     const pvQueueItems = await getQueueItemsLocally()
-    await TrackPlayer.removeUpcomingTracks()
+    TrackPlayer.removeUpcomingTracks()
     const tracks = await createTracks(pvQueueItems)
     await TrackPlayer.add(tracks)
   } catch (error) {
