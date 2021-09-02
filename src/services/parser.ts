@@ -193,6 +193,20 @@ export const parseAllAddByRSSPodcasts = async (lastParsedPubDate: string) => {
   return finalParsedPodcasts
 }
 
+export const getAddByRSSPodcastCredentialsHeader = async (addByRSSPodcastFeedUrl?: string) => {
+  const credentials = await getAddByRSSPodcastCredentials(addByRSSPodcastFeedUrl)
+  return credentials ? `Basic ${btoa(credentials)}` : ''
+}
+
+export const getAddByRSSPodcastCredentials = async (addByRSSPodcastFeedUrl?: string) => {
+  let credentials = ''
+  if (addByRSSPodcastFeedUrl) {
+    const allAddByRSSPodcastCredentials = await getAllAddByRSSPodcastCredentials()
+    credentials = allAddByRSSPodcastCredentials[addByRSSPodcastFeedUrl] || ''
+  }
+  return credentials
+}
+
 const getAllAddByRSSPodcastCredentials = async () => {
   let allCredentials = {}
 

@@ -13,13 +13,13 @@ import { checkIfIdMatchesClipIdOrEpisodeIdOrAddByUrl,
   getAppUserAgent, getExtensionFromUrl } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from './eventEmitter'
+import { getAddByRSSPodcastCredentials, getAddByRSSPodcastCredentialsHeader } from './parser'
 import {
   addQueueItemLast,
   addQueueItemNext,
   filterItemFromQueueItems,
   getQueueItems,
-  getQueueItemsLocally,
-  removeQueueItem
+  getQueueItemsLocally
 } from './queue'
 import { addOrUpdateHistoryItem, getHistoryItemsIndexLocally, getHistoryItemsLocally } from './userHistoryItem'
 import { getNowPlayingItem, getNowPlayingItemLocally } from './userNowPlayingItem'
@@ -229,7 +229,6 @@ const getDownloadedFilePath = async (id: string, episodeMediaUrl: string) => {
   const ext = getExtensionFromUrl(episodeMediaUrl)
   const downloader = await BackgroundDownloader()
 
-  
   /* If downloaded episode is for an addByRSSPodcast, then the episodeMediaUrl
      will be the id, so remove the URL params from the URL, and don't append
      an extension to the file path.
@@ -450,6 +449,7 @@ export const createTrack = async (item: NowPlayingItem) => {
   if (!item) return
 
   const {
+    addByRSSPodcastFeedUrl,
     clipId,
     episodeId,
     episodeMediaUrl = '',
@@ -478,6 +478,8 @@ export const createTrack = async (item: NowPlayingItem) => {
         pitchAlgorithm: PitchAlgorithm.Voice
       }
     } else {
+      const Authorization = await getAddByRSSPodcastCredentialsHeader(addByRSSPodcastFeedUrl)
+
       track = {
         id,
         url: episodeMediaUrl,
@@ -485,7 +487,10 @@ export const createTrack = async (item: NowPlayingItem) => {
         artist: podcastTitle,
         ...(imageUrl ? { artwork: imageUrl } : {}),
         userAgent: getAppUserAgent(),
-        pitchAlgorithm: PitchAlgorithm.Voice
+        pitchAlgorithm: PitchAlgorithm.Voice,
+        headers: {
+          ...(Authorization ? { Authorization } : {})
+        }
       }
     }
   }

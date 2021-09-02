@@ -37,7 +37,7 @@ export const TextLink = (props: Props) => {
       accessibilityRole='button'
       disabled={disabled}
       onPress={onPress}
-      testID={testID ? { testID: testID.prependTestId() } : {}}>
+      testID={testID ? testID.prependTestId() : ''}>
       <Text
         numberOfLines={numberOfLines}
         style={[style, globalTheme.link, textInputStyle]}>

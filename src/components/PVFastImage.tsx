@@ -1,4 +1,4 @@
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import { SvgUri } from 'react-native-svg'
 import React from 'reactn'
@@ -42,6 +42,12 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     const isValid = isValidUrl(source)
     const isSvg = source && source.endsWith('.svg')
 
+    /* Insecure images will not load on iOS, so force image URLs to https */
+    let secureImageUrl = source
+    if (Platform.OS === 'ios' && secureImageUrl) {
+      secureImageUrl = secureImageUrl?.replace('http://', 'https://')
+    }
+
     const image = isSvg ? (
       <View style={styles}>
         <SvgUri accessible={accessible} width='100%' height='100%' uri={source} />
@@ -54,7 +60,7 @@ export class PVFastImage extends React.PureComponent<Props, State> {
         onError={this._handleError}
         resizeMode={resizeMode}
         source={{
-          uri: source,
+          uri: secureImageUrl,
           cache,
           headers: {
             ...(userAgent ? { 'User-Agent': userAgent } : {})

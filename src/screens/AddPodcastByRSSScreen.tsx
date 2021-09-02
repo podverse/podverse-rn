@@ -7,6 +7,7 @@ import {
   NavDismissIcon,
   NavHeaderButtonText,
   ScrollView,
+  SwitchWithText,
   Text,
   TextInput,
   TextLink,
@@ -17,7 +18,7 @@ import { createEmailLinkUrl } from '../lib/utility'
 import { PV } from '../resources'
 import { getAddByRSSPodcastLocally } from '../services/parser'
 import { trackPageView } from '../services/tracking'
-import { addAddByRSSPodcast } from '../state/actions/parser'
+import { addAddByRSSPodcast, addAddByRSSPodcastWithCredentials } from '../state/actions/parser'
 
 type Props = {
   navigation: any
@@ -25,7 +26,10 @@ type Props = {
 
 type State = {
   isLoading?: boolean
+  password: string
+  showUsernameAndPassword?: boolean
   url?: string
+  username: string
 }
 
 const testIDPrefix = 'add_podcast_by_rss_screen'
@@ -33,7 +37,10 @@ const testIDPrefix = 'add_podcast_by_rss_screen'
 export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    this.state = {}
+    this.state = {
+      password: '',
+      username: ''
+    }
   }
 
   static navigationOptions = ({ navigation }) => ({
@@ -67,8 +74,13 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
     this.setState({ url: value })
   }
 
+  _handleToggleUsernameAndPassword = () => {
+    const { showUsernameAndPassword } = this.state
+    this.setState({ showUsernameAndPassword: !showUsernameAndPassword })
+  }
+
   _handleSavePodcastByRSSURL = () => {
-    const { isLoading, url } = this.state
+    const { isLoading, password, showUsernameAndPassword, url, username } = this.state
     if (isLoading) {
       return
     } else if (url) {
@@ -76,7 +88,13 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
       this.setState({ isLoading: true }, () => {
         (async () => {
           try {
-            const addByRSSSucceeded = await addAddByRSSPodcast(url)
+            let addByRSSSucceeded = false
+            if (showUsernameAndPassword) {
+              const credentials = `${username}:${password}`
+              addByRSSSucceeded = await addAddByRSSPodcastWithCredentials(url, credentials)
+            } else {
+              addByRSSSucceeded = await addAddByRSSPodcast(url)
+            }
             this.setState({ isLoading: false })
   
             if (addByRSSSucceeded) {
@@ -102,7 +120,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, url } = this.state
+    const { isLoading, password, showUsernameAndPassword, url, username } = this.state
 
     return (
       <View
@@ -124,6 +142,28 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
               testID={`${testIDPrefix}_rss_feed`}
               underlineColorAndroid='transparent'
               value={url}
+            />
+            <SwitchWithText
+              inputAutoCorrect={false}
+              inputEditable
+              inputEyebrowTitle={translate('Username')}
+              inputHandleTextChange={(text?: string) => this.setState({ username: text || '' })}
+              inputPlaceholder={translate('Username')}
+              inputShow={!!showUsernameAndPassword}
+              inputText={username}
+              input2AutoCorrect={false}
+              input2Editable
+              input2EyebrowTitle={translate('Password')}
+              input2HandleTextChange={(text?: string) => this.setState({ password: text || '' })}
+              input2Placeholder={translate('Password')}
+              input2Show={!!showUsernameAndPassword}
+              input2Text={password}
+              onValueChange={this._handleToggleUsernameAndPassword}
+              subText={!!showUsernameAndPassword ? translate('If this is a password protected feed') : ''}
+              text={translate('Include username and password')}
+              testID={`${testIDPrefix}_include_username_and_password`}
+              value={!!showUsernameAndPassword}
+              wrapperStyle={styles.switchWrapper}
             />
             <Divider style={styles.divider} />
             <Text 
@@ -156,7 +196,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   divider: {
-    marginVertical: 8
+    marginBottom: 24,
+    marginTop: 24
   },
   scrollViewContent: {
     paddingHorizontal: 12,
@@ -168,9 +209,12 @@ const styles = StyleSheet.create({
     backgroundColor: PV.Colors.grayLight,
     marginVertical: 30
   },
+  switchWrapper: {
+    marginTop: 8
+  },
   text: {
     fontSize: PV.Fonts.sizes.lg,
-    marginVertical: 12,
+    marginBottom: 12,
     textAlign: 'left'
   },
   textInput: {
