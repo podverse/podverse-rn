@@ -61,7 +61,7 @@
     "linkifyjs": "2.1.9",
     "lodash": "4.17.21",
     "lodash.memoize": "4.1.2",
-    "podverse-shared": "^3.1.8",
+    "podverse-shared": "^3.2.1",
     "react": "17.0.1",
     "react-native": "0.64.2",
     "react-native-background-downloader": "2.3.4",

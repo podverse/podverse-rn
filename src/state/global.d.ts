@@ -19,7 +19,7 @@ declare module 'reactn/default' {
     overlayAlert: {
       shouldShowAlert: boolean
     }
-    parsedTranscript: TranscriptRow[]
+    parsedTranscript: TranscriptRow[] | null
     player: {
       backupDuration?: number
       currentChapter: any
