@@ -109,8 +109,8 @@ export const updateTrackPlayerCapabilities = () => {
     // every time the user receives a notification.
     alwaysPauseOnInterruption: Platform.OS === 'ios',
     stopWithApp: true,
-    // Better to skip 10 both ways than to skip 30 both ways. No current way to set them separately
-    jumpInterval: PV.Player.jumpBackSeconds
+    backwardJumpInterval: PV.Player.jumpBackSeconds,
+    forwardJumpInterval: PV.Player.jumpSeconds
   })
 }
 
@@ -351,14 +351,16 @@ export const loadItemAndPlayTrack = async (
   addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0, forceUpdateOrderDate)
 
   if (Platform.OS === 'ios') {
+    await AsyncStorage.setItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED, 'true')
     TrackPlayer.reset()
     const track = (await createTrack(item)) as Track
     await TrackPlayer.add(track)
+    await AsyncStorage.removeItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
     await syncPlayerWithQueue()
   } else {
     const currentId = await getCurrentLoadedTrackId()
     if (currentId) {
-      await TrackPlayer.removeUpcomingTracks()
+      TrackPlayer.removeUpcomingTracks()
       const track = (await createTrack(item)) as Track
       await TrackPlayer.add(track)
       await TrackPlayer.skipToNext()
@@ -397,7 +399,6 @@ export const playNextFromQueue = async () => {
       currentId, setPlayerClipIsLoadedIfClip)
     if (item) {
       await addOrUpdateHistoryItem(item, item.userPlaybackPosition || 0, item.episodeDuration || 0)
-      await removeQueueItem(item)
       return item
     }
   }
@@ -416,7 +417,7 @@ export const addItemToPlayerQueueLast = async (item: NowPlayingItem) => {
 export const syncPlayerWithQueue = async () => {
   try {
     const pvQueueItems = await getQueueItemsLocally()
-    await TrackPlayer.removeUpcomingTracks()
+    TrackPlayer.removeUpcomingTracks()
     const tracks = await createTracks(pvQueueItems)
     await TrackPlayer.add(tracks)
   } catch (error) {

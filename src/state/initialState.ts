@@ -25,7 +25,7 @@ const initialTheme: InitialState = {
   overlayAlert: {
     shouldShowAlert: false
   },
-  parsedTranscript: [],
+  parsedTranscript: null,
   player: {
     currentChapter: null,
     currentChapters: [],

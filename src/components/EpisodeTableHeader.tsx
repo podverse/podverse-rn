@@ -68,6 +68,7 @@ export const EpisodeTableHeader = (props: Props) => {
               <View style={styles.textWrapper}>
                 <Text
                   accessibilityHint={translate('ARIA HINT - This is the podcast title')}
+                  accessibilityLabel={podcastTitle.trim()}
                   fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                   isSecondary
                   style={styles.podcastTitle}
@@ -76,6 +77,7 @@ export const EpisodeTableHeader = (props: Props) => {
                 </Text>
                 <Text
                   accessibilityHint={translate('ARIA HINT - This is the episode title')}
+                  accessibilityLabel={episodeTitle.trim()}
                   fontSizeLargestScale={PV.Fonts.largeSizes.md}
                   style={styles.title}
                   testID={`${testID}_title`}>
@@ -84,6 +86,7 @@ export const EpisodeTableHeader = (props: Props) => {
                 <View style={styles.textWrapperBottomRow}>
                   <Text
                     accessibilityHint={translate('ARIA HINT - This is the episode publication date')}
+                    accessibilityLabel={readableDate(pubDate)}
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     isSecondary
                     style={styles.pubDate}

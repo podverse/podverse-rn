@@ -23,6 +23,7 @@ type Props = {
   selectedCategoryItemKey?: string | null
   selectedCategorySubItemKey?: string | null
   selectedFilterAccessibilityHint?: string | null
+  selectedFilterAccessibilityLabel?: string | null
   selectedFilterItemKey?: string | null
   selectedFilterLabel?: string | null
   selectedFromItemKey?: string | null
@@ -71,6 +72,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       selectedFilterItemKey,
       selectedFilterLabel,
       selectedFilterAccessibilityHint,
+      selectedFilterAccessibilityLabel,
       selectedFromItemKey,
       selectedSortItemKey,
       selectedSortLabel,
@@ -94,6 +96,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
                   ? translate('ARIA HINT - This is the selected primary filter for this screen')
                   : ''
               }
+              accessibilityLabel={selectedFilterAccessibilityLabel || ''}
               accessibilityRole={disableFilter ? 'header' : 'button'}
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               numberOfLines={1}
@@ -110,6 +113,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
               accessible={accessible && !disableFilter}
               // eslint-disable-next-line max-len
               accessibilityHint={translate('ARIA HINT - This is the selected sorting filter for this screen Tap to select a different filter')}
+              accessibilityLabel={selectedSortLabel}
               disableFilter={disableFilter}
               onPress={() => {
                 this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
@@ -129,7 +133,6 @@ export class TableSectionSelectors extends React.Component<Props, State> {
                   selectedFromItemKey
                 })
               }}
-              
               sortLabel={selectedSortLabel}
               testID={testID}
               transparent={transparentDropdownButton}

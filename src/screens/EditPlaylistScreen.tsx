@@ -63,6 +63,7 @@ export class EditPlaylistScreen extends React.Component<Props, State> {
         <RNView style={styles.headerButtonWrapper}>
           <NavHeaderButtonText
             accessibilityHint={accessibilityHint}
+            accessibilityLabel={text}
             handlePress={handlePress}
             style={styles.navHeaderTextButton}
             testID={testIDPrefix}

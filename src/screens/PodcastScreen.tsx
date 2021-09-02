@@ -711,6 +711,7 @@ static navigationOptions = ({ navigation }) => {
                 accessibilityHint={
                   translate('ARIA HINT - Tap to set the time you want this episode to always start playing from')
                 }
+                accessibilityLabel={translate('Preset podcast start time')}
                 isHHMMSS
                 selectedNumber={startPodcastFromTime}
                 subText={translate('Episodes of this podcast will start playback from this time')}
@@ -725,6 +726,7 @@ static navigationOptions = ({ navigation }) => {
               accessibilityHint={
                 translate('ARIA HINT - Tap to delete all the episodes you have downloaded for this podcast')
               }
+              accessibilityLabel={translate('Delete Downloaded Episodes')}
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
               wrapperStyles={styles.settingsDeletebutton}
               testID={`${testIDPrefix}_delete_downloaded_episodes`}

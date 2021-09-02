@@ -77,6 +77,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                   <Text
                     accessible={false}
                     accessibilityHint={translate('ARIA HINT - This is the podcast title')}
+                    accessibilityLabel={podcastTitleText}
                     fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                     isSecondary
                     numberOfLines={1}
@@ -89,6 +90,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                   <Text
                     accessible={false}
                     accessibilityHint={translate('ARIA HINT - This is the episode title')}
+                    accessibilityLabel={episodeTitleText}
                     numberOfLines={2}
                     style={styles.episodeTitle}
                     testID={`${testID}_episode_title`}>
@@ -100,6 +102,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
                     <Text
                       accessible={false}
                       accessibilityHint={translate('ARIA HINT - This is the episode publication date')}
+                      accessibilityLabel={pubDate}
                       fontSizeLargerScale={PV.Fonts.largeSizes.md}
                       fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                       isSecondary
@@ -119,6 +122,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
               ? translate('ARIA HINT - This is the chapter title')
               : translate('ARIA HINT - This is the clip title')
             }
+            accessibilityLabel={title}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={4}
             style={styles.title}

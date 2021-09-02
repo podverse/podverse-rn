@@ -44,7 +44,7 @@ export const PVScrollView = (props: Props) => {
       ref={scrollViewRef}
       showsVerticalScrollIndicator={false}
       style={styles}
-      testID={testID ? { testID: testID.prependTestId() } : {}}>
+      testID={testID ? testID.prependTestId() : ''}>
       {props.children}
     </ScrollView>
   )

@@ -62,6 +62,7 @@ export const PodcastTableHeader = (props: Props) => {
                 <View style={styles.contentWrapperTop}>
                   <Text
                     accessibilityHint={translate('ARIA HINT - This is the podcast title')}
+                    accessibilityLabel={podcastTitle}
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     numberOfLines={titleNumberOfLines}
                     style={styles.title}>
@@ -128,6 +129,7 @@ export const PodcastTableHeader = (props: Props) => {
             <View style={styles.descriptionWrapper}>
               <TouchableWithoutFeedback
                 accessibilityHint={translate('ARIA HINT - Tap to show more info about this podcast')}
+                accessibilityLabel={finalDescription}
                 onPress={handleNavigateToPodcastInfoScreen}>
                 <RNView>
                   <Text

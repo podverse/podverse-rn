@@ -122,6 +122,7 @@ export function PlayerProgressBar(props: Props) {
         <View style={sliderStyles.timeRow}>
           <Text
             accessibilityHint={translate('ARIA HINT - This is the current playback time for this episode')}
+            accessibilityLabel={convertSecToHHMMSS(slidingPositionOverride || position)}
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             style={sliderStyles.time}>

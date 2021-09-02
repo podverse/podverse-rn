@@ -98,6 +98,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               ? translate('ARIA HINT - Tap to save this clip')
               : translate('ARIA HINT - Tap to go to the login screen')
             }
+            accessibilityLabel={isLoggedIn ? translate('Save Clip') : translate('Go to Login')}
             color={globalTheme.text.color}
             handlePress={navigation.getParam('_saveMediaRef')}
             testID={testIDPrefix}
@@ -503,6 +504,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     <Text
                       accessible
                       accessibilityHint={translate('ARIA HINT - Tap to remove the end time for this clip')}
+                      accessibilityLabel={translate('Remove end time')}
                       accessibilityRole='button'
                       style={styles.clearEndTimeText}>
                       {translate('Remove end time')}
@@ -578,6 +580,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <View style={styles.playerControlsBottomRow} transparent>
                   <TouchableOpacity
                     accessibilityHint={translate('ARIA HINT - Tap to show how to information for the make clip screen')}
+                    accessibilityLabel={translate('How To')}
                     accessibilityRole='button'
                     hitSlop={{
                       bottom: 4,
@@ -601,6 +604,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   </TouchableOpacity>
                   <TouchableWithoutFeedback
                     accessibilityHint={translate('ARIA HINT - This is the current playback speed')}
+                    accessibilityLabel={`${playbackRate}X`}
                     accessibilityRole='button'
                     hitSlop={{
                       bottom: 4,
@@ -625,6 +629,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   </TouchableWithoutFeedback>
                   <TouchableOpacity
                     accessibilityHint={translate('ARIA HINT - Tap to go to the FAQ page')}
+                    accessibilityLabel={translate('FAQ')}
                     accessibilityRole='button'
                     hitSlop={{
                       bottom: 4,
@@ -642,7 +647,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                           styles.playerControlsBottomRowText,
                           globalTheme.textSecondary
                         ]}>
-                        FAQ
+                        {translate('FAQ')}
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -682,6 +687,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 </Text>
                 <TouchableOpacity
                   accessibilityHint={translate('ARIA HINT - Tap to continue to the Make Clip screen')}
+                  accessibilityLabel={translate('Got It')}
                   accessibilityRole='button'
                   onPress={this._hideHowTo}
                   style={{ marginTop: 12 }}

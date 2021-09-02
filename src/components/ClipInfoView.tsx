@@ -124,9 +124,8 @@ export class ClipInfoView extends React.PureComponent<Props> {
                     accessible={false}
                     fontSizeLargestScale={PV.Fonts.largeSizes.md}
                     onPress={this._navToProfileScreen}
-                    style={styles.ownerName}>
-                    {ownerName || translate('anonymous')}
-                  </TextLink>
+                    style={styles.ownerName}
+                    text={ownerName || translate('anonymous')} />
                 ) : (
                   <Text
                     accessible={false}
@@ -142,9 +141,8 @@ export class ClipInfoView extends React.PureComponent<Props> {
                 accessible={false}
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={restartNowPlayingItemClip}
-                style={styles.replayClip}>
-                {translate('Replay Clip')}
-              </TextLink>
+                style={styles.replayClip}
+                text={translate('Replay Clip')} />
             )}
             <Divider style={styles.divider} />
           </Fragment>

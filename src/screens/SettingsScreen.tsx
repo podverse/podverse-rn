@@ -381,6 +381,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 accessibilityHint={translate('Offline mode can save battery life and improve performance')}
+                accessibilityLabel={translate('Offline Mode')}
                 onValueChange={this._handleToggleOfflineMode}
                 subText={translate('Offline mode can save battery life and improve performance')}
                 testID={`${testIDPrefix}_offline_mode`}
@@ -394,6 +395,8 @@ export class SettingsScreen extends React.Component<Props, State> {
                 <View style={styles.itemWrapper}>
                   <SwitchWithText
                     accessibilityHint={translate('Error Reporting subtext')}
+                    accessibilityLabel={errorReportingEnabled
+                      ? translate('Error Reporting Enabled') : translate('Error Reporting Disabled')}
                     onValueChange={this._handleToggleErrorReporting}
                     subText={translate('Error Reporting subtext')}
                     testID={`${testIDPrefix}_error_reporting`}
@@ -409,6 +412,8 @@ export class SettingsScreen extends React.Component<Props, State> {
               <View style={styles.itemWrapper}>
                 <SwitchWithText
                   accessibilityHint={translate('Listen Tracking subtext')}
+                  accessibilityLabel={listenTrackingEnabled
+                    ? translate('Listen Tracking Enabled') : translate('Listen Tracking Disabled')}
                   onValueChange={this._handleToggleListenTracking}
                   subText={translate('Listen Tracking subtext')}
                   testID={`${testIDPrefix}_listen_tracking`}
@@ -424,6 +429,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                 <SwitchWithText
                   accessible={false}
                   accessibilityHint={translate('ARIA HINT - Tap to change the colors of the user interface')}
+                  accessibilityLabel={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}
                   onValueChange={this._toggleTheme}
                   testID={`${testIDPrefix}_dark_mode`}
                   text={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}

@@ -139,6 +139,7 @@ export class PVActionSheet extends React.Component<Props, State> {
           <TouchableHighlight
             accessible
             accessibilityHint={translate('ARIA HINT - Tap to dismiss this menu')}
+            accessibilityLabel={translate('Cancel')}
             accessibilityRole='menuitem'
             key={PV.Keys.cancel}
             onPress={handleCancelPress}
@@ -149,7 +150,7 @@ export class PVActionSheet extends React.Component<Props, State> {
               ''
             )}>
             <Text numberOfLines={1} style={buttonTextCancelStyle}>
-              Cancel
+              {translate('Cancel')}
             </Text>
           </TouchableHighlight>
         )
