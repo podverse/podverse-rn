@@ -142,8 +142,20 @@ const resetHistoryItem = async (x: any) => {
 const handleQueueEnded = (x: any) => {
   setTimeout(() => {
     (async () => {
-      hideMiniPlayer()
-      await resetHistoryItem(x)
+      /*
+        The app is calling TrackPlayer.reset() on iOS only in loadItemAndPlayTrack
+        because .reset() is the only way to clear out the current item from the queue,
+        but .reset() results in the playback-queue-ended event in firing.
+        We don't want the playback-queue-ended event handling logic below to happen
+        during loadItemAndPlayTrack, so to work around this, I am setting temporary
+        AsyncStorage state so we can know when a queue has actually ended or
+        when the event is the result of .reset() called within loadItemAndPlayTrack.
+      */
+     const preventHandleQueueEnded = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
+     if (!preventHandleQueueEnded) {
+       hideMiniPlayer()
+       await resetHistoryItem(x)
+     }
     })()
   }, 0)
 }
