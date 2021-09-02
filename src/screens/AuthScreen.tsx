@@ -163,6 +163,7 @@ export class AuthScreen extends React.Component<Props, State> {
         <Text
           accessible
           accessibilityHint={translate('ARIA HINT - Tap to reset your password')}
+          accessibilityLabel={translate('Reset Password')}
           accessibilityRole='button'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           key='reset'
@@ -174,6 +175,7 @@ export class AuthScreen extends React.Component<Props, State> {
         <Text
           accessible
           accessibilityHint={translate('ARIA HINT - Tap to sign up for a premium account')}
+          accessibilityLabel={translate('Sign Up')}
           accessibilityRole='button'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           key='moreInfo'
@@ -185,6 +187,7 @@ export class AuthScreen extends React.Component<Props, State> {
         <Text
           accessible
           accessibilityHint={translate('ARIA HINT - Tap to learn more about premium memberships')}
+          accessibilityLabel={translate('About Premium')}
           accessibilityRole='button'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           key='moreInfo'
@@ -199,6 +202,7 @@ export class AuthScreen extends React.Component<Props, State> {
         <Text
           accessible
           accessibilityHint={translate('ARIA HINT - Tap to go back to the login screen')}
+          accessibilityLabel={translate('Back To Login')}
           accessibilityRole='button'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           key='login'

@@ -166,6 +166,9 @@ export class MoreScreen extends React.Component<Props, State> {
     const membershipTextStyle = getMembershipTextStyle(globalTheme, membershipStatus)
     const otherOptions = this._moreOtherOptions(membershipStatus)
 
+    const membershipAccessibilityLabel =
+      `${translate('Membership')}${isLoggedIn ? ' - ' : ''} ${membershipStatus}`
+
     return (
       <View
         style={core.backgroundView}
@@ -181,6 +184,10 @@ export class MoreScreen extends React.Component<Props, State> {
             return (
               <TableCell
                 accessibilityHint={tableCellAccessibilityHint}
+                accessibilityLabel={item.key === _membershipKey
+                  ? membershipAccessibilityLabel
+                  : item.title
+                }
                 onPress={() => this._onPress(item)}
                 testIDPrefix={`${testIDPrefix}_${item.key}`}
                 testIDSuffix=''>

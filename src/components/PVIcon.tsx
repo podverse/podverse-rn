@@ -62,7 +62,7 @@ export const PVIcon = (props: Props) => {
               top: 8
             }}
             onPress={onPress}
-            {...(testID ? { testID: `${testID}_icon_button` } : {})}>
+            {...(testID ? { testID: `${testID}_icon_button`.prependTestId() } : {})}>
             <RNView style={wrapperStyle}>
               {icon}
             </RNView>

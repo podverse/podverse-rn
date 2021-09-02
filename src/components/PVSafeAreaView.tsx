@@ -21,7 +21,7 @@ export const PVSafeAreaView = (props: Props) => {
   return (
     <SafeAreaView
       style={[styles.safeAreaView, globalTheme.view, props.style, extraStyles]}
-      {...(testID ? { testID } : {})}>
+      {...(testID ? { testID: testID.prependTestId() } : {})}>
       {props.children}
     </SafeAreaView>
   )

@@ -1,6 +1,6 @@
 import { Alert, Linking, StyleSheet } from 'react-native'
 import React from 'reactn'
-import { HTMLScrollView, PodcastTableHeader, Text, View } from '../components'
+import { HTMLScrollView, PodcastTableHeader, View } from '../components'
 import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { getTrackingIdText, trackPageView } from '../services/tracking'

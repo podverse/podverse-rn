@@ -154,7 +154,7 @@ export const TimeRemainingWidget = (props: Props) => {
         accessibilityRole='button'
         onPress={playItem}
         style={iconStyle}
-        testID={`${testID}_time_remaining_widget_toggle_play`}>
+        testID={`${testID}_time_remaining_widget_toggle_play`.prependTestId()}>
         {isNowPlayingItem
           ? <Icon name={'pause'} size={13} />
           : <Icon name={'play'} size={13} />

@@ -70,7 +70,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
                   isDarkMode
                 })
               }
-              testID={testIDPrefix}>
+              testID={testIDPrefix.prependTestId()}>
               <View style={[styles.player, globalTheme.player]}>
                 <FastImage
                   isSmall

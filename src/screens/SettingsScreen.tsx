@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import AsyncStorage from '@react-native-community/async-storage'
 import NetInfo from '@react-native-community/netinfo'
 import { Alert, StyleSheet } from 'react-native'
@@ -380,6 +381,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 accessibilityHint={translate('Offline mode can save battery life and improve performance')}
+                accessibilityLabel={translate('Offline Mode')}
                 onValueChange={this._handleToggleOfflineMode}
                 subText={translate('Offline mode can save battery life and improve performance')}
                 testID={`${testIDPrefix}_offline_mode`}
@@ -393,6 +395,8 @@ export class SettingsScreen extends React.Component<Props, State> {
                 <View style={styles.itemWrapper}>
                   <SwitchWithText
                     accessibilityHint={translate('Error Reporting subtext')}
+                    accessibilityLabel={errorReportingEnabled
+                      ? translate('Error Reporting Enabled') : translate('Error Reporting Disabled')}
                     onValueChange={this._handleToggleErrorReporting}
                     subText={translate('Error Reporting subtext')}
                     testID={`${testIDPrefix}_error_reporting`}
@@ -408,6 +412,8 @@ export class SettingsScreen extends React.Component<Props, State> {
               <View style={styles.itemWrapper}>
                 <SwitchWithText
                   accessibilityHint={translate('Listen Tracking subtext')}
+                  accessibilityLabel={listenTrackingEnabled
+                    ? translate('Listen Tracking Enabled') : translate('Listen Tracking Disabled')}
                   onValueChange={this._handleToggleListenTracking}
                   subText={translate('Listen Tracking subtext')}
                   testID={`${testIDPrefix}_listen_tracking`}
@@ -423,6 +429,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                 <SwitchWithText
                   accessible={false}
                   accessibilityHint={translate('ARIA HINT - Tap to change the colors of the user interface')}
+                  accessibilityLabel={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}
                   onValueChange={this._toggleTheme}
                   testID={`${testIDPrefix}_dark_mode`}
                   text={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}
@@ -568,7 +575,7 @@ export class SettingsScreen extends React.Component<Props, State> {
           <Dialog.Button
             label={translate('No')}
             onPress={this._handleToggleSetAllDownloadDialog}
-            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_update_download_limit_no_button` } : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_update_download_limit_no_button`.prependTestId() } : {})}
           />
           <Dialog.Button
             label={translate('Yes')}
@@ -577,7 +584,7 @@ export class SettingsScreen extends React.Component<Props, State> {
                 ? this._handleUpdateAllDownloadedEpiosdeLimitCount
                 : this._handleUpdateAllDownloadedEpiosdeLimitDefault
             }
-            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_update_download_limit_yes_button` } : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_update_download_limit_yes_button`.prependTestId() } : {})}
           />
         </Dialog.Container>
 
@@ -589,12 +596,12 @@ export class SettingsScreen extends React.Component<Props, State> {
           <Dialog.Button
             label={translate('No')}
             onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
-            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_no` } : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_no`.prependTestId() } : {})}
           />
           <Dialog.Button
             label={translate('Yes')}
             onPress={this._handleDeleteDownloadedEpisodes}
-            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_yes` } : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_downloaded_episodes_yes`.prependTestId() } : {})}
           />
         </Dialog.Container>
 
@@ -605,13 +612,13 @@ export class SettingsScreen extends React.Component<Props, State> {
           <Dialog.Input
             onChangeText={this._handleDeleteAccountDialogTextChange}
             placeholder=''
-            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_input` } : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_input`.prependTestId() } : {})}
             value={deleteAccountDialogText}
           />
           <Dialog.Button
             label={translate('Cancel')}
             onPress={this._handleToggleDeleteAccountDialog}
-            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_cancel` } : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_cancel`.prependTestId() } : {})}
           />
           <Dialog.Button
             bold={deleteAccountDialogConfirmed}
@@ -619,7 +626,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             disabled={!deleteAccountDialogConfirmed}
             label={translate('Delete')}
             onPress={this._handleDeleteAccount}
-            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_delete` } : {})}
+            {...(testIDPrefix ? { testID: `${testIDPrefix}_dialog_delete_account_delete`.prependTestId() } : {})}
           />
         </Dialog.Container>
       </ScrollView>

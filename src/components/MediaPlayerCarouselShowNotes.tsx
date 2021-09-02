@@ -62,6 +62,7 @@ export class MediaPlayerCarouselShowNotes extends React.PureComponent<Props> {
                 episode?.pubDate &&
                   <Text
                     accessibilityHint={translate('ARIA HINT - This is the episode publication date')}
+                    accessibilityLabel={readableDate(episode.pubDate)}
                     style={styles.episodePubDate}
                     testID={`${testIDPrefix}_episode_pub_date`}>
                     {readableDate(episode.pubDate)}

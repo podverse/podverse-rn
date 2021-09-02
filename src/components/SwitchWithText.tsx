@@ -60,7 +60,7 @@ export const SwitchWithText = (props: Props) => {
           <Switch
             accessible={accessible}
             value={value}
-            {...(testID ? { testID: `${testID}_switch` } : {})} />
+            {...(testID ? { testID: `${testID}_switch`.prependTestId() } : {})} />
           <Text
             accessible={accessible}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}

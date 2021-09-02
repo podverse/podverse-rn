@@ -41,7 +41,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
         accessibilityHint={accessibilityHint}
         accessibilityLabel={accessibilityLabel}
         onPress={onPress}
-        {...(testID ? { testID } : {})}>
+        {...(testID ? { testID: testID.prependTestId() } : {})}>
         <View hasZebraStripe={hasZebraStripe} style={styles.wrapper}>
           <RNView style={wrapperLeftStyles}>
             <RNView style={styles.wrapperLeftTop}>

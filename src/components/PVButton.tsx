@@ -7,6 +7,7 @@ import { Text } from '.'
 
 type Props = {
   accessibilityHint?: string
+  accessibilityLabel?: string
   accessible?: boolean
   disabled?: boolean
   isDisabledStyle?: boolean
@@ -22,8 +23,8 @@ type Props = {
 }
 
 export const PVButton = (props: Props) => {
-  const { accessibilityHint, accessible, disabled, isDisabledStyle, isLoading, isPrimary,
-    isSuccess, isTransparent, isWarning, onPress, testID, text, wrapperStyles } = props
+  const { accessibilityHint, accessibilityLabel, accessible, disabled, isDisabledStyle, isLoading,
+    isPrimary, isSuccess, isTransparent, isWarning, onPress, testID, text, wrapperStyles } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   const disabledStyle = disabled || isDisabledStyle ? globalTheme.buttonDisabledWrapper : null
@@ -40,6 +41,7 @@ export const PVButton = (props: Props) => {
     <TouchableOpacity
       accessible={accessible}
       accessibilityHint={accessibilityHint}
+      accessibilityLabel={accessibilityLabel}
       accessibilityRole='button'
       style={[
         core.button,
@@ -53,7 +55,7 @@ export const PVButton = (props: Props) => {
       ]}
       disabled={disabled || isLoading}
       onPress={onPress}
-      {...(testID ? { testID: `${testID}_button` } : {})}>
+      {...(testID ? { testID: `${testID}_button`.prependTestId() } : {})}>
       {isLoading ? (
         <ActivityIndicator animating color={globalTheme.buttonPrimaryText.color} size='small' />
       ) : (

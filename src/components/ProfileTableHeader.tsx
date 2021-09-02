@@ -47,6 +47,7 @@ export const ProfileTableHeader = (props: Props) => {
               ? translate('ARIA HINT - This is your profile name')
               : translate('ARIA HINT - This is the profile name')
             }
+            accessibilityLabel={name}
             style={styles.textWrapper}>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
               <Text

@@ -23,7 +23,7 @@ export const DropdownButtonSelect = (props: any) => {
           accessible: true,
           accessibilityHint,
           accessibilityLabel,
-          testID: `${testID}_dropdown_button_select`
+          testID: `${testID}_dropdown_button_select`.prependTestId()
         }}
         useNativeAndroidPickerStyle={false}
         value={value}>

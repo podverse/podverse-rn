@@ -72,7 +72,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       <TouchableWithoutFeedback
         accessibilityLabel={accessibilityLabel}
         onPress={onPress}
-        {...(testID ? { testID } : {})}>
+        {...(testID ? { testID: testID.prependTestId() } : {})}>
         <View style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={PV.Table.cells.podcast.image} />
           <RNView style={styles.textWrapper}>

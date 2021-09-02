@@ -5,6 +5,7 @@ import { Text } from './'
 
 type Props = {
   accessibilityHint?: string
+  accessibilityLabel?: string
   color?: string
   disabled?: boolean
   handlePress: any
@@ -14,7 +15,8 @@ type Props = {
 }
 
 export const NavHeaderButtonText = (props: Props) => {
-  const { accessibilityHint, color, disabled, handlePress, testID } = props
+  const { accessibilityHint, accessibilityLabel, color, disabled, handlePress,
+    testID, text } = props
 
   const buttonTextStyle = [navHeader.buttonText]
 
@@ -25,11 +27,12 @@ export const NavHeaderButtonText = (props: Props) => {
   return (
     <TouchableOpacity
       accessibilityHint={accessibilityHint}
+      accessibilityLabel={accessibilityLabel}
       disabled={disabled}
       onPress={handlePress}
-      testID={`${testID}_nav_header_button_text`}>
+      testID={`${testID}_nav_header_button_text`.prependTestId()}>
       <Text allowFontScaling={false} style={buttonTextStyle} testID={`${testID}_text`}>
-        {props.text}
+        {text}
       </Text>
     </TouchableOpacity>
   )

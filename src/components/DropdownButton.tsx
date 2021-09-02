@@ -19,11 +19,12 @@ export const DropdownButton = (props: any) => {
     <TouchableOpacity
       accessible={accessible}
       accessibilityHint={accessibilityHint}
+      accessibilityLabel={sortLabel}
       accessibilityRole='button'
       activeOpacity={0.7}
       disabled={disableFilter}
       onPress={onPress}
-      testID={`${testID}_dropdown_button`}>
+      testID={`${testID}_dropdown_button`.prependTestId()}>
       <View style={[styles.dropdownButton, dropdownStyle, extraStyles]}>
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}

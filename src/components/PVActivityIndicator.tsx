@@ -36,7 +36,7 @@ export const PVActivityIndicator = (props: Props) => {
             animating
             color={globalTheme.activityIndicator.color}
             size={size}
-            testID={`${testID}_activity_indicator`} />
+            testID={`${testID}_activity_indicator`.prependTestId()} />
         </View>
       )}
       {!isOverlay && (
@@ -49,7 +49,7 @@ export const PVActivityIndicator = (props: Props) => {
               animating
               color={globalTheme.activityIndicator.color}
               size={size}
-              testID={`${testID}_activity_indicator`} />
+              testID={`${testID}_activity_indicator`.prependTestId()} />
           </View>
         </TouchableWithoutFeedback>
       )}

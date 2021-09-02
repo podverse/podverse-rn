@@ -142,9 +142,9 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
 
   render() {
     const { width } = this.props
-    let data: never[] | [] = this.global.parsedTranscript
+    let data: never[] | [] = this.global.parsedTranscript || []
     if (this.state.searchText) {
-      data = this.state.searchResults
+      data = this.state.searchResults || []
     }
 
     return (

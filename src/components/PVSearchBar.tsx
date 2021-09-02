@@ -57,7 +57,7 @@ export const PVSearchBar = (props: Props) => {
             size={PV.Icons.NAV}
             solid />
         )}
-        {...(testID ? { testID: `${testID}_search_bar` } : {})}
+        {...(testID ? { testID: `${testID}_search_bar`.prependTestId() } : {})}
         value={value}
       />
       {!!subText && (
