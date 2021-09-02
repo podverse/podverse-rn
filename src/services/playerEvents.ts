@@ -9,7 +9,7 @@ import { processValueTransactionQueue, saveStreamingValueTransactionsToTransacti
 import { translate } from '../lib/i18n'
 import { getStartPodcastFromTime } from '../lib/startPodcastFromTime'
 import { PV } from '../resources'
-import { handleEnrichingPlayerState, hideMiniPlayer, updatePlaybackState } from '../state/actions/player'
+import { handleEnrichingPlayerState, updatePlaybackState } from '../state/actions/player'
 import { clearChapterPlaybackInfo } from '../state/actions/playerChapters'
 import PVEventEmitter from './eventEmitter'
 import {
@@ -113,6 +113,7 @@ const syncNowPlayingItemWithTrack = () => {
             clearInterval(retryInterval)
             await handleSyncNowPlayingItem(currentTrackId, currentNowPlayingItem)
             await removeQueueItem(currentNowPlayingItem)
+            PVEventEmitter.emit(PV.Events.QUEUE_HAS_UPDATED)
           }
         }
       }, 1000)
@@ -153,7 +154,6 @@ const handleQueueEnded = (x: any) => {
       */
      const preventHandleQueueEnded = await AsyncStorage.getItem(PV.Keys.PLAYER_PREVENT_HANDLE_QUEUE_ENDED)
      if (!preventHandleQueueEnded) {
-       hideMiniPlayer()
        await resetHistoryItem(x)
      }
     })()

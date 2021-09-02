@@ -22,6 +22,7 @@ import {
 } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData } from '../services/auth'
+import PVEventEmitter from '../services/eventEmitter'
 import { movePlayerItemToNewPosition, syncPlayerWithQueue } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import { loadItemAndPlayTrack } from '../state/actions/player'
@@ -151,8 +152,11 @@ export class QueueScreen extends React.Component<Props, State> {
     }
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const { navigation } = this.props
+
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, this._getQueueItems)
 
     navigation.setParams({
       _onViewTypeSelect: this._onViewTypeSelect,
@@ -160,14 +164,23 @@ export class QueueScreen extends React.Component<Props, State> {
       _stopEditing: this._stopEditing
     })
 
+    this._getQueueItems()
+
+    trackPageView('/queue', 'Queue Screen')
+  }
+
+  componentWillUnmount() {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, this._getQueueItems)
+  }
+
+  _getQueueItems = async () => {
     try {
       await getQueueItems()
       this.setState({ isLoading: false })
     } catch (error) {
       this.setState({ isLoading: false })
     }
-
-    trackPageView('/queue', 'Queue Screen')
   }
 
   _startEditing = () => {
