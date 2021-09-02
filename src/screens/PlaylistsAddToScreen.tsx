@@ -56,6 +56,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
           {navigation.getParam('isLoggedIn') && (
             <NavHeaderButtonText
               accessibilityHint={translate('ARIA HINT - Tap to create a new playlist')}
+              accessibilityLabel={translate('New')}
               handlePress={navigation.getParam('showNewPlaylistDialog')}
               testID={`${testIDPrefix}_new`}
               text={translate('New')}
@@ -196,20 +197,20 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
               <Dialog.Input
                 onChangeText={this._handleNewPlaylistTextChange}
                 placeholder={translate('title of playlist')}
-                testID='new_playlist_title_input'
+                testID={'new_playlist_title_input'.prependTestId()}
                 value={newPlaylistTitle}
               />
               <Dialog.Button
                 accessibilityRole='button'
                 label={translate('Cancel')}
                 onPress={this._handleNewPlaylistDismiss}
-                testID='new_playlist_title_cancel'
+                testID={'new_playlist_title_cancel'.prependTestId()}
               />
               <Dialog.Button
                 accessibilityRole='button'
                 label={translate('Save')}
                 onPress={this._saveNewPlaylist}
-                testID='new_playlist_title_save'
+                testID={'new_playlist_title_save'.prependTestId()}
               />
             </Dialog.Container>
           </View>

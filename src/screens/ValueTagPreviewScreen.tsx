@@ -34,7 +34,7 @@ export class ValueTagPreviewScreen extends React.Component<Props> {
     return (
       <SafeAreaView
         style={styles.content}
-        testID={`${testIDPrefix}_view`}>
+        testID={`${testIDPrefix}_view`.prependTestId()}>
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.xl}
           style={styles.title}>

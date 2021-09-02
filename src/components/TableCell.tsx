@@ -6,6 +6,7 @@ import { Text, Icon } from '.'
 
 type TableCellProps = {
   accessibilityHint?: string
+  accessibilityLabel?: string
   children: any
   testIDPrefix: string
   testIDSuffix: string
@@ -14,20 +15,23 @@ type TableCellProps = {
 }
 
 type TableTextCellProps = {
-  text?: string
+  accessibilityHint?: string
+  accessibilityLabel?: string
+  hideChevron?: boolean
+  onPress?: any | null
   testIDPrefix: string
   testIDSuffix: string
-  onPress?: any | null
-  hideChevron?: boolean
+  text?: string
 }
 
 export const TableCell = (props: TableCellProps) => {
-  const { accessibilityHint, children, testIDPrefix, testIDSuffix, onPress = null,
+  const { accessibilityHint, accessibilityLabel, children, testIDPrefix, testIDSuffix, onPress = null,
     hideChevron = true } = props
 
   return (
     <Pressable
       accessibilityHint={accessibilityHint}
+      accessibilityLabel={accessibilityLabel}
       onPress={onPress}
       style={table.cellWrapper}
       testID={`${testIDPrefix}_table_cell_wrapper${testIDSuffix ? `_${testIDSuffix}` : ''}`}>
@@ -46,10 +50,18 @@ export const TableCell = (props: TableCellProps) => {
 }
 
 export const TableTextCell = (props: TableTextCellProps) => {
-  const { testIDPrefix, testIDSuffix, onPress = null, text = '', hideChevron = true } = props
+  const { accessibilityHint, accessibilityLabel, hideChevron = true, onPress = null,
+    testIDPrefix, testIDSuffix, text = '' } = props
 
   return (
-    <TableCell onPress={onPress} testIDPrefix={testIDPrefix} testIDSuffix={testIDSuffix} hideChevron={hideChevron}>
+    <TableCell
+      accessibilityHint={accessibilityHint}
+      accessibilityLabel={accessibilityLabel}
+      hideChevron={hideChevron}
+      onPress={onPress}
+      testIDPrefix={testIDPrefix}
+      testIDSuffix={testIDSuffix}
+      >
       <Text
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         style={table.cellText}

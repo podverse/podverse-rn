@@ -40,7 +40,7 @@ export class DownloadTableCell extends React.PureComponent<Props> {
     return (
       <Pressable
         onPress={onPress}
-        {...(testID ? { testID } : {})}
+        {...(testID ? { testID: `${testID}`.prependTestId() } : {})}
         style={styles.cellView}>
         <View pointerEvents='none' style={styles.wrapper}>
           <FastImage source={podcastImageUrl} styles={styles.image} />

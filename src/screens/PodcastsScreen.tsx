@@ -773,12 +773,12 @@ export class PodcastsScreen extends React.Component<Props, State> {
           <Dialog.Button
             label={translate('No Wifi Only')}
             onPress={this._handleDataSettingsWifiOnly}
-            testID='alert_no_wifi_only'
+            testID={'alert_no_wifi_only'.prependTestId()}
           />
           <Dialog.Button
             label={translate('Yes Allow Data')}
             onPress={this._handleDataSettingsAllowData}
-            testID='alert_yes_allow_data'
+            testID={'alert_yes_allow_data'.prependTestId()}
           />
         </Dialog.Container>
         <PurchaseListener navigation={navigation} />

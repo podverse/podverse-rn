@@ -21,7 +21,7 @@ export const PVView = (props: any) => {
     <View
       {...props}
       style={styles}
-      {...(testID ? { testID } : {})}>
+      {...(testID ? { testID: testID.prependTestId() } : {})}>
       {children}
     </View>
   )

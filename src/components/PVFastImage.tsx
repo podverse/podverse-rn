@@ -43,7 +43,9 @@ export class PVFastImage extends React.PureComponent<Props, State> {
     const isSvg = source && source.endsWith('.svg')
 
     const image = isSvg ? (
-      <SvgUri accessible={accessible} width='100%' height='100%' uri={source} style={styles} />
+      <View style={styles}>
+        <SvgUri accessible={accessible} width='100%' height='100%' uri={source} />
+      </View>
     ) : (
       <FastImage
         accessible={accessible}

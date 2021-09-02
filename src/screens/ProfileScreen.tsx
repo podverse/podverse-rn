@@ -575,12 +575,12 @@ export class ProfileScreen extends React.Component<Props, State> {
               <Dialog.Button
                 label={translate('Cancel')}
                 onPress={this._cancelDeleteMediaRef}
-                testID='dialog_delete_clip_cancel'
+                testID={'dialog_delete_clip_cancel'.prependTestId()}
               />
               <Dialog.Button
                 label={translate('Delete')}
                 onPress={this._deleteMediaRef}
-                testID='dialog_delete_clip_delete'
+                testID={'dialog_delete_clip_delete'.prependTestId()}
               />
             </Dialog.Container>
           </View>

@@ -158,9 +158,8 @@ export class MembershipScreen extends React.Component<Props, State> {
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={this.handleRenewPress}
                 style={styles.subText}
-                testID={`${testIDPrefix}_renew_membership`}>
-                {translate('Renew Membership')}
-              </TextLink>
+                testID={`${testIDPrefix}_renew_membership`}
+                text={translate('Renew Membership')} />
             </View>
           </View>
         )}
@@ -183,9 +182,8 @@ export class MembershipScreen extends React.Component<Props, State> {
                 fontSizeLargestScale={PV.Fonts.largeSizes.md}
                 onPress={this.handleSignUpPress}
                 style={styles.subText}
-                testID={`${testIDPrefix}_sign_up`}>
-                {translate('Sign Up')}
-              </TextLink>
+                testID={`${testIDPrefix}_sign_up`}
+                text={translate('Sign Up')} />
             </View>
           </View>
         )}

@@ -22,7 +22,8 @@ import {
 } from '../lib/utility'
 import { PV } from '../resources'
 import { checkIfShouldUseServerData } from '../services/auth'
-import { movePlayerItemToNewPosition } from '../services/player'
+import PVEventEmitter from '../services/eventEmitter'
+import { movePlayerItemToNewPosition, syncPlayerWithQueue } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { addQueueItemToServer, getQueueItems, removeQueueItem, setAllQueueItemsLocally } from '../state/actions/queue'
@@ -97,6 +98,7 @@ export class QueueScreen extends React.Component<Props, State> {
                   style={styles.headerButtonWrapper}>
                   <NavHeaderButtonText
                     accessibilityHint={translate('ARIA HINT - Tap to start removing items from your queue')}
+                    accessibilityLabel={translate('Remove')}
                     color={textColor}
                     handlePress={navigation.getParam('_startEditing')}
                     style={styles.navHeaderTextButton}
@@ -109,6 +111,7 @@ export class QueueScreen extends React.Component<Props, State> {
                   style={styles.headerButtonWrapper}>
                   <NavHeaderButtonText
                     accessibilityHint={translate('ARIA HINT - Tap to stop removing items from your queue')}
+                    accessibilityLabel={translate('Done')}
                     color={textColor}
                     handlePress={navigation.getParam('_stopEditing')}
                     style={styles.navHeaderTextButton}
@@ -123,6 +126,7 @@ export class QueueScreen extends React.Component<Props, State> {
               {!navigation.getParam('isEditing') ? (
                 <NavHeaderButtonText
                   accessibilityHint={translate('ARIA HINT - Tap to start removing items from your queue')}
+                  accessibilityLabel={translate('Remove')}
                   color={textColor}
                   handlePress={navigation.getParam('_startEditing')}
                   style={styles.navHeaderTextButton}
@@ -132,6 +136,7 @@ export class QueueScreen extends React.Component<Props, State> {
               ) : (
                 <NavHeaderButtonText
                   accessibilityHint={translate('ARIA HINT - Tap to stop removing items from your queue')}
+                  accessibilityLabel={translate('Done')}
                   color={textColor}
                   handlePress={navigation.getParam('_stopEditing')}
                   style={styles.navHeaderTextButton}
@@ -147,8 +152,11 @@ export class QueueScreen extends React.Component<Props, State> {
     }
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const { navigation } = this.props
+
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    PVEventEmitter.on(PV.Events.QUEUE_HAS_UPDATED, this._getQueueItems)
 
     navigation.setParams({
       _onViewTypeSelect: this._onViewTypeSelect,
@@ -156,14 +164,23 @@ export class QueueScreen extends React.Component<Props, State> {
       _stopEditing: this._stopEditing
     })
 
+    this._getQueueItems()
+
+    trackPageView('/queue', 'Queue Screen')
+  }
+
+  componentWillUnmount() {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    PVEventEmitter.removeListener(PV.Events.QUEUE_HAS_UPDATED, this._getQueueItems)
+  }
+
+  _getQueueItems = async () => {
     try {
       await getQueueItems()
       this.setState({ isLoading: false })
     } catch (error) {
       this.setState({ isLoading: false })
     }
-
-    trackPageView('/queue', 'Queue Screen')
   }
 
   _startEditing = () => {
@@ -216,6 +233,7 @@ export class QueueScreen extends React.Component<Props, State> {
     if (queueItems && queueItems[rowIndex]) {
       const item = queueItems[rowIndex]
       await removeQueueItem(item)
+      await syncPlayerWithQueue()
       this._handlePlayItem(item)
     }
   }
@@ -278,6 +296,7 @@ export class QueueScreen extends React.Component<Props, State> {
       (async () => {
         try {
           await removeQueueItem(item)
+          await syncPlayerWithQueue()
         } catch (error) {
           //
         }
@@ -354,10 +373,10 @@ export class QueueScreen extends React.Component<Props, State> {
                   <TableSectionSelectors
                     disableFilter
                     includePadding
-                    selectedFilterLabel={translate('Now Playing')}
                     selectedFilterAccessibilityHint={
                       translate('ARIA HINT - This section contains information about the currently playing item')
                     }
+                    selectedFilterLabel={translate('Now Playing')}
                     textStyle={styles.sectionHeaderText}
                   />
                   <QueueTableCell
@@ -380,10 +399,10 @@ export class QueueScreen extends React.Component<Props, State> {
             <TableSectionSelectors
               disableFilter
               includePadding
-              selectedFilterLabel={translate('Next Up')}
               selectedFilterAccessibilityHint={
                 translate('ARIA HINT - This section contains the items next up in your queue')
               }
+              selectedFilterLabel={translate('Next Up')}
               textStyle={styles.sectionHeaderText}
             />
           </View>

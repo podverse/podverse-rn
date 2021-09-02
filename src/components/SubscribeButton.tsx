@@ -47,7 +47,7 @@ export const SubscribeButton = (props: Props) => {
       }}
       onPress={handleToggleSubscribe}
       style={[styles.buttonView, props.style]}
-      {...(testID ? { testID: `${testID}_subscribe_button` } : {})}>
+      {...(testID ? { testID: `${testID}_subscribe_button`.prependTestId() } : {})}>
       <View>
         {isSubscribing && (
           <View style={styles.activityIndicator}>
@@ -58,7 +58,7 @@ export const SubscribeButton = (props: Props) => {
           <Text
             fontSizeLargerScale={PV.Fonts.largeSizes.md}
             fontSizeLargestScale={PV.Fonts.largeSizes.sm}
-            testID={buttonTextTestId}
+            testID={buttonTextTestId.prependTestId()}
             style={styles.buttonText}>
             {buttonTitle.toUpperCase()}
           </Text>

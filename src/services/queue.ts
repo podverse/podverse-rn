@@ -52,8 +52,6 @@ export const removeQueueItem = async (item: NowPlayingItem) => {
     items = await removeQueueItemLocally(item)
   }
 
-  await syncPlayerWithQueue()
-
   return items
 }
 

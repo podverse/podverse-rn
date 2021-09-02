@@ -35,7 +35,7 @@ export const PVText = (props: Props) => {
   }
 
   return (
-    <Text {...props} style={textStyle} {...(testID ? { testID } : {})}>
+    <Text {...props} style={textStyle} {...(testID ? { testID: testID.prependTestId() } : {})}>
       {typeof props.children === 'string' ? props.children?.sanitize(censorNSFWText) : props.children}
     </Text>
   )

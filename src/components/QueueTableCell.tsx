@@ -138,6 +138,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                   ? translate('ARIA HINT - This is the now playing clip title')
                   : translate('ARIA HINT - Tap to play this clip')
               }
+              accessibilityLabel={!isClip ? translate('Full Episode') : clipTitle.trim()}
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
               numberOfLines={1}
               style={styles.clipTitle}
@@ -147,6 +148,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
             {!!clipStartTime && (
               <Text
                 accessibilityHint={translate('ARIA HINT - This is the clip time range')}
+                accessibilityLabel={readableClipTime(clipStartTime, clipEndTime)}
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
                 style={styles.clipTime}
                 testID={`${testID}_clip_time`}>

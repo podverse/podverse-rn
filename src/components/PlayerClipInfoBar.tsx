@@ -20,7 +20,7 @@ export class PlayerClipInfoBar extends React.PureComponent<Props> {
     return (
       <TouchableWithoutFeedback
         onPress={handleOnPress}
-        testID='player_clip_info_bar'>
+        testID={'player_clip_info_bar'.prependTestId()}>
         <View style={[styles.wrapper, globalTheme.player]}>
           <Text
             fontSizeLargestScale={PV.Fonts.largeSizes.md}

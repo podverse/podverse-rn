@@ -44,6 +44,8 @@ export class EditProfileScreen extends React.Component<Props, State> {
       title: translate('Edit My Profile'),
       headerRight: () => (
         <NavHeaderButtonText
+          accessibilityHint={translate('ARIA HINT - Tap to save these changes to your profile')}
+          accessibilityLabel={translate('Save')}
           handlePress={navigation.getParam('updateUser')}
           testID={testIDPrefix}
           text={translate('Save')}

@@ -215,17 +215,19 @@ export const handleEnrichingPlayerState = (item: NowPlayingItem) => {
 }
 
 const enrichParsedTranscript = (item: NowPlayingItem) => {
-  setGlobal({ parsedTranscript: [] }, async () => {
-    if (item.episodeTranscript && item.episodeTranscript[0] && item.episodeTranscript[0].url) {
+  if (item.episodeTranscript && item.episodeTranscript[0] && item.episodeTranscript[0].url) {
+    setGlobal({ parsedTranscript: [] }, async () => {
       try {
         const parsedTranscript =
-        await getParsedTranscript(item.episodeTranscript[0].url, item.episodeTranscript[0].type)
+          await getParsedTranscript(item.episodeTranscript[0].url, item.episodeTranscript[0].type)
         setGlobal({ parsedTranscript })
       } catch (error) {
         console.log('loadItemAndPlayTrack transcript parsing error', error)
       }
-    }
-  })
+    })
+  } else {
+    setGlobal({ parsedTranscript: null })
+  }
 }
 
 const enrichPodcastValue = async (item: NowPlayingItem) => {

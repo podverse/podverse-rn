@@ -12,6 +12,7 @@ export const ComparisonTable = (props: any) => {
       <View style={[styles.tableHeaderRow, globalTheme.tableSectionHeader]}>
         <Text
           accessibilityHint={mainTitleAccessibilityHint}
+          accessibilityLabel={mainTitle}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
           style={[styles.tableHeaderTextLeft, globalTheme.tableSectionHeaderText]}>
