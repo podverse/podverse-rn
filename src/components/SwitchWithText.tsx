@@ -54,7 +54,8 @@ export const SwitchWithText = (props: Props) => {
         accessible={accessible}
         accessibilityHint={accessibilityHint}
         accessibilityLabel={accessibilityLabel}
-        accessibilityRole='switch'>
+        accessibilityRole='switch'
+        onPress={onValueChange}>
         <View accessible={accessible} style={styles.switchWrapper}>
           <Switch
             accessible={accessible}
