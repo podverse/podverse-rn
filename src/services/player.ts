@@ -109,8 +109,8 @@ export const updateTrackPlayerCapabilities = () => {
     // every time the user receives a notification.
     alwaysPauseOnInterruption: Platform.OS === 'ios',
     stopWithApp: true,
-    // Better to skip 10 both ways than to skip 30 both ways. No current way to set them separately
-    jumpInterval: PV.Player.jumpBackSeconds
+    backwardJumpInterval: PV.Player.jumpBackSeconds,
+    forwardJumpInterval: PV.Player.jumpSeconds
   })
 }
 
