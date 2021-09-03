@@ -90,7 +90,9 @@ export const PVTextInput = (props: Props) => {
       accessibilityHint={accessibilityHint}
       accessibilityLabel={accessibilityLabel}
       onPress={onPress}>
-      <View style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
+      <View
+        {...(onPress ? { pointerEvents: 'none' } : {})}
+        style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
         {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
           <Text style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]} testID={`${testID}_text_input_eyebrow`}>
             {eyebrowTitle || placeholder}

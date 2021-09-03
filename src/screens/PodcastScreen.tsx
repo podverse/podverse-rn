@@ -712,11 +712,13 @@ static navigationOptions = ({ navigation }) => {
                   translate('ARIA HINT - Tap to set the time you want this episode to always start playing from')
                 }
                 accessibilityLabel={translate('Preset podcast start time')}
+                editable={false}
                 isHHMMSS
                 selectedNumber={startPodcastFromTime}
                 subText={translate('Episodes of this podcast will start playback from this time')}
                 testID={`${testIDPrefix}_start_podcast_from_time`}
                 text={translate('Preset podcast start time')}
+                textInputOnPress={this._handleNavigateToStartPodcastFromTimeScreen}
                 textInputStyle={{ width: 76 }}
                 wrapperOnPress={this._handleNavigateToStartPodcastFromTimeScreen}
               />
