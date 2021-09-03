@@ -2,6 +2,7 @@ import Bottleneck from 'bottleneck'
 import { clone } from 'lodash'
 import RNBackgroundDownloader from 'react-native-background-downloader'
 import RNFS from 'react-native-fs'
+import { getAddByRSSPodcastCredentialsHeader } from '../services/parser'
 import * as DownloadState from '../state/actions/downloads'
 import { addDownloadedPodcastEpisode, getDownloadedPodcasts } from './downloadedPodcast'
 import { addDownloadingEpisode, getDownloadingEpisodes, removeDownloadingEpisode } from './downloadingEpisode'
@@ -128,15 +129,18 @@ export const downloadEpisode = async (
 
   const downloader = await BackgroundDownloader()
   const destination = `${downloader.directories.documents}/${episode.id}${ext}`
-  const secureEpisodeMediaUrl = episode.mediaUrl
+  const Authorization = await getAddByRSSPodcastCredentialsHeader(podcast.addByRSSPodcastFeedUrl)
 
   // Wait for t.stop() to complete
   setTimeout(() => {
     const task = downloader
       .download({
         id: episode.id,
-        url: secureEpisodeMediaUrl,
-        destination
+        url: episode.mediaUrl,
+        destination,
+        headers: {
+          ...(Authorization ? { Authorization } : {})
+        }
       })
       .begin(() => {
         if (!restart) {

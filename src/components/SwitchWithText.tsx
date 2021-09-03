@@ -17,6 +17,15 @@ type Props = {
   inputPlaceholder?: string
   inputShow?: boolean
   inputText?: string
+  input2AutoCorrect?: boolean
+  input2Editable?: boolean
+  input2EyebrowTitle?: string
+  input2HandleBlur?: any
+  input2HandleSubmit?: any
+  input2HandleTextChange?: any
+  input2Placeholder?: string
+  input2Show?: boolean
+  input2Text?: string
   onValueChange: any
   subText?: string
   testID: string
@@ -39,6 +48,15 @@ export const SwitchWithText = (props: Props) => {
     inputPlaceholder,
     inputShow,
     inputText,
+    input2AutoCorrect,
+    input2Editable,
+    input2EyebrowTitle,
+    input2HandleBlur,
+    input2HandleSubmit,
+    input2HandleTextChange,
+    input2Placeholder,
+    input2Show,
+    input2Text,
     onValueChange,
     subText,
     testID,
@@ -59,6 +77,7 @@ export const SwitchWithText = (props: Props) => {
         <View accessible={accessible} style={styles.switchWrapper}>
           <Switch
             accessible={accessible}
+            onValueChange={onValueChange}
             value={value}
             {...(testID ? { testID: `${testID}_switch`.prependTestId() } : {})} />
           <Text
@@ -87,6 +106,26 @@ export const SwitchWithText = (props: Props) => {
           {...(testID ? { testID: `${testID}_text_input` } : {})}
           underlineColorAndroid='transparent'
           value={inputText}
+          wrapperStyle={styles.textInputWrapper}
+        />
+      )}
+      {input2Show && (
+        <TextInput
+          autoCapitalize='none'
+          autoCorrect={input2AutoCorrect}
+          editable={!!input2Editable}
+          eyebrowTitle={input2EyebrowTitle}
+          fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          numberOfLines={1}
+          onBlur={input2HandleBlur}
+          onChangeText={input2HandleTextChange}
+          onSubmitEditing={input2HandleSubmit}
+          placeholder={input2Placeholder}
+          returnKeyType='done'
+          style={[globalTheme.textInput, styles.textInput]}
+          {...(testID ? { testID: `${testID}_text_input_2` } : {})}
+          underlineColorAndroid='transparent'
+          value={input2Text}
           wrapperStyle={styles.textInputWrapper}
         />
       )}

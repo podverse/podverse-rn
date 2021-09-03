@@ -304,6 +304,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
     return (
       <EpisodeTableCell
         item={item}
+        handleDeletePress={() => this._handleDeleteEpisode(item)}
         handleMorePress={() =>
           this._handleMorePress(convertToNowPlayingItem(item, null, item?.podcast, userPlaybackPosition))
         }
@@ -323,20 +324,11 @@ export class EpisodesScreen extends React.Component<Props, State> {
     )
   }
 
-  _handleHiddenItemPress = (selectedId) => {
-    const filteredEpisodes = this.state.flatListData.filter((x: any) => x.id !== selectedId)
-    this.setState(
-      {
-        flatListData: filteredEpisodes
-      },
-      () => {
-        (async () => {
-          await removeDownloadedPodcastEpisode(selectedId)
-          const finalDownloadedEpisodes = await getDownloadedEpisodes()
-          this.setState({ flatListData: finalDownloadedEpisodes })
-        })()
-      }
-    )
+  _handleDeleteEpisode = async (item: any) => {
+    const selectedId = item?.id
+    if (selectedId) {
+      await removeDownloadedPodcastEpisode(selectedId)
+    }
   }
 
   _handleSearchBarClear = () => {
