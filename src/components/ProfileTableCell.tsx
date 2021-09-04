@@ -18,7 +18,7 @@ export class ProfileTableCell extends React.PureComponent<Props> {
     return (
       <View
         accessible
-        accessibilityHint={translate('ARIA HINT - go to this profile')}
+        accessibilityHint={translate('ARIA HINT - tap to go to this profile')}
         accessibilityLabel={name.trim() || translate('anonymous')}
         hasZebraStripe={hasZebraStripe}
         style={styles.wrapper}>

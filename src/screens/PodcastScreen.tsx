@@ -771,7 +771,10 @@ static navigationOptions = ({ navigation }) => {
                 PV.ActionSheet.media.moreButtons(
                   selectedItem,
                   navigation,
-                  { handleDismiss: this._handleCancelPress },
+                  {
+                    handleDismiss: this._handleCancelPress,
+                    handleDownload: this._handleDownloadPressed
+                  },
                   'podcast'
                 )
               }

@@ -66,9 +66,8 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const innerTopView = (
       <RNView
-        accessibilityHint={translate('ARIA HINT - go to this episode')}
+        accessibilityHint={translate('ARIA HINT - tap to go to this episode')}
         accessibilityLabel={accessibilityLabel}
-        accessibilityRole='button'
         style={styles.innerTopView}>
         {!!imageUrl && !hideImage && <FastImage isSmall source={imageUrl} styles={styles.image} />}
         <RNView
@@ -125,7 +124,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         <RNView style={styles.wrapperTop}>
           {handleNavigationPress ? (
             <TouchableWithoutFeedback
-              accessibilityHint={translate('ARIA HINT - go to this episode')}
+              accessibilityHint={translate('ARIA HINT - tap to go to this episode')}
               accessibilityLabel={accessibilityLabel}
               onPress={handleNavigationPress}
               {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
@@ -143,7 +142,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         </RNView>
         {handleNavigationPress ? (
           <TouchableWithoutFeedback
-            accessibilityHint={translate('ARIA HINT - go to this episode')}
+            accessibilityHint={translate('ARIA HINT - tap to go to this episode')}
             accessibilityLabel={description.trim()}
             onPress={handleNavigationPress}
             {...(testID ? { testID: `${testID}_bottom_view_nav`.prependTestId() } : {})}>

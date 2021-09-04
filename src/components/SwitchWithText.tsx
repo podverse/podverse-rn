@@ -136,6 +136,7 @@ export const SwitchWithText = (props: Props) => {
         <Text
           accessible={false}
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          importantForAccessibility='no'
           style={[globalTheme.textSecondary, styles.subText]}
           {...(testID ? { testID: `${testID}_sub_text` } : {})}>
           {subText}

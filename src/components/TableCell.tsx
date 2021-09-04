@@ -1,5 +1,5 @@
 import React from 'react'
-import { Pressable, View } from 'react-native'
+import { AccessibilityRole, Pressable, View } from 'react-native'
 import { PV } from '../resources'
 import { table } from '../styles'
 import { Text, Icon } from '.'
@@ -7,6 +7,7 @@ import { Text, Icon } from '.'
 type TableCellProps = {
   accessibilityHint?: string
   accessibilityLabel?: string
+  accessibilityRole?: AccessibilityRole
   children: any
   testIDPrefix: string
   testIDSuffix: string
@@ -25,13 +26,15 @@ type TableTextCellProps = {
 }
 
 export const TableCell = (props: TableCellProps) => {
-  const { accessibilityHint, accessibilityLabel, children, testIDPrefix, testIDSuffix, onPress = null,
+  const { accessibilityHint, accessibilityLabel, accessibilityRole, children,
+    testIDPrefix, testIDSuffix, onPress = null,
     hideChevron = true } = props
 
   return (
     <Pressable
       accessibilityHint={accessibilityHint}
       accessibilityLabel={accessibilityLabel}
+      accessibilityRole={accessibilityRole}
       onPress={onPress}
       style={table.cellWrapper}
       testID={`${testIDPrefix}_table_cell_wrapper${testIDSuffix ? `_${testIDSuffix}` : ''}`}>

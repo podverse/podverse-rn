@@ -28,12 +28,11 @@ export const DropdownButton = (props: any) => {
       onPress={onPress}
       testID={`${testID}_dropdown_button`.prependTestId()}>
       <View
-        accessible={accessible}
-        importantForAccessibility={importantForAccessibility}
+        accessible={false}
+        importantForAccessibility='no-hide-descendants'
         style={[styles.dropdownButton, dropdownStyle, extraStyles]}>
         <Text
-          accessible={accessible}
-          importantForAccessibility={importantForAccessibility}
+          accessible={false}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
           style={[styles.dropdownButtonText, globalTheme.dropdownButtonText]}
@@ -41,8 +40,7 @@ export const DropdownButton = (props: any) => {
           {sortLabel}
         </Text>
         <Icon
-          accessible={accessible}
-          importantForAccessibility={importantForAccessibility}
+          accessible={false}
           name='angle-down'
           size={14}
           style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]} />

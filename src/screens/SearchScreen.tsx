@@ -198,7 +198,7 @@ export class SearchScreen extends React.Component<Props, State> {
         onPress: () => selectedPodcast && this._toggleSubscribeToPodcast(selectedPodcast.id)
       },
       {
-        accessibilityHint: translate('ARIA HINT - go to this podcast'),
+        accessibilityHint: translate('ARIA HINT - tap to go to this podcast'),
         accessibilityLabel: translate('Go to Podcast'),
         key: 'goToPodcast',
         text: translate('Go to Podcast'),

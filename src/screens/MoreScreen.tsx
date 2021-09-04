@@ -167,7 +167,7 @@ export class MoreScreen extends React.Component<Props, State> {
     const otherOptions = this._moreOtherOptions(membershipStatus)
 
     const membershipAccessibilityLabel =
-      `${translate('Membership')}${isLoggedIn ? ' - ' : ''} ${membershipStatus}`
+      `${translate('Membership')}${isLoggedIn ? ' - ' : ''} ${membershipStatus ? membershipStatus : ''}`
 
     return (
       <View
@@ -176,14 +176,8 @@ export class MoreScreen extends React.Component<Props, State> {
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => {
-            let tableCellAccessibilityHint = translate('ARIA HINT - go to this screen')
-            if (item.key === _contactKey) {
-              tableCellAccessibilityHint = translate('ARIA HINT - Contact Us button')
-            }
-
             return (
               <TableCell
-                accessibilityHint={tableCellAccessibilityHint}
                 accessibilityLabel={item.key === _membershipKey
                   ? membershipAccessibilityLabel
                   : item.title

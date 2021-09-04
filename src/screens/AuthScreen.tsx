@@ -162,7 +162,6 @@ export class AuthScreen extends React.Component<Props, State> {
       bottomButtons = [
         <Text
           accessible
-          accessibilityHint={translate('ARIA HINT - reset your password')}
           accessibilityLabel={translate('Reset Password')}
           accessibilityRole='button'
           fontSizeLargestScale={PV.Fonts.largeSizes.md}

@@ -245,7 +245,7 @@ const mediaMoreButtons = (
 
   if (includeGoToPodcast) {
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - go to this podcast'),
+      accessibilityHint: translate('ARIA HINT - tap to go to this podcast'),
       accessibilityLabel: translate('Go to Podcast'),
       key: PV.Keys.go_to_podcast,
       text: translate('Go to Podcast'),

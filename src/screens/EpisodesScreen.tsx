@@ -471,6 +471,7 @@ export class EpisodesScreen extends React.Component<Props, State> {
               navigation,
               {
                 handleDismiss: this._handleCancelPress,
+                handleDownload: this._handleDownloadPressed,
                 includeGoToPodcast: true
               },
               'episode'
