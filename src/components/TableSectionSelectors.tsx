@@ -108,11 +108,12 @@ export class TableSectionSelectors extends React.Component<Props, State> {
         {
           !hideDropdown &&
             <DropdownButton
-              accessible={accessible && !disableFilter}
+              accessible={!!accessible && !disableFilter}
               // eslint-disable-next-line max-len
               accessibilityHint={translate('ARIA HINT - This is the selected sorting filter for this screen select a different filter')}
               accessibilityLabel={selectedSortLabel}
-              disableFilter={disableFilter}
+              disableFilter={!!disableFilter}
+              importantForAccessibility={!!accessible && !disableFilter ? 'yes' : 'no'}
               onPress={() => {
                 this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
                   addByRSSPodcastFeedUrl,

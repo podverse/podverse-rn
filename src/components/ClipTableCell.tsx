@@ -3,6 +3,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
+import { images } from '../styles'
 import { IndicatorDownload } from './IndicatorDownload'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
 import { FastImage, Text, View } from './'
@@ -139,7 +140,11 @@ export class ClipTableCell extends React.PureComponent<Props> {
         importantForAccessibility='no'
         style={styles.wrapper}
         transparent={transparent}>
-        <View accessible={false} importantForAccessibility='no' style={styles.wrapperInner} transparent={transparent}>
+        <View
+          accessible={false}
+          importantForAccessibility='no'
+          style={styles.wrapperInner}
+          transparent={transparent}>
           <RNView style={styles.wrapperTop}>
             {innerTopView}
           </RNView>
@@ -170,9 +175,9 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   chapterImage: {
-    height: 64,
+    height: images.medium.height,
     marginLeft: 12,
-    width: 64
+    width: images.medium.width
   },
   chapterImageBorder: {
     borderColor: PV.Colors.skyDark,
@@ -190,9 +195,9 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.thin
   },
   image: {
-    height: 64,
+    height: images.medium.height,
     marginRight: 12,
-    width: 64
+    width: images.medium.width
   },
   imageAndTopRightTextWrapper: {
     flex: 1,

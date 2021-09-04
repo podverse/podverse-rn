@@ -133,7 +133,7 @@ export const TimeRemainingWidget = (props: Props) => {
   if (!clipTime) {
     playButtonAccessibilityHint = isNowPlayingItem
       ? translate('ARIA HINT - pause this episode')
-      : translate('ARIA HINT - play this episode')
+      : translate('ARIA HINT - tap to play this episode')
   } else if (clipTime && isChapter) {
     playButtonAccessibilityHint = isNowPlayingItem
       ? translate('ARIA HINT - pause this chapter')

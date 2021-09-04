@@ -5,7 +5,8 @@ import { PV } from '../resources'
 import { Icon, Text } from '.'
 
 export const DropdownButton = (props: any) => {
-  const { accessible = true, accessibilityHint, disableFilter, onPress, sortLabel, testID } = props
+  const { accessible = true, accessibilityHint, disableFilter, importantForAccessibility,
+    onPress, sortLabel, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const dropdownStyle = disableFilter ? { opacity: 0.0 } : {}
 
@@ -21,12 +22,18 @@ export const DropdownButton = (props: any) => {
       accessibilityHint={accessibilityHint}
       accessibilityLabel={sortLabel}
       accessibilityRole='button'
+        importantForAccessibility={importantForAccessibility}
       activeOpacity={0.7}
       disabled={disableFilter}
       onPress={onPress}
       testID={`${testID}_dropdown_button`.prependTestId()}>
-      <View style={[styles.dropdownButton, dropdownStyle, extraStyles]}>
+      <View
+        accessible={accessible}
+        importantForAccessibility={importantForAccessibility}
+        style={[styles.dropdownButton, dropdownStyle, extraStyles]}>
         <Text
+          accessible={accessible}
+          importantForAccessibility={importantForAccessibility}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
           numberOfLines={1}
           style={[styles.dropdownButtonText, globalTheme.dropdownButtonText]}
@@ -34,6 +41,8 @@ export const DropdownButton = (props: any) => {
           {sortLabel}
         </Text>
         <Icon
+          accessible={accessible}
+          importantForAccessibility={importantForAccessibility}
           name='angle-down'
           size={14}
           style={[styles.dropdownButtonIcon, globalTheme.dropdownButtonIcon]} />

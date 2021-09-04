@@ -58,7 +58,7 @@ export const NumberSelectorWithText = (props: Props) => {
         accessible={false}
         importantForAccessibility='no'
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
-        style={isSmallText ? styles.smallText : styles.text}>
+        style={isSmallText ? styles.mediumText : styles.text}>
         {text}
       </Text>
     </View>

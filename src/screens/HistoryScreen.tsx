@@ -74,19 +74,19 @@ export class HistoryScreen extends React.Component<Props, State> {
             {!navigation.getParam('isEditing') ? (
               <RNView style={styles.headerButtonWrapper}>
                 <NavHeaderButtonText
-                  accessibilityHint={translate('ARIA HINT - start removing items from your history')}
-                  accessibilityLabel={translate('Edit')}
+                  accessibilityHint={translate('ARIA HINT - tap to start removing items from your history')}
+                  accessibilityLabel={translate('Remove')}
                   color={textColor}
                   handlePress={navigation.getParam('_startEditing')}
                   style={styles.navHeaderTextButton}
                   testID={`${testIDPrefix}_header_edit`}
-                  text={translate('Edit')}
+                  text={translate('Remove')}
                 />
               </RNView>
             ) : (
               <RNView style={styles.headerButtonWrapper}>
                 <NavHeaderButtonText
-                  accessibilityHint={translate('ARIA HINT - stop removing items from your history')}
+                  accessibilityHint={translate('ARIA HINT - tap to stop removing items from your history')}
                   accessibilityLabel={translate('Done')}
                   color={textColor}
                   handlePress={navigation.getParam('_stopEditing')}
@@ -144,27 +144,24 @@ export class HistoryScreen extends React.Component<Props, State> {
     const { isEditing, isTransparent } = this.state
 
     return (
-      <View transparent={isTransparent}>
-        <QueueTableCell
-          clipEndTime={item?.clipEndTime}
-          clipStartTime={item?.clipStartTime}
-          {...(item?.clipTitle ? { clipTitle: item.clipTitle } : {})}
-          {...(item?.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
-          {...(item?.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
-          handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
-          isHistoryItem
-          onPress={() => {
-            if (!isEditing) {
-              this._handlePlayItem(item)
-            }
-          }}
-          podcastImageUrl={item?.podcastImageUrl}
-          {...(item?.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
-          showRemoveButton={isEditing}
-          testID={`${testIDPrefix}_history_item_${index}`}
-          transparent={isTransparent}
-        />
-      </View>
+      <QueueTableCell
+        clipEndTime={item?.clipEndTime}
+        clipStartTime={item?.clipStartTime}
+        {...(item?.clipTitle ? { clipTitle: item.clipTitle } : {})}
+        {...(item?.episodePubDate ? { episodePubDate: item.episodePubDate } : {})}
+        {...(item?.episodeTitle ? { episodeTitle: item.episodeTitle } : {})}
+        handleRemovePress={() => this._handleRemoveHistoryItemPress(item)}
+        onPress={() => {
+          if (!isEditing) {
+            this._handlePlayItem(item)
+          }
+        }}
+        podcastImageUrl={item?.podcastImageUrl}
+        {...(item?.podcastTitle ? { podcastTitle: item.podcastTitle } : {})}
+        showRemoveButton={isEditing}
+        testID={`${testIDPrefix}_history_item_${index}`}
+        transparent={isTransparent}
+      />
     )
   }
 

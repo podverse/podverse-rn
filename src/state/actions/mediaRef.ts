@@ -1,5 +1,5 @@
 import { setGlobal } from 'reactn'
-import { TempMediaRef } from 'src/resources/Interfaces'
+import { TempMediaRef } from '../../resources/Interfaces'
 
 export const clearTempMediaRef = async () => {
   return setGlobal({

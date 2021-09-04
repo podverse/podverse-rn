@@ -3,6 +3,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
+import { images } from '../styles'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
 import { FastImage, Text, View } from './'
@@ -174,9 +175,9 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 0,
-    height: 64,
+    height: images.medium.height,
     marginRight: 12,
-    width: 64
+    width: images.medium.width
   },
   innerTopView: {
     flex: 1,
