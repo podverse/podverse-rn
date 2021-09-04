@@ -1,8 +1,28 @@
 import React from 'react'
-import { View } from 'react-native'
+import { AccessibilityRole, View } from 'react-native'
 import { useGlobal } from 'reactn'
+import { ImportantForAccessibility } from '../lib/accessibilityHelpers'
 
-export const PVView = (props: any) => {
+type Props = {
+  accessible?: boolean
+  accessibilityHint?: string
+  accessibilityLabel?: string
+  accessibilityRole?: AccessibilityRole
+  allowFontScaling?: boolean
+  children?: any
+  fontSizeLargerScale?: number
+  fontSizeLargestScale?: number
+  hasZebraStripe?: boolean
+  importantForAccessibility?: ImportantForAccessibility
+  isSecondary?: any
+  numberOfLines?: number
+  onPress?: any
+  style?: any
+  testID: string
+  transparent?: boolean
+}
+
+export const PVView = (props: Props) => {
   const { children, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
   const styles = [globalTheme.view]

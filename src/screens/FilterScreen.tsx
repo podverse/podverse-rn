@@ -223,6 +223,7 @@ export class FilterScreen extends React.Component<Props, State> {
       <TouchableWithoutFeedback
         accessibilityHint={isActive ? translate('ARIA HINT - Currently selected filter') : ''}
         accessibilityLabel={item.labelShort || item.label || item.title}
+        importantForAccessibility='yes'
         onPress={async () => {
           const { categoryValueOverride, handleSelect } = await this.getSelectHandler(section, item)
           const newState = (await this.getNewLocalState(section, item)) as any
@@ -234,6 +235,7 @@ export class FilterScreen extends React.Component<Props, State> {
         testID={`${testIDPrefix}_${value}`.prependTestId()}>
         <View style={styles.itemWrapper}>
           <Text
+            importantForAccessibility='no-hide-descendants'
             style={[itemTextStyle, isActive ? { fontWeight: PV.Fonts.weights.extraBold, color: PV.Colors.white } : {}]}>
             {item.labelShort || item.label || item.title}
           </Text>

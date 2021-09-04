@@ -87,8 +87,9 @@ export const PVTextInput = (props: Props) => {
 
   return (
     <TouchableWithoutFeedback
-      accessibilityHint={accessibilityHint}
-      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={onPress ? accessibilityHint : ''}
+      accessibilityLabel={onPress ? accessibilityLabel : ''}
+      importantForAccessibility={onPress ? 'yes' : 'no'}
       onPress={onPress}>
       <View
         {...(onPress ? { pointerEvents: 'none' } : {})}
@@ -105,6 +106,7 @@ export const PVTextInput = (props: Props) => {
           blurOnSubmit={returnKeyType === 'done'}
           editable={!!editable}
           keyboardType={keyboardType}
+          importantForAccessibility={!onPress ? 'yes' : 'no'}
           multiline={numberOfLines > 1}
           numberOfLines={hasText ? numberOfLines : 1}
           onBlur={onBlur}

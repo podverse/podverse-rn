@@ -144,6 +144,8 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
               value={url}
             />
             <SwitchWithText
+              accessibilityHint={translate('ARIA HINT - Tap to type a username and password for this feed')}
+              accessibilityLabel={translate('Include username and password')}
               inputAutoCorrect={false}
               inputEditable
               inputEyebrowTitle={translate('Username')}

@@ -757,7 +757,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
               noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - Tap to go to the search screen')}
               noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
               noResultsMessage={
-                noSubscribedPodcasts ? translate("You don't have any podcasts yet") : translate('No podcasts found')
+                // eslint-disable-next-line max-len
+                noSubscribedPodcasts ? translate("You are not subscribed to any podcasts yet") : translate('No podcasts found')
               }
               onEndReached={this._onEndReached}
               onRefresh={queryFrom === PV.Filters._subscribedKey ? this._onRefresh : null}

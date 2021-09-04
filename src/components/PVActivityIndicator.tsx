@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import { ActivityIndicator, Dimensions, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 import { useGlobal } from 'reactn'
+import { ImportantForAccessibility } from '../lib/accessibilityHelpers'
 import { Colors } from '../resources/Colors'
 import { core } from '../styles'
 
@@ -9,6 +10,7 @@ type Props = {
   accessibilityLabel?: string
   children?: any
   fillSpace?: boolean
+  importantForAccessibility?: ImportantForAccessibility
   isOverlay?: boolean
   onPress?: any
   size?: any
@@ -19,8 +21,8 @@ type Props = {
 
 export const PVActivityIndicator = (props: Props) => {
   const [globalTheme] = useGlobal('globalTheme')
-  const { accessibilityHint, accessibilityLabel, fillSpace, isOverlay, onPress, size = 'large',
-    testID, transparent = true } = props
+  const { accessibilityHint, accessibilityLabel, fillSpace, importantForAccessibility = 'auto', 
+    isOverlay, onPress, size = 'large', testID, transparent = true } = props
 
   const viewStyle = fillSpace ? { flex: 1 } : {}
   const backgroundColor = transparent ? {} : { backgroundColor: Colors.blackOpaque }
@@ -31,6 +33,7 @@ export const PVActivityIndicator = (props: Props) => {
         <View
           accessibilityHint={accessibilityHint}
           accessibilityLabel={accessibilityLabel}
+          importantForAccessibility={importantForAccessibility}
           style={[styles.activityOverlay, backgroundColor]}>
           <ActivityIndicator
             animating
