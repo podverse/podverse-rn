@@ -134,8 +134,12 @@ export class ClipTableCell extends React.PureComponent<Props> {
     )
 
     return (
-      <View style={styles.wrapper} transparent={transparent}>
-        <View style={styles.wrapperInner} transparent={transparent}>
+      <View
+        accessible={false}
+        importantForAccessibility='no'
+        style={styles.wrapper}
+        transparent={transparent}>
+        <View accessible={false} importantForAccessibility='no' style={styles.wrapperInner} transparent={transparent}>
           <RNView style={styles.wrapperTop}>
             {innerTopView}
           </RNView>

@@ -128,9 +128,14 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
         <ActionSheet
           handleCancelPress={this._handleMoreCancelPress}
           items={() =>
-            PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
-              handleDismiss: this._handleMoreCancelPress
-            })
+            PV.ActionSheet.media.moreButtons(
+              selectedItem,
+              navigation,
+              {
+                handleDismiss: this._handleMoreCancelPress
+              },
+              'chapter'
+            )
           }
           showModal={showMoreActionSheet}
           testID={`${testID}_more`}

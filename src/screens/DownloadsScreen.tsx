@@ -121,7 +121,12 @@ export class DownloadsScreen extends React.Component<Props, State> {
           <ActionSheet
             handleCancelPress={this._handleCancelPress}
             items={() =>
-              PV.ActionSheet.media.moreButtons(selectedItem, navigation, { handleDismiss: this._handleCancelPress })
+              PV.ActionSheet.media.moreButtons(
+                selectedItem,
+                navigation,
+                { handleDismiss: this._handleCancelPress },
+                'episode'
+              )
             }
             showModal={showActionSheet}
             testID={testIDPrefix}

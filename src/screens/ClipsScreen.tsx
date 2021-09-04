@@ -453,12 +453,17 @@ export class ClipsScreen extends React.Component<Props, State> {
           items={() => {
             if (!selectedItem) return []
 
-            return PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
-              handleDismiss: this._handleCancelPress,
-              handleDownload: this._handleDownloadPressed,
-              handleDeleteClip: this._handleDeleteClip,
-              includeGoToEpisode: true
-            })
+            return PV.ActionSheet.media.moreButtons(
+              selectedItem,
+              navigation,
+              {
+                handleDismiss: this._handleCancelPress,
+                handleDownload: this._handleDownloadPressed,
+                handleDeleteClip: this._handleDeleteClip,
+                includeGoToEpisode: true
+              },
+              'clip'
+            )
           }}
           showModal={showActionSheet}
           testID={testIDPrefix}

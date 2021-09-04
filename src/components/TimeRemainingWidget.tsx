@@ -161,9 +161,7 @@ export const TimeRemainingWidget = (props: Props) => {
           : <Icon name={'play'} size={13} />
         }
       </TouchableOpacity>
-      {hasStartedItem && !isInvalidDuration && (
-        <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
-      )}
+
       <View
         accessible={!clipTime}
         accessibilityHint={timeViewAccessibilityHint}
@@ -171,11 +169,13 @@ export const TimeRemainingWidget = (props: Props) => {
           ? timeLabel
           : translate('Unplayed episode')
         }
+        importantForAccessibility={!clipTime ? 'yes' : 'no'}
         style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
         <Text
           accessible={!clipTime}
           fontSizeLargerScale={PV.Fonts.largeSizes.md}
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          importantForAccessibility={!clipTime ? 'yes' : 'no'}
           style={styles.text}>
           {timeLabel}
         </Text>

@@ -768,9 +768,12 @@ static navigationOptions = ({ navigation }) => {
             <ActionSheet
               handleCancelPress={this._handleCancelPress}
               items={() =>
-                PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
-                  handleDismiss: this._handleCancelPress
-                })
+                PV.ActionSheet.media.moreButtons(
+                  selectedItem,
+                  navigation,
+                  { handleDismiss: this._handleCancelPress },
+                  'podcast'
+                )
               }
               showModal={showActionSheet}
               testID={testIDPrefix}

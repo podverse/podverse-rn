@@ -266,10 +266,15 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
         <ActionSheet
           handleCancelPress={this._handleMoreCancelPress}
           items={() =>
-            PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
-              handleDismiss: this._handleMoreCancelPress,
-              handleDownload: this._handleDownloadPressed
-            })
+            PV.ActionSheet.media.moreButtons(
+              selectedItem,
+              navigation, 
+              {
+                handleDismiss: this._handleMoreCancelPress,
+                handleDownload: this._handleDownloadPressed
+              },
+              'clip'
+            )
           }
           showModal={showMoreActionSheet}
           testID={`${testID}_more`}

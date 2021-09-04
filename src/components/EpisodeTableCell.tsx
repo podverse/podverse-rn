@@ -67,6 +67,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
       <RNView
         accessibilityHint={translate('ARIA HINT - go to this episode')}
         accessibilityLabel={accessibilityLabel}
+        accessibilityRole='button'
         style={styles.innerTopView}>
         {!!imageUrl && !hideImage && <FastImage isSmall source={imageUrl} styles={styles.image} />}
         <RNView
