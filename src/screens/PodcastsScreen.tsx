@@ -176,7 +176,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _handleAppStateChange = (nextAppState: any) => {
     (async () => {
-      updateUserPlaybackPosition()
+      await updateUserPlaybackPosition()
 
       if (nextAppState === 'active' && !isInitialLoad) {
         const { nowPlayingItem: lastItem } = this.global.player
