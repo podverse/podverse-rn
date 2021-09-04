@@ -33,7 +33,7 @@ export const NavQueueIcon = (props: Props) => {
 
   return (
     <NavItemWrapper
-      accessibilityHint={translate('ARIA HINT - Tap to go to your queue')}
+      accessibilityHint={translate('ARIA HINT - go to your queue')}
       accessibilityLabel={translate('Queue')}
       accessibilityRole='button'
       handlePress={handlePress}

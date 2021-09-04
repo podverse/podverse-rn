@@ -110,7 +110,7 @@ export class TableSectionSelectors extends React.Component<Props, State> {
             <DropdownButton
               accessible={accessible && !disableFilter}
               // eslint-disable-next-line max-len
-              accessibilityHint={translate('ARIA HINT - This is the selected sorting filter for this screen Tap to select a different filter')}
+              accessibilityHint={translate('ARIA HINT - This is the selected sorting filter for this screen select a different filter')}
               accessibilityLabel={selectedSortLabel}
               disableFilter={disableFilter}
               onPress={() => {

@@ -60,7 +60,7 @@ export const ProfileTableHeader = (props: Props) => {
           </View>
           {!!handleEditPress && (
             <Icon
-              accessibilityHint={translate('ARIA HINT - Tap to go to the edit my profile screen')}
+              accessibilityHint={translate('ARIA HINT - go to the edit my profile screen')}
               accessibilityLabel={translate('Edit My Profile')}
               name='pencil-alt'
               onPress={() => handleEditPress(id)}

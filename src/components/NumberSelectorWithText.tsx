@@ -35,10 +35,11 @@ export const NumberSelectorWithText = (props: Props) => {
   }
 
   const textInput = (
-    <View style={styles.innerWrapper}>
+    <View
+      accessibilityHint={!!wrapperOnPress ? '' : accessibilityHint}
+      accessibilityLabel={!!wrapperOnPress ? '' : accessibilityLabel}
+      style={styles.innerWrapper}>
       <TextInput
-        accessibilityHint={!!wrapperOnPress ? '' : accessibilityHint}
-        accessibilityLabel={!!wrapperOnPress ? '' : accessibilityLabel}
         autoCompleteType='off'
         editable={editable}
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -55,6 +56,7 @@ export const NumberSelectorWithText = (props: Props) => {
       />
       <Text
         accessible={false}
+        importantForAccessibility='no'
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         style={isSmallText ? styles.smallText : styles.text}>
         {text}
@@ -77,7 +79,9 @@ export const NumberSelectorWithText = (props: Props) => {
       }
       {subText && (
         <Text
+          accessible={false}
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          importantForAccessibility='no'
           style={[globalTheme.textSecondary, styles.subText]}
           {...(testID ? { testID: `${testID}_sub_text` } : {})}>
           {subText}

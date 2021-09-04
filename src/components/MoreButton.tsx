@@ -8,16 +8,17 @@ import { ActivityIndicator } from '.'
 type Props = {
   handleMorePress: any
   isLoading?: boolean
+  itemType: 'episode' | 'clip'
   testID: string
 }
 
 export const MoreButton = (props: Props) => {
-  const { handleMorePress, isLoading, testID } = props
+  const { handleMorePress, isLoading, itemType, testID } = props
   const [globalTheme] = useGlobal('globalTheme')
 
   return (
     <TouchableOpacity
-      accessibilityHint={translate('ARIA HINT - Tap to show more options')}
+      accessibilityHint={`${translate('ARIA HINT - show more options for this')} ${translate(itemType)}`}
       accessibilityLabel={translate('More')}
       accessibilityRole='button'
       hitSlop={{

@@ -52,7 +52,7 @@ export class FilterScreen extends React.Component<Props, State> {
       headerLeft: () => null,
       headerRight: () => (
         <NavHeaderButtonText
-          accessibilityHint={translate('ARIA HINT - Tap to dismiss this screen')}
+          accessibilityHint={translate('ARIA HINT - dismiss this screen')}
           accessibilityLabel={translate('Done')}
           handlePress={navigation.dismiss}
           testID={testIDPrefix}
@@ -219,9 +219,11 @@ export class FilterScreen extends React.Component<Props, State> {
     const isSubCategory = item.parentId
     const itemTextStyle = isSubCategory ? [styles.itemSubText] : [styles.itemText]
 
+    const accessibilityHint = `${isActive ? translate('ARIA HINT - Currently selected filter') : ''}`
+
     return (
       <TouchableWithoutFeedback
-        accessibilityHint={isActive ? translate('ARIA HINT - Currently selected filter') : ''}
+        accessibilityHint={accessibilityHint}
         accessibilityLabel={item.labelShort || item.label || item.title}
         importantForAccessibility='yes'
         onPress={async () => {

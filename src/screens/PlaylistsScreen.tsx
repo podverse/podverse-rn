@@ -77,7 +77,7 @@ export class PlaylistsScreen extends React.Component<Props, State> {
 
     return (
       <PlaylistTableCell
-        accessibilityHint={translate('ARIA HINT - Tap to go to this playlist')}
+        accessibilityHint={translate('ARIA HINT - go to this playlist')}
         {...(isSubscribed ? { createdBy: ownerName } : {})}
         itemCount={item.itemCount}
         onPress={() =>

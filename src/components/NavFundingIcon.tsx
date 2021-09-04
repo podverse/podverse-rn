@@ -30,7 +30,7 @@ export const NavFundingIcon = (props: Props) => {
 
   return (
     <NavItemWrapper
-      accessibilityHint={translate('ARIA HINT - Tap to go to the funding information for this podcast')}
+      accessibilityHint={translate('ARIA HINT - go to the funding information for this podcast')}
       accessibilityLabel={translate('Funding')}
       accessibilityRole='button'
       handlePress={handlePress}

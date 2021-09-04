@@ -74,7 +74,7 @@ export class HistoryScreen extends React.Component<Props, State> {
             {!navigation.getParam('isEditing') ? (
               <RNView style={styles.headerButtonWrapper}>
                 <NavHeaderButtonText
-                  accessibilityHint={translate('ARIA HINT - Tap to start removing items from your history')}
+                  accessibilityHint={translate('ARIA HINT - start removing items from your history')}
                   accessibilityLabel={translate('Edit')}
                   color={textColor}
                   handlePress={navigation.getParam('_startEditing')}
@@ -86,7 +86,7 @@ export class HistoryScreen extends React.Component<Props, State> {
             ) : (
               <RNView style={styles.headerButtonWrapper}>
                 <NavHeaderButtonText
-                  accessibilityHint={translate('ARIA HINT - Tap to stop removing items from your history')}
+                  accessibilityHint={translate('ARIA HINT - stop removing items from your history')}
                   accessibilityLabel={translate('Done')}
                   color={textColor}
                   handlePress={navigation.getParam('_stopEditing')}

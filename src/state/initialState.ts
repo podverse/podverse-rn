@@ -131,7 +131,8 @@ const initialTheme: InitialState = {
     startTime: undefined,
     endTime: null,
     clipTitle: undefined
-  }
+  },
+  screenReaderEnabled: false
 }
 
 export default initialTheme

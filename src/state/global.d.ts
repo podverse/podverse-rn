@@ -113,7 +113,8 @@ declare module 'reactn/default' {
     urlsAPI?: any
     urlsWeb?: any
     userAgent?: string
-    bannerInfo: BannerInfo,
+    bannerInfo: BannerInfo
     tempMediaRefInfo: TempMediaRef
+    screenReaderEnabled: boolean
   }
 }

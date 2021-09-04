@@ -176,7 +176,7 @@ export class MoreScreen extends React.Component<Props, State> {
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => {
-            let tableCellAccessibilityHint = translate('ARIA HINT - Tap to go to this screen')
+            let tableCellAccessibilityHint = translate('ARIA HINT - go to this screen')
             if (item.key === _contactKey) {
               tableCellAccessibilityHint = translate('ARIA HINT - Contact Us button')
             }

@@ -40,7 +40,7 @@ const mediaMoreButtons = (
   if (item.ownerId && item.ownerId === loggedInUserId) {
     buttons.push(
       {
-        accessibilityHint: translate('ARIA HINT - Tap to edit this clip'),
+        accessibilityHint: translate('ARIA HINT - edit this clip'),
         key: PV.Keys.edit_clip,
         text: translate('Edit Clip'),
         onPress: async () => {
@@ -65,7 +65,7 @@ const mediaMoreButtons = (
         }
       },
       {
-        accessibilityHint: translate('ARIA HINT - Tap to delete this clip'),
+        accessibilityHint: translate('ARIA HINT - delete this clip'),
         key: PV.Keys.delete_clip,
         text: translate('Delete Clip'),
         onPress: async () => {
@@ -78,7 +78,7 @@ const mediaMoreButtons = (
 
   if (isDownloaded) {
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - Tap to play'),
+      accessibilityHint: translate('ARIA HINT - play'),
       key: PV.Keys.play,
       text: translate('Play'),
       onPress: async () => {
@@ -89,7 +89,7 @@ const mediaMoreButtons = (
     })
   } else {
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - Tap to stream'),
+      accessibilityHint: translate('ARIA HINT - stream'),
       key: PV.Keys.stream,
       text: translate('Stream'),
       onPress: async () => {
@@ -104,7 +104,7 @@ const mediaMoreButtons = (
 
     if (handleDownload) {
       buttons.push({
-        accessibilityHint: translate('ARIA HINT - Tap to download this episode'),
+        accessibilityHint: translate('ARIA HINT - download this episode'),
         key: PV.Keys.download,
         text: downloadingText,
         isDownloading,
@@ -127,7 +127,7 @@ const mediaMoreButtons = (
   if (!item.addByRSSPodcastFeedUrl) {
     buttons.push(
       {
-        accessibilityHint: translate('ARIA HINT - Tap to add this next in your queue'),
+        accessibilityHint: translate('ARIA HINT - add this next in your queue'),
         key: PV.Keys.queue_next,
         text: translate('Queue Next'),
         onPress: async () => {
@@ -136,7 +136,7 @@ const mediaMoreButtons = (
         }
       },
       {
-        accessibilityHint: translate('ARIA HINT - Tap to add this last in your queue'),
+        accessibilityHint: translate('ARIA HINT - add this last in your queue'),
         key: PV.Keys.queue_last,
         text: translate('Queue Last'),
         onPress: async () => {
@@ -148,7 +148,7 @@ const mediaMoreButtons = (
 
     if (!Config.DISABLE_ADD_TO_PLAYLIST && isLoggedIn) {
       buttons.push({
-        accessibilityHint: translate('ARIA HINT - Tap to add to your playlist'),
+        accessibilityHint: translate('ARIA HINT - add to your playlist'),
         key: PV.Keys.add_to_playlist,
         text: translate('Add to Playlist'),
         onPress: async () => {
@@ -162,7 +162,7 @@ const mediaMoreButtons = (
 
     if (!Config.DISABLE_SHARE) {
       buttons.push({
-        accessibilityHint: translate('ARIA HINT - Tap to share'),
+        accessibilityHint: translate('ARIA HINT - share'),
         key: PV.Keys.share,
         text: translate('Share'),
         onPress: async () => {
@@ -195,7 +195,7 @@ const mediaMoreButtons = (
 
   if (isDownloaded) {
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - Tap to delete this downloaded episode'),
+      accessibilityHint: translate('ARIA HINT - delete this downloaded episode'),
       key: PV.Keys.delete_episode,
       text: translate('Delete Episode'),
       onPress: async () => {
@@ -207,7 +207,7 @@ const mediaMoreButtons = (
 
   if (includeGoToPodcast) {
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - Tap to go to this podcast'),
+      accessibilityHint: translate('ARIA HINT - go to this podcast'),
       key: PV.Keys.go_to_podcast,
       text: translate('Go to Podcast'),
       onPress: async () => {
@@ -219,7 +219,7 @@ const mediaMoreButtons = (
 
   if (includeGoToEpisode) {
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - Tap to go to this episode'),
+      accessibilityHint: translate('ARIA HINT - go to this episode'),
       key: PV.Keys.go_to_episode,
       text: translate('Go to Episode'),
       onPress: async () => {

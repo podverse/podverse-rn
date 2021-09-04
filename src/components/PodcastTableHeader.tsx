@@ -71,8 +71,10 @@ export const PodcastTableHeader = (props: Props) => {
                   {isSubscribed && (
                     <SettingsButton
                       accessibilityHint={showSettings
-                        ? translate('ARIA HINT - On tap episodes will appear lower on this screen')
-                        : translate('ARIA HINT - On tap settings will appear lower on this screen')
+                        // eslint-disable-next-line max-len
+                        ? translate('ARIA HINT - On tap settings will hide and episodes will appear lower on this screen')
+                        // eslint-disable-next-line max-len
+                        : translate('ARIA HINT - On tap the episodes will hide and settings will appear lower on this screen')
                       }
                       accessibilityLabel={showSettings
                           ? translate('ARIA HINT - Hide podcast settings')
@@ -93,34 +95,33 @@ export const PodcastTableHeader = (props: Props) => {
                     />
                   }
                   {isSubscribed && (
-                    <TouchableWithoutFeedback
-                      accessibilityHint={autoDownloadOn
-                        ? translate('ARIA HINT - Tap to stop auto downloading new episodes from this podcast')
-                        // eslint-disable-next-line max-len
-                        : translate('ARIA HINT - Tap to auto download new episodes from this podcast when they are released')
-                      }
-                      accessibilityLabel={autoDownloadOn
-                        ? translate('Auto Downloading On')
-                        : translate('Auto Downloading Off')
-                      }
-                      onPress={handleToggleAutoDownload}>
-                      <View style={styles.autoDownloadContainer}>
-                        <Text
-                          fontSizeLargestScale={PV.Fonts.largeSizes.xs}
-                          isSecondary
-                          style={styles.autoDownloadText}>
-                          {translate('Auto')}
-                        </Text>
-                        <IndicatorDownload style={{ marginLeft: 6 }} />
-                        <Switch
-                          onValueChange={handleToggleAutoDownload}
-                          style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }], marginLeft: 5 }}
-                          trackColor={{ true: PV.Colors.brandBlueLight, false: PV.Colors.grayLightest }}
-                          {...(testID ? { testID: `${testID}_auto_dl_switch`.prependTestId() } : {})}
-                          value={autoDownloadOn}
-                        />
-                      </View>
-                    </TouchableWithoutFeedback>
+                    <View style={styles.autoDownloadContainer}>
+                      <Text
+                        accessible={false}
+                        fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+                        importantForAccessibility='no'
+                        isSecondary
+                        style={styles.autoDownloadText}>
+                        {translate('Auto')}
+                      </Text>
+                      <IndicatorDownload style={{ marginLeft: 6 }} />
+                      <Switch
+                        accessibilityHint={autoDownloadOn
+                          ? translate('ARIA HINT - stop auto downloading new episodes from this podcast')
+                          // eslint-disable-next-line max-len
+                          : translate('ARIA HINT - auto download new episodes from this podcast when they are released')
+                        }
+                        accessibilityLabel={autoDownloadOn
+                          ? translate('Auto Downloading On')
+                          : translate('Auto Downloading Off')
+                        }
+                        onValueChange={handleToggleAutoDownload}
+                        style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }], marginLeft: 5 }}
+                        trackColor={{ true: PV.Colors.brandBlueLight, false: PV.Colors.grayLightest }}
+                        {...(testID ? { testID: `${testID}_auto_dl_switch`.prependTestId() } : {})}
+                        value={autoDownloadOn}
+                      />
+                    </View>
                   )}
                 </View>
               </View>
@@ -129,7 +130,7 @@ export const PodcastTableHeader = (props: Props) => {
           {!isNotFound && !!finalDescription && (
             <View style={styles.descriptionWrapper}>
               <TouchableWithoutFeedback
-                accessibilityHint={translate('ARIA HINT - Tap to show more info about this podcast')}
+                accessibilityHint={translate('ARIA HINT - show more info about this podcast')}
                 accessibilityLabel={finalDescription}
                 onPress={handleNavigateToPodcastInfoScreen}>
                 <RNView>

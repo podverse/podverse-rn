@@ -223,7 +223,7 @@ export class FundingScreen extends React.Component<Props, State> {
             <View style={styles.noLnpayView}>
               <Text style={styles.noLnPayText}>{translate('Podcast supports value-for-value donations')}</Text>
               <Pressable
-                accessibilityHint={translate('ARIA HINT - Tap to go to the Bitcoin wallet setup screen')}
+                accessibilityHint={translate('ARIA HINT - go to the Bitcoin wallet setup screen')}
                 accessibilityLabel={translate('Setup Bitcoin Wallet')}
                 accessibilityRole='button'
                 style={styles.goToValueTagSetupButton} onPress={this._handleValueTagSetupPressed}>

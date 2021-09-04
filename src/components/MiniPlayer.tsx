@@ -17,7 +17,7 @@ const testIDPrefix = 'mini_player'
 export class MiniPlayer extends React.PureComponent<Props> {
   render() {
     const { navigation } = this.props
-    const { globalTheme, player, screenPlayer } = this.global
+    const { globalTheme, player, screenPlayer, screenReaderEnabled } = this.global
     const { nowPlayingItem, playbackState } = player
     const { hasErrored } = screenPlayer
     const isDarkMode = globalTheme === darkTheme
@@ -25,7 +25,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
     let playButtonAdjust = { paddingLeft: 2, paddingTop: 2 } as any
     let playButtonIcon = (
       <Icon
-        accessibilityHint={translate('ARIA HINT - Tap to resume playing')}
+        accessibilityHint={translate('ARIA HINT - resume playing')}
         accessibilityLabel={translate('Play')}
         accessibilityRole='button'
         name='play'
@@ -37,7 +37,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
     if (playbackState === RNTPState.Playing) {
       playButtonIcon = (
         <Icon
-          accessibilityHint={translate('ARIA HINT - Tap to pause playback')}
+          accessibilityHint={translate('ARIA HINT - pause playback')}
           accessibilityLabel={translate('Pause')}
           accessibilityRole='button'
           name='pause'
@@ -56,13 +56,24 @@ export class MiniPlayer extends React.PureComponent<Props> {
     nowPlayingAccessibilityLabel += `${nowPlayingItem.podcastTitle}. `
     nowPlayingAccessibilityLabel += `${nowPlayingItem.episodeTitle}.`
 
+    const episodeTitleComponent = (
+      <Text
+        accessible={false}
+        importantForAccessibility='no'
+        numberOfLines={1}
+        style={[styles.episodeTitle, globalTheme.playerText]}
+        testID={`${testIDPrefix}_episode_title`}>
+        {nowPlayingItem.episodeTitle}
+      </Text>
+    )
+
     return (
       <View>
         {nowPlayingItem && (
           <View style={[styles.playerInnerWrapper, globalTheme.player]}>
             <TouchableWithoutFeedback
               accessibilityLabel={nowPlayingAccessibilityLabel}
-              accessibilityHint={translate('ARIA HINT - Tap to open the full player screen')}
+              accessibilityHint={translate('ARIA HINT - open the full player screen')}
               onPress={() =>
                 navigation.navigate(PV.RouteNames.PlayerScreen, {
                   nowPlayingItem,
@@ -86,18 +97,19 @@ export class MiniPlayer extends React.PureComponent<Props> {
                     testID={`${testIDPrefix}_podcast_title`}>
                     {nowPlayingItem.podcastTitle}
                   </Text>
-                  <TextTicker
-                    allowFontScaling={false}
-                    bounce
-                    loop
-                    textLength={nowPlayingItem?.episodeTitle?.length}>
-                    <Text
-                      numberOfLines={1}
-                      style={[styles.episodeTitle, globalTheme.playerText]}
-                      testID={`${testIDPrefix}_episode_title`}>
-                      {nowPlayingItem.episodeTitle}
-                    </Text>
-                  </TextTicker>
+                  {
+                    !!screenReaderEnabled ? (
+                      <TextTicker
+                        accessible={false}
+                        allowFontScaling={false}
+                        bounce
+                        importantForAccessibility='no-hide-descendants'
+                        loop
+                        textLength={nowPlayingItem?.episodeTitle?.length}>
+                        {episodeTitleComponent}
+                      </TextTicker>
+                    ) : episodeTitleComponent
+                  }
                 </View>
               </View>
             </TouchableWithoutFeedback>

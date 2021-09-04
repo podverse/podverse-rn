@@ -79,6 +79,8 @@ export class StartPodcastFromTimeScreen extends React.Component<Props, State> {
             handleUpdateSleepTimer={this._updateStartPodcastFromTime}
             isActive />
           <Button
+            accessibilityHint={translate('ARIA HINT - dismiss this screen')}
+            accessibilityLabel={translate('Done')}
             isPrimary
             onPress={this.handleDismiss}
             testID={`${testIDPrefix}_done`}

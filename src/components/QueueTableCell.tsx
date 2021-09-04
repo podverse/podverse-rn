@@ -73,8 +73,8 @@ export class QueueTableCell extends React.PureComponent<Props> {
             accessibilityHint={isNowPlayingItem
               ? translate('ARIA HINT - This is the now playing episode')
               : !isClip
-                ? translate('ARIA HINT - Tap to play this episode')
-                : translate('ARIA HINT - This is the episode title of a clip Tap to play this clip')
+                ? translate('ARIA HINT - play this episode')
+                : translate('ARIA HINT - This is the episode title of a clip play this clip')
             }
             accessibilityLabel={accessibilityLabel}
             onLongPress={drag}
@@ -117,7 +117,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
           </TouchableWithoutFeedback>
           {!!showRemoveButton && !!handleRemovePress && (
             <Icon
-              accessibilityHint={translate('ARIA HINT - Tap to remove this item')}
+              accessibilityHint={translate('ARIA HINT - remove this item')}
               accessibilityLabel={translate('Remove')}
               accessibilityRole='button'
               name='times'
@@ -136,7 +136,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                 ? ''
                 : isNowPlayingItem
                   ? translate('ARIA HINT - This is the now playing clip title')
-                  : translate('ARIA HINT - Tap to play this clip')
+                  : translate('ARIA HINT - play this clip')
               }
               accessibilityLabel={!isClip ? translate('Full Episode') : clipTitle.trim()}
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}

@@ -121,7 +121,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
     let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
     let playButtonAdjust = { paddingLeft: 2 } as any
-    let playButtonAccessibilityHint = translate('ARIA HINT - Tap to resume playing')
+    let playButtonAccessibilityHint = translate('ARIA HINT - resume playing')
     let playButtonAccessibilityLabel = translate('Play')
     if (hasErrored) {
       playButtonIcon = (
@@ -136,7 +136,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     } else if (playbackState === RNTPState.Playing) {
       playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
       playButtonAdjust = {}
-      playButtonAccessibilityHint = translate('ARIA HINT - Tap to pause playback')
+      playButtonAccessibilityHint = translate('ARIA HINT - pause playback')
       playButtonAccessibilityLabel = translate('Pause')
     } else if (checkIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
@@ -221,7 +221,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         </View>
         <View style={styles.playerControlsBottomRow}>
           <TouchableOpacity
-            accessibilityHint={translate('ARIA HINT - Tap to go to the sleep timer screen')}
+            accessibilityHint={translate('ARIA HINT - go to the sleep timer screen')}
             accessibilityLabel={translate('Sleep Timer')}
             accessibilityRole='button'
             hitSlop={hitSlop}
@@ -244,7 +244,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             </Text>
           </TouchableWithoutFeedback>
           <TouchableOpacity
-            accessibilityHint={translate('ARIA HINT - Tap to show more player screen options')}
+            accessibilityHint={translate('ARIA HINT - show more player screen options')}
             accessibilityLabel={translate('More player options')}
             accessibilityRole='button'
             hitSlop={hitSlop}
