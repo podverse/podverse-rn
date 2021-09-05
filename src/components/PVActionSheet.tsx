@@ -114,6 +114,7 @@ export class PVActionSheet extends React.Component<Props, State> {
             underlayColor={globalTheme.actionSheetButtonUnderlay?.backgroundColor}>
             <View style={actionSheetStyles.buttonRow}>
               <Text
+                importantForAccessibility='no'
                 numberOfLines={1}
                 style={[actionSheetStyles.buttonText, buttonTextStyle]}
                 {...(testID ? { testID: `${testID}_action_sheet_${item.key}_text`.prependTestId() } : {})}>
@@ -138,7 +139,7 @@ export class PVActionSheet extends React.Component<Props, State> {
         buttons.push(
           <TouchableHighlight
             accessible
-            accessibilityHint={translate('ARIA HINT - Tap to dismiss this menu')}
+            accessibilityHint={translate('ARIA HINT - dismiss this menu')}
             accessibilityLabel={translate('Cancel')}
             accessibilityRole='menuitem'
             key={PV.Keys.cancel}
@@ -149,7 +150,10 @@ export class PVActionSheet extends React.Component<Props, State> {
               () => globalTheme.actionSheetButtonCancelUnderlay.backgroundColor,
               ''
             )}>
-            <Text numberOfLines={1} style={buttonTextCancelStyle}>
+            <Text
+              importantForAccessibility='no'
+              numberOfLines={1}
+              style={buttonTextCancelStyle}>
               {translate('Cancel')}
             </Text>
           </TouchableHighlight>

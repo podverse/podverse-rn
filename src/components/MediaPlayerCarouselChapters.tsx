@@ -70,6 +70,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
       <ClipTableCell
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
         item={item}
+        itemType='chapter'
         loadTimeStampOnPlay
         isChapter
         showPodcastInfo={false}
@@ -107,8 +108,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
           disableFilter
           includePadding
           selectedFilterLabel={translate('Chapters')}
-          selectedFilterAccessibilityHint={translate('ARIA HINT - This is a list of the chapters for this episode')}
-          selectedFilterAccessibilityLabel={translate('Chapters')} />
+          selectedFilterAccessibilityHint={translate('ARIA HINT - This is a list of the chapters for this episode')} />
         {isLoading || (isQuerying && <ActivityIndicator fillSpace testID={getTestID()} />)}
         {!isLoading && !isQuerying && currentChapters && (
           <FlatList
@@ -129,9 +129,14 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
         <ActionSheet
           handleCancelPress={this._handleMoreCancelPress}
           items={() =>
-            PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
-              handleDismiss: this._handleMoreCancelPress
-            })
+            PV.ActionSheet.media.moreButtons(
+              selectedItem,
+              navigation,
+              {
+                handleDismiss: this._handleMoreCancelPress
+              },
+              'chapter'
+            )
           }
           showModal={showMoreActionSheet}
           testID={`${testID}_more`}

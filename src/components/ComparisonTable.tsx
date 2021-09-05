@@ -21,6 +21,7 @@ export const ComparisonTable = (props: any) => {
         <Text
           accessible={false}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          importantForAccessibility='no'
           numberOfLines={1}
           style={[styles.tableHeaderTextRight, globalTheme.tableSectionHeaderText]}>
           {column1Title}
@@ -28,6 +29,7 @@ export const ComparisonTable = (props: any) => {
         <Text
           accessible={false}
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          importantForAccessibility='no'
           numberOfLines={1}
           style={[styles.tableHeaderTextRight, globalTheme.tableSectionHeaderText]}>
           {column2Title}

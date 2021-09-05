@@ -213,7 +213,7 @@ export class SignUp extends React.Component<Props, State> {
         <Button
           accessibilityHint={submitIsDisabled
             ? translate('ARIA HINT - Type a valid email and matching passwords to enable the sign up button')
-            : translate('ARIA HINT - Tap to sign up')
+            : translate('ARIA HINT - sign up')
           }
           accessibilityLabel={translate('Sign Up')}
           disabled={submitIsDisabled}

@@ -226,7 +226,8 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
 
   render() {
     const { navigation } = this.props
-    const { flatListData, flatListDataTotalCount, isLoadingMore, selectedItem, showActionSheet } = this.state
+    const { flatListData, flatListDataTotalCount, isLoadingMore, selectedItem,
+      showActionSheet, viewType } = this.state
 
     return (
       <View style={styles.view}>
@@ -247,9 +248,14 @@ export class EpisodeMediaRefScreen extends React.Component<Props, State> {
           items={() => {
             if (!selectedItem) return []
 
-            return PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
-              handleDismiss: this._handleCancelPress
-            })
+            return PV.ActionSheet.media.moreButtons(
+              selectedItem,
+              navigation,
+              {
+                handleDismiss: this._handleCancelPress
+              },
+              viewType === PV.Filters._chaptersKey ? 'chapter' : 'clip'
+            )
           }}
           showModal={showActionSheet}
           testID={testIDPrefix}

@@ -169,6 +169,9 @@ export class MediaPlayerCarouselTranscripts extends React.PureComponent<Props, S
           selectedFilterLabel={translate('Transcript')}
         />
         <PVSearchBar
+          accessibilityHint={
+            translate('ARIA HINT - Type to show only the transcript text that includes this search term')}
+          accessibilityLabel={translate('Transcript search input')}
           containerStyle={{
             backgroundColor: PV.Colors.velvet,
             marginBottom: 10,

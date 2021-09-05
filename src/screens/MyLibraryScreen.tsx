@@ -84,13 +84,18 @@ export class MyLibraryScreen extends React.Component<Props, State> {
         <SectionList
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => {
-            const accessibilityLabel = item.key === _downloadsKey
-              ? `${item.title} - ${translate('Downloads in progress')}`
-              : `${item.title}`
+            const accessibilityLabel = item.key === _downloadsKey && downloadsActiveCount > 0
+              ? `${item.title} - ${downloadsActiveCount} ${downloadsActiveCount === 1
+                ? translate('Download in progress')
+                : translate('Downloads in progress')
+              }`
+              : item.key === _downloadsKey
+                ? `${item.title} - ${translate('No downloads in progress')}`
+                : item.title
 
             return (
               <TableCell
-                accessibilityHint={translate('ARIA HINT - Tap to go to this screen')}
+                accessibilityHint={translate('ARIA HINT - tap to go to this screen')}
                 accessibilityLabel={accessibilityLabel}
                 testIDPrefix={`${testIDPrefix}_${item.key}`}
                 testIDSuffix='' 

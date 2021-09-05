@@ -428,7 +428,7 @@ export class SettingsScreen extends React.Component<Props, State> {
               <View style={styles.itemWrapper}>
                 <SwitchWithText
                   accessible={false}
-                  accessibilityHint={translate('ARIA HINT - Tap to change the colors of the user interface')}
+                  accessibilityHint={translate('ARIA HINT - change the colors of the user interface')}
                   accessibilityLabel={`${globalTheme === darkTheme ? translate('Dark Mode') : translate('Light Mode')}`}
                   onValueChange={this._toggleTheme}
                   testID={`${testIDPrefix}_dark_mode`}
@@ -440,13 +440,15 @@ export class SettingsScreen extends React.Component<Props, State> {
             <View style={styles.itemWrapper}>
               <SwitchWithText
                 onValueChange={this._toggleDownloadingWifiOnly}
+                accessibilityLabel={translate('Only allow downloading episodes when connected to Wifi')}
                 testID={`${testIDPrefix}_only_allow_downloading_when_connected_to_wifi`}
-                text={translate('Only allow downloading when connected to Wifi')}
+                text={translate('Only allow downloading episodes when connected to Wifi')}
                 value={!!downloadingWifiOnly}
               />
             </View>
             <View style={styles.itemWrapper}>
               <SwitchWithText
+                accessibilityLabel={translate('Censor NSFW text')}
                 onValueChange={this._handleToggleNSFWText}
                 testID={`${testIDPrefix}_censor_nsfw_text`}
                 text={translate('Censor NSFW text')}
@@ -455,20 +457,32 @@ export class SettingsScreen extends React.Component<Props, State> {
             </View>
             <View style={styles.itemWrapperReducedHeight}>
               <RNPickerSelect
+                fixAndroidTouchableBug
                 items={PV.Player.maximumSpeedSelectOptions}
                 onValueChange={this._setMaximumSpeed}
                 placeholder={placeholderItem}
                 style={hidePickerIconOnAndroidTransparent(isDarkMode)}
                 useNativeAndroidPickerStyle={false}
                 value={maximumSpeedOptionSelected.value}>
-                <View style={core.selectorWrapper}>
-                  <View style={core.selectorWrapperLeft}>
+                <View
+                  accessible
+                  accessibilityHint={`${translate('ARIA HINT - Max playback speed')}`}
+                  accessibilityLabel={`${translate('Max playback speed')} ${maximumSpeedOptionSelected.label}`}
+                  importantForAccessibility='yes'
+                  style={core.selectorWrapper}>
+                  <View
+                    accessible={false}
+                    importantForAccessibility='no-hide-descendants'
+                    style={core.selectorWrapperLeft}>
                     <Text fontSizeLargestScale={PV.Fonts.largeSizes.md} style={[styles.pickerSelect, globalTheme.text]}>
                       {maximumSpeedOptionSelected.label}
                     </Text>
                     <Icon name='angle-down' size={14} style={[styles.pickerSelectIcon, globalTheme.text]} />
                   </View>
-                  <View style={core.selectorWrapperRight}>
+                  <View
+                    accessible={false}
+                    importantForAccessibility='no-hide-descendants'
+                    style={core.selectorWrapperRight}>
                     <Text
                       fontSizeLargestScale={PV.Fonts.largeSizes.md}
                       style={[styles.pickerSelect, globalTheme.text]}>
@@ -484,6 +498,7 @@ export class SettingsScreen extends React.Component<Props, State> {
               value={!!autoDeleteEpisodeOnEnd} /> */}
             <View style={styles.itemWrapper}>
               <SwitchWithText
+                accessibilityLabel={translate('Limit the number of downloaded episodes for each podcast by default')}
                 onValueChange={this._handleSelectDownloadedEpisodeLimitDefault}
                 testID={`${testIDPrefix}_limit_the_number_of_downloaded_episodes`}
                 text={translate('Limit the number of downloaded episodes for each podcast by default')}
@@ -493,7 +508,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             <View style={styles.itemWrapper}>
               <NumberSelectorWithText
                 // eslint-disable-next-line max-len
-                accessibilityHint={translate('ARIA HINT - Tap to set the maximum number of downloaded episodes to save from each podcast on your device')}
+                accessibilityHint={translate('ARIA HINT - set the maximum number of downloaded episodes to save from each podcast on your device')}
                 // eslint-disable-next-line max-len
                 accessibilityLabel={`${translate('Default downloaded episode limit for each podcast')}`}
                 handleChangeText={this._handleChangeDownloadedEpisodeLimitCountText}
@@ -508,6 +523,8 @@ export class SettingsScreen extends React.Component<Props, State> {
                 <Divider style={styles.divider} />
                 <View style={styles.itemWrapper}>
                   <SwitchWithText
+                    accessibilityHint={translate('Custom web domain subtext')}
+                    accessibilityLabel={translate('Use custom API domain')}
                     inputAutoCorrect={false}
                     inputEditable={customAPIDomainEnabled}
                     inputEyebrowTitle={translate('Custom API domain')}
@@ -525,6 +542,8 @@ export class SettingsScreen extends React.Component<Props, State> {
                 </View>
                 <View style={styles.itemWrapper}>
                   <SwitchWithText
+                    accessibilityHint={translate('Custom web domain subtext')}
+                    accessibilityLabel={translate('Use custom web domain')}
                     inputAutoCorrect={false}
                     inputEditable={customWebDomainEnabled}
                     inputEyebrowTitle={translate('Custom web domain')}
@@ -545,12 +564,14 @@ export class SettingsScreen extends React.Component<Props, State> {
             )}
             <Divider style={styles.divider} />
             <Button
+              accessibilityLabel={translate('Clear History')}
               onPress={this._handleClearHistory}
               testID={`${testIDPrefix}_clear_history`}
               text={translate('Clear History')}
               wrapperStyles={styles.button}
             />
             <Button
+              accessibilityLabel={translate('Delete Downloaded Episodes')}
               onPress={this._handleToggleDeleteDownloadedEpisodesDialog}
               testID={`${testIDPrefix}_delete_downloaded_episodes`}
               text={translate('Delete Downloaded Episodes')}
@@ -558,6 +579,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             />
             {isLoggedIn && (
               <Button
+                accessibilityLabel={translate('Delete Account')}
                 isWarning
                 onPress={this._handleToggleDeleteAccountDialog}
                 testID={`${testIDPrefix}_delete_account`}

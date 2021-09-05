@@ -19,7 +19,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
   render() {
     const {
       accessibilityHint,
-      createdBy = translate('anonymous'),
+      createdBy,
       hasZebraStripe,
       isSaving,
       itemCount = 0,
@@ -34,7 +34,7 @@ export class PlaylistTableCell extends React.PureComponent<Props> {
     const trimmedTitle = title.trim()
     const itemsCount = `${translate('items')} ${itemCount}`
     const byText = `${translate('by')} ${createdBy}`
-    const accessibilityLabel = `${trimmedTitle}, ${itemsCount}, ${byText}`
+    const accessibilityLabel = `${trimmedTitle}, ${itemsCount} ${createdBy ? `,${byText}` : ''}`
 
     return (
       <TouchableWithoutFeedback
@@ -110,7 +110,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     minHeight: PV.Table.cells.standard.height,
     paddingLeft: 8,
-    paddingRight: 8
+    paddingRight: 8,
+    alignItems: 'center'
   },
   wrapperLeft: {
     flex: 1,

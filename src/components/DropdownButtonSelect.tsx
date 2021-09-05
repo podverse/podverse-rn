@@ -46,6 +46,7 @@ export const DropdownButtonSelect = (props: any) => {
       <Text
         accessible={false}
         accessibilityLabel=''
+        importantForAccessibility='no'
         style={styles.dropdownHelpText}>
         {helpText}
       </Text>

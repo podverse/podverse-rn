@@ -64,7 +64,7 @@ export class ResetPassword extends React.Component<Props, State> {
         <Button
           accessibilityHint={submitIsDisabled
             ? translate('ARIA HINT - Type your email address in the previous input')
-            : translate('ARIA HINT - Tap to send a password reset link to your email address')
+            : translate('ARIA HINT - send a password reset link to your email address')
           }
           accessibilityLabel={translate('Send Password Reset')}
           disabled={submitIsDisabled}

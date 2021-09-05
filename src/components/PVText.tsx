@@ -1,6 +1,7 @@
 import React from 'react'
 import { AccessibilityRole, Text } from 'react-native'
 import { useGlobal } from 'reactn'
+import { ImportantForAccessibility } from '../lib/accessibilityHelpers'
 import { PV } from '../resources'
 
 type Props = {
@@ -12,6 +13,7 @@ type Props = {
   children?: any
   fontSizeLargerScale?: number
   fontSizeLargestScale?: number
+  importantForAccessibility?: ImportantForAccessibility
   isSecondary?: any
   numberOfLines?: number
   onPress?: any

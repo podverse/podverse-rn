@@ -16,6 +16,7 @@ type Props = {
   handleMorePress?: any
   isChapter?: boolean
   item: any
+  itemType: 'episode' | 'clip'
   loadTimeStampOnPlay?: boolean
   mediaFileDuration?: number | undefined
   style?: any
@@ -72,7 +73,7 @@ const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
 }
 
 export const TimeRemainingWidget = (props: Props) => {
-  const { clipTime, episodeDownloading, handleMorePress, isChapter, item,
+  const { clipTime, episodeDownloading, handleMorePress, isChapter, item, itemType,
     loadTimeStampOnPlay, mediaFileDuration, style, testID, transparent, userPlaybackPosition } = props
   const { episode = {}, podcast = {} } = item
   const playingItem = convertToNowPlayingItem(item, episode, podcast, userPlaybackPosition)
@@ -131,16 +132,16 @@ export const TimeRemainingWidget = (props: Props) => {
   let playButtonAccessibilityHint = ''
   if (!clipTime) {
     playButtonAccessibilityHint = isNowPlayingItem
-      ? translate('ARIA HINT - Tap to pause this episode')
-      : translate('ARIA HINT - Tap to play this episode')
+      ? translate('ARIA HINT - pause this episode')
+      : translate('ARIA HINT - tap to play this episode')
   } else if (clipTime && isChapter) {
     playButtonAccessibilityHint = isNowPlayingItem
-      ? translate('ARIA HINT - Tap to pause this chapter')
-      : translate('ARIA HINT - Tap to play this chapter')
+      ? translate('ARIA HINT - pause this chapter')
+      : translate('ARIA HINT - play this chapter')
   } else if (clipTime) {
     playButtonAccessibilityHint = isNowPlayingItem
-      ? translate('ARIA HINT - Tap to pause this clip')
-      : translate('ARIA HINT - Tap to play this clip')
+      ? translate('ARIA HINT - pause this clip')
+      : translate('ARIA HINT - play this clip')
   }
 
   return (
@@ -160,9 +161,7 @@ export const TimeRemainingWidget = (props: Props) => {
           : <Icon name={'play'} size={13} />
         }
       </TouchableOpacity>
-      {hasStartedItem && !isInvalidDuration && (
-        <MiniProgressBar item={isNowPlayingItem} playedTime={playedTime || 0} totalTime={totalTime} />
-      )}
+
       <View
         accessible={!clipTime}
         accessibilityHint={timeViewAccessibilityHint}
@@ -170,11 +169,13 @@ export const TimeRemainingWidget = (props: Props) => {
           ? timeLabel
           : translate('Unplayed episode')
         }
+        importantForAccessibility={!clipTime ? 'yes' : 'no'}
         style={{ flexDirection: 'row', flex: 1, alignItems: 'center', height: '100%' }}>
         <Text
           accessible={!clipTime}
           fontSizeLargerScale={PV.Fonts.largeSizes.md}
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          importantForAccessibility={!clipTime ? 'yes' : 'no'}
           style={styles.text}>
           {timeLabel}
         </Text>
@@ -183,6 +184,7 @@ export const TimeRemainingWidget = (props: Props) => {
         <MoreButton
           handleMorePress={handleMorePress}
           isLoading={episodeDownloading}
+          itemType={itemType}
           testID={testID} />
       )}
     </View>

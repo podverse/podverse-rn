@@ -70,19 +70,22 @@ export const SwitchWithText = (props: Props) => {
     <View style={wrapperStyle}>
       <TouchableWithoutFeedback
         accessible={accessible}
-        accessibilityHint={accessibilityHint}
-        accessibilityLabel={accessibilityLabel}
         accessibilityRole='switch'
+        importantForAccessibility='no'
         onPress={onValueChange}>
         <View accessible={accessible} style={styles.switchWrapper}>
           <Switch
             accessible={accessible}
+            accessibilityHint={accessibilityHint}
+            accessibilityLabel={accessibilityLabel}
+            importantForAccessibility='yes'
             onValueChange={onValueChange}
             value={value}
             {...(testID ? { testID: `${testID}_switch`.prependTestId() } : {})} />
           <Text
             accessible={accessible}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
+            importantForAccessibility='no'
             style={styles.text}
             {...(testID ? { testID: `${testID}_text` } : {})}>
             {text}
@@ -133,6 +136,7 @@ export const SwitchWithText = (props: Props) => {
         <Text
           accessible={false}
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          importantForAccessibility='no'
           style={[globalTheme.textSecondary, styles.subText]}
           {...(testID ? { testID: `${testID}_sub_text` } : {})}>
           {subText}

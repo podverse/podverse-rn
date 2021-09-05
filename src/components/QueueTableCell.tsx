@@ -3,7 +3,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
-import { button } from '../styles'
+import { button, images } from '../styles'
 import { FastImage, Icon, Text, View } from '.'
 
 type Props = {
@@ -61,7 +61,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
     const episodeTitleText = episodeTitle.trim()
     const pubDateText = readableDate(episodePubDate)
     // eslint-disable-next-line max-len
-    const accessibilityLabel = `${!!podcastTitle ? `${podcastTitleText}, ` : ''} ${!!episodeTitle ? `${episodeTitleText}, ` : ''} ${!!episodePubDate ? `${pubDateText}` : ''}`
+    const accessibilityLabel = `${!!podcastTitle ? `${podcastTitleText}, ` : ''} ${!!episodeTitle ? `${episodeTitleText}, ` : ''} ${!!episodePubDate ? `${pubDateText}` : ''} ${!isClip ? `, ${translate('Full Episode')}` : `, ${clipTitle.trim()}`}`
 
     return (
       <View
@@ -73,10 +73,11 @@ export class QueueTableCell extends React.PureComponent<Props> {
             accessibilityHint={isNowPlayingItem
               ? translate('ARIA HINT - This is the now playing episode')
               : !isClip
-                ? translate('ARIA HINT - Tap to play this episode')
-                : translate('ARIA HINT - This is the episode title of a clip Tap to play this clip')
+                ? translate('ARIA HINT - tap to play this episode')
+                : translate('ARIA HINT - tap play this clip')
             }
             accessibilityLabel={accessibilityLabel}
+            accessibilityRole='none'
             onLongPress={drag}
             onPress={onPress}>
             <RNView style={styles.wrapperTappableInner}>
@@ -117,7 +118,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
           </TouchableWithoutFeedback>
           {!!showRemoveButton && !!handleRemovePress && (
             <Icon
-              accessibilityHint={translate('ARIA HINT - Tap to remove this item')}
+              accessibilityHint={translate('ARIA HINT - remove this item')}
               accessibilityLabel={translate('Remove')}
               accessibilityRole='button'
               name='times'
@@ -131,15 +132,9 @@ export class QueueTableCell extends React.PureComponent<Props> {
         {!hideBottomRow && (
           <RNView style={styles.wrapperBottom}>
             <Text
-              accessible={isClip}
-              accessibilityHint={!isClip
-                ? ''
-                : isNowPlayingItem
-                  ? translate('ARIA HINT - This is the now playing clip title')
-                  : translate('ARIA HINT - Tap to play this clip')
-              }
-              accessibilityLabel={!isClip ? translate('Full Episode') : clipTitle.trim()}
+              accessible={false}
               fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+              importantForAccessibility='no'
               numberOfLines={1}
               style={styles.clipTitle}
               testID={`${testID}_bottom_text`}>
@@ -147,9 +142,9 @@ export class QueueTableCell extends React.PureComponent<Props> {
             </Text>
             {!!clipStartTime && (
               <Text
-                accessibilityHint={translate('ARIA HINT - This is the clip time range')}
-                accessibilityLabel={readableClipTime(clipStartTime, clipEndTime)}
+                accessible={false}
                 fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+                importantForAccessibility='no'
                 style={styles.clipTime}
                 testID={`${testID}_clip_time`}>
                 {readableClipTime(clipStartTime, clipEndTime)}
@@ -186,9 +181,9 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 0,
-    height: 64,
+    height: images.medium.height,
     marginRight: 12,
-    width: 64
+    width: images.medium.width
   },
   podcastTitle: {
     fontSize: PV.Fonts.sizes.lg,
@@ -198,7 +193,8 @@ const styles = StyleSheet.create({
   },
   textWrapper: {
     flex: 1,
-    paddingRight: 8
+    paddingRight: 8,
+    justifyContent: 'center'
   },
   wrapper: {
     paddingHorizontal: 8,

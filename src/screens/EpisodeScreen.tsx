@@ -224,8 +224,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
             <View>
               {showClipsCell && (
                 <TouchableOpacity
-                  accessibilityHint={translate('ARIA HINT - Tap to show clips from this podcast')}
+                  accessibilityHint={translate('ARIA HINT - show clips from this podcast')}
                   accessibilityLabel={translate('Clips')}
+                  accessibilityRole='button'
                   activeOpacity={1}
                   style={styles.showNotesCell}
                   onPress={() => {
@@ -247,8 +248,9 @@ export class EpisodeScreen extends React.Component<Props, State> {
               )}
               {showChaptersCell && (
                 <TouchableOpacity
-                  accessibilityHint={translate('ARIA HINT - Tap to show the chapters from this podcast')}
+                  accessibilityHint={translate('ARIA HINT - show the chapters from this podcast')}
                   accessibilityLabel={translate('Chapters')}
+                  accessibilityRole='button'
                   activeOpacity={1}
                   style={styles.showNotesCell}
                   onPress={() => {
@@ -281,11 +283,16 @@ export class EpisodeScreen extends React.Component<Props, State> {
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={() =>
-            PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
-              handleDismiss: this._handleCancelPress,
-              handleDownload: this._handleDownloadPressed,
-              includeGoToPodcast
-            })
+            PV.ActionSheet.media.moreButtons(
+              selectedItem,
+              navigation,
+              {
+                handleDismiss: this._handleCancelPress,
+                handleDownload: this._handleDownloadPressed,
+                includeGoToPodcast
+              },
+              'episode'
+            )
           }
           showModal={showActionSheet}
           testID={testIDPrefix}
