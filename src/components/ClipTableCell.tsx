@@ -14,6 +14,7 @@ type Props = {
   item: any
   loadTimeStampOnPlay?: boolean
   isChapter?: boolean
+  itemType?: 'chapter' | 'clip'
   showEpisodeInfo?: boolean
   showPodcastInfo?: boolean
   testID: string
@@ -29,7 +30,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
   }
 
   render() {
-    const { handleMorePress, hideImage, item, loadTimeStampOnPlay,
+    const { handleMorePress, hideImage, item, itemType, loadTimeStampOnPlay,
       isChapter, showEpisodeInfo, showPodcastInfo, testID, transparent } = this.props
 
     const episodePubDate = item?.episode?.pubDate || ''
@@ -65,7 +66,6 @@ export class ClipTableCell extends React.PureComponent<Props> {
         {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
         <RNView
           accessible
-          accessibilityHint={translate('ARIA HINT - This is the clip title and time range')}
           accessibilityLabel={accessibilityLabel}
           style={{ flex: 1, flexDirection: 'column' }}>
           {(showEpisodeInfo || showPodcastInfo) && (
@@ -119,10 +119,6 @@ export class ClipTableCell extends React.PureComponent<Props> {
             </RNView>
           )}
           <Text
-            accessibilityHint={isChapter
-              ? translate('ARIA HINT - This is the chapter title')
-              : translate('ARIA HINT - This is the clip title')
-            }
             accessibilityLabel={title}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={4}
@@ -154,7 +150,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
             handleMorePress={handleMorePress}
             isChapter={isChapter}
             item={item}
-            itemType='clip'
+            itemType={itemType ? itemType : 'clip'}
             loadTimeStampOnPlay={loadTimeStampOnPlay}
             testID={testID}
             transparent={transparent}

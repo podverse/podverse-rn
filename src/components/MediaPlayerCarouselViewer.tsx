@@ -87,6 +87,16 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       </Text>
     )
 
+    const clipTitleComponent = (
+      <Text
+        allowFontScaling={false}
+        numberOfLines={1}
+        style={styles.clipTitle}
+        testID={`${testIDPrefix}_clip_title`}>
+        {clipTitle}
+      </Text>
+    )
+
     return (
       <ScrollView
         scrollEnabled={false}
@@ -141,14 +151,19 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
               accessibilityLabel={clipAccessibilityLabel}
               onPress={handlePressClipInfo}>
               <RNView style={styles.clipWrapper}>
-                <TextTicker
-                  allowFontScaling={false}
-                  bounce
-                  loop
-                  styles={styles.clipTitle}
-                  textLength={clipTitle?.length}>
-                  {clipTitle}
-                </TextTicker>
+                {
+                  !!screenReaderEnabled ? (
+                    <TextTicker
+                      allowFontScaling={false}
+                      bounce
+                      importantForAccessibility='no-hide-descendants'
+                      loop
+                      styles={styles.clipTitle}
+                      textLength={clipTitle?.length}>
+                      {clipTitleComponent}
+                    </TextTicker>
+                  ) : clipTitleComponent
+                }
                 <Text allowFontScaling={false} style={styles.clipTime} testID='media_player_carousel_viewer_time'>
                   {readableClipTime(clipStartTime, clipEndTime)}
                 </Text>

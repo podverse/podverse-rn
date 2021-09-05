@@ -8,7 +8,7 @@ import { ActivityIndicator } from '.'
 type Props = {
   handleMorePress: any
   isLoading?: boolean
-  itemType: 'episode' | 'clip'
+  itemType: 'episode' | 'clip' | 'chapter'
   testID: string
 }
 

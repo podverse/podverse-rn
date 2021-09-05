@@ -70,6 +70,7 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
       <ClipTableCell
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
         item={item}
+        itemType='chapter'
         loadTimeStampOnPlay
         isChapter
         showPodcastInfo={false}
