@@ -1,5 +1,6 @@
 import { convertNowPlayingItemToEpisode, convertToNowPlayingItem } from 'podverse-shared'
-import { StyleSheet } from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
+import Dialog from 'react-native-dialog'
 import React, { setGlobal } from 'reactn'
 import { downloadEpisode } from '../lib/downloader'
 import { getSelectedFromLabel, getSelectedSortLabel } from '../lib/filters'
@@ -8,7 +9,7 @@ import { hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import PVEventEmitter from '../services/eventEmitter'
-import { getMediaRefs } from '../services/mediaRef'
+import { deleteMediaRef, getMediaRefs } from '../services/mediaRef'
 import { loadItemAndPlayTrack } from '../state/actions/player'
 import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList,
   ScrollView, TableSectionSelectors } from './'
@@ -25,10 +26,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
 
   constructor(props) {
     super(props)
-
     this.shouldLoad = true
-
-    this.state = {}
   }
 
   componentDidMount() {
@@ -177,6 +175,70 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
     }
   }
 
+  _handleDeleteClip = (selectedId) => {
+    setGlobal({
+      screenPlayer: {
+        ...this.global.screenPlayer,
+        mediaRefIdToDelete: selectedId,
+        showDeleteConfirmDialog: true
+      }
+    })
+  }
+
+  _deleteMediaRef = () => {
+    const { screenPlayer } = this.global
+    const { mediaRefIdToDelete } = screenPlayer
+    let { flatListData, flatListDataTotalCount } = screenPlayer
+
+    if (mediaRefIdToDelete) {
+      setGlobal(
+        {
+          screenPlayer: {
+            isLoading: true,
+            showDeleteConfirmDialog: false
+          }
+        },
+        () => {
+          (async () => {
+            try {
+              await deleteMediaRef(mediaRefIdToDelete)
+              flatListData = flatListData.filter((x: any) => x.id !== mediaRefIdToDelete)
+              flatListDataTotalCount = flatListData.length
+            } catch (error) {
+              if (error.response) {
+                Alert.alert(
+                  PV.Alerts.SOMETHING_WENT_WRONG.title,
+                  PV.Alerts.SOMETHING_WENT_WRONG.message,
+                  PV.Alerts.BUTTONS.OK
+                )
+              }
+            }
+
+            setGlobal({
+              screenPlayer: {
+                ...this.global.screenPlayer,
+                flatListData,
+                flatListDataTotalCount,
+                isLoading: false,
+                mediaRefIdToDelete: ''
+              }
+            })
+          })()
+        }
+      )
+    }
+  }
+
+  _cancelDeleteMediaRef = () => {
+    setGlobal({
+      screenPlayer: {
+        ...this.global.screenPlayer,
+        mediaRefIdToDelete: '',
+        showDeleteConfirmDialog: false
+      }
+    })
+  }
+
   _renderItem = ({ item, index }) => {
     const { player, screenPlayer } = this.global
     const { episode } = player
@@ -222,6 +284,7 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
       selectedFromLabel = translate('Episode Clips'),
       selectedItem,
       selectedSortLabel = translate('top - week'),
+      showDeleteConfirmDialog,
       showMoreActionSheet,
       showNoInternetConnectionMessage
     } = screenPlayer
@@ -271,7 +334,8 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
               navigation, 
               {
                 handleDismiss: this._handleMoreCancelPress,
-                handleDownload: this._handleDownloadPressed
+                handleDownload: this._handleDownloadPressed,
+                handleDeleteClip: this._handleDeleteClip
               },
               'clip'
             )
@@ -279,6 +343,20 @@ export class MediaPlayerCarouselClips extends React.PureComponent<Props> {
           showModal={showMoreActionSheet}
           testID={`${testID}_more`}
         />
+        <Dialog.Container visible={showDeleteConfirmDialog}>
+          <Dialog.Title>{translate('Delete Clip')}</Dialog.Title>
+          <Dialog.Description>{translate('Are you sure')}</Dialog.Description>
+          <Dialog.Button
+            label={translate('Cancel')}
+            onPress={this._cancelDeleteMediaRef}
+            testID={`${getTestID()}_delete_clip_cancel`.prependTestId()}
+          />
+          <Dialog.Button
+            label={translate('Delete')}
+            onPress={this._deleteMediaRef}
+            testID={`${getTestID}_delete_clip_delete`.prependTestId()}
+          />
+        </Dialog.Container>
       </ScrollView>
     )
   }

@@ -40,7 +40,7 @@ import {
 } from '../services/player'
 import { trackPageView } from '../services/tracking'
 import { setNowPlayingItem, setPlaybackSpeed, togglePlay } from '../state/actions/player'
-import { core, playerStyles } from '../styles'
+import { core, darkTheme, iconStyles, playerStyles } from '../styles'
 
 type Props = {
   navigation?: any
@@ -95,7 +95,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
         <RNView style={styles.navHeaderButtonWrapper}>
           <NavHeaderButtonText
             accessibilityHint={isLoggedIn
-              ? translate('ARIA HINT - save this clip')
+              ? ''
               : translate('ARIA HINT - go to the login screen')
             }
             accessibilityLabel={isLoggedIn ? translate('Save Clip') : translate('Go to Login')}
@@ -408,6 +408,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
     const { navigation } = this.props
     const { globalTheme, player } = this.global
     const { backupDuration, playbackRate, playbackState } = player
+    const hasErrored = playbackState === PV.Player.errorState
     const {
       endTime,
       isLoggedIn,
@@ -418,6 +419,41 @@ export class MakeClipScreen extends React.Component<Props, State> {
       startTime,
       title
     } = this.state
+
+    let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
+    let playButtonAdjust = { paddingLeft: 2 } as any
+    let playButtonAccessibilityHint = translate('ARIA HINT - resume playing')
+    let playButtonAccessibilityLabel = translate('Play')
+    if (hasErrored) {
+      playButtonIcon = (
+        <Icon
+          color={globalTheme === darkTheme ? iconStyles.lightRed.color : iconStyles.darkRed.color}
+          name={'exclamation-triangle'}
+          size={35}
+          testID={`${testIDPrefix}_error`}
+        />
+      )
+      playButtonAdjust = { paddingBottom: 8 } as any
+    } else if (playbackState === RNTPState.Playing) {
+      playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
+      playButtonAdjust = {}
+      playButtonAccessibilityHint = translate('ARIA HINT - pause playback')
+      playButtonAccessibilityLabel = translate('Pause')
+    } else if (checkIfStateIsBuffering(playbackState)) {
+      playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
+      playButtonAdjust = { paddingLeft: 2, paddingTop: 2 }
+      playButtonAccessibilityHint = ''
+      playButtonAccessibilityLabel = translate('Episode is loading')
+    }
+
+    const jumpBackAccessibilityLabel =
+      `${translate(`Jump back`)} ${PV.Player.jumpBackSeconds} ${translate('seconds')}`
+    const jumpForwardAccessibilityLabel =
+      `${translate(`Jump forward`)} ${PV.Player.jumpSeconds} ${translate('seconds')}`
+    const miniJumpBackAccessibilityLabel =
+      `${translate(`Jump back`)} ${PV.Player.miniJumpSeconds} ${translate('seconds')}`
+    const miniJumpForwardAccessibilityLabel =
+      `${translate(`Jump forward`)} ${PV.Player.miniJumpSeconds} ${translate('seconds')}`
 
     return (
       <SafeAreaView style={styles.viewContainer}>
@@ -456,7 +492,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
               <View style={styles.wrapperBottomInside} transparent>
                 <TimeInput
                   // eslint-disable-next-line max-len
-                  accessibilityHint={translate('ARIA HINT - set the current playback position as the start time for this clip')}
+                  accessibilityHint={translate('ARIA HINT - tap to set the current playback position as the start time for this clip')}
                   handlePreview={() => {
                     if (startTime) {
                       playerPreviewStartTime(startTime, endTime)
@@ -465,7 +501,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   handleSetTime={this._setStartTime}
                   labelText={translate('Start time')}
                   placeholder='--:--'
-                  previewAccessibilityHint={translate('ARIA HINT - Tap preview the start position for this clip')}
                   previewAccessibilityLabel={translate('Preview Start Time')}
                   testID={`${testIDPrefix}_start`}
                   time={startTime}
@@ -473,7 +508,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <View style={styles.wrapperBottomInsideSpacer} transparent />
                 <TimeInput
                   // eslint-disable-next-line max-len
-                  accessibilityHint={translate('ARIA HINT - set the current playback position as the end time for this clip')}
+                  accessibilityHint={translate('ARIA HINT - tap to set the current playback position as the end time for this clip')}
                   handleClearTime={endTime ? this._clearEndTime : null}
                   handlePreview={() => {
                     if (endTime) {
@@ -483,7 +518,6 @@ export class MakeClipScreen extends React.Component<Props, State> {
                   handleSetTime={this._setEndTime}
                   labelText={translate('End time')}
                   placeholder={translate('optional')}
-                  previewAccessibilityHint={translate('ARIA HINT - Tap preview the end position for this clip')}
                   previewAccessibilityLabel={translate('Preview End Time')}
                   testID={`${testIDPrefix}_end`}
                   time={endTime}
@@ -493,6 +527,11 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <View style={styles.clearEndTimeTextSpacer} transparent />
                 {endTime && (
                   <TouchableWithoutFeedback
+                    accessible
+                    accessibilityHint={translate('ARIA HINT - clear the end time for this clip')}
+                    accessibilityLabel={translate('Remove end time')}
+                    accessibilityRole='button'
+                    importantForAccessibility='yes'
                     hitSlop={{
                       bottom: 0,
                       left: 2,
@@ -501,12 +540,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     }}
                     onPress={this._clearEndTime}
                     testID={`${testIDPrefix}_time_input_clear_button`.prependTestId()}>
-                    <Text
-                      accessible
-                      accessibilityHint={translate('ARIA HINT - remove the end time for this clip')}
-                      accessibilityLabel={translate('Remove end time')}
-                      accessibilityRole='button'
-                      style={styles.clearEndTimeText}>
+                    <Text style={styles.clearEndTimeText}>
                       {translate('Remove end time')}
                     </Text>
                   </TouchableWithoutFeedback>
@@ -526,38 +560,45 @@ export class MakeClipScreen extends React.Component<Props, State> {
                 <View style={styles.playerControlsMiddleRow} transparent>
                   <View style={styles.playerControlsMiddleRowTop} transparent>
                     <TouchableOpacity
+                      accessibilityLabel={jumpBackAccessibilityLabel}
+                      accessibilityRole='button'
                       onPress={this._playerJumpBackward}
                       style={playerStyles.icon}
                       testID={`${testIDPrefix}_jump_backward`.prependTestId()}>
                       {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS)}
-                      <View style={styles.skipTimeTextWrapper} transparent>
+                      <View
+                        importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper} transparent>
                         <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
                       </View>
                     </TouchableOpacity>
                     <TouchableOpacity
+                      accessibilityLabel={miniJumpBackAccessibilityLabel}
+                      accessibilityRole='button'
                       onPress={this._playerMiniJumpBackward}
                       style={playerStyles.icon}
                       testID={`${testIDPrefix}_mini_jump_backward`.prependTestId()}>
                       {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS)}
-                      <View style={styles.skipTimeTextWrapper} transparent>
+                      <View
+                        importantForAccessibility='no-hide-descendants'
+                        style={styles.skipTimeTextWrapper}
+                        transparent>
                         <Text style={styles.skipTimeText}>1</Text>
                       </View>
                     </TouchableOpacity>
                     <TouchableOpacity
+                      accessibilityHint={playButtonAccessibilityHint}
+                      accessibilityLabel={playButtonAccessibilityLabel}
                       onPress={() => togglePlay()}
-                      style={playerStyles.playButton}
                       testID={`${testIDPrefix}_toggle_play`.prependTestId()}>
-                      {!checkIfStateIsBuffering(playbackState) ? (
-                        <Icon
-                          name={playbackState === RNTPState.Playing ? 'pause' : 'play'}
-                          size={20}
-                          testID={`${testIDPrefix}_${playbackState === RNTPState.Playing ? 'pause' : 'play'}`}
-                        />
-                      ) : (
-                        <ActivityIndicator testID={testIDPrefix} />
-                      )}
+                      <View
+                        importantForAccessibility='no-hide-descendants'
+                        style={[playerStyles.playButton, playButtonAdjust]}>
+                        {playButtonIcon}
+                      </View>
                     </TouchableOpacity>
                     <TouchableOpacity
+                      accessibilityLabel={miniJumpForwardAccessibilityLabel}
+                      accessibilityRole='button'
                       onPress={this._playerMiniJumpForward}
                       style={playerStyles.icon}
                       testID={`${testIDPrefix}_mini_jump_forward`.prependTestId()}>
@@ -567,6 +608,8 @@ export class MakeClipScreen extends React.Component<Props, State> {
                       </View>
                     </TouchableOpacity>
                     <TouchableOpacity
+                      accessibilityLabel={jumpForwardAccessibilityLabel}
+                      accessibilityRole='button'
                       onPress={this._playerJumpForward}
                       style={playerStyles.icon}
                       testID={`${testIDPrefix}_jump_forward`.prependTestId()}>
@@ -603,7 +646,7 @@ export class MakeClipScreen extends React.Component<Props, State> {
                     </View>
                   </TouchableOpacity>
                   <TouchableWithoutFeedback
-                    accessibilityHint={translate('ARIA HINT - This is the current playback speed')}
+                    accessibilityHint={translate('ARIA HINT - current playback speed')}
                     accessibilityLabel={`${playbackRate}X`}
                     accessibilityRole='button'
                     hitSlop={{
@@ -774,8 +817,9 @@ const styles = StyleSheet.create({
     flex: 1
   },
   clearEndTimeWrapper: {
-    minHeight: 40,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginHorizontal: 8,
+    minHeight: 40
   },
   divider: {
     marginBottom: 8,

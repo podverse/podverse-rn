@@ -62,11 +62,11 @@ const html = `
 
   <hr />
 
-  <h2
+  <h1
     className='offset-anchor-tag'
     id='why-do-some-clips-start-at-the-wrong-time'>
 Why do some clips start at the wrong time?
-  </h2>
+  </h1>
 
   <p>
 Most podcast apps today limit your clips to be less than a minute long,
@@ -87,11 +87,11 @@ but for fair use / legal reasons we will need to get permission from each podcas
   
   <hr />
 
-  <h2
+  <h1
     className='offset-anchor-tag'
     id='what-does-open-source-mean'>
 What does open source (AGPLv3) mean?
-  </h2>
+  </h1>
 
   <p>
 AGPLv3 is the open source license under which all Podverse software is provided.
@@ -102,11 +102,11 @@ This is also known as a "share-alike" or "copyleft" license.
 
   <hr />
 
-  <h2
+  <h1
     className='offset-anchor-tag'
     id='why-is-podverse-open-source'>
 Why is Podverse open source?
-  </h2>
+  </h1>
 
   <p>
 Podverse software is open source so anyone can launch their own

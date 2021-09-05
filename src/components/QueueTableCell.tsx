@@ -77,7 +77,7 @@ export class QueueTableCell extends React.PureComponent<Props> {
                 : translate('ARIA HINT - tap play this clip')
             }
             accessibilityLabel={accessibilityLabel}
-            accessibilityRole={isNowPlayingItem ? 'none' : 'button'}
+            accessibilityRole='none'
             onLongPress={drag}
             onPress={onPress}>
             <RNView style={styles.wrapperTappableInner}>

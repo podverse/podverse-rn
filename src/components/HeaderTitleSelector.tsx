@@ -2,6 +2,7 @@ import { Platform, StyleSheet, Text, View } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import React from 'reactn'
+import { translate } from '../lib/i18n'
 import { PV } from '../resources'
 import { darkTheme } from '../styles'
 
@@ -23,9 +24,26 @@ export const HeaderTitleSelector = (props: Props) => {
   }
 
   const textNode = (
-    <View style={styles.wrapper}>
-      <Text allowFontScaling={false} style={textStyle}>{selectedItem.label || (placeholder && placeholder.label)}</Text>
-      <Icon color={color || darkTheme.text.color} name='angle-down' size={16} style={styles.angleDown} />
+    <View
+      accessible
+      accessibilityHint={translate('ARIA HINT - tap to switch between queue and history')}
+      accessibilityLabel={selectedItem.label || (placeholder && placeholder.label)}
+      importantForAccessibility='yes'
+      style={styles.wrapper}>
+      <Text
+        accessible={false}
+        allowFontScaling={false}
+        importantForAccessibility='no'
+        style={textStyle}>
+        {selectedItem.label || (placeholder && placeholder.label)}
+      </Text>
+      <Icon
+        accessible={false}
+        importantForAccessibility='no'
+        color={color || darkTheme.text.color}
+        name='angle-down'
+        size={16}
+        style={styles.angleDown} />
     </View>
   )
 
@@ -33,6 +51,7 @@ export const HeaderTitleSelector = (props: Props) => {
     <View>
       {onValueChange ? (
         <RNPickerSelect
+          fixAndroidTouchableBug
           items={items}
           onValueChange={onValueChange}
           placeholder={placeholder}

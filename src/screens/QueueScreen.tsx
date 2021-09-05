@@ -374,9 +374,6 @@ export class QueueScreen extends React.Component<Props, State> {
                     disableFilter
                     hideDropdown
                     includePadding
-                    selectedFilterAccessibilityHint={
-                      translate('ARIA HINT - This section contains information about the currently playing item')
-                    }
                     selectedFilterLabel={translate('Now Playing')}
                     textStyle={styles.sectionHeaderText}
                   />
@@ -400,9 +397,6 @@ export class QueueScreen extends React.Component<Props, State> {
             <TableSectionSelectors
               disableFilter
               includePadding
-              selectedFilterAccessibilityHint={
-                translate('ARIA HINT - This section contains the items next up in your queue')
-              }
               selectedFilterLabel={translate('Next Up')}
               textStyle={styles.sectionHeaderText}
             />
@@ -523,7 +517,8 @@ const styles = StyleSheet.create({
   },
   queueCellDivider: {},
   view: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'center'
   },
   sectionHeaderText: {
     color: PV.Colors.skyDark,

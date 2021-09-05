@@ -41,7 +41,6 @@ const mediaMoreButtons = (
   if (item.ownerId && item.ownerId === loggedInUserId) {
     buttons.push(
       {
-        accessibilityHint: translate('ARIA HINT - edit this clip'),
         accessibilityLabel: translate('Edit Clip'),
         key: PV.Keys.edit_clip,
         text: translate('Edit Clip'),
@@ -67,7 +66,6 @@ const mediaMoreButtons = (
         }
       },
       {
-        accessibilityHint: translate('ARIA HINT - delete this clip'),
         accessibilityLabel: translate('Delete Clip'),
         key: PV.Keys.delete_clip,
         text: translate('Delete Clip'),

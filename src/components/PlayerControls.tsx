@@ -188,7 +188,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               onPress={this._playerJumpBackward}
               style={playerStyles.icon}>
               {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, `${testIDPrefix}_jump_backward`)}
-              <View style={styles.skipTimeTextWrapper}>
+              <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
               </View>
             </TouchableOpacity>
@@ -196,7 +196,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               accessibilityHint={playButtonAccessibilityHint}
               accessibilityLabel={playButtonAccessibilityLabel}
               onPress={togglePlay}>
-              <View style={[playerStyles.playButton, playButtonAdjust]}>
+              <View importantForAccessibility='no-hide-descendants' style={[playerStyles.playButton, playButtonAdjust]}>
                 {playButtonIcon}
               </View>
             </TouchableOpacity>
@@ -206,7 +206,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               onPress={this._playerJumpForward}
               style={playerStyles.icon}>
               {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, `${testIDPrefix}_step_forward`)}
-              <View style={styles.skipTimeTextWrapper}>
+              <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>{PV.Player.jumpSeconds}</Text>
               </View>
             </TouchableOpacity>
@@ -231,7 +231,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             </View>
           </TouchableOpacity>
           <TouchableWithoutFeedback
-            accessibilityHint={translate('ARIA HINT - This is the current playback speed')}
+            accessibilityHint={translate('ARIA HINT - current playback speed')}
             accessibilityLabel={`${playbackRate}X`}
             accessibilityRole='button'
             hitSlop={hitSlop}

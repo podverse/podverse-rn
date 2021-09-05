@@ -39,7 +39,7 @@ export const NavMakeClipIcon = (props: Props) => {
 
   return (
     <NavItemWrapper
-      accessibilityHint={translate('ARIA HINT - make a clip from this podcast')}
+      accessibilityHint={translate('ARIA HINT - make a clip from this episode')}
       accessibilityLabel={translate('Make Clip')}
       accessibilityRole='button'
       handlePress={handlePress}

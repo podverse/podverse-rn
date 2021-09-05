@@ -579,6 +579,7 @@ export class SettingsScreen extends React.Component<Props, State> {
             />
             {isLoggedIn && (
               <Button
+                accessibilityLabel={translate('Delete Account')}
                 isWarning
                 onPress={this._handleToggleDeleteAccountDialog}
                 testID={`${testIDPrefix}_delete_account`}
