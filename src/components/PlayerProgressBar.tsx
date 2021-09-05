@@ -121,7 +121,7 @@ export function PlayerProgressBar(props: Props) {
       {!isLoading ? (
         <View style={sliderStyles.timeRow}>
           <Text
-            accessibilityHint={translate('ARIA HINT - This is the current playback time for this episode')}
+            accessibilityHint={translate('ARIA HINT - Current playback time')}
             accessibilityLabel={convertSecToHHMMSS(slidingPositionOverride || position)}
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -129,7 +129,7 @@ export function PlayerProgressBar(props: Props) {
             {convertSecToHHMMSS(slidingPositionOverride || position)}
           </Text>
           <Text
-            accessibilityHint={translate('ARIA HINT - This is the duration for this episode')}
+            accessibilityHint={translate('ARIA HINT - episode duration')}
             accessibilityLabel={duration > 0 ? convertSecToHHMMSS(parentScopeDuration) : translate('Unknown duration')}
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
@@ -140,7 +140,7 @@ export function PlayerProgressBar(props: Props) {
       ) : (
         <View style={sliderStyles.timeRow}>
           <Text
-            accessibilityHint={translate('ARIA HINT - This is the current playback time for this episode')}
+            accessibilityHint={translate('ARIA HINT - Current playback time')}
             accessibilityLabel={
               parentScopeDuration > 0 ? convertSecToHHMMSS(parentScopeDuration) : translate('Unknown duration')}
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}
@@ -149,7 +149,7 @@ export function PlayerProgressBar(props: Props) {
             {'--:--'}
           </Text>
           <Text
-            accessibilityHint={translate('ARIA HINT - This is the duration for this episode')}
+            accessibilityHint={translate('ARIA HINT - episode duration')}
             accessibilityLabel={
               parentScopeDuration > 0 ? convertSecToHHMMSS(parentScopeDuration) : translate('Unknown duration')}
             fontSizeLargerScale={PV.Fonts.largeSizes.lg}

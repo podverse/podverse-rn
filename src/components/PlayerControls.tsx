@@ -121,7 +121,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
 
     let playButtonIcon = <Icon name='play' size={20} testID={`${testIDPrefix}_play_button`} />
     let playButtonAdjust = { paddingLeft: 2 } as any
-    let playButtonAccessibilityHint = translate('ARIA HINT - Tap to resume playing')
+    let playButtonAccessibilityHint = translate('ARIA HINT - resume playing')
     let playButtonAccessibilityLabel = translate('Play')
     if (hasErrored) {
       playButtonIcon = (
@@ -136,7 +136,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
     } else if (playbackState === RNTPState.Playing) {
       playButtonIcon = <Icon name='pause' size={20} testID={`${testIDPrefix}_pause_button`} />
       playButtonAdjust = {}
-      playButtonAccessibilityHint = translate('ARIA HINT - Tap to pause playback')
+      playButtonAccessibilityHint = translate('ARIA HINT - pause playback')
       playButtonAccessibilityLabel = translate('Pause')
     } else if (checkIfStateIsBuffering(playbackState)) {
       playButtonIcon = <ActivityIndicator testID={testIDPrefix} />
@@ -188,7 +188,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               onPress={this._playerJumpBackward}
               style={playerStyles.icon}>
               {this._renderPlayerControlIcon(PV.Images.JUMP_BACKWARDS, `${testIDPrefix}_jump_backward`)}
-              <View style={styles.skipTimeTextWrapper}>
+              <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>{PV.Player.jumpBackSeconds}</Text>
               </View>
             </TouchableOpacity>
@@ -196,7 +196,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               accessibilityHint={playButtonAccessibilityHint}
               accessibilityLabel={playButtonAccessibilityLabel}
               onPress={togglePlay}>
-              <View style={[playerStyles.playButton, playButtonAdjust]}>
+              <View importantForAccessibility='no-hide-descendants' style={[playerStyles.playButton, playButtonAdjust]}>
                 {playButtonIcon}
               </View>
             </TouchableOpacity>
@@ -206,7 +206,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
               onPress={this._playerJumpForward}
               style={playerStyles.icon}>
               {this._renderPlayerControlIcon(PV.Images.JUMP_AHEAD, `${testIDPrefix}_step_forward`)}
-              <View style={styles.skipTimeTextWrapper}>
+              <View importantForAccessibility='no-hide-descendants' style={styles.skipTimeTextWrapper}>
                 <Text style={styles.skipTimeText}>{PV.Player.jumpSeconds}</Text>
               </View>
             </TouchableOpacity>
@@ -221,7 +221,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
         </View>
         <View style={styles.playerControlsBottomRow}>
           <TouchableOpacity
-            accessibilityHint={translate('ARIA HINT - Tap to go to the sleep timer screen')}
+            accessibilityHint={translate('ARIA HINT - go to the sleep timer screen')}
             accessibilityLabel={translate('Sleep Timer')}
             accessibilityRole='button'
             hitSlop={hitSlop}
@@ -231,7 +231,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             </View>
           </TouchableOpacity>
           <TouchableWithoutFeedback
-            accessibilityHint={translate('ARIA HINT - This is the current playback speed')}
+            accessibilityHint={translate('ARIA HINT - current playback speed')}
             accessibilityLabel={`${playbackRate}X`}
             accessibilityRole='button'
             hitSlop={hitSlop}
@@ -244,7 +244,7 @@ export class PlayerControls extends React.PureComponent<Props, State> {
             </Text>
           </TouchableWithoutFeedback>
           <TouchableOpacity
-            accessibilityHint={translate('ARIA HINT - Tap to show more player screen options')}
+            accessibilityHint={translate('ARIA HINT - show more player screen options')}
             accessibilityLabel={translate('More player options')}
             accessibilityRole='button'
             hitSlop={hitSlop}

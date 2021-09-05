@@ -23,7 +23,8 @@ const mediaMoreButtons = (
     handleDeleteClip: any
     includeGoToPodcast?: boolean
     includeGoToEpisode?: boolean | string
-  }
+  },
+  itemType: 'podcast' | 'episode' | 'clip' | 'chapter' | 'playlist' | 'profile'
 ) => {
   if (!item || !item.episodeId) return
 
@@ -40,7 +41,7 @@ const mediaMoreButtons = (
   if (item.ownerId && item.ownerId === loggedInUserId) {
     buttons.push(
       {
-        accessibilityHint: translate('ARIA HINT - Tap to edit this clip'),
+        accessibilityLabel: translate('Edit Clip'),
         key: PV.Keys.edit_clip,
         text: translate('Edit Clip'),
         onPress: async () => {
@@ -65,7 +66,7 @@ const mediaMoreButtons = (
         }
       },
       {
-        accessibilityHint: translate('ARIA HINT - Tap to delete this clip'),
+        accessibilityLabel: translate('Delete Clip'),
         key: PV.Keys.delete_clip,
         text: translate('Delete Clip'),
         onPress: async () => {
@@ -78,7 +79,8 @@ const mediaMoreButtons = (
 
   if (isDownloaded) {
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - Tap to play'),
+      accessibilityHint: translate('ARIA HINT - play'),
+      accessibilityLabel: translate('Play'),
       key: PV.Keys.play,
       text: translate('Play'),
       onPress: async () => {
@@ -89,7 +91,10 @@ const mediaMoreButtons = (
     })
   } else {
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - Tap to stream'),
+      accessibilityHint: itemType === 'episode'
+        ? translate('ARIA HINT - stream this episode')
+        : translate('ARIA HINT - stream this clip'),
+      accessibilityLabel: translate('Stream'),
       key: PV.Keys.stream,
       text: translate('Stream'),
       onPress: async () => {
@@ -104,7 +109,8 @@ const mediaMoreButtons = (
 
     if (handleDownload) {
       buttons.push({
-        accessibilityHint: translate('ARIA HINT - Tap to download this episode'),
+        accessibilityHint: translate('ARIA HINT - download this episode'),
+        accessibilityLabel: downloadingText,
         key: PV.Keys.download,
         text: downloadingText,
         isDownloading,
@@ -127,7 +133,12 @@ const mediaMoreButtons = (
   if (!item.addByRSSPodcastFeedUrl) {
     buttons.push(
       {
-        accessibilityHint: translate('ARIA HINT - Tap to add this next in your queue'),
+        accessibilityHint: itemType === 'episode'
+          ? translate('ARIA HINT - add this episode next in your queue')
+          : itemType === 'clip'
+            ? translate('ARIA HINT - add this clip next in your queue')
+            : translate('ARIA HINT - add this chapter next in your queue'),
+        accessibilityLabel: translate('ARIA LABEL - Queue Next'),
         key: PV.Keys.queue_next,
         text: translate('Queue Next'),
         onPress: async () => {
@@ -136,7 +147,12 @@ const mediaMoreButtons = (
         }
       },
       {
-        accessibilityHint: translate('ARIA HINT - Tap to add this last in your queue'),
+        accessibilityHint: itemType === 'episode'
+          ? translate('ARIA HINT - add this episode last in your queue')
+          : itemType === 'clip'
+            ? translate('ARIA HINT - add this clip last in your queue')
+            : translate('ARIA HINT - add this chapter last in your queue'),
+        accessibilityLabel: translate('ARIA LABEL - Queue Last'),
         key: PV.Keys.queue_last,
         text: translate('Queue Last'),
         onPress: async () => {
@@ -148,7 +164,12 @@ const mediaMoreButtons = (
 
     if (!Config.DISABLE_ADD_TO_PLAYLIST && isLoggedIn) {
       buttons.push({
-        accessibilityHint: translate('ARIA HINT - Tap to add to your playlist'),
+        accessibilityHint: itemType === 'episode'
+          ? translate('ARIA HINT - add this episode to a playlist')
+          : itemType === 'clip'
+            ? translate('ARIA HINT - add this clip to a playlist')
+            : translate('ARIA HINT - add this chapter to a playlist'),
+        accessibilityLabel: translate('Add to Playlist'),
         key: PV.Keys.add_to_playlist,
         text: translate('Add to Playlist'),
         onPress: async () => {
@@ -161,8 +182,22 @@ const mediaMoreButtons = (
     }
 
     if (!Config.DISABLE_SHARE) {
+      const accessibilityHint = itemType === 'podcast'
+        ? translate('ARIA HINT - share this podcast')
+        : itemType === 'episode'
+          ? translate('ARIA HINT - share this episode')
+          : itemType === 'clip'
+            ? translate('ARIA HINT - share this clip')
+            : itemType === 'chapter'
+              ? translate('ARIA HINT - share this chapter')
+              : itemType === 'playlist'
+                ? translate('ARIA HINT - share this playlist')
+                : itemType === 'profile'
+                  ? translate('ARIA HINT - share this profile')
+                  : translate('ARIA HINT - share this item')
       buttons.push({
-        accessibilityHint: translate('ARIA HINT - Tap to share'),
+        accessibilityHint,
+        accessibilityLabel: translate('Share'),
         key: PV.Keys.share,
         text: translate('Share'),
         onPress: async () => {
@@ -195,7 +230,8 @@ const mediaMoreButtons = (
 
   if (isDownloaded) {
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - Tap to delete this downloaded episode'),
+      accessibilityHint: translate('ARIA HINT - delete this downloaded episode'),
+      accessibilityLabel: translate('Delete Episode'),
       key: PV.Keys.delete_episode,
       text: translate('Delete Episode'),
       onPress: async () => {
@@ -207,7 +243,8 @@ const mediaMoreButtons = (
 
   if (includeGoToPodcast) {
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - Tap to go to this podcast'),
+      accessibilityHint: translate('ARIA HINT - tap to go to this podcast'),
+      accessibilityLabel: translate('Go to Podcast'),
       key: PV.Keys.go_to_podcast,
       text: translate('Go to Podcast'),
       onPress: async () => {
@@ -219,7 +256,7 @@ const mediaMoreButtons = (
 
   if (includeGoToEpisode) {
     buttons.push({
-      accessibilityHint: translate('ARIA HINT - Tap to go to this episode'),
+      accessibilityLabel: translate('Go to Episode'),
       key: PV.Keys.go_to_episode,
       text: translate('Go to Episode'),
       onPress: async () => {

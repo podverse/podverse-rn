@@ -58,7 +58,7 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   } else {
     const { podcastId } = currentNowPlayingItem
     const startPodcastFromTime = await getStartPodcastFromTime(podcastId)
-
+    
     if (!currentNowPlayingItem.clipId && startPodcastFromTime) {
       debouncedSetPlaybackPosition(startPodcastFromTime, trackId)
     }
@@ -67,7 +67,7 @@ const handleSyncNowPlayingItem = async (trackId: string, currentNowPlayingItem: 
   PVEventEmitter.emit(PV.Events.PLAYER_TRACK_CHANGED)
 
   // Call updateUserPlaybackPosition to make sure the current item is saved as the userNowPlayingItem
-  updateUserPlaybackPosition()
+  await updateUserPlaybackPosition()
 
   handleEnrichingPlayerState(currentNowPlayingItem)
 }
@@ -205,10 +205,9 @@ module.exports = async () => {
         } else {
           if (Platform.OS === 'ios') {
             if (x.state === RNTPState.Playing) {
-              updateUserPlaybackPosition()
               await setRateWithLatestPlaybackSpeed()
             } else if (x.state === RNTPState.Paused || RNTPState.Stopped) {
-              updateUserPlaybackPosition()
+              await updateUserPlaybackPosition()
             }
           } else if (Platform.OS === 'android') {
             /*
@@ -229,7 +228,7 @@ module.exports = async () => {
               const rate = await getPlaybackSpeed()
               PVTrackPlayer.setRate(rate)
             } else if (x.state === paused || x.state === stopped) {
-              updateUserPlaybackPosition()
+              await updateUserPlaybackPosition()
             }
           }
         }
@@ -321,7 +320,7 @@ module.exports = async () => {
       /* Always save the user playback position whenever the remote-duck event happens.
          I'm not sure if playback-state gets called whenever remote-duck gets called,
          so it's possible we are calling updateUserPlaybackPosition more times than necessary. */
-      updateUserPlaybackPosition()
+      await updateUserPlaybackPosition()
     })()
   })
 }

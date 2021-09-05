@@ -99,7 +99,7 @@ export class Login extends React.Component<Props, State> {
         <Button
           accessibilityHint={submitIsDisabled
             ? translate('ARIA HINT - Type a valid email and password to enable the login button')
-            : translate('ARIA HINT - Tap to login')
+            : ''
           }
           accessibilityLabel={translate('Login')}
           disabled={submitIsDisabled}

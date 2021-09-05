@@ -40,7 +40,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
 
   render() {
     const { handlePressClipInfo, width } = this.props
-    const { player, screenPlayer } = this.global
+    const { player, screenPlayer, screenReaderEnabled } = this.global
     const { currentChapter } = player
     const { isLoading } = screenPlayer
     
@@ -77,6 +77,26 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
       ? translate('ARIA HINT - This is the now playing chapter info')
       : translate('ARIA HINT - This is the now playing clip info')
 
+    const episodeTitleComponent = (
+      <Text
+        allowFontScaling={false}
+        numberOfLines={1}
+        style={styles.episodeTitle}
+        testID={`${testIDPrefix}_episode_title`}>
+        {nowPlayingItem.episodeTitle}
+      </Text>
+    )
+
+    const clipTitleComponent = (
+      <Text
+        allowFontScaling={false}
+        numberOfLines={1}
+        style={styles.clipTitle}
+        testID={`${testIDPrefix}_clip_title`}>
+        {clipTitle}
+      </Text>
+    )
+
     return (
       <ScrollView
         scrollEnabled={false}
@@ -91,15 +111,18 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
           ) : (
             !!nowPlayingItem && (
               <RNView style={styles.episodeTitleWrapper}>
-                <TextTicker allowFontScaling={false} bounce loop textLength={nowPlayingItem?.episodeTitle?.length}>
-                  <Text
-                    allowFontScaling={false}
-                    numberOfLines={1}
-                    style={styles.episodeTitle}
-                    testID={`${testIDPrefix}_episode_title`}>
-                    {nowPlayingItem.episodeTitle}
-                  </Text>
-                </TextTicker>
+                {
+                  !!screenReaderEnabled ? (
+                    <TextTicker
+                      allowFontScaling={false}
+                      bounce
+                      importantForAccessibility='no-hide-descendants'
+                      loop
+                      textLength={nowPlayingItem?.episodeTitle?.length}>
+                      {episodeTitleComponent}
+                    </TextTicker>
+                  ) : episodeTitleComponent
+                }
                 <Text
                   allowFontScaling={false}
                   isSecondary
@@ -128,14 +151,19 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
               accessibilityLabel={clipAccessibilityLabel}
               onPress={handlePressClipInfo}>
               <RNView style={styles.clipWrapper}>
-                <TextTicker
-                  allowFontScaling={false}
-                  bounce
-                  loop
-                  styles={styles.clipTitle}
-                  textLength={clipTitle?.length}>
-                  {clipTitle}
-                </TextTicker>
+                {
+                  !!screenReaderEnabled ? (
+                    <TextTicker
+                      allowFontScaling={false}
+                      bounce
+                      importantForAccessibility='no-hide-descendants'
+                      loop
+                      styles={styles.clipTitle}
+                      textLength={clipTitle?.length}>
+                      {clipTitleComponent}
+                    </TextTicker>
+                  ) : clipTitleComponent
+                }
                 <Text allowFontScaling={false} style={styles.clipTime} testID='media_player_carousel_viewer_time'>
                   {readableClipTime(clipStartTime, clipEndTime)}
                 </Text>

@@ -43,6 +43,7 @@ import {
 } from '../state/actions/player'
 import { combineWithAddByRSSPodcasts,
   getSubscribedPodcasts, removeAddByRSSPodcast, toggleSubscribeToPodcast } from '../state/actions/podcast'
+import { updateScreenReaderEnabledState } from '../state/actions/screenReader'
 import { initializeSettings } from '../state/actions/settings'
 import { checkIfTrackingIsEnabled } from '../state/actions/tracking'
 import { initializeValueProcessor } from '../state/actions/valueTag'
@@ -176,7 +177,7 @@ export class PodcastsScreen extends React.Component<Props, State> {
 
   _handleAppStateChange = (nextAppState: any) => {
     (async () => {
-      updateUserPlaybackPosition()
+      await updateUserPlaybackPosition()
 
       if (nextAppState === 'active' && !isInitialLoad) {
         const { nowPlayingItem: lastItem } = this.global.player
@@ -213,6 +214,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
           updateTrackPlayerCapabilities()
         }
       }
+
+      updateScreenReaderEnabledState()
     })()
   }
 
@@ -550,8 +553,8 @@ export class PodcastsScreen extends React.Component<Props, State> {
     const title = item?.title ? item.title : translate('Untitled Podcast')
     const buttonText = queryFrom === PV.Filters._downloadedKey ? translate('Delete') : translate('Unsubscribe')
     const buttonAccessibilityLabel = queryFrom === PV.Filters._downloadedKey
-      ? `${translate(`ARIA HINT - Tap to delete all downloaded episodes from`)} ${title}`
-      : `${translate(`ARIA HINT - Tap to unsubscribe from`)} ${title}`
+      ? `${translate(`ARIA HINT - delete all downloaded episodes from`)} ${title}`
+      : `${translate(`ARIA HINT - unsubscribe from`)} ${title}`
 
     return (
       <SwipeRowBack
@@ -754,10 +757,11 @@ export class PodcastsScreen extends React.Component<Props, State> {
                   ? this._ListHeaderComponent
                   : null
               }
-              noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - Tap to go to the search screen')}
+              noResultsTopActionTextAccessibilityHint={translate('ARIA HINT - go to the search screen')}
               noResultsTopActionText={noSubscribedPodcasts ? defaultNoSubscribedPodcastsMessage : ''}
               noResultsMessage={
-                noSubscribedPodcasts ? translate("You don't have any podcasts yet") : translate('No podcasts found')
+                // eslint-disable-next-line max-len
+                noSubscribedPodcasts ? translate("You are not subscribed to any podcasts yet") : translate('No podcasts found')
               }
               onEndReached={this._onEndReached}
               onRefresh={queryFrom === PV.Filters._subscribedKey ? this._onRefresh : null}

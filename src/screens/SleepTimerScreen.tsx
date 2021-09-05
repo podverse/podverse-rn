@@ -74,6 +74,7 @@ export class SleepTimerScreen extends React.Component<Props> {
         <View style={styles.view}>
           <TimePicker currentTime={timeRemaining} handleUpdateSleepTimer={this._updateSleepTimer} isActive={isActive} />
           <Button
+            accessibilityLabel={isActive ? translate('Stop Timer') : translate('Start Timer')}
             isSuccess={!isActive}
             isWarning={isActive}
             onPress={this._toggleSleepTimer}

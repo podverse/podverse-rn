@@ -268,12 +268,17 @@ export class PlaylistScreen extends React.Component<Props, State> {
         <ActionSheet
           handleCancelPress={this._handleCancelPress}
           items={() =>
-            PV.ActionSheet.media.moreButtons(selectedItem, navigation, {
-              handleDismiss: this._handleCancelPress,
-              handleDownload: this._handleDownloadPressed,
-              includeGoToPodcast: true,
-              includeGoToEpisode: true
-            })
+            PV.ActionSheet.media.moreButtons(
+              selectedItem,
+              navigation,
+              {
+                handleDismiss: this._handleCancelPress,
+                handleDownload: this._handleDownloadPressed,
+                includeGoToPodcast: true,
+                includeGoToEpisode: true
+              },
+              !!selectedItem.startTime ? 'clip' : 'episode'
+            )
           }
           showModal={showActionSheet}
           testID={testIDPrefix}

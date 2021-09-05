@@ -66,6 +66,7 @@ export const TimePicker = (props: Props) => {
           <Text
             accessible={false}
             fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+            importantForAccessibility='no'
             style={[stylesText, globalTheme.text]}>
             {translate('hours')}
           </Text>
@@ -85,6 +86,7 @@ export const TimePicker = (props: Props) => {
           <Text
             accessible={false}
             fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+            importantForAccessibility='no'
             style={[stylesText, globalTheme.text]}>
             {translate('minutes')}
           </Text>
@@ -104,6 +106,7 @@ export const TimePicker = (props: Props) => {
           <Text
             accessible={false}
             fontSizeLargestScale={PV.Fonts.largeSizes.xs}
+            importantForAccessibility='no'
             style={[stylesText, globalTheme.text]}>
             {translate('seconds')}
           </Text>

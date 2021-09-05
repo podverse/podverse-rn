@@ -3,6 +3,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { decodeHTMLString, readableDate, removeHTMLFromString } from '../lib/utility'
 import { PV } from '../resources'
+import { images } from '../styles'
 import { DownloadOrDeleteButton } from './DownloadOrDeleteButton'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
 import { FastImage, Text, View } from './'
@@ -44,6 +45,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const podcastTitle = podcast.title || translate('Untitled Podcast')
     description = removeHTMLFromString(description)
     description = decodeHTMLString(description)
+    description = description?.trim() || ''
 
     const { downloadedEpisodeIds, downloadsActive, fontScaleMode } = this.global
 
@@ -64,7 +66,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
 
     const innerTopView = (
       <RNView
-        accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
+        accessibilityHint={translate('ARIA HINT - tap to go to this episode')}
         accessibilityLabel={accessibilityLabel}
         style={styles.innerTopView}>
         {!!imageUrl && !hideImage && <FastImage isSmall source={imageUrl} styles={styles.image} />}
@@ -107,13 +109,13 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
     const bottomText = (
       <Text
         accessibilityHint={translate('ARIA HINT - This is the episode description')}
-        accessibilityLabel={description.trim()}
+        accessibilityLabel={description}
         fontSizeLargestScale={PV.Fonts.largeSizes.md}
         isSecondary
         numberOfLines={2}
         style={descriptionStyle}
         testID={`${testID}_description`}>
-        {description.trim()}
+        {description}
       </Text>
     )
 
@@ -122,7 +124,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         <RNView style={styles.wrapperTop}>
           {handleNavigationPress ? (
             <TouchableWithoutFeedback
-              accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
+              accessibilityHint={translate('ARIA HINT - tap to go to this episode')}
               accessibilityLabel={accessibilityLabel}
               onPress={handleNavigationPress}
               {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
@@ -140,7 +142,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
         </RNView>
         {handleNavigationPress ? (
           <TouchableWithoutFeedback
-            accessibilityHint={translate('ARIA HINT - Tap to go to this episode')}
+            accessibilityHint={translate('ARIA HINT - tap to go to this episode')}
             accessibilityLabel={description.trim()}
             onPress={handleNavigationPress}
             {...(testID ? { testID: `${testID}_bottom_view_nav`.prependTestId() } : {})}>
@@ -153,6 +155,7 @@ export class EpisodeTableCell extends React.PureComponent<Props> {
           <TimeRemainingWidget
             handleMorePress={handleMorePress}
             item={item}
+            itemType='episode'
             mediaFileDuration={mediaFileDuration}
             testID={testID}
             userPlaybackPosition={userPlaybackPosition}
@@ -167,13 +170,13 @@ const styles = StyleSheet.create({
   description: {
     fontSize: PV.Fonts.sizes.sm,
     color: PV.Colors.grayLighter,
-    marginTop: 15
+    marginTop: 12
   },
   image: {
     flex: 0,
-    height: 64,
+    height: images.medium.height,
     marginRight: 12,
-    width: 64
+    width: images.medium.width
   },
   innerTopView: {
     flex: 1,

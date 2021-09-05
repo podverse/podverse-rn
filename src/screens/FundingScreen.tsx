@@ -3,16 +3,17 @@ import { Alert, Keyboard, Linking, Pressable, StyleSheet, TouchableOpacity } fro
 import Config from 'react-native-config'
 import React, { getGlobal } from 'reactn'
 import AsyncStorage from '@react-native-community/async-storage'
-import { checkLNPayRecipientRoute } from '../services/lnpay'
-import { getLNWallet } from '../state/actions/lnpay'
 import { Divider, FastImage, NavDismissIcon, ScrollView, Text,
   TextInput, ValueTagInfoView, View } from '../components'
+import { ValueTransactionRouteError } from '../components/ValueTagInfoView'
 import { translate } from '../lib/i18n'
 import { readableDate } from '../lib/utility'
 import { convertValueTagIntoValueTransactions } from '../lib/valueTagHelpers'
 import { PV } from '../resources'
+import { checkLNPayRecipientRoute } from '../services/lnpay'
 import { trackPageView } from '../services/tracking'
-import { ValueTransactionRouteError } from '../components/ValueTagInfoView'
+import { getLNWallet } from '../state/actions/lnpay'
+import { images } from '../styles'
 
 type Props = any
 type State = {
@@ -223,7 +224,7 @@ export class FundingScreen extends React.Component<Props, State> {
             <View style={styles.noLnpayView}>
               <Text style={styles.noLnPayText}>{translate('Podcast supports value-for-value donations')}</Text>
               <Pressable
-                accessibilityHint={translate('ARIA HINT - Tap to go to the Bitcoin wallet setup screen')}
+                accessibilityHint={translate('ARIA HINT - go to the Bitcoin wallet setup screen')}
                 accessibilityLabel={translate('Setup Bitcoin Wallet')}
                 accessibilityRole='button'
                 style={styles.goToValueTagSetupButton} onPress={this._handleValueTagSetupPressed}>
@@ -362,9 +363,9 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 0,
-    height: 64,
+    height: images.medium.height,
     marginRight: 12,
-    width: 64
+    width: images.medium.width
   },
   innerTopView: {
     flex: 0,

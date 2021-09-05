@@ -55,7 +55,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
         <RNView>
           {navigation.getParam('isLoggedIn') && (
             <NavHeaderButtonText
-              accessibilityHint={translate('ARIA HINT - Tap to create a new playlist')}
+              accessibilityHint={translate('ARIA HINT - create a new playlist')}
               accessibilityLabel={translate('New')}
               handlePress={navigation.getParam('showNewPlaylistDialog')}
               testID={`${testIDPrefix}_new`}
@@ -130,6 +130,7 @@ export class PlaylistsAddToScreen extends React.Component<Props, State> {
 
     return (
       <PlaylistTableCell
+        accessibilityHint={translate('ARIA HINT - Tap to add to this playlist')}
         hasZebraStripe={isOdd(index)}
         isSaving={item.id && item.id === isSavingId}
         itemCount={item.itemCount}

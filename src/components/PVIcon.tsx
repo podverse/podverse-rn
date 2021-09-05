@@ -2,6 +2,7 @@ import React from 'react'
 import { AccessibilityRole, TouchableWithoutFeedback, View as RNView } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useGlobal } from 'reactn'
+import { ImportantForAccessibility } from '../lib/accessibilityHelpers'
 import { darkTheme, iconStyles } from '../styles'
 
 type Props = {
@@ -11,6 +12,7 @@ type Props = {
   accessibilityRole?: AccessibilityRole
   brand?: boolean
   color?: string
+  importantForAccessibility?: ImportantForAccessibility
   isSecondary?: boolean
   name: string
   onPress?: any
@@ -23,8 +25,8 @@ type Props = {
 
 export const PVIcon = (props: Props) => {
   const { accessible, accessibilityHint, accessibilityLabel, accessibilityRole,
-    brand, color: colorOverride, isSecondary, name, onPress, size, solid, style,
-    testID, wrapperStyle = {} } = props
+    brand, color: colorOverride, importantForAccessibility, isSecondary, name,
+    onPress, size, solid, style, testID, wrapperStyle = {} } = props
   const [globalTheme] = useGlobal('globalTheme')
   const isDarkMode = globalTheme === darkTheme
   const color = isDarkMode
@@ -48,7 +50,7 @@ export const PVIcon = (props: Props) => {
   )
 
   return (
-    <RNView>
+    <RNView importantForAccessibility={importantForAccessibility}>
       {
         !!onPress ? (
           <TouchableWithoutFeedback
