@@ -174,17 +174,21 @@ export class MediaPlayerCarousel extends React.PureComponent<Props, State> {
           <MediaPlayerCarouselClips navigation={navigation} width={screenWidth} />
           {hasTranscript && <MediaPlayerCarouselTranscripts width={screenWidth} />}
         </ScrollView>
-        <Dots
-          active={activeIndex}
-          activeColor={PV.Colors.skyDark}
-          activeDotHeight={9}
-          activeDotWidth={9}
-          length={itemCount}
-          paddingVertical={12}
-          passiveColor={PV.Colors.grayLighter}
-          passiveDotHeight={8}
-          passiveDotWidth={8}
-        />
+        <View
+          accessible={false}
+          importantForAccessibility='no-hide-descendants'>
+          <Dots
+            active={activeIndex}
+            activeColor={PV.Colors.skyDark}
+            activeDotHeight={9}
+            activeDotWidth={9}
+            length={itemCount}
+            paddingVertical={12}
+            passiveColor={PV.Colors.grayLighter}
+            passiveDotHeight={8}
+            passiveDotWidth={8}
+          />
+        </View>
         {!!Config.ENABLE_VALUE_TAG_TRANSACTIONS && lnpayEnabled && hasValueInfo && (
           <View style={styles.boostButtonsContainer}>
             <TouchableOpacity

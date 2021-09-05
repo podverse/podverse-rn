@@ -65,6 +65,7 @@ export const WebViewStaticHTML = (props: Props) => {
   return (
     <View style={isLoading ? { display: 'none' } : styles.view}>
       <WebView
+        accessible={false}
         containerStyle={styles.view}
         originWhitelist={['*']}
         source={{ html: styledHTML }}

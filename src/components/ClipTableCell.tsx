@@ -3,6 +3,7 @@ import React from 'reactn'
 import { translate } from '../lib/i18n'
 import { readableClipTime, readableDate } from '../lib/utility'
 import { PV } from '../resources'
+import { images } from '../styles'
 import { IndicatorDownload } from './IndicatorDownload'
 import { TimeRemainingWidget } from './TimeRemainingWidget'
 import { FastImage, Text, View } from './'
@@ -13,6 +14,7 @@ type Props = {
   item: any
   loadTimeStampOnPlay?: boolean
   isChapter?: boolean
+  itemType?: 'chapter' | 'clip'
   showEpisodeInfo?: boolean
   showPodcastInfo?: boolean
   testID: string
@@ -28,7 +30,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
   }
 
   render() {
-    const { handleMorePress, hideImage, item, loadTimeStampOnPlay,
+    const { handleMorePress, hideImage, item, itemType, loadTimeStampOnPlay,
       isChapter, showEpisodeInfo, showPodcastInfo, testID, transparent } = this.props
 
     const episodePubDate = item?.episode?.pubDate || ''
@@ -64,7 +66,6 @@ export class ClipTableCell extends React.PureComponent<Props> {
         {...(testID ? { testID: `${testID}_top_view_nav`.prependTestId() } : {})}>
         <RNView
           accessible
-          accessibilityHint={translate('ARIA HINT - This is the clip title and time range')}
           accessibilityLabel={accessibilityLabel}
           style={{ flex: 1, flexDirection: 'column' }}>
           {(showEpisodeInfo || showPodcastInfo) && (
@@ -118,10 +119,6 @@ export class ClipTableCell extends React.PureComponent<Props> {
             </RNView>
           )}
           <Text
-            accessibilityHint={isChapter
-              ? translate('ARIA HINT - This is the chapter title')
-              : translate('ARIA HINT - This is the clip title')
-            }
             accessibilityLabel={title}
             fontSizeLargestScale={PV.Fonts.largeSizes.md}
             numberOfLines={4}
@@ -134,8 +131,16 @@ export class ClipTableCell extends React.PureComponent<Props> {
     )
 
     return (
-      <View style={styles.wrapper} transparent={transparent}>
-        <View style={styles.wrapperInner} transparent={transparent}>
+      <View
+        accessible={false}
+        importantForAccessibility='no'
+        style={styles.wrapper}
+        transparent={transparent}>
+        <View
+          accessible={false}
+          importantForAccessibility='no'
+          style={styles.wrapperInner}
+          transparent={transparent}>
           <RNView style={styles.wrapperTop}>
             {innerTopView}
           </RNView>
@@ -145,6 +150,7 @@ export class ClipTableCell extends React.PureComponent<Props> {
             handleMorePress={handleMorePress}
             isChapter={isChapter}
             item={item}
+            itemType={itemType ? itemType : 'clip'}
             loadTimeStampOnPlay={loadTimeStampOnPlay}
             testID={testID}
             transparent={transparent}
@@ -165,9 +171,9 @@ export class ClipTableCell extends React.PureComponent<Props> {
 
 const styles = StyleSheet.create({
   chapterImage: {
-    height: 64,
+    height: images.medium.height,
     marginLeft: 12,
-    width: 64
+    width: images.medium.width
   },
   chapterImageBorder: {
     borderColor: PV.Colors.skyDark,
@@ -185,9 +191,9 @@ const styles = StyleSheet.create({
     fontWeight: PV.Fonts.weights.thin
   },
   image: {
-    height: 64,
+    height: images.medium.height,
     marginRight: 12,
-    width: 64
+    width: images.medium.width
   },
   imageAndTopRightTextWrapper: {
     flex: 1,

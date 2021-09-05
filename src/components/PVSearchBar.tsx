@@ -19,8 +19,8 @@ type Props = {
 }
 
 export const PVSearchBar = (props: Props) => {
-  const { accessible,containerStyle, handleClear, inputRef, onChangeText, placeholder,
-    subText, testID, value } = props
+  const { accessible, containerStyle, handleClear,
+    inputRef, onChangeText, placeholder, subText, testID, value } = props
   const [globalTheme] = useGlobal('globalTheme')
   const [fontScaleMode] = useGlobal('fontScaleMode')
   const inputStyle = PV.Fonts.fontScale.largest === fontScaleMode ? { fontSize: PV.Fonts.largeSizes.md } : {}
@@ -29,10 +29,6 @@ export const PVSearchBar = (props: Props) => {
     <RNView>
       <SearchBar
         accessible={accessible}
-        accessibilityHint={
-          translate('ARIA HINT - Type to show only the transcript text that includes this search term')
-        }
-        accessibilityLabel={translate('Transcript search input')}
         autoCorrect={false}
         clearIcon={
           <Icon
@@ -53,6 +49,7 @@ export const PVSearchBar = (props: Props) => {
           <Icon
             accessible={false}
             color={PV.Colors.white}
+            importantForAccessibility='no-hide-descendants'
             name={'search'}
             size={PV.Icons.NAV}
             solid />
@@ -62,7 +59,9 @@ export const PVSearchBar = (props: Props) => {
       />
       {!!subText && (
         <Text
+          accessible={false}
           fontSizeLargestScale={PV.Fonts.largeSizes.sm}
+          importantForAccessibility='no'
           style={[globalTheme.textSecondary, styles.subText]}
           testID={`${testID}_search_bar_sub_text`}>
           {subText}

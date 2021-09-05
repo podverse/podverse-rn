@@ -21,16 +21,16 @@ export const SubscribeButton = (props: Props) => {
   const buttonTextTestId = isSubscribed ? `${testID}_is_subscribed` : `${testID}_is_not_subscribed`
   
   let accessibililityHint = isSubscribed
-    ? translate('ARIA HINT - Tap to unsubscribe from this podcast')
-    : translate('ARIA HINT - Tap to subscribe to this podcast')
+    ? translate('ARIA HINT - unsubscribe from this podcast')
+    : translate('ARIA HINT - subscribe to this podcast')
   if (isPlaylist) {
     accessibililityHint = isSubscribed
-      ? translate('ARIA HINT - Tap to unsubscribe from this playlist')
-      : translate('ARIA HINT - Tap to subscribe to this playlist')
+      ? translate('ARIA HINT - unsubscribe from this playlist')
+      : translate('ARIA HINT - subscribe to this playlist')
   } else if (isProfile) {
     accessibililityHint = isSubscribed
-      ? translate('ARIA HINT - Tap to unsubscribe from this profile')
-      : translate('ARIA HINT - Tap to subscribe to this profile')
+      ? translate('ARIA HINT - unsubscribe from this profile')
+      : translate('ARIA HINT - subscribe to this profile')
   }
 
   const accessibilityLabel = isSubscribed ? translate('Unsubscribe') : translate('Subscribe')

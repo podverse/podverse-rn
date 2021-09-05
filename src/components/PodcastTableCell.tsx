@@ -66,7 +66,7 @@ export class PodcastTableCell extends React.PureComponent<Props> {
       </Text>
     )
 
-    const accessibilityLabel = `${trimmedPodcastTitle}, ${lastPubDate}, ${downloadCount}`
+    const accessibilityLabel = `${trimmedPodcastTitle}, ${lastPubDate}, ${downloadCountText}`
 
     return (
       <TouchableWithoutFeedback

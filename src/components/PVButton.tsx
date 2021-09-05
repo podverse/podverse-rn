@@ -61,6 +61,7 @@ export const PVButton = (props: Props) => {
       ) : (
         <Text
           fontSizeLargestScale={PV.Fonts.largeSizes.md}
+          importantForAccessibility='no'
           style={[
             core.buttonText,
             globalTheme.buttonPrimaryText,

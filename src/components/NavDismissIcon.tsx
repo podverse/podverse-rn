@@ -19,7 +19,7 @@ export const NavDismissIcon = (props: Props) => {
   }
   return (
     <NavItemWrapper
-      accessibilityHint={translate('ARIA HINT - Tap to dismiss this screen')}
+      accessibilityHint={translate('ARIA HINT - dismiss this screen')}
       accessibilityLabel={translate('Back')}
       accessibilityRole='button'
       handlePress={handlePress}

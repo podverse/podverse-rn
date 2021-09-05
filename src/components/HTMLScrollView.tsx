@@ -52,6 +52,7 @@ export const HTMLScrollView = (props: Props) => {
       {!!sectionTitle &&
         <TableSectionSelectors
           disableFilter
+          hideDropdown
           includePadding
           selectedFilterLabel={sectionTitle} />
       }

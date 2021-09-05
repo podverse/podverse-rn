@@ -23,7 +23,6 @@ type Props = {
   selectedCategoryItemKey?: string | null
   selectedCategorySubItemKey?: string | null
   selectedFilterAccessibilityHint?: string | null
-  selectedFilterAccessibilityLabel?: string | null
   selectedFilterItemKey?: string | null
   selectedFilterLabel?: string | null
   selectedFromItemKey?: string | null
@@ -72,7 +71,6 @@ export class TableSectionSelectors extends React.Component<Props, State> {
       selectedFilterItemKey,
       selectedFilterLabel,
       selectedFilterAccessibilityHint,
-      selectedFilterAccessibilityLabel,
       selectedFromItemKey,
       selectedSortItemKey,
       selectedSortLabel,
@@ -93,11 +91,11 @@ export class TableSectionSelectors extends React.Component<Props, State> {
               accessibilityHint={selectedFilterAccessibilityHint
                 ? selectedFilterAccessibilityHint
                 : !disableFilter
-                  ? translate('ARIA HINT - This is the selected primary filter for this screen')
+                  ? translate('ARIA HINT - This is the selected filter for this screen')
                   : ''
               }
-              accessibilityLabel={selectedFilterAccessibilityLabel || ''}
-              accessibilityRole={disableFilter ? 'header' : 'button'}
+              accessibilityLabel={selectedFilterLabel}
+              accessibilityRole='header'
               fontSizeLargestScale={PV.Fonts.largeSizes.md}
               numberOfLines={1}
               style={[styles.tableSectionHeaderTitleText, globalTheme.tableSectionHeaderText, textStyle]}
@@ -110,11 +108,12 @@ export class TableSectionSelectors extends React.Component<Props, State> {
         {
           !hideDropdown &&
             <DropdownButton
-              accessible={accessible && !disableFilter}
+              accessible={!!accessible && !disableFilter}
               // eslint-disable-next-line max-len
-              accessibilityHint={translate('ARIA HINT - This is the selected sorting filter for this screen Tap to select a different filter')}
+              accessibilityHint={translate('ARIA HINT - This is the selected sorting filter for this screen select a different filter')}
               accessibilityLabel={selectedSortLabel}
-              disableFilter={disableFilter}
+              disableFilter={!!disableFilter}
+              importantForAccessibility={!!accessible && !disableFilter ? 'yes' : 'no'}
               onPress={() => {
                 this.props.navigation.navigate(PV.RouteNames.FilterScreen, {
                   addByRSSPodcastFeedUrl,

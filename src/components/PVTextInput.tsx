@@ -87,14 +87,19 @@ export const PVTextInput = (props: Props) => {
 
   return (
     <TouchableWithoutFeedback
-      accessibilityHint={accessibilityHint}
-      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={onPress ? accessibilityHint : ''}
+      accessibilityLabel={onPress ? accessibilityLabel : ''}
+      importantForAccessibility={onPress ? 'yes' : 'no'}
       onPress={onPress}>
       <View
         {...(onPress ? { pointerEvents: 'none' } : {})}
         style={[globalTheme.textInputWrapper, core.textInputWrapper, wrapperStyle]}>
         {(hasText || alwaysShowEyebrow) && (!!eyebrowTitle || !!placeholder) && (
-          <Text style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]} testID={`${testID}_text_input_eyebrow`}>
+          <Text
+            accessible={false}
+            importantForAccessibility='no'
+            style={[globalTheme.textInputEyeBrow, core.textInputEyeBrow]}
+            testID={`${testID}_text_input_eyebrow`}>
             {eyebrowTitle || placeholder}
           </Text>
         )}
@@ -105,6 +110,7 @@ export const PVTextInput = (props: Props) => {
           blurOnSubmit={returnKeyType === 'done'}
           editable={!!editable}
           keyboardType={keyboardType}
+          importantForAccessibility={!onPress ? 'yes' : 'no'}
           multiline={numberOfLines > 1}
           numberOfLines={hasText ? numberOfLines : 1}
           onBlur={onBlur}
