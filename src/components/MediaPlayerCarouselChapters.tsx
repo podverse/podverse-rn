@@ -6,8 +6,10 @@ import { hasValidNetworkConnection } from '../lib/network'
 import { safeKeyExtractor } from '../lib/utility'
 import { PV } from '../resources'
 import { retrieveLatestChaptersForEpisodeId } from '../services/episode'
+import PVEventEmitter from '../services/eventEmitter'
+import { getPlaybackSpeed } from '../services/player'
 import { loadItemAndPlayTrack } from '../state/actions/player'
-import { ActionSheet, ActivityIndicator, ClipTableCell, Divider, FlatList,
+import { ActionSheet, ActivityIndicator, AutoScrollToggle, ClipTableCell, Divider, FlatList,
   ScrollView, TableSectionSelectors } from './'
 
 type Props = {
@@ -16,21 +18,96 @@ type Props = {
   width: number
 }
 
+type State = {
+  activeTranscriptRowIndex: number | null
+  autoScrollOn: boolean
+}
+
 const getTestID = () => 'media_player_carousel_chapters'
 
-export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
+let lastPlayingChapter: any = null
+
+export class MediaPlayerCarouselChapters extends React.PureComponent<Props, State> {
+  interval: ReturnType<typeof setInterval> | null = null
+  listRef: any | null = null
+  itemHeights: any[]
+
   constructor(props) {
     super(props)
-    this.state = {}
+
+    this.itemHeights = []
+
+    this.state = {
+      activeTranscriptRowIndex: null,
+      autoScrollOn: false
+    }
   }
 
   componentDidMount() {
+    PVEventEmitter.on(PV.Events.PLAYER_SPEED_UPDATED, this.updateAutoscroll)
     this._queryData()
+  }
+
+  componentWillUnmount() {
+    PVEventEmitter.removeListener(PV.Events.PLAYER_SPEED_UPDATED)
+    this.clearAutoScrollInterval()
   }
 
   _handleNavigationPress = (selectedItem: any) => {
     const shouldPlay = true
     loadItemAndPlayTrack(selectedItem, shouldPlay)
+  }
+
+  toggleAutoscroll = () => {
+    if (this.interval) {
+      this.setState({
+        activeTranscriptRowIndex: null,
+        autoScrollOn: false
+      }, this.clearAutoScrollInterval)
+    } else {
+      this.enableAutoscroll()
+    }
+  }
+
+  updateAutoscroll = () => {
+    if (this.interval) {
+      this.enableAutoscroll()
+    }
+  }
+
+  enableAutoscroll = async () => {
+    const playbackSpeed = await getPlaybackSpeed()
+    const intervalTime = 2000 / playbackSpeed
+    lastPlayingChapter = null
+    this.clearAutoScrollInterval()
+
+    this.setState({ autoScrollOn: true })
+      this.interval = setInterval(() => {
+        const { currentChapter, currentChapters } = this.global.player
+        const itemHeightsReady = currentChapters.length === this.itemHeights.length
+
+        if (currentChapter && itemHeightsReady) {
+          if (lastPlayingChapter && currentChapter.id === lastPlayingChapter.id) return 
+          lastPlayingChapter = currentChapter
+
+          const index = currentChapters.findIndex(
+            (item: Record<string, any>) => item.id === currentChapter.id
+          )
+
+          if (index !== -1) {
+            const indexBefore = index > 0 ? index - 1 : 0
+            this.listRef.scrollToIndex({ index: indexBefore, animated: false })
+            this.setState({ activeTranscriptRowIndex: index })
+          }
+        }
+      }, intervalTime)
+  }
+
+  clearAutoScrollInterval = () => {
+    if (this.interval) {
+      clearInterval(this.interval)
+      this.interval = null
+    }
   }
 
   _handleMorePress = (selectedItem: any) => {
@@ -57,10 +134,11 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
 
   _renderItem = ({ item, index }) => {
     const { player } = this.global
-    const { episode } = player
+    const { currentChapter, episode } = player
     const podcast = episode?.podcast || {}
     const testID = getTestID()
 
+    // item is a MediaRef
     item = {
       ...item,
       episode
@@ -69,10 +147,12 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
     return item?.episode?.id ? (
       <ClipTableCell
         handleMorePress={() => this._handleMorePress(convertToNowPlayingItem(item, null, podcast))}
+        isChapter
+        isNowPlayingItem={currentChapter && currentChapter.id === item.id}
         item={item}
         itemType='chapter'
         loadTimeStampOnPlay
-        isChapter
+        onLayout={(item: any) => this.itemHeights[index] = item.nativeEvent.layout.height}
         showPodcastInfo={false}
         testID={`${testID}_item_${index}`}
         transparent
@@ -81,12 +161,34 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
       <></>
     )
   }
+/* 
+  Creating array of itemHeights to determine where to scroll, given the cells
+  have a dynamic height. The array can only be populated after the list
+  has rendered once, so we're returning a default placehold length and offset
+  for initial load, and not allowing autoscroll to happen until the itemHeights
+  array is populated.
+*/
+  _getItemLayout = (data, index) => {
+    const { player } = this.global
+    const { currentChapters } = player
+
+    let length = 80
+    let offset = 80
+    
+    if (currentChapters && currentChapters.length === this.itemHeights.length) {
+      length = this.itemHeights[index];
+      offset = this.itemHeights.slice(0,index).reduce((a, c) => a + c, 0)
+    }
+
+    return {length, offset, index}
+  }
 
   _ItemSeparatorComponent = () => <Divider />
 
   render() {
     const { navigation, width } = this.props
-    const { offlineModeEnabled, player, screenPlayer } = this.global
+    const { autoScrollOn } = this.state
+    const { offlineModeEnabled, player, screenPlayer, screenReaderEnabled } = this.global
     const { currentChapters } = player
     const {
       isLoading,
@@ -105,7 +207,14 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
     return (
       <ScrollView fillSpace style={[styles.wrapper, { width }]} transparent>
         <TableSectionSelectors
+          customButtons={!screenReaderEnabled ? (
+            <AutoScrollToggle
+              autoScrollOn={autoScrollOn}
+              toggleAutoscroll={this.toggleAutoscroll}
+            />
+          ) : null}
           disableFilter
+          hideDropdown
           includePadding
           selectedFilterLabel={translate('Chapters')}
           selectedFilterAccessibilityHint={translate('ARIA HINT - This is a list of the chapters for this episode')} />
@@ -116,9 +225,14 @@ export class MediaPlayerCarouselChapters extends React.PureComponent<Props> {
             dataTotalCount={currentChapters.length}
             disableLeftSwipe
             extraData={currentChapters}
+            getItemLayout={this._getItemLayout}
             isLoadingMore={isLoadingMore}
             ItemSeparatorComponent={this._ItemSeparatorComponent}
             keyExtractor={(item: any, index: number) => safeKeyExtractor(getTestID(), index, item?.id)}
+            listRef={(ref: any) => {
+              this.listRef = ref
+            }}
+            
             noResultsMessage={noResultsMessage}
             noResultsSubMessage={noResultsSubMessage}
             renderItem={this._renderItem}

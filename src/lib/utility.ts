@@ -647,3 +647,7 @@ export const safeKeyExtractor = (listName: string, index: number, id?: string) =
     return `${listName}_${index}`
   }
 }
+
+export const checkIfNowPlayingItem = (item?: any, nowPlayingItem?: any) => {
+  return item && nowPlayingItem && (nowPlayingItem.clipId === item.id || nowPlayingItem.episodeId === item.id)
+}

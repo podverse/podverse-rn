@@ -775,7 +775,7 @@ static navigationOptions = ({ navigation }) => {
                     handleDismiss: this._handleCancelPress,
                     handleDownload: this._handleDownloadPressed
                   },
-                  'podcast'
+                  viewType === PV.Filters._clipsKey ? 'clip' : 'episode'
                 )
               }
               showModal={showActionSheet}
