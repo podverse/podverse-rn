@@ -87,8 +87,8 @@ export const PVTextInput = (props: Props) => {
 
   return (
     <TouchableWithoutFeedback
-      accessibilityHint={onPress ? accessibilityHint : ''}
-      accessibilityLabel={onPress ? accessibilityLabel : ''}
+      accessibilityHint={accessibilityHint}
+      accessibilityLabel={accessibilityLabel}
       importantForAccessibility={onPress ? 'yes' : 'no'}
       onPress={onPress}>
       <View
@@ -104,6 +104,8 @@ export const PVTextInput = (props: Props) => {
           </Text>
         )}
         <TextInput
+          accessible
+          accessibilityLabel={accessibilityLabel}
           autoCapitalize={autoCapitalize}
           autoCompleteType={autoCompleteType}
           autoCorrect={autoCorrect}

@@ -130,7 +130,9 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
         {!isLoading && (
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <TextInput
-              accessibilityHint={translate('ARIA HINT - When finished press the Save button above')}
+              // eslint-disable-next-line max-len
+              accessibilityHint={translate('ARIA HINT - Type or paste your RSS feed URL here When finished press the Save button above')}
+              accessibilityLabel={translate('RSS feed link')}
               autoCapitalize='none'
               autoCompleteType='off'
               autoCorrect={false}
@@ -162,6 +164,7 @@ export class AddPodcastByRSSScreen extends React.Component<Props, State> {
               input2Text={password}
               onValueChange={this._handleToggleUsernameAndPassword}
               subText={!!showUsernameAndPassword ? translate('If this is a password protected feed') : ''}
+              subTextAccessible
               text={translate('Include username and password')}
               testID={`${testIDPrefix}_include_username_and_password`}
               value={!!showUsernameAndPassword}

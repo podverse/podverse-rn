@@ -144,10 +144,16 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
       <ActionSheet showModal={showModal} testID={testID} handleCancelPress={handleDismiss}>
         {items}
         <View
+          accessible={false}
+          importantForAccessibility='no-hide-descendants'
           key='volume'
           style={[actionSheetStyles.button, actionSheetStyles.buttonBottom, globalTheme.actionSheetButton]}>
           <View style={styles.volumeSliderWrapper}>
-            <Icon name='volume-down' size={28} style={styles.volumeSliderIcon} />
+            <Icon
+              accessible={false}
+              name='volume-down'
+              size={28}
+              style={styles.volumeSliderIcon} />
             <Slider
               minimumValue={0}
               maximumValue={1}
@@ -158,7 +164,7 @@ export class PlayerMoreActionSheet extends React.Component<Props, State> {
               thumbTintColor={PV.Colors.brandColor}
               value={volume}
             />
-            <Icon name='volume-up' size={28} />
+            <Icon accessible={false} name='volume-up' size={28} />
           </View>
         </View>
         <TouchableHighlight
