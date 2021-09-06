@@ -112,7 +112,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
             !!nowPlayingItem && (
               <RNView style={styles.episodeTitleWrapper}>
                 {
-                  !!screenReaderEnabled ? (
+                  !screenReaderEnabled ? (
                     <TextTicker
                       allowFontScaling={false}
                       bounce
@@ -152,7 +152,7 @@ export class MediaPlayerCarouselViewer extends React.PureComponent<Props> {
               onPress={handlePressClipInfo}>
               <RNView style={styles.clipWrapper}>
                 {
-                  !!screenReaderEnabled ? (
+                  !screenReaderEnabled ? (
                     <TextTicker
                       allowFontScaling={false}
                       bounce

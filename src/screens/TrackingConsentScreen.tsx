@@ -129,6 +129,7 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
           </View>
           <Button
             accessible
+            accessibilityLabel={topButtonText}
             onPress={iOSAlreadyDetermined ? this._goToSettings : this._enableTracking}
             testID={`${testIDPrefix}_top_button`}
             text={topButtonText}
@@ -138,6 +139,7 @@ export class TrackingConsentScreen extends React.Component<Props, State> {
             !isIOSInitialPrompt && (
               <Button
                 accessible
+                accessibilityLabel={iOSAlreadyDetermined ? translate('Back') : translate('No thanks')}
                 isTransparent
                 onPress={iOSAlreadyDetermined ? this._handleDismiss : this._disableTracking}
                 testID={`${testIDPrefix}_bottom_button`}

@@ -98,7 +98,7 @@ export class MiniPlayer extends React.PureComponent<Props> {
                     {nowPlayingItem.podcastTitle}
                   </Text>
                   {
-                    !!screenReaderEnabled ? (
+                    !screenReaderEnabled ? (
                       <TextTicker
                         accessible={false}
                         allowFontScaling={false}
